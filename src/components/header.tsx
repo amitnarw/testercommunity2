@@ -1,0 +1,105 @@
+'use client';
+
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { AnimateTestLogo } from './icons';
+import { Button } from './ui/button';
+import { Sheet, SheetContent, SheetTrigger } from './ui/sheet';
+import { Menu, ArrowRight } from 'lucide-react';
+import { cn } from '@/lib/utils';
+import { useState, useEffect } from 'react';
+
+const navItems = [
+  { name: 'Marketplace', href: '/marketplace' },
+  { name: 'Dashboard', href: '/dashboard' },
+  { name: 'AI Insights', href: '/ai-insights' },
+];
+
+export function Header() {
+  const pathname = usePathname();
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [isMenuOpen, setMenuOpen] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 10);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  return (
+    <header className={cn(
+      "sticky top-0 z-50 w-full transition-all duration-300",
+      isScrolled ? "bg-background/80 backdrop-blur-lg border-b" : "bg-transparent"
+    )}>
+      <div className="container mx-auto px-4 md:px-6">
+        <div className="flex h-20 items-center justify-between">
+          <Link href="/" className="flex items-center gap-2">
+            <AnimateTestLogo className="h-8 w-8 text-primary" />
+            <span className="font-headline text-xl font-bold">AnimateTest</span>
+          </Link>
+          <nav className="hidden md:flex items-center gap-6">
+            {navItems.map((item) => (
+              <Link
+                key={item.name}
+                href={item.href}
+                className={cn(
+                  'font-medium transition-colors hover:text-primary',
+                  pathname === item.href ? 'text-primary' : 'text-muted-foreground'
+                )}
+              >
+                {item.name}
+              </Link>
+            ))}
+          </nav>
+          <div className="hidden md:flex items-center gap-4">
+            <Button variant="ghost">Log In</Button>
+            <Button asChild>
+              <Link href="/signup">Sign Up <ArrowRight className="ml-2 h-4 w-4" /></Link>
+            </Button>
+          </div>
+          <div className="md:hidden">
+            <Sheet open={isMenuOpen} onOpenChange={setMenuOpen}>
+              <SheetTrigger asChild>
+                <Button variant="ghost" size="icon">
+                  <Menu className="h-6 w-6" />
+                  <span className="sr-only">Open menu</span>
+                </Button>
+              </SheetTrigger>
+              <SheetContent side="right">
+                <div className="p-6">
+                    <Link href="/" className="flex items-center gap-2 mb-8" onClick={() => setMenuOpen(false)}>
+                        <AnimateTestLogo className="h-8 w-8 text-primary" />
+                        <span className="font-headline text-xl font-bold">AnimateTest</span>
+                    </Link>
+                    <nav className="flex flex-col gap-6">
+                        {navItems.map((item) => (
+                        <Link
+                            key={item.name}
+                            href={item.href}
+                            onClick={() => setMenuOpen(false)}
+                            className={cn(
+                            'text-lg font-medium transition-colors hover:text-primary',
+                            pathname === item.href ? 'text-primary' : 'text-foreground'
+                            )}
+                        >
+                            {item.name}
+                        </Link>
+                        ))}
+                    </nav>
+                    <div className="mt-8 flex flex-col gap-4">
+                        <Button variant="outline" onClick={() => setMenuOpen(false)}>Log In</Button>
+                        <Button asChild onClick={() => setMenuOpen(false)}>
+                            <Link href="/signup">Sign Up</Link>
+                        </Button>
+                    </div>
+                </div>
+              </SheetContent>
+            </Sheet>
+          </div>
+        </div>
+      </div>
+    </header>
+  );
+}
