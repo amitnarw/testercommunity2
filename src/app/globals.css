@@ -4,54 +4,54 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
+    --background: 240 2% 96%; /* Light Grey: #F0F0F0 */
     --foreground: 224 71.4% 4.1%;
-    --card: 0 0% 100%;
+    --card: 240 2% 96%;
     --card-foreground: 224 71.4% 4.1%;
-    --popover: 0 0% 100%;
+    --popover: 240 2% 96%;
     --popover-foreground: 224 71.4% 4.1%;
-    --primary: 191 100% 50%; /* Electric Blue: #00DDFF */
-    --primary-foreground: 224 71.4% 4.1%;
+    --primary: 278 100% 41%; /* Vibrant Purple: #9400D3 */
+    --primary-foreground: 210 40% 98%;
     --secondary: 220 14.3% 95.9%;
     --secondary-foreground: 222.9 47.4% 11.2%;
     --muted: 220 14.3% 95.9%;
     --muted-foreground: 220 8.9% 46.1%;
-    --accent: 74 100% 50%; /* Neon Green: #beef00 */
+    --accent: 93 100% 54%; /* Neon Green: #39FF14 */
     --accent-foreground: 222.9 47.4% 11.2%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
     --border: 220 13% 91%;
     --input: 220 13% 91%;
-    --ring: 191 100% 50%;
-    --chart-1: 191 100% 50%;
-    --chart-2: 74 100% 50%;
+    --ring: 278 100% 41%;
+    --chart-1: 278 100% 41%;
+    --chart-2: 93 100% 54%;
     --chart-3: 262 82% 60%;
     --chart-4: 341 82% 65%;
     --chart-5: 43 74% 66%;
     --radius: 0.8rem;
   }
   .dark {
-    --background: 222 83% 9.2%; /* Night Black: #18181B */
+    --background: 240 2% 8%; /* Night Black: #18181B - approx */
     --foreground: 210 40% 98%;
-    --card: 222 83% 9.2%;
+    --card: 240 2% 8%;
     --card-foreground: 210 40% 98%;
-    --popover: 222 83% 9.2%;
+    --popover: 240 2% 8%;
     --popover-foreground: 210 40% 98%;
-    --primary: 191 100% 50%; /* Electric Blue: #00DDFF */
-    --primary-foreground: 224 71.4% 4.1%;
+    --primary: 278 100% 41%; /* Vibrant Purple: #9400D3 */
+    --primary-foreground: 210 40% 98%;
     --secondary: 217.2 32.6% 17.5%;
     --secondary-foreground: 210 40% 98%;
     --muted: 217.2 32.6% 17.5%;
     --muted-foreground: 215 20.2% 65.1%;
-    --accent: 74 100% 50%; /* Neon Green: #beef00 */
+    --accent: 93 100% 54%; /* Neon Green: #39FF14 */
     --accent-foreground: 224 71.4% 4.1%;
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 210 40% 98%;
     --border: 217.2 32.6% 17.5%;
     --input: 217.2 32.6% 17.5%;
-    --ring: 191 100% 50%;
-    --chart-1: 191 100% 50%;
-    --chart-2: 74 100% 50%;
+    --ring: 278 100% 41%;
+    --chart-1: 278 100% 41%;
+    --chart-2: 93 100% 54%;
   }
 }
 
