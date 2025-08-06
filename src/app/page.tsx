@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { ArrowRight, BarChart, Bot, CheckCircle, ChevronRight, LayoutGrid, Star, TestTube, Users } from 'lucide-react';
+import { ArrowRight, BarChart, CheckCircle, ChevronRight, LayoutGrid, Star, TestTube, Users } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -29,10 +29,10 @@ const features = [
     link: '/#reputation',
   },
   {
-    icon: <Bot className="h-8 w-8 text-primary" />,
-    title: 'AI-Powered Insights',
-    description: 'Transform bug reports into actionable insights with our intelligent, animated analysis panel.',
-    link: '/ai-insights',
+    icon: <TestTube className="h-8 w-8 text-primary" />,
+    title: 'Seamless Bug Reporting',
+    description: 'An intuitive and animated bug reporting experience that testers will love.',
+    link: '/',
   },
 ];
 
@@ -42,7 +42,7 @@ const testimonials = [
     role: 'Lead Developer, TechNova',
     avatar: 'https://placehold.co/100x100/png',
     dataAiHint: 'woman portrait',
-    comment: 'AnimateTest has revolutionized our QA process. The real-time feedback and detailed AI insights are game-changers. The platform isn\'t just functional, it\'s a joy to use!',
+    comment: 'AnimateTest has revolutionized our QA process. The real-time feedback and detailed reports are game-changers. The platform isn\'t just functional, it\'s a joy to use!',
   },
   {
     name: 'Mike Valerio',

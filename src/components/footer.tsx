@@ -6,7 +6,6 @@ import { Github, Twitter, Linkedin } from 'lucide-react';
 const navItems = [
   { name: 'Marketplace', href: '/marketplace' },
   { name: 'Dashboard', href: '/dashboard' },
-  { name: 'AI Insights', href: '/ai-insights' },
   { name: 'Sign Up', href: '/signup' },
 ];
 

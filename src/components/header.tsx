@@ -12,7 +12,6 @@ import { useState, useEffect } from 'react';
 const navItems = [
   { name: 'Marketplace', href: '/marketplace' },
   { name: 'Dashboard', href: '/dashboard' },
-  { name: 'AI Insights', href: '/ai-insights' },
 ];
 
 export function Header() {
