@@ -5,9 +5,10 @@ import { usePathname } from 'next/navigation';
 import { AnimateTestLogo } from './icons';
 import { Button } from './ui/button';
 import { Sheet, SheetContent, SheetTrigger } from './ui/sheet';
-import { Menu, ArrowRight } from 'lucide-react';
+import { Menu, ArrowRight, Sun, Moon } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useState, useEffect } from 'react';
+import { useTheme } from 'next-themes';
 
 const navItems = [
   { name: 'Marketplace', href: '/marketplace' },
@@ -18,6 +19,7 @@ export function Header() {
   const pathname = usePathname();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setMenuOpen] = useState(false);
+  const { theme, setTheme } = useTheme();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -53,6 +55,15 @@ export function Header() {
             ))}
           </nav>
           <div className="hidden md:flex items-center gap-4">
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+            >
+              <Sun className="h-6 w-6 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+              <Moon className="absolute h-6 w-6 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+              <span className="sr-only">Toggle theme</span>
+            </Button>
             <Button variant="ghost">Log In</Button>
             <Button asChild>
               <Link href="/signup">Sign Up <ArrowRight className="ml-2 h-4 w-4" /></Link>
@@ -91,6 +102,18 @@ export function Header() {
                         <Button variant="outline" onClick={() => setMenuOpen(false)}>Log In</Button>
                         <Button asChild onClick={() => setMenuOpen(false)}>
                             <Link href="/signup">Sign Up</Link>
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="icon"
+                          onClick={() => {
+                            setTheme(theme === 'dark' ? 'light' : 'dark');
+                            setMenuOpen(false);
+                          }}
+                        >
+                          <Sun className="h-6 w-6 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+                          <Moon className="absolute h-6 w-6 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+                          <span className="sr-only">Toggle theme</span>
                         </Button>
                     </div>
                 </div>
