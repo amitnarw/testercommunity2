@@ -125,30 +125,6 @@ function GamifiedReputationSection() {
     return (
         <section id="reputation" className="py-20 md:py-28 bg-secondary/50">
           <div className="container mx-auto px-4 md:px-6 grid md:grid-cols-2 gap-12 items-center">
-            <div>
-              <Badge variant="outline">Gamified Reputation</Badge>
-              <h2 className="font-headline text-3xl md:text-4xl font-bold mt-4">Stand Out. Level Up. Get Noticed.</h2>
-              <p className="mt-4 text-muted-foreground">Our gamified system makes testing more engaging and rewarding. Earn XP, unlock badges, and climb the leaderboards to showcase your skills.</p>
-              <div className="mt-8 space-y-6">
-                <div className="space-y-2">
-                  <div className="flex justify-between items-center">
-                    <span className="font-semibold">Reputation Level: Pro Tester</span>
-                    <span className="text-sm font-mono text-primary">XP 4500 / 6000</span>
-                  </div>
-                  <Progress value={75} className="h-3 [&>div]:bg-gradient-to-r [&>div]:from-accent [&>div]:to-primary rounded-xl" />
-                </div>
-                <div className="flex gap-4">
-                    <div className="flex items-center gap-2 p-3 rounded-xl bg-background border">
-                        <GoldBadge className="h-8 w-8"/>
-                        <span className="font-semibold">Top 1% Bug Hunter</span>
-                    </div>
-                     <div className="flex items-center gap-2 p-3 rounded-xl bg-background border">
-                        <SilverBadge className="h-8 w-8"/>
-                        <span className="font-semibold">UI/UX Specialist</span>
-                    </div>
-                </div>
-              </div>
-            </div>
             <div 
                 className="relative w-full h-[400px]"
                 ref={cardRef}
@@ -183,6 +159,30 @@ function GamifiedReputationSection() {
                         <BronzeBadge className="h-10 w-10" />
                     </div>
                 </div>
+            </div>
+            <div>
+              <Badge variant="outline">Gamified Reputation</Badge>
+              <h2 className="font-headline text-3xl md:text-4xl font-bold mt-4">Stand Out. Level Up. Get Noticed.</h2>
+              <p className="mt-4 text-muted-foreground">Our gamified system makes testing more engaging and rewarding. Earn XP, unlock badges, and climb the leaderboards to showcase your skills.</p>
+              <div className="mt-8 space-y-6">
+                <div className="space-y-2">
+                  <div className="flex justify-between items-center">
+                    <span className="font-semibold">Reputation Level: Pro Tester</span>
+                    <span className="text-sm font-mono text-primary">XP 4500 / 6000</span>
+                  </div>
+                  <Progress value={75} className="h-3 [&>div]:bg-gradient-to-r [&>div]:from-accent [&>div]:to-primary rounded-xl" />
+                </div>
+                <div className="flex gap-4">
+                    <div className="flex items-center gap-2 p-3 rounded-xl bg-background border">
+                        <GoldBadge className="h-8 w-8"/>
+                        <span className="font-semibold">Top 1% Bug Hunter</span>
+                    </div>
+                     <div className="flex items-center gap-2 p-3 rounded-xl bg-background border">
+                        <SilverBadge className="h-8 w-8"/>
+                        <span className="font-semibold">UI/UX Specialist</span>
+                    </div>
+                </div>
+              </div>
             </div>
           </div>
         </section>
@@ -345,3 +345,5 @@ export default function Home() {
     </div>
   );
 }
+
+    
