@@ -10,8 +10,8 @@
     --card-foreground: 224 71.4% 4.1%;
     --popover: 240 2% 96%;
     --popover-foreground: 224 71.4% 4.1%;
-    --primary: 278 100% 41%; /* Vibrant Purple: #9400D3 */
-    --primary-foreground: 210 40% 98%;
+    --primary: 73 89% 53%; /* Lime Green: #C9F31D */
+    --primary-foreground: 224 71.4% 4.1%; /* Dark text for contrast */
     --secondary: 220 14.3% 95.9%;
     --secondary-foreground: 222.9 47.4% 11.2%;
     --muted: 220 14.3% 95.9%;
@@ -22,9 +22,9 @@
     --destructive-foreground: 210 40% 98%;
     --border: 220 13% 91%;
     --input: 220 13% 91%;
-    --ring: 278 100% 41%;
+    --ring: 73 89% 53%;
     --radius: 0.75rem;
-    --chart-1: 278 100% 41%;
+    --chart-1: 73 89% 53%;
     --chart-2: 93 100% 54%;
     --chart-3: 180 100% 50%;
     --chart-4: 328 97% 59%;
@@ -38,8 +38,8 @@
     --card-foreground: 210 40% 98%;
     --popover: 222.9 10% 3%;
     --popover-foreground: 210 40% 98%;
-    --primary: 263 88% 60%; /* Electric Blue */
-    --primary-foreground: 210 40% 98%;
+    --primary: 73 89% 53%; /* Lime Green: #C9F31D */
+    --primary-foreground: 224 71.4% 4.1%;
     --secondary: 217.2 32.6% 17.5%;
     --secondary-foreground: 210 40% 98%;
     --muted: 217.2 32.6% 17.5%;
@@ -50,8 +50,8 @@
     --destructive-foreground: 210 40% 98%;
     --border: 217.2 32.6% 17.5%;
     --input: 217.2 32.6% 17.5%;
-    --ring: 263 88% 60%;
-    --chart-1: 263 88% 60%;
+    --ring: 73 89% 53%;
+    --chart-1: 73 89% 53%;
     --chart-2: 74 92% 55%;
     --chart-3: 180 100% 50%;
     --chart-4: 0 72% 51%;
