@@ -7,12 +7,14 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
-import { TestTribeLogo, GoldBadge, SilverBadge } from '@/components/icons';
+import { TestTribeLogo, GoldBadge, SilverBadge, BronzeBadge } from '@/components/icons';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
 import Image from "next/image";
 import { ScrollToTopButton } from '@/components/scroll-to-top-button';
 import { Autoplay } from '@/components/carousel-autoplay';
 import { ScrollingRibbon } from '@/components/scrolling-ribbon';
+import React, { useRef, useState } from 'react';
+import { cn } from '@/lib/utils';
 
 const features = [
   {
@@ -95,7 +97,97 @@ const appFeatures = [
         title: "Manage Anywhere",
         description: "Access your dashboard, manage projects, and track progress on the fly."
     }
-]
+];
+
+function GamifiedReputationSection() {
+    const cardRef = useRef<HTMLDivElement>(null);
+    const [style, setStyle] = useState({});
+
+    const onMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+        if (!cardRef.current) return;
+        const { clientX, clientY } = e;
+        const { left, top, width, height } = cardRef.current.getBoundingClientRect();
+        const x = (clientX - left - width / 2) / 25;
+        const y = (clientY - top - height / 2) / 25;
+        setStyle({
+            transform: `perspective(1000px) rotateY(${x}deg) rotateX(${-y}deg) scale3d(1.05, 1.05, 1.05)`,
+            transition: 'transform 0.1s ease-out'
+        });
+    };
+
+    const onMouseLeave = () => {
+        setStyle({
+            transform: 'perspective(1000px) rotateY(0deg) rotateX(0deg) scale3d(1, 1, 1)',
+            transition: 'transform 0.6s cubic-bezier(0.23, 1, 0.32, 1)'
+        });
+    };
+
+    return (
+        <section id="reputation" className="py-20 md:py-28 bg-secondary/50">
+          <div className="container mx-auto px-4 md:px-6 grid md:grid-cols-2 gap-12 items-center">
+            <div>
+              <Badge variant="outline">Gamified Reputation</Badge>
+              <h2 className="font-headline text-3xl md:text-4xl font-bold mt-4">Stand Out. Level Up. Get Noticed.</h2>
+              <p className="mt-4 text-muted-foreground">Our gamified system makes testing more engaging and rewarding. Earn XP, unlock badges, and climb the leaderboards to showcase your skills.</p>
+              <div className="mt-8 space-y-6">
+                <div className="space-y-2">
+                  <div className="flex justify-between items-center">
+                    <span className="font-semibold">Reputation Level: Pro Tester</span>
+                    <span className="text-sm font-mono text-primary">XP 4500 / 6000</span>
+                  </div>
+                  <Progress value={75} className="h-3 [&>div]:bg-gradient-to-r [&>div]:from-accent [&>div]:to-primary rounded-xl" />
+                </div>
+                <div className="flex gap-4">
+                    <div className="flex items-center gap-2 p-3 rounded-xl bg-background border">
+                        <GoldBadge className="h-8 w-8"/>
+                        <span className="font-semibold">Top 1% Bug Hunter</span>
+                    </div>
+                     <div className="flex items-center gap-2 p-3 rounded-xl bg-background border">
+                        <SilverBadge className="h-8 w-8"/>
+                        <span className="font-semibold">UI/UX Specialist</span>
+                    </div>
+                </div>
+              </div>
+            </div>
+            <div 
+                className="relative w-full h-[400px]"
+                ref={cardRef}
+                onMouseMove={onMouseMove}
+                onMouseLeave={onMouseLeave}
+                style={{ perspective: '1000px' }}
+            >
+                <div
+                    className="absolute inset-0 rounded-2xl bg-card shadow-2xl shadow-primary/20"
+                    style={style}
+                >
+                    <Image 
+                        src="https://images.unsplash.com/photo-1589395937658-0557e7d17e34?q=80&w=600&auto=format&fit=crop" 
+                        alt="Gamified dashboard background" 
+                        layout="fill" 
+                        objectFit="cover" 
+                        className="rounded-2xl opacity-20"
+                        data-ai-hint="abstract gaming" 
+                    />
+                    <div className="absolute inset-0 p-8 flex flex-col justify-end" style={{ transform: 'translateZ(20px)' }}>
+                        <h3 className="font-headline text-2xl font-bold text-white">Alex Morgan</h3>
+                        <p className="text-primary">Elite Tester</p>
+                    </div>
+
+                    <div className="absolute top-8 right-8" style={{ transform: 'translateZ(60px)' }}>
+                        <GoldBadge className="h-16 w-16" />
+                    </div>
+                     <div className="absolute top-28 right-20" style={{ transform: 'translateZ(40px)' }}>
+                        <SilverBadge className="h-12 w-12" />
+                    </div>
+                     <div className="absolute top-48 right-8" style={{ transform: 'translateZ(20px)' }}>
+                        <BronzeBadge className="h-10 w-10" />
+                    </div>
+                </div>
+            </div>
+          </div>
+        </section>
+    );
+}
 
 export default function Home() {
   return (
@@ -154,37 +246,7 @@ export default function Home() {
         </section>
 
         {/* Gamified Reputation Section */}
-        <section id="reputation" className="py-20 md:py-28 bg-secondary/50">
-          <div className="container mx-auto px-4 md:px-6 grid md:grid-cols-2 gap-12 items-center">
-            <div>
-              <Badge variant="outline">Gamified Reputation</Badge>
-              <h2 className="font-headline text-3xl md:text-4xl font-bold mt-4">Stand Out. Level Up. Get Noticed.</h2>
-              <p className="mt-4 text-muted-foreground">Our gamified system makes testing more engaging and rewarding. Earn XP, unlock badges, and climb the leaderboards to showcase your skills.</p>
-              <div className="mt-8 space-y-6">
-                <div className="space-y-2">
-                  <div className="flex justify-between items-center">
-                    <span className="font-semibold">Reputation Level: Pro Tester</span>
-                    <span className="text-sm font-mono text-primary">XP 4500 / 6000</span>
-                  </div>
-                  <Progress value={75} className="h-3 [&>div]:bg-gradient-to-r [&>div]:from-accent [&>div]:to-primary rounded-xl" />
-                </div>
-                <div className="flex gap-4">
-                    <div className="flex items-center gap-2 p-3 rounded-xl bg-background border">
-                        <GoldBadge className="h-8 w-8"/>
-                        <span className="font-semibold">Top 1% Bug Hunter</span>
-                    </div>
-                     <div className="flex items-center gap-2 p-3 rounded-xl bg-background border">
-                        <SilverBadge className="h-8 w-8"/>
-                        <span className="font-semibold">UI/UX Specialist</span>
-                    </div>
-                </div>
-              </div>
-            </div>
-            <div className="relative h-96 w-full">
-                <Image src="https://images.unsplash.com/photo-1589395937658-0557e7d17e34?q=80&w=600&auto=format&fit=crop" alt="Gamified dashboard" layout="fill" objectFit="cover" className="rounded-xl shadow-2xl" data-ai-hint="abstract gaming" />
-            </div>
-          </div>
-        </section>
+        <GamifiedReputationSection />
 
         {/* Scrolling Ribbon Section */}
         <ScrollingRibbon />
