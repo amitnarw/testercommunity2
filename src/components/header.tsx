@@ -13,6 +13,7 @@ import { useTheme } from 'next-themes';
 const navItems = [
   { name: 'Marketplace', href: '/marketplace' },
   { name: 'Dashboard', href: '/dashboard' },
+  { name: 'Blog', href: '/blog' },
 ];
 
 export function Header() {

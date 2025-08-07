@@ -7,6 +7,7 @@ import Image from 'next/image';
 const navItems = [
   { name: 'Marketplace', href: '/marketplace' },
   { name: 'Dashboard', href: '/dashboard' },
+  { name: 'Blog', href: '/blog' },
   { name: 'Sign Up', href: '/signup' },
 ];
 
@@ -50,7 +51,7 @@ export function Footer() {
               <h4 className="font-headline font-semibold">Resources</h4>
               <ul className="space-y-2">
                 <li><Link href="#" className="text-muted-foreground hover:text-primary transition-colors">Docs</Link></li>
-                <li><Link href="#" className="text-muted-foreground hover:text-primary transition-colors">Blog</Link></li>
+                <li><Link href="/blog" className="text-muted-foreground hover:text-primary transition-colors">Blog</Link></li>
                 <li><Link href="#" className="text-muted-foreground hover:text-primary transition-colors">Support</Link></li>
               </ul>
             </div>

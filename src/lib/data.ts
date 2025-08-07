@@ -1,4 +1,4 @@
-import type { Tester } from './types';
+import type { Tester, BlogPost } from './types';
 
 export const testers: Tester[] = [
   {
@@ -98,4 +98,55 @@ export const pieChartData = [
     { category: 'Performance', bugs: 187, fill: 'var(--color-performance)' },
     { category: 'Security', bugs: 125, fill: 'var(--color-security)' },
     { category: 'Other', bugs: 73, fill: 'var(--color-other)' },
+];
+
+export const blogPosts: BlogPost[] = [
+  {
+    id: 1,
+    slug: 'mastering-automated-testing',
+    title: 'Mastering Automated Testing: A Beginner\'s Guide',
+    excerpt: 'Learn the fundamentals of automated testing and how it can save you time and improve your product quality.',
+    content: `<p>Automated testing is a cornerstone of modern software development. By letting scripts and tools do the repetitive work, you can focus on what truly matters: building great features. This guide will walk you through the basics.</p><p>We'll cover topics like:</p><ul><li>Choosing the right automation framework</li><li>Writing your first test script</li><li>Integrating tests into your CI/CD pipeline</li><li>Analyzing test results</li></ul>`,
+    author: {
+      name: 'Alice Johnson',
+      avatarUrl: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=400&auto=format&fit=crop',
+      dataAiHint: 'woman developer',
+    },
+    date: '2024-05-15',
+    imageUrl: 'https://images.unsplash.com/photo-1516116216624-53e697320f64?q=80&w=600&auto=format&fit=crop',
+    dataAiHint: 'code testing',
+    tags: ['Automation', 'Beginner', 'CI/CD'],
+  },
+  {
+    id: 2,
+    slug: 'the-art-of-ux-testing',
+    title: 'The Art of UX Testing: More Than Just Finding Bugs',
+    excerpt: 'Discover how user experience (UX) testing can transform your app from functional to delightful.',
+    content: `<p>UX testing goes beyond identifying functional bugs. It's about understanding how users feel when they interact with your product. A seamless UX can be the difference between a good app and a great one.</p><p>In this article, we explore:</p><ul><li>Heuristic evaluation</li><li>Usability testing methods</li><li>Gathering and interpreting user feedback</li><li>The connection between UX and business success</li></ul>`,
+    author: {
+      name: 'Hannah Wright',
+      avatarUrl: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?q=80&w=400&auto=format&fit=crop',
+      dataAiHint: 'woman tech',
+    },
+    date: '2024-05-20',
+    imageUrl: 'https://images.unsplash.com/photo-1587440871875-191322ee64b0?q=80&w=600&auto=format&fit=crop',
+    dataAiHint: 'ux design',
+    tags: ['UI/UX', 'Design', 'User Research'],
+  },
+  {
+    id: 3,
+    slug: 'securing-your-mobile-app',
+    title: 'Securing Your Mobile App: A Tester\'s Checklist',
+    excerpt: 'A comprehensive checklist for mobile app security testing to protect your users and your reputation.',
+    content: `<p>Mobile security is not a feature; it's a necessity. With increasing threats, robust security testing is crucial. This checklist provides a starting point for testers to ensure an app is secure.</p><p>Key areas covered:</p><ul><li>Data storage and encryption</li><li>Network communication vulnerabilities</li><li>Authentication and authorization</li><li>Code obfuscation and anti-tampering</li></ul>`,
+    author: {
+      name: 'George Hill',
+      avatarUrl: 'https://images.unsplash.com/photo-1527982987257-d3abc440f2ba?q=80&w=400&auto=format&fit=crop',
+      dataAiHint: 'man portrait',
+    },
+    date: '2024-05-25',
+    imageUrl: 'https://images.unsplash.com/photo-1555949963-ff9fe0c870eb?q=80&w=600&auto=format&fit=crop',
+    dataAiHint: 'cyber security',
+    tags: ['Security', 'Mobile', 'Checklist'],
+  },
 ];

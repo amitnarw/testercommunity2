@@ -8,3 +8,20 @@ export type Tester = {
   rate: number;
   country: string;
 };
+
+export type BlogPost = {
+  id: number;
+  slug: string;
+  title: string;
+  excerpt: string;
+  content: string;
+  author: {
+    name: string;
+    avatarUrl: string;
+    dataAiHint?: string;
+  };
+  date: string;
+  imageUrl: string;
+  dataAiHint?: string;
+  tags: string[];
+};
