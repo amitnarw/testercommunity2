@@ -4,7 +4,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 export default function SignupPage() {
   return (
     <div className="min-h-[calc(100vh-80px)] w-full flex items-center justify-center bg-dot-pattern p-4">
-        <div className="w-full max-w-md animate-fade-in-up">
+        <div className="w-full max-w-md">
             <Card className="shadow-2xl shadow-primary/10">
                 <CardHeader className="text-center">
                     <CardTitle className="font-headline text-3xl">Join AnimateTest</CardTitle>

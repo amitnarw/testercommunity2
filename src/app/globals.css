@@ -72,13 +72,3 @@
   background-image: radial-gradient(circle at 1px 1px, hsl(var(--primary) / 0.2) 1px, transparent 0);
   background-size: 20px 20px;
 }
-
-.animation-delay-200 {
-  animation-delay: 200ms;
-}
-.animation-delay-400 {
-  animation-delay: 400ms;
-}
-.animation-delay-600 {
-  animation-delay: 600ms;
-}

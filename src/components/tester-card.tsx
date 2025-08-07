@@ -12,7 +12,7 @@ interface TesterCardProps {
 
 export default function TesterCard({ tester }: TesterCardProps) {
   return (
-    <Card className="flex flex-col h-full transition-all duration-300 transform hover:-translate-y-2 hover:shadow-2xl hover:shadow-primary/20 group overflow-hidden">
+    <Card className="flex flex-col h-full transition-all duration-300 group overflow-hidden">
       <CardHeader className="flex-row gap-4 items-center p-4">
         <Avatar className="w-16 h-16 border-2 border-primary/20">
           <AvatarImage src={tester.avatarUrl} data-ai-hint={tester.dataAiHint} />

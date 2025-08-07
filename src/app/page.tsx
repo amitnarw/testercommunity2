@@ -87,16 +87,16 @@ export default function Home() {
           <div className="absolute inset-0 bg-gradient-to-b from-background via-background/80 to-transparent"></div>
           <div className="container mx-auto px-4 md:px-6 text-center relative z-10">
             <div className="max-w-4xl mx-auto">
-              <div className="inline-block animate-fade-in-up">
+              <div className="inline-block">
                 <Badge variant="secondary" className="bg-primary/10 text-primary border-primary/20">Now in Public Beta</Badge>
               </div>
-              <h1 className="font-headline text-4xl md:text-5xl lg:text-7xl font-bold mt-4 animate-fade-in-up animation-delay-200">
+              <h1 className="font-headline text-4xl md:text-5xl lg:text-7xl font-bold mt-4">
                 The Future of App Testing is Animated
               </h1>
-              <p className="mt-6 max-w-2xl mx-auto text-lg md:text-xl text-muted-foreground animate-fade-in-up animation-delay-400">
+              <p className="mt-6 max-w-2xl mx-auto text-lg md:text-xl text-muted-foreground">
                 AnimateTest is a next-generation platform that connects developers with expert testers through a dynamic, gamified, and visually stunning experience.
               </p>
-              <div className="mt-8 flex justify-center gap-4 animate-fade-in-up animation-delay-600">
+              <div className="mt-8 flex justify-center gap-4">
                 <Button asChild size="lg" className="font-bold">
                   <Link href="/signup">Get Started for Free <ArrowRight className="ml-2" /></Link>
                 </Button>
@@ -119,7 +119,7 @@ export default function Home() {
             </div>
             <div className="mt-12 grid gap-8 md:grid-cols-2 lg:grid-cols-4">
               {features.map((feature, i) => (
-                <Card key={feature.title} className="bg-card hover:border-primary/50 transition-all duration-300 transform hover:-translate-y-1 hover:shadow-2xl hover:shadow-primary/20 animate-fade-in-up" style={{ animationDelay: `${i * 150}ms` }}>
+                <Card key={feature.title} className="bg-card hover:border-primary/50 transition-all duration-300 transform hover:-translate-y-1 hover:shadow-2xl hover:shadow-primary/20">
                   <CardHeader>
                     {feature.icon}
                     <CardTitle className="font-headline mt-4">{feature.title}</CardTitle>
@@ -139,7 +139,7 @@ export default function Home() {
         {/* Gamified Reputation Section */}
         <section id="reputation" className="py-20 md:py-28 bg-secondary/50">
           <div className="container mx-auto px-4 md:px-6 grid md:grid-cols-2 gap-12 items-center">
-            <div className="animate-fade-in-up">
+            <div>
               <Badge variant="outline">Gamified Reputation</Badge>
               <h2 className="font-headline text-3xl md:text-4xl font-bold mt-4">Stand Out. Level Up. Get Noticed.</h2>
               <p className="mt-4 text-muted-foreground">Our gamified system makes testing more engaging and rewarding. Earn XP, unlock badges, and climb the leaderboards to showcase your skills.</p>
@@ -163,7 +163,7 @@ export default function Home() {
                 </div>
               </div>
             </div>
-            <div className="relative h-96 w-full animate-fade-in-up animation-delay-200">
+            <div className="relative h-96 w-full">
                 <Image src="https://placehold.co/600x400.png" alt="Gamified dashboard" layout="fill" objectFit="cover" className="rounded-xl shadow-2xl" data-ai-hint="abstract gaming" />
             </div>
           </div>
@@ -172,10 +172,10 @@ export default function Home() {
         {/* Google App Coming Soon Section */}
         <section className="py-20 md:py-28 bg-background">
             <div className="container mx-auto px-4 md:px-6 grid md:grid-cols-2 gap-12 items-center">
-                <div className="relative h-96 w-full animate-fade-in-up">
+                <div className="relative h-96 w-full">
                     <Image src="https://placehold.co/600x400.png" alt="AnimateTest Google App" layout="fill" objectFit="cover" className="rounded-xl shadow-2xl" data-ai-hint="mobile app interface" />
                 </div>
-                <div className="animate-fade-in-up animation-delay-200">
+                <div>
                     <Badge variant="secondary">Coming Soon</Badge>
                     <h2 className="font-headline text-3xl md:text-4xl font-bold mt-4">AnimateTest, Now in Your Pocket</h2>
                     <p className="mt-4 text-muted-foreground">
