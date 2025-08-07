@@ -51,7 +51,7 @@ export function ScrollingRibbon() {
 
 
     return (
-        <section className="w-full overflow-hidden bg-primary py-4 my-20 md:my-28 transform -skew-y-2 space-y-4">
+        <section className="w-full overflow-hidden bg-primary py-4 my-20 md:my-28 transform -skew-y-2 space-y-6">
             <div className="flex whitespace-nowrap text-2xl md:text-3xl font-bold uppercase tracking-wider text-primary-foreground select-none">
                 <div ref={ribbonRef1} className="flex">
                     <RibbonText />
