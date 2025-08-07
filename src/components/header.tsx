@@ -45,12 +45,13 @@ export function Header() {
               <Link
                 key={item.name}
                 href={item.href}
+                data-text={item.name}
                 className={cn(
-                  'font-medium transition-colors hover:text-primary',
+                  'font-medium transition-colors sliding-text-hover',
                   pathname === item.href ? 'text-primary' : 'text-muted-foreground'
                 )}
               >
-                {item.name}
+                <span>{item.name}</span>
               </Link>
             ))}
           </nav>

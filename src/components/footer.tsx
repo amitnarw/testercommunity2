@@ -11,6 +11,17 @@ const navItems = [
   { name: 'Sign Up', href: '/signup' },
 ];
 
+const resourceItems = [
+  { name: 'Docs', href: '#' },
+  { name: 'Blog', href: '/blog' },
+  { name: 'Support', href: '#' },
+];
+
+const legalItems = [
+    { name: 'Privacy Policy', href: '#' },
+    { name: 'Terms of Service', href: '#' },
+];
+
 export function Footer() {
   return (
     <footer className="bg-background border-t">
@@ -42,7 +53,9 @@ export function Footer() {
               <ul className="space-y-2">
                 {navItems.map((item) => (
                     <li key={item.name}>
-                        <Link href={item.href} className="text-muted-foreground hover:text-primary transition-colors">{item.name}</Link>
+                        <Link href={item.href} className="text-muted-foreground hover:text-primary transition-colors sliding-text-hover" data-text={item.name}>
+                          <span>{item.name}</span>
+                        </Link>
                     </li>
                 ))}
               </ul>
@@ -50,16 +63,25 @@ export function Footer() {
              <div className="space-y-4">
               <h4 className="font-headline font-semibold">Resources</h4>
               <ul className="space-y-2">
-                <li><Link href="#" className="text-muted-foreground hover:text-primary transition-colors">Docs</Link></li>
-                <li><Link href="/blog" className="text-muted-foreground hover:text-primary transition-colors">Blog</Link></li>
-                <li><Link href="#" className="text-muted-foreground hover:text-primary transition-colors">Support</Link></li>
+                {resourceItems.map((item) => (
+                  <li key={item.name}>
+                    <Link href={item.href} className="text-muted-foreground hover:text-primary transition-colors sliding-text-hover" data-text={item.name}>
+                      <span>{item.name}</span>
+                    </Link>
+                  </li>
+                ))}
               </ul>
             </div>
              <div className="space-y-4">
               <h4 className="font-headline font-semibold">Legal</h4>
               <ul className="space-y-2">
-                <li><Link href="#" className="text-muted-foreground hover:text-primary transition-colors">Privacy Policy</Link></li>
-                <li><Link href="#" className="text-muted-foreground hover:text-primary transition-colors">Terms of Service</Link></li>
+                 {legalItems.map((item) => (
+                  <li key={item.name}>
+                    <Link href={item.href} className="text-muted-foreground hover:text-primary transition-colors sliding-text-hover" data-text={item.name}>
+                      <span>{item.name}</span>
+                    </Link>
+                  </li>
+                ))}
               </ul>
             </div>
           </div>

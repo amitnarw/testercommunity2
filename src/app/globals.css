@@ -67,3 +67,22 @@
     @apply bg-background text-foreground;
   }
 }
+
+@layer utilities {
+  .sliding-text-hover {
+    @apply relative inline-block overflow-hidden;
+  }
+  .sliding-text-hover > span {
+    @apply inline-block transition-transform duration-300 ease-in-out;
+  }
+  .sliding-text-hover::after {
+    content: attr(data-text);
+    @apply absolute inset-0 text-primary transform translate-y-full transition-transform duration-300 ease-in-out;
+  }
+  .sliding-text-hover:hover > span {
+    @apply -translate-y-full;
+  }
+  .sliding-text-hover:hover::after {
+    @apply translate-y-0;
+  }
+}
