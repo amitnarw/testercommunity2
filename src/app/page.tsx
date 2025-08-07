@@ -59,6 +59,20 @@ const testimonials = [
     dataAiHint: 'person glasses',
     comment: 'The dashboards are incredible. Being able to visualize our testing data with such clarity and beauty has helped us identify critical issues faster than ever before.',
   },
+  {
+    name: 'David Kim',
+    role: 'QA Engineer, GameSphere',
+    avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=400&auto=format&fit=crop',
+    dataAiHint: 'man portrait',
+    comment: 'As a tester, the gamified reputation system is fantastic. It motivates me to do my best work and get recognized for it. I\'ve gotten more high-quality projects through AnimateTest than any other platform.',
+  },
+  {
+    name: 'Maria Garcia',
+    role: 'Mobile App Developer',
+    avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=400&auto=format&fit=crop',
+    dataAiHint: 'woman developer',
+    comment: 'The community aspect is what sets AnimateTest apart. It\'s not just a service; it\'s a network of professionals passionate about quality. The collaboration tools are excellent.',
+  },
 ];
 
 const appFeatures = [
@@ -202,7 +216,7 @@ export default function Home() {
         </section>
 
         {/* Testimonials Section */}
-        <section className="py-20 md:py-28">
+        <section className="py-20 md:py-28 overflow-hidden">
           <div className="container mx-auto px-4 md:px-6">
             <div className="text-center">
               <h2 className="font-headline text-3xl md:text-4xl font-bold">Trusted by a Community of Innovators</h2>
@@ -210,10 +224,14 @@ export default function Home() {
                 See what developers and testers are saying about AnimateTest.
               </p>
             </div>
-            <Carousel className="mt-12 w-full" opts={{ loop: true }}>
-              <CarouselContent>
-                {testimonials.map((testimonial) => (
-                  <CarouselItem key={testimonial.name} className="md:basis-1/2 lg:basis-1/3">
+            <Carousel
+              className="mt-12 w-full"
+              opts={{ loop: true, align: 'start' }}
+              plugins={[Autoplay({ delay: 3000, stopOnInteraction: false })]}
+            >
+              <CarouselContent className="-ml-4">
+                {testimonials.map((testimonial, index) => (
+                  <CarouselItem key={index} className="pl-4 md:basis-1/2 lg:basis-1/3">
                     <div className="p-1 h-full">
                       <Card className="flex flex-col justify-between h-full bg-card rounded-xl">
                         <CardHeader>
@@ -236,8 +254,6 @@ export default function Home() {
                   </CarouselItem>
                 ))}
               </CarouselContent>
-              <CarouselPrevious className="hidden lg:flex" />
-              <CarouselNext className="hidden lg:flex" />
             </Carousel>
           </div>
         </section>
