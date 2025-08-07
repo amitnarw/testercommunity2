@@ -1,3 +1,5 @@
+'use client';
+
 import Link from 'next/link';
 import { ArrowRight, BarChart, CheckCircle, ChevronRight, LayoutGrid, Star, TestTube, Users, Smartphone, Bell, Flag } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -9,6 +11,7 @@ import { AnimateTestLogo, GoldBadge, SilverBadge } from '@/components/icons';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
 import Image from "next/image";
 import { ScrollToTopButton } from '@/components/scroll-to-top-button';
+import { Autoplay } from '@/components/carousel-autoplay';
 
 const features = [
   {
@@ -135,7 +138,6 @@ export default function Home() {
               {features.map((feature, i) => (
                 <Card key={feature.title} className="bg-[linear-gradient(0deg,_#f9fafb_20%,_#f0f0f0_100%)] dark:bg-[linear-gradient(0deg,_#2a2d32_20%,_#1d1d1d_100%)] hover:border-primary/50 transition-all duration-300 transform hover:-translate-y-1 hover:shadow-2xl hover:shadow-primary/20 rounded-xl">
                   <CardHeader>
-                    {feature.icon}
                     <CardTitle className="font-headline mt-4">{feature.title}</CardTitle>
                   </CardHeader>
                   <CardContent>
