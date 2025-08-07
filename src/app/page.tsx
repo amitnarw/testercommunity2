@@ -8,6 +8,7 @@ import { Progress } from '@/components/ui/progress';
 import { AnimateTestLogo, GoldBadge, SilverBadge } from '@/components/icons';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
 import Image from "next/image";
+import { ScrollToTopButton } from '@/components/scroll-to-top-button';
 
 const features = [
   {
@@ -257,6 +258,7 @@ export default function Home() {
           </div>
         </section>
       </main>
+      <ScrollToTopButton />
     </div>
   );
 }
