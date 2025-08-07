@@ -19,28 +19,28 @@ const RibbonText = () => (
 export function ScrollingRibbon() {
     const ribbonRef1 = useRef<HTMLDivElement>(null);
     const ribbonRef2 = useRef<HTMLDivElement>(null);
-    const lastScrollY = useRef(0);
-    const ticking = useRef(false);
 
     useEffect(() => {
-        const handleScroll = () => {
-            lastScrollY.current = window.scrollY;
+        let lastScrollY = window.scrollY;
+        let ticking = false;
 
-            if (!ticking.current) {
+        const handleScroll = () => {
+            lastScrollY = window.scrollY;
+            if (!ticking) {
                 window.requestAnimationFrame(() => {
                     if (ribbonRef1.current) {
                         const speed = -0.35;
-                        const movement = lastScrollY.current * speed;
+                        const movement = lastScrollY * speed;
                         ribbonRef1.current.style.transform = `translateX(${movement}px)`;
                     }
                      if (ribbonRef2.current) {
                         const speed = 0.35;
-                        const movement = (lastScrollY.current * speed) - 1000;
+                        const movement = (lastScrollY * speed) - 1000;
                         ribbonRef2.current.style.transform = `translateX(${movement}px)`;
                     }
-                    ticking.current = false;
+                    ticking = false;
                 });
-                ticking.current = true;
+                ticking = true;
             }
         };
 
@@ -51,21 +51,23 @@ export function ScrollingRibbon() {
 
 
     return (
-        <section className="w-full overflow-hidden bg-primary py-4 my-20 md:my-28 transform -skew-y-2 space-y-8">
-            <div className="flex whitespace-nowrap text-2xl md:text-3xl font-bold uppercase tracking-wider text-primary-foreground select-none">
-                <div ref={ribbonRef1} className="flex">
-                    <RibbonText />
-                    <RibbonText />
-                    <RibbonText />
-                    <RibbonText />
+        <section className="w-full overflow-hidden bg-primary py-4 my-20 md:my-28 transform -skew-y-2">
+            <div className="flex flex-col gap-8">
+                <div className="flex whitespace-nowrap text-2xl md:text-3xl font-bold uppercase tracking-wider text-primary-foreground select-none">
+                    <div ref={ribbonRef1} className="flex">
+                        <RibbonText />
+                        <RibbonText />
+                        <RibbonText />
+                        <RibbonText />
+                    </div>
                 </div>
-            </div>
-             <div className="flex whitespace-nowrap text-2xl md:text-3xl font-bold uppercase tracking-wider text-primary-foreground select-none">
-                <div ref={ribbonRef2} className="flex">
-                    <RibbonText />
-                    <RibbonText />
-                    <RibbonText />
-                    <RibbonText />
+                 <div className="flex whitespace-nowrap text-2xl md:text-3xl font-bold uppercase tracking-wider text-primary-foreground select-none">
+                    <div ref={ribbonRef2} className="flex">
+                        <RibbonText />
+                        <RibbonText />
+                        <RibbonText />
+                        <RibbonText />
+                    </div>
                 </div>
             </div>
         </section>
