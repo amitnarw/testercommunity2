@@ -28,7 +28,7 @@ export function ScrollingRibbon() {
             if (!ticking.current) {
                 window.requestAnimationFrame(() => {
                     if (ribbonRef.current) {
-                        const speed = -0.15;
+                        const speed = -0.35;
                         const movement = lastScrollY.current * speed;
                         ribbonRef.current.style.transform = `translateX(${movement}px)`;
                     }
