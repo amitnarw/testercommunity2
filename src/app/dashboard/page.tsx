@@ -13,7 +13,7 @@ export default function DashboardPage() {
         </header>
 
         <div className="grid gap-4 md:grid-cols-2 md:gap-8 lg:grid-cols-4">
-          <Card>
+          <Card className="rounded-xl">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">
                 Active Testers
@@ -27,7 +27,7 @@ export default function DashboardPage() {
               </p>
             </CardContent>
           </Card>
-          <Card>
+          <Card className="rounded-xl">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">
                 Bugs Reported
@@ -41,7 +41,7 @@ export default function DashboardPage() {
               </p>
             </CardContent>
           </Card>
-          <Card>
+          <Card className="rounded-xl">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Critical Issues</CardTitle>
               <Activity className="h-4 w-4 text-muted-foreground" />
@@ -53,7 +53,7 @@ export default function DashboardPage() {
               </p>
             </CardContent>
           </Card>
-           <Card>
+           <Card className="rounded-xl">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">
                 Payouts

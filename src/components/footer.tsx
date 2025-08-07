@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { AnimateTestLogo } from './icons';
 import { Button } from './ui/button';
 import { Github, Twitter, Linkedin } from 'lucide-react';
+import Image from 'next/image';
 
 const navItems = [
   { name: 'Marketplace', href: '/marketplace' },
@@ -20,7 +21,7 @@ export function Footer() {
               <span className="font-headline text-xl font-bold">AnimateTest</span>
             </Link>
             <p className="text-muted-foreground">The future of app testing is animated.</p>
-            <div className="flex gap-2">
+            <div className="flex items-center gap-2">
               <Button variant="ghost" size="icon" asChild>
                 <Link href="#"><Twitter className="h-5 w-5" /></Link>
               </Button>
@@ -30,6 +31,9 @@ export function Footer() {
               <Button variant="ghost" size="icon" asChild>
                 <Link href="#"><Linkedin className="h-5 w-5" /></Link>
               </Button>
+              <Link href="#" className="inline-block">
+                <Image src="https://placehold.co/135x40.png" width={135} height={40} alt="Google Play Store" data-ai-hint="google play" />
+              </Link>
             </div>
           </div>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-8 lg:col-span-2">

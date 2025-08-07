@@ -20,17 +20,17 @@ export default function MarketplacePage() {
           <div className="mt-8 flex flex-col sm:flex-row items-center gap-4">
             <div className="relative w-full flex-1">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-              <Input placeholder="Search testers by name or skill..." className="pl-10" />
+              <Input placeholder="Search testers by name or skill..." className="pl-10 rounded-xl" />
             </div>
             <div className="flex gap-2">
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="outline" className="gap-2">
+                  <Button variant="outline" className="gap-2 rounded-xl">
                     <ListFilter className="h-4 w-4" />
                     Filter
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
+                <DropdownMenuContent align="end" className="rounded-xl">
                   <DropdownMenuLabel>Filter by Skill</DropdownMenuLabel>
                   <DropdownMenuSeparator />
                   <DropdownMenuCheckboxItem checked>UI/UX Testing</DropdownMenuCheckboxItem>
@@ -39,7 +39,7 @@ export default function MarketplacePage() {
                   <DropdownMenuCheckboxItem>Game Testing</DropdownMenuCheckboxItem>
                 </DropdownMenuContent>
               </DropdownMenu>
-              <Button>Search</Button>
+              <Button className="rounded-xl">Search</Button>
             </div>
           </div>
         </section>

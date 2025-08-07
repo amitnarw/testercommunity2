@@ -12,7 +12,7 @@ interface TesterCardProps {
 
 export default function TesterCard({ tester }: TesterCardProps) {
   return (
-    <Card className="flex flex-col h-full transition-all duration-300 group overflow-hidden">
+    <Card className="flex flex-col h-full transition-all duration-300 group overflow-hidden rounded-xl">
       <CardHeader className="flex-row gap-4 items-center p-4">
         <Avatar className="w-16 h-16 border-2 border-primary/20">
           <AvatarImage src={tester.avatarUrl} data-ai-hint={tester.dataAiHint} />
@@ -26,7 +26,7 @@ export default function TesterCard({ tester }: TesterCardProps) {
       <CardContent className="flex-1 p-4 pt-0">
         <div className="flex flex-wrap gap-2 mb-4">
           {tester.skills.slice(0, 3).map((skill) => (
-            <Badge key={skill} variant="secondary">{skill}</Badge>
+            <Badge key={skill} variant="secondary" className="rounded-full">{skill}</Badge>
           ))}
         </div>
         <div className="flex justify-between text-sm text-muted-foreground">
@@ -38,7 +38,7 @@ export default function TesterCard({ tester }: TesterCardProps) {
         </div>
       </CardContent>
       <CardFooter className="p-4 pt-0">
-        <Button asChild className="w-full font-bold">
+        <Button asChild className="w-full font-bold rounded-xl">
             <Link href="#">View Profile</Link>
         </Button>
       </CardFooter>

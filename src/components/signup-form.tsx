@@ -75,7 +75,7 @@ export function SignupForm() {
 
   return (
     <div className="space-y-6">
-      <Progress value={progress} className="h-2" />
+      <Progress value={progress} className="h-2 rounded-xl" />
       <form onSubmit={handleSubmit(processStep)} className="overflow-hidden">
         <div>
             {currentStep === 0 && (
@@ -84,13 +84,13 @@ export function SignupForm() {
                     <RadioGroup {...register('role')} className="grid grid-cols-2 gap-4">
                         <div>
                             <RadioGroupItem value="developer" id="developer" className="peer sr-only" />
-                            <Label htmlFor="developer" className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary">
+                            <Label htmlFor="developer" className="flex flex-col items-center justify-between rounded-xl border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary">
                                 I'm a Developer
                             </Label>
                         </div>
                          <div>
                             <RadioGroupItem value="tester" id="tester" className="peer sr-only" />
-                            <Label htmlFor="tester" className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary">
+                            <Label htmlFor="tester" className="flex flex-col items-center justify-between rounded-xl border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary">
                                 I'm a Tester
                             </Label>
                         </div>
@@ -104,7 +104,7 @@ export function SignupForm() {
                         <Label htmlFor="email">Email</Label>
                         <div className="relative">
                             <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                            <Input id="email" type="email" placeholder="you@example.com" {...register('email')} className="pl-10" />
+                            <Input id="email" type="email" placeholder="you@example.com" {...register('email')} className="pl-10 rounded-xl" />
                         </div>
                         {errors.email && <p className="text-sm text-destructive">{errors.email.message as string}</p>}
                     </div>
@@ -112,7 +112,7 @@ export function SignupForm() {
                         <Label htmlFor="password">Password</Label>
                          <div className="relative">
                             <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                            <Input id="password" type="password" placeholder="********" {...register('password')} className="pl-10" />
+                            <Input id="password" type="password" placeholder="********" {...register('password')} className="pl-10 rounded-xl" />
                         </div>
                         {errors.password && <p className="text-sm text-destructive">{errors.password.message as string}</p>}
                     </div>
@@ -124,12 +124,12 @@ export function SignupForm() {
                         <Label htmlFor="fullName">Full Name</Label>
                          <div className="relative">
                             <User className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                            <Input id="fullName" placeholder="John Doe" {...register('fullName')} className="pl-10" />
+                            <Input id="fullName" placeholder="John Doe" {...register('fullName')} className="pl-10 rounded-xl" />
                         </div>
                         {errors.fullName && <p className="text-sm text-destructive">{errors.fullName.message as string}</p>}
                     </div>
                     <div className="flex items-center space-x-2">
-                       <Checkbox id="terms" {...register('terms')} />
+                       <Checkbox id="terms" {...register('terms')} className="rounded-sm" />
                         <Label htmlFor="terms" className="text-sm font-normal">
                             I accept the <a href="#" className="underline text-primary">terms and conditions</a>.
                         </Label>
@@ -140,15 +140,15 @@ export function SignupForm() {
         </div>
       </form>
       <div className="flex justify-between">
-        <Button variant="outline" onClick={handlePrev} disabled={currentStep === 0}>
+        <Button variant="outline" onClick={handlePrev} disabled={currentStep === 0} className="rounded-xl">
             <ArrowLeft className="mr-2 h-4 w-4" /> Previous
         </Button>
         {currentStep < steps.length - 1 ? (
-          <Button onClick={handleNext}>
+          <Button onClick={handleNext} className="rounded-xl">
             Next <ArrowRight className="ml-2 h-4 w-4" />
           </Button>
         ) : (
-          <Button onClick={handleNext}>Finish</Button>
+          <Button onClick={handleNext} className="rounded-xl">Finish</Button>
         )}
       </div>
     </div>

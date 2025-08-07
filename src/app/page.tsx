@@ -97,10 +97,10 @@ export default function Home() {
                 AnimateTest is a next-generation platform that connects developers with expert testers through a dynamic, gamified, and visually stunning experience.
               </p>
               <div className="mt-8 flex justify-center gap-4">
-                <Button asChild size="lg" className="font-bold">
+                <Button asChild size="lg" className="font-bold rounded-xl">
                   <Link href="/signup">Get Started for Free <ArrowRight className="ml-2" /></Link>
                 </Button>
-                <Button asChild size="lg" variant="outline" className="font-bold">
+                <Button asChild size="lg" variant="outline" className="font-bold rounded-xl">
                   <Link href="/marketplace">Explore Testers</Link>
                 </Button>
               </div>
@@ -119,7 +119,7 @@ export default function Home() {
             </div>
             <div className="mt-12 grid gap-8 md:grid-cols-2 lg:grid-cols-4">
               {features.map((feature, i) => (
-                <Card key={feature.title} className="bg-card hover:border-primary/50 transition-all duration-300 transform hover:-translate-y-1 hover:shadow-2xl hover:shadow-primary/20">
+                <Card key={feature.title} className="bg-card hover:border-primary/50 transition-all duration-300 transform hover:-translate-y-1 hover:shadow-2xl hover:shadow-primary/20 rounded-xl">
                   <CardHeader>
                     {feature.icon}
                     <CardTitle className="font-headline mt-4">{feature.title}</CardTitle>
@@ -149,14 +149,14 @@ export default function Home() {
                     <span className="font-semibold">Reputation Level: Pro Tester</span>
                     <span className="text-sm font-mono text-primary">XP 4500 / 6000</span>
                   </div>
-                  <Progress value={75} className="h-3 [&>div]:bg-gradient-to-r [&>div]:from-accent [&>div]:to-primary" />
+                  <Progress value={75} className="h-3 [&>div]:bg-gradient-to-r [&>div]:from-accent [&>div]:to-primary rounded-xl" />
                 </div>
                 <div className="flex gap-4">
-                    <div className="flex items-center gap-2 p-3 rounded-lg bg-background border">
+                    <div className="flex items-center gap-2 p-3 rounded-xl bg-background border">
                         <GoldBadge className="h-8 w-8"/>
                         <span className="font-semibold">Top 1% Bug Hunter</span>
                     </div>
-                     <div className="flex items-center gap-2 p-3 rounded-lg bg-background border">
+                     <div className="flex items-center gap-2 p-3 rounded-xl bg-background border">
                         <SilverBadge className="h-8 w-8"/>
                         <span className="font-semibold">UI/UX Specialist</span>
                     </div>
@@ -195,7 +195,7 @@ export default function Home() {
                         ))}
                     </ul>
                     <div className="mt-8">
-                        <Button variant="outline" disabled>Notify Me (Coming Soon)</Button>
+                        <Button variant="outline" disabled className="rounded-xl">Notify Me (Coming Soon)</Button>
                     </div>
                 </div>
             </div>
@@ -215,7 +215,7 @@ export default function Home() {
                 {testimonials.map((testimonial) => (
                   <CarouselItem key={testimonial.name} className="md:basis-1/2 lg:basis-1/3">
                     <div className="p-1 h-full">
-                      <Card className="flex flex-col justify-between h-full bg-card">
+                      <Card className="flex flex-col justify-between h-full bg-card rounded-xl">
                         <CardHeader>
                           <div className="flex items-center gap-4">
                             <Avatar>
@@ -250,7 +250,7 @@ export default function Home() {
               Join the community and experience the future of app testing today. It's free to get started.
             </p>
             <div className="mt-8">
-              <Button asChild size="lg" className="font-bold text-lg px-8 py-6">
+              <Button asChild size="lg" className="font-bold text-lg px-8 py-6 rounded-xl">
                 <Link href="/signup">Sign Up Now <ArrowRight className="ml-2" /></Link>
               </Button>
             </div>
