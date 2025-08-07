@@ -17,7 +17,8 @@ const RibbonText = () => (
 )
 
 export function ScrollingRibbon() {
-    const ribbonRef = useRef<HTMLDivElement>(null);
+    const ribbonRef1 = useRef<HTMLDivElement>(null);
+    const ribbonRef2 = useRef<HTMLDivElement>(null);
     const lastScrollY = useRef(0);
     const ticking = useRef(false);
 
@@ -27,10 +28,15 @@ export function ScrollingRibbon() {
 
             if (!ticking.current) {
                 window.requestAnimationFrame(() => {
-                    if (ribbonRef.current) {
+                    if (ribbonRef1.current) {
                         const speed = -0.35;
                         const movement = lastScrollY.current * speed;
-                        ribbonRef.current.style.transform = `translateX(${movement}px)`;
+                        ribbonRef1.current.style.transform = `translateX(${movement}px)`;
+                    }
+                     if (ribbonRef2.current) {
+                        const speed = 0.35;
+                        const movement = (lastScrollY.current * speed) - 1000;
+                        ribbonRef2.current.style.transform = `translateX(${movement}px)`;
                     }
                     ticking.current = false;
                 });
@@ -45,9 +51,17 @@ export function ScrollingRibbon() {
 
 
     return (
-        <section className="w-full overflow-hidden bg-primary py-6 my-20 md:my-28 transform -skew-y-2">
+        <section className="w-full overflow-hidden bg-primary py-4 my-20 md:my-28 transform -skew-y-2 space-y-4">
             <div className="flex whitespace-nowrap text-2xl md:text-3xl font-bold uppercase tracking-wider text-primary-foreground select-none">
-                <div ref={ribbonRef} className="flex">
+                <div ref={ribbonRef1} className="flex">
+                    <RibbonText />
+                    <RibbonText />
+                    <RibbonText />
+                    <RibbonText />
+                </div>
+            </div>
+             <div className="flex whitespace-nowrap text-2xl md:text-3xl font-bold uppercase tracking-wider text-primary-foreground select-none">
+                <div ref={ribbonRef2} className="flex">
                     <RibbonText />
                     <RibbonText />
                     <RibbonText />
