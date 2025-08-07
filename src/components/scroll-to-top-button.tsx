@@ -23,7 +23,7 @@ export function ScrollToTopButton() {
   };
 
   useEffect(() => {
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
@@ -56,7 +56,7 @@ export function ScrollToTopButton() {
             cy="26"
           />
           <circle
-            className="text-primary"
+            className="text-primary transition-all duration-300"
             strokeWidth="4"
             strokeDasharray={circumference}
             strokeDashoffset={offset}

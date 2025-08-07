@@ -85,14 +85,14 @@ export default function Home() {
       <main className="flex-1">
         {/* Hero Section */}
         <section className="relative w-full py-24 md:py-32 lg:py-40 overflow-hidden bg-dot-pattern">
-          <div className="absolute inset-0 bg-gradient-to-b from-background via-background/80 to-transparent"></div>
+          <div className="absolute inset-0 bg-gradient-to-b from-background/95 via-background/80 to-background"></div>
           <div className="container mx-auto px-4 md:px-6 text-center relative z-10">
             <div className="max-w-4xl mx-auto">
               <div className="inline-block">
                 <Badge variant="secondary" className="bg-primary/10 text-primary border-primary/20">Now in Public Beta</Badge>
               </div>
               <h1 className="font-headline text-4xl md:text-5xl lg:text-7xl font-bold mt-4">
-                The Future of App Testing is Animated
+                The Ultimate Animated App Testing Community Platform
               </h1>
               <p className="mt-6 max-w-2xl mx-auto text-lg md:text-xl text-muted-foreground">
                 AnimateTest is a next-generation platform that connects developers with expert testers through a dynamic, gamified, and visually stunning experience.
