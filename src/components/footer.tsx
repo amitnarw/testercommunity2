@@ -32,7 +32,7 @@ export function Footer() {
                 <Link href="#"><Linkedin className="h-5 w-5" /></Link>
               </Button>
               <Link href="#" className="inline-block">
-                <Image src="https://placehold.co/135x40.png" width={135} height={40} alt="Google Play Store" data-ai-hint="google play" />
+                <Image src="https://play.google.com/intl/en_us/badges/static/images/badges/en_badge_web_generic.png" width={135} height={40} alt="Google Play Store" data-ai-hint="google play" />
               </Link>
             </div>
           </div>

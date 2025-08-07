@@ -4,7 +4,7 @@ export const testers: Tester[] = [
   {
     id: 1,
     name: 'Alice Johnson',
-    avatarUrl: 'https://placehold.co/128x128/png',
+    avatarUrl: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=400&auto=format&fit=crop',
     dataAiHint: 'woman developer',
     skills: ['UI/UX', 'Mobile', 'Web'],
     reputation: 4.9,
@@ -14,7 +14,7 @@ export const testers: Tester[] = [
   {
     id: 2,
     name: 'Bob Williams',
-    avatarUrl: 'https://placehold.co/128x128/png',
+    avatarUrl: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?q=80&w=400&auto=format&fit=crop',
     dataAiHint: 'man glasses',
     skills: ['Security', 'API', 'Performance'],
     reputation: 4.8,
@@ -24,7 +24,7 @@ export const testers: Tester[] = [
   {
     id: 3,
     name: 'Charlie Brown',
-    avatarUrl: 'https://placehold.co/128x128/png',
+    avatarUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=400&auto=format&fit=crop',
     dataAiHint: 'man smiling',
     skills: ['Game Testing', 'VR/AR', 'Mobile'],
     reputation: 4.9,
@@ -34,7 +34,7 @@ export const testers: Tester[] = [
   {
     id: 4,
     name: 'Diana Miller',
-    avatarUrl: 'https://placehold.co/128x128/png',
+    avatarUrl: 'https://images.unsplash.com/photo-1520466809213-7b9a56adcd45?q=80&w=400&auto=format&fit=crop',
     dataAiHint: 'woman smiling',
     skills: ['Web', 'Accessibility', 'UI/UX'],
     reputation: 4.7,
@@ -44,7 +44,7 @@ export const testers: Tester[] = [
   {
     id: 5,
     name: 'Ethan Garcia',
-    avatarUrl: 'https://placehold.co/128x128/png',
+    avatarUrl: 'https://images.unsplash.com/photo-1568602471122-7832951cc4c5?q=80&w=400&auto=format&fit=crop',
     dataAiHint: 'man engineer',
     skills: ['Performance', 'Backend', 'API'],
     reputation: 4.8,
@@ -54,7 +54,7 @@ export const testers: Tester[] = [
   {
     id: 6,
     name: 'Fiona Clark',
-    avatarUrl: 'https://placehold.co/128x128/png',
+    avatarUrl: 'https://images.unsplash.com/photo-1554151228-14d9def656e4?q=80&w=400&auto=format&fit=crop',
     dataAiHint: 'woman glasses',
     skills: ['Mobile', 'iOS', 'Android'],
     reputation: 4.9,
@@ -64,7 +64,7 @@ export const testers: Tester[] = [
   {
     id: 7,
     name: 'George Hill',
-    avatarUrl: 'https://placehold.co/128x128/png',
+    avatarUrl: 'https://images.unsplash.com/photo-1527982987257-d3abc440f2ba?q=80&w=400&auto=format&fit=crop',
     dataAiHint: 'man portrait',
     skills: ['Security', 'Penetration Testing'],
     reputation: 5.0,
@@ -74,7 +74,7 @@ export const testers: Tester[] = [
   {
     id: 8,
     name: 'Hannah Wright',
-    avatarUrl: 'https://placehold.co/128x128/png',
+    avatarUrl: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?q=80&w=400&auto=format&fit=crop',
     dataAiHint: 'woman tech',
     skills: ['UI/UX', 'Figma', 'Web'],
     reputation: 4.8,

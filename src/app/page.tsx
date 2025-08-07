@@ -41,21 +41,21 @@ const testimonials = [
   {
     name: 'Sarah Jennings',
     role: 'Lead Developer, TechNova',
-    avatar: 'https://placehold.co/100x100.png',
+    avatar: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?q=80&w=400&auto=format&fit=crop',
     dataAiHint: 'woman portrait',
     comment: 'AnimateTest has revolutionized our QA process. The real-time feedback and detailed reports are game-changers. The platform isn\'t just functional, it\'s a joy to use!',
   },
   {
     name: 'Mike Valerio',
     role: 'Indie Game Developer',
-    avatar: 'https://placehold.co/100x100.png',
+    avatar: 'https://images.unsplash.com/photo-1564564321837-a57b7070ac4f?q=80&w=400&auto=format&fit=crop',
     dataAiHint: 'man smiling',
     comment: 'Finding the right testers used to be a nightmare. The gamified marketplace made it fun and easy to connect with experienced, reliable people. My app is better for it.',
   },
   {
     name: 'Chen Lin',
     role: 'Product Manager, Innovate Inc.',
-    avatar: 'https://placehold.co/100x100.png',
+    avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=400&auto=format&fit=crop',
     dataAiHint: 'person glasses',
     comment: 'The dashboards are incredible. Being able to visualize our testing data with such clarity and beauty has helped us identify critical issues faster than ever before.',
   },
@@ -164,7 +164,7 @@ export default function Home() {
               </div>
             </div>
             <div className="relative h-96 w-full">
-                <Image src="https://placehold.co/600x400.png" alt="Gamified dashboard" layout="fill" objectFit="cover" className="rounded-xl shadow-2xl" data-ai-hint="abstract gaming" />
+                <Image src="https://images.unsplash.com/photo-1589395937658-0557e7d17e34?q=80&w=600&auto=format&fit=crop" alt="Gamified dashboard" layout="fill" objectFit="cover" className="rounded-xl shadow-2xl" data-ai-hint="abstract gaming" />
             </div>
           </div>
         </section>
@@ -173,7 +173,7 @@ export default function Home() {
         <section className="py-20 md:py-28 bg-background">
             <div className="container mx-auto px-4 md:px-6 grid md:grid-cols-2 gap-12 items-center">
                 <div className="relative h-96 w-full">
-                    <Image src="https://placehold.co/600x400.png" alt="AnimateTest Google App" layout="fill" objectFit="cover" className="rounded-xl shadow-2xl" data-ai-hint="mobile app interface" />
+                    <Image src="https://images.unsplash.com/photo-1551650975-87deedd944c3?q=80&w=600&auto=format&fit=crop" alt="AnimateTest Google App" layout="fill" objectFit="cover" className="rounded-xl shadow-2xl" data-ai-hint="mobile app interface" />
                 </div>
                 <div>
                     <Badge variant="secondary">Coming Soon</Badge>
