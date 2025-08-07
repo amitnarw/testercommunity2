@@ -17,8 +17,7 @@ export function Footer() {
         <div className="grid gap-8 lg:grid-cols-3">
           <div className="space-y-4">
             <Link href="/" className="flex items-center gap-2">
-              <AnimateTestLogo className="h-8 w-8 text-primary" />
-              <span className="font-headline text-xl font-bold">AnimateTest</span>
+              <AnimateTestLogo className="h-8" />
             </Link>
             <p className="text-muted-foreground">The future of app testing is animated.</p>
             <div className="flex items-center gap-2">

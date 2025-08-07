@@ -188,7 +188,7 @@ export default function Home() {
         {/* Google App Coming Soon Section */}
         <section className="py-20 md:py-28 bg-background">
             <div className="container mx-auto px-4 md:px-6 grid md:grid-cols-2 gap-12 items-center">
-                <div className="relative h-96 w-full">
+                <div className="relative h-full w-full">
                     <Image src="https://images.unsplash.com/photo-1551650975-87deedd944c3?q=80&w=600&auto=format&fit=crop" alt="AnimateTest Google App" layout="fill" objectFit="cover" className="rounded-xl shadow-2xl" data-ai-hint="mobile app interface" />
                 </div>
                 <div>
@@ -211,7 +211,7 @@ export default function Home() {
                         ))}
                     </ul>
                     <div className="mt-8">
-                        <Button variant="outline" disabled className="rounded-xl">Notify Me (Coming Soon)</Button>
+                        <Button variant="outline" disabled className="rounded-xl">(Coming Soon)</Button>
                     </div>
                 </div>
             </div>
