@@ -40,21 +40,21 @@ const testimonials = [
   {
     name: 'Sarah Jennings',
     role: 'Lead Developer, TechNova',
-    avatar: 'https://placehold.co/100x100/png',
+    avatar: 'https://placehold.co/100x100.png',
     dataAiHint: 'woman portrait',
     comment: 'AnimateTest has revolutionized our QA process. The real-time feedback and detailed reports are game-changers. The platform isn\'t just functional, it\'s a joy to use!',
   },
   {
     name: 'Mike Valerio',
     role: 'Indie Game Developer',
-    avatar: 'https://placehold.co/100x100/png',
+    avatar: 'https://placehold.co/100x100.png',
     dataAiHint: 'man smiling',
     comment: 'Finding the right testers used to be a nightmare. The gamified marketplace made it fun and easy to connect with experienced, reliable people. My app is better for it.',
   },
   {
     name: 'Chen Lin',
     role: 'Product Manager, Innovate Inc.',
-    avatar: 'https://placehold.co/100x100/png',
+    avatar: 'https://placehold.co/100x100.png',
     dataAiHint: 'person glasses',
     comment: 'The dashboards are incredible. Being able to visualize our testing data with such clarity and beauty has helped us identify critical issues faster than ever before.',
   },
@@ -149,6 +149,25 @@ export default function Home() {
                 <Image src="https://placehold.co/600x400.png" alt="Gamified dashboard" layout="fill" objectFit="cover" className="rounded-xl shadow-2xl" data-ai-hint="abstract gaming" />
             </div>
           </div>
+        </section>
+
+        {/* Google App Coming Soon Section */}
+        <section className="py-20 md:py-28 bg-background">
+            <div className="container mx-auto px-4 md:px-6 grid md:grid-cols-2 gap-12 items-center">
+                <div className="relative h-96 w-full animate-fade-in-up">
+                    <Image src="https://placehold.co/600x400.png" alt="AnimateTest Google App" layout="fill" objectFit="cover" className="rounded-xl shadow-2xl" data-ai-hint="mobile app interface" />
+                </div>
+                <div className="animate-fade-in-up animation-delay-200">
+                    <Badge variant="secondary">Coming Soon</Badge>
+                    <h2 className="font-headline text-3xl md:text-4xl font-bold mt-4">AnimateTest, Now in Your Pocket</h2>
+                    <p className="mt-4 text-muted-foreground">
+                        Get ready to experience AnimateTest like never before. Our native Google app is in the works, bringing all the platform's features right to your mobile device. Stay tuned for updates!
+                    </p>
+                    <div className="mt-8">
+                        <Button variant="outline" disabled>Notify Me (Coming Soon)</Button>
+                    </div>
+                </div>
+            </div>
         </section>
 
         {/* Testimonials Section */}
