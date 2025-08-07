@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { ArrowRight, BarChart, CheckCircle, ChevronRight, LayoutGrid, Star, TestTube, Users } from 'lucide-react';
+import { ArrowRight, BarChart, CheckCircle, ChevronRight, LayoutGrid, Star, TestTube, Users, Smartphone, Bell, Flag } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -59,6 +59,24 @@ const testimonials = [
     comment: 'The dashboards are incredible. Being able to visualize our testing data with such clarity and beauty has helped us identify critical issues faster than ever before.',
   },
 ];
+
+const appFeatures = [
+    {
+        icon: <Bell className="h-6 w-6 text-primary" />,
+        title: "Real-time Notifications",
+        description: "Get instant alerts for new test invites, bug reports, and messages."
+    },
+    {
+        icon: <Flag className="h-6 w-6 text-primary" />,
+        title: "On-the-Go Reporting",
+        description: "Submit bug reports with attachments directly from your device."
+    },
+    {
+        icon: <Smartphone className="h-6 w-6 text-primary" />,
+        title: "Manage Anywhere",
+        description: "Access your dashboard, manage projects, and track progress on the fly."
+    }
+]
 
 export default function Home() {
   return (
@@ -163,6 +181,19 @@ export default function Home() {
                     <p className="mt-4 text-muted-foreground">
                         Get ready to experience AnimateTest like never before. Our native Google app is in the works, bringing all the platform's features right to your mobile device. Stay tuned for updates!
                     </p>
+                    <ul className="mt-6 space-y-4">
+                        {appFeatures.map((feature) => (
+                            <li key={feature.title} className="flex items-start gap-4">
+                                <div className="bg-primary/10 p-2 rounded-full">
+                                    {feature.icon}
+                                </div>
+                                <div>
+                                    <h3 className="font-semibold">{feature.title}</h3>
+                                    <p className="text-muted-foreground text-sm">{feature.description}</p>
+                                </div>
+                            </li>
+                        ))}
+                    </ul>
                     <div className="mt-8">
                         <Button variant="outline" disabled>Notify Me (Coming Soon)</Button>
                     </div>
