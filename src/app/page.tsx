@@ -197,9 +197,9 @@ export default function Home() {
         <section className="relative w-full py-24 md:py-32 lg:py-40">
           <div className="container mx-auto px-4 md:px-6 text-center relative z-10">
             <div className="max-w-4xl mx-auto">
-              <div className="inline-block">
-                <Badge variant="secondary" className="bg-primary/10 text-primary border-primary/20">Now in Public Beta</Badge>
-              </div>
+              <Badge variant="outline" className="text-sm border-primary/30 bg-primary/10 text-primary py-1 px-4 rounded-full">
+                Now in Public Beta
+              </Badge>
               <h1 className="font-headline text-4xl md:text-5xl lg:text-7xl font-bold mt-4">
                 The Ultimate Animated App Testing Community Platform
               </h1>
