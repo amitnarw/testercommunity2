@@ -33,7 +33,7 @@ export function ScrollingRibbon() {
                         const movement = lastScrollY * speed;
                         ribbonRef1.current.style.transform = `translateX(${movement}px)`;
                     }
-                     if (ribbonRef2.current) {
+                    if (ribbonRef2.current) {
                         const speed = 0.35;
                         const movement = (lastScrollY * speed) - 1000;
                         ribbonRef2.current.style.transform = `translateX(${movement}px)`;
@@ -51,18 +51,18 @@ export function ScrollingRibbon() {
 
 
     return (
-        <section className="w-full overflow-hidden bg-primary py-4 my-20 md:my-28 transform -skew-y-2">
-            <div className="flex flex-col gap-8">
-                <div className="flex whitespace-nowrap text-2xl md:text-3xl font-bold uppercase tracking-wider text-primary-foreground select-none">
-                    <div ref={ribbonRef1} className="flex">
+        <section className="w-full overflow-hidden py-4 transform -skew-y-2">
+            <div className="flex flex-col gap-2">
+                <div className="flex whitespace-nowrap text-2xl md:text-3xl font-bold uppercase tracking-wider text-primary-foreground select-none bg-primary">
+                    <div ref={ribbonRef1} className="flex my-6">
                         <RibbonText />
                         <RibbonText />
                         <RibbonText />
                         <RibbonText />
                     </div>
                 </div>
-                 <div className="flex whitespace-nowrap text-2xl md:text-3xl font-bold uppercase tracking-wider text-primary-foreground select-none">
-                    <div ref={ribbonRef2} className="flex">
+                <div className="flex whitespace-nowrap text-2xl md:text-3xl font-bold uppercase tracking-wider text-primary-foreground select-none bg-primary">
+                    <div ref={ribbonRef2} className="flex my-6">
                         <RibbonText />
                         <RibbonText />
                         <RibbonText />

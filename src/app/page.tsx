@@ -18,25 +18,21 @@ import { cn } from '@/lib/utils';
 
 const features = [
   {
-    icon: <LayoutGrid className="h-8 w-8 text-primary" />,
     title: 'Interactive Marketplace',
     description: 'Browse and connect with top-tier testers in a visually engaging, animated marketplace.',
     link: '/marketplace',
   },
   {
-    icon: <BarChart className="h-8 w-8 text-primary" />,
     title: 'Real-Time Dashboards',
     description: 'Monitor your testing progress with dynamic charts and data visualizations that come to life.',
     link: '/dashboard',
   },
   {
-    icon: <Star className="h-8 w-8 text-primary" />,
     title: 'Gamified Reputation',
     description: 'Level up your tester profile with animated XP bars and unlockable achievement badges.',
     link: '/#reputation',
   },
   {
-    icon: <TestTube className="h-8 w-8 text-primary" />,
     title: 'Seamless Bug Reporting',
     description: 'An intuitive and animated bug reporting experience that testers will love.',
     link: '/',
@@ -235,7 +231,7 @@ export default function Home() {
               <p className="mt-6 max-w-2xl mx-auto text-lg md:text-xl text-muted-foreground">
                 TestTribe is a next-generation platform that connects developers with expert testers through a dynamic, gamified, and visually stunning experience.
               </p>
-              <div className="mt-8 flex justify-center gap-4">
+              <div className="mt-8 flex flex-col sm:flex-row justify-center gap-4">
                 <Button asChild size="lg" className="font-bold rounded-xl">
                   <Link href="/signup">Get Started for Free <ArrowRight className="ml-2" /></Link>
                 </Button>
@@ -260,8 +256,7 @@ export default function Home() {
               {features.map((feature, i) => (
                 <FeatureCard key={feature.title}>
                   <CardHeader>
-                    {feature.icon}
-                    <CardTitle className="font-headline mt-4">{feature.title}</CardTitle>
+                    <CardTitle className="font-headline">{feature.title}</CardTitle>
                   </CardHeader>
                   <CardContent>
                     <p className="text-muted-foreground">{feature.description}</p>
