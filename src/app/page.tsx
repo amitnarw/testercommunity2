@@ -84,7 +84,7 @@ export default function Home() {
     <div className="flex flex-col min-h-screen">
       <main className="flex-1">
         {/* Hero Section */}
-        <section className="relative w-full py-24 md:py-32 lg:py-40 bg-background">
+        <section className="relative w-full py-24 md:py-32 lg:py-40 bg-animated-gradient">
           <div className="container mx-auto px-4 md:px-6 text-center relative z-10">
             <div className="max-w-4xl mx-auto">
               <div className="inline-block">
