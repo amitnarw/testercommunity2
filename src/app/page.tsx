@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { ArrowRight, BarChart, CheckCircle, ChevronRight, LayoutGrid, Star, TestTube, Users, Smartphone, Bell, Flag } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, FeatureCard } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
@@ -229,7 +229,7 @@ export default function Home() {
             </div>
             <div className="mt-12 grid gap-8 md:grid-cols-2 lg:grid-cols-4">
               {features.map((feature, i) => (
-                <Card key={feature.title} className="bg-[linear-gradient(0deg,_#f9fafb_20%,_#f0f0f0_100%)] dark:bg-[linear-gradient(0deg,_#2a2d32_20%,_#1d1d1d_100%)] hover:border-primary/50 transition-all duration-300 transform hover:-translate-y-1 hover:shadow-2xl hover:shadow-primary/20 rounded-xl">
+                <FeatureCard key={feature.title}>
                   <CardHeader>
                     <CardTitle className="font-headline mt-4">{feature.title}</CardTitle>
                   </CardHeader>
@@ -239,7 +239,7 @@ export default function Home() {
                       Learn More <ChevronRight className="w-4 h-4 ml-1" />
                     </Link>
                   </CardContent>
-                </Card>
+                </FeatureCard>
               ))}
             </div>
           </div>

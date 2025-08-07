@@ -76,4 +76,20 @@ const CardFooter = React.forwardRef<
 ))
 CardFooter.displayName = "CardFooter"
 
-export { Card, CardHeader, CardFooter, CardTitle, CardDescription, CardContent }
+const FeatureCard = React.forwardRef<
+  HTMLDivElement,
+  React.HTMLAttributes<HTMLDivElement>
+>(({ className, ...props }, ref) => (
+  <Card
+    ref={ref}
+    className={cn(
+        "bg-[linear-gradient(0deg,_#f9fafb_20%,_#f0f0f0_100%)] dark:bg-[linear-gradient(0deg,_#2a2d32_20%,_#1d1d1d_100%)] hover:border-primary/50 transition-all duration-300 transform hover:-translate-y-1 hover:shadow-2xl hover:shadow-primary/20 rounded-xl",
+        className
+    )}
+    {...props}
+  />
+));
+FeatureCard.displayName = "FeatureCard";
+
+
+export { Card, CardHeader, CardFooter, CardTitle, CardDescription, CardContent, FeatureCard }
