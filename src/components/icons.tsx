@@ -1,21 +1,28 @@
 import type { SVGProps } from 'react';
 
-export function AnimateTestLogo(props: SVGProps<SVGSVGElement>) {
+export function TestTribeLogo(props: SVGProps<SVGSVGElement>) {
   return (
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
+    <svg 
+      viewBox="0 0 160 32"
+      aria-hidden="true"
       {...props}
     >
-      <path d="M5.5 22v-6.5" />
-      <path d="M18.5 22v-6.5" />
-      <path d="M2 15.5h20" />
-      <path d="M12 2a4.5 4.5 0 0 0-4.5 4.5v1.5h9V6.5A4.5 4.5 0 0 0 12 2z" />
+      <defs>
+        <linearGradient id="logo-gradient" x1="0%" y1="50%" x2="100%" y2="50%">
+          <stop offset="0%" style={{ stopColor: 'hsl(var(--primary))' }} />
+          <stop offset="100%" style={{ stopColor: 'hsl(var(--accent))' }} />
+        </linearGradient>
+      </defs>
+      <text
+        fontFamily="Montserrat, sans-serif"
+        fontSize="32"
+        fontWeight="bold"
+        fill="url(#logo-gradient)"
+        x="0"
+        y="24"
+      >
+        TestTribe
+      </text>
     </svg>
   );
 }

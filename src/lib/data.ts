@@ -1,10 +1,10 @@
-import type { Tester } from './types';
+import type { Tester, BlogPost } from './types';
 
 export const testers: Tester[] = [
   {
     id: 1,
     name: 'Alice Johnson',
-    avatarUrl: 'https://placehold.co/128x128/png',
+    avatarUrl: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=400&auto=format&fit=crop',
     dataAiHint: 'woman developer',
     skills: ['UI/UX', 'Mobile', 'Web'],
     reputation: 4.9,
@@ -14,7 +14,7 @@ export const testers: Tester[] = [
   {
     id: 2,
     name: 'Bob Williams',
-    avatarUrl: 'https://placehold.co/128x128/png',
+    avatarUrl: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?q=80&w=400&auto=format&fit=crop',
     dataAiHint: 'man glasses',
     skills: ['Security', 'API', 'Performance'],
     reputation: 4.8,
@@ -24,7 +24,7 @@ export const testers: Tester[] = [
   {
     id: 3,
     name: 'Charlie Brown',
-    avatarUrl: 'https://placehold.co/128x128/png',
+    avatarUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=400&auto=format&fit=crop',
     dataAiHint: 'man smiling',
     skills: ['Game Testing', 'VR/AR', 'Mobile'],
     reputation: 4.9,
@@ -34,7 +34,7 @@ export const testers: Tester[] = [
   {
     id: 4,
     name: 'Diana Miller',
-    avatarUrl: 'https://placehold.co/128x128/png',
+    avatarUrl: 'https://images.unsplash.com/photo-1520466809213-7b9a56adcd45?q=80&w=400&auto=format&fit=crop',
     dataAiHint: 'woman smiling',
     skills: ['Web', 'Accessibility', 'UI/UX'],
     reputation: 4.7,
@@ -44,7 +44,7 @@ export const testers: Tester[] = [
   {
     id: 5,
     name: 'Ethan Garcia',
-    avatarUrl: 'https://placehold.co/128x128/png',
+    avatarUrl: 'https://images.unsplash.com/photo-1568602471122-7832951cc4c5?q=80&w=400&auto=format&fit=crop',
     dataAiHint: 'man engineer',
     skills: ['Performance', 'Backend', 'API'],
     reputation: 4.8,
@@ -54,7 +54,7 @@ export const testers: Tester[] = [
   {
     id: 6,
     name: 'Fiona Clark',
-    avatarUrl: 'https://placehold.co/128x128/png',
+    avatarUrl: 'https://images.unsplash.com/photo-1554151228-14d9def656e4?q=80&w=400&auto=format&fit=crop',
     dataAiHint: 'woman glasses',
     skills: ['Mobile', 'iOS', 'Android'],
     reputation: 4.9,
@@ -64,7 +64,7 @@ export const testers: Tester[] = [
   {
     id: 7,
     name: 'George Hill',
-    avatarUrl: 'https://placehold.co/128x128/png',
+    avatarUrl: 'https://images.unsplash.com/photo-1527982987257-d3abc440f2ba?q=80&w=400&auto=format&fit=crop',
     dataAiHint: 'man portrait',
     skills: ['Security', 'Penetration Testing'],
     reputation: 5.0,
@@ -74,7 +74,7 @@ export const testers: Tester[] = [
   {
     id: 8,
     name: 'Hannah Wright',
-    avatarUrl: 'https://placehold.co/128x128/png',
+    avatarUrl: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?q=80&w=400&auto=format&fit=crop',
     dataAiHint: 'woman tech',
     skills: ['UI/UX', 'Figma', 'Web'],
     reputation: 4.8,
@@ -98,4 +98,55 @@ export const pieChartData = [
     { category: 'Performance', bugs: 187, fill: 'var(--color-performance)' },
     { category: 'Security', bugs: 125, fill: 'var(--color-security)' },
     { category: 'Other', bugs: 73, fill: 'var(--color-other)' },
+];
+
+export const blogPosts: BlogPost[] = [
+  {
+    id: 1,
+    slug: 'mastering-automated-testing',
+    title: 'Mastering Automated Testing: A Beginner\'s Guide',
+    excerpt: 'Learn the fundamentals of automated testing and how it can save you time and improve your product quality.',
+    content: `<p>Automated testing is a cornerstone of modern software development. By letting scripts and tools do the repetitive work, you can focus on what truly matters: building great features. This guide will walk you through the basics.</p><p>We'll cover topics like:</p><ul><li>Choosing the right automation framework</li><li>Writing your first test script</li><li>Integrating tests into your CI/CD pipeline</li><li>Analyzing test results</li></ul>`,
+    author: {
+      name: 'Alice Johnson',
+      avatarUrl: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=400&auto=format&fit=crop',
+      dataAiHint: 'woman developer',
+    },
+    date: '2024-05-15',
+    imageUrl: 'https://images.unsplash.com/photo-1516116216624-53e697320f64?q=80&w=600&auto=format&fit=crop',
+    dataAiHint: 'code testing',
+    tags: ['Automation', 'Beginner', 'CI/CD'],
+  },
+  {
+    id: 2,
+    slug: 'the-art-of-ux-testing',
+    title: 'The Art of UX Testing: More Than Just Finding Bugs',
+    excerpt: 'Discover how user experience (UX) testing can transform your app from functional to delightful.',
+    content: `<p>UX testing goes beyond identifying functional bugs. It's about understanding how users feel when they interact with your product. A seamless UX can be the difference between a good app and a great one.</p><p>In this article, we explore:</p><ul><li>Heuristic evaluation</li><li>Usability testing methods</li><li>Gathering and interpreting user feedback</li><li>The connection between UX and business success</li></ul>`,
+    author: {
+      name: 'Hannah Wright',
+      avatarUrl: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?q=80&w=400&auto=format&fit=crop',
+      dataAiHint: 'woman tech',
+    },
+    date: '2024-05-20',
+    imageUrl: 'https://images.unsplash.com/photo-1587440871875-191322ee64b0?q=80&w=600&auto=format&fit=crop',
+    dataAiHint: 'ux design',
+    tags: ['UI/UX', 'Design', 'User Research'],
+  },
+  {
+    id: 3,
+    slug: 'securing-your-mobile-app',
+    title: 'Securing Your Mobile App: A Tester\'s Checklist',
+    excerpt: 'A comprehensive checklist for mobile app security testing to protect your users and your reputation.',
+    content: `<p>Mobile security is not a feature; it's a necessity. With increasing threats, robust security testing is crucial. This checklist provides a starting point for testers to ensure an app is secure.</p><p>Key areas covered:</p><ul><li>Data storage and encryption</li><li>Network communication vulnerabilities</li><li>Authentication and authorization</li><li>Code obfuscation and anti-tampering</li></ul>`,
+    author: {
+      name: 'George Hill',
+      avatarUrl: 'https://images.unsplash.com/photo-1527982987257-d3abc440f2ba?q=80&w=400&auto=format&fit=crop',
+      dataAiHint: 'man portrait',
+    },
+    date: '2024-05-25',
+    imageUrl: 'https://images.unsplash.com/photo-1555949963-ff9fe0c870eb?q=80&w=600&auto=format&fit=crop',
+    dataAiHint: 'cyber security',
+    tags: ['Security', 'Mobile', 'Checklist'],
+  },
 ];

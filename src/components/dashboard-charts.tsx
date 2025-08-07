@@ -29,7 +29,7 @@ export default function DashboardCharts() {
 
   return (
     <div className="grid gap-4 md:gap-8 lg:grid-cols-2 xl:grid-cols-3">
-        <Card className="xl:col-span-2">
+        <Card className="xl:col-span-2 rounded-xl">
             <CardHeader>
             <CardTitle className="font-headline">Bug Reports Overview</CardTitle>
             <CardDescription>A monthly overview of new bug reports vs resolved issues.</CardDescription>
@@ -66,7 +66,7 @@ export default function DashboardCharts() {
             </CardContent>
         </Card>
 
-        <Card>
+        <Card className="rounded-xl">
             <CardHeader>
             <CardTitle className="font-headline">Bugs by Category</CardTitle>
             <CardDescription>Distribution of bug reports across different categories.</CardDescription>
