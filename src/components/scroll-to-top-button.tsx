@@ -9,17 +9,18 @@ export function ScrollToTopButton() {
   const [isVisible, setIsVisible] = useState(false);
   const [scrollProgress, setScrollProgress] = useState(0);
 
-  const radius = 24;
+  const radius = 26;
+  const strokeWidth = 2;
   const circumference = 2 * Math.PI * radius;
   const offset = circumference - (scrollProgress / 100) * circumference;
 
   const handleScroll = () => {
-    const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
-    const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-    const scrolled = (winScroll / height) * 100;
+    const scrollTop = window.scrollY || document.documentElement.scrollTop;
+    const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+    const progress = (scrollTop / scrollHeight) * 100;
 
-    setIsVisible(winScroll > 300);
-    setScrollProgress(scrolled);
+    setIsVisible(scrollTop > 300);
+    setScrollProgress(progress);
   };
 
   useEffect(() => {
@@ -35,42 +36,51 @@ export function ScrollToTopButton() {
   };
 
   return (
-    <div className={cn('fixed bottom-8 right-8 z-50 transition-opacity duration-300', isVisible ? 'opacity-100' : 'opacity-0')}>
-      <Button
-        onClick={scrollToTop}
-        variant="outline"
-        size="icon"
-        className="w-14 h-14 rounded-full shadow-lg relative bg-background/80 backdrop-blur-sm"
-      >
+    <div
+      className={cn(
+        'fixed bottom-8 right-8 z-50 transition-opacity duration-300',
+        isVisible ? 'opacity-100' : 'opacity-0'
+      )}
+    >
+      <div className="relative w-16 h-16">
+        {/* Progress border */}
         <svg
-          className="w-full h-full -rotate-90 absolute inset-0"
-          viewBox="0 0 52 52"
+          className="absolute inset-0 w-full h-full transform -rotate-90 pointer-events-none z-10"
+          viewBox="0 0 60 60"
         >
           <circle
-            className="text-border"
-            strokeWidth="4"
-            stroke="currentColor"
-            fill="transparent"
+            cx="30"
+            cy="30"
             r={radius}
-            cx="26"
-            cy="26"
+            fill="none"
+            stroke="var(--tw-border-color)"
+            strokeWidth={strokeWidth}
           />
           <circle
-            className="text-primary transition-all duration-300"
-            strokeWidth="4"
+            cx="30"
+            cy="30"
+            r={radius}
+            fill="none"
+            stroke="currentColor"
+            strokeWidth={strokeWidth}
             strokeDasharray={circumference}
             strokeDashoffset={offset}
             strokeLinecap="round"
-            stroke="currentColor"
-            fill="transparent"
-            r={radius}
-            cx="26"
-            cy="26"
+            className="text-primary transition-all duration-200"
           />
         </svg>
-        <ArrowUp className="h-6 w-6" />
-        <span className="sr-only">Go to top</span>
-      </Button>
+
+        {/* Button */}
+        <Button
+          onClick={scrollToTop}
+          variant="ghost"
+          size="icon"
+          className="w-16 h-16 rounded-full bg-background/80 backdrop-blur-sm shadow-lg"
+        >
+          <ArrowUp className="w-6 h-6" />
+          <span className="sr-only">Scroll to top</span>
+        </Button>
+      </div>
     </div>
   );
 }
