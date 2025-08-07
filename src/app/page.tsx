@@ -125,8 +125,32 @@ function GamifiedReputationSection() {
     return (
         <section id="reputation" className="py-20 md:py-28 bg-secondary/50">
           <div className="container mx-auto px-4 md:px-6 grid md:grid-cols-2 gap-12 items-center">
+             <div>
+              <Badge variant="outline">Gamified Reputation</Badge>
+              <h2 className="font-headline text-3xl md:text-4xl font-bold mt-4">Where Skill Meets Recognition</h2>
+              <p className="mt-4 text-muted-foreground">Our dynamic reputation system turns testing into a rewarding journey. Earn experience, unlock prestigious badges, and climb the ranks to showcase your expertise to the world.</p>
+              <div className="mt-8 space-y-6">
+                <div className="space-y-2">
+                  <div className="flex justify-between items-center">
+                    <span className="font-semibold">Level Up: Next Milestone</span>
+                    <span className="text-sm font-mono text-primary">XP 8200 / 10000</span>
+                  </div>
+                  <Progress value={82} className="h-3 [&>div]:bg-gradient-to-r [&>div]:from-accent [&>div]:to-primary rounded-xl" />
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                    <div className="flex items-center gap-2 p-3 rounded-xl bg-background/70 border">
+                        <GoldBadge className="h-8 w-8"/>
+                        <span className="font-semibold">Security Virtuoso</span>
+                    </div>
+                     <div className="flex items-center gap-2 p-3 rounded-xl bg-background/70 border">
+                        <BronzeBadge className="h-8 w-8"/>
+                        <span className="font-semibold">Top Bounty Hunter</span>
+                    </div>
+                </div>
+              </div>
+            </div>
             <div 
-                className="relative w-full h-[400px]"
+                className="relative w-full h-[450px]"
                 ref={cardRef}
                 onMouseMove={onMouseMove}
                 onMouseLeave={onMouseLeave}
@@ -137,52 +161,28 @@ function GamifiedReputationSection() {
                     style={style}
                 >
                     <Image 
-                        src="https://images.unsplash.com/photo-1589395937658-0557e7d17e34?q=80&w=600&auto=format&fit=crop" 
+                        src="https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?q=80&w=600&auto=format&fit=crop" 
                         alt="Gamified dashboard background" 
                         layout="fill" 
                         objectFit="cover" 
-                        className="rounded-2xl opacity-20"
-                        data-ai-hint="abstract gaming" 
+                        className="rounded-2xl opacity-10"
+                        data-ai-hint="cyber security matrix" 
                     />
-                    <div className="absolute inset-0 p-8 flex flex-col justify-end" style={{ transform: 'translateZ(20px)' }}>
-                        <h3 className="font-headline text-2xl font-bold text-white">Alex Morgan</h3>
-                        <p className="text-primary">Elite Tester</p>
-                    </div>
-
-                    <div className="absolute top-8 right-8" style={{ transform: 'translateZ(60px)' }}>
-                        <GoldBadge className="h-16 w-16" />
-                    </div>
-                     <div className="absolute top-28 right-20" style={{ transform: 'translateZ(40px)' }}>
-                        <SilverBadge className="h-12 w-12" />
-                    </div>
-                     <div className="absolute top-48 right-8" style={{ transform: 'translateZ(20px)' }}>
-                        <BronzeBadge className="h-10 w-10" />
-                    </div>
-                </div>
-            </div>
-            <div>
-              <Badge variant="outline">Gamified Reputation</Badge>
-              <h2 className="font-headline text-3xl md:text-4xl font-bold mt-4">Stand Out. Level Up. Get Noticed.</h2>
-              <p className="mt-4 text-muted-foreground">Our gamified system makes testing more engaging and rewarding. Earn XP, unlock badges, and climb the leaderboards to showcase your skills.</p>
-              <div className="mt-8 space-y-6">
-                <div className="space-y-2">
-                  <div className="flex justify-between items-center">
-                    <span className="font-semibold">Reputation Level: Pro Tester</span>
-                    <span className="text-sm font-mono text-primary">XP 4500 / 6000</span>
-                  </div>
-                  <Progress value={75} className="h-3 [&>div]:bg-gradient-to-r [&>div]:from-accent [&>div]:to-primary rounded-xl" />
-                </div>
-                <div className="flex gap-4">
-                    <div className="flex items-center gap-2 p-3 rounded-xl bg-background border">
-                        <GoldBadge className="h-8 w-8"/>
-                        <span className="font-semibold">Top 1% Bug Hunter</span>
-                    </div>
-                     <div className="flex items-center gap-2 p-3 rounded-xl bg-background border">
-                        <SilverBadge className="h-8 w-8"/>
-                        <span className="font-semibold">UI/UX Specialist</span>
+                    <div className="absolute inset-0 p-8 flex flex-col justify-between" style={{ transform: 'translateZ(20px)' }}>
+                        <div>
+                             <h3 className="font-headline text-3xl font-bold text-white">Samantha Kai</h3>
+                             <p className="text-primary">Cyber Sentinel</p>
+                        </div>
+                        <div className="flex gap-4">
+                             <div className="flex items-center gap-2 p-3 rounded-xl bg-background/20 backdrop-blur-sm border border-white/10" style={{ transform: 'translateZ(40px)' }}>
+                                <GoldBadge className="h-10 w-10"/>
+                            </div>
+                             <div className="flex items-center gap-2 p-3 rounded-xl bg-background/20 backdrop-blur-sm border border-white/10" style={{ transform: 'translateZ(60px)' }}>
+                                <SilverBadge className="h-10 w-10"/>
+                            </div>
+                        </div>
                     </div>
                 </div>
-              </div>
             </div>
           </div>
         </section>
@@ -345,5 +345,3 @@ export default function Home() {
     </div>
   );
 }
-
-    
