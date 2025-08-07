@@ -275,9 +275,6 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Scrolling Ribbon Section */}
-        <ScrollingRibbon />
-
         {/* Google App Coming Soon Section */}
         <section className="py-20 md:py-28 bg-background">
             <div className="container mx-auto px-4 md:px-6 grid md:grid-cols-2 gap-12 items-center">
@@ -309,9 +306,6 @@ export default function Home() {
                 </div>
             </div>
         </section>
-
-        {/* Pricing Section */}
-        <PricingSection />
 
         {/* Testimonials Section */}
         <section className="py-20 md:py-28 overflow-hidden">
@@ -356,6 +350,12 @@ export default function Home() {
           </div>
         </section>
         
+        {/* Scrolling Ribbon Section */}
+        <ScrollingRibbon />
+        
+        {/* Pricing Section */}
+        <PricingSection />
+
         {/* CTA Section */}
         <section className="py-20 md:py-28 bg-[linear-gradient(0deg,_#f9fafb_20%,_#f0f0f0_100%)] dark:bg-[linear-gradient(0deg,_#2a2d32_20%,_#1d1d1d_100%)]">
           <div className="container mx-auto px-4 md:px-6 text-center">
