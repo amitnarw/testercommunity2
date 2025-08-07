@@ -12,6 +12,7 @@ import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious
 import Image from "next/image";
 import { ScrollToTopButton } from '@/components/scroll-to-top-button';
 import { Autoplay } from '@/components/carousel-autoplay';
+import { ScrollingRibbon } from '@/components/scrolling-ribbon';
 
 const features = [
   {
@@ -184,6 +185,9 @@ export default function Home() {
             </div>
           </div>
         </section>
+
+        {/* Scrolling Ribbon Section */}
+        <ScrollingRibbon />
 
         {/* Google App Coming Soon Section */}
         <section className="py-20 md:py-28 bg-background">
