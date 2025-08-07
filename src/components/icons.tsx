@@ -1,9 +1,9 @@
 import type { SVGProps } from 'react';
 
-export function AnimateTestLogo(props: SVGProps<SVGSVGElement>) {
+export function TestTribeLogo(props: SVGProps<SVGSVGElement>) {
   return (
     <svg 
-      viewBox="0 0 180 32"
+      viewBox="0 0 160 32"
       aria-hidden="true"
       {...props}
     >
@@ -21,7 +21,7 @@ export function AnimateTestLogo(props: SVGProps<SVGSVGElement>) {
         x="0"
         y="24"
       >
-        AnimateTest
+        TestTribe
       </text>
     </svg>
   );

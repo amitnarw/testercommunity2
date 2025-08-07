@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { AnimateTestLogo } from './icons';
+import { TestTribeLogo } from './icons';
 import { Button } from './ui/button';
 import { Github, Twitter, Linkedin } from 'lucide-react';
 import Image from 'next/image';
@@ -17,7 +17,7 @@ export function Footer() {
         <div className="grid gap-8 lg:grid-cols-3">
           <div className="space-y-4">
             <Link href="/" className="flex items-center gap-2">
-              <AnimateTestLogo className="h-8" />
+              <TestTribeLogo className="h-8" />
             </Link>
             <p className="text-muted-foreground">The future of app testing is animated.</p>
             <div className="flex items-center gap-2">
@@ -64,7 +64,7 @@ export function Footer() {
           </div>
         </div>
         <div className="mt-8 border-t pt-8 flex flex-col md:flex-row justify-between items-center text-sm text-muted-foreground">
-          <p>&copy; {new Date().getFullYear()} AnimateTest, Inc. All rights reserved.</p>
+          <p>&copy; {new Date().getFullYear()} TestTribe, Inc. All rights reserved.</p>
           <p>A Next-Gen App Testing Community.</p>
         </div>
       </div>

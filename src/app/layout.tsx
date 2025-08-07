@@ -6,7 +6,7 @@ import { Footer } from '@/components/footer';
 import { ThemeProvider } from '@/components/theme-provider';
 
 export const metadata: Metadata = {
-  title: 'AnimateTest | App Testing Community Platform',
+  title: 'TestTribe | App Testing Community Platform',
   description: 'The ultimate animated app testing community platform that merges best-in-class features with exceptional animation and modern design.',
 };
 

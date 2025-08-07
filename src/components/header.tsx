@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { AnimateTestLogo } from './icons';
+import { TestTribeLogo } from './icons';
 import { Button } from './ui/button';
 import { Sheet, SheetContent, SheetTrigger } from './ui/sheet';
 import { Menu, ArrowRight, Sun, Moon } from 'lucide-react';
@@ -37,7 +37,7 @@ export function Header() {
       <div className="container mx-auto px-4 md:px-6">
         <div className="flex h-20 items-center justify-between">
           <Link href="/" className="flex items-center gap-2">
-            <AnimateTestLogo className="h-8" />
+            <TestTribeLogo className="h-8" />
           </Link>
           <nav className="hidden md:flex items-center gap-6">
             {navItems.map((item) => (
@@ -79,7 +79,7 @@ export function Header() {
               <SheetContent side="right">
                 <div className="p-6">
                     <Link href="/" className="flex items-center gap-2 mb-8" onClick={() => setMenuOpen(false)}>
-                        <AnimateTestLogo className="h-8" />
+                        <TestTribeLogo className="h-8" />
                     </Link>
                     <nav className="flex flex-col gap-6">
                         {navItems.map((item) => (

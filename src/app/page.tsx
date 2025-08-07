@@ -7,7 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
-import { AnimateTestLogo, GoldBadge, SilverBadge } from '@/components/icons';
+import { TestTribeLogo, GoldBadge, SilverBadge } from '@/components/icons';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
 import Image from "next/image";
 import { ScrollToTopButton } from '@/components/scroll-to-top-button';
@@ -46,7 +46,7 @@ const testimonials = [
     role: 'Lead Developer, TechNova',
     avatar: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?q=80&w=400&auto=format&fit=crop',
     dataAiHint: 'woman portrait',
-    comment: 'AnimateTest has revolutionized our QA process. The real-time feedback and detailed reports are game-changers. The platform isn\'t just functional, it\'s a joy to use!',
+    comment: 'TestTribe has revolutionized our QA process. The real-time feedback and detailed reports are game-changers. The platform isn\'t just functional, it\'s a joy to use!',
   },
   {
     name: 'Mike Valerio',
@@ -67,14 +67,14 @@ const testimonials = [
     role: 'QA Engineer, GameSphere',
     avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=400&auto=format&fit=crop',
     dataAiHint: 'man portrait',
-    comment: 'As a tester, the gamified reputation system is fantastic. It motivates me to do my best work and get recognized for it. I\'ve gotten more high-quality projects through AnimateTest than any other platform.',
+    comment: 'As a tester, the gamified reputation system is fantastic. It motivates me to do my best work and get recognized for it. I\'ve gotten more high-quality projects through TestTribe than any other platform.',
   },
   {
     name: 'Maria Garcia',
     role: 'Mobile App Developer',
     avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=400&auto=format&fit=crop',
     dataAiHint: 'woman developer',
-    comment: 'The community aspect is what sets AnimateTest apart. It\'s not just a service; it\'s a network of professionals passionate about quality. The collaboration tools are excellent.',
+    comment: 'The community aspect is what sets TestTribe apart. It\'s not just a service; it\'s a network of professionals passionate about quality. The collaboration tools are excellent.',
   },
 ];
 
@@ -111,7 +111,7 @@ export default function Home() {
                 The Ultimate Animated App Testing Community Platform
               </h1>
               <p className="mt-6 max-w-2xl mx-auto text-lg md:text-xl text-muted-foreground">
-                AnimateTest is a next-generation platform that connects developers with expert testers through a dynamic, gamified, and visually stunning experience.
+                TestTribe is a next-generation platform that connects developers with expert testers through a dynamic, gamified, and visually stunning experience.
               </p>
               <div className="mt-8 flex justify-center gap-4">
                 <Button asChild size="lg" className="font-bold rounded-xl">
@@ -189,13 +189,13 @@ export default function Home() {
         <section className="py-20 md:py-28 bg-background">
             <div className="container mx-auto px-4 md:px-6 grid md:grid-cols-2 gap-12 items-center">
                 <div className="relative h-full w-full">
-                    <Image src="https://images.unsplash.com/photo-1551650975-87deedd944c3?q=80&w=600&auto=format&fit=crop" alt="AnimateTest Google App" layout="fill" objectFit="cover" className="rounded-xl shadow-2xl" data-ai-hint="mobile app interface" />
+                    <Image src="https://images.unsplash.com/photo-1551650975-87deedd944c3?q=80&w=600&auto=format&fit=crop" alt="TestTribe Google App" layout="fill" objectFit="cover" className="rounded-xl shadow-2xl" data-ai-hint="mobile app interface" />
                 </div>
                 <div>
                     <Badge variant="secondary">Coming Soon</Badge>
-                    <h2 className="font-headline text-3xl md:text-4xl font-bold mt-4">AnimateTest, Now in Your Pocket</h2>
+                    <h2 className="font-headline text-3xl md:text-4xl font-bold mt-4">TestTribe, Now in Your Pocket</h2>
                     <p className="mt-4 text-muted-foreground">
-                        Get ready to experience AnimateTest like never before. Our native Google app is in the works, bringing all the platform's features right to your mobile device. Stay tuned for updates!
+                        Get ready to experience TestTribe like never before. Our native Google app is in the works, bringing all the platform's features right to your mobile device. Stay tuned for updates!
                     </p>
                     <ul className="mt-6 space-y-4">
                         {appFeatures.map((feature) => (
@@ -223,7 +223,7 @@ export default function Home() {
             <div className="text-center">
               <h2 className="font-headline text-3xl md:text-4xl font-bold">Trusted by a Community of Innovators</h2>
               <p className="mt-4 max-w-2xl mx-auto text-muted-foreground">
-                See what developers and testers are saying about AnimateTest.
+                See what developers and testers are saying about TestTribe.
               </p>
             </div>
             <Carousel
