@@ -67,7 +67,7 @@ function PricingSection() {
                 </div>
                 <div className="mt-12 grid gap-8 md:grid-cols-2 items-center justify-center">
                     {/* Pay-as-you-go Plan */}
-                    <Card className="rounded-xl border hover:border-primary/50 transition-all duration-300 transform hover:-translate-y-1 hover:shadow-2xl hover:shadow-primary/20">
+                    <Card className="rounded-xl border border-border/50 hover:border-primary/50 transition-all duration-300 transform hover:-translate-y-1 hover:shadow-2xl hover:shadow-primary/20">
                         <CardHeader className="pt-8">
                             <CardTitle className="text-2xl">Hourly</CardTitle>
                             <CardDescription>For flexible, on-demand testing needs.</CardDescription>
