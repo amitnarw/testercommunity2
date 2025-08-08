@@ -13,6 +13,10 @@ const RibbonText = () => (
         <span className="text-primary-foreground/50 mx-8">•</span>
         <span className="mx-8">Level Up Your Skills</span>
         <span className="text-primary-foreground/50 mx-8">•</span>
+        <span className="mx-8">Ship Faster</span>
+        <span className="text-primary-foreground/50 mx-8">•</span>
+        <span className="mx-8">Build Better Apps</span>
+        <span className="text-primary-foreground/50 mx-8">•</span>
     </>
 )
 
