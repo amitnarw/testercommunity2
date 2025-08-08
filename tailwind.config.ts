@@ -92,12 +92,23 @@ export default {
             '0%': { transform: 'translateX(-50%)' },
             '100%': { transform: 'translateX(0)' },
         },
+        'fade-in-up': {
+            '0%': {
+                opacity: '0',
+                transform: 'translateY(20px)'
+            },
+            '100%': {
+                opacity: '1',
+                transform: 'translateY(0)'
+            },
+        }
       },
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
         'scroll-ltr': 'scroll-ltr 30s linear infinite',
         'scroll-rtl': 'scroll-rtl 30s linear infinite',
+        'fade-in-up': 'fade-in-up 0.8s ease-out forwards',
       },
     },
   },
