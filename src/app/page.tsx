@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { ArrowRight, BarChart, CheckCircle, ChevronRight, LayoutGrid, Star, TestTube, Users, Smartphone, Bell, Flag } from 'lucide-react';
+import { ArrowRight, BarChart, CheckCircle, ChevronRight, LayoutGrid, Star, TestTube, Users, Smartphone, Bell, Flag, Zap, Users2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, FeatureCard } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -100,112 +100,78 @@ function PricingSection() {
         <section id="pricing" className="py-20 md:py-28 bg-background">
             <div className="container mx-auto px-4 md:px-6">
                 <div className="text-center max-w-2xl mx-auto">
-                    <h2 className="font-headline text-3xl md:text-4xl font-bold">Find the Perfect Plan</h2>
+                    <h2 className="font-headline text-3xl md:text-4xl font-bold">Hire Professional Testers</h2>
                     <p className="mt-4 text-muted-foreground">
-                        Whether you're a solo developer or a large enterprise, we have a plan that fits your needs.
+                        Access dedicated, professional testers for your project. No subscriptions, just results.
                     </p>
                 </div>
-                <div className="mt-12 grid gap-8 md:grid-cols-3 items-center">
-                    {/* Free Plan */}
+                <div className="mt-12 grid gap-8 md:grid-cols-2 items-center justify-center">
+                    {/* Pay-as-you-go Plan */}
                     <Card className="rounded-xl border-2 border-transparent hover:border-primary/50 transition-all duration-300 transform hover:-translate-y-1 hover:shadow-2xl hover:shadow-primary/20">
                         <CardHeader className="pt-8">
-                            <CardTitle className="font-headline text-2xl">Starter</CardTitle>
-                            <CardDescription>For individuals and hobby projects.</CardDescription>
+                            <CardTitle className="font-headline text-2xl">Hourly</CardTitle>
+                            <CardDescription>For flexible, on-demand testing needs.</CardDescription>
                         </CardHeader>
                         <CardContent className="space-y-6">
                             <div className="text-4xl font-bold">
-                                $0 <span className="text-lg font-normal text-muted-foreground">/ month</span>
+                                Pay-as-you-go
                             </div>
                             <ul className="space-y-3 text-muted-foreground">
                                 <li className="flex items-center gap-2">
                                     <CheckCircle className="w-5 h-5 text-primary" />
-                                    <span>1 Project</span>
+                                    <span>Hire testers by the hour</span>
                                 </li>
                                 <li className="flex items-center gap-2">
                                     <CheckCircle className="w-5 h-5 text-primary" />
-                                    <span>5 Testers</span>
+                                    <span>Access to the full marketplace</span>
                                 </li>
                                 <li className="flex items-center gap-2">
                                     <CheckCircle className="w-5 h-5 text-primary" />
-                                    <span>Basic Reporting</span>
+                                    <span>Direct communication with testers</span>
                                 </li>
-                                <li className="flex items-center gap-2 text-muted-foreground/50">
-                                    <CheckCircle className="w-5 h-5 " />
-                                    <span>Priority Support</span>
+                                <li className="flex items-center gap-2">
+                                    <CheckCircle className="w-5 h-5 text-primary" />
+                                    <span>Secure payment processing</span>
                                 </li>
                             </ul>
                         </CardContent>
                         <CardFooter>
-                            <Button variant="outline" className="w-full rounded-xl">Get Started</Button>
+                            <Button variant="outline" className="w-full rounded-xl">Explore Marketplace</Button>
                         </CardFooter>
                     </Card>
 
-                    {/* Pro Plan */}
+                    {/* Project-based Plan */}
                     <Card className="rounded-2xl border-2 border-primary shadow-2xl shadow-primary/20 relative">
-                         <Badge variant="default" className="absolute -top-4 left-1/2 -translate-x-1/2">Most Popular</Badge>
+                         <Badge variant="default" className="absolute -top-4 left-1/2 -translate-x-1/2">Best Value</Badge>
                         <CardHeader className="pt-8">
-                            <CardTitle className="font-headline text-2xl">Pro</CardTitle>
-                            <CardDescription>For small teams and growing businesses.</CardDescription>
-                        </CardHeader>
-                        <CardContent className="space-y-6">
-                            <div className="text-4xl font-bold">
-                                $49 <span className="text-lg font-normal text-muted-foreground">/ month</span>
-                            </div>
-                            <ul className="space-y-3 text-muted-foreground">
-                                <li className="flex items-center gap-2">
-                                    <CheckCircle className="w-5 h-5 text-primary" />
-                                    <span>10 Projects</span>
-                                </li>
-                                <li className="flex items-center gap-2">
-                                    <CheckCircle className="w-5 h-5 text-primary" />
-                                    <span>50 Testers</span>
-                                </li>
-                                <li className="flex items-center gap-2">
-                                    <CheckCircle className="w-5 h-5 text-primary" />
-                                    <span>Advanced Reporting</span>
-                                </li>
-                                 <li className="flex items-center gap-2">
-                                    <CheckCircle className="w-5 h-5 text-primary" />
-                                    <span>Priority Support</span>
-                                </li>
-                            </ul>
-                        </CardContent>
-                        <CardFooter>
-                            <Button className="w-full rounded-xl">Choose Plan</Button>
-                        </CardFooter>
-                    </Card>
-
-                    {/* Enterprise Plan */}
-                    <Card className="rounded-xl border-2 border-transparent hover:border-primary/50 transition-all duration-300 transform hover:-translate-y-1 hover:shadow-2xl hover:shadow-primary/20">
-                        <CardHeader className="pt-8">
-                            <CardTitle className="font-headline text-2xl">Enterprise</CardTitle>
-                            <CardDescription>For large organizations with custom needs.</CardDescription>
+                            <CardTitle className="font-headline text-2xl">Project-Based</CardTitle>
+                            <CardDescription>For fixed-scope projects with clear deliverables.</CardDescription>
                         </CardHeader>
                         <CardContent className="space-y-6">
                              <div className="text-4xl font-bold">
-                                Custom
+                                Custom Quote
                             </div>
                             <ul className="space-y-3 text-muted-foreground">
                                 <li className="flex items-center gap-2">
                                     <CheckCircle className="w-5 h-5 text-primary" />
-                                    <span>Unlimited Projects</span>
+                                    <span>Fixed price for the entire project</span>
                                 </li>
                                 <li className="flex items-center gap-2">
                                     <CheckCircle className="w-5 h-5 text-primary" />
-                                    <span>Unlimited Testers</span>
+                                    <span>Dedicated project management</span>
                                 </li>
                                 <li className="flex items-center gap-2">
                                     <CheckCircle className="w-5 h-5 text-primary" />
-                                    <span>Dedicated Account Manager</span>
+                                    <span>Milestone-based payments</span>
                                 </li>
                                  <li className="flex items-center gap-2">
                                     <CheckCircle className="w-5 h-5 text-primary" />
-                                    <span>Custom Integrations</span>
+                                    <span>Guaranteed outcomes</span>
                                 </li>
                             </ul>
                         </CardContent>
                         <CardFooter>
-                             <Button variant="outline" className="w-full rounded-xl">Contact Us</Button>
+                             <Button className="w-full rounded-xl">Request a Quote</Button>
                         </CardFooter>
                     </Card>
                 </div>
@@ -268,6 +234,68 @@ export default function Home() {
               ))}
             </div>
           </div>
+        </section>
+        
+        {/* Two Services Section */}
+        <section className="py-20 md:py-28">
+            <div className="container mx-auto px-4 md:px-6">
+                <div className="text-center max-w-3xl mx-auto">
+                    <h2 className="font-headline text-3xl md:text-4xl font-bold">Two Paths to Perfect Testing</h2>
+                    <p className="mt-4 text-muted-foreground">
+                        Whether you want to harness the power of community or hire dedicated professionals, we've got you covered.
+                    </p>
+                </div>
+                <div className="mt-12 grid md:grid-cols-2 gap-8">
+                    <FeatureCard>
+                        <CardHeader>
+                            <div className="bg-primary/10 p-3 rounded-full w-max mb-4">
+                                <Users2 className="w-8 h-8 text-primary" />
+                            </div>
+                            <CardTitle className="font-headline text-2xl">Community-Powered Testing</CardTitle>
+                            <CardDescription>Leverage the community to get your app tested and earn rewards.</CardDescription>
+                        </CardHeader>
+                        <CardContent className="space-y-4">
+                            <p className="text-muted-foreground">
+                                Users test each other's apps in a reciprocal ecosystem. By testing community-submitted apps, you earn points. These points can then be redeemed to get your own apps tested by our professional testers. It's a great way to get valuable feedback while contributing to the community.
+                            </p>
+                            <ul className="space-y-2 text-sm">
+                                <li className="flex items-center gap-2"><CheckCircle className="w-4 h-4 text-accent" /> Test apps to earn points.</li>
+                                <li className="flex items-center gap-2"><CheckCircle className="w-4 h-4 text-accent" /> Submit your own apps for testing.</li>
+                                <li className="flex items-center gap-2"><CheckCircle className="w-4 h-4 text-accent" /> Use points to hire individual testers.</li>
+                            </ul>
+                        </CardContent>
+                        <CardFooter>
+                            <Button asChild className="w-full rounded-xl">
+                                <Link href="/signup">Join the Community</Link>
+                            </Button>
+                        </CardFooter>
+                    </FeatureCard>
+                    <FeatureCard>
+                        <CardHeader>
+                             <div className="bg-primary/10 p-3 rounded-full w-max mb-4">
+                                <Zap className="w-8 h-8 text-primary" />
+                            </div>
+                            <CardTitle className="font-headline text-2xl">Hire Professional Testers</CardTitle>
+                            <CardDescription>Directly hire skilled testers for your project. No subscriptions required.</CardDescription>
+                        </CardHeader>
+                        <CardContent className="space-y-4">
+                             <p className="text-muted-foreground">
+                                Need dedicated testing expertise? Browse our marketplace of vetted professional testers and hire them on an hourly or project basis. This is a straightforward, paid service for when you need guaranteed, expert-level testing for your critical projects.
+                            </p>
+                             <ul className="space-y-2 text-sm">
+                                <li className="flex items-center gap-2"><CheckCircle className="w-4 h-4 text-accent" /> Purely a paid service.</li>
+                                <li className="flex items-center gap-2"><CheckCircle className="w-4 h-4 text-accent" /> No free or trial plans available.</li>
+                                <li className="flex items-center gap-2"><CheckCircle className="w-4 h-4 text-accent" /> Access top-tier, vetted talent.</li>
+                            </ul>
+                        </CardContent>
+                         <CardFooter>
+                            <Button asChild variant="outline" className="w-full rounded-xl">
+                                <Link href="/marketplace">Browse Testers</Link>
+                            </Button>
+                        </CardFooter>
+                    </FeatureCard>
+                </div>
+            </div>
         </section>
 
         {/* Google App Coming Soon Section */}
