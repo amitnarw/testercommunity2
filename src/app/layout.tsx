@@ -29,11 +29,11 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
+          <div className="pointer-events-none fixed inset-x-0 top-0 z-0 h-96 bg-gradient-to-b from-primary/20 to-transparent blur-3xl"></div>
           <Header />
           <main className="flex-1">{children}</main>
           <Footer />
           <Toaster />
-           <div className="pointer-events-none fixed inset-x-0 bottom-0 z-0 h-48 bg-gradient-to-t from-primary/10 to-transparent blur-3xl"></div>
         </ThemeProvider>
       </body>
     </html>
