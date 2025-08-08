@@ -14,7 +14,7 @@ export function TestTribeLogo(props: SVGProps<SVGSVGElement>) {
         </linearGradient>
       </defs>
       <text
-        fontFamily="Montserrat, sans-serif"
+        fontFamily="Plus Jakarta Sans, sans-serif"
         fontSize="32"
         fontWeight="bold"
         fill="url(#logo-gradient)"
