@@ -2,7 +2,7 @@
 'use client';
 
 import Link from 'next/link';
-import { ArrowRight, CheckCircle, ChevronRight, Bell, Flag, Zap, Users2, Smartphone } from 'lucide-react';
+import { ArrowRight, CheckCircle, ChevronRight, Bell, Flag, Zap, Users2, Smartphone, IndianRupee } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, FeatureCard } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -108,8 +108,9 @@ function PricingSection() {
                             <CardDescription>For fixed-scope projects with clear deliverables.</CardDescription>
                         </CardHeader>
                         <CardContent className="space-y-6">
-                             <div className="text-4xl font-bold">
-                                Custom Quote
+                             <div className="flex items-baseline gap-2">
+                                <span className="text-4xl font-bold">₹999</span>
+                                <span className="text-muted-foreground">/ project</span>
                             </div>
                             <ul className="space-y-3 text-muted-foreground">
                                 <li className="flex items-center gap-2">
@@ -127,6 +128,10 @@ function PricingSection() {
                                  <li className="flex items-center gap-2">
                                     <CheckCircle className="w-5 h-5 text-primary" />
                                     <span>Guaranteed outcomes</span>
+                                </li>
+                                <li className="flex items-center gap-2">
+                                    <CheckCircle className="w-5 h-5 text-primary" />
+                                    <span>UPI, Cards & Netbanking supported</span>
                                 </li>
                             </ul>
                         </CardContent>
@@ -158,7 +163,7 @@ export default function Home() {
                 Get Google Play production access, faster, smoother, and without rejections. Join devs from 100+ countries using our service.
               </p>
               <div className="mt-8 flex flex-col sm:flex-row justify-center gap-4">
-                <Button asChild size="lg" className="font-bold rounded-xl">
+                <Button asChild size="lg" className="font-bold rounded-xl hover:shadow-primary/30">
                   <Link href="/signup">Get Started for Free <ArrowRight className="ml-2" /></Link>
                 </Button>
                 <Button asChild size="lg" variant="outline" className="font-bold rounded-xl">
@@ -260,7 +265,7 @@ export default function Home() {
               Join the community and experience the future of app testing today. It's free to get started.
             </p>
             <div className="mt-8">
-              <Button asChild size="lg" className="font-bold text-lg px-8 py-6 rounded-xl">
+              <Button asChild size="lg" className="font-bold text-lg px-8 py-6 rounded-xl hover:shadow-primary/30">
                 <Link href="/signup">Sign Up Now <ArrowRight className="ml-2" /></Link>
               </Button>
             </div>
@@ -271,3 +276,5 @@ export default function Home() {
     </div>
   );
 }
+
+    

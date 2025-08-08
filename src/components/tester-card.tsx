@@ -34,7 +34,7 @@ export default function TesterCard({ tester }: TesterCardProps) {
                 <Star className="w-4 h-4 text-amber-400 fill-amber-400" />
                 <span className="font-bold">{tester.reputation.toFixed(1)}</span>
             </div>
-            <p><span className="font-bold text-foreground">${tester.rate}</span>/hr</p>
+            <p><span className="font-bold text-foreground">₹{tester.rate}</span>/hr</p>
         </div>
       </CardContent>
       <CardFooter className="p-4 pt-0">
@@ -45,3 +45,5 @@ export default function TesterCard({ tester }: TesterCardProps) {
     </Card>
   );
 }
+
+    

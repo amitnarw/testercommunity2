@@ -1,5 +1,5 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { Activity, Bug, DollarSign, Users } from 'lucide-react'
+import { Activity, Bug, IndianRupee, Users } from 'lucide-react'
 import DashboardCharts from '@/components/dashboard-charts'
 import { Badge } from '@/components/ui/badge'
 
@@ -58,10 +58,10 @@ export default function DashboardPage() {
               <CardTitle className="text-sm font-medium font-body">
                 Payouts
               </CardTitle>
-              <DollarSign className="h-4 w-4 text-muted-foreground" />
+              <IndianRupee className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">$4,291</div>
+              <div className="text-2xl font-bold">₹3,50,000</div>
               <p className="text-xs text-muted-foreground">
                 Total paid to testers this month
               </p>
@@ -76,3 +76,5 @@ export default function DashboardPage() {
     </div>
   )
 }
+
+    
