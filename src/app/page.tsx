@@ -61,7 +61,7 @@ function PricingSection() {
         <section id="pricing" className="py-20 md:py-28 bg-background">
             <div className="container mx-auto px-4 md:px-6">
                 <div className="text-center max-w-2xl mx-auto">
-                    <h2 className="text-3xl md:text-4xl font-bold">Hire Professional Testers</h2>
+                    <h2 className="text-4xl md:text-5xl font-bold">Hire Professional Testers</h2>
                     <p className="mt-4 text-muted-foreground">
                         Access dedicated, professional testers for your project. No subscriptions, just results.
                     </p>
@@ -77,7 +77,7 @@ function PricingSection() {
                             <div className="text-4xl font-bold">
                                 Pay-as-you-go
                             </div>
-                            <ul className="space-y-3 text-muted-foreground">
+                            <ul className="space-y-3 text-sm text-muted-foreground">
                                 <li className="flex items-center gap-2">
                                     <CheckCircle className="w-5 h-5 text-primary" />
                                     <span>Hire testers by the hour</span>
@@ -93,6 +93,14 @@ function PricingSection() {
                                 <li className="flex items-center gap-2">
                                     <CheckCircle className="w-5 h-5 text-primary" />
                                     <span>Secure payment processing</span>
+                                </li>
+                                 <li className="flex items-center gap-2">
+                                    <CheckCircle className="w-5 h-5 text-primary" />
+                                    <span>Detailed test reports</span>
+                                </li>
+                                 <li className="flex items-center gap-2">
+                                    <CheckCircle className="w-5 h-5 text-primary" />
+                                    <span>Flexible tester selection</span>
                                 </li>
                             </ul>
                         </CardContent>
@@ -113,7 +121,7 @@ function PricingSection() {
                                 <span className="text-4xl font-bold">₹999</span>
                                 <span className="text-muted-foreground">/ project</span>
                             </div>
-                            <ul className="space-y-3 text-muted-foreground">
+                            <ul className="space-y-3 text-sm text-muted-foreground">
                                 <li className="flex items-center gap-2">
                                     <CheckCircle className="w-5 h-5 text-primary" />
                                     <span>Fixed price for the entire project</span>
@@ -133,6 +141,14 @@ function PricingSection() {
                                 <li className="flex items-center gap-2">
                                     <CheckCircle className="w-5 h-5 text-primary" />
                                     <span>UPI, Cards & Netbanking supported</span>
+                                </li>
+                                 <li className="flex items-center gap-2">
+                                    <CheckCircle className="w-5 h-5 text-primary" />
+                                    <span>Comprehensive test planning</span>
+                                </li>
+                                 <li className="flex items-center gap-2">
+                                    <CheckCircle className="w-5 h-5 text-primary" />
+                                    <span>Final QA sign-off report</span>
                                 </li>
                             </ul>
                         </CardContent>
