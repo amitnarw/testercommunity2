@@ -195,66 +195,66 @@ export default function Home() {
           </div>
         </section>
         
-        {/* Two Services Section */}
+        {/* Two Paths Section */}
         <section className="py-20 md:py-28">
-            <div className="container mx-auto px-4 md:px-6">
-                <div className="text-center max-w-3xl mx-auto">
-                    <h2 className="text-3xl md:text-4xl font-bold">Two Paths to Perfect Testing</h2>
-                    <p className="mt-4 text-muted-foreground">
-                        Whether you want to harness the power of community or hire dedicated professionals, we've got you covered.
-                    </p>
-                </div>
-                <div className="mt-12 grid md:grid-cols-2 gap-8">
-                    <FeatureCard>
-                        <CardHeader>
-                            <div className="bg-primary/10 p-3 rounded-full w-max mb-4">
-                                <Users2 className="w-8 h-8 text-primary" />
-                            </div>
-                            <CardTitle className="text-2xl">Community-Powered Testing</CardTitle>
-                            <CardDescription>Leverage the community to get your app tested and earn rewards.</CardDescription>
-                        </CardHeader>
-                        <CardContent className="space-y-4">
-                            <p className="text-muted-foreground">
-                                Users test each other's apps in a reciprocal ecosystem. By testing community-submitted apps, you earn points. These points can then be redeemed to get your own apps tested by our professional testers. It's a great way to get valuable feedback while contributing to the community.
-                            </p>
-                            <ul className="space-y-2 text-sm">
-                                <li className="flex items-center gap-2"><CheckCircle className="w-4 h-4 text-accent" /> Test apps to earn points.</li>
-                                <li className="flex items-center gap-2"><CheckCircle className="w-4 h-4 text-accent" /> Submit your own apps for testing.</li>
-                                <li className="flex items-center gap-2"><CheckCircle className="w-4 h-4 text-accent" /> Use points to hire individual testers.</li>
-                            </ul>
-                        </CardContent>
-                        <CardFooter>
-                            <Button asChild className="w-full rounded-xl">
-                                <Link href="/signup">Join the Community</Link>
-                            </Button>
-                        </CardFooter>
-                    </FeatureCard>
-                    <FeatureCard>
-                        <CardHeader>
-                             <div className="bg-primary/10 p-3 rounded-full w-max mb-4">
-                                <Zap className="w-8 h-8 text-primary" />
-                            </div>
-                            <CardTitle className="text-2xl">Hire Professional Testers</CardTitle>
-                            <CardDescription>Directly hire skilled testers for your project. No subscriptions required.</CardDescription>
-                        </CardHeader>
-                        <CardContent className="space-y-4">
-                             <p className="text-muted-foreground">
-                                Need dedicated testing expertise? Browse our marketplace of vetted professional testers and hire them on an hourly or project basis. This is a straightforward, paid service for when you need guaranteed, expert-level testing for your critical projects.
-                            </p>
-                             <ul className="space-y-2 text-sm">
-                                <li className="flex items-center gap-2"><CheckCircle className="w-4 h-4 text-accent" /> Purely a paid service.</li>
-                                <li className="flex items-center gap-2"><CheckCircle className="w-4 h-4 text-accent" /> No free or trial plans available.</li>
-                                <li className="flex items-center gap-2"><CheckCircle className="w-4 h-4 text-accent" /> Access top-tier, vetted talent.</li>
-                            </ul>
-                        </CardContent>
-                         <CardFooter>
-                            <Button asChild variant="outline" className="w-full rounded-xl">
-                                <Link href="/marketplace">Browse Testers</Link>
-                            </Button>
-                        </CardFooter>
-                    </FeatureCard>
-                </div>
+          <div className="container mx-auto px-4 md:px-6">
+            <div className="text-center max-w-3xl mx-auto">
+              <h2 className="text-3xl md:text-4xl font-bold">Two Paths to Perfect Testing</h2>
+              <p className="mt-4 text-muted-foreground">
+                Whether you want to harness the power of community or hire dedicated professionals, we've got you covered.
+              </p>
             </div>
+            <div className="mt-16 space-y-24">
+
+              {/* Path 1: Community */}
+              <div className="grid md:grid-cols-2 gap-12 items-center">
+                <div className="relative aspect-square">
+                  <Image src="https://placehold.co/600x600.png" alt="Community-Powered Testing" layout="fill" objectFit="cover" className="rounded-xl shadow-2xl" data-ai-hint="team collaboration" />
+                </div>
+                <div>
+                   <Badge variant="secondary">Community-Powered</Badge>
+                   <h3 className="text-3xl font-bold mt-4">Test Apps, Earn Rewards</h3>
+                   <p className="mt-4 text-muted-foreground">
+                     Join a reciprocal ecosystem where you test community-submitted apps to earn points. Redeem those points to get your own apps tested by professionals. It's a powerful way to get valuable feedback while contributing to the community.
+                   </p>
+                   <ul className="mt-6 space-y-3">
+                      <li className="flex items-start gap-3"><CheckCircle className="w-5 h-5 text-primary mt-1 flex-shrink-0" /><span>Test community apps to earn points.</span></li>
+                      <li className="flex items-start gap-3"><CheckCircle className="w-5 h-5 text-primary mt-1 flex-shrink-0" /><span>Submit your own apps for in-depth testing.</span></li>
+                      <li className="flex items-start gap-3"><CheckCircle className="w-5 h-5 text-primary mt-1 flex-shrink-0" /><span>Use points to hire individual expert testers.</span></li>
+                   </ul>
+                   <div className="mt-8">
+                      <Button asChild className="rounded-xl">
+                          <Link href="/signup">Join the Community</Link>
+                      </Button>
+                   </div>
+                </div>
+              </div>
+
+              {/* Path 2: Professional */}
+              <div className="grid md:grid-cols-2 gap-12 items-center">
+                 <div className="md:order-2 relative aspect-square">
+                  <Image src="https://placehold.co/600x600.png" alt="Hire Professional Testers" layout="fill" objectFit="cover" className="rounded-xl shadow-2xl" data-ai-hint="professional desk" />
+                </div>
+                <div className="md:order-1">
+                   <Badge>Paid Service</Badge>
+                   <h3 className="text-3xl font-bold mt-4">Hire Dedicated Professionals</h3>
+                   <p className="mt-4 text-muted-foreground">
+                    Need guaranteed, expert-level testing for your critical projects? Browse our marketplace of vetted professional testers and hire them on an hourly or project basis. This is a straightforward, paid service with no free trials.
+                   </p>
+                   <ul className="mt-6 space-y-3">
+                      <li className="flex items-start gap-3"><CheckCircle className="w-5 h-5 text-primary mt-1 flex-shrink-0" /><span>Purely a paid service for guaranteed results.</span></li>
+                      <li className="flex items-start gap-3"><CheckCircle className="w-5 h-5 text-primary mt-1 flex-shrink-0" /><span>No free or trial plans available.</span></li>
+                      <li className="flex items-start gap-3"><CheckCircle className="w-5 h-5 text-primary mt-1 flex-shrink-0" /><span>Access top-tier, vetted talent on-demand.</span></li>
+                   </ul>
+                   <div className="mt-8">
+                       <Button asChild variant="outline" className="rounded-xl">
+                          <Link href="/marketplace">Browse Testers</Link>
+                      </Button>
+                   </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </section>
 
         {/* Google App Coming Soon Section */}
@@ -329,3 +329,5 @@ export default function Home() {
     </div>
   );
 }
+
+    
