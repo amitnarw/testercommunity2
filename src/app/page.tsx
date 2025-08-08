@@ -151,7 +151,7 @@ export default function Home() {
                 Now in Public Beta
               </Badge>
               <h1 className="font-body text-4xl md:text-5xl lg:text-7xl font-extrabold mt-4">
-                Get Your App <span className="text-primary">Tested & Published</span> Faster
+                Get Your App <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-accent">Tested & Published</span> Faster
               </h1>
               <p className="mt-6 max-w-2xl mx-auto text-lg md:text-xl text-muted-foreground">
                 Get Google Play production access, faster, smoother, and without rejections. Join devs from 100+ countries using our service.
@@ -311,10 +311,10 @@ export default function Home() {
         <PricingSection />
 
         {/* CTA Section */}
-        <section className="py-20 md:py-28 bg-[linear-gradient(0deg,_#f9fafb_20%,_#f0f0f0_100%)] dark:bg-[linear-gradient(0deg,_#2a2d32_20%,_#1d1d1d_100%)]">
+        <section className="py-20 md:py-28 bg-gradient-to-b from-background to-primary/10 dark:from-background dark:to-primary/10">
           <div className="container mx-auto px-4 md:px-6 text-center">
-            <h2 className="text-3xl md:text-4xl font-bold text-gray-800 dark:text-gray-100">Ready to Elevate Your Testing?</h2>
-            <p className="mt-4 max-w-2xl mx-auto text-gray-600 dark:text-gray-300">
+            <h2 className="text-3xl md:text-4xl font-bold">Ready to Elevate Your Testing?</h2>
+            <p className="mt-4 max-w-2xl mx-auto text-muted-foreground">
               Join the community and experience the future of app testing today. It's free to get started.
             </p>
             <div className="mt-8">
