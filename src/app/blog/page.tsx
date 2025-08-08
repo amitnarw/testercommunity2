@@ -7,7 +7,7 @@ export default function BlogPage() {
     <div className="min-h-screen bg-background">
       <div className="container mx-auto px-4 md:px-6 py-12">
         <section className="text-center">
-          <h1 className="font-headline text-4xl md:text-5xl font-bold">The TestTribe Blog</h1>
+          <h1 className="text-4xl md:text-5xl font-bold">The TestTribe Blog</h1>
           <p className="mt-4 max-w-2xl mx-auto text-muted-foreground">
             Insights, tutorials, and stories from the world of app testing and quality assurance.
           </p>

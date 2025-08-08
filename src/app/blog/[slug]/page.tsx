@@ -29,7 +29,7 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
                 </Link>
                 <article>
                     <header className="mb-8">
-                        <h1 className="font-headline text-4xl md:text-5xl font-bold mb-4">{post.title}</h1>
+                        <h1 className="text-4xl md:text-5xl font-bold mb-4">{post.title}</h1>
                         <div className="flex items-center gap-4 text-sm text-muted-foreground">
                             <div className="flex items-center gap-2">
                                 <Avatar className="h-8 w-8">
@@ -58,7 +58,7 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
                         dangerouslySetInnerHTML={{ __html: post.content }}
                     />
                      <div className="mt-8 pt-8 border-t">
-                        <h3 className="text-xl font-semibold mb-4 font-headline">Tags</h3>
+                        <h3 className="text-xl font-semibold mb-4">Tags</h3>
                         <div className="flex flex-wrap gap-2">
                             {post.tags.map((tag) => (
                                 <Badge key={tag} variant="secondary" className="rounded-full">{tag}</Badge>

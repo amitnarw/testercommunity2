@@ -11,7 +11,7 @@ export default function MarketplacePage() {
       <div className="container mx-auto px-4 md:px-6 py-12">
         <section>
           <div className="text-center">
-            <h1 className="font-headline text-4xl md:text-5xl font-bold">Tester Marketplace</h1>
+            <h1 className="text-4xl md:text-5xl font-bold">Tester Marketplace</h1>
             <p className="mt-4 max-w-2xl mx-auto text-muted-foreground">
               Find the perfect tester for your project. Filter by skills, reputation, and more.
             </p>

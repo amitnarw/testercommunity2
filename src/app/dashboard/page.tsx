@@ -8,7 +8,7 @@ export default function DashboardPage() {
     <div className="min-h-screen bg-secondary/50">
       <div className="container mx-auto px-4 md:px-6 py-12">
         <header className="mb-8">
-          <h1 className="font-headline text-4xl font-bold">Dashboard</h1>
+          <h1 className="text-4xl font-bold">Dashboard</h1>
           <p className="text-muted-foreground">Real-time overview of your testing activities.</p>
         </header>
 

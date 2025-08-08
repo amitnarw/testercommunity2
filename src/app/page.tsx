@@ -2,18 +2,14 @@
 'use client';
 
 import Link from 'next/link';
-import { ArrowRight, BarChart, CheckCircle, ChevronRight, LayoutGrid, Star, TestTube, Users, Smartphone, Bell, Flag, Zap, Users2 } from 'lucide-react';
+import { ArrowRight, CheckCircle, ChevronRight, Bell, Flag, Zap, Users2, Smartphone } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, FeatureCard } from '@/components/ui/card';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
-import { Progress } from '@/components/ui/progress';
-import { TestTribeLogo, GoldBadge, SilverBadge, BronzeBadge } from '@/components/icons';
 import Image from "next/image";
 import { ScrollToTopButton } from '@/components/scroll-to-top-button';
 import { ScrollingRibbon } from '@/components/scrolling-ribbon';
 import React from 'react';
-import { cn } from '@/lib/utils';
 import { testimonials } from '@/lib/data';
 import { TestimonialScroller } from '@/components/testimonial-scroller';
 
@@ -63,7 +59,7 @@ function PricingSection() {
         <section id="pricing" className="py-20 md:py-28 bg-background">
             <div className="container mx-auto px-4 md:px-6">
                 <div className="text-center max-w-2xl mx-auto">
-                    <h2 className="font-headline text-3xl md:text-4xl font-bold">Hire Professional Testers</h2>
+                    <h2 className="text-3xl md:text-4xl font-bold">Hire Professional Testers</h2>
                     <p className="mt-4 text-muted-foreground">
                         Access dedicated, professional testers for your project. No subscriptions, just results.
                     </p>
@@ -72,7 +68,7 @@ function PricingSection() {
                     {/* Pay-as-you-go Plan */}
                     <Card className="rounded-xl border-2 border-transparent hover:border-primary/50 transition-all duration-300 transform hover:-translate-y-1 hover:shadow-2xl hover:shadow-primary/20">
                         <CardHeader className="pt-8">
-                            <CardTitle className="font-headline text-2xl">Hourly</CardTitle>
+                            <CardTitle className="text-2xl">Hourly</CardTitle>
                             <CardDescription>For flexible, on-demand testing needs.</CardDescription>
                         </CardHeader>
                         <CardContent className="space-y-6">
@@ -107,7 +103,7 @@ function PricingSection() {
                     <Card className="rounded-2xl border-2 border-primary shadow-2xl shadow-primary/20 relative">
                          <Badge variant="default" className="absolute -top-4 left-1/2 -translate-x-1/2">Best Value</Badge>
                         <CardHeader className="pt-8">
-                            <CardTitle className="font-headline text-2xl">Project-Based</CardTitle>
+                            <CardTitle className="text-2xl">Project-Based</CardTitle>
                             <CardDescription>For fixed-scope projects with clear deliverables.</CardDescription>
                         </CardHeader>
                         <CardContent className="space-y-6">
@@ -154,8 +150,8 @@ export default function Home() {
               <Badge variant="outline" className="text-sm border-primary/30 bg-primary/10 text-primary py-1 px-4 rounded-full">
                 Now in Public Beta
               </Badge>
-              <h1 className="font-body text-4xl md:text-5xl lg:text-7xl font-bold mt-4">
-                Get Your App <span className="text-primary font-headline italic">Tested & Published</span> Faster
+              <h1 className="font-body text-4xl md:text-5xl lg:text-7xl font-extrabold mt-4">
+                Get Your App <span className="text-primary">Tested & Published</span> Faster
               </h1>
               <p className="mt-6 max-w-2xl mx-auto text-lg md:text-xl text-muted-foreground">
                 Get Google Play production access, faster, smoother, and without rejections. Join devs from 100+ countries using our service.
@@ -176,7 +172,7 @@ export default function Home() {
         <section className="py-20 md:py-28 bg-background">
           <div className="container mx-auto px-4 md:px-6">
             <div className="text-center">
-              <h2 className="font-headline text-3xl md:text-4xl font-bold">A Platform That Works as Good as It Looks</h2>
+              <h2 className="text-3xl md:text-4xl font-bold">A Platform That Works as Good as It Looks</h2>
               <p className="mt-4 max-w-2xl mx-auto text-muted-foreground">
                 We've merged cutting-edge functionality with Awwwards-caliber design to create an unparalleled testing experience.
               </p>
@@ -203,7 +199,7 @@ export default function Home() {
         <section className="py-20 md:py-28">
             <div className="container mx-auto px-4 md:px-6">
                 <div className="text-center max-w-3xl mx-auto">
-                    <h2 className="font-headline text-3xl md:text-4xl font-bold">Two Paths to Perfect Testing</h2>
+                    <h2 className="text-3xl md:text-4xl font-bold">Two Paths to Perfect Testing</h2>
                     <p className="mt-4 text-muted-foreground">
                         Whether you want to harness the power of community or hire dedicated professionals, we've got you covered.
                     </p>
@@ -269,7 +265,7 @@ export default function Home() {
                 </div>
                 <div>
                     <Badge variant="secondary">Coming Soon</Badge>
-                    <h2 className="font-headline text-3xl md:text-4xl font-bold mt-4">TestTribe, Now in Your Pocket</h2>
+                    <h2 className="text-3xl md:text-4xl font-bold mt-4">TestTribe, Now in Your Pocket</h2>
                     <p className="mt-4 text-muted-foreground">
                         Get ready to experience TestTribe like never before. Our native Google app is in the works, bringing all the platform's features right to your mobile device. Stay tuned for updates!
                     </p>
@@ -297,7 +293,7 @@ export default function Home() {
         <section className="py-20 md:py-28">
           <div className="container mx-auto px-4 md:px-6">
             <div className="text-center">
-              <h2 className="font-headline text-3xl md:text-4xl font-bold">Trusted by a Community of Innovators</h2>
+              <h2 className="text-3xl md:text-4xl font-bold">Trusted by a Community of Innovators</h2>
               <p className="mt-4 max-w-2xl mx-auto text-muted-foreground">
                 See what developers and testers are saying about TestTribe.
               </p>
@@ -317,7 +313,7 @@ export default function Home() {
         {/* CTA Section */}
         <section className="py-20 md:py-28 bg-[linear-gradient(0deg,_#f9fafb_20%,_#f0f0f0_100%)] dark:bg-[linear-gradient(0deg,_#2a2d32_20%,_#1d1d1d_100%)]">
           <div className="container mx-auto px-4 md:px-6 text-center">
-            <h2 className="font-headline text-3xl md:text-4xl font-bold text-gray-800 dark:text-gray-100">Ready to Elevate Your Testing?</h2>
+            <h2 className="text-3xl md:text-4xl font-bold text-gray-800 dark:text-gray-100">Ready to Elevate Your Testing?</h2>
             <p className="mt-4 max-w-2xl mx-auto text-gray-600 dark:text-gray-300">
               Join the community and experience the future of app testing today. It's free to get started.
             </p>
