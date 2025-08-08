@@ -152,7 +152,7 @@ export default function Home() {
                 Now in Public Beta
               </Badge>
               <h1 className="font-body text-4xl md:text-5xl lg:text-7xl font-extrabold mt-4">
-                Get Your App <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-accent">Tested & Published</span> Faster
+                Get Your App <span className="text-primary">Tested & Published</span> Faster
               </h1>
               <p className="mt-6 max-w-2xl mx-auto text-lg md:text-xl text-muted-foreground">
                 Get Google Play production access, faster, smoother, and without rejections. Join devs from 100+ countries using our service.
