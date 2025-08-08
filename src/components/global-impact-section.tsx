@@ -46,24 +46,48 @@ const stats = [
         value: 100,
         suffix: '+',
         label: 'Countries Reached',
+        position: { top: '10%', left: '15%' },
+        animation: {
+            y: [0, -15, 0],
+            x: [0, 10, 0],
+            transition: { duration: 8, repeat: Infinity, repeatType: "reverse", ease: "easeInOut" }
+        }
     },
     {
         icon: <Users className="w-8 h-8" />,
         value: 20000,
         suffix: '+',
         label: 'Testers Engaged',
+        position: { top: '25%', left: '70%' },
+        animation: {
+            y: [0, 20, 0],
+            x: [0, -15, 0],
+            transition: { duration: 10, repeat: Infinity, repeatType: "reverse", ease: "easeInOut" }
+        }
     },
     {
         icon: <Bug className="w-8 h-8" />,
         value: 500000,
         suffix: '+',
         label: 'Bugs Squashed',
+        position: { top: '60%', left: '5%' },
+        animation: {
+            y: [0, -25, 0],
+            x: [0, 20, 0],
+            transition: { duration: 12, repeat: Infinity, repeatType: "reverse", ease: "easeInOut" }
+        }
     },
     {
         icon: <Code className="w-8 h-8" />,
         value: 1,
         suffix: 'M+',
         label: 'Developer Hours Saved',
+        position: { top: '75%', left: '60%' },
+        animation: {
+            y: [0, 15, 0],
+            x: [0, -10, 0],
+            transition: { duration: 9, repeat: Infinity, repeatType: "reverse", ease: "easeInOut" }
+        }
     },
 ]
 
@@ -76,14 +100,15 @@ export function GlobalImpactSection() {
         visible: {
             opacity: 1,
             transition: {
-                staggerChildren: 0.2,
+                staggerChildren: 0.3,
+                delayChildren: 0.2,
             },
         },
     };
 
     const itemVariants = {
-        hidden: { opacity: 0, y: 20 },
-        visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
+        hidden: { opacity: 0, scale: 0.5 },
+        visible: { opacity: 1, scale: 1, transition: { duration: 0.5 } },
     };
 
 
@@ -108,16 +133,10 @@ export function GlobalImpactSection() {
                     >
                         From Local <span className="text-primary">₹999</span> to Global Ripples
                     </motion.h2>
-                    <motion.p 
-                        variants={itemVariants}
-                        className="mt-6 max-w-2xl mx-auto text-lg text-muted-foreground"
-                    >
-                        We believe in democratizing quality. See how a single, affordable test cycle creates a wave of impact, empowering developers and improving apps across the planet.
-                    </motion.p>
                 </motion.div>
 
                 <motion.div 
-                    className="mt-16 grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto"
+                    className="mt-16 relative min-h-[500px]"
                     variants={containerVariants}
                     initial="hidden"
                     animate={isInView ? "visible" : "hidden"}
@@ -126,17 +145,19 @@ export function GlobalImpactSection() {
                        <motion.div 
                             key={i}
                             variants={itemVariants}
-                            className="bg-background/30 backdrop-blur-lg p-6 rounded-2xl border border-white/10 flex items-center gap-6"
+                            animate={stat.animation}
+                            className="absolute bg-background/30 backdrop-blur-lg p-6 rounded-full border border-white/10 flex flex-col items-center justify-center text-center w-56 h-56"
+                            style={stat.position}
                         >
-                           <div className="flex-shrink-0 bg-primary/10 text-primary rounded-full p-4">
+                           <div className="flex-shrink-0 bg-primary/10 text-primary rounded-full p-4 mb-3">
                             {stat.icon}
                            </div>
-                           <div className="text-left">
-                               <p className="text-4xl md:text-5xl font-bold text-primary">
+                           <div>
+                               <p className="text-3xl md:text-4xl font-bold text-primary">
                                    {stat.value > 100000 ? stat.value/1000000 + stat.suffix : <AnimatedCounter to={stat.value} />}
                                    {stat.value < 100000 && stat.suffix}
                                </p>
-                               <p className="text-muted-foreground mt-1">{stat.label}</p>
+                               <p className="text-muted-foreground text-sm mt-1">{stat.label}</p>
                            </div>
                        </motion.div>
                    ))}
@@ -145,15 +166,3 @@ export function GlobalImpactSection() {
         </section>
     );
 }
-
-// A simple dot pattern background
-const DotPattern = () => (
-    <svg className="absolute w-full h-full inset-0" aria-hidden="true">
-        <defs>
-            <pattern id="dot-pattern" width="10" height="10" patternUnits="userSpaceOnUse">
-                <circle cx="5" cy="5" r="1" fill="currentColor" />
-            </pattern>
-        </defs>
-        <rect width="100%" height="100%" fill="url(#dot-pattern)" />
-    </svg>
-)
