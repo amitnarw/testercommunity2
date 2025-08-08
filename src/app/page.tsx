@@ -1,3 +1,4 @@
+
 'use client';
 
 import Link from 'next/link';
@@ -153,8 +154,8 @@ export default function Home() {
               <Badge variant="outline" className="text-sm border-primary/30 bg-primary/10 text-primary py-1 px-4 rounded-full">
                 Now in Public Beta
               </Badge>
-              <h1 className="font-headline text-4xl md:text-5xl lg:text-7xl font-bold mt-4">
-                Get Your App <span className="text-primary">Tested & Published</span> Faster
+              <h1 className="font-body text-4xl md:text-5xl lg:text-7xl font-bold mt-4">
+                Get Your App <span className="text-primary font-headline italic">Tested & Published</span> Faster
               </h1>
               <p className="mt-6 max-w-2xl mx-auto text-lg md:text-xl text-muted-foreground">
                 Get Google Play production access, faster, smoother, and without rejections. Join devs from 100+ countries using our service.
