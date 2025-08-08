@@ -29,9 +29,12 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <Header />
-          <main className="flex-1">{children}</main>
-          <Footer />
+          <div className="relative flex flex-col min-h-screen">
+            <Header />
+            <main className="flex-1">{children}</main>
+            <Footer />
+          </div>
+          <div className="fixed bottom-0 left-1/2 -translate-x-1/2 w-[150%] h-48 bg-primary/10 rounded-full blur-3xl -z-50 pointer-events-none" />
           <Toaster />
         </ThemeProvider>
       </body>
