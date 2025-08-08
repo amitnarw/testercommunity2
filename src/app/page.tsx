@@ -314,7 +314,7 @@ export default function Home() {
             <Carousel
               className="mt-12 w-full"
               opts={{ loop: true, align: 'start' }}
-              plugins={[Autoplay({ delay: 3000, stopOnInteraction: false })]}
+              plugins={[Autoplay({ delay: 3000, stopOnInteraction: false, stopOnMouseEnter: false })]}
             >
               <CarouselContent className="-ml-4">
                 {testimonials.map((testimonial, index) => (
