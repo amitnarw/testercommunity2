@@ -97,8 +97,8 @@ export default {
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
-        'scroll-ltr': 'scroll-ltr 60s linear infinite',
-        'scroll-rtl': 'scroll-rtl 60s linear infinite',
+        'scroll-ltr': 'scroll-ltr 40s linear infinite',
+        'scroll-rtl': 'scroll-rtl 40s linear infinite',
       },
     },
   },

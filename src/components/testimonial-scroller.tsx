@@ -11,7 +11,7 @@ interface TestimonialCardProps {
 
 function TestimonialCard({ testimonial }: TestimonialCardProps) {
   return (
-    <Card className="flex flex-col justify-between h-full bg-card rounded-xl shadow-md w-[350px] mx-4">
+    <Card className="flex flex-col justify-between bg-card rounded-xl shadow-md w-[350px] mx-4">
       <CardHeader>
         <div className="flex items-center gap-4">
           <Avatar>
