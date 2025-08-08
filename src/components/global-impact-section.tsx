@@ -52,7 +52,7 @@ const StatCard = ({ icon, title, children, className }: { icon: React.ReactNode,
             animate={isInView ? { opacity: 1, y: 0, scale: 1 } : {}}
             transition={{ duration: 0.5, ease: 'easeOut' }}
             className={cn(
-                "bg-background/50 backdrop-blur-lg rounded-2xl border border-primary/20 p-6 shadow-lg",
+                "bg-background/50 backdrop-blur-lg rounded-2xl border border-primary/20 p-4 sm:p-6 shadow-lg",
                 "flex flex-col",
                 className
             )}
@@ -86,7 +86,7 @@ export function GlobalImpactSection() {
                 className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-0"
                 style={{ rotate }}
             >
-                <Globe className="w-[600px] h-[600px] text-primary/10" strokeWidth={0.5} />
+                <Globe className="w-[300px] h-[300px] md:w-[600px] md:h-[600px] text-primary/10" strokeWidth={0.5} />
             </motion.div>
             
             <div className="container mx-auto px-4 md:px-6 relative z-10 flex flex-col items-center justify-center">
@@ -104,7 +104,7 @@ export function GlobalImpactSection() {
                 <div className="mt-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 w-full max-w-6xl">
                     <StatCard title="Global Reach" icon={<Globe className="w-6 h-6"/>} className="lg:col-span-1">
                         <div className="space-y-3">
-                            <p className="text-4xl font-bold"><AnimatedCounter to={100} suffix="+" /></p>
+                            <p className="text-3xl sm:text-4xl font-bold"><AnimatedCounter to={100} suffix="+" /></p>
                             <p className="text-muted-foreground">Countries with active TestTribe members.</p>
                              <div>
                                 <h4 className="font-semibold mb-2">Top Regions:</h4>
@@ -120,7 +120,7 @@ export function GlobalImpactSection() {
                      <StatCard title="Tester Community" icon={<Users className="w-6 h-6"/>} className="lg:col-span-2">
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                             <div>
-                                <p className="text-4xl font-bold"><AnimatedCounter to={20000} suffix="+" /></p>
+                                <p className="text-3xl sm:text-4xl font-bold"><AnimatedCounter to={20000} suffix="+" /></p>
                                 <p className="text-muted-foreground">Vetted testers on the platform.</p>
                             </div>
                             <div>
@@ -137,7 +137,7 @@ export function GlobalImpactSection() {
                     <StatCard title="Bugs Squashed" icon={<Bug className="w-6 h-6"/>} className="lg:col-span-2">
                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                              <div>
-                                <p className="text-4xl font-bold"><AnimatedCounter to={500000} suffix="+" /></p>
+                                <p className="text-3xl sm:text-4xl font-bold"><AnimatedCounter to={500000} suffix="+" /></p>
                                 <p className="text-muted-foreground">Bugs identified and reported.</p>
                             </div>
                             <div>
@@ -151,7 +151,7 @@ export function GlobalImpactSection() {
                     </StatCard>
                     <StatCard title="Projects Accelerated" icon={<Code className="w-6 h-6"/>}>
                         <div>
-                            <p className="text-4xl font-bold"><AnimatedCounter to={1000000} prefix="~" suffix="+" /></p>
+                            <p className="text-3xl sm:text-4xl font-bold"><AnimatedCounter to={1000000} prefix="~" suffix="+" /></p>
                             <p className="text-muted-foreground">Development hours saved for our clients.</p>
                             <p className="mt-2 text-sm">Equivalent to <span className="font-bold text-foreground">114 years</span> of continuous development time.</p>
                         </div>
@@ -161,5 +161,3 @@ export function GlobalImpactSection() {
         </section>
     );
 }
-
-    
