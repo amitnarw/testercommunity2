@@ -49,7 +49,7 @@ export function Footer() {
           </div>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-8 lg:col-span-2">
             <div className="space-y-4">
-              <h4 className="font-headline font-semibold">Platform</h4>
+              <h4 className="font-semibold font-headline">Platform</h4>
               <ul className="space-y-2">
                 {navItems.map((item) => (
                     <li key={item.name}>
@@ -61,7 +61,7 @@ export function Footer() {
               </ul>
             </div>
              <div className="space-y-4">
-              <h4 className="font-headline font-semibold">Resources</h4>
+              <h4 className="font-semibold font-headline">Resources</h4>
               <ul className="space-y-2">
                 {resourceItems.map((item) => (
                   <li key={item.name}>
@@ -73,7 +73,7 @@ export function Footer() {
               </ul>
             </div>
              <div className="space-y-4">
-              <h4 className="font-headline font-semibold">Legal</h4>
+              <h4 className="font-semibold font-headline">Legal</h4>
               <ul className="space-y-2">
                  {legalItems.map((item) => (
                   <li key={item.name}>

@@ -184,7 +184,7 @@ export default function Home() {
               {features.map((feature, i) => (
                 <FeatureCard key={feature.title}>
                   <CardHeader>
-                    <CardTitle className="font-headline">{feature.title}</CardTitle>
+                    <CardTitle>{feature.title}</CardTitle>
                   </CardHeader>
                   <CardContent>
                     <p className="text-muted-foreground">{feature.description}</p>
@@ -213,7 +213,7 @@ export default function Home() {
                             <div className="bg-primary/10 p-3 rounded-full w-max mb-4">
                                 <Users2 className="w-8 h-8 text-primary" />
                             </div>
-                            <CardTitle className="font-headline text-2xl">Community-Powered Testing</CardTitle>
+                            <CardTitle className="text-2xl">Community-Powered Testing</CardTitle>
                             <CardDescription>Leverage the community to get your app tested and earn rewards.</CardDescription>
                         </CardHeader>
                         <CardContent className="space-y-4">
@@ -237,7 +237,7 @@ export default function Home() {
                              <div className="bg-primary/10 p-3 rounded-full w-max mb-4">
                                 <Zap className="w-8 h-8 text-primary" />
                             </div>
-                            <CardTitle className="font-headline text-2xl">Hire Professional Testers</CardTitle>
+                            <CardTitle className="text-2xl">Hire Professional Testers</CardTitle>
                             <CardDescription>Directly hire skilled testers for your project. No subscriptions required.</CardDescription>
                         </CardHeader>
                         <CardContent className="space-y-4">

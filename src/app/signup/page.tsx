@@ -7,7 +7,7 @@ export default function SignupPage() {
         <div className="w-full max-w-md">
             <Card className="shadow-2xl shadow-primary/10 rounded-xl">
                 <CardHeader className="text-center">
-                    <CardTitle className="font-headline text-3xl">Join TestTribe</CardTitle>
+                    <CardTitle className="text-3xl">Join TestTribe</CardTitle>
                     <CardDescription>Create your account and start testing today.</CardDescription>
                 </CardHeader>
                 <CardContent>

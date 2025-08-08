@@ -15,7 +15,7 @@ export default function DashboardPage() {
         <div className="grid gap-4 md:grid-cols-2 md:gap-8 lg:grid-cols-4">
           <Card className="rounded-xl">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">
+              <CardTitle className="text-sm font-medium font-body">
                 Active Testers
               </CardTitle>
               <Users className="h-4 w-4 text-muted-foreground" />
@@ -29,7 +29,7 @@ export default function DashboardPage() {
           </Card>
           <Card className="rounded-xl">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">
+              <CardTitle className="text-sm font-medium font-body">
                 Bugs Reported
               </CardTitle>
               <Bug className="h-4 w-4 text-muted-foreground" />
@@ -43,7 +43,7 @@ export default function DashboardPage() {
           </Card>
           <Card className="rounded-xl">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">Critical Issues</CardTitle>
+              <CardTitle className="text-sm font-medium font-body">Critical Issues</CardTitle>
               <Activity className="h-4 w-4 text-muted-foreground" />
             </CardHeader>
             <CardContent>
@@ -55,7 +55,7 @@ export default function DashboardPage() {
           </Card>
            <Card className="rounded-xl">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">
+              <CardTitle className="text-sm font-medium font-body">
                 Payouts
               </CardTitle>
               <DollarSign className="h-4 w-4 text-muted-foreground" />

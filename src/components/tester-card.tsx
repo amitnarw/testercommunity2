@@ -19,7 +19,7 @@ export default function TesterCard({ tester }: TesterCardProps) {
           <AvatarFallback>{tester.name.charAt(0)}</AvatarFallback>
         </Avatar>
         <div>
-          <CardTitle className="font-headline text-lg">{tester.name}</CardTitle>
+          <CardTitle className="text-lg">{tester.name}</CardTitle>
           <CardDescription className="flex items-center gap-1"><MapPin className="w-3 h-3"/>{tester.country}</CardDescription>
         </div>
       </CardHeader>

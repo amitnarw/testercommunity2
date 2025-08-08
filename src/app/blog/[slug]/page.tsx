@@ -58,7 +58,7 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
                         dangerouslySetInnerHTML={{ __html: post.content }}
                     />
                      <div className="mt-8 pt-8 border-t">
-                        <h3 className="font-headline text-xl font-semibold mb-4">Tags</h3>
+                        <h3 className="text-xl font-semibold mb-4 font-headline">Tags</h3>
                         <div className="flex flex-wrap gap-2">
                             {post.tags.map((tag) => (
                                 <Badge key={tag} variant="secondary" className="rounded-full">{tag}</Badge>
