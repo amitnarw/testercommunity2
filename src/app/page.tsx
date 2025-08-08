@@ -152,14 +152,13 @@ export default function Home() {
       <main className="flex-1">
         {/* Hero Section */}
         <section className="relative w-full py-24 md:py-32 lg:py-40 overflow-hidden">
-          <div className="absolute inset-x-0 top-0 h-full bg-gradient-to-b from-primary/30 to-transparent blur-3xl -z-10" />
           <div className="container mx-auto px-4 md:px-6 text-center relative z-10">
             <div className="max-w-4xl mx-auto">
               <Badge variant="outline" className="text-sm border-primary/30 bg-primary/10 text-primary py-1 px-4 rounded-full">
                 Now in Public Beta
               </Badge>
               <h1 className="font-body text-4xl md:text-5xl lg:text-7xl font-extrabold mt-4">
-                Get Your App <span className="text-primary">Tested & Published</span> Faster
+                Get Your App Tested & Published Faster
               </h1>
               <p className="mt-6 max-w-2xl mx-auto text-lg md:text-xl text-muted-foreground">
                 Get Google Play production access, faster, smoother, and without rejections. Join devs from 100+ countries using our service.
