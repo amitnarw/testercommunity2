@@ -63,10 +63,18 @@ export function ScrollingRibbon() {
                         <RibbonText />
                         <RibbonText />
                         <RibbonText />
+                        <RibbonText />
+                        <RibbonText />
+                        <RibbonText />
+                        <RibbonText />
                     </div>
                 </div>
                 <div className="flex whitespace-nowrap text-2xl md:text-3xl font-bold uppercase tracking-wider text-primary-foreground select-none bg-primary">
                     <div ref={ribbonRef2} className="flex my-6">
+                        <RibbonText />
+                        <RibbonText />
+                        <RibbonText />
+                        <RibbonText />
                         <RibbonText />
                         <RibbonText />
                         <RibbonText />
