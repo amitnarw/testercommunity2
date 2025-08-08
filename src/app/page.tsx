@@ -2,7 +2,7 @@
 'use client';
 
 import Link from 'next/link';
-import { ArrowRight, CheckCircle, ChevronRight, Bell, Flag, Zap, Users2, Smartphone, IndianRupee } from 'lucide-react';
+import { ArrowRight, BadgeCheck, ChevronRight, Bell, Flag, Zap, Users2, Smartphone, IndianRupee } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, FeatureCard } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -66,7 +66,7 @@ function PricingSection() {
                         Access dedicated, professional testers for your project. No subscriptions, just results.
                     </p>
                 </div>
-                <div className="mt-12 grid gap-8 md:grid-cols-2 items-center justify-center">
+                <div className="mt-12 grid gap-8 md:grid-cols-2 items-start justify-center">
                     {/* Pay-as-you-go Plan */}
                     <Card className="rounded-xl border border-border/50 hover:border-primary/50 transition-all duration-300 transform hover:-translate-y-1 hover:shadow-2xl hover:shadow-primary/20">
                         <CardHeader className="pt-8">
@@ -78,29 +78,33 @@ function PricingSection() {
                                 Pay-as-you-go
                             </div>
                             <ul className="space-y-3 text-sm text-muted-foreground">
-                                <li className="flex items-center gap-2">
-                                    <CheckCircle className="w-5 h-5 text-primary" />
-                                    <span>Hire testers by the hour</span>
+                                <li className="flex items-start gap-2">
+                                    <BadgeCheck className="w-5 h-5 text-primary flex-shrink-0 mt-1" />
+                                    <span>Hire testers by the hour for any duration.</span>
                                 </li>
-                                <li className="flex items-center gap-2">
-                                    <CheckCircle className="w-5 h-5 text-primary" />
-                                    <span>Access to the full marketplace</span>
+                                <li className="flex items-start gap-2">
+                                    <BadgeCheck className="w-5 h-5 text-primary flex-shrink-0 mt-1" />
+                                    <span>Access to the full marketplace of vetted professionals.</span>
                                 </li>
-                                <li className="flex items-center gap-2">
-                                    <CheckCircle className="w-5 h-5 text-primary" />
-                                    <span>Direct communication with testers</span>
+                                <li className="flex items-start gap-2">
+                                    <BadgeCheck className="w-5 h-5 text-primary flex-shrink-0 mt-1" />
+                                    <span>Direct communication and collaboration with testers.</span>
                                 </li>
-                                <li className="flex items-center gap-2">
-                                    <CheckCircle className="w-5 h-5 text-primary" />
-                                    <span>Secure payment processing</span>
+                                <li className="flex items-start gap-2">
+                                    <BadgeCheck className="w-5 h-5 text-primary flex-shrink-0 mt-1" />
+                                    <span>Secure and simple payment processing.</span>
                                 </li>
-                                 <li className="flex items-center gap-2">
-                                    <CheckCircle className="w-5 h-5 text-primary" />
-                                    <span>Detailed test reports</span>
+                                 <li className="flex items-start gap-2">
+                                    <BadgeCheck className="w-5 h-5 text-primary flex-shrink-0 mt-1" />
+                                    <span>Receive detailed and actionable test reports.</span>
                                 </li>
-                                 <li className="flex items-center gap-2">
-                                    <CheckCircle className="w-5 h-5 text-primary" />
-                                    <span>Flexible tester selection</span>
+                                 <li className="flex items-start gap-2">
+                                    <BadgeCheck className="w-5 h-5 text-primary flex-shrink-0 mt-1" />
+                                    <span>Flexible tester selection based on skills and experience.</span>
+                                </li>
+                                <li className="flex items-start gap-2">
+                                    <BadgeCheck className="w-5 h-5 text-primary flex-shrink-0 mt-1" />
+                                    <span>Ideal for quick bug hunts or usability checks.</span>
                                 </li>
                             </ul>
                         </CardContent>
@@ -122,33 +126,37 @@ function PricingSection() {
                                 <span className="text-muted-foreground">/ project</span>
                             </div>
                             <ul className="space-y-3 text-sm text-muted-foreground">
-                                <li className="flex items-center gap-2">
-                                    <CheckCircle className="w-5 h-5 text-primary" />
-                                    <span>Fixed price for the entire project</span>
+                                <li className="flex items-start gap-2">
+                                    <BadgeCheck className="w-5 h-5 text-primary flex-shrink-0 mt-1" />
+                                    <span>A fixed price for the entire project scope, no surprises.</span>
                                 </li>
-                                <li className="flex items-center gap-2">
-                                    <CheckCircle className="w-5 h-5 text-primary" />
-                                    <span>Dedicated project management</span>
+                                <li className="flex items-start gap-2">
+                                    <BadgeCheck className="w-5 h-5 text-primary flex-shrink-0 mt-1" />
+                                    <span>Dedicated project management and support.</span>
                                 </li>
-                                <li className="flex items-center gap-2">
-                                    <CheckCircle className="w-5 h-5 text-primary" />
-                                    <span>Milestone-based payments</span>
+                                <li className="flex items-start gap-2">
+                                    <BadgeCheck className="w-5 h-5 text-primary flex-shrink-0 mt-1" />
+                                    <span>Milestone-based payments for better budget control.</span>
                                 </li>
-                                 <li className="flex items-center gap-2">
-                                    <CheckCircle className="w-5 h-5 text-primary" />
-                                    <span>Guaranteed outcomes</span>
+                                 <li className="flex items-start gap-2">
+                                    <BadgeCheck className="w-5 h-5 text-primary flex-shrink-0 mt-1" />
+                                    <span>Guaranteed outcomes and deliverable-focused results.</span>
                                 </li>
-                                <li className="flex items-center gap-2">
-                                    <CheckCircle className="w-5 h-5 text-primary" />
-                                    <span>UPI, Cards & Netbanking supported</span>
+                                <li className="flex items-start gap-2">
+                                    <BadgeCheck className="w-5 h-5 text-primary flex-shrink-0 mt-1" />
+                                    <span>UPI, Cards & Netbanking supported for easy payments.</span>
                                 </li>
-                                 <li className="flex items-center gap-2">
-                                    <CheckCircle className="w-5 h-5 text-primary" />
-                                    <span>Comprehensive test planning</span>
+                                 <li className="flex items-start gap-2">
+                                    <BadgeCheck className="w-5 h-5 text-primary flex-shrink-0 mt-1" />
+                                    <span>Comprehensive test planning and strategy included.</span>
                                 </li>
-                                 <li className="flex items-center gap-2">
-                                    <CheckCircle className="w-5 h-5 text-primary" />
-                                    <span>Final QA sign-off report</span>
+                                 <li className="flex items-start gap-2">
+                                    <BadgeCheck className="w-5 h-5 text-primary flex-shrink-0 mt-1" />
+                                    <span>Final QA sign-off report for project completion.</span>
+                                </li>
+                                <li className="flex items-start gap-2">
+                                    <BadgeCheck className="w-5 h-5 text-primary flex-shrink-0 mt-1" />
+                                    <span>Perfect for full test cycles and pre-launch QA.</span>
                                 </li>
                             </ul>
                         </CardContent>
@@ -173,7 +181,7 @@ export default function Home() {
               <Badge variant="outline" className="text-sm border-primary/30 bg-primary/10 text-primary py-1 px-4 rounded-full">
                 Now in Public Beta
               </Badge>
-              <h1 className="font-body text-4xl md:text-5xl lg:text-6xl font-extrabold mt-4">
+              <h1 className="font-body text-4xl md:text-5xl font-extrabold mt-4">
                 Get Your App <span className="bg-gradient-to-br from-primary to-accent bg-clip-text text-transparent">Tested & Published</span> Faster
               </h1>
               <p className="mt-6 max-w-2xl mx-auto text-lg md:text-xl text-muted-foreground">
