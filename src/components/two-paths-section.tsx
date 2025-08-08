@@ -2,10 +2,8 @@
 'use client';
 
 import Link from 'next/link';
-import Image from 'next/image';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { CheckCircle } from 'lucide-react';
+import { CheckCircle, ArrowRight } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { cn } from '@/lib/utils';
 
@@ -31,7 +29,7 @@ const useIntersectionObserver = (options: IntersectionObserverInit) => {
 };
 
 const AnimatedDiv = ({ children, className, ...props }: React.HTMLAttributes<HTMLDivElement>) => {
-    const [ref, entry] = useIntersectionObserver({ threshold: 0.1 });
+    const [ref, entry] = useIntersectionObserver({ threshold: 0.1, triggerOnce: true });
     const isVisible = entry?.isIntersecting;
 
     return (
@@ -39,7 +37,7 @@ const AnimatedDiv = ({ children, className, ...props }: React.HTMLAttributes<HTM
             ref={ref}
             className={cn(
                 'transition-opacity duration-1000',
-                isVisible ? 'animate-fade-in-up' : 'opacity-0',
+                isVisible ? 'opacity-100' : 'opacity-0',
                 className
             )}
             {...props}
@@ -51,62 +49,49 @@ const AnimatedDiv = ({ children, className, ...props }: React.HTMLAttributes<HTM
 
 export function TwoPathsSection() {
     return (
-        <section className="py-20 md:py-28 overflow-hidden">
+        <section className="py-20 md:py-28 bg-background">
             <div className="container mx-auto px-4 md:px-6">
-                <AnimatedDiv className="text-center max-w-3xl mx-auto">
+                <AnimatedDiv className="text-center max-w-3xl mx-auto mb-16">
                     <h2 className="text-3xl md:text-4xl font-bold">Two Paths to Perfect Testing</h2>
                     <p className="mt-4 text-muted-foreground">
                         Whether you want to harness the power of community or hire dedicated professionals, we've got you covered.
                     </p>
                 </AnimatedDiv>
-
-                <div className="mt-16 grid md:grid-cols-2 gap-16 items-start">
-                    <div className="md:sticky md:top-24">
-                        <AnimatedDiv>
-                            <div className="relative aspect-square">
-                                <Image 
-                                    src="https://images.unsplash.com/photo-1556742502-ec7c0e9f34b1?q=80&w=800&auto=format&fit=crop" 
-                                    alt="Community testing dashboard" 
-                                    layout="fill" 
-                                    objectFit="cover" 
-                                    className="rounded-2xl shadow-2xl shadow-primary/10"
-                                    data-ai-hint="collaboration interface"
-                                />
+                
+                <div className="grid md:grid-cols-2 gap-8">
+                    {/* Path 1: Community */}
+                    <Link href="/signup" className="group relative block rounded-2xl overflow-hidden shadow-2xl shadow-primary/10">
+                        <div 
+                            className="absolute inset-0 bg-cover bg-center transition-transform duration-500 ease-in-out group-hover:scale-105"
+                            style={{ backgroundImage: "url('https://images.unsplash.com/photo-1556742502-ec7c0e9f34b1?q=80&w=800&auto=format&fit=crop')" }}
+                            data-ai-hint="collaboration interface"
+                        ></div>
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/50 to-transparent"></div>
+                        <div className="relative flex flex-col justify-end h-[500px] p-8 text-white">
+                            <h3 className="text-3xl font-bold mb-2">Test Apps, Earn Rewards</h3>
+                            <p className="text-white/80 mb-6">Join our reciprocal ecosystem. Test community apps to earn points, then use those points to get your own apps tested.</p>
+                             <div className="flex items-center gap-2 text-lg font-semibold text-primary opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                Join the Community <ArrowRight className="w-5 h-5" />
                             </div>
-                        </AnimatedDiv>
-                    </div>
-                    <div className="space-y-24">
-                         <AnimatedDiv className="space-y-6 bg-background/50 p-8 rounded-xl backdrop-blur-sm">
-                            <Badge variant="secondary">Community-Powered</Badge>
-                            <h3 className="text-3xl font-bold">Test Apps, Earn Rewards</h3>
-                            <p className="text-muted-foreground">
-                                Join a reciprocal ecosystem where you test community-submitted apps to earn points. Redeem those points to get your own apps tested by professionals. It's a powerful way to get valuable feedback while contributing to the community.
-                            </p>
-                            <ul className="space-y-3 text-left">
-                                <li className="flex items-start gap-3"><CheckCircle className="w-5 h-5 text-primary mt-1 flex-shrink-0" /><span>Test community apps to earn points.</span></li>
-                                <li className="flex items-start gap-3"><CheckCircle className="w-5 h-5 text-primary mt-1 flex-shrink-0" /><span>Submit your own apps for in-depth testing.</span></li>
-                                <li className="flex items-start gap-3"><CheckCircle className="w-5 h-5 text-primary mt-1 flex-shrink-0" /><span>Use points to hire individual expert testers.</span></li>
-                            </ul>
-                            <Button asChild className="rounded-xl">
-                                <Link href="/signup">Join the Community</Link>
-                            </Button>
-                        </AnimatedDiv>
-                         <AnimatedDiv className="space-y-6 bg-background/50 p-8 rounded-xl backdrop-blur-sm">
-                            <Badge>Paid Service</Badge>
-                            <h3 className="text-3xl font-bold">Hire Dedicated Professionals</h3>
-                            <p className="text-muted-foreground">
-                                Need guaranteed, expert-level testing for your critical projects? Browse our marketplace of vetted professional testers and hire them on an hourly or project basis. This is a straightforward, paid service with no free trials.
-                            </p>
-                            <ul className="space-y-3 text-left">
-                                <li className="flex items-start gap-3"><CheckCircle className="w-5 h-5 text-primary mt-1 flex-shrink-0" /><span>Purely a paid service for guaranteed results.</span></li>
-                                <li className="flex items-start gap-3"><CheckCircle className="w-5 h-5 text-primary mt-1 flex-shrink-0" /><span>No free or trial plans available.</span></li>
-                                <li className="flex items-start gap-3"><CheckCircle className="w-5 h-5 text-primary mt-1 flex-shrink-0" /><span>Access top-tier, vetted talent on-demand.</span></li>
-                            </ul>
-                            <Button asChild variant="outline" className="rounded-xl">
-                                <Link href="/marketplace">Browse Testers</Link>
-                            </Button>
-                        </AnimatedDiv>
-                    </div>
+                        </div>
+                    </Link>
+
+                    {/* Path 2: Paid */}
+                    <Link href="/marketplace" className="group relative block rounded-2xl overflow-hidden shadow-2xl shadow-primary/10">
+                        <div 
+                           className="absolute inset-0 bg-cover bg-center transition-transform duration-500 ease-in-out group-hover:scale-105"
+                           style={{ backgroundImage: "url('https://images.unsplash.com/photo-1521791136064-7986c2920216?q=80&w=800&auto=format&fit=crop')" }}
+                           data-ai-hint="professional meeting"
+                        ></div>
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/50 to-transparent"></div>
+                        <div className="relative flex flex-col justify-end h-[500px] p-8 text-white">
+                            <h3 className="text-3xl font-bold mb-2">Hire Professionals</h3>
+                            <p className="text-white/80 mb-6">Need guaranteed results? Browse our marketplace of vetted professional testers and hire them for your critical projects.</p>
+                            <div className="flex items-center gap-2 text-lg font-semibold text-primary opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                Browse Testers <ArrowRight className="w-5 h-5" />
+                            </div>
+                        </div>
+                    </Link>
                 </div>
             </div>
         </section>
