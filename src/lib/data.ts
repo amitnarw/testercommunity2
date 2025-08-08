@@ -1,4 +1,4 @@
-import type { Tester, BlogPost } from './types';
+import type { Tester, BlogPost, Testimonial } from './types';
 
 export const testers: Tester[] = [
   {
@@ -148,5 +148,43 @@ export const blogPosts: BlogPost[] = [
     imageUrl: 'https://images.unsplash.com/photo-1555949963-ff9fe0c870eb?q=80&w=600&auto=format&fit=crop',
     dataAiHint: 'cyber security',
     tags: ['Security', 'Mobile', 'Checklist'],
+  },
+];
+
+export const testimonials: Testimonial[] = [
+  {
+    name: 'Sarah Jennings',
+    role: 'Lead Developer, TechNova',
+    avatar: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?q=80&w=400&auto=format&fit=crop',
+    dataAiHint: 'woman portrait',
+    comment: 'TestTribe has revolutionized our QA process. The real-time feedback and detailed reports are game-changers. The platform isn\'t just functional, it\'s a joy to use!',
+  },
+  {
+    name: 'Mike Valerio',
+    role: 'Indie Game Developer',
+    avatar: 'https://images.unsplash.com/photo-1564564321837-a57b7070ac4f?q=80&w=400&auto=format&fit=crop',
+    dataAiHint: 'man smiling',
+    comment: 'Finding the right testers used to be a nightmare. The gamified marketplace made it fun and easy to connect with experienced, reliable people. My app is better for it.',
+  },
+  {
+    name: 'Chen Lin',
+    role: 'Product Manager, Innovate Inc.',
+    avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=400&auto=format&fit=crop',
+    dataAiHint: 'person glasses',
+    comment: 'The dashboards are incredible. Being able to visualize our testing data with such clarity and beauty has helped us identify critical issues faster than ever before.',
+  },
+  {
+    name: 'David Kim',
+    role: 'QA Engineer, GameSphere',
+    avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=400&auto=format&fit=crop',
+    dataAiHint: 'man portrait',
+    comment: 'As a tester, the gamified reputation system is fantastic. It motivates me to do my best work and get recognized for it. I\'ve gotten more high-quality projects through TestTribe than any other platform.',
+  },
+  {
+    name: 'Maria Garcia',
+    role: 'Mobile App Developer',
+    avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=400&auto=format&fit=crop',
+    dataAiHint: 'woman developer',
+    comment: 'The community aspect is what sets TestTribe apart. It\'s not just a service; it\'s a network of professionals passionate about quality. The collaboration tools are excellent.',
   },
 ];

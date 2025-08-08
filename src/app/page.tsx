@@ -8,13 +8,13 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Progress } from '@/components/ui/progress';
 import { TestTribeLogo, GoldBadge, SilverBadge, BronzeBadge } from '@/components/icons';
-import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel';
 import Image from "next/image";
 import { ScrollToTopButton } from '@/components/scroll-to-top-button';
-import { Autoplay } from '@/components/carousel-autoplay';
 import { ScrollingRibbon } from '@/components/scrolling-ribbon';
-import React, { useRef, useState } from 'react';
+import React from 'react';
 import { cn } from '@/lib/utils';
+import { testimonials } from '@/lib/data';
+import { TestimonialScroller } from '@/components/testimonial-scroller';
 
 const features = [
   {
@@ -36,44 +36,6 @@ const features = [
     title: 'Seamless Bug Reporting',
     description: 'An intuitive and animated bug reporting experience that testers will love.',
     link: '/',
-  },
-];
-
-const testimonials = [
-  {
-    name: 'Sarah Jennings',
-    role: 'Lead Developer, TechNova',
-    avatar: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?q=80&w=400&auto=format&fit=crop',
-    dataAiHint: 'woman portrait',
-    comment: 'TestTribe has revolutionized our QA process. The real-time feedback and detailed reports are game-changers. The platform isn\'t just functional, it\'s a joy to use!',
-  },
-  {
-    name: 'Mike Valerio',
-    role: 'Indie Game Developer',
-    avatar: 'https://images.unsplash.com/photo-1564564321837-a57b7070ac4f?q=80&w=400&auto=format&fit=crop',
-    dataAiHint: 'man smiling',
-    comment: 'Finding the right testers used to be a nightmare. The gamified marketplace made it fun and easy to connect with experienced, reliable people. My app is better for it.',
-  },
-  {
-    name: 'Chen Lin',
-    role: 'Product Manager, Innovate Inc.',
-    avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=400&auto=format&fit=crop',
-    dataAiHint: 'person glasses',
-    comment: 'The dashboards are incredible. Being able to visualize our testing data with such clarity and beauty has helped us identify critical issues faster than ever before.',
-  },
-  {
-    name: 'David Kim',
-    role: 'QA Engineer, GameSphere',
-    avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=400&auto=format&fit=crop',
-    dataAiHint: 'man portrait',
-    comment: 'As a tester, the gamified reputation system is fantastic. It motivates me to do my best work and get recognized for it. I\'ve gotten more high-quality projects through TestTribe than any other platform.',
-  },
-  {
-    name: 'Maria Garcia',
-    role: 'Mobile App Developer',
-    avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=400&auto=format&fit=crop',
-    dataAiHint: 'woman developer',
-    comment: 'The community aspect is what sets TestTribe apart. It\'s not just a service; it\'s a network of professionals passionate about quality. The collaboration tools are excellent.',
   },
 ];
 
@@ -331,7 +293,7 @@ export default function Home() {
         </section>
 
         {/* Testimonials Section */}
-        <section className="py-20 md:py-28 overflow-hidden">
+        <section className="py-20 md:py-28">
           <div className="container mx-auto px-4 md:px-6">
             <div className="text-center">
               <h2 className="font-headline text-3xl md:text-4xl font-bold">Trusted by a Community of Innovators</h2>
@@ -339,37 +301,9 @@ export default function Home() {
                 See what developers and testers are saying about TestTribe.
               </p>
             </div>
-            <Carousel
-              className="mt-12 w-full"
-              opts={{ loop: true, align: 'start' }}
-              plugins={[Autoplay({ delay: 3000, stopOnInteraction: false, stopOnMouseEnter: false })]}
-            >
-              <CarouselContent className="-ml-4">
-                {testimonials.map((testimonial, index) => (
-                  <CarouselItem key={index} className="pl-4 md:basis-1/2 lg:basis-1/3">
-                    <div className="p-1 h-full">
-                      <Card className="flex flex-col justify-between h-full bg-card rounded-xl">
-                        <CardHeader>
-                          <div className="flex items-center gap-4">
-                            <Avatar>
-                              <AvatarImage src={testimonial.avatar} data-ai-hint={testimonial.dataAiHint} />
-                              <AvatarFallback>{testimonial.name.charAt(0)}</AvatarFallback>
-                            </Avatar>
-                            <div>
-                              <CardTitle className="text-base">{testimonial.name}</CardTitle>
-                              <CardDescription>{testimonial.role}</CardDescription>
-                            </div>
-                          </div>
-                        </CardHeader>
-                        <CardContent>
-                          <p className="text-muted-foreground">&ldquo;{testimonial.comment}&rdquo;</p>
-                        </CardContent>
-                      </Card>
-                    </div>
-                  </CarouselItem>
-                ))}
-              </CarouselContent>
-            </Carousel>
+          </div>
+          <div className="mt-12">
+            <TestimonialScroller testimonials={testimonials} />
           </div>
         </section>
         
