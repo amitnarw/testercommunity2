@@ -1,3 +1,4 @@
+
 'use client';
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -11,7 +12,7 @@ interface TestimonialCardProps {
 
 function TestimonialCard({ testimonial }: TestimonialCardProps) {
   return (
-    <Card className="flex flex-col justify-between bg-card rounded-xl shadow-md w-[350px] mx-4 flex-shrink-0">
+    <Card className="flex flex-col justify-between bg-card rounded-xl w-[350px] mx-4 flex-shrink-0">
       <CardHeader>
         <div className="flex items-center gap-4">
           <Avatar>
