@@ -102,11 +102,6 @@ export function GlobalImpactSection() {
                     initial="hidden"
                     animate={isInView ? "visible" : "hidden"}
                 >
-                    <motion.div variants={itemVariants}>
-                        <Badge variant="outline" className="text-sm border-primary/30 bg-primary/10 text-primary py-1 px-4 rounded-full">
-                           A Small Price, A Giant Leap
-                        </Badge>
-                    </motion.div>
                     <motion.h2 
                         variants={itemVariants}
                         className="text-3xl md:text-5xl font-bold mt-4"
@@ -122,7 +117,7 @@ export function GlobalImpactSection() {
                 </motion.div>
 
                 <motion.div 
-                    className="mt-16 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 max-w-5xl mx-auto"
+                    className="mt-16 grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto"
                     variants={containerVariants}
                     initial="hidden"
                     animate={isInView ? "visible" : "hidden"}
@@ -131,14 +126,18 @@ export function GlobalImpactSection() {
                        <motion.div 
                             key={i}
                             variants={itemVariants}
-                            className="text-center bg-background/50 backdrop-blur-sm p-6 rounded-2xl border border-white/10"
+                            className="bg-background/30 backdrop-blur-lg p-6 rounded-2xl border border-white/10 flex items-center gap-6"
                         >
-                           <div className="flex justify-center text-primary mb-4">{stat.icon}</div>
-                           <p className="text-4xl md:text-5xl font-bold text-primary">
-                               {stat.value > 100000 ? stat.value/1000000 + stat.suffix : <AnimatedCounter to={stat.value} />}
-                               {stat.value < 100000 && stat.suffix}
-                           </p>
-                           <p className="text-muted-foreground mt-2">{stat.label}</p>
+                           <div className="flex-shrink-0 bg-primary/10 text-primary rounded-full p-4">
+                            {stat.icon}
+                           </div>
+                           <div className="text-left">
+                               <p className="text-4xl md:text-5xl font-bold text-primary">
+                                   {stat.value > 100000 ? stat.value/1000000 + stat.suffix : <AnimatedCounter to={stat.value} />}
+                                   {stat.value < 100000 && stat.suffix}
+                               </p>
+                               <p className="text-muted-foreground mt-1">{stat.label}</p>
+                           </div>
                        </motion.div>
                    ))}
                 </motion.div>
