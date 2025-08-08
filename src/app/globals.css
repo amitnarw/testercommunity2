@@ -4,30 +4,30 @@
 
 @layer base {
   :root {
-    --background: 240 2% 96%; /* Light Grey: #F0F0F0 */
-    --foreground: 224 71.4% 4.1%;
-    --card: 240 2% 96%;
-    --card-foreground: 224 71.4% 4.1%;
-    --popover: 240 2% 96%;
-    --popover-foreground: 224 71.4% 4.1%;
-    --primary: 73 89% 53%; /* Lime Green: #C9F31D */
-    --primary-foreground: 224 71.4% 4.1%; /* Dark text for contrast */
+    --background: 48 33% 94%; /* Lightest Beige: #EFEBE0 */
+    --foreground: 40 11% 25%; /* Dark brown for text */
+    --card: 48 33% 94%;
+    --card-foreground: 40 11% 25%;
+    --popover: 48 33% 94%;
+    --popover-foreground: 40 11% 25%;
+    --primary: 49 29% 86%; /* Light Beige: #DAD4BB */
+    --primary-foreground: 40 11% 25%; /* Dark text for contrast */
     --secondary: 220 14.3% 95.9%;
     --secondary-foreground: 222.9 47.4% 11.2%;
     --muted: 220 14.3% 95.9%;
     --muted-foreground: 220 8.9% 46.1%;
-    --accent: 93 100% 54%; /* Neon Green: #39FF14 */
-    --accent-foreground: 222.9 47.4% 11.2%;
+    --accent: 50 20% 75%; /* Medium Beige: #BFB89E */
+    --accent-foreground: 40 11% 25%;
     --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
     --border: 220 13% 91%;
     --input: 220 13% 91%;
-    --ring: 73 89% 53%;
+    --ring: 49 29% 86%;
     --radius: 0.75rem;
-    --chart-1: 73 89% 53%;
-    --chart-2: 93 100% 54%;
-    --chart-3: 180 100% 50%;
-    --chart-4: 328 97% 59%;
+    --chart-1: 49 29% 86%;
+    --chart-2: 50 20% 75%;
+    --chart-3: 51 14% 56%;
+    --chart-4: 40 11% 25%;
     --chart-5: 48 96% 50%;
   }
 
@@ -38,22 +38,22 @@
     --card-foreground: 210 40% 98%;
     --popover: 222.9 10% 3%;
     --popover-foreground: 210 40% 98%;
-    --primary: 73 89% 53%; /* Lime Green: #C9F31D */
-    --primary-foreground: 224 71.4% 4.1%;
+    --primary: 49 29% 86%; /* Light Beige */
+    --primary-foreground: 40 11% 25%;
     --secondary: 217.2 32.6% 17.5%;
     --secondary-foreground: 210 40% 98%;
     --muted: 217.2 32.6% 17.5%;
     --muted-foreground: 215 20.2% 65.1%;
-    --accent: 74 92% 55%; /* Neon Green */
-    --accent-foreground: 222.9 47.4% 11.2%;
+    --accent: 50 20% 75%; /* Medium Beige */
+    --accent-foreground: 40 11% 25%;
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 210 40% 98%;
     --border: 217.2 32.6% 17.5%;
     --input: 217.2 32.6% 17.5%;
-    --ring: 73 89% 53%;
-    --chart-1: 73 89% 53%;
-    --chart-2: 74 92% 55%;
-    --chart-3: 180 100% 50%;
+    --ring: 49 29% 86%;
+    --chart-1: 49 29% 86%;
+    --chart-2: 50 20% 75%;
+    --chart-3: 51 14% 56%;
     --chart-4: 0 72% 51%;
     --chart-5: 328 97% 59%;
   }
