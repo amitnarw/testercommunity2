@@ -229,7 +229,7 @@ export default function Home() {
                 Get Your App <span className="text-primary">Tested & Published</span> Faster
               </h1>
               <p className="mt-6 max-w-2xl mx-auto text-lg md:text-xl text-muted-foreground">
-                TestTribe is a next-generation platform that connects developers with expert testers through a dynamic, gamified, and visually stunning experience.
+                Get Google Play production access, faster, smoother, and without rejections. Join devs from 100+ countries using our service.
               </p>
               <div className="mt-8 flex flex-col sm:flex-row justify-center gap-4">
                 <Button asChild size="lg" className="font-bold rounded-xl">
