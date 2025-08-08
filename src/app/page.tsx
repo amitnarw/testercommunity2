@@ -157,7 +157,7 @@ export default function Home() {
               <Badge variant="outline" className="text-sm border-primary/30 bg-primary/10 text-primary py-1 px-4 rounded-full">
                 Now in Public Beta
               </Badge>
-              <h1 className="font-body text-4xl md:text-5xl lg:text-7xl font-extrabold mt-4">
+              <h1 className="font-body text-4xl md:text-5xl lg:text-6xl font-extrabold mt-4">
                 Get Your App <span className="bg-gradient-to-br from-primary to-accent bg-clip-text text-transparent">Tested & Published</span> Faster
               </h1>
               <p className="mt-6 max-w-2xl mx-auto text-lg md:text-xl text-muted-foreground">
