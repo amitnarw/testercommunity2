@@ -13,6 +13,7 @@ import React from 'react';
 import { testimonials } from '@/lib/data';
 import { TestimonialScroller } from '@/components/testimonial-scroller';
 import { TwoPathsSection } from '@/components/two-paths-section';
+import { GlobalImpactSection } from '@/components/global-impact-section';
 
 const features = [
   {
@@ -163,7 +164,7 @@ export default function Home() {
                 Get Google Play production access, faster, smoother, and without rejections. Join devs from 100+ countries using our service.
               </p>
               <div className="mt-8 flex flex-col sm:flex-row justify-center gap-4">
-                <Button asChild size="lg" className="font-bold rounded-xl hover:shadow-primary/30">
+                <Button asChild size="lg" className="font-bold rounded-xl hover:shadow-lg hover:shadow-primary/30">
                   <Link href="/signup">Get Started for Free <ArrowRight className="ml-2" /></Link>
                 </Button>
                 <Button asChild size="lg" variant="outline" className="font-bold rounded-xl">
@@ -173,6 +174,9 @@ export default function Home() {
             </div>
           </div>
         </section>
+
+        {/* Global Impact Section */}
+        <GlobalImpactSection />
 
         {/* Features Section */}
         <section className="py-20 md:py-28 bg-background">
@@ -187,7 +191,7 @@ export default function Home() {
               {features.map((feature, i) => (
                 <FeatureCard key={feature.title}>
                   <CardHeader>
-                    <CardTitle>{feature.title}</CardTitle>
+                    <CardTitle className="text-lg bg-gradient-to-br from-primary to-accent bg-clip-text text-transparent">{feature.title}</CardTitle>
                   </CardHeader>
                   <CardContent>
                     <p className="text-muted-foreground">{feature.description}</p>
@@ -265,7 +269,7 @@ export default function Home() {
               Join the community and experience the future of app testing today. It's free to get started.
             </p>
             <div className="mt-8">
-              <Button asChild size="lg" className="font-bold text-lg px-8 py-6 rounded-xl hover:shadow-primary/30">
+              <Button asChild size="lg" className="font-bold text-lg px-8 py-6 rounded-xl hover:shadow-lg hover:shadow-primary/30">
                 <Link href="/signup">Sign Up Now <ArrowRight className="ml-2" /></Link>
               </Button>
             </div>
@@ -276,5 +280,3 @@ export default function Home() {
     </div>
   );
 }
-
-    
