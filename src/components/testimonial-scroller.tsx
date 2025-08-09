@@ -1,7 +1,7 @@
 
 'use client';
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import type { Testimonial } from '@/lib/types';
 import { cn } from '@/lib/utils';
@@ -12,22 +12,22 @@ interface TestimonialCardProps {
 
 function TestimonialCard({ testimonial }: TestimonialCardProps) {
   return (
-    <Card className="flex flex-col justify-between bg-card rounded-xl w-[350px] mx-4 flex-shrink-0">
-      <CardHeader>
-        <div className="flex items-center gap-4">
-          <Avatar>
-            <AvatarImage src={testimonial.avatar} data-ai-hint={testimonial.dataAiHint} />
-            <AvatarFallback>{testimonial.name.charAt(0)}</AvatarFallback>
-          </Avatar>
-          <div>
-            <CardTitle className="text-base">{testimonial.name}</CardTitle>
-            <CardDescription>{testimonial.role}</CardDescription>
-          </div>
-        </div>
-      </CardHeader>
-      <CardContent>
-        <p className="text-muted-foreground">&ldquo;{testimonial.comment}&rdquo;</p>
-      </CardContent>
+    <Card className="flex flex-col justify-between bg-foreground text-background rounded-xl w-[350px] mx-4 flex-shrink-0 overflow-hidden">
+        <CardContent className="p-6">
+            <p className="text-background/80">&ldquo;{testimonial.comment}&rdquo;</p>
+        </CardContent>
+        <CardFooter className="bg-background text-foreground p-4">
+             <div className="flex items-center gap-4">
+                <Avatar>
+                    <AvatarImage src={testimonial.avatar} data-ai-hint={testimonial.dataAiHint} />
+                    <AvatarFallback>{testimonial.name.charAt(0)}</AvatarFallback>
+                </Avatar>
+                <div>
+                    <p className="text-base font-bold">{testimonial.name}</p>
+                    <p className="text-sm text-muted-foreground">{testimonial.role}</p>
+                </div>
+            </div>
+        </CardFooter>
     </Card>
   );
 }

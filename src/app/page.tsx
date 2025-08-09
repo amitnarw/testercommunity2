@@ -188,7 +188,7 @@ export default function Home() {
                                 <Badge variant="outline" className="text-sm border-primary/30 bg-primary/10 text-primary py-1 px-4 rounded-full">
                                     Now in Public Beta
                                 </Badge>
-                                <h1 className="font-body text-5xl md:text-7xl font-extrabold mt-4">
+                                <h1 className="font-body text-6xl md:text-8xl font-extrabold mt-4">
                                     Get Your App <span className="bg-gradient-to-br from-primary to-accent bg-clip-text text-transparent">Tested & Published</span> Faster
                                 </h1>
                                 <p className="mt-6 max-w-2xl mx-auto text-lg md:text-xl text-muted-foreground">
@@ -273,19 +273,6 @@ export default function Home() {
                         </div>
                     </section>
                 </div>
-
-                {/* Testimonial Design Showcase */}
-                 <section className="py-20 md:py-28 bg-secondary/50">
-                    <div className="container mx-auto px-4 md:px-6">
-                        <div className="text-center">
-                            <h2 className="text-3xl md:text-4xl font-bold">Choose a Testimonial Design</h2>
-                            <p className="mt-4 max-w-2xl mx-auto text-muted-foreground">
-                                Below are 5 different designs. Please review them and let me know which one you'd like to use.
-                            </p>
-                        </div>
-                        <TestimonialCardShowcase />
-                    </div>
-                </section>
 
                 {/* Testimonials Section */}
                 <section className="py-20 md:py-28">
