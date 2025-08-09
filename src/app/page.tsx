@@ -182,24 +182,24 @@ export default function Home() {
             <main className="flex-1">
                 <div className="lg:w-[80%] lg:mx-auto">
                     {/* Hero Section */}
-                    <section className="relative w-full py-24 md:py-32 lg:py-40 overflow-hidden">
+                    <section className="relative w-full py-12 sm:py-16 md:py-20 lg:py-28 overflow-hidden">
                         <div className="container mx-auto px-4 md:px-6 text-center relative z-10">
                             <div className="max-w-4xl mx-auto">
-                                <Badge variant="outline" className="text-sm border-primary/30 bg-primary/10 text-primary py-1 px-4 rounded-full">
+                                <Badge variant="outline" className="inline-flex items-center rounded-full border border-primary/20 bg-primary/5 px-3 py-1 text-xs sm:text-sm font-body text-primary mb-5 sm:mb-6">
                                     Now in Public Beta
                                 </Badge>
-                                <h1 className="font-body text-6xl md:text-8xl font-extrabold mt-4">
+                                <h1 className="text-[2.25rem] sm:text-[2.75rem] md:text-[3.5rem] lg:text-[4.25rem] font-heading leading-[1.1] tracking-tight font-bold mb-5 sm:mb-6 md:mb-8">
                                     Get Your App <span className="bg-gradient-to-br from-primary to-accent bg-clip-text text-transparent">Tested & Published</span> Faster
                                 </h1>
-                                <p className="mt-6 max-w-2xl mx-auto text-lg md:text-xl text-muted-foreground">
+                                <p className="text-sm sm:text-base md:text-lg font-body max-w-sm sm:max-w-md md:max-w-lg lg:max-w-[700px] mx-auto mb-8 sm:mb-9 md:mb-10 lg:mb-12 text-muted-foreground">
                                     Get Google Play production access, faster, smoother, and without rejections. Join devs from 100+ countries using our service.
                                 </p>
                                 <div className="mt-8 flex flex-col sm:flex-row justify-center gap-4">
                                     <Button asChild size="lg" className="font-bold rounded-xl hover:shadow-lg hover:shadow-primary/30">
-                                        <Link href="/signup">Get Started for Free <ArrowRight className="ml-2" /></Link>
+                                        <Link href="/signup">Start for Free <ArrowRight className="ml-2" /></Link>
                                     </Button>
                                     <Button asChild size="lg" variant="outline" className="font-bold rounded-xl">
-                                        <Link href="/marketplace">Explore Testers</Link>
+                                        <Link href="/marketplace">or Go Pro</Link>
                                     </Button>
                                 </div>
                             </div>
