@@ -6,11 +6,10 @@ import { usePathname } from 'next/navigation';
 import { TestTribeLogo } from './icons';
 import { Button } from './ui/button';
 import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle } from './ui/sheet';
-import { PanelRightOpen, ArrowRight, Sun, Moon } from 'lucide-react';
+import { Menu, ArrowRight, Sun, Moon } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useState, useEffect } from 'react';
 import { useTheme } from 'next-themes';
-import { AnimatedHamburgerButton } from './animated-hamburger-button';
 
 const navItems = [
   { name: 'Marketplace', href: '/marketplace' },
@@ -75,11 +74,14 @@ export function Header() {
           <div className="md:hidden">
             <Sheet open={isMenuOpen} onOpenChange={setMenuOpen}>
               <SheetTrigger asChild>
-                <AnimatedHamburgerButton isOpen={isMenuOpen} onClick={() => setMenuOpen(!isMenuOpen)} />
+                <Button variant="ghost" size="icon">
+                  <Menu className="h-6 w-6" />
+                  <span className="sr-only">Open menu</span>
+                </Button>
               </SheetTrigger>
               <SheetContent side="right">
-                <SheetHeader>
-                  <SheetTitle className="sr-only">Mobile Menu</SheetTitle>
+                <SheetHeader className="sr-only">
+                  <SheetTitle>Mobile Menu</SheetTitle>
                 </SheetHeader>
                 <div className="p-6">
                     <Link href="/" className="flex items-center gap-2 mb-8" onClick={() => setMenuOpen(false)}>
