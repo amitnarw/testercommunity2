@@ -107,19 +107,14 @@ export default {
           '0%': { transform: 'scale(1)' },
           '100%': { transform: 'scale(1.05)' },
         },
-        'glow': {
-          '0%, 100%': { boxShadow: '0 0 5px hsl(var(--primary))' },
-          '50%': { boxShadow: '0 0 20px hsl(var(--primary))' },
-        },
       },
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
         'scroll-ltr': 'scroll-ltr 20s linear infinite',
         'scroll-rtl': 'scroll-rtl 20s linear infinite',
-        'fade-in-up': 'fade-in-up 0.8s ease-out forwards',
+        'fade-in-up': 'fade-in-up 0.5s ease-out forwards',
         'image-zoom': 'image-zoom 0.5s ease-in-out forwards',
-        'glow': 'glow 2s ease-in-out infinite',
       },
        backgroundImage: {
         'dot-pattern': "radial-gradient(circle, hsl(var(--primary) / 0.1) 1px, transparent 1px)",
