@@ -52,7 +52,7 @@ const StatCard = ({ icon, title, children, className }: { icon: React.ReactNode,
             animate={isInView ? { opacity: 1, y: 0, scale: 1 } : {}}
             transition={{ duration: 0.5, ease: 'easeOut' }}
             className={cn(
-                "bg-background/50 backdrop-blur-lg rounded-2xl border border-primary/20 p-4 sm:p-6 shadow-lg",
+                "bg-background/50 backdrop-blur-lg rounded-2xl border border-primary/20 p-6 shadow-lg",
                 "flex flex-col",
                 className
             )}
@@ -63,7 +63,7 @@ const StatCard = ({ icon, title, children, className }: { icon: React.ReactNode,
                 </div>
                 <h3 className="font-bold text-lg">{title}</h3>
             </div>
-            <div className="flex-grow">
+            <div className="flex-grow space-y-2">
                 {children}
             </div>
         </motion.div>
@@ -101,60 +101,22 @@ export function GlobalImpactSection() {
                     </p>
                 </div>
 
-                <div className="mt-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 w-full max-w-6xl">
-                    <StatCard title="Global Reach" icon={<Globe className="w-6 h-6"/>} className="lg:col-span-1">
-                        <div className="space-y-3">
-                            <p className="text-3xl sm:text-4xl font-bold"><AnimatedCounter to={100} suffix="+" /></p>
-                            <p className="text-muted-foreground">Countries with active TestTribe members.</p>
-                             <div>
-                                <h4 className="font-semibold mb-2">Top Regions:</h4>
-                                <div className="flex flex-wrap gap-2">
-                                    <Badge variant="secondary">North America</Badge>
-                                    <Badge variant="secondary">Europe</Badge>
-                                    <Badge variant="secondary">Southeast Asia</Badge>
-                                    <Badge variant="secondary">India</Badge>
-                                </div>
-                            </div>
-                        </div>
+                <div className="mt-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8 w-full max-w-4xl">
+                    <StatCard title="A Thriving Community" icon={<Users className="w-6 h-6"/>}>
+                        <p className="text-3xl sm:text-4xl font-bold"><AnimatedCounter to={20000} suffix="+" /></p>
+                        <p className="text-muted-foreground">Vetted testers available across <span className="font-bold text-foreground">100+</span> countries.</p>
                     </StatCard>
-                     <StatCard title="Tester Community" icon={<Users className="w-6 h-6"/>} className="lg:col-span-2">
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                            <div>
-                                <p className="text-3xl sm:text-4xl font-bold"><AnimatedCounter to={20000} suffix="+" /></p>
-                                <p className="text-muted-foreground">Vetted testers on the platform.</p>
-                            </div>
-                            <div>
-                                <h4 className="font-semibold mb-2">Specialties:</h4>
-                                <ul className="space-y-2 text-sm text-muted-foreground">
-                                    <li className="flex items-center gap-2"><Palette className="w-4 h-4 text-primary" /> <span>UI/UX & Design Feedback</span></li>
-                                    <li className="flex items-center gap-2"><ShieldCheck className="w-4 h-4 text-primary" /> <span>Security & Penetration</span></li>
-                                    <li className="flex items-center gap-2"><TrendingUp className="w-4 h-4 text-primary" /> <span>Performance & Load</span></li>
-                                    <li className="flex items-center gap-2"><CheckCircle className="w-4 h-4 text-primary" /> <span>Functional & Regression</span></li>
-                                </ul>
-                            </div>
-                        </div>
+                    <StatCard title="Bugs Squashed" icon={<Bug className="w-6 h-6"/>}>
+                        <p className="text-3xl sm:text-4xl font-bold"><AnimatedCounter to={500000} suffix="+" /></p>
+                        <p className="text-muted-foreground">Bugs identified, including over <span className="font-bold text-foreground">1,200</span> critical security vulnerabilities.</p>
                     </StatCard>
-                    <StatCard title="Bugs Squashed" icon={<Bug className="w-6 h-6"/>} className="lg:col-span-2">
-                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                             <div>
-                                <p className="text-3xl sm:text-4xl font-bold"><AnimatedCounter to={500000} suffix="+" /></p>
-                                <p className="text-muted-foreground">Bugs identified and reported.</p>
-                            </div>
-                            <div>
-                                <h4 className="font-semibold mb-2">Impact:</h4>
-                                <ul className="space-y-2 text-sm text-muted-foreground">
-                                   <li className="flex items-center gap-2"><span className="font-bold text-foreground text-base">~1,200</span> Critical Vulnerabilities Patched</li>
-                                   <li className="flex items-center gap-2"><span className="font-bold text-foreground text-base">~8,500</span> High-Impact Usability Issues Fixed</li>
-                                </ul>
-                            </div>
-                        </div>
+                    <StatCard title="Projects Accelerated" icon={<TrendingUp className="w-6 h-6"/>}>
+                        <p className="text-3xl sm:text-4xl font-bold"><AnimatedCounter to={1000000} prefix="~" suffix="+" /></p>
+                        <p className="text-muted-foreground">Development hours saved, equivalent to <span className="font-bold text-foreground">114 years</span> of coding time.</p>
                     </StatCard>
-                    <StatCard title="Projects Accelerated" icon={<Code className="w-6 h-6"/>}>
-                        <div>
-                            <p className="text-3xl sm:text-4xl font-bold"><AnimatedCounter to={1000000} prefix="~" suffix="+" /></p>
-                            <p className="text-muted-foreground">Development hours saved for our clients.</p>
-                            <p className="mt-2 text-sm">Equivalent to <span className="font-bold text-foreground">114 years</span> of continuous development time.</p>
-                        </div>
+                    <StatCard title="Apps Improved" icon={<CheckCircle className="w-6 h-6"/>}>
+                        <p className="text-3xl sm:text-4xl font-bold"><AnimatedCounter to={8500} suffix="+" /></p>
+                        <p className="text-muted-foreground">High-impact usability issues fixed, leading to better user experiences.</p>
                     </StatCard>
                 </div>
             </div>
