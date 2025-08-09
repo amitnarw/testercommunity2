@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { TestTribeLogo } from './icons';
 import { Button } from './ui/button';
-import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle } from './ui/sheet';
+import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle, SheetClose } from './ui/sheet';
 import { Menu, ArrowRight, Sun, Moon, Twitter, Github, Linkedin } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useState, useEffect } from 'react';
@@ -80,6 +80,14 @@ export function Header() {
                 </Button>
               </SheetTrigger>
               <SheetContent side="top" className="flex flex-col items-center justify-center">
+                 <div className="absolute top-0 right-0 p-2 md:hidden">
+                    <SheetClose asChild>
+                        <Button size="icon" variant="outline">
+                            <Menu className="h-6 w-6" />
+                            <span className="sr-only">Close menu</span>
+                        </Button>
+                    </SheetClose>
+                </div>
                 <SheetHeader>
                   <SheetTitle className="sr-only">Mobile Menu</SheetTitle>
                 </SheetHeader>
