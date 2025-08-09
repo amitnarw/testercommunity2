@@ -103,47 +103,54 @@ export function GlobalImpactSection() {
                     </p>
                 </div>
 
-                <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-5xl">
-                    <StatCard title="A Thriving Community" icon={<Users className="w-6 h-6"/>} className="md:col-span-2 relative">
-                        <Image src="https://images.unsplash.com/photo-1521737852577-68489a391027?q=80&w=800&auto=format&fit=crop" layout="fill" objectFit="cover" alt="Community" className="absolute inset-0 opacity-20 group-hover:opacity-30 transition-opacity" data-ai-hint="collaboration team" />
+                <div className="mt-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full max-w-6xl">
+                    <StatCard title="A Thriving Community" icon={<Users className="w-6 h-6"/>} className="lg:col-span-2 relative group">
+                        <Image src="https://images.unsplash.com/photo-1521737852577-68489a391027?q=80&w=1200&auto=format&fit=crop" layout="fill" objectFit="cover" alt="Community" className="absolute inset-0 opacity-20 group-hover:opacity-30 transition-opacity duration-300" data-ai-hint="collaboration team" />
                          <div className="relative z-10">
-                            <p className="text-3xl sm:text-5xl font-bold"><AnimatedCounter to={20000} suffix="+" /></p>
+                            <p className="text-4xl sm:text-6xl font-bold"><AnimatedCounter to={20000} suffix="+" /></p>
                             <p className="text-muted-foreground mt-2">Vetted testers available across <span className="font-bold text-foreground">100+</span> countries.</p>
                         </div>
                     </StatCard>
-                    <StatCard title="Projects Accelerated" icon={<TrendingUp className="w-6 h-6"/>} className="bg-primary text-primary-foreground">
-                        <p className="text-3xl sm:text-4xl font-bold"><AnimatedCounter to={1000000} prefix="~" suffix="+" /></p>
+                     <StatCard title="Projects Accelerated" icon={<TrendingUp className="w-6 h-6"/>} className="bg-primary text-primary-foreground">
+                        <p className="text-4xl sm:text-5xl font-bold"><AnimatedCounter to={1000000} prefix="~" suffix="+" /></p>
                         <p className="text-primary-foreground/80">Development hours saved.</p>
                     </StatCard>
                      <StatCard title="Bugs Squashed" icon={<Bug className="w-6 h-6"/>} className="bg-primary text-primary-foreground">
-                        <p className="text-3xl sm:text-4xl font-bold"><AnimatedCounter to={500000} suffix="+" /></p>
+                        <p className="text-4xl sm:text-5xl font-bold"><AnimatedCounter to={500000} suffix="+" /></p>
                         <p className="text-primary-foreground/80">Bugs identified and resolved.</p>
                     </StatCard>
-                    <StatCard title="Value Delivered" className="md:col-span-1 md:row-span-2 p-0 flex flex-col">
-                        <div className="p-6 pb-0 flex-1">
+                    <StatCard title="Value Delivered" className="lg:row-span-2 p-0 flex flex-col">
+                        <div className="p-6 pb-4 flex-1">
                              <div className="flex items-center gap-3 mb-2 z-10">
                                 <div className="bg-primary/10 text-primary p-2 rounded-lg flex-shrink-0">
                                     <ShieldCheck className="w-6 h-6"/>
                                 </div>
                                 <h3 className="font-bold text-lg">Security First</h3>
                             </div>
-                            <p className="text-3xl sm:text-4xl font-bold"><AnimatedCounter to={1200} suffix="+" /></p>
+                            <p className="text-4xl sm:text-5xl font-bold"><AnimatedCounter to={1200} suffix="+" /></p>
                             <p className="text-muted-foreground">Critical vulnerabilities found.</p>
                         </div>
-                        <div className="border-t p-6 flex-1">
+                        <div className="border-t p-6 pt-4 flex-1">
                             <div className="flex items-center gap-3 mb-2 z-10">
                                 <div className="bg-primary/10 text-primary p-2 rounded-lg flex-shrink-0">
                                     <IndianRupee className="w-6 h-6"/>
                                 </div>
                                 <h3 className="font-bold text-lg">Tester Payouts</h3>
                             </div>
-                            <p className="text-3xl sm:text-4xl font-bold"><AnimatedCounter to={5000000} prefix="₹" /></p>
+                            <p className="text-4xl sm:text-5xl font-bold"><AnimatedCounter to={5000000} prefix="₹" /></p>
                             <p className="text-muted-foreground">Paid to our testing community.</p>
                         </div>
                     </StatCard>
-                     <StatCard title="Apps Improved" icon={<CheckCircle className="w-6 h-6"/>} className="md:col-span-1">
-                         <p className="text-3xl sm:text-4xl font-bold"><AnimatedCounter to={8500} suffix="+" /></p>
-                         <p className="text-muted-foreground">High-impact usability issues fixed.</p>
+                    <StatCard title="Developer Tools" icon={<Code className="w-6 h-6"/>} className="relative group">
+                        <Image src="https://images.unsplash.com/photo-1605379399642-870262d3d051?q=80&w=1200&auto=format&fit=crop" layout="fill" objectFit="cover" alt="Code on a screen" className="absolute inset-0 opacity-20 group-hover:opacity-30 transition-opacity duration-300" data-ai-hint="developer tools code" />
+                        <div className="relative z-10">
+                            <p className="text-4xl sm:text-5xl font-bold"><AnimatedCounter to={100} suffix="M+" /></p>
+                            <p className="text-muted-foreground mt-2">Lines of code analyzed.</p>
+                        </div>
+                    </StatCard>
+                     <StatCard title="Apps Improved" icon={<CheckCircle className="w-6 h-6"/>} className="lg:col-span-3">
+                         <p className="text-4xl sm:text-6xl font-bold"><AnimatedCounter to={8500} suffix="+" /></p>
+                         <p className="text-muted-foreground">Applications made better through our platform.</p>
                     </StatCard>
                 </div>
             </div>
