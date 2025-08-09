@@ -85,4 +85,46 @@
   .sliding-text-hover:hover::after {
     @apply translate-y-0;
   }
+
+  /* Animated Hamburger Button */
+  .hamburger-button {
+    @apply p-2 inline-flex items-center justify-center rounded-md transition-colors duration-300;
+  }
+
+  .hamburger-box {
+    @apply w-6 h-6 inline-block relative;
+  }
+
+  .hamburger-inner {
+    @apply block top-1/2 w-6 h-0.5 bg-current rounded-full;
+    transform: translateY(-50%);
+    transition: transform 0.2s ease-in-out, background-color 0.2s ease-in-out;
+  }
+
+  .hamburger-inner::before,
+  .hamburger-inner::after {
+    content: '';
+    @apply block w-6 h-0.5 bg-current rounded-full absolute;
+    transition: transform 0.2s ease-in-out;
+  }
+
+  .hamburger-inner::before {
+    transform: translateY(-8px);
+  }
+
+  .hamburger-inner::after {
+    transform: translateY(8px);
+  }
+
+  .hamburger-button.open .hamburger-inner {
+    @apply bg-transparent;
+  }
+
+  .hamburger-button.open .hamburger-inner::before {
+    transform: translateY(0) rotate(45deg);
+  }
+
+  .hamburger-button.open .hamburger-inner::after {
+    transform: translateY(0) rotate(-45deg);
+  }
 }

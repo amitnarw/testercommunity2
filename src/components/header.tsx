@@ -10,6 +10,7 @@ import { PanelRightOpen, ArrowRight, Sun, Moon } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useState, useEffect } from 'react';
 import { useTheme } from 'next-themes';
+import { AnimatedHamburgerButton } from './animated-hamburger-button';
 
 const navItems = [
   { name: 'Marketplace', href: '/marketplace' },
@@ -74,10 +75,7 @@ export function Header() {
           <div className="md:hidden">
             <Sheet open={isMenuOpen} onOpenChange={setMenuOpen}>
               <SheetTrigger asChild>
-                <Button variant="ghost" size="icon">
-                  <PanelRightOpen className="h-6 w-6" />
-                  <span className="sr-only">Open menu</span>
-                </Button>
+                <AnimatedHamburgerButton isOpen={isMenuOpen} onClick={() => setMenuOpen(!isMenuOpen)} />
               </SheetTrigger>
               <SheetContent side="right">
                 <SheetHeader>
