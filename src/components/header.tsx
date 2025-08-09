@@ -6,7 +6,7 @@ import { usePathname } from 'next/navigation';
 import { TestTribeLogo } from './icons';
 import { Button } from './ui/button';
 import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle } from './ui/sheet';
-import { Menu, ArrowRight, Sun, Moon } from 'lucide-react';
+import { Menu, ArrowRight, Sun, Moon, Twitter, Github, Linkedin } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useState, useEffect } from 'react';
 import { useTheme } from 'next-themes';
@@ -118,6 +118,17 @@ export function Header() {
                           <span className="sr-only">Toggle theme</span>
                         </Button>
                     </div>
+                </div>
+                 <div className="absolute bottom-8 left-8 flex items-center gap-2">
+                    <Button variant="ghost" size="icon" asChild>
+                        <Link href="#"><Twitter className="h-5 w-5" /></Link>
+                    </Button>
+                    <Button variant="ghost" size="icon" asChild>
+                        <Link href="#"><Github className="h-5 w-5" /></Link>
+                    </Button>
+                    <Button variant="ghost" size="icon" asChild>
+                        <Link href="#"><Linkedin className="h-5 w-5" /></Link>
+                    </Button>
                 </div>
               </SheetContent>
             </Sheet>
