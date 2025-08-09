@@ -12,11 +12,11 @@ interface TestimonialCardProps {
 
 function TestimonialCard({ testimonial }: TestimonialCardProps) {
   return (
-    <Card className="flex flex-col justify-between bg-gradient-to-br from-primary to-accent text-primary-foreground rounded-xl w-[350px] mx-4 flex-shrink-0 overflow-hidden">
+    <Card className="flex flex-col justify-between bg-gradient-to-br from-primary/10 to-accent/20 text-foreground rounded-xl w-[350px] mx-4 flex-shrink-0 overflow-hidden">
         <CardContent className="p-6">
-            <p className="text-primary-foreground/80">&ldquo;{testimonial.comment}&rdquo;</p>
+            <p className="text-muted-foreground">&ldquo;{testimonial.comment}&rdquo;</p>
         </CardContent>
-        <CardFooter className="bg-background text-foreground p-4">
+        <CardFooter className="bg-background/50 text-foreground p-4">
              <div className="flex items-center gap-4">
                 <Avatar>
                     <AvatarImage src={testimonial.avatar} data-ai-hint={testimonial.dataAiHint} />
