@@ -101,8 +101,8 @@ export function GlobalImpactSection() {
                     </p>
                 </div>
 
-                <div className="mt-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8 w-full max-w-4xl">
-                    <StatCard title="A Thriving Community" icon={<Users className="w-6 h-6"/>}>
+                <div className="mt-16 grid grid-cols-1 md:grid-cols-2 gap-8 w-full max-w-4xl">
+                    <StatCard title="A Thriving Community" icon={<Users className="w-6 h-6"/>} className="md:col-span-2">
                         <p className="text-3xl sm:text-4xl font-bold"><AnimatedCounter to={20000} suffix="+" /></p>
                         <p className="text-muted-foreground">Vetted testers available across <span className="font-bold text-foreground">100+</span> countries.</p>
                     </StatCard>
@@ -114,7 +114,7 @@ export function GlobalImpactSection() {
                         <p className="text-3xl sm:text-4xl font-bold"><AnimatedCounter to={1000000} prefix="~" suffix="+" /></p>
                         <p className="text-muted-foreground">Development hours saved, equivalent to <span className="font-bold text-foreground">114 years</span> of coding time.</p>
                     </StatCard>
-                    <StatCard title="Apps Improved" icon={<CheckCircle className="w-6 h-6"/>}>
+                    <StatCard title="Apps Improved" icon={<CheckCircle className="w-6 h-6"/>} className="md:col-span-2">
                         <p className="text-3xl sm:text-4xl font-bold"><AnimatedCounter to={8500} suffix="+" /></p>
                         <p className="text-muted-foreground">High-impact usability issues fixed, leading to better user experiences.</p>
                     </StatCard>
