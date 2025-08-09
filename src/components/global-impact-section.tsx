@@ -44,14 +44,14 @@ const AnimatedCounter = ({ to, suffix = '', prefix = '' }: { to: number; suffix?
 
 const StatCard = ({ icon, title, children, className, ...props }: { icon?: React.ReactNode, title: string, children: React.ReactNode, className?: string } & React.HTMLAttributes<HTMLDivElement>) => {
     const ref = useRef(null);
-    const isInView = useInView(ref, { once: true, amount: 0.2 });
+    const isInView = useInView(ref, { once: true, amount: 0.1 });
 
     return (
         <motion.div
             ref={ref}
-            initial={{ opacity: 0, y: 50, scale: 0.95 }}
-            animate={isInView ? { opacity: 1, y: 0, scale: 1 } : {}}
-            transition={{ duration: 0.5, ease: 'easeOut' }}
+            initial={{ opacity: 0, y: 40 }}
+            animate={isInView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.7, ease: 'easeOut' }}
             className={cn(
                 "bg-background/50 backdrop-blur-lg rounded-2xl border border-primary/20 p-6 shadow-lg relative overflow-hidden",
                 "flex flex-col",
@@ -59,13 +59,13 @@ const StatCard = ({ icon, title, children, className, ...props }: { icon?: React
             )}
             {...props}
         >
-            <div className="flex items-center gap-3 mb-2 z-10">
+             <div className="flex items-center gap-3 mb-3 z-10">
                 {icon && <div className="bg-primary/10 text-primary p-2 rounded-lg flex-shrink-0">
                     {icon}
                 </div>}
                 <h3 className="font-bold text-lg">{title}</h3>
             </div>
-            <div className="flex-grow space-y-2 z-10">
+            <div className="flex-grow flex flex-col justify-center z-10">
                 {children}
             </div>
         </motion.div>
@@ -103,23 +103,23 @@ export function GlobalImpactSection() {
                     </p>
                 </div>
 
-                <div className="mt-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 w-full max-w-6xl">
-                    <StatCard title="A Thriving Community" icon={<Users className="w-6 h-6"/>} className="lg:col-span-2 relative group">
+                <div className="mt-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-6 w-full max-w-6xl">
+                    <StatCard title="A Thriving Community" icon={<Users className="w-6 h-6"/>} className="lg:col-span-4 relative group">
                         <Image src="https://images.unsplash.com/photo-1521737852577-68489a391027?q=80&w=1200&auto=format&fit=crop" layout="fill" objectFit="cover" alt="Community" className="absolute inset-0 opacity-20 group-hover:opacity-30 transition-opacity duration-300" data-ai-hint="collaboration team" />
                          <div className="relative z-10">
                             <p className="text-4xl sm:text-6xl font-bold"><AnimatedCounter to={20000} suffix="+" /></p>
                             <p className="text-muted-foreground mt-2">Vetted testers available across <span className="font-bold text-foreground">100+</span> countries.</p>
                         </div>
                     </StatCard>
-                     <StatCard title="Projects Accelerated" icon={<TrendingUp className="w-6 h-6"/>} className="bg-primary text-primary-foreground">
-                        <p className="text-4xl sm:text-5xl font-bold"><AnimatedCounter to={1000000} prefix="~" suffix="+" /></p>
-                        <p className="text-primary-foreground/80">Development hours saved.</p>
-                    </StatCard>
-                     <StatCard title="Bugs Squashed" icon={<Bug className="w-6 h-6"/>} className="bg-primary text-primary-foreground">
+                    <StatCard title="Bugs Squashed" icon={<Bug className="w-6 h-6"/>} className="lg:col-span-2 bg-primary text-primary-foreground">
                         <p className="text-4xl sm:text-5xl font-bold"><AnimatedCounter to={500000} suffix="+" /></p>
                         <p className="text-primary-foreground/80">Bugs identified and resolved.</p>
                     </StatCard>
-                    <StatCard title="Value Delivered" className="lg:row-span-2 p-0 flex flex-col">
+                     <StatCard title="Projects Accelerated" icon={<TrendingUp className="w-6 h-6"/>} className="lg:col-span-2 bg-primary text-primary-foreground">
+                        <p className="text-4xl sm:text-5xl font-bold"><AnimatedCounter to={1000000} prefix="~" suffix="+" /></p>
+                        <p className="text-primary-foreground/80">Development hours saved.</p>
+                    </StatCard>
+                    <StatCard title="Value Delivered" className="lg:col-span-2 p-0 flex flex-col">
                         <div className="p-6 pb-4 flex-1">
                              <div className="flex items-center gap-3 mb-2 z-10">
                                 <div className="bg-primary/10 text-primary p-2 rounded-lg flex-shrink-0">
@@ -141,14 +141,14 @@ export function GlobalImpactSection() {
                             <p className="text-muted-foreground">Paid to our testing community.</p>
                         </div>
                     </StatCard>
-                    <StatCard title="Developer Tools" icon={<Code className="w-6 h-6"/>} className="relative group">
+                     <StatCard title="Developer Tools" icon={<Code className="w-6 h-6"/>} className="lg:col-span-2 relative group">
                         <Image src="https://images.unsplash.com/photo-1605379399642-870262d3d051?q=80&w=1200&auto=format&fit=crop" layout="fill" objectFit="cover" alt="Code on a screen" className="absolute inset-0 opacity-20 group-hover:opacity-30 transition-opacity duration-300" data-ai-hint="developer tools code" />
                         <div className="relative z-10">
                             <p className="text-4xl sm:text-5xl font-bold"><AnimatedCounter to={100} suffix="M+" /></p>
                             <p className="text-muted-foreground mt-2">Lines of code analyzed.</p>
                         </div>
                     </StatCard>
-                     <StatCard title="Apps Improved" icon={<CheckCircle className="w-6 h-6"/>} className="lg:col-span-3">
+                     <StatCard title="Apps Improved" icon={<CheckCircle className="w-6 h-6"/>} className="lg:col-span-6">
                          <p className="text-4xl sm:text-6xl font-bold"><AnimatedCounter to={8500} suffix="+" /></p>
                          <p className="text-muted-foreground">Applications made better through our platform.</p>
                     </StatCard>
