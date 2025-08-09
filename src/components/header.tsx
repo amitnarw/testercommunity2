@@ -82,7 +82,7 @@ export function Header() {
               <SheetContent side="top" className="flex flex-col items-center">
                  <div className="absolute top-4 right-4 md:hidden">
                     <SheetClose asChild>
-                        <Button size="icon" variant="outline">
+                        <Button size="icon" variant="outline" className='mr-4 mt-1'>
                             <X className="h-6 w-6" />
                             <span className="sr-only">Close menu</span>
                         </Button>
@@ -91,7 +91,7 @@ export function Header() {
                 <SheetHeader>
                   <SheetTitle className="sr-only">Mobile Menu</SheetTitle>
                 </SheetHeader>
-                <div className="p-6 pt-20">
+                <div className="p-6 pt-20 w-full">
                     <nav className="flex flex-col items-center text-center gap-8">
                         {navItems.map((item, index) => (
                         <Link

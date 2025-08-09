@@ -78,7 +78,7 @@ export function GlobalImpactSection() {
         target: sectionRef,
         offset: ['start end', 'end start']
     });
-    const rotate = useTransform(scrollYProgress, [0, 1], [0, 30]);
+    const rotate = useTransform(scrollYProgress, [0, 1], [0, 90]);
 
     return (
         <section ref={sectionRef} className="py-20 md:py-32 bg-secondary/50 relative overflow-hidden">
