@@ -218,7 +218,7 @@ export default function Home() {
                 {features.map((feature, i) => (
                     <FeatureCard key={feature.title}>
                     <CardHeader>
-                        <CardTitle className="text-lg text-primary">{feature.title}</CardTitle>
+                        <CardTitle className="text-lg text-white">{feature.title}</CardTitle>
                     </CardHeader>
                     <CardContent>
                         <p className="text-muted-foreground">{feature.description}</p>
@@ -310,3 +310,5 @@ export default function Home() {
     </div>
   );
 }
+
+    
