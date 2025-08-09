@@ -1,4 +1,5 @@
 
+
 'use client';
 
 import Link from 'next/link';
@@ -14,6 +15,7 @@ import { testimonials } from '@/lib/data';
 import { TestimonialScroller } from '@/components/testimonial-scroller';
 import { TwoPathsSection } from '@/components/two-paths-section';
 import { GlobalImpactSection } from '@/components/global-impact-section';
+import { TestimonialCardShowcase } from '@/components/testimonial-card-showcase';
 
 const features = [
     {
@@ -68,98 +70,102 @@ function PricingSection() {
                 </div>
                 <div className="mt-12 grid gap-8 md:grid-cols-2 items-start justify-center">
                     {/* Pay-as-you-go Plan */}
-                    <Card className="rounded-xl border border-border/50 hover:border-primary/50 transition-all duration-300 transform hover:-translate-y-1 hover:shadow-2xl hover:shadow-primary/20">
-                        <CardHeader className="pt-8">
-                            <CardTitle className="text-2xl">Hourly</CardTitle>
-                            <CardDescription>For flexible, on-demand testing needs.</CardDescription>
-                        </CardHeader>
-                        <CardContent className="space-y-6">
-                            <div className="text-4xl font-bold">
-                                Pay-as-you-go
-                            </div>
-                            <ul className="space-y-3 text-sm text-muted-foreground">
-                                <li className="flex items-start gap-2">
-                                    <BadgeCheck className="w-5 h-5 text-primary flex-shrink-0 mt-1" />
-                                    <span>Hire testers by the hour for any duration.</span>
-                                </li>
-                                <li className="flex items-start gap-2">
-                                    <BadgeCheck className="w-5 h-5 text-primary flex-shrink-0 mt-1" />
-                                    <span>Access to the full marketplace of vetted professionals.</span>
-                                </li>
-                                <li className="flex items-start gap-2">
-                                    <BadgeCheck className="w-5 h-5 text-primary flex-shrink-0 mt-1" />
-                                    <span>Direct communication and collaboration with testers.</span>
-                                </li>
-                                <li className="flex items-start gap-2">
-                                    <BadgeCheck className="w-5 h-5 text-primary flex-shrink-0 mt-1" />
-                                    <span>Secure and simple payment processing.</span>
-                                </li>
-                                <li className="flex items-start gap-2">
-                                    <BadgeCheck className="w-5 h-5 text-primary flex-shrink-0 mt-1" />
-                                    <span>Receive detailed and actionable test reports.</span>
-                                </li>
-                                <li className="flex items-start gap-2">
-                                    <BadgeCheck className="w-5 h-5 text-primary flex-shrink-0 mt-1" />
-                                    <span>Flexible tester selection based on skills and experience.</span>
-                                </li>
-                                <li className="flex items-start gap-2">
-                                    <BadgeCheck className="w-5 h-5 text-primary flex-shrink-0 mt-1" />
-                                    <span>Ideal for quick bug hunts or usability checks.</span>
-                                </li>
-                            </ul>
-                        </CardContent>
-                        <CardFooter>
+                    <Card className="rounded-xl border border-border/50 hover:border-primary/50 transition-all duration-300 transform hover:-translate-y-1 hover:shadow-2xl hover:shadow-primary/20 h-full flex flex-col items-center justify-between">
+                        <div>
+                            <CardHeader className="pt-8">
+                                <CardTitle className="text-2xl">Hourly</CardTitle>
+                                <CardDescription>For flexible, on-demand testing needs.</CardDescription>
+                            </CardHeader>
+                            <CardContent className="space-y-6">
+                                <div className="text-4xl font-bold">
+                                    Pay-as-you-go
+                                </div>
+                                <ul className="space-y-3 text-sm text-muted-foreground">
+                                    <li className="flex items-start gap-2">
+                                        <BadgeCheck className="w-5 h-5 text-primary flex-shrink-0 mt-1" />
+                                        <span>Hire testers by the hour for any duration.</span>
+                                    </li>
+                                    <li className="flex items-start gap-2">
+                                        <BadgeCheck className="w-5 h-5 text-primary flex-shrink-0 mt-1" />
+                                        <span>Access to the full marketplace of vetted professionals.</span>
+                                    </li>
+                                    <li className="flex items-start gap-2">
+                                        <BadgeCheck className="w-5 h-5 text-primary flex-shrink-0 mt-1" />
+                                        <span>Direct communication and collaboration with testers.</span>
+                                    </li>
+                                    <li className="flex items-start gap-2">
+                                        <BadgeCheck className="w-5 h-5 text-primary flex-shrink-0 mt-1" />
+                                        <span>Secure and simple payment processing.</span>
+                                    </li>
+                                    <li className="flex items-start gap-2">
+                                        <BadgeCheck className="w-5 h-5 text-primary flex-shrink-0 mt-1" />
+                                        <span>Receive detailed and actionable test reports.</span>
+                                    </li>
+                                    <li className="flex items-start gap-2">
+                                        <BadgeCheck className="w-5 h-5 text-primary flex-shrink-0 mt-1" />
+                                        <span>Flexible tester selection based on skills and experience.</span>
+                                    </li>
+                                    <li className="flex items-start gap-2">
+                                        <BadgeCheck className="w-5 h-5 text-primary flex-shrink-0 mt-1" />
+                                        <span>Ideal for quick bug hunts or usability checks.</span>
+                                    </li>
+                                </ul>
+                            </CardContent>
+                        </div>
+                        <CardFooter className='w-full'>
                             <Button variant="outline" className="w-full rounded-xl">Explore Marketplace</Button>
                         </CardFooter>
                     </Card>
 
                     {/* Project-based Plan */}
-                    <Card className="rounded-2xl border-2 border-primary shadow-2xl shadow-primary/20 relative">
+                    <Card className="rounded-2xl border-2 border-primary shadow-2xl shadow-primary/20 relative h-full">
                         <Badge variant="default" className="absolute -top-4 left-1/2 -translate-x-1/2">Best Value</Badge>
-                        <CardHeader className="pt-8">
-                            <CardTitle className="text-2xl">Project-Based</CardTitle>
-                            <CardDescription>For fixed-scope projects with clear deliverables.</CardDescription>
-                        </CardHeader>
-                        <CardContent className="space-y-6">
-                            <div className="flex items-baseline gap-2">
-                                <span className="text-4xl font-bold">₹999</span>
-                                <span className="text-muted-foreground">/ project</span>
-                            </div>
-                            <ul className="space-y-3 text-sm text-muted-foreground">
-                                <li className="flex items-start gap-2">
-                                    <BadgeCheck className="w-5 h-5 text-primary flex-shrink-0 mt-1" />
-                                    <span>A fixed price for the entire project scope, no surprises.</span>
-                                </li>
-                                <li className="flex items-start gap-2">
-                                    <BadgeCheck className="w-5 h-5 text-primary flex-shrink-0 mt-1" />
-                                    <span>Dedicated project management and support.</span>
-                                </li>
-                                <li className="flex items-start gap-2">
-                                    <BadgeCheck className="w-5 h-5 text-primary flex-shrink-0 mt-1" />
-                                    <span>Milestone-based payments for better budget control.</span>
-                                </li>
-                                <li className="flex items-start gap-2">
-                                    <BadgeCheck className="w-5 h-5 text-primary flex-shrink-0 mt-1" />
-                                    <span>Guaranteed outcomes and deliverable-focused results.</span>
-                                </li>
-                                <li className="flex items-start gap-2">
-                                    <BadgeCheck className="w-5 h-5 text-primary flex-shrink-0 mt-1" />
-                                    <span>UPI, Cards & Netbanking supported for easy payments.</span>
-                                </li>
-                                <li className="flex items-start gap-2">
-                                    <BadgeCheck className="w-5 h-5 text-primary flex-shrink-0 mt-1" />
-                                    <span>Comprehensive test planning and strategy included.</span>
-                                </li>
-                                <li className="flex items-start gap-2">
-                                    <BadgeCheck className="w-5 h-5 text-primary flex-shrink-0 mt-1" />
-                                    <span>Final QA sign-off report for project completion.</span>
-                                </li>
-                                <li className="flex items-start gap-2">
-                                    <BadgeCheck className="w-5 h-5 text-primary flex-shrink-0 mt-1" />
-                                    <span>Perfect for full test cycles and pre-launch QA.</span>
-                                </li>
-                            </ul>
-                        </CardContent>
+                        <div>
+                            <CardHeader className="pt-8">
+                                <CardTitle className="text-2xl">Project-Based</CardTitle>
+                                <CardDescription>For fixed-scope projects with clear deliverables.</CardDescription>
+                            </CardHeader>
+                            <CardContent className="space-y-6">
+                                <div className="flex items-baseline gap-2">
+                                    <span className="text-4xl font-bold">₹999</span>
+                                    <span className="text-muted-foreground">/ project</span>
+                                </div>
+                                <ul className="space-y-3 text-sm text-muted-foreground">
+                                    <li className="flex items-start gap-2">
+                                        <BadgeCheck className="w-5 h-5 text-primary flex-shrink-0 mt-1" />
+                                        <span>A fixed price for the entire project scope, no surprises.</span>
+                                    </li>
+                                    <li className="flex items-start gap-2">
+                                        <BadgeCheck className="w-5 h-5 text-primary flex-shrink-0 mt-1" />
+                                        <span>Dedicated project management and support.</span>
+                                    </li>
+                                    <li className="flex items-start gap-2">
+                                        <BadgeCheck className="w-5 h-5 text-primary flex-shrink-0 mt-1" />
+                                        <span>Milestone-based payments for better budget control.</span>
+                                    </li>
+                                    <li className="flex items-start gap-2">
+                                        <BadgeCheck className="w-5 h-5 text-primary flex-shrink-0 mt-1" />
+                                        <span>Guaranteed outcomes and deliverable-focused results.</span>
+                                    </li>
+                                    <li className="flex items-start gap-2">
+                                        <BadgeCheck className="w-5 h-5 text-primary flex-shrink-0 mt-1" />
+                                        <span>UPI, Cards & Netbanking supported for easy payments.</span>
+                                    </li>
+                                    <li className="flex items-start gap-2">
+                                        <BadgeCheck className="w-5 h-5 text-primary flex-shrink-0 mt-1" />
+                                        <span>Comprehensive test planning and strategy included.</span>
+                                    </li>
+                                    <li className="flex items-start gap-2">
+                                        <BadgeCheck className="w-5 h-5 text-primary flex-shrink-0 mt-1" />
+                                        <span>Final QA sign-off report for project completion.</span>
+                                    </li>
+                                    <li className="flex items-start gap-2">
+                                        <BadgeCheck className="w-5 h-5 text-primary flex-shrink-0 mt-1" />
+                                        <span>Perfect for full test cycles and pre-launch QA.</span>
+                                    </li>
+                                </ul>
+                            </CardContent>
+                        </div>
                         <CardFooter>
                             <Button className="w-full rounded-xl">Request a Quote</Button>
                         </CardFooter>
@@ -268,6 +274,19 @@ export default function Home() {
                     </section>
                 </div>
 
+                {/* Testimonial Design Showcase */}
+                 <section className="py-20 md:py-28 bg-secondary/50">
+                    <div className="container mx-auto px-4 md:px-6">
+                        <div className="text-center">
+                            <h2 className="text-3xl md:text-4xl font-bold">Choose a Testimonial Design</h2>
+                            <p className="mt-4 max-w-2xl mx-auto text-muted-foreground">
+                                Below are 5 different designs. Please review them and let me know which one you'd like to use.
+                            </p>
+                        </div>
+                        <TestimonialCardShowcase />
+                    </div>
+                </section>
+
                 {/* Testimonials Section */}
                 <section className="py-20 md:py-28">
                     <div className="container mx-auto px-4 md:px-6">
@@ -310,4 +329,3 @@ export default function Home() {
         </div>
     );
 }
-
