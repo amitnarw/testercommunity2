@@ -6,7 +6,7 @@ import { usePathname } from 'next/navigation';
 import { TestTribeLogo } from './icons';
 import { Button } from './ui/button';
 import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle, SheetClose } from './ui/sheet';
-import { Menu, ArrowRight, Sun, Moon, Twitter, Github, Linkedin } from 'lucide-react';
+import { Menu, ArrowRight, Sun, Moon, Twitter, Github, Linkedin, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useState, useEffect } from 'react';
 import { useTheme } from 'next-themes';
@@ -79,11 +79,11 @@ export function Header() {
                     <span className="sr-only">Open menu</span>
                 </Button>
               </SheetTrigger>
-              <SheetContent side="top" className="flex flex-col items-center justify-center">
-                 <div className="absolute top-0 right-0 p-2 md:hidden">
+              <SheetContent side="top" className="flex flex-col items-center">
+                 <div className="absolute top-4 right-4 md:hidden">
                     <SheetClose asChild>
                         <Button size="icon" variant="outline">
-                            <Menu className="h-6 w-6" />
+                            <X className="h-6 w-6" />
                             <span className="sr-only">Close menu</span>
                         </Button>
                     </SheetClose>
@@ -91,7 +91,7 @@ export function Header() {
                 <SheetHeader>
                   <SheetTitle className="sr-only">Mobile Menu</SheetTitle>
                 </SheetHeader>
-                <div className="p-6">
+                <div className="p-6 pt-20">
                     <nav className="flex flex-col items-center text-center gap-8">
                         {navItems.map((item, index) => (
                         <Link
