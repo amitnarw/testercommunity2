@@ -39,7 +39,7 @@ export function ScrollingRibbon() {
                     }
                     if (ribbonRef2.current) {
                         const speed = 0.35;
-                        const movement = (lastScrollY * speed) - 1000;
+                        const movement = (lastScrollY * speed) - 3000;
                         ribbonRef2.current.style.transform = `translateX(${movement}px)`;
                     }
                     ticking = false;

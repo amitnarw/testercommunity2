@@ -16,26 +16,26 @@ import { TwoPathsSection } from '@/components/two-paths-section';
 import { GlobalImpactSection } from '@/components/global-impact-section';
 
 const features = [
-  {
-    title: 'Interactive Marketplace',
-    description: 'Browse and connect with top-tier testers in a visually engaging, animated marketplace.',
-    link: '/marketplace',
-  },
-  {
-    title: 'Real-Time Dashboards',
-    description: 'Monitor your testing progress with dynamic charts and data visualizations that come to life.',
-    link: '/dashboard',
-  },
-  {
-    title: 'Gamified Reputation',
-    description: 'Level up your tester profile with animated XP bars and unlockable achievement badges.',
-    link: '/#reputation',
-  },
-  {
-    title: 'Seamless Bug Reporting',
-    description: 'An intuitive and animated bug reporting experience that testers will love.',
-    link: '/',
-  },
+    {
+        title: 'Interactive Marketplace',
+        description: 'Browse and connect with top-tier testers in a visually engaging, animated marketplace.',
+        link: '/marketplace',
+    },
+    {
+        title: 'Real-Time Dashboards',
+        description: 'Monitor your testing progress with dynamic charts and data visualizations that come to life.',
+        link: '/dashboard',
+    },
+    {
+        title: 'Gamified Reputation',
+        description: 'Level up your tester profile with animated XP bars and unlockable achievement badges.',
+        link: '/#reputation',
+    },
+    {
+        title: 'Seamless Bug Reporting',
+        description: 'An intuitive and animated bug reporting experience that testers will love.',
+        link: '/',
+    },
 ];
 
 const appFeatures = [
@@ -94,11 +94,11 @@ function PricingSection() {
                                     <BadgeCheck className="w-5 h-5 text-primary flex-shrink-0 mt-1" />
                                     <span>Secure and simple payment processing.</span>
                                 </li>
-                                 <li className="flex items-start gap-2">
+                                <li className="flex items-start gap-2">
                                     <BadgeCheck className="w-5 h-5 text-primary flex-shrink-0 mt-1" />
                                     <span>Receive detailed and actionable test reports.</span>
                                 </li>
-                                 <li className="flex items-start gap-2">
+                                <li className="flex items-start gap-2">
                                     <BadgeCheck className="w-5 h-5 text-primary flex-shrink-0 mt-1" />
                                     <span>Flexible tester selection based on skills and experience.</span>
                                 </li>
@@ -115,13 +115,13 @@ function PricingSection() {
 
                     {/* Project-based Plan */}
                     <Card className="rounded-2xl border-2 border-primary shadow-2xl shadow-primary/20 relative">
-                         <Badge variant="default" className="absolute -top-4 left-1/2 -translate-x-1/2">Best Value</Badge>
+                        <Badge variant="default" className="absolute -top-4 left-1/2 -translate-x-1/2">Best Value</Badge>
                         <CardHeader className="pt-8">
                             <CardTitle className="text-2xl">Project-Based</CardTitle>
                             <CardDescription>For fixed-scope projects with clear deliverables.</CardDescription>
                         </CardHeader>
                         <CardContent className="space-y-6">
-                             <div className="flex items-baseline gap-2">
+                            <div className="flex items-baseline gap-2">
                                 <span className="text-4xl font-bold">₹999</span>
                                 <span className="text-muted-foreground">/ project</span>
                             </div>
@@ -138,7 +138,7 @@ function PricingSection() {
                                     <BadgeCheck className="w-5 h-5 text-primary flex-shrink-0 mt-1" />
                                     <span>Milestone-based payments for better budget control.</span>
                                 </li>
-                                 <li className="flex items-start gap-2">
+                                <li className="flex items-start gap-2">
                                     <BadgeCheck className="w-5 h-5 text-primary flex-shrink-0 mt-1" />
                                     <span>Guaranteed outcomes and deliverable-focused results.</span>
                                 </li>
@@ -146,11 +146,11 @@ function PricingSection() {
                                     <BadgeCheck className="w-5 h-5 text-primary flex-shrink-0 mt-1" />
                                     <span>UPI, Cards & Netbanking supported for easy payments.</span>
                                 </li>
-                                 <li className="flex items-start gap-2">
+                                <li className="flex items-start gap-2">
                                     <BadgeCheck className="w-5 h-5 text-primary flex-shrink-0 mt-1" />
                                     <span>Comprehensive test planning and strategy included.</span>
                                 </li>
-                                 <li className="flex items-start gap-2">
+                                <li className="flex items-start gap-2">
                                     <BadgeCheck className="w-5 h-5 text-primary flex-shrink-0 mt-1" />
                                     <span>Final QA sign-off report for project completion.</span>
                                 </li>
@@ -161,7 +161,7 @@ function PricingSection() {
                             </ul>
                         </CardContent>
                         <CardFooter>
-                             <Button className="w-full rounded-xl">Request a Quote</Button>
+                            <Button className="w-full rounded-xl">Request a Quote</Button>
                         </CardFooter>
                     </Card>
                 </div>
@@ -171,144 +171,143 @@ function PricingSection() {
 }
 
 export default function Home() {
-  return (
-    <div className="flex flex-col min-h-screen">
-      <main className="flex-1">
-        <div className="lg:w-[80%] lg:mx-auto">
-            {/* Hero Section */}
-            <section className="relative w-full py-24 md:py-32 lg:py-40 overflow-hidden">
-            <div className="container mx-auto px-4 md:px-6 text-center relative z-10">
-                <div className="max-w-4xl mx-auto">
-                <Badge variant="outline" className="text-sm border-primary/30 bg-primary/10 text-primary py-1 px-4 rounded-full">
-                    Now in Public Beta
-                </Badge>
-                <h1 className="font-body text-5xl md:text-7xl font-extrabold mt-4">
-                    Get Your App <span className="bg-gradient-to-br from-primary to-accent bg-clip-text text-transparent">Tested & Published</span> Faster
-                </h1>
-                <p className="mt-6 max-w-2xl mx-auto text-lg md:text-xl text-muted-foreground">
-                    Get Google Play production access, faster, smoother, and without rejections. Join devs from 100+ countries using our service.
-                </p>
-                <div className="mt-8 flex flex-col sm:flex-row justify-center gap-4">
-                    <Button asChild size="lg" className="font-bold rounded-xl hover:shadow-lg hover:shadow-primary/30">
-                    <Link href="/signup">Get Started for Free <ArrowRight className="ml-2" /></Link>
-                    </Button>
-                    <Button asChild size="lg" variant="outline" className="font-bold rounded-xl">
-                    <Link href="/marketplace">Explore Testers</Link>
-                    </Button>
+    return (
+        <div className="flex flex-col min-h-screen">
+            <main className="flex-1">
+                <div className="lg:w-[80%] lg:mx-auto">
+                    {/* Hero Section */}
+                    <section className="relative w-full py-24 md:py-32 lg:py-40 overflow-hidden">
+                        <div className="container mx-auto px-4 md:px-6 text-center relative z-10">
+                            <div className="max-w-4xl mx-auto">
+                                <Badge variant="outline" className="text-sm border-primary/30 bg-primary/10 text-primary py-1 px-4 rounded-full">
+                                    Now in Public Beta
+                                </Badge>
+                                <h1 className="font-body text-5xl md:text-7xl font-extrabold mt-4">
+                                    Get Your App <span className="bg-gradient-to-br from-primary to-accent bg-clip-text text-transparent">Tested & Published</span> Faster
+                                </h1>
+                                <p className="mt-6 max-w-2xl mx-auto text-lg md:text-xl text-muted-foreground">
+                                    Get Google Play production access, faster, smoother, and without rejections. Join devs from 100+ countries using our service.
+                                </p>
+                                <div className="mt-8 flex flex-col sm:flex-row justify-center gap-4">
+                                    <Button asChild size="lg" className="font-bold rounded-xl hover:shadow-lg hover:shadow-primary/30">
+                                        <Link href="/signup">Get Started for Free <ArrowRight className="ml-2" /></Link>
+                                    </Button>
+                                    <Button asChild size="lg" variant="outline" className="font-bold rounded-xl">
+                                        <Link href="/marketplace">Explore Testers</Link>
+                                    </Button>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
                 </div>
-                </div>
-            </div>
-            </section>
-        </div>
 
-        {/* Global Impact Section */}
-        <GlobalImpactSection />
+                {/* Global Impact Section */}
+                <GlobalImpactSection />
 
-        <div className="lg:w-[80%] lg:mx-auto">
-            {/* Features Section */}
-            <section className="py-20 md:py-28 bg-background">
-            <div className="container mx-auto px-4 md:px-6">
-                <div className="text-center">
-                <h2 className="text-3xl md:text-4xl font-bold">A Platform That Works as Good as It Looks</h2>
-                <p className="mt-4 max-w-2xl mx-auto text-muted-foreground">
-                    We've merged cutting-edge functionality with Awwwards-caliber design to create an unparalleled testing experience.
-                </p>
-                </div>
-                <div className="mt-12 grid gap-8 md:grid-cols-2 lg:grid-cols-4">
-                {features.map((feature, i) => (
-                    <FeatureCard key={feature.title}>
-                    <CardHeader>
-                        <CardTitle className="text-lg text-white">{feature.title}</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                        <p className="text-muted-foreground">{feature.description}</p>
-                        <Link href={feature.link} className="flex items-center text-primary font-semibold mt-4 hover:underline">
-                        Learn More <ChevronRight className="w-4 h-4 ml-1" />
-                        </Link>
-                    </CardContent>
-                    </FeatureCard>
-                ))}
-                </div>
-            </div>
-            </section>
-            
-            {/* Two Paths Section */}
-            <TwoPathsSection />
+                <div className="lg:w-[80%] lg:mx-auto">
+                    {/* Features Section */}
+                    <section className="py-20 md:py-28 bg-background">
+                        <div className="container mx-auto px-4 md:px-6">
+                            <div className="text-center">
+                                <h2 className="text-3xl md:text-4xl font-bold">A Platform That Works as Good as It Looks</h2>
+                                <p className="mt-4 max-w-2xl mx-auto text-muted-foreground">
+                                    We've merged cutting-edge functionality with Awwwards-caliber design to create an unparalleled testing experience.
+                                </p>
+                            </div>
+                            <div className="mt-12 grid gap-8 md:grid-cols-2 lg:grid-cols-4">
+                                {features.map((feature, i) => (
+                                    <FeatureCard key={feature.title}>
+                                        <CardHeader>
+                                            <CardTitle className="text-lg text-white">{feature.title}</CardTitle>
+                                        </CardHeader>
+                                        <CardContent>
+                                            <p className="text-muted-foreground">{feature.description}</p>
+                                            <Link href={feature.link} className="flex items-center text-primary font-semibold mt-4 hover:underline">
+                                                Learn More <ChevronRight className="w-4 h-4 ml-1" />
+                                            </Link>
+                                        </CardContent>
+                                    </FeatureCard>
+                                ))}
+                            </div>
+                        </div>
+                    </section>
 
-            {/* Google App Coming Soon Section */}
-            <section className="py-20 md:py-28 bg-background">
-                <div className="container mx-auto px-4 md:px-6 grid md:grid-cols-2 gap-12 items-center">
-                    <div className="relative h-full w-full min-h-[500px]">
-                        <Image src="https://images.unsplash.com/photo-1551650975-87deedd944c3?q=80&w=600&auto=format&fit=crop" alt="TestTribe Google App" layout="fill" objectFit="cover" className="rounded-xl shadow-2xl" data-ai-hint="mobile app interface" />
-                    </div>
-                    <div>
-                        <Badge variant="secondary">Coming Soon</Badge>
-                        <h2 className="text-3xl md:text-4xl font-bold mt-4">TestTribe, Now in Your Pocket</h2>
-                        <p className="mt-4 text-muted-foreground">
-                            Get ready to experience TestTribe like never before. Our native Google app is in the works, bringing all the platform's features right to your mobile device. Stay tuned for updates!
-                        </p>
-                        <ul className="mt-6 space-y-4">
-                            {appFeatures.map((feature) => (
-                                <li key={feature.title} className="flex items-start gap-4">
-                                    <div className="bg-primary/10 p-2 rounded-full">
-                                        {feature.icon}
-                                    </div>
-                                    <div>
-                                        <h3 className="font-semibold">{feature.title}</h3>
-                                        <p className="text-muted-foreground text-sm">{feature.description}</p>
-                                    </div>
-                                </li>
-                            ))}
-                        </ul>
-                        <div className="mt-8">
-                            <Button variant="outline" disabled className="rounded-xl">(Coming Soon)</Button>
+                    {/* Two Paths Section */}
+                    <TwoPathsSection />
+
+                    {/* Google App Coming Soon Section */}
+                    <section className="py-20 md:py-28 bg-background">
+                        <div className="container mx-auto px-4 md:px-6 grid md:grid-cols-2 gap-12 items-center">
+                            <div className="relative h-full w-full min-h-[500px]">
+                                <Image src="https://images.unsplash.com/photo-1551650975-87deedd944c3?q=80&w=600&auto=format&fit=crop" alt="TestTribe Google App" layout="fill" objectFit="cover" className="rounded-xl shadow-2xl" data-ai-hint="mobile app interface" />
+                            </div>
+                            <div>
+                                <Badge variant="secondary">Coming Soon</Badge>
+                                <h2 className="text-3xl md:text-4xl font-bold mt-4">TestTribe, Now in Your Pocket</h2>
+                                <p className="mt-4 text-muted-foreground">
+                                    Get ready to experience TestTribe like never before. Our native Google app is in the works, bringing all the platform's features right to your mobile device. Stay tuned for updates!
+                                </p>
+                                <ul className="mt-6 space-y-4">
+                                    {appFeatures.map((feature) => (
+                                        <li key={feature.title} className="flex items-start gap-4">
+                                            <div className="bg-primary/10 p-2 rounded-full">
+                                                {feature.icon}
+                                            </div>
+                                            <div>
+                                                <h3 className="font-semibold">{feature.title}</h3>
+                                                <p className="text-muted-foreground text-sm">{feature.description}</p>
+                                            </div>
+                                        </li>
+                                    ))}
+                                </ul>
+                                <div className="mt-8">
+                                    <Button variant="outline" disabled className="rounded-xl">(Coming Soon)</Button>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+
+                {/* Testimonials Section */}
+                <section className="py-20 md:py-28">
+                    <div className="container mx-auto px-4 md:px-6">
+                        <div className="text-center">
+                            <h2 className="text-3xl md:text-4xl font-bold">Trusted by a Community of Innovators</h2>
+                            <p className="mt-4 max-w-2xl mx-auto text-muted-foreground">
+                                See what developers and testers are saying about TestTribe.
+                            </p>
                         </div>
                     </div>
-                </div>
-            </section>
-        </div>
-        
-        {/* Testimonials Section */}
-        <section className="py-20 md:py-28">
-          <div className="container mx-auto px-4 md:px-6">
-            <div className="text-center">
-              <h2 className="text-3xl md:text-4xl font-bold">Trusted by a Community of Innovators</h2>
-              <p className="mt-4 max-w-2xl mx-auto text-muted-foreground">
-                See what developers and testers are saying about TestTribe.
-              </p>
-            </div>
-          </div>
-          <div className="mt-12">
-            <TestimonialScroller testimonials={testimonials} />
-          </div>
-        </section>
-        
-        {/* Scrolling Ribbon Section */}
-        <ScrollingRibbon />
-        
-        <div className="lg:w-[80%] lg:mx-auto">
-            {/* Pricing Section */}
-            <PricingSection />
+                    <div className="mt-12">
+                        <TestimonialScroller testimonials={testimonials} />
+                    </div>
+                </section>
 
-            {/* CTA Section */}
-            <section className="py-20 md:py-28">
-            <div className="container mx-auto px-4 md:px-6 text-center">
-                <h2 className="text-4xl md:text-5xl font-bold">Ready to Elevate Your Testing?</h2>
-                <p className="mt-4 max-w-2xl mx-auto text-muted-foreground">
-                Join the community and experience the future of app testing today. It's free to get started.
-                </p>
-                <div className="mt-8">
-                <Button asChild size="lg" className="font-bold text-lg px-8 py-6 rounded-xl hover:shadow-lg hover:shadow-primary/30">
-                    <Link href="/signup">Sign Up Now <ArrowRight className="ml-2" /></Link>
-                </Button>
+                {/* Scrolling Ribbon Section */}
+                <ScrollingRibbon />
+
+                <div className="lg:w-[80%] lg:mx-auto">
+                    {/* Pricing Section */}
+                    <PricingSection />
+
+                    {/* CTA Section */}
+                    <section className="py-20 md:py-28">
+                        <div className="container mx-auto px-4 md:px-6 text-center">
+                            <h2 className="text-4xl md:text-5xl font-bold">Ready to Elevate Your Testing?</h2>
+                            <p className="mt-4 max-w-2xl mx-auto text-muted-foreground">
+                                Join the community and experience the future of app testing today. It's free to get started.
+                            </p>
+                            <div className="mt-8">
+                                <Button asChild size="lg" className="font-bold text-lg px-8 py-6 rounded-xl hover:shadow-lg hover:shadow-primary/30">
+                                    <Link href="/signup">Sign Up Now <ArrowRight className="ml-2" /></Link>
+                                </Button>
+                            </div>
+                        </div>
+                    </section>
                 </div>
-            </div>
-            </section>
+            </main>
+            <ScrollToTopButton />
         </div>
-      </main>
-      <ScrollToTopButton />
-    </div>
-  );
+    );
 }
 
-    
