@@ -1,5 +1,4 @@
 
-
 'use client';
 
 import Link from 'next/link';
@@ -63,111 +62,90 @@ function PricingSection() {
         <section id="pricing" className="py-20 md:py-28 bg-background">
             <div className="container mx-auto px-4 md:px-6">
                 <div className="text-center max-w-2xl mx-auto">
-                    <h2 className="text-4xl md:text-5xl font-bold">Hire Professional Testers</h2>
+                    <h2 className="text-4xl md:text-5xl font-bold">Flexible Testing for Every Need</h2>
                     <p className="mt-4 text-muted-foreground">
-                        Access dedicated, professional testers for your project. No subscriptions, just results.
+                        Whether you're a bootstrapper or a growing enterprise, we have a path for you.
                     </p>
                 </div>
                 <div className="mt-12 grid gap-8 md:grid-cols-2 items-start justify-center">
-                    {/* Pay-as-you-go Plan */}
+                    {/* Community Plan */}
                     <Card className="rounded-xl border border-border/50 hover:border-primary/50 transition-all duration-300 transform hover:-translate-y-1 hover:shadow-2xl hover:shadow-primary/20 h-full flex flex-col items-center justify-between">
                         <div>
                             <CardHeader className="pt-8">
-                                <CardTitle className="text-2xl">Hourly</CardTitle>
-                                <CardDescription>For flexible, on-demand testing needs.</CardDescription>
+                                <CardTitle className="text-2xl">Community Testing</CardTitle>
+                                <CardDescription>Leverage the power of the crowd, for free.</CardDescription>
                             </CardHeader>
                             <CardContent className="space-y-6">
                                 <div className="text-4xl font-bold">
-                                    Pay-as-you-go
+                                   Free
                                 </div>
                                 <ul className="space-y-3 text-sm text-muted-foreground">
                                     <li className="flex items-start gap-2">
                                         <BadgeCheck className="w-5 h-5 text-primary flex-shrink-0 mt-1" />
-                                        <span>Hire testers by the hour for any duration.</span>
+                                        <span>Test other apps to earn points.</span>
                                     </li>
                                     <li className="flex items-start gap-2">
                                         <BadgeCheck className="w-5 h-5 text-primary flex-shrink-0 mt-1" />
-                                        <span>Access to the full marketplace of vetted professionals.</span>
+                                        <span>Use points to get your own app tested by the community.</span>
                                     </li>
                                     <li className="flex items-start gap-2">
                                         <BadgeCheck className="w-5 h-5 text-primary flex-shrink-0 mt-1" />
-                                        <span>Direct communication and collaboration with testers.</span>
+                                        <span>Access a diverse pool of testers and devices.</span>
                                     </li>
                                     <li className="flex items-start gap-2">
                                         <BadgeCheck className="w-5 h-5 text-primary flex-shrink-0 mt-1" />
-                                        <span>Secure and simple payment processing.</span>
+                                        <span>Ideal for indie developers, startups, and hobby projects.</span>
                                     </li>
-                                    <li className="flex items-start gap-2">
+                                     <li className="flex items-start gap-2">
                                         <BadgeCheck className="w-5 h-5 text-primary flex-shrink-0 mt-1" />
-                                        <span>Receive detailed and actionable test reports.</span>
-                                    </li>
-                                    <li className="flex items-start gap-2">
-                                        <BadgeCheck className="w-5 h-5 text-primary flex-shrink-0 mt-1" />
-                                        <span>Flexible tester selection based on skills and experience.</span>
-                                    </li>
-                                    <li className="flex items-start gap-2">
-                                        <BadgeCheck className="w-5 h-5 text-primary flex-shrink-0 mt-1" />
-                                        <span>Ideal for quick bug hunts or usability checks.</span>
+                                        <span>Engage with a community passionate about quality.</span>
                                     </li>
                                 </ul>
                             </CardContent>
                         </div>
                         <CardFooter className='w-full'>
-                            <Button variant="outline" className="w-full rounded-xl">Explore Marketplace</Button>
+                            <Button variant="outline" className="w-full rounded-xl">Join the Community</Button>
                         </CardFooter>
                     </Card>
 
-                    {/* Project-based Plan */}
+                    {/* Pro Plan */}
                     <Card className="rounded-2xl border-2 border-primary shadow-2xl shadow-primary/20 relative h-full">
                         <Badge variant="default" className="absolute -top-4 left-1/2 -translate-x-1/2">Best Value</Badge>
                         <div>
                             <CardHeader className="pt-8">
-                                <CardTitle className="text-2xl">Project-Based</CardTitle>
-                                <CardDescription>For fixed-scope projects with clear deliverables.</CardDescription>
+                                <CardTitle className="text-2xl">Pro Testing</CardTitle>
+                                <CardDescription>Hire vetted professionals for guaranteed results.</CardDescription>
                             </CardHeader>
                             <CardContent className="space-y-6">
                                 <div className="flex items-baseline gap-2">
-                                    <span className="text-4xl font-bold">₹999</span>
-                                    <span className="text-muted-foreground">/ project</span>
+                                    <span className="text-4xl font-bold">Pay-per-Project</span>
                                 </div>
                                 <ul className="space-y-3 text-sm text-muted-foreground">
                                     <li className="flex items-start gap-2">
                                         <BadgeCheck className="w-5 h-5 text-primary flex-shrink-0 mt-1" />
-                                        <span>A fixed price for the entire project scope, no surprises.</span>
+                                        <span>Directly hire professional testers.</span>
                                     </li>
                                     <li className="flex items-start gap-2">
                                         <BadgeCheck className="w-5 h-5 text-primary flex-shrink-0 mt-1" />
-                                        <span>Dedicated project management and support.</span>
+                                        <span>Choose testers based on specific skills and expertise.</span>
                                     </li>
                                     <li className="flex items-start gap-2">
                                         <BadgeCheck className="w-5 h-5 text-primary flex-shrink-0 mt-1" />
-                                        <span>Milestone-based payments for better budget control.</span>
+                                        <span>Fixed-price projects or flexible hourly rates available.</span>
                                     </li>
                                     <li className="flex items-start gap-2">
                                         <BadgeCheck className="w-5 h-5 text-primary flex-shrink-0 mt-1" />
-                                        <span>Guaranteed outcomes and deliverable-focused results.</span>
+                                        <span>Guaranteed high-quality, actionable feedback.</span>
                                     </li>
                                     <li className="flex items-start gap-2">
                                         <BadgeCheck className="w-5 h-5 text-primary flex-shrink-0 mt-1" />
-                                        <span>UPI, Cards & Netbanking supported for easy payments.</span>
-                                    </li>
-                                    <li className="flex items-start gap-2">
-                                        <BadgeCheck className="w-5 h-5 text-primary flex-shrink-0 mt-1" />
-                                        <span>Comprehensive test planning and strategy included.</span>
-                                    </li>
-                                    <li className="flex items-start gap-2">
-                                        <BadgeCheck className="w-5 h-5 text-primary flex-shrink-0 mt-1" />
-                                        <span>Final QA sign-off report for project completion.</span>
-                                    </li>
-                                    <li className="flex items-start gap-2">
-                                        <BadgeCheck className="w-5 h-5 text-primary flex-shrink-0 mt-1" />
-                                        <span>Perfect for full test cycles and pre-launch QA.</span>
+                                        <span>Perfect for businesses, critical launches, and tight deadlines.</span>
                                     </li>
                                 </ul>
                             </CardContent>
                         </div>
                         <CardFooter>
-                            <Button className="w-full rounded-xl">Request a Quote</Button>
+                            <Button className="w-full rounded-xl">Explore the Marketplace</Button>
                         </CardFooter>
                     </Card>
                 </div>
@@ -180,37 +158,35 @@ export default function Home() {
     return (
         <div className="flex flex-col min-h-screen">
             <main className="flex-1">
-                <div className="lg:w-[80%] lg:mx-auto">
-                    {/* Hero Section */}
-                    <section className="relative w-full py-12 sm:py-16 md:py-20 lg:py-28 overflow-hidden">
-                        <div className="container mx-auto px-4 md:px-6 text-center relative z-10">
-                            <div className="max-w-4xl mx-auto">
-                                <Badge variant="outline" className="inline-flex items-center rounded-full border border-primary/20 bg-primary/5 px-3 py-1 text-xs sm:text-sm font-body text-primary mb-5 sm:mb-6">
-                                    Now in Public Beta
-                                </Badge>
-                                <h1 className="text-[2.25rem] sm:text-[2.75rem] md:text-[3.5rem] lg:text-[4.25rem] font-heading leading-[1.1] tracking-tight font-bold mb-5 sm:mb-6 md:mb-8">
-                                    Community-Powered <span className="bg-gradient-to-br from-primary to-accent bg-clip-text text-transparent">or Professionally</span> Tested
-                                </h1>
-                                <p className="text-sm sm:text-base md:text-lg font-body max-w-sm sm:max-w-md md:max-w-lg lg:max-w-[700px] mx-auto mb-8 sm:mb-9 md:mb-10 lg:mb-12 text-muted-foreground">
-                                    Harness the power of our community to test your app for free, or hire our professional testers for guaranteed results. The choice is yours.
-                                </p>
-                                <div className="mt-8 flex flex-col sm:flex-row justify-center gap-4">
-                                    <Button asChild size="lg" className="font-bold rounded-xl hover:shadow-lg hover:shadow-primary/30">
-                                        <Link href="/signup">Start for Free <ArrowRight className="ml-2" /></Link>
-                                    </Button>
-                                    <Button asChild size="lg" variant="outline" className="font-bold rounded-xl">
-                                        <Link href="/marketplace">or Go Pro</Link>
-                                    </Button>
-                                </div>
+                {/* Hero Section */}
+                <section className="relative w-full py-12 sm:py-16 md:py-20 lg:py-28 overflow-hidden">
+                    <div className="container mx-auto px-4 md:px-6 text-center relative z-10">
+                        <div className="max-w-4xl mx-auto">
+                            <Badge variant="outline" className="inline-flex items-center rounded-full border border-primary/20 bg-primary/5 px-3 py-1 text-xs sm:text-sm font-body text-primary mb-5 sm:mb-6">
+                                Now in Public Beta
+                            </Badge>
+                            <h1 className="text-[2.25rem] sm:text-[2.75rem] md:text-[3.5rem] lg:text-[4.25rem] font-heading leading-[1.1] tracking-tight font-bold mb-5 sm:mb-6 md:mb-8">
+                                Community-Powered <span className="bg-gradient-to-br from-primary to-accent bg-clip-text text-transparent">or Professionally</span> Tested
+                            </h1>
+                            <p className="text-sm sm:text-base md:text-lg font-body max-w-sm sm:max-w-md md:max-w-lg lg:max-w-[700px] mx-auto mb-8 sm:mb-9 md:mb-10 lg:mb-12 text-muted-foreground">
+                                Harness the power of our community to test your app for free, or hire our professional testers for guaranteed results. The choice is yours.
+                            </p>
+                            <div className="mt-8 flex flex-col sm:flex-row justify-center gap-4">
+                                <Button asChild size="lg" className="font-bold rounded-xl hover:shadow-lg hover:shadow-primary/30">
+                                    <Link href="/signup">Start for Free <ArrowRight className="ml-2" /></Link>
+                                </Button>
+                                <Button asChild size="lg" variant="outline" className="font-bold rounded-xl">
+                                    <Link href="/marketplace">or Go Pro</Link>
+                                </Button>
+                            </div>
 
-                                <div className="w-full max-w-[700px] overflow-hidden m-auto mt-12 sm:mt-20 md:mt-40">
-                                    <Image src={"/dark-mac.png"} alt="App Testing Platform" width={"900"} height={"600"} decoding="async" data-nimg="1" className="w-full h-auto hidden dark:block" ></Image>
-                                    <Image src={"/light-mac.png"} alt="App Testing Platform" width={"900"} height={"600"} decoding="async" data-nimg="1" className="w-full h-auto dark:hidden block" ></Image>
-                                </div>
+                            <div className="w-full max-w-[700px] overflow-hidden m-auto mt-12 sm:mt-20 md:mt-40">
+                                <Image src={"/dark-mac.png"} alt="App Testing Platform" width={"900"} height={"600"} decoding="async" data-nimg="1" className="w-full h-auto hidden dark:block" ></Image>
+                                <Image src={"/light-mac.png"} alt="App Testing Platform" width={"900"} height={"600"} decoding="async" data-nimg="1" className="w-full h-auto dark:hidden block" ></Image>
                             </div>
                         </div>
-                    </section>
-                </div>
+                    </div>
+                </section>
 
                 {/* Global Impact Section */}
                 <GlobalImpactSection />
@@ -321,3 +297,5 @@ export default function Home() {
         </div>
     );
 }
+
+    
