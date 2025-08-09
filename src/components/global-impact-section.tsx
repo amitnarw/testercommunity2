@@ -83,13 +83,13 @@ export function GlobalImpactSection() {
             <div className="absolute inset-0 bg-dot-pattern-dark opacity-30 z-0"></div>
             
              <motion.div 
-                className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-0"
+                className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-0 md:w-[600px] md:h-[600px] w-[300px] h-[300px]"
                 style={{ rotate }}
             >
-                <Globe className="w-[300px] h-[300px] md:w-[600px] md:h-[600px] text-primary/10" strokeWidth={0.5} />
+                <Globe className="w-full h-full text-primary/10" strokeWidth={0.5} />
             </motion.div>
             
-            <div className="container mx-auto px-4 md:px-6 relative z-10 flex flex-col items-center justify-center">
+            <div className="container mx-auto px-4 md:px-6 relative z-10 flex flex-col items-center justify-center lg:w-[80%] lg:mx-auto">
                  <div className="text-center max-w-3xl mx-auto">
                     <h2 
                         className="text-3xl md:text-5xl font-bold mt-4"
