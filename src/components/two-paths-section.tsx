@@ -68,8 +68,8 @@ export function TwoPathsSection() {
                         ></div>
                         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/50 to-transparent"></div>
                         <div className="relative flex flex-col justify-end h-[500px] p-8 text-white">
-                            <h3 className="text-3xl font-bold mb-2">Test Apps, Earn Rewards</h3>
-                            <p className="text-white/80 mb-6">Join our reciprocal ecosystem. Test community apps to earn points, then use those points to get your own apps tested.</p>
+                            <h3 className="text-3xl font-bold mb-2">Test Apps, Earn Points</h3>
+                            <p className="text-white/80 mb-6">Join our reciprocal ecosystem. Test community apps to earn points, then use those points to get your own apps tested for free or redeem them for paid services.</p>
                              <div className="flex items-center gap-2 text-lg font-semibold text-primary opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                                 Join the Community <ArrowRight className="w-5 h-5" />
                             </div>
@@ -85,8 +85,8 @@ export function TwoPathsSection() {
                         ></div>
                         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/50 to-transparent"></div>
                         <div className="relative flex flex-col justify-end h-[500px] p-8 text-white">
-                            <h3 className="text-3xl font-bold mb-2">Hire Professionals</h3>
-                            <p className="text-white/80 mb-6">Need guaranteed results? Browse our marketplace of vetted professional testers and hire them for your critical projects.</p>
+                            <h3 className="text-3xl font-bold mb-2">Hire Vetted Professionals</h3>
+                            <p className="text-white/80 mb-6">Need guaranteed, high-quality results? Browse our marketplace of vetted professional testers and hire them for your critical projects.</p>
                             <div className="flex items-center gap-2 text-lg font-semibold text-primary opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                                 Browse Testers <ArrowRight className="w-5 h-5" />
                             </div>

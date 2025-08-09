@@ -15,7 +15,7 @@ import { testimonials } from '@/lib/data';
 import { TestimonialScroller } from '@/components/testimonial-scroller';
 import { TwoPathsSection } from '@/components/two-paths-section';
 import { GlobalImpactSection } from '@/components/global-impact-section';
-import { TestimonialCardShowcase } from '@/components/testimonial-card-showcase';
+import { FaqSection } from '@/components/faq-section';
 
 const features = [
     {
@@ -189,10 +189,10 @@ export default function Home() {
                                     Now in Public Beta
                                 </Badge>
                                 <h1 className="text-[2.25rem] sm:text-[2.75rem] md:text-[3.5rem] lg:text-[4.25rem] font-heading leading-[1.1] tracking-tight font-bold mb-5 sm:mb-6 md:mb-8">
-                                    Get Your App <span className="bg-gradient-to-br from-primary to-accent bg-clip-text text-transparent">Tested & Published</span> Faster
+                                    Community-Powered <span className="bg-gradient-to-br from-primary to-accent bg-clip-text text-transparent">or Professionally</span> Tested
                                 </h1>
                                 <p className="text-sm sm:text-base md:text-lg font-body max-w-sm sm:max-w-md md:max-w-lg lg:max-w-[700px] mx-auto mb-8 sm:mb-9 md:mb-10 lg:mb-12 text-muted-foreground">
-                                    Get Google Play production access, faster, smoother, and without rejections. Join devs from 100+ countries using our service.
+                                    Harness the power of our community to test your app for free, or hire our professional testers for guaranteed results. The choice is yours.
                                 </p>
                                 <div className="mt-8 flex flex-col sm:flex-row justify-center gap-4">
                                     <Button asChild size="lg" className="font-bold rounded-xl hover:shadow-lg hover:shadow-primary/30">
@@ -201,6 +201,11 @@ export default function Home() {
                                     <Button asChild size="lg" variant="outline" className="font-bold rounded-xl">
                                         <Link href="/marketplace">or Go Pro</Link>
                                     </Button>
+                                </div>
+
+                                <div className="w-full max-w-[700px] overflow-hidden m-auto mt-12 sm:mt-20 md:mt-40">
+                                    <Image src={"/dark-mac.png"} alt="App Testing Platform" width={"900"} height={"600"} decoding="async" data-nimg="1" className="w-full h-auto hidden dark:block" ></Image>
+                                    <Image src={"/light-mac.png"} alt="App Testing Platform" width={"900"} height={"600"} decoding="async" data-nimg="1" className="w-full h-auto dark:hidden block" ></Image>
                                 </div>
                             </div>
                         </div>
@@ -224,7 +229,7 @@ export default function Home() {
                                 {features.map((feature, i) => (
                                     <FeatureCard key={feature.title}>
                                         <CardHeader>
-                                            <CardTitle className="text-lg text-white">{feature.title}</CardTitle>
+                                            <CardTitle className="text-lg text-white dark:text-white">{feature.title}</CardTitle>
                                         </CardHeader>
                                         <CardContent>
                                             <p className="text-muted-foreground">{feature.description}</p>
@@ -244,11 +249,11 @@ export default function Home() {
                     {/* Google App Coming Soon Section */}
                     <section className="py-20 md:py-28 bg-background">
                         <div className="container mx-auto px-4 md:px-6 grid md:grid-cols-2 gap-12 items-center">
-                            <div className="relative h-full w-full min-h-[500px]">
+                            <div className="relative h-full w-full min-h-[400px]">
                                 <Image src="https://images.unsplash.com/photo-1551650975-87deedd944c3?q=80&w=600&auto=format&fit=crop" alt="TestTribe Google App" layout="fill" objectFit="cover" className="rounded-xl shadow-2xl" data-ai-hint="mobile app interface" />
                             </div>
                             <div>
-                                <Badge variant="secondary">Coming Soon</Badge>
+                                <Badge variant="secondary" className='py-2 px-4'>Coming Soon</Badge>
                                 <h2 className="text-3xl md:text-4xl font-bold mt-4">TestTribe, Now in Your Pocket</h2>
                                 <p className="mt-4 text-muted-foreground">
                                     Get ready to experience TestTribe like never before. Our native Google app is in the works, bringing all the platform's features right to your mobile device. Stay tuned for updates!
@@ -266,9 +271,6 @@ export default function Home() {
                                         </li>
                                     ))}
                                 </ul>
-                                <div className="mt-8">
-                                    <Button variant="outline" disabled className="rounded-xl">(Coming Soon)</Button>
-                                </div>
                             </div>
                         </div>
                     </section>
@@ -295,6 +297,9 @@ export default function Home() {
                 <div className="lg:w-[80%] lg:mx-auto">
                     {/* Pricing Section */}
                     <PricingSection />
+
+                    {/* FAQ Section */}
+                    <FaqSection />
 
                     {/* CTA Section */}
                     <section className="py-20 md:py-28">
