@@ -53,7 +53,7 @@ const StatCard = ({ icon, title, children, className, ...props }: { icon?: React
             animate={isInView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.7, ease: 'easeOut' }}
             className={cn(
-                "rounded-2xl border border-white/10 p-6 shadow-lg relative overflow-hidden",
+                "rounded-2xl border border-white/10 p-4 shadow-lg relative overflow-hidden",
                 "flex flex-col",
                 className
             )}
@@ -63,7 +63,7 @@ const StatCard = ({ icon, title, children, className, ...props }: { icon?: React
                 {icon && <div className="flex-shrink-0">
                     {icon}
                 </div>}
-                <h3 className="font-bold text-base">{title}</h3>
+                <h3 className="font-bold text-sm">{title}</h3>
             </div>
             <div className="flex-grow flex flex-col justify-center z-10">
                 {children}
@@ -103,33 +103,27 @@ export function GlobalImpactSection() {
                     </p>
                 </div>
 
-                <div className="mt-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 w-full max-w-6xl">
-                    <StatCard title="Thriving Community" icon={<Users className="w-5 h-5"/>} className="lg:col-span-2 bg-gradient-to-br from-primary/30 to-accent/50 text-foreground">
+                <div className="mt-16 grid grid-cols-2 lg:grid-cols-4 gap-4 w-full max-w-6xl">
+                    <StatCard title="Thriving Community" icon={<Users className="w-4 h-4"/>} className="col-span-2 lg:col-span-2 bg-gradient-to-br from-primary/30 to-accent/50 text-foreground">
                          <div className="relative z-10 h-full flex flex-col justify-center">
-                            <p className="text-3xl sm:text-4xl font-bold"><AnimatedCounter to={20000} suffix="+" /></p>
-                            <p className="text-muted-foreground mt-1 text-xs">Vetted testers available across 100+ countries.</p>
+                            <p className="text-2xl sm:text-3xl font-bold"><AnimatedCounter to={20000} suffix="+" /></p>
+                            <p className="text-muted-foreground mt-1 text-xs">Vetted testers across 100+ countries.</p>
                         </div>
                     </StatCard>
-                    <StatCard title="Bugs Squashed" icon={<Bug className="w-5 h-5"/>} className="bg-gradient-to-br from-green-500/30 to-green-700/50 text-foreground">
-                        <p className="text-3xl sm:text-4xl font-bold"><AnimatedCounter to={500000} suffix="+" /></p>
-                        <p className="text-muted-foreground mt-1 text-xs">Bugs identified and resolved.</p>
+                    <StatCard title="Bugs Squashed" icon={<Bug className="w-4 h-4"/>} className="bg-gradient-to-br from-green-500/40 to-green-800/60 text-foreground">
+                        <p className="text-2xl sm:text-3xl font-bold"><AnimatedCounter to={500000} suffix="+" /></p>
                     </StatCard>
-                     <StatCard title="Projects Accelerated" icon={<TrendingUp className="w-5 h-5"/>} className="bg-gradient-to-br from-cyan-500/30 to-blue-700/50 text-foreground">
-                        <p className="text-3xl sm:text-4xl font-bold"><AnimatedCounter to={1000000} prefix="~" suffix="+" /></p>
-                        <p className="text-muted-foreground mt-1 text-xs">Development hours saved.</p>
+                     <StatCard title="Projects Accelerated" icon={<TrendingUp className="w-4 h-4"/>} className="bg-gradient-to-br from-cyan-500/40 to-blue-800/60 text-foreground">
+                        <p className="text-2xl sm:text-3xl font-bold"><AnimatedCounter to={1000000} suffix="+" /></p>
                     </StatCard>
-                    <StatCard title="Developer Tools" icon={<Code className="w-5 h-5"/>} className="bg-gradient-to-br from-purple-500/30 to-indigo-700/50 text-foreground">
-                        <div className="relative z-10">
-                            <p className="text-3xl sm:text-4xl font-bold"><AnimatedCounter to={100} suffix="M+" /></p>
-                            <p className="text-muted-foreground mt-1 text-xs">Lines of code analyzed.</p>
-                        </div>
+                    <StatCard title="Developer Tools" icon={<Code className="w-4 h-4"/>} className="bg-gradient-to-br from-purple-500/40 to-indigo-800/60 text-foreground">
+                        <p className="text-2xl sm:text-3xl font-bold"><AnimatedCounter to={100} suffix="M+" /></p>
                     </StatCard>
-                     <StatCard title="Security First" icon={<ShieldCheck className="w-5 h-5"/>} className="bg-gradient-to-br from-red-500/30 to-orange-700/50 text-foreground">
-                        <p className="text-3xl sm:text-4xl font-bold"><AnimatedCounter to={1200} suffix="+" /></p>
-                        <p className="text-muted-foreground mt-1 text-xs">Critical vulnerabilities found.</p>
+                     <StatCard title="Security First" icon={<ShieldCheck className="w-4 h-4"/>} className="bg-gradient-to-br from-red-500/40 to-orange-800/60 text-foreground">
+                        <p className="text-2xl sm:text-3xl font-bold"><AnimatedCounter to={1200} suffix="+" /></p>
                     </StatCard>
-                    <StatCard title="Tester Payouts" icon={<IndianRupee className="w-5 h-5"/>} className="lg:col-span-2 bg-gradient-to-br from-amber-500/30 to-yellow-700/50 text-foreground">
-                        <p className="text-3xl sm:text-4xl font-bold"><AnimatedCounter to={5000000} prefix="₹" /></p>
+                    <StatCard title="Tester Payouts" icon={<IndianRupee className="w-4 h-4"/>} className="col-span-2 lg:col-span-4 bg-gradient-to-br from-amber-500/40 to-yellow-800/60 text-foreground">
+                        <p className="text-2xl sm:text-3xl font-bold"><AnimatedCounter to={5000000} prefix="₹" /></p>
                         <p className="text-muted-foreground mt-1 text-xs">Paid to our testing community.</p>
                     </StatCard>
                 </div>
