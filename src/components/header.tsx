@@ -74,14 +74,14 @@ export function Header() {
           <div className="md:hidden">
             <Sheet open={isMenuOpen} onOpenChange={setMenuOpen}>
               <SheetTrigger asChild>
-                <Button variant="ghost" size="icon">
-                  <Menu className="h-6 w-6" />
-                  <span className="sr-only">Open menu</span>
+                 <Button variant="ghost" size="icon" className="md:hidden animate-glow rounded-full">
+                    <Menu className="h-6 w-6" />
+                    <span className="sr-only">Open menu</span>
                 </Button>
               </SheetTrigger>
               <SheetContent side="right">
-                <SheetHeader className="sr-only">
-                  <SheetTitle>Mobile Menu</SheetTitle>
+                <SheetHeader>
+                  <SheetTitle className="sr-only">Mobile Menu</SheetTitle>
                 </SheetHeader>
                 <div className="p-6">
                     <Link href="/" className="flex items-center gap-2 mb-8" onClick={() => setMenuOpen(false)}>
