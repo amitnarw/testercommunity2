@@ -74,12 +74,12 @@ export function Header() {
           <div className="md:hidden">
             <Sheet open={isMenuOpen} onOpenChange={setMenuOpen}>
               <SheetTrigger asChild>
-                 <Button size="icon" className="md:hidden">
+                 <Button size="icon" className="md:hidden" variant="outline">
                     <Menu className="h-6 w-6" />
                     <span className="sr-only">Open menu</span>
                 </Button>
               </SheetTrigger>
-              <SheetContent side="top" className="pt-20">
+              <SheetContent side="top" className="flex flex-col items-center justify-center">
                 <SheetHeader>
                   <SheetTitle className="sr-only">Mobile Menu</SheetTitle>
                 </SheetHeader>
