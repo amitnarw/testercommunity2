@@ -96,7 +96,7 @@ export function GlobalImpactSection() {
                     <h2 
                         className="text-3xl md:text-5xl font-bold mt-4"
                     >
-                        From Local Start to Global Ripples
+                        From Local Startups to Global Scale
                     </h2>
                      <p className="mt-4 text-muted-foreground text-lg">
                         Our platform empowers developers and testers worldwide, creating a virtuous cycle of quality and innovation. Here's a look at our collective impact.
@@ -126,9 +126,9 @@ export function GlobalImpactSection() {
                         <p className="text-2xl sm:text-3xl font-bold"><AnimatedCounter to={100} suffix="M+" /></p>
                          <p className="text-muted-foreground mt-1 text-xs">Lines of code analyzed.</p>
                     </StatCard>
-                    <StatCard title="Tester Payouts" icon={<IndianRupee className="w-4 h-4"/>} className="col-span-2 lg:col-span-2">
+                    <StatCard title="Tester Payouts" icon={<IndianRupee className="w-4 h-4"/>} className="col-span-2 lg:col-span-2 bg-gradient-to-br from-primary to-primary/50 text-primary-foreground">
                         <p className="text-2xl sm:text-3xl font-bold"><AnimatedCounter to={5000000} prefix="₹" /></p>
-                        <p className="text-muted-foreground mt-1 text-xs">Paid to our testing community.</p>
+                        <p className="text-primary-foreground/80 mt-1 text-xs">Paid to our testing community.</p>
                     </StatCard>
                 </div>
             </div>
