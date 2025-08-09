@@ -19,7 +19,7 @@ export default function TesterCard({ tester }: TesterCardProps) {
           <AvatarFallback>{tester.name.charAt(0)}</AvatarFallback>
         </Avatar>
         <div>
-          <CardTitle className="font-headline text-lg">{tester.name}</CardTitle>
+          <CardTitle className="text-lg">{tester.name}</CardTitle>
           <CardDescription className="flex items-center gap-1"><MapPin className="w-3 h-3"/>{tester.country}</CardDescription>
         </div>
       </CardHeader>
@@ -34,7 +34,7 @@ export default function TesterCard({ tester }: TesterCardProps) {
                 <Star className="w-4 h-4 text-amber-400 fill-amber-400" />
                 <span className="font-bold">{tester.reputation.toFixed(1)}</span>
             </div>
-            <p><span className="font-bold text-foreground">${tester.rate}</span>/hr</p>
+            <p><span className="font-bold text-foreground">₹{tester.rate}</span>/hr</p>
         </div>
       </CardContent>
       <CardFooter className="p-4 pt-0">
@@ -45,3 +45,5 @@ export default function TesterCard({ tester }: TesterCardProps) {
     </Card>
   );
 }
+
+    

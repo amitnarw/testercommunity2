@@ -31,7 +31,7 @@ export default function DashboardCharts() {
     <div className="grid gap-4 md:gap-8 lg:grid-cols-2 xl:grid-cols-3">
         <Card className="xl:col-span-2 rounded-xl">
             <CardHeader>
-            <CardTitle className="font-headline">Bug Reports Overview</CardTitle>
+            <CardTitle>Bug Reports Overview</CardTitle>
             <CardDescription>A monthly overview of new bug reports vs resolved issues.</CardDescription>
             </CardHeader>
             <CardContent>
@@ -68,7 +68,7 @@ export default function DashboardCharts() {
 
         <Card className="rounded-xl">
             <CardHeader>
-            <CardTitle className="font-headline">Bugs by Category</CardTitle>
+            <CardTitle>Bugs by Category</CardTitle>
             <CardDescription>Distribution of bug reports across different categories.</CardDescription>
             </CardHeader>
             <CardContent className="flex-1 pb-0">
@@ -116,7 +116,7 @@ export default function DashboardCharts() {
                             const { cx, cy, innerRadius, outerRadius, startAngle, endAngle, fill, payload } = props as PieSectorDataItem;
                             return (
                                 <g>
-                                    <text x={cx} y={cy} dy={8} textAnchor="middle" fill={fill} className="text-lg font-bold">
+                                    <text x={cx} y={cy} dy={8} textAnchor="middle" fill={fill} className="text-lg font-bold font-body">
                                         {payload.category}
                                     </text>
                                     <Sector

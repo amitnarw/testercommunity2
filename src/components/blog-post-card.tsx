@@ -27,7 +27,7 @@ export default function BlogPostCard({ post }: BlogPostCardProps) {
                 </div>
             </CardHeader>
             <CardContent className="p-6 flex-1">
-                <CardTitle className="font-headline text-xl mb-2 group-hover:text-primary transition-colors">{post.title}</CardTitle>
+                <CardTitle className="text-xl mb-2 group-hover:text-primary transition-colors">{post.title}</CardTitle>
                 <div className="flex flex-wrap gap-2 mb-4">
                     {post.tags.slice(0, 2).map((tag) => (
                         <Badge key={tag} variant="secondary" className="rounded-full">{tag}</Badge>

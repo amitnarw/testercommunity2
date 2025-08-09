@@ -1,3 +1,4 @@
+
 import type {Config} from 'tailwindcss';
 
 export default {
@@ -17,8 +18,7 @@ export default {
     },
     extend: {
       fontFamily: {
-        body: ['Montserrat', 'sans-serif'],
-        headline: ['Montserrat', 'sans-serif'],
+        body: ['Plus Jakarta Sans', 'sans-serif'],
         code: ['monospace'],
       },
       colors: {
@@ -85,10 +85,43 @@ export default {
             height: '0',
           },
         },
+        'scroll-ltr': {
+            '0%': { transform: 'translateX(0)' },
+            '100%': { transform: 'translateX(-50%)' },
+        },
+        'scroll-rtl': {
+            '0%': { transform: 'translateX(-50%)' },
+            '100%': { transform: 'translateX(0)' },
+        },
+        'fade-in-up': {
+            '0%': {
+                opacity: '0',
+                transform: 'translateY(20px)'
+            },
+            '100%': {
+                opacity: '1',
+                transform: 'translateY(0)'
+            },
+        },
+        'image-zoom': {
+          '0%': { transform: 'scale(1)' },
+          '100%': { transform: 'scale(1.05)' },
+        },
       },
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
+        'scroll-ltr': 'scroll-ltr 20s linear infinite',
+        'scroll-rtl': 'scroll-rtl 20s linear infinite',
+        'fade-in-up': 'fade-in-up 0.5s ease-out forwards',
+        'image-zoom': 'image-zoom 0.5s ease-in-out forwards',
+      },
+       backgroundImage: {
+        'dot-pattern': "radial-gradient(circle, hsl(var(--primary) / 0.1) 1px, transparent 1px)",
+        'dot-pattern-dark': "radial-gradient(circle, hsl(var(--primary) / 0.2) 1px, transparent 1px)",
+      },
+      backgroundSize: {
+        'dot-pattern': '20px 20px',
       },
     },
   },

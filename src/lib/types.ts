@@ -25,3 +25,11 @@ export type BlogPost = {
   dataAiHint?: string;
   tags: string[];
 };
+
+export type Testimonial = {
+  name: string;
+  role: string;
+  avatar: string;
+  dataAiHint?: string;
+  comment: string;
+};

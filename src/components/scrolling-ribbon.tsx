@@ -13,6 +13,10 @@ const RibbonText = () => (
         <span className="text-primary-foreground/50 mx-8">•</span>
         <span className="mx-8">Level Up Your Skills</span>
         <span className="text-primary-foreground/50 mx-8">•</span>
+        <span className="mx-8">Ship Faster</span>
+        <span className="text-primary-foreground/50 mx-8">•</span>
+        <span className="mx-8">Build Better Apps</span>
+        <span className="text-primary-foreground/50 mx-8">•</span>
     </>
 )
 
@@ -35,7 +39,7 @@ export function ScrollingRibbon() {
                     }
                     if (ribbonRef2.current) {
                         const speed = 0.35;
-                        const movement = (lastScrollY * speed) - 1000;
+                        const movement = (lastScrollY * speed) - 3000;
                         ribbonRef2.current.style.transform = `translateX(${movement}px)`;
                     }
                     ticking = false;
@@ -59,10 +63,18 @@ export function ScrollingRibbon() {
                         <RibbonText />
                         <RibbonText />
                         <RibbonText />
+                        <RibbonText />
+                        <RibbonText />
+                        <RibbonText />
+                        <RibbonText />
                     </div>
                 </div>
                 <div className="flex whitespace-nowrap text-2xl md:text-3xl font-bold uppercase tracking-wider text-primary-foreground select-none bg-primary">
                     <div ref={ribbonRef2} className="flex my-6">
+                        <RibbonText />
+                        <RibbonText />
+                        <RibbonText />
+                        <RibbonText />
                         <RibbonText />
                         <RibbonText />
                         <RibbonText />

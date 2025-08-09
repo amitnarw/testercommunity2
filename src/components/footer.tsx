@@ -1,3 +1,4 @@
+
 import Link from 'next/link';
 import { TestTribeLogo } from './icons';
 import { Button } from './ui/button';
@@ -24,7 +25,8 @@ const legalItems = [
 
 export function Footer() {
   return (
-    <footer className="bg-background border-t">
+    <footer className="bg-transparent border-t relative overflow-hidden">
+      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1/2 h-32 bg-primary/20 rounded-full blur-[100px] -z-10 pointer-events-none" />
       <div className="container mx-auto px-4 md:px-6 py-16">
         <div className="grid gap-8 lg:grid-cols-3">
           <div className="space-y-4">
@@ -49,7 +51,7 @@ export function Footer() {
           </div>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-8 lg:col-span-2">
             <div className="space-y-4">
-              <h4 className="font-headline font-semibold">Platform</h4>
+              <h4 className="font-semibold">Platform</h4>
               <ul className="space-y-2">
                 {navItems.map((item) => (
                     <li key={item.name}>
@@ -61,7 +63,7 @@ export function Footer() {
               </ul>
             </div>
              <div className="space-y-4">
-              <h4 className="font-headline font-semibold">Resources</h4>
+              <h4 className="font-semibold">Resources</h4>
               <ul className="space-y-2">
                 {resourceItems.map((item) => (
                   <li key={item.name}>
@@ -73,7 +75,7 @@ export function Footer() {
               </ul>
             </div>
              <div className="space-y-4">
-              <h4 className="font-headline font-semibold">Legal</h4>
+              <h4 className="font-semibold">Legal</h4>
               <ul className="space-y-2">
                  {legalItems.map((item) => (
                   <li key={item.name}>

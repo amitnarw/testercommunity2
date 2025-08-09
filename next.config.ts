@@ -27,6 +27,12 @@ const nextConfig: NextConfig = {
         hostname: 'play.google.com',
         port: '',
         pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'storage.googleapis.com',
+        port: '',
+        pathname: '/**',
       }
     ],
   },
