@@ -205,7 +205,7 @@ export default function Home() {
                                 {features.map((feature, i) => (
                                     <FeatureCard key={feature.title}>
                                         <CardHeader>
-                                            <CardTitle className="text-lg text-white dark:text-white">{feature.title}</CardTitle>
+                                            <CardTitle className="text-lg text-black dark:text-white">{feature.title}</CardTitle>
                                         </CardHeader>
                                         <CardContent>
                                             <p className="text-muted-foreground">{feature.description}</p>
