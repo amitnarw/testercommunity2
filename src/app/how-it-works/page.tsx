@@ -16,12 +16,15 @@ const HorizontalRoadmap = ({ steps, isPro }: { steps: typeof communityPathSteps,
     const targetRef = useRef<HTMLDivElement | null>(null);
     const { scrollYProgress } = useScroll({
         target: targetRef,
+        offset: ['start start', 'end end'],
     });
 
-    const x = useTransform(scrollYProgress, [0, 1], ["0%", `-${100 * (steps.length -1)}%`]);
+    const totalSteps = steps.length;
+    const scrollEndpoint = totalSteps > 1 ? (totalSteps - 1) / totalSteps : 1;
+    const x = useTransform(scrollYProgress, [0, scrollEndpoint], ["0%", `-${100 * (totalSteps - 1)}%`]);
 
     return (
-        <section ref={targetRef} style={{ height: `${steps.length * 100}vh` }} className="relative">
+        <section ref={targetRef} style={{ height: `${totalSteps * 100}vh` }} className="relative">
             <div className="sticky top-0 flex h-screen items-center overflow-hidden">
                 <motion.div style={{ x }} className="flex">
                     {steps.map((step) => (
