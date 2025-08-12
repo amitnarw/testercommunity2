@@ -87,8 +87,8 @@ export function SignupForm() {
                                         <FormControl>
                                             <RadioGroupItem value="developer" id="developer" className="peer sr-only" />
                                         </FormControl>
-                                        <Label htmlFor="developer" className="relative flex flex-col justify-between cursor-pointer rounded-xl border-2 bg-background p-4 text-center transition-all peer-data-[state=checked]:border-primary peer-data-[state=checked]:text-primary-foreground peer-data-[state=checked]:bg-primary peer-data-[state=checked]:shadow-lg h-28">
-                                            <CheckCircle2 className="absolute right-2 top-2 h-5 w-5 opacity-0 transition-opacity peer-data-[state=checked]:opacity-100" />
+                                        <Label htmlFor="developer" className="relative flex flex-col justify-between cursor-pointer rounded-xl border-2 border-border bg-background p-4 text-center transition-all h-28 peer-data-[state=checked]:border-primary peer-data-[state=checked]:bg-primary peer-data-[state=checked]:text-primary-foreground">
+                                            <CheckCircle2 className="absolute right-2 top-2 h-5 w-5 opacity-0 transition-opacity duration-300 peer-data-[state=checked]:opacity-100" />
                                             <div>
                                                 <p className="font-semibold">I'm a Developer</p>
                                                 <p className="text-xs text-muted-foreground peer-data-[state=checked]:text-primary-foreground/80 mt-1">I want to get my app tested</p>
@@ -99,8 +99,8 @@ export function SignupForm() {
                                         <FormControl>
                                             <RadioGroupItem value="tester" id="tester" className="peer sr-only" />
                                         </FormControl>
-                                        <Label htmlFor="tester" className="relative flex flex-col justify-between cursor-pointer rounded-xl border-2 bg-background p-4 text-center transition-all peer-data-[state=checked]:border-primary peer-data-[state=checked]:text-primary-foreground peer-data-[state=checked]:bg-primary peer-data-[state=checked]:shadow-lg h-28">
-                                            <CheckCircle2 className="absolute right-2 top-2 h-5 w-5 opacity-0 transition-opacity peer-data-[state=checked]:opacity-100" />
+                                        <Label htmlFor="tester" className="relative flex flex-col justify-between cursor-pointer rounded-xl border-2 border-border bg-background p-4 text-center transition-all h-28 peer-data-[state=checked]:border-primary peer-data-[state=checked]:bg-primary peer-data-[state=checked]:text-primary-foreground">
+                                            <CheckCircle2 className="absolute right-2 top-2 h-5 w-5 opacity-0 transition-opacity duration-300 peer-data-[state=checked]:opacity-100" />
                                             <div>
                                                 <p className="font-semibold">I'm a Tester</p>
                                                 <p className="text-xs text-muted-foreground peer-data-[state=checked]:text-primary-foreground/80 mt-1">I want to test apps and earn</p>
