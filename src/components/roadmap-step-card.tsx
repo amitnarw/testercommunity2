@@ -41,14 +41,15 @@ export function RoadmapStepCard({ step, isPro }: RoadmapStepCardProps) {
       viewport={{ once: true, amount: 0.2 }}
       className={cn(
         "w-full h-full p-8 md:p-12 lg:p-24 flex items-center justify-center overflow-hidden relative",
+        // This is the part to change for `isPro`
         isPro 
-          ? "bg-gradient-to-br from-secondary via-background to-background dark:from-gray-900 dark:via-gray-950 dark:to-black" 
+          ? "bg-gradient-to-br from-amber-50 via-background to-background dark:from-gray-900 dark:via-black dark:to-black" 
           : "bg-white dark:bg-gray-900"
       )}
     >
         <div className={cn("absolute inset-0 pointer-events-none",
             !isPro && "bg-[radial-gradient(ellipse_at_bottom_left,_var(--tw-gradient-stops))] from-primary/5 via-transparent to-transparent dark:from-primary/10",
-            isPro && "bg-gradient-to-tr from-primary/5 via-transparent to-transparent dark:from-primary/20"
+            isPro && "bg-gradient-to-tr from-amber-400/10 via-transparent to-transparent dark:from-amber-400/20"
         )}></div>
         
         <div className="max-w-7xl mx-auto w-full grid md:grid-cols-12 gap-4 md:gap-16 items-center relative z-10">
@@ -59,9 +60,9 @@ export function RoadmapStepCard({ step, isPro }: RoadmapStepCardProps) {
             >
                 <span className={cn(
                     "font-black leading-none",
-                    "text-7xl md:text-[10rem] lg:text-[12rem]",
+                    "text-7xl md:text-[10rem] lg:text-[12rem] text-xs md:text-base",
                     isPro 
-                        ? "text-transparent bg-clip-text bg-gradient-to-b from-primary/20 to-primary/0" 
+                        ? "text-transparent bg-clip-text bg-gradient-to-b from-amber-300 to-amber-500" 
                         : "text-primary/10"
                 )}>
                     {step.step}
@@ -75,7 +76,7 @@ export function RoadmapStepCard({ step, isPro }: RoadmapStepCardProps) {
             >
                 {badgeText && 
                     <motion.div variants={itemVariants}>
-                        <Badge variant={isPro ? "default" : "secondary"} className="text-xs py-1 px-3 md:text-sm md:py-2 md:px-4 rounded-lg mb-4 md:mb-6 shadow-md">
+                        <Badge variant={isPro ? "default" : "secondary"} className={cn("text-xs py-1 px-3 md:text-sm md:py-2 md:px-4 rounded-lg mb-4 md:mb-6 shadow-md", isPro && "bg-amber-500/10 text-amber-600 border border-amber-500/20 dark:bg-amber-500/10 dark:text-amber-400")}>
                             {badgeText}
                         </Badge>
                     </motion.div>
@@ -83,7 +84,7 @@ export function RoadmapStepCard({ step, isPro }: RoadmapStepCardProps) {
                 
                 <motion.h3 
                     variants={itemVariants}
-                    className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 md:mb-6 text-foreground"
+                    className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 md:mb-6 text-foreground text-xs md:text-base"
                 >
                     {title}
                 </motion.h3>
