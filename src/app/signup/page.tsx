@@ -1,14 +1,12 @@
 
 import { SignupForm } from '@/components/signup-form';
-import { TestTribeLogo } from '@/components/icons';
-import Link from 'next/link';
 import { ParallaxBackground } from '@/components/parallax-background';
 import { Card, CardContent } from '@/components/ui/card';
 
 export default function SignupPage() {
   return (
     <div className="min-h-screen w-full lg:grid lg:grid-cols-2">
-      <div className="hidden lg:flex flex-col items-center justify-center p-12 text-center relative overflow-hidden bg-secondary">
+      <div className="hidden lg:flex flex-col items-center justify-center p-12 text-center relative overflow-hidden bg-gradient-to-br from-blue-50 to-blue-200 dark:bg-secondary">
         <div className="relative z-10 flex flex-col items-center justify-center">
             <ParallaxBackground />
             <h1 className="text-4xl font-bold tracking-tight mt-8">Join a community of innovators</h1>
@@ -17,7 +15,7 @@ export default function SignupPage() {
             </p>
         </div>
       </div>
-        <div className="w-full max-w-md space-y-8 flex flex-col justify-center mx-auto p-6">
+        <div className="w-full space-y-8 flex flex-col justify-center mx-auto p-6">
             <div>
               <h2 className="mt-6 text-center text-3xl font-bold tracking-tight text-foreground">
                 Create your account

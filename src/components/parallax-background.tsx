@@ -13,8 +13,8 @@ const Cloud = ({ className }: { className?: string }) => (
     >
         <defs>
             <linearGradient id="cloud-gradient" x1="0%" y1="0%" x2="0%" y2="100%">
-                <stop offset="0%" style={{ stopColor: 'white', stopOpacity: '0.9' }} />
-                <stop offset="100%" style={{ stopColor: 'white', stopOpacity: '0.7' }} />
+                <stop offset="0%" style={{ stopColor: 'currentColor', stopOpacity: '0.9' }} />
+                <stop offset="100%" style={{ stopColor: 'currentColor', stopOpacity: '0.7' }} />
             </linearGradient>
         </defs>
         <path 
@@ -60,7 +60,7 @@ export function ParallaxBackground() {
   const cloud3Y = useSpring(mousePosition.y * 15, springConfig);
 
   return (
-    <div className="relative w-[400px] h-[200px] flex items-center justify-center">
+    <div className="relative w-[400px] h-[200px] flex items-center justify-center text-white dark:text-gray-100">
         {/* Back Cloud */}
         <motion.div
             className="absolute z-0"
