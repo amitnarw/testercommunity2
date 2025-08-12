@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState } from 'react';
@@ -18,12 +19,13 @@ const step1Schema = z.object({
 });
 
 const step2Schema = z.object({
+  fullName: z.string().min(2, 'Please enter your full name.'),
   email: z.string().email('Please enter a valid email address.'),
-  password: z.string().min(8, 'Password must be at least 8 characters long.'),
+  
 });
 
 const step3Schema = z.object({
-    fullName: z.string().min(2, 'Please enter your full name.'),
+    password: z.string().min(8, 'Password must be at least 8 characters long.'),
     terms: z.boolean().refine(val => val === true, { message: 'You must accept the terms.' }),
 });
 
@@ -80,7 +82,7 @@ export function SignupForm() {
         <div>
             {currentStep === 0 && (
                 <div className="space-y-4">
-                    <Label>What is your role?</Label>
+                    <Label>What is your primary role?</Label>
                     <RadioGroup {...register('role')} className="grid grid-cols-2 gap-4">
                         <div>
                             <RadioGroupItem value="developer" id="developer" className="peer sr-only" />
@@ -101,26 +103,6 @@ export function SignupForm() {
             {currentStep === 1 && (
                 <div className="space-y-4">
                     <div>
-                        <Label htmlFor="email">Email</Label>
-                        <div className="relative">
-                            <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                            <Input id="email" type="email" placeholder="you@example.com" {...register('email')} className="pl-10 rounded-xl" />
-                        </div>
-                        {errors.email && <p className="text-sm text-destructive">{errors.email.message as string}</p>}
-                    </div>
-                    <div>
-                        <Label htmlFor="password">Password</Label>
-                         <div className="relative">
-                            <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                            <Input id="password" type="password" placeholder="********" {...register('password')} className="pl-10 rounded-xl" />
-                        </div>
-                        {errors.password && <p className="text-sm text-destructive">{errors.password.message as string}</p>}
-                    </div>
-                </div>
-            )}
-            {currentStep === 2 && (
-                <div className="space-y-4">
-                    <div>
                         <Label htmlFor="fullName">Full Name</Label>
                          <div className="relative">
                             <User className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
@@ -128,7 +110,27 @@ export function SignupForm() {
                         </div>
                         {errors.fullName && <p className="text-sm text-destructive">{errors.fullName.message as string}</p>}
                     </div>
-                    <div className="flex items-center space-x-2">
+                    <div>
+                        <Label htmlFor="email">Email</Label>
+                        <div className="relative">
+                            <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                            <Input id="email" type="email" placeholder="you@example.com" {...register('email')} className="pl-10 rounded-xl" />
+                        </div>
+                        {errors.email && <p className="text-sm text-destructive">{errors.email.message as string}</p>}
+                    </div>
+                </div>
+            )}
+            {currentStep === 2 && (
+                <div className="space-y-4">
+                     <div>
+                        <Label htmlFor="password">Password</Label>
+                         <div className="relative">
+                            <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
+                            <Input id="password" type="password" placeholder="********" {...register('password')} className="pl-10 rounded-xl" />
+                        </div>
+                        {errors.password && <p className="text-sm text-destructive">{errors.password.message as string}</p>}
+                    </div>
+                    <div className="flex items-center space-x-2 pt-2">
                        <Checkbox id="terms" {...register('terms')} className="rounded-sm" />
                         <Label htmlFor="terms" className="text-sm font-normal">
                             I accept the <a href="#" className="underline text-primary">terms and conditions</a>.
@@ -139,16 +141,16 @@ export function SignupForm() {
             )}
         </div>
       </form>
-      <div className="flex justify-between">
+      <div className="flex justify-between pt-4">
         <Button variant="outline" onClick={handlePrev} disabled={currentStep === 0} className="rounded-xl">
             <ArrowLeft className="mr-2 h-4 w-4" /> Previous
         </Button>
         {currentStep < steps.length - 1 ? (
           <Button onClick={handleNext} className="rounded-xl">
             Next <ArrowRight className="ml-2 h-4 w-4" />
-          </Button>
+          </a sButton>
         ) : (
-          <Button onClick={handleNext} className="rounded-xl">Finish</Button>
+          <Button onClick={handleNext} className="rounded-xl">Finish Sign Up</Button>
         )}
       </div>
     </div>
