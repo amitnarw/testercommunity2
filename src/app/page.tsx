@@ -166,7 +166,7 @@ export default function Home() {
                                 Now in Public Beta
                             </Badge>
                             <h1 className="text-[2.25rem] sm:text-[2.75rem] md:text-[3.5rem] lg:text-[4.25rem] font-heading leading-[1.1] tracking-tight font-bold mb-5 sm:mb-6 md:mb-8">
-                                Test Together or <span className="bg-gradient-to-br from-primary to-accent bg-clip-text text-transparent">Leave It to Us</span>
+                                Free Community Testing, or <span className="bg-gradient-to-br from-primary to-accent bg-clip-text text-transparent">UPGRADE to Professional Testing</span>
                             </h1>
                             <p className="text-sm sm:text-base md:text-lg font-body max-w-sm sm:max-w-md md:max-w-lg lg:max-w-[700px] mx-auto mb-8 sm:mb-9 md:mb-10 lg:mb-12 text-muted-foreground">
                                 Harness the power of our community to test your app for free, or hire our professional testers for guaranteed results. The choice is yours.
