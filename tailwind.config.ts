@@ -124,7 +124,7 @@ export default {
       },
        backgroundImage: {
         'dot-pattern': "radial-gradient(circle, hsl(var(--primary) / 0.1) 1px, transparent 1px)",
-        'dot-pattern-dark': ["radial-gradient(circle, hsl(var(--primary) / 0.2) 1px, transparent 1px)", { backgroundSize: '20px 20px' }],
+        'dot-pattern-dark': ["radial-gradient(circle at 1px 1px, hsl(var(--primary) / 0.2) 1px, hsl(var(--secondary)) 0)", { backgroundSize: '20px 20px' }],
       },
     },
   },
