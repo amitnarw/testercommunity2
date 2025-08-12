@@ -12,8 +12,7 @@ import { useState, useEffect } from 'react';
 import { useTheme } from 'next-themes';
 
 const navItems = [
-  { name: 'Marketplace', href: '/marketplace' },
-  { name: 'Dashboard', href: '/dashboard' },
+  { name: 'Home', href: '/' },
   { name: 'How It Works', href: '/how-it-works' },
   { name: 'Blog', href: '/blog' },
 ];

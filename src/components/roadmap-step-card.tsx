@@ -75,7 +75,7 @@ export function RoadmapStepCard({ step, isPro }: RoadmapStepCardProps) {
             >
                 {badgeText && 
                     <motion.div variants={itemVariants}>
-                        <Badge variant={isPro ? "default" : "secondary"} className={cn("text-xs py-1 px-3 md:text-sm md:py-2 md:px-4 rounded-lg mb-4 md:mb-6 shadow-md", isPro && "bg-amber-500/10 text-amber-600 border border-amber-500/20 dark:bg-amber-500/10 dark:text-amber-400")}>
+                        <Badge variant={isPro ? "default" : "secondary"} className={cn("text-xs py-1 px-3 md:text-sm md:py-2 md:px-4 rounded-lg mb-4 md:mb-6", isPro && "bg-amber-500/10 text-amber-600 border border-amber-500/20 dark:bg-amber-500/10 dark:text-amber-400")}>
                             {badgeText}
                         </Badge>
                     </motion.div>

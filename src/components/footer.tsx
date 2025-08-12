@@ -6,10 +6,10 @@ import { Github, Twitter, Linkedin } from 'lucide-react';
 import Image from 'next/image';
 
 const navItems = [
-  { name: 'Marketplace', href: '/marketplace' },
-  { name: 'Dashboard', href: '/dashboard' },
-  { name: 'Blog', href: '/blog' },
-  { name: 'Sign Up', href: '/signup' },
+    { name: 'Home', href: '/' },
+    { name: 'How It Works', href: '/how-it-works' },
+    { name: 'Blog', href: '/blog' },
+    { name: 'Sign Up', href: '/signup' },
 ];
 
 const resourceItems = [
