@@ -7,7 +7,7 @@ import Link from 'next/link';
 export default function SignupPage() {
   return (
     <div className="min-h-screen w-full lg:grid lg:grid-cols-2">
-      <div className="hidden lg:flex flex-col items-center justify-center p-12 text-center relative overflow-hidden bg-dot-pattern-dark animate-background-position">
+      <div className="hidden lg:flex flex-col items-center justify-center p-12 text-center relative overflow-hidden bg-secondary/50 animate-speed-lines bg-speed-lines-dark">
         <div className="relative z-10">
             <Link href="/" className="inline-block mb-8">
                 <TestTribeLogo className="h-12" />

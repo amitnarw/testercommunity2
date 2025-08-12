@@ -107,11 +107,10 @@ export default {
           '0%': { transform: 'scale(1)' },
           '100%': { transform: 'scale(1.05)' },
         },
-        'background-position': {
-            '0%': { 'background-position': '0% 50%' },
-            '50%': { 'background-position': '100% 50%' },
-            '100%': { 'background-position': '0% 50%' },
-        }
+        'speed-lines': {
+            '0%': { 'background-position': '0% 0%' },
+            '100%': { 'background-position': '-100% 100%' },
+        },
       },
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
@@ -120,11 +119,10 @@ export default {
         'scroll-rtl': 'scroll-rtl 20s linear infinite',
         'fade-in-up': 'fade-in-up 0.5s ease-out forwards',
         'image-zoom': 'image-zoom 0.5s ease-in-out forwards',
-        'background-position': 'background-position 20s ease-in-out infinite',
+        'speed-lines': 'speed-lines 30s linear infinite',
       },
        backgroundImage: {
-        'dot-pattern': "radial-gradient(circle, hsl(var(--primary) / 0.1) 1px, transparent 1px)",
-        'dot-pattern-dark': ["radial-gradient(circle at 1px 1px, hsl(var(--primary) / 0.2) 1px, hsl(var(--secondary)) 0)", { backgroundSize: '20px 20px' }],
+        'speed-lines-dark': "repeating-linear-gradient(-45deg, transparent, transparent 10px, hsl(var(--primary) / 0.05) 10px, hsl(var(--primary) / 0.05) 20px)",
       },
     },
   },
