@@ -7,10 +7,10 @@ import * as z from 'zod';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
-import { User, Lock, Mail } from 'lucide-react';
 import { Checkbox } from './ui/checkbox';
 import { RadioGroup, RadioGroupItem } from './ui/radio-group';
 import { Separator } from './ui/separator';
+import { cn } from '@/lib/utils';
 
 const signupSchema = z.object({
   role: z.enum(['developer', 'tester'], { required_error: 'Please select a role.' }),
@@ -31,6 +31,24 @@ const GoogleIcon = (props: React.SVGProps<SVGSVGElement>) => (
     </svg>
 );
 
+const FloatingLabelInput = ({ id, label, register, error }: { id: any, label: string, register: any, error?: { message?: string }}) => (
+    <div className="relative border-b-2 border-muted focus-within:border-primary transition-colors">
+        <Input 
+            id={id} 
+            placeholder=" " 
+            {...register(id)} 
+            className="block w-full appearance-none focus:outline-none bg-transparent border-none p-0 pt-6" 
+        />
+        <Label 
+            htmlFor={id} 
+            className="absolute top-4 left-0 -translate-y-1/2 duration-300 origin-0 text-muted-foreground"
+        >
+            {label}
+        </Label>
+        {error && <p className="text-sm text-destructive mt-1">{error.message}</p>}
+    </div>
+);
+
 
 export function SignupForm() {
   const { register, handleSubmit, formState: { errors } } = useForm<SignupFormData>({
@@ -44,71 +62,50 @@ export function SignupForm() {
   };
 
   return (
-    <div className="space-y-6">
-        <Button variant="outline" className="w-full rounded-xl">
-            <GoogleIcon className="mr-2" />
+    <div className="space-y-8">
+        <Button variant="outline" className="w-full rounded-xl py-6 text-lg">
+            <GoogleIcon className="mr-3" />
             Sign up with Google
         </Button>
 
         <div className="flex items-center gap-4">
-            <Separator className="flex-1" />
-            <span className="text-xs text-muted-foreground">OR CONTINUE WITH EMAIL</span>
-            <Separator className="flex-1" />
+            <Separator className="flex-1 bg-border/50" />
+            <span className="text-xs text-muted-foreground">OR</span>
+            <Separator className="flex-1 bg-border/50" />
         </div>
 
-        <form onSubmit={handleSubmit(processForm)} className="space-y-4">
+        <form onSubmit={handleSubmit(processForm)} className="space-y-8">
             <div>
-                <Label className="text-base">I am a...</Label>
-                <RadioGroup {...register('role')} className="grid grid-cols-2 gap-4 mt-2">
+                <RadioGroup {...register('role')} className="grid grid-cols-2 gap-2 rounded-xl bg-muted p-1">
                     <div>
                         <RadioGroupItem value="developer" id="developer" className="peer sr-only" />
-                        <Label htmlFor="developer" className="flex flex-col items-center justify-between rounded-xl border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary">
-                            Developer
+                        <Label htmlFor="developer" className="flex items-center justify-center rounded-lg p-2 text-center text-sm font-semibold transition-colors peer-data-[state=checked]:bg-background peer-data-[state=checked]:text-foreground peer-data-[state=unchecked]:text-muted-foreground">
+                            I'm a Developer
                         </Label>
                     </div>
                      <div>
                         <RadioGroupItem value="tester" id="tester" className="peer sr-only" />
-                        <Label htmlFor="tester" className="flex flex-col items-center justify-between rounded-xl border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary">
-                            Tester
+                        <Label htmlFor="tester" className="flex items-center justify-center rounded-lg p-2 text-center text-sm font-semibold transition-colors peer-data-[state=checked]:bg-background peer-data-[state=checked]:text-foreground peer-data-[state=unchecked]:text-muted-foreground">
+                            I'm a Tester
                         </Label>
                     </div>
                 </RadioGroup>
                 {errors.role && <p className="text-sm text-destructive mt-1">{errors.role.message}</p>}
             </div>
 
-            <div>
-                <Label htmlFor="fullName">Full Name</Label>
-                 <div className="relative">
-                    <User className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                    <Input id="fullName" placeholder="John Doe" {...register('fullName')} className="pl-10 rounded-xl" />
-                </div>
-                {errors.fullName && <p className="text-sm text-destructive">{errors.fullName.message}</p>}
-            </div>
-            <div>
-                <Label htmlFor="email">Email</Label>
-                <div className="relative">
-                    <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                    <Input id="email" type="email" placeholder="you@example.com" {...register('email')} className="pl-10 rounded-xl" />
-                </div>
-                {errors.email && <p className="text-sm text-destructive">{errors.email.message}</p>}
-            </div>
-             <div>
-                <Label htmlFor="password">Password</Label>
-                 <div className="relative">
-                    <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                    <Input id="password" type="password" placeholder="********" {...register('password')} className="pl-10 rounded-xl" />
-                </div>
-                {errors.password && <p className="text-sm text-destructive">{errors.password.message}</p>}
-            </div>
+            <FloatingLabelInput id="fullName" label="Full Name" register={register} error={errors.fullName} />
+            <FloatingLabelInput id="email" label="Email Address" register={register} error={errors.email} />
+            <FloatingLabelInput id="password" label="Password" register={register} error={errors.password} />
+            
             <div className="flex items-center space-x-2 pt-2">
                <Checkbox id="terms" {...register('terms')} className="rounded-sm" />
-                <Label htmlFor="terms" className="text-sm font-normal">
+                <Label htmlFor="terms" className="text-sm font-normal text-muted-foreground">
                     I accept the <a href="#" className="underline text-primary">terms and conditions</a>.
                 </Label>
             </div>
             {errors.terms && <p className="text-sm text-destructive">{errors.terms.message}</p>}
 
-            <Button type="submit" className="w-full rounded-xl">Create Account</Button>
+            <Button type="submit" className="w-full rounded-xl py-6 text-lg">Create Account</Button>
         </form>
     </div>
   );

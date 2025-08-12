@@ -1,3 +1,4 @@
+
 "use client"
 
 import * as React from "react"
@@ -17,7 +18,12 @@ const Label = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <LabelPrimitive.Root
     ref={ref}
-    className={cn(labelVariants(), className)}
+    className={cn(
+      labelVariants(),
+      // Floating label styles
+      "peer-placeholder-shown:scale-100 peer-placeholder-shown:translate-y-0 peer-focus:scale-75 peer-focus:-translate-y-4",
+      className
+    )}
     {...props}
   />
 ))
