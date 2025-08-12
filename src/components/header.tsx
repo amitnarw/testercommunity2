@@ -79,7 +79,7 @@ export function Header() {
                     <span className="sr-only">Open menu</span>
                 </Button>
               </SheetTrigger>
-              <SheetContent side="top" className="flex flex-col items-center">
+              <SheetContent side="top" className="flex flex-col">
                  <div className="absolute top-4 right-4 md:hidden">
                     <SheetClose asChild>
                         <Button size="icon" variant="outline" className='mr-4 mt-1'>
@@ -99,10 +99,9 @@ export function Header() {
                             href={item.href}
                             onClick={() => setMenuOpen(false)}
                             className={cn(
-                            'text-2xl font-medium transition-colors hover:text-primary animate-fade-in-up',
+                            'text-2xl font-medium transition-colors hover:text-primary',
                             pathname === item.href ? 'text-primary' : 'text-foreground'
                             )}
-                            style={{ animationDelay: `${150 + index * 100}ms` }}
                         >
                             {item.name}
                         </Link>
