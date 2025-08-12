@@ -10,22 +10,22 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import Confetti from 'react-dom-confetti';
 
-const HorizontalRoadmap = ({ steps, isPro }: { steps: typeof communityPathSteps, isPro: boolean }) => {
+const HorizontalScrollSection = ({ steps, isPro }: { steps: typeof communityPathSteps; isPro: boolean }) => {
     const targetRef = useRef<HTMLDivElement | null>(null);
     const { scrollYProgress } = useScroll({
         target: targetRef,
-        offset: ['start start', 'end start'],
+        offset: ['start start', 'end end'],
     });
 
-    const x = useTransform(scrollYProgress, [0, 1], ["0%", `-${100 * (steps.length - 1)}%`]);
+    const x = useTransform(scrollYProgress, [0, 1], ['0%', `-${(steps.length - 1) * 100}%`]);
 
     return (
-        <section ref={targetRef} style={{ height: `${steps.length * 100}vh` }} className="relative">
-            <div className="sticky top-0 flex h-screen items-center overflow-hidden">
+        <section ref={targetRef} className="relative" style={{ height: `${steps.length * 100}vh` }}>
+            <div className="sticky top-0 h-screen flex items-center overflow-hidden">
                 <motion.div style={{ x }} className="flex">
                     {steps.map((step) => (
                         <div key={step.step} className="w-screen h-screen flex-shrink-0">
-                            <RoadmapStepCard step={step} isPro={isPro} />
+                           <RoadmapStepCard step={step} isPro={isPro} />
                         </div>
                     ))}
                 </motion.div>
@@ -96,7 +96,7 @@ export default function HowItWorksPage() {
                         </p>
                     </div>
                 </div>
-                 <HorizontalRoadmap steps={communityPathSteps} isPro={false} />
+                 <HorizontalScrollSection steps={communityPathSteps} isPro={false} />
             </section>
             
             <section className="w-full py-16 md:py-20">
@@ -108,7 +108,7 @@ export default function HowItWorksPage() {
                         </p>
                     </div>
                 </div>
-                 <HorizontalRoadmap steps={professionalPathSteps} isPro={true} />
+                 <HorizontalScrollSection steps={professionalPathSteps} isPro={true} />
             </section>
 
              <motion.section 
