@@ -20,11 +20,15 @@ export function RoadmapStepCard({ step, isPro }: RoadmapStepCardProps) {
       className={cn(
         "w-full h-full p-8 md:p-12 flex items-center justify-center overflow-hidden",
         isPro 
-          ? "bg-gradient-to-br from-slate-900 via-black to-slate-900 text-primary-foreground" 
-          : "bg-background dark:bg-secondary/20 dark:bg-dot-pattern-dark dark:bg-[length:30px_30px]"
+          ? "bg-gradient-to-br from-secondary via-background to-background dark:from-primary/20 dark:via-background dark:to-background" 
+          : "bg-background"
       )}
     >
-        <div className="grid md:grid-cols-2 gap-12 items-center w-full max-w-6xl mx-auto">
+        <div className={cn("absolute inset-0 pointer-events-none",
+            !isPro && "bg-[radial-gradient(ellipse_at_bottom_left,_var(--tw-gradient-stops))] from-primary/10 via-transparent to-transparent"
+        )}></div>
+
+        <div className="grid md:grid-cols-2 gap-12 items-center w-full max-w-6xl mx-auto relative z-10">
             {/* Left Column: Icon and Info */}
             <div className="flex flex-col items-center justify-center text-center md:items-start md:text-left">
                 <div className="flex items-center gap-4 mb-6">
@@ -34,11 +38,11 @@ export function RoadmapStepCard({ step, isPro }: RoadmapStepCardProps) {
                     )}>
                     {step.step}
                     </div>
-                    <Icon className={cn("w-16 h-16", isPro ? "text-primary-foreground" : "text-primary")} />
+                    <Icon className="w-16 h-16 text-primary" />
                 </div>
                 
-                <h3 className="text-3xl md:text-4xl font-bold mb-4">{title}</h3>
-                <p className={cn("text-lg md:text-xl mb-6", isPro ? "text-slate-400" : "text-muted-foreground")}>
+                <h3 className="text-4xl md:text-5xl font-bold mb-4 text-foreground">{title}</h3>
+                <p className="text-lg md:text-xl mb-6 text-muted-foreground">
                     {description}
                 </p>
                 {badgeText && <Badge variant={isPro ? "default" : "secondary"} className="text-base py-2 px-4 rounded-lg">{badgeText}</Badge>}
@@ -47,15 +51,17 @@ export function RoadmapStepCard({ step, isPro }: RoadmapStepCardProps) {
             {/* Right Column: Details */}
             <div className="w-full">
                 <div className={cn(
-                    "p-8 rounded-2xl h-full",
-                    isPro ? "bg-white/5 backdrop-blur-sm" : "bg-secondary/50 dark:bg-secondary/30"
+                    "p-8 rounded-2xl h-full border",
+                    isPro 
+                        ? "bg-card/50 backdrop-blur-sm border-primary/20" 
+                        : "bg-secondary/30 dark:bg-secondary/20 border-border/50"
                 )}>
-                <h4 className="text-xl font-bold mb-4">Key Details</h4>
+                <h4 className="text-xl font-bold mb-4 text-foreground">Key Details</h4>
                 <ul className="space-y-4">
                     {details.map((detail, index) => (
                         <li key={index} className="flex items-start gap-3">
                             <CheckCircle className="w-5 h-5 text-primary flex-shrink-0 mt-1" />
-                            <span className={cn(isPro ? "text-slate-300" : "text-muted-foreground")}>{detail}</span>
+                            <span className="text-muted-foreground">{detail}</span>
                         </li>
                     ))}
                 </ul>
