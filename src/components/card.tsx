@@ -1,3 +1,4 @@
+
 import * as React from "react"
 
 import { cn } from "@/lib/utils"
@@ -92,5 +93,27 @@ const FeatureCard = React.forwardRef<
 ));
 FeatureCard.displayName = "FeatureCard";
 
+interface HowItWorksCardProps {
+    icon: React.ReactNode;
+    title: string;
+    description: string;
+}
 
-export { Card, CardHeader, CardFooter, CardTitle, CardDescription, CardContent, FeatureCard }
+const HowItWorksCard = React.forwardRef<
+  HTMLDivElement,
+  HowItWorksCardProps
+>(({ icon, title, description, className, ...props }, ref) => (
+    <div ref={ref} className={cn("flex items-start gap-4", className)} {...props}>
+        <div className="flex-shrink-0 bg-primary/10 p-3 rounded-lg flex items-center justify-center">
+            {icon}
+        </div>
+        <div>
+            <h3 className="text-lg font-semibold">{title}</h3>
+            <p className="text-muted-foreground mt-1">{description}</p>
+        </div>
+    </div>
+));
+HowItWorksCard.displayName = "HowItWorksCard";
+
+
+export { Card, CardHeader, CardFooter, CardTitle, CardDescription, CardContent, FeatureCard, HowItWorksCard }
