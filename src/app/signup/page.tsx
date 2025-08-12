@@ -1,13 +1,14 @@
 
 import { SignupForm } from '@/components/signup-form';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { TestTribeLogo } from '@/components/icons';
 import Link from 'next/link';
+import { ParallaxBackground } from '@/components/parallax-background';
 
 export default function SignupPage() {
   return (
     <div className="min-h-screen w-full lg:grid lg:grid-cols-2">
-      <div className="hidden lg:flex flex-col items-center justify-center p-12 text-center relative overflow-hidden bg-secondary animate-speed-lines bg-speed-lines-dark">
+      <div className="hidden lg:flex flex-col items-center justify-center p-12 text-center relative overflow-hidden bg-secondary">
+        <ParallaxBackground />
         <div className="relative z-10">
             <Link href="/" className="inline-block mb-8">
                 <TestTribeLogo className="h-12" />
