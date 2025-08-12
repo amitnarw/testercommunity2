@@ -17,11 +17,7 @@ export function RoadmapStepCard({ step, isPro }: RoadmapStepCardProps) {
   const { icon: Icon, title, description, details, badgeText } = step;
 
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      whileInView={{ opacity: 1 }}
-      transition={{ duration: 0.8, ease: 'easeOut' }}
-      viewport={{ amount: 0.5 }}
+    <div
       className={cn(
         "w-full h-full p-8 md:p-16 flex flex-col md:flex-row items-center justify-center gap-16",
         isPro 
@@ -65,6 +61,6 @@ export function RoadmapStepCard({ step, isPro }: RoadmapStepCardProps) {
           </ul>
         </div>
       </div>
-    </motion.div>
+    </div>
   );
 }
