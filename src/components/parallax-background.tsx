@@ -25,6 +25,35 @@ const Cloud = ({ className }: { className?: string }) => (
     </svg>
 );
 
+const cloudAnimationVariants = {
+  animate: {
+    x: [0, 50, 0],
+    transition: {
+      x: {
+        duration: 15,
+        repeat: Infinity,
+        repeatType: "loop",
+        ease: "easeInOut",
+      },
+    },
+  },
+};
+
+const cloudAnimationVariants2 = {
+  animate: {
+    x: [0, -40, 0],
+    transition: {
+      x: {
+        duration: 20,
+        repeat: Infinity,
+        repeatType: "loop",
+        ease: "easeInOut",
+        delay: 5,
+      },
+    },
+  },
+};
+
 
 export function ParallaxBackground() {
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
@@ -95,6 +124,8 @@ export function ParallaxBackground() {
                 left: -50,
                 scale: 1.2,
             }}
+            variants={cloudAnimationVariants}
+            animate="animate"
         >
             <Cloud className="w-48 h-auto" />
         </motion.div>
@@ -109,6 +140,8 @@ export function ParallaxBackground() {
                 right: -80,
                 scale: 1.1,
             }}
+            variants={cloudAnimationVariants2}
+            animate="animate"
         >
             <Cloud className="w-40 h-auto" />
         </motion.div>
