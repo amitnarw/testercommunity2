@@ -6,7 +6,7 @@ import { Card, CardContent } from '@/components/ui/card';
 export default function SignupPage() {
   return (
     <div className="min-h-screen w-full lg:grid lg:grid-cols-2">
-      <div className="hidden lg:flex flex-col items-center justify-center p-12 text-center relative overflow-hidden bg-background dark:bg-secondary bg-[radial-gradient(ellipse_at_top_left,_var(--tw-gradient-stops))] from-blue-100/30 via-transparent to-transparent">
+      <div className="hidden lg:flex flex-col items-center justify-center p-12 text-center relative overflow-hidden bg-background dark:bg-secondary bg-[radial-gradient(ellipse_at_top_left,_var(--tw-gradient-stops))] from-blue-100/30 via-transparent to-transparent dark:from-blue-900/40 dark:via-transparent dark:to-transparent">
         <div className="relative z-10 flex flex-col items-center justify-center">
             <ParallaxBackground />
             <h1 className="text-4xl font-bold tracking-tight mt-8">Join a community of innovators</h1>
