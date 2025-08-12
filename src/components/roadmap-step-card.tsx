@@ -22,20 +22,18 @@ export function RoadmapStepCard({ step, isPro }: RoadmapStepCardProps) {
         "w-full h-full p-8 md:p-16 flex flex-col md:flex-row items-center justify-center gap-16",
         isPro 
           ? "bg-gradient-to-br from-slate-900 to-black text-primary-foreground" 
-          : "bg-background"
+          : "bg-background dark:bg-dot-pattern-dark dark:bg-[length:30px_30px]"
       )}
     >
       <div className="flex-1 flex flex-col items-center justify-center text-center md:text-left md:items-start max-w-lg">
           <div className="flex items-center gap-4 mb-8">
             <div className={cn(
               "w-20 h-20 flex items-center justify-center rounded-full text-4xl font-bold shadow-lg",
-              isPro 
-                ? "bg-primary text-primary-foreground" 
-                : "bg-primary text-primary-foreground"
+              "bg-primary text-primary-foreground"
             )}>
               {step.step}
             </div>
-             <Icon className={cn("w-16 h-16", isPro ? "text-primary" : "text-primary")} />
+             <Icon className={cn("w-16 h-16 text-primary")} />
           </div>
           
           <h3 className="text-4xl md:text-5xl font-bold mb-4">{title}</h3>
@@ -48,7 +46,7 @@ export function RoadmapStepCard({ step, isPro }: RoadmapStepCardProps) {
       <div className="flex-1 w-full max-w-lg">
         <div className={cn(
           "p-8 rounded-2xl",
-          isPro ? "bg-white/5" : "bg-secondary"
+          isPro ? "bg-white/5" : "bg-secondary/50 dark:bg-secondary/20"
         )}>
           <h4 className="text-xl font-bold mb-4">Key Details</h4>
           <ul className="space-y-3">
