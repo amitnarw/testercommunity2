@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useLayoutEffect, useRef } from 'react';
+import { useLayoutEffect, useRef, useState, useEffect } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { communityPathSteps, professionalPathSteps } from '@/lib/data';
@@ -10,6 +10,9 @@ import { ArrowRight, Rocket } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import type { RoadmapStep } from '@/lib/types';
+import Confetti from 'react-dom-confetti';
+import { useInView } from 'react-intersection-observer';
+
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -19,7 +22,7 @@ const HorizontalScrollSection = ({ steps, isPro }: { steps: RoadmapStep[], isPro
 
     useLayoutEffect(() => {
         let ctx = gsap.context(() => {
-            let panels = gsap.utils.toArray(".panel", slider.current);
+            let panels = gsap.utils.toArray<HTMLDivElement>(".panel", slider.current!);
             gsap.to(panels, {
                 xPercent: -100 * (panels.length - 1),
                 ease: "none",
@@ -50,6 +53,18 @@ const HorizontalScrollSection = ({ steps, isPro }: { steps: RoadmapStep[], isPro
 
 
 export default function HowItWorksPage() {
+    const [isConfettiActive, setConfettiActive] = useState(false);
+    const { ref: launchpadRef, inView: launchpadInView } = useInView({
+        threshold: 0.5,
+        triggerOnce: true,
+    });
+
+    useEffect(() => {
+        if (launchpadInView) {
+            setTimeout(() => setConfettiActive(true), 300);
+        }
+    }, [launchpadInView]);
+
     return (
         <main className="bg-background text-foreground overflow-x-hidden">
              <section className="h-screen w-full flex flex-col items-center justify-center text-center p-4 bg-dot-pattern dark:bg-dot-pattern-dark">
@@ -79,8 +94,24 @@ export default function HowItWorksPage() {
             <HorizontalScrollSection steps={professionalPathSteps} isPro={true} />
 
             <section 
+                ref={launchpadRef}
                 className="h-screen w-full flex flex-col items-center justify-center text-center p-4 relative overflow-hidden bg-secondary/30 dark:bg-secondary/20"
             >
+                 <div className="absolute top-1/2 left-1/2">
+                    <Confetti active={isConfettiActive} config={{
+                        angle: 90,
+                        spread: 360,
+                        startVelocity: 40,
+                        elementCount: 100,
+                        dragFriction: 0.12,
+                        duration: 3000,
+                        stagger: 3,
+                        width: "10px",
+                        height: "10px",
+                        perspective: "500px",
+                        colors: ["#a864fd", "#29cdff", "#78ff44", "#ff718d", "#fdff6a"]
+                    }}/>
+                </div>
                 <Rocket className="w-16 h-16 text-primary mb-4" />
                 <h2 className="text-5xl md:text-7xl font-bold">You've Reached the <span className="text-primary">Launchpad</span></h2>
                 <p className="mt-6 max-w-2xl mx-auto text-muted-foreground text-xl">

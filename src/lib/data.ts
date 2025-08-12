@@ -1,6 +1,5 @@
 
 import type { Tester, BlogPost, Testimonial, RoadmapStep } from './types';
-import { UserPlus, UploadCloud, Zap, Award, CheckCircle, Briefcase, FileText, Rocket, IndianRupee } from 'lucide-react';
 
 export const testers: Tester[] = [
   {
@@ -195,53 +194,50 @@ export const testimonials: Testimonial[] = [
 export const communityPathSteps: RoadmapStep[] = [
     {
         step: 1,
-        icon: UserPlus,
-        title: "Join the Tribe",
-        description: "Create your free profile to become part of a global community of developers and testers passionate about quality. This is your passport to a world of collaborative testing.",
-        badgeText: "Time: 5 mins • Cost: Free",
+        title: "Join & Contribute",
+        description: "Sign up and become a vital part of a global community. Earn points and reputation by testing apps for fellow developers, providing valuable feedback on your real devices.",
+        badgeText: "Time: 5 Mins • Cost: Free",
         details: [
-            "Sign up with your email and choose the 'Tester' or 'Developer' role.",
-            "Complete your profile to build trust within the community.",
-            "No payment information required to get started."
+            { title: "Profile Creation", description: "Quickly set up your profile to showcase your devices and interests." },
+            { title: "Points System", description: "Earn points for every valid bug you find. More severe bugs earn more points." },
+            { title: "Reputation Building", description: "Quality contributions increase your reputation, unlocking more opportunities." },
+            { title: "Diverse Projects", description: "Access a wide variety of apps and games to test." },
         ]
     },
     {
         step: 2,
-        icon: Zap,
-        title: "Test to Earn Points",
-        description: "Dive into the community pool and test apps from other members. For every valid bug you report, you'll earn points and build your reputation as a skilled tester.",
-        badgeText: "Est. Time: 1-2 hours per test cycle",
+        title: "Submit Your App",
+        description: "Ready for feedback? Use your earned points to submit your own app. Define your testing goals and let the community put your creation through its paces.",
+        badgeText: "Requirement: Points Earned",
         details: [
-            "Browse available projects from other community members.",
-            "Download apps and test them on your real devices.",
-            "Submit detailed bug reports through our platform.",
-            "Points are awarded based on bug severity and report quality."
+            { title: "Project Setup", description: "Easily create a project, upload your build, and write testing instructions." },
+            { title: "Point Budget", description: "Allocate your earned points to control the amount of testing you receive." },
+            { title: "Crowdsourced Power", description: "Leverage a vast array of devices, OS versions, and user perspectives." },
+            { title: "Real-World Conditions", description: "Get feedback based on real-world usage, not sterile lab environments." },
         ]
     },
     {
         step: 3,
-        icon: UploadCloud,
-        title: "Submit Your Own App",
-        description: "Use the points you've earned to get your own app tested. Provide your build, and specify which areas you want the community to focus on.",
-        badgeText: "Requirement: Points earned from testing",
+        title: "Analyze Feedback",
+        description: "Watch as detailed reports from the community flow into your dashboard in real-time. Triage bugs, gain insights, and understand how users truly interact with your app.",
+        badgeText: "Typical: Feedback within 48 hours",
         details: [
-            "Create a new project and upload your APK or app bundle.",
-            "Set a 'point budget' to determine how much testing you receive.",
-            "Write clear instructions and testing goals for the community.",
-            "Your app becomes available in the community testing pool."
+            { title: "Live Dashboard", description: "Track incoming reports, view device stats, and monitor progress." },
+            { title: "Detailed Reports", description: "Each report includes steps, screenshots, and device logs for easy debugging." },
+            { title: "Direct Communication", description: "Collaborate with testers to clarify findings and ask for more details." },
+            { title: "Video Evidence", description: "Testers can attach video recordings of the bugs they find." },
         ]
     },
     {
         step: 4,
-        icon: Award,
-        title: "Receive Diverse Feedback",
-        description: "Benefit from a wide range of perspectives, devices, and usage patterns. Crowdsourced testing is invaluable for uncovering unexpected real-world bugs.",
-        badgeText: "Typical Wait: Feedback within 48 hours",
+        title: "Iterate & Improve",
+        description: "Armed with actionable feedback, you can now efficiently squash bugs, refine your UX, and enhance performance. Upload new builds for the community to verify your fixes.",
+        badgeText: "Cycle: Continuous",
         details: [
-            "Get reports from various devices and OS versions.",
-            "Receive feedback on UI/UX, functionality, and performance.",
-            "All reports are viewable on your project dashboard in real-time.",
-            "Engage with testers to ask for more details on their findings."
+            { title: "Bug Prioritization", description: "Use the detailed feedback to prioritize the most critical fixes." },
+            { title: "Verification Testing", description: "Submit patched builds to confirm that issues are resolved." },
+            { title: "Community Recognition", description: "Reward helpful testers with praise and bonus points." },
+            { title: "Ship with Confidence", description: "Release updates knowing your app has been vetted by a diverse user base." },
         ]
     },
 ];
@@ -249,54 +245,50 @@ export const communityPathSteps: RoadmapStep[] = [
 export const professionalPathSteps: RoadmapStep[] = [
     {
         step: 1,
-        icon: Briefcase,
-        title: "Post Your Project",
-        description: "For mission-critical projects where quality is paramount. Define your project scope, objectives, and the specific testing you need, from security to performance.",
-        badgeText: "Time: 15 mins • Cost: Free to post",
+        title: "Define Your Mission",
+        description: "For mission-critical projects, precision is key. Create a detailed test plan, outlining your objectives, target devices, and the specific expertise you require.",
+        badgeText: "Time: 15 Mins • Cost: Free to post",
         details: [
-            "Describe your app and its target audience.",
-            "Specify the type of testing required (e.g., Regression, Exploratory).",
-            "Define the project budget or request quotes from testers.",
-            "Your project is posted to our exclusive professional marketplace."
+            { title: "Project Scoping", description: "Clearly define what needs to be tested, from user flows to API endpoints." },
+            { title: "Tester Requirements", description: "Specify skills like 'Security Auditing' or 'Performance Bottlenecking'." },
+            { title: "Budget Options", description: "Set a fixed price for the project or invite testers to bid with hourly rates." },
+            { title: "Secure Posting", description: "Your project is posted confidentially to our vetted professional marketplace." },
         ]
     },
     {
         step: 2,
-        icon: IndianRupee,
-        title: "Hire a Professional",
-        description: "Browse our marketplace of elite, vetted QA professionals. Review profiles, skills, and ratings to hire the perfect expert for your project's unique needs.",
-        badgeText: "Cost: Starts at ₹999 per project",
+        title: "Assemble Your Elite Squad",
+        description: "Browse our marketplace of world-class QA professionals. Review their profiles, work history, and client feedback to hire the perfect expert for your project.",
+        badgeText: "Cost: Starts at ₹999",
         details: [
-            "Filter testers by skills, country, language, and experience.",
-            "Review detailed profiles with work history and client feedback.",
-            "Interview and negotiate with testers directly on the platform.",
-            "Securely fund the project milestone once you've chosen a tester."
+            { title: "Advanced Filtering", description: "Filter testers by skills, country, language, and specific device ownership." },
+            { title: "Verified Credentials", description: "All professional testers undergo a rigorous vetting and verification process." },
+            { title: "Direct Negotiation", description: "Interview and negotiate terms directly on our secure platform." },
+            { title: "Milestone Funding", description: "Securely fund the project milestone, with payment released upon completion." },
         ]
     },
     {
         step: 3,
-        icon: FileText,
-        title: "Receive Expert Reports",
-        description: "Your pro tester delivers comprehensive, actionable reports. Expect detailed replication steps, logs, and screenshots for every bug found.",
-        badgeText: "Cycle: 3-14 day projects available",
+        title: "Execute the Test Plan",
+        description: "Your hired professional executes the test plan with precision, employing structured methodologies to provide comprehensive, actionable reports.",
+        badgeText: "Cycle: 3-14 day projects",
         details: [
-            "Professionals follow structured testing methodologies.",
-            "Reports include severity levels, device details, and logs.",
-            "Receive a full test summary and a list of validated test cases.",
-            "All reports are standardized for clarity and easy integration."
+            { title: "Structured Testing", description: "Professionals follow your test cases and perform exploratory testing." },
+            { title: "Comprehensive Reports", description: "Receive executive summaries and detailed bug reports with logs." },
+            { title: "Test Case Validation", description: "Get a full report on which test cases passed, failed, or were blocked." },
+            { title: "Daily Stand-ups", description: "Receive regular progress updates from your dedicated tester." },
         ]
     },
     {
         step: 4,
-        icon: CheckCircle,
-        title: "Collaborate & Verify",
-        description: "Communicate directly with your tester to clarify issues. After you push fixes, the tester verifies them to ensure they're resolved and haven't introduced regressions.",
-        badgeText: "Benefit: Guaranteed quality assurance",
+        title: "Launch with Certainty",
+        description: "Collaborate on fixes and have the tester perform rigorous regression testing to ensure absolute quality. Approve the final milestone and launch your flawless app to the world.",
+        badgeText: "Benefit: Guaranteed Quality",
         details: [
-            "Use our platform for seamless communication.",
-            "Provide new builds for regression and verification testing.",
-            "The tester confirms that bugs are fixed and the app is stable.",
-            "Approve the milestone release upon successful verification."
+            { title: "Seamless Collaboration", description: "Use our platform to provide new builds and communicate on fixes." },
+            { title: "Regression Testing", description: "The pro tester ensures your fixes haven't introduced new problems." },
+            { title: "Final Sign-off", description: "Receive a final quality assurance report before you ship." },
+            { title: "Secure Payment Release", description: "Approve the final milestone to release the payment to the tester." },
         ]
     }
 ];

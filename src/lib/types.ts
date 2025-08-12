@@ -19,7 +19,7 @@ export type BlogPost = {
   excerpt: string;
   content: string;
   author: {
-    name: string;
+    name:string;
     avatarUrl: string;
     dataAiHint?: string;
   };
@@ -37,11 +37,15 @@ export type Testimonial = {
   comment: string;
 };
 
+export type RoadmapDetail = {
+    title: string;
+    description: string;
+}
+
 export type RoadmapStep = {
     step: number;
-    icon: LucideIcon;
     title: string;
     description: string;
     badgeText: string;
-    details: string[];
+    details: RoadmapDetail[];
 };
