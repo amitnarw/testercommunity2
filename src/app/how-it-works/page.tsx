@@ -1,133 +1,100 @@
 
 'use client';
 
-import { useRef, useState, useEffect } from 'react';
-import { motion, useScroll, useTransform } from 'framer-motion';
+import { useState } from 'react';
+import { useInView } from 'react-intersection-observer';
 import { communityPathSteps, professionalPathSteps } from '@/lib/data';
 import { RoadmapStepCard } from '@/components/roadmap-step-card';
 import { ArrowRight, Rocket, Users, Briefcase } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import Confetti from 'react-dom-confetti';
+import { motion } from 'framer-motion';
+import { HowItWorksProcessCard } from '@/components/how-it-works-process-card';
+
+const processSteps = [
+    {
+        icon: <Users className="w-8 h-8"/>,
+        title: "Sign Up & Join",
+        description: "Create your free profile to become part of a global community.",
+        communityDetails: "Choose your path as a tester or developer. No payment info needed to start.",
+        proDetails: "Post your project for free, outlining your app and testing requirements."
+    },
+    {
+        icon: <Rocket className="w-8 h-8"/>,
+        title: "Engage & Test",
+        description: "Start your testing journey by either earning points or hiring experts.",
+        communityDetails: "Test other apps to earn points. The more you test, the more you earn.",
+        proDetails: "Browse our marketplace of vetted professionals and hire the perfect tester for your needs."
+    },
+    {
+        icon: <Briefcase className="w-8 h-8"/>,
+        title: "Get Feedback",
+        description: "Receive valuable insights to improve your application.",
+        communityDetails: "Use your points to get your app tested by a diverse range of community members.",
+        proDetails: "Receive comprehensive, actionable reports from your hired professional."
+    },
+    {
+        icon: <ArrowRight className="w-8 h-8"/>,
+        title: "Launch with Confidence",
+        description: "Iterate on the feedback and prepare for a successful launch.",
+        communityDetails: "Engage with testers, fix bugs, and resubmit for further testing.",
+        proDetails: "Verify fixes with your tester and approve the project upon successful completion."
+    }
+];
 
 export default function HowItWorksPage() {
-    const [showConfetti, setShowConfetti] = useState(false);
-    const launchpadRef = useRef(null);
-
-    const communityRef = useRef<HTMLDivElement | null>(null);
-    const proRef = useRef<HTMLDivElement | null>(null);
-
-    const { scrollYProgress: communityScroll } = useScroll({
-        target: communityRef,
-        offset: ['start start', 'end end'],
-    });
-
-    const { scrollYProgress: proScroll } = useScroll({
-        target: proRef,
-        offset: ['start start', 'end end'],
-    });
-
-    const communityX = useTransform(communityScroll, [0, 1], ['0%', `-${(communityPathSteps.length - 1) * 100}%`]);
-    const proX = useTransform(proScroll, [0, 1], ['0%', `-${(professionalPathSteps.length - 1) * 100}%`]);
-
-
-      useEffect(() => {
-        const observer = new IntersectionObserver(
-        ([entry]) => {
-            if (entry.isIntersecting) {
-            setShowConfetti(true);
-            }
-        },
-        {
-            threshold: 0.5,
-        }
-        );
-
-        const currentRef = launchpadRef.current;
-        if (currentRef) {
-        observer.observe(currentRef);
-        }
-
-        return () => {
-        if (currentRef) {
-            observer.unobserve(currentRef);
-        }
-        };
-    }, []);
-
-    const confettiConfig = {
-        angle: 90,
-        spread: 360,
-        startVelocity: 40,
-        elementCount: 100,
-        dragFriction: 0.12,
-        duration: 3000,
-        stagger: 3,
-        width: "10px",
-        height: "10px",
-        perspective: "500px",
-        colors: ["#a864fd", "#29cdff", "#78ff44", "#ff718d", "#fdff6a"]
-    };
-
+    
     return (
         <div className="bg-background text-foreground">
-            <section className="h-screen w-full flex flex-col items-center justify-center text-center p-4">
-                <h1 className="text-5xl md:text-7xl font-bold">Two Paths to a Perfect App</h1>
+             <section className="h-screen w-full flex flex-col items-center justify-center text-center p-4 bg-dot-pattern dark:bg-dot-pattern-dark">
+                <h1 className="text-5xl md:text-7xl font-bold">The Path to a Perfect App</h1>
                 <p className="mt-6 max-w-3xl mx-auto text-muted-foreground text-xl">
-                    Whether you're an indie dev looking for community feedback or a business needing professional precision, your journey to a flawless launch starts here.
+                    Our unified process ensures quality, whether you leverage the community or hire professionals. Your journey to a flawless launch starts here.
                 </p>
-                <p className="mt-8 text-sm text-muted-foreground animate-pulse">Scroll down to begin your journey</p>
+                <p className="mt-8 text-sm text-muted-foreground animate-pulse">Scroll down to see how it works</p>
             </section>
             
-            <section ref={communityRef} className="relative" style={{ height: `${communityPathSteps.length * 100}vh` }}>
-                <div className="sticky top-0 h-screen flex flex-col items-center justify-start bg-secondary/30 dark:bg-secondary/20 pt-16 md:pt-20">
-                    <div className="text-center mb-12 container mx-auto px-4 md:px-6">
-                        <h2 className="text-3xl md:text-5xl font-bold inline-flex items-center gap-3"><Users className="w-10 h-10 text-primary"/>The Community Path</h2>
-                        <p className="mt-4 max-w-2xl mx-auto text-muted-foreground text-lg">
-                            Leverage the power of the crowd. Test other apps to earn points, then spend them to get your own app tested by a diverse community of passionate users.
-                        </p>
-                    </div>
-                
-                    <div className="flex items-center overflow-hidden w-full h-full">
-                        <motion.div style={{ x: communityX }} className="flex">
-                            {communityPathSteps.map((step) => (
-                                <div key={step.step} className="w-screen h-full flex-shrink-0">
-                                   <RoadmapStepCard step={step} isPro={false} />
+            <section className="py-20 md:py-32 container mx-auto px-4 md:px-6">
+                 <div className="grid md:grid-cols-2 gap-16 md:gap-24 items-start">
+                    {/* Left Column: Scrolling Text */}
+                    <div className="md:col-span-1 space-y-24">
+                        {processSteps.map((step, index) => (
+                           <motion.div 
+                                key={index} 
+                                className="space-y-4"
+                                initial={{ opacity: 0 }}
+                                whileInView={{ opacity: 1 }}
+                                viewport={{ once: true, amount: 0.5, margin: "-200px" }}
+                                transition={{ duration: 0.5 }}
+                            >
+                                <div className="flex items-center gap-4">
+                                     <div className="text-primary bg-primary/10 p-3 rounded-lg flex items-center justify-center">
+                                        {step.icon}
+                                    </div>
+                                    <h2 className="text-3xl font-bold">{step.title}</h2>
                                 </div>
-                            ))}
-                        </motion.div>
+                                <p className="text-lg text-muted-foreground">{step.description}</p>
+                           </motion.div>
+                        ))}
                     </div>
-                </div>
-            </section>
-            
-             <section ref={proRef} className="relative" style={{ height: `${professionalPathSteps.length * 100}vh` }}>
-                <div className="sticky top-0 h-screen flex flex-col items-center justify-start bg-background pt-16 md:pt-20">
-                     <div className="text-center mb-12 container mx-auto px-4 md:px-6">
-                        <h2 className="text-3xl md:text-5xl font-bold inline-flex items-center gap-3"><Briefcase className="w-10 h-10 text-primary"/>The Professional Path</h2>
-                        <p className="mt-4 max-w-2xl mx-auto text-muted-foreground text-lg">
-                            For when you need certainty. Hire vetted QA professionals who provide expert feedback, detailed reports, and guaranteed results for a flawless launch.
-                        </p>
-                    </div>
-                
-                    <div className="flex items-center overflow-hidden w-full h-full">
-                         <motion.div style={{ x: proX }} className="flex">
-                            {professionalPathSteps.map((step) => (
-                                <div key={step.step} className="w-screen h-full flex-shrink-0">
-                                   <RoadmapStepCard step={step} isPro={true} />
-                                </div>
-                            ))}
-                        </motion.div>
+
+                    {/* Right Column: Sticky Card */}
+                    <div className="md:col-span-1 md:sticky top-24">
+                        <HowItWorksProcessCard
+                            icon={<Users className="w-8 h-8"/>}
+                            title="Sign Up & Join"
+                            description="Create your free profile to become part of a global community."
+                            communityDetails="Choose your path as a tester or developer. No payment info needed to start."
+                            proDetails="Post your project for free, outlining your app and testing requirements."
+                        />
                     </div>
                 </div>
             </section>
 
              <motion.section 
-                ref={launchpadRef}
                 className="h-screen w-full flex flex-col items-center justify-center text-center p-4 relative overflow-hidden bg-secondary/30 dark:bg-secondary/20"
             >
-                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
-                    <Confetti active={showConfetti} config={confettiConfig} />
-                </div>
                 <Rocket className="w-16 h-16 text-primary mb-4" />
                 <h2 className="text-5xl md:text-7xl font-bold">You've Reached the <span className="text-primary">Launchpad</span></h2>
                 <p className="mt-6 max-w-2xl mx-auto text-muted-foreground text-xl">
