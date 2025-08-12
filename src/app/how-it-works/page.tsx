@@ -1,201 +1,164 @@
 
-'use client'
+'use client';
 
 import { Button } from '@/components/ui/button';
-import { ArrowRight, Users, Briefcase, Award, Zap, FileText, IndianRupee, Rocket } from 'lucide-react';
+import { ArrowRight, Users, Briefcase, Award, Zap, Rocket, IndianRupee } from 'lucide-react';
 import Link from 'next/link';
-import { motion } from 'framer-motion';
+import { motion, useScroll, useTransform } from 'framer-motion';
+import React, { useRef } from 'react';
 import { cn } from '@/lib/utils';
-import React from 'react';
+import Confetti from 'react-dom-confetti';
 
-const sections = [
-  {
-    title: 'Getting Started',
-    icon: <Users className="w-6 h-6" />,
-    community: {
-      title: 'Join the Community',
-      description: 'Create your free account to become part of our collaborative testing ecosystem. It’s your passport to a world of shared knowledge and collective improvement.',
-      details: 'Time: ~5 minutes'
-    },
-    professional: {
-      title: 'Post Your Project',
-      description: 'Define your testing needs, scope, and objectives. Invite our vetted professionals or let us match you with the perfect expert for your app.',
-      details: 'Cost: Starts at ₹999'
-    }
-  },
-  {
-    title: 'The Work',
-    icon: <Zap className="w-6 h-6" />,
-    community: {
-      title: 'Test Apps, Earn Points',
-      description: 'Browse apps, find bugs, and submit reports. Every valid bug earns you points and boosts your reputation, making you a trusted name in the Tribe.',
-      details: 'Time: ~1-2 hours per cycle'
-    },
-    professional: {
-      title: 'Receive Actionable Reports',
-      description: 'Your hired pro gets to work immediately, delivering a stream of detailed reports with logs, screenshots, and clear replication steps.',
-      details: 'Time: First reports within 24 hours'
-    }
-  },
-  {
-    title: 'The Rewards',
-    icon: <Award className="w-6 h-6" />,
-    community: {
-      title: 'Get Your App Tested',
-      description: 'Spend your hard-earned points to get your own app tested by a diverse range of community members on various devices, uncovering unique issues.',
-      details: 'Wait: First feedback within 48 hours'
-    },
-    professional: {
-      title: 'Verify Fixes & Launch',
-      description: 'Collaborate with your tester to verify fixes. Once all critical issues are resolved, you get a final report and are ready for a confident launch.',
-      details: 'Time: 7-14 day project cycles'
-    }
-  }
-];
-
-const SectionCard = ({ community, professional }: { community: any, professional: any }) => (
-    <motion.div 
-        className="w-full"
-        initial={{ opacity: 0, y: 30 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, amount: 0.3 }}
-        transition={{ duration: 0.6, ease: 'easeOut' }}
+const JourneyStep = ({
+  icon,
+  title,
+  description,
+  details,
+  isPro,
+  isFirst = false,
+  isLast = false
+}: {
+  icon: React.ReactNode;
+  title: string;
+  description: string;
+  details: string;
+  isPro: boolean;
+  isFirst?: boolean;
+  isLast?: boolean;
+}) => {
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 50 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5, delay: 0.2, ease: 'easeOut' }}
+      viewport={{ once: true, amount: 0.5 }}
+      className={cn(
+        "w-[300px] md:w-[350px] h-full flex-shrink-0 relative px-4",
+        isFirst ? "pl-8 md:pl-16" : "",
+        isLast ? "pr-8 md:pr-16" : ""
+      )}
     >
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {/* Community Card */}
-            <div className="bg-secondary/30 p-8 rounded-2xl border border-border/20 h-full flex flex-col">
-                <div className="flex items-center gap-3 mb-4">
-                    <Users className="w-6 h-6 text-primary"/>
-                    <h4 className="text-xl font-bold">Community Path <span className="text-sm font-normal text-muted-foreground">(Free)</span></h4>
-                </div>
-                <h5 className="font-semibold text-lg mb-2">{community.title}</h5>
-                <p className="text-muted-foreground mb-4 flex-grow">{community.description}</p>
-                <p className="text-xs font-semibold uppercase text-primary tracking-widest">{community.details}</p>
-            </div>
-            {/* Professional Card */}
-            <div className="bg-card p-8 rounded-2xl border-2 border-primary/50 shadow-2xl shadow-primary/10 h-full flex flex-col">
-                <div className="flex items-center gap-3 mb-4">
-                    <Briefcase className="w-6 h-6 text-primary"/>
-                    <h4 className="text-xl font-bold">Professional Path <span className="text-sm font-normal text-muted-foreground">(Paid)</span></h4>
-                </div>
-                <h5 className="font-semibold text-lg mb-2">{professional.title}</h5>
-                <p className="text-muted-foreground mb-4 flex-grow">{professional.description}</p>
-                <p className="text-xs font-semibold uppercase text-primary tracking-widest">{professional.details}</p>
-            </div>
+      <div className={cn("h-full w-full rounded-2xl p-6 flex flex-col justify-center", isPro ? "bg-primary/10 border-primary/20 border" : "bg-secondary")}>
+        <div className={cn("absolute flex items-center justify-center w-12 h-12 rounded-full border-4 bg-background left-1/2 -translate-x-1/2",
+            isPro ? "bottom-[-24px] border-primary/50" : "top-[-24px] border-secondary-foreground/20"
+        )}>
+            {icon}
         </div>
+        <h3 className="text-xl font-bold mb-2 text-center">{title}</h3>
+        <p className="text-muted-foreground text-sm text-center mb-4">{description}</p>
+        <div className="text-center bg-background/50 p-3 rounded-lg text-xs">
+            <p className="font-semibold text-foreground">{details}</p>
+        </div>
+      </div>
     </motion.div>
-);
-
+  );
+};
 
 export default function HowItWorksPage() {
-    const [activeSection, setActiveSection] = React.useState(0);
-    const sectionRefs = React.useRef<(HTMLDivElement | null)[]>([]);
+  const horizontalScrollRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({ target: horizontalScrollRef });
+  const x = useTransform(scrollYProgress, [0, 1], ['0%', '-65%']);
+  const [isLaunchVisible, setIsLaunchVisible] = React.useState(false);
 
-    React.useEffect(() => {
-        const observer = new IntersectionObserver(
-            (entries) => {
-                entries.forEach((entry) => {
-                    if (entry.isIntersecting) {
-                        const index = parseInt(entry.target.getAttribute('data-index') || '0', 10);
-                        setActiveSection(index);
-                    }
-                });
-            },
-            { rootMargin: "-50% 0px -50% 0px" }
-        );
+  return (
+    <div className="bg-background text-foreground">
+      <section className="h-screen w-full flex flex-col items-center justify-center text-center p-4">
+        <h1 className="text-5xl md:text-7xl font-bold">The Journey to a Perfect App</h1>
+        <p className="mt-6 max-w-2xl mx-auto text-muted-foreground text-xl">
+          Two distinct paths, one goal: flawless quality. Scroll to explore the journey.
+        </p>
+        <motion.div
+            animate={{ y: [0, 10, 0] }}
+            transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+            className="mt-12"
+        >
+            <ArrowRight className="w-8 h-8 rotate-90" />
+        </motion.div>
+      </section>
 
-        sectionRefs.current.forEach((ref) => {
-            if (ref) observer.observe(ref);
-        });
-
-        return () => {
-            sectionRefs.current.forEach((ref) => {
-                if (ref) observer.unobserve(ref);
-            });
-        };
-    }, []);
-
-    return (
-        <div className="bg-background text-foreground overflow-hidden">
-            {/* Hero Section */}
-            <section className="py-20 md:py-28 text-center bg-secondary/30 relative">
-                <div className="absolute inset-0 bg-dot-pattern-dark opacity-30 z-0"></div>
-                <div className="container mx-auto px-4 md:px-6 relative z-10">
-                    <h1 className="text-4xl md:text-6xl font-bold">
-                        Two Paths to a Perfect App
-                    </h1>
-                    <p className="mt-4 max-w-3xl mx-auto text-muted-foreground text-lg">
-                       Whether you're a bootstrapper who loves community collaboration or a business that needs guaranteed professional results, we have a journey designed for you.
-                    </p>
-                </div>
-            </section>
-
-            {/* Main Content Section */}
-            <section className="py-20 md:py-28">
-                <div className="container mx-auto px-4 md:px-6">
-                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-16">
-                        {/* Sticky Left Nav */}
-                        <aside className="lg:col-span-1 lg:sticky top-28 h-min">
-                             <h2 className="text-2xl font-bold mb-8">The Journey</h2>
-                             <div className="space-y-4">
-                                {sections.map((section, index) => (
-                                    <div 
-                                        key={index}
-                                        className={cn(
-                                            "flex items-center gap-4 p-4 rounded-lg transition-all duration-300",
-                                            activeSection === index ? 'bg-primary/10 text-primary' : 'bg-transparent'
-                                        )}
-                                    >
-                                        <div className={cn(
-                                            "p-2 rounded-md",
-                                            activeSection === index ? 'bg-primary text-primary-foreground' : 'bg-secondary'
-                                        )}>
-                                            {section.icon}
-                                        </div>
-                                        <span className="font-bold text-lg">{section.title}</span>
-                                    </div>
-                                ))}
-                             </div>
-                        </aside>
-
-                        {/* Scrolling Right Content */}
-                        <main className="lg:col-span-2 space-y-24">
-                            {sections.map((section, index) => (
-                                <div 
-                                    key={index} 
-                                    ref={el => sectionRefs.current[index] = el}
-                                    data-index={index}
-                                >
-                                    <SectionCard community={section.community} professional={section.professional} />
-                                </div>
-                            ))}
-                        </main>
-                    </div>
-                </div>
-            </section>
-
-             {/* CTA Section */}
-            <section className="py-20 md:py-28">
-                <div className="container mx-auto px-4 md:px-6 text-center">
-                    <motion.div
-                        initial={{ opacity: 0, y: 30 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true, amount: 0.5 }}
-                        transition={{ duration: 0.6 }}
-                    >
-                        <Rocket className="w-16 h-16 mx-auto text-primary mb-4" />
-                        <h2 className="text-4xl md:text-5xl font-bold">Ready to <span className="bg-gradient-to-br from-primary to-accent bg-clip-text text-transparent">Elevate</span> Your App?</h2>
-                        <p className="mt-4 max-w-2xl mx-auto text-muted-foreground text-lg">
-                            Your journey to a flawless app starts now. Choose your path, join the tribe, and launch with ultimate confidence.
-                        </p>
-                        <div className="mt-8">
-                            <Button asChild size="lg" className="font-bold text-lg px-8 py-6 rounded-xl hover:shadow-lg hover:shadow-primary/30">
-                                <Link href="/signup">Start Your Journey <ArrowRight className="ml-2" /></Link>
-                            </Button>
-                        </div>
-                    </motion.div>
-                </div>
-            </section>
+      <section ref={horizontalScrollRef} className="relative h-[200vh] w-full">
+        <div className="sticky top-0 h-screen w-full flex items-center overflow-hidden">
+           {/* The Road */}
+          <div className="absolute top-1/2 left-0 w-full h-1 bg-border/50"></div>
+          <motion.div style={{ x }} className="flex h-full items-center gap-8">
+            {/* Community Path - Top */}
+            <div className="flex h-1/2 items-center">
+                 <JourneyStep
+                    isFirst
+                    isPro={false}
+                    icon={<Users className="w-6 h-6 text-secondary-foreground" />}
+                    title="Join the Community"
+                    description="Sign up for free and create your profile."
+                    details="Time: 5 mins • Cost: Free"
+                />
+                 <JourneyStep
+                    isPro={false}
+                    icon={<Zap className="w-6 h-6 text-secondary-foreground" />}
+                    title="Test to Earn"
+                    description="Find bugs in others' apps to earn points and build reputation."
+                    details="Time: 1-2 hours per cycle"
+                />
+                 <JourneyStep
+                    isPro={false}
+                    icon={<Award className="w-6 h-6 text-secondary-foreground" />}
+                    title="Get Feedback"
+                    description="Spend your points to get your own app tested by the community."
+                    details="Wait: Feedback within 48 hours"
+                />
+            </div>
+             {/* Pro Path - Bottom */}
+            <div className="flex h-1/2 items-center">
+                 <JourneyStep
+                    isFirst
+                    isPro={true}
+                    icon={<Briefcase className="w-6 h-6 text-primary" />}
+                    title="Post Your Project"
+                    description="Define your testing needs and project scope."
+                    details="Time: 15 mins"
+                />
+                <JourneyStep
+                    isPro={true}
+                    icon={<IndianRupee className="w-6 h-6 text-primary" />}
+                    title="Hire a Professional"
+                    description="Choose a vetted tester from our marketplace."
+                    details="Cost: Starts at ₹999"
+                />
+                <JourneyStep
+                    isPro={true}
+                    icon={<Rocket className="w-6 h-6 text-primary" />}
+                    title="Launch with Confidence"
+                    description="Receive expert reports and launch a battle-tested app."
+                    details="Cycle: 7-14 day projects"
+                />
+            </div>
+          </motion.div>
         </div>
-    );
+      </section>
+
+      <motion.section 
+        onViewportEnter={() => setIsLaunchVisible(true)}
+        className="h-screen w-full flex flex-col items-center justify-center text-center p-4 relative overflow-hidden"
+      >
+        <div className="absolute inset-0 flex items-center justify-center">
+          <Confetti active={isLaunchVisible} config={{
+            particleCount: 200,
+            spread: 90,
+            startVelocity: 40,
+            elementCount: 200,
+            decay: 0.9,
+          }}/>
+        </div>
+        <Rocket className="w-16 h-16 text-primary mb-4" />
+        <h2 className="text-5xl md:text-7xl font-bold">You've Reached the <span className="text-primary">Launchpad</span></h2>
+        <p className="mt-6 max-w-2xl mx-auto text-muted-foreground text-xl">
+          Your journey to a flawless app starts now. Choose your path and launch with the confidence of knowing your app is truly ready for the world.
+        </p>
+        <div className="mt-10">
+          <Button asChild size="lg" className="font-bold text-lg px-8 py-6 rounded-xl hover:shadow-lg hover:shadow-primary/30">
+            <Link href="/signup">Begin Your Ascent <ArrowRight className="ml-2" /></Link>
+          </Button>
+        </div>
+      </motion.section>
+    </div>
+  );
 }
