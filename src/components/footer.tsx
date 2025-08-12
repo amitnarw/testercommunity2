@@ -26,7 +26,6 @@ const legalItems = [
 export function Footer() {
   return (
     <footer className="bg-transparent border-t relative overflow-hidden">
-      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1/2 h-32 bg-primary/20 rounded-full blur-[100px] pointer-events-none" />
       <div className="container mx-auto px-4 md:px-6 py-16 relative z-10">
         <div className="grid gap-8 lg:grid-cols-3">
           <div className="space-y-4">
