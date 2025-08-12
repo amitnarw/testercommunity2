@@ -75,7 +75,7 @@ export function ScrollToTopButton() {
           onClick={scrollToTop}
           variant="ghost"
           size="icon"
-          className="w-16 h-16 rounded-full bg-background/80 backdrop-blur-sm shadow-lg"
+          className="w-16 h-16 rounded-full bg-background/50 backdrop-blur-sm shadow-lg"
         >
           <ArrowUp className="w-6 h-6" />
           <span className="sr-only">Scroll to top</span>

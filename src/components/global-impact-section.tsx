@@ -96,7 +96,7 @@ export function GlobalImpactSection() {
                     <h2 
                         className="text-3xl md:text-5xl font-bold mt-4"
                     >
-                        From Local Startups to Global Scale
+                        From Local ₹999 to Global Ripples
                     </h2>
                      <p className="mt-4 text-muted-foreground text-lg">
                         Our platform empowers developers and testers worldwide, creating a virtuous cycle of quality and innovation. Here's a look at our collective impact.
