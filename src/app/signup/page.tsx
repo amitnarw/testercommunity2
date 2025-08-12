@@ -6,7 +6,7 @@ export default function SignupPage() {
   return (
     <div className="min-h-screen w-full lg:grid lg:grid-cols-2">
       <div className="hidden lg:flex flex-col items-center p-6 text-center relative bg-[radial-gradient(ellipse_at_top_left,_var(--tw-gradient-stops))] from-primary/10 via-transparent to-transparent">
-        <div className="relative z-10 flex flex-col items-center justify-center">
+        <div className="relative z-10 flex flex-col items-center">
           <ParallaxBackground />
           <h1 className="text-3xl font-bold tracking-tight mt-4 text-foreground">Join a community of innovators</h1>
           <p className="mt-2 max-w-md mx-auto text-muted-foreground">
