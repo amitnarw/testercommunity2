@@ -3,6 +3,7 @@ import { SignupForm } from '@/components/signup-form';
 import { TestTribeLogo } from '@/components/icons';
 import Link from 'next/link';
 import { ParallaxBackground } from '@/components/parallax-background';
+import { Card, CardContent } from '@/components/ui/card';
 
 export default function SignupPage() {
   return (
