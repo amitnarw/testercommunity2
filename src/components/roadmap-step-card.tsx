@@ -59,7 +59,7 @@ export function RoadmapStepCard({ step, isPro }: RoadmapStepCardProps) {
             >
                 <span className={cn(
                     "font-black leading-none",
-                    "text-7xl md:text-[12rem] lg:text-[15rem]", // smaller on mobile
+                    "text-7xl md:text-[10rem] lg:text-[12rem]",
                     isPro 
                         ? "text-transparent bg-clip-text bg-gradient-to-b from-primary/20 to-primary/0" 
                         : "text-primary/10"
@@ -83,21 +83,24 @@ export function RoadmapStepCard({ step, isPro }: RoadmapStepCardProps) {
                 
                 <motion.h3 
                     variants={itemVariants}
-                    className="text-3xl md:text-5xl lg:text-6xl font-bold mb-4 md:mb-6 text-foreground"
+                    className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 md:mb-6 text-foreground"
                 >
                     {title}
                 </motion.h3>
                 
                 <motion.p 
                     variants={itemVariants}
-                    className="text-sm md:text-lg lg:text-xl mb-6 md:mb-10 text-muted-foreground max-w-3xl"
+                    className="text-xs md:text-base lg:text-lg mb-6 md:mb-10 text-muted-foreground max-w-3xl"
                 >
                     {description}
                 </motion.p>
                 
                 <motion.div 
                     variants={itemVariants}
-                    className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-4 md:gap-y-6 md:border-l-2 border-primary/20 md:pl-6"
+                    className={cn(
+                        "grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-4 md:gap-y-6 md:border-l-2 md:pl-6",
+                        isPro ? "border-amber-400/50" : "border-primary/20"
+                    )}
                 >
                     {step.details.map((detail, index) => (
                         <div key={index}>
