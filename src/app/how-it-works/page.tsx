@@ -1,50 +1,56 @@
 
 'use client';
 
-import { useState } from 'react';
-import { useInView } from 'react-intersection-observer';
+import { useLayoutEffect, useRef } from 'react';
+import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { communityPathSteps, professionalPathSteps } from '@/lib/data';
 import { RoadmapStepCard } from '@/components/roadmap-step-card';
-import { ArrowRight, Rocket, Users, Briefcase } from 'lucide-react';
+import { ArrowRight, Rocket } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import Confetti from 'react-dom-confetti';
-import { motion } from 'framer-motion';
-import { HowItWorksProcessCard } from '@/components/how-it-works-process-card';
+import type { RoadmapStep } from '@/lib/types';
+import { cn } from '@/lib/utils';
 
-const processSteps = [
-    {
-        icon: <Users className="w-8 h-8"/>,
-        title: "Sign Up & Join",
-        description: "Create your free profile to become part of a global community.",
-        communityDetails: "Choose your path as a tester or developer. No payment info needed to start.",
-        proDetails: "Post your project for free, outlining your app and testing requirements."
-    },
-    {
-        icon: <Rocket className="w-8 h-8"/>,
-        title: "Engage & Test",
-        description: "Start your testing journey by either earning points or hiring experts.",
-        communityDetails: "Test other apps to earn points. The more you test, the more you earn.",
-        proDetails: "Browse our marketplace of vetted professionals and hire the perfect tester for your needs."
-    },
-    {
-        icon: <Briefcase className="w-8 h-8"/>,
-        title: "Get Feedback",
-        description: "Receive valuable insights to improve your application.",
-        communityDetails: "Use your points to get your app tested by a diverse range of community members.",
-        proDetails: "Receive comprehensive, actionable reports from your hired professional."
-    },
-    {
-        icon: <ArrowRight className="w-8 h-8"/>,
-        title: "Launch with Confidence",
-        description: "Iterate on the feedback and prepare for a successful launch.",
-        communityDetails: "Engage with testers, fix bugs, and resubmit for further testing.",
-        proDetails: "Verify fixes with your tester and approve the project upon successful completion."
-    }
-];
+gsap.registerPlugin(ScrollTrigger);
+
+const HorizontalScrollSection = ({ steps, isPro }: { steps: RoadmapStep[], isPro: boolean }) => {
+    const component = useRef<HTMLDivElement>(null);
+    const slider = useRef<HTMLDivElement>(null);
+
+    useLayoutEffect(() => {
+        let ctx = gsap.context(() => {
+            let panels = gsap.utils.toArray(".panel", slider.current);
+            gsap.to(panels, {
+                xPercent: -100 * (panels.length - 1),
+                ease: "none",
+                scrollTrigger: {
+                    trigger: slider.current,
+                    pin: true,
+                    scrub: 1,
+                    snap: 1 / (panels.length - 1),
+                    end: () => "+=" + (slider.current?.offsetWidth || 0)
+                }
+            });
+        }, component);
+        return () => ctx.revert();
+    }, [steps]);
+
+    return (
+        <div className="relative" ref={component}>
+            <div ref={slider} className="flex w-fit">
+                {steps.map((step, index) => (
+                    <div key={index} className="panel w-screen h-screen">
+                        <RoadmapStepCard step={step} isPro={isPro} />
+                    </div>
+                ))}
+            </div>
+        </div>
+    );
+};
+
 
 export default function HowItWorksPage() {
-    
     return (
         <div className="bg-background text-foreground">
              <section className="h-screen w-full flex flex-col items-center justify-center text-center p-4 bg-dot-pattern dark:bg-dot-pattern-dark">
@@ -56,43 +62,24 @@ export default function HowItWorksPage() {
             </section>
             
             <section className="py-20 md:py-32 container mx-auto px-4 md:px-6">
-                 <div className="grid md:grid-cols-2 gap-16 md:gap-24 items-start">
-                    {/* Left Column: Scrolling Text */}
-                    <div className="md:col-span-1 space-y-24">
-                        {processSteps.map((step, index) => (
-                           <motion.div 
-                                key={index} 
-                                className="space-y-4"
-                                initial={{ opacity: 0 }}
-                                whileInView={{ opacity: 1 }}
-                                viewport={{ once: true, amount: 0.5, margin: "-200px" }}
-                                transition={{ duration: 0.5 }}
-                            >
-                                <div className="flex items-center gap-4">
-                                     <div className="text-primary bg-primary/10 p-3 rounded-lg flex items-center justify-center">
-                                        {step.icon}
-                                    </div>
-                                    <h2 className="text-3xl font-bold">{step.title}</h2>
-                                </div>
-                                <p className="text-lg text-muted-foreground">{step.description}</p>
-                           </motion.div>
-                        ))}
-                    </div>
+                <div className="text-center max-w-2xl mx-auto">
+                    <h2 className="text-3xl md:text-5xl font-bold">The Community Path</h2>
+                    <p className="mt-4 text-muted-foreground text-lg">Test other apps to earn points, then use those points to get your own app tested for free. It's a powerful, reciprocal ecosystem.</p>
+                </div>
+            </section>
+            
+            <HorizontalScrollSection steps={communityPathSteps} isPro={false} />
 
-                    {/* Right Column: Sticky Card */}
-                    <div className="md:col-span-1 md:sticky top-24">
-                        <HowItWorksProcessCard
-                            icon={<Users className="w-8 h-8"/>}
-                            title="Sign Up & Join"
-                            description="Create your free profile to become part of a global community."
-                            communityDetails="Choose your path as a tester or developer. No payment info needed to start."
-                            proDetails="Post your project for free, outlining your app and testing requirements."
-                        />
-                    </div>
+            <section className="py-20 md:py-32 container mx-auto px-4 md:px-6">
+                <div className="text-center max-w-2xl mx-auto">
+                    <h2 className="text-3xl md:text-5xl font-bold">The Professional Path</h2>
+                    <p className="mt-4 text-muted-foreground text-lg">Need guaranteed, high-quality results on a tight deadline? Hire our vetted professional testers for your critical projects.</p>
                 </div>
             </section>
 
-             <motion.section 
+            <HorizontalScrollSection steps={professionalPathSteps} isPro={true} />
+
+            <section 
                 className="h-screen w-full flex flex-col items-center justify-center text-center p-4 relative overflow-hidden bg-secondary/30 dark:bg-secondary/20"
             >
                 <Rocket className="w-16 h-16 text-primary mb-4" />
@@ -105,7 +92,7 @@ export default function HowItWorksPage() {
                     <Link href="/signup">Begin Your Ascent <ArrowRight className="ml-2" /></Link>
                 </Button>
                 </div>
-            </motion.section>
+            </section>
         </div>
     );
 }

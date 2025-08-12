@@ -6,8 +6,6 @@ import type { RoadmapStep } from '@/lib/types';
 import React from 'react';
 import { CheckCircle } from 'lucide-react';
 import { Badge } from '@/components/ui/badge';
-import { Card } from '@/components/ui/card';
-import { motion } from 'framer-motion';
 
 interface RoadmapStepCardProps {
   step: RoadmapStep;
@@ -18,13 +16,9 @@ export function RoadmapStepCard({ step, isPro }: RoadmapStepCardProps) {
   const { icon: Icon, title, description, details, badgeText } = step;
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 50 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, amount: 0.3 }}
-      transition={{ duration: 0.5, ease: 'easeOut' }}
+    <div
       className={cn(
-        "w-full h-full p-8 md:p-12 flex items-center justify-center overflow-hidden rounded-none border-0",
+        "w-full h-full p-8 md:p-12 flex items-center justify-center overflow-hidden",
         isPro 
           ? "bg-gradient-to-br from-slate-900 via-black to-slate-900 text-primary-foreground" 
           : "bg-background dark:bg-secondary/20 dark:bg-dot-pattern-dark dark:bg-[length:30px_30px]"
@@ -68,6 +62,6 @@ export function RoadmapStepCard({ step, isPro }: RoadmapStepCardProps) {
                 </div>
             </div>
         </div>
-    </motion.div>
+    </div>
   );
 }
