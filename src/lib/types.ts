@@ -38,6 +38,7 @@ export type Testimonial = {
 };
 
 export type RoadmapStep = {
+    step: number;
     icon: LucideIcon;
     title: string;
     description: string;

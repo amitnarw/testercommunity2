@@ -16,26 +16,47 @@ export function RoadmapStepCard({ step, isPro }: RoadmapStepCardProps) {
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 50 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5, delay: 0.2, ease: 'easeOut' }}
-      viewport={{ once: true, amount: 0.5 }}
-      className="w-[300px] md:w-[350px] h-full flex-shrink-0 relative px-4"
+      initial={{ opacity: 0, y: 50, scale: 0.9 }}
+      whileInView={{ opacity: 1, y: 0, scale: 1 }}
+      transition={{ duration: 0.6, ease: 'easeOut' }}
+      viewport={{ once: true, amount: 0.3 }}
+      className={cn(
+        "w-[350px] md:w-[450px] h-fit flex-shrink-0 p-8 rounded-3xl shadow-2xl relative flex flex-col justify-between",
+        isPro 
+          ? "bg-gradient-to-br from-primary/90 to-primary/70 text-primary-foreground border-primary" 
+          : "bg-card border-border"
+      )}
     >
-        <div className={cn("h-full w-full rounded-2xl p-6 flex flex-col justify-center", isPro ? "bg-primary/10 border-primary/20 border" : "bg-secondary")}>
-            <div className={cn("absolute flex items-center justify-center w-16 h-16 rounded-full border-4 bg-background left-1/2 -translate-x-1/2",
-                 isPro ? "bottom-[-32px] border-primary/50" : "top-[-32px] border-secondary-foreground/20"
-            )}>
-                 <div className={cn("flex items-center justify-center w-12 h-12 rounded-full", isPro ? "bg-primary/20 text-primary" : "bg-secondary-foreground/10 text-secondary-foreground")}>
-                    <Icon className="w-6 h-6" />
-                </div>
-            </div>
-            <h3 className="text-xl font-bold mb-2 text-center">{title}</h3>
-            <p className="text-muted-foreground text-sm text-center mb-4">{description}</p>
-            <div className="text-center bg-background/50 p-3 rounded-lg text-xs">
-                <p className="font-semibold text-foreground">{details}</p>
-            </div>
+      <div className={cn(
+        "absolute -top-6 -right-6 w-12 h-12 flex items-center justify-center rounded-full text-lg font-bold",
+        isPro 
+          ? "bg-primary-foreground text-primary" 
+          : "bg-primary text-primary-foreground"
+      )}>
+        {step.step}
+      </div>
+      
+      <div>
+        <div className="flex items-center gap-4 mb-4">
+          <div className={cn(
+            "p-3 rounded-xl",
+            isPro ? "bg-primary-foreground/20" : "bg-primary/10"
+          )}>
+            <Icon className={cn("w-6 h-6", isPro ? "text-primary-foreground" : "text-primary")} />
+          </div>
+          <h3 className="text-2xl font-bold">{title}</h3>
         </div>
+        <p className={cn("mb-6", isPro ? "text-primary-foreground/90" : "text-muted-foreground")}>
+          {description}
+        </p>
+      </div>
+
+      <div className={cn(
+        "p-4 rounded-xl text-sm",
+        isPro ? "bg-black/20" : "bg-secondary"
+      )}>
+        <p>{details}</p>
+      </div>
     </motion.div>
   );
 }

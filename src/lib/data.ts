@@ -6,7 +6,7 @@ export const testers: Tester[] = [
   {
     id: 1,
     name: 'Alice Johnson',
-    avatarUrl: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=400&auto=format&fit=crop',
+    avatarUrl: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=400&auto=format=fit=crop',
     dataAiHint: 'woman developer',
     skills: ['UI/UX', 'Mobile', 'Web'],
     reputation: 4.9,
@@ -26,7 +26,7 @@ export const testers: Tester[] = [
   {
     id: 3,
     name: 'Charlie Brown',
-    avatarUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=400&auto=format&fit=crop',
+    avatarUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=400&auto=format=fit=crop',
     dataAiHint: 'man smiling',
     skills: ['Game Testing', 'VR/AR', 'Mobile'],
     reputation: 4.9,
@@ -46,7 +46,7 @@ export const testers: Tester[] = [
   {
     id: 5,
     name: 'Ethan Garcia',
-    avatarUrl: 'https://images.unsplash.com/photo-1568602471122-7832951cc4c5?q=80&w=400&auto=format&fit=crop',
+    avatarUrl: 'https://images.unsplash.com/photo-1568602471122-7832951cc4c5?q=80&w=400&auto=format=fit=crop',
     dataAiHint: 'man engineer',
     skills: ['Performance', 'Backend', 'API'],
     reputation: 4.8,
@@ -111,7 +111,7 @@ export const blogPosts: BlogPost[] = [
     content: `<p>Automated testing is a cornerstone of modern software development. By letting scripts and tools do the repetitive work, you can focus on what truly matters: building great features. This guide will walk you through the basics.</p><p>We'll cover topics like:</p><ul><li>Choosing the right automation framework</li><li>Writing your first test script</li><li>Integrating tests into your CI/CD pipeline</li><li>Analyzing test results</li></ul>`,
     author: {
       name: 'Alice Johnson',
-      avatarUrl: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=400&auto=format&fit=crop',
+      avatarUrl: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=400&auto=format=fit=crop',
       dataAiHint: 'woman developer',
     },
     date: '2024-05-15',
@@ -194,66 +194,76 @@ export const testimonials: Testimonial[] = [
 
 export const communityPathSteps: RoadmapStep[] = [
     {
+        step: 1,
         icon: UserPlus,
         title: "Join the Tribe",
-        description: "Sign up for free to create your profile. This is your passport to a world of collaborative testing where you can both give and receive valuable feedback.",
+        description: "Create your free profile to become part of a global community of developers and testers passionate about quality. This is your passport to a world of collaborative testing.",
         details: "Time: 5 mins • Cost: Free"
     },
     {
+        step: 2,
         icon: Zap,
-        title: "Test to Earn",
-        description: "Explore apps submitted by other community members. Find bugs, submit detailed reports, and earn points for every valid issue you uncover. Build your reputation and skills.",
-        details: "Time: 1-2 hours per cycle"
+        title: "Test to Earn Points",
+        description: "Dive into the community pool and test apps from other members. For every valid bug you report, you'll earn points and build your reputation as a skilled tester.",
+        details: "Est. Time: 1-2 hours per test cycle"
     },
     {
+        step: 3,
         icon: UploadCloud,
-        title: "Submit Your App",
-        description: "Once you've earned points, spend them to get your own app tested. Provide details about your app and specify what kind of feedback you're looking for.",
-        details: "Wait: Feedback within 48 hours"
+        title: "Submit Your Own App",
+        description: "Use the points you've earned to get your own app tested. Provide your build, and specify which areas you want the community to focus on.",
+        details: "Requirement: Points earned from testing"
     },
     {
+        step: 4,
         icon: Award,
-        title: "Receive Community Feedback",
-        description: "Get diverse feedback from a wide range of devices and user perspectives. This crowdsourced approach is invaluable for uncovering unexpected bugs and usability issues.",
-        details: "Outcome: Crowdsourced QA reports"
+        title: "Receive Diverse Feedback",
+        description: "Benefit from a wide range of perspectives, devices, and usage patterns. Crowdsourced testing is invaluable for uncovering unexpected real-world bugs.",
+        details: "Typical Wait: Feedback within 48 hours"
     },
      {
+        step: 5,
         icon: Rocket,
-        title: "Launch with Community Support",
-        description: "Use the collective feedback to improve your app. Iterate based on the community's findings and launch a more robust and user-friendly product.",
-        details: "Benefit: A battle-tested app"
+        title: "Launch a Better App",
+        description: "Leverage the collective intelligence of the community. Iterate on the feedback, fix the bugs, and launch a more robust and user-friendly product.",
+        details: "Outcome: A community-vetted application"
     },
 ];
 
 export const professionalPathSteps: RoadmapStep[] = [
     {
+        step: 1,
         icon: Briefcase,
         title: "Post Your Project",
-        description: "Define your project scope and testing requirements. Outline your objectives, whether it's for UI/UX, security, performance, or general quality assurance.",
-        details: "Time: 15 mins"
+        description: "For mission-critical projects where quality is paramount. Define your project scope, objectives, and the specific testing you need, from security to performance.",
+        details: "Time: 15 mins • Cost: Free to post"
     },
     {
+        step: 2,
         icon: IndianRupee,
         title: "Hire a Professional",
-        description: "Browse our curated marketplace of vetted QA professionals. Choose a tester based on their skills, experience, and ratings to ensure a perfect fit for your project.",
-        details: "Cost: Starts at ₹999"
+        description: "Browse our marketplace of elite, vetted QA professionals. Review profiles, skills, and ratings to hire the perfect expert for your project's unique needs.",
+        details: "Cost: Starts at ₹999 per project"
     },
     {
+        step: 3,
         icon: FileText,
         title: "Receive Expert Reports",
-        description: "Your hired tester will conduct a thorough review of your app, providing detailed, actionable bug reports complete with logs, screenshots, and clear replication steps.",
-        details: "Cycle: 7-14 day projects"
+        description: "Your pro tester delivers comprehensive, actionable reports. Expect detailed replication steps, logs, and screenshots for every bug found.",
+        details: "Cycle: 3-14 day projects available"
     },
     {
+        step: 4,
         icon: CheckCircle,
         title: "Collaborate & Verify",
-        description: "Communicate directly with your tester to clarify issues. Once you've implemented fixes, the tester will verify them to ensure they are resolved correctly.",
-        details: "Benefit: Guaranteed quality"
+        description: "Communicate directly with your tester to clarify issues. After you push fixes, the tester verifies them to ensure they're resolved and haven't introduced regressions.",
+        details: "Benefit: Guaranteed quality assurance"
     },
      {
+        step: 5,
         icon: Rocket,
         title: "Launch with Confidence",
-        description: "With a professionally audited app and a comprehensive final report, you can launch to the market with the ultimate assurance of quality and a 'TestTribe Certified' badge.",
-        details: "Outcome: A production-ready app"
+        description: "Go to market with the ultimate assurance of quality. Your professionally audited app is ready for prime time, backed by a 'TestTribe Certified' final report.",
+        details: "Outcome: A production-ready, flawless app"
     }
 ];

@@ -13,20 +13,23 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
 const HorizontalRoadmap = ({ steps, isPro }: { steps: any[], isPro: boolean }) => {
     const targetRef = useRef<HTMLDivElement | null>(null);
-    const { scrollYProgress } = useScroll({ target: targetRef });
+    const { scrollYProgress } = useScroll({
+        target: targetRef,
+        offset: ["start end", "end start"]
+    });
 
-    const x = useTransform(scrollYProgress, [0, 1], ["1%", "-80%"]);
+    const x = useTransform(scrollYProgress, [0.1, 0.85], ["0%", "-80%"]);
 
     return (
-        <div ref={targetRef} className="relative h-[250vh]">
+        <section ref={targetRef} className="relative h-[300vh] bg-background">
             <div className="sticky top-0 flex h-screen items-center overflow-hidden">
-                <motion.div style={{ x }} className="flex gap-8">
+                <motion.div style={{ x }} className="flex gap-12 px-12">
                     {steps.map((step, index) => (
                         <RoadmapStepCard key={index} step={step} isPro={isPro} />
                     ))}
                 </motion.div>
             </div>
-        </div>
+        </section>
     );
 };
 
@@ -48,42 +51,23 @@ export default function HowItWorksPage() {
       </section>
 
       <section className="w-full">
-         <Tabs defaultValue="community" className="w-full">
-            <div className="sticky top-20 z-40 bg-background/80 backdrop-blur-lg py-4">
-                <div className="container mx-auto flex justify-center">
-                    <TabsList className="grid w-full max-w-md grid-cols-2">
-                        <TabsTrigger value="community">
-                            <Users className="mr-2 h-4 w-4" />
-                            Community Path
-                        </TabsTrigger>
-                        <TabsTrigger value="pro">
-                             <Briefcase className="mr-2 h-4 w-4" />
-                            Professional Path
-                        </TabsTrigger>
-                    </TabsList>
-                </div>
-            </div>
-            
-            <TabsContent value="community" className="pt-8">
-                <div className="text-center container mx-auto px-4 md:px-6 mb-16">
-                    <h2 className="text-3xl md:text-4xl font-bold">The Community Path: Grow Together</h2>
-                    <p className="mt-4 max-w-2xl mx-auto text-muted-foreground">
-                        Leverage the power of the crowd. Test other apps to earn points, then spend them to get your own app tested by a diverse community of passionate users.
-                    </p>
-                </div>
-                <HorizontalRoadmap steps={communityPathSteps} isPro={false} />
-            </TabsContent>
-            
-            <TabsContent value="pro" className="pt-8">
-                 <div className="text-center container mx-auto px-4 md:px-6 mb-16">
-                    <h2 className="text-3xl md:text-4xl font-bold">The Professional Path: Guaranteed Quality</h2>
-                    <p className="mt-4 max-w-2xl mx-auto text-muted-foreground">
-                       For when you need certainty. Hire vetted QA professionals who provide expert feedback, detailed reports, and guaranteed results for a flawless launch.
-                    </p>
-                </div>
-                <HorizontalRoadmap steps={professionalPathSteps} isPro={true} />
-            </TabsContent>
-        </Tabs>
+         <div className="text-center container mx-auto px-4 md:px-6 my-16">
+            <h2 className="text-3xl md:text-4xl font-bold inline-flex items-center gap-3"><Users className="w-8 h-8 text-primary"/>The Community Path: Grow Together</h2>
+            <p className="mt-4 max-w-2xl mx-auto text-muted-foreground">
+                Leverage the power of the crowd. Test other apps to earn points, then spend them to get your own app tested by a diverse community of passionate users.
+            </p>
+        </div>
+        <HorizontalRoadmap steps={communityPathSteps} isPro={false} />
+      </section>
+       
+      <section className="w-full">
+        <div className="text-center container mx-auto px-4 md:px-6 my-16">
+            <h2 className="text-3xl md:text-4xl font-bold inline-flex items-center gap-3"><Briefcase className="w-8 h-8 text-primary"/>The Professional Path: Guaranteed Quality</h2>
+            <p className="mt-4 max-w-2xl mx-auto text-muted-foreground">
+                For when you need certainty. Hire vetted QA professionals who provide expert feedback, detailed reports, and guaranteed results for a flawless launch.
+            </p>
+        </div>
+        <HorizontalRoadmap steps={professionalPathSteps} isPro={true} />
       </section>
 
       <motion.section 
