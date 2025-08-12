@@ -1,3 +1,5 @@
+import type { LucideIcon } from 'lucide-react';
+
 export type Tester = {
   id: number;
   name: string;
@@ -32,4 +34,11 @@ export type Testimonial = {
   avatar: string;
   dataAiHint?: string;
   comment: string;
+};
+
+export type RoadmapStep = {
+    icon: LucideIcon;
+    title: string;
+    description: string;
+    time: string;
 };

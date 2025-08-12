@@ -1,4 +1,5 @@
-import type { Tester, BlogPost, Testimonial } from './types';
+import type { Tester, BlogPost, Testimonial, RoadmapStep } from './types';
+import { UserPlus, UploadCloud, Zap, Award, CheckCircle, Briefcase, FileText, Rocket, IndianRupee } from 'lucide-react';
 
 export const testers: Tester[] = [
   {
@@ -187,4 +188,71 @@ export const testimonials: Testimonial[] = [
     dataAiHint: 'woman developer',
     comment: 'The community aspect is what sets TestTribe apart. It\'s not just a service; it\'s a network of professionals passionate about quality. The collaboration tools are excellent.',
   },
+];
+
+
+export const communityPathSteps: RoadmapStep[] = [
+    {
+        icon: UserPlus,
+        title: "Step 1: Join the Tribe",
+        description: "Create your free account to become part of the TestTribe ecosystem. This is your passport to a world of collaborative testing.",
+        time: "Time: ~5 minutes"
+    },
+    {
+        icon: Zap,
+        title: "Step 2: Earn Points by Testing",
+        description: "Browse community-submitted apps, find one that interests you, and start testing. For every valid bug you report, you'll earn points and build your reputation.",
+        time: "Time: ~1-2 hours per test cycle"
+    },
+    {
+        icon: UploadCloud,
+        title: "Step 3: Submit Your App",
+        description: "Once you've earned enough points, you can spend them to submit your own app. Provide your app details, and it will be available for the community to test.",
+        time: "Time: ~10 minutes"
+    },
+    {
+        icon: Award,
+        title: "Step 4: Receive Community Feedback",
+        description: "Watch as feedback and bug reports from a diverse range of testers and devices pour in. This crowdsourced feedback is invaluable for finding unique issues.",
+        time: "Typical Wait: First reports within 48 hours"
+    },
+    {
+        icon: CheckCircle,
+        title: "Step 5: Iterate and Improve",
+        description: "Use the feedback to fix bugs, improve your app, and re-submit for further testing if needed. Your app becomes more robust with every cycle.",
+        time: "Time: Ongoing"
+    }
+];
+
+export const professionalPathSteps: RoadmapStep[] = [
+    {
+        icon: Briefcase,
+        title: "Step 1: Post Your Project",
+        description: "Submit your app and define your testing needs. Specify the scope, objectives (e.g., UI/UX, security, performance), and your budget.",
+        time: "Time: ~15 minutes"
+    },
+    {
+        icon: IndianRupee,
+        title: "Step 2: Choose Your Tester",
+        description: "Browse our marketplace of vetted professionals. Review their profiles, expertise, and ratings to hire the perfect QA expert for your project.",
+        time: "Cost: Starts at ₹999 per project"
+    },
+    {
+        icon: FileText,
+        title: "Step 3: Receive Actionable Reports",
+        description: "Your hired professional gets to work immediately, providing a stream of detailed, actionable bug reports with logs, screenshots, and clear replication steps.",
+        time: "Time: First reports within 24 hours"
+    },
+    {
+        icon: CheckCircle,
+        title: "Step 4: Collaborate and Verify",
+        description: "Communicate directly with your tester to clarify issues. Once you've fixed the bugs, the tester will verify the fixes to ensure they're resolved.",
+        time: "Time: 7-14 day cycles"
+    },
+    {
+        icon: Rocket,
+        title: "Step 5: Launch with Confidence",
+        description: "With a thoroughly tested app and a final comprehensive report, you can launch to the market with the ultimate assurance of quality and a 'TestTribe Certified' badge.",
+        time: "Ready for launch!"
+    }
 ];
