@@ -10,8 +10,8 @@ export function KloudsBackground() {
   useEffect(() => {
     if (canvasRef.current && !kloudsRef.current) {
         import('klouds').then((KloudsModule) => {
-            const Klouds = KloudsModule.default;
-            kloudsRef.current = new Klouds({
+            // Correctly instantiate the Klouds object from the module's default export
+            kloudsRef.current = new (KloudsModule.default)({
                 selector: canvasRef.current,
                 speed: 2,
                 layerCount: 5,
