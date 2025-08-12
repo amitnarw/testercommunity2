@@ -22,16 +22,21 @@ const HorizontalScrollSection = ({ steps, isPro }: { steps: RoadmapStep[], isPro
 
     useLayoutEffect(() => {
         let ctx = gsap.context(() => {
-            let panels = gsap.utils.toArray<HTMLDivElement>(".panel", slider.current!);
-            gsap.to(panels, {
-                xPercent: -100 * (panels.length - 1),
-                ease: "none",
-                scrollTrigger: {
-                    trigger: slider.current,
-                    pin: true,
-                    scrub: 1,
-                    snap: 1 / (panels.length - 1),
-                    end: () => "+=" + (slider.current?.offsetWidth || 0)
+            // Media query for desktop
+            ScrollTrigger.matchMedia({
+                "(min-width: 768px)": function() {
+                    let panels = gsap.utils.toArray<HTMLDivElement>(".panel", slider.current!);
+                    gsap.to(panels, {
+                        xPercent: -100 * (panels.length - 1),
+                        ease: "none",
+                        scrollTrigger: {
+                            trigger: component.current,
+                            pin: true,
+                            scrub: 1,
+                            snap: 1 / (panels.length - 1),
+                            end: () => "+=" + slider.current?.offsetWidth
+                        }
+                    });
                 }
             });
         }, component);
@@ -39,10 +44,10 @@ const HorizontalScrollSection = ({ steps, isPro }: { steps: RoadmapStep[], isPro
     }, [steps]);
 
     return (
-        <div className="relative" ref={component}>
-            <div ref={slider} className="flex w-fit">
+        <div className="relative md:h-auto" ref={component}>
+            <div ref={slider} className="md:flex md:w-fit">
                 {steps.map((step, index) => (
-                    <div key={index} className="panel w-screen h-screen">
+                    <div key={index} className="panel md:w-screen md:h-screen">
                         <RoadmapStepCard step={step} isPro={isPro} />
                     </div>
                 ))}
@@ -72,7 +77,7 @@ export default function HowItWorksPage() {
                 <p className="mt-6 max-w-3xl mx-auto text-muted-foreground text-xl">
                     Our unified process ensures quality, whether you leverage the community or hire professionals. Your journey to a flawless launch starts here.
                 </p>
-                <p className="mt-8 text-sm text-muted-foreground animate-pulse">Scroll down to see how it works</p>
+                <p className="mt-8 text-sm text-muted-foreground animate-pulse md:block hidden">Scroll down to see how it works</p>
             </section>
             
             <section className="py-20 md:py-32 container mx-auto px-4 md:px-6">
