@@ -38,7 +38,7 @@ const FloatingLabelInput = ({ id, label, register, error }: { id: any, label: st
             id={id} 
             placeholder=" " 
             {...register(id)} 
-            className="block w-full appearance-none focus:outline-none bg-transparent border-none p-0 pt-6" 
+            className="block w-full appearance-none focus:outline-none bg-transparent outline-none border-none p-0 pt-6" 
         />
         <Label 
             htmlFor={id} 
@@ -78,17 +78,17 @@ export function SignupForm() {
         <form onSubmit={handleSubmit(processForm)} className="space-y-8">
             <div>
                  <RadioGroup {...register('role')} className="grid grid-cols-2 gap-4">
-                    <Label htmlFor="developer" className="relative cursor-pointer rounded-xl border-2 bg-background p-4 text-center transition-all peer-data-[state=checked]:border-primary peer-data-[state=checked]:shadow-lg">
+                    <Label htmlFor="developer" className="relative cursor-pointer rounded-xl border-2 bg-background p-4 text-center transition-all peer-data-[state=checked]:border-transparent peer-data-[state=checked]:text-primary-foreground peer-data-[state=checked]:bg-gradient-to-br from-primary to-accent peer-data-[state=checked]:shadow-lg">
                         <RadioGroupItem value="developer" id="developer" className="peer sr-only" />
-                        <CheckCircle2 className="absolute right-2 top-2 h-5 w-5 text-primary opacity-0 transition-opacity peer-data-[state=checked]:opacity-100" />
+                        <CheckCircle2 className="absolute right-2 top-2 h-5 w-5 opacity-0 transition-opacity peer-data-[state=checked]:opacity-100" />
                         <p className="font-semibold">I'm a Developer</p>
-                        <p className="text-xs text-muted-foreground">I want to get my app tested</p>
+                        <p className="text-xs text-muted-foreground peer-data-[state=checked]:text-primary-foreground/80">I want to get my app tested</p>
                     </Label>
-                    <Label htmlFor="tester" className="relative cursor-pointer rounded-xl border-2 bg-background p-4 text-center transition-all peer-data-[state=checked]:border-primary peer-data-[state=checked]:shadow-lg">
+                    <Label htmlFor="tester" className="relative cursor-pointer rounded-xl border-2 bg-background p-4 text-center transition-all peer-data-[state=checked]:border-transparent peer-data-[state=checked]:text-primary-foreground peer-data-[state=checked]:bg-gradient-to-br from-primary to-accent peer-data-[state=checked]:shadow-lg">
                         <RadioGroupItem value="tester" id="tester" className="peer sr-only" />
-                        <CheckCircle2 className="absolute right-2 top-2 h-5 w-5 text-primary opacity-0 transition-opacity peer-data-[state=checked]:opacity-100" />
+                        <CheckCircle2 className="absolute right-2 top-2 h-5 w-5 opacity-0 transition-opacity peer-data-[state=checked]:opacity-100" />
                         <p className="font-semibold">I'm a Tester</p>
-                        <p className="text-xs text-muted-foreground">I want to test apps and earn</p>
+                        <p className="text-xs text-muted-foreground peer-data-[state=checked]:text-primary-foreground/80">I want to test apps and earn</p>
                     </Label>
                 </RadioGroup>
                 {errors.role && <p className="text-sm text-destructive mt-1">{errors.role.message}</p>}

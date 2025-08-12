@@ -14,15 +14,13 @@ export default function SignupPage() {
           </p>
         </div>
       </div>
-      <div className="w-full flex flex-col items-center justify-center p-6 bg-secondary/20">
+      <div className="w-full flex flex-col items-center justify-center p-6">
         <div className="max-w-md w-full space-y-6">
            <div className="text-center">
             <h2 className="text-3xl font-bold tracking-tight text-foreground">
               Create your account
             </h2>
-            <p className="mt-2 text-sm text-muted-foreground">
-              And start your journey with TestTribe
-            </p>
+           
           </div>
           <SignupForm />
         </div>
