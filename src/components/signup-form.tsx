@@ -148,7 +148,7 @@ export function SignupForm() {
         {currentStep < steps.length - 1 ? (
           <Button onClick={handleNext} className="rounded-xl">
             Next <ArrowRight className="ml-2 h-4 w-4" />
-          </a sButton>
+          </Button>
         ) : (
           <Button onClick={handleNext} className="rounded-xl">Finish Sign Up</Button>
         )}
