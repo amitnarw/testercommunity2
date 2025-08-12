@@ -1,6 +1,7 @@
 
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle, HowItWorksCard } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
+import { HowItWorksCard } from '@/components/how-it-works-card';
 import { ArrowRight, Check, Users, Briefcase, Award, Zap, Heart, Target } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
