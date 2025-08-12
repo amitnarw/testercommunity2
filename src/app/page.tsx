@@ -205,9 +205,9 @@ export default function Home() {
                                 {features.map((feature, i) => (
                                     <FeatureCard key={feature.title}>
                                         <CardHeader>
-                                            <CardTitle className="text-lg text-white dark:text-white">{feature.title}</CardTitle>
+                                            <CardTitle className="text-lg text-black dark:text-white">{feature.title}</CardTitle>
                                         </CardHeader>
-                                        <CardContent>
+                                        <CardContent className='flex flex-col items-start justify-between h-full'>
                                             <p className="text-muted-foreground">{feature.description}</p>
                                             <Link href={feature.link} className="flex items-center text-primary font-semibold mt-4 hover:underline">
                                                 Learn More <ChevronRight className="w-4 h-4 ml-1" />
@@ -280,7 +280,7 @@ export default function Home() {
                     {/* CTA Section */}
                     <section className="py-20 md:py-28">
                         <div className="container mx-auto px-4 md:px-6 text-center">
-                            <h2 className="text-4xl md:text-5xl font-bold">Ready to Elevate Your Testing?</h2>
+                            <h2 className="text-4xl md:text-5xl font-bold">Ready to <span className="bg-gradient-to-br from-primary to-accent bg-clip-text text-transparent">Elevate</span> Your Testing?</h2>
                             <p className="mt-4 max-w-2xl mx-auto text-muted-foreground">
                                 Join the community and experience the future of app testing today. It's free to get started.
                             </p>
