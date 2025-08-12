@@ -86,6 +86,7 @@ export default function HowItWorksPage() {
                     <span className="text-sm text-muted-foreground animate-pulse">Scroll down to see how it works</span>
                     <ArrowDown className="w-5 h-5 text-muted-foreground transition-transform group-hover:translate-y-1" />
                 </div>
+                 <div className="timeline-road-finish"></div>
             </section>
             
             <section id="community-path-section" className="py-20 md:py-32 container mx-auto px-4 md:px-6">
