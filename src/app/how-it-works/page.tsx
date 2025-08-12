@@ -87,15 +87,16 @@ export default function HowItWorksPage() {
                             Leverage the power of the crowd. Test other apps to earn points, then spend them to get your own app tested by a diverse community of passionate users.
                         </p>
                     </div>
-                </div>
-                <div className="sticky top-0 h-screen flex items-center overflow-hidden">
-                    <motion.div style={{ x: communityX }} className="flex">
-                        {communityPathSteps.map((step) => (
-                            <div key={step.step} className="w-screen h-screen flex-shrink-0">
-                               <RoadmapStepCard step={step} isPro={false} />
-                            </div>
-                        ))}
-                    </motion.div>
+                
+                    <div className="sticky top-0 h-screen flex items-center overflow-hidden w-full">
+                        <motion.div style={{ x: communityX }} className="flex">
+                            {communityPathSteps.map((step) => (
+                                <div key={step.step} className="w-screen h-screen flex-shrink-0">
+                                   <RoadmapStepCard step={step} isPro={false} />
+                                </div>
+                            ))}
+                        </motion.div>
+                    </div>
                 </div>
             </section>
             
@@ -107,15 +108,16 @@ export default function HowItWorksPage() {
                             For when you need certainty. Hire vetted QA professionals who provide expert feedback, detailed reports, and guaranteed results for a flawless launch.
                         </p>
                     </div>
-                </div>
-                <div className="sticky top-0 h-screen flex items-center overflow-hidden">
-                     <motion.div style={{ x: proX }} className="flex">
-                        {professionalPathSteps.map((step) => (
-                            <div key={step.step} className="w-screen h-screen flex-shrink-0">
-                               <RoadmapStepCard step={step} isPro={true} />
-                            </div>
-                        ))}
-                    </motion.div>
+                
+                    <div className="sticky top-0 h-screen flex items-center overflow-hidden w-full">
+                         <motion.div style={{ x: proX }} className="flex">
+                            {professionalPathSteps.map((step) => (
+                                <div key={step.step} className="w-screen h-screen flex-shrink-0">
+                                   <RoadmapStepCard step={step} isPro={true} />
+                                </div>
+                            ))}
+                        </motion.div>
+                    </div>
                 </div>
             </section>
 
