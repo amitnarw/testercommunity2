@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useRef } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import { motion, useScroll, useTransform } from 'framer-motion';
 import { communityPathSteps, professionalPathSteps } from '@/lib/data';
 import { RoadmapStepCard } from '@/components/roadmap-step-card';
@@ -9,14 +9,12 @@ import { ArrowRight, Rocket, Users, Briefcase } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import Confetti from 'react-dom-confetti';
-import { useState, useEffect } from 'react';
-
 
 const HorizontalRoadmap = ({ steps, isPro }: { steps: typeof communityPathSteps, isPro: boolean }) => {
     const targetRef = useRef<HTMLDivElement | null>(null);
     const { scrollYProgress } = useScroll({
         target: targetRef,
-        offset: ['start start', 'end end'],
+        offset: ['start start', 'end start'],
     });
 
     const x = useTransform(scrollYProgress, [0, 1], ["0%", `-${100 * (steps.length - 1)}%`]);
