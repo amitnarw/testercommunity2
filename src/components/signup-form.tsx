@@ -12,6 +12,14 @@ import { RadioGroup, RadioGroupItem } from './ui/radio-group';
 import { Separator } from './ui/separator';
 import { cn } from '@/lib/utils';
 import { CheckCircle2 } from 'lucide-react';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form"
 
 const signupSchema = z.object({
   role: z.enum(['developer', 'tester'], { required_error: 'Please select a role.' }),
@@ -32,29 +40,16 @@ const GoogleIcon = (props: React.SVGProps<SVGSVGElement>) => (
     </svg>
 );
 
-const FloatingLabelInput = ({ id, label, register, error }: { id: any, label: string, register: any, error?: { message?: string }}) => (
-    <div className="relative border-b-2 border-muted focus-within:border-primary transition-colors">
-        <Input 
-            id={id} 
-            placeholder=" " 
-            {...register(id)} 
-            className="block w-full appearance-none focus:outline-none bg-transparent outline-none border-none p-0 pt-6" 
-        />
-        <Label 
-            htmlFor={id} 
-            className="absolute top-4 left-0 -translate-y-1/2 duration-300 origin-0 text-muted-foreground"
-        >
-            {label}
-        </Label>
-        {error && <p className="text-sm text-destructive mt-1">{error.message}</p>}
-    </div>
-);
-
-
 export function SignupForm() {
-  const { register, handleSubmit, formState: { errors } } = useForm<SignupFormData>({
+  const form = useForm<SignupFormData>({
     resolver: zodResolver(signupSchema),
-    mode: 'onChange'
+    mode: 'onChange',
+    defaultValues: {
+        fullName: '',
+        email: '',
+        password: '',
+        terms: false,
+    }
   });
 
   const processForm: SubmitHandler<SignupFormData> = (data) => {
@@ -64,7 +59,7 @@ export function SignupForm() {
 
   return (
     <div className="space-y-8">
-        <Button variant="outline" className="w-full rounded-xl py-6">
+        <Button variant="outline" className="w-full rounded-xl py-6 text-base">
             <GoogleIcon className="mr-3" />
             Sign up with Google
         </Button>
@@ -75,39 +70,116 @@ export function SignupForm() {
             <Separator className="flex-1 bg-border/50" />
         </div>
 
-        <form onSubmit={handleSubmit(processForm)} className="space-y-8">
-            <div>
-                 <RadioGroup {...register('role')} className="grid grid-cols-2 gap-4">
-                    <Label htmlFor="developer" className="relative cursor-pointer rounded-xl border-2 bg-background p-4 text-center transition-all peer-data-[state=checked]:border-transparent peer-data-[state=checked]:text-primary-foreground peer-data-[state=checked]:bg-gradient-to-br from-primary to-accent peer-data-[state=checked]:shadow-lg">
-                        <RadioGroupItem value="developer" id="developer" className="peer sr-only" />
-                        <CheckCircle2 className="absolute right-2 top-2 h-5 w-5 opacity-0 transition-opacity peer-data-[state=checked]:opacity-100" />
-                        <p className="font-semibold">I'm a Developer</p>
-                        <p className="text-xs text-muted-foreground peer-data-[state=checked]:text-primary-foreground/80">I want to get my app tested</p>
-                    </Label>
-                    <Label htmlFor="tester" className="relative cursor-pointer rounded-xl border-2 bg-background p-4 text-center transition-all peer-data-[state=checked]:border-transparent peer-data-[state=checked]:text-primary-foreground peer-data-[state=checked]:bg-gradient-to-br from-primary to-accent peer-data-[state=checked]:shadow-lg">
-                        <RadioGroupItem value="tester" id="tester" className="peer sr-only" />
-                        <CheckCircle2 className="absolute right-2 top-2 h-5 w-5 opacity-0 transition-opacity peer-data-[state=checked]:opacity-100" />
-                        <p className="font-semibold">I'm a Tester</p>
-                        <p className="text-xs text-muted-foreground peer-data-[state=checked]:text-primary-foreground/80">I want to test apps and earn</p>
-                    </Label>
-                </RadioGroup>
-                {errors.role && <p className="text-sm text-destructive mt-1">{errors.role.message}</p>}
-            </div>
+        <Form {...form}>
+            <form onSubmit={form.handleSubmit(processForm)} className="space-y-6">
+                <FormField
+                    control={form.control}
+                    name="role"
+                    render={({ field }) => (
+                        <FormItem className="space-y-3">
+                            <FormControl>
+                                <RadioGroup
+                                    onValueChange={field.onChange}
+                                    defaultValue={field.value}
+                                    className="grid grid-cols-2 gap-4"
+                                >
+                                    <FormItem>
+                                        <FormControl>
+                                            <RadioGroupItem value="developer" id="developer" className="peer sr-only" />
+                                        </FormControl>
+                                        <Label htmlFor="developer" className="relative flex flex-col justify-between cursor-pointer rounded-xl border-2 bg-background p-4 text-center transition-all peer-data-[state=checked]:border-primary peer-data-[state=checked]:text-primary-foreground peer-data-[state=checked]:bg-primary peer-data-[state=checked]:shadow-lg h-28">
+                                            <CheckCircle2 className="absolute right-2 top-2 h-5 w-5 opacity-0 transition-opacity peer-data-[state=checked]:opacity-100" />
+                                            <div>
+                                                <p className="font-semibold">I'm a Developer</p>
+                                                <p className="text-xs text-muted-foreground peer-data-[state=checked]:text-primary-foreground/80 mt-1">I want to get my app tested</p>
+                                            </div>
+                                        </Label>
+                                    </FormItem>
+                                    <FormItem>
+                                        <FormControl>
+                                            <RadioGroupItem value="tester" id="tester" className="peer sr-only" />
+                                        </FormControl>
+                                        <Label htmlFor="tester" className="relative flex flex-col justify-between cursor-pointer rounded-xl border-2 bg-background p-4 text-center transition-all peer-data-[state=checked]:border-primary peer-data-[state=checked]:text-primary-foreground peer-data-[state=checked]:bg-primary peer-data-[state=checked]:shadow-lg h-28">
+                                            <CheckCircle2 className="absolute right-2 top-2 h-5 w-5 opacity-0 transition-opacity peer-data-[state=checked]:opacity-100" />
+                                            <div>
+                                                <p className="font-semibold">I'm a Tester</p>
+                                                <p className="text-xs text-muted-foreground peer-data-[state=checked]:text-primary-foreground/80 mt-1">I want to test apps and earn</p>
+                                            </div>
+                                        </Label>
+                                    </FormItem>
+                                </RadioGroup>
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                />
 
-            <FloatingLabelInput id="fullName" label="Full Name" register={register} error={errors.fullName} />
-            <FloatingLabelInput id="email" label="Email Address" register={register} error={errors.email} />
-            <FloatingLabelInput id="password" label="Password" register={register} error={errors.password} />
-            
-            <div className="flex items-center space-x-2 pt-2">
-               <Checkbox id="terms" {...register('terms')} className="rounded-sm" />
-                <Label htmlFor="terms" className="text-sm font-normal text-muted-foreground">
-                    I accept the <a href="#" className="underline text-primary">terms and conditions</a>.
-                </Label>
-            </div>
-            {errors.terms && <p className="text-sm text-destructive">{errors.terms.message}</p>}
+                <FormField
+                    control={form.control}
+                    name="fullName"
+                    render={({ field }) => (
+                        <FormItem>
+                        <FormLabel>Full Name</FormLabel>
+                        <FormControl>
+                            <Input placeholder="John Doe" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                        </FormItem>
+                    )}
+                />
 
-            <Button type="submit" className="w-full rounded-xl py-6 text-lg">Create Account</Button>
-        </form>
+                <FormField
+                    control={form.control}
+                    name="email"
+                    render={({ field }) => (
+                        <FormItem>
+                        <FormLabel>Email Address</FormLabel>
+                        <FormControl>
+                            <Input placeholder="you@example.com" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                        </FormItem>
+                    )}
+                />
+
+                <FormField
+                    control={form.control}
+                    name="password"
+                    render={({ field }) => (
+                        <FormItem>
+                        <FormLabel>Password</FormLabel>
+                        <FormControl>
+                            <Input type="password" placeholder="••••••••" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                        </FormItem>
+                    )}
+                />
+                
+                <FormField
+                    control={form.control}
+                    name="terms"
+                    render={({ field }) => (
+                        <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md py-4">
+                        <FormControl>
+                            <Checkbox
+                            checked={field.value}
+                            onCheckedChange={field.onChange}
+                            />
+                        </FormControl>
+                        <div className="space-y-1 leading-none">
+                            <FormLabel className="text-sm font-normal text-muted-foreground">
+                                I accept the <a href="#" className="underline text-primary">terms and conditions</a>.
+                            </FormLabel>
+                            <FormMessage />
+                        </div>
+                        </FormItem>
+                    )}
+                />
+
+                <Button type="submit" className="w-full rounded-xl py-6 text-lg">Create Account</Button>
+            </form>
+        </Form>
     </div>
   );
 }
