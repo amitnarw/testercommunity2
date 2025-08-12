@@ -17,10 +17,16 @@ const HorizontalRoadmap = ({ steps, isPro }: { steps: any[], isPro: boolean }) =
         target: targetRef,
     });
 
+    // Adjust the output range to control how much the content moves.
+    // A larger negative value will make it scroll "faster" relative to the container height.
     const x = useTransform(scrollYProgress, [0, 1], ["0%", `-${100 * (steps.length - 1)}%`]);
+    
+    // The height of the container determines how much you have to scroll to get through the animation.
+    // A taller container means a slower horizontal scroll.
+    const containerHeight = `${steps.length * 100}vh`;
 
     return (
-        <section ref={targetRef} className="relative h-[500vh]">
+        <section ref={targetRef} className="relative" style={{ height: containerHeight }}>
             <div className="sticky top-0 flex h-screen items-center overflow-hidden">
                 <motion.div style={{ x }} className="flex">
                     {steps.map((step, index) => (
@@ -50,13 +56,14 @@ export default function HowItWorksPage() {
       }
     );
 
-    if (launchpadRef.current) {
-      observer.observe(launchpadRef.current);
+    const currentRef = launchpadRef.current;
+    if (currentRef) {
+      observer.observe(currentRef);
     }
 
     return () => {
-      if (launchpadRef.current) {
-        observer.unobserve(launchpadRef.current);
+      if (currentRef) {
+        observer.unobserve(currentRef);
       }
     };
   }, []);
@@ -94,7 +101,7 @@ export default function HowItWorksPage() {
       </section>
 
       <section className="w-full">
-         <div className="h-screen flex flex-col items-center justify-center text-center container mx-auto px-4 md:px-6">
+         <div className="py-20 flex flex-col items-center justify-center text-center container mx-auto px-4 md:px-6">
             <h2 className="text-3xl md:text-5xl font-bold inline-flex items-center gap-3"><Users className="w-10 h-10 text-primary"/>The Community Path</h2>
             <p className="mt-4 max-w-2xl mx-auto text-muted-foreground text-lg">
                 Leverage the power of the crowd. Test other apps to earn points, then spend them to get your own app tested by a diverse community of passionate users.
@@ -104,7 +111,7 @@ export default function HowItWorksPage() {
       </section>
        
       <section className="w-full">
-        <div className="h-screen flex flex-col items-center justify-center text-center container mx-auto px-4 md:px-6">
+        <div className="py-20 flex flex-col items-center justify-center text-center container mx-auto px-4 md:px-6">
             <h2 className="text-3xl md:text-5xl font-bold inline-flex items-center gap-3"><Briefcase className="w-10 h-10 text-primary"/>The Professional Path</h2>
             <p className="mt-4 max-w-2xl mx-auto text-muted-foreground text-lg">
                 For when you need certainty. Hire vetted QA professionals who provide expert feedback, detailed reports, and guaranteed results for a flawless launch.
