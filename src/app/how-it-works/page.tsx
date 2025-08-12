@@ -8,32 +8,42 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { RoadmapStep } from '@/components/roadmap-step';
 import { communityPathSteps, professionalPathSteps } from '@/lib/data';
 import type { RoadmapStep as RoadmapStepType } from '@/lib/types';
+import { motion } from 'framer-motion';
 
 const PathSegment = ({ isReversed }: { isReversed: boolean }) => (
     <div className="h-40 w-full flex justify-center">
         <svg viewBox="0 0 100 100" className="h-full w-auto" preserveAspectRatio="none">
-            <path
-                d={isReversed ? "M 50 0 V 50 C 50 75, 75 75, 75 100" : "M 50 0 V 50 C 50 75, 25 75, 25 100"}
+            <motion.path
+                d={isReversed ? "M 75 0 C 75 25, 50 25, 50 50 S 25 75, 25 100" : "M 25 0 C 25 25, 50 25, 50 50 S 75 75, 75 100"}
                 stroke="hsl(var(--border))"
                 strokeWidth="4"
                 fill="none"
                 strokeLinecap="round"
+                initial={{ pathLength: 0 }}
+                whileInView={{ pathLength: 1 }}
+                viewport={{ once: true, amount: 0.5 }}
+                transition={{ duration: 0.8 }}
             />
         </svg>
     </div>
 );
 
-
 const Roadmap = ({ steps }: { steps: RoadmapStepType[] }) => (
     <div className="relative w-full max-w-5xl mx-auto py-12">
-        {steps.map((step, index) => (
-            <div key={index} className="flex flex-col items-center">
-                 <RoadmapStep step={step} index={index} />
-                 {index < steps.length - 1 && (
-                    <PathSegment isReversed={index % 2 === 0} />
-                )}
-            </div>
-        ))}
+        <div className="flex flex-col items-center">
+            {steps.map((step, index) => (
+                <div key={index} className="w-full">
+                    <div className={`flex w-full ${index % 2 !== 0 ? 'justify-start' : 'justify-end'}`}>
+                        <div className="w-1/2 p-4">
+                            <RoadmapStep step={step} index={index} />
+                        </div>
+                    </div>
+                    {index < steps.length - 1 && (
+                        <PathSegment isReversed={index % 2 !== 0} />
+                    )}
+                </div>
+            ))}
+        </div>
     </div>
 );
 
@@ -87,4 +97,3 @@ export default function HowItWorksPage() {
     </div>
   );
 }
-
