@@ -19,9 +19,9 @@ export function RoadmapStepCard({ step, isPro }: RoadmapStepCardProps) {
   return (
     <Card
       className={cn(
-        "w-full h-[500px] p-8 md:p-12 flex items-center justify-center overflow-hidden rounded-2xl",
+        "w-full h-full p-8 md:p-12 flex items-center justify-center overflow-hidden rounded-none border-0",
         isPro 
-          ? "bg-gradient-to-br from-slate-900 via-black to-slate-900 text-primary-foreground shadow-2xl shadow-primary/20" 
+          ? "bg-gradient-to-br from-slate-900 via-black to-slate-900 text-primary-foreground" 
           : "bg-background dark:bg-secondary/20 dark:bg-dot-pattern-dark dark:bg-[length:30px_30px]"
       )}
     >
