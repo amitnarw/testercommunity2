@@ -81,30 +81,26 @@ export function SignupForm() {
                                 <RadioGroup
                                     onValueChange={field.onChange}
                                     defaultValue={field.value}
-                                    className="grid grid-cols-2 gap-4"
+                                    className="relative grid grid-cols-2 gap-2 rounded-xl bg-secondary p-1"
                                 >
+                                     <div className={cn(
+                                        "absolute h-[calc(100%-0.5rem)] w-[calc(50%-0.25rem)] bg-background shadow-md rounded-lg transition-transform duration-300 ease-in-out",
+                                        field.value === 'developer' ? 'translate-x-0' : 'translate-x-full'
+                                    )} style={{ margin: '0.25rem' }}></div>
                                     <FormItem>
                                         <FormControl>
                                             <RadioGroupItem value="developer" id="developer" className="peer sr-only" />
                                         </FormControl>
-                                        <Label htmlFor="developer" className="relative flex flex-col justify-between cursor-pointer rounded-xl border-2 border-border bg-background p-4 text-center transition-all h-28 peer-data-[state=checked]:border-primary peer-data-[state=checked]:bg-primary peer-data-[state=checked]:text-primary-foreground">
-                                            <CheckCircle2 className="absolute right-2 top-2 h-5 w-5 opacity-0 transition-opacity duration-300 peer-data-[state=checked]:opacity-100" />
-                                            <div>
-                                                <p className="font-semibold">I'm a Developer</p>
-                                                <p className="text-xs text-muted-foreground peer-data-[state=checked]:text-primary-foreground/80 mt-1">I want to get my app tested</p>
-                                            </div>
+                                        <Label htmlFor="developer" className="relative z-10 flex cursor-pointer justify-center rounded-lg p-3 text-center transition-colors peer-data-[state=checked]:text-primary">
+                                            I'm a Developer
                                         </Label>
                                     </FormItem>
                                     <FormItem>
                                         <FormControl>
                                             <RadioGroupItem value="tester" id="tester" className="peer sr-only" />
                                         </FormControl>
-                                        <Label htmlFor="tester" className="relative flex flex-col justify-between cursor-pointer rounded-xl border-2 border-border bg-background p-4 text-center transition-all h-28 peer-data-[state=checked]:border-primary peer-data-[state=checked]:bg-primary peer-data-[state=checked]:text-primary-foreground">
-                                            <CheckCircle2 className="absolute right-2 top-2 h-5 w-5 opacity-0 transition-opacity duration-300 peer-data-[state=checked]:opacity-100" />
-                                            <div>
-                                                <p className="font-semibold">I'm a Tester</p>
-                                                <p className="text-xs text-muted-foreground peer-data-[state=checked]:text-primary-foreground/80 mt-1">I want to test apps and earn</p>
-                                            </div>
+                                        <Label htmlFor="tester" className="relative z-10 flex cursor-pointer justify-center rounded-lg p-3 text-center transition-colors peer-data-[state=checked]:text-primary">
+                                            I'm a Tester
                                         </Label>
                                     </FormItem>
                                 </RadioGroup>
