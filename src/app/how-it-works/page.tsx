@@ -15,19 +15,18 @@ const HorizontalRoadmap = ({ steps, isPro }: { steps: any[], isPro: boolean }) =
     const targetRef = useRef<HTMLDivElement | null>(null);
     const { scrollYProgress } = useScroll({
         target: targetRef,
-        offset: ["start end", "end start"]
     });
 
-    // Adjust the range to control the scroll speed.
-    // A larger output range (e.g., "-100%") makes it scroll faster.
-    const x = useTransform(scrollYProgress, [0.1, 0.9], ["5%", "-85%"]);
+    const x = useTransform(scrollYProgress, [0, 1], ["0%", `-${100 * (steps.length - 1)}%`]);
 
     return (
-        <section ref={targetRef} className="relative h-[300vh] bg-background">
+        <section ref={targetRef} className="relative h-[500vh]">
             <div className="sticky top-0 flex h-screen items-center overflow-hidden">
-                <motion.div style={{ x }} className="flex gap-12 px-12">
+                <motion.div style={{ x }} className="flex">
                     {steps.map((step, index) => (
-                        <RoadmapStepCard key={index} step={step} isPro={isPro} />
+                        <div key={index} className="flex-shrink-0 w-screen h-screen">
+                           <RoadmapStepCard step={step} isPro={isPro} />
+                        </div>
                     ))}
                 </motion.div>
             </div>
@@ -79,7 +78,7 @@ export default function HowItWorksPage() {
 
   return (
     <div className="bg-background text-foreground">
-      <section className="h-[80vh] w-full flex flex-col items-center justify-center text-center p-4">
+      <section className="h-screen w-full flex flex-col items-center justify-center text-center p-4">
         <h1 className="text-5xl md:text-7xl font-bold">Two Paths to a Perfect App</h1>
         <p className="mt-6 max-w-3xl mx-auto text-muted-foreground text-xl">
           Whether you're an indie dev looking for community feedback or a business needing professional precision, your journey to a flawless launch starts here.
@@ -89,14 +88,15 @@ export default function HowItWorksPage() {
             transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
             className="mt-12"
         >
-            <ArrowRight className="w-8 h-8 rotate-90" />
+             <p className="text-sm text-muted-foreground mb-2">Scroll to begin your journey</p>
+            <ArrowRight className="w-8 h-8 rotate-90 mx-auto" />
         </motion.div>
       </section>
 
       <section className="w-full">
-         <div className="text-center container mx-auto px-4 md:px-6 my-16">
-            <h2 className="text-3xl md:text-4xl font-bold inline-flex items-center gap-3"><Users className="w-8 h-8 text-primary"/>The Community Path: Grow Together</h2>
-            <p className="mt-4 max-w-2xl mx-auto text-muted-foreground">
+         <div className="h-screen flex flex-col items-center justify-center text-center container mx-auto px-4 md:px-6">
+            <h2 className="text-3xl md:text-5xl font-bold inline-flex items-center gap-3"><Users className="w-10 h-10 text-primary"/>The Community Path</h2>
+            <p className="mt-4 max-w-2xl mx-auto text-muted-foreground text-lg">
                 Leverage the power of the crowd. Test other apps to earn points, then spend them to get your own app tested by a diverse community of passionate users.
             </p>
         </div>
@@ -104,9 +104,9 @@ export default function HowItWorksPage() {
       </section>
        
       <section className="w-full">
-        <div className="text-center container mx-auto px-4 md:px-6 my-16">
-            <h2 className="text-3xl md:text-4xl font-bold inline-flex items-center gap-3"><Briefcase className="w-8 h-8 text-primary"/>The Professional Path: Guaranteed Quality</h2>
-            <p className="mt-4 max-w-2xl mx-auto text-muted-foreground">
+        <div className="h-screen flex flex-col items-center justify-center text-center container mx-auto px-4 md:px-6">
+            <h2 className="text-3xl md:text-5xl font-bold inline-flex items-center gap-3"><Briefcase className="w-10 h-10 text-primary"/>The Professional Path</h2>
+            <p className="mt-4 max-w-2xl mx-auto text-muted-foreground text-lg">
                 For when you need certainty. Hire vetted QA professionals who provide expert feedback, detailed reports, and guaranteed results for a flawless launch.
             </p>
         </div>
