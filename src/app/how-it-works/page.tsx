@@ -88,10 +88,10 @@ export default function HowItWorksPage() {
                         </p>
                     </div>
                 
-                    <div className="sticky top-0 h-screen flex items-center overflow-hidden w-full">
+                    <div className="flex items-center overflow-hidden w-full h-full">
                         <motion.div style={{ x: communityX }} className="flex">
                             {communityPathSteps.map((step) => (
-                                <div key={step.step} className="w-screen h-screen flex-shrink-0">
+                                <div key={step.step} className="w-screen h-full flex-shrink-0">
                                    <RoadmapStepCard step={step} isPro={false} />
                                 </div>
                             ))}
@@ -109,10 +109,10 @@ export default function HowItWorksPage() {
                         </p>
                     </div>
                 
-                    <div className="sticky top-0 h-screen flex items-center overflow-hidden w-full">
+                    <div className="flex items-center overflow-hidden w-full h-full">
                          <motion.div style={{ x: proX }} className="flex">
                             {professionalPathSteps.map((step) => (
-                                <div key={step.step} className="w-screen h-screen flex-shrink-0">
+                                <div key={step.step} className="w-screen h-full flex-shrink-0">
                                    <RoadmapStepCard step={step} isPro={true} />
                                 </div>
                             ))}
