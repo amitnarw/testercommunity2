@@ -195,65 +195,65 @@ export const testimonials: Testimonial[] = [
 export const communityPathSteps: RoadmapStep[] = [
     {
         icon: UserPlus,
-        title: "Step 1: Join the Tribe",
-        description: "Create your free account to become part of the TestTribe ecosystem. This is your passport to a world of collaborative testing.",
-        time: "Time: ~5 minutes"
+        title: "Join the Tribe",
+        description: "Sign up for free to create your profile. This is your passport to a world of collaborative testing where you can both give and receive valuable feedback.",
+        details: "Time: 5 mins • Cost: Free"
     },
     {
         icon: Zap,
-        title: "Step 2: Earn Points by Testing",
-        description: "Browse community-submitted apps, find one that interests you, and start testing. For every valid bug you report, you'll earn points and build your reputation.",
-        time: "Time: ~1-2 hours per test cycle"
+        title: "Test to Earn",
+        description: "Explore apps submitted by other community members. Find bugs, submit detailed reports, and earn points for every valid issue you uncover. Build your reputation and skills.",
+        details: "Time: 1-2 hours per cycle"
     },
     {
         icon: UploadCloud,
-        title: "Step 3: Submit Your App",
-        description: "Once you've earned enough points, you can spend them to submit your own app. Provide your app details, and it will be available for the community to test.",
-        time: "Time: ~10 minutes"
+        title: "Submit Your App",
+        description: "Once you've earned points, spend them to get your own app tested. Provide details about your app and specify what kind of feedback you're looking for.",
+        details: "Wait: Feedback within 48 hours"
     },
     {
         icon: Award,
-        title: "Step 4: Receive Community Feedback",
-        description: "Watch as feedback and bug reports from a diverse range of testers and devices pour in. This crowdsourced feedback is invaluable for finding unique issues.",
-        time: "Typical Wait: First reports within 48 hours"
+        title: "Receive Community Feedback",
+        description: "Get diverse feedback from a wide range of devices and user perspectives. This crowdsourced approach is invaluable for uncovering unexpected bugs and usability issues.",
+        details: "Outcome: Crowdsourced QA reports"
     },
-    {
-        icon: CheckCircle,
-        title: "Step 5: Iterate and Improve",
-        description: "Use the feedback to fix bugs, improve your app, and re-submit for further testing if needed. Your app becomes more robust with every cycle.",
-        time: "Time: Ongoing"
-    }
+     {
+        icon: Rocket,
+        title: "Launch with Community Support",
+        description: "Use the collective feedback to improve your app. Iterate based on the community's findings and launch a more robust and user-friendly product.",
+        details: "Benefit: A battle-tested app"
+    },
 ];
 
 export const professionalPathSteps: RoadmapStep[] = [
     {
         icon: Briefcase,
-        title: "Step 1: Post Your Project",
-        description: "Submit your app and define your testing needs. Specify the scope, objectives (e.g., UI/UX, security, performance), and your budget.",
-        time: "Time: ~15 minutes"
+        title: "Post Your Project",
+        description: "Define your project scope and testing requirements. Outline your objectives, whether it's for UI/UX, security, performance, or general quality assurance.",
+        details: "Time: 15 mins"
     },
     {
         icon: IndianRupee,
-        title: "Step 2: Choose Your Tester",
-        description: "Browse our marketplace of vetted professionals. Review their profiles, expertise, and ratings to hire the perfect QA expert for your project.",
-        time: "Cost: Starts at ₹999 per project"
+        title: "Hire a Professional",
+        description: "Browse our curated marketplace of vetted QA professionals. Choose a tester based on their skills, experience, and ratings to ensure a perfect fit for your project.",
+        details: "Cost: Starts at ₹999"
     },
     {
         icon: FileText,
-        title: "Step 3: Receive Actionable Reports",
-        description: "Your hired professional gets to work immediately, providing a stream of detailed, actionable bug reports with logs, screenshots, and clear replication steps.",
-        time: "Time: First reports within 24 hours"
+        title: "Receive Expert Reports",
+        description: "Your hired tester will conduct a thorough review of your app, providing detailed, actionable bug reports complete with logs, screenshots, and clear replication steps.",
+        details: "Cycle: 7-14 day projects"
     },
     {
         icon: CheckCircle,
-        title: "Step 4: Collaborate and Verify",
-        description: "Communicate directly with your tester to clarify issues. Once you've fixed the bugs, the tester will verify the fixes to ensure they're resolved.",
-        time: "Time: 7-14 day cycles"
+        title: "Collaborate & Verify",
+        description: "Communicate directly with your tester to clarify issues. Once you've implemented fixes, the tester will verify them to ensure they are resolved correctly.",
+        details: "Benefit: Guaranteed quality"
     },
-    {
+     {
         icon: Rocket,
-        title: "Step 5: Launch with Confidence",
-        description: "With a thoroughly tested app and a final comprehensive report, you can launch to the market with the ultimate assurance of quality and a 'TestTribe Certified' badge.",
-        time: "Ready for launch!"
+        title: "Launch with Confidence",
+        description: "With a professionally audited app and a comprehensive final report, you can launch to the market with the ultimate assurance of quality and a 'TestTribe Certified' badge.",
+        details: "Outcome: A production-ready app"
     }
 ];

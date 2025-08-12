@@ -41,5 +41,5 @@ export type RoadmapStep = {
     icon: LucideIcon;
     title: string;
     description: string;
-    time: string;
+    details: string;
 };
