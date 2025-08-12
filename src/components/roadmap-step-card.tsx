@@ -41,7 +41,6 @@ export function RoadmapStepCard({ step, isPro }: RoadmapStepCardProps) {
       viewport={{ once: true, amount: 0.2 }}
       className={cn(
         "w-full h-full p-8 md:p-12 lg:p-24 flex items-center justify-center overflow-hidden relative",
-        // This is the part to change for `isPro`
         isPro 
           ? "bg-gradient-to-br from-amber-50 via-background to-background dark:from-gray-900 dark:via-black dark:to-black" 
           : "bg-white dark:bg-gray-900"
@@ -60,7 +59,7 @@ export function RoadmapStepCard({ step, isPro }: RoadmapStepCardProps) {
             >
                 <span className={cn(
                     "font-black leading-none",
-                    "text-7xl md:text-[10rem] lg:text-[12rem] text-xs md:text-base",
+                    "text-7xl md:text-[10rem] lg:text-[12rem]",
                     isPro 
                         ? "text-transparent bg-clip-text bg-gradient-to-b from-amber-300 to-amber-500" 
                         : "text-primary/10"
@@ -84,14 +83,14 @@ export function RoadmapStepCard({ step, isPro }: RoadmapStepCardProps) {
                 
                 <motion.h3 
                     variants={itemVariants}
-                    className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 md:mb-6 text-foreground text-xs md:text-base"
+                    className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4 md:mb-6 text-foreground"
                 >
                     {title}
                 </motion.h3>
                 
                 <motion.p 
                     variants={itemVariants}
-                    className="text-xs md:text-base lg:text-lg mb-6 md:mb-10 text-muted-foreground max-w-3xl"
+                    className="text-base lg:text-lg mb-6 md:mb-10 text-muted-foreground max-w-3xl"
                 >
                     {description}
                 </motion.p>
