@@ -6,7 +6,7 @@ import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { communityPathSteps, professionalPathSteps } from '@/lib/data';
 import { RoadmapStepCard } from '@/components/roadmap-step-card';
-import { ArrowRight, Rocket } from 'lucide-react';
+import { ArrowRight, ArrowDown, Rocket } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import type { RoadmapStep } from '@/lib/types';
@@ -64,18 +64,31 @@ export default function HowItWorksPage() {
             setTimeout(() => setConfettiActive(true), 300);
         }
     }, [launchpadInView]);
+    
+    const handleScrollDown = () => {
+        const communitySection = document.getElementById('community-path-section');
+        if (communitySection) {
+            communitySection.scrollIntoView({ behavior: 'smooth' });
+        }
+    };
 
     return (
         <main className="bg-background text-foreground overflow-x-hidden">
-             <section className="h-screen w-full flex flex-col items-center justify-center text-center p-4 bg-dot-pattern dark:bg-dot-pattern-dark">
+             <section className="h-screen w-full flex flex-col items-center justify-center text-center p-4 bg-dot-pattern dark:bg-dot-pattern-dark relative">
                 <h1 className="text-5xl md:text-7xl font-bold">The Path to a Perfect App</h1>
                 <p className="mt-6 max-w-3xl mx-auto text-muted-foreground text-xl">
                     Our unified process ensures quality, whether you leverage the community or hire professionals. Your journey to a flawless launch starts here.
                 </p>
-                <p className="mt-8 text-sm text-muted-foreground animate-pulse md:block hidden">Scroll down to see how it works</p>
+                <div 
+                    onClick={handleScrollDown}
+                    className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 cursor-pointer group"
+                >
+                    <span className="text-sm text-muted-foreground animate-pulse">Scroll down to see how it works</span>
+                    <ArrowDown className="w-5 h-5 text-muted-foreground transition-transform group-hover:translate-y-1" />
+                </div>
             </section>
             
-            <section className="py-20 md:py-32 container mx-auto px-4 md:px-6">
+            <section id="community-path-section" className="py-20 md:py-32 container mx-auto px-4 md:px-6">
                 <div className="text-center max-w-2xl mx-auto">
                     <h2 className="text-3xl md:text-5xl font-bold">The Community Path</h2>
                     <p className="mt-4 text-muted-foreground text-lg">Test other apps to earn points, then use those points to get your own app tested for free. It's a powerful, reciprocal ecosystem.</p>
