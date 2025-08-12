@@ -108,8 +108,8 @@ export default {
           '100%': { transform: 'scale(1.05)' },
         },
         'speed-lines': {
-            '0%': { 'background-position': '0% 0%' },
-            '100%': { 'background-position': '-100% 100%' },
+            '0%': { 'background-position': '0 0' },
+            '100%': { 'background-position': '200% 0' },
         },
       },
       animation: {
@@ -119,10 +119,10 @@ export default {
         'scroll-rtl': 'scroll-rtl 20s linear infinite',
         'fade-in-up': 'fade-in-up 0.5s ease-out forwards',
         'image-zoom': 'image-zoom 0.5s ease-in-out forwards',
-        'speed-lines': 'speed-lines 30s linear infinite',
+        'speed-lines': 'speed-lines 10s linear infinite',
       },
        backgroundImage: {
-        'speed-lines-dark': "repeating-linear-gradient(-45deg, transparent, transparent 10px, hsl(var(--primary) / 0.05) 10px, hsl(var(--primary) / 0.05) 20px)",
+        'speed-lines-dark': "repeating-linear-gradient(-45deg, transparent, transparent 10px, hsl(var(--primary) / 0.2) 10px, hsl(var(--primary) / 0.2) 20px)",
       },
     },
   },
