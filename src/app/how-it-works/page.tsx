@@ -10,7 +10,6 @@ import { ArrowRight, Rocket } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import type { RoadmapStep } from '@/lib/types';
-import { cn } from '@/lib/utils';
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -52,7 +51,7 @@ const HorizontalScrollSection = ({ steps, isPro }: { steps: RoadmapStep[], isPro
 
 export default function HowItWorksPage() {
     return (
-        <div className="bg-background text-foreground">
+        <main className="bg-background text-foreground overflow-x-hidden">
              <section className="h-screen w-full flex flex-col items-center justify-center text-center p-4 bg-dot-pattern dark:bg-dot-pattern-dark">
                 <h1 className="text-5xl md:text-7xl font-bold">The Path to a Perfect App</h1>
                 <p className="mt-6 max-w-3xl mx-auto text-muted-foreground text-xl">
@@ -93,6 +92,6 @@ export default function HowItWorksPage() {
                 </Button>
                 </div>
             </section>
-        </div>
+        </main>
     );
 }
