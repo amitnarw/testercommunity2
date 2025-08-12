@@ -16,44 +16,44 @@ export function RoadmapStepCard({ step, isPro }: RoadmapStepCardProps) {
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 50, scale: 0.9 }}
+      initial={{ opacity: 0, y: 50, scale: 0.95 }}
       whileInView={{ opacity: 1, y: 0, scale: 1 }}
       transition={{ duration: 0.6, ease: 'easeOut' }}
       viewport={{ once: true, amount: 0.3 }}
       className={cn(
-        "w-[350px] md:w-[450px] h-fit flex-shrink-0 p-8 rounded-3xl shadow-2xl relative flex flex-col justify-between",
+        "w-[350px] md:w-[450px] h-fit flex-shrink-0 p-8 rounded-3xl shadow-2xl relative flex flex-col justify-between border",
         isPro 
-          ? "bg-gradient-to-br from-primary/90 to-primary/70 text-primary-foreground border-primary" 
+          ? "bg-gradient-to-br from-slate-900 to-black text-primary-foreground border-primary/20" 
           : "bg-card border-border"
       )}
     >
       <div className={cn(
-        "absolute -top-6 -right-6 w-12 h-12 flex items-center justify-center rounded-full text-lg font-bold",
+        "absolute -top-6 -left-6 w-16 h-16 flex items-center justify-center rounded-full text-2xl font-bold shadow-lg",
         isPro 
-          ? "bg-primary-foreground text-primary" 
+          ? "bg-primary text-primary-foreground" 
           : "bg-primary text-primary-foreground"
       )}>
         {step.step}
       </div>
       
-      <div>
+      <div className='mt-8'>
         <div className="flex items-center gap-4 mb-4">
           <div className={cn(
             "p-3 rounded-xl",
-            isPro ? "bg-primary-foreground/20" : "bg-primary/10"
+            isPro ? "bg-primary/10" : "bg-primary/10"
           )}>
-            <Icon className={cn("w-6 h-6", isPro ? "text-primary-foreground" : "text-primary")} />
+            <Icon className={cn("w-6 h-6", isPro ? "text-primary" : "text-primary")} />
           </div>
           <h3 className="text-2xl font-bold">{title}</h3>
         </div>
-        <p className={cn("mb-6", isPro ? "text-primary-foreground/90" : "text-muted-foreground")}>
+        <p className={cn("mb-6 text-base", isPro ? "text-slate-400" : "text-muted-foreground")}>
           {description}
         </p>
       </div>
 
       <div className={cn(
         "p-4 rounded-xl text-sm",
-        isPro ? "bg-black/20" : "bg-secondary"
+        isPro ? "bg-white/5" : "bg-secondary"
       )}>
         <p>{details}</p>
       </div>

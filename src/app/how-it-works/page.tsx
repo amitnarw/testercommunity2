@@ -2,13 +2,13 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
-import { ArrowRight, Users, Briefcase, Award, Zap, Rocket, IndianRupee, CheckCircle, FileText, UploadCloud, UserPlus } from 'lucide-react';
+import { ArrowRight, Users, Briefcase, Rocket } from 'lucide-react';
 import Link from 'next/link';
 import { motion, useScroll, useTransform } from 'framer-motion';
-import React, { useRef } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { communityPathSteps, professionalPathSteps } from '@/lib/data';
 import { RoadmapStepCard } from '@/components/roadmap-step-card';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import Confetti from 'react-dom-confetti';
 
 
 const HorizontalRoadmap = ({ steps, isPro }: { steps: any[], isPro: boolean }) => {
@@ -18,7 +18,9 @@ const HorizontalRoadmap = ({ steps, isPro }: { steps: any[], isPro: boolean }) =
         offset: ["start end", "end start"]
     });
 
-    const x = useTransform(scrollYProgress, [0.1, 0.85], ["0%", "-80%"]);
+    // Adjust the range to control the scroll speed.
+    // A larger output range (e.g., "-100%") makes it scroll faster.
+    const x = useTransform(scrollYProgress, [0.1, 0.9], ["5%", "-85%"]);
 
     return (
         <section ref={targetRef} className="relative h-[300vh] bg-background">
@@ -34,12 +36,53 @@ const HorizontalRoadmap = ({ steps, isPro }: { steps: any[], isPro: boolean }) =
 };
 
 export default function HowItWorksPage() {
+  const [showConfetti, setShowConfetti] = useState(false);
+  const launchpadRef = useRef(null);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setShowConfetti(true);
+        }
+      },
+      {
+        threshold: 0.5,
+      }
+    );
+
+    if (launchpadRef.current) {
+      observer.observe(launchpadRef.current);
+    }
+
+    return () => {
+      if (launchpadRef.current) {
+        observer.unobserve(launchpadRef.current);
+      }
+    };
+  }, []);
+
+  const confettiConfig = {
+    angle: 90,
+    spread: 360,
+    startVelocity: 40,
+    elementCount: 100,
+    dragFriction: 0.12,
+    duration: 3000,
+    stagger: 3,
+    width: "10px",
+    height: "10px",
+    perspective: "500px",
+    colors: ["#a864fd", "#29cdff", "#78ff44", "#ff718d", "#fdff6a"]
+  };
+
+
   return (
     <div className="bg-background text-foreground">
       <section className="h-[80vh] w-full flex flex-col items-center justify-center text-center p-4">
         <h1 className="text-5xl md:text-7xl font-bold">Two Paths to a Perfect App</h1>
         <p className="mt-6 max-w-3xl mx-auto text-muted-foreground text-xl">
-          Whether you're an indie dev looking for community feedback or a business needing professional precision, your journey to a flawless launch starts here. Choose your path below.
+          Whether you're an indie dev looking for community feedback or a business needing professional precision, your journey to a flawless launch starts here.
         </p>
          <motion.div
             animate={{ y: [0, 10, 0] }}
@@ -71,8 +114,12 @@ export default function HowItWorksPage() {
       </section>
 
       <motion.section 
+        ref={launchpadRef}
         className="h-screen w-full flex flex-col items-center justify-center text-center p-4 relative overflow-hidden"
       >
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+            <Confetti active={showConfetti} config={confettiConfig} />
+        </div>
         <Rocket className="w-16 h-16 text-primary mb-4" />
         <h2 className="text-5xl md:text-7xl font-bold">You've Reached the <span className="text-primary">Launchpad</span></h2>
         <p className="mt-6 max-w-2xl mx-auto text-muted-foreground text-xl">
