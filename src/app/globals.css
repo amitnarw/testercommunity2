@@ -85,11 +85,6 @@
   .sliding-text-hover:hover::after {
     @apply translate-y-0;
   }
-  .timeline-road::after {
-    content: '';
-    @apply absolute top-0 left-1/2 -translate-x-1/2 h-full w-1 bg-border -z-10;
-  }
-
   .timeline-road-finish::after {
      content: '';
     @apply absolute bottom-0 left-1/2 -translate-x-1/2 h-12 w-12 rounded-full border-2 border-dashed border-primary bg-primary/10 -z-10 flex items-center justify-center;

@@ -4,7 +4,7 @@
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { HowItWorksStep } from '@/components/how-it-works-step';
-import { ArrowRight, Check, Users, Briefcase, Award, Zap, Heart, Target, Rocket, Flag, IndianRupee } from 'lucide-react';
+import { ArrowRight, Check, Users, Briefcase, Award, Zap, Heart, Target, Rocket, Flag, IndianRupee, PlayCircle } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
@@ -55,7 +55,10 @@ export default function HowItWorksPage() {
 
         {/* The Timeline Section */}
         <section className="py-20 md:py-28 relative">
-            <div className="timeline-road"></div>
+             <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 flex flex-col items-center z-20">
+                <PlayCircle className="w-12 h-12 text-primary animate-pulse"/>
+                <div className="w-1 h-20 bg-border"></div>
+            </div>
             <div className="container mx-auto px-4 md:px-6">
 
                 <HowItWorksStep
@@ -133,7 +136,7 @@ export default function HowItWorksPage() {
                 />
             </div>
              <div className="timeline-road-finish">
-                <Rocket className="w-6 h-6 text-primary" />
+                <Rocket className="w-6 h-6 text-primary-foreground" />
              </div>
         </section>
 
