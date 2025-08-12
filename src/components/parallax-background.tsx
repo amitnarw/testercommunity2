@@ -27,13 +27,13 @@ const Cloud = ({ className }: { className?: string }) => (
 
 const cloudAnimationVariants = {
   animate: {
-    x: [0, 50, 0],
+    x: [-200, 450],
     transition: {
       x: {
-        duration: 15,
+        duration: 25,
         repeat: Infinity,
         repeatType: "loop",
-        ease: "easeInOut",
+        ease: "linear",
       },
     },
   },
@@ -41,14 +41,14 @@ const cloudAnimationVariants = {
 
 const cloudAnimationVariants2 = {
   animate: {
-    x: [0, -40, 0],
+    x: [-150, 500],
     transition: {
       x: {
-        duration: 20,
+        duration: 35,
         repeat: Infinity,
         repeatType: "loop",
-        ease: "easeInOut",
-        delay: 5,
+        ease: "linear",
+        delay: 7,
       },
     },
   },
@@ -90,7 +90,7 @@ export function ParallaxBackground() {
   const cloud3Y = useSpring(mousePosition.y * 15, springConfig);
 
   return (
-    <div className="relative w-[400px] h-[200px] flex items-center justify-center">
+    <div className="relative w-[400px] h-[200px] flex items-center justify-center overflow-hidden">
         {/* Back Cloud */}
         <motion.div
             className="absolute z-0"
