@@ -2,7 +2,6 @@
 'use client';
 
 import { useEffect, useRef } from 'react';
-import Klouds from 'klouds';
 
 export function KloudsBackground() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -10,19 +9,21 @@ export function KloudsBackground() {
 
   useEffect(() => {
     if (canvasRef.current && !kloudsRef.current) {
-        kloudsRef.current = new Klouds({
-            selector: canvasRef.current,
-            speed: 2,
-            layerCount: 5,
-            cloudColor: getComputedStyle(document.documentElement).getPropertyValue('--primary'),
-            bgColor: 'transparent',
+        import('klouds').then((KloudsModule) => {
+            const Klouds = KloudsModule.default;
+            kloudsRef.current = new Klouds({
+                selector: canvasRef.current,
+                speed: 2,
+                layerCount: 5,
+                cloudColor: `hsl(${getComputedStyle(document.documentElement).getPropertyValue('--primary')})`,
+                bgColor: 'transparent',
+            });
         });
     }
 
     const handleResize = () => {
         if(kloudsRef.current) {
-            // Re-initializing might be one way if the library doesn't support resizing
-            // This is a placeholder for actual resize logic if the lib supports it
+            // Placeholder for resize logic if the library supports it
         }
     }
     
@@ -30,10 +31,6 @@ export function KloudsBackground() {
 
     return () => {
       window.removeEventListener('resize', handleResize);
-      // Optional: Add cleanup logic if Klouds provides a destroy method
-      // if (kloudsRef.current && typeof kloudsRef.current.destroy === 'function') {
-      //   kloudsRef.current.destroy();
-      // }
     };
   }, []);
 
