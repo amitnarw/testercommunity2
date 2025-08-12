@@ -75,13 +75,15 @@ export default function HowItWorksPage() {
     return (
         <main className="bg-background text-foreground overflow-x-hidden">
              <section className="h-screen w-full flex flex-col items-center justify-center text-center p-4 bg-dot-pattern dark:bg-dot-pattern-dark relative">
-                <h1 className="text-5xl md:text-7xl font-bold">The Path to a <span className="bg-gradient-to-br from-primary to-accent bg-clip-text text-transparent">Perfect App</span></h1>
-                <p className="mt-6 max-w-3xl mx-auto text-muted-foreground text-xl">
-                    Our unified process ensures quality, whether you leverage the community or hire professionals. Your journey to a flawless launch starts here.
-                </p>
+                <div className="max-w-4xl mx-auto">
+                    <h1 className="text-[2.25rem] sm:text-[2.75rem] md:text-[3.5rem] lg:text-[4.25rem] font-heading leading-[1.1] tracking-tight font-bold mb-5 sm:mb-6 md:mb-8">The Path to a <span className="bg-gradient-to-br from-primary to-accent bg-clip-text text-transparent">Perfect App</span></h1>
+                    <p className="mt-6 max-w-3xl mx-auto text-muted-foreground text-lg">
+                        Our unified process ensures quality, whether you leverage the community or hire professionals. Your journey to a flawless launch starts here.
+                    </p>
+                </div>
                 <div 
                     onClick={handleScrollDown}
-                    className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 cursor-pointer group"
+                    className="absolute bottom-24 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 cursor-pointer group"
                 >
                     <span className="text-sm text-muted-foreground animate-pulse">Scroll down to see how it works</span>
                     <div className="w-12 h-12 flex items-center justify-center rounded-full border-2 border-primary/50 bg-primary/10">
