@@ -65,7 +65,7 @@ export default function HowItWorksPage() {
         {/* Hero Section */}
         <section className="py-20 md:py-28 text-center bg-secondary/30">
             <div className="container mx-auto px-4 md:px-6">
-                <h1 className="text-4xl md:text-5xl font-bold">See How It Works</h1>
+                <h1 className="text-5xl md:text-6xl font-bold">See How It Works</h1>
                 <p className="mt-4 max-w-2xl mx-auto text-muted-foreground">
                     Your App, Tested and Improved in 4 Simple Steps. Join 2,000+ successful developers. See our proven process for getting your app ready for launch.
                 </p>
@@ -111,7 +111,7 @@ export default function HowItWorksPage() {
                     <div className="mt-8 space-y-8 relative">
                          <div className="absolute left-4 top-0 h-full w-0.5 bg-border -z-10"></div>
                          {communitySteps.map((step, index) => (
-                            <div key={index} className="flex items-start gap-6">
+                            <div key={index} className="flex items-start gap-6 animate-fade-in-up" style={{ animationDelay: `${index * 150}ms` }}>
                                 <div className="flex-shrink-0 bg-primary/10 p-3 rounded-full flex items-center justify-center ring-8 ring-background">
                                     {step.icon}
                                 </div>
@@ -143,7 +143,7 @@ export default function HowItWorksPage() {
                     <div className="mt-8 space-y-8 relative">
                          <div className="absolute left-4 top-0 h-full w-0.5 bg-border -z-10"></div>
                          {proSteps.map((step, index) => (
-                            <div key={index} className="flex items-start gap-6">
+                            <div key={index} className="flex items-start gap-6 animate-fade-in-up" style={{ animationDelay: `${index * 150}ms` }}>
                                 <div className="flex-shrink-0 bg-primary/10 p-3 rounded-full flex items-center justify-center ring-8 ring-secondary/30">
                                     {step.icon}
                                 </div>
