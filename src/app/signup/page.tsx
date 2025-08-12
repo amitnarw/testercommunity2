@@ -8,7 +8,7 @@ export default function SignupPage() {
   return (
     <div className="min-h-screen w-full lg:grid lg:grid-cols-2">
       <div className="hidden lg:flex flex-col items-center justify-center bg-secondary/50 p-12 text-center relative overflow-hidden">
-        <div className="absolute inset-0 bg-dot-pattern-dark opacity-30 z-0"></div>
+        <div className="absolute inset-0 bg-dot-pattern-dark opacity-30 z-0 animate-background-position"></div>
         <div className="relative z-10">
             <Link href="/" className="inline-block mb-8">
                 <TestTribeLogo className="h-12" />
@@ -19,7 +19,7 @@ export default function SignupPage() {
             </p>
         </div>
       </div>
-        <div className="w-full max-w-md space-y-8">
+        <div className="w-full max-w-md space-y-8 flex flex-col justify-center mx-auto p-6">
             <div>
               <h2 className="mt-6 text-center text-3xl font-bold tracking-tight text-foreground">
                 Create your account
