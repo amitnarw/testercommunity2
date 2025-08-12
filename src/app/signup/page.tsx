@@ -12,7 +12,11 @@ export default function SignupPage() {
           <p className="mt-4 max-w-md mx-auto text-muted-foreground">
             Whether you're here to test, or have your app tested, you're in the right place. Welcome to the future of quality assurance.
           </p>
-           <div className="text-center mt-12">
+        </div>
+      </div>
+      <div className="w-full flex flex-col items-center justify-center p-6 bg-secondary/20">
+        <div className="max-w-md w-full space-y-6">
+           <div className="text-center">
             <h2 className="text-3xl font-bold tracking-tight text-foreground">
               Create your account
             </h2>
@@ -20,10 +24,6 @@ export default function SignupPage() {
               And start your journey with TestTribe
             </p>
           </div>
-        </div>
-      </div>
-      <div className="w-full flex flex-col items-center justify-center p-6 bg-secondary/20">
-        <div className="max-w-md w-full space-y-6">
           <SignupForm />
         </div>
       </div>

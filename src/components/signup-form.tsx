@@ -11,6 +11,7 @@ import { Checkbox } from './ui/checkbox';
 import { RadioGroup, RadioGroupItem } from './ui/radio-group';
 import { Separator } from './ui/separator';
 import { cn } from '@/lib/utils';
+import { CheckCircle2 } from 'lucide-react';
 
 const signupSchema = z.object({
   role: z.enum(['developer', 'tester'], { required_error: 'Please select a role.' }),
@@ -63,7 +64,7 @@ export function SignupForm() {
 
   return (
     <div className="space-y-8">
-        <Button variant="outline" className="w-full rounded-xl py-6 text-lg">
+        <Button variant="outline" className="w-full rounded-xl py-6">
             <GoogleIcon className="mr-3" />
             Sign up with Google
         </Button>
@@ -76,19 +77,19 @@ export function SignupForm() {
 
         <form onSubmit={handleSubmit(processForm)} className="space-y-8">
             <div>
-                <RadioGroup {...register('role')} className="grid grid-cols-2 gap-2 rounded-xl bg-muted p-1">
-                    <div>
+                 <RadioGroup {...register('role')} className="grid grid-cols-2 gap-4">
+                    <Label htmlFor="developer" className="relative cursor-pointer rounded-xl border-2 bg-background p-4 text-center transition-all peer-data-[state=checked]:border-primary peer-data-[state=checked]:shadow-lg">
                         <RadioGroupItem value="developer" id="developer" className="peer sr-only" />
-                        <Label htmlFor="developer" className="flex items-center justify-center rounded-lg p-2 text-center text-sm font-semibold transition-colors peer-data-[state=checked]:bg-background peer-data-[state=checked]:text-foreground peer-data-[state=unchecked]:text-muted-foreground">
-                            I'm a Developer
-                        </Label>
-                    </div>
-                     <div>
+                        <CheckCircle2 className="absolute right-2 top-2 h-5 w-5 text-primary opacity-0 transition-opacity peer-data-[state=checked]:opacity-100" />
+                        <p className="font-semibold">I'm a Developer</p>
+                        <p className="text-xs text-muted-foreground">I want to get my app tested</p>
+                    </Label>
+                    <Label htmlFor="tester" className="relative cursor-pointer rounded-xl border-2 bg-background p-4 text-center transition-all peer-data-[state=checked]:border-primary peer-data-[state=checked]:shadow-lg">
                         <RadioGroupItem value="tester" id="tester" className="peer sr-only" />
-                        <Label htmlFor="tester" className="flex items-center justify-center rounded-lg p-2 text-center text-sm font-semibold transition-colors peer-data-[state=checked]:bg-background peer-data-[state=checked]:text-foreground peer-data-[state=unchecked]:text-muted-foreground">
-                            I'm a Tester
-                        </Label>
-                    </div>
+                        <CheckCircle2 className="absolute right-2 top-2 h-5 w-5 text-primary opacity-0 transition-opacity peer-data-[state=checked]:opacity-100" />
+                        <p className="font-semibold">I'm a Tester</p>
+                        <p className="text-xs text-muted-foreground">I want to test apps and earn</p>
+                    </Label>
                 </RadioGroup>
                 {errors.role && <p className="text-sm text-destructive mt-1">{errors.role.message}</p>}
             </div>
