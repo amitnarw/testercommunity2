@@ -22,21 +22,16 @@ const HorizontalScrollSection = ({ steps, isPro }: { steps: RoadmapStep[], isPro
 
     useLayoutEffect(() => {
         let ctx = gsap.context(() => {
-            // Media query for desktop
-            ScrollTrigger.matchMedia({
-                "(min-width: 768px)": function() {
-                    let panels = gsap.utils.toArray<HTMLDivElement>(".panel", slider.current!);
-                    gsap.to(panels, {
-                        xPercent: -100 * (panels.length - 1),
-                        ease: "none",
-                        scrollTrigger: {
-                            trigger: component.current,
-                            pin: true,
-                            scrub: 1,
-                            snap: 1 / (panels.length - 1),
-                            end: () => "+=" + slider.current?.offsetWidth
-                        }
-                    });
+            let panels = gsap.utils.toArray<HTMLDivElement>(".panel", slider.current!);
+            gsap.to(panels, {
+                xPercent: -100 * (panels.length - 1),
+                ease: "none",
+                scrollTrigger: {
+                    trigger: component.current,
+                    pin: true,
+                    scrub: 1,
+                    snap: 1 / (panels.length - 1),
+                    end: () => "+=" + slider.current?.offsetWidth
                 }
             });
         }, component);
@@ -44,10 +39,10 @@ const HorizontalScrollSection = ({ steps, isPro }: { steps: RoadmapStep[], isPro
     }, [steps]);
 
     return (
-        <div className="relative md:h-auto" ref={component}>
-            <div ref={slider} className="md:flex md:w-fit">
+        <div className="relative" ref={component}>
+            <div ref={slider} className="flex w-fit">
                 {steps.map((step, index) => (
-                    <div key={index} className="panel md:w-screen md:h-screen">
+                    <div key={index} className="panel w-screen h-screen">
                         <RoadmapStepCard step={step} isPro={isPro} />
                     </div>
                 ))}
