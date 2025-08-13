@@ -12,6 +12,7 @@ import { RadioGroup, RadioGroupItem } from './ui/radio-group';
 import { Separator } from './ui/separator';
 import { cn } from '@/lib/utils';
 import { CheckCircle2 } from 'lucide-react';
+import Link from 'next/link';
 import {
   Form,
   FormControl,
@@ -165,7 +166,7 @@ export function SignupForm() {
                         </FormControl>
                         <div className="space-y-1 leading-none">
                             <FormLabel className="text-sm font-normal text-muted-foreground">
-                                I accept the <a href="#" className="underline text-primary">terms and conditions</a>.
+                                I accept the <Link href="/terms" className="underline text-primary hover:no-underline">terms and conditions</Link>.
                             </FormLabel>
                             <FormMessage />
                         </div>
