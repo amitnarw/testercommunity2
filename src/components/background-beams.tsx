@@ -9,13 +9,12 @@ export const BackgroundBeams = ({
 }: {
   className?: string;
 }) => {
-  const numberOfBeams = 10;
   const Svg = ({ path, className }: { path: string; className?: string }) => {
     return (
       <motion.svg
         xmlns="http://www.w3.org/2000/svg"
         fill="none"
-        stroke="white"
+        stroke="currentColor" 
         className={className}
         initial={{
           pathLength: 0,
@@ -50,12 +49,11 @@ export const BackgroundBeams = ({
     <div
       className={cn(
         "absolute top-0 left-0 w-full h-full -z-10",
-        "bg-neutral-950",
         "[mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)]",
         className
       )}
     >
-      <div className="absolute inset-0 z-20 bg-dot-pattern-dark" />
+      <div className="absolute inset-0 z-20 bg-dot-pattern" />
       {paths.map((path, i) => {
         const SvgComponent = (
           <Svg
@@ -63,7 +61,7 @@ export const BackgroundBeams = ({
             path={path}
             className={cn(
               "absolute h-full w-full",
-              "stroke-neutral-800",
+              "text-border",
               "blur-[1px]",
               "[mask-image:linear-gradient(to_bottom,transparent,white_20%,white_80%,transparent)]"
             )}
@@ -75,7 +73,7 @@ export const BackgroundBeams = ({
             path={path}
             className={cn(
               "absolute h-full w-full",
-              "stroke-primary",
+              "text-primary",
               "blur-md"
             )}
           />
