@@ -1,7 +1,6 @@
 
 'use client';
 
-import { SignupForm } from '@/components/signup-form';
 import { TestTribeLogo } from '@/components/icons';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
@@ -9,6 +8,7 @@ import { Separator } from '@/components/ui/separator';
 import { useTheme } from 'next-themes';
 import { Moon, Sun, ArrowLeft } from 'lucide-react';
 import { BackgroundBeams } from '@/components/background-beams';
+import { useRouter } from 'next/navigation';
 
 const GoogleIcon = (props: React.SVGProps<SVGSVGElement>) => (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="24px" height="24px" {...props}>
@@ -20,6 +20,12 @@ const GoogleIcon = (props: React.SVGProps<SVGSVGElement>) => (
 );
 
 const LoginForm = () => {
+    const router = useRouter();
+
+    const handleDemoLogin = () => {
+        router.push('/dashboard');
+    }
+
     return (
         <div className="space-y-6">
              <Button variant="outline" className="w-full rounded-xl py-6 text-base">
@@ -39,7 +45,10 @@ const LoginForm = () => {
                 <label htmlFor="password">Password</label>
                 <input id="password" type="password" placeholder="••••••••" className="flex h-10 w-full rounded-none border-b border-input bg-transparent px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-0 focus-visible:border-primary disabled:cursor-not-allowed disabled:opacity-50" />
             </div>
-            <Button className="w-full rounded-xl py-6 text-lg">Log In</Button>
+            <div className="space-y-2">
+                <Button className="w-full rounded-xl py-6 text-lg">Log In</Button>
+                <Button variant="link" className="w-full" onClick={handleDemoLogin}>Log in as Demo User</Button>
+            </div>
         </div>
     )
 }
