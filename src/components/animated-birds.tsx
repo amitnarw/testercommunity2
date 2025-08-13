@@ -2,6 +2,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
+import { useTheme } from 'next-themes';
 
 const BirdSVG = (props: React.SVGProps<SVGSVGElement>) => (
     <svg viewBox="0 0 40 28" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
@@ -13,22 +14,30 @@ const BirdSVG = (props: React.SVGProps<SVGSVGElement>) => (
 );
 
 
-const Bird = ({ delay, duration, y, scale }: { delay: number, duration: number, y: string, scale: number }) => {
+const Bird = ({ delay, duration, initialY, scale }: { delay: number, duration: number, initialY: string, scale: number }) => {
     return (
         <motion.div
             className="absolute text-primary/30 dark:text-primary/50"
             style={{
-                top: y,
+                top: initialY,
                 scale,
                 transformOrigin: 'center center',
             }}
-            initial={{ x: '-20vw' }}
-            animate={{ x: '120vw' }}
+            initial={{ x: '-20vw', y: 0 }}
+            animate={{ 
+                x: '120vw',
+                y: ['0rem', '-1.5rem', '0rem']
+            }}
             transition={{
                 delay,
                 duration,
                 repeat: Infinity,
                 ease: 'linear',
+                y: {
+                    duration: duration / 4,
+                    repeat: Infinity,
+                    ease: "easeInOut"
+                }
             }}
         >
             <BirdSVG />
@@ -40,12 +49,12 @@ export function AnimatedBirds() {
     return (
         <div className="absolute inset-0 w-full h-full overflow-hidden bg-transparent pointer-events-none">
             <div className="relative w-full h-full">
-                <Bird delay={0} duration={25} y="10%" scale={0.8} />
-                <Bird delay={2} duration={20} y="20%" scale={1} />
-                <Bird delay={5} duration={30} y="35%" scale={0.6} />
-                <Bird delay={8} duration={18} y="50%" scale={1.2} />
-                <Bird delay={12} duration={28} y="65%" scale={0.9} />
-                <Bird delay={15} duration={22} y="80%" scale={0.7} />
+                <Bird delay={0} duration={25} initialY="10%" scale={0.8} />
+                <Bird delay={2} duration={20} initialY="20%" scale={1} />
+                <Bird delay={5} duration={30} initialY="35%" scale={0.6} />
+                <Bird delay={8} duration={18} initialY="50%" scale={1.2} />
+                <Bird delay={12} duration={28} initialY="65%" scale={0.9} />
+                <Bird delay={15} duration={22} initialY="80%" scale={0.7} />
             </div>
         </div>
     );
