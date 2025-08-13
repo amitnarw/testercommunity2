@@ -59,7 +59,7 @@ export function SignupForm() {
   };
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-6">
         <Button variant="outline" className="w-full rounded-xl py-6 text-base">
             <GoogleIcon className="mr-3" />
             Sign up with Google
@@ -72,7 +72,7 @@ export function SignupForm() {
         </div>
 
         <Form {...form}>
-            <form onSubmit={form.handleSubmit(processForm)} className="space-y-6">
+            <form onSubmit={form.handleSubmit(processForm)} className="space-y-4">
                 <FormField
                     control={form.control}
                     name="role"
