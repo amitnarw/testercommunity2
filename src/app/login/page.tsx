@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { useTheme } from 'next-themes';
 import { Moon, Sun, ArrowLeft } from 'lucide-react';
-import { MountainParallax } from '@/components/mountain-parallax';
+import { InteractiveOrbs } from '@/components/interactive-orbs';
 
 const GoogleIcon = (props: React.SVGProps<SVGSVGElement>) => (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="24px" height="24px" {...props}>
@@ -77,12 +77,12 @@ export default function LoginPage() {
                 <LoginForm />
             </div>
         </div>
-        <div className="hidden lg:flex flex-col items-center justify-center p-6 text-center relative overflow-hidden bg-[#0a0a0a]">
-             <MountainParallax />
+        <div className="hidden lg:flex flex-col items-center justify-center p-6 text-center relative overflow-hidden bg-secondary/20">
+             <InteractiveOrbs />
             <div className="relative z-10 flex flex-col items-center">
                 <TestTribeLogo className="h-20 w-auto mb-4" />
-                <h1 className="text-3xl font-bold tracking-tight text-white">Welcome back</h1>
-                <p className="mt-2 max-w-md mx-auto text-white/70">
+                <h1 className="text-3xl font-bold tracking-tight text-foreground">Welcome back</h1>
+                <p className="mt-2 max-w-md mx-auto text-muted-foreground">
                     Log in to continue your journey of building flawless apps.
                 </p>
             </div>
