@@ -67,7 +67,7 @@ export function InteractiveOrbs() {
   }, [mousePos]);
 
   return (
-    <div className="fixed inset-0 w-full h-full pointer-events-none">
+    <div className="absolute inset-0 w-full h-full pointer-events-none">
       {orbs.map((orb, i) => (
         <div
           key={i}
