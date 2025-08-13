@@ -17,7 +17,7 @@ const BirdSVG = (props: React.SVGProps<SVGSVGElement>) => (
 const Bird = ({ delay, duration, initialY, scale }: { delay: number, duration: number, initialY: string, scale: number }) => {
     return (
         <motion.div
-            className="absolute text-primary/30 dark:text-primary/50"
+            className="absolute"
             style={{
                 top: initialY,
                 scale,
@@ -40,7 +40,7 @@ const Bird = ({ delay, duration, initialY, scale }: { delay: number, duration: n
                 }
             }}
         >
-            <BirdSVG />
+            <BirdSVG className="text-primary/30 dark:text-primary/50" />
         </motion.div>
     );
 };
