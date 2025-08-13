@@ -7,14 +7,15 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { useTheme } from 'next-themes';
 import { Moon, Sun, ArrowLeft } from 'lucide-react';
+import { AnimatedGradient } from '@/components/animated-gradient';
 
 export default function SignupPage() {
     const { setTheme, theme } = useTheme();
 
   return (
     <div className="min-h-screen w-full lg:grid lg:grid-cols-2">
-      <div className="hidden lg:flex flex-col items-center justify-center p-6 text-center relative overflow-hidden bg-background bg-dot-pattern-dark">
-        <div className="absolute inset-0 bg-gradient-radial from-primary/20 via-transparent to-transparent"></div>
+      <div className="hidden lg:flex flex-col items-center justify-center p-6 text-center relative overflow-hidden bg-background">
+        <AnimatedGradient />
         <div className="relative z-10 flex flex-col items-center">
             <TestTribeLogo className="h-20 w-auto mb-4" />
             <h1 className="text-3xl font-bold tracking-tight text-foreground">Join a community of innovators</h1>
