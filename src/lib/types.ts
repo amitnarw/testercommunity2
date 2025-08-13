@@ -1,3 +1,6 @@
+
+import type { LucideIcon } from 'lucide-react';
+
 export type Tester = {
   id: number;
   name: string;
@@ -16,7 +19,7 @@ export type BlogPost = {
   excerpt: string;
   content: string;
   author: {
-    name: string;
+    name:string;
     avatarUrl: string;
     dataAiHint?: string;
   };
@@ -32,4 +35,17 @@ export type Testimonial = {
   avatar: string;
   dataAiHint?: string;
   comment: string;
+};
+
+export type RoadmapDetail = {
+    title: string;
+    description: string;
+}
+
+export type RoadmapStep = {
+    step: number;
+    title: string;
+    description: string;
+    badgeText: string;
+    details: RoadmapDetail[];
 };

@@ -4,7 +4,7 @@ import { InteractiveOrbs } from '@/components/interactive-orbs';
 
 export default function NotFoundPage() {
   return (
-    <div className="flex flex-col items-center justify-center min-h-[calc(100vh-80px)] bg-background text-center p-4 overflow-hidden">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-background text-center p-4 overflow-hidden">
       <div className="max-w-md w-full relative">
         <InteractiveOrbs />
         <div className="relative z-10 bg-background/50 backdrop-blur-sm p-8 rounded-xl">

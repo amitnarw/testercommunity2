@@ -12,8 +12,8 @@ import { useState, useEffect } from 'react';
 import { useTheme } from 'next-themes';
 
 const navItems = [
-  { name: 'Marketplace', href: '/marketplace' },
-  { name: 'Dashboard', href: '/dashboard' },
+  { name: 'Home', href: '/' },
+  { name: 'How It Works', href: '/how-it-works' },
   { name: 'Blog', href: '/blog' },
 ];
 
@@ -73,16 +73,18 @@ export function Header() {
           </div>
           <div className="md:hidden">
             <Sheet open={isMenuOpen} onOpenChange={setMenuOpen}>
-              <SheetTrigger asChild>
-                 <Button size="icon" className="md:hidden" variant="outline">
-                    <Menu className="h-6 w-6" />
-                    <span className="sr-only">Open menu</span>
-                </Button>
-              </SheetTrigger>
-              <SheetContent side="top" className="flex flex-col items-center">
+               <div className="md:hidden relative">
+                <SheetTrigger asChild>
+                    <Button size="icon" variant="outline">
+                        <Menu className="h-6 w-6" />
+                        <span className="sr-only">Open menu</span>
+                    </Button>
+                </SheetTrigger>
+              </div>
+              <SheetContent side="top" className="flex flex-col">
                  <div className="absolute top-4 right-4 md:hidden">
                     <SheetClose asChild>
-                        <Button size="icon" variant="outline" className='mr-4 mt-1'>
+                        <Button size="icon" variant="outline">
                             <X className="h-6 w-6" />
                             <span className="sr-only">Close menu</span>
                         </Button>
@@ -99,10 +101,9 @@ export function Header() {
                             href={item.href}
                             onClick={() => setMenuOpen(false)}
                             className={cn(
-                            'text-2xl font-medium transition-colors hover:text-primary animate-fade-in-up',
+                            'text-2xl font-medium transition-colors hover:text-primary',
                             pathname === item.href ? 'text-primary' : 'text-foreground'
                             )}
-                            style={{ animationDelay: `${150 + index * 100}ms` }}
                         >
                             {item.name}
                         </Link>

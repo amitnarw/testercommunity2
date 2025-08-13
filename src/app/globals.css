@@ -85,4 +85,16 @@
   .sliding-text-hover:hover::after {
     @apply translate-y-0;
   }
+  .timeline-road-finish::after {
+     content: '';
+    @apply absolute bottom-0 left-1/2 -translate-x-1/2 h-12 w-12 rounded-full border-2 border-dashed border-primary bg-primary/10 -z-10 flex items-center justify-center;
+  }
+  .bg-dot-pattern {
+    background-image: radial-gradient(circle, hsl(var(--foreground) / 0.1) 1px, transparent 1px);
+    background-size: 1.25rem 1.25rem;
+  }
+  .bg-dot-pattern-dark {
+    background-image: radial-gradient(circle, hsl(var(--foreground) / 0.05) 1px, transparent 1px);
+    background-size: 1.25rem 1.25rem;
+  }
 }

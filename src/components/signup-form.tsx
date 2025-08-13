@@ -1,156 +1,182 @@
+
 'use client';
 
-import { useState } from 'react';
 import { useForm, type SubmitHandler } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
-import { Progress } from './ui/progress';
-import { ArrowLeft, ArrowRight, User, Lock, Mail } from 'lucide-react';
-import { cn } from '@/lib/utils';
 import { Checkbox } from './ui/checkbox';
 import { RadioGroup, RadioGroupItem } from './ui/radio-group';
+import { Separator } from './ui/separator';
+import { cn } from '@/lib/utils';
+import { CheckCircle2 } from 'lucide-react';
+import Link from 'next/link';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form"
 
-const step1Schema = z.object({
+const signupSchema = z.object({
   role: z.enum(['developer', 'tester'], { required_error: 'Please select a role.' }),
-});
-
-const step2Schema = z.object({
+  fullName: z.string().min(2, 'Please enter your full name.'),
   email: z.string().email('Please enter a valid email address.'),
   password: z.string().min(8, 'Password must be at least 8 characters long.'),
+  terms: z.boolean().refine(val => val === true, { message: 'You must accept the terms.' }),
 });
 
-const step3Schema = z.object({
-    fullName: z.string().min(2, 'Please enter your full name.'),
-    terms: z.boolean().refine(val => val === true, { message: 'You must accept the terms.' }),
-});
+type SignupFormData = z.infer<typeof signupSchema>;
 
-type Step1Data = z.infer<typeof step1Schema>;
-type Step2Data = z.infer<typeof step2Schema>;
-type Step3Data = z.infer<typeof step3Schema>;
-
-type FormData = Step1Data & Step2Data & Step3Data;
-
-const steps = [
-  { id: 1, schema: step1Schema },
-  { id: 2, schema: step2Schema },
-  { id: 3, schema: step3Schema },
-];
+const GoogleIcon = (props: React.SVGProps<SVGSVGElement>) => (
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="24px" height="24px" {...props}>
+        <path fill="#FFC107" d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12s5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24s8.955,20,20,20s20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z" />
+        <path fill="#FF3D00" d="M6.306,14.691l6.571,4.819C14.655,15.108,18.961,12,24,12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C16.318,4,9.656,8.337,6.306,14.691z" />
+        <path fill="#4CAF50" d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36c-5.222,0-9.655-3.307-11.28-7.792l-6.522,5.025C9.505,39.556,16.227,44,24,44z" />
+        <path fill="#1976D2" d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.574l6.19,5.238C39.99,36.626,44,31.1,44,24C44,22.659,43.862,21.35,43.611,20.083z" />
+    </svg>
+);
 
 export function SignupForm() {
-  const [currentStep, setCurrentStep] = useState(0);
-  const [formData, setFormData] = useState<Partial<FormData>>({});
-
-  const { register, handleSubmit, formState: { errors }, trigger, getValues } = useForm({
-    resolver: zodResolver(steps[currentStep].schema),
-    mode: 'onChange'
+  const form = useForm<SignupFormData>({
+    resolver: zodResolver(signupSchema),
+    mode: 'onChange',
+    defaultValues: {
+        fullName: '',
+        email: '',
+        password: '',
+        terms: false,
+    }
   });
 
-  const processStep: SubmitHandler<any> = (data) => {
-    setFormData(prev => ({ ...prev, ...data }));
-    if (currentStep < steps.length - 1) {
-      setCurrentStep(currentStep + 1);
-    } else {
-      console.log('Final form data:', {...formData, ...data});
-      // Handle final submission
-    }
+  const processForm: SubmitHandler<SignupFormData> = (data) => {
+    console.log('Final form data:', data);
+    // Handle final submission
   };
-
-  const handleNext = async () => {
-    const isValid = await trigger();
-    if (isValid) {
-      processStep(getValues());
-    }
-  };
-
-  const handlePrev = () => {
-    if (currentStep > 0) {
-      setCurrentStep(currentStep - 1);
-    }
-  };
-
-  const progress = ((currentStep + 1) / steps.length) * 100;
 
   return (
     <div className="space-y-6">
-      <Progress value={progress} className="h-2 rounded-xl" />
-      <form onSubmit={handleSubmit(processStep)} className="overflow-hidden">
-        <div>
-            {currentStep === 0 && (
-                <div className="space-y-4">
-                    <Label>What is your role?</Label>
-                    <RadioGroup {...register('role')} className="grid grid-cols-2 gap-4">
-                        <div>
-                            <RadioGroupItem value="developer" id="developer" className="peer sr-only" />
-                            <Label htmlFor="developer" className="flex flex-col items-center justify-between rounded-xl border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary">
-                                I'm a Developer
-                            </Label>
-                        </div>
-                         <div>
-                            <RadioGroupItem value="tester" id="tester" className="peer sr-only" />
-                            <Label htmlFor="tester" className="flex flex-col items-center justify-between rounded-xl border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary">
-                                I'm a Tester
-                            </Label>
-                        </div>
-                    </RadioGroup>
-                    {errors.role && <p className="text-sm text-destructive">{errors.role.message as string}</p>}
-                </div>
-            )}
-            {currentStep === 1 && (
-                <div className="space-y-4">
-                    <div>
-                        <Label htmlFor="email">Email</Label>
-                        <div className="relative">
-                            <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                            <Input id="email" type="email" placeholder="you@example.com" {...register('email')} className="pl-10 rounded-xl" />
-                        </div>
-                        {errors.email && <p className="text-sm text-destructive">{errors.email.message as string}</p>}
-                    </div>
-                    <div>
-                        <Label htmlFor="password">Password</Label>
-                         <div className="relative">
-                            <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                            <Input id="password" type="password" placeholder="********" {...register('password')} className="pl-10 rounded-xl" />
-                        </div>
-                        {errors.password && <p className="text-sm text-destructive">{errors.password.message as string}</p>}
-                    </div>
-                </div>
-            )}
-            {currentStep === 2 && (
-                <div className="space-y-4">
-                    <div>
-                        <Label htmlFor="fullName">Full Name</Label>
-                         <div className="relative">
-                            <User className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-muted-foreground" />
-                            <Input id="fullName" placeholder="John Doe" {...register('fullName')} className="pl-10 rounded-xl" />
-                        </div>
-                        {errors.fullName && <p className="text-sm text-destructive">{errors.fullName.message as string}</p>}
-                    </div>
-                    <div className="flex items-center space-x-2">
-                       <Checkbox id="terms" {...register('terms')} className="rounded-sm" />
-                        <Label htmlFor="terms" className="text-sm font-normal">
-                            I accept the <a href="#" className="underline text-primary">terms and conditions</a>.
-                        </Label>
-                    </div>
-                    {errors.terms && <p className="text-sm text-destructive">{errors.terms.message as string}</p>}
-                </div>
-            )}
-        </div>
-      </form>
-      <div className="flex justify-between">
-        <Button variant="outline" onClick={handlePrev} disabled={currentStep === 0} className="rounded-xl">
-            <ArrowLeft className="mr-2 h-4 w-4" /> Previous
+        <Button variant="outline" className="w-full rounded-xl py-6 text-base">
+            <GoogleIcon className="mr-3" />
+            Sign up with Google
         </Button>
-        {currentStep < steps.length - 1 ? (
-          <Button onClick={handleNext} className="rounded-xl">
-            Next <ArrowRight className="ml-2 h-4 w-4" />
-          </Button>
-        ) : (
-          <Button onClick={handleNext} className="rounded-xl">Finish</Button>
-        )}
-      </div>
+
+        <div className="flex items-center gap-4">
+            <Separator className="flex-1 bg-border/50" />
+            <span className="text-xs text-muted-foreground">OR</span>
+            <Separator className="flex-1 bg-border/50" />
+        </div>
+
+        <Form {...form}>
+            <form onSubmit={form.handleSubmit(processForm)} className="space-y-4">
+                <FormField
+                    control={form.control}
+                    name="role"
+                    render={({ field }) => (
+                        <FormItem className="space-y-3">
+                            <FormControl>
+                                <RadioGroup
+                                    onValueChange={field.onChange}
+                                    defaultValue={field.value}
+                                    className="relative grid grid-cols-2 gap-2 rounded-xl bg-secondary p-1"
+                                >
+                                     <div className={cn(
+                                        "absolute h-[calc(100%-0.5rem)] w-[calc(50%-0.25rem)] bg-background shadow-md rounded-lg transition-transform duration-300 ease-in-out",
+                                        field.value === 'developer' ? 'translate-x-0' : 'translate-x-full'
+                                    )} style={{ margin: '0.25rem' }}></div>
+                                    <FormItem>
+                                        <FormControl>
+                                            <RadioGroupItem value="developer" id="developer" className="peer sr-only" />
+                                        </FormControl>
+                                        <Label htmlFor="developer" className="relative z-10 flex cursor-pointer justify-center rounded-lg p-3 text-center transition-colors peer-data-[state=checked]:text-primary">
+                                            I'm a Developer
+                                        </Label>
+                                    </FormItem>
+                                    <FormItem>
+                                        <FormControl>
+                                            <RadioGroupItem value="tester" id="tester" className="peer sr-only" />
+                                        </FormControl>
+                                        <Label htmlFor="tester" className="relative z-10 flex cursor-pointer justify-center rounded-lg p-3 text-center transition-colors peer-data-[state=checked]:text-primary">
+                                            I'm a Tester
+                                        </Label>
+                                    </FormItem>
+                                </RadioGroup>
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                />
+
+                <FormField
+                    control={form.control}
+                    name="fullName"
+                    render={({ field }) => (
+                        <FormItem>
+                        <FormLabel>Full Name</FormLabel>
+                        <FormControl>
+                            <Input placeholder="John Doe" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                        </FormItem>
+                    )}
+                />
+
+                <FormField
+                    control={form.control}
+                    name="email"
+                    render={({ field }) => (
+                        <FormItem>
+                        <FormLabel>Email Address</FormLabel>
+                        <FormControl>
+                            <Input placeholder="you@example.com" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                        </FormItem>
+                    )}
+                />
+
+                <FormField
+                    control={form.control}
+                    name="password"
+                    render={({ field }) => (
+                        <FormItem>
+                        <FormLabel>Password</FormLabel>
+                        <FormControl>
+                            <Input type="password" placeholder="••••••••" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                        </FormItem>
+                    )}
+                />
+                
+                <FormField
+                    control={form.control}
+                    name="terms"
+                    render={({ field }) => (
+                        <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md py-4">
+                        <FormControl>
+                            <Checkbox
+                            checked={field.value}
+                            onCheckedChange={field.onChange}
+                            />
+                        </FormControl>
+                        <div className="space-y-1 leading-none">
+                            <FormLabel className="text-sm font-normal text-muted-foreground">
+                                I accept the <Link href="/terms" className="underline text-primary hover:no-underline">terms and conditions</Link>.
+                            </FormLabel>
+                            <FormMessage />
+                        </div>
+                        </FormItem>
+                    )}
+                />
+
+                <Button type="submit" className="w-full rounded-xl py-6 text-lg">Create Account</Button>
+            </form>
+        </Form>
     </div>
   );
 }

@@ -17,6 +17,9 @@ export default {
       },
     },
     extend: {
+      backgroundImage: {
+        'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
+      },
       fontFamily: {
         body: ['Plus Jakarta Sans', 'sans-serif'],
         code: ['monospace'],
@@ -115,13 +118,6 @@ export default {
         'scroll-rtl': 'scroll-rtl 20s linear infinite',
         'fade-in-up': 'fade-in-up 0.5s ease-out forwards',
         'image-zoom': 'image-zoom 0.5s ease-in-out forwards',
-      },
-       backgroundImage: {
-        'dot-pattern': "radial-gradient(circle, hsl(var(--primary) / 0.1) 1px, transparent 1px)",
-        'dot-pattern-dark': "radial-gradient(circle, hsl(var(--primary) / 0.2) 1px, transparent 1px)",
-      },
-      backgroundSize: {
-        'dot-pattern': '20px 20px',
       },
     },
   },

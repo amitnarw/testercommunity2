@@ -166,7 +166,7 @@ export default function Home() {
                                 Now in Public Beta
                             </Badge>
                             <h1 className="text-[2.25rem] sm:text-[2.75rem] md:text-[3.5rem] lg:text-[4.25rem] font-heading leading-[1.1] tracking-tight font-bold mb-5 sm:mb-6 md:mb-8">
-                                Community-Powered <span className="bg-gradient-to-br from-primary to-accent bg-clip-text text-transparent">or Professionally</span> Tested
+                            Community-Powered <span className="bg-gradient-to-br from-primary to-accent bg-clip-text text-transparent">or Professionally</span> Tested
                             </h1>
                             <p className="text-sm sm:text-base md:text-lg font-body max-w-sm sm:max-w-md md:max-w-lg lg:max-w-[700px] mx-auto mb-8 sm:mb-9 md:mb-10 lg:mb-12 text-muted-foreground">
                                 Harness the power of our community to test your app for free, or hire our professional testers for guaranteed results. The choice is yours.
@@ -207,7 +207,7 @@ export default function Home() {
                                         <CardHeader>
                                             <CardTitle className="text-lg text-black dark:text-white">{feature.title}</CardTitle>
                                         </CardHeader>
-                                        <CardContent>
+                                        <CardContent className='flex flex-col items-start justify-between h-full'>
                                             <p className="text-muted-foreground">{feature.description}</p>
                                             <Link href={feature.link} className="flex items-center text-primary font-semibold mt-4 hover:underline">
                                                 Learn More <ChevronRight className="w-4 h-4 ml-1" />
@@ -280,7 +280,7 @@ export default function Home() {
                     {/* CTA Section */}
                     <section className="py-20 md:py-28">
                         <div className="container mx-auto px-4 md:px-6 text-center">
-                            <h2 className="text-4xl md:text-5xl font-bold">Ready to Elevate Your Testing?</h2>
+                            <h2 className="text-4xl md:text-5xl font-bold">Ready to <span className="bg-gradient-to-br from-primary to-accent bg-clip-text text-transparent">Elevate</span> Your Testing?</h2>
                             <p className="mt-4 max-w-2xl mx-auto text-muted-foreground">
                                 Join the community and experience the future of app testing today. It's free to get started.
                             </p>
@@ -297,5 +297,4 @@ export default function Home() {
         </div>
     );
 }
-
     

@@ -6,10 +6,10 @@ import { Github, Twitter, Linkedin } from 'lucide-react';
 import Image from 'next/image';
 
 const navItems = [
-  { name: 'Marketplace', href: '/marketplace' },
-  { name: 'Dashboard', href: '/dashboard' },
-  { name: 'Blog', href: '/blog' },
-  { name: 'Sign Up', href: '/signup' },
+    { name: 'Home', href: '/' },
+    { name: 'How It Works', href: '/how-it-works' },
+    { name: 'Blog', href: '/blog' },
+    { name: 'Sign Up', href: '/signup' },
 ];
 
 const resourceItems = [
@@ -26,8 +26,7 @@ const legalItems = [
 export function Footer() {
   return (
     <footer className="bg-transparent border-t relative overflow-hidden">
-      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-1/2 h-32 bg-primary/20 rounded-full blur-[100px] -z-10 pointer-events-none" />
-      <div className="container mx-auto px-4 md:px-6 py-16">
+      <div className="container mx-auto px-4 md:px-6 py-16 relative z-10">
         <div className="grid gap-8 lg:grid-cols-3">
           <div className="space-y-4">
             <Link href="/" className="flex items-center gap-2">
