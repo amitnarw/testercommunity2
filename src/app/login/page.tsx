@@ -48,32 +48,32 @@ export default function LoginPage() {
     const { setTheme, theme } = useTheme();
 
   return (
-    <div className="min-h-screen w-full lg:grid lg:grid-cols-2 relative">
-        <div className="absolute top-4 right-4 flex items-center gap-4">
-             <Button variant="ghost" asChild>
-                <Link href="/"><ArrowLeft className="mr-2 h-4 w-4" /> Go to Home</Link>
-            </Button>
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-            >
-              <Sun className="h-6 w-6 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-              <Moon className="absolute h-6 w-6 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-              <span className="sr-only">Toggle theme</span>
-            </Button>
-        </div>
-        <div className="w-full flex flex-col items-center justify-center p-6 bg-background">
-            <div className="max-w-md w-full space-y-6">
-            <div className="text-center">
-                <h2 className="text-2xl font-bold tracking-tight text-foreground">
-                Log in to your account
-                </h2>
-                <p className="text-muted-foreground mt-2">
-                    Or <Link href="/signup" className="text-primary hover:underline">create a new account</Link>
-                </p>
+    <div className="min-h-screen w-full lg:grid lg:grid-cols-2">
+        <div className="relative w-full flex flex-col items-center justify-center p-6 bg-background">
+             <div className="absolute top-4 right-4 flex items-center gap-4">
+                <Button variant="ghost" asChild>
+                    <Link href="/"><ArrowLeft className="mr-2 h-4 w-4" /> Go to Home</Link>
+                </Button>
+                <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+                >
+                <Sun className="h-6 w-6 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+                <Moon className="absolute h-6 w-6 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+                <span className="sr-only">Toggle theme</span>
+                </Button>
             </div>
-            <LoginForm />
+            <div className="max-w-md w-full space-y-6">
+                <div className="text-center">
+                    <h2 className="text-2xl font-bold tracking-tight text-foreground">
+                    Log in to your account
+                    </h2>
+                    <p className="text-muted-foreground mt-2">
+                        Or <Link href="/signup" className="text-primary hover:underline">create a new account</Link>
+                    </p>
+                </div>
+                <LoginForm />
             </div>
         </div>
         <div className="hidden bg-muted lg:flex flex-col items-center justify-center p-6 text-center relative overflow-hidden">
