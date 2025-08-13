@@ -82,7 +82,7 @@ export function MountainParallax() {
             style={{ x: x2, y: y2 }}
         >
             <Image
-                src="https://images.unsplash.com/photo-1519681393784-d120267933ba?q=80&w=1200&auto=format&fit=crop"
+                src="https://images.unsplash.com/photo-1519681393784-d120267933ba?q=80&w=1200&auto=format=fit=crop"
                 alt="Distant mountains"
                 layout="fill"
                 objectFit="cover"
