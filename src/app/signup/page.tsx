@@ -37,7 +37,7 @@ export default function SignupPage() {
               <span className="sr-only">Toggle theme</span>
             </Button>
         </div>
-        <div className="max-w-md w-full space-y-6">
+        <div className="max-w-md w-full space-y-6 pt-16 lg:pt-0">
            <div className="text-center">
             <h2 className="text-2xl font-bold tracking-tight text-foreground">
               Create your account
