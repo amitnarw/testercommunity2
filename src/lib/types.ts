@@ -56,3 +56,11 @@ export type UserProfileData = {
     primaryGoal: string;
     monthlyBudget: string;
 };
+
+export type PricingPlan = {
+    name: string;
+    price: number;
+    apps: number;
+    features: string[];
+    popular: boolean;
+};
