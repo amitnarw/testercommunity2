@@ -32,9 +32,9 @@ export default function RootLayout({
         >
           <div className="relative flex flex-col min-h-screen">
             <Header />
-            <main className="flex-1 pb-16">{children}</main>
+            <main className="flex-1">{children}</main>
+            <Footer />
           </div>
-          <Footer />
           <Toaster />
         </ThemeProvider>
       </body>
