@@ -8,8 +8,8 @@ import Image from 'next/image';
 const navItems = [
     { name: 'Home', href: '/' },
     { name: 'How It Works', href: '/how-it-works' },
+    { name: 'Marketplace', href: '/marketplace' },
     { name: 'Blog', href: '/blog' },
-    { name: 'Sign Up', href: '/signup' },
 ];
 
 const resourceItems = [
