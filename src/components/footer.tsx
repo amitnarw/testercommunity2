@@ -15,12 +15,13 @@ const navItems = [
 const resourceItems = [
   { name: 'Docs', href: '#' },
   { name: 'Blog', href: '/blog' },
+  { name: 'FAQ', href: '/faq' },
   { name: 'Support', href: '/help' },
 ];
 
 const legalItems = [
     { name: 'Privacy Policy', href: '#' },
-    { name: 'Terms of Service', href: '#' },
+    { name: 'Terms of Service', href: '/terms' },
 ];
 
 export function Footer() {
