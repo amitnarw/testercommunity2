@@ -32,11 +32,11 @@ const LoginForm = () => {
             </div>
              <div className="space-y-2">
                 <label htmlFor="email">Email</label>
-                <input id="email" type="email" placeholder="you@example.com" className="flex h-10 w-full rounded-none border-b border-input bg-transparent px-3 py-2 text-base ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-0 focus-visible:border-primary disabled:cursor-not-allowed disabled:opacity-50 md:text-sm" />
+                <input id="email" type="email" placeholder="you@example.com" className="flex h-10 w-full rounded-none border-b border-input bg-transparent px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-0 focus-visible:border-primary disabled:cursor-not-allowed disabled:opacity-50" />
             </div>
             <div className="space-y-2">
                 <label htmlFor="password">Password</label>
-                <input id="password" type="password" placeholder="••••••••" className="flex h-10 w-full rounded-none border-b border-input bg-transparent px-3 py-2 text-base ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-0 focus-visible:border-primary disabled:cursor-not-allowed disabled:opacity-50 md:text-sm" />
+                <input id="password" type="password" placeholder="••••••••" className="flex h-10 w-full rounded-none border-b border-input bg-transparent px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-0 focus-visible:border-primary disabled:cursor-not-allowed disabled:opacity-50" />
             </div>
             <Button className="w-full rounded-xl py-6 text-lg">Log In</Button>
         </div>
