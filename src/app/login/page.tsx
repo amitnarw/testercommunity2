@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { useTheme } from 'next-themes';
 import { Moon, Sun, ArrowLeft } from 'lucide-react';
-import { MeteorShower } from '@/components/meteor-shower';
+import { MovingGradient } from '@/components/moving-gradient';
 
 const GoogleIcon = (props: React.SVGProps<SVGSVGElement>) => (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="24px" height="24px" {...props}>
@@ -78,7 +78,7 @@ export default function LoginPage() {
             </div>
         </div>
         <div className="hidden lg:flex flex-col items-center justify-center p-6 text-center relative overflow-hidden bg-secondary/20">
-            <MeteorShower />
+            <MovingGradient />
             <div className="relative z-10 flex flex-col items-center">
                 <TestTribeLogo className="h-20 w-auto mb-4" />
                 <h1 className="text-3xl font-bold tracking-tight text-foreground">Welcome back</h1>
