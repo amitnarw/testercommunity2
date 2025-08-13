@@ -1,9 +1,13 @@
 
+'use client';
+
 import { SignupForm } from '@/components/signup-form';
 import { TestTribeLogo } from '@/components/icons';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
+import { useTheme } from 'next-themes';
+import { Moon, Sun, ArrowLeft } from 'lucide-react';
 
 const GoogleIcon = (props: React.SVGProps<SVGSVGElement>) => (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="24px" height="24px" {...props}>
@@ -14,7 +18,6 @@ const GoogleIcon = (props: React.SVGProps<SVGSVGElement>) => (
     </svg>
 );
 
-// This is a placeholder login form. We can build this out later.
 const LoginForm = () => {
     return (
         <div className="space-y-6">
@@ -29,11 +32,11 @@ const LoginForm = () => {
             </div>
              <div className="space-y-2">
                 <label htmlFor="email">Email</label>
-                <input id="email" type="email" placeholder="you@example.com" className="w-full p-2 bg-transparent rounded-none border-b border-foreground focus:outline-none focus:ring-0 focus:border-primary" />
+                <input id="email" type="email" placeholder="you@example.com" className="flex h-10 w-full rounded-none border-b border-input bg-transparent px-3 py-2 text-base ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-0 focus-visible:border-primary disabled:cursor-not-allowed disabled:opacity-50 md:text-sm" />
             </div>
             <div className="space-y-2">
                 <label htmlFor="password">Password</label>
-                <input id="password" type="password" placeholder="••••••••" className="w-full p-2 bg-transparent rounded-none border-b border-foreground focus:outline-none focus:ring-0 focus:border-primary" />
+                <input id="password" type="password" placeholder="••••••••" className="flex h-10 w-full rounded-none border-b border-input bg-transparent px-3 py-2 text-base ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-0 focus-visible:border-primary disabled:cursor-not-allowed disabled:opacity-50 md:text-sm" />
             </div>
             <Button className="w-full rounded-xl py-6 text-lg">Log In</Button>
         </div>
@@ -42,8 +45,24 @@ const LoginForm = () => {
 
 
 export default function LoginPage() {
+    const { setTheme, theme } = useTheme();
+
   return (
-    <div className="min-h-screen w-full lg:grid lg:grid-cols-2">
+    <div className="min-h-screen w-full lg:grid lg:grid-cols-2 relative">
+        <div className="absolute top-4 right-4 flex items-center gap-4">
+             <Button variant="ghost" asChild>
+                <Link href="/"><ArrowLeft className="mr-2 h-4 w-4" /> Go to Home</Link>
+            </Button>
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+            >
+              <Sun className="h-6 w-6 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+              <Moon className="absolute h-6 w-6 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+              <span className="sr-only">Toggle theme</span>
+            </Button>
+        </div>
         <div className="w-full flex flex-col items-center justify-center p-6 bg-background">
             <div className="max-w-md w-full space-y-6">
             <div className="text-center">
