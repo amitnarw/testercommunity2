@@ -67,7 +67,7 @@ export function MountainParallax() {
             style={{ x: x2, y: y2 }}
         >
             <Image
-                src="https://images.unsplash.com/photo-1522030299833-14599d134116?q=80&w=400&auto=format&fit=crop"
+                src="https://images.unsplash.com/photo-1522030299833-14599d134116?q=80&w=400&auto=format=fit=crop"
                 alt="Moon"
                 layout="fill"
                 objectFit="contain"
