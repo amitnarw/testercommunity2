@@ -132,15 +132,15 @@ export default function PricingPage() {
                     </p>
                 </section>
 
-                <section className="mt-20 max-w-6xl mx-auto">
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <section className="mt-20 max-w-5xl mx-auto">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                         {plans.map(plan => (
-                             <div className="lg:col-span-1" key={plan.name}>
+                             <div key={plan.name}>
                                 <PricingCard plan={plan} />
                             </div>
                         ))}
-                         <div className="lg:col-span-1">
-                            <Card className="flex flex-col rounded-2xl h-full bg-secondary/50 border-dashed border-2">
+                         <div>
+                            <Card className="flex flex-col rounded-2xl h-full bg-secondary/50 border-dashed border-2 p-6 justify-center items-center text-center">
                                 <CardHeader className="pt-10">
                                     <CardTitle className="text-2xl">Enterprise</CardTitle>
                                     <CardDescription>
@@ -151,7 +151,7 @@ export default function PricingPage() {
                                     <p className="text-muted-foreground">
                                         Need more than 10 apps, custom integrations, or dedicated account management? We can build a plan tailored to your specific requirements.
                                     </p>
-                                     <ul className="space-y-3">
+                                     <ul className="space-y-3 text-left">
                                         {["Unlimited Apps", "Volume Discounts", "Custom Integrations", "Dedicated Account Manager", "Advanced Security & Compliance"].map(feature => (
                                             <li key={feature} className="flex items-center gap-2 text-muted-foreground">
                                                 <CheckCircle className="w-5 h-5 text-primary" />
