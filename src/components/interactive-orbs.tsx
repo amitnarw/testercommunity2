@@ -1,91 +1,69 @@
 
 'use client';
 
-import { useState, useEffect } from 'react';
-import { cn } from '@/lib/utils';
+import { useState, useEffect, useRef } from 'react';
+import { motion, useSpring } from 'framer-motion';
 
-const NUM_ORBS = 15;
-const ORB_SIZE = 20;
-const DAMPING = 0.8;
+const spring = {
+  type: 'spring',
+  stiffness: 300,
+  damping: 40,
+};
 
-const generateOrbs = () =>
-  Array(NUM_ORBS)
-    .fill(0)
-    .map(() => ({
-      x: -9999,
-      y: -9999,
-      vx: 0,
-      vy: 0,
-    }));
-
-export function InteractiveOrbs() {
-  const [mousePos, setMousePos] = useState({ x: -9999, y: -9999 });
-  const [orbs, setOrbs] = useState(generateOrbs);
+const Orb = ({ mouseX, mouseY }: { mouseX: any; mouseY: any }) => {
+  const x = useSpring(0, spring);
+  const y = useSpring(0, spring);
 
   useEffect(() => {
-    const handleMouseMove = (e: MouseEvent) => {
-      setMousePos({ x: e.clientX, y: e.clientY });
-    };
-
-    window.addEventListener('mousemove', handleMouseMove);
-    return () => window.removeEventListener('mousemove', handleMouseMove);
-  }, []);
-
-  useEffect(() => {
-    let animationFrameId: number;
-
-    const animate = () => {
-      setOrbs((currentOrbs) => {
-        return currentOrbs.map((orb, i) => {
-          const target = i === 0 ? mousePos : currentOrbs[i - 1];
-          const dx = target.x - orb.x;
-          const dy = target.y - orb.y;
-
-          let newVx = orb.vx + dx * 0.05;
-          let newVy = orb.vy + dy * 0.05;
-
-          newVx *= DAMPING;
-          newVy *= DAMPING;
-
-          const newX = orb.x + newVx;
-          const newY = orb.y + newVy;
-          
-          return {
-            x: newX,
-            y: newY,
-            vx: newVx,
-            vy: newVy,
-          };
-        });
-      });
-      animationFrameId = requestAnimationFrame(animate);
-    };
-
-    animate();
-
-    return () => cancelAnimationFrame(animationFrameId);
-  }, [mousePos]);
+    x.set(mouseX.get());
+    y.set(mouseY.get());
+  }, [mouseX, mouseY, x, y]);
 
   return (
-    <div className="absolute inset-0 w-full h-full pointer-events-none">
-      {orbs.map((orb, i) => (
-        <div
-          key={i}
-          className={cn(
-            'absolute rounded-full',
-            'bg-gradient-to-br from-primary to-accent'
-          )}
-          style={{
-            left: orb.x,
-            top: orb.y,
-            width: `${ORB_SIZE}px`,
-            height: `${ORB_SIZE}px`,
-            transform: `translate(-50%, -50%) scale(${1 - i / NUM_ORBS})`,
-            opacity: 1 - i / (NUM_ORBS * 1.5),
-            zIndex: NUM_ORBS - i,
-          }}
+    <motion.div
+      style={{ x, y }}
+      className="absolute top-0 left-0 w-16 h-16 rounded-full bg-primary/20 dark:bg-primary/30 backdrop-blur-md pointer-events-none"
+    />
+  );
+};
+
+export function InteractiveOrbs() {
+  const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleMouseMove = (event: MouseEvent) => {
+      if (containerRef.current) {
+        const rect = containerRef.current.getBoundingClientRect();
+        setMousePosition({
+          x: event.clientX - rect.left,
+          y: event.clientY - rect.top,
+        });
+      }
+    };
+    window.addEventListener('mousemove', handleMouseMove);
+    return () => {
+      window.removeEventListener('mousemove', handleMouseMove);
+    };
+  }, []);
+
+  const mouseX = useSpring(mousePosition.x, spring);
+  const mouseY = useSpring(mousePosition.y, spring);
+
+  return (
+    <div
+      ref={containerRef}
+      className="absolute inset-0 z-0"
+    >
+        <motion.div
+            className="w-full h-full"
+            style={{
+                x: mouseX,
+                y: mouseY,
+                background: 'radial-gradient(circle at center, hsl(var(--primary)/0.2), transparent 50%)',
+            }}
+            transition={spring}
         />
-      ))}
     </div>
   );
 }
