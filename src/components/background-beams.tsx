@@ -1,6 +1,6 @@
 
 "use client";
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 
@@ -28,8 +28,26 @@ const paths = [
   "M-247 -341C-247 -341 -179 64 285 191C749 318 817 723 817 723",
 ];
 
+interface AnimationConfig {
+  duration: number;
+  delay: number;
+}
+
 export const BackgroundBeams = React.memo(
   ({ className }: { className?: string }) => {
+    const [animationConfigs, setAnimationConfigs] = useState<AnimationConfig[]>([]);
+    const [isClient, setIsClient] = useState(false);
+
+    useEffect(() => {
+      setIsClient(true);
+      setAnimationConfigs(
+        paths.slice(0, 5).map(() => ({
+          duration: Math.random() * 20 + 20,
+          delay: Math.random() * 10,
+        }))
+      );
+    }, []);
+
     return (
       <div
         className={cn(
@@ -57,7 +75,7 @@ export const BackgroundBeams = React.memo(
           ))}
 
           {/* Layer 2: Animated glowing segments */}
-          {paths.slice(0, 5).map((path, index) => { // Animate only a few for performance
+          {isClient && animationConfigs.map((config, index) => {
             const totalLength = 1000; // Approximate length, fine for this effect
             const dashLength = 20;
             const gapLength = totalLength - dashLength;
@@ -65,7 +83,7 @@ export const BackgroundBeams = React.memo(
             return (
               <motion.path
                 key={`animated-segment-${index}`}
-                d={path}
+                d={paths[index]}
                 stroke="url(#beam-gradient)"
                 strokeWidth="1.5"
                 strokeLinecap="round"
@@ -75,10 +93,10 @@ export const BackgroundBeams = React.memo(
                   strokeDashoffset: [totalLength, -totalLength],
                 }}
                 transition={{
-                  duration: Math.random() * 20 + 20, // Random duration between 20-40s
+                  duration: config.duration,
                   repeat: Infinity,
                   ease: "linear",
-                  delay: Math.random() * 10, // Random delay up to 10s
+                  delay: config.delay,
                 }}
               />
             );
