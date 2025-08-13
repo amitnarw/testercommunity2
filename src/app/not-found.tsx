@@ -1,12 +1,12 @@
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { LevitatingOrb } from '@/components/levitating-orb';
+import { BugSquashAnimation } from '@/components/bug-squash-animation';
 
 export default function NotFoundPage() {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-background text-center p-4 overflow-hidden relative">
       <div className="absolute inset-0">
-        <LevitatingOrb />
+        <BugSquashAnimation />
       </div>
       <div className="max-w-md w-full relative z-10">
         <div className="relative z-10 bg-background/50 backdrop-blur-sm p-8 rounded-xl">
