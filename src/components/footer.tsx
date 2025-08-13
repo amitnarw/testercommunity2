@@ -15,7 +15,7 @@ const navItems = [
 const resourceItems = [
   { name: 'Docs', href: '#' },
   { name: 'Blog', href: '/blog' },
-  { name: 'Support', href: '#' },
+  { name: 'Support', href: '/help' },
 ];
 
 const legalItems = [

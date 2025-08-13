@@ -15,6 +15,7 @@ const navItems = [
   { name: 'Home', href: '/' },
   { name: 'How It Works', href: '/how-it-works' },
   { name: 'Blog', href: '/blog' },
+  { name: 'FAQ', href: '/faq' },
 ];
 
 export function Header() {
@@ -66,7 +67,9 @@ export function Header() {
               <Moon className="absolute h-6 w-6 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
               <span className="sr-only">Toggle theme</span>
             </Button>
-            <Button variant="ghost">Log In</Button>
+            <Button variant="ghost" asChild>
+                <Link href="/login">Log In</Link>
+            </Button>
             <Button asChild>
               <Link href="/signup">Sign Up <ArrowRight className="ml-2 h-4 w-4" /></Link>
             </Button>
@@ -110,7 +113,9 @@ export function Header() {
                         ))}
                     </nav>
                     <div className="mt-12 flex flex-col gap-4">
-                        <Button variant="outline" size="lg" onClick={() => setMenuOpen(false)}>Log In</Button>
+                        <Button variant="outline" size="lg" asChild onClick={() => setMenuOpen(false)}>
+                            <Link href="/login">Log In</Link>
+                        </Button>
                         <Button asChild size="lg" onClick={() => setMenuOpen(false)}>
                             <Link href="/signup">Sign Up</Link>
                         </Button>
