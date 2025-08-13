@@ -6,7 +6,7 @@ import { motion } from 'framer-motion';
 const Cloud = ({ delay, duration, initialX, y, scale }: { delay: number, duration: number, initialX: string, y: string, scale: number }) => {
     return (
         <motion.div
-            className="absolute bg-white/10 dark:bg-white/5 rounded-full filter blur-xl"
+            className="absolute bg-primary/10 dark:bg-primary/20 rounded-full filter blur-xl"
             style={{
                 width: `${200 * scale}px`,
                 height: `${80 * scale}px`,
