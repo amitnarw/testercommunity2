@@ -7,19 +7,19 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { useTheme } from 'next-themes';
 import { Moon, Sun, ArrowLeft } from 'lucide-react';
-import { MountainSunAnimation } from '@/components/mountain-sun-animation';
+import { MountainParallax } from '@/components/mountain-parallax';
 
 export default function SignupPage() {
     const { setTheme, theme } = useTheme();
 
   return (
     <div className="min-h-screen w-full lg:grid lg:grid-cols-2">
-      <div className="hidden lg:flex flex-col items-center justify-center p-6 text-center relative overflow-hidden bg-background">
-        <MountainSunAnimation />
+      <div className="hidden lg:flex flex-col items-center justify-center p-6 text-center relative overflow-hidden bg-[#0a0a0a]">
+        <MountainParallax />
         <div className="relative z-10 flex flex-col items-center">
             <TestTribeLogo className="h-20 w-auto mb-4" />
-            <h1 className="text-3xl font-bold tracking-tight text-foreground">Join a community of innovators</h1>
-            <p className="mt-2 max-w-md mx-auto text-muted-foreground">
+            <h1 className="text-3xl font-bold tracking-tight text-white">Join a community of innovators</h1>
+            <p className="mt-2 max-w-md mx-auto text-white/70">
                 Whether you're here to test, or have your app tested, you're in the right place.
             </p>
         </div>
