@@ -22,7 +22,7 @@ export default function SignupPage() {
             </p>
         </div>
       </div>
-      <div className="relative w-full flex flex-col items-center justify-start lg:justify-center p-6 bg-background py-16">
+      <div className="relative w-full flex flex-col items-center justify-start lg:justify-center p-6 bg-background">
         <div className="absolute top-4 right-4 flex items-center gap-4">
              <Button variant="ghost" asChild>
                 <Link href="/"><ArrowLeft className="mr-2 h-4 w-4" /> Go to Home</Link>
@@ -37,7 +37,7 @@ export default function SignupPage() {
               <span className="sr-only">Toggle theme</span>
             </Button>
         </div>
-        <div className="max-w-md w-full space-y-6">
+        <div className="max-w-md w-full space-y-6 pt-16 lg:pt-0">
            <div className="text-center">
             <h2 className="text-2xl font-bold tracking-tight text-foreground">
               Create your account
