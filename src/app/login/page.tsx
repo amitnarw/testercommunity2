@@ -29,11 +29,11 @@ const LoginForm = () => {
             </div>
              <div className="space-y-2">
                 <label htmlFor="email">Email</label>
-                <input id="email" type="email" placeholder="you@example.com" className="w-full p-2 border rounded-xl" />
+                <input id="email" type="email" placeholder="you@example.com" className="w-full p-2 bg-transparent rounded-none border-b border-foreground focus:outline-none focus:ring-0 focus:border-primary" />
             </div>
             <div className="space-y-2">
                 <label htmlFor="password">Password</label>
-                <input id="password" type="password" placeholder="••••••••" className="w-full p-2 border rounded-xl" />
+                <input id="password" type="password" placeholder="••••••••" className="w-full p-2 bg-transparent rounded-none border-b border-foreground focus:outline-none focus:ring-0 focus:border-primary" />
             </div>
             <Button className="w-full rounded-xl py-6 text-lg">Log In</Button>
         </div>
