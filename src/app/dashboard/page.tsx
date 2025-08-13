@@ -1,4 +1,4 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/card'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Activity, Bug, IndianRupee, Users } from 'lucide-react'
 import DashboardCharts from '@/components/dashboard-charts'
 import { Badge } from '@/components/ui/badge'

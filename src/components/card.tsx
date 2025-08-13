@@ -101,7 +101,7 @@ interface HowItWorksCardProps {
 
 const HowItWorksCard = React.forwardRef<
   HTMLDivElement,
-  HowItWorksCardProps & React.HTMLAttributes<HTMLDivElement>
+  HowItWorksCardProps
 >(({ icon, title, description, className, ...props }, ref) => (
     <div ref={ref} className={cn("flex items-start gap-4", className)} {...props}>
         <div className="flex-shrink-0 bg-primary/10 p-3 rounded-lg flex items-center justify-center">

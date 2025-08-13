@@ -4,7 +4,7 @@
 import Link from 'next/link';
 import { ArrowRight, BadgeCheck, ChevronRight, Bell, Flag, Zap, Users2, Smartphone, IndianRupee } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, FeatureCard } from '@/components/card';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, FeatureCard } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import Image from "next/image";
 import { ScrollToTopButton } from '@/components/scroll-to-top-button';
