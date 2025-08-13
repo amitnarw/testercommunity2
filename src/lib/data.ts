@@ -1,5 +1,5 @@
 
-import type { Tester, BlogPost, Testimonial, RoadmapStep } from './types';
+import type { Tester, BlogPost, Testimonial, RoadmapStep, UserProfileData } from './types';
 
 export const testers: Tester[] = [
   {
@@ -262,7 +262,7 @@ export const professionalPathSteps: RoadmapStep[] = [
         badgeText: "Cost: Starts at ₹999",
         details: [
             { title: "Advanced Filtering", description: "Filter testers by skills, country, language, and specific device ownership." },
-            { title: "Verified Credentials", description: "All professional testers undergo a rigorous vetting and verification process." },
+            { title: "Verified Credentials", description: "All professional testers undergo a rigourous vetting and verification process." },
             { title: "Direct Negotiation", description: "Interview and negotiate terms directly on our secure platform." },
             { title: "Milestone Funding", description: "Securely fund the project milestone, with payment released upon completion." },
         ]
@@ -282,13 +282,20 @@ export const professionalPathSteps: RoadmapStep[] = [
     {
         step: 4,
         title: "Launch with Certainty",
-        description: "Collaborate on fixes and have the tester perform rigorous regression testing to ensure absolute quality. Approve the final milestone and launch your flawless app to the world.",
+        description: "Collaborate on fixes and have the tester perform rigourous regression testing to ensure absolute quality. Approve the final milestone and launch your flawless app to the world.",
         badgeText: "Benefit: Guaranteed Quality",
         details: [
             { title: "Seamless Collaboration", description: "Use our platform to provide new builds and communicate on fixes." },
             { title: "Regression Testing", description: "The pro tester ensures your fixes haven't introduced new problems." },
             { title: "Final Sign-off", description: "Receive a final quality assurance report before you ship." },
-            { title: "Secure Payment Release", description: "Approve the final milestone to release the payment to the tester." },
+            { title: "Secure Payment Release", description: "Approve the final milestone to release the tester." },
         ]
     }
 ];
+
+export const demoUser: UserProfileData = {
+    role: 'product_manager',
+    companySize: '11-50',
+    primaryGoal: 'hire_testers',
+    monthlyBudget: '500+',
+};

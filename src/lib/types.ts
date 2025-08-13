@@ -44,8 +44,15 @@ export type RoadmapDetail = {
 
 export type RoadmapStep = {
     step: number;
-    title: string;
+    title:string;
     description: string;
     badgeText: string;
     details: RoadmapDetail[];
+};
+
+export type UserProfileData = {
+    role: string;
+    companySize: string;
+    primaryGoal: string;
+    monthlyBudget: string;
 };
