@@ -1,6 +1,7 @@
 
 import { SignupForm } from '@/components/signup-form';
 import { TestTribeLogo } from '@/components/icons';
+import Link from 'next/link';
 
 export default function SignupPage() {
   return (
@@ -20,6 +21,9 @@ export default function SignupPage() {
             <h2 className="text-2xl font-bold tracking-tight text-foreground">
               Create your account
             </h2>
+            <p className="text-muted-foreground mt-2">
+                Already have an account? <Link href="/login" className="text-primary hover:underline">Log in</Link>
+            </p>
           </div>
           <SignupForm />
         </div>
