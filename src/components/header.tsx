@@ -16,7 +16,6 @@ import { demoUser } from '@/lib/data';
 
 const navItems = [
   { name: 'How It Works', href: '/how-it-works' },
-  { name: 'Marketplace', href: '/marketplace' },
   { name: 'Blog', href: '/blog' },
 ];
 
