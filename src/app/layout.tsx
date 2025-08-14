@@ -8,6 +8,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { ThemeProvider } from '@/components/theme-provider';
 import { Header } from '@/components/header';
 import { Footer } from '@/components/footer';
+import { DashboardFooter } from '@/components/dashboard-footer';
 
 // This is a client component, so we can't use metadata here.
 // We'll manage the title in the individual page components.
@@ -19,6 +20,7 @@ export default function RootLayout({
 }>) {
   const pathname = usePathname();
   const isAuthPage = pathname === '/login' || pathname === '/signup';
+  const isDashboardPage = pathname.startsWith('/dashboard') || pathname.startsWith('/community-dashboard');
 
   return (
     <html lang="en" className="!scroll-smooth" suppressHydrationWarning>
@@ -38,7 +40,9 @@ export default function RootLayout({
           <div className="relative flex flex-col min-h-screen">
             {!isAuthPage && <Header />}
             <main className="flex-1">{children}</main>
-            {!isAuthPage && <Footer />}
+            {!isAuthPage && (
+              isDashboardPage ? <DashboardFooter /> : <Footer />
+            )}
           </div>
           <Toaster />
         </ThemeProvider>
