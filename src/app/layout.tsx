@@ -23,6 +23,8 @@ export default function RootLayout({
 }>) {
   const pathname = usePathname();
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
   const isAuthPage = pathname === '/login' || pathname === '/signup';
   const isDashboardPage = pathname.startsWith('/dashboard') || pathname.startsWith('/community-dashboard') || pathname.startsWith('/profile');
 
@@ -42,12 +44,25 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <div className="relative flex flex-col min-h-screen">
-            {isDashboardPage && <Sidebar isCollapsed={isSidebarCollapsed} setCollapsed={setIsSidebarCollapsed} />}
+            {isDashboardPage && (
+              <Sidebar 
+                isCollapsed={isSidebarCollapsed} 
+                setCollapsed={setIsSidebarCollapsed}
+                isMobileOpen={isMobileMenuOpen}
+                setMobileOpen={setIsMobileMenuOpen}
+              />
+            )}
+             {isDashboardPage && isMobileMenuOpen && (
+                <div 
+                    onClick={() => setIsMobileMenuOpen(false)}
+                    className="fixed inset-0 z-40 bg-black/50 md:hidden"
+                ></div>
+            )}
             <div className={cn(
               "transition-[margin-left] ease-in-out duration-300",
               isDashboardPage && (isSidebarCollapsed ? "md:ml-20" : "md:ml-64")
             )}>
-              {!isAuthPage && <Header />}
+              {!isAuthPage && <Header isMobileMenuOpen={isMobileMenuOpen} setMobileMenuOpen={setIsMobileMenuOpen} />}
               <main className="flex-1">{children}</main>
               {!isAuthPage && (
                 isDashboardPage ? <DashboardFooter /> : <Footer />

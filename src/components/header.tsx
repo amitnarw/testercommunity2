@@ -75,10 +75,15 @@ const UserNav = () => {
 };
 
 
-export function Header() {
+interface HeaderProps {
+  isMobileMenuOpen: boolean;
+  setMobileMenuOpen: (open: boolean) => void;
+}
+
+export function Header({ isMobileMenuOpen, setMobileMenuOpen }: HeaderProps) {
   const pathname = usePathname();
   const [isScrolled, setIsScrolled] = useState(false);
-  const [isMenuOpen, setMenuOpen] = useState(false);
+  const [isVisitorMenuOpen, setVisitorMenuOpen] = useState(false);
   const { theme, setTheme } = useTheme();
   const [isMounted, setIsMounted] = useState(false);
 
@@ -97,19 +102,10 @@ export function Header() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const mobileNavItems = [
-    ...(isAuthenticated 
-        ? [{ name: 'Developer Dashboard', href: '/dashboard' }]
-        : [{ name: 'Home', href: '/' }]),
+  const visitorNavItems = [
+    { name: 'Home', href: '/' },
     ...navItems,
-    ...(isAuthenticated ? [] : [{ name: 'Community Hub', href: '/community-dashboard'}, { name: 'Marketplace', href: '/marketplace'}, {name: 'Pricing', href: '/pricing'}])
   ];
-
-  const mobileAuthNavItems = [
-      { name: 'Profile', href: '/profile', icon: <User /> },
-      { name: 'Support', href: '/help', icon: <LifeBuoy /> },
-      { name: 'Log out', href: '/', icon: <LogOut /> },
-  ]
 
   return (
     <header className={cn(
@@ -118,7 +114,7 @@ export function Header() {
        isDashboardPage && "border-b"
     )}>
       <div className="container mx-auto px-4 md:px-6">
-        <div className={cn("flex h-20 items-center justify-between", isDashboardPage && "justify-end")}>
+        <div className={cn("flex h-20 items-center", isDashboardPage ? "justify-end" : "justify-between")}>
            
           {!isDashboardPage && (
             <>
@@ -128,16 +124,6 @@ export function Header() {
                 </Link>
               </div>
               <nav className="hidden md:flex items-center gap-6">
-                  <Link
-                      href="/"
-                      data-text="Home"
-                      className={cn(
-                      'font-medium transition-colors sliding-text-hover',
-                      pathname === '/' ? 'text-primary' : 'text-muted-foreground'
-                      )}
-                  >
-                      <span>Home</span>
-                  </Link>
                   {navItems.map((item) => (
                   <Link
                       key={item.name}
@@ -169,9 +155,9 @@ export function Header() {
             {isMounted && (
               <>
                 {isAuthenticated ? (
-                    <div className="hidden md:block">
-                        <UserNav />
-                    </div>
+                  <div className="hidden md:block">
+                    <UserNav />
+                  </div>
                 ) : (
                     <div className="hidden md:flex items-center gap-2">
                         <Button variant="ghost" asChild>
@@ -186,7 +172,13 @@ export function Header() {
             )}
 
             <div className="md:hidden">
-                <Sheet open={isMenuOpen} onOpenChange={setMenuOpen}>
+              {isAuthenticated ? (
+                  <Button size="icon" variant="outline" onClick={() => setMobileMenuOpen(!isMobileMenuOpen)}>
+                      <Menu className="h-6 w-6" />
+                      <span className="sr-only">Open menu</span>
+                  </Button>
+              ) : (
+                <Sheet open={isVisitorMenuOpen} onOpenChange={setVisitorMenuOpen}>
                     <SheetTrigger asChild>
                         <Button size="icon" variant="outline">
                             <Menu className="h-6 w-6" />
@@ -207,11 +199,11 @@ export function Header() {
                         </SheetHeader>
                         <div className="p-6 pt-20 w-full">
                             <nav className="flex flex-col items-center text-center gap-8">
-                                {mobileNavItems.map((item) => (
+                                {visitorNavItems.map((item) => (
                                     <Link
                                         key={item.name}
                                         href={item.href}
-                                        onClick={() => setMenuOpen(false)}
+                                        onClick={() => setVisitorMenuOpen(false)}
                                         className={cn(
                                         'text-2xl font-medium transition-colors hover:text-primary',
                                         pathname === item.href ? 'text-primary' : 'text-foreground'
@@ -222,43 +214,17 @@ export function Header() {
                                 ))}
                             </nav>
                             <div className="mt-12 flex flex-col gap-4">
-                               {isMounted && (
-                                <>
-                                  {isAuthenticated ? (
-                                      <div className="border-t pt-8 mt-4">
-                                          <nav className="flex flex-col items-center text-center gap-8">
-                                              {mobileAuthNavItems.map((item) => (
-                                                  <Link
-                                                      key={item.name}
-                                                      href={item.href}
-                                                      onClick={() => setMenuOpen(false)}
-                                                      className={cn(
-                                                          'flex items-center gap-3 text-lg font-medium transition-colors hover:text-primary',
-                                                          pathname === item.href ? 'text-primary' : 'text-muted-foreground'
-                                                      )}
-                                                  >
-                                                      {item.icon}
-                                                      {item.name}
-                                                  </Link>
-                                              ))}
-                                          </nav>
-                                      </div>
-                                  ) : (
-                                      <>
-                                      <Button variant="outline" size="lg" asChild onClick={() => setMenuOpen(false)}>
-                                          <Link href="/login">Log In</Link>
-                                      </Button>
-                                      <Button asChild size="lg" onClick={() => setMenuOpen(false)}>
-                                          <Link href="/signup">Sign Up</Link>
-                                      </Button>
-                                      </>
-                                  )}
-                                </>
-                               )}
+                               <Button variant="outline" size="lg" asChild onClick={() => setVisitorMenuOpen(false)}>
+                                  <Link href="/login">Log In</Link>
+                              </Button>
+                              <Button asChild size="lg" onClick={() => setVisitorMenuOpen(false)}>
+                                  <Link href="/signup">Sign Up</Link>
+                              </Button>
                             </div>
                         </div>
                     </SheetContent>
                 </Sheet>
+              )}
             </div>
           </div>
         </div>

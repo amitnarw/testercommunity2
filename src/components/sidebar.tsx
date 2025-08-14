@@ -5,7 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { InTestersLogo } from "./icons";
 import { cn } from "@/lib/utils";
-import { LayoutDashboard, Users, ShoppingBag, PlusCircle, LifeBuoy, User, LogOut, PanelLeftClose, PanelLeftOpen } from "lucide-react";
+import { LayoutDashboard, Users, ShoppingBag, PlusCircle, LifeBuoy, User, LogOut, PanelLeftClose, PanelLeftOpen, X } from "lucide-react";
 import { Button } from "./ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { demoUser } from "@/lib/data";
@@ -18,7 +18,7 @@ const mainNavLinks = [
     { name: "Marketplace", href: "/marketplace", icon: ShoppingBag },
 ];
 
-const NavLink = ({ href, icon: Icon, children, isCollapsed }: { href: string, icon: React.ElementType, children: React.ReactNode, isCollapsed: boolean }) => {
+const NavLink = ({ href, icon: Icon, children, isCollapsed, onClick }: { href: string, icon: React.ElementType, children: React.ReactNode, isCollapsed: boolean, onClick?: () => void }) => {
     const pathname = usePathname();
     const isActive = pathname === href || (href !== '/dashboard' && pathname.startsWith(href));
 
@@ -29,7 +29,7 @@ const NavLink = ({ href, icon: Icon, children, isCollapsed }: { href: string, ic
             isCollapsed && "justify-center"
         )}>
             <Icon className="h-5 w-5" />
-            <span className={cn("transition-opacity", isCollapsed && "opacity-0 absolute")}>{children}</span>
+            <span className={cn("transition-opacity", isCollapsed && "md:opacity-0 md:absolute")}>{children}</span>
         </div>
     );
 
@@ -38,7 +38,7 @@ const NavLink = ({ href, icon: Icon, children, isCollapsed }: { href: string, ic
             <TooltipProvider>
                 <Tooltip delayDuration={0}>
                     <TooltipTrigger asChild>
-                        <Link href={href}>{linkContent}</Link>
+                        <Link href={href} onClick={onClick}>{linkContent}</Link>
                     </TooltipTrigger>
                     <TooltipContent side="right">
                         {children}
@@ -48,35 +48,42 @@ const NavLink = ({ href, icon: Icon, children, isCollapsed }: { href: string, ic
         )
     }
 
-    return <Link href={href}>{linkContent}</Link>;
+    return <Link href={href} onClick={onClick}>{linkContent}</Link>;
 };
 
 
 interface SidebarProps {
     isCollapsed: boolean;
     setCollapsed: (collapsed: boolean) => void;
+    isMobileOpen: boolean;
+    setMobileOpen: (open: boolean) => void;
 }
 
-export function Sidebar({ isCollapsed, setCollapsed }: SidebarProps) {
+export function Sidebar({ isCollapsed, setCollapsed, isMobileOpen, setMobileOpen }: SidebarProps) {
     return (
         <div className={cn(
-            "hidden md:flex h-full flex-col fixed inset-y-0 z-50 border-r bg-background transition-[width] ease-in-out duration-300",
-            isCollapsed ? "w-20" : "w-64"
+            "fixed inset-y-0 left-0 z-50 flex h-full flex-col border-r bg-background transition-transform duration-300 ease-in-out md:translate-x-0 md:transition-[width]",
+            isMobileOpen ? "translate-x-0" : "-translate-x-full",
+            isCollapsed ? "w-full md:w-20" : "w-64"
         )}>
             <div className="flex h-full max-h-screen flex-col gap-2">
                 <div className="flex h-20 items-center justify-between border-b px-4">
                     <Link href="/" className="flex items-center gap-2 font-semibold">
                          <InTestersLogo className={cn("h-8 transition-all", isCollapsed ? "w-8" : "w-auto")} />
                     </Link>
-                     <Button variant="ghost" size="icon" onClick={() => setCollapsed(!isCollapsed)}>
+                     <Button variant="ghost" size="icon" onClick={() => setCollapsed(!isCollapsed)} className="hidden md:flex">
                         {isCollapsed ? <PanelLeftOpen /> : <PanelLeftClose />}
                         <span className="sr-only">{isCollapsed ? "Expand sidebar" : "Collapse sidebar"}</span>
+                    </Button>
+                    <Button variant="ghost" size="icon" onClick={() => setMobileOpen(false)} className="md:hidden">
+                        <X />
+                        <span className="sr-only">Close menu</span>
                     </Button>
                 </div>
                 <div className="flex-1 overflow-y-auto py-4">
                     <nav className="grid items-start px-4 text-sm font-medium">
                         {mainNavLinks.map(link => (
-                            <NavLink key={link.href} href={link.href} icon={link.icon} isCollapsed={isCollapsed}>
+                            <NavLink key={link.href} href={link.href} icon={link.icon} isCollapsed={isCollapsed} onClick={() => setMobileOpen(false)}>
                                 {link.name}
                             </NavLink>
                         ))}
@@ -84,16 +91,16 @@ export function Sidebar({ isCollapsed, setCollapsed }: SidebarProps) {
                         <div className="my-4 border-t -mx-4"></div>
 
                         <div className={cn("px-3", isCollapsed && "px-0 text-center")}>
-                             <Button asChild className={cn(isCollapsed && "w-10 h-10 p-0")}>
-                                <Link href="/dashboard/add-app">
-                                    <PlusCircle className={cn("mr-2", isCollapsed && "mr-0")}/>
-                                    <span className={cn(isCollapsed && "sr-only")}>Submit App</span>
+                             <Button asChild className={cn(isCollapsed && "w-10 h-10 p-0 md:w-auto md:p-2")}>
+                                <Link href="/dashboard/add-app" onClick={() => setMobileOpen(false)}>
+                                    <PlusCircle className={cn("mr-2", isCollapsed && "md:mr-0")}/>
+                                    <span className={cn(isCollapsed && "md:sr-only")}>Submit App</span>
                                 </Link>
                             </Button>
                         </div>
                         
                          <div className="mt-4">
-                            <NavLink href="/help" icon={LifeBuoy} isCollapsed={isCollapsed}>Support</NavLink>
+                            <NavLink href="/help" icon={LifeBuoy} isCollapsed={isCollapsed} onClick={() => setMobileOpen(false)}>Support</NavLink>
                         </div>
                     </nav>
                 </div>
