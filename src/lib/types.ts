@@ -67,7 +67,6 @@ export type PricingPlan = {
 
 export type ProcessStep = {
     title: string;
-    shortDescription: string;
     imageUrl: string;
     dataAiHint: string;
 };
@@ -83,6 +82,6 @@ export type CommunityApp = {
     androidVersion: string;
     estimatedTime: string;
     playStoreUrl?: string;
-    screenshots?: { url: string; alt: string; dataAiHint?: string }[];
-    testingInstructions?: string;
+    screenshots: { url: string; alt: string; dataAiHint?: string }[];
+    testingInstructions: string;
 }

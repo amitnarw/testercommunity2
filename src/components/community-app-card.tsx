@@ -15,7 +15,7 @@ interface CommunityAppCardProps {
 
 export function CommunityAppCard({ app, isPreview = false }: CommunityAppCardProps) {
     return (
-        <div className={cn(
+        <Card className={cn(
             "group flex flex-col md:flex-row items-start md:items-center gap-6 p-6 rounded-xl transition-all duration-300 w-full",
             !isPreview && "hover:bg-secondary/80 hover:shadow-md"
         )}>
@@ -37,6 +37,10 @@ export function CommunityAppCard({ app, isPreview = false }: CommunityAppCardPro
                         <Smartphone className="w-4 h-4"/>
                         <span>Android {app.androidVersion}</span>
                     </div>
+                     <div className="flex items-center gap-1.5">
+                        <Clock className="w-4 h-4"/>
+                        <span>{app.estimatedTime}</span>
+                    </div>
                 </div>
             </div>
             {!isPreview && (
@@ -44,6 +48,6 @@ export function CommunityAppCard({ app, isPreview = false }: CommunityAppCardPro
                     <Link href={`/community-dashboard/test/${app.id}`}>Test App <ArrowRight className="ml-2 h-4 w-4"/></Link>
                 </Button>
             )}
-        </div>
+        </Card>
     );
 }
