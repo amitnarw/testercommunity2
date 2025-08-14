@@ -12,6 +12,7 @@ import Link from 'next/link';
 import { useState } from 'react';
 import Image from 'next/image';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
+import { IconRain } from '@/components/icon-rain';
 
 const Highlight = ({ children }: { children: React.ReactNode }) => (
     <span className="bg-primary/20 text-primary font-semibold px-1.5 py-0.5 rounded-md">{children}</span>
@@ -86,7 +87,7 @@ export default function AddAppPage() {
                         {step === 'guide' ? (
                             <div className="space-y-8">
                                 <div className="rounded-xl overflow-hidden shadow-lg border relative bg-secondary/30">
-                                    <Video className="w-48 h-48 text-primary/10 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 animate-float opacity-50" />
+                                    <IconRain />
                                     {isVideoExpanded ? (
                                         <div className="relative aspect-video">
                                             <iframe

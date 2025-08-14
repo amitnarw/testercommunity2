@@ -115,6 +115,10 @@ export default {
             '50%': { transform: 'translateY(-20px)' },
             '100%': { transform: 'translateY(0px)' },
         },
+        'fall': {
+            '0%': { transform: 'translateY(-100%)', opacity: '1' },
+            '100%': { transform: 'translateY(100vh)', opacity: '0' },
+        }
       },
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
@@ -124,6 +128,7 @@ export default {
         'fade-in-up': 'fade-in-up 0.5s ease-out forwards',
         'image-zoom': 'image-zoom 0.5s ease-in-out forwards',
         'float': 'float 3s ease-in-out infinite',
+        'fall': 'fall linear forwards',
       },
     },
   },
