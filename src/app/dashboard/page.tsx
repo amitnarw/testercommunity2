@@ -56,7 +56,7 @@ export default function DashboardPage() {
                         className="flex flex-col h-full"
                     >
                     {modalStep === 0 ? (
-                      <>
+                      <div className="flex flex-col h-full">
                         <DialogHeader className="px-6 pt-6 md:px-8 md:pt-8 border-b">
                             <DialogTitle className="text-3xl font-bold">Get Your App Tested</DialogTitle>
                             <DialogDescription>
@@ -92,9 +92,9 @@ export default function DashboardPage() {
                                 Get Started <ArrowRight className="ml-2"/>
                             </Button>
                         </DialogFooter>
-                      </>
+                      </div>
                     ) : (
-                      <>
+                       <div className="flex flex-col h-full">
                         <DialogHeader className="px-6 pt-6 md:px-8 md:pt-8 border-b">
                             <DialogTitle className="text-3xl font-bold">Submit Your App Details</DialogTitle>
                             <DialogDescription>
@@ -125,7 +125,7 @@ export default function DashboardPage() {
                             <Button variant="ghost" onClick={() => setModalStep(0)}><ArrowLeft className="mr-2 h-4 w-4"/> Back to Guide</Button>
                             <Button type="submit" className="px-8">Submit App</Button>
                         </DialogFooter>
-                      </>
+                      </div>
                     )}
                   </motion.div>
                   </AnimatePresence>
