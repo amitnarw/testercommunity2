@@ -7,13 +7,15 @@ import { Button } from '@/components/ui/button';
 import { Award, CheckSquare, Coins, ListFilter, ArrowUpDown } from 'lucide-react';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { Input } from '@/components/ui/input';
-import { CommunityAppCard } from '@/components/community-app-card';
 import { communityApps } from '@/lib/data';
 import { PointsSidebar } from '@/components/points-sidebar';
+import { AvailableAppRow } from '@/components/available-app-row';
 
 export default function CommunityDashboardPage() {
     const [filter, setFilter] = useState('All');
     const [sort, setSort] = useState('Most Recent');
+    const [hoveredAppId, setHoveredAppId] = useState<number | null>(null);
+    const hoveredApp = communityApps.find(app => app.id === hoveredAppId);
 
     return (
         <div className="bg-secondary/50 min-h-screen">
@@ -96,10 +98,33 @@ export default function CommunityDashboardPage() {
                                         </div>
                                     </div>
                                 </CardHeader>
-                                <CardContent className="space-y-4">
-                                    {communityApps.map(app => (
-                                        <CommunityAppCard key={app.id} app={app} />
-                                    ))}
+                                <CardContent className="grid grid-cols-1 md:grid-cols-3">
+                                    <div className="col-span-1 md:col-span-2">
+                                        <div className="border-t">
+                                            {communityApps.map(app => (
+                                                <AvailableAppRow 
+                                                    key={app.id} 
+                                                    app={app} 
+                                                    onMouseEnter={() => setHoveredAppId(app.id)}
+                                                    onMouseLeave={() => setHoveredAppId(null)}
+                                                />
+                                            ))}
+                                        </div>
+                                    </div>
+                                     <div className="hidden md:block col-span-1 p-4">
+                                        <div className="sticky top-28 h-96 bg-secondary rounded-xl flex items-center justify-center transition-all duration-300">
+                                            {hoveredApp && hoveredApp.screenshots?.[0] ? (
+                                                <img 
+                                                    src={hoveredApp.screenshots[0].url} 
+                                                    alt={hoveredApp.screenshots[0].alt}
+                                                    className="max-h-full max-w-full object-contain rounded-lg animate-in fade-in zoom-in-95"
+                                                    data-ai-hint={hoveredApp.screenshots[0].dataAiHint}
+                                                />
+                                            ) : (
+                                                <span className="text-muted-foreground text-sm">Hover over an app to see a preview</span>
+                                            )}
+                                        </div>
+                                    </div>
                                 </CardContent>
                             </Card>
                         </main>
