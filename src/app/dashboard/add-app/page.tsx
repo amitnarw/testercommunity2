@@ -16,6 +16,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/
 export default function AddAppPage() {
     const [step, setStep] = useState<'guide' | 'form'>('guide');
     const [fullscreenImage, setFullscreenImage] = useState<string | null>(null);
+    const [isVideoExpanded, setIsVideoExpanded] = useState(false);
 
     return (
         <>
@@ -37,15 +38,33 @@ export default function AddAppPage() {
                     <main className="max-w-4xl mx-auto">
                         {step === 'guide' ? (
                             <div className="space-y-8">
-                                <div className="relative group rounded-xl overflow-hidden shadow-lg border aspect-video">
-                                    <iframe
-                                        className="absolute top-0 left-0 w-full h-full"
-                                        src="https://www.youtube.com/embed/9M1Cv8V_I3U"
-                                        title="YouTube video player"
-                                        frameBorder="0"
-                                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                                        allowFullScreen
-                                    ></iframe>
+                                <div className="rounded-xl overflow-hidden shadow-lg border">
+                                    {isVideoExpanded ? (
+                                        <div className="relative aspect-video">
+                                            <iframe
+                                                className="absolute top-0 left-0 w-full h-full"
+                                                src="https://www.youtube.com/embed/9M1Cv8V_I3U?autoplay=1"
+                                                title="YouTube video player"
+                                                frameBorder="0"
+                                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                                allowFullScreen
+                                            ></iframe>
+                                        </div>
+                                    ) : (
+                                        <div 
+                                            className="p-6 flex flex-col md:flex-row items-center justify-between gap-4 cursor-pointer bg-secondary/30"
+                                            onClick={() => setIsVideoExpanded(true)}
+                                        >
+                                            <div>
+                                                <h3 className="font-bold text-xl mb-1">Quick Walkthrough</h3>
+                                                <p className="text-muted-foreground text-sm">Watch a 2-minute video on how to submit your app.</p>
+                                            </div>
+                                            <Button size="lg" variant="outline">
+                                                <PlayCircle className="mr-2 h-5 w-5"/>
+                                                Watch Guide
+                                            </Button>
+                                        </div>
+                                    )}
                                 </div>
 
                                 <Accordion type="single" collapsible className="w-full space-y-4">
