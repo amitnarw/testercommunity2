@@ -7,12 +7,14 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { ArrowRight, ArrowLeft, Expand, X, PlayCircle, ChevronDown, Clipboard, Check, Video, Upload } from 'lucide-react'
+import { ArrowRight, ArrowLeft, Expand, X, PlayCircle, ChevronDown, Clipboard, Check, Video, Upload, UploadCloud } from 'lucide-react'
 import Link from 'next/link';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import Image from 'next/image';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { IconRain } from '@/components/icon-rain';
+import { useDropzone } from 'react-dropzone';
+import { toast } from '@/hooks/use-toast';
 
 const Highlight = ({ children }: { children: React.ReactNode }) => (
     <span className="bg-primary/20 text-primary font-semibold px-1.5 py-0.5 rounded-md">{children}</span>
@@ -66,6 +68,54 @@ export default function AddAppPage() {
     const [fullscreenImage, setFullscreenImage] = useState<string | null>(null);
     const [isVideoExpanded, setIsVideoExpanded] = useState(false);
     const [isClient, setIsClient] = useState(false);
+    const [iconPreview, setIconPreview] = useState<string | null>(null);
+
+    const onDrop = useCallback((acceptedFiles: File[]) => {
+        const file = acceptedFiles[0];
+        if (file && file.type.startsWith('image/')) {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setIconPreview(reader.result as string);
+            };
+            reader.readAsDataURL(file);
+        } else {
+             toast({
+                title: "Invalid File",
+                description: "Please upload a valid image file.",
+                variant: "destructive",
+            })
+        }
+    }, []);
+
+    const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop, noClick: true, noKeyboard: true });
+
+    const handlePaste = (event: React.ClipboardEvent<HTMLDivElement>) => {
+        const items = event.clipboardData.items;
+        for (let i = 0; i < items.length; i++) {
+            if (items[i].type.indexOf('image') !== -1) {
+                const blob = items[i].getAsFile();
+                if (blob) {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        setIconPreview(e.target?.result as string);
+                    };
+                    reader.readAsDataURL(blob);
+                }
+            } else if (items[i].type === 'text/plain') {
+                 items[i].getAsString((text) => {
+                    if (text.match(/\.(jpeg|jpg|gif|png)$/) != null) {
+                        setIconPreview(text);
+                    } else {
+                        toast({
+                            title: "Invalid Link",
+                            description: "Please paste a valid image URL.",
+                            variant: "destructive",
+                        })
+                    }
+                 });
+            }
+        }
+    };
 
     useEffect(() => {
         setIsClient(true);
@@ -301,13 +351,23 @@ export default function AddAppPage() {
                                         </div>
                                     </div>
                                     <div className="space-y-2">
-                                        <Label htmlFor="icon">App Icon URL</Label>
-                                        <p className="text-sm text-muted-foreground">You can paste a direct link to an image or upload one from your computer.</p>
-                                        <div className="flex items-center gap-2">
-                                            <Input id="icon" placeholder="Paste link or upload..." />
-                                            <Button variant="outline">
-                                                <Upload className="mr-2" /> Upload
-                                            </Button>
+                                        <Label htmlFor="icon">App Icon</Label>
+                                        <div {...getRootProps()} onPaste={handlePaste} className={`relative flex flex-col items-center justify-center w-full h-48 border-2 border-dashed rounded-lg cursor-pointer bg-secondary/50 hover:bg-secondary/80 transition-colors ${isDragActive ? 'border-primary' : 'border-border'}`}>
+                                            <input {...getInputProps()} />
+                                            {iconPreview ? (
+                                                <>
+                                                    <Image src={iconPreview} alt="App icon preview" layout="fill" objectFit="contain" className="rounded-lg p-2" />
+                                                    <Button variant="destructive" size="icon" className="absolute top-2 right-2 h-7 w-7" onClick={(e) => { e.stopPropagation(); setIconPreview(null); }}>
+                                                        <X className="h-4 w-4" />
+                                                    </Button>
+                                                </>
+                                            ) : (
+                                                <div className="text-center text-muted-foreground">
+                                                    <UploadCloud className="w-10 h-10 mx-auto mb-2" />
+                                                    <p className="font-semibold">Drag & drop, click to upload, or paste link</p>
+                                                    <p className="text-xs">PNG, JPG, or GIF (800x800px recommended)</p>
+                                                </div>
+                                            )}
                                         </div>
                                     </div>
                                     <div className="space-y-2">
@@ -352,6 +412,8 @@ export default function AddAppPage() {
         </>
     );
 }
+
+    
 
     
 
