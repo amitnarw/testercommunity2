@@ -7,12 +7,13 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Package, FlaskConical, CheckCircle2, Coins, PlusCircle, Gem, ArrowRight, ArrowLeft, Expand, X } from 'lucide-react'
+import { Package, FlaskConical, CheckCircle2, Coins, PlusCircle, Gem, ArrowRight, ArrowLeft, Expand, X, PlayCircle } from 'lucide-react'
 import { ProjectList } from '@/components/project-list';
 import Link from 'next/link';
 import { useState } from 'react';
 import Image from 'next/image';
 import { processSteps } from '@/lib/data.tsx';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 
 
 export default function DashboardPage() {
@@ -22,6 +23,7 @@ export default function DashboardPage() {
 
   const handleOpenChange = (open: boolean) => {
     if (!open) {
+      // Reset state on close
       setTimeout(() => {
         setModalStep('guide');
         setFullscreenImage(null);
@@ -47,39 +49,58 @@ export default function DashboardPage() {
                 <DialogContent className="sm:max-w-4xl max-h-[90vh] flex flex-col p-0">
                   {modalStep === 'guide' ? (
                     <>
-                      <DialogHeader className="px-6 pt-6 border-b">
+                      <DialogHeader className="p-6 border-b">
                           <DialogTitle className="text-2xl font-bold">Get Your App Tested</DialogTitle>
                           <DialogDescription>
-                              Follow this guide to prepare your app for our testing community.
+                              Follow our simple guide to prepare and submit your app for testing.
                           </DialogDescription>
                       </DialogHeader>
                       <div className="flex-grow overflow-y-auto px-6 py-6 space-y-8">
-                          <div className="aspect-video bg-muted rounded-lg flex items-center justify-center">
-                              <p className="text-muted-foreground">Video Guide Placeholder</p>
-                          </div>
+                        <Card className="bg-secondary/30 border-dashed">
+                          <CardContent className="p-6 flex flex-col md:flex-row items-center gap-6">
+                            <div className="flex-grow">
+                                <h3 className="font-bold text-lg">Quick Walkthrough</h3>
+                                <p className="text-muted-foreground mt-1">This 2-minute video shows you everything from setting up your Google Play test track to submitting your app on TestTribe.</p>
+                            </div>
+                             <Button variant="outline" size="lg" className="w-full md:w-auto">
+                                <PlayCircle className="mr-2 h-5 w-5"/> Watch the 2-min Guide
+                            </Button>
+                          </CardContent>
+                        </Card>
                           
-                          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            {processSteps.map((item, index) => (
-                                <div key={index} className="bg-secondary/30 p-4 rounded-lg border">
-                                    <div className="flex items-center gap-3 mb-3">
-                                        <div className="bg-primary/10 text-primary p-2 rounded-lg">{item.icon}</div>
-                                        <h3 className="font-semibold text-lg">{item.title}</h3>
-                                    </div>
-                                    <p className="text-muted-foreground whitespace-pre-line text-sm mb-4">{item.detailedDescription}</p>
-                                    <div 
-                                        className="relative w-full h-40 rounded-lg overflow-hidden group cursor-pointer"
-                                        onClick={() => setFullscreenImage(item.imageUrl)}
-                                    >
-                                        <Image src={item.imageUrl} data-ai-hint={item.dataAiHint} alt={item.title} layout="fill" objectFit="cover" />
-                                        <div className="absolute inset-0 bg-black/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                                            <Expand className="w-8 h-8 text-white" />
-                                        </div>
-                                    </div>
-                                </div>
-                            ))}
-                          </div>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                          {processSteps.map((item, index) => (
+                              <div key={index} className="bg-secondary/30 p-4 rounded-lg border">
+                                  <div className="flex items-start gap-4">
+                                      <div className="flex-shrink-0 h-8 w-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-bold text-lg">{index + 1}</div>
+                                      <div className='flex-grow'>
+                                          <h3 className="font-semibold text-lg leading-tight">{item.title}</h3>
+                                          <Accordion type="single" collapsible className="w-full">
+                                            <AccordionItem value="item-1" className="border-b-0">
+                                                <AccordionTrigger className="text-sm text-muted-foreground hover:no-underline py-2 justify-start gap-1">
+                                                  Show Details
+                                                </AccordionTrigger>
+                                                <AccordionContent className="space-y-4">
+                                                    <p className="text-muted-foreground whitespace-pre-line text-sm">{item.detailedDescription}</p>
+                                                    <div 
+                                                        className="relative w-full h-40 rounded-lg overflow-hidden group cursor-pointer"
+                                                        onClick={() => setFullscreenImage(item.imageUrl)}
+                                                    >
+                                                        <Image src={item.imageUrl} data-ai-hint={item.dataAiHint} alt={item.title} layout="fill" objectFit="cover" />
+                                                        <div className="absolute inset-0 bg-black/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                                            <Expand className="w-8 h-8 text-white" />
+                                                        </div>
+                                                    </div>
+                                                </AccordionContent>
+                                            </AccordionItem>
+                                          </Accordion>
+                                      </div>
+                                  </div>
+                              </div>
+                          ))}
+                        </div>
                       </div>
-                       <div className="px-6 py-4 border-t bg-background flex justify-end w-full">
+                       <div className="p-6 border-t bg-background flex justify-end w-full">
                           <Button onClick={() => setModalStep('form')} className="w-full sm:w-auto">
                               Get Started <ArrowRight className="ml-2"/>
                           </Button>
@@ -87,7 +108,7 @@ export default function DashboardPage() {
                     </>
                   ) : (
                     <>
-                      <DialogHeader className="px-6 pt-6 border-b">
+                      <DialogHeader className="p-6 border-b">
                           <DialogTitle className="text-2xl font-bold">Submit Your App Details</DialogTitle>
                           <DialogDescription>
                               Fill in the information below. You can edit these details later.
@@ -113,7 +134,7 @@ export default function DashboardPage() {
                               <Textarea id="instructions" placeholder="e.g., Use user: demo@test.com, pass: 1234. Focus on the new checkout flow." className="min-h-[120px]" />
                           </div>
                       </div>
-                      <div className="px-6 py-4 border-t bg-background flex justify-between w-full">
+                      <div className="p-6 border-t bg-background flex justify-between w-full">
                           <Button variant="ghost" onClick={() => setModalStep('guide')}><ArrowLeft className="mr-2 h-4 w-4"/> Back to Guide</Button>
                           <Button type="submit" className="px-8">Submit App</Button>
                       </div>
