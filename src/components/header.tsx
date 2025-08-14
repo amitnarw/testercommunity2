@@ -18,6 +18,7 @@ const navItems = [
   { name: 'How It Works', href: '/how-it-works' },
   { name: 'Community Hub', href: '/community-dashboard' },
   { name: 'Blog', href: '/blog' },
+  { name: 'Marketplace', href: '/marketplace' },
 ];
 
 
@@ -86,7 +87,8 @@ export function Header() {
     setIsMounted(true);
   }, []);
 
-  const isAuthenticated = pathname.startsWith('/dashboard') || pathname.startsWith('/profile') || pathname.startsWith('/community-dashboard');
+  const isDashboardPage = pathname.startsWith('/dashboard') || pathname.startsWith('/community-dashboard') || pathname.startsWith('/profile');
+  const isAuthenticated = isDashboardPage;
 
   useEffect(() => {
     const handleScroll = () => {
@@ -111,27 +113,20 @@ export function Header() {
 
   return (
     <header className={cn(
-      "sticky top-0 z-50 w-full transition-all duration-300",
-      isScrolled ? "bg-background/80 backdrop-blur-lg border-b" : "bg-transparent"
+      "sticky top-0 z-40 w-full transition-all duration-300",
+       isScrolled ? "bg-background/80 backdrop-blur-lg border-b" : "bg-transparent",
+       isDashboardPage && "md:ml-64 border-b"
     )}>
       <div className="container mx-auto px-4 md:px-6">
         <div className="flex h-20 items-center justify-between">
-          <Link href="/" className="flex items-center gap-2">
-            <InTestersLogo className="h-8" />
-          </Link>
-          <nav className="hidden md:flex items-center gap-6">
-             {isAuthenticated ? (
-                 <Link
-                    href="/dashboard"
-                    data-text="Developer Dashboard"
-                    className={cn(
-                    'font-medium transition-colors sliding-text-hover',
-                    pathname.startsWith('/dashboard') ? 'text-primary' : 'text-muted-foreground'
-                    )}
-                >
-                    <span>Developer Dashboard</span>
-                </Link>
-            ) : (
+          <div className={cn("flex items-center gap-2", isDashboardPage && "md:hidden")}>
+             <Link href="/">
+                <InTestersLogo className="h-8" />
+             </Link>
+          </div>
+          
+          {!isDashboardPage && (
+            <nav className="hidden md:flex items-center gap-6">
                  <Link
                     href="/"
                     data-text="Home"
@@ -142,22 +137,23 @@ export function Header() {
                 >
                     <span>Home</span>
                 </Link>
-            )}
-            {navItems.map((item) => (
-              <Link
-                key={item.name}
-                href={item.href}
-                data-text={item.name}
-                className={cn(
-                  'font-medium transition-colors sliding-text-hover',
-                  pathname.startsWith(item.href) ? 'text-primary' : 'text-muted-foreground'
-                )}
-              >
-                <span>{item.name}</span>
-              </Link>
-            ))}
-          </nav>
-          <div className="flex items-center gap-2">
+                {navItems.map((item) => (
+                <Link
+                    key={item.name}
+                    href={item.href}
+                    data-text={item.name}
+                    className={cn(
+                    'font-medium transition-colors sliding-text-hover',
+                    pathname.startsWith(item.href) ? 'text-primary' : 'text-muted-foreground'
+                    )}
+                >
+                    <span>{item.name}</span>
+                </Link>
+                ))}
+            </nav>
+          )}
+
+          <div className={cn("flex items-center gap-2", isDashboardPage && "w-full justify-end")}>
              <Button
                 variant="ghost"
                 size="icon"
