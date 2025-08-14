@@ -1,3 +1,4 @@
+
 import type { SVGProps } from 'react';
 
 export function InTestersLogo(props: SVGProps<SVGSVGElement>) {
@@ -5,6 +6,7 @@ export function InTestersLogo(props: SVGProps<SVGSVGElement>) {
     <svg 
       viewBox="0 0 160 32"
       aria-hidden="true"
+      suppressHydrationWarning
       {...props}
     >
       <defs>
@@ -20,6 +22,7 @@ export function InTestersLogo(props: SVGProps<SVGSVGElement>) {
         fill="url(#logo-gradient)"
         x="0"
         y="24"
+        suppressHydrationWarning
       >
         inTesters
       </text>
