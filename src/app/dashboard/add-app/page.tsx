@@ -1,4 +1,5 @@
 
+
 'use client';
 
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
@@ -108,7 +109,7 @@ export default function AddAppPage() {
                                             <ChevronDown className="h-6 w-6 shrink-0 transition-transform duration-200" />
                                         </AccordionTrigger>
                                         <AccordionContent className="px-6 pb-6">
-                                            <div className="flex flex-col md:flex-row gap-6 items-start">
+                                            <div className="flex flex-col gap-6 items-start">
                                                 <div className="flex-1 space-y-4 text-muted-foreground">
                                                     <p>First, head to the Google Play Console and select your app.</p>
                                                     <ol className="list-decimal list-inside space-y-3 pl-2">
@@ -120,12 +121,12 @@ export default function AddAppPage() {
                                                     <CopyBlock textToCopy="testers-community@googlegroups.com" />
                                                     <p className="text-xs italic"><strong>Why?</strong> This allows our testers to securely download your app from the Play Store for the 14-day test cycle. Your app remains invisible to the public.</p>
                                                 </div>
-                                                <div className="w-full md:w-64 flex-shrink-0">
+                                                <div className="w-full flex-shrink-0">
                                                     <div
-                                                        className="relative w-full h-52 rounded-lg overflow-hidden group cursor-pointer"
+                                                        className="relative w-full h-80 rounded-lg overflow-hidden group cursor-pointer bg-black/10"
                                                         onClick={() => setFullscreenImage(processSteps[0].imageUrl)}
                                                     >
-                                                        <Image src={processSteps[0].imageUrl} data-ai-hint={processSteps[0].dataAiHint} alt={processSteps[0].title} layout="fill" objectFit="cover" className="transition-transform duration-300 group-hover:scale-105" />
+                                                        <Image src={processSteps[0].imageUrl} data-ai-hint={processSteps[0].dataAiHint} alt={processSteps[0].title} layout="fill" objectFit="contain" className="transition-transform duration-300 group-hover:scale-105 p-2" />
                                                         <div className="absolute inset-0 bg-black/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
                                                             <Expand className="w-8 h-8 text-white" />
                                                         </div>
@@ -147,7 +148,7 @@ export default function AddAppPage() {
                                             <ChevronDown className="h-6 w-6 shrink-0 transition-transform duration-200" />
                                         </AccordionTrigger>
                                         <AccordionContent className="px-6 pb-6">
-                                            <div className="flex flex-col md:flex-row gap-6 items-start">
+                                            <div className="flex flex-col gap-6 items-start">
                                                 <div className="flex-1 space-y-4 text-muted-foreground">
                                                     <p>To ensure our diverse, international team can test your app, you must enable worldwide distribution.</p>
                                                      <ol className="list-decimal list-inside space-y-3 pl-2">
@@ -157,12 +158,12 @@ export default function AddAppPage() {
                                                     </ol>
                                                     <p className="text-xs italic"><strong>Benefit:</strong> This simple step allows testers from different regions with varied network conditions and device models to test your app, uncovering bugs you might otherwise miss.</p>
                                                 </div>
-                                                <div className="w-full md:w-64 flex-shrink-0">
+                                                <div className="w-full flex-shrink-0">
                                                     <div
-                                                        className="relative w-full h-52 rounded-lg overflow-hidden group cursor-pointer"
+                                                        className="relative w-full h-80 rounded-lg overflow-hidden group cursor-pointer bg-black/10"
                                                         onClick={() => setFullscreenImage(processSteps[1].imageUrl)}
                                                     >
-                                                        <Image src={processSteps[1].imageUrl} data-ai-hint={processSteps[1].dataAiHint} alt={processSteps[1].title} layout="fill" objectFit="cover" className="transition-transform duration-300 group-hover:scale-105" />
+                                                        <Image src={processSteps[1].imageUrl} data-ai-hint={processSteps[1].dataAiHint} alt={processSteps[1].title} layout="fill" objectFit="contain" className="transition-transform duration-300 group-hover:scale-105 p-2" />
                                                         <div className="absolute inset-0 bg-black/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
                                                             <Expand className="w-8 h-8 text-white" />
                                                         </div>
@@ -184,7 +185,7 @@ export default function AddAppPage() {
                                             <ChevronDown className="h-6 w-6 shrink-0 transition-transform duration-200" />
                                         </AccordionTrigger>
                                         <AccordionContent className="px-6 pb-6">
-                                            <div className="flex flex-col md:flex-row gap-6 items-start">
+                                            <div className="flex flex-col gap-6 items-start">
                                                 <div className="flex-1 space-y-4 text-muted-foreground">
                                                      <p>After configuring the tester list and countries, you just need to save the changes.</p>
                                                     <ol className="list-decimal list-inside space-y-3 pl-2">
@@ -193,12 +194,12 @@ export default function AddAppPage() {
                                                     </ol>
                                                      <p className="text-xs italic"><strong>What to expect:</strong> This is not a full app review. It is a quick check of your testing configuration. Approval is typically very fast, often taking anywhere from a few minutes to a couple of hours.</p>
                                                 </div>
-                                                <div className="w-full md:w-64 flex-shrink-0">
+                                                <div className="w-full flex-shrink-0">
                                                     <div
-                                                        className="relative w-full h-52 rounded-lg overflow-hidden group cursor-pointer"
+                                                        className="relative w-full h-80 rounded-lg overflow-hidden group cursor-pointer bg-black/10"
                                                         onClick={() => setFullscreenImage(processSteps[2].imageUrl)}
                                                     >
-                                                        <Image src={processSteps[2].imageUrl} data-ai-hint={processSteps[2].dataAiHint} alt={processSteps[2].title} layout="fill" objectFit="cover" className="transition-transform duration-300 group-hover:scale-105" />
+                                                        <Image src={processSteps[2].imageUrl} data-ai-hint={processSteps[2].dataAiHint} alt={processSteps[2].title} layout="fill" objectFit="contain" className="transition-transform duration-300 group-hover:scale-105 p-2" />
                                                         <div className="absolute inset-0 bg-black/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
                                                             <Expand className="w-8 h-8 text-white" />
                                                         </div>
@@ -220,7 +221,7 @@ export default function AddAppPage() {
                                             <ChevronDown className="h-6 w-6 shrink-0 transition-transform duration-200" />
                                         </AccordionTrigger>
                                         <AccordionContent className="px-6 pb-6">
-                                            <div className="flex flex-col md:flex-row gap-6 items-start">
+                                            <div className="flex flex-col gap-6 items-start">
                                                 <div className="flex-1 space-y-4 text-muted-foreground">
                                                     <p>Once Google approves your changes, you're ready to activate the test cycle!</p>
                                                      <ol className="list-decimal list-inside space-y-3 pl-2">
@@ -230,12 +231,12 @@ export default function AddAppPage() {
                                                     </ol>
                                                      <p className="text-xs italic"><strong>Final Step:</strong> After you fill out the form and submit, our testers will be notified automatically, and your 14-day testing cycle will officially begin!</p>
                                                 </div>
-                                                <div className="w-full md:w-64 flex-shrink-0">
+                                                <div className="w-full flex-shrink-0">
                                                     <div
-                                                        className="relative w-full h-52 rounded-lg overflow-hidden group cursor-pointer"
+                                                        className="relative w-full h-80 rounded-lg overflow-hidden group cursor-pointer bg-black/10"
                                                         onClick={() => setFullscreenImage(processSteps[3].imageUrl)}
                                                     >
-                                                        <Image src={processSteps[3].imageUrl} data-ai-hint={processSteps[3].dataAiHint} alt={processSteps[3].title} layout="fill" objectFit="cover" className="transition-transform duration-300 group-hover:scale-105" />
+                                                        <Image src={processSteps[3].imageUrl} data-ai-hint={processSteps[3].dataAiHint} alt={processSteps[3].title} layout="fill" objectFit="contain" className="transition-transform duration-300 group-hover:scale-105 p-2" />
                                                         <div className="absolute inset-0 bg-black/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
                                                             <Expand className="w-8 h-8 text-white" />
                                                         </div>
@@ -311,5 +312,3 @@ export default function AddAppPage() {
         </>
     );
 }
-
-    
