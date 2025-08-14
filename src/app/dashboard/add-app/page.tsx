@@ -11,7 +11,6 @@ import { ArrowRight, ArrowLeft, Expand, X, PlayCircle, ChevronDown, Clipboard, C
 import Link from 'next/link';
 import { useState } from 'react';
 import Image from 'next/image';
-import { processSteps } from '@/lib/data.tsx';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 
 const Highlight = ({ children }: { children: React.ReactNode }) => (
@@ -28,7 +27,7 @@ const CopyBlock = ({ textToCopy }: { textToCopy: string }) => {
     };
 
     return (
-        <div className="bg-secondary/50 p-4 rounded-lg flex items-center justify-between my-4">
+        <div className="bg-secondary/50 p-4 py-2 rounded-lg flex items-center justify-between my-4">
             <code className="text-sm text-muted-foreground">{textToCopy}</code>
             <Button variant="ghost" size="icon" onClick={handleCopy}>
                 {copied ? <Check className="w-4 h-4 text-green-500" /> : <Clipboard className="w-4 h-4" />}
@@ -36,6 +35,29 @@ const CopyBlock = ({ textToCopy }: { textToCopy: string }) => {
         </div>
     );
 };
+
+const processSteps = [
+    { 
+        title: "Grant Our Testers Access", 
+        imageUrl: "/add-app-1.webp",
+        dataAiHint: "team collaboration"
+    },
+    { 
+        title: "Enable Global Reach", 
+        imageUrl: "/add-app-2.webp",
+        dataAiHint: "world map data"
+    },
+    { 
+        title: "Submit for Google's Review", 
+        imageUrl: "/add-app-3.webp",
+        dataAiHint: "checklist document"
+     },
+    { 
+        title: "Activate Your Test Cycle", 
+        imageUrl: "/add-app-4.webp",
+        dataAiHint: "scientist laboratory"
+    },
+];
 
 
 export default function AddAppPage() {
@@ -77,11 +99,11 @@ export default function AddAppPage() {
                                         </div>
                                     ) : (
                                         <div 
-                                            className="p-6 flex flex-col md:flex-row items-center justify-between gap-4 cursor-pointer bg-secondary/30"
+                                            className="p-6 py-10 flex flex-col md:flex-row items-center justify-between gap-4 cursor-pointer bg-gradient-to-br from-primary/10 to-accent/20 bg-[length:200%_200%] animate-animated-gradient"
                                             onClick={() => setIsVideoExpanded(true)}
                                         >
                                             <div>
-                                                <h3 className="font-bold text-xl mb-1 flex items-center gap-3">Quick Walkthrough <span className="text-sm font-medium text-primary">(2-min watch)</span></h3>
+                                                <h3 className="font-bold text-xl mb-1 flex flex-col sm:flex-row items-center sm:gap-3">Quick Walkthrough <span className="text-sm font-medium text-primary">(2-min watch)</span></h3>
                                                 <p className="text-muted-foreground text-sm">Watch a short video on how to submit your app.</p>
                                             </div>
                                             <Button size="lg" variant="outline">
@@ -99,9 +121,9 @@ export default function AddAppPage() {
                                 <Accordion type="single" collapsible className="w-full space-y-4">
                                     <AccordionItem value="item-1" className="bg-secondary/30 rounded-xl border overflow-hidden">
                                         <AccordionTrigger className="p-6 text-left hover:no-underline flex flex-row items-center justify-between w-full relative">
-                                            <div className="flex items-start flex-1">
-                                                <span className="text-4xl md:text-5xl font-black text-primary/50 leading-none w-20 absolute md:relative top-6 left-6 md:top-auto md:left-auto">01</span>
-                                                <div className="pl-16 md:pl-0">
+                                            <div className="flex items-start flex-1 md:pl-0 pl-16">
+                                                <span className="text-7xl md:text-5xl font-black text-primary/20 md:text-primary/50 leading-none md:w-20 absolute top-3 left-3 md:relative md:top-auto md:left-auto">01</span>
+                                                <div>
                                                     <h3 className="font-bold text-xl mb-1">Grant Our Testers Access</h3>
                                                     <p className="text-muted-foreground text-sm text-left">Add our official tester group to your app's internal test track.</p>
                                                 </div>
@@ -138,9 +160,9 @@ export default function AddAppPage() {
 
                                      <AccordionItem value="item-2" className="bg-secondary/30 rounded-xl border overflow-hidden">
                                         <AccordionTrigger className="p-6 text-left hover:no-underline flex flex-row items-center justify-between w-full relative">
-                                            <div className="flex items-start flex-1">
-                                                <span className="text-4xl md:text-5xl font-black text-primary/50 leading-none w-20 absolute md:relative top-6 left-6 md:top-auto md:left-auto">02</span>
-                                                <div className="pl-16 md:pl-0">
+                                            <div className="flex items-start flex-1 md:pl-0 pl-16">
+                                                <span className="text-7xl md:text-5xl font-black text-primary/20 md:text-primary/50 leading-none md:w-20 absolute top-3 left-3 md:relative md:top-auto md:left-auto">02</span>
+                                                <div>
                                                     <h3 className="font-bold text-xl mb-1">Enable Global Reach</h3>
                                                     <p className="text-muted-foreground text-sm text-left">Make your app available in all countries for maximum test coverage.</p>
                                                 </div>
@@ -175,9 +197,9 @@ export default function AddAppPage() {
 
                                      <AccordionItem value="item-3" className="bg-secondary/30 rounded-xl border overflow-hidden">
                                         <AccordionTrigger className="p-6 text-left hover:no-underline flex flex-row items-center justify-between w-full relative">
-                                            <div className="flex items-start flex-1">
-                                                 <span className="text-4xl md:text-5xl font-black text-primary/50 leading-none w-20 absolute md:relative top-6 left-6 md:top-auto md:left-auto">03</span>
-                                                <div className="pl-16 md:pl-0">
+                                            <div className="flex items-start flex-1 md:pl-0 pl-16">
+                                                 <span className="text-7xl md:text-5xl font-black text-primary/20 md:text-primary/50 leading-none md:w-20 absolute top-3 left-3 md:relative md:top-auto md:left-auto">03</span>
+                                                <div>
                                                     <h3 className="font-bold text-xl mb-1">Submit for Google's Review</h3>
                                                     <p className="text-muted-foreground text-sm text-left">Save your changes and submit them to Google for a quick review.</p>
                                                 </div>
@@ -211,9 +233,9 @@ export default function AddAppPage() {
 
                                      <AccordionItem value="item-4" className="bg-secondary/30 rounded-xl border overflow-hidden">
                                         <AccordionTrigger className="p-6 text-left hover:no-underline flex flex-row items-center justify-between w-full relative">
-                                            <div className="flex items-start flex-1">
-                                                <span className="text-4xl md:text-5xl font-black text-primary/50 leading-none w-20 absolute md:relative top-6 left-6 md:top-auto md:left-auto">04</span>
-                                                <div className="pl-16 md:pl-0">
+                                            <div className="flex items-start flex-1 md:pl-0 pl-16">
+                                                <span className="text-7xl md:text-5xl font-black text-primary/20 md:text-primary/50 leading-none md:w-20 absolute top-3 left-3 md:relative md:top-auto md:left-auto">04</span>
+                                                <div>
                                                     <h3 className="font-bold text-xl mb-1">Activate Your Test Cycle</h3>
                                                     <p className="text-muted-foreground text-sm text-left">Come back to inTesters with your test URL to begin.</p>
                                                 </div>
@@ -312,3 +334,5 @@ export default function AddAppPage() {
         </>
     );
 }
+
+    

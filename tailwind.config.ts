@@ -110,6 +110,11 @@ export default {
           '0%': { transform: 'scale(1)' },
           '100%': { transform: 'scale(1.05)' },
         },
+        'animated-gradient': {
+          '0%': { backgroundPosition: '0% 50%' },
+          '50%': { backgroundPosition: '100% 50%' },
+          '100%': { backgroundPosition: '0% 50%' },
+        },
       },
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
@@ -118,8 +123,11 @@ export default {
         'scroll-rtl': 'scroll-rtl 20s linear infinite',
         'fade-in-up': 'fade-in-up 0.5s ease-out forwards',
         'image-zoom': 'image-zoom 0.5s ease-in-out forwards',
+        'animated-gradient': 'animated-gradient 6s ease infinite',
       },
     },
   },
   plugins: [require('tailwindcss-animate')],
 } satisfies Config;
+
+    

@@ -303,28 +303,26 @@ export const demoUser: UserProfileData = {
 export const processSteps: ProcessStep[] = [
     { 
         title: "Grant Our Testers Access", 
-        shortDescription: "Add our official tester group to your app's internal test track.",
         imageUrl: "/add-app-1.webp",
         dataAiHint: "team collaboration"
     },
     { 
         title: "Enable Global Reach", 
-        shortDescription: "Make your app available in all countries for maximum test coverage.",
         imageUrl: "/add-app-2.webp",
         dataAiHint: "world map data"
     },
     { 
         title: "Submit for Google's Review", 
-        shortDescription: "Save your changes and submit them to Google for a quick review.",
         imageUrl: "/add-app-3.webp",
         dataAiHint: "checklist document"
      },
     { 
         title: "Activate Your Test Cycle", 
-        shortDescription: "Come back to inTesters with your test URL to begin.",
         imageUrl: "/add-app-4.webp",
         dataAiHint: "scientist laboratory"
     },
 ];
+
+    
 
     
