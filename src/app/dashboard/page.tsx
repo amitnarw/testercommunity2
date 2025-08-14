@@ -5,8 +5,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Package, FlaskConical, CheckCircle2, Coins, PlusCircle, Gem } from 'lucide-react'
-import DashboardCharts from '@/components/dashboard-charts'
+import { Package, FlaskConical, CheckCircle2, Coins, PlusCircle, Gem, UploadCloud } from 'lucide-react'
 import { ProjectList } from '@/components/project-list';
 import Link from 'next/link';
 
@@ -24,42 +23,48 @@ export default function DashboardPage() {
               <DialogTrigger asChild>
                 <Button><PlusCircle className="mr-2 h-4 w-4" /> Add New App</Button>
               </DialogTrigger>
-              <DialogContent className="sm:max-w-[425px]">
-                <DialogHeader>
-                  <DialogTitle>Add a new app for testing</DialogTitle>
-                  <DialogDescription>
-                    Fill in the details below to submit your app to the testing community or professionals.
-                  </DialogDescription>
-                </DialogHeader>
-                <div className="grid gap-4 py-4">
-                  <div className="grid grid-cols-4 items-center gap-4">
-                    <Label htmlFor="name" className="text-right">
-                      App Name
-                    </Label>
-                    <Input id="name" placeholder="My Awesome App" className="col-span-3 rounded-md" />
+              <DialogContent className="sm:max-w-3xl p-0">
+                <div className="grid grid-cols-1 md:grid-cols-3">
+                  <div className="hidden md:flex flex-col items-center justify-center p-8 bg-primary/10 rounded-l-lg">
+                      <div className="bg-primary/20 p-4 rounded-full">
+                        <UploadCloud className="h-12 w-12 text-primary" />
+                      </div>
+                      <h3 className="text-xl font-bold mt-4">Submit Your App</h3>
+                      <p className="text-muted-foreground text-center mt-2 text-sm">Provide the necessary details to get your app tested by our community.</p>
                   </div>
-                  <div className="grid grid-cols-4 items-center gap-4">
-                    <Label htmlFor="url" className="text-right">
-                      Testing URL
-                    </Label>
-                    <Input id="url" placeholder="https://example.com/test-build" className="col-span-3 rounded-md" />
-                  </div>
-                  <div className="grid grid-cols-4 items-center gap-4">
-                    <Label htmlFor="icon" className="text-right">
-                      App Icon URL
-                    </Label>
-                    <Input id="icon" placeholder="https://example.com/icon.png" className="col-span-3 rounded-md" />
-                  </div>
-                   <div className="grid grid-cols-4 items-start gap-4">
-                    <Label htmlFor="instructions" className="text-right pt-2">
-                      Instructions
-                    </Label>
-                    <Textarea id="instructions" placeholder="Optional: Provide test credentials (e.g., user: demo@test.com, pass: 1234) or any specific instructions." className="col-span-3 rounded-md" />
+                  <div className="col-span-2 p-8">
+                    <DialogHeader>
+                      <DialogTitle className="text-2xl">Add a new app for testing</DialogTitle>
+                      <DialogDescription>
+                        Fill in the details below to submit your app.
+                      </DialogDescription>
+                    </DialogHeader>
+                    <div className="grid gap-6 py-6">
+                      <div className="grid grid-cols-2 gap-6">
+                        <div className="space-y-2">
+                          <Label htmlFor="name">App Name</Label>
+                          <Input id="name" placeholder="My Awesome App" className="rounded-md h-12" />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="url">Testing URL</Label>
+                          <Input id="url" placeholder="https://example.com/test-build" className="rounded-md h-12" />
+                        </div>
+                      </div>
+                      <div className="space-y-2">
+                          <Label htmlFor="icon">App Icon URL</Label>
+                          <Input id="icon" placeholder="https://example.com/icon.png" className="rounded-md h-12" />
+                      </div>
+                      <div className="space-y-2">
+                        <Label htmlFor="instructions">Test Instructions (Optional)</Label>
+                        <Textarea id="instructions" placeholder="e.g., Use user: demo@test.com, pass: 1234. Focus on the new checkout flow." className="rounded-md" />
+                      </div>
+                    </div>
+                    <DialogFooter>
+                       <Button variant="outline" className="rounded-xl">Cancel</Button>
+                      <Button type="submit" className="rounded-xl">Submit App</Button>
+                    </DialogFooter>
                   </div>
                 </div>
-                <DialogFooter>
-                  <Button type="submit">Submit App</Button>
-                </DialogFooter>
               </DialogContent>
             </Dialog>
             <Button variant="outline" asChild>
@@ -127,25 +132,10 @@ export default function DashboardPage() {
           </Card>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-5 gap-8 mt-8">
-            <div className="lg:col-span-3">
-                <ProjectList />
-            </div>
-            <div className="lg:col-span-2">
-                <Card className="rounded-xl">
-                    <CardHeader>
-                    <CardTitle>Bug Reports Overview</CardTitle>
-                    <CardDescription>A monthly overview of new bug reports vs resolved issues.</CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                    <DashboardCharts />
-                    </CardContent>
-                </Card>
-            </div>
+        <div className="mt-8">
+            <ProjectList />
         </div>
       </div>
     </div>
   )
 }
-
-    
