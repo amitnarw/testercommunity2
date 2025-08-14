@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { ArrowRight, ArrowLeft, Expand, X, PlayCircle, ChevronDown, Clipboard, Check, Video } from 'lucide-react'
+import { ArrowRight, ArrowLeft, Expand, X, PlayCircle, ChevronDown, Clipboard, Check, Video, Upload } from 'lucide-react'
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
@@ -302,7 +302,12 @@ export default function AddAppPage() {
                                     </div>
                                     <div className="space-y-2">
                                         <Label htmlFor="icon">App Icon URL</Label>
-                                        <Input id="icon" placeholder="https://example.com/icon.png" />
+                                        <div className="flex items-center gap-2">
+                                            <Input id="icon" placeholder="Paste link or upload..." />
+                                            <Button variant="outline">
+                                                <Upload className="mr-2" /> Upload
+                                            </Button>
+                                        </div>
                                     </div>
                                     <div className="space-y-2">
                                         <Label htmlFor="instructions">Test Credentials & Instructions</Label>
@@ -346,3 +351,5 @@ export default function AddAppPage() {
         </>
     );
 }
+
+    
