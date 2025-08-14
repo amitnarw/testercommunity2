@@ -100,17 +100,11 @@ export default function CommunityDashboardPage() {
                                     </div>
                                 </div>
                                 <TabsContent value="available">
-                                     <Card className="rounded-xl">
-                                        <CardHeader>
-                                            <CardTitle>Available Apps to Test</CardTitle>
-                                            <CardDescription>Choose an app to test and start earning points.</CardDescription>
-                                        </CardHeader>
-                                        <CardContent className="space-y-4">
-                                            {communityApps.map(app => (
-                                                <CommunityAppCard key={app.id} app={app} />
-                                            ))}
-                                        </CardContent>
-                                    </Card>
+                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        {communityApps.map(app => (
+                                            <CommunityAppCard key={app.id} app={app} />
+                                        ))}
+                                    </div>
                                 </TabsContent>
                                 <TabsContent value="ongoing">
                                     <Card className="rounded-xl">
