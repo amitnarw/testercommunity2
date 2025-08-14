@@ -3,7 +3,7 @@
 
 import { motion } from 'framer-motion';
 import { Video, Film, Clapperboard, PlayCircle } from 'lucide-react';
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 
 const icons = [
     { component: Video, size: 'w-8 h-8' },
@@ -19,9 +19,15 @@ const icons = [
 ];
 
 export const IconRain = () => {
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
   return (
     <div className="absolute inset-0 overflow-hidden pointer-events-none">
-      {icons.map((icon, index) => {
+      {isClient && icons.map((icon, index) => {
         const IconComponent = icon.component;
         const duration = 12 + Math.random() * 16; 
         const delay = Math.random() * 15;
