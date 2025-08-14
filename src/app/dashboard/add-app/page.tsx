@@ -9,7 +9,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { ArrowRight, ArrowLeft, Expand, X, PlayCircle, ChevronDown, Clipboard, Check, Video } from 'lucide-react'
 import Link from 'next/link';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { IconRain } from '@/components/icon-rain';
@@ -65,6 +65,11 @@ export default function AddAppPage() {
     const [step, setStep] = useState<'guide' | 'form'>('guide');
     const [fullscreenImage, setFullscreenImage] = useState<string | null>(null);
     const [isVideoExpanded, setIsVideoExpanded] = useState(false);
+    const [isClient, setIsClient] = useState(false);
+
+    useEffect(() => {
+        setIsClient(true);
+    }, []);
 
     const handleGetStarted = () => {
         setStep('form');
@@ -92,7 +97,7 @@ export default function AddAppPage() {
                         {step === 'guide' ? (
                             <div className="space-y-8">
                                 <div className="rounded-xl overflow-hidden shadow-lg border relative bg-secondary/30">
-                                    <IconRain />
+                                    {isClient && <IconRain />}
                                     {isVideoExpanded ? (
                                         <div className="relative aspect-video">
                                             <iframe
@@ -292,7 +297,7 @@ export default function AddAppPage() {
                                         </div>
                                         <div className="space-y-2">
                                             <Label htmlFor="url">Testing URL</Label>
-                                            <Input id="url" placeholder="https://example.com/test-build" />
+                                            <Input id="url" placeholder="https://play.google.com/store/apps/details?id=com.example.app" />
                                         </div>
                                     </div>
                                     <div className="space-y-2">
