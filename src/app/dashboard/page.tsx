@@ -21,8 +21,11 @@ export default function DashboardPage() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const handleOpenChange = (open: boolean) => {
-    if (open) {
-      setModalStep('guide');
+    if (!open) {
+      // Reset to the first step when the dialog is closed
+      setTimeout(() => {
+        setModalStep('guide');
+      }, 200); 
     }
     setIsDialogOpen(open);
   };
@@ -43,13 +46,13 @@ export default function DashboardPage() {
               <DialogContent className="sm:max-w-4xl max-h-[90vh] flex flex-col p-0">
                 {modalStep === 'guide' ? (
                   <>
-                    <DialogHeader className="px-6 pt-6 md:px-8 md:pt-8 border-b">
-                        <DialogTitle className="text-3xl font-bold">Get Your App Tested</DialogTitle>
+                    <DialogHeader className="px-6 pt-6 border-b">
+                        <DialogTitle className="text-2xl font-bold">Get Your App Tested</DialogTitle>
                         <DialogDescription>
-                            Follow this guide to prepare your app for our testing community. <Link href="/help" className="text-primary underline">Contact Support</Link> if you're confused.
+                            Follow this guide to prepare your app for our testing community.
                         </DialogDescription>
                     </DialogHeader>
-                    <div className="flex-grow overflow-y-auto px-6 md:px-8 py-6 space-y-8">
+                    <div className="flex-grow overflow-y-auto px-6 py-6 space-y-8">
                         <div className="aspect-video bg-muted rounded-lg flex items-center justify-center">
                             <p className="text-muted-foreground">Video Guide Placeholder</p>
                         </div>
@@ -73,21 +76,21 @@ export default function DashboardPage() {
                             ))}
                         </Accordion>
                     </div>
-                    <DialogFooter className="px-6 pb-6 md:px-8 md:pb-8 border-t bg-background sticky bottom-0">
-                        <Button onClick={() => setModalStep('form')} className="w-full md:w-auto ml-auto text-lg py-6">
+                    <DialogFooter className="px-6 py-4 border-t bg-background sticky bottom-0">
+                        <Button onClick={() => setModalStep('form')} className="w-full sm:w-auto ml-auto">
                             Get Started <ArrowRight className="ml-2"/>
                         </Button>
                     </DialogFooter>
                   </>
                 ) : (
                   <>
-                    <DialogHeader className="px-6 pt-6 md:px-8 md:pt-8 border-b">
-                        <DialogTitle className="text-3xl font-bold">Submit Your App Details</DialogTitle>
+                    <DialogHeader className="px-6 pt-6 border-b">
+                        <DialogTitle className="text-2xl font-bold">Submit Your App Details</DialogTitle>
                         <DialogDescription>
                             Fill in the information below. You can edit these details later.
                         </DialogDescription>
                     </DialogHeader>
-                    <div className="flex-grow py-8 space-y-6 overflow-y-auto px-6 md:px-8">
+                    <div className="flex-grow py-6 space-y-6 overflow-y-auto px-6">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div className="space-y-2">
                                 <Label htmlFor="name">App Name</Label>
@@ -107,7 +110,7 @@ export default function DashboardPage() {
                             <Textarea id="instructions" placeholder="e.g., Use user: demo@test.com, pass: 1234. Focus on the new checkout flow." className="min-h-[120px]" />
                         </div>
                     </div>
-                    <DialogFooter className="px-6 pb-6 md:px-8 md:pb-8 border-t bg-background sticky bottom-0">
+                    <DialogFooter className="px-6 py-4 border-t bg-background sticky bottom-0 flex justify-between w-full">
                         <Button variant="ghost" onClick={() => setModalStep('guide')}><ArrowLeft className="mr-2 h-4 w-4"/> Back to Guide</Button>
                         <Button type="submit" className="px-8">Submit App</Button>
                     </DialogFooter>
