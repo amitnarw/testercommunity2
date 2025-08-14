@@ -12,6 +12,7 @@ import Link from 'next/link';
 import { useState } from 'react';
 import Image from 'next/image';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
+import { BackgroundBeams } from '@/components/background-beams';
 
 const Highlight = ({ children }: { children: React.ReactNode }) => (
     <span className="bg-primary/20 text-primary font-semibold px-1.5 py-0.5 rounded-md">{children}</span>
@@ -85,7 +86,8 @@ export default function AddAppPage() {
                     <main className="max-w-4xl mx-auto">
                         {step === 'guide' ? (
                             <div className="space-y-8">
-                                <div className="rounded-xl overflow-hidden shadow-lg border">
+                                <div className="rounded-xl overflow-hidden shadow-lg border relative">
+                                    <BackgroundBeams className="[mask-image:radial-gradient(ellipse_at_center,white_5%,transparent_90%)]" />
                                     {isVideoExpanded ? (
                                         <div className="relative aspect-video">
                                             <iframe
@@ -99,7 +101,7 @@ export default function AddAppPage() {
                                         </div>
                                     ) : (
                                         <div 
-                                            className="p-6 py-10 flex flex-col md:flex-row items-center justify-between gap-4 cursor-pointer bg-gradient-to-br from-primary/10 to-accent/20 bg-[length:200%_200%] animate-animated-gradient"
+                                            className="p-6 py-10 flex flex-col md:flex-row items-center justify-between gap-4 cursor-pointer relative z-10"
                                             onClick={() => setIsVideoExpanded(true)}
                                         >
                                             <div>
@@ -334,5 +336,7 @@ export default function AddAppPage() {
         </>
     );
 }
+
+    
 
     
