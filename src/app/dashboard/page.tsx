@@ -34,7 +34,7 @@ export default function DashboardPage() {
               <DialogTrigger asChild>
                 <Button><PlusCircle className="mr-2 h-4 w-4" /> Add New App</Button>
               </DialogTrigger>
-              <DialogContent className="sm:max-w-4xl p-0">
+              <DialogContent className="sm:max-w-4xl">
                   <AnimatePresence mode="wait">
                   {modalStep === 1 ? (
                     <motion.div
@@ -45,7 +45,7 @@ export default function DashboardPage() {
                         transition={{ duration: 0.3 }}
                         className="h-full"
                     >
-                        <div className="p-8 md:p-12 w-full flex flex-col">
+                        <div className="w-full flex flex-col">
                             <DialogHeader className="text-center mb-8">
                                 <DialogTitle className="text-3xl font-bold">Get Your App Tested</DialogTitle>
                                 <DialogDescription>
@@ -114,7 +114,7 @@ export default function DashboardPage() {
                         transition={{ duration: 0.3 }}
                         className="h-full"
                     >
-                        <div className="p-12 w-full flex flex-col h-full">
+                        <div className="w-full flex flex-col h-full">
                             <DialogHeader>
                                 <DialogTitle className="text-3xl font-bold">Submit Your App Details</DialogTitle>
                                 <DialogDescription>
