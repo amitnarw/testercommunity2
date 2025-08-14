@@ -12,24 +12,20 @@ import { ProjectList } from '@/components/project-list';
 import Link from 'next/link';
 import { useState } from 'react';
 import Image from 'next/image';
-import { AnimatePresence, motion } from 'framer-motion';
 import { processSteps } from '@/lib/data.tsx';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 
 
 export default function DashboardPage() {
-  const [modalStep, setModalStep] = useState(0);
+  const [modalStep, setModalStep] = useState<'guide' | 'form'>('guide');
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
-  // Reset to step 1 whenever the dialog is opened
   const handleOpenChange = (open: boolean) => {
     if (open) {
-      setModalStep(0);
+      setModalStep('guide');
     }
     setIsDialogOpen(open);
   };
-  
-  const delta = modalStep - (modalStep - 1);
 
   return (
     <div className="min-h-screen bg-secondary/50">
@@ -45,90 +41,78 @@ export default function DashboardPage() {
                 <Button><PlusCircle className="mr-2 h-4 w-4" /> Add New App</Button>
               </DialogTrigger>
               <DialogContent className="sm:max-w-4xl max-h-[90vh] flex flex-col p-0">
-                  <AnimatePresence initial={false} custom={delta} mode="wait">
-                    <motion.div
-                        key={modalStep}
-                        custom={delta}
-                        initial={{ opacity: 0, x: delta > 0 ? 300 : -300 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        exit={{ opacity: 0, x: delta > 0 ? -300 : 300 }}
-                        transition={{ type: 'tween', duration: 0.3, ease: 'easeInOut' }}
-                        className="flex flex-col h-full"
-                    >
-                    {modalStep === 0 ? (
-                      <div className="flex flex-col h-full">
-                        <DialogHeader className="px-6 pt-6 md:px-8 md:pt-8 border-b">
-                            <DialogTitle className="text-3xl font-bold">Get Your App Tested</DialogTitle>
-                            <DialogDescription>
-                                Follow this guide to prepare your app for our testing community. <Link href="/help" className="text-primary underline">Contact Support</Link> if you're confused.
-                            </DialogDescription>
-                        </DialogHeader>
-                        <div className="flex-grow overflow-y-auto px-6 md:px-8 py-6 space-y-8">
-                            <div className="aspect-video bg-muted rounded-lg flex items-center justify-center">
-                                <p className="text-muted-foreground">Video Guide Placeholder</p>
-                            </div>
-                            
-                            <Accordion type="single" collapsible className="w-full space-y-4">
-                                {processSteps.map((item, index) => (
-                                     <AccordionItem value={`item-${index}`} key={index} className="bg-secondary/30 p-4 rounded-lg border-b-0">
-                                        <AccordionTrigger className="text-left font-semibold hover:no-underline text-base py-2">
-                                            <div className="flex items-center gap-3">
-                                                <div className="bg-primary/10 text-primary p-2 rounded-lg">{item.icon}</div>
-                                                <h3 className="font-semibold text-lg">{item.title}</h3>
-                                            </div>
-                                        </AccordionTrigger>
-                                        <AccordionContent className="pt-4 space-y-4">
-                                            <p className="text-muted-foreground whitespace-pre-line text-sm">{item.detailedDescription}</p>
-                                            <div className="relative w-full h-40 rounded-lg overflow-hidden group">
-                                                <Image src={item.imageUrl} data-ai-hint={item.dataAiHint} alt={item.title} layout="fill" objectFit="cover" />
-                                            </div>
-                                        </AccordionContent>
-                                    </AccordionItem>
-                                ))}
-                            </Accordion>
+                {modalStep === 'guide' ? (
+                  <>
+                    <DialogHeader className="px-6 pt-6 md:px-8 md:pt-8 border-b">
+                        <DialogTitle className="text-3xl font-bold">Get Your App Tested</DialogTitle>
+                        <DialogDescription>
+                            Follow this guide to prepare your app for our testing community. <Link href="/help" className="text-primary underline">Contact Support</Link> if you're confused.
+                        </DialogDescription>
+                    </DialogHeader>
+                    <div className="flex-grow overflow-y-auto px-6 md:px-8 py-6 space-y-8">
+                        <div className="aspect-video bg-muted rounded-lg flex items-center justify-center">
+                            <p className="text-muted-foreground">Video Guide Placeholder</p>
                         </div>
-                        <DialogFooter className="px-6 pb-6 md:px-8 md:pb-8 border-t bg-background sticky bottom-0">
-                            <Button onClick={() => setModalStep(1)} className="w-full md:w-auto ml-auto text-lg py-6">
-                                Get Started <ArrowRight className="ml-2"/>
-                            </Button>
-                        </DialogFooter>
-                      </div>
-                    ) : (
-                       <div className="flex flex-col h-full">
-                        <DialogHeader className="px-6 pt-6 md:px-8 md:pt-8 border-b">
-                            <DialogTitle className="text-3xl font-bold">Submit Your App Details</DialogTitle>
-                            <DialogDescription>
-                                Fill in the information below. You can edit these details later.
-                            </DialogDescription>
-                        </DialogHeader>
-                        <div className="flex-grow py-8 space-y-6 overflow-y-auto px-6 md:px-8">
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div className="space-y-2">
-                                    <Label htmlFor="name">App Name</Label>
-                                    <Input id="name" placeholder="E.g., Project Phoenix" />
-                                </div>
-                                <div className="space-y-2">
-                                    <Label htmlFor="url">Testing URL</Label>
-                                    <Input id="url" placeholder="https://example.com/test-build" />
-                                </div>
+                        
+                        <Accordion type="single" collapsible className="w-full space-y-4">
+                            {processSteps.map((item, index) => (
+                                 <AccordionItem value={`item-${index}`} key={index} className="bg-secondary/30 p-4 rounded-lg border-b-0">
+                                    <AccordionTrigger className="text-left font-semibold hover:no-underline text-base py-2">
+                                        <div className="flex items-center gap-3">
+                                            <div className="bg-primary/10 text-primary p-2 rounded-lg">{item.icon}</div>
+                                            <h3 className="font-semibold text-lg">{item.title}</h3>
+                                        </div>
+                                    </AccordionTrigger>
+                                    <AccordionContent className="pt-4 space-y-4">
+                                        <p className="text-muted-foreground whitespace-pre-line text-sm">{item.detailedDescription}</p>
+                                        <div className="relative w-full h-40 rounded-lg overflow-hidden group">
+                                            <Image src={item.imageUrl} data-ai-hint={item.dataAiHint} alt={item.title} layout="fill" objectFit="cover" />
+                                        </div>
+                                    </AccordionContent>
+                                </AccordionItem>
+                            ))}
+                        </Accordion>
+                    </div>
+                    <DialogFooter className="px-6 pb-6 md:px-8 md:pb-8 border-t bg-background sticky bottom-0">
+                        <Button onClick={() => setModalStep('form')} className="w-full md:w-auto ml-auto text-lg py-6">
+                            Get Started <ArrowRight className="ml-2"/>
+                        </Button>
+                    </DialogFooter>
+                  </>
+                ) : (
+                  <>
+                    <DialogHeader className="px-6 pt-6 md:px-8 md:pt-8 border-b">
+                        <DialogTitle className="text-3xl font-bold">Submit Your App Details</DialogTitle>
+                        <DialogDescription>
+                            Fill in the information below. You can edit these details later.
+                        </DialogDescription>
+                    </DialogHeader>
+                    <div className="flex-grow py-8 space-y-6 overflow-y-auto px-6 md:px-8">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div className="space-y-2">
+                                <Label htmlFor="name">App Name</Label>
+                                <Input id="name" placeholder="E.g., Project Phoenix" />
                             </div>
                             <div className="space-y-2">
-                                <Label htmlFor="icon">App Icon URL</Label>
-                                <Input id="icon" placeholder="https://example.com/icon.png" />
-                            </div>
-                            <div className="space-y-2">
-                                <Label htmlFor="instructions">Test Credentials & Instructions</Label>
-                                <Textarea id="instructions" placeholder="e.g., Use user: demo@test.com, pass: 1234. Focus on the new checkout flow." className="min-h-[120px]" />
+                                <Label htmlFor="url">Testing URL</Label>
+                                <Input id="url" placeholder="https://example.com/test-build" />
                             </div>
                         </div>
-                        <DialogFooter className="px-6 pb-6 md:px-8 md:pb-8 border-t bg-background sticky bottom-0">
-                            <Button variant="ghost" onClick={() => setModalStep(0)}><ArrowLeft className="mr-2 h-4 w-4"/> Back to Guide</Button>
-                            <Button type="submit" className="px-8">Submit App</Button>
-                        </DialogFooter>
-                      </div>
-                    )}
-                  </motion.div>
-                  </AnimatePresence>
+                        <div className="space-y-2">
+                            <Label htmlFor="icon">App Icon URL</Label>
+                            <Input id="icon" placeholder="https://example.com/icon.png" />
+                        </div>
+                        <div className="space-y-2">
+                            <Label htmlFor="instructions">Test Credentials & Instructions</Label>
+                            <Textarea id="instructions" placeholder="e.g., Use user: demo@test.com, pass: 1234. Focus on the new checkout flow." className="min-h-[120px]" />
+                        </div>
+                    </div>
+                    <DialogFooter className="px-6 pb-6 md:px-8 md:pb-8 border-t bg-background sticky bottom-0">
+                        <Button variant="ghost" onClick={() => setModalStep('guide')}><ArrowLeft className="mr-2 h-4 w-4"/> Back to Guide</Button>
+                        <Button type="submit" className="px-8">Submit App</Button>
+                    </DialogFooter>
+                  </>
+                )}
               </DialogContent>
             </Dialog>
             <Button variant="outline" asChild>
