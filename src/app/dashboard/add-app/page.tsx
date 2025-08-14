@@ -123,10 +123,10 @@ export default function AddAppPage() {
                                                 </div>
                                                 <div className="w-full flex-shrink-0">
                                                     <div
-                                                        className="relative w-full h-80 rounded-lg overflow-hidden group cursor-pointer bg-black/10"
+                                                        className="relative w-full rounded-lg overflow-hidden group cursor-pointer bg-black/10"
                                                         onClick={() => setFullscreenImage(processSteps[0].imageUrl)}
                                                     >
-                                                        <Image src={processSteps[0].imageUrl} data-ai-hint={processSteps[0].dataAiHint} alt={processSteps[0].title} layout="fill" objectFit="contain" className="transition-transform duration-300 group-hover:scale-105 p-2" />
+                                                        <Image src={processSteps[0].imageUrl} data-ai-hint={processSteps[0].dataAiHint} alt={processSteps[0].title} layout="responsive" width={1200} height={750} className="transition-transform duration-300 group-hover:scale-105" />
                                                         <div className="absolute inset-0 bg-black/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
                                                             <Expand className="w-8 h-8 text-white" />
                                                         </div>
@@ -160,10 +160,10 @@ export default function AddAppPage() {
                                                 </div>
                                                 <div className="w-full flex-shrink-0">
                                                     <div
-                                                        className="relative w-full h-80 rounded-lg overflow-hidden group cursor-pointer bg-black/10"
+                                                        className="relative w-full rounded-lg overflow-hidden group cursor-pointer bg-black/10"
                                                         onClick={() => setFullscreenImage(processSteps[1].imageUrl)}
                                                     >
-                                                        <Image src={processSteps[1].imageUrl} data-ai-hint={processSteps[1].dataAiHint} alt={processSteps[1].title} layout="fill" objectFit="contain" className="transition-transform duration-300 group-hover:scale-105 p-2" />
+                                                        <Image src={processSteps[1].imageUrl} data-ai-hint={processSteps[1].dataAiHint} alt={processSteps[1].title} layout="responsive" width={1200} height={750} className="transition-transform duration-300 group-hover:scale-105" />
                                                         <div className="absolute inset-0 bg-black/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
                                                             <Expand className="w-8 h-8 text-white" />
                                                         </div>
@@ -196,10 +196,10 @@ export default function AddAppPage() {
                                                 </div>
                                                 <div className="w-full flex-shrink-0">
                                                     <div
-                                                        className="relative w-full h-80 rounded-lg overflow-hidden group cursor-pointer bg-black/10"
+                                                        className="relative w-full rounded-lg overflow-hidden group cursor-pointer bg-black/10"
                                                         onClick={() => setFullscreenImage(processSteps[2].imageUrl)}
                                                     >
-                                                        <Image src={processSteps[2].imageUrl} data-ai-hint={processSteps[2].dataAiHint} alt={processSteps[2].title} layout="fill" objectFit="contain" className="transition-transform duration-300 group-hover:scale-105 p-2" />
+                                                        <Image src={processSteps[2].imageUrl} data-ai-hint={processSteps[2].dataAiHint} alt={processSteps[2].title} layout="responsive" width={1200} height={750} className="transition-transform duration-300 group-hover:scale-105" />
                                                         <div className="absolute inset-0 bg-black/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
                                                             <Expand className="w-8 h-8 text-white" />
                                                         </div>
@@ -233,10 +233,10 @@ export default function AddAppPage() {
                                                 </div>
                                                 <div className="w-full flex-shrink-0">
                                                     <div
-                                                        className="relative w-full h-80 rounded-lg overflow-hidden group cursor-pointer bg-black/10"
+                                                        className="relative w-full rounded-lg overflow-hidden group cursor-pointer bg-black/10"
                                                         onClick={() => setFullscreenImage(processSteps[3].imageUrl)}
                                                     >
-                                                        <Image src={processSteps[3].imageUrl} data-ai-hint={processSteps[3].dataAiHint} alt={processSteps[3].title} layout="fill" objectFit="contain" className="transition-transform duration-300 group-hover:scale-105 p-2" />
+                                                        <Image src={processSteps[3].imageUrl} data-ai-hint={processSteps[3].dataAiHint} alt={processSteps[3].title} layout="responsive" width={1200} height={750} className="transition-transform duration-300 group-hover:scale-105" />
                                                         <div className="absolute inset-0 bg-black/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
                                                             <Expand className="w-8 h-8 text-white" />
                                                         </div>
