@@ -14,9 +14,9 @@ interface CommunityAppCardProps {
 }
 
 export function CommunityAppCard({ app, isPreview = false }: CommunityAppCardProps) {
-    const cardContent = (
+    return (
         <Card className={cn(
-            "flex flex-col md:flex-row items-start md:items-center gap-6 p-6 rounded-xl transition-all duration-300 w-full",
+            "group flex flex-col md:flex-row items-start md:items-center gap-6 p-6 rounded-xl transition-all duration-300 w-full",
             !isPreview && "hover:bg-secondary/80 hover:shadow-md"
         )}>
             <Image src={app.icon} alt={app.name} width={80} height={80} className="rounded-2xl border flex-shrink-0" data-ai-hint={app.dataAiHint}/>
@@ -50,6 +50,4 @@ export function CommunityAppCard({ app, isPreview = false }: CommunityAppCardPro
             )}
         </Card>
     );
-
-    return isPreview ? cardContent : <Link href={`/community-dashboard/test/${app.id}`} className="group">{cardContent}</Link>
 }
