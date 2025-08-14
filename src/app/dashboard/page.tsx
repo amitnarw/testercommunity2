@@ -57,7 +57,7 @@ export default function DashboardPage() {
                     >
                     {modalStep === 0 ? (
                       <>
-                        <DialogHeader className="text-left px-6 pt-6 md:px-8 md:pt-8">
+                        <DialogHeader className="px-6 pt-6 md:px-8 md:pt-8 border-b">
                             <DialogTitle className="text-3xl font-bold">Get Your App Tested</DialogTitle>
                             <DialogDescription>
                                 Follow this guide to prepare your app for our testing community. <Link href="/help" className="text-primary underline">Contact Support</Link> if you're confused.
@@ -78,16 +78,16 @@ export default function DashboardPage() {
                                             </div>
                                         </AccordionTrigger>
                                         <AccordionContent className="pt-4 space-y-4">
+                                            <p className="text-muted-foreground whitespace-pre-line text-sm">{item.detailedDescription}</p>
                                             <div className="relative w-full h-40 rounded-lg overflow-hidden group">
                                                 <Image src={item.imageUrl} data-ai-hint={item.dataAiHint} alt={item.title} layout="fill" objectFit="cover" />
                                             </div>
-                                            <p className="text-muted-foreground whitespace-pre-line text-sm">{item.detailedDescription}</p>
                                         </AccordionContent>
                                     </AccordionItem>
                                 ))}
                             </Accordion>
                         </div>
-                        <DialogFooter className="mt-auto p-6 md:p-8 border-t bg-background sticky bottom-0">
+                        <DialogFooter className="px-6 pb-6 md:px-8 md:pb-8 border-t bg-background sticky bottom-0">
                             <Button onClick={() => setModalStep(1)} className="w-full md:w-auto ml-auto text-lg py-6">
                                 Get Started <ArrowRight className="ml-2"/>
                             </Button>
@@ -95,7 +95,7 @@ export default function DashboardPage() {
                       </>
                     ) : (
                       <>
-                        <DialogHeader className="px-6 pt-6 md:px-8 md:pt-8">
+                        <DialogHeader className="px-6 pt-6 md:px-8 md:pt-8 border-b">
                             <DialogTitle className="text-3xl font-bold">Submit Your App Details</DialogTitle>
                             <DialogDescription>
                                 Fill in the information below. You can edit these details later.
@@ -121,7 +121,7 @@ export default function DashboardPage() {
                                 <Textarea id="instructions" placeholder="e.g., Use user: demo@test.com, pass: 1234. Focus on the new checkout flow." className="min-h-[120px]" />
                             </div>
                         </div>
-                        <DialogFooter className="mt-auto p-6 md:p-8 border-t bg-background sticky bottom-0">
+                        <DialogFooter className="px-6 pb-6 md:px-8 md:pb-8 border-t bg-background sticky bottom-0">
                             <Button variant="ghost" onClick={() => setModalStep(0)}><ArrowLeft className="mr-2 h-4 w-4"/> Back to Guide</Button>
                             <Button type="submit" className="px-8">Submit App</Button>
                         </DialogFooter>
