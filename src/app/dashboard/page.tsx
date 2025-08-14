@@ -16,7 +16,7 @@ export default function DashboardPage() {
         <div className="container mx-auto px-4 md:px-6 py-12">
           <header className="mb-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div>
-              <h1 className="text-4xl font-bold">Dashboard</h1>
+              <h1 className="text-4xl font-bold">Developer Dashboard</h1>
               <p className="text-muted-foreground">Manage your apps and testing projects.</p>
             </div>
             <div className='flex items-center gap-2'>

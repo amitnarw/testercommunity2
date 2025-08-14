@@ -120,7 +120,7 @@ export default function AddAppPage() {
                 <div className="container mx-auto px-4 md:px-6 py-12">
                     <header className="mb-8 max-w-4xl mx-auto">
                         <Button variant="ghost" asChild className="mb-4">
-                            <Link href="/dashboard"><ArrowLeft className="mr-2 h-4 w-4" /> Back to Dashboard</Link>
+                            <Link href="/dashboard"><ArrowLeft className="mr-2 h-4 w-4" /> Back to Developer Dashboard</Link>
                         </Button>
                         <h1 className="text-4xl font-bold">Submit a New App</h1>
                         <p className="text-muted-foreground mt-2">

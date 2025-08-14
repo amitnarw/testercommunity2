@@ -39,7 +39,7 @@ export default function AppTestingPage({ params }: { params: { id: string } }) {
                     <div className="lg:col-span-3">
                          <header className="mb-8">
                             <Button variant="ghost" asChild className="mb-4">
-                                <Link href="/community-dashboard"><ArrowLeft className="mr-2 h-4 w-4" /> Back to Dashboard</Link>
+                                <Link href="/community-dashboard"><ArrowLeft className="mr-2 h-4 w-4" /> Back to Community Hub</Link>
                             </Button>
                             <div className="flex items-start gap-6">
                                 <Image src={app.icon} alt={app.name} width={100} height={100} className="rounded-2xl border" data-ai-hint={app.dataAiHint} />

@@ -16,7 +16,7 @@ import { demoUser } from '@/lib/data.tsx';
 
 const navItems = [
   { name: 'How It Works', href: '/how-it-works' },
-  { name: 'Community', href: '/community-dashboard' },
+  { name: 'Community Hub', href: '/community-dashboard' },
   { name: 'Blog', href: '/blog' },
 ];
 
@@ -46,7 +46,7 @@ const UserNav = () => {
            <Link href="/dashboard">
             <DropdownMenuItem>
                 <LayoutDashboard className="mr-2" />
-                Dashboard
+                Developer Dashboard
             </DropdownMenuItem>
           </Link>
           <Link href="/profile">
@@ -98,7 +98,7 @@ export function Header() {
 
   const mobileNavItems = [
     ...(isAuthenticated 
-        ? [{ name: 'Dashboard', href: '/dashboard' }]
+        ? [{ name: 'Developer Dashboard', href: '/dashboard' }]
         : [{ name: 'Home', href: '/' }]),
     ...navItems
   ];
@@ -123,13 +123,13 @@ export function Header() {
              {isAuthenticated ? (
                  <Link
                     href="/dashboard"
-                    data-text="Dashboard"
+                    data-text="Developer Dashboard"
                     className={cn(
                     'font-medium transition-colors sliding-text-hover',
                     pathname.startsWith('/dashboard') ? 'text-primary' : 'text-muted-foreground'
                     )}
                 >
-                    <span>Dashboard</span>
+                    <span>Developer Dashboard</span>
                 </Link>
             ) : (
                  <Link

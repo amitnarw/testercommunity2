@@ -25,7 +25,7 @@ export default function CommunityDashboardPage() {
                 <div className="grid lg:grid-cols-4 gap-8">
                     <div className="lg:col-span-3">
                         <header className="mb-8">
-                            <h1 className="text-4xl font-bold">Community Dashboard</h1>
+                            <h1 className="text-4xl font-bold">Community Hub</h1>
                             <p className="text-muted-foreground mt-2">Test apps, earn points, and help fellow developers build better products.</p>
                         </header>
 
