@@ -39,22 +39,22 @@ const CopyBlock = ({ textToCopy }: { textToCopy: string }) => {
 const processSteps = [
     { 
         title: "Grant Our Testers Access", 
-        imageUrl: "/add-app-1.webp",
+        imageUrl: "https://placehold.co/1200x750.png",
         dataAiHint: "team collaboration"
     },
     { 
         title: "Enable Global Reach", 
-        imageUrl: "/add-app-2.webp",
+        imageUrl: "https://placehold.co/1200x750.png",
         dataAiHint: "world map data"
     },
     { 
         title: "Submit for Google's Review", 
-        imageUrl: "/add-app-3.webp",
+        imageUrl: "https://placehold.co/1200x750.png",
         dataAiHint: "checklist document"
      },
     { 
         title: "Activate Your Test Cycle", 
-        imageUrl: "/add-app-4.webp",
+        imageUrl: "https://placehold.co/1200x750.png",
         dataAiHint: "scientist laboratory"
     },
 ];
@@ -86,7 +86,7 @@ export default function AddAppPage() {
                         {step === 'guide' ? (
                             <div className="space-y-8">
                                 <div className="rounded-xl overflow-hidden shadow-lg border relative bg-secondary/30">
-                                    <Video className="w-32 h-32 text-primary/10 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 animate-float opacity-50" />
+                                    <Video className="w-48 h-48 text-primary/10 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 animate-float opacity-50" />
                                     {isVideoExpanded ? (
                                         <div className="relative aspect-video">
                                             <iframe
