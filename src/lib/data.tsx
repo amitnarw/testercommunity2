@@ -1,6 +1,5 @@
 
 import type { Tester, BlogPost, Testimonial, RoadmapStep, UserProfileData, ProcessStep } from './types';
-import { Users, Globe, FileCheck, Power } from 'lucide-react';
 
 export const testers: Tester[] = [
   {
@@ -262,7 +261,7 @@ export const professionalPathSteps: RoadmapStep[] = [
         description: "Browse our marketplace of world-class QA professionals. Review their profiles, work history, and client feedback to hire the perfect expert for your project.",
         badgeText: "Cost: Starts at ₹999",
         details: [
-            { title: "Advanced Filtering", description: "Filter testers by skills, country, language, and specific device ownership." },
+            { title: "Advanced Filtering", description: "Filter testers by country, language, and specific device ownership." },
             { title: "Verified Credentials", description: "All professional testers undergo a rigourous vetting and verification process." },
             { title: "Direct Negotiation", description: "Interview and negotiate terms directly on our secure platform." },
             { title: "Milestone Funding", description: "Securely fund the project milestone, with payment released upon completion." },
@@ -304,27 +303,46 @@ export const demoUser: UserProfileData = {
 export const processSteps: ProcessStep[] = [
     { 
         title: "Grant Our Testers Access", 
-        detailedDescription: `In Google Play Console, go to "Internal Testing" > "Testers". Add our official testing group by pasting the following email address. This allows our verified team to download your app for the 14-day test cycle.
+        shortDescription: "Add our official tester group to your app's internal test track.",
+        detailedDescription: `In the Google Play Console, navigate to your app's "Internal Testing" page. Under the "Testers" tab, you'll find an option to add tester lists by email.
+        
+Please add the following Google Group email address:
+testers-community@googlegroups.com
 
-Email: testers-community@googlegroups.com`,
+Why this is needed: This is a secure, private group containing our vetted testers. Granting access allows them to download your app from the Play Store for the 14-day test cycle. Your app remains invisible to the public.`,
         imageUrl: "https://images.unsplash.com/photo-1556742502-ec7c0e9f34b1?q=80&w=600&auto=format=fit=crop",
         dataAiHint: "team collaboration"
     },
     { 
         title: "Enable Global Reach", 
-        detailedDescription: `To ensure our diverse, international team can access your app, navigate to the "Countries / regions" tab for your internal test track and select "All" or add all available countries. This maximizes your testing coverage across different locales and networks.`,
+        shortDescription: "Make your app available in all countries for maximum test coverage.",
+        detailedDescription: `To ensure our diverse, international team can access your app, you must enable worldwide distribution for the internal test track.
+        
+In the "Countries / regions" tab for your internal track, click "Add countries / regions". For maximum coverage, we highly recommend selecting all available countries.
+
+Benefit: This simple step allows testers from different regions with varied network conditions and device models to test your app, uncovering bugs you might otherwise miss.`,
         imageUrl: "https://images.unsplash.com/photo-1543286386-713bdd548da4?q=80&w=600&auto=format=fit=crop",
         dataAiHint: "world map data"
     },
     { 
         title: "Submit for Google's Review", 
-        detailedDescription: `After configuring the testing settings, save your changes and submit them to Google for review. This is a standard Google Play process to ensure everything is set up correctly. Approval is typically very fast, often within a few hours.`,
+        shortDescription: "Save your changes and submit them to Google for a quick review.",
+        detailedDescription: `After configuring the testing settings (adding the tester group and setting countries), save your changes and submit them to Google for review. This is a standard, automated Google Play process to ensure the track is set up correctly.
+
+What to expect: This is not a full app review. It is a quick check of your testing configuration. Approval is typically very fast, often taking anywhere from a few minutes to a few hours. You will receive a notification from Google once it's approved.`,
         imageUrl: "https://images.unsplash.com/photo-1584984792203-12a52a355642?q=80&w=600&auto=format=fit=crop",
         dataAiHint: "checklist document"
      },
     { 
         title: "Activate Your Test Cycle", 
-        detailedDescription: `Once Google approves your changes, your testing track will be live! Our testers will be notified automatically. You can now come back to TestTribe, paste your app's test URL, and begin your 14-day testing cycle.`,
+        shortDescription: "Come back to TestTribe with your test URL to begin.",
+        detailedDescription: `Once Google approves your changes, your testing track will be live and accessible to our testers. The final step is to activate the cycle on our platform.
+
+1. Find the "Join on the web" link on your internal testing page in the Play Console.
+2. Copy this URL.
+3. Come back to TestTribe and paste this URL into the submission form.
+
+After you submit, our testers will be notified automatically, and your 14-day testing cycle will officially begin!`,
         imageUrl: "https://images.unsplash.com/photo-1581090464777-f3220bbe1b8b?q=80&w=600&auto=format=fit=crop",
         dataAiHint: "scientist laboratory"
     },

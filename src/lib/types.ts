@@ -1,5 +1,4 @@
 
-import type { LucideIcon } from 'lucide-react';
 import type { ReactNode } from 'react';
 
 export type Tester = {
@@ -67,7 +66,6 @@ export type PricingPlan = {
 };
 
 export type ProcessStep = {
-    icon: ReactNode;
     title: string;
     shortDescription: string;
     detailedDescription: string;
