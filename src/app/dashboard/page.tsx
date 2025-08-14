@@ -14,6 +14,7 @@ import { useState } from 'react';
 import Image from 'next/image';
 import { AnimatePresence, motion } from 'framer-motion';
 import { processSteps } from '@/lib/data.tsx';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 
 
 export default function DashboardPage() {
@@ -43,7 +44,7 @@ export default function DashboardPage() {
               <DialogTrigger asChild>
                 <Button><PlusCircle className="mr-2 h-4 w-4" /> Add New App</Button>
               </DialogTrigger>
-              <DialogContent className="sm:max-w-4xl h-auto flex flex-col p-0">
+              <DialogContent className="sm:max-w-4xl max-h-[90vh] flex flex-col p-0">
                   <AnimatePresence initial={false} custom={delta} mode="wait">
                     <motion.div
                         key={modalStep}
@@ -67,20 +68,24 @@ export default function DashboardPage() {
                                 <p className="text-muted-foreground">Video Guide Placeholder</p>
                             </div>
                             
-                            <div className="grid md:grid-cols-2 gap-6">
+                            <Accordion type="single" collapsible className="w-full space-y-4">
                                 {processSteps.map((item, index) => (
-                                    <div key={index} className="space-y-4 bg-secondary/30 p-4 rounded-lg">
-                                        <div className="flex items-center gap-3">
-                                            <div className="bg-primary/10 text-primary p-2 rounded-lg">{item.icon}</div>
-                                            <h3 className="font-semibold text-lg">{item.title}</h3>
-                                        </div>
-                                        <div className="relative w-full h-40 rounded-lg overflow-hidden group">
-                                            <Image src={item.imageUrl} data-ai-hint={item.dataAiHint} alt={item.title} layout="fill" objectFit="cover" />
-                                        </div>
-                                        <p className="text-muted-foreground whitespace-pre-line text-sm">{item.detailedDescription}</p>
-                                    </div>
+                                     <AccordionItem value={`item-${index}`} key={index} className="bg-secondary/30 p-4 rounded-lg border-b-0">
+                                        <AccordionTrigger className="text-left font-semibold hover:no-underline text-base py-2">
+                                            <div className="flex items-center gap-3">
+                                                <div className="bg-primary/10 text-primary p-2 rounded-lg">{item.icon}</div>
+                                                <h3 className="font-semibold text-lg">{item.title}</h3>
+                                            </div>
+                                        </AccordionTrigger>
+                                        <AccordionContent className="pt-4 space-y-4">
+                                            <div className="relative w-full h-40 rounded-lg overflow-hidden group">
+                                                <Image src={item.imageUrl} data-ai-hint={item.dataAiHint} alt={item.title} layout="fill" objectFit="cover" />
+                                            </div>
+                                            <p className="text-muted-foreground whitespace-pre-line text-sm">{item.detailedDescription}</p>
+                                        </AccordionContent>
+                                    </AccordionItem>
                                 ))}
-                            </div>
+                            </Accordion>
                         </div>
                         <DialogFooter className="mt-auto p-6 md:p-8 border-t bg-background sticky bottom-0">
                             <Button onClick={() => setModalStep(1)} className="w-full md:w-auto ml-auto text-lg py-6">
