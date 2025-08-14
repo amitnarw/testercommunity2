@@ -35,102 +35,120 @@ export default function DashboardPage() {
                 <Button><PlusCircle className="mr-2 h-4 w-4" /> Add New App</Button>
               </DialogTrigger>
               <DialogContent className="sm:max-w-4xl p-0">
-                  {modalStep === 1 && (
-                    <div className="p-8 md:p-12 w-full flex flex-col">
-                        <DialogHeader className="text-center mb-8">
-                            <DialogTitle className="text-3xl font-bold">Get Your App Tested</DialogTitle>
-                            <DialogDescription>
-                                Follow this guide to prepare your app for our testing community.
-                            </DialogDescription>
-                        </DialogHeader>
+                  <AnimatePresence mode="wait">
+                  {modalStep === 1 ? (
+                    <motion.div
+                        key="step1"
+                        initial={{ opacity: 0, x: -300 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        exit={{ opacity: 0, x: 300 }}
+                        transition={{ duration: 0.3 }}
+                        className="h-full"
+                    >
+                        <div className="p-8 md:p-12 w-full flex flex-col">
+                            <DialogHeader className="text-center mb-8">
+                                <DialogTitle className="text-3xl font-bold">Get Your App Tested</DialogTitle>
+                                <DialogDescription>
+                                    Follow this guide to prepare your app for our testing community.
+                                </DialogDescription>
+                            </DialogHeader>
+                            <div className="max-h-[70vh] overflow-y-auto pr-4">
+                                <div className="aspect-video bg-muted rounded-lg flex items-center justify-center mb-8">
+                                    <div className="text-center">
+                                        <PlayCircle className="w-12 h-12 text-muted-foreground mx-auto" />
+                                        <p className="text-muted-foreground mt-2">Watch the Process Guide</p>
+                                    </div>
+                                </div>
 
-                        <div className="aspect-video bg-muted rounded-lg flex items-center justify-center mb-8">
-                            <div className="text-center">
-                                <PlayCircle className="w-12 h-12 text-muted-foreground mx-auto" />
-                                <p className="text-muted-foreground mt-2">Watch the Process Guide</p>
-                            </div>
-                        </div>
-
-                        <div className="space-y-4">
-                            {processSteps.map((item, index) => (
-                                <div key={index} className="border rounded-lg overflow-hidden">
-                                    <button
-                                        onClick={() => setSelectedStep(selectedStep === index ? null : index)}
-                                        className="w-full text-left p-4 flex justify-between items-center bg-secondary/30 hover:bg-secondary/70 transition-colors"
-                                    >
-                                        <div className="flex items-center gap-4">
-                                            <div className="bg-primary/10 text-primary p-2 rounded-lg">{item.icon}</div>
-                                            <span className="font-semibold">{item.title}</span>
-                                        </div>
-                                        <ChevronDown className={cn("transform transition-transform", selectedStep === index && "rotate-180")} />
-                                    </button>
-                                     <AnimatePresence>
-                                        {selectedStep === index && (
-                                            <motion.div
-                                                initial={{ height: 0, opacity: 0 }}
-                                                animate={{ height: 'auto', opacity: 1 }}
-                                                exit={{ height: 0, opacity: 0 }}
-                                                transition={{ duration: 0.3, ease: 'easeInOut' }}
-                                                className="bg-background"
+                                <div className="space-y-4">
+                                    {processSteps.map((item, index) => (
+                                        <div key={index} className="border rounded-lg overflow-hidden">
+                                            <button
+                                                onClick={() => setSelectedStep(selectedStep === index ? null : index)}
+                                                className="w-full text-left p-4 flex justify-between items-center bg-secondary/30 hover:bg-secondary/70 transition-colors"
                                             >
-                                                <div className="p-6 grid md:grid-cols-2 gap-6 items-center">
-                                                    <div className="space-y-4">
-                                                        <p className="text-muted-foreground whitespace-pre-line">{item.detailedDescription}</p>
-                                                        <Link href="/help" className="text-sm text-primary underline">Contact Support if you're confused</Link>
-                                                    </div>
-                                                     <div className="relative w-full h-48 rounded-lg overflow-hidden group">
-                                                        <Image src={item.imageUrl} data-ai-hint={item.dataAiHint} alt={item.title} layout="fill" objectFit="cover" />
-                                                    </div>
+                                                <div className="flex items-center gap-4">
+                                                    <div className="bg-primary/10 text-primary p-2 rounded-lg">{item.icon}</div>
+                                                    <span className="font-semibold">{item.title}</span>
                                                 </div>
-                                            </motion.div>
-                                        )}
-                                    </AnimatePresence>
+                                                <ChevronDown className={cn("transform transition-transform", selectedStep === index && "rotate-180")} />
+                                            </button>
+                                            <AnimatePresence>
+                                                {selectedStep === index && (
+                                                    <motion.div
+                                                        initial={{ height: 0, opacity: 0 }}
+                                                        animate={{ height: 'auto', opacity: 1 }}
+                                                        exit={{ height: 0, opacity: 0 }}
+                                                        transition={{ duration: 0.3, ease: 'easeInOut' }}
+                                                        className="bg-background"
+                                                    >
+                                                        <div className="p-6 grid md:grid-cols-2 gap-6 items-center">
+                                                            <div className="space-y-4">
+                                                                <p className="text-muted-foreground whitespace-pre-line">{item.detailedDescription}</p>
+                                                                <Link href="/help" className="text-sm text-primary underline">Contact Support if you're confused</Link>
+                                                            </div>
+                                                            <div className="relative w-full h-48 rounded-lg overflow-hidden group">
+                                                                <Image src={item.imageUrl} data-ai-hint={item.dataAiHint} alt={item.title} layout="fill" objectFit="cover" />
+                                                            </div>
+                                                        </div>
+                                                    </motion.div>
+                                                )}
+                                            </AnimatePresence>
+                                        </div>
+                                    ))}
                                 </div>
-                            ))}
+                            </div>
+                            <DialogFooter className="mt-8 pt-6 border-t">
+                                <Button onClick={() => setModalStep(2)} className="w-full md:w-auto ml-auto text-lg py-6">
+                                    Get Started <ArrowRight className="ml-2"/>
+                                </Button>
+                            </DialogFooter>
                         </div>
-
-                        <DialogFooter className="mt-8 pt-6 border-t">
-                            <Button onClick={() => setModalStep(2)} className="w-full md:w-auto ml-auto text-lg py-6">
-                                Get Started <ArrowRight className="ml-2"/>
-                            </Button>
-                        </DialogFooter>
-                    </div>
-                  )}
-
-                  {modalStep === 2 && (
-                    <div className="p-12 w-full flex flex-col">
-                        <DialogHeader>
-                            <DialogTitle className="text-3xl font-bold">Submit Your App Details</DialogTitle>
-                            <DialogDescription>
-                                Fill in the information below. You can edit these details later from your project dashboard.
-                            </DialogDescription>
-                        </DialogHeader>
-                        <div className="flex-grow py-8 space-y-6">
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div className="space-y-2">
-                                    <Label htmlFor="name" className="text-sm font-medium">App Name</Label>
-                                    <Input id="name" placeholder="E.g., Project Phoenix" className="h-12"/>
+                    </motion.div>
+                  ) : (
+                    <motion.div
+                        key="step2"
+                        initial={{ opacity: 0, x: 300 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        exit={{ opacity: 0, x: -300 }}
+                        transition={{ duration: 0.3 }}
+                        className="h-full"
+                    >
+                        <div className="p-12 w-full flex flex-col h-full">
+                            <DialogHeader>
+                                <DialogTitle className="text-3xl font-bold">Submit Your App Details</DialogTitle>
+                                <DialogDescription>
+                                    Fill in the information below. You can edit these details later from your project dashboard.
+                                </DialogDescription>
+                            </DialogHeader>
+                            <div className="flex-grow py-8 space-y-6 max-h-[70vh] overflow-y-auto pr-4">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div className="space-y-2">
+                                        <Label htmlFor="name" className="text-sm font-medium">App Name</Label>
+                                        <Input id="name" placeholder="E.g., Project Phoenix" className="h-12"/>
+                                    </div>
+                                    <div className="space-y-2">
+                                        <Label htmlFor="url" className="text-sm font-medium">Testing URL</Label>
+                                        <Input id="url" placeholder="https://example.com/test-build" className="h-12"/>
+                                    </div>
                                 </div>
                                 <div className="space-y-2">
-                                    <Label htmlFor="url" className="text-sm font-medium">Testing URL</Label>
-                                    <Input id="url" placeholder="https://example.com/test-build" className="h-12"/>
+                                    <Label htmlFor="icon" className="text-sm font-medium">App Icon URL</Label>
+                                    <Input id="icon" placeholder="https://example.com/icon.png" className="h-12" />
+                                </div>
+                                <div className="space-y-2">
+                                    <Label htmlFor="instructions" className="text-sm font-medium">Test Credentials & Instructions (Optional)</Label>
+                                    <Textarea id="instructions" placeholder="e.g., Use user: demo@test.com, pass: 1234. Focus on the new checkout flow." className="min-h-[120px]" />
                                 </div>
                             </div>
-                            <div className="space-y-2">
-                                <Label htmlFor="icon" className="text-sm font-medium">App Icon URL</Label>
-                                <Input id="icon" placeholder="https://example.com/icon.png" className="h-12" />
-                            </div>
-                            <div className="space-y-2">
-                                <Label htmlFor="instructions" className="text-sm font-medium">Test Credentials & Instructions (Optional)</Label>
-                                <Textarea id="instructions" placeholder="e.g., Use user: demo@test.com, pass: 1234. Focus on the new checkout flow." className="min-h-[120px]" />
-                            </div>
+                            <DialogFooter className="mt-auto pt-6 border-t">
+                                <Button variant="ghost" onClick={() => setModalStep(1)}><ArrowLeft className="mr-2 h-4 w-4"/> Back</Button>
+                                <Button type="submit" className="px-8">Submit App</Button>
+                            </DialogFooter>
                         </div>
-                        <DialogFooter className="mt-auto pt-6 border-t">
-                            <Button variant="ghost" onClick={() => setModalStep(1)}><ArrowLeft className="mr-2 h-4 w-4"/> Back</Button>
-                            <Button type="submit" className="px-8">Submit App</Button>
-                        </DialogFooter>
-                    </div>
+                    </motion.div>
                   )}
+                  </AnimatePresence>
               </DialogContent>
             </Dialog>
             <Button variant="outline" asChild>
@@ -205,5 +223,3 @@ export default function DashboardPage() {
     </div>
   )
 }
-
-    
