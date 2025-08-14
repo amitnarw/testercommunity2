@@ -6,7 +6,7 @@ import { usePathname } from 'next/navigation';
 import { InTestersLogo } from './icons';
 import { Button } from './ui/button';
 import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle, SheetClose } from './ui/sheet';
-import { Menu, ArrowRight, Sun, Moon, User, LogOut, LayoutDashboard, Settings, LifeBuoy } from 'lucide-react';
+import { Menu, ArrowRight, Sun, Moon, User, LogOut, LayoutDashboard, Settings, LifeBuoy, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useState, useEffect } from 'react';
 import { useTheme } from 'next-themes';
@@ -187,7 +187,7 @@ export function Header() {
                         <div className="absolute top-4 right-4">
                             <SheetClose asChild>
                                 <Button size="icon" variant="outline">
-                                    <Menu className="h-6 w-6" />
+                                    <X className="h-6 w-6" />
                                     <span className="sr-only">Close menu</span>
                                 </Button>
                             </SheetClose>
