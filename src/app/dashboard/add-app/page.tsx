@@ -6,13 +6,11 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { ArrowRight, ArrowLeft, Expand, X, PlayCircle, ChevronDown } from 'lucide-react'
+import { ArrowRight, ArrowLeft, Expand, X, PlayCircle } from 'lucide-react'
 import Link from 'next/link';
 import { useState } from 'react';
 import Image from 'next/image';
 import { processSteps } from '@/lib/data.tsx';
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
-
 
 export default function AddAppPage() {
   const [step, setStep] = useState<'guide' | 'form'>('guide');
@@ -61,36 +59,28 @@ export default function AddAppPage() {
                       
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
                       {processSteps.map((item, index) => (
-                          <div key={index} className="bg-secondary/30 p-4 rounded-lg border">
-                              <div className="flex items-start gap-4">
-                                  <div className="text-5xl font-bold text-primary/50">{index + 1}</div>
-                                  <div className='flex-grow'>
-                                      <Accordion type="single" collapsible className="w-full">
-                                        <AccordionItem value="item-1" className="border-b-0">
-                                            <AccordionTrigger className="text-sm font-semibold text-left hover:no-underline py-2 justify-between">
-                                              <div className="flex-grow">
-                                                <h3 className="font-semibold text-lg leading-tight">{item.title}</h3>
-                                                <p className="text-sm text-muted-foreground font-normal mt-1">{item.shortDescription}</p>
-                                              </div>
-                                              <ChevronDown className="h-4 w-4 shrink-0 transition-transform duration-200" />
-                                            </AccordionTrigger>
-                                            <AccordionContent className="space-y-4 pt-2">
-                                                <p className="text-muted-foreground whitespace-pre-line text-sm">{item.detailedDescription}</p>
-                                                <div 
-                                                    className="relative w-full h-40 rounded-lg overflow-hidden group cursor-pointer"
-                                                    onClick={() => setFullscreenImage(item.imageUrl)}
-                                                >
-                                                    <Image src={item.imageUrl} data-ai-hint={item.dataAiHint} alt={item.title} layout="fill" objectFit="cover" />
-                                                    <div className="absolute inset-0 bg-black/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                                                        <Expand className="w-8 h-8 text-white" />
-                                                    </div>
-                                                </div>
-                                            </AccordionContent>
-                                        </AccordionItem>
-                                      </Accordion>
-                                  </div>
-                              </div>
-                          </div>
+                        <Card key={index} className="bg-secondary/30 rounded-xl border overflow-hidden h-full flex flex-col">
+                            <CardContent className="p-6 flex-grow">
+                               <div className="flex items-start gap-6">
+                                    <span className="text-6xl font-black text-primary/20 leading-none">0{index + 1}</span>
+                                    <div>
+                                        <h3 className="font-bold text-xl mb-2">{item.title}</h3>
+                                        <p className="text-muted-foreground text-sm whitespace-pre-line">{item.detailedDescription}</p>
+                                    </div>
+                               </div>
+                            </CardContent>
+                            <CardFooter className="p-2">
+                               <div 
+                                    className="relative w-full h-48 rounded-lg overflow-hidden group cursor-pointer"
+                                    onClick={() => setFullscreenImage(item.imageUrl)}
+                                >
+                                    <Image src={item.imageUrl} data-ai-hint={item.dataAiHint} alt={item.title} layout="fill" objectFit="cover" className="transition-transform duration-300 group-hover:scale-105" />
+                                    <div className="absolute inset-0 bg-black/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                        <Expand className="w-8 h-8 text-white" />
+                                    </div>
+                                </div>
+                            </CardFooter>
+                        </Card>
                       ))}
                     </div>
 

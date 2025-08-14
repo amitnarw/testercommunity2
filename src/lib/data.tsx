@@ -303,36 +303,28 @@ export const demoUser: UserProfileData = {
 
 export const processSteps: ProcessStep[] = [
     { 
-        icon: <Users className="w-5 h-5" />, 
-        title: "Add Testers Group", 
-        shortDescription: "Grant our testers access.",
-        detailedDescription: `Navigate to your app's testing section and add our Google Group to enable our testers to access your app for the 14-day testing period.
-        Add this Google Group:
-        testers-community@googlegroups.com`,
+        title: "Grant Our Testers Access", 
+        detailedDescription: `In Google Play Console, go to "Internal Testing" > "Testers". Add our official testing group by pasting the following email address. This allows our verified team to download your app for the 14-day test cycle.
+
+Email: testers-community@googlegroups.com`,
         imageUrl: "https://images.unsplash.com/photo-1556742502-ec7c0e9f34b1?q=80&w=600&auto=format=fit=crop",
         dataAiHint: "team collaboration"
     },
     { 
-        icon: <Globe className="w-5 h-5" />, 
-        title: "Enable Global Testing", 
-        shortDescription: "Reach our international team.",
-        detailedDescription: "Expand your app's reach by selecting all countries. This ensures our international team of testers can participate in your app testing.",
+        title: "Enable Global Reach", 
+        detailedDescription: `To ensure our diverse, international team can access your app, navigate to the "Countries / regions" tab for your internal test track and select "All" or add all available countries. This maximizes your testing coverage across different locales and networks.`,
         imageUrl: "https://images.unsplash.com/photo-1543286386-713bdd548da4?q=80&w=600&auto=format=fit=crop",
         dataAiHint: "world map data"
     },
     { 
-        icon: <FileCheck className="w-5 h-5" />, 
-        title: "Submit for Review", 
-        shortDescription: "Get approved by Google.",
-        detailedDescription: "Once you've configured the testing settings, submit your changes to Google Play for review. This process is usually very quick.",
+        title: "Submit for Google's Review", 
+        detailedDescription: `After configuring the testing settings, save your changes and submit them to Google for review. This is a standard Google Play process to ensure everything is set up correctly. Approval is typically very fast, often within a few hours.`,
         imageUrl: "https://images.unsplash.com/photo-1584984792203-12a52a355642?q=80&w=600&auto=format=fit=crop",
         dataAiHint: "checklist document"
      },
     { 
-        icon: <Power className="w-5 h-5" />, 
-        title: "Activate Testing", 
-        shortDescription: "Begin the 14-day test cycle.",
-        detailedDescription: "After Google approves your changes, publish them to activate the testing track and begin the 14-day testing period with our team.",
+        title: "Activate Your Test Cycle", 
+        detailedDescription: `Once Google approves your changes, your testing track will be live! Our testers will be notified automatically. You can now come back to TestTribe, paste your app's test URL, and begin your 14-day testing cycle.`,
         imageUrl: "https://images.unsplash.com/photo-1581090464777-f3220bbe1b8b?q=80&w=600&auto=format=fit=crop",
         dataAiHint: "scientist laboratory"
     },
