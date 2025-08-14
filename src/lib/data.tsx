@@ -304,46 +304,27 @@ export const processSteps: ProcessStep[] = [
     { 
         title: "Grant Our Testers Access", 
         shortDescription: "Add our official tester group to your app's internal test track.",
-        detailedDescription: `In the Google Play Console, navigate to your app's "Internal Testing" page. Under the "Testers" tab, you'll find an option to add tester lists by email.
-        
-Please add the following Google Group email address:
-testers-community@googlegroups.com
-
-Why this is needed: This is a secure, private group containing our vetted testers. Granting access allows them to download your app from the Play Store for the 14-day test cycle. Your app remains invisible to the public.`,
         imageUrl: "/add-app-1.webp",
         dataAiHint: "team collaboration"
     },
     { 
         title: "Enable Global Reach", 
         shortDescription: "Make your app available in all countries for maximum test coverage.",
-        detailedDescription: `To ensure our diverse, international team can access your app, you must enable worldwide distribution for the internal test track.
-        
-In the "Countries / regions" tab for your internal track, click "Add countries / regions". For maximum coverage, we highly recommend selecting all available countries.
-
-Benefit: This simple step allows testers from different regions with varied network conditions and device models to test your app, uncovering bugs you might otherwise miss.`,
         imageUrl: "/add-app-2.webp",
         dataAiHint: "world map data"
     },
     { 
         title: "Submit for Google's Review", 
         shortDescription: "Save your changes and submit them to Google for a quick review.",
-        detailedDescription: `After configuring the testing settings (adding the tester group and setting countries), save your changes and submit them to Google for review. This is a standard, automated Google Play process to ensure the track is set up correctly.
-
-What to expect: This is not a full app review. It is a quick check of your testing configuration. Approval is typically very fast, often taking anywhere from a few minutes to a few hours. You will receive a notification from Google once it's approved.`,
         imageUrl: "/add-app-3.webp",
         dataAiHint: "checklist document"
      },
     { 
         title: "Activate Your Test Cycle", 
         shortDescription: "Come back to inTesters with your test URL to begin.",
-        detailedDescription: `Once Google approves your changes, your testing track will be live and accessible to our testers. The final step is to activate the cycle on our platform.
-
-1. Find the "Join on the web" link on your internal testing page in the Play Console.
-2. Copy this URL.
-3. Come back to inTesters and paste this URL into the submission form.
-
-After you submit, our testers will be notified automatically, and your 14-day testing cycle will officially begin!`,
         imageUrl: "/add-app-4.webp",
         dataAiHint: "scientist laboratory"
     },
 ];
+
+    

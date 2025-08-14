@@ -6,12 +6,36 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { ArrowRight, ArrowLeft, Expand, X, PlayCircle, ChevronDown } from 'lucide-react'
+import { ArrowRight, ArrowLeft, Expand, X, PlayCircle, ChevronDown, Clipboard, Check } from 'lucide-react'
 import Link from 'next/link';
 import { useState } from 'react';
 import Image from 'next/image';
 import { processSteps } from '@/lib/data.tsx';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
+
+const Highlight = ({ children }: { children: React.ReactNode }) => (
+    <span className="bg-primary/20 text-primary font-semibold px-1.5 py-0.5 rounded-md">{children}</span>
+);
+
+const CopyBlock = ({ textToCopy }: { textToCopy: string }) => {
+    const [copied, setCopied] = useState(false);
+
+    const handleCopy = () => {
+        navigator.clipboard.writeText(textToCopy);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000); // Reset after 2 seconds
+    };
+
+    return (
+        <div className="bg-secondary/50 p-4 rounded-lg flex items-center justify-between my-4">
+            <code className="text-sm text-muted-foreground">{textToCopy}</code>
+            <Button variant="ghost" size="icon" onClick={handleCopy}>
+                {copied ? <Check className="w-4 h-4 text-green-500" /> : <Clipboard className="w-4 h-4" />}
+            </Button>
+        </div>
+    );
+};
+
 
 export default function AddAppPage() {
     const [step, setStep] = useState<'guide' | 'form'>('guide');
@@ -72,38 +96,154 @@ export default function AddAppPage() {
                                 </p>
 
                                 <Accordion type="single" collapsible className="w-full space-y-4">
-                                    {processSteps.map((item, index) => (
-                                        <AccordionItem key={index} value={`item-${index}`} className="bg-secondary/30 rounded-xl border overflow-hidden">
-                                            <AccordionTrigger className="p-6 text-left hover:no-underline flex flex-row items-center justify-between">
-                                                <div className="flex items-start">
-                                                    <span className="text-5xl font-black text-primary/20 leading-none w-20">0{index + 1}</span>
-                                                    <div>
-                                                        <h3 className="font-bold text-xl mb-1">{item.title}</h3>
-                                                        <p className="text-muted-foreground text-sm text-left">{item.shortDescription}</p>
-                                                    </div>
+                                    <AccordionItem value="item-1" className="bg-secondary/30 rounded-xl border overflow-hidden">
+                                        <AccordionTrigger className="p-6 text-left hover:no-underline flex flex-row items-center justify-between">
+                                            <div className="flex items-start">
+                                                <span className="text-5xl font-black text-primary/20 leading-none w-20">01</span>
+                                                <div>
+                                                    <h3 className="font-bold text-xl mb-1">Grant Our Testers Access</h3>
+                                                    <p className="text-muted-foreground text-sm text-left">Add our official tester group to your app's internal test track.</p>
                                                 </div>
-                                                <ChevronDown className="h-6 w-6 shrink-0 transition-transform duration-200" />
-                                            </AccordionTrigger>
-                                            <AccordionContent className="px-6 pb-6">
-                                                <div className="flex flex-col md:flex-row gap-6 items-start">
-                                                    <div className="flex-1 space-y-4">
-                                                        <p className="text-muted-foreground whitespace-pre-line">{item.detailedDescription}</p>
-                                                    </div>
-                                                    <div className="w-full md:w-64 flex-shrink-0">
-                                                        <div
-                                                            className="relative w-full h-52 rounded-lg overflow-hidden group cursor-pointer"
-                                                            onClick={() => setFullscreenImage(item.imageUrl)}
-                                                        >
-                                                            <Image src={item.imageUrl} data-ai-hint={item.dataAiHint} alt={item.title} layout="fill" objectFit="cover" className="transition-transform duration-300 group-hover:scale-105" />
-                                                            <div className="absolute inset-0 bg-black/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                                                                <Expand className="w-8 h-8 text-white" />
-                                                            </div>
+                                            </div>
+                                            <ChevronDown className="h-6 w-6 shrink-0 transition-transform duration-200" />
+                                        </AccordionTrigger>
+                                        <AccordionContent className="px-6 pb-6">
+                                            <div className="flex flex-col md:flex-row gap-6 items-start">
+                                                <div className="flex-1 space-y-4 text-muted-foreground">
+                                                    <p>First, head to the Google Play Console and select your app.</p>
+                                                    <ol className="list-decimal list-inside space-y-3 pl-2">
+                                                        <li>Navigate to the <Highlight>Internal Testing</Highlight> page from the side menu.</li>
+                                                        <li>Go to the <Highlight>Testers</Highlight> tab.</li>
+                                                        <li>Find the "Tester lists" section and click "Create email list" if you don't have one, or select an existing one.</li>
+                                                        <li>In the "Add email addresses" field, paste the following Google Group address. This is our secure, private group of vetted testers.</li>
+                                                    </ol>
+                                                    <CopyBlock textToCopy="testers-community@googlegroups.com" />
+                                                    <p className="text-xs italic"><strong>Why?</strong> This allows our testers to securely download your app from the Play Store for the 14-day test cycle. Your app remains invisible to the public.</p>
+                                                </div>
+                                                <div className="w-full md:w-64 flex-shrink-0">
+                                                    <div
+                                                        className="relative w-full h-52 rounded-lg overflow-hidden group cursor-pointer"
+                                                        onClick={() => setFullscreenImage(processSteps[0].imageUrl)}
+                                                    >
+                                                        <Image src={processSteps[0].imageUrl} data-ai-hint={processSteps[0].dataAiHint} alt={processSteps[0].title} layout="fill" objectFit="cover" className="transition-transform duration-300 group-hover:scale-105" />
+                                                        <div className="absolute inset-0 bg-black/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                                            <Expand className="w-8 h-8 text-white" />
                                                         </div>
                                                     </div>
                                                 </div>
-                                            </AccordionContent>
-                                        </AccordionItem>
-                                    ))}
+                                            </div>
+                                        </AccordionContent>
+                                    </AccordionItem>
+
+                                     <AccordionItem value="item-2" className="bg-secondary/30 rounded-xl border overflow-hidden">
+                                        <AccordionTrigger className="p-6 text-left hover:no-underline flex flex-row items-center justify-between">
+                                            <div className="flex items-start">
+                                                <span className="text-5xl font-black text-primary/20 leading-none w-20">02</span>
+                                                <div>
+                                                    <h3 className="font-bold text-xl mb-1">Enable Global Reach</h3>
+                                                    <p className="text-muted-foreground text-sm text-left">Make your app available in all countries for maximum test coverage.</p>
+                                                </div>
+                                            </div>
+                                            <ChevronDown className="h-6 w-6 shrink-0 transition-transform duration-200" />
+                                        </AccordionTrigger>
+                                        <AccordionContent className="px-6 pb-6">
+                                            <div className="flex flex-col md:flex-row gap-6 items-start">
+                                                <div className="flex-1 space-y-4 text-muted-foreground">
+                                                    <p>To ensure our diverse, international team can test your app, you must enable worldwide distribution.</p>
+                                                     <ol className="list-decimal list-inside space-y-3 pl-2">
+                                                        <li>While still on the internal testing track, click the <Highlight>Countries / regions</Highlight> tab.</li>
+                                                        <li>Click <Highlight>Add countries / regions</Highlight>.</li>
+                                                        <li>For the best results and maximum coverage, we highly recommend selecting the first checkbox to include <Highlight>All</Highlight> countries and regions.</li>
+                                                    </ol>
+                                                    <p className="text-xs italic"><strong>Benefit:</strong> This simple step allows testers from different regions with varied network conditions and device models to test your app, uncovering bugs you might otherwise miss.</p>
+                                                </div>
+                                                <div className="w-full md:w-64 flex-shrink-0">
+                                                    <div
+                                                        className="relative w-full h-52 rounded-lg overflow-hidden group cursor-pointer"
+                                                        onClick={() => setFullscreenImage(processSteps[1].imageUrl)}
+                                                    >
+                                                        <Image src={processSteps[1].imageUrl} data-ai-hint={processSteps[1].dataAiHint} alt={processSteps[1].title} layout="fill" objectFit="cover" className="transition-transform duration-300 group-hover:scale-105" />
+                                                        <div className="absolute inset-0 bg-black/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                                            <Expand className="w-8 h-8 text-white" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </AccordionContent>
+                                    </AccordionItem>
+
+                                     <AccordionItem value="item-3" className="bg-secondary/30 rounded-xl border overflow-hidden">
+                                        <AccordionTrigger className="p-6 text-left hover:no-underline flex flex-row items-center justify-between">
+                                            <div className="flex items-start">
+                                                <span className="text-5xl font-black text-primary/20 leading-none w-20">03</span>
+                                                <div>
+                                                    <h3 className="font-bold text-xl mb-1">Submit for Google's Review</h3>
+                                                    <p className="text-muted-foreground text-sm text-left">Save your changes and submit them to Google for a quick review.</p>
+                                                </div>
+                                            </div>
+                                            <ChevronDown className="h-6 w-6 shrink-0 transition-transform duration-200" />
+                                        </AccordionTrigger>
+                                        <AccordionContent className="px-6 pb-6">
+                                            <div className="flex flex-col md:flex-row gap-6 items-start">
+                                                <div className="flex-1 space-y-4 text-muted-foreground">
+                                                     <p>After configuring the tester list and countries, you just need to save the changes.</p>
+                                                    <ol className="list-decimal list-inside space-y-3 pl-2">
+                                                        <li>Click the <Highlight>Save</Highlight> button at the bottom right of the page.</li>
+                                                        <li>This will submit your changes to Google for a standard, automated process to ensure the track is set up correctly.</li>
+                                                    </ol>
+                                                     <p className="text-xs italic"><strong>What to expect:</strong> This is not a full app review. It is a quick check of your testing configuration. Approval is typically very fast, often taking anywhere from a few minutes to a couple of hours.</p>
+                                                </div>
+                                                <div className="w-full md:w-64 flex-shrink-0">
+                                                    <div
+                                                        className="relative w-full h-52 rounded-lg overflow-hidden group cursor-pointer"
+                                                        onClick={() => setFullscreenImage(processSteps[2].imageUrl)}
+                                                    >
+                                                        <Image src={processSteps[2].imageUrl} data-ai-hint={processSteps[2].dataAiHint} alt={processSteps[2].title} layout="fill" objectFit="cover" className="transition-transform duration-300 group-hover:scale-105" />
+                                                        <div className="absolute inset-0 bg-black/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                                            <Expand className="w-8 h-8 text-white" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </AccordionContent>
+                                    </AccordionItem>
+
+                                     <AccordionItem value="item-4" className="bg-secondary/30 rounded-xl border overflow-hidden">
+                                        <AccordionTrigger className="p-6 text-left hover:no-underline flex flex-row items-center justify-between">
+                                            <div className="flex items-start">
+                                                <span className="text-5xl font-black text-primary/20 leading-none w-20">04</span>
+                                                <div>
+                                                    <h3 className="font-bold text-xl mb-1">Activate Your Test Cycle</h3>
+                                                    <p className="text-muted-foreground text-sm text-left">Come back to inTesters with your test URL to begin.</p>
+                                                </div>
+                                            </div>
+                                            <ChevronDown className="h-6 w-6 shrink-0 transition-transform duration-200" />
+                                        </AccordionTrigger>
+                                        <AccordionContent className="px-6 pb-6">
+                                            <div className="flex flex-col md:flex-row gap-6 items-start">
+                                                <div className="flex-1 space-y-4 text-muted-foreground">
+                                                    <p>Once Google approves your changes, you're ready to activate the test cycle!</p>
+                                                     <ol className="list-decimal list-inside space-y-3 pl-2">
+                                                        <li>On your internal testing page, look for the <Highlight>Join on the web</Highlight> link.</li>
+                                                        <li>Click the copy icon next to it to copy the URL.</li>
+                                                        <li>Come back to this page, click "Get Started" below, and paste this URL into the <Highlight>Testing URL</Highlight> field in the form.</li>
+                                                    </ol>
+                                                     <p className="text-xs italic"><strong>Final Step:</strong> After you fill out the form and submit, our testers will be notified automatically, and your 14-day testing cycle will officially begin!</p>
+                                                </div>
+                                                <div className="w-full md:w-64 flex-shrink-0">
+                                                    <div
+                                                        className="relative w-full h-52 rounded-lg overflow-hidden group cursor-pointer"
+                                                        onClick={() => setFullscreenImage(processSteps[3].imageUrl)}
+                                                    >
+                                                        <Image src={processSteps[3].imageUrl} data-ai-hint={processSteps[3].dataAiHint} alt={processSteps[3].title} layout="fill" objectFit="cover" className="transition-transform duration-300 group-hover:scale-105" />
+                                                        <div className="absolute inset-0 bg-black/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                                            <Expand className="w-8 h-8 text-white" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </AccordionContent>
+                                    </AccordionItem>
                                 </Accordion>
 
                                 <div className="pt-6 border-t flex justify-end">
@@ -171,3 +311,5 @@ export default function AddAppPage() {
         </>
     );
 }
+
+    

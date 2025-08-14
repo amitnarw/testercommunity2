@@ -68,7 +68,8 @@ export type PricingPlan = {
 export type ProcessStep = {
     title: string;
     shortDescription: string;
-    detailedDescription: string;
     imageUrl: string;
     dataAiHint: string;
 };
+
+    
