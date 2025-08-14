@@ -92,12 +92,14 @@ export default function AddAppPage() {
 
     const handlePaste = (event: React.ClipboardEvent<HTMLInputElement>) => {
         const text = event.clipboardData.getData('text');
-        if (text.match(/\.(jpeg|jpg|gif|png)$/) != null) {
+        // Simple regex to check for image extensions
+        if (/\.(jpeg|jpg|gif|png)$/.test(text)) {
             setIconPreview(text);
         } else {
+            // A more complex check could be added here for URLs without extensions
             toast({
                 title: "Invalid Link",
-                description: "Please paste a valid image URL.",
+                description: "Please paste a direct link to an image.",
                 variant: "destructive",
             })
         }
@@ -346,22 +348,22 @@ export default function AddAppPage() {
                                                 </Button>
                                             </div>
                                         ) : (
-                                            <div className="relative border border-dashed rounded-lg p-4 grid grid-cols-2 divide-x divide-dashed">
+                                            <div className="relative border border-dashed rounded-lg p-0 grid grid-cols-1 md:grid-cols-2">
                                                  <div {...getRootProps()} className={`flex flex-col items-center justify-center p-8 cursor-pointer hover:bg-secondary/50 rounded-l-md transition-colors ${isDragActive ? 'bg-secondary' : ''}`}>
                                                     <input {...getInputProps()} />
                                                     <Upload className="w-10 h-10 text-muted-foreground mb-2" />
                                                     <p className="font-semibold text-center">Select Image to Upload</p>
                                                     <p className="text-xs text-muted-foreground text-center">or drag and drop</p>
                                                  </div>
-                                                 <div className="p-8 flex flex-col items-center justify-center">
+                                                 <div className="p-8 flex flex-col items-center justify-center border-t border-dashed md:border-t-0 md:border-l">
                                                      <LinkIcon className="w-10 h-10 text-muted-foreground mb-2" />
                                                      <p className="font-semibold text-center mb-2">Paste image URL</p>
                                                      <Input type="text" placeholder="https://..." onPaste={handlePaste} className="text-center" />
                                                  </div>
-                                                 <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center">
-                                                     <Separator orientation="vertical" className="h-12" />
-                                                     <div className="mx-2 bg-background px-1 text-xs text-muted-foreground font-bold">OR</div>
-                                                     <Separator orientation="vertical" className="h-12"/>
+                                                 <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 hidden md:flex items-center">
+                                                     <Separator orientation="vertical" className="h-16" />
+                                                     <div className="mx-2 bg-background px-1 text-xs text-muted-foreground font-bold rounded-full border">OR</div>
+                                                     <Separator orientation="vertical" className="h-16"/>
                                                  </div>
                                             </div>
                                         )}
@@ -408,3 +410,4 @@ export default function AddAppPage() {
         </>
     );
 }
+
