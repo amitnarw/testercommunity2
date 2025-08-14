@@ -310,7 +310,7 @@ Please add the following Google Group email address:
 testers-community@googlegroups.com
 
 Why this is needed: This is a secure, private group containing our vetted testers. Granting access allows them to download your app from the Play Store for the 14-day test cycle. Your app remains invisible to the public.`,
-        imageUrl: "https://images.unsplash.com/photo-1556742502-ec7c0e9f34b1?q=80&w=600&auto=format=fit=crop",
+        imageUrl: "/add-app-1.webp",
         dataAiHint: "team collaboration"
     },
     { 
@@ -321,7 +321,7 @@ Why this is needed: This is a secure, private group containing our vetted tester
 In the "Countries / regions" tab for your internal track, click "Add countries / regions". For maximum coverage, we highly recommend selecting all available countries.
 
 Benefit: This simple step allows testers from different regions with varied network conditions and device models to test your app, uncovering bugs you might otherwise miss.`,
-        imageUrl: "https://images.unsplash.com/photo-1543286386-713bdd548da4?q=80&w=600&auto=format=fit=crop",
+        imageUrl: "/add-app-2.webp",
         dataAiHint: "world map data"
     },
     { 
@@ -330,7 +330,7 @@ Benefit: This simple step allows testers from different regions with varied netw
         detailedDescription: `After configuring the testing settings (adding the tester group and setting countries), save your changes and submit them to Google for review. This is a standard, automated Google Play process to ensure the track is set up correctly.
 
 What to expect: This is not a full app review. It is a quick check of your testing configuration. Approval is typically very fast, often taking anywhere from a few minutes to a few hours. You will receive a notification from Google once it's approved.`,
-        imageUrl: "https://images.unsplash.com/photo-1584984792203-12a52a355642?q=80&w=600&auto=format=fit=crop",
+        imageUrl: "/add-app-3.webp",
         dataAiHint: "checklist document"
      },
     { 
@@ -343,7 +343,7 @@ What to expect: This is not a full app review. It is a quick check of your testi
 3. Come back to TestTribe and paste this URL into the submission form.
 
 After you submit, our testers will be notified automatically, and your 14-day testing cycle will officially begin!`,
-        imageUrl: "https://images.unsplash.com/photo-1581090464777-f3220bbe1b8b?q=80&w=600&auto=format=fit=crop",
+        imageUrl: "/add-app-4.webp",
         dataAiHint: "scientist laboratory"
     },
 ];
