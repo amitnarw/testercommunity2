@@ -50,7 +50,7 @@ export default function DashboardPage() {
                                             selectedStep === index ? "bg-primary text-primary-foreground" : "hover:bg-primary/10"
                                         )}
                                     >
-                                        <div className={cn(selectedStep !== index && "bg-primary/10 text-primary p-2 rounded-lg")}>
+                                        <div className={cn("p-2 rounded-lg", selectedStep === index ? "bg-primary/20 text-primary-foreground" : "bg-primary/10 text-primary")}>
                                             {item.icon}
                                         </div>
                                         <span className="font-semibold">{item.title}</span>
@@ -63,24 +63,31 @@ export default function DashboardPage() {
                             </div>
                         </div>
                         <div className="md:col-span-8 p-12 flex flex-col justify-between">
-                            <AnimatePresence mode="wait">
-                                <motion.div
-                                    key={selectedStep}
-                                    initial={{ opacity: 0, y: 20 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    exit={{ opacity: 0, y: -20 }}
-                                    transition={{ duration: 0.3 }}
-                                    className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center"
-                                >
-                                    <div>
-                                        <h4 className="text-3xl font-bold mb-4">{processSteps[selectedStep].title}</h4>
-                                        <p className="text-muted-foreground">{processSteps[selectedStep].detailedDescription}</p>
+                            <div className="h-full flex flex-col">
+                                <div className="mb-6">
+                                    <div className="aspect-video bg-muted rounded-lg flex items-center justify-center">
+                                        <p className="text-muted-foreground">Video Guide Placeholder</p>
                                     </div>
-                                    <div className="relative w-full h-64 rounded-lg overflow-hidden group">
-                                        <Image src={processSteps[selectedStep].imageUrl} data-ai-hint={processSteps[selectedStep].dataAiHint} alt={processSteps[selectedStep].title} layout="fill" objectFit="cover" className="transition-transform duration-300 group-hover:scale-105" />
-                                    </div>
-                                </motion.div>
-                            </AnimatePresence>
+                                </div>
+                                <AnimatePresence mode="wait">
+                                    <motion.div
+                                        key={selectedStep}
+                                        initial={{ opacity: 0, y: 20 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        exit={{ opacity: 0, y: -20 }}
+                                        transition={{ duration: 0.3 }}
+                                        className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center flex-grow"
+                                    >
+                                        <div>
+                                            <h4 className="text-3xl font-bold mb-4">{processSteps[selectedStep].title}</h4>
+                                            <p className="text-muted-foreground whitespace-pre-line">{processSteps[selectedStep].detailedDescription}</p>
+                                        </div>
+                                        <div className="relative w-full h-64 rounded-lg overflow-hidden group">
+                                            <Image src={processSteps[selectedStep].imageUrl} data-ai-hint={processSteps[selectedStep].dataAiHint} alt={processSteps[selectedStep].title} layout="fill" objectFit="cover" className="transition-transform duration-300 group-hover:scale-105" />
+                                        </div>
+                                    </motion.div>
+                                </AnimatePresence>
+                            </div>
                             <div className="mt-auto pt-6 text-right">
                                 <Button onClick={() => setModalStep(2)} className="text-lg py-6">
                                     Get Started <ArrowRight className="ml-2"/>
