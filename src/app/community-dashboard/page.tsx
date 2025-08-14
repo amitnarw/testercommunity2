@@ -9,11 +9,15 @@ import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel,
 import { communityApps } from '@/lib/data';
 import { PointsSidebar } from '@/components/points-sidebar';
 import { CommunityAppCard } from '@/components/community-app-card';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 
 export default function CommunityDashboardPage() {
     const [filter, setFilter] = useState('All');
     const [sort, setSort] = useState('Most Recent');
+
+    const ongoingApps = communityApps.slice(0, 1);
+    const completedApps = communityApps.slice(1, 2);
 
     return (
         <div className="bg-secondary/50 min-h-screen">
@@ -59,49 +63,90 @@ export default function CommunityDashboardPage() {
                         </div>
                         
                         <main>
-                            <Card className="rounded-xl">
-                                <CardHeader>
-                                    <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-                                        <div>
+                            <Tabs defaultValue="available" className="w-full">
+                                <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
+                                    <TabsList>
+                                        <TabsTrigger value="available">Available</TabsTrigger>
+                                        <TabsTrigger value="ongoing">Ongoing</TabsTrigger>
+                                        <TabsTrigger value="completed">Completed</TabsTrigger>
+                                    </TabsList>
+                                    <div className="flex gap-2">
+                                        <DropdownMenu>
+                                            <DropdownMenuTrigger asChild>
+                                                <Button variant="outline" className="gap-2 rounded-xl">
+                                                    <ListFilter className="h-4 w-4" /> Filter
+                                                </Button>
+                                            </DropdownMenuTrigger>
+                                            <DropdownMenuContent align="end" className="rounded-xl">
+                                                <DropdownMenuLabel>Filter by Category</DropdownMenuLabel>
+                                                <DropdownMenuSeparator />
+                                                {['All', 'Games', 'Productivity', 'Social', 'Utilities'].map(cat => (
+                                                        <DropdownMenuItem key={cat} onClick={() => setFilter(cat)}>{cat}</DropdownMenuItem>
+                                                ))}
+                                            </DropdownMenuContent>
+                                        </DropdownMenu>
+                                        <DropdownMenu>
+                                            <DropdownMenuTrigger asChild>
+                                                <Button variant="outline" className="gap-2 rounded-xl">
+                                                    <ArrowUpDown className="h-4 w-4" /> Sort
+                                                </Button>
+                                            </DropdownMenuTrigger>
+                                            <DropdownMenuContent align="end" className="rounded-xl">
+                                                    {['Most Recent', 'Most Rewarding', 'Time to Test'].map(cat => (
+                                                        <DropdownMenuItem key={cat} onClick={() => setSort(cat)}>{cat}</DropdownMenuItem>
+                                                ))}
+                                            </DropdownMenuContent>
+                                        </DropdownMenu>
+                                    </div>
+                                </div>
+                                <TabsContent value="available">
+                                     <Card className="rounded-xl">
+                                        <CardHeader>
                                             <CardTitle>Available Apps to Test</CardTitle>
                                             <CardDescription>Choose an app to test and start earning points.</CardDescription>
-                                        </div>
-                                        <div className="flex gap-2">
-                                            <DropdownMenu>
-                                                <DropdownMenuTrigger asChild>
-                                                    <Button variant="outline" className="gap-2 rounded-xl">
-                                                        <ListFilter className="h-4 w-4" /> Filter
-                                                    </Button>
-                                                </DropdownMenuTrigger>
-                                                <DropdownMenuContent align="end" className="rounded-xl">
-                                                    <DropdownMenuLabel>Filter by Category</DropdownMenuLabel>
-                                                    <DropdownMenuSeparator />
-                                                    {['All', 'Games', 'Productivity', 'Social', 'Utilities'].map(cat => (
-                                                         <DropdownMenuItem key={cat} onClick={() => setFilter(cat)}>{cat}</DropdownMenuItem>
-                                                    ))}
-                                                </DropdownMenuContent>
-                                            </DropdownMenu>
-                                            <DropdownMenu>
-                                                <DropdownMenuTrigger asChild>
-                                                    <Button variant="outline" className="gap-2 rounded-xl">
-                                                        <ArrowUpDown className="h-4 w-4" /> Sort
-                                                    </Button>
-                                                </DropdownMenuTrigger>
-                                                <DropdownMenuContent align="end" className="rounded-xl">
-                                                     {['Most Recent', 'Most Rewarding', 'Time to Test'].map(cat => (
-                                                         <DropdownMenuItem key={cat} onClick={() => setSort(cat)}>{cat}</DropdownMenuItem>
-                                                    ))}
-                                                </DropdownMenuContent>
-                                            </DropdownMenu>
-                                        </div>
-                                    </div>
-                                </CardHeader>
-                                <CardContent className="space-y-4">
-                                    {communityApps.map(app => (
-                                        <CommunityAppCard key={app.id} app={app} />
-                                    ))}
-                                </CardContent>
-                            </Card>
+                                        </CardHeader>
+                                        <CardContent className="space-y-4">
+                                            {communityApps.map(app => (
+                                                <CommunityAppCard key={app.id} app={app} />
+                                            ))}
+                                        </CardContent>
+                                    </Card>
+                                </TabsContent>
+                                <TabsContent value="ongoing">
+                                    <Card className="rounded-xl">
+                                        <CardHeader>
+                                            <CardTitle>Ongoing Tests</CardTitle>
+                                            <CardDescription>Apps you are currently testing. Submit your feedback before the deadline!</CardDescription>
+                                        </CardHeader>
+                                        <CardContent className="space-y-4">
+                                            {ongoingApps.length > 0 ? (
+                                                ongoingApps.map(app => (
+                                                    <CommunityAppCard key={app.id} app={app} />
+                                                ))
+                                            ) : (
+                                                <div className="text-center py-12 text-muted-foreground">You have no ongoing tests.</div>
+                                            )}
+                                        </CardContent>
+                                    </Card>
+                                </TabsContent>
+                                <TabsContent value="completed">
+                                    <Card className="rounded-xl">
+                                        <CardHeader>
+                                            <CardTitle>Completed Tests</CardTitle>
+                                            <CardDescription>Apps you have successfully tested and provided feedback for.</CardDescription>
+                                        </CardHeader>
+                                        <CardContent className="space-y-4">
+                                            {completedApps.length > 0 ? (
+                                                completedApps.map(app => (
+                                                    <CommunityAppCard key={app.id} app={app} />
+                                                ))
+                                            ) : (
+                                                 <div className="text-center py-12 text-muted-foreground">You have not completed any tests yet.</div>
+                                            )}
+                                        </CardContent>
+                                    </Card>
+                                </TabsContent>
+                            </Tabs>
                         </main>
 
                     </div>
