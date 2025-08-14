@@ -51,7 +51,7 @@ export default function DashboardPage() {
                     <div className="flex flex-col h-full">
                       <DialogHeader className="p-6 border-b shrink-0">
                           <DialogTitle className="text-2xl font-bold">Get Your App Tested</DialogTitle>
-                          <DialogClose className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground">
+                           <DialogClose className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground">
                             <X className="h-6 w-6" />
                             <span className="sr-only">Close</span>
                           </DialogClose>
@@ -73,13 +73,15 @@ export default function DashboardPage() {
                           {processSteps.map((item, index) => (
                               <div key={index} className="bg-secondary/30 p-4 rounded-lg border">
                                   <div className="flex items-start gap-4">
-                                      <div className="flex-shrink-0 h-8 w-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-bold text-lg">{index + 1}</div>
+                                      <div className="text-5xl font-bold text-primary/50">{index + 1}</div>
                                       <div className='flex-grow'>
-                                          <h3 className="font-semibold text-lg leading-tight">{item.title}</h3>
-                                           <Accordion type="single" collapsible className="w-full">
+                                          <Accordion type="single" collapsible className="w-full">
                                             <AccordionItem value="item-1" className="border-b-0">
-                                                <AccordionTrigger className="text-sm text-muted-foreground hover:no-underline py-2 justify-start gap-1">
-                                                  <span>{item.shortDescription}</span>
+                                                <AccordionTrigger className="text-sm font-semibold text-left hover:no-underline py-2 justify-between">
+                                                  <div className="flex-grow">
+                                                    <h3 className="font-semibold text-lg leading-tight">{item.title}</h3>
+                                                    <p className="text-sm text-muted-foreground font-normal">{item.shortDescription}</p>
+                                                  </div>
                                                   <ChevronDown className="h-4 w-4 shrink-0 transition-transform duration-200" />
                                                 </AccordionTrigger>
                                                 <AccordionContent className="space-y-4 pt-2">
