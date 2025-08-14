@@ -12,7 +12,7 @@ import { useState, useEffect } from 'react';
 import { useTheme } from 'next-themes';
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuGroup } from './ui/dropdown-menu';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
-import { demoUser } from '@/lib/data';
+import { demoUser } from '@/lib/data.tsx';
 
 const navItems = [
   { name: 'How It Works', href: '/how-it-works' },

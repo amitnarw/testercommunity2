@@ -13,16 +13,13 @@ import Link from 'next/link';
 import { cn } from '@/lib/utils';
 import { useState } from 'react';
 import Image from 'next/image';
+import { AnimatePresence, motion } from 'framer-motion';
+import { processSteps } from '@/lib/data.tsx';
 
-const processSteps = [
-    { icon: <Users className="w-5 h-5" />, title: "Add Testers Group", description: "Invite your internal team or select from our community." },
-    { icon: <Globe className="w-5 h-5" />, title: "Enable Global Testing", description: "Optionally, open your app to a wider global audience." },
-    { icon: <FileCheck className="w-5 h-5" />, title: "Submit for Review", description: "Our team will quickly review your app for readiness." },
-    { icon: <Power className="w-5 h-5" />, title: "Activate Testing", description: "Once approved, your testing cycle begins immediately." },
-]
 
 export default function DashboardPage() {
-  const [step, setStep] = useState(1);
+  const [modalStep, setModalStep] = useState(1);
+  const [selectedStep, setSelectedStep] = useState(0);
 
   return (
     <div className="min-h-screen bg-secondary/50">
@@ -33,43 +30,59 @@ export default function DashboardPage() {
             <p className="text-muted-foreground">Manage your apps and testing projects.</p>
           </div>
           <div className='flex items-center gap-2'>
-            <Dialog onOpenChange={() => setStep(1)}>
+            <Dialog onOpenChange={() => setModalStep(1)}>
               <DialogTrigger asChild>
                 <Button><PlusCircle className="mr-2 h-4 w-4" /> Add New App</Button>
               </DialogTrigger>
-              <DialogContent className="sm:max-w-5xl p-0 h-[600px] flex">
-                  {step === 1 && (
-                    <div className="grid grid-cols-1 md:grid-cols-2 w-full">
-                        <div className="relative bg-secondary/50 p-8 flex flex-col items-center justify-center rounded-l-lg">
-                           <div className="relative w-full h-64 rounded-lg overflow-hidden group">
-                             <Image src="https://placehold.co/800x600.png" data-ai-hint="video player" alt="Video guide thumbnail" layout="fill" objectFit="cover" className="transition-transform duration-300 group-hover:scale-105" />
-                             <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
-                                <PlayCircle className="w-20 h-20 text-white/70 group-hover:text-white transition-colors" />
-                             </div>
-                           </div>
-                           <h3 className="text-xl font-bold mt-6">How to Add Your App</h3>
-                           <p className="text-muted-foreground text-center mt-2">Watch this quick guide to learn how to set up your project for testing success.</p>
-                        </div>
-                        <div className="p-12 flex flex-col justify-between">
-                            <div>
-                                <h3 className="text-2xl font-bold mb-6">Your Path to a Bug-Free App</h3>
-                                <div className="space-y-5">
-                                    {processSteps.map((item, index) => (
-                                        <div key={index} className="flex items-start gap-4">
-                                            <div className="bg-primary/10 text-primary p-3 rounded-lg">
-                                                {item.icon}
-                                            </div>
-                                            <div>
-                                                <h4 className="font-semibold">{item.title}</h4>
-                                                <p className="text-sm text-muted-foreground">{item.description}</p>
-                                            </div>
+              <DialogContent className="sm:max-w-6xl p-0 h-[600px] flex flex-col">
+                  {modalStep === 1 && (
+                    <div className="grid grid-cols-1 md:grid-cols-12 w-full h-full">
+                        <div className="md:col-span-4 bg-secondary/50 p-8 flex flex-col justify-between rounded-l-lg">
+                           <div>
+                            <h3 className="text-2xl font-bold mb-6">How It Works</h3>
+                            <div className="space-y-2">
+                                {processSteps.map((item, index) => (
+                                    <button 
+                                        key={index} 
+                                        onClick={() => setSelectedStep(index)}
+                                        className={cn(
+                                            "w-full text-left p-4 rounded-lg transition-colors flex items-center gap-4",
+                                            selectedStep === index ? "bg-primary text-primary-foreground" : "hover:bg-primary/10"
+                                        )}
+                                    >
+                                        <div className={cn(selectedStep !== index && "bg-primary/10 text-primary p-2 rounded-lg")}>
+                                            {item.icon}
                                         </div>
-                                    ))}
-                                </div>
+                                        <span className="font-semibold">{item.title}</span>
+                                    </button>
+                                ))}
                             </div>
-                            <div className="mt-8 border-t pt-6">
+                           </div>
+                           <div className="mt-8 border-t pt-6">
                                 <p className="text-xs text-muted-foreground mb-4">Confused? <Link href="/help" className="text-primary underline">Contact Support</Link></p>
-                                <Button onClick={() => setStep(2)} className="w-full text-lg py-6">
+                            </div>
+                        </div>
+                        <div className="md:col-span-8 p-12 flex flex-col justify-between">
+                            <AnimatePresence mode="wait">
+                                <motion.div
+                                    key={selectedStep}
+                                    initial={{ opacity: 0, y: 20 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    exit={{ opacity: 0, y: -20 }}
+                                    transition={{ duration: 0.3 }}
+                                    className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center"
+                                >
+                                    <div>
+                                        <h4 className="text-3xl font-bold mb-4">{processSteps[selectedStep].title}</h4>
+                                        <p className="text-muted-foreground">{processSteps[selectedStep].detailedDescription}</p>
+                                    </div>
+                                    <div className="relative w-full h-64 rounded-lg overflow-hidden group">
+                                        <Image src={processSteps[selectedStep].imageUrl} data-ai-hint={processSteps[selectedStep].dataAiHint} alt={processSteps[selectedStep].title} layout="fill" objectFit="cover" className="transition-transform duration-300 group-hover:scale-105" />
+                                    </div>
+                                </motion.div>
+                            </AnimatePresence>
+                            <div className="mt-auto pt-6 text-right">
+                                <Button onClick={() => setModalStep(2)} className="text-lg py-6">
                                     Get Started <ArrowRight className="ml-2"/>
                                 </Button>
                             </div>
@@ -77,7 +90,7 @@ export default function DashboardPage() {
                     </div>
                   )}
 
-                  {step === 2 && (
+                  {modalStep === 2 && (
                     <div className="p-12 w-full flex flex-col">
                         <DialogHeader>
                             <DialogTitle className="text-3xl font-bold">Submit Your App Details</DialogTitle>
@@ -106,7 +119,7 @@ export default function DashboardPage() {
                             </div>
                         </div>
                         <DialogFooter className="mt-auto pt-6 border-t">
-                            <Button variant="ghost" onClick={() => setStep(1)}><ArrowLeft className="mr-2 h-4 w-4"/> Back</Button>
+                            <Button variant="ghost" onClick={() => setModalStep(1)}><ArrowLeft className="mr-2 h-4 w-4"/> Back</Button>
                             <Button type="submit" className="px-8">Submit App</Button>
                         </DialogFooter>
                     </div>

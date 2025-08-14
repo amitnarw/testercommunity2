@@ -10,7 +10,7 @@ import Image from "next/image";
 import { ScrollToTopButton } from '@/components/scroll-to-top-button';
 import { ScrollingRibbon } from '@/components/scrolling-ribbon';
 import React from 'react';
-import { testimonials } from '@/lib/data';
+import { testimonials } from '@/lib/data.tsx';
 import { TestimonialScroller } from '@/components/testimonial-scroller';
 import { TwoPathsSection } from '@/components/two-paths-section';
 import { GlobalImpactSection } from '@/components/global-impact-section';

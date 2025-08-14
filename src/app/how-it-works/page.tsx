@@ -4,7 +4,7 @@
 import { useLayoutEffect, useRef, useState, useEffect } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { communityPathSteps, professionalPathSteps } from '@/lib/data';
+import { communityPathSteps, professionalPathSteps } from '@/lib/data.tsx';
 import { RoadmapStepCard } from '@/components/roadmap-step-card';
 import { ArrowRight, ArrowDown, Rocket } from 'lucide-react';
 import Link from 'next/link';

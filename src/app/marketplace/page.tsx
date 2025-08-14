@@ -1,9 +1,10 @@
+
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuCheckboxItem } from '@/components/ui/dropdown-menu';
 import { ListFilter, Search } from 'lucide-react';
 import TesterCard from '@/components/tester-card';
-import { testers } from '@/lib/data';
+import { testers } from '@/lib/data.tsx';
 
 export default function MarketplacePage() {
   return (

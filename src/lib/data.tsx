@@ -1,5 +1,6 @@
 
-import type { Tester, BlogPost, Testimonial, RoadmapStep, UserProfileData } from './types';
+import type { Tester, BlogPost, Testimonial, RoadmapStep, UserProfileData, ProcessStep } from './types';
+import { Users, Globe, FileCheck, Power } from 'lucide-react';
 
 export const testers: Tester[] = [
   {
@@ -299,3 +300,34 @@ export const demoUser: UserProfileData = {
     primaryGoal: 'hire_testers',
     monthlyBudget: '500+',
 };
+
+export const processSteps: ProcessStep[] = [
+    { 
+        icon: <Users className="w-5 h-5" />, 
+        title: "Add Testers Group", 
+        detailedDescription: "First, assemble your testing team. You can invite your own internal QA team or colleagues via email. Alternatively, if you're using our community or professional services, you can select testers from the marketplace based on their skills and reputation. This ensures the right people are testing your app.",
+        imageUrl: "https://images.unsplash.com/photo-1521791136064-7986c2920216?q=80&w=600&auto=format=fit=crop",
+        dataAiHint: "team meeting"
+    },
+    { 
+        icon: <Globe className="w-5 h-5" />, 
+        title: "Enable Global Testing", 
+        detailedDescription: "Optionally, you can open your app to a wider, global audience for crowdsourced testing. This is perfect for identifying localization issues and testing on a massive variety of devices and network conditions that are difficult to replicate in a lab.",
+        imageUrl: "https://images.unsplash.com/photo-1543286386-713bdd548da4?q=80&w=600&auto=format=fit=crop",
+        dataAiHint: "world map data"
+    },
+    { 
+        icon: <FileCheck className="w-5 h-5" />, 
+        title: "Submit for Review", 
+        detailedDescription: "Once your app details are submitted, our team performs a quick review. We check to ensure the build installs correctly and that the testing instructions are clear. This step prevents delays and ensures testers have everything they need to get started right away.",
+        imageUrl: "https://images.unsplash.com/photo-1584984792203-12a52a355642?q=80&w=600&auto=format=fit=crop",
+        dataAiHint: "checklist document"
+     },
+    { 
+        icon: <Power className="w-5 h-5" />, 
+        title: "Activate Testing", 
+        detailedDescription: "As soon as your app is approved, the testing cycle begins! Your chosen testers will be notified, and you'll start seeing real-time feedback, bug reports, and insights roll into your project dashboard. You can monitor progress and collaborate with testers directly.",
+        imageUrl: "https://images.unsplash.com/photo-1581090464777-f3220bbe1b8b?q=80&w=600&auto=format=fit=crop",
+        dataAiHint: "scientist laboratory"
+    },
+];

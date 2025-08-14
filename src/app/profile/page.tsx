@@ -1,6 +1,6 @@
 
 import { UserProfileForm } from '@/components/user-profile-form';
-import { demoUser } from '@/lib/data';
+import { demoUser } from '@/lib/data.tsx';
 
 export default function ProfilePage() {
   return (

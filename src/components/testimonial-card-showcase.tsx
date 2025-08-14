@@ -2,7 +2,7 @@
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import type { Testimonial } from '@/lib/types';
-import { testimonials } from '@/lib/data';
+import { testimonials } from '@/lib/data.tsx';
 import { Quote } from 'lucide-react';
 import { cn } from '@/lib/utils';
 

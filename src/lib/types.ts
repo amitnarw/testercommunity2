@@ -1,5 +1,6 @@
 
 import type { LucideIcon } from 'lucide-react';
+import type { ReactNode } from 'react';
 
 export type Tester = {
   id: number;
@@ -63,4 +64,12 @@ export type PricingPlan = {
     apps: number;
     features: string[];
     popular: boolean;
+};
+
+export type ProcessStep = {
+    icon: ReactNode;
+    title: string;
+    detailedDescription: string;
+    imageUrl: string;
+    dataAiHint: string;
 };

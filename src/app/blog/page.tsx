@@ -1,5 +1,6 @@
+
 import BlogPostCard from '@/components/blog-post-card';
-import { blogPosts } from '@/lib/data';
+import { blogPosts } from '@/lib/data.tsx';
 import { Rss } from 'lucide-react';
 
 export default function BlogPage() {

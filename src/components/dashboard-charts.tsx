@@ -11,7 +11,7 @@ import {
   ChartLegend,
   ChartLegendContent,
 } from "@/components/ui/chart"
-import { chartData, pieChartData } from '@/lib/data'
+import { chartData, pieChartData } from '@/lib/data.tsx'
 import type { PieSectorDataItem } from 'recharts/types/polar/Pie'
 
 const initialChartData = chartData;
@@ -61,5 +61,3 @@ export default function DashboardCharts() {
     </div>
   )
 }
-
-    
