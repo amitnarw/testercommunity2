@@ -8,6 +8,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Package, FlaskConical, CheckCircle2, Coins, PlusCircle, Gem, UploadCloud } from 'lucide-react'
 import { ProjectList } from '@/components/project-list';
 import Link from 'next/link';
+import { cn } from '@/lib/utils';
 
 export default function DashboardPage() {
   return (
@@ -23,45 +24,55 @@ export default function DashboardPage() {
               <DialogTrigger asChild>
                 <Button><PlusCircle className="mr-2 h-4 w-4" /> Add New App</Button>
               </DialogTrigger>
-              <DialogContent className="sm:max-w-3xl p-0">
-                <div className="grid grid-cols-1 md:grid-cols-3">
-                  <div className="hidden md:flex flex-col items-center justify-center p-8 bg-primary/10 rounded-l-lg">
-                      <div className="bg-primary/20 p-4 rounded-full">
-                        <UploadCloud className="h-12 w-12 text-primary" />
+              <DialogContent className="sm:max-w-4xl p-0">
+                <div className="grid grid-cols-1 md:grid-cols-2">
+                  
+                  <div className="relative hidden md:flex flex-col justify-between p-8 lg:p-12 bg-secondary/50 rounded-l-lg overflow-hidden">
+                      <div className="bg-dot-pattern-dark absolute inset-0 opacity-50"></div>
+                      <div className="relative z-10">
+                        <div className="bg-primary/20 p-3 rounded-full w-fit">
+                          <UploadCloud className="h-8 w-8 text-primary" />
+                        </div>
+                        <h3 className="text-2xl font-bold mt-6">Submit Your App</h3>
+                        <p className="text-muted-foreground text-base mt-2">
+                          Provide the necessary details to get your app tested by our community or professional testers.
+                        </p>
                       </div>
-                      <h3 className="text-xl font-bold mt-4">Submit Your App</h3>
-                      <p className="text-muted-foreground text-center mt-2 text-sm">Provide the necessary details to get your app tested by our community.</p>
+                      <div className="relative z-10 text-xs text-muted-foreground">
+                        © TestTribe - App Testing Platform
+                      </div>
                   </div>
-                  <div className="col-span-2 p-8">
+
+                  <div className="p-8 lg:p-12">
                     <DialogHeader>
-                      <DialogTitle className="text-2xl">Add a new app for testing</DialogTitle>
+                      <DialogTitle className="text-2xl">New App Submission</DialogTitle>
                       <DialogDescription>
-                        Fill in the details below to submit your app.
+                        Fill in the details below. You can edit this information later.
                       </DialogDescription>
                     </DialogHeader>
-                    <div className="grid gap-6 py-6">
+                    <div className="grid gap-6 py-8">
                       <div className="grid grid-cols-2 gap-6">
                         <div className="space-y-2">
                           <Label htmlFor="name">App Name</Label>
-                          <Input id="name" placeholder="My Awesome App" className="rounded-md h-12" />
+                          <input id="name" placeholder="E.g., Project Phoenix" className="flex h-10 w-full rounded-none border-b border-input bg-transparent px-1 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-0 focus-visible:border-primary disabled:cursor-not-allowed disabled:opacity-50" />
                         </div>
                         <div className="space-y-2">
                           <Label htmlFor="url">Testing URL</Label>
-                          <Input id="url" placeholder="https://example.com/test-build" className="rounded-md h-12" />
+                           <input id="url" placeholder="https://example.com/test-build" className="flex h-10 w-full rounded-none border-b border-input bg-transparent px-1 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-0 focus-visible:border-primary disabled:cursor-not-allowed disabled:opacity-50" />
                         </div>
                       </div>
                       <div className="space-y-2">
                           <Label htmlFor="icon">App Icon URL</Label>
-                          <Input id="icon" placeholder="https://example.com/icon.png" className="rounded-md h-12" />
+                          <input id="icon" placeholder="https://example.com/icon.png" className="flex h-10 w-full rounded-none border-b border-input bg-transparent px-1 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-0 focus-visible:border-primary disabled:cursor-not-allowed disabled:opacity-50" />
                       </div>
                       <div className="space-y-2">
                         <Label htmlFor="instructions">Test Instructions (Optional)</Label>
-                        <Textarea id="instructions" placeholder="e.g., Use user: demo@test.com, pass: 1234. Focus on the new checkout flow." className="rounded-md" />
+                        <Textarea id="instructions" placeholder="e.g., Use user: demo@test.com, pass: 1234. Focus on the new checkout flow." className="rounded-xl mt-2" />
                       </div>
                     </div>
                     <DialogFooter>
                        <Button variant="outline" className="rounded-xl">Cancel</Button>
-                      <Button type="submit" className="rounded-xl">Submit App</Button>
+                      <Button type="submit" className="rounded-xl w-full sm:w-auto px-8 py-6">Submit App</Button>
                     </DialogFooter>
                   </div>
                 </div>
