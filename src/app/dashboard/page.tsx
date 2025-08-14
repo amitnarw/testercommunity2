@@ -57,17 +57,26 @@ export default function DashboardPage() {
                           </DialogClose>
                       </DialogHeader>
                       <div className="flex-grow overflow-y-auto px-6 py-6 space-y-8 min-h-0">
-                        <Card className="bg-secondary/30 border-dashed">
-                          <CardContent className="p-6 flex flex-col md:flex-row items-center gap-6">
-                            <div className="flex-grow">
-                                <h3 className="font-bold text-lg">Quick Walkthrough</h3>
-                                <p className="text-muted-foreground mt-1">This 2-minute video shows you everything from setting up your Google Play test track to submitting your app on TestTribe.</p>
-                            </div>
-                             <Button variant="outline" size="lg" className="w-full md:w-auto">
-                                <PlayCircle className="mr-2 h-5 w-5"/> Watch the 2-min Guide
-                            </Button>
-                          </CardContent>
-                        </Card>
+                        <div className="relative group rounded-xl overflow-hidden shadow-lg">
+                           <Image 
+                              src="https://images.unsplash.com/photo-1516116216624-53e697320f64?q=80&w=800&auto=format=fit=crop" 
+                              alt="Video walkthrough thumbnail" 
+                              width={800} 
+                              height={450}
+                              className="w-full h-auto object-cover"
+                              data-ai-hint="code testing"
+                            />
+                           <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent p-6 flex flex-col justify-end">
+                              <h3 className="font-bold text-lg text-white">Quick Walkthrough</h3>
+                              <p className="text-white/80 text-sm mt-1 max-w-prose">This 2-minute video shows you everything from setting up your Google Play test track to submitting your app on TestTribe.</p>
+                           </div>
+                           <div className="absolute inset-0 flex items-center justify-center">
+                              <Button variant="ghost" className="w-20 h-20 rounded-full bg-white/20 backdrop-blur-sm border-2 border-white/30 text-white hover:bg-white/30 hover:text-white transition-transform duration-300 group-hover:scale-110">
+                                <PlayCircle className="w-10 h-10" />
+                                <span className="sr-only">Watch the 2-min Guide</span>
+                              </Button>
+                           </div>
+                        </div>
                           
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4 items-start">
                           {processSteps.map((item, index) => (
