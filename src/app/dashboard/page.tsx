@@ -24,38 +24,38 @@ export default function DashboardPage() {
               <DialogTrigger asChild>
                 <Button><PlusCircle className="mr-2 h-4 w-4" /> Add New App</Button>
               </DialogTrigger>
-              <DialogContent className="sm:max-w-3xl p-0">
+              <DialogContent className="sm:max-w-4xl p-0">
                   <div className="p-8 lg:p-12">
-                    <DialogHeader className='mb-8'>
-                      <DialogTitle className="text-3xl font-bold">Submit a New App</DialogTitle>
-                      <DialogDescription>
+                    <DialogHeader className='mb-8 text-center'>
+                      <DialogTitle className="text-4xl font-bold">Submit a New App</DialogTitle>
+                      <DialogDescription className="max-w-lg mx-auto">
                         Fill in the details below to get your app ready for testing. You can edit this information later.
                       </DialogDescription>
                     </DialogHeader>
-                    <div className="grid gap-8">
-                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div className="space-y-2">
-                          <Label htmlFor="name" className="text-sm font-medium">App Name</Label>
-                          <Input id="name" placeholder="E.g., Project Phoenix" />
+                    <div className="grid gap-8 max-w-xl mx-auto">
+                        <div className="grid grid-cols-1 gap-6">
+                            <div className="space-y-2">
+                                <Label htmlFor="name" className="text-sm font-medium">App Name</Label>
+                                <Input id="name" placeholder="E.g., Project Phoenix" />
+                            </div>
+                            <div className="space-y-2">
+                                <Label htmlFor="url" className="text-sm font-medium">Testing URL</Label>
+                                <Input id="url" placeholder="https://example.com/test-build" />
+                            </div>
+                            <div className="space-y-2">
+                                <Label htmlFor="icon" className="text-sm font-medium">App Icon URL</Label>
+                                <Input id="icon" placeholder="https://example.com/icon.png" />
+                            </div>
+                            <div className="space-y-2">
+                                <Label htmlFor="instructions" className="text-sm font-medium">Test Credentials & Instructions (Optional)</Label>
+                                <Textarea id="instructions" placeholder="e.g., Use user: demo@test.com, pass: 1234. Focus on the new checkout flow." className="rounded-xl mt-2 min-h-[120px]" />
+                            </div>
                         </div>
-                        <div className="space-y-2">
-                          <Label htmlFor="url" className="text-sm font-medium">Testing URL</Label>
-                           <Input id="url" placeholder="https://example.com/test-build" />
-                        </div>
-                      </div>
-                      <div className="space-y-2">
-                          <Label htmlFor="icon" className="text-sm font-medium">App Icon URL</Label>
-                          <Input id="icon" placeholder="https://example.com/icon.png" />
-                      </div>
-                      <div className="space-y-2">
-                        <Label htmlFor="instructions" className="text-sm font-medium">Test Credentials & Instructions (Optional)</Label>
-                        <Textarea id="instructions" placeholder="e.g., Use user: demo@test.com, pass: 1234. Focus on the new checkout flow." className="rounded-xl mt-2 min-h-[120px]" />
-                      </div>
+                        <DialogFooter className="mt-4 pt-4 sm:justify-center">
+                            <Button variant="outline" className="rounded-xl px-6 py-3">Cancel</Button>
+                            <Button type="submit" className="rounded-xl px-8 py-6 text-base">Submit App</Button>
+                        </DialogFooter>
                     </div>
-                    <DialogFooter className="mt-8 pt-6 border-t">
-                       <Button variant="outline" className="rounded-xl px-6 py-3">Cancel</Button>
-                      <Button type="submit" className="rounded-xl px-8 py-6 text-base">Submit App</Button>
-                    </DialogFooter>
                   </div>
               </DialogContent>
             </Dialog>
