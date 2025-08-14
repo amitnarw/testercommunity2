@@ -67,10 +67,7 @@ export function Sidebar({ isCollapsed, setCollapsed, isMobileOpen, setMobileOpen
             isCollapsed ? "w-full md:w-20" : "w-64"
         )}>
             <div className="flex h-full max-h-screen flex-col gap-2">
-                <div className="flex h-20 items-center justify-between border-b px-4">
-                    <Link href="/" className="flex items-center gap-2 font-semibold">
-                         <InTestersLogo className={cn("h-8 transition-all", isCollapsed ? "w-8" : "w-auto")} />
-                    </Link>
+                <div className="flex h-20 items-center justify-end border-b px-4">
                      <Button variant="ghost" size="icon" onClick={() => setCollapsed(!isCollapsed)} className="hidden md:flex">
                         {isCollapsed ? <PanelLeftOpen /> : <PanelLeftClose />}
                         <span className="sr-only">{isCollapsed ? "Expand sidebar" : "Collapse sidebar"}</span>
