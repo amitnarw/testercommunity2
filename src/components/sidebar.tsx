@@ -61,7 +61,7 @@ interface SidebarProps {
 
 export function Sidebar({ isCollapsed, setCollapsed, isMobileOpen, setMobileOpen }: SidebarProps) {
     return (
-        <div className={cn(
+        <aside className={cn(
             "fixed inset-y-0 left-0 z-50 flex h-full flex-col border-r bg-background transition-transform duration-300 ease-in-out md:translate-x-0 md:transition-[width]",
             isMobileOpen ? "translate-x-0" : "-translate-x-full",
             isCollapsed ? "w-full md:w-20" : "w-64"
@@ -91,9 +91,9 @@ export function Sidebar({ isCollapsed, setCollapsed, isMobileOpen, setMobileOpen
                         <div className="my-4 border-t -mx-4"></div>
 
                         <div className={cn("px-3", isCollapsed && "px-0 text-center")}>
-                             <Button asChild className={cn(isCollapsed && "w-10 h-10 p-0 md:w-auto md:p-2")}>
+                             <Button asChild className={cn("w-full justify-center", isCollapsed && "w-10 h-10 p-0 md:w-auto md:p-2")}>
                                 <Link href="/dashboard/add-app" onClick={() => setMobileOpen(false)}>
-                                    <PlusCircle className={cn("mr-2", isCollapsed && "md:mr-0")}/>
+                                    <PlusCircle className={cn("mr-2 h-4 w-4", isCollapsed && "md:mr-0")}/>
                                     <span className={cn(isCollapsed && "md:sr-only")}>Submit App</span>
                                 </Link>
                             </Button>
@@ -139,6 +139,6 @@ export function Sidebar({ isCollapsed, setCollapsed, isMobileOpen, setMobileOpen
                     </DropdownMenu>
                 </div>
             </div>
-        </div>
+        </aside>
     );
 }

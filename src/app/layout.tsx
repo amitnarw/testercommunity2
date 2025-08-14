@@ -62,7 +62,7 @@ export default function RootLayout({
               "transition-[margin-left] ease-in-out duration-300",
               isDashboardPage && (isSidebarCollapsed ? "md:ml-20" : "md:ml-64")
             )}>
-              {!isAuthPage && <Header isMobileMenuOpen={isMobileMenuOpen} setMobileMenuOpen={setIsMobileMenuOpen} />}
+              <Header isDashboardPage={isDashboardPage} isMobileMenuOpen={isMobileMenuOpen} setMobileMenuOpen={setIsMobileMenuOpen} />
               <main className="flex-1">{children}</main>
               {!isAuthPage && (
                 isDashboardPage ? <DashboardFooter /> : <Footer />

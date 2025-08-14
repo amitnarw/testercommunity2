@@ -76,11 +76,12 @@ const UserNav = () => {
 
 
 interface HeaderProps {
+  isDashboardPage: boolean;
   isMobileMenuOpen: boolean;
   setMobileMenuOpen: (open: boolean) => void;
 }
 
-export function Header({ isMobileMenuOpen, setMobileMenuOpen }: HeaderProps) {
+export function Header({ isDashboardPage, isMobileMenuOpen, setMobileMenuOpen }: HeaderProps) {
   const pathname = usePathname();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isVisitorMenuOpen, setVisitorMenuOpen] = useState(false);
@@ -91,8 +92,8 @@ export function Header({ isMobileMenuOpen, setMobileMenuOpen }: HeaderProps) {
     setIsMounted(true);
   }, []);
 
-  const isDashboardPage = pathname.startsWith('/dashboard') || pathname.startsWith('/community-dashboard') || pathname.startsWith('/profile');
   const isAuthenticated = isDashboardPage;
+  const isAuthPage = pathname === '/login' || pathname === '/signup';
 
   useEffect(() => {
     const handleScroll = () => {
@@ -107,14 +108,16 @@ export function Header({ isMobileMenuOpen, setMobileMenuOpen }: HeaderProps) {
     ...navItems,
   ];
 
+  if (isAuthPage) return null;
+
   return (
     <header className={cn(
-      "sticky top-0 z-40 w-full transition-all duration-300",
+      "sticky top-0 z-30 w-full transition-all duration-300",
        isScrolled ? "bg-background/80 backdrop-blur-lg border-b" : "bg-transparent",
        isDashboardPage && "border-b"
     )}>
       <div className="container mx-auto px-4 md:px-6">
-        <div className={cn("flex h-20 items-center", isDashboardPage ? "justify-end" : "justify-between")}>
+        <div className="flex h-20 items-center justify-between">
            
           {!isDashboardPage && (
             <>
@@ -141,7 +144,7 @@ export function Header({ isMobileMenuOpen, setMobileMenuOpen }: HeaderProps) {
             </>
           )}
 
-          <div className="flex items-center gap-2">
+          <div className={cn("flex items-center gap-2", isDashboardPage && "w-full justify-end")}>
              <Button
                 variant="ghost"
                 size="icon"
