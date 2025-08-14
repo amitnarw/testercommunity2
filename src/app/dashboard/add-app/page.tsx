@@ -302,6 +302,7 @@ export default function AddAppPage() {
                                     </div>
                                     <div className="space-y-2">
                                         <Label htmlFor="icon">App Icon URL</Label>
+                                        <p className="text-sm text-muted-foreground">You can paste a direct link to an image or upload one from your computer.</p>
                                         <div className="flex items-center gap-2">
                                             <Input id="icon" placeholder="Paste link or upload..." />
                                             <Button variant="outline">
@@ -351,5 +352,7 @@ export default function AddAppPage() {
         </>
     );
 }
+
+    
 
     
