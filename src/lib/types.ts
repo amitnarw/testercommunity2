@@ -72,4 +72,17 @@ export type ProcessStep = {
     dataAiHint: string;
 };
 
-    
+export type CommunityApp = {
+    id: number;
+    name: string;
+    icon: string;
+    dataAiHint?: string;
+    category: string;
+    shortDescription: string;
+    points: number;
+    androidVersion: string;
+    estimatedTime: string;
+    playStoreUrl?: string;
+    screenshots?: { url: string; alt: string; dataAiHint?: string }[];
+    testingInstructions?: string;
+}

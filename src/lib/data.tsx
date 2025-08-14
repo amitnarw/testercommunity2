@@ -1,5 +1,5 @@
 
-import type { Tester, BlogPost, Testimonial, RoadmapStep, UserProfileData, ProcessStep } from './types';
+import type { Tester, BlogPost, Testimonial, RoadmapStep, UserProfileData, ProcessStep, CommunityApp } from './types';
 
 export const testers: Tester[] = [
   {
@@ -323,6 +323,56 @@ export const processSteps: ProcessStep[] = [
     },
 ];
 
-    
-
-    
+export const communityApps: CommunityApp[] = [
+    {
+        id: 1,
+        name: 'Finance Tracker',
+        icon: 'https://placehold.co/128x128.png',
+        dataAiHint: 'finance app icon',
+        category: 'Productivity',
+        shortDescription: 'A simple way to track your income and expenses on the go.',
+        points: 100,
+        androidVersion: '10+',
+        estimatedTime: '15-20 min',
+        playStoreUrl: '#',
+        screenshots: [
+            { url: 'https://placehold.co/400x800.png', alt: 'Screenshot 1', dataAiHint: 'app screenshot' },
+            { url: 'https://placehold.co/400x800.png', alt: 'Screenshot 2', dataAiHint: 'app interface' }
+        ],
+        testingInstructions: 'Please focus on the new budgeting feature. Try creating a monthly budget, adding several expenses, and see if the summary view is correct. Check for any visual glitches or crashes.'
+    },
+    {
+        id: 2,
+        name: 'Pixel Adventure',
+        icon: 'https://placehold.co/128x128.png',
+        dataAiHint: 'pixel art game',
+        category: 'Games',
+        shortDescription: 'A retro-style platformer with challenging levels and epic boss fights.',
+        points: 75,
+        androidVersion: '9+',
+        estimatedTime: '20-30 min',
+        playStoreUrl: '#',
+        screenshots: [
+            { url: 'https://placehold.co/800x400.png', alt: 'Screenshot 1', dataAiHint: 'gameplay screenshot' },
+            { url: 'https://placehold.co/800x400.png', alt: 'Screenshot 2', dataAiHint: 'game level' }
+        ],
+        testingInstructions: 'Play through the first three levels. We are looking for feedback on game difficulty, control responsiveness, and any performance issues on older devices.'
+    },
+     {
+        id: 3,
+        name: 'Weatherly',
+        icon: 'https://placehold.co/128x128.png',
+        dataAiHint: 'weather app icon',
+        category: 'Utilities',
+        shortDescription: 'Clean, simple, and accurate weather forecasts at your fingertips.',
+        points: 50,
+        androidVersion: '11+',
+        estimatedTime: '5-10 min',
+        playStoreUrl: '#',
+        screenshots: [
+            { url: 'https://placehold.co/400x800.png', alt: 'Screenshot 1', dataAiHint: 'weather forecast' },
+            { url: 'https://placehold.co/400x800.png', alt: 'Screenshot 2', dataAiHint: 'weather details' }
+        ],
+        testingInstructions: 'Check the weather for your current location and at least two other cities. Please verify if the hourly forecast seems accurate and report any UI issues.'
+    }
+];

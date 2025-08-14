@@ -6,7 +6,7 @@ import { usePathname } from 'next/navigation';
 import { InTestersLogo } from './icons';
 import { Button } from './ui/button';
 import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle, SheetClose } from './ui/sheet';
-import { Menu, ArrowRight, Sun, Moon, User, LogOut, LayoutDashboard, Settings, LifeBuoy, X } from 'lucide-react';
+import { Menu, ArrowRight, Sun, Moon, User, LogOut, LayoutDashboard, Settings, LifeBuoy, X, Users2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useState, useEffect } from 'react';
 import { useTheme } from 'next-themes';
@@ -16,6 +16,7 @@ import { demoUser } from '@/lib/data.tsx';
 
 const navItems = [
   { name: 'How It Works', href: '/how-it-works' },
+  { name: 'Community', href: '/community-dashboard' },
   { name: 'Blog', href: '/blog' },
 ];
 
@@ -85,7 +86,7 @@ export function Header() {
     setIsMounted(true);
   }, []);
 
-  const isAuthenticated = pathname.startsWith('/dashboard') || pathname.startsWith('/profile');
+  const isAuthenticated = pathname.startsWith('/dashboard') || pathname.startsWith('/profile') || pathname.startsWith('/community-dashboard');
 
   useEffect(() => {
     const handleScroll = () => {
@@ -125,7 +126,7 @@ export function Header() {
                     data-text="Dashboard"
                     className={cn(
                     'font-medium transition-colors sliding-text-hover',
-                    pathname === '/dashboard' ? 'text-primary' : 'text-muted-foreground'
+                    pathname.startsWith('/dashboard') ? 'text-primary' : 'text-muted-foreground'
                     )}
                 >
                     <span>Dashboard</span>
@@ -149,7 +150,7 @@ export function Header() {
                 data-text={item.name}
                 className={cn(
                   'font-medium transition-colors sliding-text-hover',
-                  pathname === item.href ? 'text-primary' : 'text-muted-foreground'
+                  pathname.startsWith(item.href) ? 'text-primary' : 'text-muted-foreground'
                 )}
               >
                 <span>{item.name}</span>
