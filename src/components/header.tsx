@@ -16,10 +16,8 @@ import { demoUser } from '@/lib/data.tsx';
 
 const navItems = [
   { name: 'How It Works', href: '/how-it-works' },
-  { name: 'Community Hub', href: '/community-dashboard' },
+  { name: 'Freemium', href: '/freemium' },
   { name: 'Blog', href: '/blog' },
-  { name: 'Marketplace', href: '/marketplace' },
-  { name: 'Pricing', href: '/pricing'},
 ];
 
 
@@ -103,7 +101,8 @@ export function Header() {
     ...(isAuthenticated 
         ? [{ name: 'Developer Dashboard', href: '/dashboard' }]
         : [{ name: 'Home', href: '/' }]),
-    ...navItems
+    ...navItems,
+    ...(isAuthenticated ? [] : [{ name: 'Community Hub', href: '/community-dashboard'}, { name: 'Marketplace', href: '/marketplace'}, {name: 'Pricing', href: '/pricing'}])
   ];
 
   const mobileAuthNavItems = [
@@ -119,7 +118,7 @@ export function Header() {
        isDashboardPage && "border-b"
     )}>
       <div className="container mx-auto px-4 md:px-6">
-        <div className={cn("flex h-20 items-center", isDashboardPage ? "justify-end" : "justify-between")}>
+        <div className={cn("flex h-20 items-center justify-between", isDashboardPage && "justify-end")}>
            
           {!isDashboardPage && (
             <>
