@@ -11,6 +11,7 @@ import { Footer } from '@/components/footer';
 import { DashboardFooter } from '@/components/dashboard-footer';
 import { Sidebar } from '@/components/sidebar';
 import { cn } from '@/lib/utils';
+import { useState } from 'react';
 
 // This is a client component, so we can't use metadata here.
 // We'll manage the title in the individual page components.
@@ -21,6 +22,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   const pathname = usePathname();
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const isAuthPage = pathname === '/login' || pathname === '/signup';
   const isDashboardPage = pathname.startsWith('/dashboard') || pathname.startsWith('/community-dashboard') || pathname.startsWith('/profile');
 
@@ -40,8 +42,11 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <div className="relative flex flex-col min-h-screen">
-            {isDashboardPage && <Sidebar />}
-            <div className={cn(isDashboardPage && "md:ml-64")}>
+            {isDashboardPage && <Sidebar isCollapsed={isSidebarCollapsed} setCollapsed={setIsSidebarCollapsed} />}
+            <div className={cn(
+              "transition-[margin-left] ease-in-out duration-300",
+              isDashboardPage && (isSidebarCollapsed ? "md:ml-20" : "md:ml-64")
+            )}>
               {!isAuthPage && <Header />}
               <main className="flex-1">{children}</main>
               {!isAuthPage && (
