@@ -119,42 +119,44 @@ export function Header() {
        isDashboardPage && "border-b"
     )}>
       <div className="container mx-auto px-4 md:px-6">
-        <div className="flex h-20 items-center justify-between">
-           <div className={cn("flex items-center gap-2", isDashboardPage && "md:hidden")}>
-             <Link href="/">
-                <InTestersLogo className="h-8" />
-             </Link>
-          </div>
-          
+        <div className={cn("flex h-20 items-center", isDashboardPage ? "justify-end" : "justify-between")}>
+           
           {!isDashboardPage && (
-            <nav className="hidden md:flex items-center gap-6">
-                 <Link
-                    href="/"
-                    data-text="Home"
-                    className={cn(
-                    'font-medium transition-colors sliding-text-hover',
-                    pathname === '/' ? 'text-primary' : 'text-muted-foreground'
-                    )}
-                >
-                    <span>Home</span>
+            <>
+              <div className="flex items-center gap-2">
+                <Link href="/">
+                    <InTestersLogo className="h-8" />
                 </Link>
-                {navItems.map((item) => (
-                <Link
-                    key={item.name}
-                    href={item.href}
-                    data-text={item.name}
-                    className={cn(
-                    'font-medium transition-colors sliding-text-hover',
-                    pathname.startsWith(item.href) ? 'text-primary' : 'text-muted-foreground'
-                    )}
-                >
-                    <span>{item.name}</span>
-                </Link>
-                ))}
-            </nav>
+              </div>
+              <nav className="hidden md:flex items-center gap-6">
+                  <Link
+                      href="/"
+                      data-text="Home"
+                      className={cn(
+                      'font-medium transition-colors sliding-text-hover',
+                      pathname === '/' ? 'text-primary' : 'text-muted-foreground'
+                      )}
+                  >
+                      <span>Home</span>
+                  </Link>
+                  {navItems.map((item) => (
+                  <Link
+                      key={item.name}
+                      href={item.href}
+                      data-text={item.name}
+                      className={cn(
+                      'font-medium transition-colors sliding-text-hover',
+                      pathname.startsWith(item.href) ? 'text-primary' : 'text-muted-foreground'
+                      )}
+                  >
+                      <span>{item.name}</span>
+                  </Link>
+                  ))}
+              </nav>
+            </>
           )}
 
-          <div className={cn("flex items-center gap-2", isDashboardPage && "w-full justify-end")}>
+          <div className="flex items-center gap-2">
              <Button
                 variant="ghost"
                 size="icon"
