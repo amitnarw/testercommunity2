@@ -56,8 +56,8 @@ export default function AddAppPage() {
                                             onClick={() => setIsVideoExpanded(true)}
                                         >
                                             <div>
-                                                <h3 className="font-bold text-xl mb-1">Quick Walkthrough</h3>
-                                                <p className="text-muted-foreground text-sm">Watch a 2-minute video on how to submit your app.</p>
+                                                <h3 className="font-bold text-xl mb-1 flex items-center gap-3">Quick Walkthrough <span className="text-sm font-medium text-primary">(2-min watch)</span></h3>
+                                                <p className="text-muted-foreground text-sm">Watch a short video on how to submit your app.</p>
                                             </div>
                                             <Button size="lg" variant="outline">
                                                 <PlayCircle className="mr-2 h-5 w-5"/>
@@ -66,6 +66,10 @@ export default function AddAppPage() {
                                         </div>
                                     )}
                                 </div>
+                                
+                                <p className="text-center text-muted-foreground text-sm">
+                                    You can either watch the video above or follow the step-by-step guide below. Both cover the same process.
+                                </p>
 
                                 <Accordion type="single" collapsible className="w-full space-y-4">
                                     {processSteps.map((item, index) => (
