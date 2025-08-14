@@ -110,6 +110,11 @@ export default {
           '0%': { transform: 'scale(1)' },
           '100%': { transform: 'scale(1.05)' },
         },
+        'float': {
+            '0%': { transform: 'translateY(0px)' },
+            '50%': { transform: 'translateY(-20px)' },
+            '100%': { transform: 'translateY(0px)' },
+        },
       },
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
@@ -118,10 +123,9 @@ export default {
         'scroll-rtl': 'scroll-rtl 20s linear infinite',
         'fade-in-up': 'fade-in-up 0.5s ease-out forwards',
         'image-zoom': 'image-zoom 0.5s ease-in-out forwards',
+        'float': 'float 3s ease-in-out infinite',
       },
     },
   },
   plugins: [require('tailwindcss-animate')],
 } satisfies Config;
-
-    

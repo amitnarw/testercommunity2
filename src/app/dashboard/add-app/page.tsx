@@ -7,12 +7,11 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { ArrowRight, ArrowLeft, Expand, X, PlayCircle, ChevronDown, Clipboard, Check } from 'lucide-react'
+import { ArrowRight, ArrowLeft, Expand, X, PlayCircle, ChevronDown, Clipboard, Check, Video } from 'lucide-react'
 import Link from 'next/link';
 import { useState } from 'react';
 import Image from 'next/image';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
-import { BackgroundBeams } from '@/components/background-beams';
 
 const Highlight = ({ children }: { children: React.ReactNode }) => (
     <span className="bg-primary/20 text-primary font-semibold px-1.5 py-0.5 rounded-md">{children}</span>
@@ -86,8 +85,8 @@ export default function AddAppPage() {
                     <main className="max-w-4xl mx-auto">
                         {step === 'guide' ? (
                             <div className="space-y-8">
-                                <div className="rounded-xl overflow-hidden shadow-lg border relative">
-                                    <BackgroundBeams className="[mask-image:radial-gradient(ellipse_at_center,white_5%,transparent_90%)]" />
+                                <div className="rounded-xl overflow-hidden shadow-lg border relative bg-secondary/30">
+                                    <Video className="w-32 h-32 text-primary/10 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 animate-float opacity-50" />
                                     {isVideoExpanded ? (
                                         <div className="relative aspect-video">
                                             <iframe
@@ -336,7 +335,3 @@ export default function AddAppPage() {
         </>
     );
 }
-
-    
-
-    
