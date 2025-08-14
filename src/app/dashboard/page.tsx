@@ -24,58 +24,39 @@ export default function DashboardPage() {
               <DialogTrigger asChild>
                 <Button><PlusCircle className="mr-2 h-4 w-4" /> Add New App</Button>
               </DialogTrigger>
-              <DialogContent className="sm:max-w-4xl p-0">
-                <div className="grid grid-cols-1 md:grid-cols-2">
-                  
-                  <div className="relative hidden md:flex flex-col justify-between p-8 lg:p-12 bg-secondary/50 rounded-l-lg overflow-hidden">
-                      <div className="bg-dot-pattern-dark absolute inset-0 opacity-50"></div>
-                      <div className="relative z-10">
-                        <div className="bg-primary/20 p-3 rounded-full w-fit">
-                          <UploadCloud className="h-8 w-8 text-primary" />
-                        </div>
-                        <h3 className="text-2xl font-bold mt-6">Submit Your App</h3>
-                        <p className="text-muted-foreground text-base mt-2">
-                          Provide the necessary details to get your app tested by our community or professional testers.
-                        </p>
-                      </div>
-                      <div className="relative z-10 text-xs text-muted-foreground">
-                        © TestTribe - App Testing Platform
-                      </div>
-                  </div>
-
+              <DialogContent className="sm:max-w-3xl p-0">
                   <div className="p-8 lg:p-12">
-                    <DialogHeader>
-                      <DialogTitle className="text-2xl">New App Submission</DialogTitle>
+                    <DialogHeader className='mb-8'>
+                      <DialogTitle className="text-3xl font-bold">Submit a New App</DialogTitle>
                       <DialogDescription>
-                        Fill in the details below. You can edit this information later.
+                        Fill in the details below to get your app ready for testing. You can edit this information later.
                       </DialogDescription>
                     </DialogHeader>
-                    <div className="grid gap-6 py-8">
-                      <div className="grid grid-cols-2 gap-6">
+                    <div className="grid gap-8">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div className="space-y-2">
-                          <Label htmlFor="name">App Name</Label>
-                          <input id="name" placeholder="E.g., Project Phoenix" className="flex h-10 w-full rounded-none border-b border-input bg-transparent px-1 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-0 focus-visible:border-primary disabled:cursor-not-allowed disabled:opacity-50" />
+                          <Label htmlFor="name" className="text-sm font-medium">App Name</Label>
+                          <Input id="name" placeholder="E.g., Project Phoenix" />
                         </div>
                         <div className="space-y-2">
-                          <Label htmlFor="url">Testing URL</Label>
-                           <input id="url" placeholder="https://example.com/test-build" className="flex h-10 w-full rounded-none border-b border-input bg-transparent px-1 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-0 focus-visible:border-primary disabled:cursor-not-allowed disabled:opacity-50" />
+                          <Label htmlFor="url" className="text-sm font-medium">Testing URL</Label>
+                           <Input id="url" placeholder="https://example.com/test-build" />
                         </div>
                       </div>
                       <div className="space-y-2">
-                          <Label htmlFor="icon">App Icon URL</Label>
-                          <input id="icon" placeholder="https://example.com/icon.png" className="flex h-10 w-full rounded-none border-b border-input bg-transparent px-1 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-0 focus-visible:border-primary disabled:cursor-not-allowed disabled:opacity-50" />
+                          <Label htmlFor="icon" className="text-sm font-medium">App Icon URL</Label>
+                          <Input id="icon" placeholder="https://example.com/icon.png" />
                       </div>
                       <div className="space-y-2">
-                        <Label htmlFor="instructions">Test Instructions (Optional)</Label>
-                        <Textarea id="instructions" placeholder="e.g., Use user: demo@test.com, pass: 1234. Focus on the new checkout flow." className="rounded-xl mt-2" />
+                        <Label htmlFor="instructions" className="text-sm font-medium">Test Credentials & Instructions (Optional)</Label>
+                        <Textarea id="instructions" placeholder="e.g., Use user: demo@test.com, pass: 1234. Focus on the new checkout flow." className="rounded-xl mt-2 min-h-[120px]" />
                       </div>
                     </div>
-                    <DialogFooter>
-                       <Button variant="outline" className="rounded-xl">Cancel</Button>
-                      <Button type="submit" className="rounded-xl w-full sm:w-auto px-8 py-6">Submit App</Button>
+                    <DialogFooter className="mt-8 pt-6 border-t">
+                       <Button variant="outline" className="rounded-xl px-6 py-3">Cancel</Button>
+                      <Button type="submit" className="rounded-xl px-8 py-6 text-base">Submit App</Button>
                     </DialogFooter>
                   </div>
-                </div>
               </DialogContent>
             </Dialog>
             <Button variant="outline" asChild>
