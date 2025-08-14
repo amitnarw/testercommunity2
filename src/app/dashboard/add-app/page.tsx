@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { ArrowRight, ArrowLeft, Expand, X, PlayCircle, ChevronDown, Clipboard, Check, Video, Upload, UploadCloud } from 'lucide-react'
+import { ArrowRight, ArrowLeft, Expand, X, PlayCircle, ChevronDown, Clipboard, Check, Video, Upload, Link as LinkIcon } from 'lucide-react'
 import Link from 'next/link';
 import { useState, useEffect, useCallback } from 'react';
 import Image from 'next/image';
@@ -15,6 +15,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/
 import { IconRain } from '@/components/icon-rain';
 import { useDropzone } from 'react-dropzone';
 import { toast } from '@/hooks/use-toast';
+import { Separator } from '@/components/ui/separator';
 
 const Highlight = ({ children }: { children: React.ReactNode }) => (
     <span className="bg-primary/20 text-primary font-semibold px-1.5 py-0.5 rounded-md">{children}</span>
@@ -87,36 +88,21 @@ export default function AddAppPage() {
         }
     }, []);
 
-    const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop, noClick: true, noKeyboard: true });
+    const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
 
-    const handlePaste = (event: React.ClipboardEvent<HTMLDivElement>) => {
-        const items = event.clipboardData.items;
-        for (let i = 0; i < items.length; i++) {
-            if (items[i].type.indexOf('image') !== -1) {
-                const blob = items[i].getAsFile();
-                if (blob) {
-                    const reader = new FileReader();
-                    reader.onload = (e) => {
-                        setIconPreview(e.target?.result as string);
-                    };
-                    reader.readAsDataURL(blob);
-                }
-            } else if (items[i].type === 'text/plain') {
-                 items[i].getAsString((text) => {
-                    if (text.match(/\.(jpeg|jpg|gif|png)$/) != null) {
-                        setIconPreview(text);
-                    } else {
-                        toast({
-                            title: "Invalid Link",
-                            description: "Please paste a valid image URL.",
-                            variant: "destructive",
-                        })
-                    }
-                 });
-            }
+    const handlePaste = (event: React.ClipboardEvent<HTMLInputElement>) => {
+        const text = event.clipboardData.getData('text');
+        if (text.match(/\.(jpeg|jpg|gif|png)$/) != null) {
+            setIconPreview(text);
+        } else {
+            toast({
+                title: "Invalid Link",
+                description: "Please paste a valid image URL.",
+                variant: "destructive",
+            })
         }
     };
-
+    
     useEffect(() => {
         setIsClient(true);
     }, []);
@@ -352,23 +338,33 @@ export default function AddAppPage() {
                                     </div>
                                     <div className="space-y-2">
                                         <Label htmlFor="icon">App Icon</Label>
-                                        <div {...getRootProps()} onPaste={handlePaste} className={`relative flex flex-col items-center justify-center w-full h-48 border-2 border-dashed rounded-lg cursor-pointer bg-secondary/50 hover:bg-secondary/80 transition-colors ${isDragActive ? 'border-primary' : 'border-border'}`}>
-                                            <input {...getInputProps()} />
-                                            {iconPreview ? (
-                                                <>
-                                                    <Image src={iconPreview} alt="App icon preview" layout="fill" objectFit="contain" className="rounded-lg p-2" />
-                                                    <Button variant="destructive" size="icon" className="absolute top-2 right-2 h-7 w-7" onClick={(e) => { e.stopPropagation(); setIconPreview(null); }}>
-                                                        <X className="h-4 w-4" />
-                                                    </Button>
-                                                </>
-                                            ) : (
-                                                <div className="text-center text-muted-foreground">
-                                                    <UploadCloud className="w-10 h-10 mx-auto mb-2" />
-                                                    <p className="font-semibold">Drag & drop, click to upload, or paste link</p>
-                                                    <p className="text-xs">PNG, JPG, or GIF (800x800px recommended)</p>
-                                                </div>
-                                            )}
-                                        </div>
+                                        {iconPreview ? (
+                                            <div className="relative w-full h-48">
+                                                <Image src={iconPreview} alt="App icon preview" layout="fill" objectFit="contain" className="rounded-lg p-2 border" />
+                                                <Button variant="destructive" size="icon" className="absolute top-2 right-2 h-7 w-7" onClick={(e) => { e.stopPropagation(); setIconPreview(null); }}>
+                                                    <X className="h-4 w-4" />
+                                                </Button>
+                                            </div>
+                                        ) : (
+                                            <div className="relative border border-dashed rounded-lg p-4 grid grid-cols-2 divide-x divide-dashed">
+                                                 <div {...getRootProps()} className={`flex flex-col items-center justify-center p-8 cursor-pointer hover:bg-secondary/50 rounded-l-md transition-colors ${isDragActive ? 'bg-secondary' : ''}`}>
+                                                    <input {...getInputProps()} />
+                                                    <Upload className="w-10 h-10 text-muted-foreground mb-2" />
+                                                    <p className="font-semibold text-center">Select Image to Upload</p>
+                                                    <p className="text-xs text-muted-foreground text-center">or drag and drop</p>
+                                                 </div>
+                                                 <div className="p-8 flex flex-col items-center justify-center">
+                                                     <LinkIcon className="w-10 h-10 text-muted-foreground mb-2" />
+                                                     <p className="font-semibold text-center mb-2">Paste image URL</p>
+                                                     <Input type="text" placeholder="https://..." onPaste={handlePaste} className="text-center" />
+                                                 </div>
+                                                 <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 flex items-center">
+                                                     <Separator orientation="vertical" className="h-12" />
+                                                     <div className="mx-2 bg-background px-1 text-xs text-muted-foreground font-bold">OR</div>
+                                                     <Separator orientation="vertical" className="h-12"/>
+                                                 </div>
+                                            </div>
+                                        )}
                                     </div>
                                     <div className="space-y-2">
                                         <Label htmlFor="instructions">Test Credentials & Instructions</Label>
