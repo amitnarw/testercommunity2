@@ -7,10 +7,9 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Package, FlaskConical, CheckCircle2, Coins, PlusCircle, Gem, UploadCloud, PlayCircle, Users, Globe, FileCheck, Power, ArrowRight, ArrowLeft, ChevronDown } from 'lucide-react'
+import { Package, FlaskConical, CheckCircle2, Coins, PlusCircle, Gem, ArrowRight, ArrowLeft } from 'lucide-react'
 import { ProjectList } from '@/components/project-list';
 import Link from 'next/link';
-import { cn } from '@/lib/utils';
 import { useState } from 'react';
 import Image from 'next/image';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -19,6 +18,15 @@ import { processSteps } from '@/lib/data.tsx';
 
 export default function DashboardPage() {
   const [modalStep, setModalStep] = useState(1);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+
+  // Reset to step 1 whenever the dialog is opened
+  const handleOpenChange = (open: boolean) => {
+    if (open) {
+      setModalStep(1);
+    }
+    setIsDialogOpen(open);
+  };
 
   return (
     <div className="min-h-screen bg-secondary/50">
@@ -29,11 +37,11 @@ export default function DashboardPage() {
             <p className="text-muted-foreground">Manage your apps and testing projects.</p>
           </div>
           <div className='flex items-center gap-2'>
-            <Dialog onOpenChange={() => { setModalStep(1); }}>
+            <Dialog open={isDialogOpen} onOpenChange={handleOpenChange}>
               <DialogTrigger asChild>
                 <Button><PlusCircle className="mr-2 h-4 w-4" /> Add New App</Button>
               </DialogTrigger>
-              <DialogContent className="sm:max-w-4xl max-h-[90vh] h-auto flex flex-col">
+              <DialogContent className="sm:max-w-4xl max-h-[90vh] h-auto flex flex-col p-0">
                   <AnimatePresence mode="wait">
                   {modalStep === 1 ? (
                     <motion.div
@@ -42,25 +50,23 @@ export default function DashboardPage() {
                         animate={{ opacity: 1, x: 0 }}
                         exit={{ opacity: 0, x: 300 }}
                         transition={{ duration: 0.3 }}
-                        className="flex-grow overflow-hidden"
+                        className="flex flex-col h-full"
                     >
-                        <div className="w-full flex flex-col h-full">
-                            <DialogHeader className="text-center mb-8 px-6 pt-6">
-                                <DialogTitle className="text-3xl font-bold">Get Your App Tested</DialogTitle>
-                                <DialogDescription>
-                                    Follow this guide to prepare your app for our testing community.
-                                </DialogDescription>
-                            </DialogHeader>
-                             <div className="aspect-video bg-muted rounded-lg flex items-center justify-center m-6 mt-0">
-                                <div className="text-center">
-                                    <PlayCircle className="w-12 h-12 text-muted-foreground mx-auto" />
-                                    <p className="text-muted-foreground mt-2">Watch the Process Guide</p>
-                                </div>
+                        <DialogHeader className="text-center px-6 pt-6 md:px-8 md:pt-8">
+                            <DialogTitle className="text-3xl font-bold">Get Your App Tested</DialogTitle>
+                            <DialogDescription>
+                                Follow this guide to prepare your app for our testing community.
+                            </DialogDescription>
+                        </DialogHeader>
+                        
+                        <div className="flex-grow overflow-y-auto px-6 md:px-8 py-6 space-y-8">
+                            <div className="aspect-video bg-muted rounded-lg flex items-center justify-center">
+                                <p className="text-muted-foreground">Video Guide Placeholder</p>
                             </div>
-
-                            <div className="flex-grow overflow-y-auto px-6 pb-6 space-y-6">
+                            
+                            <div className="space-y-10">
                                 {processSteps.map((item, index) => (
-                                    <div key={index} className="grid md:grid-cols-2 gap-6 items-center p-4 border rounded-lg bg-secondary/30">
+                                    <div key={index} className="grid md:grid-cols-2 gap-6 items-center">
                                         <div className="space-y-3">
                                             <div className="flex items-center gap-3">
                                                 <div className="bg-primary/10 text-primary p-2 rounded-lg">{item.icon}</div>
@@ -75,13 +81,13 @@ export default function DashboardPage() {
                                     </div>
                                 ))}
                             </div>
-
-                            <DialogFooter className="mt-auto p-6 pt-6 border-t">
-                                <Button onClick={() => setModalStep(2)} className="w-full md:w-auto ml-auto text-lg py-6">
-                                    Get Started <ArrowRight className="ml-2"/>
-                                </Button>
-                            </DialogFooter>
                         </div>
+
+                        <DialogFooter className="mt-auto p-6 md:p-8 border-t bg-background sticky bottom-0">
+                            <Button onClick={() => setModalStep(2)} className="w-full md:w-auto ml-auto text-lg py-6">
+                                Get Started <ArrowRight className="ml-2"/>
+                            </Button>
+                        </DialogFooter>
                     </motion.div>
                   ) : (
                     <motion.div
@@ -90,40 +96,38 @@ export default function DashboardPage() {
                         animate={{ opacity: 1, x: 0 }}
                         exit={{ opacity: 0, x: -300 }}
                         transition={{ duration: 0.3 }}
-                         className="flex-grow overflow-hidden"
+                         className="flex flex-col h-full"
                     >
-                        <div className="w-full flex flex-col h-full">
-                            <DialogHeader className="px-6 pt-6">
-                                <DialogTitle className="text-3xl font-bold">Submit Your App Details</DialogTitle>
-                                <DialogDescription>
-                                    Fill in the information below. You can edit these details later from your project dashboard.
-                                </DialogDescription>
-                            </DialogHeader>
-                            <div className="flex-grow py-8 space-y-6 overflow-y-auto px-6">
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                    <div className="space-y-2">
-                                        <Label htmlFor="name" className="text-sm font-medium">App Name</Label>
-                                        <Input id="name" placeholder="E.g., Project Phoenix" className="h-12"/>
-                                    </div>
-                                    <div className="space-y-2">
-                                        <Label htmlFor="url" className="text-sm font-medium">Testing URL</Label>
-                                        <Input id="url" placeholder="https://example.com/test-build" className="h-12"/>
-                                    </div>
+                        <DialogHeader className="px-6 pt-6 md:px-8 md:pt-8">
+                            <DialogTitle className="text-3xl font-bold">Submit Your App Details</DialogTitle>
+                            <DialogDescription>
+                                Fill in the information below. You can edit these details later.
+                            </DialogDescription>
+                        </DialogHeader>
+                        <div className="flex-grow py-8 space-y-6 overflow-y-auto px-6 md:px-8">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div className="space-y-2">
+                                    <Label htmlFor="name">App Name</Label>
+                                    <Input id="name" placeholder="E.g., Project Phoenix" />
                                 </div>
                                 <div className="space-y-2">
-                                    <Label htmlFor="icon" className="text-sm font-medium">App Icon URL</Label>
-                                    <Input id="icon" placeholder="https://example.com/icon.png" className="h-12" />
-                                </div>
-                                <div className="space-y-2">
-                                    <Label htmlFor="instructions" className="text-sm font-medium">Test Credentials & Instructions (Optional)</Label>
-                                    <Textarea id="instructions" placeholder="e.g., Use user: demo@test.com, pass: 1234. Focus on the new checkout flow." className="min-h-[120px]" />
+                                    <Label htmlFor="url">Testing URL</Label>
+                                    <Input id="url" placeholder="https://example.com/test-build" />
                                 </div>
                             </div>
-                            <DialogFooter className="mt-auto p-6 pt-6 border-t">
-                                <Button variant="ghost" onClick={() => setModalStep(1)}><ArrowLeft className="mr-2 h-4 w-4"/> Back</Button>
-                                <Button type="submit" className="px-8">Submit App</Button>
-                            </DialogFooter>
+                            <div className="space-y-2">
+                                <Label htmlFor="icon">App Icon URL</Label>
+                                <Input id="icon" placeholder="https://example.com/icon.png" />
+                            </div>
+                            <div className="space-y-2">
+                                <Label htmlFor="instructions">Test Credentials & Instructions</Label>
+                                <Textarea id="instructions" placeholder="e.g., Use user: demo@test.com, pass: 1234. Focus on the new checkout flow." className="min-h-[120px]" />
+                            </div>
                         </div>
+                        <DialogFooter className="mt-auto p-6 md:p-8 border-t bg-background sticky bottom-0">
+                            <Button variant="ghost" onClick={() => setModalStep(1)}><ArrowLeft className="mr-2 h-4 w-4"/> Back to Guide</Button>
+                            <Button type="submit" className="px-8">Submit App</Button>
+                        </DialogFooter>
                     </motion.div>
                   )}
                   </AnimatePresence>
