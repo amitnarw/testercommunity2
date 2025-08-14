@@ -90,6 +90,19 @@ export function Header() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  const mobileNavItems = [
+    ...(isAuthenticated 
+        ? [{ name: 'Dashboard', href: '/dashboard' }]
+        : [{ name: 'Home', href: '/' }]),
+    ...navItems
+  ];
+
+  const mobileAuthNavItems = [
+      { name: 'Profile', href: '/profile', icon: <User /> },
+      { name: 'Support', href: '/help', icon: <LifeBuoy /> },
+      { name: 'Log out', href: '/', icon: <LogOut /> },
+  ]
+
   return (
     <header className={cn(
       "sticky top-0 z-50 w-full transition-all duration-300",
@@ -149,7 +162,9 @@ export function Header() {
                 <span className="sr-only">Toggle theme</span>
             </Button>
             {isAuthenticated ? (
-                <UserNav />
+                <div className="hidden md:block">
+                    <UserNav />
+                </div>
             ) : (
                 <div className="hidden md:flex items-center gap-2">
                     <Button variant="ghost" asChild>
@@ -182,12 +197,7 @@ export function Header() {
                         </SheetHeader>
                         <div className="p-6 pt-20 w-full">
                             <nav className="flex flex-col items-center text-center gap-8">
-                                {[
-                                    ...(isAuthenticated 
-                                        ? [{ name: 'Dashboard', href: '/dashboard' }]
-                                        : [{ name: 'Home', href: '/' }]),
-                                    ...navItems
-                                ].map((item) => (
+                                {mobileNavItems.map((item) => (
                                     <Link
                                         key={item.name}
                                         href={item.href}
@@ -202,7 +212,26 @@ export function Header() {
                                 ))}
                             </nav>
                             <div className="mt-12 flex flex-col gap-4">
-                                {!isAuthenticated && (
+                                {isAuthenticated ? (
+                                    <div className="border-t pt-8 mt-4">
+                                        <nav className="flex flex-col items-center text-center gap-8">
+                                            {mobileAuthNavItems.map((item) => (
+                                                <Link
+                                                    key={item.name}
+                                                    href={item.href}
+                                                    onClick={() => setMenuOpen(false)}
+                                                    className={cn(
+                                                        'flex items-center gap-3 text-lg font-medium transition-colors hover:text-primary',
+                                                        pathname === item.href ? 'text-primary' : 'text-muted-foreground'
+                                                    )}
+                                                >
+                                                    {item.icon}
+                                                    {item.name}
+                                                </Link>
+                                            ))}
+                                        </nav>
+                                    </div>
+                                ) : (
                                     <>
                                      <Button variant="outline" size="lg" asChild onClick={() => setMenuOpen(false)}>
                                         <Link href="/login">Log In</Link>
