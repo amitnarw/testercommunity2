@@ -3,11 +3,11 @@
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger, DialogClose } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Package, FlaskConical, CheckCircle2, Coins, PlusCircle, Gem, ArrowRight, ArrowLeft, Expand, X, PlayCircle } from 'lucide-react'
+import { Package, FlaskConical, CheckCircle2, Coins, PlusCircle, Gem, ArrowRight, ArrowLeft, Expand, X, PlayCircle, ChevronDown } from 'lucide-react'
 import { ProjectList } from '@/components/project-list';
 import Link from 'next/link';
 import { useState } from 'react';
@@ -48,12 +48,13 @@ export default function DashboardPage() {
                 </DialogTrigger>
                 <DialogContent className="sm:max-w-4xl max-h-[90vh] flex flex-col p-0">
                   {modalStep === 'guide' ? (
-                    <>
-                      <DialogHeader className="p-6 border-b">
+                    <div className="flex flex-col h-full">
+                      <DialogHeader className="p-6 border-b shrink-0">
                           <DialogTitle className="text-2xl font-bold">Get Your App Tested</DialogTitle>
-                          <DialogDescription>
-                              Follow our simple guide to prepare and submit your app for testing.
-                          </DialogDescription>
+                          <DialogClose className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground">
+                            <X className="h-6 w-6" />
+                            <span className="sr-only">Close</span>
+                          </DialogClose>
                       </DialogHeader>
                       <div className="flex-grow overflow-y-auto px-6 py-6 space-y-8">
                         <Card className="bg-secondary/30 border-dashed">
@@ -68,19 +69,20 @@ export default function DashboardPage() {
                           </CardContent>
                         </Card>
                           
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
                           {processSteps.map((item, index) => (
                               <div key={index} className="bg-secondary/30 p-4 rounded-lg border">
                                   <div className="flex items-start gap-4">
                                       <div className="flex-shrink-0 h-8 w-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-bold text-lg">{index + 1}</div>
                                       <div className='flex-grow'>
                                           <h3 className="font-semibold text-lg leading-tight">{item.title}</h3>
-                                          <Accordion type="single" collapsible className="w-full">
+                                           <Accordion type="single" collapsible className="w-full">
                                             <AccordionItem value="item-1" className="border-b-0">
                                                 <AccordionTrigger className="text-sm text-muted-foreground hover:no-underline py-2 justify-start gap-1">
-                                                  Show Details
+                                                  <span>{item.shortDescription}</span>
+                                                  <ChevronDown className="h-4 w-4 shrink-0 transition-transform duration-200" />
                                                 </AccordionTrigger>
-                                                <AccordionContent className="space-y-4">
+                                                <AccordionContent className="space-y-4 pt-2">
                                                     <p className="text-muted-foreground whitespace-pre-line text-sm">{item.detailedDescription}</p>
                                                     <div 
                                                         className="relative w-full h-40 rounded-lg overflow-hidden group cursor-pointer"
@@ -100,19 +102,23 @@ export default function DashboardPage() {
                           ))}
                         </div>
                       </div>
-                       <div className="p-6 border-t bg-background flex justify-end w-full">
+                       <div className="p-6 border-t bg-background shrink-0 flex justify-end w-full">
                           <Button onClick={() => setModalStep('form')} className="w-full sm:w-auto">
                               Get Started <ArrowRight className="ml-2"/>
                           </Button>
                       </div>
-                    </>
+                    </div>
                   ) : (
-                    <>
-                      <DialogHeader className="p-6 border-b">
+                    <div className="flex flex-col h-full">
+                      <DialogHeader className="p-6 border-b shrink-0">
                           <DialogTitle className="text-2xl font-bold">Submit Your App Details</DialogTitle>
                           <DialogDescription>
                               Fill in the information below. You can edit these details later.
                           </DialogDescription>
+                           <DialogClose className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground">
+                            <X className="h-6 w-6" />
+                            <span className="sr-only">Close</span>
+                          </DialogClose>
                       </DialogHeader>
                       <div className="flex-grow py-6 space-y-6 overflow-y-auto px-6">
                           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -134,11 +140,11 @@ export default function DashboardPage() {
                               <Textarea id="instructions" placeholder="e.g., Use user: demo@test.com, pass: 1234. Focus on the new checkout flow." className="min-h-[120px]" />
                           </div>
                       </div>
-                      <div className="p-6 border-t bg-background flex justify-between w-full">
+                      <div className="p-6 border-t bg-background shrink-0 flex justify-between w-full">
                           <Button variant="ghost" onClick={() => setModalStep('guide')}><ArrowLeft className="mr-2 h-4 w-4"/> Back to Guide</Button>
                           <Button type="submit" className="px-8">Submit App</Button>
                       </div>
-                    </>
+                    </div>
                   )}
                 </DialogContent>
               </Dialog>
