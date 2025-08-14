@@ -48,7 +48,7 @@ export default function DashboardPage() {
                 </DialogTrigger>
                 <DialogContent className="sm:max-w-4xl max-h-[90vh] flex flex-col p-0">
                   {modalStep === 'guide' ? (
-                    <div className="flex flex-col h-full">
+                    <>
                       <DialogHeader className="p-6 border-b shrink-0">
                           <DialogTitle className="text-2xl font-bold">Get Your App Tested</DialogTitle>
                            <DialogClose className="absolute right-4 top-4 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none data-[state=open]:bg-accent data-[state=open]:text-muted-foreground">
@@ -56,7 +56,7 @@ export default function DashboardPage() {
                             <span className="sr-only">Close</span>
                           </DialogClose>
                       </DialogHeader>
-                      <div className="flex-grow overflow-y-auto px-6 py-6 space-y-8">
+                      <div className="flex-grow overflow-y-auto px-6 py-6 space-y-8 min-h-0">
                         <Card className="bg-secondary/30 border-dashed">
                           <CardContent className="p-6 flex flex-col md:flex-row items-center gap-6">
                             <div className="flex-grow">
@@ -69,7 +69,7 @@ export default function DashboardPage() {
                           </CardContent>
                         </Card>
                           
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4 items-start">
                           {processSteps.map((item, index) => (
                               <div key={index} className="bg-secondary/30 p-4 rounded-lg border">
                                   <div className="flex items-start gap-4">
@@ -104,12 +104,12 @@ export default function DashboardPage() {
                           ))}
                         </div>
                       </div>
-                       <div className="p-6 border-t bg-background shrink-0 flex justify-end w-full">
+                       <DialogFooter className="p-6 border-t bg-background shrink-0">
                           <Button onClick={() => setModalStep('form')} className="w-full sm:w-auto">
                               Get Started <ArrowRight className="ml-2"/>
                           </Button>
-                      </div>
-                    </div>
+                      </DialogFooter>
+                    </>
                   ) : (
                     <div className="flex flex-col h-full">
                       <DialogHeader className="p-6 border-b shrink-0">
@@ -142,10 +142,10 @@ export default function DashboardPage() {
                               <Textarea id="instructions" placeholder="e.g., Use user: demo@test.com, pass: 1234. Focus on the new checkout flow." className="min-h-[120px]" />
                           </div>
                       </div>
-                      <div className="p-6 border-t bg-background shrink-0 flex justify-between w-full">
+                      <DialogFooter className="p-6 border-t bg-background shrink-0 flex justify-between w-full">
                           <Button variant="ghost" onClick={() => setModalStep('guide')}><ArrowLeft className="mr-2 h-4 w-4"/> Back to Guide</Button>
                           <Button type="submit" className="px-8">Submit App</Button>
-                      </div>
+                      </DialogFooter>
                     </div>
                   )}
                 </DialogContent>
