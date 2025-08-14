@@ -3,7 +3,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { TestTribeLogo } from './icons';
+import { InTestersLogo } from './icons';
 import { Button } from './ui/button';
 import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle, SheetClose } from './ui/sheet';
 import { Menu, ArrowRight, Sun, Moon, User, LogOut, LayoutDashboard, Settings, LifeBuoy } from 'lucide-react';
@@ -36,7 +36,7 @@ const UserNav = () => {
           <div className="flex flex-col space-y-1">
             <p className="text-sm font-medium leading-none">Demo User</p>
             <p className="text-xs leading-none text-muted-foreground">
-              demo@testtribe.com
+              demo@inTesters.com
             </p>
           </div>
         </DropdownMenuLabel>
@@ -98,7 +98,7 @@ export function Header() {
       <div className="container mx-auto px-4 md:px-6">
         <div className="flex h-20 items-center justify-between">
           <Link href="/" className="flex items-center gap-2">
-            <TestTribeLogo className="h-8" />
+            <InTestersLogo className="h-8" />
           </Link>
           <nav className="hidden md:flex items-center gap-6">
              {isAuthenticated ? (

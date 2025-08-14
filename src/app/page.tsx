@@ -226,13 +226,13 @@ export default function Home() {
                     <section className="py-20 md:py-28 bg-background">
                         <div className="container mx-auto px-4 md:px-6 grid md:grid-cols-2 gap-12 items-center">
                             <div className="relative h-full w-full min-h-[400px]">
-                                <Image src="https://images.unsplash.com/photo-1551650975-87deedd944c3?q=80&w=600&auto=format&fit=crop" alt="TestTribe Google App" layout="fill" objectFit="cover" className="rounded-xl shadow-2xl" data-ai-hint="mobile app interface" />
+                                <Image src="https://images.unsplash.com/photo-1551650975-87deedd944c3?q=80&w=600&auto=format&fit=crop" alt="inTesters Google App" layout="fill" objectFit="cover" className="rounded-xl shadow-2xl" data-ai-hint="mobile app interface" />
                             </div>
                             <div>
                                 <Badge variant="secondary" className='py-2 px-4'>Coming Soon</Badge>
-                                <h2 className="text-3xl md:text-4xl font-bold mt-4">TestTribe, Now in Your Pocket</h2>
+                                <h2 className="text-3xl md:text-4xl font-bold mt-4">inTesters, Now in Your Pocket</h2>
                                 <p className="mt-4 text-muted-foreground">
-                                    Get ready to experience TestTribe like never before. Our native Google app is in the works, bringing all the platform's features right to your mobile device. Stay tuned for updates!
+                                    Get ready to experience inTesters like never before. Our native Google app is in the works, bringing all the platform's features right to your mobile device. Stay tuned for updates!
                                 </p>
                                 <ul className="mt-6 space-y-4">
                                     {appFeatures.map((feature) => (
@@ -258,7 +258,7 @@ export default function Home() {
                         <div className="text-center">
                             <h2 className="text-3xl md:text-4xl font-bold">Trusted by a Community of Innovators</h2>
                             <p className="mt-4 max-w-2xl mx-auto text-muted-foreground">
-                                See what developers and testers are saying about TestTribe.
+                                See what developers and testers are saying about inTesters.
                             </p>
                         </div>
                     </div>

@@ -9,7 +9,7 @@ export default function ProfilePage() {
             <header className="mb-8">
                 <h1 className="text-3xl font-bold">Your Profile</h1>
                 <p className="text-muted-foreground mt-2">
-                    Help us tailor your experience. Complete your profile to get the most out of TestTribe.
+                    Help us tailor your experience. Complete your profile to get the most out of inTesters.
                 </p>
             </header>
             <UserProfileForm user={demoUser} />

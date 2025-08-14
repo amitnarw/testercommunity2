@@ -35,7 +35,7 @@ type ProfileFormData = z.infer<typeof profileFormSchema>;
 const formSteps = [
     { id: 'role', fields: ['role'], title: 'What is your current role?' },
     { id: 'company', fields: ['companySize'], title: 'What is the size of your team?' },
-    { id: 'goal', fields: ['primaryGoal', 'monthlyBudget'], title: 'What brings you to TestTribe?' },
+    { id: 'goal', fields: ['primaryGoal', 'monthlyBudget'], title: 'What brings you to inTesters?' },
 ]
 
 interface UserProfileFormProps {

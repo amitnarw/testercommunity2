@@ -6,12 +6,12 @@ import Link from "next/link";
 
 const generalFaqs = [
     {
-        question: "What is TestTribe?",
-        answer: "TestTribe is a dual-path platform for app testing. You can either harness the power of a global community to test your app for free, or hire vetted professional testers for guaranteed, high-quality results."
+        question: "What is inTesters?",
+        answer: "inTesters is a dual-path platform for app testing. You can either harness the power of a global community to test your app for free, or hire vetted professional testers for guaranteed, high-quality results."
     },
     {
-        question: "Who is TestTribe for?",
-        answer: "TestTribe is for everyone involved in app development! This includes indie developers, startups, large enterprises, product managers, QA testers, and anyone who wants to build a high-quality, bug-free application."
+        question: "Who is inTesters for?",
+        answer: "inTesters is for everyone involved in app development! This includes indie developers, startups, large enterprises, product managers, QA testers, and anyone who wants to build a high-quality, bug-free application."
     },
      {
         question: "How do I get started?",
@@ -55,7 +55,7 @@ export default function FaqPage() {
             <div className="text-center max-w-2xl mx-auto">
                 <h1 className="text-4xl md:text-5xl font-bold">Frequently Asked Questions</h1>
                 <p className="mt-4 text-muted-foreground">
-                    Everything you need to know about TestTribe. If you have more questions, feel free to reach out to our support team.
+                    Everything you need to know about inTesters. If you have more questions, feel free to reach out to our support team.
                 </p>
             </div>
 

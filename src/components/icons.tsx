@@ -1,6 +1,6 @@
 import type { SVGProps } from 'react';
 
-export function TestTribeLogo(props: SVGProps<SVGSVGElement>) {
+export function InTestersLogo(props: SVGProps<SVGSVGElement>) {
   return (
     <svg 
       viewBox="0 0 160 32"
@@ -21,7 +21,7 @@ export function TestTribeLogo(props: SVGProps<SVGSVGElement>) {
         x="0"
         y="24"
       >
-        TestTribe
+        inTesters
       </text>
     </svg>
   );

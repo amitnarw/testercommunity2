@@ -158,7 +158,7 @@ export const testimonials: Testimonial[] = [
     role: 'Lead Developer, TechNova',
     avatar: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?q=80&w=400&auto=format=fit=crop',
     dataAiHint: 'woman portrait',
-    comment: 'TestTribe has revolutionized our QA process. The real-time feedback and detailed reports are game-changers. The platform isn\'t just functional, it\'s a joy to use!',
+    comment: 'inTesters has revolutionized our QA process. The real-time feedback and detailed reports are game-changers. The platform isn\'t just functional, it\'s a joy to use!',
   },
   {
     name: 'Mike Valerio',
@@ -179,14 +179,14 @@ export const testimonials: Testimonial[] = [
     role: 'QA Engineer, GameSphere',
     avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=400&auto=format=fit=crop',
     dataAiHint: 'man portrait',
-    comment: 'As a tester, the gamified reputation system is fantastic. It motivates me to do my best work and get recognized for it. I\'ve gotten more high-quality projects through TestTribe than any other platform.',
+    comment: 'As a tester, the gamified reputation system is fantastic. It motivates me to do my best work and get recognized for it. I\'ve gotten more high-quality projects through inTesters than any other platform.',
   },
   {
     name: 'Maria Garcia',
     role: 'Mobile App Developer',
     avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=400&auto=format=fit=crop',
     dataAiHint: 'woman developer',
-    comment: 'The community aspect is what sets TestTribe apart. It\'s not just a service; it\'s a network of professionals passionate about quality. The collaboration tools are excellent.',
+    comment: 'The community aspect is what sets inTesters apart. It\'s not just a service; it\'s a network of professionals passionate about quality. The collaboration tools are excellent.',
   },
 ];
 
@@ -335,12 +335,12 @@ What to expect: This is not a full app review. It is a quick check of your testi
      },
     { 
         title: "Activate Your Test Cycle", 
-        shortDescription: "Come back to TestTribe with your test URL to begin.",
+        shortDescription: "Come back to inTesters with your test URL to begin.",
         detailedDescription: `Once Google approves your changes, your testing track will be live and accessible to our testers. The final step is to activate the cycle on our platform.
 
 1. Find the "Join on the web" link on your internal testing page in the Play Console.
 2. Copy this URL.
-3. Come back to TestTribe and paste this URL into the submission form.
+3. Come back to inTesters and paste this URL into the submission form.
 
 After you submit, our testers will be notified automatically, and your 14-day testing cycle will officially begin!`,
         imageUrl: "/add-app-4.webp",
