@@ -66,6 +66,11 @@ export default function AddAppPage() {
     const [fullscreenImage, setFullscreenImage] = useState<string | null>(null);
     const [isVideoExpanded, setIsVideoExpanded] = useState(false);
 
+    const handleGetStarted = () => {
+        setStep('form');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
     return (
         <>
             <div className="min-h-screen bg-background">
@@ -272,7 +277,7 @@ export default function AddAppPage() {
                                 </Accordion>
 
                                 <div className="pt-6 flex justify-end">
-                                    <Button onClick={() => setStep('form')} size="lg">
+                                    <Button onClick={handleGetStarted} size="lg">
                                         Get Started <ArrowRight className="ml-2" />
                                     </Button>
                                 </div>
