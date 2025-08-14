@@ -66,7 +66,10 @@ export default function DashboardPage() {
                             <div className="h-full flex flex-col">
                                 <div className="mb-6">
                                     <div className="aspect-video bg-muted rounded-lg flex items-center justify-center">
-                                        <p className="text-muted-foreground">Video Guide Placeholder</p>
+                                         <div className="text-center">
+                                            <PlayCircle className="w-12 h-12 text-muted-foreground mx-auto" />
+                                            <p className="text-muted-foreground mt-2">Watch the Process Guide</p>
+                                        </div>
                                     </div>
                                 </div>
                                 <AnimatePresence mode="wait">
