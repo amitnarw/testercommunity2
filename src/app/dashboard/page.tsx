@@ -43,7 +43,7 @@ export default function DashboardPage() {
               <DialogTrigger asChild>
                 <Button><PlusCircle className="mr-2 h-4 w-4" /> Add New App</Button>
               </DialogTrigger>
-              <DialogContent className="sm:max-w-4xl max-h-[90vh] flex flex-col p-0">
+              <DialogContent className="sm:max-w-4xl max-h-[90vh] flex flex-col">
                 {modalStep === 'guide' ? (
                   <>
                     <DialogHeader className="px-6 pt-6 border-b">
@@ -53,7 +53,7 @@ export default function DashboardPage() {
                         </DialogDescription>
                     </DialogHeader>
                     <div className="flex-grow overflow-y-auto px-6 py-6 space-y-8">
-                        <div className="aspect-video bg-muted rounded-lg flex items-center justify-center">
+                        <div className="aspect-video bg-muted rounded-lg flex items-center justify-center mb-8">
                             <p className="text-muted-foreground">Video Guide Placeholder</p>
                         </div>
                         
@@ -68,19 +68,19 @@ export default function DashboardPage() {
                                     </AccordionTrigger>
                                     <AccordionContent className="pt-4 space-y-4">
                                         <p className="text-muted-foreground whitespace-pre-line text-sm">{item.detailedDescription}</p>
-                                        <div className="relative w-full h-40 rounded-lg overflow-hidden group">
+                                        <div className="relative w-full h-40 rounded-lg overflow-hidden group mt-4">
                                             <Image src={item.imageUrl} data-ai-hint={item.dataAiHint} alt={item.title} layout="fill" objectFit="cover" />
                                         </div>
                                     </AccordionContent>
                                 </AccordionItem>
                             ))}
                         </Accordion>
+                        <div className="pt-6 flex justify-end">
+                            <Button onClick={() => setModalStep('form')} className="w-full sm:w-auto ml-auto">
+                                Get Started <ArrowRight className="ml-2"/>
+                            </Button>
+                        </div>
                     </div>
-                    <DialogFooter className="px-6 py-4 border-t bg-background sticky bottom-0">
-                        <Button onClick={() => setModalStep('form')} className="w-full sm:w-auto ml-auto">
-                            Get Started <ArrowRight className="ml-2"/>
-                        </Button>
-                    </DialogFooter>
                   </>
                 ) : (
                   <>
@@ -110,10 +110,10 @@ export default function DashboardPage() {
                             <Textarea id="instructions" placeholder="e.g., Use user: demo@test.com, pass: 1234. Focus on the new checkout flow." className="min-h-[120px]" />
                         </div>
                     </div>
-                    <DialogFooter className="px-6 py-4 border-t bg-background sticky bottom-0 flex justify-between w-full">
+                    <div className="px-6 py-4 border-t bg-background flex justify-between w-full">
                         <Button variant="ghost" onClick={() => setModalStep('guide')}><ArrowLeft className="mr-2 h-4 w-4"/> Back to Guide</Button>
                         <Button type="submit" className="px-8">Submit App</Button>
-                    </DialogFooter>
+                    </div>
                   </>
                 )}
               </DialogContent>
