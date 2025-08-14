@@ -1,101 +1,55 @@
 
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { cn } from "@/lib/utils";
-import { ArrowRight, BadgeCheck, Users, Briefcase } from "lucide-react";
-import Link from "next/link";
+'use client';
 
-const communityFeatures = [
-    "Test other apps to earn points",
-    "Use points to get your app tested",
-    "Access a diverse pool of real users",
-    "Ideal for indie devs and hobby projects",
-    "It's free, powered by your time"
-];
-
-const proFeatures = [
-    "Hire vetted QA professionals",
-    "Get guaranteed, high-quality feedback",
-    "Choose testers with specific skills",
-    "Perfect for businesses and critical launches",
-    "Pay-per-project or hourly rates"
-];
-
+import Link from 'next/link';
+import { Button } from '@/components/ui/button';
+import { ArrowRight } from 'lucide-react';
 
 export default function FreemiumPage() {
     return (
         <div className="bg-background">
             <div className="container mx-auto px-4 md:px-6 py-20">
                 <section className="text-center max-w-3xl mx-auto">
-                    <h1 className="text-4xl md:text-6xl font-bold">The Best of Both Worlds</h1>
+                    <h1 className="text-4xl md:text-6xl font-bold">Two Paths to a Perfect App</h1>
                     <p className="mt-4 text-lg text-muted-foreground">
-                        We believe in flexibility. Whether you have more time than money or need guaranteed results on a deadline, we have a path for you. Both paths lead to a better app.
+                        Every great app needs testing. Your journey to a bug-free launch starts here. Choose the path that fits your project, your budget, and your timeline.
                     </p>
                 </section>
 
                 <section className="mt-20 grid md:grid-cols-2 gap-8 items-stretch">
                     {/* Community Path */}
-                    <Card className="rounded-xl border border-border/50 hover:border-primary/50 transition-all duration-300 transform hover:-translate-y-1 hover:shadow-2xl hover:shadow-primary/20 h-full flex flex-col">
-                        <CardHeader className="pt-8">
-                            <div className="flex items-center gap-4 mb-4">
-                                <div className="bg-primary/10 p-3 rounded-lg">
-                                    <Users className="w-8 h-8 text-primary" />
-                                </div>
-                                <CardTitle className="text-3xl">Community Path</CardTitle>
+                    <Link href="/community-dashboard" className="group relative block rounded-2xl overflow-hidden shadow-lg hover:shadow-primary/20 transition-all duration-300">
+                        <div 
+                            className="absolute inset-0 bg-cover bg-center transition-transform duration-500 ease-in-out group-hover:scale-105"
+                            style={{ backgroundImage: "url('https://images.unsplash.com/photo-1556742502-ec7c0e9f34b1?q=80&w=800&auto=format=fit=crop')" }}
+                            data-ai-hint="collaboration interface"
+                        ></div>
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/50 to-transparent"></div>
+                        <div className="relative flex flex-col justify-end h-[500px] p-8 text-white">
+                            <h3 className="text-3xl font-bold mb-2">The Community Path</h3>
+                            <p className="text-white/80 mb-6">Harness the power of a global community. Test other apps to earn points, then spend those points to get your app tested by a diverse group of real users on real devices. It's a powerful, reciprocal ecosystem.</p>
+                            <div className="flex items-center gap-2 text-lg font-semibold text-primary opacity-0 group-hover:opacity-100 transition-opacity duration-300 transform group-hover:translate-x-2">
+                                Start Testing for Free <ArrowRight className="w-5 h-5" />
                             </div>
-                            <CardDescription>Leverage the power of the crowd. Test apps, earn points, and get your app tested for free.</CardDescription>
-                        </CardHeader>
-                        <CardContent className="space-y-6 flex-grow">
-                            <div className="text-4xl font-bold">
-                                Free
-                                <span className="text-lg text-muted-foreground ml-2">(Pay with your time)</span>
-                            </div>
-                            <ul className="space-y-3 text-sm text-muted-foreground">
-                                {communityFeatures.map((feature, index) => (
-                                     <li key={index} className="flex items-start gap-2">
-                                        <BadgeCheck className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
-                                        <span>{feature}</span>
-                                    </li>
-                                ))}
-                            </ul>
-                        </CardContent>
-                        <CardFooter>
-                            <Button asChild className="w-full">
-                                <Link href="/signup">Join the Community <ArrowRight className="ml-2" /></Link>
-                            </Button>
-                        </CardFooter>
-                    </Card>
+                        </div>
+                    </Link>
 
-                    {/* Pro Path */}
-                     <Card className="rounded-2xl border-2 border-primary shadow-2xl shadow-primary/20 relative h-full flex flex-col">
-                        <CardHeader className="pt-8">
-                            <div className="flex items-center gap-4 mb-4">
-                                <div className="bg-primary/10 p-3 rounded-lg">
-                                    <Briefcase className="w-8 h-8 text-primary" />
-                                </div>
-                                <CardTitle className="text-3xl">Professional Path</CardTitle>
+                    {/* Professional Path */}
+                    <Link href="/marketplace" className="group relative block rounded-2xl overflow-hidden shadow-lg hover:shadow-primary/20 transition-all duration-300">
+                         <div 
+                           className="absolute inset-0 bg-cover bg-center transition-transform duration-500 ease-in-out group-hover:scale-105"
+                           style={{ backgroundImage: "url('https://images.unsplash.com/photo-1521791136064-7986c2920216?q=80&w=800&auto=format=fit=crop')" }}
+                           data-ai-hint="professional meeting"
+                        ></div>
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/50 to-transparent"></div>
+                        <div className="relative flex flex-col justify-end h-[500px] p-8 text-white">
+                            <h3 className="text-3xl font-bold mb-2">The Professional Path</h3>
+                            <p className="text-white/80 mb-6">When you need guaranteed results, specialized skills, or have a critical deadline, hire our vetted professionals. Get expert eyes on your app for a fixed price or hourly rate.</p>
+                            <div className="flex items-center gap-2 text-lg font-semibold text-primary opacity-0 group-hover:opacity-100 transition-opacity duration-300 transform group-hover:translate-x-2">
+                                Hire a Pro <ArrowRight className="w-5 h-5" />
                             </div>
-                            <CardDescription>Hire vetted professionals for guaranteed results and specialized testing when you need it most.</CardDescription>
-                        </CardHeader>
-                        <CardContent className="space-y-6 flex-grow">
-                             <div className="flex items-baseline gap-2">
-                                <span className="text-4xl font-bold">Pay-per-Project</span>
-                            </div>
-                             <ul className="space-y-3 text-sm text-muted-foreground">
-                                {proFeatures.map((feature, index) => (
-                                     <li key={index} className="flex items-start gap-2">
-                                        <BadgeCheck className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
-                                        <span>{feature}</span>
-                                    </li>
-                                ))}
-                            </ul>
-                        </CardContent>
-                        <CardFooter>
-                            <Button asChild className="w-full" variant="outline">
-                                <Link href="/marketplace">Explore Marketplace <ArrowRight className="ml-2" /></Link>
-                            </Button>
-                        </CardFooter>
-                    </Card>
+                        </div>
+                    </Link>
                 </section>
             </div>
         </div>
