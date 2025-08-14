@@ -97,10 +97,10 @@ export default function AddAppPage() {
 
                                 <Accordion type="single" collapsible className="w-full space-y-4">
                                     <AccordionItem value="item-1" className="bg-secondary/30 rounded-xl border overflow-hidden">
-                                        <AccordionTrigger className="p-6 text-left hover:no-underline flex flex-row items-center justify-between">
-                                            <div className="flex items-start">
-                                                <span className="text-5xl font-black text-primary/20 leading-none w-20">01</span>
-                                                <div>
+                                        <AccordionTrigger className="p-6 text-left hover:no-underline flex flex-row items-center justify-between w-full relative">
+                                            <div className="flex items-start flex-1">
+                                                <span className="text-4xl md:text-5xl font-black text-primary/50 leading-none w-20 absolute md:relative top-6 left-6 md:top-auto md:left-auto">01</span>
+                                                <div className="pl-16 md:pl-0">
                                                     <h3 className="font-bold text-xl mb-1">Grant Our Testers Access</h3>
                                                     <p className="text-muted-foreground text-sm text-left">Add our official tester group to your app's internal test track.</p>
                                                 </div>
@@ -136,10 +136,10 @@ export default function AddAppPage() {
                                     </AccordionItem>
 
                                      <AccordionItem value="item-2" className="bg-secondary/30 rounded-xl border overflow-hidden">
-                                        <AccordionTrigger className="p-6 text-left hover:no-underline flex flex-row items-center justify-between">
-                                            <div className="flex items-start">
-                                                <span className="text-5xl font-black text-primary/20 leading-none w-20">02</span>
-                                                <div>
+                                        <AccordionTrigger className="p-6 text-left hover:no-underline flex flex-row items-center justify-between w-full relative">
+                                            <div className="flex items-start flex-1">
+                                                <span className="text-4xl md:text-5xl font-black text-primary/50 leading-none w-20 absolute md:relative top-6 left-6 md:top-auto md:left-auto">02</span>
+                                                <div className="pl-16 md:pl-0">
                                                     <h3 className="font-bold text-xl mb-1">Enable Global Reach</h3>
                                                     <p className="text-muted-foreground text-sm text-left">Make your app available in all countries for maximum test coverage.</p>
                                                 </div>
@@ -173,10 +173,10 @@ export default function AddAppPage() {
                                     </AccordionItem>
 
                                      <AccordionItem value="item-3" className="bg-secondary/30 rounded-xl border overflow-hidden">
-                                        <AccordionTrigger className="p-6 text-left hover:no-underline flex flex-row items-center justify-between">
-                                            <div className="flex items-start">
-                                                <span className="text-5xl font-black text-primary/20 leading-none w-20">03</span>
-                                                <div>
+                                        <AccordionTrigger className="p-6 text-left hover:no-underline flex flex-row items-center justify-between w-full relative">
+                                            <div className="flex items-start flex-1">
+                                                 <span className="text-4xl md:text-5xl font-black text-primary/50 leading-none w-20 absolute md:relative top-6 left-6 md:top-auto md:left-auto">03</span>
+                                                <div className="pl-16 md:pl-0">
                                                     <h3 className="font-bold text-xl mb-1">Submit for Google's Review</h3>
                                                     <p className="text-muted-foreground text-sm text-left">Save your changes and submit them to Google for a quick review.</p>
                                                 </div>
@@ -209,10 +209,10 @@ export default function AddAppPage() {
                                     </AccordionItem>
 
                                      <AccordionItem value="item-4" className="bg-secondary/30 rounded-xl border overflow-hidden">
-                                        <AccordionTrigger className="p-6 text-left hover:no-underline flex flex-row items-center justify-between">
-                                            <div className="flex items-start">
-                                                <span className="text-5xl font-black text-primary/20 leading-none w-20">04</span>
-                                                <div>
+                                        <AccordionTrigger className="p-6 text-left hover:no-underline flex flex-row items-center justify-between w-full relative">
+                                            <div className="flex items-start flex-1">
+                                                <span className="text-4xl md:text-5xl font-black text-primary/50 leading-none w-20 absolute md:relative top-6 left-6 md:top-auto md:left-auto">04</span>
+                                                <div className="pl-16 md:pl-0">
                                                     <h3 className="font-bold text-xl mb-1">Activate Your Test Cycle</h3>
                                                     <p className="text-muted-foreground text-sm text-left">Come back to inTesters with your test URL to begin.</p>
                                                 </div>
