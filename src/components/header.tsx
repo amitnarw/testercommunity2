@@ -19,6 +19,7 @@ const navItems = [
   { name: 'Community Hub', href: '/community-dashboard' },
   { name: 'Blog', href: '/blog' },
   { name: 'Marketplace', href: '/marketplace' },
+  { name: 'Pricing', href: '/pricing'},
 ];
 
 
@@ -46,19 +47,19 @@ const UserNav = () => {
         <DropdownMenuGroup>
            <Link href="/dashboard">
             <DropdownMenuItem>
-                <LayoutDashboard className="mr-2" />
+                <LayoutDashboard className="mr-2 h-4 w-4" />
                 Developer Dashboard
             </DropdownMenuItem>
           </Link>
           <Link href="/profile">
             <DropdownMenuItem>
-                <User className="mr-2" />
+                <User className="mr-2 h-4 w-4" />
                 Profile
             </DropdownMenuItem>
           </Link>
           <Link href="/help">
             <DropdownMenuItem>
-                <LifeBuoy className="mr-2" />
+                <LifeBuoy className="mr-2 h-4 w-4" />
                 Support
             </DropdownMenuItem>
           </Link>
@@ -66,7 +67,7 @@ const UserNav = () => {
         <DropdownMenuSeparator />
         <Link href="/">
             <DropdownMenuItem>
-            <LogOut className="mr-2" />
+            <LogOut className="mr-2 h-4 w-4" />
             Log out
             </DropdownMenuItem>
         </Link>
@@ -115,11 +116,11 @@ export function Header() {
     <header className={cn(
       "sticky top-0 z-40 w-full transition-all duration-300",
        isScrolled ? "bg-background/80 backdrop-blur-lg border-b" : "bg-transparent",
-       isDashboardPage && "md:ml-64 border-b"
+       isDashboardPage && "border-b"
     )}>
       <div className="container mx-auto px-4 md:px-6">
         <div className="flex h-20 items-center justify-between">
-          <div className={cn("flex items-center gap-2", isDashboardPage && "md:hidden")}>
+           <div className={cn("flex items-center gap-2", isDashboardPage && "md:hidden")}>
              <Link href="/">
                 <InTestersLogo className="h-8" />
              </Link>
