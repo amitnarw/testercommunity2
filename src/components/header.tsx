@@ -79,6 +79,11 @@ export function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setMenuOpen] = useState(false);
   const { theme, setTheme } = useTheme();
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   const isAuthenticated = pathname.startsWith('/dashboard') || pathname.startsWith('/profile');
 
@@ -161,20 +166,26 @@ export function Header() {
                 <Moon className="absolute h-6 w-6 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
                 <span className="sr-only">Toggle theme</span>
             </Button>
-            {isAuthenticated ? (
-                <div className="hidden md:block">
-                    <UserNav />
-                </div>
-            ) : (
-                <div className="hidden md:flex items-center gap-2">
-                    <Button variant="ghost" asChild>
-                        <Link href="/login">Log In</Link>
-                    </Button>
-                    <Button asChild>
-                    <Link href="/signup">Sign Up <ArrowRight className="ml-2 h-4 w-4" /></Link>
-                    </Button>
-                </div>
+
+            {isMounted && (
+              <>
+                {isAuthenticated ? (
+                    <div className="hidden md:block">
+                        <UserNav />
+                    </div>
+                ) : (
+                    <div className="hidden md:flex items-center gap-2">
+                        <Button variant="ghost" asChild>
+                            <Link href="/login">Log In</Link>
+                        </Button>
+                        <Button asChild>
+                        <Link href="/signup">Sign Up <ArrowRight className="ml-2 h-4 w-4" /></Link>
+                        </Button>
+                    </div>
+                )}
+              </>
             )}
+
             <div className="md:hidden">
                 <Sheet open={isMenuOpen} onOpenChange={setMenuOpen}>
                     <SheetTrigger asChild>
@@ -212,35 +223,39 @@ export function Header() {
                                 ))}
                             </nav>
                             <div className="mt-12 flex flex-col gap-4">
-                                {isAuthenticated ? (
-                                    <div className="border-t pt-8 mt-4">
-                                        <nav className="flex flex-col items-center text-center gap-8">
-                                            {mobileAuthNavItems.map((item) => (
-                                                <Link
-                                                    key={item.name}
-                                                    href={item.href}
-                                                    onClick={() => setMenuOpen(false)}
-                                                    className={cn(
-                                                        'flex items-center gap-3 text-lg font-medium transition-colors hover:text-primary',
-                                                        pathname === item.href ? 'text-primary' : 'text-muted-foreground'
-                                                    )}
-                                                >
-                                                    {item.icon}
-                                                    {item.name}
-                                                </Link>
-                                            ))}
-                                        </nav>
-                                    </div>
-                                ) : (
-                                    <>
-                                     <Button variant="outline" size="lg" asChild onClick={() => setMenuOpen(false)}>
-                                        <Link href="/login">Log In</Link>
-                                    </Button>
-                                    <Button asChild size="lg" onClick={() => setMenuOpen(false)}>
-                                        <Link href="/signup">Sign Up</Link>
-                                    </Button>
-                                    </>
-                                )}
+                               {isMounted && (
+                                <>
+                                  {isAuthenticated ? (
+                                      <div className="border-t pt-8 mt-4">
+                                          <nav className="flex flex-col items-center text-center gap-8">
+                                              {mobileAuthNavItems.map((item) => (
+                                                  <Link
+                                                      key={item.name}
+                                                      href={item.href}
+                                                      onClick={() => setMenuOpen(false)}
+                                                      className={cn(
+                                                          'flex items-center gap-3 text-lg font-medium transition-colors hover:text-primary',
+                                                          pathname === item.href ? 'text-primary' : 'text-muted-foreground'
+                                                      )}
+                                                  >
+                                                      {item.icon}
+                                                      {item.name}
+                                                  </Link>
+                                              ))}
+                                          </nav>
+                                      </div>
+                                  ) : (
+                                      <>
+                                      <Button variant="outline" size="lg" asChild onClick={() => setMenuOpen(false)}>
+                                          <Link href="/login">Log In</Link>
+                                      </Button>
+                                      <Button asChild size="lg" onClick={() => setMenuOpen(false)}>
+                                          <Link href="/signup">Sign Up</Link>
+                                      </Button>
+                                      </>
+                                  )}
+                                </>
+                               )}
                             </div>
                         </div>
                     </SheetContent>
