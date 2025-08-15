@@ -118,7 +118,12 @@ export default {
         'fall': {
             '0%': { transform: 'translateY(-100%)', opacity: '1' },
             '100%': { transform: 'translateY(100vh)', opacity: '0' },
-        }
+        },
+        'animated-gradient': {
+          '0%': { backgroundPosition: '0% 50%' },
+          '50%': { backgroundPosition: '100% 50%' },
+          '100%': { backgroundPosition: '0% 50%' },
+        },
       },
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
@@ -129,6 +134,7 @@ export default {
         'image-zoom': 'image-zoom 0.5s ease-in-out forwards',
         'float': 'float 3s ease-in-out infinite',
         'fall': 'fall linear forwards',
+        'animated-gradient': 'animated-gradient 6s ease infinite',
       },
     },
   },

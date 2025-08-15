@@ -44,12 +44,15 @@ export default function Home() {
         <div className="flex flex-col min-h-screen">
             <main className="flex-1">
                 {/* Hero Section */}
-                <section className="relative w-full py-12 sm:py-16 md:py-20 lg:py-28 overflow-hidden bg-dot-pattern dark:bg-dot-pattern-dark">
+                <section className="relative w-full py-12 sm:py-16 md:py-20 lg:py-28 overflow-hidden bg-dot-pattern">
                     <div className="container mx-auto px-4 md:px-6 text-center relative z-10">
                         <div className="max-w-4xl mx-auto">
-                            <Badge variant="outline" className="inline-flex items-center rounded-full border border-primary/20 bg-primary/5 px-3 py-1 text-xs sm:text-sm font-body text-primary mb-5 sm:mb-6">
-                                Meet Google's 12-Tester Requirement.
-                            </Badge>
+                             <div className="relative inline-block mb-5 sm:mb-6 group">
+                                <span className="absolute -inset-0.5 rounded-full bg-gradient-to-r from-primary to-accent blur-md opacity-75 group-hover:opacity-100 transition duration-1000 group-hover:duration-200 animate-animated-gradient"></span>
+                                <Badge variant="outline" className="relative inline-flex items-center rounded-full border-border bg-background px-3 py-1 text-xs sm:text-sm font-body text-primary">
+                                    Meet Google's 12-Tester Requirement.
+                                </Badge>
+                            </div>
                             <h1 className="text-[2.25rem] sm:text-[2.75rem] md:text-[3.5rem] lg:text-[4.25rem] font-heading leading-[1.1] tracking-tight font-bold mb-5 sm:mb-6 md:mb-8">
                                 Testing <span className="bg-gradient-to-br from-primary to-accent bg-clip-text text-transparent">Your App</span> Just Got Easier
                             </h1>
