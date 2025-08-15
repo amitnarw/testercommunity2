@@ -1,5 +1,5 @@
 
-import type { BlogPost, Testimonial, RoadmapStep, UserProfileData, ProcessStep, CommunityApp } from './types';
+import type { BlogPost, Testimonial, RoadmapStep, UserProfileData, ProcessStep, CommunityApp, PointsPackage, FaqItem } from './types';
 
 export const chartData = [
     { month: 'January', reports: 186, resolved: 80 },
@@ -242,3 +242,49 @@ export const communityApps: CommunityApp[] = [
         testingInstructions: 'Check the weather for your current location and at least two other cities. Please verify if the hourly forecast seems accurate and report any UI issues.'
     }
 ];
+
+export const pointsPackages: PointsPackage[] = [
+    {
+        name: "Booster",
+        price: 499,
+        points: 500,
+        description: "Perfect for a quick test cycle for a small app or feature.",
+        features: ["Fund one small project", "Basic bug reports", "Community support"],
+        pricePerPoint: 499 / 500
+    },
+    {
+        name: "Accelerator",
+        price: 1999,
+        points: 2500,
+        description: "Great for medium-sized projects or a few rounds of testing.",
+        features: ["Fund multiple test cycles", "More detailed reports", "Priority in queue"],
+        pricePerPoint: 1999 / 2500
+    },
+    {
+        name: "Launchpad",
+        price: 4999,
+        points: 7500,
+        description: "Ideal for large apps or extensive pre-launch testing.",
+        features: ["Sufficient for major releases", "Highest queue priority", "Dedicated community manager"],
+        pricePerPoint: 4999 / 7500
+    }
+];
+
+export const pricingFaqs: FaqItem[] = [
+    {
+        question: "What can I use points for?",
+        answer: "Points are the currency of inTesters. You use them to 'pay' community members for testing your app. The more points you offer for your project, the more attractive it is to testers, and the faster you'll likely receive feedback."
+    },
+    {
+        question: "Do my purchased points expire?",
+        answer: "No, your points never expire. You can use them whenever you're ready to start a new testing cycle for your app."
+    },
+    {
+        question: "What's the difference between earning and buying points?",
+        answer: "Earning points is free—you contribute your time and skill by testing other apps. Buying points is a shortcut that lets you fund your projects immediately without having to test other apps first. It's perfect for when you're on a tight deadline."
+    },
+    {
+        question: "Can I get a refund on purchased points?",
+        answer: "Points that have not been spent on a testing project are eligible for a refund within 14 days of purchase. Please contact our support team for assistance."
+    }
+]

@@ -46,12 +46,13 @@ export type UserProfileData = {
     monthlyBudget: string;
 };
 
-export type PricingPlan = {
+export type PointsPackage = {
     name: string;
     price: number;
-    apps: number;
+    points: number;
+    description: string;
     features: string[];
-    popular: boolean;
+    pricePerPoint?: number;
 };
 
 export type ProcessStep = {
@@ -73,4 +74,9 @@ export type CommunityApp = {
     playStoreUrl?: string;
     screenshots: { url: string; alt: string; dataAiHint?: string }[];
     testingInstructions: string;
+}
+
+export type FaqItem = {
+    question: string;
+    answer: string;
 }

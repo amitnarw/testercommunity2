@@ -12,7 +12,6 @@ import { ScrollingRibbon } from '@/components/scrolling-ribbon';
 import React from 'react';
 import { testimonials } from '@/lib/data.tsx';
 import { TestimonialScroller } from '@/components/testimonial-scroller';
-import { TwoPathsSection } from '@/components/two-paths-section';
 import { GlobalImpactSection } from '@/components/global-impact-section';
 import { FaqSection } from '@/components/faq-section';
 
@@ -64,16 +63,16 @@ function PricingSection() {
                 <div className="text-center max-w-2xl mx-auto">
                     <h2 className="text-4xl md:text-5xl font-bold">A Plan For Everyone</h2>
                     <p className="mt-4 text-muted-foreground">
-                        Our platform is built on a community-driven, freemium model.
+                        Our platform is built on a community-driven, freemium model. Earn points for free, or buy them to get started faster.
                     </p>
                 </div>
-                <div className="mt-12 max-w-md mx-auto">
+                <div className="mt-12 max-w-4xl mx-auto grid md:grid-cols-2 gap-8 items-stretch">
                     {/* Community Plan */}
-                    <Card className="rounded-2xl border-2 border-primary shadow-2xl shadow-primary/20 relative h-full">
+                    <Card className="rounded-2xl border-2 border-primary shadow-2xl shadow-primary/20 relative h-full flex flex-col">
                          <Badge variant="default" className="absolute -top-4 left-1/2 -translate-x-1/2">Community Plan</Badge>
-                        <div>
+                        <div className="flex-grow">
                             <CardHeader className="pt-8 text-center">
-                                <CardTitle className="text-2xl">Community Testing</CardTitle>
+                                <CardTitle className="text-2xl">Earn Your Way</CardTitle>
                                 <CardDescription>Leverage the power of the crowd, for free.</CardDescription>
                             </CardHeader>
                             <CardContent className="space-y-6">
@@ -93,10 +92,6 @@ function PricingSection() {
                                         <BadgeCheck className="w-5 h-5 text-primary flex-shrink-0 mt-1" />
                                         <span>Access a diverse pool of testers and devices.</span>
                                     </li>
-                                    <li className="flex items-start gap-2">
-                                        <BadgeCheck className="w-5 h-5 text-primary flex-shrink-0 mt-1" />
-                                        <span>Ideal for indie developers, startups, and hobby projects.</span>
-                                    </li>
                                      <li className="flex items-start gap-2">
                                         <BadgeCheck className="w-5 h-5 text-primary flex-shrink-0 mt-1" />
                                         <span>Engage with a community passionate about quality.</span>
@@ -106,7 +101,44 @@ function PricingSection() {
                         </div>
                         <CardFooter className='w-full'>
                             <Button asChild className="w-full rounded-xl">
-                                <Link href="/community-dashboard">Join the Community</Link>
+                                <Link href="/community-dashboard">Start Earning Points</Link>
+                            </Button>
+                        </CardFooter>
+                    </Card>
+                    {/* Buy Points Plan */}
+                     <Card className="rounded-2xl border h-full flex flex-col">
+                        <div className="flex-grow">
+                            <CardHeader className="pt-8 text-center">
+                                <CardTitle className="text-2xl">Buy Points</CardTitle>
+                                <CardDescription>Fast-track your testing by purchasing points.</CardDescription>
+                            </CardHeader>
+                            <CardContent className="space-y-6">
+                                <div className="text-4xl font-bold text-center">
+                                   Starting at ₹499
+                                </div>
+                                <ul className="space-y-3 text-sm text-muted-foreground">
+                                    <li className="flex items-start gap-2">
+                                        <BadgeCheck className="w-5 h-5 text-primary flex-shrink-0 mt-1" />
+                                        <span>Instantly fund your testing projects.</span>
+                                    </li>
+                                    <li className="flex items-start gap-2">
+                                        <BadgeCheck className="w-5 h-5 text-primary flex-shrink-0 mt-1" />
+                                        <span>Choose from various packages to fit your budget.</span>
+                                    </li>
+                                    <li className="flex items-start gap-2">
+                                        <BadgeCheck className="w-5 h-5 text-primary flex-shrink-0 mt-1" />
+                                        <span>Perfect for when you're on a deadline.</span>
+                                    </li>
+                                     <li className="flex items-start gap-2">
+                                        <BadgeCheck className="w-5 h-5 text-primary flex-shrink-0 mt-1" />
+                                        <span>Get immediate access to the testing queue.</span>
+                                    </li>
+                                </ul>
+                            </CardContent>
+                        </div>
+                        <CardFooter className='w-full'>
+                            <Button asChild className="w-full rounded-xl" variant="outline">
+                                <Link href="/pricing">View Point Packages</Link>
                             </Button>
                         </CardFooter>
                     </Card>
