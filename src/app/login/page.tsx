@@ -23,6 +23,8 @@ const LoginForm = () => {
     const router = useRouter();
 
     const handleDemoLogin = () => {
+        // Set a flag in localStorage to simulate login
+        localStorage.setItem('isAuthenticated', 'true');
         router.push('/dashboard');
     }
 

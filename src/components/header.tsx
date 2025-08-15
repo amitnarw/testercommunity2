@@ -21,7 +21,7 @@ const navItems = [
 ];
 
 
-const UserNav = () => {
+const UserNav = ({ onLogout }: { onLogout: () => void }) => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -64,7 +64,7 @@ const UserNav = () => {
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <Link href="/">
-            <DropdownMenuItem>
+            <DropdownMenuItem onClick={onLogout}>
             <LogOut className="mr-2 h-4 w-4" />
             Log out
             </DropdownMenuItem>
@@ -76,12 +76,14 @@ const UserNav = () => {
 
 
 interface HeaderProps {
+  isAuthenticated: boolean;
   isDashboardPage: boolean;
   isMobileMenuOpen: boolean;
   setMobileMenuOpen: (open: boolean) => void;
+  onLogout: () => void;
 }
 
-export function Header({ isDashboardPage, isMobileMenuOpen, setMobileMenuOpen }: HeaderProps) {
+export function Header({ isAuthenticated, isDashboardPage, isMobileMenuOpen, setMobileMenuOpen, onLogout }: HeaderProps) {
   const pathname = usePathname();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isVisitorMenuOpen, setVisitorMenuOpen] = useState(false);
@@ -92,7 +94,6 @@ export function Header({ isDashboardPage, isMobileMenuOpen, setMobileMenuOpen }:
     setIsMounted(true);
   }, []);
 
-  const isAuthenticated = isDashboardPage;
   const isAuthPage = pathname === '/login' || pathname === '/signup';
 
   useEffect(() => {
@@ -119,7 +120,7 @@ export function Header({ isDashboardPage, isMobileMenuOpen, setMobileMenuOpen }:
       <div className="container mx-auto px-4 md:px-6">
         <div className="flex h-20 items-center justify-between">
             <div className="flex items-center gap-2">
-              {isAuthenticated ? (
+              {isDashboardPage ? (
                 <div className="flex items-center gap-4">
                   <Button size="icon" variant="outline" onClick={() => setMobileMenuOpen(!isMobileMenuOpen)} className="md:hidden">
                     <Menu className="h-6 w-6" />
@@ -136,7 +137,7 @@ export function Header({ isDashboardPage, isMobileMenuOpen, setMobileMenuOpen }:
               )}
             </div>
            
-            {!isAuthenticated && (
+            {!isDashboardPage && (
               <nav className="hidden md:flex items-center gap-6">
                   {navItems.map((item) => (
                   <Link
@@ -168,7 +169,7 @@ export function Header({ isDashboardPage, isMobileMenuOpen, setMobileMenuOpen }:
                   </Button>
 
                   {isAuthenticated ? (
-                    <UserNav />
+                    <UserNav onLogout={onLogout} />
                   ) : (
                       <div className="hidden md:flex items-center gap-2">
                           <Button variant="ghost" asChild>

@@ -11,7 +11,7 @@ import { Footer } from '@/components/footer';
 import { DashboardFooter } from '@/components/dashboard-footer';
 import { Sidebar } from '@/components/sidebar';
 import { cn } from '@/lib/utils';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 // This is a client component, so we can't use metadata here.
 // We'll manage the title in the individual page components.
@@ -24,10 +24,23 @@ export default function RootLayout({
   const pathname = usePathname();
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  useEffect(() => {
+    // Check localStorage only on the client side
+    const authStatus = localStorage.getItem('isAuthenticated') === 'true';
+    setIsAuthenticated(authStatus);
+  }, [pathname]); // Re-check on path change
 
   const isAuthPage = pathname === '/login' || pathname === '/signup';
-  const isDashboardPage = pathname.startsWith('/dashboard') || pathname.startsWith('/community-dashboard') || pathname.startsWith('/profile');
+  const isDashboardPage = isAuthenticated && (pathname.startsWith('/dashboard') || pathname.startsWith('/community-dashboard') || pathname.startsWith('/profile'));
 
+  const handleLogout = () => {
+    localStorage.removeItem('isAuthenticated');
+    setIsAuthenticated(false);
+    // Optionally redirect to home or login page
+  };
+  
   return (
     <html lang="en" className="!scroll-smooth" suppressHydrationWarning>
       <head>
@@ -60,9 +73,15 @@ export default function RootLayout({
             )}
             <div className={cn(
               "transition-[margin-left] ease-in-out duration-300",
-              isDashboardPage && (isSidebarCollapsed ? "md:ml-20" : "md:ml-64")
+              isDashboardPage && !isAuthPage && (isSidebarCollapsed ? "md:ml-20" : "md:ml-64")
             )}>
-              <Header isDashboardPage={isDashboardPage} isMobileMenuOpen={isMobileMenuOpen} setMobileMenuOpen={setIsMobileMenuOpen} />
+              <Header 
+                isAuthenticated={isAuthenticated}
+                isDashboardPage={isDashboardPage} 
+                isMobileMenuOpen={isMobileMenuOpen} 
+                setMobileMenuOpen={setIsMobileMenuOpen}
+                onLogout={handleLogout}
+              />
               <main className="flex-1">{children}</main>
               {!isAuthPage && (
                 isDashboardPage ? <DashboardFooter /> : <Footer />
