@@ -44,7 +44,7 @@ export default function Home() {
         <div className="flex flex-col min-h-screen">
             <main className="flex-1">
                 {/* Hero Section */}
-                <section className="relative w-full py-12 sm:py-16 md:py-20 lg:py-28 overflow-hidden">
+                <section className="relative w-full py-12 sm:py-16 md:py-20 lg:py-28 overflow-hidden bg-dot-pattern dark:bg-dot-pattern-dark">
                     <div className="container mx-auto px-4 md:px-6 text-center relative z-10">
                         <div className="max-w-4xl mx-auto">
                              <Badge variant="outline" className="inline-flex items-center rounded-full border border-primary/20 bg-primary/5 px-3 py-1 text-xs sm:text-sm font-body text-primary mb-5 sm:mb-6">
