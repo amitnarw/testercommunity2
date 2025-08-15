@@ -2,9 +2,9 @@
 'use client';
 
 import Link from 'next/link';
-import { ArrowRight, BadgeCheck, ChevronRight, Bell, Flag, Zap, Users2, Smartphone, IndianRupee } from 'lucide-react';
+import { ArrowRight, BadgeCheck, CheckCircle, ChevronRight, Users, Briefcase } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, FeatureCard } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, FeatureCard, HowItWorksCard } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import Image from "next/image";
 import { ScrollToTopButton } from '@/components/scroll-to-top-button';
@@ -14,6 +14,7 @@ import { testimonials } from '@/lib/data.tsx';
 import { TestimonialScroller } from '@/components/testimonial-scroller';
 import { GlobalImpactSection } from '@/components/global-impact-section';
 import { FaqSection } from '@/components/faq-section';
+import { TwoPathsSection } from '@/components/two-paths-section';
 
 const features = [
     {
@@ -38,116 +39,6 @@ const features = [
     },
 ];
 
-const appFeatures = [
-    {
-        icon: <Bell className="h-6 w-6 text-primary" />,
-        title: "Real-time Notifications",
-        description: "Get instant alerts for new test invites, bug reports, and messages."
-    },
-    {
-        icon: <Flag className="h-6 w-6 text-primary" />,
-        title: "On-the-Go Reporting",
-        description: "Submit bug reports with attachments directly from your device."
-    },
-    {
-        icon: <Smartphone className="h-6 w-6 text-primary" />,
-        title: "Manage Anywhere",
-        description: "Access your dashboard, manage projects, and track progress on the fly."
-    }
-];
-
-function PricingSection() {
-    return (
-        <section id="pricing" className="py-20 md:py-28 bg-background">
-            <div className="container mx-auto px-4 md:px-6">
-                <div className="text-center max-w-2xl mx-auto">
-                    <h2 className="text-4xl md:text-5xl font-bold">A Plan For Everyone</h2>
-                    <p className="mt-4 text-muted-foreground">
-                        Our platform is built on a community-driven, freemium model. Earn points for free, or buy them to get started faster.
-                    </p>
-                </div>
-                <div className="mt-12 max-w-4xl mx-auto grid md:grid-cols-2 gap-8 items-stretch">
-                    {/* Community Plan */}
-                    <Card className="rounded-2xl border-2 border-primary shadow-2xl shadow-primary/20 relative h-full flex flex-col">
-                         <Badge variant="default" className="absolute -top-4 left-1/2 -translate-x-1/2">Community Plan</Badge>
-                        <div className="flex-grow">
-                            <CardHeader className="pt-8 text-center">
-                                <CardTitle className="text-2xl">Earn Your Way</CardTitle>
-                                <CardDescription>Leverage the power of the crowd, for free.</CardDescription>
-                            </CardHeader>
-                            <CardContent className="space-y-6">
-                                <div className="text-4xl font-bold text-center">
-                                   Free
-                                </div>
-                                <ul className="space-y-3 text-sm text-muted-foreground">
-                                    <li className="flex items-start gap-2">
-                                        <BadgeCheck className="w-5 h-5 text-primary flex-shrink-0 mt-1" />
-                                        <span>Test other apps to earn points.</span>
-                                    </li>
-                                    <li className="flex items-start gap-2">
-                                        <BadgeCheck className="w-5 h-5 text-primary flex-shrink-0 mt-1" />
-                                        <span>Use points to get your own app tested by the community.</span>
-                                    </li>
-                                    <li className="flex items-start gap-2">
-                                        <BadgeCheck className="w-5 h-5 text-primary flex-shrink-0 mt-1" />
-                                        <span>Access a diverse pool of testers and devices.</span>
-                                    </li>
-                                     <li className="flex items-start gap-2">
-                                        <BadgeCheck className="w-5 h-5 text-primary flex-shrink-0 mt-1" />
-                                        <span>Engage with a community passionate about quality.</span>
-                                    </li>
-                                </ul>
-                            </CardContent>
-                        </div>
-                        <CardFooter className='w-full'>
-                            <Button asChild className="w-full rounded-xl">
-                                <Link href="/community-dashboard">Start Earning Points</Link>
-                            </Button>
-                        </CardFooter>
-                    </Card>
-                    {/* Buy Points Plan */}
-                     <Card className="rounded-2xl border h-full flex flex-col">
-                        <div className="flex-grow">
-                            <CardHeader className="pt-8 text-center">
-                                <CardTitle className="text-2xl">Buy Points</CardTitle>
-                                <CardDescription>Fast-track your testing by purchasing points.</CardDescription>
-                            </CardHeader>
-                            <CardContent className="space-y-6">
-                                <div className="text-4xl font-bold text-center">
-                                   Starting at ₹499
-                                </div>
-                                <ul className="space-y-3 text-sm text-muted-foreground">
-                                    <li className="flex items-start gap-2">
-                                        <BadgeCheck className="w-5 h-5 text-primary flex-shrink-0 mt-1" />
-                                        <span>Instantly fund your testing projects.</span>
-                                    </li>
-                                    <li className="flex items-start gap-2">
-                                        <BadgeCheck className="w-5 h-5 text-primary flex-shrink-0 mt-1" />
-                                        <span>Choose from various packages to fit your budget.</span>
-                                    </li>
-                                    <li className="flex items-start gap-2">
-                                        <BadgeCheck className="w-5 h-5 text-primary flex-shrink-0 mt-1" />
-                                        <span>Perfect for when you're on a deadline.</span>
-                                    </li>
-                                     <li className="flex items-start gap-2">
-                                        <BadgeCheck className="w-5 h-5 text-primary flex-shrink-0 mt-1" />
-                                        <span>Get immediate access to the testing queue.</span>
-                                    </li>
-                                </ul>
-                            </CardContent>
-                        </div>
-                        <CardFooter className='w-full'>
-                            <Button asChild className="w-full rounded-xl" variant="outline">
-                                <Link href="/pricing">View Point Packages</Link>
-                            </Button>
-                        </CardFooter>
-                    </Card>
-                </div>
-            </div>
-        </section>
-    );
-}
-
 export default function Home() {
     return (
         <div className="flex flex-col min-h-screen">
@@ -156,18 +47,18 @@ export default function Home() {
                 <section className="relative w-full py-12 sm:py-16 md:py-20 lg:py-28 overflow-hidden">
                     <div className="container mx-auto px-4 md:px-6 text-center relative z-10">
                         <div className="max-w-4xl mx-auto">
-                            <Badge variant="outline" className="inline-flex items-center rounded-full border border-primary/20 bg-primary/5 px-3 py-1 text-xs sm:text-sm font-body text-primary mb-5 sm:mb-6">
-                                Now in Public Beta
+                             <Badge variant="outline" className="inline-flex items-center rounded-full border border-primary/20 bg-primary/5 px-3 py-1 text-xs sm:text-sm font-body text-primary mb-5 sm:mb-6">
+                                The Google Play Store requires 12 testers for 14 days. We can help.
                             </Badge>
                             <h1 className="text-[2.25rem] sm:text-[2.75rem] md:text-[3.5rem] lg:text-[4.25rem] font-heading leading-[1.1] tracking-tight font-bold mb-5 sm:mb-6 md:mb-8">
-                            Community-Powered <span className="bg-gradient-to-br from-primary to-accent bg-clip-text text-transparent">App Testing</span>
+                                Launch Your App with <span className="bg-gradient-to-br from-primary to-accent bg-clip-text text-transparent">Confidence</span>
                             </h1>
                             <p className="text-sm sm:text-base md:text-lg font-body max-w-sm sm:max-w-md md:max-w-lg lg:max-w-[700px] mx-auto mb-8 sm:mb-9 md:mb-10 lg:mb-12 text-muted-foreground">
-                                Harness the power of our global community to test your app for free. Test apps, earn points, and get valuable feedback from real users on real devices.
+                                Get your Android app tested by 12+ real users for 14 days to meet Google's publishing requirements. Choose our free community path or hire our professional testers.
                             </p>
                             <div className="mt-8 flex flex-col sm:flex-row justify-center gap-4">
                                 <Button asChild size="lg" className="font-bold rounded-xl hover:shadow-lg hover:shadow-primary/30">
-                                    <Link href="/signup">Start Testing For Free <ArrowRight className="ml-2" /></Link>
+                                    <Link href="/signup">Get Started For Free <ArrowRight className="ml-2" /></Link>
                                 </Button>
                             </div>
 
@@ -178,6 +69,8 @@ export default function Home() {
                         </div>
                     </div>
                 </section>
+                
+                <TwoPathsSection />
 
                 {/* Global Impact Section */}
                 <GlobalImpactSection />
@@ -209,35 +102,6 @@ export default function Home() {
                             </div>
                         </div>
                     </section>
-
-                    {/* Google App Coming Soon Section */}
-                    <section className="py-20 md:py-28 bg-background">
-                        <div className="container mx-auto px-4 md:px-6 grid md:grid-cols-2 gap-12 items-center">
-                            <div className="relative h-full w-full min-h-[400px]">
-                                <Image src="https://images.unsplash.com/photo-1551650975-87deedd944c3?q=80&w=600&auto=format&fit=crop" alt="inTesters Google App" layout="fill" objectFit="cover" className="rounded-xl shadow-2xl" data-ai-hint="mobile app interface" />
-                            </div>
-                            <div>
-                                <Badge variant="secondary" className='py-2 px-4'>Coming Soon</Badge>
-                                <h2 className="text-3xl md:text-4xl font-bold mt-4">inTesters, Now in Your Pocket</h2>
-                                <p className="mt-4 text-muted-foreground">
-                                    Get ready to experience inTesters like never before. Our native Google app is in the works, bringing all the platform's features right to your mobile device. Stay tuned for updates!
-                                </p>
-                                <ul className="mt-6 space-y-4">
-                                    {appFeatures.map((feature) => (
-                                        <li key={feature.title} className="flex items-start gap-4">
-                                            <div className="bg-primary/10 p-2 rounded-full">
-                                                {feature.icon}
-                                            </div>
-                                            <div>
-                                                <h3 className="font-semibold">{feature.title}</h3>
-                                                <p className="text-muted-foreground text-sm">{feature.description}</p>
-                                            </div>
-                                        </li>
-                                    ))}
-                                </ul>
-                            </div>
-                        </div>
-                    </section>
                 </div>
 
                 {/* Testimonials Section */}
@@ -259,9 +123,6 @@ export default function Home() {
                 <ScrollingRibbon />
 
                 <div className="lg:w-[80%] lg:mx-auto">
-                    {/* Pricing Section */}
-                    <PricingSection />
-
                     {/* FAQ Section */}
                     <section id="faq" className="py-20 md:py-28 bg-background">
                         <div className="container mx-auto px-4 md:px-6">

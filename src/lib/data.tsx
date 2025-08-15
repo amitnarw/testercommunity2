@@ -159,6 +159,57 @@ export const communityPathSteps: RoadmapStep[] = [
     },
 ];
 
+export const professionalPathSteps: RoadmapStep[] = [
+    {
+        step: 1,
+        title: "Purchase Points",
+        description: "Fast-track your testing by purchasing a points package. This is your currency for all professional services on the platform, allowing you to skip community testing entirely.",
+        badgeText: "Time: 2 Mins • Cost: Varies",
+        details: [
+            { title: "Flexible Packages", description: "Choose a points package that fits your project's budget and scope." },
+            { title: "Instant Access", description: "No need to earn points; get started with professional testing right away." },
+            { title: "Secure Payment", description: "All transactions are handled securely through our trusted payment processor." },
+            { title: "Points Never Expire", description: "Your purchased points are yours to use whenever you're ready." },
+        ]
+    },
+    {
+        step: 2,
+        title: "Submit & Forget",
+        description: "Submit your app through the Developer Dashboard. Provide us with your build and instructions, and we'll handle the rest. Our project managers take over from here.",
+        badgeText: "Requirement: Points Purchased",
+        details: [
+            { title: "Simple Submission", description: "A straightforward form to provide your app and testing requirements." },
+            { title: "Managed Process", description: "Our team assigns the best-suited professional testers to your project." },
+            { title: "Confidentiality", description: "Your project is handled under strict NDA by our vetted team." },
+            { title: "Hassle-Free", description: "Focus on development while we manage the entire 14-day testing cycle." },
+        ]
+    },
+    {
+        step: 3,
+        title: "Receive Pro Reports",
+        description: "Our professional testers deliver structured, high-quality reports. Expect clear, actionable, and consistent feedback that makes debugging a breeze.",
+        badgeText: "Typical: Daily Summaries",
+        details: [
+            { title: "Standardized Reports", description: "All feedback follows a consistent, easy-to-digest format." },
+            { title: "Expert Analysis", description: "Our testers provide insights that go beyond simple bug reports." },
+            { title: "Consolidated Feedback", description: "Receive daily or weekly summary reports from our project manager." },
+            { title: "Guaranteed Coverage", description: "We ensure all specified areas of your app are thoroughly tested." },
+        ]
+    },
+    {
+        step: 4,
+        title: "Launch with Certainty",
+        description: "With the 14-day/12-tester requirement met and your app polished by experts, you can submit to the Google Play Store with the highest degree of confidence.",
+        badgeText: "Cycle: Defined & Completed",
+        details: [
+            { title: "Official Confirmation", description: "Receive an official completion report for your records." },
+            { title: "Peace of Mind", description: "Know that your app has passed a professional-grade QA check." },
+            { title: "Faster Time-to-Market", description: "Avoid delays by ensuring testing requirements are met correctly the first time." },
+            { title: "Ongoing Support", description: "Our team is available for any follow-up questions or re-testing needs." },
+        ]
+    },
+];
+
 export const demoUser: UserProfileData = {
     role: 'product_manager',
     companySize: '11-50',

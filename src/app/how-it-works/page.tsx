@@ -4,7 +4,7 @@
 import { useLayoutEffect, useRef, useState, useEffect } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { communityPathSteps } from '@/lib/data.tsx';
+import { communityPathSteps, professionalPathSteps } from '@/lib/data.tsx';
 import { RoadmapStepCard } from '@/components/roadmap-step-card';
 import { ArrowRight, ArrowDown, Rocket } from 'lucide-react';
 import Link from 'next/link';
@@ -12,6 +12,7 @@ import { Button } from '@/components/ui/button';
 import type { RoadmapStep } from '@/lib/types';
 import Confetti from 'react-dom-confetti';
 import { useInView } from 'react-intersection-observer';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 
 gsap.registerPlugin(ScrollTrigger);
@@ -58,6 +59,7 @@ export default function HowItWorksPage() {
         threshold: 0.5,
         triggerOnce: true,
     });
+     const [activeTab, setActiveTab] = useState('community');
 
     useEffect(() => {
         if (launchpadInView) {
@@ -66,7 +68,7 @@ export default function HowItWorksPage() {
     }, [launchpadInView]);
 
     const handleScrollDown = () => {
-        const communitySection = document.getElementById('community-path-section');
+        const communitySection = document.getElementById('paths-section');
         if (communitySection) {
             communitySection.scrollIntoView({ behavior: 'smooth' });
         }
@@ -92,14 +94,22 @@ export default function HowItWorksPage() {
                 </div>
             </section>
 
-            <section id="community-path-section" className="py-20 md:py-32 container mx-auto px-4 md:px-6">
+            <section id="paths-section" className="py-20 md:py-32 container mx-auto px-4 md:px-6">
                 <div className="text-center max-w-2xl mx-auto">
-                    <h2 className="text-3xl md:text-5xl font-bold">The Community Path</h2>
-                    <p className="mt-4 text-muted-foreground text-lg">Test other apps to earn points, then use those points to get your own app tested for free. It's a powerful, reciprocal ecosystem.</p>
+                    <h2 className="text-3xl md:text-5xl font-bold">Choose Your Path</h2>
+                    <p className="mt-4 text-muted-foreground text-lg">Whether you're bootstrapping or on a deadline, we have a testing solution that fits your needs.</p>
+                    <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full max-w-xs mx-auto mt-8">
+                        <TabsList className="grid w-full grid-cols-2">
+                            <TabsTrigger value="community">Community Path</TabsTrigger>
+                            <TabsTrigger value="professional">Pro Path</TabsTrigger>
+                        </TabsList>
+                    </Tabs>
                 </div>
             </section>
+            
+            {activeTab === 'community' && <HorizontalScrollSection steps={communityPathSteps} isPro={false} />}
+            {activeTab === 'professional' && <HorizontalScrollSection steps={professionalPathSteps} isPro={true} />}
 
-            <HorizontalScrollSection steps={communityPathSteps} isPro={false} />
 
             <section
                 ref={launchpadRef}

@@ -7,45 +7,45 @@ import Link from "next/link";
 const generalFaqs = [
     {
         question: "What is inTesters?",
-        answer: "inTesters is a dual-path platform for app testing. You can either harness the power of a global community to test your app for free, or hire vetted professional testers for guaranteed, high-quality results."
+        answer: "inTesters is a platform designed to help Android developers meet the Google Play Store's requirement of having their app tested by 12+ people for 14 days. We offer two paths: a free, community-driven approach and a paid, professional service."
     },
     {
         question: "Who is inTesters for?",
-        answer: "inTesters is for everyone involved in app development! This includes indie developers, startups, large enterprises, product managers, QA testers, and anyone who wants to build a high-quality, bug-free application."
+        answer: "inTesters is for any Android developer, from solo indie devs to large companies, who need to fulfill Google's pre-launch testing requirements quickly and efficiently."
     },
      {
         question: "How do I get started?",
-        answer: "Just sign up for a free account! From there, you can choose your path. You can start testing other apps to earn points right away, or you can browse the marketplace to hire a professional for your project."
+        answer: "Just sign up for a free account! From there, you can choose your path. You can start testing other apps to earn points right away via the Community Hub, or you can purchase points and submit your app for professional testing via the Developer Dashboard."
     }
 ];
 
 const communityFaqs = [
     {
-        question: "How does the 'Community Testing' path work?",
-        answer: "It's a reciprocal ecosystem. You test apps submitted by other community members on your devices. For every valid bug you find, you earn points. You can then spend these points to have the community test your own app."
+        question: "How does the 'Community Path' work?",
+        answer: "It's a reciprocal ecosystem. You test apps submitted by other community members on your Android devices. For each valid bug or feedback you provide, you earn points. You can then spend these points to have the community test your own app."
     },
     {
-        question: "Is community testing really free?",
+        question: "Is the Community Path really free?",
         answer: "Yes, in terms of money. It requires your time and effort to test other apps, which is how you contribute to the community and earn your own testing credits (points). It's a 'give-to-get' model."
     },
     {
         question: "What kind of feedback can I expect from the community?",
-        answer: "You'll receive reports from a diverse range of real users on real devices. This often uncovers usability issues, device-specific bugs, and general feedback that you might not find in a controlled environment."
+        answer: "You'll receive feedback from a diverse range of real users on real devices. This often uncovers usability issues, device-specific bugs, and general feedback that you might not find in a controlled environment."
     }
 ];
 
 const proFaqs = [
     {
-        question: "Who are the professional testers?",
-        answer: "Our Pro testers are experienced QA professionals who have been rigorously vetted by our team for their technical skills, attention to detail, and communication. You can view their profiles, skills, ratings, and work history in the Marketplace."
+        question: "What is the 'Professional Path'?",
+        answer: "On this path, you use points (which can be purchased) to have your app tested by our team of vetted, professional QA testers. We manage the entire process to ensure you get high-quality, structured feedback and meet the 14-day testing requirement without any hassle."
     },
     {
-        question: "When should I choose the 'Pro Testing' path?",
-        answer: "Choose the Pro path when you have a critical deadline, need specialized testing (like security, performance, or automation), or simply don't have time for community testing. It's ideal for commercial projects and pre-launch audits."
+        question: "When should I choose the Professional Path?",
+        answer: "Choose the Pro path when you have a critical deadline, need guaranteed test completion, or simply don't have time for community testing. It's the fastest and most reliable way to get your app ready for launch."
     },
     {
-        question: "How does payment work for Pro testers?",
-        answer: "You can hire testers on a fixed-project price or an hourly rate. All payments are handled securely through our platform. You fund a milestone, and the payment is only released to the tester when you approve their work."
+        question: "How are points used for the Professional Path?",
+        answer: "You can purchase points directly from our website. Once you have enough points, you submit your app through the Developer Dashboard. We then assign our professional testers to your project. The points cover the entire service."
     }
 ];
 
