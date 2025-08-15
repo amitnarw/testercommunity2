@@ -47,18 +47,18 @@ export default function Home() {
                 <section className="relative w-full py-12 sm:py-16 md:py-20 lg:py-28 overflow-hidden bg-dot-pattern dark:bg-dot-pattern-dark">
                     <div className="container mx-auto px-4 md:px-6 text-center relative z-10">
                         <div className="max-w-4xl mx-auto">
-                             <Badge variant="outline" className="inline-flex items-center rounded-full border border-primary/20 bg-primary/5 px-3 py-1 text-xs sm:text-sm font-body text-primary mb-5 sm:mb-6">
+                            <Badge variant="outline" className="inline-flex items-center rounded-full border border-primary/20 bg-primary/5 px-3 py-1 text-xs sm:text-sm font-body text-primary mb-5 sm:mb-6">
                                 Meet Google's 12-Tester Requirement.
                             </Badge>
                             <h1 className="text-[2.25rem] sm:text-[2.75rem] md:text-[3.5rem] lg:text-[4.25rem] font-heading leading-[1.1] tracking-tight font-bold mb-5 sm:mb-6 md:mb-8">
-                                Launch Your App with <span className="bg-gradient-to-br from-primary to-accent bg-clip-text text-transparent">Confidence</span>
+                                Testing <span className="bg-gradient-to-br from-primary to-accent bg-clip-text text-transparent">Your App</span> Just Got Easier
                             </h1>
                             <p className="text-sm sm:text-base md:text-lg font-body max-w-sm sm:max-w-md md:max-w-lg lg:max-w-[700px] mx-auto mb-8 sm:mb-9 md:mb-10 lg:mb-12 text-muted-foreground">
-                                Get your Android app tested by 12+ real users for 14 days to meet Google's publishing requirements. Choose our free community path or hire our professional testers.
+                            Get 12+ real testers and meet Google Play’s 14-day rule, fast. Use free community testing or go pro with points. Submit, track, and launch, all in one place.
                             </p>
                             <div className="mt-8 flex flex-col sm:flex-row justify-center gap-4">
                                 <Button asChild size="lg" className="font-bold rounded-xl hover:shadow-lg hover:shadow-primary/30">
-                                    <Link href="/signup">Get Started For Free <ArrowRight className="ml-2" /></Link>
+                                    <Link href="/signup">Submit Your App Now <ArrowRight className="ml-2" /></Link>
                                 </Button>
                             </div>
 
@@ -69,7 +69,7 @@ export default function Home() {
                         </div>
                     </div>
                 </section>
-                
+
                 {/* Global Impact Section */}
                 <GlobalImpactSection />
 
@@ -136,7 +136,7 @@ export default function Home() {
                             <div className="mt-12 max-w-3xl mx-auto">
                                 <FaqSection />
                                 <div className="mt-8 text-center">
-                                     <Button asChild variant="outline">
+                                    <Button asChild variant="outline">
                                         <Link href="/faq">View All FAQs <ArrowRight className="ml-2" /></Link>
                                     </Button>
                                 </div>
