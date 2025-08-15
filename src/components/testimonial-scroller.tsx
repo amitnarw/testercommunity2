@@ -5,6 +5,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import type { Testimonial } from '@/lib/types';
 import { cn } from '@/lib/utils';
+import { Quote } from 'lucide-react';
 
 interface TestimonialCardProps {
   testimonial: Testimonial;
@@ -12,22 +13,23 @@ interface TestimonialCardProps {
 
 function TestimonialCard({ testimonial }: TestimonialCardProps) {
   return (
-    <Card className="flex flex-col justify-between bg-gradient-to-br from-primary/20 to-accent/40 text-foreground rounded-xl w-[350px] mx-4 flex-shrink-0 overflow-hidden">
-        <CardContent className="p-6">
+    <Card className="flex flex-col justify-between bg-card rounded-xl w-[300px] mx-4 flex-shrink-0 relative overflow-hidden h-full">
+         <Quote className="absolute -top-2 -left-2 w-20 h-20 text-primary/5" />
+        <CardHeader className="z-10">
+            <div className="flex items-center gap-4">
+            <Avatar>
+                <AvatarImage src={testimonial.avatar} data-ai-hint={testimonial.dataAiHint} />
+                <AvatarFallback>{testimonial.name.charAt(0)}</AvatarFallback>
+            </Avatar>
+            <div>
+                <CardTitle className="text-base">{testimonial.name}</CardTitle>
+                <CardDescription>{testimonial.role}</CardDescription>
+            </div>
+            </div>
+        </CardHeader>
+        <CardContent className="z-10 flex-grow">
             <p className="text-muted-foreground">&ldquo;{testimonial.comment}&rdquo;</p>
         </CardContent>
-        <CardFooter className="bg-background/50 text-foreground p-4">
-             <div className="flex items-center gap-4">
-                <Avatar>
-                    <AvatarImage src={testimonial.avatar} data-ai-hint={testimonial.dataAiHint} />
-                    <AvatarFallback>{testimonial.name.charAt(0)}</AvatarFallback>
-                </Avatar>
-                <div>
-                    <p className="text-base font-bold">{testimonial.name}</p>
-                    <p className="text-sm text-muted-foreground">{testimonial.role}</p>
-                </div>
-            </div>
-        </CardFooter>
     </Card>
   );
 }
