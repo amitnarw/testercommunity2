@@ -6,13 +6,12 @@ import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import { communityPathSteps, professionalPathSteps } from '@/lib/data.tsx';
 import { RoadmapStepCard } from '@/components/roadmap-step-card';
-import { ArrowRight, ArrowDown, Rocket } from 'lucide-react';
+import { ArrowRight, ArrowDown, Rocket, Users, Briefcase } from 'lucide-react';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import type { RoadmapStep } from '@/lib/types';
 import Confetti from 'react-dom-confetti';
 import { useInView } from 'react-intersection-observer';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 
 gsap.registerPlugin(ScrollTrigger);
@@ -68,7 +67,7 @@ export default function HowItWorksPage() {
     }, [launchpadInView]);
 
     const handleScrollDown = () => {
-        const communitySection = document.getElementById('paths-section');
+        const communitySection = document.getElementById('community-path-section');
         if (communitySection) {
             communitySection.scrollIntoView({ behavior: 'smooth' });
         }
@@ -94,26 +93,37 @@ export default function HowItWorksPage() {
                 </div>
             </section>
 
-            <section id="paths-section" className="py-20 md:py-32 container mx-auto px-4 md:px-6">
+            <section id="community-path-section" className="py-20 md:py-32 container mx-auto px-4 md:px-6">
                 <div className="text-center max-w-2xl mx-auto">
-                    <h2 className="text-3xl md:text-5xl font-bold">Choose Your Path</h2>
-                    <p className="mt-4 text-muted-foreground text-lg">Whether you're bootstrapping or on a deadline, we have a testing solution that fits your needs.</p>
-                    <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full max-w-xs mx-auto mt-8">
-                        <TabsList className="grid w-full grid-cols-2">
-                            <TabsTrigger value="community">Community Path</TabsTrigger>
-                            <TabsTrigger value="professional">Pro Path</TabsTrigger>
-                        </TabsList>
-                    </Tabs>
+                    <div className="inline-block bg-primary/10 text-primary p-4 rounded-full mb-4">
+                        <Users className="w-10 h-10" />
+                    </div>
+                    <h2 className="text-3xl md:text-5xl font-bold">The Community Path</h2>
+                    <p className="mt-4 text-muted-foreground text-lg">Test apps, earn points, and get your app tested by a diverse global community. It's the free, reciprocal way to ensure quality.</p>
                 </div>
             </section>
             
-            {activeTab === 'community' && <HorizontalScrollSection steps={communityPathSteps} isPro={false} />}
-            {activeTab === 'professional' && <HorizontalScrollSection steps={professionalPathSteps} isPro={true} />}
-
+            <HorizontalScrollSection steps={communityPathSteps} isPro={false} />
+            
+            <section className="py-20 md:py-32 container mx-auto px-4 md:px-6 bg-secondary/30 dark:bg-secondary/20 mt-[-1px]">
+                 <div className="text-center max-w-2xl mx-auto">
+                     <div className="inline-block bg-primary/10 text-primary p-4 rounded-full mb-4">
+                        <Briefcase className="w-10 h-10" />
+                    </div>
+                    <h2 className="text-3xl md:text-5xl font-bold">The Professional Path</h2>
+                    <p className="mt-4 text-muted-foreground text-lg">
+                        For when you need guaranteed, managed, and expert results. Purchase points and let our team of vetted professionals handle the entire testing process.
+                    </p>
+                </div>
+            </section>
+            
+            <div className="bg-secondary/30 dark:bg-secondary/20">
+                <HorizontalScrollSection steps={professionalPathSteps} isPro={true} />
+            </div>
 
             <section
                 ref={launchpadRef}
-                className="h-screen w-full flex flex-col items-center justify-center text-center p-4 relative overflow-hidden bg-secondary/30 dark:bg-secondary/20"
+                className="h-screen w-full flex flex-col items-center justify-center text-center p-4 relative overflow-hidden bg-background"
             >
                 <div className="absolute top-1/2 left-1/2">
                     <Confetti active={isConfettiActive} config={{

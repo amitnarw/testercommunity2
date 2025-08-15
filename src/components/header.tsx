@@ -17,6 +17,7 @@ import { demoUser } from '@/lib/data.tsx';
 const navItems = [
   { name: 'Home', href: '/' },
   { name: 'How It Works', href: '/how-it-works' },
+  { name: 'Pricing', href: '/pricing' },
   { name: 'Blog', href: '/blog' },
 ];
 
