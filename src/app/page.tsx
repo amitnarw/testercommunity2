@@ -48,7 +48,7 @@ export default function Home() {
                     <div className="container mx-auto px-4 md:px-6 text-center relative z-10">
                         <div className="max-w-4xl mx-auto">
                             <div className="border-train-effect inline-flex rounded-full mb-5 sm:mb-6">
-                                <Badge variant="outline" className="relative inline-flex items-center rounded-full border-none bg-background px-3 py-1 text-xs sm:text-sm font-body text-primary">
+                                <Badge variant="outline" className="relative inline-flex items-center rounded-full border bg-background px-3 py-1 text-xs sm:text-sm font-body text-primary">
                                     Meet Google's 12-Tester Requirement.
                                 </Badge>
                             </div>
