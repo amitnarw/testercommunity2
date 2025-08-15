@@ -70,8 +70,6 @@ export default function Home() {
                     </div>
                 </section>
                 
-                <TwoPathsSection />
-
                 {/* Global Impact Section */}
                 <GlobalImpactSection />
 
@@ -121,6 +119,8 @@ export default function Home() {
 
                 {/* Scrolling Ribbon Section */}
                 <ScrollingRibbon />
+
+                <TwoPathsSection />
 
                 <div className="lg:w-[80%] lg:mx-auto">
                     {/* FAQ Section */}
