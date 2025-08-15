@@ -62,12 +62,15 @@ interface SidebarProps {
 export function Sidebar({ isCollapsed, setCollapsed, isMobileOpen, setMobileOpen }: SidebarProps) {
     return (
         <aside className={cn(
-            "fixed inset-y-0 left-0 z-50 flex h-full flex-col border-r bg-background transition-transform duration-300 ease-in-out md:translate-x-0 md:transition-[width]",
+            "fixed inset-y-0 left-0 z-50 flex h-full flex-col border-r bg-background transition-transform duration-300 ease-in-out md:transition-[width]",
             isMobileOpen ? "translate-x-0" : "-translate-x-full",
             isCollapsed ? "w-full md:w-20" : "w-64"
         )}>
             <div className="flex h-full max-h-screen flex-col gap-2">
-                <div className="flex h-20 items-center justify-end border-b px-4">
+                <div className="flex h-20 items-center border-b px-4 justify-between md:justify-end">
+                     <Link href="/dashboard" className={cn("md:hidden", isCollapsed && "hidden")}>
+                        <InTestersLogo className="h-8" />
+                     </Link>
                      <Button variant="ghost" size="icon" onClick={() => setCollapsed(!isCollapsed)} className="hidden md:flex">
                         {isCollapsed ? <PanelLeftOpen /> : <PanelLeftClose />}
                         <span className="sr-only">{isCollapsed ? "Expand sidebar" : "Collapse sidebar"}</span>
@@ -103,37 +106,9 @@ export function Sidebar({ isCollapsed, setCollapsed, isMobileOpen, setMobileOpen
                 </div>
 
                 <div className="mt-auto p-4 border-t">
-                    <DropdownMenu>
-                        <DropdownMenuTrigger asChild>
-                            <Button variant="ghost" className={cn(
-                                "w-full justify-start gap-3 h-auto py-2 px-3",
-                                isCollapsed && "p-0 w-10 h-10 justify-center"
-                                )}>
-                                <Avatar className="h-9 w-9">
-                                    <AvatarImage src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=400&auto=format=fit=crop" alt="User Avatar" />
-                                    <AvatarFallback>{demoUser.role.charAt(0).toUpperCase()}</AvatarFallback>
-                                </Avatar>
-                                <div className={cn("text-left", isCollapsed && "hidden")}>
-                                    <p className="text-sm font-medium leading-none">Demo User</p>
-                                    <p className="text-xs leading-none text-muted-foreground">demo@inTesters.com</p>
-                                </div>
-                            </Button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent className="w-56 mb-2 rounded-xl" align="end" side="top" forceMount>
-                            <DropdownMenuGroup>
-                                <Link href="/profile">
-                                    <DropdownMenuItem>
-                                        <User className="mr-2" /> Profile
-                                    </DropdownMenuItem>
-                                </Link>
-                                <Link href="/">
-                                    <DropdownMenuItem>
-                                        <LogOut className="mr-2" /> Log out
-                                    </DropdownMenuItem>
-                                </Link>
-                            </DropdownMenuGroup>
-                        </DropdownMenuContent>
-                    </DropdownMenu>
+                    <NavLink href="/" icon={LogOut} isCollapsed={isCollapsed} onClick={() => setMobileOpen(false)}>
+                        Log Out
+                    </NavLink>
                 </div>
             </div>
         </aside>
