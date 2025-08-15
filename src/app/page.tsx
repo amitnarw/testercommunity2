@@ -48,7 +48,7 @@ export default function Home() {
                     <div className="container mx-auto px-4 md:px-6 text-center relative z-10">
                         <div className="max-w-4xl mx-auto">
                              <Badge variant="outline" className="inline-flex items-center rounded-full border border-primary/20 bg-primary/5 px-3 py-1 text-xs sm:text-sm font-body text-primary mb-5 sm:mb-6">
-                                The Google Play Store requires 12 testers for 14 days. We can help.
+                                Meet Google's 12-Tester Requirement.
                             </Badge>
                             <h1 className="text-[2.25rem] sm:text-[2.75rem] md:text-[3.5rem] lg:text-[4.25rem] font-heading leading-[1.1] tracking-tight font-bold mb-5 sm:mb-6 md:mb-8">
                                 Launch Your App with <span className="bg-gradient-to-br from-primary to-accent bg-clip-text text-transparent">Confidence</span>
