@@ -44,7 +44,8 @@ export default function Home() {
         <div className="flex flex-col min-h-screen">
             <main className="flex-1">
                 {/* Hero Section */}
-                <section className="relative w-full py-12 sm:py-16 md:py-20 lg:py-28 overflow-hidden bg-dot-pattern">
+                <section className="relative w-full py-12 sm:py-16 md:py-20 lg:py-28 overflow-hidden">
+                    <div className="absolute inset-0 bg-dot-pattern z-0"></div>
                     <div className="container mx-auto px-4 md:px-6 text-center relative z-10">
                         <div className="max-w-4xl mx-auto">
                             <div className="border-train-effect inline-flex rounded-full mb-5 sm:mb-6">
