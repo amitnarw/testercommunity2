@@ -5,14 +5,13 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { InTestersLogo } from "./icons";
 import { cn } from "@/lib/utils";
-import { LayoutDashboard, Users, ShoppingBag, PlusCircle, LifeBuoy, User, LogOut, PanelLeftClose, PanelLeftOpen, X } from "lucide-react";
+import { LayoutDashboard, Users, PlusCircle, LifeBuoy, LogOut, PanelLeftClose, PanelLeftOpen, X } from "lucide-react";
 import { Button } from "./ui/button";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "./ui/tooltip";
 
 const mainNavLinks = [
     { name: "Developer Dashboard", href: "/dashboard", icon: LayoutDashboard },
     { name: "Community Hub", href: "/community-dashboard", icon: Users },
-    { name: "Marketplace", href: "/marketplace", icon: ShoppingBag },
 ];
 
 const NavLink = ({ href, icon: Icon, children, isCollapsed, onClick }: { href: string, icon: React.ElementType, children: React.ReactNode, isCollapsed: boolean, onClick?: () => void }) => {
@@ -66,9 +65,6 @@ export function Sidebar({ isCollapsed, setCollapsed, isMobileOpen, setMobileOpen
         )}>
             <div className="flex h-full max-h-screen flex-col gap-2">
                 <div className={cn("flex h-20 items-center border-b px-4", isCollapsed ? "justify-center" : "justify-between")}>
-                     <Link href="/dashboard" className={cn("md:hidden", isCollapsed && "hidden")}>
-                        <InTestersLogo className="h-8" />
-                     </Link>
                      <Button variant="ghost" size="icon" onClick={() => setCollapsed(!isCollapsed)} className="hidden md:flex">
                         {isCollapsed ? <PanelLeftOpen /> : <PanelLeftClose />}
                         <span className="sr-only">{isCollapsed ? "Expand sidebar" : "Collapse sidebar"}</span>
@@ -101,12 +97,6 @@ export function Sidebar({ isCollapsed, setCollapsed, isMobileOpen, setMobileOpen
                             <NavLink href="/help" icon={LifeBuoy} isCollapsed={isCollapsed} onClick={() => setMobileOpen(false)}>Support</NavLink>
                         </div>
                     </nav>
-                </div>
-
-                <div className="mt-auto p-4 border-t">
-                    <NavLink href="/" icon={LogOut} isCollapsed={isCollapsed} onClick={() => setMobileOpen(false)}>
-                        Log Out
-                    </NavLink>
                 </div>
             </div>
         </aside>

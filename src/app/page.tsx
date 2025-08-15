@@ -18,9 +18,9 @@ import { FaqSection } from '@/components/faq-section';
 
 const features = [
     {
-        title: 'Interactive Marketplace',
-        description: 'Browse and connect with top-tier testers in a visually engaging, animated marketplace.',
-        link: '/marketplace',
+        title: 'Community Testing Hub',
+        description: 'Engage with a vibrant community to get your app tested on a massive range of devices.',
+        link: '/community-dashboard',
     },
     {
         title: 'Real-Time Dashboards',
@@ -30,7 +30,7 @@ const features = [
     {
         title: 'Gamified Reputation',
         description: 'Level up your tester profile with animated XP bars and unlockable achievement badges.',
-        link: '/#reputation',
+        link: '/community-dashboard',
     },
     {
         title: 'Seamless Bug Reporting',
@@ -62,21 +62,22 @@ function PricingSection() {
         <section id="pricing" className="py-20 md:py-28 bg-background">
             <div className="container mx-auto px-4 md:px-6">
                 <div className="text-center max-w-2xl mx-auto">
-                    <h2 className="text-4xl md:text-5xl font-bold">Flexible Testing for Every Need</h2>
+                    <h2 className="text-4xl md:text-5xl font-bold">A Plan For Everyone</h2>
                     <p className="mt-4 text-muted-foreground">
-                        Whether you're a bootstrapper or a growing enterprise, we have a path for you.
+                        Our platform is built on a community-driven, freemium model.
                     </p>
                 </div>
-                <div className="mt-12 grid gap-8 md:grid-cols-2 items-start justify-center">
+                <div className="mt-12 max-w-md mx-auto">
                     {/* Community Plan */}
-                    <Card className="rounded-xl border border-border/50 hover:border-primary/50 transition-all duration-300 transform hover:-translate-y-1 hover:shadow-2xl hover:shadow-primary/20 h-full flex flex-col items-center justify-between">
+                    <Card className="rounded-2xl border-2 border-primary shadow-2xl shadow-primary/20 relative h-full">
+                         <Badge variant="default" className="absolute -top-4 left-1/2 -translate-x-1/2">Community Plan</Badge>
                         <div>
-                            <CardHeader className="pt-8">
+                            <CardHeader className="pt-8 text-center">
                                 <CardTitle className="text-2xl">Community Testing</CardTitle>
                                 <CardDescription>Leverage the power of the crowd, for free.</CardDescription>
                             </CardHeader>
                             <CardContent className="space-y-6">
-                                <div className="text-4xl font-bold">
+                                <div className="text-4xl font-bold text-center">
                                    Free
                                 </div>
                                 <ul className="space-y-3 text-sm text-muted-foreground">
@@ -104,48 +105,9 @@ function PricingSection() {
                             </CardContent>
                         </div>
                         <CardFooter className='w-full'>
-                            <Button variant="outline" className="w-full rounded-xl">Join the Community</Button>
-                        </CardFooter>
-                    </Card>
-
-                    {/* Pro Plan */}
-                    <Card className="rounded-2xl border-2 border-primary shadow-2xl shadow-primary/20 relative h-full">
-                        <Badge variant="default" className="absolute -top-4 left-1/2 -translate-x-1/2">Best Value</Badge>
-                        <div>
-                            <CardHeader className="pt-8">
-                                <CardTitle className="text-2xl">Pro Testing</CardTitle>
-                                <CardDescription>Hire vetted professionals for guaranteed results.</CardDescription>
-                            </CardHeader>
-                            <CardContent className="space-y-6">
-                                <div className="flex items-baseline gap-2">
-                                    <span className="text-4xl font-bold">Pay-per-Project</span>
-                                </div>
-                                <ul className="space-y-3 text-sm text-muted-foreground">
-                                    <li className="flex items-start gap-2">
-                                        <BadgeCheck className="w-5 h-5 text-primary flex-shrink-0 mt-1" />
-                                        <span>Directly hire professional testers.</span>
-                                    </li>
-                                    <li className="flex items-start gap-2">
-                                        <BadgeCheck className="w-5 h-5 text-primary flex-shrink-0 mt-1" />
-                                        <span>Choose testers based on specific skills and expertise.</span>
-                                    </li>
-                                    <li className="flex items-start gap-2">
-                                        <BadgeCheck className="w-5 h-5 text-primary flex-shrink-0 mt-1" />
-                                        <span>Fixed-price projects or flexible hourly rates available.</span>
-                                    </li>
-                                    <li className="flex items-start gap-2">
-                                        <BadgeCheck className="w-5 h-5 text-primary flex-shrink-0 mt-1" />
-                                        <span>Guaranteed high-quality, actionable feedback.</span>
-                                    </li>
-                                    <li className="flex items-start gap-2">
-                                        <BadgeCheck className="w-5 h-5 text-primary flex-shrink-0 mt-1" />
-                                        <span>Perfect for businesses, critical launches, and tight deadlines.</span>
-                                    </li>
-                                </ul>
-                            </CardContent>
-                        </div>
-                        <CardFooter>
-                            <Button className="w-full rounded-xl">Explore the Marketplace</Button>
+                            <Button asChild className="w-full rounded-xl">
+                                <Link href="/community-dashboard">Join the Community</Link>
+                            </Button>
                         </CardFooter>
                     </Card>
                 </div>
@@ -166,17 +128,14 @@ export default function Home() {
                                 Now in Public Beta
                             </Badge>
                             <h1 className="text-[2.25rem] sm:text-[2.75rem] md:text-[3.5rem] lg:text-[4.25rem] font-heading leading-[1.1] tracking-tight font-bold mb-5 sm:mb-6 md:mb-8">
-                            Community-Powered <span className="bg-gradient-to-br from-primary to-accent bg-clip-text text-transparent">or Professionally</span> Tested
+                            Community-Powered App Testing
                             </h1>
                             <p className="text-sm sm:text-base md:text-lg font-body max-w-sm sm:max-w-md md:max-w-lg lg:max-w-[700px] mx-auto mb-8 sm:mb-9 md:mb-10 lg:mb-12 text-muted-foreground">
-                                Harness the power of our community to test your app for free, or hire our professional testers for guaranteed results. The choice is yours.
+                                Harness the power of our global community to test your app for free. Test apps, earn points, and get valuable feedback from real users on real devices.
                             </p>
                             <div className="mt-8 flex flex-col sm:flex-row justify-center gap-4">
                                 <Button asChild size="lg" className="font-bold rounded-xl hover:shadow-lg hover:shadow-primary/30">
-                                    <Link href="/signup">Start for Free <ArrowRight className="ml-2" /></Link>
-                                </Button>
-                                <Button asChild size="lg" variant="outline" className="font-bold rounded-xl">
-                                    <Link href="/marketplace">or Go Pro</Link>
+                                    <Link href="/signup">Start Testing For Free <ArrowRight className="ml-2" /></Link>
                                 </Button>
                             </div>
 

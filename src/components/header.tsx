@@ -126,7 +126,7 @@ export function Header({ isAuthenticated, isDashboardPage, isMobileMenuOpen, set
                     <Menu className="h-6 w-6" />
                     <span className="sr-only">Open menu</span>
                   </Button>
-                  <Link href="/dashboard" className="hidden md:block">
+                   <Link href="/dashboard">
                      <InTestersLogo className="h-8" />
                   </Link>
                 </div>
