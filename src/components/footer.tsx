@@ -13,7 +13,6 @@ const navItems = [
 ];
 
 const resourceItems = [
-  { name: 'Docs', href: '#' },
   { name: 'Blog', href: '/blog' },
   { name: 'FAQ', href: '/faq' },
   { name: 'Support', href: '/help' },

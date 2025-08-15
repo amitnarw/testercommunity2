@@ -15,6 +15,7 @@ import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 import { demoUser } from '@/lib/data.tsx';
 
 const navItems = [
+  { name: 'Home', href: '/' },
   { name: 'How It Works', href: '/how-it-works' },
   { name: 'Freemium', href: '/freemium' },
   { name: 'Blog', href: '/blog' },
@@ -116,10 +117,7 @@ export function Header({ isAuthenticated, isDashboardPage, isMobileMenuOpen, set
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const visitorNavItems = [
-    { name: 'Home', href: '/' },
-    ...navItems,
-  ];
+  const visitorNavItems = navItems;
 
   if (isAuthPage) return null;
 
@@ -158,7 +156,8 @@ export function Header({ isAuthenticated, isDashboardPage, isMobileMenuOpen, set
                       data-text={item.name}
                       className={cn(
                       'font-medium transition-colors sliding-text-hover',
-                      pathname.startsWith(item.href) ? 'text-primary' : 'text-muted-foreground'
+                      pathname.startsWith(item.href) && item.href !== '/' ? 'text-primary' : 'text-muted-foreground',
+                      pathname === '/' && item.href === '/' && 'text-primary'
                       )}
                   >
                       <span>{item.name}</span>
