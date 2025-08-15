@@ -124,10 +124,6 @@ export default {
           '50%': { backgroundPosition: '100% 50%' },
           '100%': { backgroundPosition: '0% 50%' },
         },
-        'spin-around': {
-          '0%': { transform: 'rotate(0deg)' },
-          '100%': { transform: 'rotate(360deg)' },
-        },
       },
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
@@ -139,7 +135,6 @@ export default {
         'float': 'float 3s ease-in-out infinite',
         'fall': 'fall linear forwards',
         'animated-gradient': 'animated-gradient 6s ease infinite',
-        'spin-around': 'spin-around var(--spin-duration, 4s) linear infinite',
       },
     },
   },
