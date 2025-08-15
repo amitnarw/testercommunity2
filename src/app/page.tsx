@@ -47,9 +47,8 @@ export default function Home() {
                 <section className="relative w-full py-12 sm:py-16 md:py-20 lg:py-28 overflow-hidden bg-dot-pattern">
                     <div className="container mx-auto px-4 md:px-6 text-center relative z-10">
                         <div className="max-w-4xl mx-auto">
-                             <div className="relative inline-block mb-5 sm:mb-6 group">
-                                <span className="absolute -inset-0.5 rounded-full bg-gradient-to-r from-primary to-accent blur-md opacity-75 group-hover:opacity-100 transition duration-1000 group-hover:duration-200 animate-animated-gradient"></span>
-                                <Badge variant="outline" className="relative inline-flex items-center rounded-full border-border bg-background px-3 py-1 text-xs sm:text-sm font-body text-primary">
+                            <div className="relative inline-flex mb-5 sm:mb-6 p-px rounded-full bg-gradient-to-r from-primary/70 via-accent/70 to-primary/70 animate-spin-around [--spin-duration:4s]">
+                                <Badge variant="outline" className="relative inline-flex items-center rounded-full border-none bg-background px-3 py-1 text-xs sm:text-sm font-body text-primary">
                                     Meet Google's 12-Tester Requirement.
                                 </Badge>
                             </div>
