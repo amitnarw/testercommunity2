@@ -7,9 +7,6 @@ import { InTestersLogo } from "./icons";
 import { cn } from "@/lib/utils";
 import { LayoutDashboard, Users, ShoppingBag, PlusCircle, LifeBuoy, User, LogOut, PanelLeftClose, PanelLeftOpen, X } from "lucide-react";
 import { Button } from "./ui/button";
-import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
-import { demoUser } from "@/lib/data";
-import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuGroup } from './ui/dropdown-menu';
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "./ui/tooltip";
 
 const mainNavLinks = [
@@ -64,10 +61,11 @@ export function Sidebar({ isCollapsed, setCollapsed, isMobileOpen, setMobileOpen
         <aside className={cn(
             "fixed inset-y-0 left-0 z-50 flex h-full flex-col border-r bg-background transition-transform duration-300 ease-in-out md:transition-[width]",
             isMobileOpen ? "translate-x-0" : "-translate-x-full",
+            "md:translate-x-0", // Always visible on desktop
             isCollapsed ? "w-full md:w-20" : "w-64"
         )}>
             <div className="flex h-full max-h-screen flex-col gap-2">
-                <div className="flex h-20 items-center border-b px-4 justify-between md:justify-end">
+                <div className={cn("flex h-20 items-center border-b px-4", isCollapsed ? "justify-center" : "justify-between")}>
                      <Link href="/dashboard" className={cn("md:hidden", isCollapsed && "hidden")}>
                         <InTestersLogo className="h-8" />
                      </Link>
