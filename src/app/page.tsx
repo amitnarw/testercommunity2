@@ -54,10 +54,10 @@ export default function Home() {
                                 </Badge>
                             </div>
                             <h1 className="text-[2.25rem] sm:text-[2.75rem] md:text-[3.5rem] lg:text-[4.25rem] font-heading leading-[1.1] tracking-tight font-bold mb-5 sm:mb-6 md:mb-8">
-                                Testing <span className="bg-gradient-to-br from-primary to-accent bg-clip-text text-transparent">Your App</span> Just Got Easier
+                                Testing Your <span className="bg-gradient-to-br from-primary to-accent bg-clip-text text-transparent">Android App</span> Just Got Easier
                             </h1>
                             <p className="text-sm sm:text-base md:text-lg font-body max-w-sm sm:max-w-md md:max-w-lg lg:max-w-[700px] mx-auto mb-8 sm:mb-9 md:mb-10 lg:mb-12 text-muted-foreground">
-                            Get 12+ real testers and meet Google Play’s 14-day rule, fast. Use free community testing or go pro with points. Submit, track, and launch, all in one place.
+                            Get 12+ real testers and meet Google Play’s 14 day rule, fast. Use free community testing or go pro with points. Submit, track, and launch, all in one place.
                             </p>
                             <div className="mt-8 flex flex-col sm:flex-row justify-center gap-4">
                                 <Button asChild size="lg" className="font-bold rounded-xl hover:shadow-lg hover:shadow-primary/30">

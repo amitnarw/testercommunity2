@@ -91,12 +91,12 @@
     @apply absolute bottom-0 left-1/2 -translate-x-1/2 h-12 w-12 rounded-full border-2 border-dashed border-primary bg-primary/10 -z-10 flex items-center justify-center;
   }
   .bg-dot-pattern {
-    background-image: radial-gradient(circle, hsl(var(--primary) / 0.1) 1px, transparent 1px);
+    background-image: radial-gradient(circle, hsl(var(--primary) / 0.5) 1px, transparent 1px);
     background-size: 1.25rem 1.25rem;
     mask-image: radial-gradient(ellipse at center, white 20%, transparent 70%);
   }
   .dark .bg-dot-pattern {
-    background-image: radial-gradient(circle, hsl(var(--primary) / 0.2) 1px, transparent 1px);
+    background-image: radial-gradient(circle, hsl(var(--primary) / 0.4) 1px, transparent 1px);
   }
 
   @keyframes border-train {

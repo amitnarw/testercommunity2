@@ -75,8 +75,9 @@ export default function HowItWorksPage() {
 
     return (
         <main className="bg-background text-foreground overflow-x-hidden">
-            <section className="h-screen w-full flex flex-col items-center justify-start text-center p-4 bg-dot-pattern dark:bg-dot-pattern-dark relative py-32">
-                <div className="max-w-4xl mx-auto">
+            <section className="h-screen w-full flex flex-col items-center justify-start text-center p-4 relative py-32">
+                <div className="absolute inset-0 bg-dot-pattern z-0"></div>
+                <div className="max-w-4xl mx-auto relative z-10">
                     <h1 className="text-[2.25rem] sm:text-[2.75rem] md:text-[3.5rem] lg:text-[4.25rem] font-heading leading-[1.1] tracking-tight font-bold mb-5 sm:mb-6 md:mb-8">Step Inside the <span className="bg-gradient-to-br from-primary to-accent bg-clip-text text-transparent">App Creation</span> Process</h1>
                     <p className="mt-6 max-w-3xl mx-auto text-muted-foreground text-lg">
                         Our unified process ensures quality, whether you leverage the community or hire professionals. Your journey to a flawless launch starts here.
@@ -84,7 +85,7 @@ export default function HowItWorksPage() {
                 </div>
                 <div
                     onClick={handleScrollDown}
-                    className="absolute bottom-24 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 cursor-pointer group"
+                    className="absolute bottom-24 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 cursor-pointer group z-10"
                 >
                     <span className="text-sm text-muted-foreground animate-pulse">Scroll down to see how it works</span>
                     <div className="w-12 h-12 flex items-center justify-center rounded-full border-2 border-primary/50 bg-primary/10">
