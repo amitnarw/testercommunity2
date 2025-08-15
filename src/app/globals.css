@@ -146,7 +146,7 @@
   }
   .border-train-effect::before {
     content: '';
-    @apply absolute w-1/3 h-1 bg-primary/80 blur-sm;
+    @apply absolute w-1/2 h-2 bg-primary blur-lg;
     transform-origin: left;
     animation: border-train 4s linear infinite;
   }
