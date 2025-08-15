@@ -94,9 +94,8 @@
     background-image: radial-gradient(circle, hsl(var(--primary) / 0.1) 1px, transparent 1px);
     background-size: 1.25rem 1.25rem;
   }
-  .bg-dot-pattern-dark {
-    background-image: radial-gradient(circle, hsl(var(--primary) / 0.3) 1px, transparent 1px);
-    background-size: 1.25rem 1.25rem;
+  .dark .bg-dot-pattern {
+    background-image: radial-gradient(circle, hsl(var(--primary) / 0.2) 1px, transparent 1px);
   }
 }
 
