@@ -4,7 +4,7 @@
 import { useLayoutEffect, useRef, useState, useEffect } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
-import { communityPathSteps, professionalPathSteps } from '@/lib/data.tsx';
+import { communityPathSteps } from '@/lib/data.tsx';
 import { RoadmapStepCard } from '@/components/roadmap-step-card';
 import { ArrowRight, ArrowDown, Rocket } from 'lucide-react';
 import Link from 'next/link';
@@ -100,15 +100,6 @@ export default function HowItWorksPage() {
             </section>
 
             <HorizontalScrollSection steps={communityPathSteps} isPro={false} />
-
-            <section className="py-20 md:py-32 container mx-auto px-4 md:px-6">
-                <div className="text-center max-w-2xl mx-auto">
-                    <h2 className="text-3xl md:text-5xl font-bold">The Professional Path</h2>
-                    <p className="mt-4 text-muted-foreground text-lg">Need guaranteed, high-quality results on a tight deadline? Hire our vetted professional testers for your critical projects.</p>
-                </div>
-            </section>
-
-            <HorizontalScrollSection steps={professionalPathSteps} isPro={true} />
 
             <section
                 ref={launchpadRef}

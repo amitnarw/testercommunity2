@@ -159,57 +159,6 @@ export const communityPathSteps: RoadmapStep[] = [
     },
 ];
 
-export const professionalPathSteps: RoadmapStep[] = [
-    {
-        step: 1,
-        title: "Define Your Mission",
-        description: "For mission-critical projects, precision is key. Create a detailed test plan, outlining your objectives, target devices, and the specific expertise you require.",
-        badgeText: "Time: 15 Mins • Cost: Free to post",
-        details: [
-            { title: "Project Scoping", description: "Clearly define what needs to be tested, from user flows to API endpoints." },
-            { title: "Tester Requirements", description: "Specify skills like 'Security Auditing' or 'Performance Bottlenecking'." },
-            { title: "Budget Options", description: "Set a fixed price for the project or invite testers to bid with hourly rates." },
-            { title: "Secure Posting", description: "Your project is posted confidentially to our vetted professional marketplace." },
-        ]
-    },
-    {
-        step: 2,
-        title: "Assemble Your Elite Squad",
-        description: "Browse our marketplace of world-class QA professionals. Review their profiles, work history, and client feedback to hire the perfect expert for your project.",
-        badgeText: "Cost: Starts at ₹999",
-        details: [
-            { title: "Advanced Filtering", description: "Filter testers by country, language, and specific device ownership." },
-            { title: "Verified Credentials", description: "All professional testers undergo a rigourous vetting and verification process." },
-            { title: "Direct Negotiation", description: "Interview and negotiate terms directly on our secure platform." },
-            { title: "Milestone Funding", description: "Securely fund the project milestone, with payment released upon completion." },
-        ]
-    },
-    {
-        step: 3,
-        title: "Execute the Test Plan",
-        description: "Your hired professional executes the test plan with precision, employing structured methodologies to provide comprehensive, actionable reports.",
-        badgeText: "Cycle: 3-14 day projects",
-        details: [
-            { title: "Structured Testing", description: "Professionals follow your test cases and perform exploratory testing." },
-            { title: "Comprehensive Reports", description: "Receive executive summaries and detailed bug reports with logs." },
-            { title: "Test Case Validation", description: "Get a full report on which test cases passed, failed, or were blocked." },
-            { title: "Daily Stand-ups", description: "Receive regular progress updates from your dedicated tester." },
-        ]
-    },
-    {
-        step: 4,
-        title: "Launch with Certainty",
-        description: "Collaborate on fixes and have the tester perform rigourous regression testing to ensure absolute quality. Approve the final milestone and launch your flawless app to the world.",
-        badgeText: "Benefit: Guaranteed Quality",
-        details: [
-            { title: "Seamless Collaboration", description: "Use our platform to provide new builds and communicate on fixes." },
-            { title: "Regression Testing", description: "The pro tester ensures your fixes haven't introduced new problems." },
-            { title: "Final Sign-off", description: "Receive a final quality assurance report before you ship." },
-            { title: "Secure Payment Release", description: "Approve the final milestone to release the tester." },
-        ]
-    }
-];
-
 export const demoUser: UserProfileData = {
     role: 'product_manager',
     companySize: '11-50',

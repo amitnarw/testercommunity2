@@ -133,13 +133,13 @@ export default function PricingPage() {
                 </section>
 
                 <section className="mt-20 max-w-5xl mx-auto">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                         {plans.map(plan => (
                              <div key={plan.name}>
                                 <PricingCard plan={plan} />
                             </div>
                         ))}
-                         <div>
+                         <div className="md:col-span-2 lg:col-span-1">
                             <Card className="flex flex-col rounded-2xl h-full bg-secondary/50 border-dashed border-2 p-6 justify-center items-center text-center">
                                 <CardHeader className="pt-10">
                                     <CardTitle className="text-2xl">Enterprise</CardTitle>
