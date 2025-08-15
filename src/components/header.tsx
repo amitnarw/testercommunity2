@@ -6,7 +6,7 @@ import { usePathname } from 'next/navigation';
 import { InTestersLogo } from './icons';
 import { Button } from './ui/button';
 import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle, SheetClose } from './ui/sheet';
-import { Menu, ArrowRight, Sun, Moon, User, LogOut, LayoutDashboard, Settings, LifeBuoy, X, Users2 } from 'lucide-react';
+import { Menu, ArrowRight, Sun, Moon, User, LogOut, LayoutDashboard, Settings, LifeBuoy, X, Users2, Gift } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useState, useEffect } from 'react';
 import { useTheme } from 'next-themes';
@@ -49,10 +49,22 @@ const UserNav = ({ onLogout }: { onLogout: () => void }) => {
                 Developer Dashboard
             </DropdownMenuItem>
           </Link>
+          <Link href="/community-dashboard">
+            <DropdownMenuItem>
+                <Users2 className="mr-2 h-4 w-4" />
+                Community Hub
+            </DropdownMenuItem>
+          </Link>
           <Link href="/profile">
             <DropdownMenuItem>
                 <User className="mr-2 h-4 w-4" />
                 Profile
+            </DropdownMenuItem>
+          </Link>
+           <Link href="/pricing">
+            <DropdownMenuItem>
+                <Gift className="mr-2 h-4 w-4" />
+                Buy Points
             </DropdownMenuItem>
           </Link>
           <Link href="/help">
