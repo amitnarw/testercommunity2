@@ -45,7 +45,7 @@ export default function Home() {
         <div className="flex flex-col min-h-screen">
             <main className="flex-1">
                 {/* Hero Section */}
-                <section className="relative w-full py-12 sm:py-16 md:py-20 lg:py-28 overflow-hidden">
+                <section className="relative w-full py-12 sm:py-16 md:py-20 lg:py-28">
                     <div className="absolute inset-0 bg-dot-pattern z-0"></div>
                     <div className="container mx-auto px-4 md:px-6 text-center relative z-10">
                         <div className="max-w-4xl mx-auto">
@@ -63,10 +63,10 @@ export default function Home() {
                             Get 12+ real testers and meet Google Play’s 14 day rule, fast. Use free community testing or go pro with points. Submit, track, and launch, all in one place.
                             </p>
                             <div className="mt-8 flex flex-col sm:flex-row justify-center gap-4">
-                                <Button asChild size="lg" variant="premium" className="group font-bold text-lg px-8 py-6 rounded-full">
+                                <Button asChild size="lg" variant="premium" className="group text-base px-8 py-6 rounded-full">
                                     <Link href="/signup">
-                                        <span>Submit Your App Now</span>
-                                        <div className="relative inline-flex items-center justify-center w-8 h-8 ml-2 rounded-full bg-primary-foreground/20 group-hover:bg-white transition-all duration-300 group-hover:scale-[2.5]">
+                                        <span className="relative z-10 font-bold">Submit Your App Now</span>
+                                        <div className="relative inline-flex items-center justify-center w-8 h-8 rounded-full bg-primary-foreground/20 group-hover:bg-white transition-all duration-300 group-hover:scale-[2.5]">
                                             <ArrowRight className="w-4 h-4 text-primary-foreground group-hover:text-black transition-colors duration-300" />
                                         </div>
                                     </Link>
