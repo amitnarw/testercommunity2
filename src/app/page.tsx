@@ -51,10 +51,10 @@ export default function Home() {
                         <div className="max-w-4xl mx-auto">
                             <HoverBorderGradient
                                 containerClassName="rounded-full"
-                                as="div"
-                                className="inline-flex items-center rounded-full bg-background px-3 py-1 text-xs sm:text-sm font-body text-primary mb-5 sm:mb-6"
+                                as="button"
+                                className="dark:bg-black bg-white text-black dark:text-white flex items-center space-x-2"
                             >
-                                Meet Google's 12-Tester Requirement.
+                                <span>Meet Google's 12-Tester Requirement.</span>
                             </HoverBorderGradient>
                             <h1 className="text-[2.25rem] sm:text-[2.75rem] md:text-[3.5rem] lg:text-[4.25rem] font-heading leading-[1.1] tracking-tight font-bold mb-5 sm:mb-6 md:mb-8">
                                 Testing Your <span className="bg-gradient-to-br from-primary to-accent bg-clip-text text-transparent">Android App</span> Just Got Easier
