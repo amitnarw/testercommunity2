@@ -46,6 +46,9 @@ export function TestimonialScroller({ testimonials }: TestimonialScrollerProps) 
                         {duplicatedTestimonials.map((testimonial, index) => (
                              <TestimonialCard key={`ltr-${index}`} testimonial={testimonial} />
                         ))}
+                         {duplicatedTestimonials.map((testimonial, index) => (
+                             <TestimonialCard key={`ltr-dup-${index}`} testimonial={testimonial} />
+                        ))}
                     </div>
                 </div>
 
@@ -54,6 +57,9 @@ export function TestimonialScroller({ testimonials }: TestimonialScrollerProps) 
                      <div className="flex animate-scroll-rtl">
                         {duplicatedTestimonials.map((testimonial, index) => (
                             <TestimonialCard key={`rtl-${index}`} testimonial={testimonial} />
+                        ))}
+                        {duplicatedTestimonials.map((testimonial, index) => (
+                            <TestimonialCard key={`rtl-dup-${index}`} testimonial={testimonial} />
                         ))}
                     </div>
                 </div>
