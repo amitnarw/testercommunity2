@@ -63,10 +63,12 @@ export default function Home() {
                             Get 12+ real testers and meet Google Play’s 14 day rule, fast. Use free community testing or go pro with points. Submit, track, and launch, all in one place.
                             </p>
                             <div className="mt-8 flex flex-col sm:flex-row justify-center gap-4">
-                                <Button asChild size="lg" variant="premium" className="font-bold text-lg px-8 py-6 rounded-full">
+                                <Button asChild size="lg" variant="premium" className="group font-bold text-lg px-8 py-6 rounded-full">
                                     <Link href="/signup">
-                                        <span className="z-10">Submit Your App Now</span>
-                                        <ArrowRight className="ml-2 z-10" />
+                                        <span>Submit Your App Now</span>
+                                        <div className="relative inline-flex items-center justify-center w-8 h-8 ml-2 rounded-full bg-primary-foreground/20 group-hover:bg-white transition-all duration-300 group-hover:p-4">
+                                            <ArrowRight className="w-4 h-4 text-primary-foreground group-hover:text-black transition-colors duration-300" />
+                                        </div>
                                     </Link>
                                 </Button>
                             </div>
