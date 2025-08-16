@@ -98,58 +98,5 @@
   .dark .bg-dot-pattern {
     background-image: radial-gradient(circle, hsl(var(--primary) / 0.4) 1px, transparent 1px);
   }
-
-  @keyframes border-train {
-    0% {
-      top: 0;
-      left: 0;
-      transform: translateX(-100%);
-    }
-    25% {
-      top: 0;
-      left: 100%;
-      transform: translateX(0%);
-    }
-    25.001% {
-      top: 0;
-      left: 100%;
-      transform: translateY(-100%) rotate(90deg);
-    }
-    50% {
-      top: 100%;
-      left: 100%;
-      transform: translateY(0%) rotate(90deg);
-    }
-    50.001% {
-      top: 100%;
-      left: 100%;
-      transform: translateX(100%) rotate(180deg);
-    }
-    75% {
-      top: 100%;
-      left: 0;
-      transform: translateX(0%) rotate(180deg);
-    }
-    75.001% {
-      top: 100%;
-      left: 0;
-      transform: translateY(100%) rotate(270deg);
-    }
-    100% {
-      top: 0;
-      left: 0;
-      transform: translateY(0%) rotate(270deg);
-    }
-  }
-
-  .border-train-effect {
-    @apply relative p-px overflow-hidden;
-  }
-  .border-train-effect::before {
-    content: '';
-    @apply absolute w-1/2 h-4 bg-primary blur-lg;
-    transform-origin: left;
-    animation: border-train 4s linear infinite;
-  }
 }
     

@@ -15,6 +15,7 @@ import { TestimonialScroller } from '@/components/testimonial-scroller';
 import { GlobalImpactSection } from '@/components/global-impact-section';
 import { FaqSection } from '@/components/faq-section';
 import { TwoPathsSection } from '@/components/two-paths-section';
+import { HoverBorderGradient } from '@/components/ui/hover-border-gradient';
 
 const features = [
     {
@@ -48,11 +49,13 @@ export default function Home() {
                     <div className="absolute inset-0 bg-dot-pattern z-0"></div>
                     <div className="container mx-auto px-4 md:px-6 text-center relative z-10">
                         <div className="max-w-4xl mx-auto">
-                            <div className="border-train-effect inline-flex rounded-full mb-5 sm:mb-6">
-                                <Badge variant="outline" className="relative inline-flex items-center rounded-full border bg-background px-3 py-1 text-xs sm:text-sm font-body text-primary">
-                                    Meet Google's 12-Tester Requirement.
-                                </Badge>
-                            </div>
+                            <HoverBorderGradient
+                                containerClassName="rounded-full"
+                                as="div"
+                                className="inline-flex items-center rounded-full bg-background px-3 py-1 text-xs sm:text-sm font-body text-primary mb-5 sm:mb-6"
+                            >
+                                Meet Google's 12-Tester Requirement.
+                            </HoverBorderGradient>
                             <h1 className="text-[2.25rem] sm:text-[2.75rem] md:text-[3.5rem] lg:text-[4.25rem] font-heading leading-[1.1] tracking-tight font-bold mb-5 sm:mb-6 md:mb-8">
                                 Testing Your <span className="bg-gradient-to-br from-primary to-accent bg-clip-text text-transparent">Android App</span> Just Got Easier
                             </h1>
