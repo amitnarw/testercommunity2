@@ -13,21 +13,25 @@ interface TestimonialCardProps {
 
 function TestimonialCard({ testimonial }: TestimonialCardProps) {
   return (
-    <Card className="flex flex-col justify-between bg-card rounded-xl w-[450px] h-[260px] mx-4 flex-shrink-0 relative overflow-hidden p-6">
-        <Quote className="absolute -top-2 -left-2 w-20 h-20 text-primary/10" />
-        <div className="relative z-10 flex flex-col h-full">
-            <div className="flex-grow flex gap-6">
-                <div className="flex-grow">
-                    <p className="text-muted-foreground">&ldquo;{testimonial.comment}&rdquo;</p>
+    <Card className="bg-card rounded-xl w-[450px] h-[260px] mx-4 flex-shrink-0 overflow-hidden">
+        <div className="flex h-full">
+            <div className="flex flex-col p-6 relative flex-grow">
+                <Quote className="absolute -top-2 -left-2 w-20 h-20 text-primary/10" />
+                <div className="relative z-10 flex flex-col h-full">
+                    <div className="flex-grow">
+                        <p className="text-muted-foreground line-clamp-5">&ldquo;{testimonial.comment}&rdquo;</p>
+                    </div>
+                    <div className="mt-4">
+                        <p className="font-bold">{testimonial.name}</p>
+                        <p className="text-sm text-muted-foreground">{testimonial.role}</p>
+                    </div>
                 </div>
-                <Avatar className="w-20 h-20 flex-shrink-0 border-2 border-primary/20">
-                    <AvatarImage src={testimonial.avatar} data-ai-hint={testimonial.dataAiHint} />
+            </div>
+            <div className="w-[40%] flex-shrink-0">
+                 <Avatar className="w-full h-full rounded-none">
+                    <AvatarImage src={testimonial.avatar} data-ai-hint={testimonial.dataAiHint} className="object-cover" />
                     <AvatarFallback>{testimonial.name.charAt(0)}</AvatarFallback>
                 </Avatar>
-            </div>
-            <div className="mt-4">
-                <p className="font-bold">{testimonial.name}</p>
-                <p className="text-sm text-muted-foreground">{testimonial.role}</p>
             </div>
         </div>
     </Card>
