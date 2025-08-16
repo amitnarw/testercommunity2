@@ -17,7 +17,7 @@ interface TestimonialCardProps {
 
 function TestimonialCard({ testimonial }: TestimonialCardProps) {
   return (
-    <Card className="rounded-xl w-[450px] h-[220px] mx-4 flex-shrink-0 overflow-hidden relative p-6 flex items-center bg-gradient-to-r from-cyan-500 to-blue-500">
+    <Card className="rounded-xl w-[450px] h-[220px] mx-4 flex-shrink-0 overflow-hidden relative p-6 flex items-center bg-gradient-to-b from-primary/5 to-primary/15 border-0">
       <Quote className="absolute -top-2 -left-2 w-20 h-20 text-primary/10" />
       <div className="flex-grow pr-4 z-10">
         <p className="text-sm text-muted-foreground line-clamp-5 mb-4">&ldquo;{testimonial.comment}&rdquo;</p>
@@ -77,10 +77,10 @@ export function TestimonialScroller({ testimonials }: TestimonialScrollerProps) 
     return (
         <div className="w-full">
             <div className="flex flex-col gap-4">
-               <HorizontalLooper speed={40} reversed={false}>
+               <HorizontalLooper speed={30} reversed={false}>
                     {cards}
                 </HorizontalLooper>
-                <HorizontalLooper speed={40} reversed={true}>
+                <HorizontalLooper speed={30} reversed={true}>
                     {cards}
                 </HorizontalLooper>
             </div>

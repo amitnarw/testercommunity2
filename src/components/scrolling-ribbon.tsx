@@ -53,12 +53,11 @@ export function ScrollingRibbon() {
         return () => window.removeEventListener('scroll', handleScroll);
     }, []);
 
-
     return (
         <section className="w-full overflow-hidden py-4 transform -skew-y-2">
             <div className="flex flex-col gap-2">
-                <div className="flex whitespace-nowrap text-2xl md:text-3xl font-bold uppercase tracking-wider text-primary-foreground select-none bg-primary">
-                    <div ref={ribbonRef1} className="flex my-6">
+                <div className="flex whitespace-nowrap text-lg md:text-3xl font-bold uppercase tracking-wider text-primary-foreground select-none bg-primary">
+                    <div ref={ribbonRef1} className="flex my-2 sm:my-6">
                         <RibbonText />
                         <RibbonText />
                         <RibbonText />
@@ -69,8 +68,8 @@ export function ScrollingRibbon() {
                         <RibbonText />
                     </div>
                 </div>
-                <div className="flex whitespace-nowrap text-2xl md:text-3xl font-bold uppercase tracking-wider text-primary-foreground select-none bg-primary">
-                    <div ref={ribbonRef2} className="flex my-6">
+                <div className="flex whitespace-nowrap text-lg md:text-3xl font-bold uppercase tracking-wider text-primary-foreground select-none bg-primary">
+                    <div ref={ribbonRef2} className="flex my-2 sm:my-6">
                         <RibbonText />
                         <RibbonText />
                         <RibbonText />

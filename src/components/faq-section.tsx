@@ -37,7 +37,7 @@ export function FaqSection() {
                     className="border-b"
                 >
                     <AccordionTrigger className="text-left font-semibold hover:no-underline text-base py-6">
-                        {faq.question}
+                        <span>{faq.question}</span>
                     </AccordionTrigger>
                     <AccordionContent className="text-muted-foreground pb-6">
                         {faq.answer}

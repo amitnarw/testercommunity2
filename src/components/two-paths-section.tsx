@@ -16,15 +16,15 @@ export function TwoPathsSection() {
                 <div className="text-center max-w-3xl mx-auto mb-16">
                     <h2 className="text-3xl md:text-4xl font-bold">Two Paths to Get Your App Tested</h2>
                     <p className="mt-4 text-muted-foreground">
-                       Whether you want to contribute to a community or need guaranteed professional results, we have a solution that fits your needs.
+                        Whether you want to contribute to a community or need guaranteed professional results, we have a solution that fits your needs.
                     </p>
                 </div>
-                
+
                 <div className="grid md:grid-cols-2 gap-8 items-stretch">
                     {/* Path 1: Community */}
                     <Card className="rounded-2xl border h-full flex flex-col p-6 text-center items-center">
                         <div className="flex-grow">
-                             <div className="inline-block bg-primary/10 text-primary p-3 rounded-full mb-4">
+                            <div className="inline-block bg-primary/10 text-primary p-3 rounded-full mb-4">
                                 <Users className="w-8 h-8" />
                             </div>
                             <CardHeader className="p-0">
@@ -33,9 +33,8 @@ export function TwoPathsSection() {
                             </CardHeader>
                             <CardDescription className="text-4xl font-bold text-center my-6">
                                 Free
-                                <span className="text-sm font-normal text-muted-foreground ml-1">(Pay with your time)</span>
                             </CardDescription>
-                             <ul className="space-y-3 text-sm text-muted-foreground text-left">
+                            <ul className="space-y-3 text-sm text-muted-foreground text-left">
                                 <li className="flex items-start gap-2">
                                     <CheckCircle className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
                                     <span>Reciprocal "give-to-get" model.</span>
@@ -61,16 +60,15 @@ export function TwoPathsSection() {
                     <Card className="rounded-2xl border-2 border-primary shadow-2xl shadow-primary/20 relative h-full flex flex-col p-6 text-center items-center">
                         <Badge variant="default" className="absolute -top-4 left-1/2 -translate-x-1/2">Recommended</Badge>
                         <div className="flex-grow">
-                             <div className="inline-block bg-primary/10 text-primary p-3 rounded-full mb-4">
+                            <div className="inline-block bg-primary/10 text-primary p-3 rounded-full mb-4">
                                 <Briefcase className="w-8 h-8" />
                             </div>
                             <CardHeader className="p-0">
                                 <CardTitle className="text-2xl">The Professional Path</CardTitle>
                                 <CardDescription className="max-w-xs mx-auto">Hire our professional testers for guaranteed, high-quality results.</CardDescription>
                             </CardHeader>
-                             <div className="text-4xl font-bold text-center my-6">
+                            <div className="text-4xl font-bold text-center my-6 text-primary">
                                 Paid
-                                <span className="text-sm font-normal text-muted-foreground ml-1">(Pay with points)</span>
                             </div>
                             <ul className="space-y-3 text-sm text-muted-foreground text-left">
                                 <li className="flex items-start gap-2">
