@@ -66,7 +66,7 @@ export default function Home() {
                                 <Button asChild size="lg" variant="premium" className="group text-base px-8 py-6 rounded-full">
                                     <Link href="/signup">
                                         <span className="relative z-10 font-bold">Submit Your App Now</span>
-                                        <div className="relative inline-flex items-center justify-center w-8 h-8 rounded-full bg-primary-foreground/20 group-hover:bg-white transition-all duration-300 group-hover:scale-[2.5]">
+                                        <div className="relative inline-flex items-center justify-center w-8 h-8 rounded-full bg-primary-foreground/20 group-hover:bg-white transition-all duration-300 group-hover:scale-[2.5] ml-auto">
                                             <ArrowRight className="w-4 h-4 text-primary-foreground group-hover:text-black transition-colors duration-300" />
                                         </div>
                                     </Link>
