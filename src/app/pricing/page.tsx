@@ -58,7 +58,7 @@ export default function PricingPage() {
         <div className="bg-background text-foreground">
             <div className="container mx-auto px-4 md:px-6 py-20">
                 <section className="text-center max-w-3xl mx-auto">
-                    <h1 className="text-4xl md:text-6xl font-bold">Get a <span className="text-primary">Points Boost</span></h1>
+                    <h1 className="text-4xl md:text-6xl font-bold">Get a <span className="bg-gradient-to-br from-primary to-accent bg-clip-text text-transparent">Points Boost</span></h1>
                     <p className="mt-4 text-lg text-muted-foreground">
                         Earn points for free by testing apps in the Community Hub, or buy a package to fund your testing needs instantly.
                     </p>
