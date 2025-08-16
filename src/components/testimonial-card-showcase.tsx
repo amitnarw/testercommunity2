@@ -2,7 +2,7 @@
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import type { Testimonial } from '@/lib/types';
-import { testimonials } from '@/lib/data';
+import { testimonials } from '@/lib/data.tsx';
 import { Quote } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -61,9 +61,9 @@ export function TestimonialCardShowcase() {
       
       {/* Design 3: Quotable */}
       <div className="space-y-2">
-        <h3 className="text-lg font-semibold text-center">3. Quotable</h3>
+        <h3 className="text-lg font-semibold text-center">3. Quotable (New Design)</h3>
         <Card className="flex flex-col justify-between bg-card rounded-xl w-full h-full relative overflow-hidden">
-            <Quote className="absolute -top-4 -left-4 w-24 h-24 text-primary/10" />
+            <Quote className="absolute -top-2 -left-2 w-20 h-20 text-primary/10" />
             <CardHeader className="z-10">
                 <div className="flex items-center gap-4">
                 <Avatar>
@@ -76,10 +76,10 @@ export function TestimonialCardShowcase() {
                 </div>
                 </div>
             </CardHeader>
-            <CardContent className="z-10">
+            <CardContent className="z-10 flex-grow">
                 <p className="text-muted-foreground">&ldquo;{sampleTestimonial.comment}&rdquo;</p>
             </CardContent>
-            <CardFooter></CardFooter>
+             <CardFooter></CardFooter>
         </Card>
       </div>
 

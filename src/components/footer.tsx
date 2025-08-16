@@ -1,6 +1,6 @@
 
 import Link from 'next/link';
-import { TestTribeLogo } from './icons';
+import { InTestersLogo } from './icons';
 import { Button } from './ui/button';
 import { Github, Twitter, Linkedin } from 'lucide-react';
 import Image from 'next/image';
@@ -8,19 +8,19 @@ import Image from 'next/image';
 const navItems = [
     { name: 'Home', href: '/' },
     { name: 'How It Works', href: '/how-it-works' },
+    { name: 'Pricing', href: '/pricing' },
     { name: 'Blog', href: '/blog' },
-    { name: 'Sign Up', href: '/signup' },
 ];
 
 const resourceItems = [
-  { name: 'Docs', href: '#' },
   { name: 'Blog', href: '/blog' },
-  { name: 'Support', href: '#' },
+  { name: 'FAQ', href: '/faq' },
+  { name: 'Support', href: '/help' },
 ];
 
 const legalItems = [
     { name: 'Privacy Policy', href: '#' },
-    { name: 'Terms of Service', href: '#' },
+    { name: 'Terms of Service', href: '/terms' },
 ];
 
 export function Footer() {
@@ -30,7 +30,7 @@ export function Footer() {
         <div className="grid gap-8 lg:grid-cols-3">
           <div className="space-y-4">
             <Link href="/" className="flex items-center gap-2">
-              <TestTribeLogo className="h-8" />
+              <InTestersLogo className="h-8" />
             </Link>
             <p className="text-muted-foreground">The future of app testing is animated.</p>
             <div className="flex items-center gap-2">
@@ -88,7 +88,7 @@ export function Footer() {
           </div>
         </div>
         <div className="mt-8 border-t pt-8 flex flex-col md:flex-row justify-between items-center text-sm text-muted-foreground">
-          <p>&copy; {new Date().getFullYear()} TestTribe, Inc. All rights reserved.</p>
+          <p>&copy; {new Date().getFullYear()} inTesters, Inc. All rights reserved.</p>
           <p>A Next-Gen App Testing Community.</p>
         </div>
       </div>

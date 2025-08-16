@@ -7,12 +7,9 @@ import * as z from 'zod';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Label } from './ui/label';
-import { Checkbox } from './ui/checkbox';
-import { RadioGroup, RadioGroupItem } from './ui/radio-group';
 import { Separator } from './ui/separator';
-import { cn } from '@/lib/utils';
-import { CheckCircle2 } from 'lucide-react';
 import Link from 'next/link';
+
 import {
   Form,
   FormControl,
@@ -21,9 +18,10 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form"
+import { Checkbox } from './ui/checkbox';
+
 
 const signupSchema = z.object({
-  role: z.enum(['developer', 'tester'], { required_error: 'Please select a role.' }),
   fullName: z.string().min(2, 'Please enter your full name.'),
   email: z.string().email('Please enter a valid email address.'),
   password: z.string().min(8, 'Password must be at least 8 characters long.'),
@@ -42,141 +40,93 @@ const GoogleIcon = (props: React.SVGProps<SVGSVGElement>) => (
 );
 
 export function SignupForm() {
-  const form = useForm<SignupFormData>({
-    resolver: zodResolver(signupSchema),
-    mode: 'onChange',
-    defaultValues: {
-        fullName: '',
-        email: '',
-        password: '',
-        terms: false,
-    }
-  });
+    const form = useForm<SignupFormData>({
+        resolver: zodResolver(signupSchema),
+        mode: 'onChange',
+    });
 
-  const processForm: SubmitHandler<SignupFormData> = (data) => {
-    console.log('Final form data:', data);
-    // Handle final submission
-  };
+    const processForm: SubmitHandler<SignupFormData> = (data) => {
+        console.log('Final form data:', data);
+        // Handle final submission logic here
+    };
 
-  return (
-    <div className="space-y-6">
-        <Button variant="outline" className="w-full rounded-xl py-6 text-base">
-            <GoogleIcon className="mr-3" />
-            Sign up with Google
-        </Button>
+    return (
+        <div className="space-y-6">
+            <Button variant="outline" className="w-full rounded-xl py-6 text-base">
+                <GoogleIcon className="mr-3" />
+                Sign up with Google
+            </Button>
 
-        <div className="flex items-center gap-4">
-            <Separator className="flex-1 bg-border/50" />
-            <span className="text-xs text-muted-foreground">OR</span>
-            <Separator className="flex-1 bg-border/50" />
-        </div>
+            <div className="flex items-center gap-4">
+                <Separator className="flex-1 bg-border/50" />
+                <span className="text-xs text-muted-foreground">OR</span>
+                <Separator className="flex-1 bg-border/50" />
+            </div>
 
-        <Form {...form}>
-            <form onSubmit={form.handleSubmit(processForm)} className="space-y-4">
-                <FormField
-                    control={form.control}
-                    name="role"
-                    render={({ field }) => (
-                        <FormItem className="space-y-3">
+            <Form {...form}>
+                <form onSubmit={form.handleSubmit(processForm)} className="space-y-4">
+                     <FormField
+                        control={form.control}
+                        name="fullName"
+                        render={({ field }) => (
+                            <FormItem>
+                            <FormLabel>Full Name</FormLabel>
                             <FormControl>
-                                <RadioGroup
-                                    onValueChange={field.onChange}
-                                    defaultValue={field.value}
-                                    className="relative grid grid-cols-2 gap-2 rounded-xl bg-secondary p-1"
-                                >
-                                     <div className={cn(
-                                        "absolute h-[calc(100%-0.5rem)] w-[calc(50%-0.25rem)] bg-background shadow-md rounded-lg transition-transform duration-300 ease-in-out",
-                                        field.value === 'developer' ? 'translate-x-0' : 'translate-x-full'
-                                    )} style={{ margin: '0.25rem' }}></div>
-                                    <FormItem>
-                                        <FormControl>
-                                            <RadioGroupItem value="developer" id="developer" className="peer sr-only" />
-                                        </FormControl>
-                                        <Label htmlFor="developer" className="relative z-10 flex cursor-pointer justify-center rounded-lg p-3 text-center transition-colors peer-data-[state=checked]:text-primary">
-                                            I'm a Developer
-                                        </Label>
-                                    </FormItem>
-                                    <FormItem>
-                                        <FormControl>
-                                            <RadioGroupItem value="tester" id="tester" className="peer sr-only" />
-                                        </FormControl>
-                                        <Label htmlFor="tester" className="relative z-10 flex cursor-pointer justify-center rounded-lg p-3 text-center transition-colors peer-data-[state=checked]:text-primary">
-                                            I'm a Tester
-                                        </Label>
-                                    </FormItem>
-                                </RadioGroup>
+                                <Input placeholder="John Doe" {...field} className="rounded-xl h-12" />
                             </FormControl>
                             <FormMessage />
-                        </FormItem>
-                    )}
-                />
-
-                <FormField
-                    control={form.control}
-                    name="fullName"
-                    render={({ field }) => (
-                        <FormItem>
-                        <FormLabel>Full Name</FormLabel>
-                        <FormControl>
-                            <Input placeholder="John Doe" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                        </FormItem>
-                    )}
-                />
-
-                <FormField
-                    control={form.control}
-                    name="email"
-                    render={({ field }) => (
-                        <FormItem>
-                        <FormLabel>Email Address</FormLabel>
-                        <FormControl>
-                            <Input placeholder="you@example.com" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                        </FormItem>
-                    )}
-                />
-
-                <FormField
-                    control={form.control}
-                    name="password"
-                    render={({ field }) => (
-                        <FormItem>
-                        <FormLabel>Password</FormLabel>
-                        <FormControl>
-                            <Input type="password" placeholder="••••••••" {...field} />
-                        </FormControl>
-                        <FormMessage />
-                        </FormItem>
-                    )}
-                />
-                
-                <FormField
-                    control={form.control}
-                    name="terms"
-                    render={({ field }) => (
-                        <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md py-4">
-                        <FormControl>
-                            <Checkbox
-                            checked={field.value}
-                            onCheckedChange={field.onChange}
-                            />
-                        </FormControl>
-                        <div className="space-y-1 leading-none">
-                            <FormLabel className="text-sm font-normal text-muted-foreground">
-                                I accept the <Link href="/terms" className="underline text-primary hover:no-underline">terms and conditions</Link>.
-                            </FormLabel>
+                            </FormItem>
+                        )}
+                    />
+                    <FormField
+                        control={form.control}
+                        name="email"
+                        render={({ field }) => (
+                            <FormItem>
+                            <FormLabel>Email Address</FormLabel>
+                            <FormControl>
+                                <Input placeholder="you@example.com" {...field} className="rounded-xl h-12" />
+                            </FormControl>
                             <FormMessage />
-                        </div>
-                        </FormItem>
-                    )}
-                />
-
-                <Button type="submit" className="w-full rounded-xl py-6 text-lg">Create Account</Button>
-            </form>
-        </Form>
-    </div>
-  );
+                            </FormItem>
+                        )}
+                    />
+                    <FormField
+                        control={form.control}
+                        name="password"
+                        render={({ field }) => (
+                            <FormItem>
+                            <FormLabel>Password</FormLabel>
+                            <FormControl>
+                                <Input type="password" placeholder="••••••••" {...field} className="rounded-xl h-12" />
+                            </FormControl>
+                            <FormMessage />
+                            </FormItem>
+                        )}
+                    />
+                     <FormField
+                        control={form.control}
+                        name="terms"
+                        render={({ field }) => (
+                            <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md py-4">
+                            <FormControl>
+                                <Checkbox
+                                checked={field.value}
+                                onCheckedChange={field.onChange}
+                                />
+                            </FormControl>
+                            <div className="space-y-1 leading-none">
+                                <FormLabel className="text-sm font-normal text-muted-foreground">
+                                    I accept the <Link href="/terms" className="underline text-primary hover:no-underline">terms and conditions</Link>.
+                                </FormLabel>
+                                <FormMessage />
+                            </div>
+                            </FormItem>
+                        )}
+                    />
+                    <Button type="submit" className="w-full !mt-6" size="lg">Create Account</Button>
+                </form>
+            </Form>
+        </div>
+    );
 }

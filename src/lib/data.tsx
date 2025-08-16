@@ -1,88 +1,5 @@
 
-import type { Tester, BlogPost, Testimonial, RoadmapStep } from './types';
-
-export const testers: Tester[] = [
-  {
-    id: 1,
-    name: 'Alice Johnson',
-    avatarUrl: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=400&auto=format=fit=crop',
-    dataAiHint: 'woman developer',
-    skills: ['UI/UX', 'Mobile', 'Web'],
-    reputation: 4.9,
-    rate: 75,
-    country: 'USA',
-  },
-  {
-    id: 2,
-    name: 'Bob Williams',
-    avatarUrl: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?q=80&w=400&auto=format=fit=crop',
-    dataAiHint: 'man glasses',
-    skills: ['Security', 'API', 'Performance'],
-    reputation: 4.8,
-    rate: 90,
-    country: 'Canada',
-  },
-  {
-    id: 3,
-    name: 'Charlie Brown',
-    avatarUrl: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=400&auto=format=fit=crop',
-    dataAiHint: 'man smiling',
-    skills: ['Game Testing', 'VR/AR', 'Mobile'],
-    reputation: 4.9,
-    rate: 80,
-    country: 'UK',
-  },
-  {
-    id: 4,
-    name: 'Diana Miller',
-    avatarUrl: 'https://images.unsplash.com/photo-1520466809213-7b9a56adcd45?q=80&w=400&auto=format=fit=crop',
-    dataAiHint: 'woman smiling',
-    skills: ['Web', 'Accessibility', 'UI/UX'],
-    reputation: 4.7,
-    rate: 65,
-    country: 'Australia',
-  },
-  {
-    id: 5,
-    name: 'Ethan Garcia',
-    avatarUrl: 'https://images.unsplash.com/photo-1568602471122-7832951cc4c5?q=80&w=400&auto=format=fit=crop',
-    dataAiHint: 'man engineer',
-    skills: ['Performance', 'Backend', 'API'],
-    reputation: 4.8,
-    rate: 95,
-    country: 'Germany',
-  },
-  {
-    id: 6,
-    name: 'Fiona Clark',
-    avatarUrl: 'https://images.unsplash.com/photo-1554151228-14d9def656e4?q=80&w=400&auto=format=fit=crop',
-    dataAiHint: 'woman glasses',
-    skills: ['Mobile', 'iOS', 'Android'],
-    reputation: 4.9,
-    rate: 85,
-    country: 'France',
-  },
-  {
-    id: 7,
-    name: 'George Hill',
-    avatarUrl: 'https://images.unsplash.com/photo-1527982987257-d3abc440f2ba?q=80&w=400&auto=format=fit=crop',
-    dataAiHint: 'man portrait',
-    skills: ['Security', 'Penetration Testing'],
-    reputation: 5.0,
-    rate: 120,
-    country: 'USA',
-  },
-  {
-    id: 8,
-    name: 'Hannah Wright',
-    avatarUrl: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?q=80&w=400&auto=format=fit=crop',
-    dataAiHint: 'woman tech',
-    skills: ['UI/UX', 'Figma', 'Web'],
-    reputation: 4.8,
-    rate: 70,
-    country: 'UK',
-  },
-];
+import type { BlogPost, Testimonial, RoadmapStep, UserProfileData, ProcessStep, CommunityApp, PointsPackage, FaqItem } from './types';
 
 export const chartData = [
     { month: 'January', reports: 186, resolved: 80 },
@@ -158,7 +75,7 @@ export const testimonials: Testimonial[] = [
     role: 'Lead Developer, TechNova',
     avatar: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?q=80&w=400&auto=format=fit=crop',
     dataAiHint: 'woman portrait',
-    comment: 'TestTribe has revolutionized our QA process. The real-time feedback and detailed reports are game-changers. The platform isn\'t just functional, it\'s a joy to use!',
+    comment: 'inTesters has revolutionized our QA process. The real-time feedback and detailed reports are game-changers. The platform isn\'t just functional, it\'s a joy to use!',
   },
   {
     name: 'Mike Valerio',
@@ -179,14 +96,14 @@ export const testimonials: Testimonial[] = [
     role: 'QA Engineer, GameSphere',
     avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=400&auto=format=fit=crop',
     dataAiHint: 'man portrait',
-    comment: 'As a tester, the gamified reputation system is fantastic. It motivates me to do my best work and get recognized for it. I\'ve gotten more high-quality projects through TestTribe than any other platform.',
+    comment: 'As a tester, the gamified reputation system is fantastic. It motivates me to do my best work and get recognized for it. I\'ve gotten more high-quality projects through inTesters than any other platform.',
   },
   {
     name: 'Maria Garcia',
     role: 'Mobile App Developer',
     avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=400&auto=format=fit=crop',
     dataAiHint: 'woman developer',
-    comment: 'The community aspect is what sets TestTribe apart. It\'s not just a service; it\'s a network of professionals passionate about quality. The collaboration tools are excellent.',
+    comment: 'The community aspect is what sets inTesters apart. It\'s not just a service; it\'s a network of professionals passionate about quality. The collaboration tools are excellent.',
   },
 ];
 
@@ -245,50 +162,180 @@ export const communityPathSteps: RoadmapStep[] = [
 export const professionalPathSteps: RoadmapStep[] = [
     {
         step: 1,
-        title: "Define Your Mission",
-        description: "For mission-critical projects, precision is key. Create a detailed test plan, outlining your objectives, target devices, and the specific expertise you require.",
-        badgeText: "Time: 15 Mins • Cost: Free to post",
+        title: "Purchase Points",
+        description: "Fast-track your testing by purchasing a points package. This is your currency for all professional services on the platform, allowing you to skip community testing entirely.",
+        badgeText: "Time: 2 Mins • Cost: Varies",
         details: [
-            { title: "Project Scoping", description: "Clearly define what needs to be tested, from user flows to API endpoints." },
-            { title: "Tester Requirements", description: "Specify skills like 'Security Auditing' or 'Performance Bottlenecking'." },
-            { title: "Budget Options", description: "Set a fixed price for the project or invite testers to bid with hourly rates." },
-            { title: "Secure Posting", description: "Your project is posted confidentially to our vetted professional marketplace." },
+            { title: "Flexible Packages", description: "Choose a points package that fits your project's budget and scope." },
+            { title: "Instant Access", description: "No need to earn points; get started with professional testing right away." },
+            { title: "Secure Payment", description: "All transactions are handled securely through our trusted payment processor." },
+            { title: "Points Never Expire", description: "Your purchased points are yours to use whenever you're ready." },
         ]
     },
     {
         step: 2,
-        title: "Assemble Your Elite Squad",
-        description: "Browse our marketplace of world-class QA professionals. Review their profiles, work history, and client feedback to hire the perfect expert for your project.",
-        badgeText: "Cost: Starts at ₹999",
+        title: "Submit & Forget",
+        description: "Submit your app through the Developer Dashboard. Provide us with your build and instructions, and we'll handle the rest. Our project managers take over from here.",
+        badgeText: "Requirement: Points Purchased",
         details: [
-            { title: "Advanced Filtering", description: "Filter testers by skills, country, language, and specific device ownership." },
-            { title: "Verified Credentials", description: "All professional testers undergo a rigorous vetting and verification process." },
-            { title: "Direct Negotiation", description: "Interview and negotiate terms directly on our secure platform." },
-            { title: "Milestone Funding", description: "Securely fund the project milestone, with payment released upon completion." },
+            { title: "Simple Submission", description: "A straightforward form to provide your app and testing requirements." },
+            { title: "Managed Process", description: "Our team assigns the best-suited professional testers to your project." },
+            { title: "Confidentiality", description: "Your project is handled under strict NDA by our vetted team." },
+            { title: "Hassle-Free", description: "Focus on development while we manage the entire 14-day testing cycle." },
         ]
     },
     {
         step: 3,
-        title: "Execute the Test Plan",
-        description: "Your hired professional executes the test plan with precision, employing structured methodologies to provide comprehensive, actionable reports.",
-        badgeText: "Cycle: 3-14 day projects",
+        title: "Receive Pro Reports",
+        description: "Our professional testers deliver structured, high-quality reports. Expect clear, actionable, and consistent feedback that makes debugging a breeze.",
+        badgeText: "Typical: Daily Summaries",
         details: [
-            { title: "Structured Testing", description: "Professionals follow your test cases and perform exploratory testing." },
-            { title: "Comprehensive Reports", description: "Receive executive summaries and detailed bug reports with logs." },
-            { title: "Test Case Validation", description: "Get a full report on which test cases passed, failed, or were blocked." },
-            { title: "Daily Stand-ups", description: "Receive regular progress updates from your dedicated tester." },
+            { title: "Standardized Reports", description: "All feedback follows a consistent, easy-to-digest format." },
+            { title: "Expert Analysis", description: "Our testers provide insights that go beyond simple bug reports." },
+            { title: "Consolidated Feedback", description: "Receive daily or weekly summary reports from our project manager." },
+            { title: "Guaranteed Coverage", description: "We ensure all specified areas of your app are thoroughly tested." },
         ]
     },
     {
         step: 4,
         title: "Launch with Certainty",
-        description: "Collaborate on fixes and have the tester perform rigorous regression testing to ensure absolute quality. Approve the final milestone and launch your flawless app to the world.",
-        badgeText: "Benefit: Guaranteed Quality",
+        description: "With the 14-day/12-tester requirement met and your app polished by experts, you can submit to the Google Play Store with the highest degree of confidence.",
+        badgeText: "Cycle: Defined & Completed",
         details: [
-            { title: "Seamless Collaboration", description: "Use our platform to provide new builds and communicate on fixes." },
-            { title: "Regression Testing", description: "The pro tester ensures your fixes haven't introduced new problems." },
-            { title: "Final Sign-off", description: "Receive a final quality assurance report before you ship." },
-            { title: "Secure Payment Release", description: "Approve the final milestone to release the payment to the tester." },
+            { title: "Official Confirmation", description: "Receive an official completion report for your records." },
+            { title: "Peace of Mind", description: "Know that your app has passed a professional-grade QA check." },
+            { title: "Faster Time-to-Market", description: "Avoid delays by ensuring testing requirements are met correctly the first time." },
+            { title: "Ongoing Support", description: "Our team is available for any follow-up questions or re-testing needs." },
         ]
+    },
+];
+
+export const demoUser: UserProfileData = {
+    role: 'product_manager',
+    companySize: '11-50',
+    primaryGoal: 'hire_testers',
+    monthlyBudget: '500+',
+};
+
+export const processSteps: ProcessStep[] = [
+    { 
+        title: "Grant Our Testers Access", 
+        imageUrl: "/add-app-1.webp",
+        dataAiHint: "team collaboration"
+    },
+    { 
+        title: "Enable Global Reach", 
+        imageUrl: "/add-app-2.webp",
+        dataAiHint: "world map data"
+    },
+    { 
+        title: "Submit for Google's Review", 
+        imageUrl: "/add-app-3.webp",
+        dataAiHint: "checklist document"
+     },
+    { 
+        title: "Activate Your Test Cycle", 
+        imageUrl: "/add-app-4.webp",
+        dataAiHint: "scientist laboratory"
+    },
+];
+
+export const communityApps: CommunityApp[] = [
+    {
+        id: 1,
+        name: 'Finance Tracker',
+        icon: 'https://placehold.co/128x128.png',
+        dataAiHint: 'finance app icon',
+        category: 'Productivity',
+        shortDescription: 'A simple way to track your income and expenses on the go.',
+        points: 100,
+        androidVersion: '10+',
+        estimatedTime: '15-20 min',
+        playStoreUrl: '#',
+        screenshots: [
+            { url: 'https://placehold.co/400x800.png', alt: 'Screenshot 1', dataAiHint: 'app screenshot' },
+            { url: 'https://placehold.co/400x800.png', alt: 'Screenshot 2', dataAiHint: 'app interface' }
+        ],
+        testingInstructions: 'Please focus on the new budgeting feature. Try creating a monthly budget, adding several expenses, and see if the summary view is correct. Check for any visual glitches or crashes.'
+    },
+    {
+        id: 2,
+        name: 'Pixel Adventure',
+        icon: 'https://placehold.co/128x128.png',
+        dataAiHint: 'pixel art game',
+        category: 'Games',
+        shortDescription: 'A retro-style platformer with challenging levels and epic boss fights.',
+        points: 75,
+        androidVersion: '9+',
+        estimatedTime: '20-30 min',
+        playStoreUrl: '#',
+        screenshots: [
+            { url: 'https://placehold.co/800x400.png', alt: 'Screenshot 1', dataAiHint: 'gameplay screenshot' },
+            { url: 'https://placehold.co/800x400.png', alt: 'Screenshot 2', dataAiHint: 'game level' }
+        ],
+        testingInstructions: 'Play through the first three levels. We are looking for feedback on game difficulty, control responsiveness, and any performance issues on older devices.'
+    },
+     {
+        id: 3,
+        name: 'Weatherly',
+        icon: 'https://placehold.co/128x128.png',
+        dataAiHint: 'weather app icon',
+        category: 'Utilities',
+        shortDescription: 'Clean, simple, and accurate weather forecasts at your fingertips.',
+        points: 50,
+        androidVersion: '11+',
+        estimatedTime: '5-10 min',
+        playStoreUrl: '#',
+        screenshots: [
+            { url: 'https://placehold.co/400x800.png', alt: 'Screenshot 1', dataAiHint: 'weather forecast' },
+            { url: 'https://placehold.co/400x800.png', alt: 'Screenshot 2', dataAiHint: 'weather details' }
+        ],
+        testingInstructions: 'Check the weather for your current location and at least two other cities. Please verify if the hourly forecast seems accurate and report any UI issues.'
     }
 ];
+
+export const pointsPackages: PointsPackage[] = [
+    {
+        name: "Booster",
+        price: 499,
+        points: 500,
+        description: "Perfect for a quick test cycle for a small app or feature.",
+        features: ["Fund one small project", "Basic bug reports", "Community support"],
+        pricePerPoint: 499 / 500
+    },
+    {
+        name: "Accelerator",
+        price: 1999,
+        points: 2500,
+        description: "Great for medium-sized projects or a few rounds of testing.",
+        features: ["Fund multiple test cycles", "More detailed reports", "Priority in queue"],
+        pricePerPoint: 1999 / 2500
+    },
+    {
+        name: "Launchpad",
+        price: 4999,
+        points: 7500,
+        description: "Ideal for large apps or extensive pre-launch testing.",
+        features: ["Sufficient for major releases", "Highest queue priority", "Dedicated community manager"],
+        pricePerPoint: 4999 / 7500
+    }
+];
+
+export const pricingFaqs: FaqItem[] = [
+    {
+        question: "What can I use points for?",
+        answer: "Points are the currency of inTesters. You use them to 'pay' community members for testing your app. The more points you offer for your project, the more attractive it is to testers, and the faster you'll likely receive feedback."
+    },
+    {
+        question: "Do my purchased points expire?",
+        answer: "No, your points never expire. You can use them whenever you're ready to start a new testing cycle for your app."
+    },
+    {
+        question: "What's the difference between earning and buying points?",
+        answer: "Earning points is free—you contribute your time and skill by testing other apps. Buying points is a shortcut that lets you fund your projects immediately without having to test other apps first. It's perfect for when you're on a tight deadline."
+    },
+    {
+        question: "Can I get a refund on purchased points?",
+        answer: "Points that have not been spent on a testing project are eligible for a refund within 14 days of purchase. Please contact our support team for assistance."
+    }
+]

@@ -3,95 +3,94 @@
 
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
-import { CheckCircle, ArrowRight } from 'lucide-react';
+import { CheckCircle, ArrowRight, Users, Briefcase } from 'lucide-react';
 import { useEffect, useRef, useState } from 'react';
 import { cn } from '@/lib/utils';
-
-const useIntersectionObserver = (options: IntersectionObserverInit) => {
-    const [entry, setEntry] = useState<IntersectionObserverEntry>();
-    const [node, setNode] = useState<HTMLElement | null>(null);
-
-    const observer = useRef<IntersectionObserver | null>(null);
-
-    useEffect(() => {
-        if (observer.current) observer.current.disconnect();
-
-        observer.current = new IntersectionObserver(([entry]) => setEntry(entry), options);
-
-        const { current: currentObserver } = observer;
-
-        if (node) currentObserver.observe(node);
-
-        return () => currentObserver.disconnect();
-    }, [node, options]);
-
-    return [setNode, entry] as const;
-};
-
-const AnimatedDiv = ({ children, className, ...props }: React.HTMLAttributes<HTMLDivElement>) => {
-    const [ref, entry] = useIntersectionObserver({ threshold: 0.1, triggerOnce: true });
-    const isVisible = entry?.isIntersecting;
-
-    return (
-        <div
-            ref={ref}
-            className={cn(
-                'transition-opacity duration-1000',
-                isVisible ? 'opacity-100' : 'opacity-0',
-                className
-            )}
-            {...props}
-        >
-            {children}
-        </div>
-    );
-};
+import { Card, CardDescription, CardFooter, CardHeader, CardTitle } from './ui/card';
+import { Badge } from './ui/badge';
 
 export function TwoPathsSection() {
     return (
-        <section className="py-20 md:py-28 bg-background">
+        <section className="py-20 md:py-28 bg-secondary/30">
             <div className="container mx-auto px-4 md:px-6">
-                <AnimatedDiv className="text-center max-w-3xl mx-auto mb-16">
-                    <h2 className="text-3xl md:text-4xl font-bold">Two Paths to Perfect Testing</h2>
+                <div className="text-center max-w-3xl mx-auto mb-16">
+                    <h2 className="text-3xl md:text-4xl font-bold">Two Paths to Get Your App Tested</h2>
                     <p className="mt-4 text-muted-foreground">
-                        Whether you want to harness the power of community or hire dedicated professionals, we've got you covered.
+                        Whether you want to contribute to a community or need guaranteed professional results, we have a solution that fits your needs.
                     </p>
-                </AnimatedDiv>
-                
-                <div className="grid md:grid-cols-2 gap-8">
-                    {/* Path 1: Community */}
-                    <Link href="/signup" className="group relative block rounded-2xl overflow-hidden shadow-2xl shadow-primary/10">
-                        <div 
-                            className="absolute inset-0 bg-cover bg-center transition-transform duration-500 ease-in-out group-hover:scale-105"
-                            style={{ backgroundImage: "url('https://images.unsplash.com/photo-1556742502-ec7c0e9f34b1?q=80&w=800&auto=format&fit=crop')" }}
-                            data-ai-hint="collaboration interface"
-                        ></div>
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/50 to-transparent"></div>
-                        <div className="relative flex flex-col justify-end h-[500px] p-8 text-white">
-                            <h3 className="text-3xl font-bold mb-2">Test Apps, Earn Points</h3>
-                            <p className="text-white/80 mb-6">Join our reciprocal ecosystem. Test community apps to earn points, then use those points to get your own apps tested for free or redeem them for paid services.</p>
-                             <div className="flex items-center gap-2 text-lg font-semibold text-primary opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                                Join the Community <ArrowRight className="w-5 h-5" />
-                            </div>
-                        </div>
-                    </Link>
+                </div>
 
-                    {/* Path 2: Paid */}
-                    <Link href="/marketplace" className="group relative block rounded-2xl overflow-hidden shadow-2xl shadow-primary/10">
-                        <div 
-                           className="absolute inset-0 bg-cover bg-center transition-transform duration-500 ease-in-out group-hover:scale-105"
-                           style={{ backgroundImage: "url('https://images.unsplash.com/photo-1521791136064-7986c2920216?q=80&w=800&auto=format&fit=crop')" }}
-                           data-ai-hint="professional meeting"
-                        ></div>
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/50 to-transparent"></div>
-                        <div className="relative flex flex-col justify-end h-[500px] p-8 text-white">
-                            <h3 className="text-3xl font-bold mb-2">Hire Vetted Professionals</h3>
-                            <p className="text-white/80 mb-6">Need guaranteed, high-quality results? Browse our marketplace of vetted professional testers and hire them for your critical projects.</p>
-                            <div className="flex items-center gap-2 text-lg font-semibold text-primary opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                                Browse Testers <ArrowRight className="w-5 h-5" />
+                <div className="grid md:grid-cols-2 gap-8 items-stretch">
+                    {/* Path 1: Community */}
+                    <Card className="rounded-2xl border h-full flex flex-col p-6 text-center items-center">
+                        <div className="flex-grow">
+                            <div className="inline-block bg-primary/10 text-primary p-3 rounded-full mb-4">
+                                <Users className="w-8 h-8" />
                             </div>
+                            <CardHeader className="p-0">
+                                <CardTitle className="text-2xl">The Community Path</CardTitle>
+                                <CardDescription className="max-w-xs mx-auto">Test apps, earn points, and get your app tested by the community.</CardDescription>
+                            </CardHeader>
+                            <CardDescription className="text-4xl font-bold text-center my-6">
+                                Free
+                            </CardDescription>
+                            <ul className="space-y-3 text-sm text-muted-foreground text-left">
+                                <li className="flex items-start gap-2">
+                                    <CheckCircle className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
+                                    <span>Reciprocal "give-to-get" model.</span>
+                                </li>
+                                <li className="flex items-start gap-2">
+                                    <CheckCircle className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
+                                    <span>Earn points for testing other apps.</span>
+                                </li>
+                                <li className="flex items-start gap-2">
+                                    <CheckCircle className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
+                                    <span>Access a diverse pool of real users and devices.</span>
+                                </li>
+                            </ul>
                         </div>
-                    </Link>
+                        <CardFooter className='w-full mt-6 p-0'>
+                            <Button asChild className="w-full rounded-xl" variant="outline">
+                                <Link href="/community-dashboard">Explore Community Hub</Link>
+                            </Button>
+                        </CardFooter>
+                    </Card>
+
+                    {/* Path 2: Professional */}
+                    <Card className="rounded-2xl border-2 border-primary shadow-2xl shadow-primary/20 relative h-full flex flex-col p-6 text-center items-center">
+                        <Badge variant="default" className="absolute -top-4 left-1/2 -translate-x-1/2">Recommended</Badge>
+                        <div className="flex-grow">
+                            <div className="inline-block bg-primary/10 text-primary p-3 rounded-full mb-4">
+                                <Briefcase className="w-8 h-8" />
+                            </div>
+                            <CardHeader className="p-0">
+                                <CardTitle className="text-2xl">The Professional Path</CardTitle>
+                                <CardDescription className="max-w-xs mx-auto">Hire our professional testers for guaranteed, high-quality results.</CardDescription>
+                            </CardHeader>
+                            <div className="text-4xl font-bold text-center my-6 text-primary">
+                                Paid
+                            </div>
+                            <ul className="space-y-3 text-sm text-muted-foreground text-left">
+                                <li className="flex items-start gap-2">
+                                    <CheckCircle className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
+                                    <span>Guaranteed testing by vetted professionals.</span>
+                                </li>
+                                <li className="flex items-start gap-2">
+                                    <CheckCircle className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
+                                    <span>Fast-track your launch, no community testing required.</span>
+                                </li>
+                                <li className="flex items-start gap-2">
+                                    <CheckCircle className="w-5 h-5 text-primary flex-shrink-0 mt-0.5" />
+                                    <span>Managed process for hassle-free completion.</span>
+                                </li>
+                            </ul>
+                        </div>
+                        <CardFooter className='w-full mt-6 p-0'>
+                            <Button asChild className="w-full rounded-xl">
+                                <Link href="/pricing">View Point Packages</Link>
+                            </Button>
+                        </CardFooter>
+                    </Card>
                 </div>
             </div>
         </section>

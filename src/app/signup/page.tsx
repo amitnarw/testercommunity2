@@ -2,12 +2,12 @@
 'use client';
 
 import { SignupForm } from '@/components/signup-form';
-import { TestTribeLogo } from '@/components/icons';
+import { InTestersLogo } from '@/components/icons';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { useTheme } from 'next-themes';
 import { Moon, Sun, ArrowLeft } from 'lucide-react';
-import { AnimatedGradient } from '@/components/animated-gradient';
+import { BackgroundBeams } from '@/components/background-beams';
 
 export default function SignupPage() {
     const { setTheme, theme } = useTheme();
@@ -15,9 +15,9 @@ export default function SignupPage() {
   return (
     <div className="min-h-screen w-full lg:grid lg:grid-cols-2">
       <div className="hidden lg:flex flex-col items-center justify-center p-6 text-center relative overflow-hidden bg-background">
-        <AnimatedGradient />
+        <BackgroundBeams />
         <div className="relative z-10 flex flex-col items-center">
-            <TestTribeLogo className="h-20 w-auto mb-4" />
+            <InTestersLogo className="h-20 w-auto mb-4" />
             <h1 className="text-3xl font-bold tracking-tight text-foreground">Join a community of innovators</h1>
             <p className="mt-2 max-w-md mx-auto text-muted-foreground">
                 Whether you're here to test, or have your app tested, you're in the right place.

@@ -1,16 +1,5 @@
 
-import type { LucideIcon } from 'lucide-react';
-
-export type Tester = {
-  id: number;
-  name: string;
-  avatarUrl: string;
-  dataAiHint?: string;
-  skills: string[];
-  reputation: number;
-  rate: number;
-  country: string;
-};
+import type { ReactNode } from 'react';
 
 export type BlogPost = {
   id: number;
@@ -44,8 +33,50 @@ export type RoadmapDetail = {
 
 export type RoadmapStep = {
     step: number;
-    title: string;
+    title:string;
     description: string;
     badgeText: string;
     details: RoadmapDetail[];
 };
+
+export type UserProfileData = {
+    role: string;
+    companySize: string;
+    primaryGoal: string;
+    monthlyBudget: string;
+};
+
+export type PointsPackage = {
+    name: string;
+    price: number;
+    points: number;
+    description: string;
+    features: string[];
+    pricePerPoint?: number;
+};
+
+export type ProcessStep = {
+    title: string;
+    imageUrl: string;
+    dataAiHint: string;
+};
+
+export type CommunityApp = {
+    id: number;
+    name: string;
+    icon: string;
+    dataAiHint?: string;
+    category: string;
+    shortDescription: string;
+    points: number;
+    androidVersion: string;
+    estimatedTime: string;
+    playStoreUrl?: string;
+    screenshots: { url: string; alt: string; dataAiHint?: string }[];
+    testingInstructions: string;
+}
+
+export type FaqItem = {
+    question: string;
+    answer: string;
+}

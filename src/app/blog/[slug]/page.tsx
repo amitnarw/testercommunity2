@@ -1,6 +1,7 @@
+
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
-import { blogPosts } from '@/lib/data';
+import { blogPosts } from '@/lib/data.tsx';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import Link from 'next/link';

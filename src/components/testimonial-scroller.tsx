@@ -1,10 +1,15 @@
 
 'use client';
 
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import type { Testimonial } from '@/lib/types';
-import { cn } from '@/lib/utils';
+import { Quote } from 'lucide-react';
+import { useEffect, useRef } from 'react';
+import { gsap } from 'gsap';
+import { useGSAP } from '@gsap/react';
+
+gsap.registerPlugin(useGSAP);
 
 interface TestimonialCardProps {
   testimonial: Testimonial;
@@ -12,54 +17,72 @@ interface TestimonialCardProps {
 
 function TestimonialCard({ testimonial }: TestimonialCardProps) {
   return (
-    <Card className="flex flex-col justify-between bg-gradient-to-br from-primary/20 to-accent/40 text-foreground rounded-xl w-[350px] mx-4 flex-shrink-0 overflow-hidden">
-        <CardContent className="p-6">
-            <p className="text-muted-foreground">&ldquo;{testimonial.comment}&rdquo;</p>
-        </CardContent>
-        <CardFooter className="bg-background/50 text-foreground p-4">
-             <div className="flex items-center gap-4">
-                <Avatar>
-                    <AvatarImage src={testimonial.avatar} data-ai-hint={testimonial.dataAiHint} />
-                    <AvatarFallback>{testimonial.name.charAt(0)}</AvatarFallback>
-                </Avatar>
-                <div>
-                    <p className="text-base font-bold">{testimonial.name}</p>
-                    <p className="text-sm text-muted-foreground">{testimonial.role}</p>
-                </div>
-            </div>
-        </CardFooter>
+    <Card className="rounded-xl w-[450px] h-[220px] mx-4 flex-shrink-0 overflow-hidden relative p-6 flex items-center bg-gradient-to-b from-primary/5 to-primary/15 border-0">
+      <Quote className="absolute -top-2 -left-2 w-20 h-20 text-primary/10" />
+      <div className="flex-grow pr-4 z-10">
+        <p className="text-sm text-muted-foreground line-clamp-5 mb-4">&ldquo;{testimonial.comment}&rdquo;</p>
+        <p className="text-xs font-semibold">{testimonial.name} <span className="text-muted-foreground font-normal">| {testimonial.role}</span></p>
+      </div>
+      <div className="flex-shrink-0">
+        <Avatar className="w-32 h-32 border-4 border-background shadow-lg">
+          <AvatarImage src={testimonial.avatar} data-ai-hint={testimonial.dataAiHint} className="object-cover" />
+          <AvatarFallback>{testimonial.name.charAt(0)}</AvatarFallback>
+        </Avatar>
+      </div>
     </Card>
   );
 }
 
+const HorizontalLooper = ({ children, speed, reversed = false }: { children: React.ReactNode, speed: number, reversed?: boolean }) => {
+    const mainRef = useRef<HTMLDivElement>(null);
+    const contentRef = useRef<HTMLDivElement>(null);
+
+    useGSAP(() => {
+        if (!mainRef.current || !contentRef.current) return;
+        
+        const contentWidth = contentRef.current.offsetWidth / 2;
+        gsap.set(contentRef.current, { xPercent: -50, x: 0 });
+
+        const tl = gsap.timeline();
+        
+        tl.to(contentRef.current, {
+            x: reversed ? contentWidth : -contentWidth,
+            duration: speed,
+            ease: "linear",
+            repeat: -1,
+        });
+
+    }, { scope: mainRef });
+
+    return (
+        <div className="relative w-full overflow-hidden" ref={mainRef}>
+            <div className="flex" ref={contentRef}>
+                {children}
+                {children}
+            </div>
+        </div>
+    );
+};
 
 interface TestimonialScrollerProps {
     testimonials: Testimonial[];
 }
 
 export function TestimonialScroller({ testimonials }: TestimonialScrollerProps) {
-    const duplicatedTestimonials = [...testimonials, ...testimonials];
+    
+    const cards = testimonials.map((testimonial, index) => (
+        <TestimonialCard key={index} testimonial={testimonial} />
+    ));
     
     return (
-        <div className="w-full overflow-hidden">
+        <div className="w-full">
             <div className="flex flex-col gap-4">
-                {/* Row 1: Left to Right */}
-                <div className="relative w-full overflow-hidden">
-                    <div className="flex animate-scroll-ltr">
-                        {duplicatedTestimonials.map((testimonial, index) => (
-                             <TestimonialCard key={`ltr-${index}`} testimonial={testimonial} />
-                        ))}
-                    </div>
-                </div>
-
-                {/* Row 2: Right to Left */}
-                <div className="relative w-full overflow-hidden">
-                     <div className="flex animate-scroll-rtl">
-                        {duplicatedTestimonials.map((testimonial, index) => (
-                            <TestimonialCard key={`rtl-${index}`} testimonial={testimonial} />
-                        ))}
-                    </div>
-                </div>
+               <HorizontalLooper speed={30} reversed={false}>
+                    {cards}
+                </HorizontalLooper>
+                <HorizontalLooper speed={30} reversed={true}>
+                    {cards}
+                </HorizontalLooper>
             </div>
         </div>
     );

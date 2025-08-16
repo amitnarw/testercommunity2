@@ -15,8 +15,8 @@ export default function TermsPage() {
           <h3 className="text-xl font-semibold text-foreground">Definitions</h3>
           <p>For the purposes of these Terms and Conditions:</p>
           <ul className="list-disc pl-6 space-y-2">
-            <li><strong>Application</strong> means the software program provided by the Company downloaded by You on any electronic device, named TestTribe.</li>
-            <li><strong>Company</strong> (referred to as either "the Company", "We", "Us" or "Our" in this Agreement) refers to TestTribe, Inc.</li>
+            <li><strong>Application</strong> means the software program provided by the Company downloaded by You on any electronic device, named inTesters.</li>
+            <li><strong>Company</strong> (referred to as either "the Company", "We", "Us" or "Our" in this Agreement) refers to inTesters, Inc.</li>
             <li><strong>Country</strong> refers to: Delaware, United States</li>
             <li><strong>Service</strong> refers to the Application.</li>
             <li><strong>Terms and Conditions</strong> (also referred as "Terms") mean these Terms and Conditions that form the entire agreement between You and the Company regarding the use of the Service.</li>
@@ -30,7 +30,7 @@ export default function TermsPage() {
           <p>Your access to and use of the Service is also conditioned on Your acceptance of and compliance with the Privacy Policy of the Company. Our Privacy Policy describes Our policies and procedures on the collection, use and disclosure of Your personal information when You use the Application or the Website and tells You about Your privacy rights and how the law protects You. Please read Our Privacy Policy carefully before using Our Service.</p>
           
           <h2 className="text-2xl font-semibold text-foreground pt-4 mt-4 border-t">Contact Us</h2>
-          <p>If you have any questions about these Terms and Conditions, You can contact us by email at contact@testtribe.com.</p>
+          <p>If you have any questions about these Terms and Conditions, You can contact us by email at contact@inTesters.com.</p>
         </div>
       </div>
     </div>
