@@ -17,7 +17,7 @@ interface TestimonialCardProps {
 
 function TestimonialCard({ testimonial }: TestimonialCardProps) {
   return (
-    <Card className="bg-card rounded-xl w-[450px] h-[220px] mx-4 flex-shrink-0 overflow-hidden relative p-6 flex items-center">
+    <Card className="rounded-xl w-[450px] h-[220px] mx-4 flex-shrink-0 overflow-hidden relative p-6 flex items-center bg-gradient-to-r from-cyan-500 to-blue-500">
       <Quote className="absolute -top-2 -left-2 w-20 h-20 text-primary/10" />
       <div className="flex-grow pr-4 z-10">
         <p className="text-sm text-muted-foreground line-clamp-5 mb-4">&ldquo;{testimonial.comment}&rdquo;</p>
