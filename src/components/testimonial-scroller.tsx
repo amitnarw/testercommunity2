@@ -13,23 +13,23 @@ interface TestimonialCardProps {
 
 function TestimonialCard({ testimonial }: TestimonialCardProps) {
   return (
-    <Card className="flex flex-col justify-between bg-card rounded-xl w-[350px] h-[260px] mx-4 flex-shrink-0 relative overflow-hidden">
-         <Quote className="absolute -top-2 -left-2 w-20 h-20 text-primary/5" />
-        <CardHeader className="z-10">
-            <div className="flex items-center gap-4">
-            <Avatar>
-                <AvatarImage src={testimonial.avatar} data-ai-hint={testimonial.dataAiHint} />
-                <AvatarFallback>{testimonial.name.charAt(0)}</AvatarFallback>
-            </Avatar>
-            <div>
-                <CardTitle className="text-base">{testimonial.name}</CardTitle>
-                <CardDescription>{testimonial.role}</CardDescription>
+    <Card className="flex flex-col justify-between bg-card rounded-xl w-[350px] h-[260px] mx-4 flex-shrink-0 relative overflow-hidden p-6">
+        <Quote className="absolute -top-2 -left-2 w-20 h-20 text-primary/10" />
+        <div className="relative z-10 flex flex-col h-full">
+            <div className="flex-grow flex gap-6">
+                <div className="flex-grow">
+                    <p className="text-muted-foreground">&ldquo;{testimonial.comment}&rdquo;</p>
+                </div>
+                <Avatar className="w-16 h-16 flex-shrink-0 border-2 border-primary/20">
+                    <AvatarImage src={testimonial.avatar} data-ai-hint={testimonial.dataAiHint} />
+                    <AvatarFallback>{testimonial.name.charAt(0)}</AvatarFallback>
+                </Avatar>
             </div>
+            <div className="mt-4">
+                <p className="font-bold">{testimonial.name}</p>
+                <p className="text-sm text-muted-foreground">{testimonial.role}</p>
             </div>
-        </CardHeader>
-        <CardContent className="z-10 flex-grow">
-            <p className="text-muted-foreground">&ldquo;{testimonial.comment}&rdquo;</p>
-        </CardContent>
+        </div>
     </Card>
   );
 }
