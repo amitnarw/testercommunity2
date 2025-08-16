@@ -58,7 +58,6 @@ export default function HowItWorksPage() {
         threshold: 0.5,
         triggerOnce: true,
     });
-     const [activeTab, setActiveTab] = useState('community');
 
     useEffect(() => {
         if (launchpadInView) {
@@ -142,7 +141,7 @@ export default function HowItWorksPage() {
                     }} />
                 </div>
                 <Rocket className="w-16 h-16 text-primary mb-4" />
-                <h2 className="text-4xl md:text-6xl font-bold">You've Reached the <span className="text-primary">Launchpad</span></h2>
+                <h2 className="text-4xl md:text-6xl font-bold">You've Reached the <span className="bg-gradient-to-br from-primary to-accent bg-clip-text text-transparent">Launchpad</span></h2>
                 <p className="mt-6 max-w-2xl mx-auto text-muted-foreground text-xl">
                     Your journey to a flawless app starts now. Choose your path and launch with the confidence of knowing your app is truly ready for the world.
                 </p>

@@ -15,8 +15,8 @@ import { pointsPackages, pricingFaqs } from "@/lib/data";
 const PointsPackageCard = ({ plan, isPopular }: { plan: PointsPackage, isPopular: boolean }) => {
     return (
         <Card className={cn(
-            "flex flex-col rounded-2xl h-full transition-all duration-300 transform hover:-translate-y-2",
-            isPopular ? "border-2 border-primary shadow-2xl shadow-primary/20" : "border-border/50 hover:shadow-xl hover:shadow-primary/10"
+            "flex flex-col rounded-2xl h-full transition-all duration-300",
+            isPopular ? "border-2 border-primary shadow-2xl shadow-primary/20 transform scale-105" : "border-border/50 hover:shadow-xl hover:shadow-primary/10 hover:-translate-y-2"
         )}>
             {isPopular && (
                 <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground px-4 py-1 rounded-full text-sm font-bold flex items-center gap-1">

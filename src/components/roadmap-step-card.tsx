@@ -58,11 +58,11 @@ export function RoadmapStepCard({ step, isPro }: RoadmapStepCardProps) {
                 className="md:col-span-4 lg:col-span-3 flex items-start md:items-center md:justify-center"
             >
                 <span className={cn(
-                    "font-black leading-none",
-                    "text-7xl md:text-[10rem] lg:text-[12rem]",
+                    "font-black leading-none absolute -top-48 -left-20 sm:top-auto sm:left-auto sm:block",
+                    "text-[20rem] lg:text-[20rem]",
                     isPro 
-                        ? "text-transparent bg-clip-text bg-gradient-to-b from-amber-300 to-amber-500" 
-                        : "text-primary/10"
+                        ? "text-transparent bg-clip-text bg-gradient-to-b from-amber-500/10 to-amber-500/0 sm:from-amber-500/20 sm:to-amber-500/20" 
+                        : "text-transparent bg-clip-text bg-gradient-to-b from-primary/10 to-primary/0 sm:from-primary/20 sm:to-primary/20"
                 )}>
                     {step.step}
                 </span>

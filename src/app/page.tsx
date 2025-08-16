@@ -62,12 +62,12 @@ export default function Home() {
                             <p className="text-sm sm:text-base md:text-lg font-body max-w-sm sm:max-w-md md:max-w-lg lg:max-w-[700px] mx-auto mb-8 sm:mb-9 md:mb-10 lg:mb-12 text-muted-foreground">
                             Get 12+ real testers and meet Google Play’s 14 day rule, fast. Use free community testing or go pro with points. Submit, track, and launch, all in one place.
                             </p>
-                            <div className="mt-8 flex flex-col sm:flex-row justify-center gap-4">
-                                <Button asChild size="lg" variant="premium" className="group text-base px-8 py-6 rounded-full">
+                            <div className="mt-10">
+                                <Button asChild size="lg" variant="premium" className="group text-base pr-3 py-6 rounded-full">
                                     <Link href="/signup">
                                         <span className="relative z-10 font-bold">Submit Your App Now</span>
-                                        <div className="relative inline-flex items-center justify-center w-8 h-8 rounded-full bg-primary-foreground/20 group-hover:bg-white transition-all duration-300 group-hover:scale-[2.5] ml-auto">
-                                            <ArrowRight className="w-4 h-4 text-primary-foreground group-hover:text-black transition-colors duration-300" />
+                                        <div className="relative inline-flex items-center justify-center w-8 h-8 rounded-full bg-primary-foreground/20 group-hover:bg-black dark:group-hover:bg-white transition-all duration-500 group-hover:scale-[2] ml-8">
+                                            <ArrowRight className="w-4 h-4 text-primary-foreground group-hover:text-white dark:group-hover:text-black transition-colors duration-300" />
                                         </div>
                                     </Link>
                                 </Button>
