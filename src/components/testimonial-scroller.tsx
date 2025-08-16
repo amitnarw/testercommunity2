@@ -13,7 +13,7 @@ interface TestimonialCardProps {
 
 function TestimonialCard({ testimonial }: TestimonialCardProps) {
   return (
-    <Card className="flex flex-col justify-between bg-card rounded-xl w-[300px] mx-4 flex-shrink-0 relative overflow-hidden h-full">
+    <Card className="flex flex-col justify-between bg-card rounded-xl w-[350px] h-[260px] mx-4 flex-shrink-0 relative overflow-hidden">
          <Quote className="absolute -top-2 -left-2 w-20 h-20 text-primary/5" />
         <CardHeader className="z-10">
             <div className="flex items-center gap-4">

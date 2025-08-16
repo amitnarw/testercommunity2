@@ -50,9 +50,9 @@ export default function Home() {
                     <div className="container mx-auto px-4 md:px-6 text-center relative z-10">
                         <div className="max-w-4xl mx-auto">
                             <HoverBorderGradient
-                                containerClassName="rounded-full"
+                                containerClassName="rounded-full m-auto mb-5"
                                 as="button"
-                                className="dark:bg-black bg-white text-black dark:text-white flex items-center space-x-2"
+                                className="dark:bg-black bg-white text-black dark:text-white flex items-center text-sm"
                             >
                                 <span>Meet Google's 12-Tester Requirement.</span>
                             </HoverBorderGradient>
