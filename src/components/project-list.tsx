@@ -21,22 +21,18 @@ const getStatusConfig = (status: string) => {
     switch (status) {
         case "In Testing":
             return {
-                icon: <Timer className="text-destructive" />,
                 badgeVariant: "destructive",
             };
         case "Completed":
             return {
-                icon: <CheckCircle className="text-green-500" />,
                 badgeVariant: "secondary",
             };
         case "Archived":
              return {
-                icon: <FolderArchive className="text-muted-foreground" />,
                 badgeVariant: "outline",
             };
         default:
             return {
-                icon: <Timer className="text-muted-foreground" />,
                 badgeVariant: "secondary",
             };
     }
@@ -55,9 +51,9 @@ export function ProjectList() {
                 const statusConfig = getStatusConfig(project.status);
                 return (
                     <Link href="#" key={project.name} className="group block h-full">
-                        <div className="rounded-2xl overflow-hidden bg-background border hover:border-primary/50 transition-all duration-300 transform hover:-translate-y-1 hover:shadow-2xl hover:shadow-primary/20 h-full flex flex-col relative">
-                           <div className="absolute top-0 right-0 h-12 w-12 bg-primary rounded-bl-2xl flex items-center justify-center">
-                                <ArrowRight className="h-5 w-5 text-primary-foreground" />
+                        <div className="rounded-2xl overflow-hidden bg-background border-0 hover:bg-secondary/50 transition-all duration-300 transform hover:-translate-y-1 hover:shadow-lg h-full flex flex-col relative">
+                           <div className="absolute top-4 right-4 h-10 w-10 bg-primary/20 rounded-full flex items-center justify-center">
+                                <ArrowRight className="h-5 w-5 text-primary" />
                             </div>
                             <CardHeader className="flex flex-row items-start justify-between gap-4 p-5">
                                 <div className="flex items-center gap-4">
@@ -65,43 +61,21 @@ export function ProjectList() {
                                     <div>
                                         <CardTitle className="text-base">{project.name}</CardTitle>
                                         <div className="flex items-center gap-1.5 mt-1">
-                                            {statusConfig.icon}
                                             <Badge variant={statusConfig.badgeVariant as any} className="text-xs">{project.status}</Badge>
                                         </div>
                                     </div>
                                 </div>
                             </CardHeader>
                             <CardContent className="p-5 pt-0 space-y-5 flex-grow">
-                                <div className="space-y-3">
-                                    <div className="flex justify-between items-center text-sm">
-                                        <div className="flex items-center gap-3">
-                                            <div className="flex -space-x-2 overflow-hidden">
-                                                {project.testers.slice(0, 3).map((tester, index) => (
-                                                    <Avatar key={index} className="h-6 w-6 border-2 border-background">
-                                                        <AvatarImage src={tester.avatarUrl} data-ai-hint={tester.dataAiHint}/>
-                                                        <AvatarFallback>{tester.name.charAt(0)}</AvatarFallback>
-                                                    </Avatar>
-                                                ))}
-                                            </div>
-                                            <span className="text-xs text-muted-foreground">{project.testers.length} testers</span>
-                                        </div>
-                                        <div className="flex items-center gap-2">
-                                            <FileText className="h-4 w-4 text-muted-foreground" />
-                                            <span className="text-xs font-medium">{project.reports} reports</span>
-                                        </div>
-                                    </div>
-                                </div>
-
                                 <Separator />
-                                
                                 <div className="grid grid-cols-2 gap-4 text-center">
-                                    <div className="bg-secondary/50 rounded-lg p-2">
-                                        <p className="text-xs text-muted-foreground">Crash Rate</p>
-                                        <p className="text-lg font-bold">{project.crashRate}%</p>
+                                    <div className="bg-secondary/50 rounded-lg p-3">
+                                        <p className="text-xs text-muted-foreground">Testers</p>
+                                        <p className="text-xl font-bold">{project.testerCount}</p>
                                     </div>
-                                    <div className="bg-secondary/50 rounded-lg p-2">
-                                        <p className="text-xs text-muted-foreground">Top Bug</p>
-                                        <p className="text-base font-semibold truncate">{project.topBugCategory}</p>
+                                    <div className="bg-secondary/50 rounded-lg p-3">
+                                        <p className="text-xs text-muted-foreground">Reports</p>
+                                        <p className="text-xl font-bold">{project.reports}</p>
                                     </div>
                                 </div>
                             </CardContent>

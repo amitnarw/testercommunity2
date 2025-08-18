@@ -484,15 +484,7 @@ export const projects: Project[] = [
       dataAiHint: "phoenix bird",
       status: "In Testing",
       reports: 42,
-      timeline: { progress: 40, daysLeft: 8 },
-      crashRate: 1.5,
-      topBugCategory: "UI/UX",
-      testers: [
-        { name: "A", avatarUrl: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=100&auto=format=fit=crop", dataAiHint: 'woman portrait' },
-        { name: "B", avatarUrl: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=100&auto=format=fit=crop", dataAiHint: 'man portrait' },
-        { name: "C", avatarUrl: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=100&auto=format=fit=crop", dataAiHint: 'person glasses' },
-        { name: "D", avatarUrl: "https://images.unsplash.com/photo-1580489944761-15a19d654956?q=80&w=100&auto=format=fit=crop", dataAiHint: 'woman smiling' },
-      ],
+      testerCount: 14,
     },
     {
       name: "SocialConnect App",
@@ -500,13 +492,7 @@ export const projects: Project[] = [
       dataAiHint: "social media",
       status: "In Testing",
       reports: 15,
-      timeline: { progress: 80, daysLeft: 3 },
-      crashRate: 0.2,
-      topBugCategory: "Performance",
-      testers: [
-        { name: "E", avatarUrl: "https://images.unsplash.com/photo-1517841905240-472988babdf9?q=80&w=100&auto=format=fit=crop", dataAiHint: 'woman tech' },
-        { name: "F", avatarUrl: "https://images.unsplash.com/photo-1527982987257-d3abc440f2ba?q=80&w=100&auto=format=fit=crop", dataAiHint: 'man smiling' },
-      ],
+      testerCount: 12,
     },
     {
       name: "E-commerce Platform",
@@ -514,12 +500,7 @@ export const projects: Project[] = [
       dataAiHint: "shopping cart",
       status: "Completed",
       reports: 128,
-      timeline: { progress: 100, daysLeft: 0 },
-      crashRate: 0.1,
-      topBugCategory: "Functional",
-      testers: [
-        { name: "G", avatarUrl: "https://images.unsplash.com/photo-1564564321837-a57b7070ac4f?q=80&w=100&auto=format=fit=crop", dataAiHint: 'man stylish' },
-      ],
+      testerCount: 20,
     },
     {
       name: "HealthTracker API",
@@ -527,10 +508,7 @@ export const projects: Project[] = [
       dataAiHint: "heartbeat chart",
       status: "Completed",
       reports: 76,
-      timeline: { progress: 100, daysLeft: 0 },
-      crashRate: 0.0,
-      topBugCategory: "Security",
-      testers: [],
+      testerCount: 15,
     },
       {
       name: "IndieGame 'Starlight'",
@@ -538,9 +516,6 @@ export const projects: Project[] = [
       dataAiHint: "pixel art star",
       status: "Archived",
       reports: 210,
-      timeline: { progress: 100, daysLeft: 0 },
-      crashRate: 3.2,
-      topBugCategory: "Compatibility",
-      testers: [],
+      testerCount: 25,
     },
   ]

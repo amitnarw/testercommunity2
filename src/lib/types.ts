@@ -99,15 +99,5 @@ export type Project = {
   dataAiHint?: string;
   status: "In Testing" | "Completed" | "Archived";
   reports: number;
-  timeline: {
-    progress: number;
-    daysLeft: number;
-  };
-  crashRate: number;
-  topBugCategory: string;
-  testers: {
-    name: string;
-    avatarUrl: string;
-    dataAiHint?: string;
-  }[];
+  testerCount: number;
 }
