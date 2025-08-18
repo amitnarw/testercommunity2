@@ -1,19 +1,17 @@
 
 import {
-  Table,
-  TableBody,
-  TableCaption,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./ui/card"
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card"
 import { Badge } from "./ui/badge";
-import { cn } from "@/lib/utils";
 import Image from "next/image";
-import { MoreVertical } from "lucide-react";
+import { MoreVertical, FileText } from "lucide-react";
 import { Button } from "./ui/button";
+import Link from "next/link";
 
 const projects = [
   {
@@ -60,43 +58,35 @@ export function ProjectList() {
             <CardTitle>Your Projects</CardTitle>
             <CardDescription>An overview of your apps currently being tested or completed.</CardDescription>
         </CardHeader>
-        <CardContent>
-            <Table>
-                <TableHeader>
-                    <TableRow>
-                    <TableHead className="w-[300px]">App</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead>Reports</TableHead>
-                    <TableHead className="text-right">Actions</TableHead>
-                    </TableRow>
-                </TableHeader>
-                <TableBody>
-                    {projects.map((project) => (
-                    <TableRow key={project.name}>
-                        <TableCell className="font-medium">
-                            <div className="flex items-center gap-3">
-                                <Image src={project.icon} alt={project.name} width={40} height={40} className="rounded-md" data-ai-hint={project.dataAiHint} />
-                                <span>{project.name}</span>
-                            </div>
-                        </TableCell>
-                        <TableCell>
-                            <Badge variant={project.status === "In Testing" ? "destructive" : "secondary"}>
-                                {project.status}
-                            </Badge>
-                        </TableCell>
-                        <TableCell>{project.reports}</TableCell>
-                        <TableCell className="text-right">
-                           <Button variant="ghost" size="icon">
-                                <MoreVertical className="h-4 w-4" />
-                            </Button>
-                        </TableCell>
-                    </TableRow>
-                    ))}
-                </TableBody>
-            </Table>
-      </CardContent>
+        <CardContent className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {projects.map((project) => (
+                <Card key={project.name} className="flex flex-col overflow-hidden rounded-xl transition-all duration-300 hover:shadow-primary/20 hover:-translate-y-1">
+                    <CardHeader className="flex flex-row items-start justify-between gap-4 p-4">
+                        <div className="flex items-center gap-4">
+                             <Image src={project.icon} alt={project.name} width={48} height={48} className="rounded-lg border" data-ai-hint={project.dataAiHint} />
+                             <div>
+                                <CardTitle className="text-base">{project.name}</CardTitle>
+                                <Badge variant={project.status === "In Testing" ? "destructive" : "secondary"} className="mt-1">{project.status}</Badge>
+                             </div>
+                        </div>
+                        <Button variant="ghost" size="icon" className="flex-shrink-0">
+                            <MoreVertical className="h-4 w-4" />
+                        </Button>
+                    </CardHeader>
+                    <CardContent className="flex-grow p-4 pt-0">
+                        <div className="flex items-center gap-2 text-sm text-muted-foreground p-3 bg-secondary/50 rounded-lg">
+                            <FileText className="h-4 w-4" />
+                            <span>{project.reports} reports received</span>
+                        </div>
+                    </CardContent>
+                    <CardFooter className="bg-secondary/30 p-2">
+                        <Button variant="ghost" className="w-full h-auto py-2" asChild>
+                            <Link href="#">View Details</Link>
+                        </Button>
+                    </CardFooter>
+                </Card>
+            ))}
+        </CardContent>
     </Card>
   )
 }
-
-    
