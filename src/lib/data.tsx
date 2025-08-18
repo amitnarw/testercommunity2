@@ -296,6 +296,96 @@ export const communityApps: CommunityApp[] = [
         ],
         testingInstructions: 'Check the weather for your current location and at least two other cities. Please verify if the hourly forecast seems accurate and report any UI issues.',
         status: 'available',
+    },
+    {
+        id: 4,
+        name: 'Connect Social',
+        icon: 'https://placehold.co/128x128.png',
+        dataAiHint: 'social network',
+        category: 'Social',
+        shortDescription: 'A new way to connect with friends and share your life moments.',
+        points: 120,
+        androidVersion: '11+',
+        estimatedTime: '25-35 min',
+        playStoreUrl: '#',
+        screenshots: [
+            { url: 'https://placehold.co/400x800.png', alt: 'Screenshot 1', dataAiHint: 'social feed' },
+            { url: 'https://placehold.co/400x800.png', alt: 'Screenshot 2', dataAiHint: 'user profile' }
+        ],
+        testingInstructions: 'Test the photo upload and sharing functionality. Try adding filters and tagging friends. Report any crashes or slow performance.',
+        status: 'available',
+    },
+    {
+        id: 5,
+        name: 'Galaxy Runner',
+        icon: 'https://placehold.co/128x128.png',
+        dataAiHint: 'space game',
+        category: 'Games',
+        shortDescription: 'An endless runner game set in the depths of space. Dodge asteroids and collect power-ups!',
+        points: 80,
+        androidVersion: '8+',
+        estimatedTime: '10-15 min',
+        playStoreUrl: '#',
+        screenshots: [
+            { url: 'https://placehold.co/800x400.png', alt: 'Screenshot 1', dataAiHint: 'space background' },
+            { url: 'https://placehold.co/800x400.png', alt: 'Screenshot 2', dataAiHint: 'spaceship character' }
+        ],
+        testingInstructions: 'Play the game for at least 10 minutes. We are looking for feedback on the new power-ups and overall game balance.',
+        status: 'available',
+    },
+    {
+        id: 6,
+        name: 'TaskMaster Pro',
+        icon: 'https://placehold.co/128x128.png',
+        dataAiHint: 'to-do list',
+        category: 'Productivity',
+        shortDescription: 'Organize your life with the most powerful to-do list and project manager.',
+        points: 150,
+        androidVersion: '12+',
+        estimatedTime: '20-25 min',
+        playStoreUrl: '#',
+        screenshots: [
+            { url: 'https://placehold.co/400x800.png', alt: 'Screenshot 1', dataAiHint: 'task list' },
+            { url: 'https://placehold.co/400x800.png', alt: 'Screenshot 2', dataAiHint: 'project board' }
+        ],
+        testingInstructions: 'Create a new project, add at least 5 tasks with sub-tasks, and assign due dates. Check if reminders are working correctly.',
+        status: 'available',
+    },
+    {
+        id: 7,
+        name: 'Unit Converter Ultimate',
+        icon: 'https://placehold.co/128x128.png',
+        dataAiHint: 'ruler calculator',
+        category: 'Utilities',
+        shortDescription: 'A comprehensive unit converter for all your needs, from currency to cooking.',
+        points: 40,
+        androidVersion: '7+',
+        estimatedTime: '5-10 min',
+        playStoreUrl: '#',
+        screenshots: [
+            { url: 'https://placehold.co/400x800.png', alt: 'Screenshot 1', dataAiHint: 'conversion screen' },
+            { url: 'https://placehold.co/400x800.png', alt: 'Screenshot 2', dataAiHint: 'currency exchange' }
+        ],
+        testingInstructions: 'Test at least 5 different unit conversions, including currency. Verify the accuracy of the conversions.',
+        status: 'available',
+    },
+    {
+        id: 8,
+        name: 'Karaoke King',
+        icon: 'https://placehold.co/128x128.png',
+        dataAiHint: 'microphone icon',
+        category: 'Social',
+        shortDescription: 'Sing your heart out and share your performances with the world.',
+        points: 90,
+        androidVersion: '10+',
+        estimatedTime: '15-20 min',
+        playStoreUrl: '#',
+        screenshots: [
+            { url: 'https://placehold.co/400x800.png', alt: 'Screenshot 1', dataAiHint: 'song list' },
+            { url: 'https://placehold.co/400x800.png', alt: 'Screenshot 2', dataAiHint: 'recording screen' }
+        ],
+        testingInstructions: 'Record one song and apply a voice effect. Share it to the feed and check if it plays back correctly for others.',
+        status: 'available',
     }
 ];
 
