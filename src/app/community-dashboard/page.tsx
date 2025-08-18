@@ -10,14 +10,17 @@ import { communityApps } from '@/lib/data';
 import { PointsSidebar } from '@/components/points-sidebar';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { CommunityAvailableAppCard } from '@/components/community-available-app-card';
+import { CommunityOngoingAppCard } from '@/components/community-ongoing-app-card';
+import { CommunityCompletedAppCard } from '@/components/community-completed-app-card';
 
 
 export default function CommunityDashboardPage() {
     const [filter, setFilter] = useState('All');
     const [sort, setSort] = useState('Most Recent');
 
-    const ongoingApps = communityApps.slice(0, 1);
-    const completedApps = communityApps.slice(1, 2);
+    const ongoingApps = communityApps.filter(app => app.status === 'ongoing');
+    const completedApps = communityApps.filter(app => app.status === 'completed');
+    const availableApps = communityApps.filter(app => app.status === 'available');
 
     return (
         <div className="bg-secondary/50 min-h-screen">
@@ -101,7 +104,7 @@ export default function CommunityDashboardPage() {
                                 </div>
                                 <TabsContent value="available">
                                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                                        {communityApps.map(app => (
+                                        {availableApps.map(app => (
                                             <CommunityAvailableAppCard key={app.id} app={app} />
                                         ))}
                                     </div>
@@ -110,7 +113,7 @@ export default function CommunityDashboardPage() {
                                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                                         {ongoingApps.length > 0 ? (
                                             ongoingApps.map(app => (
-                                                <CommunityAvailableAppCard key={app.id} app={app} />
+                                                <CommunityOngoingAppCard key={app.id} app={app} />
                                             ))
                                         ) : (
                                             <div className="text-center py-12 text-muted-foreground col-span-full">You have no ongoing tests.</div>
@@ -121,7 +124,7 @@ export default function CommunityDashboardPage() {
                                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                                         {completedApps.length > 0 ? (
                                             completedApps.map(app => (
-                                                <CommunityAvailableAppCard key={app.id} app={app} />
+                                                <CommunityCompletedAppCard key={app.id} app={app} />
                                             ))
                                         ) : (
                                              <div className="text-center py-12 text-muted-foreground col-span-full">You have not completed any tests yet.</div>

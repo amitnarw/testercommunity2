@@ -256,7 +256,9 @@ export const communityApps: CommunityApp[] = [
             { url: 'https://placehold.co/400x800.png', alt: 'Screenshot 1', dataAiHint: 'app screenshot' },
             { url: 'https://placehold.co/400x800.png', alt: 'Screenshot 2', dataAiHint: 'app interface' }
         ],
-        testingInstructions: 'Please focus on the new budgeting feature. Try creating a monthly budget, adding several expenses, and see if the summary view is correct. Check for any visual glitches or crashes.'
+        testingInstructions: 'Please focus on the new budgeting feature. Try creating a monthly budget, adding several expenses, and see if the summary view is correct. Check for any visual glitches or crashes.',
+        status: 'ongoing',
+        progress: 60,
     },
     {
         id: 2,
@@ -273,7 +275,9 @@ export const communityApps: CommunityApp[] = [
             { url: 'https://placehold.co/800x400.png', alt: 'Screenshot 1', dataAiHint: 'gameplay screenshot' },
             { url: 'https://placehold.co/800x400.png', alt: 'Screenshot 2', dataAiHint: 'game level' }
         ],
-        testingInstructions: 'Play through the first three levels. We are looking for feedback on game difficulty, control responsiveness, and any performance issues on older devices.'
+        testingInstructions: 'Play through the first three levels. We are looking for feedback on game difficulty, control responsiveness, and any performance issues on older devices.',
+        status: 'completed',
+        completedDate: '2024-05-28',
     },
      {
         id: 3,
@@ -290,7 +294,8 @@ export const communityApps: CommunityApp[] = [
             { url: 'https://placehold.co/400x800.png', alt: 'Screenshot 1', dataAiHint: 'weather forecast' },
             { url: 'https://placehold.co/400x800.png', alt: 'Screenshot 2', dataAiHint: 'weather details' }
         ],
-        testingInstructions: 'Check the weather for your current location and at least two other cities. Please verify if the hourly forecast seems accurate and report any UI issues.'
+        testingInstructions: 'Check the weather for your current location and at least two other cities. Please verify if the hourly forecast seems accurate and report any UI issues.',
+        status: 'available',
     }
 ];
 

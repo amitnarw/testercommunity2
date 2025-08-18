@@ -74,6 +74,9 @@ export type CommunityApp = {
     playStoreUrl?: string;
     screenshots: { url: string; alt: string; dataAiHint?: string }[];
     testingInstructions: string;
+    status: 'available' | 'ongoing' | 'completed';
+    progress?: number;
+    completedDate?: string;
 }
 
 export type FaqItem = {
