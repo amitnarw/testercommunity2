@@ -33,7 +33,7 @@ export default function RootLayout({
   }, [pathname]); // Re-check on path change
 
   const isAuthPage = pathname === '/login' || pathname === '/signup';
-  const isDashboardPage = isAuthenticated && (pathname.startsWith('/dashboard') || pathname.startsWith('/community-dashboard') || pathname.startsWith('/profile'));
+  const isDashboardPage = isAuthenticated && (pathname.startsWith('/dashboard') || pathname.startsWith('/community-dashboard') || pathname.startsWith('/profile') || pathname.startsWith('/notifications'));
 
   const handleLogout = () => {
     localStorage.removeItem('isAuthenticated');
@@ -63,6 +63,7 @@ export default function RootLayout({
                 setCollapsed={setIsSidebarCollapsed}
                 isMobileOpen={isMobileMenuOpen}
                 setMobileOpen={setIsMobileMenuOpen}
+                onLogout={handleLogout}
               />
             )}
              {isDashboardPage && isMobileMenuOpen && (
