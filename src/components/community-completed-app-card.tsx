@@ -3,7 +3,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Star } from 'lucide-react';
+import { Smartphone, Star } from 'lucide-react';
 import type { CommunityApp } from '@/lib/types';
 
 interface CommunityCompletedAppCardProps {
@@ -14,8 +14,8 @@ export function CommunityCompletedAppCard({ app }: CommunityCompletedAppCardProp
     return (
         <Link href={`/community-dashboard/test/${app.id}/completed`} className="group block">
             <Card className="flex flex-col h-full overflow-hidden rounded-xl transition-all duration-300 group-hover:shadow-primary/20 group-hover:-translate-y-1 bg-secondary/30">
-                 <CardContent className="p-4 flex-grow">
-                     <div className="flex items-start gap-4">
+                 <CardContent className="p-4 flex-grow flex flex-col">
+                     <div className="flex items-start gap-4 mb-4">
                         <Image 
                             src={app.icon} 
                             alt={app.name} 
@@ -24,16 +24,20 @@ export function CommunityCompletedAppCard({ app }: CommunityCompletedAppCardProp
                             className="rounded-lg border" 
                             data-ai-hint={app.dataAiHint} 
                         />
-                        <div className="flex-grow">
-                             <div className="flex justify-between items-start">
-                                <h3 className="text-lg font-bold transition-colors">{app.name}</h3>
-                                <Badge variant="secondary">{app.category}</Badge>
+                        <div className="flex-grow text-right">
+                             <Badge variant="secondary">{app.category}</Badge>
+                             <div className="flex items-center justify-end gap-1.5 text-xs text-muted-foreground mt-2">
+                                <Smartphone className="w-3 h-3"/>
+                                <span>Android {app.androidVersion}</span>
                             </div>
-                            <p className="text-sm text-muted-foreground mt-1 h-10 line-clamp-2">{app.shortDescription}</p>
                         </div>
                     </div>
+                    <div className='flex-grow'>
+                        <h3 className="text-lg font-bold transition-colors">{app.name}</h3>
+                        <p className="text-sm text-muted-foreground mt-1 h-10 line-clamp-2">{app.shortDescription}</p>
+                    </div>
                 </CardContent>
-                <CardFooter className="flex-col items-start gap-3 p-4 pt-0">
+                <CardFooter className="flex-col items-start gap-3 p-4 pt-0 mt-4">
                     <div className='w-full p-3 bg-background/50 rounded-lg'>
                         <div className="flex justify-between items-center text-sm text-muted-foreground">
                             <span>Points Claimed</span>
