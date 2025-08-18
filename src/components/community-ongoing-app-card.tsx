@@ -19,8 +19,8 @@ export function CommunityOngoingAppCard({ app }: CommunityOngoingAppCardProps) {
                         src={app.icon} 
                         alt={app.name} 
                         layout="fill"
-                        objectFit="cover"
-                        className="group-hover:scale-110 transition-transform duration-300" 
+                        objectFit="contain"
+                        className="group-hover:scale-110 transition-transform duration-300 p-4" 
                         data-ai-hint={app.dataAiHint} 
                     />
                     <Badge variant="secondary" className="absolute top-3 right-3 z-10">{app.category}</Badge>
