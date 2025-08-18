@@ -284,4 +284,5 @@ export default function CommunityDashboardPage() {
                 </div>
             </div>
         </div>
-    
+    )
+}
