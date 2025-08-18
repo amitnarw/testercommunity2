@@ -22,6 +22,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 import { useState } from 'react';
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from '@/components/ui/pagination';
+import type { ProjectFeedback } from '@/lib/types';
 
 const FEEDBACK_PER_PAGE = 10;
 
@@ -60,6 +61,8 @@ const getSeverityBadge = (severity: string) => {
 
 export default function ProjectDetailsPage({ params }: { params: { id: string } }) {
   const [feedbackPage, setFeedbackPage] = useState(1);
+  const [activeTab, setActiveTab] = useState('all');
+
   const project = projects.find(p => p.id.toString() === params.id);
 
   if (!project) {
@@ -69,15 +72,25 @@ export default function ProjectDetailsPage({ params }: { params: { id: string } 
   const statusConfig = getStatusConfig(project.status);
   const totalTesters = project.deviceCoverage.reduce((acc, dev) => acc + dev.testers, 0);
 
-  const totalFeedbackPages = Math.ceil(project.feedback.length / FEEDBACK_PER_PAGE);
+  const filteredFeedback = project.feedback.filter(fb => {
+    if (activeTab === 'all') return true;
+    return fb.type.toLowerCase() === activeTab;
+  });
+
+  const totalFeedbackPages = Math.ceil(filteredFeedback.length / FEEDBACK_PER_PAGE);
   const feedbackStartIndex = (feedbackPage - 1) * FEEDBACK_PER_PAGE;
   const feedbackEndIndex = feedbackStartIndex + FEEDBACK_PER_PAGE;
-  const currentFeedback = project.feedback.slice(feedbackStartIndex, feedbackEndIndex);
+  const currentFeedback = filteredFeedback.slice(feedbackStartIndex, feedbackEndIndex);
 
   const handleFeedbackPageChange = (page: number) => {
     if (page < 1 || page > totalFeedbackPages) return;
     setFeedbackPage(page);
   };
+
+  const handleTabChange = (tab: string) => {
+    setActiveTab(tab);
+    setFeedbackPage(1); // Reset to first page on tab change
+  }
 
   return (
     <div className="bg-secondary/50 min-h-screen">
@@ -102,8 +115,8 @@ export default function ProjectDetailsPage({ params }: { params: { id: string } 
                 </div>
             </header>
 
-            <main className="max-w-7xl mx-auto">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-8">
+            <main className="max-w-7xl mx-auto space-y-8">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                      <Card>
                         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                             <CardTitle className="text-sm font-medium">Stability</CardTitle>
@@ -146,20 +159,21 @@ export default function ProjectDetailsPage({ params }: { params: { id: string } 
                     </Card>
                 </div>
 
-                <Tabs defaultValue="feedback">
-                    <TabsList className="grid w-full grid-cols-3 max-w-md mx-auto mb-8">
-                        <TabsTrigger value="feedback">Feedback Log</TabsTrigger>
-                        <TabsTrigger value="analytics">Performance Analytics</TabsTrigger>
-                        <TabsTrigger value="demographics">Tester Demographics</TabsTrigger>
-                    </TabsList>
-                    <TabsContent value="feedback">
-                        <Card>
-                            <CardHeader>
-                                <CardTitle>Detailed Feedback Log</CardTitle>
-                                <CardDescription>All feedback submitted by testers for this project.</CardDescription>
-                            </CardHeader>
-                            <CardContent>
-                                <Table>
+                <Card>
+                    <CardHeader>
+                        <CardTitle>Detailed Feedback Log</CardTitle>
+                        <CardDescription>All feedback submitted by testers for this project.</CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                        <Tabs defaultValue="all" onValueChange={handleTabChange} className="w-full">
+                            <TabsList>
+                                <TabsTrigger value="all">All ({project.feedback.length})</TabsTrigger>
+                                <TabsTrigger value="bug">Bugs ({project.feedback.filter(fb => fb.type === 'Bug').length})</TabsTrigger>
+                                <TabsTrigger value="suggestion">Suggestions ({project.feedback.filter(fb => fb.type === 'Suggestion').length})</TabsTrigger>
+                                <TabsTrigger value="praise">Praise ({project.feedback.filter(fb => fb.type === 'Praise').length})</TabsTrigger>
+                            </TabsList>
+                            <TabsContent value={activeTab} className="mt-4">
+                                 <Table>
                                     <TableHeader>
                                         <TableRow>
                                             <TableHead className="w-[120px]">Type</TableHead>
@@ -171,7 +185,7 @@ export default function ProjectDetailsPage({ params }: { params: { id: string } 
                                         </TableRow>
                                     </TableHeader>
                                     <TableBody>
-                                        {currentFeedback.map(fb => (
+                                        {currentFeedback.length > 0 ? currentFeedback.map(fb => (
                                             <TableRow key={fb.id}>
                                                 <TableCell className="font-medium flex items-center gap-2">
                                                     {getFeedbackIcon(fb.type)}
@@ -185,7 +199,13 @@ export default function ProjectDetailsPage({ params }: { params: { id: string } 
                                                 <TableCell>{fb.tester}</TableCell>
                                                 <TableCell className="text-right text-muted-foreground">{fb.date}</TableCell>
                                             </TableRow>
-                                        ))}
+                                        )) : (
+                                            <TableRow>
+                                                <TableCell colSpan={6} className="text-center h-24 text-muted-foreground">
+                                                    No {activeTab !== 'all' ? activeTab : ''} feedback yet.
+                                                </TableCell>
+                                            </TableRow>
+                                        )}
                                     </TableBody>
                                 </Table>
 
@@ -220,82 +240,82 @@ export default function ProjectDetailsPage({ params }: { params: { id: string } 
                                         </PaginationContent>
                                     </Pagination>
                                 )}
-                            </CardContent>
-                        </Card>
-                    </TabsContent>
-                     <TabsContent value="analytics">
-                        <Card>
-                             <CardHeader>
-                                <CardTitle>Bug Report Trend</CardTitle>
-                                <CardDescription>Number of new bugs reported over the 14-day test cycle.</CardDescription>
-                            </CardHeader>
-                            <CardContent className="h-[400px] w-full">
-                               <ResponsiveContainer width="100%" height="100%">
-                                    <LineChart data={project.chartData} margin={{ top: 5, right: 20, left: -10, bottom: 5 }}>
-                                        <CartesianGrid strokeDasharray="3 3" />
-                                        <XAxis dataKey="date" />
-                                        <YAxis />
-                                        <Tooltip />
-                                        <Line type="monotone" dataKey="bugs" stroke="hsl(var(--primary))" strokeWidth={2} activeDot={{ r: 8 }} />
-                                    </LineChart>
-                                </ResponsiveContainer>
-                            </CardContent>
-                        </Card>
-                    </TabsContent>
-                     <TabsContent value="demographics">
-                        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
-                            <Card className="lg:col-span-1">
-                                <CardHeader>
-                                    <CardTitle className="flex items-center gap-2"><Smartphone className="w-5 h-5"/> Device Coverage</CardTitle>
-                                </CardHeader>
-                                <CardContent className="space-y-4">
-                                {project.deviceCoverage.map(device => (
-                                    <div key={device.device}>
-                                        <div className="flex justify-between items-center mb-1">
-                                            <span className="text-sm font-medium">{device.device}</span>
-                                            <span className="text-sm text-muted-foreground">{device.testers} Testers</span>
-                                        </div>
-                                        <Progress value={(device.testers / totalTesters) * 100} />
-                                    </div>
-                                ))}
-                                </CardContent>
-                            </Card>
-                            <Card className="lg:col-span-1">
-                                <CardHeader>
-                                    <CardTitle className="flex items-center gap-2"><BarChart className="w-5 h-5"/> OS Version Coverage</CardTitle>
-                                </CardHeader>
-                                <CardContent className="space-y-4">
-                                {project.osCoverage.map(os => (
-                                    <div key={os.version}>
-                                        <div className="flex justify-between items-center mb-1">
-                                            <span className="text-sm font-medium">{os.version}</span>
-                                            <span className="text-sm text-muted-foreground">{os.testers} Testers</span>
-                                        </div>
-                                        <Progress value={(os.testers / totalTesters) * 100} className="[&>div]:bg-green-500" />
-                                    </div>
-                                ))}
-                                </CardContent>
-                            </Card>
-                            <Card className="lg:col-span-1">
-                                <CardHeader>
-                                    <CardTitle className="flex items-center gap-2"><MapPin className="w-5 h-5"/> Top Geographies</CardTitle>
-                                </CardHeader>
-                                <CardContent>
-                                <ul className="space-y-3">
-                                    {project.topGeographies.map(geo => (
-                                        <li key={geo.country} className="flex items-center justify-between">
-                                            <span className="text-sm font-medium flex items-center gap-2">{geo.flag} {geo.country}</span>
-                                            <span className="text-sm text-muted-foreground">{geo.testers} Testers</span>
-                                        </li>
-                                    ))}
-                                </ul>
-                                </CardContent>
-                            </Card>
-                        </div>
-                    </TabsContent>
-                </Tabs>
+                            </TabsContent>
+                        </Tabs>
+                    </CardContent>
+                </Card>
+                
+                <Card>
+                     <CardHeader>
+                        <CardTitle>Bug Report Trend</CardTitle>
+                        <CardDescription>Number of new bugs reported over the 14-day test cycle.</CardDescription>
+                    </CardHeader>
+                    <CardContent className="h-[400px] w-full">
+                       <ResponsiveContainer width="100%" height="100%">
+                            <LineChart data={project.chartData} margin={{ top: 5, right: 20, left: -10, bottom: 5 }}>
+                                <CartesianGrid strokeDasharray="3 3" />
+                                <XAxis dataKey="date" />
+                                <YAxis />
+                                <Tooltip />
+                                <Line type="monotone" dataKey="bugs" stroke="hsl(var(--primary))" strokeWidth={2} activeDot={{ r: 8 }} />
+                            </LineChart>
+                        </ResponsiveContainer>
+                    </CardContent>
+                </Card>
+                    
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+                    <Card className="lg:col-span-1">
+                        <CardHeader>
+                            <CardTitle className="flex items-center gap-2"><Smartphone className="w-5 h-5"/> Device Coverage</CardTitle>
+                        </CardHeader>
+                        <CardContent className="space-y-4">
+                        {project.deviceCoverage.map(device => (
+                            <div key={device.device}>
+                                <div className="flex justify-between items-center mb-1">
+                                    <span className="text-sm font-medium">{device.device}</span>
+                                    <span className="text-sm text-muted-foreground">{device.testers} Testers</span>
+                                </div>
+                                <Progress value={(device.testers / totalTesters) * 100} />
+                            </div>
+                        ))}
+                        </CardContent>
+                    </Card>
+                    <Card className="lg:col-span-1">
+                        <CardHeader>
+                            <CardTitle className="flex items-center gap-2"><BarChart className="w-5 h-5"/> OS Version Coverage</CardTitle>
+                        </CardHeader>
+                        <CardContent className="space-y-4">
+                        {project.osCoverage.map(os => (
+                            <div key={os.version}>
+                                <div className="flex justify-between items-center mb-1">
+                                    <span className="text-sm font-medium">{os.version}</span>
+                                    <span className="text-sm text-muted-foreground">{os.testers} Testers</span>
+                                </div>
+                                <Progress value={(os.testers / totalTesters) * 100} className="[&>div]:bg-green-500" />
+                            </div>
+                        ))}
+                        </CardContent>
+                    </Card>
+                    <Card className="lg:col-span-1">
+                        <CardHeader>
+                            <CardTitle className="flex items-center gap-2"><MapPin className="w-5 h-5"/> Top Geographies</CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                        <ul className="space-y-3">
+                            {project.topGeographies.map(geo => (
+                                <li key={geo.country} className="flex items-center justify-between">
+                                    <span className="text-sm font-medium flex items-center gap-2">{geo.flag} {geo.country}</span>
+                                    <span className="text-sm text-muted-foreground">{geo.testers} Testers</span>
+                                </li>
+                            ))}
+                        </ul>
+                        </CardContent>
+                    </Card>
+                </div>
             </main>
         </div>
     </div>
   )
 }
+
+    
