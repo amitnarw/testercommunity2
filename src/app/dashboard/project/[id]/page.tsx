@@ -20,6 +20,10 @@ import {
 } from "@/components/ui/table"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
+import { useState } from 'react';
+import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from '@/components/ui/pagination';
+
+const FEEDBACK_PER_PAGE = 10;
 
 const getStatusConfig = (status: string) => {
     switch (status) {
@@ -55,6 +59,7 @@ const getSeverityBadge = (severity: string) => {
 
 
 export default function ProjectDetailsPage({ params }: { params: { id: string } }) {
+  const [feedbackPage, setFeedbackPage] = useState(1);
   const project = projects.find(p => p.id.toString() === params.id);
 
   if (!project) {
@@ -63,6 +68,16 @@ export default function ProjectDetailsPage({ params }: { params: { id: string } 
   
   const statusConfig = getStatusConfig(project.status);
   const totalTesters = project.deviceCoverage.reduce((acc, dev) => acc + dev.testers, 0);
+
+  const totalFeedbackPages = Math.ceil(project.feedback.length / FEEDBACK_PER_PAGE);
+  const feedbackStartIndex = (feedbackPage - 1) * FEEDBACK_PER_PAGE;
+  const feedbackEndIndex = feedbackStartIndex + FEEDBACK_PER_PAGE;
+  const currentFeedback = project.feedback.slice(feedbackStartIndex, feedbackEndIndex);
+
+  const handleFeedbackPageChange = (page: number) => {
+    if (page < 1 || page > totalFeedbackPages) return;
+    setFeedbackPage(page);
+  };
 
   return (
     <div className="bg-secondary/50 min-h-screen">
@@ -156,7 +171,7 @@ export default function ProjectDetailsPage({ params }: { params: { id: string } 
                                         </TableRow>
                                     </TableHeader>
                                     <TableBody>
-                                        {project.feedback.map(fb => (
+                                        {currentFeedback.map(fb => (
                                             <TableRow key={fb.id}>
                                                 <TableCell className="font-medium flex items-center gap-2">
                                                     {getFeedbackIcon(fb.type)}
@@ -173,6 +188,38 @@ export default function ProjectDetailsPage({ params }: { params: { id: string } 
                                         ))}
                                     </TableBody>
                                 </Table>
+
+                                {totalFeedbackPages > 1 && (
+                                    <Pagination className="mt-8">
+                                        <PaginationContent>
+                                            <PaginationItem>
+                                                <PaginationPrevious 
+                                                    href="#" 
+                                                    onClick={(e) => { e.preventDefault(); handleFeedbackPageChange(feedbackPage - 1); }}
+                                                    className={feedbackPage === 1 ? 'pointer-events-none opacity-50' : undefined}
+                                                />
+                                            </PaginationItem>
+                                            {Array.from({ length: totalFeedbackPages }, (_, i) => i + 1).map(page => (
+                                                <PaginationItem key={page}>
+                                                    <PaginationLink 
+                                                        href="#" 
+                                                        isActive={feedbackPage === page}
+                                                        onClick={(e) => { e.preventDefault(); handleFeedbackPageChange(page); }}
+                                                    >
+                                                        {page}
+                                                    </PaginationLink>
+                                                </PaginationItem>
+                                            ))}
+                                            <PaginationItem>
+                                                <PaginationNext 
+                                                    href="#" 
+                                                    onClick={(e) => { e.preventDefault(); handleFeedbackPageChange(feedbackPage + 1); }}
+                                                    className={feedbackPage === totalFeedbackPages ? 'pointer-events-none opacity-50' : undefined}
+                                                />
+                                            </PaginationItem>
+                                        </PaginationContent>
+                                    </Pagination>
+                                )}
                             </CardContent>
                         </Card>
                     </TabsContent>

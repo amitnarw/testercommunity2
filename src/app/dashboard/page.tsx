@@ -6,10 +6,28 @@ import { Button } from '@/components/ui/button';
 import { PlusCircle, Gem } from 'lucide-react'
 import { ProjectList } from '@/components/project-list';
 import Link from 'next/link';
-import { Package, FlaskConical, CheckCircle2, Coins } from 'lucide-react'
+import { Package, FlaskConical, CheckCircle2, Coins } from 'lucide-react';
+import { useState } from 'react';
+import { projects as allProjects } from '@/lib/data';
+import type { Project } from '@/lib/types';
+import { Pagination, PaginationContent, PaginationItem, PaginationPrevious, PaginationLink, PaginationNext } from '@/components/ui/pagination';
 
+
+const PROJECTS_PER_PAGE = 6;
 
 export default function DashboardPage() {
+  const [currentPage, setCurrentPage] = useState(1);
+
+  const totalPages = Math.ceil(allProjects.length / PROJECTS_PER_PAGE);
+  const startIndex = (currentPage - 1) * PROJECTS_PER_PAGE;
+  const endIndex = startIndex + PROJECTS_PER_PAGE;
+  const currentProjects = allProjects.slice(startIndex, endIndex);
+
+  const handlePageChange = (page: number) => {
+    if (page < 1 || page > totalPages) return;
+    setCurrentPage(page);
+  };
+
   return (
     <>
       <div className="min-h-screen bg-secondary/50">
@@ -42,7 +60,7 @@ export default function DashboardPage() {
                 <Package className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">5</div>
+                <div className="text-2xl font-bold">{allProjects.length}</div>
                 <p className="text-xs text-muted-foreground">
                   Across all your projects
                 </p>
@@ -56,7 +74,7 @@ export default function DashboardPage() {
                 <FlaskConical className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">2</div>
+                <div className="text-2xl font-bold">{allProjects.filter(p => p.status === 'In Testing').length}</div>
                 <p className="text-xs text-muted-foreground">
                   Currently being tested by the community
                 </p>
@@ -68,7 +86,7 @@ export default function DashboardPage() {
                 <CheckCircle2 className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">3</div>
+                <div className="text-2xl font-bold">{allProjects.filter(p => p.status === 'Completed').length}</div>
                 <p className="text-xs text-muted-foreground">
                   Finished testing cycles
                 </p>
@@ -91,7 +109,38 @@ export default function DashboardPage() {
           </div>
 
           <div className="mt-8">
-              <ProjectList />
+              <ProjectList projects={currentProjects} />
+              {totalPages > 1 && (
+                 <Pagination className="mt-8">
+                    <PaginationContent>
+                        <PaginationItem>
+                            <PaginationPrevious 
+                                href="#" 
+                                onClick={(e) => { e.preventDefault(); handlePageChange(currentPage - 1); }}
+                                className={currentPage === 1 ? 'pointer-events-none opacity-50' : undefined}
+                            />
+                        </PaginationItem>
+                        {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
+                            <PaginationItem key={page}>
+                                <PaginationLink 
+                                    href="#" 
+                                    isActive={currentPage === page}
+                                    onClick={(e) => { e.preventDefault(); handlePageChange(page); }}
+                                >
+                                    {page}
+                                </PaginationLink>
+                            </PaginationItem>
+                        ))}
+                        <PaginationItem>
+                            <PaginationNext 
+                                href="#" 
+                                onClick={(e) => { e.preventDefault(); handlePageChange(currentPage + 1); }}
+                                className={currentPage === totalPages ? 'pointer-events-none opacity-50' : undefined}
+                            />
+                        </PaginationItem>
+                    </PaginationContent>
+                </Pagination>
+              )}
           </div>
         </div>
       </div>

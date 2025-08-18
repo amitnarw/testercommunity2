@@ -11,8 +11,8 @@ import { Badge } from "./ui/badge";
 import Image from "next/image";
 import { ArrowRight } from "lucide-react";
 import Link from "next/link";
-import { projects } from "@/lib/data";
 import { Separator } from "./ui/separator";
+import type { Project } from "@/lib/types";
 
 const getStatusConfig = (status: string) => {
     switch (status) {
@@ -43,7 +43,7 @@ const Metric = ({ label, value }: { label: string, value: string | number }) => 
 );
 
 
-export function ProjectList() {
+export function ProjectList({ projects }: { projects: Project[] }) {
     return (
         <Card className="rounded-xl border-0 bg-transparent shadow-none">
             <CardHeader>
