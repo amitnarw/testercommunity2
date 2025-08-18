@@ -72,9 +72,9 @@ export function ProjectList() {
                                     </CardHeader>
 
                                     <CardContent className="p-5 pt-0 space-y-5 flex-grow">
-                                        <div className="flex flex-row items-center gap-5">
+                                        <div className="flex flex-row items-center gap-2">
                                             <Badge variant={statusConfig.badgeVariant as any} className="text-xs">{project.status}</Badge>
-                                            <span className="text-sm text-gray-400 dark:text-gray-500">Started from: 22 Aug 2025</span>
+                                            <Badge variant="outline" className="text-xs font-light">Started from: 22 Aug 2025</Badge>
                                         </div>
                                         <div className="grid grid-cols-2 gap-4">
                                             <Metric label="Testers Started" value={project.testersStarted} />

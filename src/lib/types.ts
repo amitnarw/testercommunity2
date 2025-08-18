@@ -103,4 +103,7 @@ export type Project = {
   testersCompleted: number;
   totalDays: number;
   avgTestersPerDay: number;
+  startedFrom: string;
 }
+
+    

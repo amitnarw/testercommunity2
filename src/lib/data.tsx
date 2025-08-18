@@ -487,7 +487,8 @@ export const projects: Project[] = [
       testersStarted: 14,
       testersCompleted: 8,
       totalDays: 14,
-      avgTestersPerDay: 1.2
+      avgTestersPerDay: 1.2,
+      startedFrom: "22 Aug 2024"
     },
     {
       name: "SocialConnect App",
@@ -498,7 +499,8 @@ export const projects: Project[] = [
       testersStarted: 12,
       testersCompleted: 10,
       totalDays: 10,
-      avgTestersPerDay: 1.0
+      avgTestersPerDay: 1.0,
+      startedFrom: "15 Jul 2024"
     },
     {
       name: "E-commerce Platform",
@@ -509,7 +511,8 @@ export const projects: Project[] = [
       testersStarted: 20,
       testersCompleted: 20,
       totalDays: 14,
-      avgTestersPerDay: 1.4
+      avgTestersPerDay: 1.4,
+      startedFrom: "01 Jun 2024"
     },
     {
       name: "HealthTracker API",
@@ -520,7 +523,8 @@ export const projects: Project[] = [
       testersStarted: 15,
       testersCompleted: 15,
       totalDays: 14,
-      avgTestersPerDay: 1.1
+      avgTestersPerDay: 1.1,
+      startedFrom: "10 May 2024"
     },
       {
       name: "IndieGame 'Starlight'",
@@ -531,6 +535,10 @@ export const projects: Project[] = [
       testersStarted: 25,
       testersCompleted: 25,
       totalDays: 14,
-      avgTestersPerDay: 1.8
+      avgTestersPerDay: 1.8,
+      startedFrom: "05 Apr 2024"
     },
   ]
+
+
+    
