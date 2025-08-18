@@ -87,25 +87,25 @@ export default function CommunityDashboardPage() {
                             <p className="text-muted-foreground mt-2">Test apps, earn points, and help fellow developers build better products.</p>
                         </header>
 
-                        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 mb-8">
-                           <Card className="rounded-xl lg:col-span-2">
+                        <div className="grid grid-cols-1 md:grid-cols-3 md:grid-rows-2 gap-4 mb-8">
+                           <Card className="rounded-xl md:col-span-2 md:row-span-2">
                                 <CardHeader>
                                     <CardTitle>Your Apps' Performance</CardTitle>
                                     <CardDescription>How the community is engaging with your projects.</CardDescription>
                                 </CardHeader>
-                                <CardContent className="flex items-center justify-around text-center">
+                                <CardContent className="flex flex-col sm:flex-row h-full items-center justify-around text-center gap-4">
                                     <div className="flex flex-col items-center gap-1">
                                         <Package className="h-6 w-6 text-muted-foreground mb-1" />
                                         <p className="text-2xl font-bold">2</p>
                                         <p className="text-xs text-muted-foreground">Apps Submitted</p>
                                     </div>
-                                    <Separator orientation="vertical" className="h-16" />
+                                    <Separator orientation="vertical" className="h-16 hidden sm:block" />
                                      <div className="flex flex-col items-center gap-1">
                                         <Users className="h-6 w-6 text-muted-foreground mb-1" />
                                         <p className="text-2xl font-bold">35</p>
                                         <p className="text-xs text-muted-foreground">Testers Engaged</p>
                                     </div>
-                                     <Separator orientation="vertical" className="h-16" />
+                                     <Separator orientation="vertical" className="h-16 hidden sm:block" />
                                      <div className="flex flex-col items-center gap-1">
                                         <Flag className="h-6 w-6 text-muted-foreground mb-1" />
                                         <p className="text-2xl font-bold">12</p>
@@ -216,3 +216,5 @@ export default function CommunityDashboardPage() {
         </div>
     );
 }
+
+    
