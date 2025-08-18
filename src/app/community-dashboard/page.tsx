@@ -4,7 +4,7 @@
 import { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Award, CheckSquare, Coins, ListFilter, ArrowUpDown } from 'lucide-react';
+import { Award, CheckSquare, ListFilter, ArrowUpDown, Users, Package, Flag } from 'lucide-react';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { communityApps } from '@/lib/data';
 import { PointsSidebar } from '@/components/points-sidebar';
@@ -13,6 +13,7 @@ import { CommunityAvailableAppCard } from '@/components/community-available-app-
 import { CommunityOngoingAppCard } from '@/components/community-ongoing-app-card';
 import { CommunityCompletedAppCard } from '@/components/community-completed-app-card';
 import { Pagination, PaginationContent, PaginationItem, PaginationPrevious, PaginationLink, PaginationNext, PaginationEllipsis } from '@/components/ui/pagination';
+import { Separator } from '@/components/ui/separator';
 
 
 const APPS_PER_PAGE = 6;
@@ -86,20 +87,35 @@ export default function CommunityDashboardPage() {
                             <p className="text-muted-foreground mt-2">Test apps, earn points, and help fellow developers build better products.</p>
                         </header>
 
-                        <div className="grid gap-4 md:grid-cols-3 mb-8">
-                            <Card className="rounded-xl">
-                                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                                    <CardTitle className="text-sm font-medium">Points Balance</CardTitle>
-                                    <Coins className="h-4 w-4 text-muted-foreground" />
+                        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4 mb-8">
+                           <Card className="rounded-xl lg:col-span-2">
+                                <CardHeader>
+                                    <CardTitle>Your Apps' Performance</CardTitle>
+                                    <CardDescription>How the community is engaging with your projects.</CardDescription>
                                 </CardHeader>
-                                <CardContent>
-                                    <div className="text-2xl font-bold">2,450</div>
-                                    <p className="text-xs text-muted-foreground">Ready to spend or redeem</p>
+                                <CardContent className="flex items-center justify-around text-center">
+                                    <div className="flex flex-col items-center gap-1">
+                                        <Package className="h-6 w-6 text-muted-foreground mb-1" />
+                                        <p className="text-2xl font-bold">2</p>
+                                        <p className="text-xs text-muted-foreground">Apps Submitted</p>
+                                    </div>
+                                    <Separator orientation="vertical" className="h-16" />
+                                     <div className="flex flex-col items-center gap-1">
+                                        <Users className="h-6 w-6 text-muted-foreground mb-1" />
+                                        <p className="text-2xl font-bold">35</p>
+                                        <p className="text-xs text-muted-foreground">Testers Engaged</p>
+                                    </div>
+                                     <Separator orientation="vertical" className="h-16" />
+                                     <div className="flex flex-col items-center gap-1">
+                                        <Flag className="h-6 w-6 text-muted-foreground mb-1" />
+                                        <p className="text-2xl font-bold">12</p>
+                                        <p className="text-xs text-muted-foreground">Tests Completed</p>
+                                    </div>
                                 </CardContent>
                             </Card>
                             <Card className="rounded-xl">
                                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                                    <CardTitle className="text-sm font-medium">Tests Completed</CardTitle>
+                                    <CardTitle className="text-sm font-medium">Tests You've Completed</CardTitle>
                                     <CheckSquare className="h-4 w-4 text-muted-foreground" />
                                 </CardHeader>
                                 <CardContent>
@@ -109,12 +125,12 @@ export default function CommunityDashboardPage() {
                             </Card>
                             <Card className="rounded-xl">
                                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                                    <CardTitle className="text-sm font-medium">Apps Submitted</CardTitle>
+                                    <CardTitle className="text-sm font-medium">Your Tester Rank</CardTitle>
                                     <Award className="h-4 w-4 text-muted-foreground" />
                                 </CardHeader>
                                 <CardContent>
-                                    <div className="text-2xl font-bold">2</div>
-                                    <p className="text-xs text-muted-foreground">Your projects in the queue</p>
+                                    <div className="text-2xl font-bold">Gold</div>
+                                    <p className="text-xs text-muted-foreground">Top 10% of testers</p>
                                 </CardContent>
                             </Card>
                         </div>
