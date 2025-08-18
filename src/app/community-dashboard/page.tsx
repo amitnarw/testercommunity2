@@ -60,50 +60,6 @@ export default function CommunityDashboardPage() {
         }
     };
 
-    const renderPagination = (type: 'available' | 'ongoing' | 'completed') => {
-        const totalPages = {
-            available: totalAvailablePages,
-            ongoing: totalOngoingPages,
-            completed: totalCompletedPages,
-        }[type];
-        
-        if (totalPages <= 1) return null;
-
-        const currentPage = pagination[type];
-
-        return (
-            <Pagination className="mt-8">
-                <PaginationContent>
-                    <PaginationItem>
-                        <PaginationPrevious 
-                            href="#"
-                            onClick={(e) => { e.preventDefault(); handlePageChange(type, currentPage - 1); }}
-                            className={currentPage === 1 ? 'pointer-events-none opacity-50' : ''}
-                        />
-                    </PaginationItem>
-                    {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
-                        <PaginationItem key={page}>
-                            <PaginationLink 
-                                href="#" 
-                                isActive={currentPage === page} 
-                                onClick={(e) => { e.preventDefault(); handlePageChange(type, page); }}
-                            >
-                                {page}
-                            </PaginationLink>
-                        </PaginationItem>
-                    ))}
-                    <PaginationItem>
-                        <PaginationNext 
-                            href="#"
-                            onClick={(e) => { e.preventDefault(); handlePageChange(type, currentPage + 1); }}
-                            className={currentPage === totalPages ? 'pointer-events-none opacity-50' : ''}
-                        />
-                    </PaginationItem>
-                </PaginationContent>
-            </Pagination>
-        )
-    }
-
     return (
         <div className="bg-secondary/50 min-h-screen">
             <div className="container mx-auto px-4 md:px-6 py-12">
@@ -202,7 +158,37 @@ export default function CommunityDashboardPage() {
                                             <CommunityAvailableAppCard key={app.id} app={app} />
                                         ))}
                                     </div>
-                                    {renderPagination('available')}
+                                    {totalAvailablePages > 1 && (
+                                        <Pagination className="mt-8">
+                                            <PaginationContent>
+                                                <PaginationItem>
+                                                    <PaginationPrevious
+                                                        href="#"
+                                                        onClick={(e) => { e.preventDefault(); handlePageChange('available', pagination.available - 1); }}
+                                                        className={pagination.available === 1 ? 'pointer-events-none opacity-50' : ''}
+                                                    />
+                                                </PaginationItem>
+                                                {Array.from({ length: totalAvailablePages }, (_, i) => i + 1).map(page => (
+                                                    <PaginationItem key={page}>
+                                                        <PaginationLink
+                                                            href="#"
+                                                            isActive={pagination.available === page}
+                                                            onClick={(e) => { e.preventDefault(); handlePageChange('available', page); }}
+                                                        >
+                                                            {page}
+                                                        </PaginationLink>
+                                                    </PaginationItem>
+                                                ))}
+                                                <PaginationItem>
+                                                    <PaginationNext
+                                                        href="#"
+                                                        onClick={(e) => { e.preventDefault(); handlePageChange('available', pagination.available + 1); }}
+                                                        className={pagination.available === totalAvailablePages ? 'pointer-events-none opacity-50' : ''}
+                                                    />
+                                                </PaginationItem>
+                                            </PaginationContent>
+                                        </Pagination>
+                                    )}
                                 </TabsContent>
                                 <TabsContent value="ongoing">
                                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -214,7 +200,37 @@ export default function CommunityDashboardPage() {
                                             <div className="text-center py-12 text-muted-foreground col-span-full">You have no ongoing tests.</div>
                                         )}
                                     </div>
-                                    {renderPagination('ongoing')}
+                                    {totalOngoingPages > 1 && (
+                                        <Pagination className="mt-8">
+                                            <PaginationContent>
+                                                <PaginationItem>
+                                                    <PaginationPrevious
+                                                        href="#"
+                                                        onClick={(e) => { e.preventDefault(); handlePageChange('ongoing', pagination.ongoing - 1); }}
+                                                        className={pagination.ongoing === 1 ? 'pointer-events-none opacity-50' : ''}
+                                                    />
+                                                </PaginationItem>
+                                                {Array.from({ length: totalOngoingPages }, (_, i) => i + 1).map(page => (
+                                                    <PaginationItem key={page}>
+                                                        <PaginationLink
+                                                            href="#"
+                                                            isActive={pagination.ongoing === page}
+                                                            onClick={(e) => { e.preventDefault(); handlePageChange('ongoing', page); }}
+                                                        >
+                                                            {page}
+                                                        </PaginationLink>
+                                                    </PaginationItem>
+                                                ))}
+                                                <PaginationItem>
+                                                    <PaginationNext
+                                                        href="#"
+                                                        onClick={(e) => { e.preventDefault(); handlePageChange('ongoing', pagination.ongoing + 1); }}
+                                                        className={pagination.ongoing === totalOngoingPages ? 'pointer-events-none opacity-50' : ''}
+                                                    />
+                                                </PaginationItem>
+                                            </PaginationContent>
+                                        </Pagination>
+                                    )}
                                 </TabsContent>
                                 <TabsContent value="completed">
                                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -226,7 +242,37 @@ export default function CommunityDashboardPage() {
                                             <div className="text-center py-12 text-muted-foreground col-span-full">You have not completed any tests yet.</div>
                                         )}
                                     </div>
-                                    {renderPagination('completed')}
+                                    {totalCompletedPages > 1 && (
+                                        <Pagination className="mt-8">
+                                            <PaginationContent>
+                                                <PaginationItem>
+                                                    <PaginationPrevious
+                                                        href="#"
+                                                        onClick={(e) => { e.preventDefault(); handlePageChange('completed', pagination.completed - 1); }}
+                                                        className={pagination.completed === 1 ? 'pointer-events-none opacity-50' : ''}
+                                                    />
+                                                </PaginationItem>
+                                                {Array.from({ length: totalCompletedPages }, (_, i) => i + 1).map(page => (
+                                                    <PaginationItem key={page}>
+                                                        <PaginationLink
+                                                            href="#"
+                                                            isActive={pagination.completed === page}
+                                                            onClick={(e) => { e.preventDefault(); handlePageChange('completed', page); }}
+                                                        >
+                                                            {page}
+                                                        </PaginationLink>
+                                                    </PaginationItem>
+                                                ))}
+                                                <PaginationItem>
+                                                    <PaginationNext
+                                                        href="#"
+                                                        onClick={(e) => { e.preventDefault(); handlePageChange('completed', pagination.completed + 1); }}
+                                                        className={pagination.completed === totalCompletedPages ? 'pointer-events-none opacity-50' : ''}
+                                                    />
+                                                </PaginationItem>
+                                            </PaginationContent>
+                                        </Pagination>
+                                    )}
                                 </TabsContent>
                             </Tabs>
                         </main>
@@ -238,5 +284,4 @@ export default function CommunityDashboardPage() {
                 </div>
             </div>
         </div>
-    );
-}
+    
