@@ -95,9 +95,12 @@ export type Notification = {
 
 export type Project = {
   name: string;
+  packageName: string;
   icon: string;
   dataAiHint?: string;
   status: "In Testing" | "Completed" | "Archived";
-  reports: number;
-  testerCount: number;
+  testersStarted: number;
+  testersCompleted: number;
+  totalDays: number;
+  avgTestersPerDay: number;
 }

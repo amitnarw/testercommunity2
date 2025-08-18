@@ -480,42 +480,57 @@ export const notifications: Notification[] = Array.from({ length: 25 }, (_, i) =
 export const projects: Project[] = [
     {
       name: "Project Phoenix",
+      packageName: "com.phoenix.app",
       icon: "https://placehold.co/48x48.png",
       dataAiHint: "phoenix bird",
       status: "In Testing",
-      reports: 42,
-      testerCount: 14,
+      testersStarted: 14,
+      testersCompleted: 8,
+      totalDays: 14,
+      avgTestersPerDay: 1.2
     },
     {
       name: "SocialConnect App",
+      packageName: "com.social.connect",
       icon: "https://placehold.co/48x48.png",
       dataAiHint: "social media",
       status: "In Testing",
-      reports: 15,
-      testerCount: 12,
+      testersStarted: 12,
+      testersCompleted: 10,
+      totalDays: 10,
+      avgTestersPerDay: 1.0
     },
     {
       name: "E-commerce Platform",
+      packageName: "com.store.cart",
       icon: "https://placehold.co/48x48.png",
       dataAiHint: "shopping cart",
       status: "Completed",
-      reports: 128,
-      testerCount: 20,
+      testersStarted: 20,
+      testersCompleted: 20,
+      totalDays: 14,
+      avgTestersPerDay: 1.4
     },
     {
       name: "HealthTracker API",
+      packageName: "com.health.api",
       icon: "https://placehold.co/48x48.png",
       dataAiHint: "heartbeat chart",
       status: "Completed",
-      reports: 76,
-      testerCount: 15,
+      testersStarted: 15,
+      testersCompleted: 15,
+      totalDays: 14,
+      avgTestersPerDay: 1.1
     },
       {
       name: "IndieGame 'Starlight'",
+      packageName: "com.game.starlight",
       icon: "https://placehold.co/48x48.png",
       dataAiHint: "pixel art star",
       status: "Archived",
-      reports: 210,
-      testerCount: 25,
+      testersStarted: 25,
+      testersCompleted: 25,
+      totalDays: 14,
+      avgTestersPerDay: 1.8
     },
   ]
