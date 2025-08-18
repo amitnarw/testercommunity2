@@ -54,8 +54,8 @@ export function ProjectList() {
                 {projects.map((project) => {
                     const statusConfig = getStatusConfig(project.status);
                     return (
-                        <div key={project.name} className="group relative">
-                            <Link href="#">
+                        <div key={project.id} className="group relative">
+                            <Link href={`/dashboard/project/${project.id}`}>
                                 <div className="rounded-2xl overflow-hidden bg-background border-0 hover:bg-secondary/50 transition-all duration-300 transform hover:-translate-y-1 hover:shadow-lg h-full flex flex-col">
                                     <CardHeader className="flex flex-row items-start justify-between gap-4 p-5">
                                         <div className="flex items-center gap-4">
@@ -74,7 +74,7 @@ export function ProjectList() {
                                     <CardContent className="p-5 pt-0 space-y-5 flex-grow">
                                         <div className="flex flex-row items-center gap-2">
                                             <Badge variant={statusConfig.badgeVariant as any} className="text-xs">{project.status}</Badge>
-                                            <Badge variant="outline" className="text-xs font-light">Started from: 22 Aug 2025</Badge>
+                                            <Badge variant="outline" className="text-xs font-light">Started from: {project.startedFrom}</Badge>
                                         </div>
                                         <div className="grid grid-cols-2 gap-4">
                                             <Metric label="Testers Started" value={project.testersStarted} />

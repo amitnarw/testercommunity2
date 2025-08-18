@@ -477,8 +477,35 @@ export const notifications: Notification[] = Array.from({ length: 25 }, (_, i) =
     };
 });
 
+const generateFeedback = (projectName: string) => {
+    const feedbackTypes = ['Bug', 'Suggestion', 'Praise'];
+    const comments = {
+        'Bug': `Found a crash in ${projectName} when trying to open the settings page.`,
+        'Suggestion': `It would be great if ${projectName} had a dark mode option.`,
+        'Praise': `The new update for ${projectName} is fantastic! The UI is so much smoother.`
+    }
+    return Array.from({ length: 5 }, (_, i) => {
+        const type = feedbackTypes[i % 3] as 'Bug' | 'Suggestion' | 'Praise';
+        return {
+            id: i + 1,
+            tester: `Tester00${i+1}`,
+            type: type,
+            comment: comments[type],
+            date: `2024-08-${20-i}`
+        }
+    });
+};
+
+const generateChartData = (baseBugs: number) => {
+    return Array.from({length: 14}, (_, i) => ({
+        date: `Day ${i+1}`,
+        bugs: Math.max(0, baseBugs - i * Math.floor(Math.random() * 3 + 1) + Math.floor(Math.random() * 5 - 2))
+    }));
+};
+
 export const projects: Project[] = [
     {
+      id: 1,
       name: "Project Phoenix",
       packageName: "com.phoenix.app",
       icon: "https://placehold.co/48x48.png",
@@ -488,9 +515,18 @@ export const projects: Project[] = [
       testersCompleted: 8,
       totalDays: 14,
       avgTestersPerDay: 1.2,
-      startedFrom: "22 Aug 2024"
+      startedFrom: "22 Aug 2024",
+      description: "Project Phoenix is a cutting-edge productivity app designed to streamline workflows for creative professionals. It integrates task management, asset versioning, and collaborative feedback tools into a single, intuitive interface.",
+      crashFreeRate: 99.8,
+      topBugs: [
+          { type: "UI/UX", count: 12 },
+          { type: "Crash", count: 3 },
+      ],
+      feedback: generateFeedback("Project Phoenix"),
+      chartData: generateChartData(20)
     },
     {
+      id: 2,
       name: "SocialConnect App",
       packageName: "com.social.connect",
       icon: "https://placehold.co/48x48.png",
@@ -500,9 +536,18 @@ export const projects: Project[] = [
       testersCompleted: 10,
       totalDays: 10,
       avgTestersPerDay: 1.0,
-      startedFrom: "15 Jul 2024"
+      startedFrom: "15 Jul 2024",
+      description: "SocialConnect is a new-age social media platform focused on authentic connections. It features interest-based groups, event organization, and privacy-focused sharing options to help users build meaningful communities.",
+      crashFreeRate: 99.9,
+      topBugs: [
+          { type: "Performance", count: 8 },
+          { type: "Login", count: 2 },
+      ],
+      feedback: generateFeedback("SocialConnect"),
+      chartData: generateChartData(15)
     },
     {
+      id: 3,
       name: "E-commerce Platform",
       packageName: "com.store.cart",
       icon: "https://placehold.co/48x48.png",
@@ -512,9 +557,18 @@ export const projects: Project[] = [
       testersCompleted: 20,
       totalDays: 14,
       avgTestersPerDay: 1.4,
-      startedFrom: "01 Jun 2024"
+      startedFrom: "01 Jun 2024",
+      description: "A robust and scalable e-commerce solution for small to medium-sized businesses. Features include a powerful product management system, secure payment gateway integration, and customer analytics.",
+      crashFreeRate: 100,
+      topBugs: [
+          { type: "Payment", count: 1 },
+          { type: "UI/UX", count: 1 },
+      ],
+      feedback: generateFeedback("E-commerce Platform"),
+      chartData: generateChartData(5)
     },
     {
+      id: 4,
       name: "HealthTracker API",
       packageName: "com.health.api",
       icon: "https://placehold.co/48x48.png",
@@ -524,9 +578,18 @@ export const projects: Project[] = [
       testersCompleted: 15,
       totalDays: 14,
       avgTestersPerDay: 1.1,
-      startedFrom: "10 May 2024"
+      startedFrom: "10 May 2024",
+      description: "A comprehensive backend API for health and fitness applications. It provides endpoints for tracking user activity, nutrition, sleep patterns, and integrates with popular fitness wearables.",
+      crashFreeRate: 99.95,
+      topBugs: [
+          { type: "API", count: 5 },
+          { type: "Docs", count: 4 },
+      ],
+      feedback: generateFeedback("HealthTracker API"),
+      chartData: generateChartData(12)
     },
       {
+      id: 5,
       name: "IndieGame 'Starlight'",
       packageName: "com.game.starlight",
       icon: "https://placehold.co/48x48.png",
@@ -536,9 +599,14 @@ export const projects: Project[] = [
       testersCompleted: 25,
       totalDays: 14,
       avgTestersPerDay: 1.8,
-      startedFrom: "05 Apr 2024"
+      startedFrom: "05 Apr 2024",
+      description: "Starlight is a 2D pixel-art adventure game with a rich story and challenging puzzles. Players explore a mysterious world, uncover ancient secrets, and battle powerful foes.",
+      crashFreeRate: 98.5,
+      topBugs: [
+          { type: "Gameplay", count: 25 },
+          { type: "Performance", count: 10 },
+      ],
+      feedback: generateFeedback("Starlight"),
+      chartData: generateChartData(40)
     },
   ]
-
-
-    

@@ -93,7 +93,16 @@ export type Notification = {
     read: boolean;
 }
 
+export type ProjectFeedback = {
+    id: number;
+    tester: string;
+    type: 'Bug' | 'Suggestion' | 'Praise';
+    comment: string;
+    date: string;
+}
+
 export type Project = {
+  id: number;
   name: string;
   packageName: string;
   icon: string;
@@ -104,6 +113,9 @@ export type Project = {
   totalDays: number;
   avgTestersPerDay: number;
   startedFrom: string;
+  description: string;
+  crashFreeRate: number;
+  topBugs: { type: string; count: number }[];
+  feedback: ProjectFeedback[];
+  chartData: { date: string; bugs: number }[];
 }
-
-    
