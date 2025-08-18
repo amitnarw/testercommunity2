@@ -8,7 +8,6 @@ import { Award, CheckSquare, Coins, ListFilter, ArrowUpDown } from 'lucide-react
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { communityApps } from '@/lib/data';
 import { PointsSidebar } from '@/components/points-sidebar';
-import { CommunityAppCard } from '@/components/community-app-card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { CommunityAvailableAppCard } from '@/components/community-available-app-card';
 
@@ -108,38 +107,26 @@ export default function CommunityDashboardPage() {
                                     </div>
                                 </TabsContent>
                                 <TabsContent value="ongoing">
-                                    <Card className="rounded-xl">
-                                        <CardHeader>
-                                            <CardTitle>Ongoing Tests</CardTitle>
-                                            <CardDescription>Apps you are currently testing. Submit your feedback before the deadline!</CardDescription>
-                                        </CardHeader>
-                                        <CardContent className="space-y-4">
-                                            {ongoingApps.length > 0 ? (
-                                                ongoingApps.map(app => (
-                                                    <CommunityAppCard key={app.id} app={app} />
-                                                ))
-                                            ) : (
-                                                <div className="text-center py-12 text-muted-foreground">You have no ongoing tests.</div>
-                                            )}
-                                        </CardContent>
-                                    </Card>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                        {ongoingApps.length > 0 ? (
+                                            ongoingApps.map(app => (
+                                                <CommunityAvailableAppCard key={app.id} app={app} />
+                                            ))
+                                        ) : (
+                                            <div className="text-center py-12 text-muted-foreground col-span-full">You have no ongoing tests.</div>
+                                        )}
+                                    </div>
                                 </TabsContent>
                                 <TabsContent value="completed">
-                                    <Card className="rounded-xl">
-                                        <CardHeader>
-                                            <CardTitle>Completed Tests</CardTitle>
-                                            <CardDescription>Apps you have successfully tested and provided feedback for.</CardDescription>
-                                        </CardHeader>
-                                        <CardContent className="space-y-4">
-                                            {completedApps.length > 0 ? (
-                                                completedApps.map(app => (
-                                                    <CommunityAppCard key={app.id} app={app} />
-                                                ))
-                                            ) : (
-                                                 <div className="text-center py-12 text-muted-foreground">You have not completed any tests yet.</div>
-                                            )}
-                                        </CardContent>
-                                    </Card>
+                                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                        {completedApps.length > 0 ? (
+                                            completedApps.map(app => (
+                                                <CommunityAvailableAppCard key={app.id} app={app} />
+                                            ))
+                                        ) : (
+                                             <div className="text-center py-12 text-muted-foreground col-span-full">You have not completed any tests yet.</div>
+                                        )}
+                                    </div>
                                 </TabsContent>
                             </Tabs>
                         </main>
