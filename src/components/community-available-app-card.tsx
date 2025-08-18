@@ -21,7 +21,7 @@ export function CommunityAvailableAppCard({ app }: CommunityAvailableAppCardProp
                         alt={app.name} 
                         layout="fill"
                         objectFit="contain"
-                        className="group-hover:scale-110 transition-transform duration-300 p-4" 
+                        className="group-hover:scale-110 transition-transform duration-300" 
                         data-ai-hint={app.dataAiHint} 
                     />
                     <Badge variant="secondary" className="absolute top-3 right-3 z-10">{app.category}</Badge>

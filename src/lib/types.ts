@@ -83,3 +83,12 @@ export type FaqItem = {
     question: string;
     answer: string;
 }
+
+export type Notification = {
+    id: number;
+    title: string;
+    description: string;
+    date: string;
+    type: 'new_test' | 'feedback_received' | 'test_completed' | 'bug_report' | 'points_awarded';
+    read: boolean;
+}

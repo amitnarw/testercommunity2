@@ -4,7 +4,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { LayoutDashboard, Users2, PlusCircle, LifeBuoy, LogOut, PanelLeftClose, PanelLeftOpen, X, Gift } from "lucide-react";
+import { LayoutDashboard, Users2, PlusCircle, LifeBuoy, LogOut, PanelLeftClose, PanelLeftOpen, X, Bell } from "lucide-react";
 import { Button } from "./ui/button";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "./ui/tooltip";
 import { OfferCard } from "./offer-card";
@@ -12,6 +12,7 @@ import { OfferCard } from "./offer-card";
 const mainNavLinks = [
     { name: "Developer Dashboard", href: "/dashboard", icon: LayoutDashboard },
     { name: "Community Hub", href: "/community-dashboard", icon: Users2 },
+    { name: "Notifications", href: "/notifications", icon: Bell },
 ];
 
 const NavLink = ({ href, icon: Icon, children, isCollapsed, onClick }: { href: string, icon: React.ElementType, children: React.ReactNode, isCollapsed: boolean, onClick?: () => void }) => {

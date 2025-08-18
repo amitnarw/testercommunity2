@@ -1,5 +1,5 @@
 
-import type { BlogPost, Testimonial, RoadmapStep, UserProfileData, ProcessStep, CommunityApp, PointsPackage, FaqItem } from './types';
+import type { BlogPost, Testimonial, RoadmapStep, UserProfileData, ProcessStep, CommunityApp, PointsPackage, FaqItem, Notification } from './types';
 
 export const chartData = [
     { month: 'January', reports: 186, resolved: 80 },
@@ -343,4 +343,46 @@ export const pricingFaqs: FaqItem[] = [
         question: "Can I get a refund on purchased points?",
         answer: "Points that have not been spent on a testing project are eligible for a refund within 14 days of purchase. Please contact our support team for assistance."
     }
-]
+];
+
+export const notifications: Notification[] = Array.from({ length: 25 }, (_, i) => {
+    const types: Notification['type'][] = ['new_test', 'feedback_received', 'test_completed', 'bug_report', 'points_awarded'];
+    const type = types[i % types.length];
+    const date = new Date();
+    date.setDate(date.getDate() - i);
+
+    let title = '';
+    let description = '';
+
+    switch (type) {
+        case 'new_test':
+            title = 'New Testing Opportunity!';
+            description = 'A new app, "PhotoSnap Editor", is available for testing in the Productivity category.';
+            break;
+        case 'feedback_received':
+            title = 'You have new feedback!';
+            description = 'A tester has submitted new feedback for your project "Project Phoenix".';
+            break;
+        case 'test_completed':
+            title = 'Test Cycle Completed';
+            description = 'Congratulations! Your app "SocialConnect" has completed its 14-day test cycle.';
+            break;
+        case 'bug_report':
+            title = 'New Bug Reported';
+            description = 'A critical bug has been reported for "E-commerce Platform".';
+            break;
+        case 'points_awarded':
+            title = `You've earned ${i % 2 === 0 ? 100 : 75} points!`;
+            description = `Thanks for your feedback on "${i % 2 === 0 ? 'Finance Tracker' : 'Pixel Adventure'}". Your points have been added.`;
+            break;
+    }
+
+    return {
+        id: i + 1,
+        title,
+        description,
+        date: date.toISOString(),
+        type,
+        read: i > 4, // Mark the first 5 as unread
+    };
+});
