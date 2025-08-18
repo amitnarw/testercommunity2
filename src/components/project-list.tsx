@@ -55,7 +55,10 @@ export function ProjectList() {
                 const statusConfig = getStatusConfig(project.status);
                 return (
                     <Link href="#" key={project.name} className="group block h-full">
-                        <div className="rounded-2xl overflow-hidden bg-background border hover:border-primary/50 transition-all duration-300 transform hover:-translate-y-1 hover:shadow-2xl hover:shadow-primary/20 h-full flex flex-col">
+                        <div className="rounded-2xl overflow-hidden bg-background border hover:border-primary/50 transition-all duration-300 transform hover:-translate-y-1 hover:shadow-2xl hover:shadow-primary/20 h-full flex flex-col relative">
+                           <div className="absolute top-0 right-0 h-12 w-12 bg-primary rounded-bl-2xl flex items-center justify-center">
+                                <ArrowRight className="h-5 w-5 text-primary-foreground" />
+                            </div>
                             <CardHeader className="flex flex-row items-start justify-between gap-4 p-5">
                                 <div className="flex items-center gap-4">
                                     <Image src={project.icon} alt={project.name} width={48} height={48} className="rounded-lg border bg-secondary" data-ai-hint={project.dataAiHint} />
@@ -66,9 +69,6 @@ export function ProjectList() {
                                             <Badge variant={statusConfig.badgeVariant as any} className="text-xs">{project.status}</Badge>
                                         </div>
                                     </div>
-                                </div>
-                                <div className="p-2 bg-secondary/50 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 transform group-hover:scale-110">
-                                    <ArrowRight className="h-4 w-4 text-primary" />
                                 </div>
                             </CardHeader>
                             <CardContent className="p-5 pt-0 space-y-5 flex-grow">
