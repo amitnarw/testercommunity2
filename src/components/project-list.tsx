@@ -61,11 +61,13 @@ export function ProjectList() {
                                     <div className="flex items-center gap-4">
                                         <Image src={project.icon} alt={project.name} width={48} height={48} className="rounded-lg border bg-secondary" data-ai-hint={project.dataAiHint} />
                                         <div>
-                                            <CardTitle className="text-base">{project.name}</CardTitle>
+                                            <div className="flex items-center gap-2">
+                                                <CardTitle className="text-base">{project.name}</CardTitle>
+                                                <Badge variant={statusConfig.badgeVariant as any} className="text-xs">{project.status}</Badge>
+                                            </div>
                                             <p className="text-xs text-muted-foreground">{project.packageName}</p>
                                         </div>
                                     </div>
-                                    <Badge variant={statusConfig.badgeVariant as any} className="text-xs">{project.status}</Badge>
                                 </CardHeader>
                                 <CardContent className="p-5 pt-0 space-y-5 flex-grow">
                                     <Separator />
