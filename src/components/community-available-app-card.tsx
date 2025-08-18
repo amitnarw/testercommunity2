@@ -15,22 +15,18 @@ export function CommunityAvailableAppCard({ app }: CommunityAvailableAppCardProp
     return (
         <Link href={`/community-dashboard/test/${app.id}`} className="group block">
             <Card className="flex flex-col h-full overflow-hidden rounded-xl transition-all duration-300 group-hover:shadow-primary/20 group-hover:-translate-y-1">
-                <CardHeader className="p-0 relative">
-                    <div className="relative w-full h-40">
-                        <Image
-                            src={app.screenshots[0]?.url || 'https://placehold.co/400x300.png'}
-                            alt={app.name}
-                            layout="fill"
-                            objectFit="cover"
-                            className="group-hover:scale-105 transition-transform duration-300"
-                            data-ai-hint={app.screenshots[0]?.dataAiHint || 'app screenshot'}
-                        />
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
-                    </div>
+                <CardHeader className="p-0 relative flex justify-center items-center h-40 bg-secondary">
+                    <Image 
+                        src={app.icon} 
+                        alt={app.name} 
+                        width={80} 
+                        height={80} 
+                        className="rounded-2xl border-4 border-background group-hover:scale-110 transition-transform duration-300" 
+                        data-ai-hint={app.dataAiHint} 
+                    />
                     <Badge variant="secondary" className="absolute top-3 right-3">{app.category}</Badge>
-                    <Image src={app.icon} alt={app.name} width={56} height={56} className="absolute bottom-0 left-4 translate-y-1/2 rounded-xl border-4 border-background" data-ai-hint={app.dataAiHint} />
                 </CardHeader>
-                <CardContent className="p-4 pt-10 flex-grow">
+                <CardContent className="p-4 flex-grow">
                     <h3 className="text-lg font-bold group-hover:text-primary transition-colors">{app.name}</h3>
                     <p className="text-sm text-muted-foreground mt-1 h-10 line-clamp-2">{app.shortDescription}</p>
                 </CardContent>
