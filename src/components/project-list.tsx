@@ -72,13 +72,15 @@ export function ProjectList() {
                                     <div className="grid grid-cols-2 gap-4">
                                         <Metric label="Testers Started" value={project.testersStarted} />
                                         <Metric label="Testers Completed" value={project.testersCompleted} />
-                                        <Metric label="Days in Test" value={project.totalDays} />
-                                        <Metric label="Avg. Testers/Day" value={project.avgTestersPerDay.toFixed(1)} />
                                     </div>
                                 </CardContent>
+                                <CardFooter className="px-5 pb-5 text-xs text-muted-foreground flex justify-between">
+                                    <span>Days in test: <span className="font-bold text-foreground">{project.totalDays}</span></span>
+                                    <span>Avg. testers/day: <span className="font-bold text-foreground">{project.avgTestersPerDay.toFixed(1)}</span></span>
+                                </CardFooter>
                             </div>
                         </Link>
-                         <div className="absolute -top-3 -right-3 h-10 w-10 bg-primary/20 rounded-full flex items-center justify-center pointer-events-none group-hover:scale-110 group-hover:bg-primary/80 transition-transform">
+                         <div className="absolute top-3 right-3 h-10 w-10 bg-primary/20 rounded-full flex items-center justify-center pointer-events-none group-hover:scale-110 group-hover:bg-primary/80 transition-transform">
                             <ArrowRight className="h-5 w-5 text-primary group-hover:text-primary-foreground" />
                         </div>
                     </div>
