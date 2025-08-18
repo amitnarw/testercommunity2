@@ -14,16 +14,16 @@ export function CommunityOngoingAppCard({ app }: CommunityOngoingAppCardProps) {
     return (
         <Link href={`/community-dashboard/test/${app.id}/ongoing`} className="group block">
             <Card className="flex flex-col h-full overflow-hidden rounded-xl transition-all duration-300 group-hover:shadow-primary/20 group-hover:-translate-y-1">
-                <CardHeader className="p-0 relative flex justify-center items-center h-40 bg-secondary">
+                <CardHeader className="p-0 relative flex justify-center items-center h-40 bg-secondary overflow-hidden">
                      <Image 
                         src={app.icon} 
                         alt={app.name} 
-                        width={80} 
-                        height={80} 
-                        className="rounded-2xl border-4 border-background group-hover:scale-110 transition-transform duration-300" 
+                        layout="fill"
+                        objectFit="cover"
+                        className="group-hover:scale-110 transition-transform duration-300" 
                         data-ai-hint={app.dataAiHint} 
                     />
-                    <Badge variant="secondary" className="absolute top-3 right-3">{app.category}</Badge>
+                    <Badge variant="secondary" className="absolute top-3 right-3 z-10">{app.category}</Badge>
                 </CardHeader>
                 <CardContent className="p-4 flex-grow">
                     <h3 className="text-lg font-bold group-hover:text-primary transition-colors">{app.name}</h3>
