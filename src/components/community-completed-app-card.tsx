@@ -13,7 +13,7 @@ interface CommunityCompletedAppCardProps {
 export function CommunityCompletedAppCard({ app }: CommunityCompletedAppCardProps) {
     return (
         <Link href={`/community-dashboard/test/${app.id}/completed`} className="group block">
-            <Card className="flex flex-col h-full overflow-hidden rounded-xl transition-all duration-300 group-hover:shadow-primary/20 group-hover:-translate-y-1 bg-secondary/30">
+            <Card className="flex flex-col h-full overflow-hidden rounded-2xl transition-all duration-300 group-hover:shadow-primary/20 group-hover:-translate-y-1 bg-secondary/30 border-0">
                  <CardContent className="p-4 flex-grow flex flex-col">
                      <div className="flex items-start gap-4 mb-4">
                         <Image 

@@ -47,30 +47,50 @@ export default function CommunityDashboardPage() {
         (pagination.completed - 1) * APPS_PER_PAGE,
         pagination.completed * APPS_PER_PAGE
     );
-    
+
     const handlePageChange = (type: 'available' | 'ongoing' | 'completed', page: number) => {
-        setPagination(prev => ({ ...prev, [type]: page }));
+        const totalPages = {
+            available: totalAvailablePages,
+            ongoing: totalOngoingPages,
+            completed: totalCompletedPages,
+        }[type];
+
+        if (page >= 1 && page <= totalPages) {
+            setPagination(prev => ({ ...prev, [type]: page }));
+        }
     };
-    
+
     const renderPagination = (type: 'available' | 'ongoing' | 'completed', totalPages: number) => {
         if (totalPages <= 1) return null;
         const currentPage = pagination[type];
 
         return (
-             <Pagination className="mt-8">
+            <Pagination className="mt-8">
                 <PaginationContent>
                     <PaginationItem>
-                        <PaginationPrevious href="#" onClick={(e) => { e.preventDefault(); handlePageChange(type, currentPage - 1); }} />
+                        <PaginationPrevious 
+                            href="#" 
+                            onClick={(e) => { e.preventDefault(); handlePageChange(type, currentPage - 1); }}
+                            className={currentPage === 1 ? 'pointer-events-none opacity-50' : ''}
+                        />
                     </PaginationItem>
                     {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
                         <PaginationItem key={page}>
-                            <PaginationLink href="#" isActive={currentPage === page} onClick={(e) => { e.preventDefault(); handlePageChange(type, page); }}>
+                            <PaginationLink 
+                                href="#" 
+                                isActive={currentPage === page} 
+                                onClick={(e) => { e.preventDefault(); handlePageChange(type, page); }}
+                            >
                                 {page}
                             </PaginationLink>
                         </PaginationItem>
                     ))}
                     <PaginationItem>
-                        <PaginationNext href="#" onClick={(e) => { e.preventDefault(); handlePageChange(type, currentPage + 1); }}/>
+                        <PaginationNext 
+                            href="#" 
+                            onClick={(e) => { e.preventDefault(); handlePageChange(type, currentPage + 1); }}
+                            className={currentPage === totalPages ? 'pointer-events-none opacity-50' : ''}
+                        />
                     </PaginationItem>
                 </PaginationContent>
             </Pagination>
@@ -87,54 +107,51 @@ export default function CommunityDashboardPage() {
                             <p className="text-muted-foreground mt-2">Test apps, earn points, and help fellow developers build better products.</p>
                         </header>
 
-                        <div className="grid grid-cols-1 md:grid-cols-3 md:grid-rows-2 gap-4 mb-8">
-                           <Card className="rounded-xl md:col-span-2 md:row-span-2">
-                                <CardHeader>
+                        <div className="grid gap-4 mb-8 md:grid-cols-3 md:grid-rows-2">
+
+                            <Card className="rounded-xl border-0 row-span-1 md:col-span-2 md:row-span-2">
+                                <CardHeader className='h-1/3'>
                                     <CardTitle>Your Apps' Performance</CardTitle>
-                                    <CardDescription>How the community is engaging with your projects.</CardDescription>
                                 </CardHeader>
-                                <CardContent className="flex flex-col sm:flex-row h-full items-center justify-around text-center gap-4">
+                                <CardContent className="flex flex-row items-center justify-around text-center gap-4 h-2/3">
                                     <div className="flex flex-col items-center gap-1">
-                                        <Package className="h-6 w-6 text-muted-foreground mb-1" />
                                         <p className="text-2xl font-bold">2</p>
                                         <p className="text-xs text-muted-foreground">Apps Submitted</p>
                                     </div>
                                     <Separator orientation="vertical" className="h-16 hidden sm:block" />
-                                     <div className="flex flex-col items-center gap-1">
-                                        <Users className="h-6 w-6 text-muted-foreground mb-1" />
+                                    <div className="flex flex-col items-center gap-1">
                                         <p className="text-2xl font-bold">35</p>
                                         <p className="text-xs text-muted-foreground">Testers Engaged</p>
                                     </div>
-                                     <Separator orientation="vertical" className="h-16 hidden sm:block" />
-                                     <div className="flex flex-col items-center gap-1">
-                                        <Flag className="h-6 w-6 text-muted-foreground mb-1" />
+                                    <Separator orientation="vertical" className="h-16 hidden sm:block" />
+                                    <div className="flex flex-col items-center gap-1">
                                         <p className="text-2xl font-bold">12</p>
                                         <p className="text-xs text-muted-foreground">Tests Completed</p>
                                     </div>
                                 </CardContent>
                             </Card>
-                            <Card className="rounded-xl">
-                                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                                    <CardTitle className="text-sm font-medium">Tests You've Completed</CardTitle>
-                                    <CheckSquare className="h-4 w-4 text-muted-foreground" />
-                                </CardHeader>
-                                <CardContent>
-                                    <div className="text-2xl font-bold">12</div>
-                                    <p className="text-xs text-muted-foreground">You're a testing machine!</p>
-                                </CardContent>
-                            </Card>
-                            <Card className="rounded-xl">
-                                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                                    <CardTitle className="text-sm font-medium">Your Tester Rank</CardTitle>
-                                    <Award className="h-4 w-4 text-muted-foreground" />
-                                </CardHeader>
-                                <CardContent>
-                                    <div className="text-2xl font-bold">Gold</div>
-                                    <p className="text-xs text-muted-foreground">Top 10% of testers</p>
-                                </CardContent>
-                            </Card>
+
+                            <div className="flex flex-row gap-4 md:contents">
+                                <Card className="rounded-xl border-0 p-4 w-1/2 md:w-auto md:col-span-1">
+                                    <CardHeader className="p-0 mb-1">
+                                        <CardTitle className="text-sm font-medium">Tests You've Started</CardTitle>
+                                    </CardHeader>
+                                    <CardContent className='p-0'>
+                                        <div className="text-2xl font-bold">5</div>
+                                    </CardContent>
+                                </Card>
+                                <Card className="rounded-xl border-0 p-4 w-1/2 md:w-auto md:col-span-1">
+                                    <CardHeader className="p-0 mb-1">
+                                        <CardTitle className="text-sm font-medium">Tests You've Completed</CardTitle>
+                                    </CardHeader>
+                                    <CardContent className='p-0'>
+                                        <div className="text-2xl font-bold">12</div>
+                                    </CardContent>
+                                </Card>
+                            </div>
                         </div>
-                        
+
+
                         <main>
                             <Tabs defaultValue="available" className="w-full">
                                 <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
@@ -154,7 +171,7 @@ export default function CommunityDashboardPage() {
                                                 <DropdownMenuLabel>Filter by Category</DropdownMenuLabel>
                                                 <DropdownMenuSeparator />
                                                 {['All', 'Games', 'Productivity', 'Social', 'Utilities'].map(cat => (
-                                                        <DropdownMenuItem key={cat} onClick={() => setFilter(cat)}>{cat}</DropdownMenuItem>
+                                                    <DropdownMenuItem key={cat} onClick={() => setFilter(cat)}>{cat}</DropdownMenuItem>
                                                 ))}
                                             </DropdownMenuContent>
                                         </DropdownMenu>
@@ -165,8 +182,8 @@ export default function CommunityDashboardPage() {
                                                 </Button>
                                             </DropdownMenuTrigger>
                                             <DropdownMenuContent align="end" className="rounded-xl">
-                                                    {['Most Recent', 'Most Rewarding', 'Time to Test'].map(cat => (
-                                                        <DropdownMenuItem key={cat} onClick={() => setSort(cat)}>{cat}</DropdownMenuItem>
+                                                {['Most Recent', 'Most Rewarding', 'Time to Test'].map(cat => (
+                                                    <DropdownMenuItem key={cat} onClick={() => setSort(cat)}>{cat}</DropdownMenuItem>
                                                 ))}
                                             </DropdownMenuContent>
                                         </DropdownMenu>
@@ -193,13 +210,13 @@ export default function CommunityDashboardPage() {
                                     {renderPagination('ongoing', totalOngoingPages)}
                                 </TabsContent>
                                 <TabsContent value="completed">
-                                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                                         {currentCompletedApps.length > 0 ? (
                                             currentCompletedApps.map(app => (
                                                 <CommunityCompletedAppCard key={app.id} app={app} />
                                             ))
                                         ) : (
-                                             <div className="text-center py-12 text-muted-foreground col-span-full">You have not completed any tests yet.</div>
+                                            <div className="text-center py-12 text-muted-foreground col-span-full">You have not completed any tests yet.</div>
                                         )}
                                     </div>
                                     {renderPagination('completed', totalCompletedPages)}
@@ -217,4 +234,3 @@ export default function CommunityDashboardPage() {
     );
 }
 
-    
