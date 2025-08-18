@@ -56,7 +56,7 @@ export function ProjectList() {
                     return (
                         <div key={project.id} className="group relative">
                             <Link href={`/dashboard/project/${project.id}`}>
-                                <div className="rounded-2xl overflow-hidden bg-background border-0 hover:bg-secondary/50 transition-all duration-300 transform hover:-translate-y-1 hover:shadow-lg h-full flex flex-col">
+                                <div className="rounded-2xl overflow-hidden bg-background border hover:bg-secondary/50 transition-all duration-300 transform hover:-translate-y-1 hover:shadow-lg h-full flex flex-col">
                                     <CardHeader className="flex flex-row items-start justify-between gap-4 p-5">
                                         <div className="flex items-center gap-4">
                                             <Image src={project.icon} alt={project.name} width={48} height={48} className="rounded-lg border bg-secondary" data-ai-hint={project.dataAiHint} />
@@ -66,8 +66,8 @@ export function ProjectList() {
                                             </div>
                                         </div>
 
-                                        <div className="absolute -top-9 -right-7 bg-primary/20 rounded-full flex items-center justify-center pointer-events-none group-hover:scale-110 group-hover:bg-primary/80 transition-transform p-10">
-                                            <ArrowRight className="text-primary group-hover:text-primary-foreground absolute top-10 right-10" size={24} />
+                                        <div className="absolute top-3 right-3 bg-primary/20 rounded-full flex items-center justify-center pointer-events-none group-hover:scale-110 group-hover:bg-primary/80 transition-transform p-2">
+                                            <ArrowRight className="text-primary group-hover:text-primary-foreground" size={16} />
                                         </div>
                                     </CardHeader>
 
