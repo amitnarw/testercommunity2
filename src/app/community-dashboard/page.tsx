@@ -10,7 +10,7 @@ import { communityApps } from '@/lib/data';
 import { PointsSidebar } from '@/components/points-sidebar';
 import { CommunityAppCard } from '@/components/community-app-card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { AvailableAppRow } from '@/components/available-app-row';
+import { CommunityAvailableAppCard } from '@/components/community-available-app-card';
 
 
 export default function CommunityDashboardPage() {
@@ -101,19 +101,11 @@ export default function CommunityDashboardPage() {
                                     </div>
                                 </div>
                                 <TabsContent value="available">
-                                     <Card className="rounded-xl">
-                                        <CardHeader>
-                                            <CardTitle>Available Apps to Test</CardTitle>
-                                            <CardDescription>Earn points by testing these apps from the community.</CardDescription>
-                                        </CardHeader>
-                                        <CardContent className="p-0">
-                                            <div className="divide-y">
-                                                {communityApps.map(app => (
-                                                    <AvailableAppRow key={app.id} app={app} />
-                                                ))}
-                                            </div>
-                                        </CardContent>
-                                     </Card>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                        {communityApps.map(app => (
+                                            <CommunityAvailableAppCard key={app.id} app={app} />
+                                        ))}
+                                    </div>
                                 </TabsContent>
                                 <TabsContent value="ongoing">
                                     <Card className="rounded-xl">

@@ -9,7 +9,7 @@ export default function NotFoundPage() {
       <BackgroundBeams />
       <div className="max-w-md w-full relative z-10">
         <div className="relative z-10 bg-background/50 backdrop-blur-sm p-8 rounded-xl border">
-          <h1 className="bg-gradient-to-br from-primary to-accent bg-clip-text text-transparent">404</h1>
+          <h1 className="bg-gradient-to-br from-primary to-accent bg-clip-text text-transparent text-9xl font-semibold">404</h1>
           <h2 className="mt-4 text-3xl font-semibold">Page Not Found</h2>
           <p className="mt-2 text-muted-foreground">
             Oops! It seems you've wandered off the beaten path.
