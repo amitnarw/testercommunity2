@@ -12,7 +12,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { CommunityAvailableAppCard } from '@/components/community-available-app-card';
 import { CommunityOngoingAppCard } from '@/components/community-ongoing-app-card';
 import { CommunityCompletedAppCard } from '@/components/community-completed-app-card';
-import { Pagination, PaginationContent, PaginationItem, PaginationPrevious, PaginationLink, PaginationNext, PaginationEllipsis } from '@/components/ui/pagination';
+import { Pagination, PaginationContent, PaginationItem, PaginationPrevious, PaginationLink, PaginationNext } from '@/components/ui/pagination';
 import { Separator } from '@/components/ui/separator';
 
 
@@ -60,7 +60,13 @@ export default function CommunityDashboardPage() {
         }
     };
 
-    const renderPagination = (type: 'available' | 'ongoing' | 'completed', totalPages: number) => {
+    const renderPagination = (type: 'available' | 'ongoing' | 'completed') => {
+        const totalPages = {
+            available: totalAvailablePages,
+            ongoing: totalOngoingPages,
+            completed: totalCompletedPages,
+        }[type];
+        
         if (totalPages <= 1) return null;
         const currentPage = pagination[type];
 
@@ -69,7 +75,7 @@ export default function CommunityDashboardPage() {
                 <PaginationContent>
                     <PaginationItem>
                         <PaginationPrevious 
-                            href="#" 
+                            href="#"
                             onClick={(e) => { e.preventDefault(); handlePageChange(type, currentPage - 1); }}
                             className={currentPage === 1 ? 'pointer-events-none opacity-50' : ''}
                         />
@@ -87,7 +93,7 @@ export default function CommunityDashboardPage() {
                     ))}
                     <PaginationItem>
                         <PaginationNext 
-                            href="#" 
+                            href="#"
                             onClick={(e) => { e.preventDefault(); handlePageChange(type, currentPage + 1); }}
                             className={currentPage === totalPages ? 'pointer-events-none opacity-50' : ''}
                         />
@@ -195,7 +201,7 @@ export default function CommunityDashboardPage() {
                                             <CommunityAvailableAppCard key={app.id} app={app} />
                                         ))}
                                     </div>
-                                    {renderPagination('available', totalAvailablePages)}
+                                    {renderPagination('available')}
                                 </TabsContent>
                                 <TabsContent value="ongoing">
                                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -207,7 +213,7 @@ export default function CommunityDashboardPage() {
                                             <div className="text-center py-12 text-muted-foreground col-span-full">You have no ongoing tests.</div>
                                         )}
                                     </div>
-                                    {renderPagination('ongoing', totalOngoingPages)}
+                                    {renderPagination('ongoing')}
                                 </TabsContent>
                                 <TabsContent value="completed">
                                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -219,7 +225,7 @@ export default function CommunityDashboardPage() {
                                             <div className="text-center py-12 text-muted-foreground col-span-full">You have not completed any tests yet.</div>
                                         )}
                                     </div>
-                                    {renderPagination('completed', totalCompletedPages)}
+                                    {renderPagination('completed')}
                                 </TabsContent>
                             </Tabs>
                         </main>
@@ -233,4 +239,3 @@ export default function CommunityDashboardPage() {
         </div>
     );
 }
-
