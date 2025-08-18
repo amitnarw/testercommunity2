@@ -4,7 +4,7 @@
 import { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Award, CheckSquare, ListFilter, ArrowUpDown, Users, Package, Flag } from 'lucide-react';
+import { ListFilter, ArrowUpDown } from 'lucide-react';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { communityApps } from '@/lib/data';
 import { PointsSidebar } from '@/components/points-sidebar';
@@ -68,6 +68,7 @@ export default function CommunityDashboardPage() {
         }[type];
         
         if (totalPages <= 1) return null;
+
         const currentPage = pagination[type];
 
         return (
