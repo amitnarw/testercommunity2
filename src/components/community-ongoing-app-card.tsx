@@ -15,19 +15,23 @@ export function CommunityOngoingAppCard({ app }: CommunityOngoingAppCardProps) {
         <Link href={`/community-dashboard/test/${app.id}/ongoing`} className="group block">
             <Card className="flex flex-col h-full overflow-hidden rounded-xl transition-all duration-300 group-hover:shadow-primary/20 group-hover:-translate-y-1">
                 <CardContent className="p-4 flex-grow">
-                     <div className="flex justify-between items-start mb-4">
+                     <div className="flex items-start gap-4">
                         <Image 
                             src={app.icon} 
                             alt={app.name} 
-                            width={48}
-                            height={48}
+                            width={64}
+                            height={64}
                             className="rounded-lg border" 
                             data-ai-hint={app.dataAiHint} 
                         />
-                        <Badge variant="secondary">{app.category}</Badge>
+                        <div className="flex-grow">
+                             <div className="flex justify-between items-start">
+                                <h3 className="text-lg font-bold group-hover:text-primary transition-colors">{app.name}</h3>
+                                <Badge variant="secondary">{app.category}</Badge>
+                            </div>
+                            <p className="text-sm text-muted-foreground mt-1 h-10 line-clamp-2">{app.shortDescription}</p>
+                        </div>
                     </div>
-                    <h3 className="text-lg font-bold group-hover:text-primary transition-colors">{app.name}</h3>
-                    <p className="text-sm text-muted-foreground mt-1 h-10 line-clamp-2">{app.shortDescription}</p>
                 </CardContent>
                 <CardFooter className="flex-col items-start gap-3 p-4 pt-0">
                     <div className='w-full'>
