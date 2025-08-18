@@ -97,6 +97,8 @@ export type ProjectFeedback = {
     id: number;
     tester: string;
     type: 'Bug' | 'Suggestion' | 'Praise';
+    severity: 'Critical' | 'High' | 'Medium' | 'Low' | 'N/A';
+    status: 'New' | 'In Progress' | 'Resolved' | 'Closed';
     comment: string;
     date: string;
 }
@@ -115,7 +117,29 @@ export type Project = {
   startedFrom: string;
   description: string;
   crashFreeRate: number;
-  topBugs: { type: string; count: number }[];
+  feedbackBreakdown: {
+    total: number;
+    critical: number;
+    high: number;
+    low: number;
+  };
+  performanceMetrics: {
+    avgStartupTime: string;
+    frozenFrames: string;
+  };
+  deviceCoverage: {
+    device: string;
+    testers: number;
+  }[];
+  osCoverage: {
+    version: string;
+    testers: number;
+  }[];
+  topGeographies: {
+    country: string;
+    testers: number;
+    flag: string;
+  }[];
   feedback: ProjectFeedback[];
   chartData: { date: string; bugs: number }[];
 }

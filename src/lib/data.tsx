@@ -478,20 +478,25 @@ export const notifications: Notification[] = Array.from({ length: 25 }, (_, i) =
 });
 
 const generateFeedback = (projectName: string) => {
-    const feedbackTypes = ['Bug', 'Suggestion', 'Praise'];
+    const feedbackTypes: ProjectFeedback['type'][] = ['Bug', 'Suggestion', 'Praise', 'Bug', 'Bug'];
     const comments = {
         'Bug': `Found a crash in ${projectName} when trying to open the settings page.`,
         'Suggestion': `It would be great if ${projectName} had a dark mode option.`,
         'Praise': `The new update for ${projectName} is fantastic! The UI is so much smoother.`
     }
-    return Array.from({ length: 5 }, (_, i) => {
-        const type = feedbackTypes[i % 3] as 'Bug' | 'Suggestion' | 'Praise';
+    const severities: ProjectFeedback['severity'][] = ['Critical', 'Low', 'N/A', 'High', 'Medium'];
+    const statuses: ProjectFeedback['status'][] = ['New', 'Closed', 'Closed', 'In Progress', 'Resolved'];
+
+    return Array.from({ length: 15 }, (_, i) => {
+        const type = feedbackTypes[i % feedbackTypes.length];
         return {
             id: i + 1,
-            tester: `Tester00${i+1}`,
+            tester: `Tester${100 + i}`,
             type: type,
-            comment: comments[type],
-            date: `2024-08-${20-i}`
+            severity: type === 'Bug' ? severities[i % severities.length] : 'N/A',
+            status: statuses[i % statuses.length],
+            comment: comments[type] || `Generic feedback item #${i+1}`,
+            date: `2024-08-${20- (i % 10)}`
         }
     });
 };
@@ -518,9 +523,23 @@ export const projects: Project[] = [
       startedFrom: "22 Aug 2024",
       description: "Project Phoenix is a cutting-edge productivity app designed to streamline workflows for creative professionals. It integrates task management, asset versioning, and collaborative feedback tools into a single, intuitive interface.",
       crashFreeRate: 99.8,
-      topBugs: [
-          { type: "UI/UX", count: 12 },
-          { type: "Crash", count: 3 },
+      feedbackBreakdown: { total: 45, critical: 3, high: 12, low: 30 },
+      performanceMetrics: { avgStartupTime: "350ms", frozenFrames: "0.2%" },
+      deviceCoverage: [
+        { device: "Google Pixel", testers: 5 },
+        { device: "Samsung Galaxy", testers: 4 },
+        { device: "OnePlus", testers: 3 },
+        { device: "Other", testers: 2 },
+      ],
+      osCoverage: [
+        { version: "Android 14", testers: 8 },
+        { version: "Android 13", testers: 4 },
+        { version: "Android 12", testers: 2 },
+      ],
+      topGeographies: [
+          { country: "USA", testers: 4, flag: "🇺🇸" },
+          { country: "India", testers: 3, flag: "🇮🇳" },
+          { country: "Germany", testers: 2, flag: "🇩🇪" },
       ],
       feedback: generateFeedback("Project Phoenix"),
       chartData: generateChartData(20)
@@ -539,9 +558,23 @@ export const projects: Project[] = [
       startedFrom: "15 Jul 2024",
       description: "SocialConnect is a new-age social media platform focused on authentic connections. It features interest-based groups, event organization, and privacy-focused sharing options to help users build meaningful communities.",
       crashFreeRate: 99.9,
-      topBugs: [
-          { type: "Performance", count: 8 },
-          { type: "Login", count: 2 },
+      feedbackBreakdown: { total: 30, critical: 1, high: 5, low: 24 },
+      performanceMetrics: { avgStartupTime: "450ms", frozenFrames: "0.1%" },
+       deviceCoverage: [
+        { device: "Google Pixel", testers: 3 },
+        { device: "Samsung Galaxy", testers: 6 },
+        { device: "Xiaomi", testers: 2 },
+        { device: "Other", testers: 1 },
+      ],
+      osCoverage: [
+        { version: "Android 14", testers: 5 },
+        { version: "Android 13", testers: 6 },
+        { version: "Android 12", testers: 1 },
+      ],
+       topGeographies: [
+          { country: "Brazil", testers: 5, flag: "🇧🇷" },
+          { country: "USA", testers: 3, flag: "🇺🇸" },
+          { country: "Nigeria", testers: 2, flag: "🇳🇬" },
       ],
       feedback: generateFeedback("SocialConnect"),
       chartData: generateChartData(15)
@@ -560,9 +593,21 @@ export const projects: Project[] = [
       startedFrom: "01 Jun 2024",
       description: "A robust and scalable e-commerce solution for small to medium-sized businesses. Features include a powerful product management system, secure payment gateway integration, and customer analytics.",
       crashFreeRate: 100,
-      topBugs: [
-          { type: "Payment", count: 1 },
-          { type: "UI/UX", count: 1 },
+      feedbackBreakdown: { total: 15, critical: 0, high: 2, low: 13 },
+      performanceMetrics: { avgStartupTime: "250ms", frozenFrames: "0.05%" },
+      deviceCoverage: [
+        { device: "Google Pixel", testers: 8 },
+        { device: "Samsung Galaxy", testers: 8 },
+        { device: "OnePlus", testers: 4 },
+      ],
+      osCoverage: [
+        { version: "Android 14", testers: 10 },
+        { version: "Android 13", testers: 10 },
+      ],
+       topGeographies: [
+          { country: "UK", testers: 8, flag: "🇬🇧" },
+          { country: "Canada", testers: 7, flag: "🇨🇦" },
+          { country: "Australia", testers: 5, flag: "🇦🇺" },
       ],
       feedback: generateFeedback("E-commerce Platform"),
       chartData: generateChartData(5)
@@ -581,9 +626,17 @@ export const projects: Project[] = [
       startedFrom: "10 May 2024",
       description: "A comprehensive backend API for health and fitness applications. It provides endpoints for tracking user activity, nutrition, sleep patterns, and integrates with popular fitness wearables.",
       crashFreeRate: 99.95,
-      topBugs: [
-          { type: "API", count: 5 },
-          { type: "Docs", count: 4 },
+      feedbackBreakdown: { total: 22, critical: 2, high: 8, low: 12 },
+      performanceMetrics: { avgStartupTime: "N/A", frozenFrames: "N/A" },
+       deviceCoverage: [
+        { device: "N/A (API)", testers: 15 },
+      ],
+      osCoverage: [
+        { version: "N/A (API)", testers: 15 },
+      ],
+       topGeographies: [
+          { country: "USA", testers: 10, flag: "🇺🇸" },
+          { country: "Germany", testers: 5, flag: "🇩🇪" },
       ],
       feedback: generateFeedback("HealthTracker API"),
       chartData: generateChartData(12)
@@ -602,9 +655,23 @@ export const projects: Project[] = [
       startedFrom: "05 Apr 2024",
       description: "Starlight is a 2D pixel-art adventure game with a rich story and challenging puzzles. Players explore a mysterious world, uncover ancient secrets, and battle powerful foes.",
       crashFreeRate: 98.5,
-      topBugs: [
-          { type: "Gameplay", count: 25 },
-          { type: "Performance", count: 10 },
+      feedbackBreakdown: { total: 88, critical: 15, high: 40, low: 33 },
+      performanceMetrics: { avgStartupTime: "600ms", frozenFrames: "1.5%" },
+       deviceCoverage: [
+        { device: "Google Pixel", testers: 5 },
+        { device: "Samsung Galaxy", testers: 10 },
+        { device: "Xiaomi", testers: 5 },
+        { device: "Other", testers: 5 },
+      ],
+      osCoverage: [
+        { version: "Android 13", testers: 10 },
+        { version: "Android 12", testers: 8 },
+        { version: "Android 11", testers: 7 },
+      ],
+       topGeographies: [
+          { country: "USA", testers: 8, flag: "🇺🇸" },
+          { country: "Japan", testers: 7, flag: "🇯🇵" },
+          { country: "South Korea", testers: 5, flag: "🇰🇷" },
       ],
       feedback: generateFeedback("Starlight"),
       chartData: generateChartData(40)
