@@ -61,7 +61,7 @@ const getSeverityBadge = (severity: string) => {
 
 export default function ProjectDetailsPage({ params }: { params: { id: string } }) {
   const [feedbackPage, setFeedbackPage] = useState(1);
-  const [activeTab, setActiveTab] = useState('all');
+  const [activeTab, setActiveTab] = useState('bug');
 
   const project = projects.find(p => p.id.toString() === params.id);
 
@@ -233,9 +233,8 @@ export default function ProjectDetailsPage({ params }: { params: { id: string } 
                         <CardDescription>All feedback submitted by testers for this project.</CardDescription>
                     </CardHeader>
                     <CardContent>
-                        <Tabs defaultValue="all" onValueChange={handleTabChange} className="w-full">
+                        <Tabs defaultValue="bug" onValueChange={handleTabChange} className="w-full">
                             <TabsList>
-                                <TabsTrigger value="all">All ({project.feedback.length})</TabsTrigger>
                                 <TabsTrigger value="bug">Bugs ({project.feedback.filter(fb => fb.type === 'Bug').length})</TabsTrigger>
                                 <TabsTrigger value="suggestion">Suggestions ({project.feedback.filter(fb => fb.type === 'Suggestion').length})</TabsTrigger>
                                 <TabsTrigger value="praise">Praise ({project.feedback.filter(fb => fb.type === 'Praise').length})</TabsTrigger>
