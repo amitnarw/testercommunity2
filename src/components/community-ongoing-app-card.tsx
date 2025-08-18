@@ -14,7 +14,7 @@ export function CommunityOngoingAppCard({ app }: CommunityOngoingAppCardProps) {
     return (
         <Link href={`/community-dashboard/test/${app.id}/ongoing`} className="group block">
             <Card className="flex flex-col h-full overflow-hidden rounded-xl transition-all duration-300 group-hover:shadow-primary/20 group-hover:-translate-y-1">
-                <CardHeader className="p-0 relative flex justify-center items-center h-40 bg-secondary overflow-hidden">
+                <CardHeader className="p-0 relative flex justify-center items-center bg-secondary overflow-hidden aspect-square">
                      <Image 
                         src={app.icon} 
                         alt={app.name} 

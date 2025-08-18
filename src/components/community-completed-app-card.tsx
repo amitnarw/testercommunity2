@@ -14,7 +14,7 @@ export function CommunityCompletedAppCard({ app }: CommunityCompletedAppCardProp
     return (
         <Link href={`/community-dashboard/test/${app.id}/completed`} className="group block">
             <Card className="flex flex-col h-full overflow-hidden rounded-xl transition-all duration-300 group-hover:shadow-primary/20 group-hover:-translate-y-1 bg-secondary/30">
-                <CardHeader className="p-0 relative flex justify-center items-center h-40 bg-secondary/80 overflow-hidden">
+                <CardHeader className="p-0 relative flex justify-center items-center bg-secondary/80 overflow-hidden aspect-square">
                     <Image 
                         src={app.icon} 
                         alt={app.name} 

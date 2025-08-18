@@ -17,6 +17,9 @@ export default {
       },
     },
     extend: {
+      aspectRatio: {
+        'square': '1 / 1',
+      },
       backgroundImage: {
         'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
       },
