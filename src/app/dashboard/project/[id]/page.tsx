@@ -8,7 +8,7 @@ import { projects } from '@/lib/data';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { ArrowLeft, Bug, CheckCircle, Clock, Percent, ShieldCheck, User, Users, MessageSquare, AlertTriangle, Star, Smartphone, BarChart, MapPin } from 'lucide-react';
+import { ArrowLeft, Bug, CheckCircle, Clock, Percent, ShieldCheck, User, Users, MessageSquare, AlertTriangle, Star, Smartphone, BarChart, MapPin, LayoutGrid, List } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
 import {
   Table,
@@ -23,6 +23,7 @@ import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContai
 import { useState } from 'react';
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from '@/components/ui/pagination';
 import type { ProjectFeedback } from '@/lib/types';
+import { cn } from '@/lib/utils';
 
 const FEEDBACK_PER_PAGE = 10;
 
@@ -62,6 +63,7 @@ const getSeverityBadge = (severity: string) => {
 export default function ProjectDetailsPage({ params }: { params: { id: string } }) {
   const [feedbackPage, setFeedbackPage] = useState(1);
   const [activeTab, setActiveTab] = useState('bug');
+  const [viewMode, setViewMode] = useState<'table' | 'list'>('table');
 
   const project = projects.find(p => p.id.toString() === params.id);
 
@@ -73,7 +75,6 @@ export default function ProjectDetailsPage({ params }: { params: { id: string } 
   const totalTesters = project.deviceCoverage.reduce((acc, dev) => acc + dev.testers, 0);
 
   const filteredFeedback = project.feedback.filter(fb => {
-    if (activeTab === 'all') return true;
     return fb.type.toLowerCase() === activeTab;
   });
 
@@ -228,9 +229,21 @@ export default function ProjectDetailsPage({ params }: { params: { id: string } 
                 </div>
 
                 <Card>
-                    <CardHeader>
-                        <CardTitle>Detailed Feedback Log</CardTitle>
-                        <CardDescription>All feedback submitted by testers for this project.</CardDescription>
+                    <CardHeader className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                        <div>
+                            <CardTitle>Detailed Feedback Log</CardTitle>
+                            <CardDescription>All feedback submitted by testers for this project.</CardDescription>
+                        </div>
+                        <div className="flex items-center gap-2">
+                           <Button variant={viewMode === 'list' ? 'default' : 'outline'} size="icon" onClick={() => setViewMode('list')}>
+                                <LayoutGrid className="w-4 h-4" />
+                                <span className="sr-only">List View</span>
+                           </Button>
+                            <Button variant={viewMode === 'table' ? 'default' : 'outline'} size="icon" onClick={() => setViewMode('table')}>
+                                <List className="w-4 h-4" />
+                                <span className="sr-only">Table View</span>
+                           </Button>
+                        </div>
                     </CardHeader>
                     <CardContent>
                         <Tabs defaultValue="bug" onValueChange={handleTabChange} className="w-full">
@@ -240,41 +253,68 @@ export default function ProjectDetailsPage({ params }: { params: { id: string } 
                                 <TabsTrigger value="praise">Praise ({project.feedback.filter(fb => fb.type === 'Praise').length})</TabsTrigger>
                             </TabsList>
                             <TabsContent value={activeTab} className="mt-4">
-                                 <Table>
-                                    <TableHeader>
-                                        <TableRow>
-                                            <TableHead className="w-[120px]">Type</TableHead>
-                                            <TableHead className="w-[120px]">Severity</TableHead>
-                                            <TableHead>Comment</TableHead>
-                                            <TableHead className="w-[120px]">Status</TableHead>
-                                            <TableHead className="w-[150px]">Tester</TableHead>
-                                            <TableHead className="text-right w-[100px]">Date</TableHead>
-                                        </TableRow>
-                                    </TableHeader>
-                                    <TableBody>
-                                        {currentFeedback.length > 0 ? currentFeedback.map(fb => (
-                                            <TableRow key={fb.id}>
-                                                <TableCell className="font-medium flex items-center gap-2">
-                                                    {getFeedbackIcon(fb.type)}
-                                                    {fb.type}
-                                                </TableCell>
-                                                <TableCell>{getSeverityBadge(fb.severity)}</TableCell>
-                                                <TableCell className="text-muted-foreground">{fb.comment}</TableCell>
-                                                <TableCell>
-                                                    <Badge variant={fb.status === 'Resolved' || fb.status === 'Closed' ? 'secondary' : 'outline'}>{fb.status}</Badge>
-                                                </TableCell>
-                                                <TableCell>{fb.tester}</TableCell>
-                                                <TableCell className="text-right text-muted-foreground">{fb.date}</TableCell>
-                                            </TableRow>
-                                        )) : (
+                                {viewMode === 'table' ? (
+                                    <Table>
+                                        <TableHeader>
                                             <TableRow>
-                                                <TableCell colSpan={6} className="text-center h-24 text-muted-foreground">
-                                                    No {activeTab !== 'all' ? activeTab : ''} feedback yet.
-                                                </TableCell>
+                                                <TableHead className="w-[120px]">Type</TableHead>
+                                                <TableHead className="w-[120px]">Severity</TableHead>
+                                                <TableHead>Comment</TableHead>
+                                                <TableHead className="w-[120px]">Status</TableHead>
+                                                <TableHead className="w-[150px]">Tester</TableHead>
+                                                <TableHead className="text-right w-[100px]">Date</TableHead>
                                             </TableRow>
+                                        </TableHeader>
+                                        <TableBody>
+                                            {currentFeedback.length > 0 ? currentFeedback.map(fb => (
+                                                <TableRow key={fb.id}>
+                                                    <TableCell className="font-medium flex items-center gap-2">
+                                                        {getFeedbackIcon(fb.type)}
+                                                        {fb.type}
+                                                    </TableCell>
+                                                    <TableCell>{getSeverityBadge(fb.severity)}</TableCell>
+                                                    <TableCell className="text-muted-foreground">{fb.comment}</TableCell>
+                                                    <TableCell>
+                                                        <Badge variant={fb.status === 'Resolved' || fb.status === 'Closed' ? 'secondary' : 'outline'}>{fb.status}</Badge>
+                                                    </TableCell>
+                                                    <TableCell>{fb.tester}</TableCell>
+                                                    <TableCell className="text-right text-muted-foreground">{fb.date}</TableCell>
+                                                </TableRow>
+                                            )) : (
+                                                <TableRow>
+                                                    <TableCell colSpan={6} className="text-center h-24 text-muted-foreground">
+                                                        No {activeTab} feedback yet.
+                                                    </TableCell>
+                                                </TableRow>
+                                            )}
+                                        </TableBody>
+                                    </Table>
+                                ) : (
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        {currentFeedback.length > 0 ? currentFeedback.map(fb => (
+                                            <Card key={fb.id} className="p-4 space-y-3">
+                                                <div className="flex items-center justify-between">
+                                                    <div className="font-medium flex items-center gap-2">
+                                                        {getFeedbackIcon(fb.type)}
+                                                        {fb.type}
+                                                    </div>
+                                                    {getSeverityBadge(fb.severity)}
+                                                </div>
+                                                <p className="text-muted-foreground text-sm">{fb.comment}</p>
+                                                <div className="flex items-center justify-between text-xs text-muted-foreground pt-3 border-t">
+                                                    <div>
+                                                        <span className="font-semibold text-foreground">{fb.tester}</span> / {fb.date}
+                                                    </div>
+                                                     <Badge variant={fb.status === 'Resolved' || fb.status === 'Closed' ? 'secondary' : 'outline'}>{fb.status}</Badge>
+                                                </div>
+                                            </Card>
+                                        )) : (
+                                             <div className="col-span-full text-center h-24 flex items-center justify-center text-muted-foreground">
+                                                No {activeTab} feedback yet.
+                                            </div>
                                         )}
-                                    </TableBody>
-                                </Table>
+                                    </div>
+                                )}
 
                                 {totalFeedbackPages > 1 && (
                                     <Pagination className="mt-8">
@@ -316,3 +356,5 @@ export default function ProjectDetailsPage({ params }: { params: { id: string } 
     </div>
   )
 }
+
+    
