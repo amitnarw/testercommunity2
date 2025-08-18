@@ -18,6 +18,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
 const getStatusConfig = (status: string) => {
     switch (status) {
@@ -129,93 +131,122 @@ export default function ProjectDetailsPage({ params }: { params: { id: string } 
                     </Card>
                 </div>
 
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start mb-8">
-                    <Card className="lg:col-span-1">
-                         <CardHeader>
-                            <CardTitle className="flex items-center gap-2"><Smartphone className="w-5 h-5"/> Device Coverage</CardTitle>
-                        </CardHeader>
-                        <CardContent className="space-y-4">
-                           {project.deviceCoverage.map(device => (
-                               <div key={device.device}>
-                                   <div className="flex justify-between items-center mb-1">
-                                       <span className="text-sm font-medium">{device.device}</span>
-                                       <span className="text-sm text-muted-foreground">{device.testers} Testers</span>
-                                   </div>
-                                   <Progress value={(device.testers / totalTesters) * 100} />
-                               </div>
-                           ))}
-                        </CardContent>
-                    </Card>
-                    <Card className="lg:col-span-1">
-                         <CardHeader>
-                            <CardTitle className="flex items-center gap-2"><BarChart className="w-5 h-5"/> OS Version Coverage</CardTitle>
-                        </CardHeader>
-                        <CardContent className="space-y-4">
-                           {project.osCoverage.map(os => (
-                               <div key={os.version}>
-                                   <div className="flex justify-between items-center mb-1">
-                                       <span className="text-sm font-medium">{os.version}</span>
-                                       <span className="text-sm text-muted-foreground">{os.testers} Testers</span>
-                                   </div>
-                                   <Progress value={(os.testers / totalTesters) * 100} className="[&>div]:bg-green-500" />
-                               </div>
-                           ))}
-                        </CardContent>
-                    </Card>
-                    <Card className="lg:col-span-1">
-                         <CardHeader>
-                            <CardTitle className="flex items-center gap-2"><MapPin className="w-5 h-5"/> Top Geographies</CardTitle>
-                        </CardHeader>
-                        <CardContent>
-                           <ul className="space-y-3">
-                               {project.topGeographies.map(geo => (
-                                   <li key={geo.country} className="flex items-center justify-between">
-                                       <span className="text-sm font-medium flex items-center gap-2">{geo.flag} {geo.country}</span>
-                                       <span className="text-sm text-muted-foreground">{geo.testers} Testers</span>
-                                   </li>
-                               ))}
-                           </ul>
-                        </CardContent>
-                    </Card>
-                </div>
-                
-                <Card>
-                    <CardHeader>
-                        <CardTitle>Detailed Feedback Log</CardTitle>
-                        <CardDescription>All feedback submitted by testers for this project.</CardDescription>
-                    </CardHeader>
-                    <CardContent>
-                        <Table>
-                            <TableHeader>
-                                <TableRow>
-                                    <TableHead className="w-[120px]">Type</TableHead>
-                                    <TableHead className="w-[120px]">Severity</TableHead>
-                                    <TableHead>Comment</TableHead>
-                                    <TableHead className="w-[120px]">Status</TableHead>
-                                    <TableHead className="w-[150px]">Tester</TableHead>
-                                    <TableHead className="text-right w-[100px]">Date</TableHead>
-                                </TableRow>
-                            </TableHeader>
-                            <TableBody>
-                                {project.feedback.map(fb => (
-                                    <TableRow key={fb.id}>
-                                        <TableCell className="font-medium flex items-center gap-2">
-                                            {getFeedbackIcon(fb.type)}
-                                            {fb.type}
-                                        </TableCell>
-                                        <TableCell>{getSeverityBadge(fb.severity)}</TableCell>
-                                        <TableCell className="text-muted-foreground">{fb.comment}</TableCell>
-                                        <TableCell>
-                                            <Badge variant={fb.status === 'Resolved' || fb.status === 'Closed' ? 'secondary' : 'outline'}>{fb.status}</Badge>
-                                        </TableCell>
-                                        <TableCell>{fb.tester}</TableCell>
-                                        <TableCell className="text-right text-muted-foreground">{fb.date}</TableCell>
-                                    </TableRow>
+                <Tabs defaultValue="feedback">
+                    <TabsList className="grid w-full grid-cols-3 max-w-md mx-auto mb-8">
+                        <TabsTrigger value="feedback">Feedback Log</TabsTrigger>
+                        <TabsTrigger value="analytics">Performance Analytics</TabsTrigger>
+                        <TabsTrigger value="demographics">Tester Demographics</TabsTrigger>
+                    </TabsList>
+                    <TabsContent value="feedback">
+                        <Card>
+                            <CardHeader>
+                                <CardTitle>Detailed Feedback Log</CardTitle>
+                                <CardDescription>All feedback submitted by testers for this project.</CardDescription>
+                            </CardHeader>
+                            <CardContent>
+                                <Table>
+                                    <TableHeader>
+                                        <TableRow>
+                                            <TableHead className="w-[120px]">Type</TableHead>
+                                            <TableHead className="w-[120px]">Severity</TableHead>
+                                            <TableHead>Comment</TableHead>
+                                            <TableHead className="w-[120px]">Status</TableHead>
+                                            <TableHead className="w-[150px]">Tester</TableHead>
+                                            <TableHead className="text-right w-[100px]">Date</TableHead>
+                                        </TableRow>
+                                    </TableHeader>
+                                    <TableBody>
+                                        {project.feedback.map(fb => (
+                                            <TableRow key={fb.id}>
+                                                <TableCell className="font-medium flex items-center gap-2">
+                                                    {getFeedbackIcon(fb.type)}
+                                                    {fb.type}
+                                                </TableCell>
+                                                <TableCell>{getSeverityBadge(fb.severity)}</TableCell>
+                                                <TableCell className="text-muted-foreground">{fb.comment}</TableCell>
+                                                <TableCell>
+                                                    <Badge variant={fb.status === 'Resolved' || fb.status === 'Closed' ? 'secondary' : 'outline'}>{fb.status}</Badge>
+                                                </TableCell>
+                                                <TableCell>{fb.tester}</TableCell>
+                                                <TableCell className="text-right text-muted-foreground">{fb.date}</TableCell>
+                                            </TableRow>
+                                        ))}
+                                    </TableBody>
+                                </Table>
+                            </CardContent>
+                        </Card>
+                    </TabsContent>
+                     <TabsContent value="analytics">
+                        <Card>
+                             <CardHeader>
+                                <CardTitle>Bug Report Trend</CardTitle>
+                                <CardDescription>Number of new bugs reported over the 14-day test cycle.</CardDescription>
+                            </CardHeader>
+                            <CardContent className="h-[400px] w-full">
+                               <ResponsiveContainer width="100%" height="100%">
+                                    <LineChart data={project.chartData} margin={{ top: 5, right: 20, left: -10, bottom: 5 }}>
+                                        <CartesianGrid strokeDasharray="3 3" />
+                                        <XAxis dataKey="date" />
+                                        <YAxis />
+                                        <Tooltip />
+                                        <Line type="monotone" dataKey="bugs" stroke="hsl(var(--primary))" strokeWidth={2} activeDot={{ r: 8 }} />
+                                    </LineChart>
+                                </ResponsiveContainer>
+                            </CardContent>
+                        </Card>
+                    </TabsContent>
+                     <TabsContent value="demographics">
+                        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+                            <Card className="lg:col-span-1">
+                                <CardHeader>
+                                    <CardTitle className="flex items-center gap-2"><Smartphone className="w-5 h-5"/> Device Coverage</CardTitle>
+                                </CardHeader>
+                                <CardContent className="space-y-4">
+                                {project.deviceCoverage.map(device => (
+                                    <div key={device.device}>
+                                        <div className="flex justify-between items-center mb-1">
+                                            <span className="text-sm font-medium">{device.device}</span>
+                                            <span className="text-sm text-muted-foreground">{device.testers} Testers</span>
+                                        </div>
+                                        <Progress value={(device.testers / totalTesters) * 100} />
+                                    </div>
                                 ))}
-                            </TableBody>
-                        </Table>
-                    </CardContent>
-                </Card>
+                                </CardContent>
+                            </Card>
+                            <Card className="lg:col-span-1">
+                                <CardHeader>
+                                    <CardTitle className="flex items-center gap-2"><BarChart className="w-5 h-5"/> OS Version Coverage</CardTitle>
+                                </CardHeader>
+                                <CardContent className="space-y-4">
+                                {project.osCoverage.map(os => (
+                                    <div key={os.version}>
+                                        <div className="flex justify-between items-center mb-1">
+                                            <span className="text-sm font-medium">{os.version}</span>
+                                            <span className="text-sm text-muted-foreground">{os.testers} Testers</span>
+                                        </div>
+                                        <Progress value={(os.testers / totalTesters) * 100} className="[&>div]:bg-green-500" />
+                                    </div>
+                                ))}
+                                </CardContent>
+                            </Card>
+                            <Card className="lg:col-span-1">
+                                <CardHeader>
+                                    <CardTitle className="flex items-center gap-2"><MapPin className="w-5 h-5"/> Top Geographies</CardTitle>
+                                </CardHeader>
+                                <CardContent>
+                                <ul className="space-y-3">
+                                    {project.topGeographies.map(geo => (
+                                        <li key={geo.country} className="flex items-center justify-between">
+                                            <span className="text-sm font-medium flex items-center gap-2">{geo.flag} {geo.country}</span>
+                                            <span className="text-sm text-muted-foreground">{geo.testers} Testers</span>
+                                        </li>
+                                    ))}
+                                </ul>
+                                </CardContent>
+                            </Card>
+                        </div>
+                    </TabsContent>
+                </Tabs>
             </main>
         </div>
     </div>
