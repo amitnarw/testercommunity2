@@ -85,7 +85,7 @@ export function SupportChatbot() {
     return (
         <div className="fixed bottom-8 right-8 z-50">
             <AnimatePresence>
-                {!isOpen ? (
+                {!isOpen && (
                     <motion.button
                         layoutId="chatbot-window"
                         onClick={openChat}
@@ -106,10 +106,17 @@ export function SupportChatbot() {
                              <MessageSquare className="w-5 h-5" />
                         </div>
                     </motion.button>
-                ) : (
+                )}
+            </AnimatePresence>
+             <AnimatePresence>
+                {isOpen && (
                     <motion.div
                         layoutId="chatbot-window"
-                        className="w-[90vw] max-w-sm h-[70vh] bg-card rounded-2xl shadow-2xl flex flex-col overflow-hidden border"
+                        initial={{ scale: 0, opacity: 0 }}
+                        animate={{ scale: 1, opacity: 1 }}
+                        exit={{ scale: 0, opacity: 0 }}
+                        transition={{ duration: 0.3, ease: 'easeOut' }}
+                        className="w-[90vw] max-w-sm h-[70vh] bg-card rounded-2xl shadow-2xl flex flex-col overflow-hidden border origin-bottom-right"
                     >
                         {/* Header */}
                         <header className="flex items-center justify-between p-4 border-b bg-primary text-primary-foreground">
