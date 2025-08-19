@@ -19,24 +19,21 @@ const PageTransition = () => {
 
     const variants = {
         initial: {
-            opacity: 1,
             top: "100vh",
-            height: "100vh",
         },
         animate: {
-            opacity: 0,
             top: "-100vh",
-            height: "0vh",
             transition: { 
                 duration: 1, 
                 ease: [0.76, 0, 0.24, 1],
                 delay: 0.2
+            },
+            transitionEnd: {
+                top: "100vh",
             }
         },
         exit: {
-            opacity: 1,
-            top: "0",
-            height: "100vh",
+            top: "0vh",
             transition: { 
                 duration: 1, 
                 ease: [0.76, 0, 0.24, 1],
@@ -61,11 +58,12 @@ const PageTransition = () => {
     }
 
     if (dimensions.width === 0) {
-        return <div className="page-transition" />;
+        return null; // Return null to avoid flash of unstyled content
     }
     
-    const initialPath = `M0 0 L${dimensions.width} 0 L${dimensions.width} ${dimensions.height} Q${dimensions.width/2} ${dimensions.height + 300} 0 ${dimensions.height}  L0 0`
-    const targetPath = `M0 0 L${dimensions.width} 0 L${dimensions.width} ${dimensions.height} Q${dimensions.width/2} ${dimensions.height} 0 ${dimensions.height}  L0 0`
+    const initialPath = `M0 ${dimensions.height} Q${dimensions.width/2} ${dimensions.height + 300} ${dimensions.width} ${dimensions.height} L${dimensions.width} 0 L0 0`
+    const targetPath = `M0 ${dimensions.height} Q${dimensions.width/2} ${dimensions.height} ${dimensions.width} ${dimensions.height} L${dimensions.width} 0 L0 0`
+
 
     return (
          <motion.div 
