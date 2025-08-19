@@ -92,7 +92,7 @@ interface HeaderProps {
   isAuthenticated: boolean;
   isDashboardPage: boolean;
   isMobileMenuOpen: boolean;
-  setMobileMenuOpen: (open: boolean) => void;
+  setMobileOpen: (open: boolean) => void;
   isSidebarCollapsed: boolean;
   setSidebarCollapsed: (collapsed: boolean) => void;
   onLogout: () => void;
@@ -153,7 +153,7 @@ export function Header({
                 </div>
               ) : (
                 <Link href="/">
-                  <SiteLogo className="h-10" />
+                  <SiteLogo />
                 </Link>
               )}
             </div>

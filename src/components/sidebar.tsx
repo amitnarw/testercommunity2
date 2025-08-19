@@ -4,7 +4,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { LayoutDashboard, Users2, PlusCircle, LifeBuoy, LogOut, PanelLeftClose, PanelLeftOpen, X, Bell } from "lucide-react";
+import { LayoutDashboard, Users2, PlusCircle, LifeBuoy, LogOut, Bell } from "lucide-react";
 import { Button } from "./ui/button";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "./ui/tooltip";
 import { OfferCard } from "./offer-card";
@@ -68,13 +68,12 @@ export function Sidebar({ isCollapsed, isMobileOpen, setMobileOpen, onLogout }: 
         )}>
             <div className="flex h-full max-h-screen flex-col">
                 <div className={cn("flex h-20 items-center border-b px-4", isCollapsed ? "justify-center" : "justify-between")}>
-                    <Link href="/dashboard" className="transition-opacity duration-300">
-                       {isCollapsed ? <InTestersLogoShort className="h-8 w-8" /> : <SiteLogo className="h-10" />}
+                    <Link href="/dashboard" className={cn("transition-opacity duration-300", isCollapsed && "opacity-0 invisible")}>
+                       <SiteLogo className="h-10" />
                     </Link>
-                    <Button variant="ghost" size="icon" onClick={() => setMobileOpen(false)} className="md:hidden">
-                        <X />
-                        <span className="sr-only">Close menu</span>
-                    </Button>
+                     <Link href="/dashboard" className={cn("transition-opacity duration-300", !isCollapsed && "opacity-0 invisible")}>
+                       <InTestersLogoShort className="h-8 w-8" />
+                    </Link>
                 </div>
                 
                 <div className="flex-1 overflow-y-auto py-4 space-y-4">

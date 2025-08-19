@@ -4,17 +4,18 @@ import { cn } from '@/lib/utils';
 
 export function SiteLogo({className}: {className?: string}) {
     return (
-        <div className={cn("flex flex-col items-center", className)}>
-            <InTestersLogoShort className="h-8 w-8" />
+        <div className={cn("flex flex-col items-center w-10", className)}>
+            <InTestersLogoShort className="h-10 w-10" />
             <span 
-                className="text-xs font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent"
-                style={{letterSpacing: '0.27em'}}
+                className="text-[9px] font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent block w-full text-center mt-0.5"
+                style={{ transform: 'scaleX(1.75)', transformOrigin: 'center' }}
             >
                 inTesters
             </span>
         </div>
     )
 }
+
 
 export function InTestersLogo(props: SVGProps<SVGSVGElement>) {
   return (

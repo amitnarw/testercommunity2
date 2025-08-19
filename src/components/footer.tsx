@@ -30,7 +30,7 @@ export function Footer() {
         <div className="grid gap-8 lg:grid-cols-3">
           <div className="space-y-4">
             <Link href="/" className="flex items-center gap-2">
-              <SiteLogo className="h-10" />
+              <SiteLogo />
             </Link>
             <p className="text-muted-foreground">The future of app testing is animated.</p>
             <div className="flex items-center gap-2">
