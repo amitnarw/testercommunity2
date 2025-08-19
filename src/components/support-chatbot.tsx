@@ -40,7 +40,10 @@ export function SupportChatbot() {
     useEffect(() => {
         const trigger = document.querySelector('[data-chatbot-trigger]');
         if (trigger) {
-            const handleClick = () => openChat();
+            const handleClick = (e: Event) => {
+                e.preventDefault();
+                openChat();
+            };
             trigger.addEventListener('click', handleClick);
             return () => {
                 trigger.removeEventListener('click', handleClick);
@@ -88,9 +91,9 @@ export function SupportChatbot() {
         <div className="fixed bottom-8 right-8 z-50">
             <motion.div
                 layout
-                transition={{ duration: 0.3, type: "spring", stiffness: 300, damping: 30 }}
+                transition={{ duration: 0.3, type: "spring", stiffness: 400, damping: 40 }}
                 className={cn(
-                    "bg-card shadow-2xl flex flex-col border origin-bottom-right",
+                    "bg-card shadow-2xl flex flex-col border origin-bottom-right overflow-hidden",
                     isOpen 
                         ? 'w-[90vw] max-w-sm h-[70vh] rounded-2xl' 
                         : 'w-auto h-auto rounded-full cursor-pointer'
@@ -99,10 +102,10 @@ export function SupportChatbot() {
             >
                 <AnimatePresence>
                 {isOpen ? (
-                    <motion.div
+                     <motion.div
                         key="chatbot-open"
                         initial={{ opacity: 0 }}
-                        animate={{ opacity: 1, transition: { delay: 0.2 } }}
+                        animate={{ opacity: 1, transition: { delay: 0.2, duration: 0.3 } }}
                         exit={{ opacity: 0, transition: { duration: 0.1 } }}
                         className="w-full h-full flex flex-col"
                     >
@@ -124,7 +127,7 @@ export function SupportChatbot() {
                                 <X className="h-5 w-5" />
                             </Button>
                         </header>
-                         <ScrollArea className="flex-1 p-4" ref={scrollAreaRef as any}>
+                         <ScrollArea className="flex-1 p-4 bg-background" ref={scrollAreaRef as any}>
                             <div className="space-y-4">
                                 {messages.map((message) => (
                                     <div
@@ -176,7 +179,7 @@ export function SupportChatbot() {
                                 )}
                             </div>
                         </ScrollArea>
-                        <footer className="p-4 border-t flex-shrink-0">
+                        <footer className="p-4 border-t flex-shrink-0 bg-background">
                             <form onSubmit={handleSendMessage} className="flex items-center gap-2">
                                 <Input
                                     value={inputValue}
@@ -195,8 +198,8 @@ export function SupportChatbot() {
                     <motion.div
                         key="chatbot-closed"
                         initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
+                        animate={{ opacity: 1, transition: { delay: 0.2, duration: 0.3 } }}
+                        exit={{ opacity: 0, transition: { duration: 0.1 } }}
                         className="flex items-center gap-3 p-3 bg-primary text-primary-foreground group"
                     >
                        <div className="flex items-center gap-2">
