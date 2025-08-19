@@ -142,6 +142,5 @@ export type Project = {
   }[];
   feedback: ProjectFeedback[];
   chartData: { date: string; bugs: number }[];
+  reviewNotes?: string;
 }
-
-    

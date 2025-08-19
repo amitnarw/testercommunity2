@@ -625,6 +625,7 @@ export const projects: Project[] = [
       avgTestersPerDay: 0,
       startedFrom: "28 Aug 2024",
       description: "A new photo editing app with AI-powered filters and one-touch enhancements.",
+      reviewNotes: "Initial review in progress. Checking for policy compliance and testability.",
       crashFreeRate: 100,
       feedbackBreakdown: { total: 0, critical: 0, high: 0, low: 0 },
       performanceMetrics: { avgStartupTime: "N/A", frozenFrames: "N/A" },
