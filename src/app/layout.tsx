@@ -12,6 +12,9 @@ import { DashboardFooter } from '@/components/dashboard-footer';
 import { Sidebar } from '@/components/sidebar';
 import { cn } from '@/lib/utils';
 import { useState, useEffect } from 'react';
+import { AnimatePresence } from 'framer-motion';
+import PageTransition from '@/components/page-transition';
+
 
 // This is a client component, so we can't use metadata here.
 // We'll manage the title in the individual page components.
@@ -84,7 +87,12 @@ export default function RootLayout({
                 setSidebarCollapsed={setIsSidebarCollapsed}
                 onLogout={handleLogout}
               />
-              <main className="flex-1">{children}</main>
+              <AnimatePresence mode="wait">
+                <main key={pathname} className="flex-1">
+                    <PageTransition />
+                    {children}
+                </main>
+              </AnimatePresence>
               {!isAuthPage && (
                 isDashboardPage ? <DashboardFooter /> : <Footer />
               )}
