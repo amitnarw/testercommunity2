@@ -4,11 +4,10 @@ import { cn } from '@/lib/utils';
 
 export function SiteLogo({className}: {className?: string}) {
     return (
-        <div className={cn("flex flex-col items-center w-10", className)}>
+        <div className={cn("flex flex-col items-center w-auto", className)}>
             <InTestersLogoShort className="h-10 w-10" />
             <span 
-                className="text-[9px] font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent block w-full text-center mt-0.5"
-                style={{ transform: 'scaleX(1.75)', transformOrigin: 'center' }}
+                className="text-[9px] font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent block w-full text-center"
             >
                 inTesters
             </span>
