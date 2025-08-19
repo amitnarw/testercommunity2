@@ -39,13 +39,15 @@ export function SupportChatbot() {
 
     useEffect(() => {
         const trigger = document.querySelector('[data-chatbot-trigger]');
+        const handleClick = (e: Event) => {
+            e.preventDefault();
+            openChat();
+        };
         if (trigger) {
-            const handleClick = (e: Event) => {
-                e.preventDefault();
-                openChat();
-            };
             trigger.addEventListener('click', handleClick);
-            return () => {
+        }
+        return () => {
+            if(trigger) {
                 trigger.removeEventListener('click', handleClick);
             }
         }
@@ -89,25 +91,15 @@ export function SupportChatbot() {
 
     return (
         <div className="fixed bottom-8 right-8 z-50">
-            <motion.div
-                layout
-                transition={{ duration: 0.3, type: "spring", stiffness: 400, damping: 40 }}
-                className={cn(
-                    "bg-card shadow-2xl flex flex-col border origin-bottom-right overflow-hidden",
-                    isOpen 
-                        ? 'w-[90vw] max-w-sm h-[70vh] rounded-2xl' 
-                        : 'w-auto h-auto rounded-full cursor-pointer'
-                )}
-                onClick={() => !isOpen && openChat()}
-            >
-                <AnimatePresence>
+            <AnimatePresence>
                 {isOpen ? (
                      <motion.div
-                        key="chatbot-open"
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1, transition: { delay: 0.2, duration: 0.3 } }}
-                        exit={{ opacity: 0, transition: { duration: 0.1 } }}
-                        className="w-full h-full flex flex-col"
+                        key="chatbot-window"
+                        initial={{ opacity: 0, y: 20, scale: 0.95 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        exit={{ opacity: 0, y: 20, scale: 0.95, transition: { duration: 0.2 } }}
+                        transition={{ duration: 0.3, ease: "easeOut" }}
+                        className="bg-card shadow-2xl flex flex-col border origin-bottom-right overflow-hidden w-[90vw] max-w-sm h-[70vh] rounded-2xl"
                     >
                          <header className="flex items-center justify-between p-4 border-b bg-primary text-primary-foreground flex-shrink-0">
                             <div className="flex items-center gap-3">
@@ -195,12 +187,14 @@ export function SupportChatbot() {
                         </footer>
                     </motion.div>
                 ) : (
-                    <motion.div
-                        key="chatbot-closed"
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1, transition: { delay: 0.2, duration: 0.3 } }}
-                        exit={{ opacity: 0, transition: { duration: 0.1 } }}
-                        className="flex items-center gap-3 p-3 bg-primary text-primary-foreground group"
+                    <motion.button
+                        key="chatbot-button"
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: 20, transition: { duration: 0.2 } }}
+                        transition={{ duration: 0.3, ease: "easeOut", delay: 0.1 }}
+                        onClick={openChat}
+                        className="flex items-center gap-3 p-3 bg-primary text-primary-foreground rounded-full shadow-lg group"
                     >
                        <div className="flex items-center gap-2">
                              <Avatar className="w-8 h-8 border-2 border-primary-foreground/50">
@@ -212,10 +206,9 @@ export function SupportChatbot() {
                         <div className="bg-primary-foreground/20 rounded-full p-2">
                              <MessageSquare className="w-5 h-5" />
                         </div>
-                    </motion.div>
+                    </motion.button>
                 )}
-                </AnimatePresence>
-            </motion.div>
+            </AnimatePresence>
         </div>
     );
 }
