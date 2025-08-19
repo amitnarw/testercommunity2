@@ -19,18 +19,14 @@ const PageTransition = () => {
 
     const variants = {
         initial: {
-            top: "100vh",
+            top: "0vh",
         },
         animate: {
             top: "-100vh",
             transition: { 
                 duration: 1, 
                 ease: [0.76, 0, 0.24, 1],
-                delay: 0.2
             },
-            transitionEnd: {
-                top: "100vh",
-            }
         },
         exit: {
             top: "0vh",
@@ -71,6 +67,7 @@ const PageTransition = () => {
             initial="initial"
             animate="animate"
             exit="exit"
+            style={{top: '100vh'}}
             variants={variants}
          >
             <svg className="absolute top-0 w-full h-[calc(100%+300px)] pointer-events-none">
