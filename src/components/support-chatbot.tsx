@@ -193,10 +193,6 @@ export function SupportChatbot() {
                         key="button"
                         onClick={openChat}
                         className="flex items-center gap-3 p-3 pl-4 bg-primary text-primary-foreground rounded-full shadow-lg hover:bg-primary/90 transition-all group origin-bottom-right"
-                        initial={{ scale: 0.5, opacity: 0, y: 100 }}
-                        animate={{ scale: 1, opacity: 1, y: 0 }}
-                        exit={{ scale: 0.5, opacity: 0, y: 100 }}
-                        transition={{ duration: 0.3, ease: 'easeOut' }}
                     >
                         <div className="flex items-center gap-2">
                              <Avatar className="w-8 h-8 border-2 border-primary-foreground/50">
