@@ -8,6 +8,7 @@ import { LayoutDashboard, Users2, PlusCircle, LifeBuoy, LogOut, PanelLeftClose, 
 import { Button } from "./ui/button";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "./ui/tooltip";
 import { OfferCard } from "./offer-card";
+import { InTestersLogo } from "./icons";
 
 const mainNavLinks = [
     { name: "Developer Dashboard", href: "/dashboard", icon: LayoutDashboard },
@@ -68,6 +69,9 @@ export function Sidebar({ isCollapsed, setCollapsed, isMobileOpen, setMobileOpen
         )}>
             <div className="flex h-full max-h-screen flex-col">
                 <div className={cn("flex h-20 items-center border-b px-4", isCollapsed ? "justify-center" : "justify-between")}>
+                    <Link href="/dashboard" className={cn(isCollapsed && "hidden md:inline-block")}>
+                        <InTestersLogo className="h-8" />
+                    </Link>
                      <Button variant="ghost" size="icon" onClick={() => setCollapsed(!isCollapsed)} className="hidden md:flex">
                         {isCollapsed ? <PanelLeftOpen /> : <PanelLeftClose />}
                         <span className="sr-only">{isCollapsed ? "Expand sidebar" : "Collapse sidebar"}</span>

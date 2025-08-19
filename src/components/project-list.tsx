@@ -45,7 +45,7 @@ const Metric = ({ label, value }: { label: string, value: string | number }) => 
 
 export function ProjectList({ projects }: { projects: Project[] }) {
     return (
-        <Card className="rounded-xl border-0 bg-transparent shadow-none">
+        <Card className="rounded-xl border-0 bg-transparent shadow-sm">
             <CardHeader>
                 <CardTitle>Your Projects</CardTitle>
                 <CardDescription>An overview of your apps currently being tested or completed.</CardDescription>
@@ -56,7 +56,7 @@ export function ProjectList({ projects }: { projects: Project[] }) {
                     return (
                         <div key={project.id} className="group relative">
                             <Link href={`/dashboard/project/${project.id}`}>
-                                <div className="rounded-2xl overflow-hidden bg-background border hover:bg-secondary/50 transition-all duration-300 transform hover:-translate-y-1 hover:shadow-lg h-full flex flex-col">
+                                <div className="rounded-2xl overflow-hidden bg-background hover:bg-secondary/50 transition-all duration-300 transform hover:-translate-y-1 hover:shadow-lg h-full flex flex-col">
                                     <CardHeader className="flex flex-row items-start justify-between gap-4 p-5">
                                         <div className="flex items-center gap-4">
                                             <Image src={project.icon} alt={project.name} width={48} height={48} className="rounded-lg border bg-secondary" data-ai-hint={project.dataAiHint} />
@@ -66,8 +66,8 @@ export function ProjectList({ projects }: { projects: Project[] }) {
                                             </div>
                                         </div>
 
-                                        <div className="absolute top-3 right-3 bg-primary/20 rounded-full flex items-center justify-center pointer-events-none group-hover:scale-110 group-hover:bg-primary/80 transition-transform p-2">
-                                            <ArrowRight className="text-primary group-hover:text-primary-foreground" size={16} />
+                                        <div className="absolute -top-11 -right-10 bg-primary/20 rounded-full flex items-center justify-center pointer-events-none group-hover:scale-110 group-hover:bg-primary/80 transition-transform p-12 duration-500">
+                                            <ArrowRight className="absolute top-12 right-12 text-primary group-hover:text-primary-foreground group-hover:-rotate-45 duration-300" size={24} />
                                         </div>
                                     </CardHeader>
 

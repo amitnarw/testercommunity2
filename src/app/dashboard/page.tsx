@@ -51,59 +51,43 @@ export default function DashboardPage() {
             </div>
           </header>
 
-          <div className="grid gap-4 md:grid-cols-2 md:gap-8 lg:grid-cols-4">
-            <Card className="rounded-xl">
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+            <Card className="rounded-xl border-0">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">
                   Total Apps
                 </CardTitle>
-                <Package className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">{allProjects.length}</div>
-                <p className="text-xs text-muted-foreground">
-                  Across all your projects
-                </p>
               </CardContent>
             </Card>
-            <Card className="rounded-xl">
+            <Card className="rounded-xl border-0">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">
                   In Testing
                 </CardTitle>
-                <FlaskConical className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">{allProjects.filter(p => p.status === 'In Testing').length}</div>
-                <p className="text-xs text-muted-foreground">
-                  Currently being tested by the community
-                </p>
               </CardContent>
             </Card>
-            <Card className="rounded-xl">
+            <Card className="rounded-xl border-0">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">Completed</CardTitle>
-                <CheckCircle2 className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">{allProjects.filter(p => p.status === 'Completed').length}</div>
-                <p className="text-xs text-muted-foreground">
-                  Finished testing cycles
-                </p>
               </CardContent>
             </Card>
-             <Card className="rounded-xl">
+             <Card className="rounded-xl border-0">
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">
                   Available Points
                 </CardTitle>
-                <Coins className="h-4 w-4 text-muted-foreground" />
               </CardHeader>
               <CardContent>
                 <div className="text-2xl font-bold">1,250</div>
-                <p className="text-xs text-muted-foreground">
-                  Your current point balance
-                </p>
               </CardContent>
             </Card>
           </div>

@@ -74,20 +74,18 @@ export default function CommunityDashboardPage() {
 
                             <Card className="rounded-xl border-0 row-span-1 md:col-span-2 md:row-span-2">
                                 <CardHeader className='h-1/3'>
-                                    <CardTitle>Your Apps' Performance</CardTitle>
+                                    <CardTitle className='text-primary'>Your Apps' Performance</CardTitle>
                                 </CardHeader>
                                 <CardContent className="flex flex-row items-center justify-around text-center gap-4 h-2/3">
-                                    <div className="flex flex-col items-center gap-1">
+                                    <div className="flex flex-col items-center gap-1 bg-secondary rounded-2xl p-4 w-full">
                                         <p className="text-2xl font-bold">2</p>
                                         <p className="text-xs text-muted-foreground">Apps Submitted</p>
                                     </div>
-                                    <Separator orientation="vertical" className="h-16 hidden sm:block" />
-                                    <div className="flex flex-col items-center gap-1">
+                                    <div className="flex flex-col items-center gap-1 bg-secondary rounded-2xl p-4 w-full">
                                         <p className="text-2xl font-bold">35</p>
                                         <p className="text-xs text-muted-foreground">Testers Engaged</p>
                                     </div>
-                                    <Separator orientation="vertical" className="h-16 hidden sm:block" />
-                                    <div className="flex flex-col items-center gap-1">
+                                    <div className="flex flex-col items-center gap-1 bg-secondary rounded-2xl p-4 w-full">
                                         <p className="text-2xl font-bold">12</p>
                                         <p className="text-xs text-muted-foreground">Tests Completed</p>
                                     </div>
