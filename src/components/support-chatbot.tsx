@@ -60,11 +60,11 @@ export function SupportChatbot() {
                 }
             }, 100);
         }
-    }, [messages, isOpen]);
+    }, [messages, isOpen, isLoading]);
 
     const handleSendMessage = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (!inputValue.trim()) return;
+        if (!inputValue.trim() || isLoading) return;
 
         const userMessage: Message = { id: Date.now(), text: inputValue, sender: 'user' };
         setMessages(prev => [...prev, userMessage]);
@@ -86,15 +86,27 @@ export function SupportChatbot() {
 
     return (
         <div className="fixed bottom-8 right-8 z-50">
-            <AnimatePresence>
+            <motion.div
+                layout
+                transition={{ duration: 0.3, type: "spring", stiffness: 300, damping: 30 }}
+                className={cn(
+                    "bg-card shadow-2xl flex flex-col border origin-bottom-right",
+                    isOpen 
+                        ? 'w-[90vw] max-w-sm h-[70vh] rounded-2xl' 
+                        : 'w-auto h-auto rounded-full cursor-pointer'
+                )}
+                onClick={() => !isOpen && openChat()}
+            >
+                <AnimatePresence>
                 {isOpen ? (
                     <motion.div
-                        layoutId="chatbot-window"
-                        key="chatbot"
-                        className="w-[90vw] max-w-sm h-[70vh] bg-card rounded-2xl shadow-2xl flex flex-col overflow-hidden border origin-bottom-right"
+                        key="chatbot-open"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1, transition: { delay: 0.2 } }}
+                        exit={{ opacity: 0, transition: { duration: 0.1 } }}
+                        className="w-full h-full flex flex-col"
                     >
-                        {/* Header */}
-                        <header className="flex items-center justify-between p-4 border-b bg-primary text-primary-foreground">
+                         <header className="flex items-center justify-between p-4 border-b bg-primary text-primary-foreground flex-shrink-0">
                             <div className="flex items-center gap-3">
                                 <Avatar>
                                     <AvatarImage src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?q=80&w=400" data-ai-hint="support agent" />
@@ -112,9 +124,7 @@ export function SupportChatbot() {
                                 <X className="h-5 w-5" />
                             </Button>
                         </header>
-
-                        {/* Messages */}
-                        <ScrollArea className="flex-1 p-4" ref={scrollAreaRef as any}>
+                         <ScrollArea className="flex-1 p-4" ref={scrollAreaRef as any}>
                             <div className="space-y-4">
                                 {messages.map((message) => (
                                     <div
@@ -166,9 +176,7 @@ export function SupportChatbot() {
                                 )}
                             </div>
                         </ScrollArea>
-
-                        {/* Input Form */}
-                        <footer className="p-4 border-t">
+                        <footer className="p-4 border-t flex-shrink-0">
                             <form onSubmit={handleSendMessage} className="flex items-center gap-2">
                                 <Input
                                     value={inputValue}
@@ -184,25 +192,27 @@ export function SupportChatbot() {
                         </footer>
                     </motion.div>
                 ) : (
-                    <motion.button
-                        layoutId="chatbot-window"
-                        key="button"
-                        onClick={openChat}
-                        className="flex items-center gap-3 p-3 pl-4 bg-primary text-primary-foreground rounded-full shadow-lg hover:bg-primary/90 transition-all group origin-bottom-right"
+                    <motion.div
+                        key="chatbot-closed"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className="flex items-center gap-3 p-3 bg-primary text-primary-foreground group"
                     >
-                        <div className="flex items-center gap-2">
+                       <div className="flex items-center gap-2">
                              <Avatar className="w-8 h-8 border-2 border-primary-foreground/50">
                                 <AvatarImage src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?q=80&w=400" data-ai-hint="support agent" />
                                 <AvatarFallback>A</AvatarFallback>
                             </Avatar>
                             <span className="font-semibold text-sm">Chat with Alex</span>
                         </div>
-                        <div className="bg-primary-foreground/20 rounded-full p-2 group-hover:scale-110 transition-transform">
+                        <div className="bg-primary-foreground/20 rounded-full p-2">
                              <MessageSquare className="w-5 h-5" />
                         </div>
-                    </motion.button>
+                    </motion.div>
                 )}
-            </AnimatePresence>
+                </AnimatePresence>
+            </motion.div>
         </div>
     );
 }
