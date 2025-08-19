@@ -23,7 +23,7 @@ const ChatWindow = ({ closeChat, messages, isLoading, inputValue, setInputValue,
         className="fixed bottom-8 right-8 z-50 bg-card shadow-2xl flex flex-col border origin-bottom-right overflow-hidden w-[90vw] max-w-sm h-[70vh] rounded-2xl"
         initial={{ opacity: 0, scale: 0.8 }}
         animate={{ opacity: 1, scale: 1, transition: { duration: 0.3, ease: 'easeInOut' } }}
-        exit={{ opacity: 0, scale: 0.8, transition: { duration: 0.1, ease: 'easeInOut' } }}
+        exit={{ opacity: 0, scale: 0.8, transition: { duration: 0.1, ease: 'easeOut' } }}
     >
         <header className="flex items-center justify-between p-4 border-b bg-primary text-primary-foreground flex-shrink-0">
             <div className="flex items-center gap-3">
@@ -113,10 +113,10 @@ const ChatWindow = ({ closeChat, messages, isLoading, inputValue, setInputValue,
 );
 
 const ChatButton = ({ openChat }: any) => (
-     <motion.button
+     <motion.div
         layoutId="chatbot-window"
         onClick={openChat}
-        className="fixed bottom-8 right-8 z-50 flex items-center gap-3 p-3 bg-primary text-primary-foreground rounded-full shadow-lg"
+        className="fixed bottom-8 right-8 z-50 flex items-center gap-3 p-3 bg-primary text-primary-foreground rounded-full shadow-lg cursor-pointer origin-bottom-right"
         initial={{ opacity: 0, scale: 0.8 }}
         animate={{ opacity: 1, scale: 1 }}
         exit={{ opacity: 0, scale: 0.8 }}
@@ -132,7 +132,7 @@ const ChatButton = ({ openChat }: any) => (
         <div className="bg-primary-foreground/20 rounded-full p-2">
             <MessageSquare className="w-5 h-5" />
         </div>
-    </motion.button>
+    </motion.div>
 )
 
 export function SupportChatbot() {
