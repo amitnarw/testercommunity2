@@ -167,8 +167,8 @@ export default function Home() {
                                 Join the community and experience the future of app testing today. It's free to get started.
                             </p>
                             <div className="mt-8">
-                                <Button asChild size="lg" className="font-bold text-lg px-8 py-6 rounded-xl hover:shadow-lg hover:shadow-primary/30">
-                                    <Link href="/signup">Sign Up Now <ArrowRight className="ml-2" /></Link>
+                                <Button asChild size="lg" className="font-bold text-lg px-8 py-6 rounded-xl hover:shadow-lg hover:shadow-primary/30 btn-hover-curved-effect">
+                                    <Link href="/signup"><span>Sign Up Now</span> <ArrowRight className="ml-2" /></Link>
                                 </Button>
                             </div>
                         </div>
