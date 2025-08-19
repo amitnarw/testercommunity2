@@ -91,10 +91,6 @@ export function SupportChatbot() {
                     <motion.div
                         layoutId="chatbot-window"
                         key="chatbot"
-                        initial={{ scale: 0.5, opacity: 0, y: 100 }}
-                        animate={{ scale: 1, opacity: 1, y: 0 }}
-                        exit={{ scale: 0.5, opacity: 0, y: 100 }}
-                        transition={{ duration: 0.3, ease: 'easeOut' }}
                         className="w-[90vw] max-w-sm h-[70vh] bg-card rounded-2xl shadow-2xl flex flex-col overflow-hidden border origin-bottom-right"
                     >
                         {/* Header */}
