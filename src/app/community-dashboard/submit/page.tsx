@@ -111,4 +111,3 @@ export default function SubmitAppPage() {
             </div>
         </div>
     )
-}
