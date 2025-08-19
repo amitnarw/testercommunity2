@@ -12,8 +12,6 @@ import { DashboardFooter } from '@/components/dashboard-footer';
 import { Sidebar } from '@/components/sidebar';
 import { cn } from '@/lib/utils';
 import { useState, useEffect } from 'react';
-import { AnimatePresence } from 'framer-motion';
-import PageTransition from '@/components/page-transition';
 
 
 // This is a client component, so we can't use metadata here.
@@ -87,12 +85,9 @@ export default function RootLayout({
                 setSidebarCollapsed={setIsSidebarCollapsed}
                 onLogout={handleLogout}
               />
-              <AnimatePresence mode="wait">
-                  <main key={pathname} className="flex-1">
-                      <PageTransition />
-                      {children}
-                  </main>
-              </AnimatePresence>
+              <main className="flex-1">
+                  {children}
+              </main>
               {!isAuthPage && (
                 isDashboardPage ? <DashboardFooter /> : <Footer />
               )}

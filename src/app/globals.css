@@ -98,12 +98,5 @@
   .dark .bg-dot-pattern {
     background-image: radial-gradient(circle, hsl(var(--primary) / 0.4) 1px, transparent 1px);
   }
-   .page-transition {
-    @apply fixed left-0 top-0 w-full text-black bg-transparent pointer-events-none z-50;
-  }
-
-  .dark .page-transition {
-    @apply text-white;
-  }
 }
     
