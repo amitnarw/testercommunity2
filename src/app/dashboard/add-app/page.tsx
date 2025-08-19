@@ -41,23 +41,23 @@ const CopyBlock = ({ textToCopy }: { textToCopy: string }) => {
 };
 
 const processSteps = [
-    { 
-        title: "Grant Our Testers Access", 
+    {
+        title: "Grant Our Testers Access",
         imageUrl: "/add-app-1.webp",
         dataAiHint: "team collaboration"
     },
-    { 
-        title: "Enable Global Reach", 
+    {
+        title: "Enable Global Reach",
         imageUrl: "/add-app-2.webp",
         dataAiHint: "world map data"
     },
-    { 
-        title: "Submit for Google's Review", 
+    {
+        title: "Submit for Google's Review",
         imageUrl: "/add-app-3.webp",
         dataAiHint: "checklist document"
-     },
-    { 
-        title: "Activate Your Test Cycle", 
+    },
+    {
+        title: "Activate Your Test Cycle",
         imageUrl: "/add-app-4.webp",
         dataAiHint: "scientist laboratory"
     },
@@ -80,7 +80,7 @@ export default function AddAppPage() {
             };
             reader.readAsDataURL(file);
         } else {
-             toast({
+            toast({
                 title: "Invalid File",
                 description: "Please upload a valid image file.",
                 variant: "destructive",
@@ -104,7 +104,7 @@ export default function AddAppPage() {
             })
         }
     };
-    
+
     useEffect(() => {
         setIsClient(true);
     }, []);
@@ -148,7 +148,7 @@ export default function AddAppPage() {
                                             ></iframe>
                                         </div>
                                     ) : (
-                                        <div 
+                                        <div
                                             className="p-6 py-10 flex flex-col md:flex-row items-center justify-between gap-4 cursor-pointer relative z-10"
                                             onClick={() => setIsVideoExpanded(true)}
                                         >
@@ -157,13 +157,13 @@ export default function AddAppPage() {
                                                 <p className="text-muted-foreground text-sm">Watch a short video on how to submit your app.</p>
                                             </div>
                                             <Button size="lg" variant="outline">
-                                                <PlayCircle className="mr-2 h-5 w-5"/>
+                                                <PlayCircle className="mr-2 h-5 w-5" />
                                                 Watch Guide
                                             </Button>
                                         </div>
                                     )}
                                 </div>
-                                
+
                                 <p className="text-center text-muted-foreground text-sm">
                                     You can either watch the video above or follow the step-by-step guide below. Both cover the same process.
                                 </p>
@@ -172,13 +172,12 @@ export default function AddAppPage() {
                                     <AccordionItem value="item-1" className="bg-secondary/30 rounded-xl border overflow-hidden">
                                         <AccordionTrigger className="p-6 text-left hover:no-underline flex flex-row items-center justify-between w-full relative">
                                             <div className="flex items-start flex-1">
-                                                <span className="text-7xl md:text-5xl font-black text-primary/20 md:text-primary/50 leading-none md:w-20 absolute -top-3 -left-3 md:relative md:top-auto md:left-auto">01</span>
+                                                <span className="text-7xl md:text-5xl font-black bg-gradient-to-br from-primary/20 to-primary/0 bg-clip-text text-transparent md:w-20 absolute -top-3 -left-3 md:relative md:top-auto md:left-auto">01</span>
                                                 <div>
                                                     <h3 className="font-bold text-xl mb-1">Grant Our Testers Access</h3>
                                                     <p className="text-muted-foreground text-sm text-left">Add our official tester group to your app's internal test track.</p>
                                                 </div>
                                             </div>
-                                            <ChevronDown className="h-6 w-6 shrink-0 transition-transform duration-200" />
                                         </AccordionTrigger>
                                         <AccordionContent className="px-6 pb-6">
                                             <div className="flex flex-col gap-6 items-start">
@@ -208,22 +207,21 @@ export default function AddAppPage() {
                                         </AccordionContent>
                                     </AccordionItem>
 
-                                     <AccordionItem value="item-2" className="bg-secondary/30 rounded-xl border overflow-hidden">
+                                    <AccordionItem value="item-2" className="bg-secondary/30 rounded-xl border overflow-hidden">
                                         <AccordionTrigger className="p-6 text-left hover:no-underline flex flex-row items-center justify-between w-full relative">
                                             <div className="flex items-start flex-1">
-                                                <span className="text-7xl md:text-5xl font-black text-primary/20 md:text-primary/50 leading-none md:w-20 absolute -top-3 -left-3 md:relative md:top-auto md:left-auto">02</span>
+                                                <span className="text-7xl md:text-5xl font-black bg-gradient-to-br from-primary/20 to-primary/0 bg-clip-text text-transparent md:w-20 absolute -top-3 -left-3 md:relative md:top-auto md:left-auto">02</span>
                                                 <div>
                                                     <h3 className="font-bold text-xl mb-1">Enable Global Reach</h3>
                                                     <p className="text-muted-foreground text-sm text-left">Make your app available in all countries for maximum test coverage.</p>
                                                 </div>
                                             </div>
-                                            <ChevronDown className="h-6 w-6 shrink-0 transition-transform duration-200" />
                                         </AccordionTrigger>
                                         <AccordionContent className="px-6 pb-6">
                                             <div className="flex flex-col gap-6 items-start">
                                                 <div className="flex-1 space-y-4 text-muted-foreground">
                                                     <p>To ensure our diverse, international team can test your app, you must enable worldwide distribution.</p>
-                                                     <ol className="list-decimal list-inside space-y-3 pl-2">
+                                                    <ol className="list-decimal list-inside space-y-3 pl-2">
                                                         <li>While still on the internal testing track, click the <Highlight>Countries / regions</Highlight> tab.</li>
                                                         <li>Click <Highlight>Add countries / regions</Highlight>.</li>
                                                         <li>For the best results and maximum coverage, we highly recommend selecting the first checkbox to include <Highlight>All</Highlight> countries and regions.</li>
@@ -245,26 +243,25 @@ export default function AddAppPage() {
                                         </AccordionContent>
                                     </AccordionItem>
 
-                                     <AccordionItem value="item-3" className="bg-secondary/30 rounded-xl border overflow-hidden">
+                                    <AccordionItem value="item-3" className="bg-secondary/30 rounded-xl border overflow-hidden">
                                         <AccordionTrigger className="p-6 text-left hover:no-underline flex flex-row items-center justify-between w-full relative">
                                             <div className="flex items-start flex-1">
-                                                 <span className="text-7xl md:text-5xl font-black text-primary/20 md:text-primary/50 leading-none md:w-20 absolute -top-3 -left-3 md:relative md:top-auto md:left-auto">03</span>
+                                                <span className="text-7xl md:text-5xl font-black bg-gradient-to-br from-primary/20 to-primary/0 bg-clip-text text-transparent md:w-20 absolute -top-3 -left-3 md:relative md:top-auto md:left-auto">03</span>
                                                 <div>
                                                     <h3 className="font-bold text-xl mb-1">Submit for Google's Review</h3>
                                                     <p className="text-muted-foreground text-sm text-left">Save your changes and submit them to Google for a quick review.</p>
                                                 </div>
                                             </div>
-                                            <ChevronDown className="h-6 w-6 shrink-0 transition-transform duration-200" />
                                         </AccordionTrigger>
                                         <AccordionContent className="px-6 pb-6">
                                             <div className="flex flex-col gap-6 items-start">
                                                 <div className="flex-1 space-y-4 text-muted-foreground">
-                                                     <p>After configuring the tester list and countries, you just need to save the changes.</p>
+                                                    <p>After configuring the tester list and countries, you just need to save the changes.</p>
                                                     <ol className="list-decimal list-inside space-y-3 pl-2">
                                                         <li>Click the <Highlight>Save</Highlight> button at the bottom right of the page.</li>
                                                         <li>This will submit your changes to Google for a standard, automated process to ensure the track is set up correctly.</li>
                                                     </ol>
-                                                     <p className="text-xs italic"><strong>What to expect:</strong> This is not a full app review. It is a quick check of your testing configuration. Approval is typically very fast, often taking anywhere from a few minutes to a couple of hours.</p>
+                                                    <p className="text-xs italic"><strong>What to expect:</strong> This is not a full app review. It is a quick check of your testing configuration. Approval is typically very fast, often taking anywhere from a few minutes to a couple of hours.</p>
                                                 </div>
                                                 <div className="w-full flex-shrink-0">
                                                     <div
@@ -281,27 +278,26 @@ export default function AddAppPage() {
                                         </AccordionContent>
                                     </AccordionItem>
 
-                                     <AccordionItem value="item-4" className="bg-secondary/30 rounded-xl border overflow-hidden">
+                                    <AccordionItem value="item-4" className="bg-secondary/30 rounded-xl border overflow-hidden">
                                         <AccordionTrigger className="p-6 text-left hover:no-underline flex flex-row items-center justify-between w-full relative">
                                             <div className="flex items-start flex-1">
-                                                <span className="text-7xl md:text-5xl font-black text-primary/20 md:text-primary/50 leading-none md:w-20 absolute -top-3 -left-3 md:relative md:top-auto md:left-auto">04</span>
+                                                <span className="text-7xl md:text-5xl font-black bg-gradient-to-br from-primary/20 to-primary/0 bg-clip-text text-transparent md:w-20 absolute -top-3 -left-3 md:relative md:top-auto md:left-auto">04</span>
                                                 <div>
                                                     <h3 className="font-bold text-xl mb-1">Activate Your Test Cycle</h3>
                                                     <p className="text-muted-foreground text-sm text-left">Come back to inTesters with your test URL to begin.</p>
                                                 </div>
                                             </div>
-                                            <ChevronDown className="h-6 w-6 shrink-0 transition-transform duration-200" />
                                         </AccordionTrigger>
                                         <AccordionContent className="px-6 pb-6">
                                             <div className="flex flex-col gap-6 items-start">
                                                 <div className="flex-1 space-y-4 text-muted-foreground">
                                                     <p>Once Google approves your changes, you're ready to activate the test cycle!</p>
-                                                     <ol className="list-decimal list-inside space-y-3 pl-2">
+                                                    <ol className="list-decimal list-inside space-y-3 pl-2">
                                                         <li>On your internal testing page, look for the <Highlight>Join on the web</Highlight> link.</li>
                                                         <li>Click the copy icon next to it to copy the URL.</li>
                                                         <li>Come back to this page, click "Get Started" below, and paste this URL into the <Highlight>Testing URL</Highlight> field in the form.</li>
                                                     </ol>
-                                                     <p className="text-xs italic"><strong>Final Step:</strong> After you fill out the form and submit, our testers will be notified automatically, and your 14-day testing cycle will officially begin!</p>
+                                                    <p className="text-xs italic"><strong>Final Step:</strong> After you fill out the form and submit, our testers will be notified automatically, and your 14-day testing cycle will officially begin!</p>
                                                 </div>
                                                 <div className="w-full flex-shrink-0">
                                                     <div
@@ -349,22 +345,22 @@ export default function AddAppPage() {
                                             </div>
                                         ) : (
                                             <div className="relative border border-dashed rounded-lg p-0 grid grid-cols-1 md:grid-cols-2">
-                                                 <div {...getRootProps()} className={`flex flex-col items-center justify-center p-8 cursor-pointer hover:bg-secondary/50 rounded-l-md transition-colors ${isDragActive ? 'bg-secondary' : ''}`}>
+                                                <div {...getRootProps()} className={`flex flex-col items-center justify-center p-8 cursor-pointer hover:bg-secondary/50 rounded-l-md transition-colors ${isDragActive ? 'bg-secondary' : ''}`}>
                                                     <input {...getInputProps()} />
                                                     <Upload className="w-10 h-10 text-muted-foreground mb-2" />
                                                     <p className="font-semibold text-center">Select Image to Upload</p>
                                                     <p className="text-xs text-muted-foreground text-center">or drag and drop</p>
-                                                 </div>
-                                                 <div className="p-8 flex flex-col items-center justify-center border-t border-dashed md:border-t-0 md:border-l">
-                                                     <LinkIcon className="w-10 h-10 text-muted-foreground mb-2" />
-                                                     <p className="font-semibold text-center mb-2">Paste image URL</p>
-                                                     <Input type="text" placeholder="https://..." onPaste={handlePaste} className="text-center" />
-                                                 </div>
-                                                 <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 hidden md:flex items-center">
-                                                     <Separator orientation="vertical" className="h-16" />
-                                                     <div className="mx-2 bg-background px-1 text-xs text-muted-foreground font-bold rounded-full border">OR</div>
-                                                     <Separator orientation="vertical" className="h-16"/>
-                                                 </div>
+                                                </div>
+                                                <div className="p-8 flex flex-col items-center justify-center border-t border-dashed md:border-t-0 md:border-l">
+                                                    <LinkIcon className="w-10 h-10 text-muted-foreground mb-2" />
+                                                    <p className="font-semibold text-center mb-2">Paste image URL</p>
+                                                    <Input type="text" placeholder="https://..." onPaste={handlePaste} className="text-center" />
+                                                </div>
+                                                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 hidden md:flex items-center">
+                                                    <Separator orientation="vertical" className="h-16" />
+                                                    <div className="mx-2 bg-background px-1 text-xs text-muted-foreground font-bold rounded-full border">OR</div>
+                                                    <Separator orientation="vertical" className="h-16" />
+                                                </div>
                                             </div>
                                         )}
                                     </div>

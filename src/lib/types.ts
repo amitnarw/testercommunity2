@@ -74,9 +74,73 @@ export type CommunityApp = {
     playStoreUrl?: string;
     screenshots: { url: string; alt: string; dataAiHint?: string }[];
     testingInstructions: string;
+    status: 'available' | 'ongoing' | 'completed';
+    progress?: number;
+    completedDate?: string;
 }
 
 export type FaqItem = {
     question: string;
     answer: string;
+}
+
+export type Notification = {
+    id: number;
+    title: string;
+    description: string;
+    date: string;
+    type: 'new_test' | 'feedback_received' | 'test_completed' | 'bug_report' | 'points_awarded';
+    read: boolean;
+}
+
+export type ProjectFeedback = {
+    id: number;
+    tester: string;
+    type: 'Bug' | 'Suggestion' | 'Praise';
+    severity: 'Critical' | 'High' | 'Medium' | 'Low' | 'N/A';
+    status: 'New' | 'In Progress' | 'Resolved' | 'Closed';
+    comment: string;
+    date: string;
+}
+
+export type Project = {
+  id: number;
+  name: string;
+  packageName: string;
+  icon: string;
+  dataAiHint?: string;
+  status: "In Testing" | "Completed" | "Archived" | "In Review";
+  testersStarted: number;
+  testersCompleted: number;
+  totalDays: number;
+  avgTestersPerDay: number;
+  startedFrom: string;
+  description: string;
+  crashFreeRate: number;
+  feedbackBreakdown: {
+    total: number;
+    critical: number;
+    high: number;
+    low: number;
+  };
+  performanceMetrics: {
+    avgStartupTime: string;
+    frozenFrames: string;
+  };
+  deviceCoverage: {
+    device: string;
+    testers: number;
+  }[];
+  osCoverage: {
+    version: string;
+    testers: number;
+  }[];
+  topGeographies: {
+    country: string;
+    testers: number;
+    flag: string;
+  }[];
+  feedback: ProjectFeedback[];
+  chartData: { date: string; bugs: number }[];
+  reviewNotes?: string;
 }

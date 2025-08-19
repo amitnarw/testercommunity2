@@ -1,7 +1,7 @@
 
 'use client';
 
-import { InTestersLogo } from '@/components/icons';
+import { SiteLogo } from '@/components/icons';
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
@@ -91,7 +91,7 @@ export default function LoginPage() {
         <div className="hidden lg:flex flex-col items-center justify-center p-6 text-center relative overflow-hidden bg-background">
             <BackgroundBeams />
             <div className="relative z-10 flex flex-col items-center">
-                <InTestersLogo className="h-20 w-auto mb-4" />
+                <SiteLogo className="h-20 w-auto mb-4" />
                 <h1 className="text-3xl font-bold tracking-tight text-foreground">Welcome back</h1>
                 <p className="mt-2 max-w-md mx-auto text-muted-foreground">
                     Log in to continue your journey of building flawless apps.

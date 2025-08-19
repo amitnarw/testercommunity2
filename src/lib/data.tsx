@@ -1,5 +1,5 @@
 
-import type { BlogPost, Testimonial, RoadmapStep, UserProfileData, ProcessStep, CommunityApp, PointsPackage, FaqItem } from './types';
+import type { BlogPost, Testimonial, RoadmapStep, UserProfileData, ProcessStep, CommunityApp, PointsPackage, FaqItem, Notification, Project } from './types';
 
 export const chartData = [
     { month: 'January', reports: 186, resolved: 80 },
@@ -256,7 +256,9 @@ export const communityApps: CommunityApp[] = [
             { url: 'https://placehold.co/400x800.png', alt: 'Screenshot 1', dataAiHint: 'app screenshot' },
             { url: 'https://placehold.co/400x800.png', alt: 'Screenshot 2', dataAiHint: 'app interface' }
         ],
-        testingInstructions: 'Please focus on the new budgeting feature. Try creating a monthly budget, adding several expenses, and see if the summary view is correct. Check for any visual glitches or crashes.'
+        testingInstructions: 'Please focus on the new budgeting feature. Try creating a monthly budget, adding several expenses, and see if the summary view is correct. Check for any visual glitches or crashes.',
+        status: 'ongoing',
+        progress: 60,
     },
     {
         id: 2,
@@ -273,7 +275,9 @@ export const communityApps: CommunityApp[] = [
             { url: 'https://placehold.co/800x400.png', alt: 'Screenshot 1', dataAiHint: 'gameplay screenshot' },
             { url: 'https://placehold.co/800x400.png', alt: 'Screenshot 2', dataAiHint: 'game level' }
         ],
-        testingInstructions: 'Play through the first three levels. We are looking for feedback on game difficulty, control responsiveness, and any performance issues on older devices.'
+        testingInstructions: 'Play through the first three levels. We are looking for feedback on game difficulty, control responsiveness, and any performance issues on older devices.',
+        status: 'completed',
+        completedDate: '2024-05-28',
     },
      {
         id: 3,
@@ -290,7 +294,98 @@ export const communityApps: CommunityApp[] = [
             { url: 'https://placehold.co/400x800.png', alt: 'Screenshot 1', dataAiHint: 'weather forecast' },
             { url: 'https://placehold.co/400x800.png', alt: 'Screenshot 2', dataAiHint: 'weather details' }
         ],
-        testingInstructions: 'Check the weather for your current location and at least two other cities. Please verify if the hourly forecast seems accurate and report any UI issues.'
+        testingInstructions: 'Check the weather for your current location and at least two other cities. Please verify if the hourly forecast seems accurate and report any UI issues.',
+        status: 'available',
+    },
+    {
+        id: 4,
+        name: 'Connect Social',
+        icon: 'https://placehold.co/128x128.png',
+        dataAiHint: 'social network',
+        category: 'Social',
+        shortDescription: 'A new way to connect with friends and share your life moments.',
+        points: 120,
+        androidVersion: '11+',
+        estimatedTime: '25-35 min',
+        playStoreUrl: '#',
+        screenshots: [
+            { url: 'https://placehold.co/400x800.png', alt: 'Screenshot 1', dataAiHint: 'social feed' },
+            { url: 'https://placehold.co/400x800.png', alt: 'Screenshot 2', dataAiHint: 'user profile' }
+        ],
+        testingInstructions: 'Test the photo upload and sharing functionality. Try adding filters and tagging friends. Report any crashes or slow performance.',
+        status: 'available',
+    },
+    {
+        id: 5,
+        name: 'Galaxy Runner',
+        icon: 'https://placehold.co/128x128.png',
+        dataAiHint: 'space game',
+        category: 'Games',
+        shortDescription: 'An endless runner game set in the depths of space. Dodge asteroids and collect power-ups!',
+        points: 80,
+        androidVersion: '8+',
+        estimatedTime: '10-15 min',
+        playStoreUrl: '#',
+        screenshots: [
+            { url: 'https://placehold.co/800x400.png', alt: 'Screenshot 1', dataAiHint: 'space background' },
+            { url: 'https://placehold.co/800x400.png', alt: 'Screenshot 2', dataAiHint: 'spaceship character' }
+        ],
+        testingInstructions: 'Play the game for at least 10 minutes. We are looking for feedback on the new power-ups and overall game balance.',
+        status: 'available',
+    },
+    {
+        id: 6,
+        name: 'TaskMaster Pro',
+        icon: 'https://placehold.co/128x128.png',
+        dataAiHint: 'to-do list',
+        category: 'Productivity',
+        shortDescription: 'Organize your life with the most powerful to-do list and project manager.',
+        points: 150,
+        androidVersion: '12+',
+        estimatedTime: '20-25 min',
+        playStoreUrl: '#',
+        screenshots: [
+            { url: 'https://placehold.co/400x800.png', alt: 'Screenshot 1', dataAiHint: 'task list' },
+            { url: 'https://placehold.co/400x800.png', alt: 'Screenshot 2', dataAiHint: 'project board' }
+        ],
+        testingInstructions: 'Create a new project, add at least 5 tasks with sub-tasks, and assign due dates. Check if reminders are working correctly.',
+        status: 'available',
+    },
+    {
+        id: 7,
+        name: 'Unit Converter Ultimate',
+        icon: 'https://placehold.co/128x128.png',
+        dataAiHint: 'ruler calculator',
+        category: 'Utilities',
+        shortDescription: 'A comprehensive unit converter for all your needs, from currency to cooking.',
+        points: 40,
+        androidVersion: '7+',
+        estimatedTime: '5-10 min',
+        playStoreUrl: '#',
+        screenshots: [
+            { url: 'https://placehold.co/400x800.png', alt: 'Screenshot 1', dataAiHint: 'conversion screen' },
+            { url: 'https://placehold.co/400x800.png', alt: 'Screenshot 2', dataAiHint: 'currency exchange' }
+        ],
+        testingInstructions: 'Test at least 5 different unit conversions, including currency. Verify the accuracy of the conversions.',
+        status: 'available',
+    },
+    {
+        id: 8,
+        name: 'Karaoke King',
+        icon: 'https://placehold.co/128x128.png',
+        dataAiHint: 'microphone icon',
+        category: 'Social',
+        shortDescription: 'Sing your heart out and share your performances with the world.',
+        points: 90,
+        androidVersion: '10+',
+        estimatedTime: '15-20 min',
+        playStoreUrl: '#',
+        screenshots: [
+            { url: 'https://placehold.co/400x800.png', alt: 'Screenshot 1', dataAiHint: 'song list' },
+            { url: 'https://placehold.co/400x800.png', alt: 'Screenshot 2', dataAiHint: 'recording screen' }
+        ],
+        testingInstructions: 'Record one song and apply a voice effect. Share it to the feed and check if it plays back correctly for others.',
+        status: 'available',
     }
 ];
 
@@ -338,4 +433,272 @@ export const pricingFaqs: FaqItem[] = [
         question: "Can I get a refund on purchased points?",
         answer: "Points that have not been spent on a testing project are eligible for a refund within 14 days of purchase. Please contact our support team for assistance."
     }
-]
+];
+
+export const notifications: Notification[] = Array.from({ length: 25 }, (_, i) => {
+    const types: Notification['type'][] = ['new_test', 'feedback_received', 'test_completed', 'bug_report', 'points_awarded'];
+    const type = types[i % types.length];
+    const date = new Date();
+    date.setDate(date.getDate() - i);
+
+    let title = '';
+    let description = '';
+
+    switch (type) {
+        case 'new_test':
+            title = 'New Testing Opportunity!';
+            description = 'A new app, "PhotoSnap Editor", is available for testing in the Productivity category.';
+            break;
+        case 'feedback_received':
+            title = 'You have new feedback!';
+            description = 'A tester has submitted new feedback for your project "Project Phoenix".';
+            break;
+        case 'test_completed':
+            title = 'Test Cycle Completed';
+            description = 'Congratulations! Your app "SocialConnect" has completed its 14-day test cycle.';
+            break;
+        case 'bug_report':
+            title = 'New Bug Reported';
+            description = 'A critical bug has been reported for "E-commerce Platform".';
+            break;
+        case 'points_awarded':
+            title = `You've earned ${i % 2 === 0 ? 100 : 75} points!`;
+            description = `Thanks for your feedback on "${i % 2 === 0 ? 'Finance Tracker' : 'Pixel Adventure'}". Your points have been added.`;
+            break;
+    }
+
+    return {
+        id: i + 1,
+        title,
+        description,
+        date: date.toISOString(),
+        type,
+        read: i > 4, // Mark the first 5 as unread
+    };
+});
+
+const generateFeedback = (projectName: string) => {
+    const feedbackTypes: ProjectFeedback['type'][] = ['Bug', 'Suggestion', 'Praise', 'Bug', 'Bug'];
+    const comments = {
+        'Bug': `Found a crash in ${projectName} when trying to open the settings page.`,
+        'Suggestion': `It would be great if ${projectName} had a dark mode option.`,
+        'Praise': `The new update for ${projectName} is fantastic! The UI is so much smoother.`
+    }
+    const severities: ProjectFeedback['severity'][] = ['Critical', 'Low', 'N/A', 'High', 'Medium'];
+    const statuses: ProjectFeedback['status'][] = ['New', 'Closed', 'Closed', 'In Progress', 'Resolved'];
+
+    return Array.from({ length: 15 }, (_, i) => {
+        const type = feedbackTypes[i % feedbackTypes.length];
+        return {
+            id: i + 1,
+            tester: `Tester${100 + i}`,
+            type: type,
+            severity: type === 'Bug' ? severities[i % severities.length] : 'N/A',
+            status: statuses[i % statuses.length],
+            comment: comments[type] || `Generic feedback item #${i+1}`,
+            date: `2024-08-${20- (i % 10)}`
+        }
+    });
+};
+
+const generateChartData = (baseBugs: number) => {
+    return Array.from({length: 14}, (_, i) => ({
+        date: `Day ${i+1}`,
+        bugs: Math.max(0, baseBugs - i * Math.floor(Math.random() * 3 + 1) + Math.floor(Math.random() * 5 - 2))
+    }));
+};
+
+export const projects: Project[] = [
+    {
+      id: 1,
+      name: "Project Phoenix",
+      packageName: "com.phoenix.app",
+      icon: "https://placehold.co/48x48.png",
+      dataAiHint: "phoenix bird",
+      status: "In Testing",
+      testersStarted: 14,
+      testersCompleted: 8,
+      totalDays: 14,
+      avgTestersPerDay: 1.2,
+      startedFrom: "22 Aug 2024",
+      description: "Project Phoenix is a cutting-edge productivity app designed to streamline workflows for creative professionals. It integrates task management, asset versioning, and collaborative feedback tools into a single, intuitive interface.",
+      crashFreeRate: 99.8,
+      feedbackBreakdown: { total: 45, critical: 3, high: 12, low: 30 },
+      performanceMetrics: { avgStartupTime: "350ms", frozenFrames: "0.2%" },
+      deviceCoverage: [
+        { device: "Google Pixel", testers: 5 },
+        { device: "Samsung Galaxy", testers: 4 },
+        { device: "OnePlus", testers: 3 },
+        { device: "Other", testers: 2 },
+      ],
+      osCoverage: [
+        { version: "Android 14", testers: 8 },
+        { version: "Android 13", testers: 4 },
+        { version: "Android 12", testers: 2 },
+      ],
+      topGeographies: [
+          { country: "USA", testers: 4, flag: "🇺🇸" },
+          { country: "India", testers: 3, flag: "🇮🇳" },
+          { country: "Germany", testers: 2, flag: "🇩🇪" },
+      ],
+      feedback: generateFeedback("Project Phoenix"),
+      chartData: generateChartData(20)
+    },
+    {
+      id: 2,
+      name: "SocialConnect App",
+      packageName: "com.social.connect",
+      icon: "https://placehold.co/48x48.png",
+      dataAiHint: "social media",
+      status: "In Testing",
+      testersStarted: 12,
+      testersCompleted: 10,
+      totalDays: 10,
+      avgTestersPerDay: 1.0,
+      startedFrom: "15 Jul 2024",
+      description: "SocialConnect is a new-age social media platform focused on authentic connections. It features interest-based groups, event organization, and privacy-focused sharing options to help users build meaningful communities.",
+      crashFreeRate: 99.9,
+      feedbackBreakdown: { total: 30, critical: 1, high: 5, low: 24 },
+      performanceMetrics: { avgStartupTime: "450ms", frozenFrames: "0.1%" },
+       deviceCoverage: [
+        { device: "Google Pixel", testers: 3 },
+        { device: "Samsung Galaxy", testers: 6 },
+        { device: "Xiaomi", testers: 2 },
+        { device: "Other", testers: 1 },
+      ],
+      osCoverage: [
+        { version: "Android 14", testers: 5 },
+        { version: "Android 13", testers: 6 },
+        { version: "Android 12", testers: 1 },
+      ],
+       topGeographies: [
+          { country: "Brazil", testers: 5, flag: "🇧🇷" },
+          { country: "USA", testers: 3, flag: "🇺🇸" },
+          { country: "Nigeria", testers: 2, flag: "🇳🇬" },
+      ],
+      feedback: generateFeedback("SocialConnect"),
+      chartData: generateChartData(15)
+    },
+    {
+      id: 3,
+      name: "E-commerce Platform",
+      packageName: "com.store.cart",
+      icon: "https://placehold.co/48x48.png",
+      dataAiHint: "shopping cart",
+      status: "Completed",
+      testersStarted: 20,
+      testersCompleted: 20,
+      totalDays: 14,
+      avgTestersPerDay: 1.4,
+      startedFrom: "01 Jun 2024",
+      description: "A robust and scalable e-commerce solution for small to medium-sized businesses. Features include a powerful product management system, secure payment gateway integration, and customer analytics.",
+      crashFreeRate: 100,
+      feedbackBreakdown: { total: 15, critical: 0, high: 2, low: 13 },
+      performanceMetrics: { avgStartupTime: "250ms", frozenFrames: "0.05%" },
+      deviceCoverage: [
+        { device: "Google Pixel", testers: 8 },
+        { device: "Samsung Galaxy", testers: 8 },
+        { device: "OnePlus", testers: 4 },
+      ],
+      osCoverage: [
+        { version: "Android 14", testers: 10 },
+        { version: "Android 13", testers: 10 },
+      ],
+       topGeographies: [
+          { country: "UK", testers: 8, flag: "🇬🇧" },
+          { country: "Canada", testers: 7, flag: "🇨🇦" },
+          { country: "Australia", testers: 5, flag: "🇦🇺" },
+      ],
+      feedback: generateFeedback("E-commerce Platform"),
+      chartData: generateChartData(5)
+    },
+     {
+      id: 6,
+      name: "My New Photo App",
+      packageName: "com.mynew.photoapp",
+      icon: "https://placehold.co/48x48.png",
+      dataAiHint: "camera shutter",
+      status: "In Review",
+      testersStarted: 0,
+      testersCompleted: 0,
+      totalDays: 0,
+      avgTestersPerDay: 0,
+      startedFrom: "28 Aug 2024",
+      description: "A new photo editing app with AI-powered filters and one-touch enhancements.",
+      reviewNotes: "Initial review in progress. Checking for policy compliance and testability.",
+      crashFreeRate: 100,
+      feedbackBreakdown: { total: 0, critical: 0, high: 0, low: 0 },
+      performanceMetrics: { avgStartupTime: "N/A", frozenFrames: "N/A" },
+       deviceCoverage: [],
+      osCoverage: [],
+       topGeographies: [],
+      feedback: [],
+      chartData: []
+    },
+    {
+      id: 4,
+      name: "HealthTracker API",
+      packageName: "com.health.api",
+      icon: "https://placehold.co/48x48.png",
+      dataAiHint: "heartbeat chart",
+      status: "Completed",
+      testersStarted: 15,
+      testersCompleted: 15,
+      totalDays: 14,
+      avgTestersPerDay: 1.1,
+      startedFrom: "10 May 2024",
+      description: "A comprehensive backend API for health and fitness applications. It provides endpoints for tracking user activity, nutrition, sleep patterns, and integrates with popular fitness wearables.",
+      crashFreeRate: 99.95,
+      feedbackBreakdown: { total: 22, critical: 2, high: 8, low: 12 },
+      performanceMetrics: { avgStartupTime: "N/A", frozenFrames: "N/A" },
+       deviceCoverage: [
+        { device: "N/A (API)", testers: 15 },
+      ],
+      osCoverage: [
+        { version: "N/A (API)", testers: 15 },
+      ],
+       topGeographies: [
+          { country: "USA", testers: 10, flag: "🇺🇸" },
+          { country: "Germany", testers: 5, flag: "🇩🇪" },
+      ],
+      feedback: generateFeedback("HealthTracker API"),
+      chartData: generateChartData(12)
+    },
+      {
+      id: 5,
+      name: "IndieGame 'Starlight'",
+      packageName: "com.game.starlight",
+      icon: "https://placehold.co/48x48.png",
+      dataAiHint: "pixel art star",
+      status: "Archived",
+      testersStarted: 25,
+      testersCompleted: 25,
+      totalDays: 14,
+      avgTestersPerDay: 1.8,
+      startedFrom: "05 Apr 2024",
+      description: "Starlight is a 2D pixel-art adventure game with a rich story and challenging puzzles. Players explore a mysterious world, uncover ancient secrets, and battle powerful foes.",
+      crashFreeRate: 98.5,
+      feedbackBreakdown: { total: 88, critical: 15, high: 40, low: 33 },
+      performanceMetrics: { avgStartupTime: "600ms", frozenFrames: "1.5%" },
+       deviceCoverage: [
+        { device: "Google Pixel", testers: 5 },
+        { device: "Samsung Galaxy", testers: 10 },
+        { device: "Xiaomi", testers: 5 },
+        { device: "Other", testers: 5 },
+      ],
+      osCoverage: [
+        { version: "Android 13", testers: 10 },
+        { version: "Android 12", testers: 8 },
+        { version: "Android 11", testers: 7 },
+      ],
+       topGeographies: [
+          { country: "USA", testers: 8, flag: "🇺🇸" },
+          { country: "Japan", testers: 7, flag: "🇯🇵" },
+          { country: "South Korea", testers: 5, flag: "🇰🇷" },
+      ],
+      feedback: generateFeedback("Starlight"),
+      chartData: generateChartData(40)
+    },
+  ]
+
+    

@@ -4,14 +4,16 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { LayoutDashboard, Users2, PlusCircle, LifeBuoy, LogOut, PanelLeftClose, PanelLeftOpen, X, Gift } from "lucide-react";
+import { LayoutDashboard, Users2, PlusCircle, LifeBuoy, LogOut, Bell } from "lucide-react";
 import { Button } from "./ui/button";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "./ui/tooltip";
 import { OfferCard } from "./offer-card";
+import { InTestersLogoShort, SiteLogo } from "./icons";
 
 const mainNavLinks = [
     { name: "Developer Dashboard", href: "/dashboard", icon: LayoutDashboard },
     { name: "Community Hub", href: "/community-dashboard", icon: Users2 },
+    { name: "Notifications", href: "/notifications", icon: Bell },
 ];
 
 const NavLink = ({ href, icon: Icon, children, isCollapsed, onClick }: { href: string, icon: React.ElementType, children: React.ReactNode, isCollapsed: boolean, onClick?: () => void }) => {
@@ -51,13 +53,12 @@ const NavLink = ({ href, icon: Icon, children, isCollapsed, onClick }: { href: s
 
 interface SidebarProps {
     isCollapsed: boolean;
-    setCollapsed: (collapsed: boolean) => void;
     isMobileOpen: boolean;
     setMobileOpen: (open: boolean) => void;
     onLogout: () => void;
 }
 
-export function Sidebar({ isCollapsed, setCollapsed, isMobileOpen, setMobileOpen, onLogout }: SidebarProps) {
+export function Sidebar({ isCollapsed, isMobileOpen, setMobileOpen, onLogout }: SidebarProps) {
     return (
         <aside className={cn(
             "fixed inset-y-0 left-0 z-50 flex h-full flex-col border-r bg-background transition-transform duration-300 ease-in-out md:transition-[width]",
@@ -67,14 +68,12 @@ export function Sidebar({ isCollapsed, setCollapsed, isMobileOpen, setMobileOpen
         )}>
             <div className="flex h-full max-h-screen flex-col">
                 <div className={cn("flex h-20 items-center border-b px-4", isCollapsed ? "justify-center" : "justify-between")}>
-                     <Button variant="ghost" size="icon" onClick={() => setCollapsed(!isCollapsed)} className="hidden md:flex">
-                        {isCollapsed ? <PanelLeftOpen /> : <PanelLeftClose />}
-                        <span className="sr-only">{isCollapsed ? "Expand sidebar" : "Collapse sidebar"}</span>
-                    </Button>
-                    <Button variant="ghost" size="icon" onClick={() => setMobileOpen(false)} className="md:hidden">
-                        <X />
-                        <span className="sr-only">Close menu</span>
-                    </Button>
+                    <Link href="/dashboard" className={cn("transition-opacity duration-300", isCollapsed && "opacity-0 invisible")}>
+                       <SiteLogo className="h-10" />
+                    </Link>
+                     <Link href="/dashboard" className={cn("transition-opacity duration-300", !isCollapsed && "opacity-0 invisible")}>
+                       <InTestersLogoShort className="h-8 w-8" />
+                    </Link>
                 </div>
                 
                 <div className="flex-1 overflow-y-auto py-4 space-y-4">
@@ -88,12 +87,21 @@ export function Sidebar({ isCollapsed, setCollapsed, isMobileOpen, setMobileOpen
 
                     <div className={cn("px-2", isCollapsed && "px-0 text-center")}>
                             <div className="my-4 border-t -mx-2"></div>
-                            <Button asChild className={cn("w-full justify-center", isCollapsed && "w-auto h-auto p-3")}>
-                            <Link href="/dashboard/add-app" onClick={() => setMobileOpen(false)}>
-                                <PlusCircle className={cn("mr-2 h-4 w-4", isCollapsed && "md:mr-0")}/>
-                                <span className={cn(isCollapsed && "md:sr-only")}>Submit App</span>
-                            </Link>
-                        </Button>
+                             <TooltipProvider>
+                                <Tooltip delayDuration={0}>
+                                    <TooltipTrigger asChild>
+                                        <Button asChild className={cn("w-full justify-center", isCollapsed && "w-auto h-auto p-3")}>
+                                            <Link href="/dashboard/add-app" onClick={() => setMobileOpen(false)}>
+                                                <PlusCircle className={cn("mr-2 h-4 w-4", isCollapsed && "md:mr-0")}/>
+                                                <span className={cn(isCollapsed && "md:sr-only")}>Submit App</span>
+                                            </Link>
+                                        </Button>
+                                    </TooltipTrigger>
+                                    <TooltipContent side="right">
+                                        Submit App
+                                    </TooltipContent>
+                                </Tooltip>
+                            </TooltipProvider>
                     </div>
                 </div>
 
