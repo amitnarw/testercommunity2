@@ -15,7 +15,7 @@ import { TestimonialScroller } from '@/components/testimonial-scroller';
 import { GlobalImpactSection } from '@/components/global-impact-section';
 import { FaqSection } from '@/components/faq-section';
 import { TwoPathsSection } from '@/components/two-paths-section';
-import { HoverBorderGradient } from '@/components/ui/hover-border-gradient';
+import { MagneticButton } from '@/components/magnetic-button';
 
 const features = [
     {
@@ -49,28 +49,27 @@ export default function Home() {
                     <div className="absolute inset-0 bg-dot-pattern z-0"></div>
                     <div className="container mx-auto px-4 md:px-6 text-center relative z-10">
                         <div className="max-w-4xl mx-auto">
-                            <HoverBorderGradient
-                                containerClassName="rounded-full m-auto mb-5"
-                                as="button"
-                                className="dark:bg-black bg-white text-black dark:text-white flex items-center text-xs sm:text-sm"
-                            >
-                                <span>Meet Google's 12-Tester Requirement.</span>
-                            </HoverBorderGradient>
+                            <Badge variant="secondary" className="py-1 px-3 rounded-full text-sm font-medium mb-5">
+                                <BadgeCheck className="w-4 h-4 mr-2 text-primary" />
+                                Meet Google's 12-Tester Requirement.
+                            </Badge>
                             <h1 className="text-[2.25rem] sm:text-[2.75rem] md:text-[3.5rem] lg:text-[4.25rem] font-heading leading-[1.1] tracking-tight font-bold mb-5 sm:mb-6 md:mb-8">
                                 Testing Your <span className="bg-gradient-to-br from-primary to-accent bg-clip-text text-transparent">Android App</span> Just Got Easier
                             </h1>
                             <p className="text-sm sm:text-base md:text-lg font-body max-w-sm sm:max-w-md md:max-w-lg lg:max-w-[700px] mx-auto mb-8 sm:mb-9 md:mb-10 lg:mb-12 text-muted-foreground">
                             Get 12+ real testers and meet Google Play’s 14 day rule, fast. Use free community testing or go pro with points. Submit, track, and launch, all in one place.
                             </p>
-                            <div className="mt-10">
-                                <Button asChild size="lg" variant="premium" className="group text-base pr-3 py-6 rounded-full">
-                                    <Link href="/signup">
-                                        <span className="relative z-10 font-bold">Submit Your App Now</span>
-                                        <div className="relative inline-flex items-center justify-center w-8 h-8 rounded-full bg-primary-foreground/20 group-hover:bg-black dark:group-hover:bg-white transition-all duration-500 group-hover:scale-[2] ml-8">
-                                            <ArrowRight className="w-4 h-4 text-primary-foreground group-hover:text-white dark:group-hover:text-black transition-colors duration-300" />
-                                        </div>
-                                    </Link>
-                                </Button>
+                            <div className="mt-10 inline-block p-4">
+                                <MagneticButton>
+                                    <Button asChild size="lg" variant="default" className="group text-base pr-3 py-6 rounded-full shadow-lg shadow-primary/30">
+                                        <Link href="/signup">
+                                            <span className="relative z-10 font-bold">Submit Your App Now</span>
+                                            <div className="relative inline-flex items-center justify-center w-8 h-8 rounded-full bg-primary-foreground/20 group-hover:bg-black dark:group-hover:bg-white transition-all duration-500 group-hover:scale-[2] ml-8">
+                                                <ArrowRight className="w-4 h-4 text-primary-foreground group-hover:text-white dark:group-hover:text-black transition-colors duration-300" />
+                                            </div>
+                                        </Link>
+                                    </Button>
+                                </MagneticButton>
                             </div>
 
                             <div className="w-full max-w-[700px] overflow-hidden m-auto mt-12 sm:mt-20 md:mt-40">
