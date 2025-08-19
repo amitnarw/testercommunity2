@@ -17,6 +17,125 @@ interface Message {
     sender: 'user' | 'bot';
 }
 
+const ChatWindow = ({ closeChat, messages, isLoading, inputValue, setInputValue, handleSendMessage, scrollAreaRef }: any) => (
+    <motion.div
+        layoutId="chatbot-window"
+        className="fixed bottom-8 right-8 z-50 bg-card shadow-2xl flex flex-col border origin-bottom-right overflow-hidden w-[90vw] max-w-sm h-[70vh] rounded-2xl"
+        initial={{ opacity: 0, scale: 0.8 }}
+        animate={{ opacity: 1, scale: 1 }}
+        exit={{ opacity: 0, scale: 0.8 }}
+        transition={{ duration: 0.3, ease: 'easeInOut' }}
+    >
+        <header className="flex items-center justify-between p-4 border-b bg-primary text-primary-foreground flex-shrink-0">
+            <div className="flex items-center gap-3">
+                <Avatar>
+                    <AvatarImage src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?q=80&w=400" data-ai-hint="support agent" />
+                    <AvatarFallback>A</AvatarFallback>
+                </Avatar>
+                <div>
+                    <h3 className="font-bold">Alex @ inTesters</h3>
+                    <p className="text-xs text-primary-foreground/80 flex items-center gap-1.5">
+                        <span className="w-2 h-2 rounded-full bg-green-400"></span>
+                        Online
+                    </p>
+                </div>
+            </div>
+            <Button variant="ghost" size="icon" onClick={closeChat} className="rounded-full hover:bg-primary/80">
+                <X className="h-5 w-5" />
+            </Button>
+        </header>
+        <ScrollArea className="flex-1 p-4 bg-background" ref={scrollAreaRef as any}>
+            <div className="space-y-4">
+                {messages.map((message: Message) => (
+                    <div
+                        key={message.id}
+                        className={cn(
+                            "flex items-end gap-2",
+                            message.sender === 'user' ? 'justify-end' : 'justify-start'
+                        )}
+                    >
+                        {message.sender === 'bot' && (
+                            <Avatar className="w-8 h-8 flex-shrink-0">
+                                <AvatarImage src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?q=80&w=400" />
+                                <AvatarFallback>A</AvatarFallback>
+                            </Avatar>
+                        )}
+                        <motion.div
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            className={cn(
+                                "p-3 rounded-2xl max-w-[80%] text-sm",
+                                message.sender === 'user'
+                                    ? 'bg-primary text-primary-foreground rounded-br-none'
+                                    : 'bg-secondary text-secondary-foreground rounded-bl-none'
+                            )}
+                        >
+                            {message.text}
+                        </motion.div>
+                         {message.sender === 'user' && (
+                            <Avatar className="w-8 h-8 flex-shrink-0">
+                                <AvatarFallback><User className="w-4 h-4" /></AvatarFallback>
+                            </Avatar>
+                        )}
+                    </div>
+                ))}
+                {isLoading && (
+                    <div className="flex items-end gap-2 justify-start">
+                        <Avatar className="w-8 h-8">
+                            <AvatarImage src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?q=80&w=400" />
+                            <AvatarFallback>A</AvatarFallback>
+                        </Avatar>
+                        <div className="p-3 rounded-2xl bg-secondary rounded-bl-none">
+                            <div className="flex items-center gap-1">
+                                <span className="w-2 h-2 rounded-full bg-muted-foreground animate-bounce [animation-delay:-0.3s]"></span>
+                                <span className="w-2 h-2 rounded-full bg-muted-foreground animate-bounce [animation-delay:-0.15s]"></span>
+                                <span className="w-2 h-2 rounded-full bg-muted-foreground animate-bounce"></span>
+                            </div>
+                        </div>
+                    </div>
+                )}
+            </div>
+        </ScrollArea>
+        <footer className="p-4 border-t flex-shrink-0 bg-background">
+            <form onSubmit={handleSendMessage} className="flex items-center gap-2">
+                <Input
+                    value={inputValue}
+                    onChange={(e) => setInputValue(e.target.value)}
+                    placeholder="Type your message..."
+                    className="flex-1"
+                    autoComplete="off"
+                />
+                <Button type="submit" size="icon" disabled={isLoading}>
+                    <Send className="h-5 w-5" />
+                </Button>
+            </form>
+        </footer>
+    </motion.div>
+);
+
+const ChatButton = ({ openChat }: any) => (
+     <motion.button
+        layoutId="chatbot-window"
+        onClick={openChat}
+        className="fixed bottom-8 right-8 z-50 flex items-center gap-3 p-3 bg-primary text-primary-foreground rounded-full shadow-lg"
+        initial={{ opacity: 0, scale: 0.8 }}
+        animate={{ opacity: 1, scale: 1 }}
+        exit={{ opacity: 0, scale: 0.8 }}
+        transition={{ duration: 0.3 }}
+    >
+        <div className="flex items-center gap-2">
+            <Avatar className="w-8 h-8 border-2 border-primary-foreground/50">
+                <AvatarImage src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?q=80&w=400" data-ai-hint="support agent" />
+                <AvatarFallback>A</AvatarFallback>
+            </Avatar>
+            <span className="font-semibold text-sm">Chat with Alex</span>
+        </div>
+        <div className="bg-primary-foreground/20 rounded-full p-2">
+            <MessageSquare className="w-5 h-5" />
+        </div>
+    </motion.button>
+)
+
 export function SupportChatbot() {
     const [isOpen, setIsOpen] = useState(false);
     const [messages, setMessages] = useState<Message[]>([]);
@@ -90,123 +209,21 @@ export function SupportChatbot() {
     };
 
     return (
-        <>
-            <AnimatePresence>
-                {isOpen ? (
-                    <motion.div
-                        className="fixed bottom-8 right-8 z-50 bg-card shadow-2xl flex flex-col border origin-bottom-right overflow-hidden w-[90vw] max-w-sm h-[70vh] rounded-2xl"
-                        initial={{ opacity: 0, scale: 0.8, y: 50 }}
-                        animate={{ opacity: 1, scale: 1, y: 0 }}
-                        exit={{ opacity: 0, scale: 0.8, y: 50 }}
-                        transition={{ duration: 0.3, ease: 'easeInOut' }}
-                    >
-                         <header className="flex items-center justify-between p-4 border-b bg-primary text-primary-foreground flex-shrink-0">
-                            <div className="flex items-center gap-3">
-                                <Avatar>
-                                    <AvatarImage src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?q=80&w=400" data-ai-hint="support agent" />
-                                    <AvatarFallback>A</AvatarFallback>
-                                </Avatar>
-                                <div>
-                                    <h3 className="font-bold">Alex @ inTesters</h3>
-                                    <p className="text-xs text-primary-foreground/80 flex items-center gap-1.5">
-                                        <span className="w-2 h-2 rounded-full bg-green-400"></span>
-                                        Online
-                                    </p>
-                                </div>
-                            </div>
-                            <Button variant="ghost" size="icon" onClick={closeChat} className="rounded-full hover:bg-primary/80">
-                                <X className="h-5 w-5" />
-                            </Button>
-                        </header>
-                         <ScrollArea className="flex-1 p-4 bg-background" ref={scrollAreaRef as any}>
-                            <div className="space-y-4">
-                                {messages.map((message: Message) => (
-                                    <div
-                                        key={message.id}
-                                        className={cn(
-                                            "flex items-end gap-2",
-                                            message.sender === 'user' ? 'justify-end' : 'justify-start'
-                                        )}
-                                    >
-                                        {message.sender === 'bot' && (
-                                            <Avatar className="w-8 h-8 flex-shrink-0">
-                                                <AvatarImage src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?q=80&w=400" />
-                                                <AvatarFallback>A</AvatarFallback>
-                                            </Avatar>
-                                        )}
-                                        <motion.div
-                                            initial={{ opacity: 0, y: 10 }}
-                                            animate={{ opacity: 1, y: 0 }}
-                                            className={cn(
-                                                "p-3 rounded-2xl max-w-[80%] text-sm",
-                                                message.sender === 'user'
-                                                    ? 'bg-primary text-primary-foreground rounded-br-none'
-                                                    : 'bg-secondary text-secondary-foreground rounded-bl-none'
-                                            )}
-                                        >
-                                            {message.text}
-                                        </motion.div>
-                                         {message.sender === 'user' && (
-                                            <Avatar className="w-8 h-8 flex-shrink-0">
-                                                <AvatarFallback><User className="w-4 h-4" /></AvatarFallback>
-                                            </Avatar>
-                                        )}
-                                    </div>
-                                ))}
-                                {isLoading && (
-                                    <div className="flex items-end gap-2 justify-start">
-                                        <Avatar className="w-8 h-8">
-                                            <AvatarImage src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?q=80&w=400" />
-                                            <AvatarFallback>A</AvatarFallback>
-                                        </Avatar>
-                                        <div className="p-3 rounded-2xl bg-secondary rounded-bl-none">
-                                            <div className="flex items-center gap-1">
-                                                <span className="w-2 h-2 rounded-full bg-muted-foreground animate-bounce [animation-delay:-0.3s]"></span>
-                                                <span className="w-2 h-2 rounded-full bg-muted-foreground animate-bounce [animation-delay:-0.15s]"></span>
-                                                <span className="w-2 h-2 rounded-full bg-muted-foreground animate-bounce"></span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                )}
-                            </div>
-                        </ScrollArea>
-                        <footer className="p-4 border-t flex-shrink-0 bg-background">
-                            <form onSubmit={handleSendMessage} className="flex items-center gap-2">
-                                <Input
-                                    value={inputValue}
-                                    onChange={(e) => setInputValue(e.target.value)}
-                                    placeholder="Type your message..."
-                                    className="flex-1"
-                                    autoComplete="off"
-                                />
-                                <Button type="submit" size="icon" disabled={isLoading}>
-                                    <Send className="h-5 w-5" />
-                                </Button>
-                            </form>
-                        </footer>
-                    </motion.div>
-                ) : (
-                    <motion.button
-                        onClick={openChat}
-                        className="fixed bottom-8 right-8 z-50 flex items-center gap-3 p-3 bg-primary text-primary-foreground rounded-full shadow-lg"
-                        initial={{ opacity: 0, scale: 0.8 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        exit={{ opacity: 0, scale: 0.8 }}
-                        transition={{ duration: 0.3 }}
-                    >
-                        <div className="flex items-center gap-2">
-                            <Avatar className="w-8 h-8 border-2 border-primary-foreground/50">
-                                <AvatarImage src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?q=80&w=400" data-ai-hint="support agent" />
-                                <AvatarFallback>A</AvatarFallback>
-                            </Avatar>
-                            <span className="font-semibold text-sm">Chat with Alex</span>
-                        </div>
-                        <div className="bg-primary-foreground/20 rounded-full p-2">
-                            <MessageSquare className="w-5 h-5" />
-                        </div>
-                    </motion.button>
-                )}
-            </AnimatePresence>
-        </>
+        <AnimatePresence>
+            {isOpen ? (
+                <ChatWindow
+                    key="chat-window"
+                    closeChat={closeChat}
+                    messages={messages}
+                    isLoading={isLoading}
+                    inputValue={inputValue}
+                    setInputValue={setInputValue}
+                    handleSendMessage={handleSendMessage}
+                    scrollAreaRef={scrollAreaRef}
+                />
+            ) : (
+                <ChatButton key="chat-button" openChat={openChat} />
+            )}
+        </AnimatePresence>
     );
 }
