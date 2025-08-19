@@ -98,25 +98,5 @@
   .dark .bg-dot-pattern {
     background-image: radial-gradient(circle, hsl(var(--primary) / 0.4) 1px, transparent 1px);
   }
-  .page-transition {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100vh;
-    pointer-events: none;
-    z-index: 50;
-    display: flex;
-  }
-  .page-transition .transition-element {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    left: 0;
-    top: 0;
-    background-color: hsl(var(--destructive));
-    border-bottom-left-radius: 100px;
-    border-bottom-right-radius: 100px;
-  }
 }
     
