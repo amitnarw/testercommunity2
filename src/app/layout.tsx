@@ -73,7 +73,7 @@ export default function RootLayout({
                 ></div>
             )}
             <div className={cn(
-              "transition-[margin-left] ease-in-out duration-300",
+              "transition-[margin-left] ease-in-out duration-300 flex flex-col flex-1",
               isDashboardPage && !isAuthPage && (isSidebarCollapsed ? "md:ml-20" : "md:ml-64")
             )}>
               <Header 
