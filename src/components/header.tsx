@@ -150,9 +150,6 @@ export function Header({
                         {isSidebarCollapsed ? <PanelLeftOpen /> : <PanelLeftClose />}
                         <span className="sr-only">{isSidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}</span>
                   </Button>
-                   <Link href="/dashboard" className="hidden md:block">
-                     <InTestersLogo className="h-8" />
-                  </Link>
                 </div>
               ) : (
                 <Link href="/">
