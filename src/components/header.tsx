@@ -6,7 +6,7 @@ import { usePathname } from 'next/navigation';
 import { InTestersLogo } from './icons';
 import { Button } from './ui/button';
 import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle, SheetClose } from './ui/sheet';
-import { Menu, ArrowRight, Sun, Moon, User, LogOut, LayoutDashboard, Settings, LifeBuoy, X, Users2, Gift } from 'lucide-react';
+import { Menu, ArrowRight, Sun, Moon, User, LogOut, LayoutDashboard, Settings, LifeBuoy, X, Users2, Gift, PanelLeftOpen, PanelLeftClose } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useState, useEffect } from 'react';
 import { useTheme } from 'next-themes';
@@ -93,10 +93,20 @@ interface HeaderProps {
   isDashboardPage: boolean;
   isMobileMenuOpen: boolean;
   setMobileMenuOpen: (open: boolean) => void;
+  isSidebarCollapsed: boolean;
+  setSidebarCollapsed: (collapsed: boolean) => void;
   onLogout: () => void;
 }
 
-export function Header({ isAuthenticated, isDashboardPage, isMobileMenuOpen, setMobileMenuOpen, onLogout }: HeaderProps) {
+export function Header({ 
+  isAuthenticated, 
+  isDashboardPage, 
+  isMobileMenuOpen, 
+  setMobileMenuOpen, 
+  isSidebarCollapsed,
+  setSidebarCollapsed,
+  onLogout 
+}: HeaderProps) {
   const pathname = usePathname();
   const [isScrolled, setIsScrolled] = useState(false);
   const [isVisitorMenuOpen, setVisitorMenuOpen] = useState(false);
@@ -131,12 +141,16 @@ export function Header({ isAuthenticated, isDashboardPage, isMobileMenuOpen, set
         <div className="flex h-20 items-center justify-between">
             <div className="flex items-center gap-2">
               {isDashboardPage ? (
-                <div className="flex items-center gap-4">
-                  <Button size="icon" variant="outline" onClick={() => setMobileMenuOpen(!isMobileMenuOpen)} className="md:hidden">
+                <div className="flex items-center gap-2">
+                   <Button size="icon" variant="ghost" onClick={() => setMobileMenuOpen(!isMobileMenuOpen)} className="md:hidden">
                     <Menu className="h-6 w-6" />
                     <span className="sr-only">Open menu</span>
                   </Button>
-                   <Link href="/dashboard">
+                  <Button variant="ghost" size="icon" onClick={() => setSidebarCollapsed(!isSidebarCollapsed)} className="hidden md:flex">
+                        {isSidebarCollapsed ? <PanelLeftOpen /> : <PanelLeftClose />}
+                        <span className="sr-only">{isSidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}</span>
+                  </Button>
+                   <Link href="/dashboard" className="hidden md:block">
                      <InTestersLogo className="h-8" />
                   </Link>
                 </div>

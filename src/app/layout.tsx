@@ -60,7 +60,6 @@ export default function RootLayout({
             {isDashboardPage && (
               <Sidebar 
                 isCollapsed={isSidebarCollapsed} 
-                setCollapsed={setIsSidebarCollapsed}
                 isMobileOpen={isMobileMenuOpen}
                 setMobileOpen={setIsMobileMenuOpen}
                 onLogout={handleLogout}
@@ -81,6 +80,8 @@ export default function RootLayout({
                 isDashboardPage={isDashboardPage} 
                 isMobileMenuOpen={isMobileMenuOpen} 
                 setMobileMenuOpen={setIsMobileMenuOpen}
+                isSidebarCollapsed={isSidebarCollapsed}
+                setSidebarCollapsed={setIsSidebarCollapsed}
                 onLogout={handleLogout}
               />
               <main className="flex-1">{children}</main>

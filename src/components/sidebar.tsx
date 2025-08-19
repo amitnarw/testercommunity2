@@ -53,13 +53,12 @@ const NavLink = ({ href, icon: Icon, children, isCollapsed, onClick }: { href: s
 
 interface SidebarProps {
     isCollapsed: boolean;
-    setCollapsed: (collapsed: boolean) => void;
     isMobileOpen: boolean;
     setMobileOpen: (open: boolean) => void;
     onLogout: () => void;
 }
 
-export function Sidebar({ isCollapsed, setCollapsed, isMobileOpen, setMobileOpen, onLogout }: SidebarProps) {
+export function Sidebar({ isCollapsed, isMobileOpen, setMobileOpen, onLogout }: SidebarProps) {
     return (
         <aside className={cn(
             "fixed inset-y-0 left-0 z-50 flex h-full flex-col border-r bg-background transition-transform duration-300 ease-in-out md:transition-[width]",
@@ -72,10 +71,6 @@ export function Sidebar({ isCollapsed, setCollapsed, isMobileOpen, setMobileOpen
                     <Link href="/dashboard" className={cn(isCollapsed && "hidden md:inline-block")}>
                         <InTestersLogo className="h-8" />
                     </Link>
-                     <Button variant="ghost" size="icon" onClick={() => setCollapsed(!isCollapsed)} className="hidden md:flex">
-                        {isCollapsed ? <PanelLeftOpen /> : <PanelLeftClose />}
-                        <span className="sr-only">{isCollapsed ? "Expand sidebar" : "Collapse sidebar"}</span>
-                    </Button>
                     <Button variant="ghost" size="icon" onClick={() => setMobileOpen(false)} className="md:hidden">
                         <X />
                         <span className="sr-only">Close menu</span>
