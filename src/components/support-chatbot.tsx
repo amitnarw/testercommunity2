@@ -34,6 +34,8 @@ export function SupportChatbot() {
         }
         setIsOpen(true);
     };
+    
+    const closeChat = () => setIsOpen(false);
 
     useEffect(() => {
         const trigger = document.querySelector('[data-chatbot-trigger]');
@@ -85,36 +87,13 @@ export function SupportChatbot() {
     return (
         <div className="fixed bottom-8 right-8 z-50">
             <AnimatePresence>
-                {!isOpen && (
-                    <motion.button
-                        layoutId="chatbot-window"
-                        onClick={openChat}
-                        className="flex items-center gap-3 p-3 pl-4 bg-primary text-primary-foreground rounded-full shadow-lg hover:bg-primary/90 transition-all group"
-                        initial={{ scale: 0, opacity: 0 }}
-                        animate={{ scale: 1, opacity: 1 }}
-                        exit={{ scale: 0, opacity: 0 }}
-                        transition={{ duration: 0.3, ease: 'easeOut', delay: 0.5 }}
-                    >
-                        <div className="flex items-center gap-2">
-                             <Avatar className="w-8 h-8 border-2 border-primary-foreground/50">
-                                <AvatarImage src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?q=80&w=400" data-ai-hint="support agent" />
-                                <AvatarFallback>A</AvatarFallback>
-                            </Avatar>
-                            <span className="font-semibold text-sm">Chat with Alex</span>
-                        </div>
-                        <div className="bg-primary-foreground/20 rounded-full p-2 group-hover:scale-110 transition-transform">
-                             <MessageSquare className="w-5 h-5" />
-                        </div>
-                    </motion.button>
-                )}
-            </AnimatePresence>
-             <AnimatePresence>
-                {isOpen && (
+                {isOpen ? (
                     <motion.div
                         layoutId="chatbot-window"
-                        initial={{ scale: 0, opacity: 0 }}
-                        animate={{ scale: 1, opacity: 1 }}
-                        exit={{ scale: 0, opacity: 0 }}
+                        key="chatbot"
+                        initial={{ scale: 0.5, opacity: 0, y: 100 }}
+                        animate={{ scale: 1, opacity: 1, y: 0 }}
+                        exit={{ scale: 0.5, opacity: 0, y: 100 }}
                         transition={{ duration: 0.3, ease: 'easeOut' }}
                         className="w-[90vw] max-w-sm h-[70vh] bg-card rounded-2xl shadow-2xl flex flex-col overflow-hidden border origin-bottom-right"
                     >
@@ -133,7 +112,7 @@ export function SupportChatbot() {
                                     </p>
                                 </div>
                             </div>
-                            <Button variant="ghost" size="icon" onClick={() => setIsOpen(false)} className="rounded-full hover:bg-primary/80">
+                            <Button variant="ghost" size="icon" onClick={closeChat} className="rounded-full hover:bg-primary/80">
                                 <X className="h-5 w-5" />
                             </Button>
                         </header>
@@ -208,6 +187,28 @@ export function SupportChatbot() {
                             </form>
                         </footer>
                     </motion.div>
+                ) : (
+                    <motion.button
+                        layoutId="chatbot-window"
+                        key="button"
+                        onClick={openChat}
+                        className="flex items-center gap-3 p-3 pl-4 bg-primary text-primary-foreground rounded-full shadow-lg hover:bg-primary/90 transition-all group origin-bottom-right"
+                        initial={{ scale: 0.5, opacity: 0, y: 100 }}
+                        animate={{ scale: 1, opacity: 1, y: 0 }}
+                        exit={{ scale: 0.5, opacity: 0, y: 100 }}
+                        transition={{ duration: 0.3, ease: 'easeOut' }}
+                    >
+                        <div className="flex items-center gap-2">
+                             <Avatar className="w-8 h-8 border-2 border-primary-foreground/50">
+                                <AvatarImage src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?q=80&w=400" data-ai-hint="support agent" />
+                                <AvatarFallback>A</AvatarFallback>
+                            </Avatar>
+                            <span className="font-semibold text-sm">Chat with Alex</span>
+                        </div>
+                        <div className="bg-primary-foreground/20 rounded-full p-2 group-hover:scale-110 transition-transform">
+                             <MessageSquare className="w-5 h-5" />
+                        </div>
+                    </motion.button>
                 )}
             </AnimatePresence>
         </div>
