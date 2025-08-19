@@ -4,7 +4,7 @@
 import { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { ListFilter, ArrowUpDown } from 'lucide-react';
+import { ListFilter, ArrowUpDown, PlusCircle } from 'lucide-react';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { communityApps } from '@/lib/data';
 import { PointsSidebar } from '@/components/points-sidebar';
@@ -14,6 +14,7 @@ import { CommunityOngoingAppCard } from '@/components/community-ongoing-app-card
 import { CommunityCompletedAppCard } from '@/components/community-completed-app-card';
 import { Pagination, PaginationContent, PaginationItem, PaginationPrevious, PaginationLink, PaginationNext } from '@/components/ui/pagination';
 import { Separator } from '@/components/ui/separator';
+import Link from 'next/link';
 
 
 const APPS_PER_PAGE = 6;
@@ -65,9 +66,16 @@ export default function CommunityDashboardPage() {
             <div className="container mx-auto px-4 md:px-6 py-12">
                 <div className="grid lg:grid-cols-4 gap-8">
                     <div className="lg:col-span-3">
-                        <header className="mb-8">
-                            <h1 className="text-4xl font-bold">Community Hub</h1>
-                            <p className="text-muted-foreground mt-2">Test apps, earn points, and help fellow developers build better products.</p>
+                        <header className="mb-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                            <div>
+                                <h1 className="text-4xl font-bold">Community Hub</h1>
+                                <p className="text-muted-foreground mt-2">Test apps, earn points, and help fellow developers build better products.</p>
+                            </div>
+                             <Button asChild>
+                                <Link href="/community-dashboard/submit">
+                                <PlusCircle className="mr-2 h-4 w-4" /> Submit Your App
+                                </Link>
+                            </Button>
                         </header>
 
                         <div className="grid gap-4 mb-8 md:grid-cols-3 md:grid-rows-2">
@@ -117,9 +125,10 @@ export default function CommunityDashboardPage() {
                             <Tabs defaultValue="available" className="w-full">
                                 <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
                                     <TabsList>
-                                        <TabsTrigger value="available">Available</TabsTrigger>
-                                        <TabsTrigger value="ongoing">Ongoing</TabsTrigger>
-                                        <TabsTrigger value="completed">Completed</TabsTrigger>
+                                        <TabsTrigger value="available">Available Tests</TabsTrigger>
+                                        <TabsTrigger value="ongoing">My Ongoing Tests</TabsTrigger>
+                                        <TabsTrigger value="completed">My Completed Tests</TabsTrigger>
+                                        <TabsTrigger value="submissions" onClick={() => window.location.href = '/community-dashboard/my-submissions'}>My Submissions</TabsTrigger>
                                     </TabsList>
                                     <div className="flex gap-2">
                                         <DropdownMenu>

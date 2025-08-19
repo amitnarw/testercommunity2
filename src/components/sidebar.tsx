@@ -88,12 +88,21 @@ export function Sidebar({ isCollapsed, isMobileOpen, setMobileOpen, onLogout }: 
 
                     <div className={cn("px-2", isCollapsed && "px-0 text-center")}>
                             <div className="my-4 border-t -mx-2"></div>
-                            <Button asChild className={cn("w-full justify-center", isCollapsed && "w-auto h-auto p-3")}>
-                            <Link href="/dashboard/add-app" onClick={() => setMobileOpen(false)}>
-                                <PlusCircle className={cn("mr-2 h-4 w-4", isCollapsed && "md:mr-0")}/>
-                                <span className={cn(isCollapsed && "md:sr-only")}>Submit App</span>
-                            </Link>
-                        </Button>
+                             <TooltipProvider>
+                                <Tooltip delayDuration={0}>
+                                    <TooltipTrigger asChild>
+                                        <Button asChild className={cn("w-full justify-center", isCollapsed && "w-auto h-auto p-3")}>
+                                            <Link href="/dashboard/add-app" onClick={() => setMobileOpen(false)}>
+                                                <PlusCircle className={cn("mr-2 h-4 w-4", isCollapsed && "md:mr-0")}/>
+                                                <span className={cn(isCollapsed && "md:sr-only")}>Submit App</span>
+                                            </Link>
+                                        </Button>
+                                    </TooltipTrigger>
+                                    <TooltipContent side="right">
+                                        Submit App
+                                    </TooltipContent>
+                                </Tooltip>
+                            </TooltipProvider>
                     </div>
                 </div>
 
