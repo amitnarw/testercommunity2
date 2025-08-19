@@ -25,7 +25,6 @@ export function SupportChatbot() {
     const scrollAreaRef = useRef<HTMLDivElement>(null);
 
     const openChat = () => {
-        setIsOpen(true);
         if (messages.length === 0) {
             setIsLoading(true);
             setTimeout(() => {
@@ -33,29 +32,33 @@ export function SupportChatbot() {
                 setIsLoading(false);
             }, 1000);
         }
+        setIsOpen(true);
     };
 
     useEffect(() => {
         const trigger = document.querySelector('[data-chatbot-trigger]');
         if (trigger) {
-            trigger.addEventListener('click', openChat);
-        }
-        return () => {
-            if (trigger) {
-                trigger.removeEventListener('click', openChat);
+            const handleClick = () => openChat();
+            trigger.addEventListener('click', handleClick);
+            return () => {
+                trigger.removeEventListener('click', handleClick);
             }
         }
     }, [messages.length]);
 
 
     useEffect(() => {
-        if (scrollAreaRef.current) {
-            scrollAreaRef.current.scrollTo({
-                top: scrollAreaRef.current.scrollHeight,
-                behavior: 'smooth'
-            });
+        if (isOpen && scrollAreaRef.current) {
+            setTimeout(() => {
+                 if (scrollAreaRef.current) {
+                    scrollAreaRef.current.scrollTo({
+                        top: scrollAreaRef.current.scrollHeight,
+                        behavior: 'smooth'
+                    });
+                }
+            }, 100);
         }
-    }, [messages]);
+    }, [messages, isOpen]);
 
     const handleSendMessage = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -80,21 +83,17 @@ export function SupportChatbot() {
     };
 
     return (
-        <>
-            <motion.div
-                className="fixed bottom-8 right-8 z-50 group"
-                initial={{ scale: 0, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                transition={{ delay: 0.5, type: 'spring', stiffness: 260, damping: 20 }}
-            >
-                <AnimatePresence>
-                {!isOpen && (
-                     <motion.button
+        <div className="fixed bottom-8 right-8 z-50">
+            <AnimatePresence>
+                {!isOpen ? (
+                    <motion.button
+                        layoutId="chatbot-window"
                         onClick={openChat}
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0, transition: { delay: 0.2 } }}
-                        exit={{ opacity: 0, scale: 0.9 }}
-                        className="flex items-center gap-3 p-3 pl-4 bg-primary text-primary-foreground rounded-full shadow-lg hover:bg-primary/90 transition-all"
+                        className="flex items-center gap-3 p-3 pl-4 bg-primary text-primary-foreground rounded-full shadow-lg hover:bg-primary/90 transition-all group"
+                        initial={{ scale: 0, opacity: 0 }}
+                        animate={{ scale: 1, opacity: 1 }}
+                        exit={{ scale: 0, opacity: 0 }}
+                        transition={{ duration: 0.3, ease: 'easeOut', delay: 0.5 }}
                     >
                         <div className="flex items-center gap-2">
                              <Avatar className="w-8 h-8 border-2 border-primary-foreground/50">
@@ -107,18 +106,10 @@ export function SupportChatbot() {
                              <MessageSquare className="w-5 h-5" />
                         </div>
                     </motion.button>
-                )}
-                </AnimatePresence>
-            </motion.div>
-
-            <AnimatePresence>
-                {isOpen && (
+                ) : (
                     <motion.div
-                        initial={{ opacity: 0, y: 50, scale: 0.9 }}
-                        animate={{ opacity: 1, y: 0, scale: 1 }}
-                        exit={{ opacity: 0, y: 50, scale: 0.9 }}
-                        transition={{ type: 'spring', stiffness: 200, damping: 25 }}
-                        className="fixed bottom-8 right-8 z-50 w-[90vw] max-w-sm h-[70vh] bg-card rounded-2xl shadow-2xl flex flex-col overflow-hidden border"
+                        layoutId="chatbot-window"
+                        className="w-[90vw] max-w-sm h-[70vh] bg-card rounded-2xl shadow-2xl flex flex-col overflow-hidden border"
                     >
                         {/* Header */}
                         <header className="flex items-center justify-between p-4 border-b bg-primary text-primary-foreground">
@@ -212,6 +203,6 @@ export function SupportChatbot() {
                     </motion.div>
                 )}
             </AnimatePresence>
-        </>
+        </div>
     );
 }
