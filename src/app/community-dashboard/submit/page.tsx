@@ -21,7 +21,7 @@ export default function SubmitAppPage() {
                     </Button>
                     <h1 className="text-4xl font-bold">Submit Your App to the Community</h1>
                     <p className="text-muted-foreground mt-2">
-                        Get valuable feedback by submitting your app for community testing. Our team will review your submission and allocate appropriate points for testers.
+                        Get valuable feedback by submitting your app for community testing. Our team will review your submission and allocate appropriate points for testers. Please note, the review process may take a few days. Once approved, your app will be available in the Community Hub, and the points we assign will be awarded to testers upon completion of their testing.
                     </p>
                 </header>
 
