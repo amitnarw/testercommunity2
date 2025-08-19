@@ -1,9 +1,9 @@
 
 'use client';
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card'
 import { Button } from '@/components/ui/button';
-import { PlusCircle, Gem } from 'lucide-react'
+import { PlusCircle, FileClock, CheckCircle, Clock } from 'lucide-react'
 import Link from 'next/link';
 import { useState } from 'react';
 import { projects as allProjects } from '@/lib/data';
@@ -11,43 +11,30 @@ import type { Project } from '@/lib/types';
 import { Pagination, PaginationContent, PaginationItem, PaginationPrevious, PaginationLink, PaginationNext } from '@/components/ui/pagination';
 import { Badge } from '@/components/ui/badge';
 import Image from 'next/image';
-import { ArrowRight } from 'lucide-react';
+import { ArrowRight, FileCheck, Search } from 'lucide-react';
+import { cn } from '@/lib/utils';
 
 
 const PROJECTS_PER_PAGE = 6;
 
-const getStatusConfig = (status: string) => {
+const getStatusConfig = (status: Project['status']) => {
     switch (status) {
+        case "In Review":
+            return { badgeVariant: "secondary", icon: <Search className="w-3 h-3" />, description: "Our team is reviewing your submission." };
         case "In Testing":
-            return {
-                badgeVariant: "destructive",
-            };
+            return { badgeVariant: "destructive", icon: <Clock className="w-3 h-3" />, description: "Community members are actively testing your app." };
         case "Completed":
-            return {
-                badgeVariant: "secondary",
-            };
-        case "Archived":
-            return {
-                badgeVariant: "outline",
-            };
+            return { badgeVariant: "default", className: "bg-green-600 hover:bg-green-700", icon: <CheckCircle className="w-3 h-3" />, description: "Test cycle complete! Check your feedback." };
         default:
-            return {
-                badgeVariant: "secondary",
-            };
+            return { badgeVariant: "outline", icon: <FileClock className="w-3 h-3" />, description: "Your app is published and awaiting testers." };
     }
 }
-
-const Metric = ({ label, value }: { label: string, value: string | number }) => (
-    <div className="bg-secondary/50 rounded-lg p-3 text-center">
-        <p className="text-xs text-muted-foreground">{label}</p>
-        <p className="text-2xl font-bold">{value}</p>
-    </div>
-);
 
 
 export default function MySubmissionsPage() {
   const [currentPage, setCurrentPage] = useState(1);
-  const myCommunityApps = allProjects.slice(0, 2); // Assume first 2 projects are community submissions
+  // Filtering only projects relevant to "my submissions"
+  const myCommunityApps = allProjects.filter(p => ["In Review", "In Testing", "Completed"].includes(p.status));
 
   const totalPages = Math.ceil(myCommunityApps.length / PROJECTS_PER_PAGE);
   const startIndex = (currentPage - 1) * PROJECTS_PER_PAGE;
@@ -65,7 +52,7 @@ export default function MySubmissionsPage() {
         <div className="container mx-auto px-4 md:px-6 py-12">
           <header className="mb-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div>
-              <h1 className="text-4xl font-bold">My Community Submissions</h1>
+              <h1 className="text-4xl font-bold">My Submissions</h1>
               <p className="text-muted-foreground">Track the progress of apps you've submitted for community testing.</p>
             </div>
             <Button asChild>
@@ -75,55 +62,57 @@ export default function MySubmissionsPage() {
             </Button>
           </header>
 
-            <Card className="rounded-xl border-0 bg-transparent shadow-sm">
-                <CardContent className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 p-0">
-                    {currentProjects.length > 0 ? currentProjects.map((project) => {
-                        const statusConfig = getStatusConfig(project.status);
+          <main>
+              {currentProjects.length > 0 ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {currentProjects.map((project) => {
+                        const statusConfig = getStatusConfig(project.status as Project['status']);
                         return (
-                            <div key={project.id} className="group relative">
-                                <Link href={`/community-dashboard/my-submissions/${project.id}`}>
-                                    <div className="rounded-2xl overflow-hidden bg-background hover:bg-secondary/50 transition-all duration-300 transform hover:-translate-y-1 hover:shadow-lg h-full flex flex-col">
-                                        <CardHeader className="flex flex-row items-start justify-between gap-4 p-5">
-                                            <div className="flex items-center gap-4">
-                                                <Image src={project.icon} alt={project.name} width={48} height={48} className="rounded-lg border bg-secondary" data-ai-hint={project.dataAiHint} />
-                                                <div>
-                                                    <CardTitle className="text-base">{project.name}</CardTitle>
-                                                    <p className="text-xs text-muted-foreground">{project.packageName}</p>
-                                                </div>
+                             <Card key={project.id} className="group relative overflow-hidden rounded-2xl bg-background hover:shadow-lg transition-shadow duration-300 flex flex-col h-full">
+                                <Link href={`/community-dashboard/my-submissions/${project.id}`} className="flex flex-col h-full">
+                                    <CardHeader className="flex flex-row items-start gap-4 p-5">
+                                        <Image src={project.icon} alt={project.name} width={48} height={48} className="rounded-lg border bg-secondary" data-ai-hint={project.dataAiHint} />
+                                        <div className="flex-grow">
+                                            <CardTitle className="text-base">{project.name}</CardTitle>
+                                            <p className="text-xs text-muted-foreground">{project.packageName}</p>
+                                        </div>
+                                         <ArrowRight className="absolute top-4 right-4 text-muted-foreground/30 transition-all duration-300 group-hover:text-primary group-hover:translate-x-1 group-hover:-translate-y-1" size={20} />
+                                    </CardHeader>
+                                    <CardContent className="p-5 pt-0 flex-grow">
+                                       <p className="text-sm text-muted-foreground h-12 line-clamp-2">{project.description}</p>
+                                    </CardContent>
+                                    <CardFooter className="p-3 bg-secondary/50 m-2 rounded-lg">
+                                        <div className="flex items-center gap-2">
+                                            <div className={cn("p-1.5 rounded-full bg-background", statusConfig.className)}>
+                                                {statusConfig.icon}
                                             </div>
-
-                                            <div className="absolute -top-11 -right-10 bg-primary/20 rounded-full flex items-center justify-center pointer-events-none group-hover:scale-110 group-hover:bg-primary/80 transition-transform p-12 duration-500">
-                                                <ArrowRight className="absolute top-12 right-12 text-primary group-hover:text-primary-foreground group-hover:-rotate-45 duration-300" size={24} />
+                                            <div>
+                                                <Badge variant={statusConfig.badgeVariant as any} className={cn("text-xs font-semibold", statusConfig.className)}>
+                                                    {project.status}
+                                                </Badge>
+                                                <p className="text-xs text-muted-foreground mt-1">{statusConfig.description}</p>
                                             </div>
-                                        </CardHeader>
-
-                                        <CardContent className="p-5 pt-0 space-y-5 flex-grow">
-                                             <div className="flex flex-row items-center gap-2">
-                                                <Badge variant={statusConfig.badgeVariant as any} className="text-xs">{project.status}</Badge>
-                                                <Badge variant="outline" className="text-xs font-light">Started from: {project.startedFrom}</Badge>
-                                            </div>
-                                            <div className="grid grid-cols-2 gap-4">
-                                                <Metric label="Testers Engaged" value={project.testersStarted} />
-                                                <Metric label="Feedback Received" value={project.feedbackBreakdown.total} />
-                                            </div>
-                                        </CardContent>
-                                    </div>
+                                        </div>
+                                    </CardFooter>
                                 </Link>
-                            </div>
+                             </Card>
                         )
-                    }) : (
-                        <div className="col-span-full text-center py-20 bg-background rounded-2xl">
-                             <p className="text-muted-foreground">You haven't submitted any apps to the community yet.</p>
-                             <Button asChild className="mt-4">
-                                <Link href="/community-dashboard/submit">Submit Your First App</Link>
-                             </Button>
-                        </div>
-                    )}
-                </CardContent>
-            </Card>
+                    })}
+                </div>
+              ) : (
+                <div className="col-span-full text-center py-20 bg-background rounded-2xl">
+                     <FileClock className="mx-auto h-12 w-12 text-muted-foreground" />
+                     <h3 className="mt-4 text-lg font-semibold">No Submissions Yet</h3>
+                     <p className="mt-2 text-sm text-muted-foreground">Submit your first app to get it tested by the community.</p>
+                     <Button asChild className="mt-6">
+                        <Link href="/community-dashboard/submit">Submit Your First App</Link>
+                     </Button>
+                </div>
+              )}
+          </main>
 
             {totalPages > 1 && (
-                <Pagination className="mt-8">
+                <Pagination className="mt-12">
                 <PaginationContent>
                     <PaginationItem>
                         <PaginationPrevious 
@@ -158,3 +147,5 @@ export default function MySubmissionsPage() {
     </>
   )
 }
+
+    

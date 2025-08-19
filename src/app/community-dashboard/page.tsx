@@ -4,7 +4,7 @@
 import { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { ListFilter, ArrowUpDown, PlusCircle } from 'lucide-react';
+import { ListFilter, ArrowUpDown, PlusCircle, ArrowRight } from 'lucide-react';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { communityApps } from '@/lib/data';
 import { PointsSidebar } from '@/components/points-sidebar';
@@ -71,11 +71,18 @@ export default function CommunityDashboardPage() {
                                 <h1 className="text-4xl font-bold">Community Hub</h1>
                                 <p className="text-muted-foreground mt-2">Test apps, earn points, and help fellow developers build better products.</p>
                             </div>
-                             <Button asChild>
-                                <Link href="/community-dashboard/submit">
-                                <PlusCircle className="mr-2 h-4 w-4" /> Submit Your App
-                                </Link>
-                            </Button>
+                            <div className="flex flex-col gap-2 items-stretch">
+                                <Button asChild>
+                                    <Link href="/community-dashboard/submit">
+                                    <PlusCircle className="mr-2 h-4 w-4" /> Submit Your App
+                                    </Link>
+                                </Button>
+                                <Button variant="link" asChild className="text-sm text-muted-foreground">
+                                    <Link href="/community-dashboard/my-submissions">
+                                        Check my submissions <ArrowRight className="ml-1 h-4 w-4" />
+                                    </Link>
+                                </Button>
+                            </div>
                         </header>
 
                         <div className="grid gap-4 mb-8 md:grid-cols-3 md:grid-rows-2">
@@ -128,7 +135,6 @@ export default function CommunityDashboardPage() {
                                         <TabsTrigger value="available">Available Tests</TabsTrigger>
                                         <TabsTrigger value="ongoing">My Ongoing Tests</TabsTrigger>
                                         <TabsTrigger value="completed">My Completed Tests</TabsTrigger>
-                                        <TabsTrigger value="submissions" onClick={() => window.location.href = '/community-dashboard/my-submissions'}>My Submissions</TabsTrigger>
                                     </TabsList>
                                     <div className="flex gap-2">
                                         <DropdownMenu>
@@ -293,3 +299,5 @@ export default function CommunityDashboardPage() {
         </div>
     )
 }
+
+    

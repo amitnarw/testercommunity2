@@ -612,6 +612,28 @@ export const projects: Project[] = [
       feedback: generateFeedback("E-commerce Platform"),
       chartData: generateChartData(5)
     },
+     {
+      id: 6,
+      name: "My New Photo App",
+      packageName: "com.mynew.photoapp",
+      icon: "https://placehold.co/48x48.png",
+      dataAiHint: "camera shutter",
+      status: "In Review",
+      testersStarted: 0,
+      testersCompleted: 0,
+      totalDays: 0,
+      avgTestersPerDay: 0,
+      startedFrom: "28 Aug 2024",
+      description: "A new photo editing app with AI-powered filters and one-touch enhancements.",
+      crashFreeRate: 100,
+      feedbackBreakdown: { total: 0, critical: 0, high: 0, low: 0 },
+      performanceMetrics: { avgStartupTime: "N/A", frozenFrames: "N/A" },
+       deviceCoverage: [],
+      osCoverage: [],
+       topGeographies: [],
+      feedback: [],
+      chartData: []
+    },
     {
       id: 4,
       name: "HealthTracker API",
@@ -677,3 +699,5 @@ export const projects: Project[] = [
       chartData: generateChartData(40)
     },
   ]
+
+    
