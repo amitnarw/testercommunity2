@@ -30,6 +30,38 @@ export function InTestersLogo(props: SVGProps<SVGSVGElement>) {
   );
 }
 
+export function InTestersLogoShort(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg 
+      viewBox="0 0 40 40"
+      aria-hidden="true"
+      suppressHydrationWarning
+      {...props}
+    >
+      <defs>
+        <linearGradient id="logo-gradient-short" x1="0%" y1="50%" x2="100%" y2="50%">
+          <stop offset="0%" style={{ stopColor: 'hsl(var(--primary))' }} />
+          <stop offset="100%" style={{ stopColor: 'hsl(var(--accent))' }} />
+        </linearGradient>
+      </defs>
+       <rect width="40" height="40" rx="8" fill="url(#logo-gradient-short)" />
+       <text
+        fontFamily="Plus Jakarta Sans, sans-serif"
+        fontSize="24"
+        fontWeight="bold"
+        fill="hsl(var(--primary-foreground))"
+        x="50%"
+        y="50%"
+        dominantBaseline="central"
+        textAnchor="middle"
+        suppressHydrationWarning
+      >
+        iT
+      </text>
+    </svg>
+  );
+}
+
 export function GoldBadge(props: SVGProps<SVGSVGElement>) {
   return (
     <svg
