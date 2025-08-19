@@ -88,10 +88,10 @@ export default function RootLayout({
                 onLogout={handleLogout}
               />
               <AnimatePresence mode="wait">
-                <main key={pathname} className="flex-1">
-                    <PageTransition />
-                    {children}
-                </main>
+                  <main key={pathname} className="flex-1">
+                      <PageTransition />
+                      {children}
+                  </main>
               </AnimatePresence>
               {!isAuthPage && (
                 isDashboardPage ? <DashboardFooter /> : <Footer />
