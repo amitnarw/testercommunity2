@@ -22,9 +22,8 @@ const ChatWindow = ({ closeChat, messages, isLoading, inputValue, setInputValue,
         layoutId="chatbot-window"
         className="fixed bottom-8 right-8 z-50 bg-card shadow-2xl flex flex-col border origin-bottom-right overflow-hidden w-[90vw] max-w-sm h-[70vh] rounded-2xl"
         initial={{ opacity: 0, scale: 0.8 }}
-        animate={{ opacity: 1, scale: 1 }}
-        exit={{ opacity: 0, scale: 0.8 }}
-        transition={{ duration: 0.3, ease: 'easeInOut' }}
+        animate={{ opacity: 1, scale: 1, transition: { duration: 0.3, ease: 'easeInOut' } }}
+        exit={{ opacity: 0, scale: 0.8, transition: { duration: 0.1, ease: 'easeInOut' } }}
     >
         <header className="flex items-center justify-between p-4 border-b bg-primary text-primary-foreground flex-shrink-0">
             <div className="flex items-center gap-3">
