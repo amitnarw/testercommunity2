@@ -1,4 +1,6 @@
 
+'use client';
+
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { ArrowRight, BookOpen, Bot, DollarSign, LifeBuoy, Mail, MessageCircle, Twitter, Linkedin, Github } from "lucide-react";
 import Link from "next/link";
@@ -13,7 +15,7 @@ const helpOptions = [
         contactType: "email",
     },
     {
-        icon: <Bot className="w-8 h-8 text-primary" />,
+        icon: <LifeBuoy className="w-8 h-8 text-primary" />,
         title: "Technical Support",
         description: "Encountering a bug, having trouble with a submission, or need help with our API? Our tech team is on standby.",
         contact: "support@inTesters.com",
@@ -41,28 +43,24 @@ export default function HelpPage() {
                     </p>
                 </section>
 
-                <section className="mt-20 max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
-                    {helpOptions.map(option => (
-                        <Link key={option.title} href={`mailto:${option.contact}`}>
-                            <Card className="h-full rounded-2xl p-6 text-center flex flex-col items-center group hover:-translate-y-2 transition-transform duration-300 hover:shadow-2xl hover:shadow-primary/20">
-                                <div className="bg-primary/10 p-4 rounded-full mb-4 transition-transform duration-300 group-hover:scale-110">
-                                    {option.icon}
-                                </div>
-                                <CardHeader className="p-0">
-                                    <CardTitle>{option.title}</CardTitle>
-                                    <CardDescription className="mt-2">{option.description}</CardDescription>
-                                </CardHeader>
-                                <div className="mt-6 font-semibold text-primary flex items-center gap-2">
-                                    <Mail className="w-4 h-4" /> {option.contact}
-                                </div>
-                            </Card>
-                        </Link>
-                    ))}
-                </section>
-
-                <section className="mt-20 max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8">
-                    <Link href="/faq">
-                        <Card className="h-full rounded-2xl p-8 flex items-center justify-between group hover:bg-secondary">
+                 <section className="mt-20 max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 items-stretch">
+                    <Card className="rounded-2xl p-8 flex items-center justify-between group bg-card shadow-lg hover:-translate-y-1 transition-transform duration-300">
+                        <div className="flex items-center gap-6">
+                            <div className="bg-primary/10 p-4 rounded-full">
+                                <Bot className="w-8 h-8 text-primary" />
+                            </div>
+                            <div>
+                                <CardTitle>Chat with Alex</CardTitle>
+                                <CardDescription className="mt-1">Get instant answers from our AI assistant.</CardDescription>
+                            </div>
+                        </div>
+                         {/* This button will be handled by the chatbot component itself */}
+                        <div data-chatbot-trigger>
+                            <ArrowRight className="w-6 h-6 text-muted-foreground transition-transform duration-300 group-hover:translate-x-1 group-hover:text-primary" />
+                        </div>
+                    </Card>
+                    <Link href="/faq" className="block">
+                        <Card className="h-full rounded-2xl p-8 flex items-center justify-between group hover:bg-secondary/80 hover:-translate-y-1 transition-transform duration-300">
                             <div className="flex items-center gap-6">
                                 <div className="bg-primary/10 p-4 rounded-full">
                                     <BookOpen className="w-8 h-8 text-primary" />
@@ -75,7 +73,35 @@ export default function HelpPage() {
                             <ArrowRight className="w-6 h-6 text-muted-foreground transition-transform duration-300 group-hover:translate-x-1 group-hover:text-primary" />
                         </Card>
                     </Link>
-                    <Card className="rounded-2xl p-8 flex items-center justify-between bg-card">
+                </section>
+
+                <section className="mt-16">
+                     <div className="text-center mb-12">
+                        <h2 className="text-2xl font-bold">Prefer to email us?</h2>
+                        <p className="text-muted-foreground mt-2">We'll get back to you as soon as possible.</p>
+                    </div>
+                    <div className="max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
+                        {helpOptions.map(option => (
+                            <Link key={option.title} href={`mailto:${option.contact}`}>
+                                <Card className="h-full rounded-2xl p-6 text-center flex flex-col items-center group hover:-translate-y-1 transition-transform duration-300 hover:shadow-lg hover:shadow-primary/10">
+                                    <div className="bg-primary/10 p-4 rounded-full mb-4 transition-transform duration-300 group-hover:scale-110">
+                                        {option.icon}
+                                    </div>
+                                    <CardHeader className="p-0">
+                                        <CardTitle>{option.title}</CardTitle>
+                                        <CardDescription className="mt-2">{option.description}</CardDescription>
+                                    </CardHeader>
+                                    <div className="mt-6 font-semibold text-primary flex items-center gap-2">
+                                        <Mail className="w-4 h-4" /> {option.contact}
+                                    </div>
+                                </Card>
+                            </Link>
+                        ))}
+                    </div>
+                </section>
+
+                <section className="mt-20 max-w-5xl mx-auto grid grid-cols-1">
+                     <Card className="rounded-2xl p-8 flex items-center justify-between bg-card">
                         <div className="flex items-center gap-6">
                             <div className="bg-primary/10 p-4 rounded-full">
                                     <LifeBuoy className="w-8 h-8 text-primary" />

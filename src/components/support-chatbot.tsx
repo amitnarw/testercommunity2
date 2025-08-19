@@ -3,7 +3,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Bot, X, Send, User } from 'lucide-react';
+import { Bot, X, Send, User, MessageSquare } from 'lucide-react';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { ScrollArea } from './ui/scroll-area';
@@ -24,15 +24,29 @@ export function SupportChatbot() {
     const [isLoading, setIsLoading] = useState(false);
     const scrollAreaRef = useRef<HTMLDivElement>(null);
 
-    useEffect(() => {
-        if (isOpen && messages.length === 0) {
+    const openChat = () => {
+        setIsOpen(true);
+        if (messages.length === 0) {
             setIsLoading(true);
             setTimeout(() => {
                 setMessages([{ id: 1, text: "Hi! I'm Alex, your personal support agent. How can I help you today?", sender: 'bot' }]);
                 setIsLoading(false);
             }, 1000);
         }
-    }, [isOpen, messages.length]);
+    };
+
+    useEffect(() => {
+        const trigger = document.querySelector('[data-chatbot-trigger]');
+        if (trigger) {
+            trigger.addEventListener('click', openChat);
+        }
+        return () => {
+            if (trigger) {
+                trigger.removeEventListener('click', openChat);
+            }
+        }
+    }, [messages.length]);
+
 
     useEffect(() => {
         if (scrollAreaRef.current) {
@@ -68,20 +82,33 @@ export function SupportChatbot() {
     return (
         <>
             <motion.div
-                className="fixed bottom-8 right-8 z-50"
+                className="fixed bottom-8 right-8 z-50 group"
                 initial={{ scale: 0, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 transition={{ delay: 0.5, type: 'spring', stiffness: 260, damping: 20 }}
             >
-                <Button
-                    onClick={() => setIsOpen(true)}
-                    className={cn(
-                        "rounded-full w-16 h-16 shadow-lg flex items-center justify-center",
-                        isOpen && "scale-0 opacity-0"
-                    )}
-                >
-                    <Bot className="h-8 w-8" />
-                </Button>
+                <AnimatePresence>
+                {!isOpen && (
+                     <motion.button
+                        onClick={openChat}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0, transition: { delay: 0.2 } }}
+                        exit={{ opacity: 0, scale: 0.9 }}
+                        className="flex items-center gap-3 p-3 pl-4 bg-primary text-primary-foreground rounded-full shadow-lg hover:bg-primary/90 transition-all"
+                    >
+                        <div className="flex items-center gap-2">
+                             <Avatar className="w-8 h-8 border-2 border-primary-foreground/50">
+                                <AvatarImage src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?q=80&w=400" data-ai-hint="support agent" />
+                                <AvatarFallback>A</AvatarFallback>
+                            </Avatar>
+                            <span className="font-semibold text-sm">Chat with Alex</span>
+                        </div>
+                        <div className="bg-primary-foreground/20 rounded-full p-2 group-hover:scale-110 transition-transform">
+                             <MessageSquare className="w-5 h-5" />
+                        </div>
+                    </motion.button>
+                )}
+                </AnimatePresence>
             </motion.div>
 
             <AnimatePresence>
