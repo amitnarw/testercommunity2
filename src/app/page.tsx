@@ -46,14 +46,14 @@ export default function Home() {
         <div className="flex flex-col min-h-screen">
             <main className="flex-1">
                 {/* Hero Section */}
-                <section className="relative w-full py-12 sm:py-16 md:py-20 lg:py-28">
+                <section className="relative w-full py-12 sm:py-16 md:py-20 lg:py-24">
                     <div className="absolute inset-0 bg-dot-pattern z-0"></div>
                     <div className="container mx-auto px-4 md:px-6 text-center relative z-10">
                         <div className="max-w-4xl mx-auto">
                             <HoverBorderGradient
-                                containerClassName="rounded-full mb-5"
+                                containerClassName="rounded-full m-auto mb-5 sm:mb-10"
                                 as="button"
-                                className="dark:bg-black bg-white text-black dark:text-white flex items-center space-x-2"
+                                className="dark:bg-black text-xs bg-white text-black dark:text-white flex items-center space-x-2"
                                 >
                                 <BadgeCheck className="w-4 h-4 mr-2 text-primary" />
                                 <span>Meet Google's 12-Tester Requirement.</span>
@@ -64,9 +64,9 @@ export default function Home() {
                             <p className="text-sm sm:text-base md:text-lg font-body max-w-sm sm:max-w-md md:max-w-lg lg:max-w-[700px] mx-auto mb-8 sm:mb-9 md:mb-10 lg:mb-12 text-muted-foreground">
                             Get 12+ real testers and meet Google Play’s 14 day rule, fast. Use free community testing or go pro with points. Submit, track, and launch, all in one place.
                             </p>
-                            <div className="mt-10 inline-block p-4">
+                            <div className="mt-5 inline-block p-4">
                                 <MagneticButton>
-                                    <Button asChild size="lg" variant="default" className="group text-base pr-3 py-6 rounded-full shadow-lg shadow-primary/30">
+                                    <Button asChild size="lg" variant="default" className="group text-base pr-3 py-7 rounded-full shadow-lg shadow-primary/30">
                                         <Link href="/signup">
                                             <span className="relative z-10 font-bold">Submit Your App Now</span>
                                             <div className="relative inline-flex items-center justify-center w-8 h-8 rounded-full bg-primary-foreground/20 group-hover:bg-black dark:group-hover:bg-white transition-all duration-500 group-hover:scale-[2] ml-8">
