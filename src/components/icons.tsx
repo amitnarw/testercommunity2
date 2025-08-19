@@ -1,5 +1,20 @@
 
 import type { SVGProps } from 'react';
+import { cn } from '@/lib/utils';
+
+export function SiteLogo({className}: {className?: string}) {
+    return (
+        <div className={cn("flex flex-col items-center", className)}>
+            <InTestersLogoShort className="h-8 w-8" />
+            <span 
+                className="text-xs font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent"
+                style={{letterSpacing: '0.27em'}}
+            >
+                inTesters
+            </span>
+        </div>
+    )
+}
 
 export function InTestersLogo(props: SVGProps<SVGSVGElement>) {
   return (

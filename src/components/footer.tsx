@@ -1,6 +1,6 @@
 
 import Link from 'next/link';
-import { InTestersLogo } from './icons';
+import { SiteLogo } from './icons';
 import { Button } from './ui/button';
 import { Github, Twitter, Linkedin } from 'lucide-react';
 import Image from 'next/image';
@@ -30,7 +30,7 @@ export function Footer() {
         <div className="grid gap-8 lg:grid-cols-3">
           <div className="space-y-4">
             <Link href="/" className="flex items-center gap-2">
-              <InTestersLogo className="h-8" />
+              <SiteLogo className="h-10" />
             </Link>
             <p className="text-muted-foreground">The future of app testing is animated.</p>
             <div className="flex items-center gap-2">

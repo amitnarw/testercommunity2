@@ -3,7 +3,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { InTestersLogo } from './icons';
+import { SiteLogo } from './icons';
 import { Button } from './ui/button';
 import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle, SheetClose } from './ui/sheet';
 import { Menu, ArrowRight, Sun, Moon, User, LogOut, LayoutDashboard, Settings, LifeBuoy, X, Users2, Gift, PanelLeftOpen, PanelLeftClose } from 'lucide-react';
@@ -153,7 +153,7 @@ export function Header({
                 </div>
               ) : (
                 <Link href="/">
-                  <InTestersLogo className="h-8" />
+                  <SiteLogo className="h-10" />
                 </Link>
               )}
             </div>
