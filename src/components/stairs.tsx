@@ -21,7 +21,7 @@ export const Stairs = () => {
         enter: (i: number) => ({
             top: "100vh",
             transition: {
-                duration: 0.4,
+                duration: 0.25,
                 delay: 0.05 * i,
                 ease: [0.215, 0.61, 0.355, 1]
             },
@@ -30,7 +30,7 @@ export const Stairs = () => {
         exit: (i: number) => ({
             height: "100vh",
             transition: {
-                duration: 0.4,
+                duration: 0.25,
                 delay: 0.05 * i,
                 ease: [0.215, 0.61, 0.355, 1]
             }
@@ -41,7 +41,7 @@ export const Stairs = () => {
 
     return (
         <div className='page-transition'>
-            <div className='transition-container'>
+            <div className='transition-container flex-grow relative'>
                 {
                     [...Array(nbOfColumns)].map((_, i) => {
                         return (
