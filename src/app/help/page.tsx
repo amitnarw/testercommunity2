@@ -2,31 +2,28 @@
 'use client';
 
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowRight, BookOpen, Bot, DollarSign, LifeBuoy, Mail, MessageCircle, Twitter, Linkedin, Github } from "lucide-react";
+import { ArrowRight, BookOpen, Bot, DollarSign, LifeBuoy, Mail } from "lucide-react";
 import Link from "next/link";
 import { SupportChatbot } from "@/components/support-chatbot";
 
 const helpOptions = [
     {
-        icon: <MessageCircle className="w-8 h-8 text-primary" />,
-        title: "General Inquiries",
-        description: "Have a general question about how inTesters works, our community, or partnerships? We're here to chat.",
-        contact: "info@inTesters.com",
-        contactType: "email",
-    },
-    {
         icon: <LifeBuoy className="w-8 h-8 text-primary" />,
         title: "Technical Support",
         description: "Encountering a bug, having trouble with a submission, or need help with our API? Our tech team is on standby.",
         contact: "support@inTesters.com",
-        contactType: "email",
     },
     {
         icon: <DollarSign className="w-8 h-8 text-primary" />,
         title: "Billing Questions",
         description: "Need help with an invoice, have questions about our point packages, or need to manage your subscription? Let us know.",
         contact: "billing@inTesters.com",
-        contactType: "email",
+    },
+    {
+        icon: <Mail className="w-8 h-8 text-primary" />,
+        title: "General Inquiries",
+        description: "Have a general question about how inTesters works, our community, or partnerships? We're here to chat.",
+        contact: "info@inTesters.com",
     },
 ]
 
@@ -98,25 +95,6 @@ export default function HelpPage() {
                             </Link>
                         ))}
                     </div>
-                </section>
-
-                <section className="mt-20 max-w-5xl mx-auto grid grid-cols-1">
-                     <Card className="rounded-2xl p-8 flex items-center justify-between bg-card">
-                        <div className="flex items-center gap-6">
-                            <div className="bg-primary/10 p-4 rounded-full">
-                                    <LifeBuoy className="w-8 h-8 text-primary" />
-                            </div>
-                            <div>
-                                <CardTitle>Connect with us</CardTitle>
-                                <CardDescription className="mt-1">Follow us on our social channels.</CardDescription>
-                            </div>
-                        </div>
-                        <div className="flex items-center gap-2">
-                            <Link href="#"><Twitter className="w-6 h-6 text-muted-foreground hover:text-primary" /></Link>
-                            <Link href="#"><Linkedin className="w-6 h-6 text-muted-foreground hover:text-primary" /></Link>
-                            <Link href="#"><Github className="w-6 h-6 text-muted-foreground hover:text-primary" /></Link>
-                        </div>
-                    </Card>
                 </section>
             </div>
         </div>

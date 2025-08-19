@@ -24,6 +24,7 @@ import { useState } from 'react';
 import type { ProjectFeedback } from '@/lib/types';
 import { cn } from '@/lib/utils';
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from '@/components/ui/pagination';
+import { format } from 'date-fns';
 
 
 const FEEDBACK_PER_PAGE = 5;
@@ -209,7 +210,7 @@ export default function CommunitySubmissionDetailsPage({ params }: { params: { i
                                                         <Badge variant={fb.status === 'Resolved' || fb.status === 'Closed' ? 'secondary' : 'outline'}>{fb.status}</Badge>
                                                     </TableCell>
                                                     <TableCell>{fb.tester}</TableCell>
-                                                    <TableCell className="text-right text-muted-foreground">{fb.date}</TableCell>
+                                                    <TableCell className="text-right text-muted-foreground">{format(new Date(fb.date), 'dd MMM yyyy')}</TableCell>
                                                 </TableRow>
                                             )) : (
                                                 <TableRow>
@@ -234,7 +235,7 @@ export default function CommunitySubmissionDetailsPage({ params }: { params: { i
                                                 <p className="text-muted-foreground text-sm">{fb.comment}</p>
                                                 <div className="flex items-center justify-between text-xs text-muted-foreground pt-3 border-t">
                                                     <div>
-                                                        <span className="font-semibold text-foreground">{fb.tester}</span> / {fb.date}
+                                                        <span className="font-semibold text-foreground">{fb.tester}</span> / {format(new Date(fb.date), 'dd MMM yyyy')}
                                                     </div>
                                                      <Badge variant={fb.status === 'Resolved' || fb.status === 'Closed' ? 'secondary' : 'outline'}>{fb.status}</Badge>
                                                 </div>
