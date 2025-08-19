@@ -19,13 +19,14 @@ const PageTransition = () => {
 
     const variants = {
         initial: {
-            top: "0vh",
+            top: "100vh",
         },
         animate: {
             top: "-100vh",
             transition: { 
                 duration: 1, 
                 ease: [0.76, 0, 0.24, 1],
+                delay: 0.2
             },
         },
         exit: {
@@ -54,11 +55,11 @@ const PageTransition = () => {
     }
 
     if (dimensions.width === 0) {
-        return null; // Return null to avoid flash of unstyled content
+        return null;
     }
     
-    const initialPath = `M0 ${dimensions.height} Q${dimensions.width/2} ${dimensions.height + 300} ${dimensions.width} ${dimensions.height} L${dimensions.width} 0 L0 0`
-    const targetPath = `M0 ${dimensions.height} Q${dimensions.width/2} ${dimensions.height} ${dimensions.width} ${dimensions.height} L${dimensions.width} 0 L0 0`
+    const initialPath = `M0 ${dimensions.height} Q${dimensions.width/2} ${dimensions.height} ${dimensions.width} ${dimensions.height} L${dimensions.width} 0 L0 0`
+    const targetPath = `M0 ${dimensions.height} Q${dimensions.width/2} ${dimensions.height - 300} ${dimensions.width} ${dimensions.height} L${dimensions.width} 0 L0 0`
 
 
     return (
@@ -67,7 +68,6 @@ const PageTransition = () => {
             initial="initial"
             animate="animate"
             exit="exit"
-            style={{top: '100vh'}}
             variants={variants}
          >
             <svg className="absolute top-0 w-full h-[calc(100%+300px)] pointer-events-none">
