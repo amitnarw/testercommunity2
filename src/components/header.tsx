@@ -148,7 +148,7 @@ export function Header({
   if (isAuthPage) return null;
 
   return (
-    <header className="sticky top-3 z-30 w-[90vw] m-auto rounded-full transition-all duration-300 bg-primary/10 backdrop-blur-lg pl-2 py-2">
+    <header className="sticky top-3 z-30 w-[90vw] m-auto rounded-full transition-all duration-300 bg-gradient-to-r from-primary/10 to-secondary/10 backdrop-blur-lg pl-2 py-2">
       <div className="container mx-auto px-2">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
