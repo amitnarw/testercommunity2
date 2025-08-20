@@ -95,7 +95,7 @@ export function Footer() {
                 </div>
             </div>
             <div className='absolute bottom-0 flex items-end justify-center w-full overflow-hidden pointer-events-none'>
-                <p className='font-black text-primary/10 dark:text-secondary/50 text-[80px] sm:text-[200px] lg:text-[300px]'>inTesters</p>
+                <p className='font-black text-primary/10 dark:text-secondary/50 text-[80px] sm:text-[200px] lg:text-[300px] -mt-40'>inTesters</p>
             </div>
         </footer>
     );
