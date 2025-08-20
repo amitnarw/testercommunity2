@@ -89,13 +89,13 @@ export function Footer() {
                         </div>
                     </div>
                 </div>
-                <div className="mt-8 pt-8 flex flex-col md:flex-row justify-between items-center text-sm text-muted-foreground">
+                <div className="mt-4 pt-8 mb-24 flex flex-col md:flex-row justify-between items-center text-sm text-muted-foreground">
                     <p>&copy; {new Date().getFullYear()} inTesters, Inc. All rights reserved.</p>
-                    <p>A Next-Gen App Testing Community.</p>
+                    <p>A Testing Community at it's best.</p>
                 </div>
             </div>
-            <div className='absolute bottom-0 flex items-end justify-center w-full overflow-hidden pointer-events-none'>
-                <p className='font-black text-primary/10 dark:text-secondary/50 text-[80px] sm:text-[200px] lg:text-[300px] -mt-40'>inTesters</p>
+            <div className='-z-10 absolute bottom-0 flex items-end justify-center w-full overflow-hidden pointer-events-none'>
+                <p className='font-black text-primary/10 dark:text-secondary/50 text-[80px] sm:text-[200px] lg:text-[300px] -mb-10 sm:-mb-24 lg:-mb-40'>inTesters</p>
             </div>
         </footer>
     );

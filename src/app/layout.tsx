@@ -85,11 +85,9 @@ export default function RootLayout({
                 setSidebarCollapsed={setIsSidebarCollapsed}
                 onLogout={handleLogout}
               />
-              <div className="relative z-20 bg-background flex-1">
-                <main className="flex-1">
+              <main className="flex-1">
                   {children}
-                </main>
-              </div>
+              </main>
               {!isAuthPage && (
                 isDashboardPage ? <DashboardFooter /> : <Footer />
               )}

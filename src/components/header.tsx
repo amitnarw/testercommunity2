@@ -124,7 +124,6 @@ export function Header({
   onLogout
 }: HeaderProps) {
   const pathname = usePathname();
-  const [isScrolled, setIsScrolled] = useState(false);
   const [isVisitorMenuOpen, setVisitorMenuOpen] = useState(false);
   const { theme, setTheme } = useTheme();
   const [isMounted, setIsMounted] = useState(false);
@@ -134,14 +133,6 @@ export function Header({
   }, []);
 
   const isAuthPage = pathname === '/login' || pathname === '/signup';
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 10);
-    };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
 
   const navItems = isAuthenticated ? authenticatedNavItems : visitorNavItems;
 
