@@ -31,7 +31,7 @@ export function Footer() {
             <div className="container mx-auto px-4 md:px-6 py-20">
                 <div className="grid gap-8 lg:grid-cols-3">
                     <div className="space-y-4">
-                        <Link href="/" className="flex items-center gap-2">
+                        <Link href="/" className="items-center gap-2 hidden sm:flex">
                             <SiteLogo />
                         </Link>
                         <p className="text-muted-foreground">The future of app testing is animated.</p>
@@ -89,7 +89,7 @@ export function Footer() {
                         </div>
                     </div>
                 </div>
-                <div className="mt-4 pt-8 mb-24 flex flex-col md:flex-row justify-between items-center text-sm text-muted-foreground">
+                <div className="mt-4 pt-8 sm:mb-24 flex flex-col md:flex-row justify-between items-center text-sm text-muted-foreground">
                     <p>&copy; {new Date().getFullYear()} inTesters, Inc. All rights reserved.</p>
                     <p>A Testing Community at it's best.</p>
                 </div>

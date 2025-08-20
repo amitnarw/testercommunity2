@@ -8,7 +8,6 @@ import { Toaster } from "@/components/ui/toaster";
 import { ThemeProvider } from '@/components/theme-provider';
 import { Header } from '@/components/header';
 import { Footer } from '@/components/footer';
-import { DashboardFooter } from '@/components/dashboard-footer';
 import { Sidebar } from '@/components/sidebar';
 import { cn } from '@/lib/utils';
 import { useState, useEffect } from 'react';
@@ -34,7 +33,8 @@ export default function RootLayout({
   }, [pathname]); // Re-check on path change
 
   const isAuthPage = pathname === '/login' || pathname === '/signup';
-  const isDashboardPage = isAuthenticated && (pathname.startsWith('/dashboard') || pathname.startsWith('/community-dashboard') || pathname.startsWith('/profile') || pathname.startsWith('/notifications'));
+  // Show special sidebar only for community dashboard pages
+  const isCommunityDashboard = isAuthenticated && pathname.startsWith('/community-dashboard');
 
   const handleLogout = () => {
     localStorage.removeItem('isAuthenticated');
@@ -48,7 +48,7 @@ export default function RootLayout({
          <title>inTesters | App Testing Community Platform</title>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700;800&display=swap" rel="stylesheet" />
+        <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700;800&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet" />
       </head>
       <body className="font-body antialiased bg-background text-foreground">
         <ThemeProvider
@@ -58,7 +58,7 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <div className="relative flex flex-col min-h-screen">
-            {isDashboardPage && (
+            {isCommunityDashboard && (
               <Sidebar 
                 isCollapsed={isSidebarCollapsed} 
                 isMobileOpen={isMobileMenuOpen}
@@ -66,7 +66,7 @@ export default function RootLayout({
                 onLogout={handleLogout}
               />
             )}
-             {isDashboardPage && isMobileMenuOpen && (
+             {isCommunityDashboard && isMobileMenuOpen && (
                 <div 
                     onClick={() => setIsMobileMenuOpen(false)}
                     className="fixed inset-0 z-40 bg-black/50 md:hidden"
@@ -74,24 +74,26 @@ export default function RootLayout({
             )}
             <div className={cn(
               "transition-[margin-left] ease-in-out duration-300 flex flex-col flex-1",
-              isDashboardPage && !isAuthPage && (isSidebarCollapsed ? "md:ml-20" : "md:ml-64")
+              isCommunityDashboard && !isAuthPage && (isSidebarCollapsed ? "md:ml-20" : "md:ml-64")
             )}>
-              <Header 
-                isAuthenticated={isAuthenticated}
-                isDashboardPage={isDashboardPage} 
-                isMobileMenuOpen={isMobileMenuOpen} 
-                setMobileMenuOpen={setIsMobileMenuOpen}
-                isSidebarCollapsed={isSidebarCollapsed}
-                setSidebarCollapsed={setIsSidebarCollapsed}
-                onLogout={handleLogout}
-              />
-              <div className="relative z-20 bg-background flex-1">
+              {!isCommunityDashboard && (
+                 <Header 
+                    isAuthenticated={isAuthenticated}
+                    isDashboardPage={false} // Pass false as header is only for non-dashboard
+                    isMobileMenuOpen={isMobileMenuOpen} 
+                    setMobileMenuOpen={setIsMobileMenuOpen}
+                    isSidebarCollapsed={isSidebarCollapsed}
+                    setSidebarCollapsed={setIsSidebarCollapsed}
+                    onLogout={handleLogout}
+                  />
+              )}
+              <div className={cn("relative flex-1", isCommunityDashboard ? 'z-0' : 'z-20 bg-background' )}>
                 <main className="flex-1">
                   {children}
                 </main>
               </div>
-              {!isAuthPage && (
-                isDashboardPage ? <DashboardFooter /> : <Footer />
+              {!isAuthPage && !isCommunityDashboard && (
+                 <Footer />
               )}
             </div>
           </div>

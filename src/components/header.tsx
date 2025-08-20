@@ -3,7 +3,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { InTestersLogoShortHeader } from './icons';
+import { InTestersLogo, InTestersLogoShortHeader } from './icons';
 import { Button } from './ui/button';
 import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetClose } from './ui/sheet';
 import { Menu, ArrowRight, Sun, Moon, User, LogOut, LayoutDashboard, LifeBuoy, X, Users2, Gift, PanelLeftOpen, PanelLeftClose } from 'lucide-react';
@@ -124,7 +124,6 @@ export function Header({
   onLogout
 }: HeaderProps) {
   const pathname = usePathname();
-  const [isScrolled, setIsScrolled] = useState(false);
   const [isVisitorMenuOpen, setVisitorMenuOpen] = useState(false);
   const { theme, setTheme } = useTheme();
   const [isMounted, setIsMounted] = useState(false);
@@ -135,13 +134,6 @@ export function Header({
 
   const isAuthPage = pathname === '/login' || pathname === '/signup';
 
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 10);
-    };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
 
   const navItems = isAuthenticated ? authenticatedNavItems : visitorNavItems;
 
@@ -166,7 +158,8 @@ export function Header({
                 </div>
               ) : (
                 <Link href="/">
-                  <InTestersLogoShortHeader className="h-10 w-10" />
+                  <InTestersLogo className="h-8 w-auto hidden sm:block" />
+                  <InTestersLogoShortHeader className="h-10 w-10 sm:hidden" />
                 </Link>
               )}
             </div>
