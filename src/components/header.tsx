@@ -14,9 +14,17 @@ import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuIte
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 import { demoUser } from '@/lib/data.tsx';
 
-const navItems = [
+const visitorNavItems = [
   { name: 'Home', href: '/' },
   { name: 'How It Works', href: '/how-it-works' },
+  { name: 'Pricing', href: '/pricing' },
+  { name: 'Blog', href: '/blog' },
+];
+
+const authenticatedNavItems = [
+  { name: 'Home', href: '/' },
+  { name: 'Dashboard', href: '/dashboard' },
+  { name: 'Community', href: '/community-dashboard' },
   { name: 'Pricing', href: '/pricing' },
   { name: 'Blog', href: '/blog' },
 ];
@@ -135,7 +143,7 @@ export function Header({
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  const visitorNavItems = navItems;
+  const navItems = isAuthenticated ? authenticatedNavItems : visitorNavItems;
 
   if (isAuthPage) return null;
 
@@ -171,8 +179,7 @@ export function Header({
                   data-text={item.name}
                   className={cn(
                     'font-medium transition-colors sliding-text-hover',
-                    pathname.startsWith(item.href) && item.href !== '/' ? 'text-primary' : 'text-muted-foreground',
-                    pathname === '/' && item.href === '/' && 'text-primary'
+                    (pathname.startsWith(item.href) && item.href !== '/') || (pathname === '/' && item.href === '/') ? 'text-primary' : 'text-muted-foreground'
                   )}
                 >
                   <span>{item.name}</span>
