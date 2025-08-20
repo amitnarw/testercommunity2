@@ -27,7 +27,7 @@ const legalItems = [
 
 export function Footer() {
     return (
-        <footer className="bg-secondary/50 bottom-0 sticky -z-10 relative">
+        <footer className="bg-secondary/50">
             <div className="container mx-auto px-4 md:px-6 py-20">
                 <div className="grid gap-8 lg:grid-cols-3">
                     <div className="space-y-4">
@@ -94,8 +94,8 @@ export function Footer() {
                     <p>A Next-Gen App Testing Community.</p>
                 </div>
             </div>
-            <div className='absolute bottom-0 flex items-end justify-center w-full overflow-hidden'>
-                <p className='font-black text-primary/10 dark:text-secondary/50 text-[80px] sm:text-[200px] lg:text-[300px] -mb-10 sm:-mb-32 lg:-mb-40 -z-10'>inTesters</p>
+            <div className='absolute bottom-0 flex items-end justify-center w-full overflow-hidden -z-10'>
+                <p className='font-black text-primary/10 dark:text-secondary/50 text-[80px] sm:text-[200px] lg:text-[300px] -mb-10 sm:-mb-32 lg:-mb-40'>inTesters</p>
             </div>
         </footer>
     );
