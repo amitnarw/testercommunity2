@@ -13,12 +13,21 @@ import { useTheme } from 'next-themes';
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuGroup } from './ui/dropdown-menu';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 import { demoUser } from '@/lib/data.tsx';
+import { Separator } from './ui/separator';
 
 const navItems = [
   { name: 'Home', href: '/' },
   { name: 'How It Works', href: '/how-it-works' },
   { name: 'Pricing', href: '/pricing' },
   { name: 'Blog', href: '/blog' },
+];
+
+const mobileAuthenticatedNavItems = [
+    { name: 'Developer Dashboard', href: '/dashboard', icon: LayoutDashboard },
+    { name: 'Community Hub', href: '/community-dashboard', icon: Users2 },
+    { name: 'Profile', href: '/profile', icon: User },
+    { name: 'Buy Points', href: '/pricing', icon: Gift },
+    { name: 'Support', href: '/help', icon: LifeBuoy },
 ];
 
 
@@ -102,7 +111,7 @@ export function Header({
   isAuthenticated, 
   isDashboardPage, 
   isMobileMenuOpen, 
-  setMobileMenuOpen, 
+  setMobileOpen, 
   isSidebarCollapsed,
   setSidebarCollapsed,
   onLogout 
@@ -206,7 +215,7 @@ export function Header({
             <div className="md:hidden">
                 <Sheet open={isVisitorMenuOpen} onOpenChange={setVisitorMenuOpen}>
                     <SheetTrigger asChild>
-                        <Button size="icon" variant="outline">
+                         <Button size="icon" variant="outline">
                             <Menu className="h-6 w-6" />
                             <span className="sr-only">Open menu</span>
                         </Button>
@@ -223,11 +232,55 @@ export function Header({
                         <SheetHeader>
                         <SheetTitle className="sr-only">Mobile Menu</SheetTitle>
                         </SheetHeader>
-                        <div className="p-6 pt-20 w-full">
+                        <div className="p-6 pt-12 w-full">
                            {isAuthenticated ? (
-                             <div className="flex flex-col items-center gap-4">
-                               <UserNav onLogout={() => { onLogout(); setVisitorMenuOpen(false); }} />
-                               <p>Welcome, Demo User!</p>
+                             <div className="flex flex-col gap-4 text-center">
+                                <div className="flex flex-col items-center gap-2">
+                                     <Avatar className="h-16 w-16 mb-2">
+                                        <AvatarImage src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=400&auto=format=fit=crop" data-ai-hint="man smiling" alt="User Avatar" />
+                                        <AvatarFallback>{demoUser.role.charAt(0).toUpperCase()}</AvatarFallback>
+                                    </Avatar>
+                                    <p className="font-semibold">Demo User</p>
+                                    <p className="text-sm text-muted-foreground">demo@inTesters.com</p>
+                                </div>
+                                <Separator className="my-4" />
+                                 <nav className="flex flex-col items-center text-center gap-6">
+                                  {navItems.map((item) => (
+                                      <Link
+                                          key={item.name}
+                                          href={item.href}
+                                          onClick={() => setVisitorMenuOpen(false)}
+                                          className={cn(
+                                          'text-xl font-medium transition-colors hover:text-primary',
+                                          pathname === item.href ? 'text-primary' : 'text-foreground'
+                                          )}
+                                      >
+                                          {item.name}
+                                      </Link>
+                                  ))}
+                                </nav>
+                                <Separator className="my-4" />
+                                 <nav className="flex flex-col items-center text-center gap-6">
+                                    {mobileAuthenticatedNavItems.map((item) => (
+                                         <Link
+                                          key={item.name}
+                                          href={item.href}
+                                          onClick={() => setVisitorMenuOpen(false)}
+                                          className="text-xl font-medium transition-colors hover:text-primary text-muted-foreground flex items-center gap-4"
+                                        >
+                                            <item.icon className="w-5 h-5" />
+                                            <span>{item.name}</span>
+                                        </Link>
+                                    ))}
+                                     <Link
+                                        href="/"
+                                        onClick={() => { onLogout(); setVisitorMenuOpen(false); }}
+                                        className="text-xl font-medium transition-colors hover:text-primary text-muted-foreground flex items-center gap-4"
+                                    >
+                                        <LogOut className="w-5 h-5" />
+                                        <span>Log out</span>
+                                    </Link>
+                                </nav>
                              </div>
                            ) : (
                             <>
