@@ -237,30 +237,17 @@ export function Header({
                         <div className="p-6 flex flex-col justify-between flex-1">
                            {isAuthenticated ? (
                              <div className="flex flex-col h-full">
-                                <div className="flex items-center justify-between p-4 bg-secondary rounded-xl mb-8">
+                                <div className="flex items-center gap-4 p-4 bg-secondary rounded-xl mb-8">
                                     <Avatar className="h-12 w-12">
                                         <AvatarImage src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=400&auto=format=fit=crop" data-ai-hint="man smiling" alt="User Avatar" />
                                         <AvatarFallback>{demoUser.role.charAt(0).toUpperCase()}</AvatarFallback>
                                     </Avatar>
-                                    <p className="text-sm font-medium text-muted-foreground text-right">demo@inTesters.com</p>
+                                    <div>
+                                        <p className="font-bold">Demo User</p>
+                                        <p className="text-sm text-muted-foreground">demo@inTesters.com</p>
+                                    </div>
                                 </div>
-
-                                <nav className="flex flex-col items-center text-center gap-8">
-                                  {mobileAuthenticatedNavItems.map((item) => (
-                                      <Link
-                                          key={item.name}
-                                          href={item.href}
-                                          onClick={() => setVisitorMenuOpen(false)}
-                                          className={cn(
-                                          'text-2xl font-medium transition-colors hover:text-primary',
-                                          pathname === item.href ? 'text-primary' : 'text-foreground'
-                                          )}
-                                      >
-                                          {item.name}
-                                      </Link>
-                                  ))}
-                                </nav>
-                                <div className="mt-auto flex justify-between items-center">
+                                <div className="flex justify-between items-center mb-8">
                                     <Button variant="ghost" asChild onClick={() => setVisitorMenuOpen(false)}>
                                         <Link href="/profile">Profile</Link>
                                     </Button>
@@ -268,6 +255,22 @@ export function Header({
                                         Log Out
                                     </Button>
                                 </div>
+
+                                <nav className="flex flex-col items-center text-center gap-6">
+                                  {mobileAuthenticatedNavItems.map((item) => (
+                                      <Link
+                                          key={item.name}
+                                          href={item.href}
+                                          onClick={() => setVisitorMenuOpen(false)}
+                                          className={cn(
+                                          'text-xl font-medium transition-colors hover:text-primary',
+                                          pathname === item.href ? 'text-primary' : 'text-foreground'
+                                          )}
+                                      >
+                                          {item.name}
+                                      </Link>
+                                  ))}
+                                </nav>
                              </div>
                            ) : (
                             <>
