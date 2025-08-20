@@ -222,7 +222,21 @@ export function Header({
                     </SheetTrigger>
                     <SheetContent side="top" className="flex flex-col h-full">
                          <SheetHeader>
-                            <div className="flex justify-end items-center">
+                            <div className="flex justify-between items-center">
+                                {isAuthenticated ? (
+                                    <div className="flex items-center gap-4">
+                                        <Avatar className="h-10 w-10">
+                                            <AvatarImage src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=400&auto=format=fit=crop" data-ai-hint="man smiling" alt="User Avatar" />
+                                            <AvatarFallback>{demoUser.role.charAt(0).toUpperCase()}</AvatarFallback>
+                                        </Avatar>
+                                        <div>
+                                            <p className="font-bold">Demo User</p>
+                                            <p className="text-sm text-muted-foreground">demo@inTesters.com</p>
+                                        </div>
+                                    </div>
+                                ) : (
+                                    <div></div>
+                                )}
                                 <SheetClose asChild>
                                     <Button size="icon" variant="ghost">
                                         <X className="h-6 w-6" />
@@ -234,25 +248,7 @@ export function Header({
                         <div className="p-6 flex flex-col justify-between flex-1">
                            {isAuthenticated ? (
                              <div className="flex flex-col h-full">
-                                <div className="flex items-center gap-4 p-4 bg-secondary rounded-xl mb-8">
-                                    <Avatar className="h-12 w-12">
-                                        <AvatarImage src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=400&auto=format=fit=crop" data-ai-hint="man smiling" alt="User Avatar" />
-                                        <AvatarFallback>{demoUser.role.charAt(0).toUpperCase()}</AvatarFallback>
-                                    </Avatar>
-                                    <div>
-                                        <p className="font-bold">Demo User</p>
-                                        <p className="text-sm text-muted-foreground">demo@inTesters.com</p>
-                                    </div>
-                                </div>
-                                <div className="flex justify-between items-center mb-8">
-                                    <Button variant="ghost" asChild onClick={() => setVisitorMenuOpen(false)}>
-                                        <Link href="/profile">Profile</Link>
-                                    </Button>
-                                    <Button variant="ghost" onClick={() => { onLogout(); setVisitorMenuOpen(false); }}>
-                                        Log Out
-                                    </Button>
-                                </div>
-
+                                <Separator className="my-4" />
                                 <nav className="flex flex-col items-center text-center gap-6">
                                   {mobileAuthenticatedNavItems.map((item) => (
                                       <Link
@@ -268,6 +264,14 @@ export function Header({
                                       </Link>
                                   ))}
                                 </nav>
+                                <div className="mt-auto flex justify-between items-center">
+                                    <Button variant="ghost" asChild onClick={() => setVisitorMenuOpen(false)}>
+                                        <Link href="/profile">Profile</Link>
+                                    </Button>
+                                    <Button variant="ghost" onClick={() => { onLogout(); setVisitorMenuOpen(false); }}>
+                                        Log Out
+                                    </Button>
+                                </div>
                              </div>
                            ) : (
                             <>
