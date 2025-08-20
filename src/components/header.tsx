@@ -237,7 +237,15 @@ export function Header({
                         <div className="p-6 flex flex-col justify-between flex-1">
                            {isAuthenticated ? (
                              <div className="flex flex-col h-full">
-                                <nav className="flex flex-col items-center text-center gap-8 mt-8">
+                                <div className="flex items-center justify-between p-4 bg-secondary rounded-xl mb-8">
+                                    <Avatar className="h-12 w-12">
+                                        <AvatarImage src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=400&auto=format=fit=crop" data-ai-hint="man smiling" alt="User Avatar" />
+                                        <AvatarFallback>{demoUser.role.charAt(0).toUpperCase()}</AvatarFallback>
+                                    </Avatar>
+                                    <p className="text-sm font-medium text-muted-foreground text-right">demo@inTesters.com</p>
+                                </div>
+
+                                <nav className="flex flex-col items-center text-center gap-8">
                                   {mobileAuthenticatedNavItems.map((item) => (
                                       <Link
                                           key={item.name}
