@@ -222,10 +222,7 @@ export function Header({
                     </SheetTrigger>
                     <SheetContent side="top" className="flex flex-col h-full">
                          <SheetHeader>
-                            <div className="flex justify-between items-center">
-                                <Link href="/" onClick={() => setVisitorMenuOpen(false)}>
-                                    <SiteLogo />
-                                </Link>
+                            <div className="flex justify-end items-center">
                                 <SheetClose asChild>
                                     <Button size="icon" variant="ghost">
                                         <X className="h-6 w-6" />
