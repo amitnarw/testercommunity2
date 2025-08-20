@@ -23,11 +23,11 @@ const navItems = [
 ];
 
 const mobileAuthenticatedNavItems = [
-    { name: 'Developer Dashboard', href: '/dashboard', icon: LayoutDashboard },
-    { name: 'Community Hub', href: '/community-dashboard', icon: Users2 },
-    { name: 'Profile', href: '/profile', icon: User },
-    { name: 'Buy Points', href: '/pricing', icon: Gift },
-    { name: 'Support', href: '/help', icon: LifeBuoy },
+    { name: 'Home', href: '/' },
+    { name: 'Dashboard', href: '/dashboard' },
+    { name: 'Community', href: '/community-dashboard' },
+    { name: 'Pricing', href: '/pricing' },
+    { name: 'Blog', href: '/blog' },
 ];
 
 
@@ -147,7 +147,7 @@ export function Header({
             <div className="flex items-center gap-2">
               {isDashboardPage ? (
                 <div className="flex items-center gap-2">
-                   <Button size="icon" variant="ghost" onClick={() => setMobileMenuOpen(!isMobileMenuOpen)} className="md:hidden">
+                   <Button size="icon" variant="ghost" onClick={() => setMobileOpen(!isMobileMenuOpen)} className="md:hidden">
                     <Menu className="h-6 w-6" />
                     <span className="sr-only">Open menu</span>
                   </Button>
@@ -220,38 +220,31 @@ export function Header({
                             <span className="sr-only">Open menu</span>
                         </Button>
                     </SheetTrigger>
-                    <SheetContent side="top" className="flex flex-col">
-                        <div className="absolute top-4 right-4">
-                            <SheetClose asChild>
-                                <Button size="icon" variant="outline">
-                                    <X className="h-6 w-6" />
-                                    <span className="sr-only">Close menu</span>
-                                </Button>
-                            </SheetClose>
-                        </div>
-                        <SheetHeader>
-                        <SheetTitle className="sr-only">Mobile Menu</SheetTitle>
+                    <SheetContent side="top" className="flex flex-col h-full">
+                         <SheetHeader>
+                            <div className="flex justify-between items-center">
+                                <Link href="/" onClick={() => setVisitorMenuOpen(false)}>
+                                    <SiteLogo />
+                                </Link>
+                                <SheetClose asChild>
+                                    <Button size="icon" variant="ghost">
+                                        <X className="h-6 w-6" />
+                                        <span className="sr-only">Close menu</span>
+                                    </Button>
+                                </SheetClose>
+                            </div>
                         </SheetHeader>
-                        <div className="p-6 pt-12 w-full">
+                        <div className="p-6 flex flex-col justify-between flex-1">
                            {isAuthenticated ? (
-                             <div className="flex flex-col gap-4 text-center">
-                                <div className="flex flex-col items-center gap-2">
-                                     <Avatar className="h-16 w-16 mb-2">
-                                        <AvatarImage src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=400&auto=format=fit=crop" data-ai-hint="man smiling" alt="User Avatar" />
-                                        <AvatarFallback>{demoUser.role.charAt(0).toUpperCase()}</AvatarFallback>
-                                    </Avatar>
-                                    <p className="font-semibold">Demo User</p>
-                                    <p className="text-sm text-muted-foreground">demo@inTesters.com</p>
-                                </div>
-                                <Separator className="my-4" />
-                                 <nav className="flex flex-col items-center text-center gap-6">
-                                  {navItems.map((item) => (
+                             <div className="flex flex-col h-full">
+                                <nav className="flex flex-col items-center text-center gap-8 mt-8">
+                                  {mobileAuthenticatedNavItems.map((item) => (
                                       <Link
                                           key={item.name}
                                           href={item.href}
                                           onClick={() => setVisitorMenuOpen(false)}
                                           className={cn(
-                                          'text-xl font-medium transition-colors hover:text-primary',
+                                          'text-2xl font-medium transition-colors hover:text-primary',
                                           pathname === item.href ? 'text-primary' : 'text-foreground'
                                           )}
                                       >
@@ -259,32 +252,18 @@ export function Header({
                                       </Link>
                                   ))}
                                 </nav>
-                                <Separator className="my-4" />
-                                 <nav className="flex flex-col items-center text-center gap-6">
-                                    {mobileAuthenticatedNavItems.map((item) => (
-                                         <Link
-                                          key={item.name}
-                                          href={item.href}
-                                          onClick={() => setVisitorMenuOpen(false)}
-                                          className="text-xl font-medium transition-colors hover:text-primary text-muted-foreground flex items-center gap-4"
-                                        >
-                                            <item.icon className="w-5 h-5" />
-                                            <span>{item.name}</span>
-                                        </Link>
-                                    ))}
-                                     <Link
-                                        href="/"
-                                        onClick={() => { onLogout(); setVisitorMenuOpen(false); }}
-                                        className="text-xl font-medium transition-colors hover:text-primary text-muted-foreground flex items-center gap-4"
-                                    >
-                                        <LogOut className="w-5 h-5" />
-                                        <span>Log out</span>
-                                    </Link>
-                                </nav>
+                                <div className="mt-auto flex justify-between items-center">
+                                    <Button variant="ghost" asChild onClick={() => setVisitorMenuOpen(false)}>
+                                        <Link href="/profile">Profile</Link>
+                                    </Button>
+                                    <Button variant="ghost" onClick={() => { onLogout(); setVisitorMenuOpen(false); }}>
+                                        Log Out
+                                    </Button>
+                                </div>
                              </div>
                            ) : (
                             <>
-                              <nav className="flex flex-col items-center text-center gap-8">
+                              <nav className="flex flex-col items-center text-center gap-8 mt-8">
                                   {visitorNavItems.map((item) => (
                                       <Link
                                           key={item.name}
@@ -299,7 +278,7 @@ export function Header({
                                       </Link>
                                   ))}
                               </nav>
-                              <div className="mt-12 flex flex-col gap-4">
+                              <div className="mt-auto flex flex-col gap-4">
                                 <Button variant="outline" size="lg" asChild onClick={() => setVisitorMenuOpen(false)}>
                                     <Link href="/login">Log In</Link>
                                 </Button>
