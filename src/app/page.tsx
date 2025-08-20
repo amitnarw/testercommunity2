@@ -58,7 +58,7 @@ export default function Home() {
                                 <span>Meet Google's 12-Tester Requirement.</span>
                             </HoverBorderGradient>
                             <h1 className="text-[2.25rem] sm:text-[2.75rem] md:text-[3.5rem] lg:text-[4.25rem] font-heading leading-[1.1] tracking-tight font-bold mb-5 sm:mb-6 md:mb-8">
-                                Testing Your <span className="bg-gradient-to-br from-primary to-accent bg-clip-text text-transparent">Android App</span> Just Got Easier
+                                Testing Your <span className="font-heading font-bold bg-gradient-to-br from-primary to-accent bg-clip-text text-transparent">Android App</span> Just Got Easier
                             </h1>
                             <p className="text-sm sm:text-base md:text-lg font-body max-w-sm sm:max-w-md md:max-w-lg lg:max-w-[700px] mx-auto mb-8 sm:mb-9 md:mb-10 lg:mb-12 text-muted-foreground">
                                 Get 12+ real testers and meet Google Play’s 14 day rule, fast. Use free community testing or go pro with points. Submit, track, and launch, all in one place.
@@ -92,7 +92,7 @@ export default function Home() {
                     <section className="py-20 md:py-28 bg-background">
                         <div className="container mx-auto px-4 md:px-6">
                             <div className="text-center">
-                                <h2 className="text-3xl md:text-4xl font-bold">A Platform That Works as Good as It Looks</h2>
+                                <h2 className="text-3xl md:text-4xl font-bold font-heading">A Platform That Works as Good as It Looks</h2>
                                 <p className="mt-4 max-w-2xl mx-auto text-muted-foreground">
                                     We've merged cutting-edge functionality with Awwwards-caliber design to create an unparalleled testing experience.
                                 </p>
@@ -117,7 +117,7 @@ export default function Home() {
                 <section className="py-20 md:py-28">
                     <div className="container mx-auto px-4 md:px-6">
                         <div className="text-center">
-                            <h2 className="text-3xl md:text-4xl font-bold">Trusted by a Community of Innovators</h2>
+                            <h2 className="text-3xl md:text-4xl font-bold font-heading">Trusted by a Community of Innovators</h2>
                             <p className="mt-4 max-w-2xl mx-auto text-muted-foreground">
                                 See what developers and testers are saying about inTesters.
                             </p>
@@ -138,7 +138,7 @@ export default function Home() {
                     <section id="faq" className="py-20 md:py-28 bg-background">
                         <div className="container mx-auto px-4 md:px-6">
                             <div className="text-center max-w-2xl mx-auto">
-                                <h2 className="text-3xl md:text-4xl font-bold">Frequently Asked Questions</h2>
+                                <h2 className="text-3xl md:text-4xl font-bold font-heading">Frequently Asked Questions</h2>
                                 <p className="mt-4 text-muted-foreground">
                                     Have questions? We have answers. For more detailed information, check out our full FAQ page.
                                 </p>
@@ -158,7 +158,7 @@ export default function Home() {
                     {/* CTA Section */}
                     <section className="py-20 md:py-28">
                         <div className="container mx-auto px-4 md:px-6 text-center">
-                            <h2 className="text-4xl md:text-5xl font-bold">Ready to <span className="bg-gradient-to-br from-primary to-accent bg-clip-text text-transparent">Elevate</span> Your Testing?</h2>
+                            <h2 className="text-4xl md:text-5xl font-bold font-heading">Ready to <span className="bg-gradient-to-br from-primary to-accent bg-clip-text text-transparent">Elevate</span> Your Testing?</h2>
                             <p className="mt-4 max-w-2xl mx-auto text-muted-foreground">
                                 Join the community and experience the future of app testing today. It's free to get started.
                             </p>

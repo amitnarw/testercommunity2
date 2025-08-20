@@ -174,7 +174,7 @@ export function Header({
                       (pathname.startsWith(item.href) && item.href !== '/') || (pathname === '/' && item.href === '/') ? 'text-primary' : 'text-muted-foreground'
                     )}
                   >
-                    <span>{item.name}</span>
+                    <span className="font-body">{item.name}</span>
                   </Link>
                 ))}
               </nav>
