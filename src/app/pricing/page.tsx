@@ -3,8 +3,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { CheckCircle, ArrowRight, Star, HelpCircle, Phone, IndianRupee, Rocket } from "lucide-react";
-import { useState } from "react";
+import { CheckCircle, Star, HelpCircle, Phone } from "lucide-react";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";

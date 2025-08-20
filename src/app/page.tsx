@@ -42,7 +42,7 @@ const features = [
 
 export default function Home() {
     return (
-        <div className="flex flex-col min-h-screen">
+        <div className="flex flex-col min-h-screen bg-background">
             <main className="flex-1">
                 {/* Hero Section */}
                 <section className="relative w-full py-12 sm:py-16 md:py-20 lg:py-24">
