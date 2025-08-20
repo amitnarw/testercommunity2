@@ -58,36 +58,25 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <div className="relative flex flex-col min-h-screen">
-            {isCommunityDashboard && (
-              <Sidebar 
-                isCollapsed={isSidebarCollapsed} 
-                isMobileOpen={isMobileMenuOpen}
-                setMobileOpen={setIsMobileMenuOpen}
+            {isCommunityDashboard ? (
+               <Sidebar onLogout={handleLogout} />
+            ) : (
+              !isAuthPage && <Header 
+                isAuthenticated={isAuthenticated}
+                isDashboardPage={false}
+                isMobileMenuOpen={isMobileMenuOpen} 
+                setMobileMenuOpen={setIsMobileMenuOpen}
+                isSidebarCollapsed={isSidebarCollapsed}
+                setSidebarCollapsed={setIsSidebarCollapsed}
                 onLogout={handleLogout}
               />
             )}
-             {isCommunityDashboard && isMobileMenuOpen && (
-                <div 
-                    onClick={() => setIsMobileMenuOpen(false)}
-                    className="fixed inset-0 z-40 bg-black/50 md:hidden"
-                ></div>
-            )}
+            
             <div className={cn(
-              "transition-[margin-left] ease-in-out duration-300 flex flex-col flex-1",
-              isCommunityDashboard && !isAuthPage && (isSidebarCollapsed ? "md:ml-20" : "md:ml-64")
+              "flex flex-col flex-1",
+              isCommunityDashboard && !isAuthPage && "md:ml-24"
             )}>
-              {!isCommunityDashboard && (
-                 <Header 
-                    isAuthenticated={isAuthenticated}
-                    isDashboardPage={false} // Pass false as header is only for non-dashboard
-                    isMobileMenuOpen={isMobileMenuOpen} 
-                    setMobileMenuOpen={setIsMobileMenuOpen}
-                    isSidebarCollapsed={isSidebarCollapsed}
-                    setSidebarCollapsed={setIsSidebarCollapsed}
-                    onLogout={handleLogout}
-                  />
-              )}
-              <div className={cn("relative flex-1", isCommunityDashboard ? 'z-0' : 'z-20 bg-background' )}>
+              <div className={cn("relative flex-1", !isCommunityDashboard ? 'z-20 bg-background' : 'z-0' )}>
                 <main className="flex-1">
                   {children}
                 </main>

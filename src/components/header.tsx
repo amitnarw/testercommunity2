@@ -108,7 +108,7 @@ interface HeaderProps {
   isAuthenticated: boolean;
   isDashboardPage: boolean;
   isMobileMenuOpen: boolean;
-  setMobileOpen: (open: boolean) => void;
+  setMobileMenuOpen: (open: boolean) => void;
   isSidebarCollapsed: boolean;
   setSidebarCollapsed: (collapsed: boolean) => void;
   onLogout: () => void;
@@ -118,7 +118,7 @@ export function Header({
   isAuthenticated,
   isDashboardPage,
   isMobileMenuOpen,
-  setMobileOpen,
+  setMobileMenuOpen,
   isSidebarCollapsed,
   setSidebarCollapsed,
   onLogout
@@ -132,12 +132,7 @@ export function Header({
     setIsMounted(true);
   }, []);
 
-  const isAuthPage = pathname === '/login' || pathname === '/signup';
-
-
   const navItems = isAuthenticated ? authenticatedNavItems : visitorNavItems;
-
-  if (isAuthPage) return null;
 
   return (
     <header className="sticky top-4 z-50 w-[95vw] mx-auto">
@@ -145,42 +140,27 @@ export function Header({
         <div className="container mx-auto px-4 py-2">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              {isDashboardPage ? (
-                <div className="flex items-center gap-2">
-                  <Button size="icon" variant="ghost" onClick={() => setMobileOpen(!isMobileMenuOpen)} className="md:hidden">
-                    <Menu className="h-6 w-6" />
-                    <span className="sr-only">Open menu</span>
-                  </Button>
-                  <Button variant="ghost" size="icon" onClick={() => setSidebarCollapsed(!isSidebarCollapsed)} className="hidden md:flex">
-                    {isSidebarCollapsed ? <PanelLeftOpen /> : <PanelLeftClose />}
-                    <span className="sr-only">{isSidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}</span>
-                  </Button>
-                </div>
-              ) : (
                 <Link href="/">
                   <InTestersLogo className="h-8 w-auto hidden sm:block" />
                   <InTestersLogoShortHeader className="h-10 w-10 sm:hidden" />
                 </Link>
-              )}
             </div>
 
-            {!isDashboardPage && (
-              <nav className="hidden md:flex items-center gap-6">
-                {navItems.map((item) => (
-                  <Link
-                    key={item.name}
-                    href={item.href}
-                    data-text={item.name}
-                    className={cn(
-                      'font-medium transition-colors sliding-text-hover',
-                      (pathname.startsWith(item.href) && item.href !== '/') || (pathname === '/' && item.href === '/') ? 'text-primary' : 'text-muted-foreground'
-                    )}
-                  >
-                    <span>{item.name}</span>
-                  </Link>
-                ))}
-              </nav>
-            )}
+            <nav className="hidden md:flex items-center gap-6">
+              {navItems.map((item) => (
+                <Link
+                  key={item.name}
+                  href={item.href}
+                  data-text={item.name}
+                  className={cn(
+                    'font-medium transition-colors sliding-text-hover',
+                    (pathname.startsWith(item.href) && item.href !== '/') || (pathname === '/' && item.href === '/') ? 'text-primary' : 'text-muted-foreground'
+                  )}
+                >
+                  <span>{item.name}</span>
+                </Link>
+              ))}
+            </nav>
 
             <div className="flex items-center gap-2">
               {isMounted && (
