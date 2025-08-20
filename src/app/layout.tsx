@@ -60,9 +60,9 @@ export default function RootLayout({
           <div className="relative flex flex-col min-h-screen">
             {isCommunityDashboard ? (
                <Sidebar 
+                onLogout={handleLogout} 
                 isCollapsed={isSidebarCollapsed}
                 setIsCollapsed={setIsSidebarCollapsed}
-                onLogout={handleLogout} 
                />
             ) : (
               !isAuthPage && <Header 
