@@ -3,17 +3,16 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { InTestersLogoShort, SiteLogo } from './icons';
+import { InTestersLogoShortHeader } from './icons';
 import { Button } from './ui/button';
-import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle, SheetClose } from './ui/sheet';
-import { Menu, ArrowRight, Sun, Moon, User, LogOut, LayoutDashboard, Settings, LifeBuoy, X, Users2, Gift, PanelLeftOpen, PanelLeftClose } from 'lucide-react';
+import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetClose } from './ui/sheet';
+import { Menu, ArrowRight, Sun, Moon, User, LogOut, LayoutDashboard, LifeBuoy, X, Users2, Gift, PanelLeftOpen, PanelLeftClose } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useState, useEffect } from 'react';
 import { useTheme } from 'next-themes';
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuGroup } from './ui/dropdown-menu';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 import { demoUser } from '@/lib/data.tsx';
-import { Separator } from './ui/separator';
 
 const navItems = [
   { name: 'Home', href: '/' },
@@ -141,7 +140,7 @@ export function Header({
   if (isAuthPage) return null;
 
   return (
-    <header className="sticky top-3 z-30 w-[90vw] m-auto rounded-full transition-all duration-300 bg-primary/10 backdrop-blur-lg">
+    <header className="sticky top-3 z-30 w-[90vw] m-auto rounded-full transition-all duration-300 bg-primary/10 backdrop-blur-lg pl-2 py-2">
       <div className="container mx-auto px-2">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
@@ -158,7 +157,7 @@ export function Header({
               </div>
             ) : (
               <Link href="/">
-                <InTestersLogoShort className="h-10 w-10" />
+                <InTestersLogoShortHeader className="h-10 w-10" />
               </Link>
             )}
           </div>
@@ -215,7 +214,7 @@ export function Header({
             <div className="md:hidden">
               <Sheet open={isVisitorMenuOpen} onOpenChange={setVisitorMenuOpen}>
                 <SheetTrigger asChild>
-                  <Button size="icon" variant="outline">
+                  <Button size="icon" variant="ghost">
                     <Menu className="h-6 w-6" />
                     <span className="sr-only">Open menu</span>
                   </Button>

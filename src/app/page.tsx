@@ -2,10 +2,9 @@
 'use client';
 
 import Link from 'next/link';
-import { ArrowRight, BadgeCheck, CheckCircle, ChevronRight, Users, Briefcase } from 'lucide-react';
+import { ArrowRight, BadgeCheck, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle, FeatureCard, HowItWorksCard } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
+import { CardContent, CardHeader, CardTitle, FeatureCard } from '@/components/ui/card';
 import Image from "next/image";
 import { ScrollToTopButton } from '@/components/scroll-to-top-button';
 import { ScrollingRibbon } from '@/components/scrolling-ribbon';
@@ -54,7 +53,7 @@ export default function Home() {
                                 containerClassName="rounded-full m-auto mb-5 sm:mb-10"
                                 as="button"
                                 className="dark:bg-black text-xs bg-white text-black dark:text-white flex items-center space-x-2"
-                                >
+                            >
                                 <BadgeCheck className="w-4 h-4 mr-2 text-primary" />
                                 <span>Meet Google's 12-Tester Requirement.</span>
                             </HoverBorderGradient>
@@ -62,7 +61,7 @@ export default function Home() {
                                 Testing Your <span className="bg-gradient-to-br from-primary to-accent bg-clip-text text-transparent">Android App</span> Just Got Easier
                             </h1>
                             <p className="text-sm sm:text-base md:text-lg font-body max-w-sm sm:max-w-md md:max-w-lg lg:max-w-[700px] mx-auto mb-8 sm:mb-9 md:mb-10 lg:mb-12 text-muted-foreground">
-                            Get 12+ real testers and meet Google Play’s 14 day rule, fast. Use free community testing or go pro with points. Submit, track, and launch, all in one place.
+                                Get 12+ real testers and meet Google Play’s 14 day rule, fast. Use free community testing or go pro with points. Submit, track, and launch, all in one place.
                             </p>
                             <div className="mt-5 inline-block p-4">
                                 <MagneticButton>
@@ -100,15 +99,12 @@ export default function Home() {
                             </div>
                             <div className="mt-12 grid gap-8 md:grid-cols-2 lg:grid-cols-4">
                                 {features.map((feature, i) => (
-                                    <FeatureCard key={feature.title}>
+                                    <FeatureCard key={feature.title} className='border-none'>
                                         <CardHeader>
                                             <CardTitle className="text-lg text-black dark:text-white">{feature.title}</CardTitle>
                                         </CardHeader>
                                         <CardContent className='flex flex-col items-start justify-between h-full'>
                                             <p className="text-muted-foreground">{feature.description}</p>
-                                            <Link href={feature.link} className="flex items-center text-primary font-semibold mt-4 hover:underline">
-                                                Learn More <ChevronRight className="w-4 h-4 ml-1" />
-                                            </Link>
                                         </CardContent>
                                     </FeatureCard>
                                 ))}

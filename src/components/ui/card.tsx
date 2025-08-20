@@ -84,7 +84,7 @@ const FeatureCard = React.forwardRef<
   <Card
     ref={ref}
     className={cn(
-        "bg-gradient-to-b from-background to-primary/5 dark:from-background dark:to-primary/10 hover:border-primary/50 transition-all duration-300 transform hover:-translate-y-1 hover:shadow-2xl hover:shadow-primary/20 rounded-xl",
+        "bg-gradient-to-b from-primary/5 to-primary/15 dark:from-primary/10 dark:to-primary/20 hover:border-primary/50 transition-all duration-300 transform hover:-translate-y-1 hover:shadow-2xl hover:shadow-primary/20 rounded-xl",
         "flex flex-col h-full",
         className
     )}
