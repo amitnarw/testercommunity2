@@ -74,7 +74,7 @@ export default function RootLayout({
             
             <div className={cn(
               "flex flex-col flex-1",
-              isCommunityDashboard && !isAuthPage && "md:ml-24"
+              isCommunityDashboard && !isAuthPage && "md:pl-24 bg-secondary/50"
             )}>
               <div className={cn("relative flex-1", !isCommunityDashboard ? 'z-20 bg-background' : 'z-0' )}>
                 <main className="flex-1">

@@ -3,10 +3,10 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { InTestersLogo, InTestersLogoShortHeader } from './icons';
+import { InTestersLogoShortHeader } from './icons';
 import { Button } from './ui/button';
 import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetClose } from './ui/sheet';
-import { Menu, ArrowRight, Sun, Moon, User, LogOut, LayoutDashboard, LifeBuoy, X, Users2, Gift, PanelLeftOpen, PanelLeftClose } from 'lucide-react';
+import { Menu, ArrowRight, Sun, Moon, User, LogOut, LayoutDashboard, LifeBuoy, X, Users2, Gift } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useState, useEffect } from 'react';
 import { useTheme } from 'next-themes';
@@ -141,8 +141,7 @@ export function Header({
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
                 <Link href="/">
-                  <InTestersLogo className="h-8 w-auto hidden sm:block" />
-                  <InTestersLogoShortHeader className="h-10 w-10 sm:hidden" />
+                  <InTestersLogoShortHeader className="h-10 w-10" />
                 </Link>
             </div>
 
