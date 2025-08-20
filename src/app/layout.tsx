@@ -22,7 +22,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   const pathname = usePathname();
-  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(true);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
@@ -59,7 +59,11 @@ export default function RootLayout({
         >
           <div className="relative flex flex-col min-h-screen">
             {isCommunityDashboard ? (
-               <Sidebar onLogout={handleLogout} />
+               <Sidebar 
+                isCollapsed={isSidebarCollapsed}
+                setIsCollapsed={setIsSidebarCollapsed}
+                onLogout={handleLogout} 
+               />
             ) : (
               !isAuthPage && <Header 
                 isAuthenticated={isAuthenticated}
@@ -73,8 +77,8 @@ export default function RootLayout({
             )}
             
             <div className={cn(
-              "flex flex-col flex-1",
-              isCommunityDashboard && !isAuthPage && "md:pl-24 bg-secondary/50"
+              "flex flex-col flex-1 transition-all duration-300",
+              isCommunityDashboard && !isAuthPage && (isSidebarCollapsed ? "md:pl-24" : "md:pl-64"),
             )}>
               <div className={cn("relative flex-1", !isCommunityDashboard ? 'z-20 bg-background' : 'z-0' )}>
                 <main className="flex-1">
