@@ -39,7 +39,7 @@ export function CommunityNavbar({ onLogout }: { onLogout: () => void }) {
     }, []);
 
     return (
-        <header className="sticky top-0 z-40 bg-background dark:bg-[#0f151e] md:pl-20 border-b">
+        <header className="sticky top-0 z-40 bg-background md:pl-20 border-b">
             <div className="container mx-auto px-4 md:px-6">
                 <div className="flex h-16 items-center justify-between">
                     <div className="hidden md:block">
