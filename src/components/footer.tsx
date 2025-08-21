@@ -35,9 +35,9 @@ const Sun = () => (
     animate={{ opacity: 1, scale: 1 }}
     exit={{ opacity: 0, scale: 0.5 }}
     transition={{ duration: 0.5 }}
-    className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2"
+    className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full"
   >
-    <div className="w-96 h-96 bg-yellow-400 rounded-full blur-[100px]" />
+    <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-96 h-96 bg-yellow-400/50 rounded-full blur-[100px]" />
   </motion.div>
 );
 
