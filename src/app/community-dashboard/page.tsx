@@ -73,14 +73,14 @@ export default function CommunityDashboardPage() {
 
     return (
         <div className="bg-secondary/50 min-h-screen">
-            <div className="container mx-auto px-4 md:px-6 py-12">
+            <div className="container mx-auto px-4 md:px-6">
                 <header className="mb-12">
                     <div className="mb-6">
                         <h1 className="text-4xl font-bold">Community Hub</h1>
                         <p className="text-muted-foreground mt-2 max-w-xl">Test apps, earn points, and help fellow developers build better products.</p>
                     </div>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                         <BentoCard>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+                         <BentoCard className='col-span-2'>
                             <CardTitle className="text-sm font-medium flex items-center gap-2 text-muted-foreground"><Activity className="w-4 h-4" /> Performance</CardTitle>
                             <div className="grid grid-cols-3 gap-2 w-full mt-2">
                                 <div className="text-center bg-secondary p-2 rounded-lg">
@@ -118,7 +118,7 @@ export default function CommunityDashboardPage() {
                         </BentoCard>
 
                         <BentoCard className="gap-2">
-                            <Button asChild className="w-full justify-start h-full bg-gradient-to-bl from-primary to-primary/60 text-primary-foreground">
+                            <Button asChild className="w-full justify-start h-full bg-gradient-to-b from-primary to-primary/40 text-primary-foreground">
                                 <Link href="/community-dashboard/submit">
                                     <PlusCircle className="mr-2 h-4 w-4" /> Submit a New App
                                 </Link>

@@ -38,7 +38,7 @@ export function Footer() {
   return (
     <footer
       ref={footerRef}
-      className="bg-secondary/50 sticky bottom-0 z-10 overflow-hidden"
+      className="bg-secondary/50 sticky bottom-0 -z-10 overflow-hidden"
     >
       <div className="container mx-auto px-4 md:px-6 py-20">
         <div className="grid gap-8 lg:grid-cols-3">

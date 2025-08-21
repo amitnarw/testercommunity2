@@ -8,13 +8,8 @@ import { ThemeProvider } from '@/components/theme-provider';
 import { Header } from '@/components/header';
 import { Footer } from '@/components/footer';
 import { Sidebar } from '@/components/sidebar';
-import { cn } from '@/lib/utils';
 import { useState, useEffect } from 'react';
 import { CommunityNavbar } from '@/components/community-navbar';
-
-
-// This is a client component, so we can't use metadata here.
-// We'll manage the title in the individual page components.
 
 export default function RootLayout({
   children,
