@@ -263,7 +263,7 @@ export const communityApps: CommunityApp[] = [
     {
         id: 2,
         name: 'Brawl Stars',
-        icon: 'https://play-lh.googleusercontent.com/algsmuhitlyCU_Y2_1l2Y3-pGg2uM8LTrE8G2aB-4C-Y00sR_Bof8omwbig3xV2Wabk=w240-h480-rw',
+        icon: 'https://play-lh.googleusercontent.com/algsmuhitlyCU_Y2_1l2Y3-pGg2uM8LTrE8G2aB-4C-Y00sR_Bof8omwbig3xV2Wabk=s96-rw',
         dataAiHint: 'game character icon',
         category: 'Games',
         shortDescription: 'Fast-paced 3v3 multiplayer and battle royale made for mobile!',
@@ -282,7 +282,7 @@ export const communityApps: CommunityApp[] = [
      {
         id: 3,
         name: 'AccuWeather',
-        icon: 'https://play-lh.googleusercontent.com/U03_StX1YhEt2Hi-gEY53nLwYt6-mRglvT5Y3j7IJCg3nEJOa2v2-s24hB3wLgq_jA=w240-h480-rw',
+        icon: 'https://play-lh.googleusercontent.com/U03_StX1YhEt2Hi-gEY53nLwYt6-mRglvT5Y3j7IJCg3nEJOa2v2-s24hB3wLgq_jA=s96-rw',
         dataAiHint: 'sun cloud icon',
         category: 'Weather',
         shortDescription: 'Live weather radar & forecast, severe weather alerts, and more.',
@@ -300,7 +300,7 @@ export const communityApps: CommunityApp[] = [
     {
         id: 4,
         name: 'Reddit',
-        icon: 'https://play-lh.googleusercontent.com/J8k5q78xv4R8SmiMhOE2i38B99qQJgHjX9gH2e_S-c26w1aO3xV3T0l_DPDXJ2c=w240-h480-rw',
+        icon: 'https://play-lh.googleusercontent.com/J8k5q78xv4R8SmiMhOE2i38B99qQJgHjX9gH2e_S-c26w1aO3xV3T0l_DPDXJ2c=s96-rw',
         dataAiHint: 'alien robot icon',
         category: 'Social',
         shortDescription: 'Dive into anything. News, trends, and communities on every topic.',
@@ -318,7 +318,7 @@ export const communityApps: CommunityApp[] = [
     {
         id: 5,
         name: 'Subway Surfers',
-        icon: 'https://play-lh.googleusercontent.com/H9jdtLqCj9Js-2f_2224omx1Z-G0qf_9M2i3k2i42bTfG2Cu2T1HAm5S-v4_eA=w240-h480-rw',
+        icon: 'https://play-lh.googleusercontent.com/H9jdtLqCj9Js-2f_2224omx1Z-G0qf_9M2i3k2i42bTfG2Cu2T1HAm5S-v4_eA=s96-rw',
         dataAiHint: 'boy running',
         category: 'Games',
         shortDescription: 'An endless runner game. DASH as fast as you can! DODGE the oncoming trains!',
@@ -336,7 +336,7 @@ export const communityApps: CommunityApp[] = [
     {
         id: 6,
         name: 'Notion',
-        icon: 'https://play-lh.googleusercontent.com/9YA6bSrgj1ZNDsJ99aYqlVd-24o7jF0smV51T-I5CMEo90hG2pT0g1Ih_HwzJ-ggEg=w240-h480-rw',
+        icon: 'https://play-lh.googleusercontent.com/9YA6bSrgj1ZNDsJ99aYqlVd-24o7jF0smV51T-I5CMEo90hG2pT0g1Ih_HwzJ-ggEg=s96-rw',
         dataAiHint: 'letter N block',
         category: 'Productivity',
         shortDescription: 'Write, plan, and get organized. Your connected workspace for docs, wikis, and projects.',
@@ -354,7 +354,7 @@ export const communityApps: CommunityApp[] = [
     {
         id: 7,
         name: 'Duolingo',
-        icon: 'https://play-lh.googleusercontent.com/MmLHNN4_w_n_iwybVv5l_2n2tLg3yN6cI4z8Lg2j_X5_3eY2-0W-l_sR_S-G=w240-h480-rw',
+        icon: 'https://play-lh.googleusercontent.com/MmLHNN4_w_n_iwybVv5l_2n2tLg3yN6cI4z8Lg2j_X5_3eY2-0W-l_sR_S-G=s96-rw',
         dataAiHint: 'green bird cartoon',
         category: 'Education',
         shortDescription: 'Learn a new language with the world’s most-downloaded education app!',
@@ -372,7 +372,7 @@ export const communityApps: CommunityApp[] = [
     {
         id: 8,
         name: 'Spotify',
-        icon: 'https://play-lh.googleusercontent.com/cShys-AmJ93dB0SV8kE6Fl5e4MbZJp25DILYfxNQuYFobIm9SRAlSwOO7sqcUY5U64w=w240-h480-rw',
+        icon: 'https://play-lh.googleusercontent.com/cShys-AmJ93dB0SV8kE6Fl5e4MbZJp25DILYfxNQuYFobIm9SRAlSwOO7sqcUY5U64w=s96-rw',
         dataAiHint: 'green circle logo',
         category: 'Music',
         shortDescription: 'Listen to music, podcasts & more. Find your favorite songs.',
@@ -390,7 +390,7 @@ export const communityApps: CommunityApp[] = [
     {
         id: 9,
         name: 'Netflix',
-        icon: 'https://play-lh.googleusercontent.com/TBRwjS_qfJCSj1m7zZB93FnpJM5fSpMA_wUlFDLxWAb45T9RmWROIO-wPpLpDlJyPiA=w240-h480-rw',
+        icon: 'https://play-lh.googleusercontent.com/TBRwjS_qfJCSj1m7zZB93FnpJM5fSpMA_wUlFDLxWAb45T9RmWROIO-wPpLpDlJyPiA=s96-rw',
         dataAiHint: 'letter N red',
         category: 'Entertainment',
         shortDescription: 'Looking for the most talked about TV shows and movies from the around the world?',
@@ -398,7 +398,10 @@ export const communityApps: CommunityApp[] = [
         androidVersion: '8+',
         estimatedTime: '15-20 min',
         playStoreUrl: 'https://play.google.com/store/apps/details?id=com.netflix.mediaclient',
-        screenshots: [],
+        screenshots: [
+            { url: 'https://play-lh.googleusercontent.com/x0I4cQ2sTNSj-Jc-2pDDh6c_zVdn2-v-b6pG0vM9O327u4jLg-IChEh4i6B-M0s_Lg=w526-h296-rw', alt: 'Netflix Screenshot 1', dataAiHint: 'movie selection screen' },
+            { url: 'https://play-lh.googleusercontent.com/Kq-pT8G_g0-LA41Z2YhMnsy-Y2x3B2i2bQJg9l48t-v-CKi9s6M43yB0y76-Lh-VNg=w526-h296-rw', alt: 'Netflix Screenshot 2', dataAiHint: 'tv show profile page' }
+        ],
         testingInstructions: 'Test the download feature for offline viewing. Download a show, put your phone in airplane mode, and try to play it. Report any issues.',
         status: 'ongoing',
         progress: 30,
@@ -406,7 +409,7 @@ export const communityApps: CommunityApp[] = [
     {
         id: 10,
         name: 'Minecraft',
-        icon: 'https://play-lh.googleusercontent.com/VSwHQjcAttxsLE47RuS4PqpC4LT7lCoSjE7Hx5AW_yCxtDvcnsHH42OUAF2Bka7SXWE=w240-h480-rw',
+        icon: 'https://play-lh.googleusercontent.com/VSwHQjcAttxsLE47RuS4PqpC4LT7lCoSjE7Hx5AW_yCxtDvcnsHH42OUAF2Bka7SXWE=s96-rw',
         dataAiHint: 'pixelated grass block',
         category: 'Games',
         shortDescription: 'Explore infinite worlds and build everything from the simplest of homes to the grandest of castles.',
@@ -414,14 +417,17 @@ export const communityApps: CommunityApp[] = [
         androidVersion: '9+',
         estimatedTime: '30-40 min',
         playStoreUrl: 'https://play.google.com/store/apps/details?id=com.mojang.minecraftpe',
-        screenshots: [],
+        screenshots: [
+             { url: 'https://play-lh.googleusercontent.com/y-z3djrE-9Z2U3koJ2B-JpNa5bBSAlqu1YQ3I_z3uvch0iXqS2-i5c2lTC-2hdL-Ryk=w526-h296-rw', alt: 'Minecraft Screenshot 1', dataAiHint: 'game world' },
+             { url: 'https://play-lh.googleusercontent.com/3Y-o2C_2jl_BqdJptY3y-DA6iV_jfpX-pG0vO_BCoXPaO199L2c_8W2Cs-O5k0V6iQ=w526-h296-rw', alt: 'Minecraft Screenshot 2', dataAiHint: 'underwater gameplay' }
+        ],
         testingInstructions: 'Join a multiplayer server and play for at least 15 minutes. We are looking for any connection issues, lag, or graphical glitches during multiplayer sessions.',
         status: 'available',
     },
     {
         id: 11,
         name: 'TikTok',
-        icon: 'https://play-lh.googleusercontent.com/Y-hStYw2yJz2fHh2-StSg98M12JPEhY22I8hWzGkXn49p_lE-ccpobf3z1J5B-R-6g=w240-h480-rw',
+        icon: 'https://play-lh.googleusercontent.com/Y-hStYw2yJz2fHh2-StSg98M12JPEhY22I8hWzGkXn49p_lE-ccpobf3z1J5B-R-6g=s96-rw',
         dataAiHint: 'music note logo',
         category: 'Social',
         shortDescription: 'TikTok is THE destination for mobile videos. On TikTok, short-form videos are exciting, spontaneous, and genuine.',
@@ -429,14 +435,17 @@ export const communityApps: CommunityApp[] = [
         androidVersion: '10+',
         estimatedTime: '10-15 min',
         playStoreUrl: 'https://play.google.com/store/apps/details?id=com.zhiliaoapp.musically',
-        screenshots: [],
+        screenshots: [
+            { url: 'https://play-lh.googleusercontent.com/M3jcFp_6m-Zg-p-v3-q2YJS2I-V_mV1nZJ-J6eTjL_zHlQ-3-k3g-p-C-G-U-L-R-g=w526-h296-rw', alt: 'TikTok Screenshot 1', dataAiHint: 'video feed interface' },
+            { url: 'https://play-lh.googleusercontent.com/yv-65V-T-7-I-fL-Y-f-k-w-z-y-f-k-w-z-y-f-k-w-z-y-f-k-w-z-y-f-k-w-z-y-f-k-w-z-y-f-k=w526-h296-rw', alt: 'TikTok Screenshot 2', dataAiHint: 'video creation tools' }
+        ],
         testingInstructions: 'Test the new "Stitch" feature with a video from your "For You" page. Ensure the editing tools work as expected and the final video posts correctly.',
         status: 'available',
     },
     {
         id: 12,
         name: 'Amazon Shopping',
-        icon: 'https://play-lh.googleusercontent.com/m21M0_yM2RssAD2iS-0c2yqKX-K_95TcK02D3_LgODp_T9-O-2T-L-2bSOcH5m_wog=w240-h480-rw',
+        icon: 'https://play-lh.googleusercontent.com/m21M0_yM2RssAD2iS-0c2yqKX-K_95TcK02D3_LgODp_T9-O-2T-L-2bSOcH5m_wog=s96-rw',
         dataAiHint: 'shopping cart arrow',
         category: 'Shopping',
         shortDescription: 'Amazon Shopping offers a wide range of products at great prices.',
@@ -444,7 +453,10 @@ export const communityApps: CommunityApp[] = [
         androidVersion: '9+',
         estimatedTime: '10-15 min',
         playStoreUrl: 'https://play.google.com/store/apps/details?id=com.amazon.mShop.android.shopping',
-        screenshots: [],
+        screenshots: [
+            { url: 'https://play-lh.googleusercontent.com/9C6ZI_4h-4Yh-3-q7j-y_m-z-p-c-v-z-p-c-v-z-p-c-v-z-p-c-v-z-p-c-v-z-p-c-v-z-p-c=w526-h296-rw', alt: 'Amazon Screenshot 1', dataAiHint: 'product page' },
+            { url: 'https://play-lh.googleusercontent.com/T-c-Y-Y-Q-A-Z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c=w526-h296-rw', alt: 'Amazon Screenshot 2', dataAiHint: 'home page deals' }
+        ],
         testingInstructions: 'Add three different items to your cart and proceed to the checkout page. Do not complete the purchase. Report any UI issues or calculation errors in the subtotal.',
         status: 'completed',
         completedDate: '2024-06-15',
@@ -452,7 +464,7 @@ export const communityApps: CommunityApp[] = [
     {
         id: 13,
         name: 'Microsoft Outlook',
-        icon: 'https://play-lh.googleusercontent.com/3ZTk2DdxNttV4-w-1i_5bSPQk3v1n2R2CIIO-c-iTNKs-3YSU3n8ge-2Vv2S_F41iXU=w240-h480-rw',
+        icon: 'https://play-lh.googleusercontent.com/3ZTk2DdxNttV4-w-1i_5bSPQk3v1n2R2CIIO-c-iTNKs-3YSU3n8ge-2Vv2S_F41iXU=s96-rw',
         dataAiHint: 'blue letter O',
         category: 'Productivity',
         shortDescription: 'Outlook for Android is the app that helps millions of users connect all their email accounts, calendars, and files in one convenient spot.',
@@ -460,14 +472,17 @@ export const communityApps: CommunityApp[] = [
         androidVersion: '11+',
         estimatedTime: '15-20 min',
         playStoreUrl: 'https://play.google.com/store/apps/details?id=com.microsoft.office.outlook',
-        screenshots: [],
+        screenshots: [
+            { url: 'https://play-lh.googleusercontent.com/i9dNB_2-n20t72yFGbZgGZgTGV-YvZmzX_9tY-M-R-U-p-Q-L-f-G-I-R-g=w526-h296-rw', alt: 'Outlook Screenshot 1', dataAiHint: 'email inbox' },
+            { url: 'https://play-lh.googleusercontent.com/t-T-I-q-g-Y-f-k-w-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c=w526-h296-rw', alt: 'Outlook Screenshot 2', dataAiHint: 'calendar view' }
+        ],
         testingInstructions: 'Test the search functionality. Search for an email by sender and then by subject. Verify that the results are accurate and load quickly.',
         status: 'available',
     },
     {
         id: 14,
         name: 'Clash of Clans',
-        icon: 'https://play-lh.googleusercontent.com/LByrur1mbl5a4i2NShAZveTgivTRxrIW-2I5Z_Drcv5NvgrPQcrUTu4u_M31Updfew=w240-h480-rw',
+        icon: 'https://play-lh.googleusercontent.com/LByrur1mbl5a4i2NShAZveTgivTRxrIW-2I5Z_Drcv5NvgrPQcrUTu4u_M31Updfew=s96-rw',
         dataAiHint: 'barbarian character',
         category: 'Games',
         shortDescription: 'Join millions of players worldwide as you build your village, raise a clan, and compete in epic Clan Wars!',
@@ -475,14 +490,17 @@ export const communityApps: CommunityApp[] = [
         androidVersion: '9+',
         estimatedTime: '20-30 min',
         playStoreUrl: 'https://play.google.com/store/apps/details?id=com.supercell.clashofclans',
-        screenshots: [],
+        screenshots: [
+            { url: 'https://play-lh.googleusercontent.com/f-p-g-Y-g-X-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c=w526-h296-rw', alt: 'Clash of Clans Screenshot 1', dataAiHint: 'village base' },
+            { url: 'https://play-lh.googleusercontent.com/p-c-g-Y-g-X-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c=w526-h296-rw', alt: 'Clash of Clans Screenshot 2', dataAiHint: 'battle scene' }
+        ],
         testingInstructions: 'Participate in a Clan War. Attack an enemy base and check if the replay functionality works correctly. Report any visual glitches during the battle.',
         status: 'available',
     },
     {
         id: 15,
         name: 'Google Photos',
-        icon: 'https://play-lh.googleusercontent.com/pZqmEG309a-32Cpfb9g7sA59oHSu2-aOf2y2d0VBAqvw3UfQf2a-5Ea6sL-G90hUvA=w240-h480-rw',
+        icon: 'https://play-lh.googleusercontent.com/pZqmEG309a-32Cpfb9g7sA59oHSu2-aOf2y2d0VBAqvw3UfQf2a-5Ea6sL-G90hUvA=s96-rw',
         dataAiHint: 'pinwheel colorful',
         category: 'Photos & Video',
         shortDescription: 'Google Photos is the home for all your photos and videos, automatically organized and easy to share.',
@@ -490,7 +508,10 @@ export const communityApps: CommunityApp[] = [
         androidVersion: '10+',
         estimatedTime: '10-15 min',
         playStoreUrl: 'https://play.google.com/store/apps/details?id=com.google.android.apps.photos',
-        screenshots: [],
+        screenshots: [
+            { url: 'https://play-lh.googleusercontent.com/v-V-I-q-g-Y-f-k-w-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c=w526-h296-rw', alt: 'Google Photos Screenshot 1', dataAiHint: 'photo gallery' },
+            { url: 'https://play-lh.googleusercontent.com/y-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z=w526-h296-rw', alt: 'Google Photos Screenshot 2', dataAiHint: 'photo editing' }
+        ],
         testingInstructions: 'Use the "Memories" feature. View a few memories and try to customize one by adding or removing photos. Ensure the changes are saved correctly.',
         status: 'ongoing',
         progress: 80,
@@ -498,7 +519,7 @@ export const communityApps: CommunityApp[] = [
     {
         id: 16,
         name: 'Uber',
-        icon: 'https://play-lh.googleusercontent.com/r_t2KjSAI2Hh1B3i4V2G7lD0erYx0c7Qyv2U044_y0JfeZCCDjE-1lBIv_ZlqTZnzQ=w240-h480-rw',
+        icon: 'https://play-lh.googleusercontent.com/r_t2KjSAI2Hh1B3i4V2G7lD0erYx0c7Qyv2U044_y0JfeZCCDjE-1lBIv_ZlqTZnzQ=s96-rw',
         dataAiHint: 'black app icon',
         category: 'Travel & Local',
         shortDescription: 'We’re committed to your safety at Uber. We’ve established a Door-to-Door Safety Standard to help you feel safe every time you ride.',
@@ -506,14 +527,17 @@ export const communityApps: CommunityApp[] = [
         androidVersion: '9+',
         estimatedTime: '5-10 min',
         playStoreUrl: 'https://play.google.com/store/apps/details?id=com.ubercab',
-        screenshots: [],
+        screenshots: [
+            { url: 'https://play-lh.googleusercontent.com/g-I-j-Y-g-X-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c=w526-h296-rw', alt: 'Uber Screenshot 1', dataAiHint: 'map with car' },
+            { url: 'https://play-lh.googleusercontent.com/Y-g-X-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c=w526-h296-rw', alt: 'Uber Screenshot 2', dataAiHint: 'ride options' }
+        ],
         testingInstructions: 'Set a destination and view the different ride options (UberX, Comfort, etc.). Do not book a ride. Report any issues with the map display or price estimation.',
         status: 'available',
     },
     {
         id: 17,
         name: 'LinkedIn',
-        icon: 'https://play-lh.googleusercontent.com/kMofEFLjobZy_bCuaiDogzBcUT-dz3BBbOrIEjJ-hqOabjK8ieuevGe6wlTD15QzOqw=w240-h480-rw',
+        icon: 'https://play-lh.googleusercontent.com/kMofEFLjobZy_bCuaiDogzBcUT-dz3BBbOrIEjJ-hqOabjK8ieuevGe6wlTD15QzOqw=s96-rw',
         dataAiHint: 'in logo blue',
         category: 'Social',
         shortDescription: 'Connect with your professional network, build your career, and find your next job.',
@@ -521,7 +545,10 @@ export const communityApps: CommunityApp[] = [
         androidVersion: '10+',
         estimatedTime: '15-20 min',
         playStoreUrl: 'https://play.google.com/store/apps/details?id=com.linkedin.android',
-        screenshots: [],
+        screenshots: [
+            { url: 'https://play-lh.googleusercontent.com/p-I-j-Y-g-X-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c=w526-h296-rw', alt: 'LinkedIn Screenshot 1', dataAiHint: 'professional profile' },
+            { url: 'https://play-lh.googleusercontent.com/I-j-Y-g-X-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z=w526-h296-rw', alt: 'LinkedIn Screenshot 2', dataAiHint: 'professional network feed' }
+        ],
         testingInstructions: 'Update a section of your profile (e.g., add a new skill). Check that the changes are reflected correctly across the app. Then, view a job posting and save it.',
         status: 'completed',
         completedDate: '2024-07-01',
@@ -529,7 +556,7 @@ export const communityApps: CommunityApp[] = [
     {
         id: 18,
         name: 'Zoom',
-        icon: 'https://play-lh.googleusercontent.com/X6srKxT6nK7aOJ5vT5Y8AFpaFwJ5EaD2iQRHhB1-wsbCoGaQj_32hQWbS347vj2_0g=w240-h480-rw',
+        icon: 'https://play-lh.googleusercontent.com/X6srKxT6nK7aOJ5vT5Y8AFpaFwJ5EaD2iQRHhB1-wsbCoGaQj_32hQWbS347vj2_0g=s96-rw',
         dataAiHint: 'video camera icon',
         category: 'Business',
         shortDescription: 'Work from anywhere with a single app that combines team chat, phone, whiteboard, meetings, and more.',
@@ -537,14 +564,17 @@ export const communityApps: CommunityApp[] = [
         androidVersion: '9+',
         estimatedTime: '10-15 min',
         playStoreUrl: 'https://play.google.com/store/apps/details?id=us.zoom.videomeetings',
-        screenshots: [],
+        screenshots: [
+            { url: 'https://play-lh.googleusercontent.com/I-j-Y-g-X-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z=w526-h296-rw', alt: 'Zoom Screenshot 1', dataAiHint: 'video conference call' },
+            { url: 'https://play-lh.googleusercontent.com/j-Y-g-X-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c=w526-h296-rw', alt: 'Zoom Screenshot 2', dataAiHint: 'meeting schedule' }
+        ],
         testingInstructions: 'Start a new meeting with only yourself. Test the virtual background feature. Ensure that the background applies correctly and there is no significant performance drop.',
         status: 'available',
     },
     {
         id: 19,
         name: 'Discord',
-        icon: 'https://play-lh.googleusercontent.com/0oO5sAneb9lJP6l8c6DH4aj6f85qNpplYpBYb3sfVTqk3SziUFCLhr21wGilD-iDpy2g=w240-h480-rw',
+        icon: 'https://play-lh.googleusercontent.com/0oO5sAneb9lJP6l8c6DH4aj6f85qNpplYpBYb3sfVTqk3SziUFCLhr21wGilD-iDpy2g=s96-rw',
         dataAiHint: 'game controller logo',
         category: 'Communication',
         shortDescription: 'Discord is where you can make a home for your communities and friends. Where you can stay close and have fun over text, voice, and video.',
@@ -552,14 +582,17 @@ export const communityApps: CommunityApp[] = [
         androidVersion: '10+',
         estimatedTime: '20-25 min',
         playStoreUrl: 'https://play.google.com/store/apps/details?id=com.discord',
-        screenshots: [],
+        screenshots: [
+            { url: 'https://play-lh.googleusercontent.com/p-I-j-Y-g-X-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c=w526-h296-rw', alt: 'Discord Screenshot 1', dataAiHint: 'chat server interface' },
+            { url: 'https://play-lh.googleusercontent.com/g-X-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z=w526-h296-rw', alt: 'Discord Screenshot 2', dataAiHint: 'voice channel' }
+        ],
         testingInstructions: 'Join a voice channel in a server. Test the noise suppression feature by enabling it and speaking with background noise. Report on its effectiveness.',
         status: 'available',
     },
     {
         id: 20,
         name: 'Pinterest',
-        icon: 'https://play-lh.googleusercontent.com/dVsv8Hc4TOUeLFAahxR8L2jB_8vLgZETIZzXpcCktrd9ZNe0b-v_keLAo26G_7u62w=w240-h480-rw',
+        icon: 'https://play-lh.googleusercontent.com/dVsv8Hc4TOUeLFAahxR8L2jB_8vLgZETIZzXpcCktrd9ZNe0b-v_keLAo26G_7u62w=s96-rw',
         dataAiHint: 'letter P red',
         category: 'Lifestyle',
         shortDescription: 'Pinterest is the place to explore inspiration. You can: Discover new ideas, save what inspires you, shop to make them yours, share what you love.',
@@ -567,14 +600,17 @@ export const communityApps: CommunityApp[] = [
         androidVersion: '10+',
         estimatedTime: '10-15 min',
         playStoreUrl: 'https://play.google.com/store/apps/details?id=com.pinterest',
-        screenshots: [],
+        screenshots: [
+            { url: 'https://play-lh.googleusercontent.com/g-Y-g-X-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c=w526-h296-rw', alt: 'Pinterest Screenshot 1', dataAiHint: 'image grid feed' },
+            { url: 'https://play-lh.googleusercontent.com/Y-g-X-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c=w526-h296-rw', alt: 'Pinterest Screenshot 2', dataAiHint: 'pin detail view' }
+        ],
         testingInstructions: 'Create a new board and save at least 5 pins to it. Test the "More ideas" section on the board to see if the suggestions are relevant.',
         status: 'available',
     },
     {
         id: 21,
         name: 'Airbnb',
-        icon: 'https://play-lh.googleusercontent.com/1-hPxafOxdYpYZEOKzNIkSP43sZxMA0GvtEDHOTdnSP8VvDeAqCAMVSOIdwoWw5fMA=w240-h480-rw',
+        icon: 'https://play-lh.googleusercontent.com/1-hPxafOxdYpYZEOKzNIkSP43sZxMA0GvtEDHOTdnSP8VvDeAqCAMVSOIdwoWw5fMA=s96-rw',
         dataAiHint: 'pink abstract logo',
         category: 'Travel & Local',
         shortDescription: 'Book places to stay and things to do.',
@@ -582,14 +618,17 @@ export const communityApps: CommunityApp[] = [
         androidVersion: '9+',
         estimatedTime: '15-20 min',
         playStoreUrl: 'https://play.google.com/store/apps/details?id=com.airbnb.android',
-        screenshots: [],
+        screenshots: [
+            { url: 'https://play-lh.googleusercontent.com/p-g-Y-g-X-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z=w526-h296-rw', alt: 'Airbnb Screenshot 1', dataAiHint: 'home rental listing' },
+            { url: 'https://play-lh.googleusercontent.com/c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c=w526-h296-rw', alt: 'Airbnb Screenshot 2', dataAiHint: 'map view with prices' }
+        ],
         testingInstructions: 'Search for a stay in any city for a future date. Apply at least 3 filters (e.g., Wi-Fi, Kitchen, Price Range) and check if the results update correctly.',
         status: 'available',
     },
     {
         id: 22,
         name: 'Microsoft OneDrive',
-        icon: 'https://play-lh.googleusercontent.com/6_SbV4MV-z-Y23DcwLaGgnqG9l6F2D40pW3h3b-A-1yXN8-_B3i00eD69-T5ThsWwA=w240-h480-rw',
+        icon: 'https://play-lh.googleusercontent.com/6_SbV4MV-z-Y23DcwLaGgnqG9l6F2D40pW3h3b-A-1yXN8-_B3i00eD69-T5ThsWwA=s96-rw',
         dataAiHint: 'blue cloud',
         category: 'Productivity',
         shortDescription: 'Do more on the go with Microsoft OneDrive. Get to and share your documents, photos, and other files from your Android device.',
@@ -597,7 +636,10 @@ export const communityApps: CommunityApp[] = [
         androidVersion: '10+',
         estimatedTime: '10-15 min',
         playStoreUrl: 'https://play.google.com/store/apps/details?id=com.microsoft.skydrive',
-        screenshots: [],
+        screenshots: [
+            { url: 'https://play-lh.googleusercontent.com/t-I-j-Y-g-X-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z=w526-h296-rw', alt: 'OneDrive Screenshot 1', dataAiHint: 'file browser' },
+            { url: 'https://play-lh.googleusercontent.com/I-j-Y-g-X-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z=w526-h296-rw', alt: 'OneDrive Screenshot 2', dataAiHint: 'photo view' }
+        ],
         testingInstructions: 'Upload a photo to your OneDrive. Then, try to share the link to that photo with another app (e.g., messaging app). Report any issues with the sharing process.',
         status: 'ongoing',
         progress: 50,
@@ -605,7 +647,7 @@ export const communityApps: CommunityApp[] = [
     {
         id: 23,
         name: 'Audible',
-        icon: 'https://play-lh.googleusercontent.com/y3WECKV1-kOAyf22IobD9xXjLSnSgIrdh2eX6p3HhE7C2-oFp-rQBlH3G-wFsbk0Jg=w240-h480-rw',
+        icon: 'https://play-lh.googleusercontent.com/y3WECKV1-kOAyf22IobD9xXjLSnSgIrdh2eX6p3HhE7C2-oFp-rQBlH3G-wFsbk0Jg=s96-rw',
         dataAiHint: 'orange app icon',
         category: 'Books & Reference',
         shortDescription: 'The home of storytelling. Find your next great listen. Audiobooks, podcasts, and exclusive Originals.',
@@ -613,14 +655,17 @@ export const communityApps: CommunityApp[] = [
         androidVersion: '9+',
         estimatedTime: '10-15 min',
         playStoreUrl: 'https://play.google.com/store/apps/details?id=com.audible.application',
-        screenshots: [],
+        screenshots: [
+            { url: 'https://play-lh.googleusercontent.com/p-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c=w526-h296-rw', alt: 'Audible Screenshot 1', dataAiHint: 'audiobook player' },
+            { url: 'https://play-lh.googleusercontent.com/c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c=w526-h296-rw', alt: 'Audible Screenshot 2', dataAiHint: 'library view' }
+        ],
         testingInstructions: 'Listen to a sample of any audiobook. Test the sleep timer feature by setting it for 5 minutes. Verify that the playback stops after the set time.',
         status: 'available',
     },
     {
         id: 24,
         name: 'Google Maps',
-        icon: 'https://play-lh.googleusercontent.com/Kf8WTct65hFJxBUDm5E-EpYsiDoLpdqCAQMh5U421C2de1HsoHcaA4UGFd1MOVEBA9Y=w240-h480-rw',
+        icon: 'https://play-lh.googleusercontent.com/Kf8WTct65hFJxBUDm5E-EpYsiDoLpdqCAQMh5U421C2de1HsoHcaA4UGFd1MOVEBA9Y=s96-rw',
         dataAiHint: 'map pin icon',
         category: 'Travel & Local',
         shortDescription: 'Navigate your world faster and easier with Google Maps. Over 220 countries and territories mapped and hundreds of millions of businesses and places on the map.',
@@ -628,7 +673,10 @@ export const communityApps: CommunityApp[] = [
         androidVersion: '9+',
         estimatedTime: '10-15 min',
         playStoreUrl: 'https://play.google.com/store/apps/details?id=com.google.android.apps.maps',
-        screenshots: [],
+        screenshots: [
+            { url: 'https://play-lh.googleusercontent.com/g-I-j-Y-g-X-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z=w526-h296-rw', alt: 'Google Maps Screenshot 1', dataAiHint: 'navigation view' },
+            { url: 'https://play-lh.googleusercontent.com/I-j-Y-g-X-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z=w526-h296-rw', alt: 'Google Maps Screenshot 2', dataAiHint: 'explore places' }
+        ],
         testingInstructions: 'Find directions to a location using public transit. Check if the app provides multiple route options and accurate departure times. Report any discrepancies.',
         status: 'completed',
         completedDate: '2024-07-10',
@@ -636,7 +684,7 @@ export const communityApps: CommunityApp[] = [
     {
         id: 25,
         name: 'Twitch',
-        icon: 'https://play-lh.googleusercontent.com/QLQzL-MXtxKEDlbhrQLmafUoFDOhYQjoLeJ5kfqSEEuDk-rptK_b5scLW33U32S_cAs=w240-h480-rw',
+        icon: 'https://play-lh.googleusercontent.com/QLQzL-MXtxKEDlbhrQLmafUoFDOhYQjoLeJ5kfqSEEuDk-rptK_b5scLW33U32S_cAs=s96-rw',
         dataAiHint: 'purple chat bubble',
         category: 'Entertainment',
         shortDescription: 'Twitch is where millions of people come together live every day to chat, interact, and make their own entertainment together.',
@@ -644,14 +692,17 @@ export const communityApps: CommunityApp[] = [
         androidVersion: '10+',
         estimatedTime: '15-20 min',
         playStoreUrl: 'https://play.google.com/store/apps/details?id=tv.twitch.android.app',
-        screenshots: [],
+        screenshots: [
+            { url: 'https://play-lh.googleusercontent.com/p-I-j-Y-g-X-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z=w526-h296-rw', alt: 'Twitch Screenshot 1', dataAiHint: 'live stream view' },
+            { url: 'https://play-lh.googleusercontent.com/j-Y-g-X-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c=w526-h296-rw', alt: 'Twitch Screenshot 2', dataAiHint: 'channel page' }
+        ],
         testingInstructions: 'Watch a live stream and try using Channel Points to redeem a reward. Verify that the reward activates correctly and your points balance is updated.',
         status: 'available',
     },
     {
         id: 26,
         name: 'Shazam',
-        icon: 'https://play-lh.googleusercontent.com/UIWRH-4o9NnsV-G29s4cK1sg1pM2sBw7D9zV2a4R2q3joVqg4ignrYgPj2P-tujWzQ=w240-h480-rw',
+        icon: 'https://play-lh.googleusercontent.com/UIWRH-4o9NnsV-G29s4cK1sg1pM2sBw7D9zV2a4R2q3joVqg4ignrYgPj2P-tujWzQ=s96-rw',
         dataAiHint: 'blue s logo',
         category: 'Music & Audio',
         shortDescription: 'Shazam will identify any song in seconds. Discover, artists, lyrics, videos & playlists, all for free.',
@@ -659,14 +710,17 @@ export const communityApps: CommunityApp[] = [
         androidVersion: '9+',
         estimatedTime: '5-10 min',
         playStoreUrl: 'https://play.google.com/store/apps/details?id=com.shazam.android',
-        screenshots: [],
+        screenshots: [
+            { url: 'https://play-lh.googleusercontent.com/I-j-Y-g-X-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z=w526-h296-rw', alt: 'Shazam Screenshot 1', dataAiHint: 'song identification screen' },
+            { url: 'https://play-lh.googleusercontent.com/j-Y-g-X-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c=w526-h296-rw', alt: 'Shazam Screenshot 2', dataAiHint: 'song details page' }
+        ],
         testingInstructions: 'Identify a song by playing music from another device. After identification, check if the lyrics are available and sync correctly with the song.',
         status: 'available',
     },
     {
         id: 27,
         name: 'Telegram',
-        icon: 'https://play-lh.googleusercontent.com/ZU9cSsyIJZo6Oy7HTHiEPwZg0m2vpsEJcBQCqJK__HiptDRG9ZNlueaeXzRyLxcEA_w=w240-h480-rw',
+        icon: 'https://play-lh.googleusercontent.com/ZU9cSsyIJZo6Oy7HTHiEPwZg0m2vpsEJcBQCqJK__HiptDRG9ZNlueaeXzRyLxcEA_w=s96-rw',
         dataAiHint: 'paper airplane icon',
         category: 'Communication',
         shortDescription: 'Telegram is a messaging app with a focus on speed and security, it’s super-fast, simple and free.',
@@ -674,7 +728,10 @@ export const communityApps: CommunityApp[] = [
         androidVersion: '8+',
         estimatedTime: '10-15 min',
         playStoreUrl: 'https://play.google.com/store/apps/details?id=org.telegram.messenger',
-        screenshots: [],
+        screenshots: [
+            { url: 'https://play-lh.googleusercontent.com/p-g-Y-g-X-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z=w526-h296-rw', alt: 'Telegram Screenshot 1', dataAiHint: 'chat interface' },
+            { url: 'https://play-lh.googleusercontent.com/c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c=w526-h296-rw', alt: 'Telegram Screenshot 2', dataAiHint: 'channel view' }
+        ],
         testingInstructions: 'Create a new sticker pack by uploading an image. Ensure the sticker is created successfully and can be sent in a chat.',
         status: 'ongoing',
         progress: 20,
@@ -682,7 +739,7 @@ export const communityApps: CommunityApp[] = [
     {
         id: 28,
         name: 'Signal Private Messenger',
-        icon: 'https://play-lh.googleusercontent.com/y-3mZQRqTjW23H-pbtT0601fR2c2n84QLxGvI1g0iKPlh6y3JqXAPXv2nJt-AdHywA=w240-h480-rw',
+        icon: 'https://play-lh.googleusercontent.com/y-3mZQRqTjW23H-pbtT0601fR2c2n84QLxGvI1g0iKPlh6y3JqXAPXv2nJt-AdHywA=s96-rw',
         dataAiHint: 'blue chat bubble',
         category: 'Communication',
         shortDescription: 'Millions of people use Signal every day for free and instantaneous communication anywhere in the world.',
@@ -690,7 +747,10 @@ export const communityApps: CommunityApp[] = [
         androidVersion: '9+',
         estimatedTime: '10-15 min',
         playStoreUrl: 'https://play.google.com/store/apps/details?id=org.thoughtcrime.securesms',
-        screenshots: [],
+        screenshots: [
+            { url: 'https://play-lh.googleusercontent.com/I-j-Y-g-X-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z=w526-h296-rw', alt: 'Signal Screenshot 1', dataAiHint: 'encrypted chat' },
+            { url: 'https://play-lh.googleusercontent.com/j-Y-g-X-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c=w526-h296-rw', alt: 'Signal Screenshot 2', dataAiHint: 'group call' }
+        ],
         testingInstructions: 'Send a disappearing message with a custom timer. Verify that the message disappears for both you and the recipient after the timer expires.',
         status: 'available',
     },
@@ -820,7 +880,7 @@ export const projects: Project[] = [
       id: 1,
       name: "Canva",
       packageName: "com.canva.editor",
-      icon: "https://play-lh.googleusercontent.com/3_f3P-6o76y_R3IMSvEAnwe0-3-U9d_AFbTJSbifHCr20NlT0vj1V-r8-aUEg2z_4A=w240-h480-rw",
+      icon: "https://play-lh.googleusercontent.com/3_f3P-6o76y_R3IMSvEAnwe0-3-U9d_AFbTJSbifHCr20NlT0vj1V-r8-aUEg2z_4A=s96-rw",
       dataAiHint: "design logo",
       status: "In Testing",
       testersStarted: 14,
@@ -855,7 +915,7 @@ export const projects: Project[] = [
       id: 2,
       name: "Figma",
       packageName: "com.figma.mirror",
-      icon: "https://play-lh.googleusercontent.com/y5NkHwARz7i_n1s-9X4h8gADg5y-2i24-cgJjDL1-hVIgJIL1L8m-98Yy18h-h2xUoM=w240-h480-rw",
+      icon: "https://play-lh.googleusercontent.com/y5NkHwARz7i_n1s-9X4h8gADg5y-2i24-cgJjDL1-hVIgJIL1L8m-98Yy18h-h2xUoM=s96-rw",
       dataAiHint: "geometric shapes",
       status: "In Testing",
       testersStarted: 12,
@@ -890,7 +950,7 @@ export const projects: Project[] = [
       id: 3,
       name: "Slack",
       packageName: "com.Slack",
-      icon: "https://play-lh.googleusercontent.com/lV1itd-iif4I-6w0l29-03csI0QYpY9b0Kj3o3F-4z7cwsI6K20rZkOY0pIUNeAABg=w240-h480-rw",
+      icon: "https://play-lh.googleusercontent.com/lV1itd-iif4I-6w0l29-03csI0QYpY9b0Kj3o3F-4z7cwsI6K20rZkOY0pIUNeAABg=s96-rw",
       dataAiHint: "colorful hash",
       status: "Completed",
       testersStarted: 20,
@@ -923,7 +983,7 @@ export const projects: Project[] = [
       id: 6,
       name: "Asana",
       packageName: "com.asana.app",
-      icon: "https://play-lh.googleusercontent.com/s_2334grImpi1J5Wr1p9s-0x2w9p50kNOu5Mw0YJcsW0Y2DO5ZasifL25sB2ORWBxQ=w240-h480-rw",
+      icon: "https://play-lh.googleusercontent.com/s_2334grImpi1J5Wr1p9s-0x2w9p50kNOu5Mw0YJcsW0Y2DO5ZasifL25sB2ORWBxQ=s96-rw",
       dataAiHint: "three dots logo",
       status: "In Review",
       testersStarted: 0,
@@ -946,7 +1006,7 @@ export const projects: Project[] = [
       id: 4,
       name: "Google Wallet",
       packageName: "com.google.android.apps.walletnfcrel",
-      icon: "https://play-lh.googleusercontent.com/PymMg-2X7d-l-N-3lofsH_bGOJ2k8Cj-hM2WJp-5K2z-MIs-2-X91wB29-o7n_EwYg=w240-h480-rw",
+      icon: "https://play-lh.googleusercontent.com/PymMg-2X7d-l-N-3lofsH_bGOJ2k8Cj-hM2WJp-5K2z-MIs-2-X91wB29-o7n_EwYg=s96-rw",
       dataAiHint: "colorful wallet",
       status: "Completed",
       testersStarted: 15,
@@ -976,7 +1036,7 @@ export const projects: Project[] = [
       id: 5,
       name: "Trello",
       packageName: "com.trello",
-      icon: "https://play-lh.googleusercontent.com/y4__fJ8K9y4l_G6LSb0s-1hsvNBb8XJ3vrf_f3i5mYp2l3gH2-Sj-cs-2KFaGq4bGA=w240-h480-rw",
+      icon: "https://play-lh.googleusercontent.com/y4__fJ8K9y4l_G6LSb0s-1hsvNBb8XJ3vrf_f3i5mYp2l3gH2-Sj-cs-2KFaGq4bGA=s96-rw",
       dataAiHint: "blue squares",
       status: "Archived",
       testersStarted: 25,
@@ -1013,9 +1073,9 @@ export const projects: Project[] = [
       const testersCompleted = isCompleted ? 15 + (app.id % 5) : (isOngoing ? 5 + (app.id % 5) : 0);
       const testersStarted = testersCompleted + (isOngoing ? 5 : 0) + (app.status === 'available' ? 2 : 0)
       return {
-        id: app.id + 10, // Avoid ID conflicts
+        id: app.id + 100, // Use a high offset to avoid ID conflicts
         name: app.name,
-        packageName: `com.example.${app.name.toLowerCase().replace(/\s/g, '')}`,
+        packageName: `com.example.${app.name.toLowerCase().replace(/[^a-z0-9]/g, '')}`,
         icon: app.icon,
         dataAiHint: app.dataAiHint,
         status: isCompleted ? "Completed" : (isOngoing ? "In Testing" : "In Review"),
@@ -1050,3 +1110,6 @@ export const projects: Project[] = [
   ]
     
 
+
+
+    
