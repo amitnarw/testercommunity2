@@ -2,9 +2,9 @@
 'use client';
 
 import { useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
+import { CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { ListFilter, ArrowUpDown, PlusCircle, ArrowRight, Star, Users, FileCheck, PlaySquare, Check, Activity, CheckCircle2, ChevronRight } from 'lucide-react';
+import { ListFilter, ArrowUpDown, PlusCircle, Star, FileCheck, Activity } from 'lucide-react';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { communityApps, projects as allProjects } from '@/lib/data';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -13,7 +13,6 @@ import { CommunityOngoingAppCard } from '@/components/community-ongoing-app-card
 import { CommunityCompletedAppCard } from '@/components/community-completed-app-card';
 import { Pagination, PaginationContent, PaginationItem, PaginationPrevious, PaginationLink, PaginationNext } from '@/components/ui/pagination';
 import Link from 'next/link';
-import { Separator } from '@/components/ui/separator';
 
 
 const APPS_PER_PAGE = 6;
@@ -66,7 +65,7 @@ export default function CommunityDashboardPage() {
             setPagination(prev => ({ ...prev, [type]: page }));
         }
     };
-    
+
     const appsSubmitted = allProjects.length;
     const testersEngaged = allProjects.reduce((sum, p) => sum + p.testersStarted, 0);
     const testsCompleted = allProjects.reduce((sum, p) => sum + p.testersCompleted, 0);
@@ -76,13 +75,13 @@ export default function CommunityDashboardPage() {
         <div className="bg-secondary/50 min-h-screen">
             <div className="container mx-auto px-4 md:px-6 py-12">
                 <header className="mb-12">
-                     <div className="mb-6">
+                    <div className="mb-6">
                         <h1 className="text-4xl font-bold">Community Hub</h1>
                         <p className="text-muted-foreground mt-2 max-w-xl">Test apps, earn points, and help fellow developers build better products.</p>
                     </div>
-                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                        <BentoCard>
-                             <CardTitle className="text-sm font-medium flex items-center gap-2 text-muted-foreground"><Activity className="w-4 h-4"/> Performance</CardTitle>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+                        <BentoCard className='col-span-2'>
+                            <CardTitle className="text-sm font-medium flex items-center gap-2 text-muted-foreground"><Activity className="w-4 h-4" /> Performance</CardTitle>
                             <div className="grid grid-cols-3 gap-2 w-full mt-2">
                                 <div className="text-center bg-secondary p-2 rounded-lg">
                                     <p className="text-2xl font-bold">{appsSubmitted}</p>
@@ -99,14 +98,14 @@ export default function CommunityDashboardPage() {
                             </div>
                         </BentoCard>
 
-                        <BentoCard className="bg-primary text-primary-foreground">
-                            <CardTitle className="text-sm font-medium flex items-center gap-2"><Star className="w-4 h-4"/> My Points</CardTitle>
-                            <p className="text-4xl font-bold text-center my-auto">1,250</p>
+                        <BentoCard className="bg-gradient-to-b from-primary to-primary/40 text-primary-foreground">
+                            <CardTitle className="text-sm font-medium flex items-center gap-2"><Star className="w-4 h-4" /> My Points</CardTitle>
+                            <p className="text-5xl font-bold text-center my-auto">1,250</p>
                         </BentoCard>
-                        
+
                         <BentoCard>
                             <CardTitle className="text-sm font-medium flex items-center gap-2 text-muted-foreground">My Testing</CardTitle>
-                             <div className="grid grid-cols-2 gap-2 w-full mt-2">
+                            <div className="grid grid-cols-2 gap-2 w-full mt-2">
                                 <div className="text-center bg-secondary p-2 rounded-lg">
                                     <p className="text-2xl font-bold">{ongoingApps.length}</p>
                                     <p className="text-xs text-muted-foreground">Ongoing</p>
@@ -119,12 +118,12 @@ export default function CommunityDashboardPage() {
                         </BentoCard>
 
                         <BentoCard className="gap-2">
-                           <Button asChild className="w-full justify-start h-full">
+                            <Button asChild className="w-full justify-start h-full bg-gradient-to-b from-primary to-primary/40">
                                 <Link href="/community-dashboard/submit">
                                     <PlusCircle className="mr-2 h-4 w-4" /> Submit a New App
                                 </Link>
                             </Button>
-                             <Button asChild variant="outline" className="w-full justify-start h-full">
+                            <Button asChild variant="outline" className="w-full justify-start h-full">
                                 <Link href="/community-dashboard/my-submissions">
                                     <FileCheck className="mr-2 h-4 w-4" /> My Submissions
                                 </Link>
@@ -136,7 +135,7 @@ export default function CommunityDashboardPage() {
                 <main>
                     <Tabs defaultValue="available" className="w-full">
                         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
-                             <div>
+                            <div>
                                 <h2 className="text-2xl font-bold">Available Apps</h2>
                                 <p className="text-muted-foreground">Browse apps that need testing from the community.</p>
                             </div>
@@ -301,5 +300,4 @@ export default function CommunityDashboardPage() {
             </div>
         </div>
     );
-
-    
+}
