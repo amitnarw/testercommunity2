@@ -16,6 +16,7 @@ import { FaqSection } from '@/components/faq-section';
 import { TwoPathsSection } from '@/components/two-paths-section';
 import { MagneticButton } from '@/components/magnetic-button';
 import { HoverBorderGradient } from '@/components/ui/hover-border-gradient';
+import AnimatedRoundedButton from '@/components/ui/animated-rounded-button';
 
 const features = [
     {
@@ -162,10 +163,15 @@ export default function Home() {
                             <p className="mt-4 max-w-2xl mx-auto text-muted-foreground">
                                 Join the community and experience the future of app testing today. It's free to get started.
                             </p>
-                            <div className="mt-8">
-                                <Button asChild size="lg" className="font-bold text-lg px-8 py-6 rounded-xl hover:shadow-lg hover:shadow-primary/30 btn-hover-curved-effect">
-                                    <Link href="/signup"><span>Sign Up Now</span> <ArrowRight className="ml-2" /></Link>
-                                </Button>
+                            <div className="mt-8 flex justify-center">
+                                <Link href="/signup">
+                                    <AnimatedRoundedButton>
+                                        <div className="flex items-center gap-2">
+                                            <span>Sign Up Now</span>
+                                            <ArrowRight />
+                                        </div>
+                                    </AnimatedRoundedButton>
+                                </Link>
                             </div>
                         </div>
                     </section>
