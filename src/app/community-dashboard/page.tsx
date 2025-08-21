@@ -4,7 +4,7 @@
 import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { ListFilter, ArrowUpDown, PlusCircle, ArrowRight, Star, Users, FileCheck, PlaySquare, Check, Activity, CheckCircle2 } from 'lucide-react';
+import { ListFilter, ArrowUpDown, PlusCircle, ArrowRight, Star, Users, FileCheck, PlaySquare, Check, Activity, CheckCircle2, ChevronRight } from 'lucide-react';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { communityApps, projects as allProjects } from '@/lib/data';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -17,6 +17,13 @@ import { Separator } from '@/components/ui/separator';
 
 
 const APPS_PER_PAGE = 6;
+
+const BentoCard = ({ children, className }: { children: React.ReactNode, className?: string }) => (
+    <div className={`bg-card rounded-2xl p-4 flex flex-col justify-between ${className}`}>
+        {children}
+    </div>
+);
+
 
 export default function CommunityDashboardPage() {
     const [filter, setFilter] = useState('All');
@@ -74,8 +81,8 @@ export default function CommunityDashboardPage() {
                         <p className="text-muted-foreground mt-2 max-w-xl">Test apps, earn points, and help fellow developers build better products.</p>
                     </div>
                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                        <Card className="lg:col-span-2 rounded-2xl p-4 flex flex-col justify-between">
-                             <CardTitle className="text-base font-medium flex items-center gap-2"><Activity className="w-4 h-4"/> Performance</CardTitle>
+                        <BentoCard>
+                             <CardTitle className="text-sm font-medium flex items-center gap-2 text-muted-foreground"><Activity className="w-4 h-4"/> Performance</CardTitle>
                             <div className="grid grid-cols-3 gap-2 w-full mt-2">
                                 <div className="text-center bg-secondary p-2 rounded-lg">
                                     <p className="text-2xl font-bold">{appsSubmitted}</p>
@@ -90,15 +97,15 @@ export default function CommunityDashboardPage() {
                                     <p className="text-xs text-muted-foreground">Tests Done</p>
                                 </div>
                             </div>
-                        </Card>
+                        </BentoCard>
 
-                        <Card className="rounded-2xl p-4 flex flex-col justify-between bg-primary text-primary-foreground">
-                            <CardTitle className="text-base font-medium flex items-center gap-2"><Star className="w-4 h-4"/> My Points</CardTitle>
-                            <p className="text-4xl font-bold text-center">1,250</p>
-                        </Card>
+                        <BentoCard className="bg-primary text-primary-foreground">
+                            <CardTitle className="text-sm font-medium flex items-center gap-2"><Star className="w-4 h-4"/> My Points</CardTitle>
+                            <p className="text-4xl font-bold text-center my-auto">1,250</p>
+                        </BentoCard>
                         
-                        <Card className="rounded-2xl p-4 flex flex-col justify-between">
-                            <CardTitle className="text-base font-medium flex items-center gap-2">My Testing</CardTitle>
+                        <BentoCard>
+                            <CardTitle className="text-sm font-medium flex items-center gap-2 text-muted-foreground">My Testing</CardTitle>
                              <div className="grid grid-cols-2 gap-2 w-full mt-2">
                                 <div className="text-center bg-secondary p-2 rounded-lg">
                                     <p className="text-2xl font-bold">{ongoingApps.length}</p>
@@ -109,7 +116,20 @@ export default function CommunityDashboardPage() {
                                     <p className="text-xs text-muted-foreground">Completed</p>
                                 </div>
                             </div>
-                        </Card>
+                        </BentoCard>
+
+                        <BentoCard className="gap-2">
+                           <Button asChild className="w-full justify-start h-full">
+                                <Link href="/community-dashboard/submit">
+                                    <PlusCircle className="mr-2 h-4 w-4" /> Submit a New App
+                                </Link>
+                            </Button>
+                             <Button asChild variant="outline" className="w-full justify-start h-full">
+                                <Link href="/community-dashboard/my-submissions">
+                                    <FileCheck className="mr-2 h-4 w-4" /> My Submissions
+                                </Link>
+                            </Button>
+                        </BentoCard>
                     </div>
                 </header>
 
@@ -281,4 +301,5 @@ export default function CommunityDashboardPage() {
             </div>
         </div>
     );
-}
+
+    
