@@ -31,38 +31,41 @@ const legalItems = [
 
 const Sun = () => (
     <motion.div
-        initial={{ opacity: 0, scale: 0.5 }}
-        animate={{ opacity: 1, scale: 1 }}
-        exit={{ opacity: 0, scale: 0.5 }}
-        transition={{ duration: 0.8, ease: [0.25, 1, 0.5, 1] }}
-        className="absolute inset-0 z-0"
+        initial={{ scale: 0 }}
+        animate={{ scale: 1, rotate: 360 }}
+        exit={{ scale: 0 }}
+        transition={{ duration: 2, ease: "easeOut", repeat: Infinity, repeatType: "loop", repeatDelay: 5 }}
+        className="absolute top-0 right-0 -translate-y-1/2 translate-x-1/2 z-0"
     >
-        <div className="absolute top-1/4 left-1/2 w-[600px] h-[600px] -translate-x-1/2 -translate-y-1/2">
-            <div className="absolute inset-0 rounded-full bg-yellow-300/40 blur-3xl animate-pulse [animation-duration:5s]" />
-            <div className="absolute inset-20 rounded-full bg-yellow-300/50 blur-3xl" />
-            <div className="absolute inset-40 rounded-full bg-white/80 blur-3xl" />
+        <div className="relative w-[600px] h-[600px]">
+            <div className="absolute inset-0 rounded-full bg-yellow-400/30 blur-3xl animate-pulse [animation-duration:5s]" />
+            <div className="absolute inset-20 rounded-full bg-yellow-400/40 blur-3xl" />
+            <div className="absolute inset-40 rounded-full bg-white/70 blur-3xl" />
         </div>
     </motion.div>
 );
 
 const MoonAndStars = () => (
     <motion.div
-        initial={{ opacity: 0, scale: 0.5 }}
-        animate={{ opacity: 1, scale: 1 }}
-        exit={{ opacity: 0, scale: 0.5 }}
-        transition={{ duration: 0.8, ease: [0.25, 1, 0.5, 1] }}
-        className="absolute inset-0 z-0 overflow-hidden"
+        initial={{ scale: 0 }}
+        animate={{ scale: 1, rotate: 360 }}
+        exit={{ scale: 0 }}
+        transition={{ duration: 2, ease: "easeOut", repeat: Infinity, repeatType: "loop", repeatDelay: 5 }}
+        className="absolute top-0 right-0 -translate-y-1/2 translate-x-1/2 z-0 overflow-visible"
     >
         {/* Moon */}
-        <div className="absolute top-1/4 left-1/2 w-32 h-32 -translate-x-1/2 -translate-y-1/2">
-            <div className="absolute inset-0 rounded-full bg-slate-100/60 blur-2xl" />
-            <div className="absolute inset-4 rounded-full bg-slate-100/80 blur-xl" />
+        <div className="relative w-32 h-32">
+            <div className="absolute inset-0 rounded-full bg-slate-100/40 blur-2xl" />
+            <div className="absolute inset-4 rounded-full bg-slate-100/60 blur-xl" />
         </div>
         
         {/* Stars */}
         {[...Array(50)].map((_, i) => {
             const size = Math.random() * 2 + 0.5;
             const delay = Math.random() * 5;
+            const distance = 100 + Math.random() * 200;
+            const angle = Math.random() * 360;
+
             return (
                 <motion.div
                     key={i}
@@ -70,8 +73,9 @@ const MoonAndStars = () => (
                     style={{
                         width: `${size}px`,
                         height: `${size}px`,
-                        top: `${Math.random() * 100}%`,
-                        left: `${Math.random() * 100}%`,
+                        top: `50%`,
+                        left: `50%`,
+                        transform: `translate(-50%, -50%) rotate(${angle}deg) translateX(${distance}px)`
                     }}
                     initial={{ opacity: 0 }}
                     animate={{ opacity: [0, 1, 0.5, 1, 0], transition: { duration: 2 + Math.random() * 3, delay, repeat: Infinity, repeatType: 'mirror' }}}
