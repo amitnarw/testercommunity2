@@ -72,7 +72,7 @@ export default function CommunityDashboardPage() {
 
 
     return (
-        <div className="bg-secondary/50 min-h-screen">
+        <div className="bg-secondary/50 min-h-screen md:pl-20">
             <div className="container mx-auto px-4 md:px-6 py-12">
                 <header className="mb-12">
                     <div className="mb-6">

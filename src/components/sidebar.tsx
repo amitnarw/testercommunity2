@@ -48,7 +48,7 @@ interface SidebarProps {
 
 export function Sidebar({ onLogout, isCollapsed, setIsCollapsed }: SidebarProps) {
     return (
-        <div className="fixed z-50 h-full hidden md:flex items-center justify-center px-4 bg-[#f8fafc] dark:bg-[#0f151e]">
+        <div className="fixed z-50 h-full hidden md:flex items-center justify-center px-4">
             <aside className={cn(
                 "left-4 h-[95vh]", // Floating position
                 "flex",

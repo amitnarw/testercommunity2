@@ -244,7 +244,7 @@ export const communityApps: CommunityApp[] = [
     {
         id: 1,
         name: 'Todoist',
-        icon: 'https://play-lh.googleusercontent.com/99w5-oJ4Cw_Hq3-Nb56H-sP2vY1J5K5YpAFz5aZgDtb3e6nL-CX_w4_4Y_2I5p003w=w240-h480-rw',
+        icon: 'https://play-lh.googleusercontent.com/GK0SwEBVqlFBpRkPjY6y_1go6E6xZzAN0Ivzfgbuf28J4TTOoOsgWnqR4oJ_RhIhsg=s96-rw',
         dataAiHint: 'task list icon',
         category: 'Productivity',
         shortDescription: 'The #1 to-do list and task manager to organize your work and life.',
@@ -253,8 +253,8 @@ export const communityApps: CommunityApp[] = [
         estimatedTime: '15-20 min',
         playStoreUrl: 'https://play.google.com/store/apps/details?id=com.todoist',
         screenshots: [
-            { url: 'https://play-lh.googleusercontent.com/lca2y0fOJPf2p1mIe6ms_J7XyPOtqgL-5u1mbt5_2Ml0ikLw1D-0g0N23sC2-XWFLg=w526-h296-rw', alt: 'Todoist Screenshot 1', dataAiHint: 'task list interface' },
-            { url: 'https://play-lh.googleusercontent.com/v_g_ryH0Tsoi3mH-Bgy_nF9s0x5n4sgkE7n_03e-i9V_Kx86pG2Z-vnsyBvS-a3f2w=w526-h296-rw', alt: 'Todoist Screenshot 2', dataAiHint: 'project board' }
+            { url: 'https://play-lh.googleusercontent.com/c6EgFHn_tZjMLPFUYA7ugHYpHHeUA_Km0u8iIDPIapV9HvmtzSPki6CNPz9tqZJQwSg=w5120-h2880-rw', alt: 'Todoist Screenshot 1', dataAiHint: 'task list interface' },
+            { url: 'https://play-lh.googleusercontent.com/5GVvBM-QT83cTK7JXF_jthPrQkyKB6QkDppBJ2_uuT13KijJa11vkbfvbxL0tHtJ5A=w5120-h2880-rw', alt: 'Todoist Screenshot 2', dataAiHint: 'project board' }
         ],
         testingInstructions: 'Please focus on the new team collaboration feature. Try creating a project, inviting a team member, and assigning a task. Check for notification accuracy and any sync issues.',
         status: 'ongoing',
