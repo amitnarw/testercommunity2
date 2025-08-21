@@ -18,20 +18,6 @@ import { Separator } from '@/components/ui/separator';
 
 const APPS_PER_PAGE = 6;
 
-const BentoCard = ({ children, className }: { children: React.ReactNode, className?: string }) => (
-    <Card className={`rounded-2xl p-6 flex flex-col justify-between items-start bg-card group hover:bg-secondary transition-colors ${className}`}>
-        {children}
-    </Card>
-);
-
-const BentoLinkCard = ({ children, className, href }: { children: React.ReactNode, className?: string, href: string }) => (
-    <Link href={href} className={`block rounded-2xl bg-card group hover:bg-secondary transition-colors ${className}`}>
-        <Card className="h-full p-6 flex flex-col justify-between items-start border-none bg-transparent shadow-none">
-             {children}
-        </Card>
-    </Link>
-);
-
 export default function CommunityDashboardPage() {
     const [filter, setFilter] = useState('All');
     const [sort, setSort] = useState('Most Recent');
@@ -87,83 +73,53 @@ export default function CommunityDashboardPage() {
                         <h1 className="text-4xl font-bold">Community Hub</h1>
                         <p className="text-muted-foreground mt-2 max-w-xl">Test apps, earn points, and help fellow developers build better products.</p>
                     </div>
-                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                        <BentoCard className="lg:col-span-2">
-                             <div>
-                                <CardTitle className="text-lg flex items-center gap-2"><Activity /> Your Apps' Performance</CardTitle>
-                                <CardDescription className="mt-1">A summary of your submitted applications.</CardDescription>
-                            </div>
-                            <div className="grid grid-cols-3 gap-4 w-full mt-4">
-                                <div className="text-center bg-secondary/50 p-3 rounded-lg">
+                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                        <Card className="lg:col-span-2 rounded-2xl p-4 flex flex-col justify-between">
+                             <CardTitle className="text-base font-medium flex items-center gap-2"><Activity className="w-4 h-4"/> Performance</CardTitle>
+                            <div className="grid grid-cols-3 gap-2 w-full mt-2">
+                                <div className="text-center bg-secondary p-2 rounded-lg">
                                     <p className="text-2xl font-bold">{appsSubmitted}</p>
                                     <p className="text-xs text-muted-foreground">Apps Submitted</p>
                                 </div>
-                                <div className="text-center bg-secondary/50 p-3 rounded-lg">
+                                <div className="text-center bg-secondary p-2 rounded-lg">
                                     <p className="text-2xl font-bold">{testersEngaged}</p>
                                     <p className="text-xs text-muted-foreground">Testers Engaged</p>
                                 </div>
-                                <div className="text-center bg-secondary/50 p-3 rounded-lg">
+                                <div className="text-center bg-secondary p-2 rounded-lg">
                                     <p className="text-2xl font-bold">{testsCompleted}</p>
-                                    <p className="text-xs text-muted-foreground">Tests Completed</p>
+                                    <p className="text-xs text-muted-foreground">Tests Done</p>
                                 </div>
                             </div>
-                        </BentoCard>
+                        </Card>
 
-                        <BentoCard className="bg-primary text-primary-foreground">
-                            <div>
-                                <CardTitle className="text-lg flex items-center gap-2"><Star /> My Points</CardTitle>
-                            </div>
-                            <p className="text-4xl font-bold">1,250</p>
-                        </BentoCard>
-
-                        <BentoCard>
-                             <div>
-                                <CardTitle className="text-lg flex items-center gap-2"><PlaySquare /> Tests You've Started</CardTitle>
-                            </div>
-                             <p className="text-4xl font-bold">{ongoingApps.length}</p>
-                        </BentoCard>
-
-                        <BentoCard>
-                             <div>
-                                <CardTitle className="text-lg flex items-center gap-2"><CheckCircle2 /> Tests You've Completed</CardTitle>
-                            </div>
-                             <p className="text-4xl font-bold">{completedApps.length}</p>
-                        </BentoCard>
+                        <Card className="rounded-2xl p-4 flex flex-col justify-between bg-primary text-primary-foreground">
+                            <CardTitle className="text-base font-medium flex items-center gap-2"><Star className="w-4 h-4"/> My Points</CardTitle>
+                            <p className="text-4xl font-bold text-center">1,250</p>
+                        </Card>
                         
-                        <BentoCard className="lg:col-span-1 p-0">
-                            <div className="flex flex-col h-full">
-                                <Link href="/community-dashboard/my-submissions" className="block p-6 flex-grow group hover:bg-secondary/50 rounded-t-2xl">
-                                    <div className="flex justify-between items-center w-full">
-                                        <div>
-                                            <CardTitle className="text-lg">My Submissions</CardTitle>
-                                            <CardDescription className="mt-1">Track your app testing progress.</CardDescription>
-                                        </div>
-                                        <ArrowRight className="ml-1 h-4 w-4 text-muted-foreground group-hover:text-primary transition-transform group-hover:translate-x-1" />
-                                    </div>
-                                </Link>
-                                <Separator />
-                                <Link href="/community-dashboard/submit" className="block p-6 flex-grow group hover:bg-secondary/50 rounded-b-2xl">
-                                    <div className="flex justify-between items-center w-full">
-                                        <div>
-                                            <CardTitle className="text-lg">Submit an App</CardTitle>
-                                            <CardDescription className="mt-1">Get community feedback.</CardDescription>
-                                        </div>
-                                         <ArrowRight className="ml-1 h-4 w-4 text-muted-foreground group-hover:text-primary transition-transform group-hover:translate-x-1" />
-                                    </div>
-                                </Link>
+                        <Card className="rounded-2xl p-4 flex flex-col justify-between">
+                            <CardTitle className="text-base font-medium flex items-center gap-2">My Testing</CardTitle>
+                             <div className="grid grid-cols-2 gap-2 w-full mt-2">
+                                <div className="text-center bg-secondary p-2 rounded-lg">
+                                    <p className="text-2xl font-bold">{ongoingApps.length}</p>
+                                    <p className="text-xs text-muted-foreground">Ongoing</p>
+                                </div>
+                                <div className="text-center bg-secondary p-2 rounded-lg">
+                                    <p className="text-2xl font-bold">{completedApps.length}</p>
+                                    <p className="text-xs text-muted-foreground">Completed</p>
+                                </div>
                             </div>
-                        </BentoCard>
+                        </Card>
                     </div>
                 </header>
 
                 <main>
                     <Tabs defaultValue="available" className="w-full">
                         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
-                            <TabsList>
-                                <TabsTrigger value="available">Available</TabsTrigger>
-                                <TabsTrigger value="ongoing">Ongoing</TabsTrigger>
-                                <TabsTrigger value="completed">Completed</TabsTrigger>
-                            </TabsList>
+                             <div>
+                                <h2 className="text-2xl font-bold">Available Apps</h2>
+                                <p className="text-muted-foreground">Browse apps that need testing from the community.</p>
+                            </div>
                             <div className="flex gap-2">
                                 <DropdownMenu>
                                     <DropdownMenuTrigger asChild>
@@ -193,6 +149,11 @@ export default function CommunityDashboardPage() {
                                 </DropdownMenu>
                             </div>
                         </div>
+                        <TabsList className="grid w-full grid-cols-3 mb-6">
+                            <TabsTrigger value="available">Available ({availableApps.length})</TabsTrigger>
+                            <TabsTrigger value="ongoing">Ongoing ({ongoingApps.length})</TabsTrigger>
+                            <TabsTrigger value="completed">Completed ({completedApps.length})</TabsTrigger>
+                        </TabsList>
                         <TabsContent value="available">
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                                 {currentAvailableApps.map(app => (
