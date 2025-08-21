@@ -24,11 +24,14 @@ export function UserNav({ onLogout }: UserNavProps) {
     return (
         <DropdownMenu>
             <DropdownMenuTrigger asChild>
-                <Button variant="ghost" className="relative h-10 w-10 rounded-full">
-                    <Avatar className="h-10 w-10">
-                         <AvatarImage src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=400&auto=format=fit=crop" data-ai-hint="man smiling" alt="User Avatar" />
-                         <AvatarFallback>{demoUser.role.charAt(0).toUpperCase()}</AvatarFallback>
-                    </Avatar>
+                 <Button variant="ghost" className="relative h-auto rounded-full p-1.5">
+                    <div className="flex items-center gap-2">
+                        <Avatar className="h-10 w-10">
+                            <AvatarImage src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=400&auto=format=fit=crop" data-ai-hint="man smiling" alt="User Avatar" />
+                            <AvatarFallback>{demoUser.role.charAt(0).toUpperCase()}</AvatarFallback>
+                        </Avatar>
+                        <ChevronDown className="h-4 w-4 text-muted-foreground" />
+                    </div>
                 </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-64 rounded-xl shadow-xl border-border/10 p-2" align="end" forceMount>
