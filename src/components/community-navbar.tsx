@@ -8,17 +8,18 @@ import { Button } from './ui/button';
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuGroup } from './ui/dropdown-menu';
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
 import { demoUser } from '@/lib/data';
-import { Sun, Moon, User, LogOut, LayoutDashboard, LifeBuoy, Users2, Gift } from 'lucide-react';
+import { Sun, Moon, User, LogOut, LayoutDashboard, LifeBuoy, Users2, Gift, ChevronDown } from 'lucide-react';
 
 const UserNav = ({ onLogout }: { onLogout: () => void }) => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" className="relative h-10 w-10 rounded-full">
-          <Avatar className="h-10 w-10">
+        <Button variant="ghost" className="flex items-center gap-2 rounded-full h-10 px-2">
+          <Avatar className="h-8 w-8">
             <AvatarImage src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=400&auto=format=fit=crop" data-ai-hint="man smiling" alt="User Avatar" />
             <AvatarFallback>{demoUser.role.charAt(0).toUpperCase()}</AvatarFallback>
           </Avatar>
+           <ChevronDown className="w-4 h-4 text-muted-foreground" />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56 rounded-xl" align="end" forceMount>
@@ -94,7 +95,7 @@ export function CommunityNavbar({ onLogout }: { onLogout: () => void }) {
     }, []);
 
     return (
-        <header className="sticky top-0 z-40 bg-background/80 backdrop-blur-lg border-b">
+        <header className="sticky top-0 z-40">
             <div className="container mx-auto px-4 md:px-6">
                 <div className="flex h-16 items-center justify-between">
                     <div>
@@ -102,7 +103,7 @@ export function CommunityNavbar({ onLogout }: { onLogout: () => void }) {
                             {isMounted ? `${greeting}, Demo User` : 'Welcome'}
                         </h1>
                     </div>
-                    <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-2">
                         {isMounted && (
                             <Button
                                 variant="ghost"
