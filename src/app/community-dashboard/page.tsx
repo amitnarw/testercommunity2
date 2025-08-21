@@ -63,16 +63,16 @@ export default function CommunityDashboardPage() {
         <div className="bg-secondary/50 min-h-screen">
             <div className="container mx-auto px-4 md:px-6 py-12">
                 <header className="mb-12">
+                     <div className="mb-6">
+                        <h1 className="text-4xl font-bold">Community Hub</h1>
+                        <p className="text-muted-foreground mt-2 max-w-xl">Test apps, earn points, and help fellow developers build better products.</p>
+                    </div>
                     <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
-                        <div className="lg:col-span-3">
-                            <h1 className="text-4xl font-bold">Community Hub</h1>
-                            <p className="text-muted-foreground mt-2 max-w-xl">Test apps, earn points, and help fellow developers build better products.</p>
-                        </div>
-                        <Card className="lg:col-span-2 row-start-2 lg:row-start-auto rounded-2xl p-6 flex flex-col justify-center items-center text-center bg-primary text-primary-foreground">
+                        <Card className="lg:col-span-2 rounded-2xl p-6 flex flex-col justify-center items-center text-center bg-primary text-primary-foreground">
                              <CardTitle className="text-sm font-medium text-primary-foreground/80">Total Points</CardTitle>
                              <div className="text-5xl font-bold flex items-center gap-2 justify-center mt-2"><Star className="w-10 h-10 text-amber-300 fill-amber-300" /> 1,250</div>
                         </Card>
-                         <Link href="/community-dashboard/submit" className="lg:col-span-2 rounded-2xl p-6 flex flex-col justify-between items-start bg-card group hover:bg-secondary transition-colors">
+                         <Link href="/community-dashboard/submit" className="lg:col-span-3 rounded-2xl p-6 flex flex-col justify-between items-start bg-card group hover:bg-secondary transition-colors">
                             <div>
                                 <CardTitle className="text-lg">Submit a New App</CardTitle>
                                 <CardDescription className="mt-1">Have an app that needs testing? Get started here.</CardDescription>
@@ -81,7 +81,7 @@ export default function CommunityDashboardPage() {
                                 Submit Now <ArrowRight className="ml-1 h-4 w-4" />
                             </Button>
                         </Link>
-                         <Link href="/community-dashboard/my-submissions" className="lg:col-span-3 rounded-2xl p-6 flex flex-col justify-between items-start bg-card group hover:bg-secondary transition-colors">
+                         <Link href="/community-dashboard/my-submissions" className="lg:col-span-5 rounded-2xl p-6 flex flex-col justify-between items-start bg-card group hover:bg-secondary transition-colors">
                             <div>
                                 <CardTitle className="text-lg">My Submissions</CardTitle>
                                 <CardDescription className="mt-1">Track the progress of your submitted apps and view feedback from testers.</CardDescription>
