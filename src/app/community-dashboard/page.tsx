@@ -86,7 +86,7 @@ export default function CommunityDashboardPage() {
                         <h1 className="text-4xl font-bold">Community Hub</h1>
                         <p className="text-muted-foreground mt-2 max-w-xl">Test apps, earn points, and help fellow developers build better products.</p>
                     </div>
-                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                         <BentoCard className="lg:col-span-2">
                              <div>
                                 <CardTitle className="text-lg flex items-center gap-2"><Activity /> Your Apps' Performance</CardTitle>
@@ -108,6 +108,13 @@ export default function CommunityDashboardPage() {
                             </div>
                         </BentoCard>
 
+                        <BentoCard className="bg-primary text-primary-foreground">
+                            <div>
+                                <CardTitle className="text-lg flex items-center gap-2"><Star /> My Points</CardTitle>
+                            </div>
+                            <p className="text-4xl font-bold">1,250</p>
+                        </BentoCard>
+
                         <BentoCard>
                              <div>
                                 <CardTitle className="text-lg flex items-center gap-2"><PlaySquare /> Tests You've Started</CardTitle>
@@ -121,32 +128,17 @@ export default function CommunityDashboardPage() {
                             </div>
                              <p className="text-4xl font-bold">{completedApps.length}</p>
                         </BentoCard>
-                        
-                        <BentoCard className="bg-primary text-primary-foreground">
-                            <div>
-                                <CardTitle className="text-lg flex items-center gap-2"><Star /> My Points</CardTitle>
-                            </div>
-                            <p className="text-4xl font-bold">1,250</p>
-                        </BentoCard>
 
-                        <BentoLinkCard href="/community-dashboard/submit" className="lg:col-span-2">
-                            <div>
-                                <CardTitle className="text-lg">Submit a New App</CardTitle>
-                                <CardDescription className="mt-1">Have an app that needs testing? Get started here.</CardDescription>
+                        <BentoLinkCard href="/community-dashboard/submit" className="lg:col-span-3">
+                             <div className="flex justify-between items-center w-full">
+                                <div>
+                                    <CardTitle className="text-lg">Submit a New App</CardTitle>
+                                    <CardDescription className="mt-1">Have an app that needs testing? Get started here.</CardDescription>
+                                </div>
+                                <Button variant="link" className="p-0 text-primary">
+                                    Submit Now <ArrowRight className="ml-1 h-4 w-4" />
+                                </Button>
                             </div>
-                             <Button variant="link" className="p-0 text-primary">
-                                Submit Now <ArrowRight className="ml-1 h-4 w-4" />
-                            </Button>
-                        </BentoLinkCard>
-                        
-                        <BentoLinkCard href="/community-dashboard/my-submissions">
-                             <div>
-                                <CardTitle className="text-lg">My Submissions</CardTitle>
-                                <CardDescription className="mt-1">Track the progress of your submitted apps.</CardDescription>
-                            </div>
-                             <Button variant="link" className="p-0 text-primary">
-                                View Submissions <ArrowRight className="ml-1 h-4 w-4" />
-                            </Button>
                         </BentoLinkCard>
                     </div>
                 </header>
@@ -316,5 +308,3 @@ export default function CommunityDashboardPage() {
         </div>
     )
 }
-
-    
