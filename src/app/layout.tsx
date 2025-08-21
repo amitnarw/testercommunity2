@@ -77,7 +77,7 @@ export default function RootLayout({
               />
             )}
             
-            <div className={cn("flex flex-col flex-1", isCommunityDashboard && "md:pl-20")}>
+            <div className={cn("flex flex-col flex-1")}>
               <div className="relative flex-1 z-20 bg-background">
                 {isCommunityDashboard && (
                  <CommunityNavbar onLogout={handleLogout} />

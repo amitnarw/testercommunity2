@@ -17,7 +17,6 @@ import { TwoPathsSection } from '@/components/two-paths-section';
 import { MagneticButton } from '@/components/magnetic-button';
 import { HoverBorderGradient } from '@/components/ui/hover-border-gradient';
 import AnimatedRoundedButton from '@/components/ui/animated-rounded-button';
-import { FooterCurve } from '@/components/footer-curve';
 
 const features = [
     {

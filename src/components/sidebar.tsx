@@ -50,7 +50,7 @@ export function Sidebar({ onLogout, isCollapsed, setIsCollapsed }: SidebarProps)
     return (
         <div className="fixed z-50 h-full hidden md:flex items-center justify-center px-4">
             <aside className={cn(
-                "left-4 h-[95vh]", // Floating position
+                "left-4 h-[95vh]",
                 "flex",
                 "transition-all duration-300",
                 isCollapsed ? "w-16" : "w-72"

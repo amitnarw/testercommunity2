@@ -11,6 +11,7 @@ import { cn } from '@/lib/utils';
 import { useState, useEffect } from 'react';
 import { useTheme } from 'next-themes';
 import { UserNav } from './user-nav';
+import MobileMenu from './mobile-menu';
 
 
 const visitorNavItems = [
@@ -21,14 +22,6 @@ const visitorNavItems = [
 ];
 
 const authenticatedNavItems = [
-  { name: 'Home', href: '/' },
-  { name: 'Dashboard', href: '/dashboard' },
-  { name: 'Community', href: '/community-dashboard' },
-  { name: 'Pricing', href: '/pricing' },
-  { name: 'Blog', href: '/blog' },
-];
-
-const mobileAuthenticatedNavItems = [
   { name: 'Home', href: '/' },
   { name: 'Dashboard', href: '/dashboard' },
   { name: 'Community', href: '/community-dashboard' },
@@ -72,9 +65,9 @@ export function Header({
         <div className="container mx-auto px-4 py-2">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-                <Link href="/">
-                  <InTestersLogoShortHeader className="h-10 w-10" />
-                </Link>
+              <Link href="/">
+                <InTestersLogoShortHeader className="h-10 w-10" />
+              </Link>
             </div>
 
             <nav className="hidden md:flex items-center gap-6">
@@ -123,90 +116,12 @@ export function Header({
                 </>
               )}
 
-              <div className="md:hidden">
-                <Sheet open={isVisitorMenuOpen} onOpenChange={setVisitorMenuOpen}>
-                  <SheetTrigger asChild>
-                    <Button size="icon" variant="ghost">
-                      <Menu className="h-6 w-6" />
-                      <span className="sr-only">Open menu</span>
-                    </Button>
-                  </SheetTrigger>
-                  <SheetContent side="top" className="flex flex-col h-full">
-                    <SheetHeader>
-                      <div className="flex justify-between items-center">
-                        {isAuthenticated ? (
-                          <div className="flex items-center gap-4">
-                              <UserNav onLogout={onLogout} />
-                          </div>
-                        ) : (
-                          <div></div>
-                        )}
-                        <SheetClose asChild>
-                          <Button size="icon" variant="ghost">
-                            <X className="h-6 w-6" />
-                            <span className="sr-only">Close menu</span>
-                          </Button>
-                        </SheetClose>
-                      </div>
-                    </SheetHeader>
-                    <div className="p-6 flex flex-col justify-between flex-1">
-                      {isAuthenticated ? (
-                        <div className="flex flex-col h-full">
-                          <nav className="flex flex-col items-center text-center justify-center gap-6 h-full">
-                            {mobileAuthenticatedNavItems.map((item) => (
-                              <Link
-                                key={item.name}
-                                href={item.href}
-                                onClick={() => setVisitorMenuOpen(false)}
-                                className={cn(
-                                  'text-2xl font-medium transition-colors hover:text-primary',
-                                  pathname === item.href ? 'text-primary' : 'text-foreground'
-                                )}
-                              >
-                                {item.name}
-                              </Link>
-                            ))}
-                          </nav>
-                          <div className="flex justify-center items-center gap-2">
-                            <Button variant="ghost" asChild onClick={() => setVisitorMenuOpen(false)} className='w-full border'>
-                              <Link href="/profile">Profile</Link>
-                            </Button>
-                            <Button variant="ghost" onClick={() => { onLogout(); setVisitorMenuOpen(false); }} className='bg-red-500/20 w-full'>
-                              Log Out
-                            </Button>
-                          </div>
-                        </div>
-                      ) : (
-                        <>
-                          <nav className="flex flex-col items-center text-center gap-8 mt-8">
-                            {visitorNavItems.map((item) => (
-                              <Link
-                                key={item.name}
-                                href={item.href}
-                                onClick={() => setVisitorMenuOpen(false)}
-                                className={cn(
-                                  'text-2xl font-medium transition-colors hover:text-primary',
-                                  pathname === item.href ? 'text-primary' : 'text-foreground'
-                                )}
-                              >
-                                {item.name}
-                              </Link>
-                            ))}
-                          </nav>
-                          <div className="mt-auto flex flex-col gap-4">
-                            <Button variant="outline" size="lg" asChild onClick={() => setVisitorMenuOpen(false)}>
-                              <Link href="/login">Log In</Link>
-                            </Button>
-                            <Button asChild size="lg" onClick={() => setVisitorMenuOpen(false)}>
-                              <Link href="/signup">Sign Up</Link>
-                            </Button>
-                          </div>
-                        </>
-                      )}
-                    </div>
-                  </SheetContent>
-                </Sheet>
-              </div>
+              <MobileMenu
+                isMenuOpen={isVisitorMenuOpen}
+                setIsMenuOpen={setVisitorMenuOpen}
+                onLogout={onLogout}
+              />
+
             </div>
           </div>
         </div>
