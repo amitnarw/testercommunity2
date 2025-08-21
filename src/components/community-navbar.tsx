@@ -4,19 +4,23 @@
 import { useState, useEffect } from 'react';
 import { useTheme } from 'next-themes';
 import { Button } from './ui/button';
-import { Sun, Moon, Menu, X } from 'lucide-react';
+import { Sun, Moon, Menu, X, LayoutDashboard, Users2, Bell, User, Gift, LifeBuoy, LogOut } from 'lucide-react';
 import { UserNav } from './user-nav';
 import { Sheet, SheetContent, SheetHeader, SheetClose, SheetTrigger } from './ui/sheet';
 import Link from 'next/link';
 import { cn } from '@/lib/utils';
 import { usePathname } from 'next/navigation';
+import { demoUser } from '@/lib/data';
+import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
+import { DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator } from './ui/dropdown-menu';
 
 const mobileAuthenticatedNavItems = [
-  { name: 'Community Hub', href: '/community-dashboard' },
-  { name: 'My Submissions', href: '/community-dashboard/my-submissions' },
-  { name: 'Developer Dashboard', href: '/dashboard' },
-  { name: 'Notifications', href: '/notifications' },
-  { name: 'Profile', href: '/profile' },
+  { name: 'Developer Dashboard', href: '/dashboard', icon: LayoutDashboard },
+  { name: 'Community Hub', href: '/community-dashboard', icon: Users2 },
+  { name: 'Notifications', href: '/notifications', icon: Bell },
+  { name: 'Profile', href: '/profile', icon: User },
+  { name: 'Buy Points', href: '/pricing', icon: Gift },
+  { name: 'Support', href: '/help', icon: LifeBuoy },
 ];
 
 export function CommunityNavbar({ onLogout }: { onLogout: () => void }) {
@@ -56,8 +60,21 @@ export function CommunityNavbar({ onLogout }: { onLogout: () => void }) {
                             </SheetTrigger>
                             <SheetContent side="left" className="w-full max-w-sm flex flex-col p-0 bg-card">
                                 <SheetHeader className="p-4 border-b">
-                                     <div className="flex justify-between items-center">
-                                        <UserNav onLogout={() => { onLogout(); setIsMenuOpen(false); }} />
+                                    <div className="flex justify-between items-center">
+                                        <div className="font-normal p-2">
+                                            <div className="flex items-center gap-3">
+                                                <Avatar className="h-10 w-10">
+                                                    <AvatarImage src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=400&auto=format=fit=crop" alt="User Avatar" />
+                                                    <AvatarFallback>{demoUser.role.charAt(0).toUpperCase()}</AvatarFallback>
+                                                </Avatar>
+                                                <div>
+                                                    <p className="text-sm font-bold leading-none text-foreground">Demo User</p>
+                                                    <p className="text-xs leading-none text-muted-foreground mt-1">
+                                                        demo@inTesters.com
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
                                         <SheetClose asChild>
                                           <Button size="icon" variant="ghost">
                                             <X className="h-6 w-6" />
@@ -67,22 +84,24 @@ export function CommunityNavbar({ onLogout }: { onLogout: () => void }) {
                                       </div>
                                 </SheetHeader>
                                 <div className="p-6 flex flex-col justify-between flex-1">
-                                    <nav className="flex flex-col gap-4">
+                                    <nav className="flex flex-col gap-1">
                                         {mobileAuthenticatedNavItems.map((item) => (
                                           <Link
                                             key={item.name}
                                             href={item.href}
                                             onClick={() => setIsMenuOpen(false)}
                                             className={cn(
-                                              'text-lg font-medium transition-colors hover:text-primary',
-                                              pathname === item.href ? 'text-primary' : 'text-muted-foreground'
+                                              'flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary',
+                                              (pathname.startsWith(item.href) && item.href !== '/') || (pathname === '/' && item.href === '/') ? 'bg-primary/10 text-primary' : ''
                                             )}
                                           >
+                                            <item.icon className="h-4 w-4" />
                                             {item.name}
                                           </Link>
                                         ))}
                                     </nav>
-                                    <Button variant="destructive" onClick={() => { onLogout(); setIsMenuOpen(false); }} className='w-full'>
+                                    <Button variant="ghost" onClick={() => { onLogout(); setIsMenuOpen(false); }} className='w-full justify-start text-red-500 hover:text-red-500 hover:bg-red-500/10'>
+                                      <LogOut className="mr-2 h-4 w-4" />
                                       Log Out
                                     </Button>
                                 </div>
