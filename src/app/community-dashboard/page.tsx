@@ -2,19 +2,16 @@
 'use client';
 
 import { useState } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { ListFilter, ArrowUpDown, PlusCircle, ArrowRight } from 'lucide-react';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { communityApps } from '@/lib/data';
-import { PointsSidebar } from '@/components/points-sidebar';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { CommunityAvailableAppCard } from '@/components/community-available-app-card';
 import { CommunityOngoingAppCard } from '@/components/community-ongoing-app-card';
 import { CommunityCompletedAppCard } from '@/components/community-completed-app-card';
 import { Pagination, PaginationContent, PaginationItem, PaginationPrevious, PaginationLink, PaginationNext } from '@/components/ui/pagination';
-import { Separator } from '@/components/ui/separator';
-import Link from 'next/link';
 
 
 const APPS_PER_PAGE = 6;
@@ -64,7 +61,7 @@ export default function CommunityDashboardPage() {
     return (
         <div className="bg-secondary/50 min-h-screen">
             <div className="container mx-auto px-4 md:px-6 py-12">
-                <div className="grid lg:grid-cols-4 gap-8">
+                <div className="grid lg:grid-cols-3 gap-8">
                     <div className="lg:col-span-3">
                         <header className="mb-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                             <div>
@@ -127,14 +124,13 @@ export default function CommunityDashboardPage() {
                             </div>
                         </div>
 
-
                         <main>
                             <Tabs defaultValue="available" className="w-full">
                                 <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
                                     <TabsList>
-                                        <TabsTrigger value="available">Available Tests</TabsTrigger>
-                                        <TabsTrigger value="ongoing">My Ongoing Tests</TabsTrigger>
-                                        <TabsTrigger value="completed">My Completed Tests</TabsTrigger>
+                                        <TabsTrigger value="available">Available</TabsTrigger>
+                                        <TabsTrigger value="ongoing">Ongoing</TabsTrigger>
+                                        <TabsTrigger value="completed">Completed</TabsTrigger>
                                     </TabsList>
                                     <div className="flex gap-2">
                                         <DropdownMenu>
@@ -289,10 +285,6 @@ export default function CommunityDashboardPage() {
                                 </TabsContent>
                             </Tabs>
                         </main>
-
-                    </div>
-                    <div className="lg:col-span-1">
-                        <PointsSidebar />
                     </div>
                 </div>
             </div>
