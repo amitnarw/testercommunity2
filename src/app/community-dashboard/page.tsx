@@ -4,7 +4,7 @@
 import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { ListFilter, ArrowUpDown, PlusCircle, ArrowRight } from 'lucide-react';
+import { ListFilter, ArrowUpDown, PlusCircle, ArrowRight, Star } from 'lucide-react';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { communityApps } from '@/lib/data';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -12,6 +12,7 @@ import { CommunityAvailableAppCard } from '@/components/community-available-app-
 import { CommunityOngoingAppCard } from '@/components/community-ongoing-app-card';
 import { CommunityCompletedAppCard } from '@/components/community-completed-app-card';
 import { Pagination, PaginationContent, PaginationItem, PaginationPrevious, PaginationLink, PaginationNext } from '@/components/ui/pagination';
+import Link from 'next/link';
 
 
 const APPS_PER_PAGE = 6;
@@ -61,24 +62,34 @@ export default function CommunityDashboardPage() {
     return (
         <div className="bg-secondary/50 min-h-screen">
             <div className="container mx-auto px-4 md:px-6 py-12">
-                <div className="grid lg:grid-cols-3 gap-8">
+                <div className="lg:grid lg:grid-cols-3 gap-8">
                     <div className="lg:col-span-3">
                         <header className="mb-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                             <div>
                                 <h1 className="text-4xl font-bold">Community Hub</h1>
                                 <p className="text-muted-foreground mt-2">Test apps, earn points, and help fellow developers build better products.</p>
                             </div>
-                            <div className="flex flex-col gap-2 items-stretch">
-                                <Button asChild>
-                                    <Link href="/community-dashboard/submit">
-                                    <PlusCircle className="mr-2 h-4 w-4" /> Submit Your App
-                                    </Link>
-                                </Button>
-                                <Button variant="link" asChild className="text-sm text-muted-foreground">
-                                    <Link href="/community-dashboard/my-submissions">
-                                        Check my submissions <ArrowRight className="ml-1 h-4 w-4" />
-                                    </Link>
-                                </Button>
+                            <div className="flex items-start gap-4">
+                                <Card className="rounded-xl border-0">
+                                    <CardHeader className="p-0 mb-1 p-4 text-center">
+                                        <CardTitle className="text-sm font-medium text-muted-foreground">Total Points</CardTitle>
+                                    </CardHeader>
+                                    <CardContent className="p-0 px-4 pb-4">
+                                        <div className="text-2xl font-bold flex items-center gap-2 justify-center"><Star className="w-6 h-6 text-amber-400 fill-amber-400" /> 1,250</div>
+                                    </CardContent>
+                                </Card>
+                                <div className="flex flex-col gap-2 items-stretch">
+                                    <Button asChild>
+                                        <Link href="/community-dashboard/submit">
+                                            <PlusCircle className="mr-2 h-4 w-4" /> Submit Your App
+                                        </Link>
+                                    </Button>
+                                    <Button variant="link" asChild className="text-sm text-muted-foreground">
+                                        <Link href="/community-dashboard/my-submissions">
+                                            Check my submissions <ArrowRight className="ml-1 h-4 w-4" />
+                                        </Link>
+                                    </Button>
+                                </div>
                             </div>
                         </header>
 
@@ -292,4 +303,5 @@ export default function CommunityDashboardPage() {
     )
 }
 
+    
     
