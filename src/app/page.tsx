@@ -17,6 +17,8 @@ import { TwoPathsSection } from '@/components/two-paths-section';
 import { MagneticButton } from '@/components/magnetic-button';
 import { HoverBorderGradient } from '@/components/ui/hover-border-gradient';
 import AnimatedRoundedButton from '@/components/ui/animated-rounded-button';
+import { motion } from 'framer-motion';
+import { FooterCurve } from '@/components/footer-curve';
 
 const features = [
     {
@@ -175,6 +177,7 @@ export default function Home() {
                             </div>
                         </div>
                     </section>
+                    <FooterCurve />
                 </div>
             </main>
             <ScrollToTopButton />

@@ -13,7 +13,7 @@ interface AnimatedRoundedButtonProps extends React.HTMLAttributes<HTMLDivElement
 
 export default function AnimatedRoundedButton({
   children,
-  backgroundColor = "#9400D3", // Default to primary theme color
+  backgroundColor = "hsl(var(--primary))", // Default to primary theme color
   className,
   ...attributes
 }: AnimatedRoundedButtonProps) {
@@ -54,7 +54,7 @@ export default function AnimatedRoundedButton({
       <div
         ref={circle}
         style={{ backgroundColor }}
-        className="absolute top-full h-[150%] w-full rounded-full"
+        className="absolute top-full h-[150%] w-full rounded-[300%]"
       ></div>
     </div>
   );
