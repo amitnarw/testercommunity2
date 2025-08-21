@@ -4,9 +4,9 @@
 import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { ListFilter, ArrowUpDown, PlusCircle, ArrowRight, Star } from 'lucide-react';
+import { ListFilter, ArrowUpDown, PlusCircle, ArrowRight, Star, Users, FileCheck, PlaySquare, Check, Activity } from 'lucide-react';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
-import { communityApps } from '@/lib/data';
+import { communityApps, projects as allProjects } from '@/lib/data';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { CommunityAvailableAppCard } from '@/components/community-available-app-card';
 import { CommunityOngoingAppCard } from '@/components/community-ongoing-app-card';
@@ -16,6 +16,20 @@ import Link from 'next/link';
 
 
 const APPS_PER_PAGE = 6;
+
+const BentoCard = ({ children, className }: { children: React.ReactNode, className?: string }) => (
+    <Card className={`rounded-2xl p-6 flex flex-col justify-between items-start bg-card group hover:bg-secondary transition-colors ${className}`}>
+        {children}
+    </Card>
+);
+
+const BentoLinkCard = ({ children, className, href }: { children: React.ReactNode, className?: string, href: string }) => (
+    <Link href={href} className={`block rounded-2xl bg-card group hover:bg-secondary transition-colors ${className}`}>
+        <Card className="h-full p-6 flex flex-col justify-between items-start border-none bg-transparent shadow-none">
+             {children}
+        </Card>
+    </Link>
+);
 
 export default function CommunityDashboardPage() {
     const [filter, setFilter] = useState('All');
@@ -58,6 +72,11 @@ export default function CommunityDashboardPage() {
             setPagination(prev => ({ ...prev, [type]: page }));
         }
     };
+    
+    const appsSubmitted = allProjects.length;
+    const testersEngaged = allProjects.reduce((sum, p) => sum + p.testersStarted, 0);
+    const testsCompleted = allProjects.reduce((sum, p) => sum + p.testersCompleted, 0);
+
 
     return (
         <div className="bg-secondary/50 min-h-screen">
@@ -67,29 +86,68 @@ export default function CommunityDashboardPage() {
                         <h1 className="text-4xl font-bold">Community Hub</h1>
                         <p className="text-muted-foreground mt-2 max-w-xl">Test apps, earn points, and help fellow developers build better products.</p>
                     </div>
-                    <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
-                        <Card className="lg:col-span-2 rounded-2xl p-6 flex flex-col justify-center items-center text-center bg-primary text-primary-foreground">
-                             <CardTitle className="text-sm font-medium text-primary-foreground/80">Total Points</CardTitle>
-                             <div className="text-5xl font-bold flex items-center gap-2 justify-center mt-2"><Star className="w-10 h-10 text-amber-300 fill-amber-300" /> 1,250</div>
-                        </Card>
-                         <Link href="/community-dashboard/submit" className="lg:col-span-3 rounded-2xl p-6 flex flex-col justify-between items-start bg-card group hover:bg-secondary transition-colors">
+                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                        <BentoCard className="lg:col-span-2">
+                             <div>
+                                <CardTitle className="text-lg flex items-center gap-2"><Activity /> Your Apps' Performance</CardTitle>
+                                <CardDescription className="mt-1">A summary of your submitted applications.</CardDescription>
+                            </div>
+                            <div className="grid grid-cols-3 gap-4 w-full mt-4">
+                                <div className="text-center bg-secondary/50 p-3 rounded-lg">
+                                    <p className="text-2xl font-bold">{appsSubmitted}</p>
+                                    <p className="text-xs text-muted-foreground">Apps Submitted</p>
+                                </div>
+                                <div className="text-center bg-secondary/50 p-3 rounded-lg">
+                                    <p className="text-2xl font-bold">{testersEngaged}</p>
+                                    <p className="text-xs text-muted-foreground">Testers Engaged</p>
+                                </div>
+                                <div className="text-center bg-secondary/50 p-3 rounded-lg">
+                                    <p className="text-2xl font-bold">{testsCompleted}</p>
+                                    <p className="text-xs text-muted-foreground">Tests Completed</p>
+                                </div>
+                            </div>
+                        </BentoCard>
+
+                        <BentoCard>
+                             <div>
+                                <CardTitle className="text-lg flex items-center gap-2"><PlaySquare /> Tests You've Started</CardTitle>
+                            </div>
+                             <p className="text-4xl font-bold">{ongoingApps.length}</p>
+                        </BentoCard>
+
+                        <BentoCard>
+                             <div>
+                                <CardTitle className="text-lg flex items-center gap-2"><Check /> Tests You've Completed</CardTitle>
+                            </div>
+                             <p className="text-4xl font-bold">{completedApps.length}</p>
+                        </BentoCard>
+                        
+                        <BentoCard className="bg-primary text-primary-foreground">
+                            <div>
+                                <CardTitle className="text-lg flex items-center gap-2"><Star /> My Points</CardTitle>
+                            </div>
+                            <p className="text-4xl font-bold">1,250</p>
+                        </BentoCard>
+
+                        <BentoLinkCard href="/community-dashboard/submit" className="lg:col-span-2">
                             <div>
                                 <CardTitle className="text-lg">Submit a New App</CardTitle>
                                 <CardDescription className="mt-1">Have an app that needs testing? Get started here.</CardDescription>
                             </div>
-                            <Button variant="link" className="p-0 text-primary">
+                             <Button variant="link" className="p-0 text-primary">
                                 Submit Now <ArrowRight className="ml-1 h-4 w-4" />
                             </Button>
-                        </Link>
-                         <Link href="/community-dashboard/my-submissions" className="lg:col-span-5 rounded-2xl p-6 flex flex-col justify-between items-start bg-card group hover:bg-secondary transition-colors">
-                            <div>
+                        </BentoLinkCard>
+                        
+                        <BentoLinkCard href="/community-dashboard/my-submissions">
+                             <div>
                                 <CardTitle className="text-lg">My Submissions</CardTitle>
-                                <CardDescription className="mt-1">Track the progress of your submitted apps and view feedback from testers.</CardDescription>
+                                <CardDescription className="mt-1">Track the progress of your submitted apps.</CardDescription>
                             </div>
                              <Button variant="link" className="p-0 text-primary">
-                                Check My Submissions <ArrowRight className="ml-1 h-4 w-4" />
+                                View Submissions <ArrowRight className="ml-1 h-4 w-4" />
                             </Button>
-                        </Link>
+                        </BentoLinkCard>
                     </div>
                 </header>
 
