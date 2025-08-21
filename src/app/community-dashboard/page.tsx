@@ -319,5 +319,5 @@ export default function CommunityDashboardPage() {
                 </main>
             </div>
         </div>
-    
-    
+    );
+}
