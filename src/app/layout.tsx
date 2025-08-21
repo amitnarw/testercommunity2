@@ -11,6 +11,7 @@ import { Footer } from '@/components/footer';
 import { Sidebar } from '@/components/sidebar';
 import { cn } from '@/lib/utils';
 import { useState, useEffect } from 'react';
+import { CommunityNavbar } from '@/components/community-navbar';
 
 
 // This is a client component, so we can't use metadata here.
@@ -80,6 +81,9 @@ export default function RootLayout({
               "flex flex-col flex-1 transition-all duration-300",
               isCommunityDashboard && !isAuthPage && (isSidebarCollapsed ? "md:pl-24" : "md:pl-64"),
             )}>
+               {isCommunityDashboard && (
+                 <CommunityNavbar onLogout={handleLogout} />
+               )}
               <div className={cn("relative flex-1", !isCommunityDashboard ? 'z-20 bg-background' : 'z-0' )}>
                 <main className="flex-1">
                   {children}
