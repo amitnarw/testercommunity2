@@ -2,7 +2,6 @@
 'use client';
 
 import { usePathname } from 'next/navigation';
-import type { Metadata } from 'next';
 import './globals.css';
 import { Toaster } from "@/components/ui/toaster";
 import { ThemeProvider } from '@/components/theme-provider';
@@ -33,16 +32,24 @@ export default function RootLayout({
     setIsAuthenticated(authStatus);
   }, [pathname]); // Re-check on path change
 
-  const isAuthPage = pathname === '/login' || pathname === '/signup';
-  // Show special sidebar only for community dashboard pages
-  const isCommunityDashboard = isAuthenticated && pathname.startsWith('/community-dashboard');
-
   const handleLogout = () => {
     localStorage.removeItem('isAuthenticated');
     setIsAuthenticated(false);
     // Optionally redirect to home or login page
   };
   
+  const authPages = ['/login', '/signup'];
+  const dashboardPages = [
+    '/dashboard',
+    '/community-dashboard',
+    '/profile',
+    '/notifications',
+  ];
+
+  const isAuthPage = authPages.includes(pathname);
+  const isDashboardPage = isAuthenticated && dashboardPages.some(p => pathname.startsWith(p));
+
+
   return (
     <html lang="en" className="!scroll-smooth" suppressHydrationWarning>
       <head>
@@ -59,37 +66,41 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <div className="relative flex flex-col min-h-screen">
-            {isCommunityDashboard ? (
-               <Sidebar 
-                onLogout={handleLogout} 
-                isCollapsed={isSidebarCollapsed}
-                setIsCollapsed={setIsSidebarCollapsed}
-               />
+             {isDashboardPage ? (
+               <>
+                  <Sidebar 
+                    onLogout={handleLogout} 
+                    isCollapsed={isSidebarCollapsed}
+                    setIsCollapsed={setIsSidebarCollapsed}
+                  />
+                  <div className="flex-1 md:pl-20">
+                     <CommunityNavbar 
+                        onLogout={handleLogout}
+                     />
+                     <main className="flex-1">
+                        {children}
+                      </main>
+                  </div>
+               </>
             ) : (
-              !isAuthPage && <Header 
-                isAuthenticated={isAuthenticated}
-                isDashboardPage={false}
-                isMobileMenuOpen={isMobileMenuOpen} 
-                setMobileMenuOpen={setIsMobileMenuOpen}
-                isSidebarCollapsed={isSidebarCollapsed}
-                setSidebarCollapsed={setIsSidebarCollapsed}
-                onLogout={handleLogout}
-              />
-            )}
-            
-            <div className={cn("flex flex-col flex-1")}>
-              <div className="relative flex-1 z-20 bg-background">
-                {isCommunityDashboard && (
-                 <CommunityNavbar onLogout={handleLogout} />
+              <>
+                {!isAuthPage && (
+                  <Header 
+                    isAuthenticated={isAuthenticated}
+                    isDashboardPage={false}
+                    isMobileMenuOpen={isMobileMenuOpen} 
+                    setMobileMenuOpen={setIsMobileMenuOpen}
+                    isSidebarCollapsed={isSidebarCollapsed}
+                    setSidebarCollapsed={setIsSidebarCollapsed}
+                    onLogout={handleLogout}
+                  />
                 )}
                 <main className="flex-1">
                   {children}
                 </main>
-              </div>
-              {!isAuthPage && !isCommunityDashboard && (
-                 <Footer />
-              )}
-            </div>
+                {!isAuthPage && <Footer />}
+              </>
+            )}
           </div>
           <Toaster />
         </ThemeProvider>
