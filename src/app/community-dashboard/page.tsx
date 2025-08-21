@@ -13,6 +13,7 @@ import { CommunityOngoingAppCard } from '@/components/community-ongoing-app-card
 import { CommunityCompletedAppCard } from '@/components/community-completed-app-card';
 import { Pagination, PaginationContent, PaginationItem, PaginationPrevious, PaginationLink, PaginationNext } from '@/components/ui/pagination';
 import Link from 'next/link';
+import { Separator } from '@/components/ui/separator';
 
 
 const APPS_PER_PAGE = 6;
@@ -129,27 +130,29 @@ export default function CommunityDashboardPage() {
                              <p className="text-4xl font-bold">{completedApps.length}</p>
                         </BentoCard>
                         
-                        <BentoLinkCard href="/community-dashboard/my-submissions" className="lg:col-span-1">
-                             <div className="flex justify-between items-center w-full">
-                                <div>
-                                    <CardTitle className="text-lg">My Submissions</CardTitle>
-                                    <CardDescription className="mt-1">Track your app testing progress.</CardDescription>
-                                </div>
-                                <ArrowRight className="ml-1 h-4 w-4 text-muted-foreground group-hover:text-primary transition-transform group-hover:translate-x-1" />
+                        <BentoCard className="lg:col-span-1 p-0">
+                            <div className="flex flex-col h-full">
+                                <Link href="/community-dashboard/my-submissions" className="block p-6 flex-grow group hover:bg-secondary/50 rounded-t-2xl">
+                                    <div className="flex justify-between items-center w-full">
+                                        <div>
+                                            <CardTitle className="text-lg">My Submissions</CardTitle>
+                                            <CardDescription className="mt-1">Track your app testing progress.</CardDescription>
+                                        </div>
+                                        <ArrowRight className="ml-1 h-4 w-4 text-muted-foreground group-hover:text-primary transition-transform group-hover:translate-x-1" />
+                                    </div>
+                                </Link>
+                                <Separator />
+                                <Link href="/community-dashboard/submit" className="block p-6 flex-grow group hover:bg-secondary/50 rounded-b-2xl">
+                                    <div className="flex justify-between items-center w-full">
+                                        <div>
+                                            <CardTitle className="text-lg">Submit an App</CardTitle>
+                                            <CardDescription className="mt-1">Get community feedback.</CardDescription>
+                                        </div>
+                                         <ArrowRight className="ml-1 h-4 w-4 text-muted-foreground group-hover:text-primary transition-transform group-hover:translate-x-1" />
+                                    </div>
+                                </Link>
                             </div>
-                        </BentoLinkCard>
-
-                        <BentoLinkCard href="/community-dashboard/submit" className="lg:col-span-2">
-                             <div className="flex justify-between items-center w-full">
-                                <div>
-                                    <CardTitle className="text-lg">Submit a New App</CardTitle>
-                                    <CardDescription className="mt-1">Have an app that needs testing? Get started here.</CardDescription>
-                                </div>
-                                <Button variant="link" className="p-0 text-primary">
-                                    Submit Now <ArrowRight className="ml-1 h-4 w-4" />
-                                </Button>
-                            </div>
-                        </BentoLinkCard>
+                        </BentoCard>
                     </div>
                 </header>
 
@@ -316,5 +319,5 @@ export default function CommunityDashboardPage() {
                 </main>
             </div>
         </div>
-    )
-}
+    
+    
