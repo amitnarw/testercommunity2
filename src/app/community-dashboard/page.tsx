@@ -4,7 +4,7 @@
 import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { ListFilter, ArrowUpDown, PlusCircle, ArrowRight, Star, Users, FileCheck, PlaySquare, Check, Activity } from 'lucide-react';
+import { ListFilter, ArrowUpDown, PlusCircle, ArrowRight, Star, Users, FileCheck, PlaySquare, Check, Activity, CheckCircle2 } from 'lucide-react';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { communityApps, projects as allProjects } from '@/lib/data';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -124,12 +124,22 @@ export default function CommunityDashboardPage() {
 
                         <BentoCard>
                              <div>
-                                <CardTitle className="text-lg flex items-center gap-2"><Check /> Tests You've Completed</CardTitle>
+                                <CardTitle className="text-lg flex items-center gap-2"><CheckCircle2 /> Tests You've Completed</CardTitle>
                             </div>
                              <p className="text-4xl font-bold">{completedApps.length}</p>
                         </BentoCard>
+                        
+                        <BentoLinkCard href="/community-dashboard/my-submissions" className="lg:col-span-1">
+                             <div className="flex justify-between items-center w-full">
+                                <div>
+                                    <CardTitle className="text-lg">My Submissions</CardTitle>
+                                    <CardDescription className="mt-1">Track your app testing progress.</CardDescription>
+                                </div>
+                                <ArrowRight className="ml-1 h-4 w-4 text-muted-foreground group-hover:text-primary transition-transform group-hover:translate-x-1" />
+                            </div>
+                        </BentoLinkCard>
 
-                        <BentoLinkCard href="/community-dashboard/submit" className="lg:col-span-3">
+                        <BentoLinkCard href="/community-dashboard/submit" className="lg:col-span-2">
                              <div className="flex justify-between items-center w-full">
                                 <div>
                                     <CardTitle className="text-lg">Submit a New App</CardTitle>
@@ -308,3 +318,5 @@ export default function CommunityDashboardPage() {
         </div>
     )
 }
+
+    
