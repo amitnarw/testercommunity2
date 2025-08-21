@@ -77,11 +77,8 @@ export default function RootLayout({
               />
             )}
             
-            <div className={cn(
-              "flex flex-col flex-1 transition-all duration-300",
-              isCommunityDashboard && !isAuthPage && (isSidebarCollapsed ? "md:pl-24" : "md:pl-64"),
-            )}>
-              <div className={cn("relative flex-1", !isCommunityDashboard ? 'z-20 bg-background' : 'z-0' )}>
+            <div className="flex flex-col flex-1">
+              <div className="relative flex-1 z-20 bg-background">
                 {isCommunityDashboard && (
                  <CommunityNavbar onLogout={handleLogout} />
                 )}

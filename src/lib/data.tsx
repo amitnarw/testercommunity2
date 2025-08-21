@@ -243,148 +243,148 @@ export const processSteps: ProcessStep[] = [
 export const communityApps: CommunityApp[] = [
     {
         id: 1,
-        name: 'Finance Tracker',
-        icon: 'https://placehold.co/128x128.png',
-        dataAiHint: 'finance app icon',
+        name: 'Todoist',
+        icon: 'https://play-lh.googleusercontent.com/99w5-oJ4Cw_Hq3-Nb56H-sP2vY1J5K5YpAFz5aZgDtb3e6nL-CX_w4_4Y_2I5p003w=w240-h480-rw',
+        dataAiHint: 'task list icon',
         category: 'Productivity',
-        shortDescription: 'A simple way to track your income and expenses on the go.',
+        shortDescription: 'The #1 to-do list and task manager to organize your work and life.',
         points: 100,
         androidVersion: '10+',
         estimatedTime: '15-20 min',
-        playStoreUrl: '#',
+        playStoreUrl: 'https://play.google.com/store/apps/details?id=com.todoist',
         screenshots: [
-            { url: 'https://placehold.co/400x800.png', alt: 'Screenshot 1', dataAiHint: 'app screenshot' },
-            { url: 'https://placehold.co/400x800.png', alt: 'Screenshot 2', dataAiHint: 'app interface' }
+            { url: 'https://play-lh.googleusercontent.com/lca2y0fOJPf2p1mIe6ms_J7XyPOtqgL-5u1mbt5_2Ml0ikLw1D-0g0N23sC2-XWFLg=w526-h296-rw', alt: 'Todoist Screenshot 1', dataAiHint: 'task list interface' },
+            { url: 'https://play-lh.googleusercontent.com/v_g_ryH0Tsoi3mH-Bgy_nF9s0x5n4sgkE7n_03e-i9V_Kx86pG2Z-vnsyBvS-a3f2w=w526-h296-rw', alt: 'Todoist Screenshot 2', dataAiHint: 'project board' }
         ],
-        testingInstructions: 'Please focus on the new budgeting feature. Try creating a monthly budget, adding several expenses, and see if the summary view is correct. Check for any visual glitches or crashes.',
+        testingInstructions: 'Please focus on the new team collaboration feature. Try creating a project, inviting a team member, and assigning a task. Check for notification accuracy and any sync issues.',
         status: 'ongoing',
         progress: 60,
     },
     {
         id: 2,
-        name: 'Pixel Adventure',
-        icon: 'https://placehold.co/128x128.png',
-        dataAiHint: 'pixel art game',
+        name: 'Brawl Stars',
+        icon: 'https://play-lh.googleusercontent.com/algsmuhitlyCU_Y2_1l2Y3-pGg2uM8LTrE8G2aB-4C-Y00sR_Bof8omwbig3xV2Wabk=w240-h480-rw',
+        dataAiHint: 'game character icon',
         category: 'Games',
-        shortDescription: 'A retro-style platformer with challenging levels and epic boss fights.',
+        shortDescription: 'Fast-paced 3v3 multiplayer and battle royale made for mobile!',
         points: 75,
         androidVersion: '9+',
         estimatedTime: '20-30 min',
-        playStoreUrl: '#',
+        playStoreUrl: 'https://play.google.com/store/apps/details?id=com.supercell.brawlstars',
         screenshots: [
-            { url: 'https://placehold.co/800x400.png', alt: 'Screenshot 1', dataAiHint: 'gameplay screenshot' },
-            { url: 'https://placehold.co/800x400.png', alt: 'Screenshot 2', dataAiHint: 'game level' }
+            { url: 'https://play-lh.googleusercontent.com/7sL_s3G-y3xDE_d2s-n2nI_p3t0aXpW2YPTz_cKiZG9xVlM6q-Jtrw8pSC7K9s2B-3I=w526-h296-rw', alt: 'Brawl Stars Screenshot 1', dataAiHint: 'gameplay screenshot' },
+            { url: 'https://play-lh.googleusercontent.com/j-rnkkrY1Aa_eJ8v0ke_c_fcaq2NBdE3zXwPqK-9pT0e-mS8UW-c-yL-VRp7VuKkfw=w526-h296-rw', alt: 'Brawl Stars Screenshot 2', dataAiHint: 'game characters' }
         ],
-        testingInstructions: 'Play through the first three levels. We are looking for feedback on game difficulty, control responsiveness, and any performance issues on older devices.',
+        testingInstructions: 'Play the new "Gem Grab" mode. We are looking for feedback on matchmaking balance, performance during intense fights, and the new Brawler\'s abilities.',
         status: 'completed',
         completedDate: '2024-05-28',
     },
      {
         id: 3,
-        name: 'Weatherly',
-        icon: 'https://placehold.co/128x128.png',
-        dataAiHint: 'weather app icon',
-        category: 'Utilities',
-        shortDescription: 'Clean, simple, and accurate weather forecasts at your fingertips.',
+        name: 'AccuWeather',
+        icon: 'https://play-lh.googleusercontent.com/U03_StX1YhEt2Hi-gEY53nLwYt6-mRglvT5Y3j7IJCg3nEJOa2v2-s24hB3wLgq_jA=w240-h480-rw',
+        dataAiHint: 'sun cloud icon',
+        category: 'Weather',
+        shortDescription: 'Live weather radar & forecast, severe weather alerts, and more.',
         points: 50,
         androidVersion: '11+',
         estimatedTime: '5-10 min',
-        playStoreUrl: '#',
+        playStoreUrl: 'https://play.google.com/store/apps/details?id=com.accuweather.android',
         screenshots: [
-            { url: 'https://placehold.co/400x800.png', alt: 'Screenshot 1', dataAiHint: 'weather forecast' },
-            { url: 'https://placehold.co/400x800.png', alt: 'Screenshot 2', dataAiHint: 'weather details' }
+            { url: 'https://play-lh.googleusercontent.com/2Uoj6wreTtrVA7-qXweWJ5AczgQG6K0pW4tqjGj8T8gZ-5uFhnpNT2w_4n5TqOSAx_U=w526-h296-rw', alt: 'AccuWeather Screenshot 1', dataAiHint: 'weather map' },
+            { url: 'https://play-lh.googleusercontent.com/mO24j9y7dGDAXG7a2aPAn8e1B3I4iUgNVaHj-YSg2sRurG4HeqYfK1cQO-e5C46p4A=w526-h296-rw', alt: 'AccuWeather Screenshot 2', dataAiHint: 'hourly forecast' }
         ],
-        testingInstructions: 'Check the weather for your current location and at least two other cities. Please verify if the hourly forecast seems accurate and report any UI issues.',
+        testingInstructions: 'Check the "Minutecast" feature for your current location. Please verify if the precipitation forecast is accurate and report any UI issues with the radar map.',
         status: 'available',
     },
     {
         id: 4,
-        name: 'Connect Social',
-        icon: 'https://placehold.co/128x128.png',
-        dataAiHint: 'social network',
+        name: 'Reddit',
+        icon: 'https://play-lh.googleusercontent.com/J8k5q78xv4R8SmiMhOE2i38B99qQJgHjX9gH2e_S-c26w1aO3xV3T0l_DPDXJ2c=w240-h480-rw',
+        dataAiHint: 'alien robot icon',
         category: 'Social',
-        shortDescription: 'A new way to connect with friends and share your life moments.',
+        shortDescription: 'Dive into anything. News, trends, and communities on every topic.',
         points: 120,
         androidVersion: '11+',
         estimatedTime: '25-35 min',
-        playStoreUrl: '#',
+        playStoreUrl: 'https://play.google.com/store/apps/details?id=com.reddit.frontpage',
         screenshots: [
-            { url: 'https://placehold.co/400x800.png', alt: 'Screenshot 1', dataAiHint: 'social feed' },
-            { url: 'https://placehold.co/400x800.png', alt: 'Screenshot 2', dataAiHint: 'user profile' }
+            { url: 'https://play-lh.googleusercontent.com/yF-C9YjGEnv2Fw5iSTs25i2RjQeWBzT0kHw-v55K-w5-y3vJ4m8v-U-ok_i5XQ-K0Q=w526-h296-rw', alt: 'Reddit Screenshot 1', dataAiHint: 'social feed' },
+            { url: 'https://play-lh.googleusercontent.com/1-1250bGo3x2C9m8AtbrdnrW65Gz_I37Zg0ZpM1aHJW-46tY2zB3yAI5LdykGqC-Yg=w526-h296-rw', alt: 'Reddit Screenshot 2', dataAiHint: 'community page' }
         ],
-        testingInstructions: 'Test the photo upload and sharing functionality. Try adding filters and tagging friends. Report any crashes or slow performance.',
+        testingInstructions: 'Test the new video player controls. Try watching several videos, scrubbing, and changing the playback speed. Report any crashes or performance issues.',
         status: 'available',
     },
     {
         id: 5,
-        name: 'Galaxy Runner',
-        icon: 'https://placehold.co/128x128.png',
-        dataAiHint: 'space game',
+        name: 'Subway Surfers',
+        icon: 'https://play-lh.googleusercontent.com/H9jdtLqCj9Js-2f_2224omx1Z-G0qf_9M2i3k2i42bTfG2Cu2T1HAm5S-v4_eA=w240-h480-rw',
+        dataAiHint: 'boy running',
         category: 'Games',
-        shortDescription: 'An endless runner game set in the depths of space. Dodge asteroids and collect power-ups!',
+        shortDescription: 'An endless runner game. DASH as fast as you can! DODGE the oncoming trains!',
         points: 80,
         androidVersion: '8+',
         estimatedTime: '10-15 min',
-        playStoreUrl: '#',
+        playStoreUrl: 'https://play.google.com/store/apps/details?id=com.kiloo.subwaysurf',
         screenshots: [
-            { url: 'https://placehold.co/800x400.png', alt: 'Screenshot 1', dataAiHint: 'space background' },
-            { url: 'https://placehold.co/800x400.png', alt: 'Screenshot 2', dataAiHint: 'spaceship character' }
+            { url: 'https://play-lh.googleusercontent.com/Z5oHmW82IqVv24eXnCj2Yg_tTSS-eLw9sDNIy_j0fO2o-2_s-i0L2aiwBqg0gVb0J-0=w526-h296-rw', alt: 'Subway Surfers Screenshot 1', dataAiHint: 'game character running' },
+            { url: 'https://play-lh.googleusercontent.com/hYgAn5WgfzAbq_FkX2dO9s-p0nSvsKx53aJ5rT-1oXqjMUPHhJvO1s8KzdaFARvWYw=w526-h296-rw', alt: 'Subway Surfers Screenshot 2', dataAiHint: 'gameplay obstacles' }
         ],
-        testingInstructions: 'Play the game for at least 10 minutes. We are looking for feedback on the new power-ups and overall game balance.',
+        testingInstructions: 'Play the game until you can afford the new "Super Sneaker" power-up. We are looking for feedback on its price balance and overall usefulness.',
         status: 'available',
     },
     {
         id: 6,
-        name: 'TaskMaster Pro',
-        icon: 'https://placehold.co/128x128.png',
-        dataAiHint: 'to-do list',
+        name: 'Notion',
+        icon: 'https://play-lh.googleusercontent.com/9YA6bSrgj1ZNDsJ99aYqlVd-24o7jF0smV51T-I5CMEo90hG2pT0g1Ih_HwzJ-ggEg=w240-h480-rw',
+        dataAiHint: 'letter N block',
         category: 'Productivity',
-        shortDescription: 'Organize your life with the most powerful to-do list and project manager.',
+        shortDescription: 'Write, plan, and get organized. Your connected workspace for docs, wikis, and projects.',
         points: 150,
         androidVersion: '12+',
         estimatedTime: '20-25 min',
-        playStoreUrl: '#',
+        playStoreUrl: 'https://play.google.com/store/apps/details?id=notion.id',
         screenshots: [
-            { url: 'https://placehold.co/400x800.png', alt: 'Screenshot 1', dataAiHint: 'task list' },
-            { url: 'https://placehold.co/400x800.png', alt: 'Screenshot 2', dataAiHint: 'project board' }
+            { url: 'https://play-lh.googleusercontent.com/lM3Gg-l2b7yv017ye2a8uR4NfUdfmMAg7X5b5Zl-4nCGFcSsCqDqG5jHq2M0N8-9oQ=w526-h296-rw', alt: 'Notion Screenshot 1', dataAiHint: 'project document' },
+            { url: 'https://play-lh.googleusercontent.com/d9h4-S-8a1de2M-AlK28v5rQ43JymP_c0w4WRjP6T-l5VccgL-A_M7e0_XkM-4kNaSk=w526-h296-rw', alt: 'Notion Screenshot 2', dataAiHint: 'database table view' }
         ],
-        testingInstructions: 'Create a new project, add at least 5 tasks with sub-tasks, and assign due dates. Check if reminders are working correctly.',
+        testingInstructions: 'Create a new database, add at least 5 entries with different properties (text, date, select). Test the filtering and sorting functionality.',
         status: 'available',
     },
     {
         id: 7,
-        name: 'Unit Converter Ultimate',
-        icon: 'https://placehold.co/128x128.png',
-        dataAiHint: 'ruler calculator',
-        category: 'Utilities',
-        shortDescription: 'A comprehensive unit converter for all your needs, from currency to cooking.',
+        name: 'Duolingo',
+        icon: 'https://play-lh.googleusercontent.com/MmLHNN4_w_n_iwybVv5l_2n2tLg3yN6cI4z8Lg2j_X5_3eY2-0W-l_sR_S-G=w240-h480-rw',
+        dataAiHint: 'green bird cartoon',
+        category: 'Education',
+        shortDescription: 'Learn a new language with the world’s most-downloaded education app!',
         points: 40,
         androidVersion: '7+',
         estimatedTime: '5-10 min',
-        playStoreUrl: '#',
+        playStoreUrl: 'https://play.google.com/store/apps/details?id=com.duolingo',
         screenshots: [
-            { url: 'https://placehold.co/400x800.png', alt: 'Screenshot 1', dataAiHint: 'conversion screen' },
-            { url: 'https://placehold.co/400x800.png', alt: 'Screenshot 2', dataAiHint: 'currency exchange' }
+            { url: 'https://play-lh.googleusercontent.com/T0bHDE7-tLh8I-tQ0bYyegx9A5vOik_1I0X4gEtB3A_GjGNRl0i9v_NHI0S3Bcw0aw=w526-h296-rw', alt: 'Duolingo Screenshot 1', dataAiHint: 'language lesson' },
+            { url: 'https://play-lh.googleusercontent.com/gKjG1o_P24KRAwBw29AYU0i5w6lT5b-9bC-b-9xKkza8w0j_XvW53DNj7E4GEv44uQ=w526-h296-rw', alt: 'Duolingo Screenshot 2', dataAiHint: 'learning path' }
         ],
-        testingInstructions: 'Test at least 5 different unit conversions, including currency. Verify the accuracy of the conversions.',
+        testingInstructions: 'Complete one full lesson in any language. Verify that the progress is saved correctly and check for any issues with audio playback during exercises.',
         status: 'available',
     },
     {
         id: 8,
-        name: 'Karaoke King',
-        icon: 'https://placehold.co/128x128.png',
-        dataAiHint: 'microphone icon',
-        category: 'Social',
-        shortDescription: 'Sing your heart out and share your performances with the world.',
+        name: 'Spotify',
+        icon: 'https://play-lh.googleusercontent.com/cShys-AmJ93dB0SV8kE6Fl5e4MbZJp25DILYfxNQuYFobIm9SRAlSwOO7sqcUY5U64w=w240-h480-rw',
+        dataAiHint: 'green circle logo',
+        category: 'Music',
+        shortDescription: 'Listen to music, podcasts & more. Find your favorite songs.',
         points: 90,
         androidVersion: '10+',
         estimatedTime: '15-20 min',
-        playStoreUrl: '#',
+        playStoreUrl: 'https://play.google.com/store/apps/details?id=com.spotify.music',
         screenshots: [
-            { url: 'https://placehold.co/400x800.png', alt: 'Screenshot 1', dataAiHint: 'song list' },
-            { url: 'https://placehold.co/400x800.png', alt: 'Screenshot 2', dataAiHint: 'recording screen' }
+            { url: 'https://play-lh.googleusercontent.com/Iykqbus64sB6194sgGjfGwbq-n0Xis0Q4M2kEpM231i-j0B0s-p-sLFHv9XqLRXzCg=w526-h296-rw', alt: 'Spotify Screenshot 1', dataAiHint: 'now playing screen' },
+            { url: 'https://play-lh.googleusercontent.com/u_pP86nB4h0s5n1p-D43GjH5vQaKNCnKzB4flv2r2qC3Wb_93G28-Qp-w4jG_A=w526-h296-rw', alt: 'Spotify Screenshot 2', dataAiHint: 'music playlist' }
         ],
-        testingInstructions: 'Record one song and apply a voice effect. Share it to the feed and check if it plays back correctly for others.',
+        testingInstructions: 'Test the "Blend" feature with a friend. Create a new Blend playlist and check if it updates correctly after both of you listen to more music.',
         status: 'available',
     }
 ];
@@ -447,23 +447,23 @@ export const notifications: Notification[] = Array.from({ length: 25 }, (_, i) =
     switch (type) {
         case 'new_test':
             title = 'New Testing Opportunity!';
-            description = 'A new app, "PhotoSnap Editor", is available for testing in the Productivity category.';
+            description = 'A new app, "Notion", is available for testing in the Productivity category.';
             break;
         case 'feedback_received':
             title = 'You have new feedback!';
-            description = 'A tester has submitted new feedback for your project "Project Phoenix".';
+            description = 'A tester has submitted new feedback for your project "Canva".';
             break;
         case 'test_completed':
             title = 'Test Cycle Completed';
-            description = 'Congratulations! Your app "SocialConnect" has completed its 14-day test cycle.';
+            description = 'Congratulations! Your app "Figma" has completed its 14-day test cycle.';
             break;
         case 'bug_report':
             title = 'New Bug Reported';
-            description = 'A critical bug has been reported for "E-commerce Platform".';
+            description = 'A critical bug has been reported for "Slack".';
             break;
         case 'points_awarded':
             title = `You've earned ${i % 2 === 0 ? 100 : 75} points!`;
-            description = `Thanks for your feedback on "${i % 2 === 0 ? 'Finance Tracker' : 'Pixel Adventure'}". Your points have been added.`;
+            description = `Thanks for your feedback on "${i % 2 === 0 ? 'Todoist' : 'Brawl Stars'}". Your points have been added.`;
             break;
     }
 
@@ -511,17 +511,17 @@ const generateChartData = (baseBugs: number) => {
 export const projects: Project[] = [
     {
       id: 1,
-      name: "Project Phoenix",
-      packageName: "com.phoenix.app",
-      icon: "https://placehold.co/48x48.png",
-      dataAiHint: "phoenix bird",
+      name: "Canva",
+      packageName: "com.canva.editor",
+      icon: "https://play-lh.googleusercontent.com/3_f3P-6o76y_R3IMSvEAnwe0-3-U9d_AFbTJSbifHCr20NlT0vj1V-r8-aUEg2z_4A=w240-h480-rw",
+      dataAiHint: "design logo",
       status: "In Testing",
       testersStarted: 14,
       testersCompleted: 8,
       totalDays: 14,
       avgTestersPerDay: 1.2,
       startedFrom: "22 Aug 2024",
-      description: "Project Phoenix is a cutting-edge productivity app designed to streamline workflows for creative professionals. It integrates task management, asset versioning, and collaborative feedback tools into a single, intuitive interface.",
+      description: "Canva makes design and video editing amazingly simple (and fun)! Create stunning designs with your photos and videos—even if you’re not a design expert!",
       crashFreeRate: 99.8,
       feedbackBreakdown: { total: 45, critical: 3, high: 12, low: 30 },
       performanceMetrics: { avgStartupTime: "350ms", frozenFrames: "0.2%" },
@@ -541,22 +541,22 @@ export const projects: Project[] = [
           { country: "India", testers: 3, flag: "🇮🇳" },
           { country: "Germany", testers: 2, flag: "🇩🇪" },
       ],
-      feedback: generateFeedback("Project Phoenix"),
+      feedback: generateFeedback("Canva"),
       chartData: generateChartData(20)
     },
     {
       id: 2,
-      name: "SocialConnect App",
-      packageName: "com.social.connect",
-      icon: "https://placehold.co/48x48.png",
-      dataAiHint: "social media",
+      name: "Figma",
+      packageName: "com.figma.mirror",
+      icon: "https://play-lh.googleusercontent.com/y5NkHwARz7i_n1s-9X4h8gADg5y-2i24-cgJjDL1-hVIgJIL1L8m-98Yy18h-h2xUoM=w240-h480-rw",
+      dataAiHint: "geometric shapes",
       status: "In Testing",
       testersStarted: 12,
       testersCompleted: 10,
       totalDays: 10,
       avgTestersPerDay: 1.0,
       startedFrom: "15 Jul 2024",
-      description: "SocialConnect is a new-age social media platform focused on authentic connections. It features interest-based groups, event organization, and privacy-focused sharing options to help users build meaningful communities.",
+      description: "Figma is the all-in-one design platform for teams. Brainstorm, design, and build better products—from start to finish.",
       crashFreeRate: 99.9,
       feedbackBreakdown: { total: 30, critical: 1, high: 5, low: 24 },
       performanceMetrics: { avgStartupTime: "450ms", frozenFrames: "0.1%" },
@@ -576,22 +576,22 @@ export const projects: Project[] = [
           { country: "USA", testers: 3, flag: "🇺🇸" },
           { country: "Nigeria", testers: 2, flag: "🇳🇬" },
       ],
-      feedback: generateFeedback("SocialConnect"),
+      feedback: generateFeedback("Figma"),
       chartData: generateChartData(15)
     },
     {
       id: 3,
-      name: "E-commerce Platform",
-      packageName: "com.store.cart",
-      icon: "https://placehold.co/48x48.png",
-      dataAiHint: "shopping cart",
+      name: "Slack",
+      packageName: "com.Slack",
+      icon: "https://play-lh.googleusercontent.com/lV1itd-iif4I-6w0l29-03csI0QYpY9b0Kj3o3F-4z7cwsI6K20rZkOY0pIUNeAABg=w240-h480-rw",
+      dataAiHint: "colorful hash",
       status: "Completed",
       testersStarted: 20,
       testersCompleted: 20,
       totalDays: 14,
       avgTestersPerDay: 1.4,
       startedFrom: "01 Jun 2024",
-      description: "A robust and scalable e-commerce solution for small to medium-sized businesses. Features include a powerful product management system, secure payment gateway integration, and customer analytics.",
+      description: "Slack brings team communication and collaboration into one place so you can get more work done, whether you belong to a large enterprise or a small business.",
       crashFreeRate: 100,
       feedbackBreakdown: { total: 15, critical: 0, high: 2, low: 13 },
       performanceMetrics: { avgStartupTime: "250ms", frozenFrames: "0.05%" },
@@ -609,22 +609,22 @@ export const projects: Project[] = [
           { country: "Canada", testers: 7, flag: "🇨🇦" },
           { country: "Australia", testers: 5, flag: "🇦🇺" },
       ],
-      feedback: generateFeedback("E-commerce Platform"),
+      feedback: generateFeedback("Slack"),
       chartData: generateChartData(5)
     },
      {
       id: 6,
-      name: "My New Photo App",
-      packageName: "com.mynew.photoapp",
-      icon: "https://placehold.co/48x48.png",
-      dataAiHint: "camera shutter",
+      name: "Asana",
+      packageName: "com.asana.app",
+      icon: "https://play-lh.googleusercontent.com/s_2334grImpi1J5Wr1p9s-0x2w9p50kNOu5Mw0YJcsW0Y2DO5ZasifL25sB2ORWBxQ=w240-h480-rw",
+      dataAiHint: "three dots logo",
       status: "In Review",
       testersStarted: 0,
       testersCompleted: 0,
       totalDays: 0,
       avgTestersPerDay: 0,
       startedFrom: "28 Aug 2024",
-      description: "A new photo editing app with AI-powered filters and one-touch enhancements.",
+      description: "Asana is the easiest way to manage team projects and your individual tasks. From the small stuff to the big picture, Asana organizes work so you and your teams are clear on what to do, why it matters, and how to get it done.",
       reviewNotes: "Initial review in progress. Checking for policy compliance and testability.",
       crashFreeRate: 100,
       feedbackBreakdown: { total: 0, critical: 0, high: 0, low: 0 },
@@ -637,46 +637,47 @@ export const projects: Project[] = [
     },
     {
       id: 4,
-      name: "HealthTracker API",
-      packageName: "com.health.api",
-      icon: "https://placehold.co/48x48.png",
-      dataAiHint: "heartbeat chart",
+      name: "Google Wallet",
+      packageName: "com.google.android.apps.walletnfcrel",
+      icon: "https://play-lh.googleusercontent.com/PymMg-2X7d-l-N-3lofsH_bGOJ2k8Cj-hM2WJp-5K2z-MIs-2-X91wB29-o7n_EwYg=w240-h480-rw",
+      dataAiHint: "colorful wallet",
       status: "Completed",
       testersStarted: 15,
       testersCompleted: 15,
       totalDays: 14,
       avgTestersPerDay: 1.1,
       startedFrom: "10 May 2024",
-      description: "A comprehensive backend API for health and fitness applications. It provides endpoints for tracking user activity, nutrition, sleep patterns, and integrates with popular fitness wearables.",
+      description: "Google Wallet gives you fast, secure access to your everyday essentials. Tap to pay everywhere Google Pay is accepted, board a flight, go to a movie, and more - all with just your phone.",
       crashFreeRate: 99.95,
       feedbackBreakdown: { total: 22, critical: 2, high: 8, low: 12 },
-      performanceMetrics: { avgStartupTime: "N/A", frozenFrames: "N/A" },
+      performanceMetrics: { avgStartupTime: "150ms", frozenFrames: "0.01%" },
        deviceCoverage: [
-        { device: "N/A (API)", testers: 15 },
+        { device: "Google Pixel", testers: 10 },
+        { device: "Samsung Galaxy", testers: 5 },
       ],
       osCoverage: [
-        { version: "N/A (API)", testers: 15 },
+        { version: "Android 14", testers: 15 },
       ],
        topGeographies: [
           { country: "USA", testers: 10, flag: "🇺🇸" },
           { country: "Germany", testers: 5, flag: "🇩🇪" },
       ],
-      feedback: generateFeedback("HealthTracker API"),
+      feedback: generateFeedback("Google Wallet"),
       chartData: generateChartData(12)
     },
       {
       id: 5,
-      name: "IndieGame 'Starlight'",
-      packageName: "com.game.starlight",
-      icon: "https://placehold.co/48x48.png",
-      dataAiHint: "pixel art star",
+      name: "Trello",
+      packageName: "com.trello",
+      icon: "https://play-lh.googleusercontent.com/y4__fJ8K9y4l_G6LSb0s-1hsvNBb8XJ3vrf_f3i5mYp2l3gH2-Sj-cs-2KFaGq4bGA=w240-h480-rw",
+      dataAiHint: "blue squares",
       status: "Archived",
       testersStarted: 25,
       testersCompleted: 25,
       totalDays: 14,
       avgTestersPerDay: 1.8,
       startedFrom: "05 Apr 2024",
-      description: "Starlight is a 2D pixel-art adventure game with a rich story and challenging puzzles. Players explore a mysterious world, uncover ancient secrets, and battle powerful foes.",
+      description: "Trello is the visual tool that empowers your team to manage any type of project, workflow, or task tracking. Add files, checklists, or even automation: Customize it all for how your team works best.",
       crashFreeRate: 98.5,
       feedbackBreakdown: { total: 88, critical: 15, high: 40, low: 33 },
       performanceMetrics: { avgStartupTime: "600ms", frozenFrames: "1.5%" },
@@ -696,7 +697,7 @@ export const projects: Project[] = [
           { country: "Japan", testers: 7, flag: "🇯🇵" },
           { country: "South Korea", testers: 5, flag: "🇰🇷" },
       ],
-      feedback: generateFeedback("Starlight"),
+      feedback: generateFeedback("Trello"),
       chartData: generateChartData(40)
     },
   ]
