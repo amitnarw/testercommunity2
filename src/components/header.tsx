@@ -6,7 +6,7 @@ import { usePathname } from 'next/navigation';
 import { InTestersLogoShortHeader } from './icons';
 import { Button } from './ui/button';
 import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetClose } from './ui/sheet';
-import { Menu, ArrowRight, Sun, Moon, User, LogOut, LayoutDashboard, LifeBuoy, X, Users2, Gift } from 'lucide-react';
+import { Menu, ArrowRight, Sun, Moon, User, LogOut, LayoutDashboard, LifeBuoy, X, Users2, Gift, ChevronDown } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useState, useEffect } from 'react';
 import { useTheme } from 'next-themes';
@@ -42,11 +42,12 @@ const UserNav = ({ onLogout }: { onLogout: () => void }) => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="ghost" className="relative h-10 w-10 rounded-full">
-          <Avatar className="h-10 w-10">
+        <Button variant="ghost" className="flex items-center gap-2 rounded-full h-10 px-2">
+          <Avatar className="h-8 w-8">
             <AvatarImage src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=400&auto=format=fit=crop" data-ai-hint="man smiling" alt="User Avatar" />
             <AvatarFallback>{demoUser.role.charAt(0).toUpperCase()}</AvatarFallback>
           </Avatar>
+          <ChevronDown className="w-4 h-4 text-muted-foreground" />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56 rounded-xl" align="end" forceMount>
