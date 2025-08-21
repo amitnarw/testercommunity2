@@ -81,10 +81,10 @@ export default function RootLayout({
               "flex flex-col flex-1 transition-all duration-300",
               isCommunityDashboard && !isAuthPage && (isSidebarCollapsed ? "md:pl-24" : "md:pl-64"),
             )}>
-               {isCommunityDashboard && (
-                 <CommunityNavbar onLogout={handleLogout} />
-               )}
               <div className={cn("relative flex-1", !isCommunityDashboard ? 'z-20 bg-background' : 'z-0' )}>
+                {isCommunityDashboard && (
+                 <CommunityNavbar onLogout={handleLogout} />
+                )}
                 <main className="flex-1">
                   {children}
                 </main>
