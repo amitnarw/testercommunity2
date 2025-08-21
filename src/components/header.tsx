@@ -5,14 +5,13 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { InTestersLogoShortHeader } from './icons';
 import { Button } from './ui/button';
-import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetClose } from './ui/sheet';
-import { Menu, ArrowRight, Sun, Moon, User, LogOut, LayoutDashboard, LifeBuoy, X, Users2, Gift, ChevronDown } from 'lucide-react';
+import { Sheet, SheetContent, SheetHeader, SheetClose, SheetTrigger } from './ui/sheet';
+import { Menu, ArrowRight, Sun, Moon, X } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useState, useEffect } from 'react';
 import { useTheme } from 'next-themes';
-import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuGroup } from './ui/dropdown-menu';
-import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar';
-import { demoUser } from '@/lib/data.tsx';
+import { UserNav } from './user-nav';
+
 
 const visitorNavItems = [
   { name: 'Home', href: '/' },
@@ -36,74 +35,6 @@ const mobileAuthenticatedNavItems = [
   { name: 'Pricing', href: '/pricing' },
   { name: 'Blog', href: '/blog' },
 ];
-
-
-const UserNav = ({ onLogout }: { onLogout: () => void }) => {
-  return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <Button variant="ghost" className="flex items-center gap-2 rounded-full h-10 px-2">
-          <Avatar className="h-8 w-8">
-            <AvatarImage src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=400&auto=format=fit=crop" data-ai-hint="man smiling" alt="User Avatar" />
-            <AvatarFallback>{demoUser.role.charAt(0).toUpperCase()}</AvatarFallback>
-          </Avatar>
-          <ChevronDown className="w-4 h-4 text-muted-foreground" />
-        </Button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-56 rounded-xl" align="end" forceMount>
-        <DropdownMenuLabel className="font-normal">
-          <div className="flex flex-col space-y-1">
-            <p className="text-sm font-medium leading-none">Demo User</p>
-            <p className="text-xs leading-none text-muted-foreground">
-              demo@inTesters.com
-            </p>
-          </div>
-        </DropdownMenuLabel>
-        <DropdownMenuSeparator />
-        <DropdownMenuGroup>
-          <Link href="/dashboard">
-            <DropdownMenuItem>
-              <LayoutDashboard className="mr-2 h-4 w-4" />
-              Developer Dashboard
-            </DropdownMenuItem>
-          </Link>
-          <Link href="/community-dashboard">
-            <DropdownMenuItem>
-              <Users2 className="mr-2 h-4 w-4" />
-              Community Hub
-            </DropdownMenuItem>
-          </Link>
-          <Link href="/profile">
-            <DropdownMenuItem>
-              <User className="mr-2 h-4 w-4" />
-              Profile
-            </DropdownMenuItem>
-          </Link>
-          <Link href="/pricing">
-            <DropdownMenuItem>
-              <Gift className="mr-2 h-4 w-4" />
-              Buy Points
-            </DropdownMenuItem>
-          </Link>
-          <Link href="/help">
-            <DropdownMenuItem>
-              <LifeBuoy className="mr-2 h-4 w-4" />
-              Support
-            </DropdownMenuItem>
-          </Link>
-        </DropdownMenuGroup>
-        <DropdownMenuSeparator />
-        <Link href="/">
-          <DropdownMenuItem onClick={onLogout}>
-            <LogOut className="mr-2 h-4 w-4" />
-            Log out
-          </DropdownMenuItem>
-        </Link>
-      </DropdownMenuContent>
-    </DropdownMenu>
-  );
-};
-
 
 interface HeaderProps {
   isAuthenticated: boolean;
@@ -205,14 +136,7 @@ export function Header({
                       <div className="flex justify-between items-center">
                         {isAuthenticated ? (
                           <div className="flex items-center gap-4">
-                            <Avatar className="h-12 w-12">
-                              <AvatarImage src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=400&auto=format=fit=crop" data-ai-hint="man smiling" alt="User Avatar" />
-                              <AvatarFallback>{demoUser.role.charAt(0).toUpperCase()}</AvatarFallback>
-                            </Avatar>
-                            <div className='flex flex-col items-start justify-start'>
-                              <p className="font-bold">Demo User</p>
-                              <p className="text-sm text-muted-foreground">demo@inTesters.com</p>
-                            </div>
+                              <UserNav onLogout={onLogout} />
                           </div>
                         ) : (
                           <div></div>
