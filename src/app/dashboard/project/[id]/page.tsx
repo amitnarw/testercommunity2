@@ -62,8 +62,8 @@ const getSeverityBadge = (severity: string) => {
     }
 };
 
-const InfoCard = ({ icon, title, children }: { icon: React.ReactNode, title: string, children: React.ReactNode }) => (
-    <Card className="rounded-xl border-border/50 bg-secondary/50">
+const InfoCard = ({ icon, title, children, className }: { icon: React.ReactNode, title: string, children: React.ReactNode, className?: string }) => (
+    <Card className={cn("rounded-xl border-border/50 bg-secondary/50", className)}>
         <CardHeader className="flex flex-row items-center gap-3 space-y-0 pb-2">
             {icon}
             <CardTitle className="text-base font-semibold">{title}</CardTitle>
@@ -90,6 +90,7 @@ const CustomTooltip = ({ active, payload }: any) => {
 export default function ProjectDetailsPage({ params }: { params: { id: string } }) {
   const [feedbackPage, setFeedbackPage] = useState(1);
   const [activeTab, setActiveTab] = useState('bug');
+  const [viewMode, setViewMode] = useState<'table' | 'list'>('table');
 
   const projectId = params.id;
   const project = projects.find(p => p.id.toString() === projectId);
@@ -99,7 +100,6 @@ export default function ProjectDetailsPage({ params }: { params: { id: string } 
   }
   
   const statusConfig = getStatusConfig(project.status);
-  const totalTesters = project.deviceCoverage.reduce((acc, dev) => acc + dev.testers, 0);
   const completionPercentage = (project.testersCompleted / project.testersStarted) * 100;
   const currentTestDay = Math.min(project.totalDays, 14);
 
@@ -174,131 +174,8 @@ export default function ProjectDetailsPage({ params }: { params: { id: string } 
                 </Card>
             </header>
 
-            <main className="w-full mx-auto grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
-                <div className="lg:col-span-2 space-y-8">
-                     <Card>
-                        <CardHeader className="flex flex-row items-center justify-between gap-4">
-                            <div>
-                                <CardTitle>Detailed Feedback Log</CardTitle>
-                                <CardDescription>All feedback submitted by testers for this project.</CardDescription>
-                            </div>
-                        </CardHeader>
-                        <CardContent>
-                            <Tabs defaultValue="bug" onValueChange={handleTabChange} className="w-full">
-                                <TabsList>
-                                    <TabsTrigger value="bug">Bugs ({project.feedback.filter(fb => fb.type === 'Bug').length})</TabsTrigger>
-                                    <TabsTrigger value="suggestion">Suggestions ({project.feedback.filter(fb => fb.type === 'Suggestion').length})</TabsTrigger>
-                                    <TabsTrigger value="praise">Praise ({project.feedback.filter(fb => fb.type === 'Praise').length})</TabsTrigger>
-                                </TabsList>
-                                <TabsContent value={activeTab} className="mt-4">
-                                     <div className="border rounded-lg overflow-hidden">
-                                        <Table>
-                                            <TableHeader>
-                                                <TableRow>
-                                                    <TableHead className="w-[120px]">Type</TableHead>
-                                                    <TableHead className="w-[120px]">Severity</TableHead>
-                                                    <TableHead>Comment</TableHead>
-                                                    <TableHead className="w-[150px]">Tester</TableHead>
-                                                </TableRow>
-                                            </TableHeader>
-                                            <TableBody>
-                                                {currentFeedback.length > 0 ? currentFeedback.map(fb => (
-                                                    <TableRow key={fb.id}>
-                                                        <TableCell className="font-medium flex items-center gap-2">
-                                                            {getFeedbackIcon(fb.type)}
-                                                            {fb.type}
-                                                        </TableCell>
-                                                        <TableCell>{getSeverityBadge(fb.severity)}</TableCell>
-                                                        <TableCell className="text-muted-foreground">{fb.comment}</TableCell>
-                                                        <TableCell>{fb.tester}</TableCell>
-                                                    </TableRow>
-                                                )) : (
-                                                    <TableRow>
-                                                        <TableCell colSpan={4} className="text-center h-24 text-muted-foreground">
-                                                            No {activeTab} feedback yet for this project.
-                                                        </TableCell>
-                                                    </TableRow>
-                                                )}
-                                            </TableBody>
-                                        </Table>
-                                    </div>
-
-                                    {totalFeedbackPages > 1 && (
-                                        <Pagination className="mt-6">
-                                            <PaginationContent>
-                                                <PaginationItem>
-                                                    <PaginationPrevious 
-                                                        href="#" 
-                                                        onClick={(e) => { e.preventDefault(); handleFeedbackPageChange(feedbackPage - 1); }}
-                                                        className={feedbackPage === 1 ? 'pointer-events-none opacity-50' : undefined}
-                                                    />
-                                                </PaginationItem>
-                                                {Array.from({ length: totalFeedbackPages }, (_, i) => i + 1).map(page => (
-                                                    <PaginationItem key={page}>
-                                                        <PaginationLink 
-                                                            href="#" 
-                                                            isActive={feedbackPage === page}
-                                                            onClick={(e) => { e.preventDefault(); handleFeedbackPageChange(page); }}
-                                                        >
-                                                            {page}
-                                                        </PaginationLink>
-                                                    </PaginationItem>
-                                                ))}
-                                                <PaginationItem>
-                                                    <PaginationNext 
-                                                        href="#" 
-                                                        onClick={(e) => { e.preventDefault(); handleFeedbackPageChange(feedbackPage + 1); }}
-                                                        className={feedbackPage === totalFeedbackPages ? 'pointer-events-none opacity-50' : undefined}
-                                                    />
-                                                </PaginationItem>
-                                            </PaginationContent>
-                                        </Pagination>
-                                    )}
-                                </TabsContent>
-                            </Tabs>
-                        </CardContent>
-                    </Card>
-
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                         <Card>
-                            <CardHeader>
-                                <CardTitle className="flex items-center gap-2"><Smartphone className="w-5 h-5"/> Device Coverage</CardTitle>
-                            </CardHeader>
-                            <CardContent className="h-[200px] w-full">
-                                <ResponsiveContainer width="100%" height="100%">
-                                    <PieChart>
-                                        <Pie data={deviceData} cx="50%" cy="50%" labelLine={false} outerRadius={80} dataKey="value">
-                                            {deviceData.map((entry, index) => (
-                                                <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                                            ))}
-                                        </Pie>
-                                        <Tooltip content={<CustomTooltip />} />
-                                    </PieChart>
-                                </ResponsiveContainer>
-                            </CardContent>
-                        </Card>
-                         <Card>
-                            <CardHeader>
-                                <CardTitle className="flex items-center gap-2"><BarChart className="w-5 h-5"/> OS Version</CardTitle>
-                            </CardHeader>
-                             <CardContent className="h-[200px] w-full">
-                                <ResponsiveContainer width="100%" height="100%">
-                                     <PieChart>
-                                        <Pie data={osData} cx="50%" cy="50%" labelLine={false} outerRadius={80} dataKey="value">
-                                            {osData.map((entry, index) => (
-                                                <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                                            ))}
-                                        </Pie>
-                                        <Tooltip content={<CustomTooltip />} />
-                                    </PieChart>
-                                </ResponsiveContainer>
-                            </CardContent>
-                        </Card>
-                    </div>
-
-                </div>
-
-                <div className="lg:col-span-1 space-y-8">
+            <main className="w-full mx-auto space-y-8">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                     <InfoCard icon={<Info className="w-5 h-5 text-primary" />} title="App Information">
                          <div className="space-y-3 text-sm">
                             <div className="flex justify-between">
@@ -337,6 +214,181 @@ export default function ProjectDetailsPage({ params }: { params: { id: string } 
                             "Please focus on the new checkout flow. We've added support for UPI payments and would like feedback on the user experience and any potential bugs during the transaction process. Also, check for stability on Android 12 devices."
                         </p>
                     </InfoCard>
+                </div>
+
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+                    <div className="lg:col-span-1 space-y-8">
+                         <Card>
+                            <CardHeader>
+                                <CardTitle className="flex items-center gap-2"><Smartphone className="w-5 h-5"/> Device Coverage</CardTitle>
+                            </CardHeader>
+                            <CardContent className="h-[200px] w-full">
+                                <ResponsiveContainer width="100%" height="100%">
+                                    <PieChart>
+                                        <Pie data={deviceData} cx="50%" cy="50%" labelLine={false} outerRadius={80} dataKey="value">
+                                            {deviceData.map((entry, index) => (
+                                                <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                                            ))}
+                                        </Pie>
+                                        <Tooltip content={<CustomTooltip />} />
+                                    </PieChart>
+                                </ResponsiveContainer>
+                            </CardContent>
+                        </Card>
+                         <Card>
+                            <CardHeader>
+                                <CardTitle className="flex items-center gap-2"><BarChart className="w-5 h-5"/> OS Version</CardTitle>
+                            </CardHeader>
+                             <CardContent className="h-[200px] w-full">
+                                <ResponsiveContainer width="100%" height="100%">
+                                     <PieChart>
+                                        <Pie data={osData} cx="50%" cy="50%" labelLine={false} outerRadius={80} dataKey="value">
+                                            {osData.map((entry, index) => (
+                                                <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                                            ))}
+                                        </Pie>
+                                        <Tooltip content={<CustomTooltip />} />
+                                    </PieChart>
+                                </ResponsiveContainer>
+                            </CardContent>
+                        </Card>
+                         <Card>
+                            <CardHeader>
+                                <CardTitle className="flex items-center gap-2"><MapPin className="w-5 h-5"/> Top Geographies</CardTitle>
+                            </CardHeader>
+                             <CardContent>
+                                <ul className="space-y-2 text-sm">
+                                    {project.topGeographies.map(geo => (
+                                        <li key={geo.country} className="flex items-center justify-between">
+                                            <span className="flex items-center gap-2">{geo.flag} {geo.country}</span>
+                                            <span className="font-mono text-muted-foreground">{geo.testers} testers</span>
+                                        </li>
+                                    ))}
+                                </ul>
+                            </CardContent>
+                        </Card>
+                    </div>
+                    <div className="lg:col-span-2">
+                        <Card>
+                            <CardHeader className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                                <div>
+                                    <CardTitle>Detailed Feedback Log</CardTitle>
+                                    <CardDescription>All feedback submitted by testers for this project.</CardDescription>
+                                </div>
+                                <div className="flex items-center gap-2">
+                                    <Button variant={viewMode === 'list' ? 'default' : 'outline'} size="icon" onClick={() => setViewMode('list')}>
+                                            <LayoutGrid className="w-4 h-4" />
+                                            <span className="sr-only">List View</span>
+                                    </Button>
+                                    <Button variant={viewMode === 'table' ? 'default' : 'outline'} size="icon" onClick={() => setViewMode('table')}>
+                                        <List className="w-4 h-4" />
+                                        <span className="sr-only">Table View</span>
+                                    </Button>
+                                </div>
+                            </CardHeader>
+                            <CardContent>
+                                <Tabs defaultValue="bug" onValueChange={handleTabChange} className="w-full">
+                                    <TabsList>
+                                        <TabsTrigger value="bug">Bugs ({project.feedback.filter(fb => fb.type === 'Bug').length})</TabsTrigger>
+                                        <TabsTrigger value="suggestion">Suggestions ({project.feedback.filter(fb => fb.type === 'Suggestion').length})</TabsTrigger>
+                                        <TabsTrigger value="praise">Praise ({project.feedback.filter(fb => fb.type === 'Praise').length})</TabsTrigger>
+                                    </TabsList>
+                                    <TabsContent value={activeTab} className="mt-4">
+                                        {viewMode === 'table' ? (
+                                            <div className="border rounded-lg overflow-hidden">
+                                                <Table>
+                                                    <TableHeader>
+                                                        <TableRow>
+                                                            <TableHead className="w-[120px]">Type</TableHead>
+                                                            <TableHead className="w-[120px]">Severity</TableHead>
+                                                            <TableHead>Comment</TableHead>
+                                                            <TableHead className="w-[150px]">Tester</TableHead>
+                                                        </TableRow>
+                                                    </TableHeader>
+                                                    <TableBody>
+                                                        {currentFeedback.length > 0 ? currentFeedback.map(fb => (
+                                                            <TableRow key={fb.id}>
+                                                                <TableCell className="font-medium flex items-center gap-2">
+                                                                    {getFeedbackIcon(fb.type)}
+                                                                    {fb.type}
+                                                                </TableCell>
+                                                                <TableCell>{getSeverityBadge(fb.severity)}</TableCell>
+                                                                <TableCell className="text-muted-foreground">{fb.comment}</TableCell>
+                                                                <TableCell>{fb.tester}</TableCell>
+                                                            </TableRow>
+                                                        )) : (
+                                                            <TableRow>
+                                                                <TableCell colSpan={4} className="text-center h-24 text-muted-foreground">
+                                                                    No {activeTab} feedback yet for this project.
+                                                                </TableCell>
+                                                            </TableRow>
+                                                        )}
+                                                    </TableBody>
+                                                </Table>
+                                            </div>
+                                        ) : (
+                                            <div className="grid grid-cols-1 gap-4">
+                                                {currentFeedback.length > 0 ? currentFeedback.map(fb => (
+                                                    <Card key={fb.id} className="p-4 space-y-3 bg-secondary/50">
+                                                        <div className="flex items-center justify-between">
+                                                            <div className="font-medium flex items-center gap-2">
+                                                                {getFeedbackIcon(fb.type)}
+                                                                {fb.type}
+                                                            </div>
+                                                            {getSeverityBadge(fb.severity)}
+                                                        </div>
+                                                        <p className="text-muted-foreground text-sm">{fb.comment}</p>
+                                                        <div className="flex items-center justify-between text-xs text-muted-foreground pt-3 border-t">
+                                                            <div>
+                                                                <span className="font-semibold text-foreground">{fb.tester}</span> / {format(new Date(fb.date), 'dd MMM yyyy')}
+                                                            </div>
+                                                            <Badge variant={fb.status === 'Resolved' || fb.status === 'Closed' ? 'secondary' : 'outline'}>{fb.status}</Badge>
+                                                        </div>
+                                                    </Card>
+                                                )) : (
+                                                    <div className="text-center h-24 flex items-center justify-center text-muted-foreground">
+                                                        No {activeTab} feedback yet.
+                                                    </div>
+                                                )}
+                                            </div>
+                                        )}
+
+                                        {totalFeedbackPages > 1 && (
+                                            <Pagination className="mt-6">
+                                                <PaginationContent>
+                                                    <PaginationItem>
+                                                        <PaginationPrevious 
+                                                            href="#" 
+                                                            onClick={(e) => { e.preventDefault(); handleFeedbackPageChange(feedbackPage - 1); }}
+                                                            className={feedbackPage === 1 ? 'pointer-events-none opacity-50' : undefined}
+                                                        />
+                                                    </PaginationItem>
+                                                    {Array.from({ length: totalFeedbackPages }, (_, i) => i + 1).map(page => (
+                                                        <PaginationItem key={page}>
+                                                            <PaginationLink 
+                                                                href="#" 
+                                                                isActive={feedbackPage === page}
+                                                                onClick={(e) => { e.preventDefault(); handleFeedbackPageChange(page); }}
+                                                            >
+                                                                {page}
+                                                            </PaginationLink>
+                                                        </PaginationItem>
+                                                    ))}
+                                                    <PaginationItem>
+                                                        <PaginationNext 
+                                                            href="#" 
+                                                            onClick={(e) => { e.preventDefault(); handleFeedbackPageChange(feedbackPage + 1); }}
+                                                            className={feedbackPage === totalFeedbackPages ? 'pointer-events-none opacity-50' : undefined}
+                                                        />
+                                                    </PaginationItem>
+                                                </PaginationContent>
+                                            </Pagination>
+                                        )}
+                                    </TabsContent>
+                                </Tabs>
+                            </CardContent>
+                        </Card>
+                    </div>
                 </div>
             </main>
         </div>
