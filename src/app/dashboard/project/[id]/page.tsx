@@ -19,7 +19,7 @@ import {
   TableRow,
 } from "@/components/ui/table"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { ResponsiveContainer, PieChart, Pie, Cell, Tooltip } from 'recharts';
+import { ResponsiveContainer, PieChart, Pie, Cell, Tooltip, Legend } from 'recharts';
 import { useState } from 'react';
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from '@/components/ui/pagination';
 import type { ProjectFeedback } from '@/lib/types';
@@ -27,6 +27,8 @@ import { cn } from '@/lib/utils';
 import { format } from 'date-fns';
 import { toast } from '@/hooks/use-toast';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { motion } from 'framer-motion';
+
 
 const FEEDBACK_PER_PAGE = 10;
 
@@ -63,15 +65,20 @@ const getSeverityBadge = (severity: string) => {
 };
 
 const InfoCard = ({ icon, title, children, className }: { icon: React.ReactNode, title: string, children: React.ReactNode, className?: string }) => (
-    <Card className={cn("rounded-xl border-border/50 bg-secondary/50", className)}>
-        <CardHeader className="flex flex-row items-center gap-3 space-y-0 pb-2">
-            {icon}
-            <CardTitle className="text-base font-semibold">{title}</CardTitle>
-        </CardHeader>
-        <CardContent>
+    <motion.div 
+        variants={{
+            hidden: { opacity: 0, y: 20 },
+            visible: { opacity: 1, y: 0 }
+        }}
+        className={cn("rounded-2xl border bg-card text-card-foreground p-6 shadow-sm", className)}>
+        <div className="flex items-center gap-3 mb-3">
+            <div className="bg-primary/10 p-2 rounded-lg text-primary">{icon}</div>
+            <h3 className="text-base font-semibold">{title}</h3>
+        </div>
+        <div>
             {children}
-        </CardContent>
-    </Card>
+        </div>
+    </motion.div>
 );
 
 const CustomTooltip = ({ active, payload }: any) => {
@@ -133,50 +140,70 @@ export default function ProjectDetailsPage({ params }: { params: { id: string } 
   const osData = project.osCoverage.map(os => ({ name: os.version, value: os.testers }));
   const deviceData = project.deviceCoverage.map(d => ({ name: d.device, value: d.testers }));
   const COLORS = ['hsl(var(--chart-1))', 'hsl(var(--chart-2))', 'hsl(var(--chart-3))', 'hsl(var(--chart-4))'];
+  
+  const pageVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+        opacity: 1,
+        transition: {
+            staggerChildren: 0.1
+        }
+    }
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: { opacity: 1, y: 0, transition: { type: 'spring', stiffness: 100 } }
+  };
+
 
   return (
-    <div className="bg-secondary/50 min-h-screen">
+    <div className="bg-secondary/30 min-h-screen">
         <div className="container px-4 md:px-6 py-12">
-            <header className="mb-8 w-full mx-auto">
-                <Button variant="ghost" asChild className="mb-4">
-                    <Link href="/dashboard"><ArrowLeft className="mr-2 h-4 w-4" /> Back to Dashboard</Link>
-                </Button>
-                 <Card className="rounded-2xl overflow-hidden shadow-lg border-border/50">
-                    <div className="p-6 bg-card flex flex-col md:flex-row items-start gap-6">
-                        <Image src={project.icon} alt={project.name} width={100} height={100} className="rounded-2xl border bg-background" data-ai-hint={project.dataAiHint} />
-                        <div className="flex-grow">
-                            <Badge variant={statusConfig.badgeVariant as any} className={cn("flex items-center gap-1.5 w-fit", statusConfig.color)}>
-                                {statusConfig.icon}
-                                {project.status}
-                            </Badge>
-                            <h1 className="text-4xl font-bold mt-2">{project.name}</h1>
-                            <p className="text-muted-foreground mt-1">{project.description}</p>
-                        </div>
-                    </div>
-                    <div className="bg-secondary/50 p-6 grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
-                        <div className="bg-background/50 rounded-lg p-3">
-                             <p className="text-4xl font-bold text-primary">{currentTestDay}</p>
-                             <p className="text-xs text-muted-foreground">Day of 14</p>
-                        </div>
-                        <div className="bg-background/50 rounded-lg p-3">
-                             <p className="text-4xl font-bold">{project.testersStarted - project.testersCompleted}</p>
-                             <p className="text-xs text-muted-foreground">Testers Active</p>
-                        </div>
-                         <div className="bg-background/50 rounded-lg p-3 col-span-2">
-                             <div className="flex justify-between items-center mb-1 px-1">
-                                <span className="text-xs text-muted-foreground">Testing Progress</span>
-                                <span className="text-sm font-bold">{project.testersCompleted} / {project.testersStarted}</span>
+            <motion.div initial="hidden" animate="visible" variants={pageVariants}>
+                <motion.div variants={itemVariants}>
+                    <Button variant="ghost" asChild className="mb-4">
+                        <Link href="/dashboard"><ArrowLeft className="mr-2 h-4 w-4" /> Back to Dashboard</Link>
+                    </Button>
+                    <Card className="rounded-2xl overflow-hidden shadow-lg border-border/50 bg-card">
+                        <div className="p-6 flex flex-col md:flex-row items-start gap-6">
+                            <Image src={project.icon} alt={project.name} width={100} height={100} className="rounded-2xl border bg-background" data-ai-hint={project.dataAiHint} />
+                            <div className="flex-grow">
+                                <Badge variant={statusConfig.badgeVariant as any} className={cn("flex items-center gap-1.5 w-fit", statusConfig.color)}>
+                                    {statusConfig.icon}
+                                    {project.status}
+                                </Badge>
+                                <h1 className="text-4xl font-bold mt-2">{project.name}</h1>
+                                <p className="text-muted-foreground mt-1">{project.description}</p>
                             </div>
-                            <Progress value={completionPercentage} />
-                            <p className="text-xs text-muted-foreground mt-1 text-right">{completionPercentage.toFixed(0)}% Complete</p>
                         </div>
-                    </div>
-                </Card>
-            </header>
+                        <div className="bg-secondary/50 p-6 grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+                            <div className="bg-background/50 rounded-lg p-3">
+                                <p className="text-4xl font-bold text-primary">{currentTestDay}</p>
+                                <p className="text-xs text-muted-foreground">Day of 14</p>
+                            </div>
+                            <div className="bg-background/50 rounded-lg p-3">
+                                <p className="text-4xl font-bold">{project.testersStarted - project.testersCompleted}</p>
+                                <p className="text-xs text-muted-foreground">Testers Active</p>
+                            </div>
+                            <div className="bg-background/50 rounded-lg p-3 col-span-2">
+                                <div className="flex justify-between items-center mb-1 px-1">
+                                    <span className="text-xs text-muted-foreground">Testing Progress</span>
+                                    <span className="text-sm font-bold">{project.testersCompleted} / {project.testersStarted}</span>
+                                </div>
+                                <Progress value={completionPercentage} />
+                                <p className="text-xs text-muted-foreground mt-1 text-right">{completionPercentage.toFixed(0)}% Complete</p>
+                            </div>
+                        </div>
+                    </Card>
+                </motion.div>
 
-            <main className="w-full mx-auto space-y-8">
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                    <InfoCard icon={<Info className="w-5 h-5 text-primary" />} title="App Information">
+                <motion.div 
+                    variants={{
+                        visible: { transition: { staggerChildren: 0.15 } }
+                    }}
+                    className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-8">
+                    <InfoCard icon={<Info className="w-5 h-5" />} title="App Information">
                          <div className="space-y-3 text-sm">
                             <div className="flex justify-between">
                                 <span className="text-muted-foreground">Package Name</span>
@@ -197,7 +224,7 @@ export default function ProjectDetailsPage({ params }: { params: { id: string } 
                             </div>
                         </div>
                     </InfoCard>
-                    <InfoCard icon={<User className="w-5 h-5 text-primary" />} title="Developer Information">
+                    <InfoCard icon={<User className="w-5 h-5" />} title="Developer Information">
                          <div className="flex items-center gap-4">
                             <Avatar className="h-12 w-12">
                                 <AvatarImage src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=400&auto=format=fit=crop" data-ai-hint="man smiling" />
@@ -209,16 +236,16 @@ export default function ProjectDetailsPage({ params }: { params: { id: string } 
                             </div>
                         </div>
                     </InfoCard>
-                     <InfoCard icon={<ClipboardList className="w-5 h-5 text-primary" />} title="Instructions for Testers">
+                     <InfoCard icon={<ClipboardList className="w-5 h-5" />} title="Instructions for Testers">
                         <p className="text-sm text-muted-foreground italic">
                             "Please focus on the new checkout flow. We've added support for UPI payments and would like feedback on the user experience and any potential bugs during the transaction process. Also, check for stability on Android 12 devices."
                         </p>
                     </InfoCard>
-                </div>
+                </motion.div>
 
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
-                    <div className="lg:col-span-2">
-                        <Card>
+                <main className="w-full mx-auto mt-8 grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+                    <motion.div variants={itemVariants} className="lg:col-span-2">
+                        <Card className="bg-card">
                             <CardHeader className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                                 <div>
                                     <CardTitle>Detailed Feedback Log</CardTitle>
@@ -278,7 +305,7 @@ export default function ProjectDetailsPage({ params }: { params: { id: string } 
                                         ) : (
                                             <div className="grid grid-cols-1 gap-4">
                                                 {currentFeedback.length > 0 ? currentFeedback.map(fb => (
-                                                    <Card key={fb.id} className="p-4 space-y-3 bg-secondary/50">
+                                                    <Card key={fb.id} className="p-4 space-y-3 bg-secondary/50 hover:shadow-md transition-shadow">
                                                         <div className="flex items-center justify-between">
                                                             <div className="font-medium flex items-center gap-2">
                                                                 {getFeedbackIcon(fb.type)}
@@ -337,48 +364,50 @@ export default function ProjectDetailsPage({ params }: { params: { id: string } 
                                 </Tabs>
                             </CardContent>
                         </Card>
-                    </div>
-                     <div className="lg:col-span-1 space-y-8">
+                    </motion.div>
+                     <motion.div variants={itemVariants} className="lg:col-span-1 space-y-8">
                          <Card>
                             <CardHeader>
-                                <CardTitle className="flex items-center gap-2"><Smartphone className="w-5 h-5"/> Device Coverage</CardTitle>
+                                <CardTitle className="flex items-center gap-2"><Smartphone className="w-5 h-5 text-primary"/> Device Coverage</CardTitle>
                             </CardHeader>
-                            <CardContent className="h-[200px] w-full">
+                            <CardContent className="h-[250px] w-full">
                                 <ResponsiveContainer width="100%" height="100%">
                                     <PieChart>
-                                        <Pie data={deviceData} cx="50%" cy="50%" labelLine={false} outerRadius={80} dataKey="value">
+                                        <Pie data={deviceData} cx="50%" cy="50%" labelLine={false} innerRadius={60} outerRadius={80} dataKey="value" paddingAngle={5}>
                                             {deviceData.map((entry, index) => (
                                                 <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                                             ))}
                                         </Pie>
                                         <Tooltip content={<CustomTooltip />} />
+                                        <Legend iconType="circle" />
                                     </PieChart>
                                 </ResponsiveContainer>
                             </CardContent>
                         </Card>
                          <Card>
                             <CardHeader>
-                                <CardTitle className="flex items-center gap-2"><BarChart className="w-5 h-5"/> OS Version</CardTitle>
+                                <CardTitle className="flex items-center gap-2"><BarChart className="w-5 h-5 text-primary"/> OS Version</CardTitle>
                             </CardHeader>
-                             <CardContent className="h-[200px] w-full">
+                             <CardContent className="h-[250px] w-full">
                                 <ResponsiveContainer width="100%" height="100%">
                                      <PieChart>
-                                        <Pie data={osData} cx="50%" cy="50%" labelLine={false} outerRadius={80} dataKey="value">
+                                        <Pie data={osData} cx="50%" cy="50%" labelLine={false} innerRadius={60} outerRadius={80} dataKey="value" paddingAngle={5}>
                                             {osData.map((entry, index) => (
                                                 <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                                             ))}
                                         </Pie>
                                         <Tooltip content={<CustomTooltip />} />
+                                        <Legend iconType="circle" />
                                     </PieChart>
                                 </ResponsiveContainer>
                             </CardContent>
                         </Card>
                          <Card>
                             <CardHeader>
-                                <CardTitle className="flex items-center gap-2"><MapPin className="w-5 h-5"/> Top Geographies</CardTitle>
+                                <CardTitle className="flex items-center gap-2"><MapPin className="w-5 h-5 text-primary"/> Top Geographies</CardTitle>
                             </CardHeader>
                              <CardContent>
-                                <ul className="space-y-2 text-sm">
+                                <ul className="space-y-3 text-sm">
                                     {project.topGeographies.map(geo => (
                                         <li key={geo.country} className="flex items-center justify-between">
                                             <span className="flex items-center gap-2">{geo.flag} {geo.country}</span>
@@ -388,9 +417,9 @@ export default function ProjectDetailsPage({ params }: { params: { id: string } 
                                 </ul>
                             </CardContent>
                         </Card>
-                    </div>
-                </div>
-            </main>
+                    </motion.div>
+                </main>
+            </motion.div>
         </div>
     </div>
   );
