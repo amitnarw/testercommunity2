@@ -10,6 +10,7 @@ import { Footer } from '@/components/footer';
 import { Sidebar } from '@/components/sidebar';
 import { useState, useEffect } from 'react';
 import { CommunityNavbar } from '@/components/community-navbar';
+import { DashboardFooter } from '@/components/dashboard-footer';
 
 export default function RootLayout({
   children,
@@ -62,21 +63,22 @@ export default function RootLayout({
         >
           <div className="relative flex flex-col min-h-screen">
              {isDashboardPage ? (
-               <>
+               <div className="flex flex-1">
                   <Sidebar 
                     onLogout={handleLogout} 
                     isCollapsed={isSidebarCollapsed}
                     setIsCollapsed={setIsSidebarCollapsed}
                   />
-                  <div className="flex-1 md:pl-20">
+                  <div className="flex flex-col flex-1 md:pl-20">
                      <CommunityNavbar 
                         onLogout={handleLogout}
                      />
                      <main className="flex-1">
                         {children}
                       </main>
+                      <DashboardFooter />
                   </div>
-               </>
+               </div>
             ) : (
               <>
                 {!isAuthPage && (
