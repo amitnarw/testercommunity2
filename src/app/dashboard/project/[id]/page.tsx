@@ -96,8 +96,8 @@ export default function ProjectDetailsPage({ params }: { params: { id: string } 
 
   return (
     <div className="bg-secondary/50 min-h-screen">
-        <div className="container mx-auto px-4 md:px-6 py-12">
-            <header className="mb-8 max-w-7xl mx-auto">
+        <div className="container px-4 md:px-6">
+            <header className="mb-8 w-full mx-auto">
                 <Button variant="ghost" asChild className="mb-4">
                     <Link href="/dashboard"><ArrowLeft className="mr-2 h-4 w-4" /> Back to Dashboard</Link>
                 </Button>
@@ -117,7 +117,7 @@ export default function ProjectDetailsPage({ params }: { params: { id: string } 
                 </div>
             </header>
 
-            <main className="max-w-7xl mx-auto space-y-8">
+            <main className="w-full mx-auto space-y-8">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                      <Card>
                         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
