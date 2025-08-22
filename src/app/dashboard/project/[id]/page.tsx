@@ -165,37 +165,27 @@ export default function ProjectDetailsPage({ params }: { params: { id: string } 
                     <Button variant="ghost" asChild className="mb-4">
                         <Link href="/dashboard"><ArrowLeft className="mr-2 h-4 w-4" /> Back to Dashboard</Link>
                     </Button>
-                    <Card className="rounded-2xl overflow-hidden shadow-lg border-border/50 bg-card">
-                        <div className="p-6 flex flex-col md:flex-row items-start gap-6">
-                            <Image src={project.icon} alt={project.name} width={100} height={100} className="rounded-2xl border bg-background" data-ai-hint={project.dataAiHint} />
-                            <div className="flex-grow">
-                                <Badge variant={statusConfig.badgeVariant as any} className={cn("flex items-center gap-1.5 w-fit", statusConfig.color)}>
-                                    {statusConfig.icon}
-                                    {project.status}
-                                </Badge>
-                                <h1 className="text-4xl font-bold mt-2">{project.name}</h1>
-                                <p className="text-muted-foreground mt-1">{project.description}</p>
-                            </div>
+                    <div className="rounded-2xl overflow-hidden shadow-lg border-border/50 bg-card p-6 flex flex-col md:flex-row items-start gap-6">
+                        <Image src={project.icon} alt={project.name} width={100} height={100} className="rounded-2xl border bg-background" data-ai-hint={project.dataAiHint} />
+                        <div className="flex-grow">
+                            <Badge variant={statusConfig.badgeVariant as any} className={cn("flex items-center gap-1.5 w-fit", statusConfig.color)}>
+                                {statusConfig.icon}
+                                {project.status}
+                            </Badge>
+                            <h1 className="text-4xl font-bold mt-2">{project.name}</h1>
+                            <p className="text-muted-foreground mt-1">{project.description}</p>
                         </div>
-                        <div className="bg-secondary/50 p-6 grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
-                            <div className="bg-background/50 rounded-lg p-3">
+                        <div className='flex flex-row gap-5'>
+                            <div className="text-center">
                                 <p className="text-4xl font-bold text-primary">{currentTestDay}</p>
                                 <p className="text-xs text-muted-foreground">Day of 14</p>
                             </div>
-                            <div className="bg-background/50 rounded-lg p-3">
+                            <div className="text-center">
                                 <p className="text-4xl font-bold">{project.testersStarted - project.testersCompleted}</p>
                                 <p className="text-xs text-muted-foreground">Testers Active</p>
                             </div>
-                            <div className="bg-background/50 rounded-lg p-3 col-span-2">
-                                <div className="flex justify-between items-center mb-1 px-1">
-                                    <span className="text-xs text-muted-foreground">Testing Progress</span>
-                                    <span className="text-sm font-bold">{project.testersCompleted} / {project.testersStarted}</span>
-                                </div>
-                                <Progress value={completionPercentage} />
-                                <p className="text-xs text-muted-foreground mt-1 text-right">{completionPercentage.toFixed(0)}% Complete</p>
-                            </div>
                         </div>
-                    </Card>
+                    </div>
                 </motion.div>
 
                 <motion.div 
