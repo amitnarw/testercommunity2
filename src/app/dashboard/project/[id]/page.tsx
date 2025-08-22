@@ -26,6 +26,7 @@ import type { ProjectFeedback } from '@/lib/types';
 import { cn } from '@/lib/utils';
 import { format } from 'date-fns';
 import { toast } from '@/hooks/use-toast';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
 const FEEDBACK_PER_PAGE = 5;
 
@@ -90,7 +91,8 @@ export default function ProjectDetailsPage({ params }: { params: { id: string } 
   const [feedbackPage, setFeedbackPage] = useState(1);
   const [activeTab, setActiveTab] = useState('bug');
 
-  const project = projects.find(p => p.id.toString() === params.id);
+  const projectId = params.id;
+  const project = projects.find(p => p.id.toString() === projectId);
 
   if (!project) {
     notFound();
@@ -339,6 +341,5 @@ export default function ProjectDetailsPage({ params }: { params: { id: string } 
             </main>
         </div>
     </div>
-  )
-
+  
     
