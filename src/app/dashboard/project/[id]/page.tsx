@@ -28,7 +28,7 @@ import { format } from 'date-fns';
 import { toast } from '@/hooks/use-toast';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 
-const FEEDBACK_PER_PAGE = 5;
+const FEEDBACK_PER_PAGE = 10;
 
 const getStatusConfig = (status: string) => {
     switch (status) {
@@ -217,57 +217,6 @@ export default function ProjectDetailsPage({ params }: { params: { id: string } 
                 </div>
 
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
-                    <div className="lg:col-span-1 space-y-8">
-                         <Card>
-                            <CardHeader>
-                                <CardTitle className="flex items-center gap-2"><Smartphone className="w-5 h-5"/> Device Coverage</CardTitle>
-                            </CardHeader>
-                            <CardContent className="h-[200px] w-full">
-                                <ResponsiveContainer width="100%" height="100%">
-                                    <PieChart>
-                                        <Pie data={deviceData} cx="50%" cy="50%" labelLine={false} outerRadius={80} dataKey="value">
-                                            {deviceData.map((entry, index) => (
-                                                <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                                            ))}
-                                        </Pie>
-                                        <Tooltip content={<CustomTooltip />} />
-                                    </PieChart>
-                                </ResponsiveContainer>
-                            </CardContent>
-                        </Card>
-                         <Card>
-                            <CardHeader>
-                                <CardTitle className="flex items-center gap-2"><BarChart className="w-5 h-5"/> OS Version</CardTitle>
-                            </CardHeader>
-                             <CardContent className="h-[200px] w-full">
-                                <ResponsiveContainer width="100%" height="100%">
-                                     <PieChart>
-                                        <Pie data={osData} cx="50%" cy="50%" labelLine={false} outerRadius={80} dataKey="value">
-                                            {osData.map((entry, index) => (
-                                                <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                                            ))}
-                                        </Pie>
-                                        <Tooltip content={<CustomTooltip />} />
-                                    </PieChart>
-                                </ResponsiveContainer>
-                            </CardContent>
-                        </Card>
-                         <Card>
-                            <CardHeader>
-                                <CardTitle className="flex items-center gap-2"><MapPin className="w-5 h-5"/> Top Geographies</CardTitle>
-                            </CardHeader>
-                             <CardContent>
-                                <ul className="space-y-2 text-sm">
-                                    {project.topGeographies.map(geo => (
-                                        <li key={geo.country} className="flex items-center justify-between">
-                                            <span className="flex items-center gap-2">{geo.flag} {geo.country}</span>
-                                            <span className="font-mono text-muted-foreground">{geo.testers} testers</span>
-                                        </li>
-                                    ))}
-                                </ul>
-                            </CardContent>
-                        </Card>
-                    </div>
                     <div className="lg:col-span-2">
                         <Card>
                             <CardHeader className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
@@ -386,6 +335,57 @@ export default function ProjectDetailsPage({ params }: { params: { id: string } 
                                         )}
                                     </TabsContent>
                                 </Tabs>
+                            </CardContent>
+                        </Card>
+                    </div>
+                     <div className="lg:col-span-1 space-y-8">
+                         <Card>
+                            <CardHeader>
+                                <CardTitle className="flex items-center gap-2"><Smartphone className="w-5 h-5"/> Device Coverage</CardTitle>
+                            </CardHeader>
+                            <CardContent className="h-[200px] w-full">
+                                <ResponsiveContainer width="100%" height="100%">
+                                    <PieChart>
+                                        <Pie data={deviceData} cx="50%" cy="50%" labelLine={false} outerRadius={80} dataKey="value">
+                                            {deviceData.map((entry, index) => (
+                                                <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                                            ))}
+                                        </Pie>
+                                        <Tooltip content={<CustomTooltip />} />
+                                    </PieChart>
+                                </ResponsiveContainer>
+                            </CardContent>
+                        </Card>
+                         <Card>
+                            <CardHeader>
+                                <CardTitle className="flex items-center gap-2"><BarChart className="w-5 h-5"/> OS Version</CardTitle>
+                            </CardHeader>
+                             <CardContent className="h-[200px] w-full">
+                                <ResponsiveContainer width="100%" height="100%">
+                                     <PieChart>
+                                        <Pie data={osData} cx="50%" cy="50%" labelLine={false} outerRadius={80} dataKey="value">
+                                            {osData.map((entry, index) => (
+                                                <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                                            ))}
+                                        </Pie>
+                                        <Tooltip content={<CustomTooltip />} />
+                                    </PieChart>
+                                </ResponsiveContainer>
+                            </CardContent>
+                        </Card>
+                         <Card>
+                            <CardHeader>
+                                <CardTitle className="flex items-center gap-2"><MapPin className="w-5 h-5"/> Top Geographies</CardTitle>
+                            </CardHeader>
+                             <CardContent>
+                                <ul className="space-y-2 text-sm">
+                                    {project.topGeographies.map(geo => (
+                                        <li key={geo.country} className="flex items-center justify-between">
+                                            <span className="flex items-center gap-2">{geo.flag} {geo.country}</span>
+                                            <span className="font-mono text-muted-foreground">{geo.testers} testers</span>
+                                        </li>
+                                    ))}
+                                </ul>
                             </CardContent>
                         </Card>
                     </div>
