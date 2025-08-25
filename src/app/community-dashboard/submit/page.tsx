@@ -124,12 +124,12 @@ export default function SubmitAppPage() {
                  <div className="container mx-auto px-4 md:px-6">
                      <div className="flex items-center justify-between h-20">
                         <div className="flex items-center gap-4">
-                            <Button variant="outline" size="sm" asChild className="mb-4">
+                            <Button variant="outline" size="sm" asChild>
                                 <Link href="/community-dashboard"><ArrowLeft className="mr-2 h-4 w-4" /> Back to Hub</Link>
                             </Button>
                             <div>
                                 <h1 className="text-xl font-bold">Submit Your App</h1>
-                                <p className="text-sm text-muted-foreground">Follow the launch sequence to get your app tested.</p>
+                                <p className="text-sm text-muted-foreground hidden sm:block">Follow the launch sequence to get your app tested.</p>
                             </div>
                         </div>
                         <div className="flex items-center gap-3">
@@ -143,6 +143,27 @@ export default function SubmitAppPage() {
                             </Button>
                         </div>
                      </div>
+                      {/* Mobile Step Navigator */}
+                    <nav className="lg:hidden flex items-center justify-around border-t">
+                        {formSteps.map((step) => (
+                            <a 
+                                key={`mobile-${step.id}`} 
+                                href={`#${step.id}`}
+                                className={cn(
+                                    "flex-1 text-center p-3 text-sm font-medium transition-all text-muted-foreground relative",
+                                    activeStep === step.id && "text-primary"
+                                )}
+                            >
+                                {step.title}
+                                {activeStep === step.id && (
+                                    <motion.div 
+                                        className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary"
+                                        layoutId="mobile-active-step-indicator"
+                                    />
+                                )}
+                            </a>
+                        ))}
+                    </nav>
                  </div>
             </header>
             
