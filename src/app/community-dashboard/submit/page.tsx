@@ -34,21 +34,21 @@ type SubmissionFormData = z.infer<typeof submissionSchema>;
 const formSteps = [
     { 
         id: 'connect',
-        title: 'Connect Your App',
+        title: 'Connect',
         icon: <LinkIcon className="w-5 h-5" />,
         fields: ['appName', 'appLink'],
         description: 'First, provide a link to your app on the Google Play Console internal testing track. This allows our testers to securely download it.'
     },
     { 
         id: 'describe',
-        title: 'Describe Your Project',
+        title: 'Describe',
         icon: <FileText className="w-5 h-5" />,
         fields: ['category', 'appDesc'],
         description: 'Tell us about your app and what you want testers to focus on. The more detail, the better the feedback.'
     },
     { 
         id: 'configure',
-        title: 'Configure Your Test',
+        title: 'Configure',
         icon: <Settings className="w-5 h-5" />,
         fields: ['androidVersion', 'testers'],
         description: 'Finally, set the technical parameters for your test run to ensure we target the right devices.'
@@ -120,8 +120,8 @@ export default function SubmitAppPage() {
 
     return (
         <div className="bg-background min-h-screen">
-            <header className="sticky top-0 z-40 bg-background/80 backdrop-blur-lg border-b">
-                 <div className="container mx-auto px-4 md:px-6">
+            <div className="sticky top-0 z-40 bg-background/80 backdrop-blur-lg border-b">
+                <header className="container mx-auto px-4 md:px-6">
                      <div className="flex items-center justify-between h-20">
                         <div className="flex items-center gap-4">
                             <Button variant="outline" size="sm" asChild>
@@ -143,29 +143,30 @@ export default function SubmitAppPage() {
                             </Button>
                         </div>
                      </div>
-                      {/* Mobile Step Navigator */}
-                    <nav className="lg:hidden flex items-center justify-around border-t">
-                        {formSteps.map((step) => (
-                            <a 
-                                key={`mobile-${step.id}`} 
-                                href={`#${step.id}`}
-                                className={cn(
-                                    "flex-1 text-center p-3 text-sm font-medium transition-all text-muted-foreground relative",
-                                    activeStep === step.id && "text-primary"
-                                )}
-                            >
-                                {step.title}
-                                {activeStep === step.id && (
-                                    <motion.div 
-                                        className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary"
-                                        layoutId="mobile-active-step-indicator"
-                                    />
-                                )}
-                            </a>
-                        ))}
-                    </nav>
-                 </div>
-            </header>
+                </header>
+                 {/* Mobile Step Navigator */}
+                <nav className="lg:hidden sticky top-20 z-30 flex items-center justify-around border-b bg-background/80 backdrop-blur-lg">
+                    {formSteps.map((step) => (
+                        <a 
+                            key={`mobile-${step.id}`} 
+                            href={`#${step.id}`}
+                            className={cn(
+                                "flex-1 flex items-center justify-center gap-2 text-center p-3 text-sm font-medium transition-all text-muted-foreground relative",
+                                activeStep === step.id && "text-primary"
+                            )}
+                        >
+                            {step.icon}
+                            {step.title}
+                            {activeStep === step.id && (
+                                <motion.div 
+                                    className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary"
+                                    layoutId="mobile-active-step-indicator"
+                                />
+                            )}
+                        </a>
+                    ))}
+                </nav>
+            </div>
             
             <div className="container mx-auto px-4 md:px-6 py-12">
                 <div className="lg:grid lg:grid-cols-12 lg:gap-16">
