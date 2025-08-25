@@ -66,6 +66,7 @@ const SheetContent = React.forwardRef<
       {...props}
     >
       {children}
+       <SheetPrimitive.Title className="sr-only">Sheet</SheetPrimitive.Title>
     </SheetPrimitive.Content>
   </SheetPortal>
 ))

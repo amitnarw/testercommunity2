@@ -98,7 +98,7 @@ export default function HowItWorksPage() {
                     <div className="inline-block bg-primary/10 text-primary p-4 rounded-full mb-4">
                         <Users className="w-10 h-10" />
                     </div>
-                    <h2 className="text-3xl md:text-5xl font-bold">The Community Path</h2>
+                    <h2 className="text-3xl md:text-5xl font-bold font-heading">The Community Path</h2>
                     <p className="mt-4 text-muted-foreground text-lg">Test apps, earn points, and get your app tested by a diverse global community. It's the free, reciprocal way to ensure quality.</p>
                 </div>
             </section>
@@ -110,7 +110,7 @@ export default function HowItWorksPage() {
                      <div className="inline-block bg-primary/10 text-primary p-4 rounded-full mb-4">
                         <Briefcase className="w-10 h-10" />
                     </div>
-                    <h2 className="text-3xl md:text-5xl font-bold">The Professional Path</h2>
+                    <h2 className="text-3xl md:text-5xl font-bold font-heading">The Professional Path</h2>
                     <p className="mt-4 text-muted-foreground text-lg">
                         For when you need guaranteed, managed, and expert results. Purchase points and let our team of vetted professionals handle the entire testing process.
                     </p>
@@ -141,7 +141,7 @@ export default function HowItWorksPage() {
                     }} />
                 </div>
                 <Rocket className="w-16 h-16 text-primary mb-4" />
-                <h2 className="text-4xl md:text-6xl font-bold">You've Reached the <span className="bg-gradient-to-br from-primary to-accent bg-clip-text text-transparent">Launchpad</span></h2>
+                <h2 className="text-4xl md:text-6xl font-bold font-heading">You've Reached the <span className="bg-gradient-to-br from-primary to-accent bg-clip-text text-transparent">Launchpad</span></h2>
                 <p className="mt-6 max-w-2xl mx-auto text-muted-foreground text-xl">
                     Your journey to a flawless app starts now. Choose your path and launch with the confidence of knowing your app is truly ready for the world.
                 </p>

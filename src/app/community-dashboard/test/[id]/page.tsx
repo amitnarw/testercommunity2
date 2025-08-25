@@ -13,8 +13,6 @@ import { Textarea } from '@/components/ui/textarea';
 import { Checkbox } from '@/components/ui/checkbox';
 import { ArrowLeft, Star, Upload, ExternalLink } from 'lucide-react';
 import { communityApps } from '@/lib/data';
-import { Separator } from '@/components/ui/separator';
-import { PointsSidebar } from '@/components/points-sidebar';
 
 export default function AppTestingPage({ params }: { params: { id: string } }) {
     const [isTesting, setIsTesting] = useState(false);
@@ -132,9 +130,6 @@ export default function AppTestingPage({ params }: { params: { id: string } }) {
                                 </Card>
                             </div>
                         </div>
-                    </div>
-                    <div className="lg:col-span-1 mt-8 lg:mt-0">
-                         <PointsSidebar />
                     </div>
                 </div>
             </div>

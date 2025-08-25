@@ -15,6 +15,36 @@ export function SiteLogo({className}: {className?: string}) {
     )
 }
 
+export function InTestersLogoShortHeader(props: SVGProps<SVGSVGElement>) {
+  return (
+    <svg 
+      viewBox="0 0 45 45"
+      aria-hidden="true"
+      suppressHydrationWarning
+      {...props}
+    >
+      <defs>
+        <linearGradient id="logo-gradient-short-text" x1="0%" y1="50%" x2="100%" y2="50%">
+          <stop offset="0%" style={{ stopColor: 'hsl(var(--primary))' }} />
+          <stop offset="100%" style={{ stopColor: 'hsl(var(--accent))' }} />
+        </linearGradient>
+      </defs>
+       <text
+        fontFamily="Plus Jakarta Sans, sans-serif"
+        fontSize="32"
+        fontWeight="bold"
+        fill="url(#logo-gradient-short-text)"
+        x="50%"
+        y="50%"
+        dominantBaseline="central"
+        textAnchor="middle"
+        suppressHydrationWarning
+      >
+        iT
+      </text>
+    </svg>
+  );
+}
 
 export function InTestersLogo(props: SVGProps<SVGSVGElement>) {
   return (
