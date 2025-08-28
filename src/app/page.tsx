@@ -42,6 +42,7 @@ const features = [
 ];
 
 export default function Home() {
+
     return (
         <div className="flex flex-col min-h-screen bg-background">
             <main className="flex-1">
@@ -165,7 +166,10 @@ export default function Home() {
                             </p>
                             <div className="mt-8 flex justify-center">
                                 <Link href="/signup">
-                                    <AnimatedRoundedButton>
+                                    <AnimatedRoundedButton
+                                        normalTextColor="hsl(var(--primary))"
+                                        hoverTextColor="white"
+                                    >
                                         <div className="flex items-center gap-2">
                                             <span>Sign Up Now</span>
                                             <ArrowRight />

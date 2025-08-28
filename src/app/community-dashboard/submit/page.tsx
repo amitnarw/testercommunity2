@@ -130,7 +130,9 @@ export default function SubmitAppPage() {
         return null;
     }
 
-    const toTextColor = theme === 'dark' ? 'black' : 'white';
+    const bgColor = theme === 'dark' ? 'white' : 'black';
+    const normalTextColor = theme === 'dark' ? 'white' : 'white';
+    const hoverTextColor = theme === 'dark' ? 'hsl(var(--primary))' : 'white';
 
     return (
         <div className="bg-[#f8fafc] dark:bg-[#0f151e] min-h-screen">
@@ -148,9 +150,9 @@ export default function SubmitAppPage() {
                         <div className="flex items-center gap-1 sm:gap-3">
                             <div onClick={form.handleSubmit(onSubmit)} className="cursor-pointer">
                                 <AnimatedRoundedButton
-                                    backgroundColor='white'
-                                    fromTextColor='hsl(var(--primary-foreground))'
-                                    toTextColor={toTextColor}
+                                    backgroundColor={bgColor}
+                                    normalTextColor={normalTextColor}
+                                    hoverTextColor={hoverTextColor}
                                     className='bg-primary'
                                     borderRadius='9999px'
                                 >

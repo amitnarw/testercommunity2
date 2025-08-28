@@ -3,7 +3,7 @@
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card'
 import { Button } from '@/components/ui/button';
-import { PlusCircle, FileClock, CheckCircle, Clock, ArrowRight, Search, FileCheck, Users } from 'lucide-react'
+import { PlusCircle, FileClock, CheckCircle, Clock, ArrowRight, Search, FileCheck, Users, ArrowLeft } from 'lucide-react'
 import Link from 'next/link';
 import { useState } from 'react';
 import { projects as allProjects } from '@/lib/data';
@@ -43,10 +43,11 @@ const ProjectCard = ({ project }: { project: Project }) => {
                     </div>
                      <ArrowRight className="absolute top-4 right-4 text-muted-foreground/30 transition-all duration-300 group-hover:text-primary group-hover:translate-x-1 group-hover:-translate-y-1" size={20} />
                 </CardHeader>
-                <CardContent className="p-5 pt-0 flex-grow">
-                   <p className="text-sm text-muted-foreground h-12 line-clamp-2">{project.description}</p>
+                <CardContent className="p-5 pt-0 flex-grow relative">
+                   <p className="text-sm text-muted-foreground line-clamp-3">{project.description}</p>
+                   <div className="absolute bottom-0 left-0 right-0 h-8 bg-gradient-to-t from-background to-transparent"></div>
                 </CardContent>
-                <CardFooter className="p-3 bg-secondary/50 m-2 rounded-lg">
+                <CardFooter className="p-3 bg-secondary/50 m-2 rounded-lg mt-auto">
                     <div className="flex items-center gap-2">
                         <div className={cn("p-1.5 rounded-full bg-background", statusConfig.className)}>
                             {statusConfig.icon}
@@ -140,16 +141,21 @@ export default function MySubmissionsPage() {
     <>
       <div className="min-h-screen bg-secondary/50">
         <div className="container mx-auto px-4 md:px-6 py-12">
-          <header className="mb-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-            <div>
-              <h1 className="text-4xl font-bold">My Submissions</h1>
-              <p className="text-muted-foreground">Track the progress of apps you've submitted for community testing.</p>
-            </div>
-            <Button asChild>
-                <Link href="/community-dashboard/submit">
-                  <PlusCircle className="mr-2 h-4 w-4" /> Submit a New App
-                </Link>
+          <header className="mb-8">
+            <Button variant="ghost" asChild className="mb-4">
+                <Link href="/community-dashboard"><ArrowLeft className="mr-2 h-4 w-4" /> Back to Community Hub</Link>
             </Button>
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                <div>
+                  <h1 className="text-4xl font-bold">My Submissions</h1>
+                  <p className="text-muted-foreground">Track the progress of apps you've submitted for community testing.</p>
+                </div>
+                <Button asChild>
+                    <Link href="/community-dashboard/submit">
+                      <PlusCircle className="mr-2 h-4 w-4" /> Submit a New App
+                    </Link>
+                </Button>
+            </div>
           </header>
 
           <main>

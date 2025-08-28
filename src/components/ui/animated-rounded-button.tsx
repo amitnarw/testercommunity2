@@ -9,16 +9,16 @@ import { cn } from '@/lib/utils';
 interface AnimatedRoundedButtonProps extends React.HTMLAttributes<HTMLDivElement> {
   children: React.ReactNode;
   backgroundColor?: string;
-  fromTextColor?: string;
-  toTextColor?: string;
+  normalTextColor?: string;
+  hoverTextColor?: string;
   borderRadius?: string;
 }
 
 export default function AnimatedRoundedButton({
   children,
   backgroundColor = "hsl(var(--primary))",
-  fromTextColor = "hsl(var(--primary-foreground))",
-  toTextColor = "hsl(var(--foreground))",
+  normalTextColor = "hsl(var(--primary-foreground))",
+  hoverTextColor = "hsl(var(--foreground))",
   borderRadius = "9999px",
   className,
   ...attributes
@@ -48,7 +48,7 @@ export default function AnimatedRoundedButton({
     }, 300);
   });
   
-  const textColor = isHovered ? toTextColor : fromTextColor;
+  const textColor = isHovered ? hoverTextColor : normalTextColor;
 
   return (
     <div
@@ -70,12 +70,7 @@ export default function AnimatedRoundedButton({
       <div
         ref={circle}
         style={{ backgroundColor }}
-        className="absolute top-full h-[150%] w-full"
-        // The high border radius on the inner circle helps create the illusion of it being a perfect circle expanding
-        // even though its width and height are not equal.
-        // It's a common trick for these types of effects.
-        // We'll keep it as a very high value to ensure it works correctly.
-        // We will not pass borderRadius prop to this div
+        className="absolute top-full h-[150%] w-full rounded-[300%]"
       ></div>
     </div>
   );
