@@ -48,7 +48,11 @@ export default function AnimatedRoundedButton({
       onMouseLeave={manageMouseLeave}
       {...attributes}
     >
-      <div className="relative z-10 text-foreground transition-colors duration-300 group-hover:text-white">
+      <div className={cn("relative z-10 transition-colors duration-300",
+       className?.includes('bg-primary') 
+        ? 'text-primary-foreground group-hover:text-foreground dark:group-hover:text-background' 
+        : 'text-foreground group-hover:text-primary-foreground'
+      )}>
         {children}
       </div>
       <div

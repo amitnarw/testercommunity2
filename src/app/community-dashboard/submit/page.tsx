@@ -135,7 +135,9 @@ export default function SubmitAppPage() {
                         </div>
                         <div className="flex items-center gap-1 sm:gap-3">
                              <div onClick={form.handleSubmit(onSubmit)} className="cursor-pointer">
-                                <AnimatedRoundedButton className='px-6 py-3'>
+                                <AnimatedRoundedButton 
+                                    className='px-6 py-3 bg-primary text-primary-foreground hover:bg-background dark:hover:bg-foreground hover:text-foreground dark:hover:text-background'
+                                >
                                     <div className="flex items-center gap-2">
                                         <span className='hidden sm:inline'>Submit for Review</span>
                                         <span className='sm:hidden'>Submit</span>
@@ -329,5 +331,3 @@ export default function SubmitAppPage() {
         </div>
     );
 }
-
-    
