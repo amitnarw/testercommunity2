@@ -66,7 +66,7 @@ const Section = ({ id, title, description, children }: { id: string, title: stri
     }, [isInView, id]);
     
     return (
-        <section ref={ref} id={id} className="min-h-[60vh] py-16">
+        <section ref={ref} id={id} className="min-h-[85vh] flex flex-col justify-center scroll-mt-[80px]">
             <div className="mb-8">
                 <h2 className="text-3xl font-bold">{title}</h2>
                 <p className="text-muted-foreground mt-2">{description}</p>
@@ -119,27 +119,28 @@ export default function SubmitAppPage() {
     }, []);
 
     return (
-        <div className="bg-background min-h-screen">
-            <div className="sticky top-0 z-40 bg-background/80 backdrop-blur-lg border-b">
+        <div className="bg-[#f8fafc] dark:bg-[#0f151e] min-h-screen">
+            <div className="sticky top-0 z-40 backdrop-blur-lg">
                 <header className="container mx-auto px-4 md:px-6">
                      <div className="flex items-center justify-between h-20">
                         <div className="flex items-center gap-4">
                             <Button variant="outline" size="sm" asChild>
                                 <Link href="/community-dashboard"><ArrowLeft className="mr-2 h-4 w-4" /> Back to Hub</Link>
                             </Button>
-                            <div>
+                            <div className='hidden sm:block'>
                                 <h1 className="text-xl font-bold">Submit Your App</h1>
                                 <p className="text-sm text-muted-foreground hidden sm:block">Follow the launch sequence to get your app tested.</p>
                             </div>
                         </div>
-                        <div className="flex items-center gap-3">
-                            <Button variant="ghost">Save Draft</Button>
+                        <div className="flex items-center gap-1 sm:gap-3">
+                            <Button variant="ghost" className='hidden sm:inline-flex'>Save Draft</Button>
                             <Button 
                                 onClick={form.handleSubmit(onSubmit)} 
                                 className="group relative overflow-hidden btn-hover-curved-effect text-primary-foreground"
                             >
                                 <Rocket className="mr-2 h-4 w-4 transition-transform duration-300 group-hover:-translate-y-1 group-hover:scale-110" />
-                                Submit for Review
+                                <span className='hidden sm:inline'>Submit for Review</span>
+                                <span className='sm:hidden'>Submit</span>
                             </Button>
                         </div>
                      </div>
@@ -168,8 +169,8 @@ export default function SubmitAppPage() {
                 </nav>
             </div>
             
-            <div className="container mx-auto px-4 md:px-6 py-12">
-                <div className="lg:grid lg:grid-cols-12 lg:gap-16">
+            <div className="container mx-auto px-2 py-5">
+                <div className="lg:grid lg:grid-cols-12 lg:gap-16 bg-background rounded-lg shadow-xl px-5">
                     <aside className="hidden lg:block lg:col-span-3 py-16">
                         <div className="sticky top-36">
                              <nav>
@@ -181,7 +182,7 @@ export default function SubmitAppPage() {
                                                 activeStep === step.id ? "bg-primary/10 text-primary" : "text-muted-foreground hover:bg-secondary/50"
                                             )}>
                                                 <div className={cn(
-                                                    "w-8 h-8 rounded-full flex items-center justify-center border-2 transition-all",
+                                                    "p-2 rounded-full flex items-center justify-center border-2 transition-all",
                                                      activeStep === step.id ? "bg-primary text-primary-foreground border-primary" : "bg-secondary border-border group-hover:border-primary/50"
                                                 )}>
                                                     {step.icon}
@@ -199,8 +200,8 @@ export default function SubmitAppPage() {
                     </aside>
                     <main className="lg:col-span-9">
                          <FormProvider {...form}>
-                            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-                                <Section id="connect" title="Connect Your App" description="Provide the essential links and name for your project.">
+                            <form onSubmit={form.handleSubmit(onSubmit)}>
+                                <Section id="connect" title="1. Connect Your App" description="Provide the essential links and name for your project.">
                                      <Card className="bg-secondary/30 border-dashed">
                                         <CardContent className="p-6 grid md:grid-cols-2 gap-6">
                                             <FormField
@@ -233,7 +234,7 @@ export default function SubmitAppPage() {
                                     </Card>
                                 </Section>
 
-                                <Section id="describe" title="Describe Your Project" description="Give testers the context they need for quality feedback.">
+                                <Section id="describe" title="2. Describe Your Project" description="Give testers the context they need for quality feedback.">
                                     <Card className="bg-secondary/30 border-dashed">
                                         <CardContent className="p-6 space-y-6">
                                             <FormField
@@ -277,7 +278,7 @@ export default function SubmitAppPage() {
                                     </Card>
                                 </Section>
 
-                                <Section id="configure" title="Configure Your Test" description="Set the final parameters for your testing cycle.">
+                                <Section id="configure" title="3. Configure Your Test" description="Set the final parameters for your testing cycle.">
                                      <Card className="bg-secondary/30 border-dashed">
                                         <CardContent className="p-6 grid md:grid-cols-2 gap-6">
                                             <FormField
