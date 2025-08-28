@@ -14,9 +14,10 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { ArrowLeft, Rocket, FileText, Settings, Link as LinkIcon, PartyPopper } from 'lucide-react';
+import { ArrowLeft, Rocket, FileText, Settings, Link as LinkIcon, PartyPopper, ArrowRight } from 'lucide-react';
 import { FormField, FormControl, FormItem, FormMessage } from '@/components/ui/form';
 import { cn } from '@/lib/utils';
+import AnimatedRoundedButton from '@/components/ui/animated-rounded-button';
 
 
 const submissionSchema = z.object({
@@ -133,15 +134,15 @@ export default function SubmitAppPage() {
                             </div>
                         </div>
                         <div className="flex items-center gap-1 sm:gap-3">
-                            <Button variant="ghost" className='hidden sm:inline-flex'>Save Draft</Button>
-                            <Button 
-                                onClick={form.handleSubmit(onSubmit)} 
-                                className="group relative overflow-hidden btn-hover-curved-effect text-primary-foreground"
-                            >
-                                <Rocket className="mr-2 h-4 w-4 transition-transform duration-300 group-hover:-translate-y-1 group-hover:scale-110" />
-                                <span className='hidden sm:inline'>Submit for Review</span>
-                                <span className='sm:hidden'>Submit</span>
-                            </Button>
+                             <div onClick={form.handleSubmit(onSubmit)} className="cursor-pointer">
+                                <AnimatedRoundedButton className='px-6 py-3'>
+                                    <div className="flex items-center gap-2">
+                                        <span className='hidden sm:inline'>Submit for Review</span>
+                                        <span className='sm:hidden'>Submit</span>
+                                        <Rocket />
+                                    </div>
+                                </AnimatedRoundedButton>
+                            </div>
                         </div>
                      </div>
                 </header>
@@ -328,3 +329,5 @@ export default function SubmitAppPage() {
         </div>
     );
 }
+
+    
