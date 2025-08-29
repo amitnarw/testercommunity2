@@ -16,7 +16,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { ArrowLeft, FileText, Settings, Link as LinkIcon, ArrowRight } from 'lucide-react';
-import { FormField, FormControl, FormItem, FormMessage } from '@/components/ui/form';
+import { FormField, FormControl, FormItem, FormMessage, FormLabel } from '@/components/ui/form';
 import { cn } from '@/lib/utils';
 import AnimatedRoundedButton from '@/components/ui/animated-rounded-button';
 
@@ -27,7 +27,7 @@ const submissionSchema = z.object({
     category: z.string({ required_error: "Please select a category." }),
     appDesc: z.string().min(50, "Please provide a detailed description of at least 50 characters."),
     androidVersion: z.string().min(1, "Please specify the minimum Android version."),
-    testers: z.string().min(1, "Please specify the number of testers."),
+    pointsToSpend: z.string().min(1, "Please specify the number of points to spend."),
 });
 
 type SubmissionFormData = z.infer<typeof submissionSchema>;
@@ -52,8 +52,8 @@ const formSteps = [
         id: 'configure',
         title: 'Configure',
         icon: <Settings className="w-5 h-5" />,
-        fields: ['androidVersion', 'testers'],
-        description: 'Finally, set the technical parameters for your test run to ensure we target the right devices.'
+        fields: ['androidVersion', 'pointsToSpend'],
+        description: 'Finally, set the technical parameters and points budget for your test run.'
     },
 ];
 
@@ -130,15 +130,16 @@ export default function SubmitAppPage() {
         return null;
     }
 
-    const bgColor = theme === 'dark' ? 'white' : 'black';
-    const normalTextColor = theme === 'dark' ? 'white' : 'white';
-    const hoverTextColor = theme === 'dark' ? 'hsl(var(--primary))' : 'white';
+    const defaultBg = 'hsl(var(--primary))';
+    const fromTextColor = 'hsl(var(--primary-foreground))';
+    const toTextColor = theme === 'dark' ? 'black' : 'white';
+
 
     return (
         <div className="bg-[#f8fafc] dark:bg-[#0f151e] min-h-screen">
             <div className="sticky top-0 z-40 backdrop-blur-lg">
                 <header className="container mx-auto px-4 md:px-6">
-                    <div className="flex items-center justify-between h-20">
+                     <div className="flex items-center justify-between h-20">
                         <div className="flex items-center gap-4">
                             <Button variant="outline" size="sm" asChild>
                                 <Link href="/community-dashboard"><ArrowLeft className="mr-2 h-4 w-4" /> Back to Hub</Link>
@@ -150,10 +151,8 @@ export default function SubmitAppPage() {
                         <div className="flex items-center gap-1 sm:gap-3">
                             <div onClick={form.handleSubmit(onSubmit)} className="cursor-pointer">
                                 <AnimatedRoundedButton
-                                    backgroundColor={bgColor}
-                                    normalTextColor={normalTextColor}
-                                    hoverTextColor={hoverTextColor}
-                                    className='bg-primary'
+                                    fromTextColor={fromTextColor}
+                                    toTextColor={toTextColor}
                                     borderRadius='9999px'
                                 >
                                     <div className="flex items-center gap-2">
@@ -298,7 +297,7 @@ export default function SubmitAppPage() {
                                     </Card>
                                 </Section>
 
-                                <Section id="configure" title="3. Configure Your Test" description="Set the final parameters for your testing cycle.">
+                                <Section id="configure" title="3. Configure Your Test" description="Set the final parameters for your testing cycle. You must have enough earned points to cover this budget.">
                                     <Card className="bg-secondary/30 border-dashed">
                                         <CardContent className="p-6 grid md:grid-cols-2 gap-6">
                                             <FormField
@@ -314,22 +313,22 @@ export default function SubmitAppPage() {
                                                     </FormItem>
                                                 )}
                                             />
-                                            <FormField
+                                             <FormField
                                                 control={form.control}
-                                                name="testers"
+                                                name="pointsToSpend"
                                                 render={({ field }) => (
                                                     <FormItem>
-                                                        <Label>Number of Testers</Label>
+                                                        <FormLabel>Points to Spend (Your balance: 1,250)</FormLabel>
                                                         <Select onValueChange={field.onChange} defaultValue={field.value}>
                                                             <FormControl>
                                                                 <SelectTrigger className="h-12">
-                                                                    <SelectValue placeholder="Select number of testers" />
+                                                                    <SelectValue placeholder="Select a points budget" />
                                                                 </SelectTrigger>
                                                             </FormControl>
                                                             <SelectContent>
-                                                                <SelectItem value="12">12 (Meets Google Requirement)</SelectItem>
-                                                                <SelectItem value="25">25 Testers</SelectItem>
-                                                                <SelectItem value="50">50 Testers</SelectItem>
+                                                                <SelectItem value="500">500 Points (Basic Feedback)</SelectItem>
+                                                                <SelectItem value="1000">1000 Points (Recommended)</SelectItem>
+                                                                <SelectItem value="2000">2000 Points (In-depth Feedback)</SelectItem>
                                                             </SelectContent>
                                                         </Select>
                                                         <FormMessage />

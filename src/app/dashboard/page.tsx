@@ -3,10 +3,10 @@
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button';
-import { PlusCircle, Gem } from 'lucide-react'
+import { PlusCircle, Package } from 'lucide-react'
 import { ProjectList } from '@/components/project-list';
 import Link from 'next/link';
-import { Star, Activity } from 'lucide-react';
+import { Gem, Activity } from 'lucide-react';
 import { useState } from 'react';
 import { projects as allProjects } from '@/lib/data';
 import { Pagination, PaginationContent, PaginationItem, PaginationPrevious, PaginationLink, PaginationNext } from '@/components/ui/pagination';
@@ -40,7 +40,7 @@ export default function DashboardPage() {
           <header className="mb-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div>
               <h1 className="text-4xl font-bold bg-gradient-to-b from-primary to-primary/40 bg-clip-text text-transparent">Developer Dashboard</h1>
-              <p className="text-muted-foreground">Manage your apps and testing projects.</p>
+              <p className="text-muted-foreground">Manage your apps and professional testing projects.</p>
             </div>
           </header>
 
@@ -82,26 +82,27 @@ export default function DashboardPage() {
             </div>
 
             <Card className="rounded-xl border-0 bg-gradient-to-br from-primary to-primary/40 relative overflow-hidden col-span-1">
-              <Star size={100} className='text-white/20 absolute -top-5 -right-5 rotate-45' />
+              <Package size={100} className='text-white/20 absolute -top-5 -right-5 rotate-45' />
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium text-white/80">
-                  Available Points
+                  Available Packages
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold text-white">1,250</div>
+                <div className="text-2xl font-bold text-white">2</div>
+                <p className="text-xs text-white/80">1 package used</p>
               </CardContent>
             </Card>
 
             <BentoCard className='grid gap-2 grid-cols-1'>
               <Button asChild className='w-full h-full bg-gradient-to-br from-primary to-primary/40'>
                 <Link href="/dashboard/add-app">
-                  <PlusCircle className="mr-2 h-4 w-4" /> Add New App
+                  <PlusCircle className="mr-2 h-4 w-4" /> Use a Package
                 </Link>
               </Button>
               <Button variant="outline" asChild className='w-full h-full'>
                 <Link href="/pricing">
-                  <Gem className="mr-2 h-4 w-4" /> Add More Points
+                  <Gem className="mr-2 h-4 w-4" /> Buy More Packages
                 </Link>
               </Button>
             </BentoCard>

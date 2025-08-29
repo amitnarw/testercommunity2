@@ -112,7 +112,7 @@ export default function HowItWorksPage() {
                     </div>
                     <h2 className="text-3xl md:text-5xl font-bold font-heading">The Professional Path</h2>
                     <p className="mt-4 text-muted-foreground text-lg">
-                        For when you need guaranteed, managed, and expert results. Purchase points and let our team of vetted professionals handle the entire testing process.
+                        For when you need guaranteed, managed, and expert results. Purchase a testing package and let our team of vetted professionals handle the entire process.
                     </p>
                 </div>
             </section>

@@ -162,21 +162,21 @@ export const communityPathSteps: RoadmapStep[] = [
 export const professionalPathSteps: RoadmapStep[] = [
     {
         step: 1,
-        title: "Purchase Points",
-        description: "Fast-track your testing by purchasing a points package. This is your currency for all professional services on the platform, allowing you to skip community testing entirely.",
+        title: "Purchase a Package",
+        description: "Fast-track your testing by purchasing a test package. This gives you one full, professional test cycle, allowing you to skip community testing entirely.",
         badgeText: "Time: 2 Mins • Cost: Varies",
         details: [
-            { title: "Flexible Packages", description: "Choose a points package that fits your project's budget and scope." },
+            { title: "Flexible Packages", description: "Choose a package that fits your project's budget and scope." },
             { title: "Instant Access", description: "No need to earn points; get started with professional testing right away." },
             { title: "Secure Payment", description: "All transactions are handled securely through our trusted payment processor." },
-            { title: "Points Never Expire", description: "Your purchased points are yours to use whenever you're ready." },
+            { title: "Use Anytime", description: "Your purchased packages are yours to use whenever you're ready." },
         ]
     },
     {
         step: 2,
         title: "Submit & Forget",
         description: "Submit your app through the Developer Dashboard. Provide us with your build and instructions, and we'll handle the rest. Our project managers take over from here.",
-        badgeText: "Requirement: Points Purchased",
+        badgeText: "Requirement: 1 Package per App",
         details: [
             { title: "Simple Submission", description: "A straightforward form to provide your app and testing requirements." },
             { title: "Managed Process", description: "Our team assigns the best-suited professional testers to your project." },
@@ -528,7 +528,7 @@ export const communityApps: CommunityApp[] = [
         estimatedTime: '5-10 min',
         playStoreUrl: 'https://play.google.com/store/apps/details?id=com.ubercab',
         screenshots: [
-            { url: 'https://play-lh.googleusercontent.com/g-I-j-Y-g-X-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c=w526-h296-rw', alt: 'Uber Screenshot 1', dataAiHint: 'map with car' },
+            { url: 'https://play-lh.googleusercontent.com/g-I-j-Y-g-X-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z=w526-h296-rw', alt: 'Uber Screenshot 1', dataAiHint: 'map with car' },
             { url: 'https://play-lh.googleusercontent.com/Y-g-X-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c=w526-h296-rw', alt: 'Uber Screenshot 2', dataAiHint: 'ride options' }
         ],
         testingInstructions: 'Set a destination and view the different ride options (UberX, Comfort, etc.). Do not book a ride. Report any issues with the map display or price estimation.',
@@ -546,7 +546,7 @@ export const communityApps: CommunityApp[] = [
         estimatedTime: '15-20 min',
         playStoreUrl: 'https://play.google.com/store/apps/details?id=com.linkedin.android',
         screenshots: [
-            { url: 'https://play-lh.googleusercontent.com/p-I-j-Y-g-X-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c=w526-h296-rw', alt: 'LinkedIn Screenshot 1', dataAiHint: 'professional profile' },
+            { url: 'https://play-lh.googleusercontent.com/p-I-j-Y-g-X-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z=w526-h296-rw', alt: 'LinkedIn Screenshot 1', dataAiHint: 'professional profile' },
             { url: 'https://play-lh.googleusercontent.com/I-j-Y-g-X-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z=w526-h296-rw', alt: 'LinkedIn Screenshot 2', dataAiHint: 'professional network feed' }
         ],
         testingInstructions: 'Update a section of your profile (e.g., add a new skill). Check that the changes are reflected correctly across the app. Then, view a job posting and save it.',
@@ -583,7 +583,7 @@ export const communityApps: CommunityApp[] = [
         estimatedTime: '20-25 min',
         playStoreUrl: 'https://play.google.com/store/apps/details?id=com.discord',
         screenshots: [
-            { url: 'https://play-lh.googleusercontent.com/p-I-j-Y-g-X-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c=w526-h296-rw', alt: 'Discord Screenshot 1', dataAiHint: 'chat server interface' },
+            { url: 'https://play-lh.googleusercontent.com/p-I-j-Y-g-X-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z=w526-h296-rw', alt: 'Discord Screenshot 1', dataAiHint: 'chat server interface' },
             { url: 'https://play-lh.googleusercontent.com/g-X-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z=w526-h296-rw', alt: 'Discord Screenshot 2', dataAiHint: 'voice channel' }
         ],
         testingInstructions: 'Join a voice channel in a server. Test the noise suppression feature by enabling it and speaking with background noise. Report on its effectiveness.',
@@ -760,45 +760,72 @@ export const pointsPackages: PointsPackage[] = [
     {
         name: "Booster",
         price: 499,
-        points: 500,
-        description: "Perfect for a quick test cycle for a small app or feature.",
-        features: ["Fund one small project", "Basic bug reports", "Community support"],
-        pricePerPoint: 499 / 500
+        points: 1, // Represents 1 package
+        description: "Perfect for a quick professional test cycle for a single app.",
+        features: ["1 Professional Test Package", "Managed by inTesters team", "Community support"],
     },
     {
         name: "Accelerator",
-        price: 1999,
-        points: 2500,
-        description: "Great for medium-sized projects or a few rounds of testing.",
-        features: ["Fund multiple test cycles", "More detailed reports", "Priority in queue"],
-        pricePerPoint: 1999 / 2500
+        price: 1299,
+        points: 3, // Represents 3 packages
+        description: "Great value for teams with multiple apps or frequent releases.",
+        features: ["3 Professional Test Packages", "Priority in testing queue", "Direct chat with project manager"],
     },
     {
         name: "Launchpad",
-        price: 4999,
-        points: 7500,
-        description: "Ideal for large apps or extensive pre-launch testing.",
-        features: ["Sufficient for major releases", "Highest queue priority", "Dedicated community manager"],
-        pricePerPoint: 4999 / 7500
+        price: 3999,
+        points: 10, // Represents 10 packages
+        description: "For agencies and enterprises needing extensive testing.",
+        features: ["10 Professional Test Packages", "Highest queue priority", "Dedicated account manager"],
+    }
+];
+
+export const generalFaqs: FaqItem[] = [
+    {
+        question: "What is inTesters?",
+        answer: "inTesters is a platform designed to help Android developers meet the Google Play Store's requirement of having their app tested by at least 20 people for 14 days. We offer two paths: a free, community-driven approach and a paid, professional service."
+    },
+    {
+        question: "Who is inTesters for?",
+        answer: "inTesters is for any Android developer, from solo indie devs to large companies, who need to fulfill Google's pre-launch testing requirements quickly and efficiently."
+    },
+     {
+        question: "How do I get started?",
+        answer: "Just sign up for a free account! From there, you can choose your path. You can start testing other apps to earn points via the Community Hub, or you can purchase a package and submit your app for professional testing via the Developer Dashboard."
+    }
+];
+
+export const communityFaqs: FaqItem[] = [
+    {
+        question: "How does the 'Community Path' work?",
+        answer: "It's a reciprocal ecosystem. You test apps submitted by other community members. For each valid test you complete, you earn points. You must have enough points to submit your own app for free testing by the community."
+    },
+    {
+        question: "Is the Community Path really free?",
+        answer: "Yes, in terms of money. It requires your time and effort to test other apps, which is how you contribute to the community and earn your own testing credits (points). You cannot buy points for community testing; they must be earned."
+    },
+    {
+        question: "What kind of feedback can I expect from the community?",
+        answer: "You'll receive feedback from a diverse range of real users on real devices. This often uncovers usability issues, device-specific bugs, and general feedback that you might not find in a controlled environment."
     }
 ];
 
 export const pricingFaqs: FaqItem[] = [
     {
-        question: "What can I use points for?",
-        answer: "Points are the currency of inTesters. You use them to 'pay' community members for testing your app. The more points you offer for your project, the more attractive it is to testers, and the faster you'll likely receive feedback."
+        question: "What is a Professional Testing Package?",
+        answer: "A package is what you buy to get one app fully tested by our professional, vetted QA team. It covers one complete testing cycle (14 days, 20+ testers) to meet Google's requirements. This is separate from the community points system."
     },
     {
-        question: "Do my purchased points expire?",
-        answer: "No, your points never expire. You can use them whenever you're ready to start a new testing cycle for your app."
+        question: "Do my purchased packages expire?",
+        answer: "No, your packages never expire. You can use them whenever you're ready to start a new professional testing cycle for an app."
     },
     {
-        question: "What's the difference between earning and buying points?",
-        answer: "Earning points is free—you contribute your time and skill by testing other apps. Buying points is a shortcut that lets you fund your projects immediately without having to test other apps first. It's perfect for when you're on a tight deadline."
+        question: "What is the difference between packages and points?",
+        answer: "Packages are purchased for the Professional Path to have our team test your app. Points are earned for free on the Community Path by testing other apps, and are used to have the community test your app. They are two separate systems."
     },
     {
-        question: "Can I get a refund on purchased points?",
-        answer: "Points that have not been spent on a testing project are eligible for a refund within 14 days of purchase. Please contact our support team for assistance."
+        question: "Can I get a refund on purchased packages?",
+        answer: "Unused packages are eligible for a refund within 14 days of purchase. Please contact our support team for assistance."
     }
 ];
 

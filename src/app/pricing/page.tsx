@@ -3,7 +3,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { CheckCircle, Star, HelpCircle, Phone } from "lucide-react";
+import { CheckCircle, Star, HelpCircle, Phone, Package } from "lucide-react";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
@@ -23,16 +23,20 @@ const PointsPackageCard = ({ plan, isPopular }: { plan: PointsPackage, isPopular
                 </div>
             )}
             <CardHeader className="pt-10">
-                <CardTitle className="text-2xl">{plan.name}</CardTitle>
+                <CardTitle className="text-2xl">{plan.name} Package</CardTitle>
                 <CardDescription>{plan.description}</CardDescription>
             </CardHeader>
             <CardContent className="flex-grow space-y-6">
                  <div className="flex items-baseline gap-2">
                     <span className="text-4xl font-bold">₹{plan.price.toLocaleString('en-IN')}</span>
+                     <span className="text-muted-foreground">/ package</span>
                 </div>
-                <div className="bg-secondary/50 p-3 rounded-lg text-center">
-                    <p className="text-2xl font-bold text-primary">{plan.points.toLocaleString('en-IN')} Points</p>
-                    {plan.pricePerPoint && <p className="text-xs text-muted-foreground">Just ₹{plan.pricePerPoint.toFixed(2)} per point</p>}
+                <div className="bg-secondary/50 p-3 rounded-lg text-center flex items-center justify-center gap-4">
+                     <Package className="w-8 h-8 text-primary" />
+                    <div>
+                        <p className="text-lg font-bold text-primary">1 Professional Test Package</p>
+                        <p className="text-xs text-muted-foreground">Unlocks one full professional test cycle</p>
+                    </div>
                 </div>
                 <ul className="space-y-3">
                     {plan.features.map(feature => (
@@ -45,7 +49,7 @@ const PointsPackageCard = ({ plan, isPopular }: { plan: PointsPackage, isPopular
             </CardContent>
             <CardFooter>
                 <Button className="w-full text-lg py-6 font-bold">
-                    Buy {plan.name} Pack
+                    Buy {plan.name} Package
                 </Button>
             </CardFooter>
         </Card>
@@ -57,9 +61,9 @@ export default function PricingPage() {
         <div className="bg-background text-foreground">
             <div className="container mx-auto px-4 md:px-6 py-20">
                 <section className="text-center max-w-3xl mx-auto">
-                    <h1 className="text-4xl md:text-6xl font-bold">Get a <span className="bg-gradient-to-br from-primary to-accent bg-clip-text text-transparent">Points Boost</span></h1>
+                    <h1 className="text-4xl md:text-6xl font-bold">Professional Testing <span className="bg-gradient-to-br from-primary to-accent bg-clip-text text-transparent">Packages</span></h1>
                     <p className="mt-4 text-lg text-muted-foreground">
-                        Earn points for free by testing apps in the Community Hub, or buy a package to fund your testing needs instantly.
+                        Jumpstart your professional testing with a package. For free community testing, earn points by testing apps in the Community Hub.
                     </p>
                 </section>
 
@@ -78,7 +82,7 @@ export default function PricingPage() {
                         <div>
                             <CardTitle className="text-2xl">Enterprise & Custom Plans</CardTitle>
                             <CardDescription className="mt-2 max-w-2xl">
-                                Need a massive points top-up, custom integrations, or dedicated account management? We can build a plan tailored to your specific requirements.
+                                Need a bulk package purchase, custom integrations, or dedicated account management? We can build a plan tailored to your specific requirements.
                             </CardDescription>
                         </div>
                         <Button asChild className="text-lg py-6 font-bold mt-4 md:mt-0 flex-shrink-0" variant="outline">
@@ -92,7 +96,7 @@ export default function PricingPage() {
                 <section className="mt-28 max-w-4xl mx-auto">
                      <div className="text-center mb-12">
                         <HelpCircle className="w-12 h-12 text-primary mx-auto mb-4" />
-                        <h2 className="text-3xl md:text-4xl font-bold">Points Explained</h2>
+                        <h2 className="text-3xl md:text-4xl font-bold">Packages & Points Explained</h2>
                         <p className="mt-4 text-muted-foreground">
                             Got questions? We've got answers.
                         </p>
