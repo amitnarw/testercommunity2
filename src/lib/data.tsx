@@ -1,4 +1,5 @@
 
+
 import type { BlogPost, Testimonial, RoadmapStep, UserProfileData, ProcessStep, CommunityApp, PointsPackage, FaqItem, Notification, Project } from './types';
 
 export const chartData = [
@@ -759,24 +760,24 @@ export const communityApps: CommunityApp[] = [
 export const pointsPackages: PointsPackage[] = [
     {
         name: "Booster",
-        price: 499,
-        points: 1, // Represents 1 package
+        price: 699,
+        packages: 1,
         description: "Perfect for a quick professional test cycle for a single app.",
         features: ["1 Professional Test Package", "Managed by inTesters team", "Community support"],
     },
     {
         name: "Accelerator",
-        price: 1299,
-        points: 3, // Represents 3 packages
+        price: 1799,
+        packages: 3,
         description: "Great value for teams with multiple apps or frequent releases.",
         features: ["3 Professional Test Packages", "Priority in testing queue", "Direct chat with project manager"],
     },
     {
         name: "Launchpad",
-        price: 3999,
-        points: 10, // Represents 10 packages
+        price: 2899,
+        packages: 6,
         description: "For agencies and enterprises needing extensive testing.",
-        features: ["10 Professional Test Packages", "Highest queue priority", "Dedicated account manager"],
+        features: ["6 Professional Test Packages", "Highest queue priority", "Dedicated account manager"],
     }
 ];
 
@@ -1140,3 +1141,4 @@ export const projects: Project[] = [
 
 
     
+

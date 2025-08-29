@@ -125,7 +125,7 @@ export default function AddAppPage() {
                         <h1 className="text-4xl font-bold">Submit a New App</h1>
                         <p className="text-muted-foreground mt-2">
                             {step === 'guide'
-                                ? "Follow this simple guide to prepare and submit your app for testing."
+                                ? "Follow this simple guide to prepare your app. One package will be used upon submission."
                                 : "Fill in your app's details. You can edit this information later."
                             }
                         </p>
@@ -371,7 +371,7 @@ export default function AddAppPage() {
                                 </CardContent>
                                 <CardHeader className="p-6 pt-0 flex flex-row justify-between items-center">
                                     <Button variant="ghost" onClick={() => setStep('guide')}><ArrowLeft className="mr-2 h-4 w-4" /> Back to Guide</Button>
-                                    <Button type="submit" size="lg">Submit App</Button>
+                                    <Button type="submit" size="lg">Submit App (1 Package)</Button>
                                 </CardHeader>
                             </Card>
                         )}

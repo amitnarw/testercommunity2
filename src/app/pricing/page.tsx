@@ -1,4 +1,5 @@
 
+
 'use client';
 
 import { Button } from "@/components/ui/button";
@@ -29,13 +30,13 @@ const PointsPackageCard = ({ plan, isPopular }: { plan: PointsPackage, isPopular
             <CardContent className="flex-grow space-y-6">
                  <div className="flex items-baseline gap-2">
                     <span className="text-4xl font-bold">₹{plan.price.toLocaleString('en-IN')}</span>
-                     <span className="text-muted-foreground">/ package</span>
+                     <span className="text-muted-foreground">/ {plan.packages} package{plan.packages > 1 ? 's' : ''}</span>
                 </div>
                 <div className="bg-secondary/50 p-3 rounded-lg text-center flex items-center justify-center gap-4">
                      <Package className="w-8 h-8 text-primary" />
                     <div>
-                        <p className="text-lg font-bold text-primary">1 Professional Test Package</p>
-                        <p className="text-xs text-muted-foreground">Unlocks one full professional test cycle</p>
+                        <p className="text-lg font-bold text-primary">{plan.packages} Professional Test Package{plan.packages > 1 ? 's' : ''}</p>
+                        <p className="text-xs text-muted-foreground">Unlocks one full professional test cycle per package</p>
                     </div>
                 </div>
                 <ul className="space-y-3">
@@ -63,7 +64,7 @@ export default function PricingPage() {
                 <section className="text-center max-w-3xl mx-auto">
                     <h1 className="text-4xl md:text-6xl font-bold">Professional Testing <span className="bg-gradient-to-br from-primary to-accent bg-clip-text text-transparent">Packages</span></h1>
                     <p className="mt-4 text-lg text-muted-foreground">
-                        Jumpstart your professional testing with a package. For free community testing, earn points by testing apps in the Community Hub.
+                        For free community testing, earn points by testing apps in the Community Hub. For professional testing, purchase a package below.
                     </p>
                 </section>
 

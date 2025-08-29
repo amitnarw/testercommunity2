@@ -1,4 +1,5 @@
 
+
 import type { ReactNode } from 'react';
 
 export type BlogPost = {
@@ -49,10 +50,9 @@ export type UserProfileData = {
 export type PointsPackage = {
     name: string;
     price: number;
-    points: number;
+    packages: number;
     description: string;
     features: string[];
-    pricePerPoint?: number;
 };
 
 export type ProcessStep = {
