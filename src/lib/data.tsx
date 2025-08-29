@@ -761,23 +761,23 @@ export const pointsPackages: PointsPackage[] = [
     {
         name: "Booster",
         price: 699,
-        packages: 1,
+        points: 10000,
         description: "Perfect for a quick professional test cycle for a single app.",
-        features: ["1 Professional Test Package", "Managed by inTesters team", "Community support"],
+        features: ["Managed by inTesters team", "Community support"],
     },
     {
         name: "Accelerator",
         price: 1799,
-        packages: 3,
+        points: 35000,
         description: "Great value for teams with multiple apps or frequent releases.",
-        features: ["3 Professional Test Packages", "Priority in testing queue", "Direct chat with project manager"],
+        features: ["Priority in testing queue", "Direct chat with project manager"],
     },
     {
         name: "Launchpad",
         price: 2899,
-        packages: 6,
+        points: 60000,
         description: "For agencies and enterprises needing extensive testing.",
-        features: ["6 Professional Test Packages", "Highest queue priority", "Dedicated account manager"],
+        features: ["Highest queue priority", "Dedicated account manager"],
     }
 ];
 
@@ -1141,4 +1141,3 @@ export const projects: Project[] = [
 
 
     
-

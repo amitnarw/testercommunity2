@@ -4,7 +4,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { CheckCircle, Star, HelpCircle, Phone, Package } from "lucide-react";
+import { CheckCircle, Star, HelpCircle, Phone, Package, IndianRupee } from "lucide-react";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
@@ -30,13 +30,13 @@ const PointsPackageCard = ({ plan, isPopular }: { plan: PointsPackage, isPopular
             <CardContent className="flex-grow space-y-6">
                  <div className="flex items-baseline gap-2">
                     <span className="text-4xl font-bold">₹{plan.price.toLocaleString('en-IN')}</span>
-                     <span className="text-muted-foreground">/ {plan.packages} package{plan.packages > 1 ? 's' : ''}</span>
+                     <span className="text-muted-foreground">/ one-time</span>
                 </div>
                 <div className="bg-secondary/50 p-3 rounded-lg text-center flex items-center justify-center gap-4">
-                     <Package className="w-8 h-8 text-primary" />
+                     <Star className="w-8 h-8 text-primary" />
                     <div>
-                        <p className="text-lg font-bold text-primary">{plan.packages} Professional Test Package{plan.packages > 1 ? 's' : ''}</p>
-                        <p className="text-xs text-muted-foreground">Unlocks one full professional test cycle per package</p>
+                        <p className="text-lg font-bold text-primary">{plan.points.toLocaleString()} Points</p>
+                        <p className="text-xs text-muted-foreground">To spend on professional testing services</p>
                     </div>
                 </div>
                 <ul className="space-y-3">

@@ -50,7 +50,7 @@ export type UserProfileData = {
 export type PointsPackage = {
     name: string;
     price: number;
-    packages: number;
+    points: number;
     description: string;
     features: string[];
 };
