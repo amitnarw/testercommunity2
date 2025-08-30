@@ -44,7 +44,7 @@ export default function AppTestingPage({ params }: { params: { id: string } }) {
     return (
         <div className="bg-background text-foreground min-h-screen">
             <div className="container mx-auto px-4 md:px-6 py-12">
-                 <header className="mb-12 max-w-4xl mx-auto">
+                 <header className="mb-12 max-w-5xl mx-auto">
                     <Button variant="ghost" asChild className="mb-6">
                         <Link href="/community-dashboard"><ArrowLeft className="mr-2 h-4 w-4" /> Back to Community Hub</Link>
                     </Button>
@@ -70,7 +70,7 @@ export default function AppTestingPage({ params }: { params: { id: string } }) {
                     </div>
                 </header>
 
-                <main className="max-w-3xl mx-auto space-y-16">
+                <main className="max-w-5xl mx-auto space-y-16">
                     <section>
                         <h2 className="text-2xl font-bold mb-4">About the App</h2>
                         <p className="text-muted-foreground text-base leading-relaxed">{app.shortDescription}</p>
