@@ -13,6 +13,10 @@ interface AnimatedRoundedButtonProps extends React.HTMLAttributes<HTMLDivElement
   normalTextColor?: string;
   hoverTextColor?: string;
   borderRadius?: string;
+  paddingYmobile?: string;
+  paddingXmobile?: string;
+  paddingY?: string;
+  paddingX?: string;
 }
 
 export default function AnimatedRoundedButton({
@@ -22,15 +26,16 @@ export default function AnimatedRoundedButton({
   normalTextColor = "hsl(var(--primary-foreground))",
   hoverTextColor = "hsl(var(--foreground))",
   borderRadius = "9999px",
+  paddingYmobile="2",
+  paddingXmobile="4",
+  paddingY="2",
+  paddingX="5",
   className,
   ...attributes
 }: AnimatedRoundedButtonProps) {
   const circle = useRef<HTMLDivElement>(null);
   const timeline = useRef<gsap.core.Timeline | null>(null);
   const [isHovered, setIsHovered] = useState(false);
-
-
-  console.log(backgroundColor,animatedBackgroundColor, 'lllllllll')
 
   const { contextSafe } = useGSAP(() => {
     timeline.current = gsap.timeline({ paused: true });
@@ -58,7 +63,7 @@ export default function AnimatedRoundedButton({
   return (
     <div
       className={cn(
-        "group relative flex cursor-pointer items-center justify-center overflow-hidden border border-border px-[60px] py-[15px]",
+        `group relative flex cursor-pointer items-center justify-center overflow-hidden px-${paddingX} py-${paddingY}`,
         className
       )}
       style={{ borderRadius, backgroundColor }}

@@ -147,10 +147,9 @@ export default function SubmitAppPage() {
                         <div className="flex items-center gap-1 sm:gap-3">
                             <div onClick={form.handleSubmit(onSubmit)} className="cursor-pointer">
                                 <AnimatedRoundedButton
-                                    fromTextColor="hsl(var(--primary-foreground))"
-                                    toTextColor={hoverTextColor}
                                     backgroundColor="hsl(var(--primary))"
                                     animatedBackgroundColor={hoverBgColor}
+                                    hoverTextColor={hoverTextColor}
                                     borderRadius='9999px'
                                 >
                                     <div className="flex items-center gap-2">
@@ -187,7 +186,7 @@ export default function SubmitAppPage() {
             </div>
 
             <div className="container mx-auto px-2 py-5">
-                <div className="lg:grid lg:grid-cols-12 lg:gap-16 bg-background rounded-lg shadow-xl px-5">
+                <div className="lg:grid lg:grid-cols-12 lg:gap-16 bg-background rounded-3xl px-5">
                     <aside className="hidden lg:block lg:col-span-3 py-16">
                         <div className="sticky top-36">
                             <nav>
