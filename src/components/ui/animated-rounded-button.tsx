@@ -9,6 +9,7 @@ import { cn } from '@/lib/utils';
 interface AnimatedRoundedButtonProps extends React.HTMLAttributes<HTMLDivElement> {
   children: React.ReactNode;
   backgroundColor?: string;
+  animatedBackgroundColor?: string;
   normalTextColor?: string;
   hoverTextColor?: string;
   borderRadius?: string;
@@ -16,7 +17,8 @@ interface AnimatedRoundedButtonProps extends React.HTMLAttributes<HTMLDivElement
 
 export default function AnimatedRoundedButton({
   children,
-  backgroundColor = "hsl(var(--primary))",
+  backgroundColor = "",
+  animatedBackgroundColor = "hsl(var(--primary))",
   normalTextColor = "hsl(var(--primary-foreground))",
   hoverTextColor = "hsl(var(--foreground))",
   borderRadius = "9999px",
@@ -26,6 +28,9 @@ export default function AnimatedRoundedButton({
   const circle = useRef<HTMLDivElement>(null);
   const timeline = useRef<gsap.core.Timeline | null>(null);
   const [isHovered, setIsHovered] = useState(false);
+
+
+  console.log(backgroundColor,animatedBackgroundColor, 'lllllllll')
 
   const { contextSafe } = useGSAP(() => {
     timeline.current = gsap.timeline({ paused: true });
@@ -56,7 +61,7 @@ export default function AnimatedRoundedButton({
         "group relative flex cursor-pointer items-center justify-center overflow-hidden border border-border px-[60px] py-[15px]",
         className
       )}
-      style={{ borderRadius }}
+      style={{ borderRadius, backgroundColor }}
       onMouseEnter={manageMouseEnter}
       onMouseLeave={manageMouseLeave}
       {...attributes}
@@ -69,7 +74,7 @@ export default function AnimatedRoundedButton({
       </div>
       <div
         ref={circle}
-        style={{ backgroundColor }}
+        style={{ backgroundColor: animatedBackgroundColor }}
         className="absolute top-full h-[150%] w-full rounded-[300%]"
       ></div>
     </div>

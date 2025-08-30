@@ -120,7 +120,7 @@ export default function SubmitAppPage() {
             window.removeEventListener('hashchange', handleHashChange);
         };
     }, []);
-    
+
     const [isMounted, setIsMounted] = useState(false);
     useEffect(() => {
         setIsMounted(true);
@@ -130,15 +130,15 @@ export default function SubmitAppPage() {
         return null;
     }
 
-    const normalTextColor = 'hsl(var(--primary-foreground))';
     const hoverTextColor = theme === 'dark' ? 'black' : 'white';
+    const hoverBgColor = theme === 'dark' ? 'white' : 'black';
 
 
     return (
         <div className="bg-[#f8fafc] dark:bg-[#0f151e] min-h-screen">
             <div className="sticky top-0 z-40 backdrop-blur-lg">
                 <header className="container mx-auto px-4 md:px-6">
-                     <div className="flex items-center justify-between h-20">
+                    <div className="flex items-center justify-between h-20">
                         <div className="flex items-center gap-4">
                             <Button variant="outline" size="sm" asChild>
                                 <Link href="/community-dashboard"><ArrowLeft className="mr-2 h-4 w-4" /> Back to Hub</Link>
@@ -150,8 +150,9 @@ export default function SubmitAppPage() {
                         <div className="flex items-center gap-1 sm:gap-3">
                             <div onClick={form.handleSubmit(onSubmit)} className="cursor-pointer">
                                 <AnimatedRoundedButton
-                                    fromTextColor={normalTextColor}
-                                    toTextColor={hoverTextColor}
+                                    backgroundColor="hsl(var(--primary))"
+                                    animatedBackgroundColor={hoverBgColor}
+                                    hoverTextColor={hoverTextColor}
                                     borderRadius='9999px'
                                 >
                                     <div className="flex items-center gap-2">
@@ -312,7 +313,7 @@ export default function SubmitAppPage() {
                                                     </FormItem>
                                                 )}
                                             />
-                                             <FormField
+                                            <FormField
                                                 control={form.control}
                                                 name="pointsToSpend"
                                                 render={({ field }) => (
