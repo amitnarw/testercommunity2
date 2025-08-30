@@ -4,19 +4,19 @@
 import { useState, Fragment } from 'react';
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
-import Link from 'next/link';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Checkbox } from '@/components/ui/checkbox';
-import { ArrowLeft, Star, Upload, ExternalLink, Smartphone, Clock, FileText, Check, Hourglass, Send, User } from 'lucide-react';
+import { Star, Upload, ExternalLink, Smartphone, Clock, FileText, Check, Hourglass, Send, User } from 'lucide-react';
 import { communityApps } from '@/lib/data';
 import { cn } from '@/lib/utils';
 import { AnimatePresence, motion } from 'framer-motion';
 import { Separator } from '@/components/ui/separator';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
+import { BackButton } from '@/components/back-button';
 
 type TestingState = 'idle' | 'requested' | 'approved';
 
@@ -92,9 +92,7 @@ export default function AppTestingPage({ params }: { params: { id: string } }) {
         <div className="bg-background text-foreground min-h-screen">
             <div className="container mx-auto px-4 md:px-6 py-12">
                  <header className="mb-8 max-w-7xl mx-auto">
-                    <Button variant="outline" asChild className="rounded-full mb-6">
-                        <Link href="/community-dashboard"><ArrowLeft className="mr-2 h-4 w-4" /> Back</Link>
-                    </Button>
+                    <BackButton href="/community-dashboard" className="mb-6" />
                 </header>
 
                 <main className="max-w-7xl mx-auto grid lg:grid-cols-3 gap-12">

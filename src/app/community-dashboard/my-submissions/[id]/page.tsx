@@ -8,7 +8,7 @@ import { projects as allProjects } from '@/lib/data'; // Using project data as i
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { ArrowLeft, Bug, CheckCircle, Clock, Smartphone, MessageSquare, Star, BarChart, MapPin, LayoutGrid, List, Users } from 'lucide-react';
+import { Bug, CheckCircle, Clock, Smartphone, MessageSquare, Star, BarChart, MapPin, LayoutGrid, List, Users } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
 import {
   Table,
@@ -25,6 +25,7 @@ import type { ProjectFeedback } from '@/lib/types';
 import { cn } from '@/lib/utils';
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from '@/components/ui/pagination';
 import { format } from 'date-fns';
+import { BackButton } from '@/components/back-button';
 
 
 const FEEDBACK_PER_PAGE = 5;
@@ -97,9 +98,7 @@ export default function CommunitySubmissionDetailsPage({ params }: { params: { i
     <div className="bg-secondary/50 min-h-screen">
         <div className="container mx-auto px-4 md:px-6 py-12">
             <header className="mb-8 max-w-7xl mx-auto">
-                <Button variant="outline" asChild className="rounded-full mb-4">
-                    <Link href="/community-dashboard/my-submissions"><ArrowLeft className="mr-2 h-4 w-4" /> Back</Link>
-                </Button>
+                <BackButton href="/community-dashboard/my-submissions" className="mb-4" />
                 <div className="flex flex-col md:flex-row items-start gap-6">
                     <Image src={project.icon} alt={project.name} width={100} height={100} className="rounded-2xl border bg-background" data-ai-hint={project.dataAiHint} />
                     <div className="flex-grow">

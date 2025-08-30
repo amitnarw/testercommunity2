@@ -2,7 +2,6 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import Link from 'next/link';
 import { useForm, FormProvider } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -10,15 +9,15 @@ import { motion, useInView } from 'framer-motion';
 import { useTheme } from 'next-themes';
 
 import { Card, CardContent } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { ArrowLeft, FileText, Settings, Link as LinkIcon, ArrowRight } from 'lucide-react';
+import { FileText, Settings, Link as LinkIcon } from 'lucide-react';
 import { FormField, FormControl, FormItem, FormMessage, FormLabel } from '@/components/ui/form';
 import { cn } from '@/lib/utils';
 import AnimatedRoundedButton from '@/components/ui/animated-rounded-button';
+import { BackButton } from '@/components/back-button';
 
 
 const submissionSchema = z.object({
@@ -140,9 +139,7 @@ export default function SubmitAppPage() {
                 <header className="container mx-auto px-4 md:px-6">
                     <div className="flex items-center justify-between h-20">
                         <div className="flex items-center gap-4">
-                            <Button variant="outline" size="sm" asChild className="rounded-full">
-                                <Link href="/community-dashboard"><ArrowLeft className="mr-2 h-4 w-4" /> Back</Link>
-                            </Button>
+                            <BackButton href="/community-dashboard" />
                             <div className='hidden sm:block'>
                                 <h1 className="text-xl font-bold">Submit Your App</h1>
                             </div>
@@ -150,9 +147,10 @@ export default function SubmitAppPage() {
                         <div className="flex items-center gap-1 sm:gap-3">
                             <div onClick={form.handleSubmit(onSubmit)} className="cursor-pointer">
                                 <AnimatedRoundedButton
+                                    fromTextColor="hsl(var(--primary-foreground))"
+                                    toTextColor={hoverTextColor}
                                     backgroundColor="hsl(var(--primary))"
                                     animatedBackgroundColor={hoverBgColor}
-                                    hoverTextColor={hoverTextColor}
                                     borderRadius='9999px'
                                 >
                                     <div className="flex items-center gap-2">

@@ -3,7 +3,7 @@
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card'
 import { Button } from '@/components/ui/button';
-import { PlusCircle, FileClock, CheckCircle, Clock, ArrowRight, Search, FileCheck, Users, ArrowLeft } from 'lucide-react'
+import { PlusCircle, FileClock, CheckCircle, Clock, ArrowRight, Search, FileCheck, Users } from 'lucide-react'
 import Link from 'next/link';
 import { useState } from 'react';
 import { projects as allProjects } from '@/lib/data';
@@ -14,6 +14,7 @@ import Image from 'next/image';
 import { cn } from '@/lib/utils';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Separator } from '@/components/ui/separator';
+import { BackButton } from '@/components/back-button';
 
 const PROJECTS_PER_PAGE = 6;
 
@@ -142,9 +143,7 @@ export default function MySubmissionsPage() {
       <div className="min-h-screen bg-secondary/50">
         <div className="container mx-auto px-4 md:px-6 py-12">
           <header className="mb-8">
-            <Button variant="outline" asChild className="rounded-full mb-4">
-                <Link href="/community-dashboard"><ArrowLeft className="mr-2 h-4 w-4" /> Back</Link>
-            </Button>
+            <BackButton href="/community-dashboard" className="mb-4" />
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                 <div>
                   <h1 className="text-4xl font-bold">My Submissions</h1>

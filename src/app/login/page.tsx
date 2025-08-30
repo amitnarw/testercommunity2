@@ -6,9 +6,10 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { useTheme } from 'next-themes';
-import { Moon, Sun, ArrowLeft } from 'lucide-react';
+import { Moon, Sun } from 'lucide-react';
 import { BackgroundBeams } from '@/components/background-beams';
 import { useRouter } from 'next/navigation';
+import { BackButton } from '@/components/back-button';
 
 const GoogleIcon = (props: React.SVGProps<SVGSVGElement>) => (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="24px" height="24px" {...props}>
@@ -63,9 +64,7 @@ export default function LoginPage() {
     <div className="min-h-screen w-full lg:grid lg:grid-cols-2">
         <div className="relative w-full h-screen flex flex-col items-center justify-center p-6 bg-background">
             <div className="absolute top-4 right-4 flex items-center gap-4">
-                <Button variant="outline" asChild className="rounded-full">
-                    <Link href="/"><ArrowLeft className="mr-2 h-4 w-4" /> Back</Link>
-                </Button>
+                <BackButton href="/" />
                 <Button
                 variant="ghost"
                 size="icon"
