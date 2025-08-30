@@ -44,21 +44,21 @@ export default function AppTestingPage({ params }: { params: { id: string } }) {
     return (
         <div className="bg-secondary/50 min-h-screen">
             <div className="container mx-auto px-4 md:px-6 py-12">
-                 <header className="mb-8 max-w-5xl mx-auto">
+                 <header className="mb-8 max-w-4xl mx-auto">
                     <Button variant="ghost" asChild className="mb-4">
                         <Link href="/community-dashboard"><ArrowLeft className="mr-2 h-4 w-4" /> Back to Community Hub</Link>
                     </Button>
                     <div className="flex flex-col md:flex-row items-start gap-6">
-                        <Image src={app.icon} alt={app.name} width={100} height={100} className="rounded-2xl border" data-ai-hint={app.dataAiHint} />
+                        <Image src={app.icon} alt={app.name} width={100} height={100} className="rounded-2xl border bg-background" data-ai-hint={app.dataAiHint} />
                         <div className='flex-grow'>
+                            <Badge variant="outline" className="mb-2">{app.category}</Badge>
                             <h1 className="text-4xl font-bold">{app.name}</h1>
                             <div className="flex flex-wrap items-center gap-x-4 gap-y-2 mt-3 text-sm">
-                                <Badge variant="outline">{app.category}</Badge>
                                 <div className="flex items-center gap-1.5 text-muted-foreground"><Smartphone className="w-4 h-4"/> Requires Android {app.androidVersion}</div>
                                 <div className="flex items-center gap-1.5 text-muted-foreground"><Clock className="w-4 h-4"/> ~{app.estimatedTime} test</div>
                             </div>
                         </div>
-                        <Card className="p-4 rounded-xl text-center shrink-0">
+                        <Card className="p-4 rounded-xl text-center shrink-0 bg-background/50 border-dashed">
                             <CardTitle className="text-sm text-muted-foreground">Reward</CardTitle>
                             <div className="text-3xl font-bold text-primary flex items-center gap-2 justify-center">
                                 <Star className="w-7 h-7" />
@@ -68,57 +68,56 @@ export default function AppTestingPage({ params }: { params: { id: string } }) {
                     </div>
                 </header>
 
-                <main className="grid md:grid-cols-2 gap-8 items-start max-w-5xl mx-auto">
-                    <div className="space-y-6">
-                        <Card className="rounded-xl">
-                            <CardHeader>
-                                <CardTitle>About the App</CardTitle>
-                            </CardHeader>
-                            <CardContent>
-                                <p className="text-muted-foreground">{app.shortDescription}</p>
-                            </CardContent>
-                        </Card>
-                         <Card className="rounded-xl">
-                            <CardHeader>
-                                <CardTitle>Screenshots</CardTitle>
-                            </CardHeader>
-                            <CardContent className="grid grid-cols-2 gap-4">
-                                {app.screenshots.map((ss, index) => (
-                                    <Image key={index} src={ss.url} alt={ss.alt} width={400} height={800} className="rounded-lg border" data-ai-hint={ss.dataAiHint}/>
-                                ))}
-                            </CardContent>
-                        </Card>
-                         <div className="w-full">
-                            <AnimatePresence mode="wait">
-                                <motion.div
-                                    key={testingState}
-                                    initial={{ opacity: 0, y: 10 }}
-                                    animate={{ opacity: 1, y: 0, transition: { delay: 0.1, duration: 0.3 } }}
-                                    exit={{ opacity: 0, y: -10, transition: { duration: 0.2 } }}
-                                >
-                                    {testingState === 'idle' && (
-                                        <Button size="lg" className="w-full text-lg h-14" onClick={handleRequestToJoin}>
-                                            <Send className="mr-2 h-5 w-5"/> Request to Join Testing
-                                        </Button>
-                                    )}
-                                    {testingState === 'requested' && (
-                                        <Button size="lg" className="w-full text-lg h-14" disabled>
-                                            <Hourglass className="mr-2 h-5 w-5 animate-spin"/> Request Sent, Awaiting Approval...
-                                        </Button>
-                                    )}
-                                     {testingState === 'approved' && (
-                                        <Button size="lg" asChild className="w-full text-lg h-14 bg-green-600 hover:bg-green-700">
-                                           <a href={app.playStoreUrl} target="_blank" rel="noopener noreferrer">
-                                                <Check className="mr-2 h-5 w-5"/> Approved! Start Testing on Google Play <ExternalLink className="ml-2 h-4 w-4" />
-                                           </a>
-                                        </Button>
-                                    )}
-                                </motion.div>
-                            </AnimatePresence>
-                        </div>
+                <main className="max-w-3xl mx-auto space-y-8">
+                    <Card className="rounded-xl">
+                        <CardHeader>
+                            <CardTitle>About the App</CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            <p className="text-muted-foreground">{app.shortDescription}</p>
+                        </CardContent>
+                    </Card>
+                     <Card className="rounded-xl">
+                        <CardHeader>
+                            <CardTitle>Screenshots</CardTitle>
+                        </CardHeader>
+                        <CardContent className="grid grid-cols-2 gap-4">
+                            {app.screenshots.map((ss, index) => (
+                                <Image key={index} src={ss.url} alt={ss.alt} width={400} height={800} className="rounded-lg border hover:scale-105 transition-transform duration-300" data-ai-hint={ss.dataAiHint}/>
+                            ))}
+                        </CardContent>
+                    </Card>
+
+                    <div className="w-full pt-4">
+                        <AnimatePresence mode="wait">
+                            <motion.div
+                                key={testingState}
+                                initial={{ opacity: 0, y: 10 }}
+                                animate={{ opacity: 1, y: 0, transition: { delay: 0.1, duration: 0.3 } }}
+                                exit={{ opacity: 0, y: -10, transition: { duration: 0.2 } }}
+                            >
+                                {testingState === 'idle' && (
+                                    <Button size="lg" className="w-full text-lg h-14" onClick={handleRequestToJoin}>
+                                        <Send className="mr-2 h-5 w-5"/> Request to Join Testing
+                                    </Button>
+                                )}
+                                {testingState === 'requested' && (
+                                    <Button size="lg" className="w-full text-lg h-14" disabled>
+                                        <Hourglass className="mr-2 h-5 w-5 animate-spin"/> Request Sent, Awaiting Approval...
+                                    </Button>
+                                )}
+                                 {testingState === 'approved' && (
+                                    <Button size="lg" asChild className="w-full text-lg h-14 bg-green-600 hover:bg-green-700">
+                                       <a href={app.playStoreUrl} target="_blank" rel="noopener noreferrer">
+                                            <Check className="mr-2 h-5 w-5"/> Approved! Start Testing on Google Play <ExternalLink className="ml-2 h-4 w-4" />
+                                       </a>
+                                    </Button>
+                                )}
+                            </motion.div>
+                        </AnimatePresence>
                     </div>
 
-                    <div className="space-y-6 relative">
+                    <div className="space-y-8 relative">
                          <AnimatePresence>
                             {isFeedbackDisabled && (
                                 <motion.div 
@@ -129,6 +128,7 @@ export default function AppTestingPage({ params }: { params: { id: string } }) {
                                 ></motion.div>
                             )}
                         </AnimatePresence>
+                        
                         <Card className={`rounded-xl transition-all duration-500`}>
                             <CardHeader>
                                 <CardTitle className="flex items-center gap-2"><FileText className="w-5 h-5 text-primary"/> Testing Instructions</CardTitle>
@@ -138,6 +138,7 @@ export default function AppTestingPage({ params }: { params: { id: string } }) {
                                 <p>{app.testingInstructions}</p>
                             </CardContent>
                         </Card>
+                        
                         <Card className={`rounded-xl transition-all duration-500`}>
                             <CardHeader>
                                 <CardTitle>Submit Feedback</CardTitle>
@@ -187,6 +188,3 @@ export default function AppTestingPage({ params }: { params: { id: string } }) {
         </div>
     );
 }
-
-
-    
