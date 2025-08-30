@@ -20,6 +20,55 @@ import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 
 type TestingState = 'idle' | 'requested' | 'approved';
 
+const AppInfoSidebar = ({ app }: { app: any }) => (
+     <div className="sticky top-24 space-y-6">
+         <Card className="bg-secondary/50 border-0">
+            <CardContent className="p-6">
+                <div className="flex items-center gap-4 mb-4">
+                    <Image src={app.icon} alt={app.name} width={64} height={64} className="rounded-xl border bg-background shadow-sm" data-ai-hint={app.dataAiHint} />
+                    <div>
+                        <h2 className="text-xl font-bold">{app.name}</h2>
+                        <Badge variant="outline" className="mt-1">{app.category}</Badge>
+                    </div>
+                </div>
+                <Separator className="my-4" />
+                <div className="space-y-3 text-sm text-muted-foreground">
+                    <div className="flex items-center gap-2"><Smartphone className="w-5 h-5 text-primary/80"/> Requires Android {app.androidVersion}</div>
+                    <div className="flex items-center gap-2"><Clock className="w-5 h-5 text-primary/80"/> ~{app.estimatedTime} test</div>
+                </div>
+            </CardContent>
+            <CardFooter className="p-6 pt-0">
+                    <div className="w-full bg-primary/10 border border-primary/20 p-4 rounded-xl text-center">
+                    <p className="text-sm font-semibold text-primary">REWARD</p>
+                    <div className="text-3xl font-bold text-foreground flex items-center gap-2 justify-center mt-1">
+                        <Star className="w-7 h-7 text-amber-400 fill-amber-400" />
+                        {app.points} Points
+                    </div>
+                </div>
+            </CardFooter>
+        </Card>
+
+        <Card className="bg-secondary/50 border-0">
+                <CardHeader>
+                <CardTitle className="text-base">Developer</CardTitle>
+            </CardHeader>
+            <CardContent>
+                <div className="flex items-center gap-3">
+                    <Avatar>
+                        <AvatarImage src="https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=400&auto=format&fit=crop" data-ai-hint="man developer" />
+                        <AvatarFallback>DV</AvatarFallback>
+                    </Avatar>
+                    <div>
+                        <p className="font-semibold text-sm">AppDev Co.</p>
+                        <p className="text-xs text-muted-foreground">Member since 2023</p>
+                    </div>
+                </div>
+            </CardContent>
+        </Card>
+    </div>
+);
+
+
 export default function AppTestingPage({ params }: { params: { id: string } }) {
     const [testingState, setTestingState] = useState<TestingState>('idle');
     const [rating, setRating] = useState(0);
@@ -65,6 +114,40 @@ export default function AppTestingPage({ params }: { params: { id: string } }) {
                                 ))}
                             </div>
                         </section>
+                        
+                        {/* Sidebar for mobile, shown in flow */}
+                        <div className="block lg:hidden">
+                            <AppInfoSidebar app={app} />
+                        </div>
+
+
+                        <AnimatePresence mode="wait">
+                            <motion.div
+                                key={testingState}
+                                initial={{ opacity: 0, y: 10 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                className="w-full"
+                            >
+                                {testingState === 'idle' && (
+                                    <Button size="lg" className="w-full text-lg h-14" onClick={handleRequestToJoin}>
+                                        <Send className="mr-2 h-5 w-5"/> Request to Join Testing
+                                    </Button>
+                                )}
+                                {testingState === 'requested' && (
+                                    <Button size="lg" className="w-full text-lg h-14" disabled>
+                                        <Hourglass className="mr-2 h-5 w-5 animate-spin"/> Awaiting Approval...
+                                    </Button>
+                                )}
+                                {testingState === 'approved' && (
+                                    <Button size="lg" asChild className="w-full text-lg h-14 bg-green-600 hover:bg-green-700">
+                                        <a href={app.playStoreUrl} target="_blank" rel="noopener noreferrer">
+                                            <Check className="mr-2 h-5 w-5"/> Start Testing on Google Play <ExternalLink className="ml-2 h-4 w-4" />
+                                        </a>
+                                    </Button>
+                                )}
+                            </motion.div>
+                        </AnimatePresence>
+
 
                         <div className="relative space-y-12">
                              <AnimatePresence>
@@ -131,79 +214,8 @@ export default function AppTestingPage({ params }: { params: { id: string } }) {
                             </section>
                         </div>
                    </div>
-                   <aside className="lg:col-span-1">
-                        <div className="sticky top-24 space-y-6">
-                             <Card className="bg-secondary/50 border-0">
-                                <CardContent className="p-6">
-                                    <div className="flex items-center gap-4 mb-4">
-                                        <Image src={app.icon} alt={app.name} width={64} height={64} className="rounded-xl border bg-background shadow-sm" data-ai-hint={app.dataAiHint} />
-                                        <div>
-                                            <h2 className="text-xl font-bold">{app.name}</h2>
-                                            <Badge variant="outline" className="mt-1">{app.category}</Badge>
-                                        </div>
-                                    </div>
-                                    <Separator className="my-4" />
-                                    <div className="space-y-3 text-sm text-muted-foreground">
-                                        <div className="flex items-center gap-2"><Smartphone className="w-5 h-5 text-primary/80"/> Requires Android {app.androidVersion}</div>
-                                        <div className="flex items-center gap-2"><Clock className="w-5 h-5 text-primary/80"/> ~{app.estimatedTime} test</div>
-                                    </div>
-                                </CardContent>
-                                <CardFooter className="p-6 pt-0">
-                                     <div className="w-full bg-primary/10 border border-primary/20 p-4 rounded-xl text-center">
-                                        <p className="text-sm font-semibold text-primary">REWARD</p>
-                                        <div className="text-3xl font-bold text-foreground flex items-center gap-2 justify-center mt-1">
-                                            <Star className="w-7 h-7 text-amber-400 fill-amber-400" />
-                                            {app.points} Points
-                                        </div>
-                                    </div>
-                                </CardFooter>
-                            </Card>
-
-                            <AnimatePresence mode="wait">
-                                <motion.div
-                                    key={testingState}
-                                    initial={{ opacity: 0, y: 10 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    className="w-full"
-                                >
-                                    {testingState === 'idle' && (
-                                        <Button size="lg" className="w-full text-lg h-14" onClick={handleRequestToJoin}>
-                                            <Send className="mr-2 h-5 w-5"/> Request to Join Testing
-                                        </Button>
-                                    )}
-                                    {testingState === 'requested' && (
-                                        <Button size="lg" className="w-full text-lg h-14" disabled>
-                                            <Hourglass className="mr-2 h-5 w-5 animate-spin"/> Awaiting Approval...
-                                        </Button>
-                                    )}
-                                    {testingState === 'approved' && (
-                                        <Button size="lg" asChild className="w-full text-lg h-14 bg-green-600 hover:bg-green-700">
-                                            <a href={app.playStoreUrl} target="_blank" rel="noopener noreferrer">
-                                                <Check className="mr-2 h-5 w-5"/> Start Testing on Google Play <ExternalLink className="ml-2 h-4 w-4" />
-                                            </a>
-                                        </Button>
-                                    )}
-                                </motion.div>
-                            </AnimatePresence>
-
-                            <Card className="bg-secondary/50 border-0">
-                                 <CardHeader>
-                                    <CardTitle className="text-base">Developer</CardTitle>
-                                </CardHeader>
-                                <CardContent>
-                                    <div className="flex items-center gap-3">
-                                        <Avatar>
-                                            <AvatarImage src="https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=400&auto=format&fit=crop" data-ai-hint="man developer" />
-                                            <AvatarFallback>DV</AvatarFallback>
-                                        </Avatar>
-                                        <div>
-                                            <p className="font-semibold text-sm">AppDev Co.</p>
-                                            <p className="text-xs text-muted-foreground">Member since 2023</p>
-                                        </div>
-                                    </div>
-                                </CardContent>
-                            </Card>
-                        </div>
+                   <aside className="lg:col-span-1 hidden lg:block">
+                        <AppInfoSidebar app={app} />
                    </aside>
                 </main>
             </div>
