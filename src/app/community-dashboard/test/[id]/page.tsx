@@ -92,8 +92,8 @@ export default function AppTestingPage({ params }: { params: { id: string } }) {
         <div className="bg-background text-foreground min-h-screen">
             <div className="container mx-auto px-4 md:px-6 py-12">
                  <header className="mb-8 max-w-7xl mx-auto">
-                    <Button variant="ghost" asChild className="mb-6">
-                        <Link href="/community-dashboard"><ArrowLeft className="mr-2 h-4 w-4" /> Back to Community Hub</Link>
+                    <Button variant="outline" asChild className="rounded-full mb-6">
+                        <Link href="/community-dashboard"><ArrowLeft className="mr-2 h-4 w-4" /> Back</Link>
                     </Button>
                 </header>
 

@@ -6,6 +6,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import Link from 'next/link';
 import { ArrowLeft } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 export async function generateStaticParams() {
   return blogPosts.map((post) => ({
@@ -24,10 +25,12 @@ export default function BlogPostPage({ params }: { params: { slug: string } }) {
     <div className="bg-background">
         <div className="container mx-auto px-4 md:px-6 py-12 md:py-20">
             <div className="max-w-4xl mx-auto">
-                 <Link href="/blog" className="inline-flex items-center gap-2 text-muted-foreground hover:text-primary transition-colors mb-8">
-                    <ArrowLeft className="w-4 h-4" />
-                    Back to Blog
-                </Link>
+                 <Button asChild variant="outline" className="rounded-full mb-8">
+                    <Link href="/blog">
+                        <ArrowLeft className="mr-2 h-4 w-4" />
+                        Back
+                    </Link>
+                </Button>
                 <article>
                     <header className="mb-8">
                         <h1 className="text-4xl md:text-5xl font-bold mb-4">{post.title}</h1>

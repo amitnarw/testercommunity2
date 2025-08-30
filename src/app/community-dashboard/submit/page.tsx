@@ -140,8 +140,8 @@ export default function SubmitAppPage() {
                 <header className="container mx-auto px-4 md:px-6">
                     <div className="flex items-center justify-between h-20">
                         <div className="flex items-center gap-4">
-                            <Button variant="outline" size="sm" asChild>
-                                <Link href="/community-dashboard"><ArrowLeft className="mr-2 h-4 w-4" /> Back to Hub</Link>
+                            <Button variant="outline" size="sm" asChild className="rounded-full">
+                                <Link href="/community-dashboard"><ArrowLeft className="mr-2 h-4 w-4" /> Back</Link>
                             </Button>
                             <div className='hidden sm:block'>
                                 <h1 className="text-xl font-bold">Submit Your App</h1>

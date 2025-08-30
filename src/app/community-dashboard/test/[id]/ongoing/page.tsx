@@ -22,8 +22,8 @@ export default function AppTestingOngoingPage({ params }: { params: { id: string
         <div className="bg-secondary/50 min-h-screen">
             <div className="container mx-auto px-4 md:px-6 py-12">
                  <header className="mb-8 max-w-4xl mx-auto">
-                    <Button variant="ghost" asChild className="mb-4">
-                        <Link href="/community-dashboard"><ArrowLeft className="mr-2 h-4 w-4" /> Back to Community Hub</Link>
+                    <Button variant="outline" asChild className="rounded-full mb-4">
+                        <Link href="/community-dashboard"><ArrowLeft className="mr-2 h-4 w-4" /> Back</Link>
                     </Button>
                      <div className="flex items-start gap-6">
                         <Image src={app.icon} alt={app.name} width={100} height={100} className="rounded-2xl border" data-ai-hint={app.dataAiHint} />

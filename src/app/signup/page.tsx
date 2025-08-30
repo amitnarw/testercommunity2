@@ -26,8 +26,8 @@ export default function SignupPage() {
       </div>
       <div className="relative w-full flex flex-col items-center justify-start lg:justify-center p-6 bg-background">
         <div className="absolute top-4 right-4 flex items-center gap-4">
-             <Button variant="ghost" asChild>
-                <Link href="/"><ArrowLeft className="mr-2 h-4 w-4" /> Go to Home</Link>
+             <Button variant="outline" asChild className="rounded-full">
+                <Link href="/"><ArrowLeft className="mr-2 h-4 w-4" /> Back</Link>
             </Button>
             <Button
               variant="ghost"

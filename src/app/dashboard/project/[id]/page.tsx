@@ -162,8 +162,8 @@ export default function ProjectDetailsPage({ params }: { params: { id: string } 
         <div className="container px-4 md:px-6 py-12">
             <motion.div initial="hidden" animate="visible" variants={pageVariants}>
                 <motion.div variants={itemVariants}>
-                    <Button variant="ghost" asChild className="mb-4">
-                        <Link href="/dashboard"><ArrowLeft className="mr-2 h-4 w-4" /> Back to Dashboard</Link>
+                    <Button variant="outline" asChild className="rounded-full mb-4">
+                        <Link href="/dashboard"><ArrowLeft className="mr-2 h-4 w-4" /> Back</Link>
                     </Button>
                     <div className="rounded-2xl overflow-hidden shadow-lg border-border/50 bg-card p-6 flex flex-col md:flex-row items-start gap-6">
                         <Image src={project.icon} alt={project.name} width={100} height={100} className="rounded-2xl border bg-background" data-ai-hint={project.dataAiHint} />

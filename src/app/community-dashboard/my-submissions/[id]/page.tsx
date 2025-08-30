@@ -97,8 +97,8 @@ export default function CommunitySubmissionDetailsPage({ params }: { params: { i
     <div className="bg-secondary/50 min-h-screen">
         <div className="container mx-auto px-4 md:px-6 py-12">
             <header className="mb-8 max-w-7xl mx-auto">
-                <Button variant="ghost" asChild className="mb-4">
-                    <Link href="/community-dashboard/my-submissions"><ArrowLeft className="mr-2 h-4 w-4" /> Back to My Submissions</Link>
+                <Button variant="outline" asChild className="rounded-full mb-4">
+                    <Link href="/community-dashboard/my-submissions"><ArrowLeft className="mr-2 h-4 w-4" /> Back</Link>
                 </Button>
                 <div className="flex flex-col md:flex-row items-start gap-6">
                     <Image src={project.icon} alt={project.name} width={100} height={100} className="rounded-2xl border bg-background" data-ai-hint={project.dataAiHint} />
