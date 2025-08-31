@@ -7,6 +7,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { motion } from 'framer-motion';
 import { useTheme } from 'next-themes';
+import { useInView } from 'react-intersection-observer';
 
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
@@ -56,9 +57,9 @@ const formSteps = [
     },
 ];
 
-const Section = ({ id, title, description, children }: { id: string, title: string, description: string, children: React.ReactNode }) => {
+const Section = ({ id, title, description, children, sectionRef }: { id: string, title: string, description: string, children: React.ReactNode, sectionRef: React.RefObject<HTMLDivElement> }) => {
     return (
-        <section id={id} className="min-h-[85vh] flex flex-col justify-center scroll-mt-24 pt-16">
+        <section ref={sectionRef} id={id} className="min-h-[85vh] flex flex-col justify-center scroll-mt-24 pt-16">
             <div className="mb-8">
                 <h2 className="text-3xl font-bold">{title}</h2>
                 <p className="text-muted-foreground mt-2">{description}</p>
@@ -82,26 +83,17 @@ export default function SubmitAppPage() {
         console.log("Form submitted:", data);
         alert("App submitted successfully! (Check console for data)");
     }
+    
+    const { ref: connectRef, inView: connectInView } = useInView({ threshold: 0.5 });
+    const { ref: describeRef, inView: describeInView } = useInView({ threshold: 0.5 });
+    const { ref: configureRef, inView: configureInView } = useInView({ threshold: 0.5 });
 
     useEffect(() => {
-        const observer = new IntersectionObserver(
-            (entries) => {
-                entries.forEach((entry) => {
-                    if (entry.isIntersecting) {
-                        setActiveStep(entry.target.id);
-                    }
-                });
-            },
-            { rootMargin: "-50% 0px -50% 0px" }
-        );
-
-        const sections = document.querySelectorAll('section[id]');
-        sections.forEach((section) => observer.observe(section));
-
-        return () => {
-            sections.forEach((section) => observer.unobserve(section));
-        };
-    }, []);
+        if (connectInView) setActiveStep('connect');
+        else if (describeInView) setActiveStep('describe');
+        else if (configureInView) setActiveStep('configure');
+    }, [connectInView, describeInView, configureInView]);
+    
 
     const [isMounted, setIsMounted] = useState(false);
     useEffect(() => {
@@ -210,7 +202,7 @@ export default function SubmitAppPage() {
                     <main className="lg:col-span-9">
                         <FormProvider {...form}>
                             <form onSubmit={form.handleSubmit(onSubmit)}>
-                                <Section id="connect" title="1. Connect Your App" description="Provide the essential links and name for your project.">
+                                <Section sectionRef={connectRef as any} id="connect" title="1. Connect Your App" description="Provide the essential links and name for your project.">
                                     <Card className="bg-secondary/30 border-dashed">
                                         <CardContent className="p-6 grid md:grid-cols-2 gap-6">
                                             <FormField
@@ -243,7 +235,7 @@ export default function SubmitAppPage() {
                                     </Card>
                                 </Section>
 
-                                <Section id="describe" title="2. Describe Your Project" description="Give testers the context they need for quality feedback.">
+                                <Section sectionRef={describeRef as any} id="describe" title="2. Describe Your Project" description="Give testers the context they need for quality feedback.">
                                     <Card className="bg-secondary/30 border-dashed">
                                         <CardContent className="p-6 space-y-6">
                                             <FormField
@@ -287,7 +279,7 @@ export default function SubmitAppPage() {
                                     </Card>
                                 </Section>
 
-                                <Section id="configure" title="3. Configure Your Test" description="Set the final parameters for your testing cycle. You must have enough earned points to cover this budget.">
+                                <Section sectionRef={configureRef as any} id="configure" title="3. Configure Your Test" description="Set the final parameters for your testing cycle. You must have enough earned points to cover this budget.">
                                     <Card className="bg-secondary/30 border-dashed">
                                         <CardContent className="p-6 grid md:grid-cols-2 gap-6">
                                             <FormField
@@ -336,4 +328,5 @@ export default function SubmitAppPage() {
             </div>
         </div>
     );
-}
+
+    
