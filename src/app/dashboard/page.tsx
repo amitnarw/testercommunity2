@@ -112,7 +112,7 @@ export default function DashboardPage() {
           <div className="mt-8">
             <ProjectList projects={currentProjects} />
             {totalPages > 1 && (
-              <Pagination className="mt-8">
+              <Pagination className="py-8">
                 <PaginationContent>
                   <PaginationItem>
                     <PaginationPrevious

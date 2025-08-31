@@ -4,7 +4,7 @@
 import { useState } from 'react';
 import { CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { ListFilter, ArrowUpDown, PlusCircle, Star, FileCheck, Activity } from 'lucide-react';
+import { ListFilter, ArrowUpDown, PlusCircle, Star, LayoutPanelLeft, Activity } from 'lucide-react';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { communityApps, projects as allProjects } from '@/lib/data';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -98,13 +98,17 @@ export default function CommunityDashboardPage() {
                             </div>
                         </BentoCard>
 
-                        <BentoCard className="bg-gradient-to-br from-primary to-primary/40 text-primary-foreground">
-                            <CardTitle className="text-sm font-medium flex items-center gap-2"><Star className="w-4 h-4" /> My Points</CardTitle>
-                            <p className="text-5xl font-bold text-center my-auto">1,250</p>
+                        <BentoCard className="bg-gradient-to-br from-primary to-primary/40 text-primary-foreground relative overflow-hidden">
+                            <CardTitle className="text-sm font-medium flex items-center gap-2">
+                                <Star className="absolute top-5 left-5 scale-[6] text-white/20 rotate-45 w-4 h-4" /> My Points
+                            </CardTitle>
+                            <p className="text-3xl sm:text-5xl font-bold text-center my-auto">1,250</p>
                         </BentoCard>
 
                         <BentoCard>
-                            <CardTitle className="text-sm font-medium flex items-center gap-2 text-muted-foreground">My Testing</CardTitle>
+                            <CardTitle className="text-sm font-medium flex items-center gap-2 text-muted-foreground">
+                                My Testing
+                            </CardTitle>
                             <div className="grid grid-cols-2 gap-2 w-full mt-2">
                                 <div className="text-center bg-secondary p-2 rounded-lg">
                                     <p className="text-2xl font-bold">{ongoingApps.length}</p>
@@ -117,15 +121,15 @@ export default function CommunityDashboardPage() {
                             </div>
                         </BentoCard>
 
-                        <BentoCard className="gap-2">
+                        <BentoCard className="flex !flex-row sm:!flex-col gap-2 col-span-2 lg:col-span-1">
                             <Button asChild className="w-full justify-start h-full bg-gradient-to-b from-primary to-primary/40 text-primary-foreground">
                                 <Link href="/community-dashboard/submit">
-                                    <PlusCircle className="mr-2 h-4 w-4" /> Submit a New App
+                                    <PlusCircle className="absolute sm:static left-0 top-0 scale-[2] text-white/20 sm:left-auto sm:top-auto sm:scale-[1] sm:text-white mr-2 h-4 w-4" /> Submit a New App
                                 </Link>
                             </Button>
                             <Button asChild variant="outline" className="w-full justify-start h-full">
                                 <Link href="/community-dashboard/my-submissions">
-                                    <FileCheck className="mr-2 h-4 w-4" /> My Submissions
+                                    <LayoutPanelLeft className="absolute sm:static left-0 top-0 scale-[2] text-black/10 dark:text-white/15 sm:left-auto sm:top-auto sm:scale-[1] sm:text-black dark:sm:text-white mr-2 h-4 w-4" /> My Submissions
                                 </Link>
                             </Button>
                         </BentoCard>
@@ -139,7 +143,7 @@ export default function CommunityDashboardPage() {
                                 <h2 className="text-2xl font-bold">Available Apps</h2>
                                 <p className="text-muted-foreground">Browse apps that need testing from the community.</p>
                             </div>
-                            <div className="flex gap-2">
+                            <div className="flex gap-2 flex-row items-center justify-end w-full md:w-auto">
                                 <DropdownMenu>
                                     <DropdownMenuTrigger asChild>
                                         <Button variant="outline" className="gap-2 rounded-xl">
@@ -180,7 +184,7 @@ export default function CommunityDashboardPage() {
                                 ))}
                             </div>
                             {totalAvailablePages > 1 && (
-                                <Pagination className="mt-8">
+                                <Pagination className="py-8">
                                     <PaginationContent>
                                         <PaginationItem>
                                             <PaginationPrevious
@@ -222,7 +226,7 @@ export default function CommunityDashboardPage() {
                                 )}
                             </div>
                             {totalOngoingPages > 1 && (
-                                <Pagination className="mt-8">
+                                <Pagination className="py-8">
                                     <PaginationContent>
                                         <PaginationItem>
                                             <PaginationPrevious
@@ -264,7 +268,7 @@ export default function CommunityDashboardPage() {
                                 )}
                             </div>
                             {totalCompletedPages > 1 && (
-                                <Pagination className="mt-8">
+                                <Pagination className="py-8">
                                     <PaginationContent>
                                         <PaginationItem>
                                             <PaginationPrevious
