@@ -75,7 +75,7 @@ export default function RootLayout({
                   />
                   <div className="flex flex-col flex-1 md:pl-20">
                       <CommunityNavbar 
-                        onLogout={handleLogout}
+                        onLogout={onLogout}
                       />
                       <main className="flex-1">
                         {children}
@@ -96,9 +96,11 @@ export default function RootLayout({
                       onLogout={handleLogout}
                     />
                   )}
-                  <main className="flex-1">
-                    {children}
-                  </main>
+                  <div className="relative z-[1] bg-background pb-[450px]">
+                    <main className="flex-1">
+                        {children}
+                    </main>
+                  </div>
                   {!isAuthPage && <Footer />}
                 </>
               )}

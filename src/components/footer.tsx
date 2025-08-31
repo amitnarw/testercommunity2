@@ -39,7 +39,7 @@ export function Footer() {
   return (
     <footer
       ref={footerRef}
-      className="bg-secondary/50 sticky bottom-0 -z-10 overflow-hidden"
+      className="bg-secondary/50 sticky bottom-0 overflow-hidden h-[450px]"
     >
       <div className="container mx-auto px-4 md:px-6 py-20">
         <div className="grid gap-8 lg:grid-cols-3">
@@ -118,16 +118,15 @@ export function Footer() {
             </div>
           </div>
         </div>
-        <div className="mt-4 pt-8 sm:mb-24 flex flex-col md:flex-row justify-between items-center text-sm text-muted-foreground">
+        <div className="mt-4 pt-8 flex flex-col md:flex-row justify-between items-center text-sm text-muted-foreground">
           <p>&copy; {new Date().getFullYear()} inTesters, Inc. All rights reserved.</p>
           <p>A Testing Community at its best.</p>
         </div>
       </div>
 
-      {/* Only "inTesters" animates up as you scroll to the bottom */}
       <motion.div
         style={{ y: testersY }}
-        className="-z-10 absolute bottom-0 flex items-end justify-center w-full overflow-hidden pointer-events-none"
+        className="z-10 absolute bottom-0 flex items-end justify-center w-full overflow-hidden pointer-events-none"
       >
         <p className="font-black text-primary/10 dark:text-secondary/50 text-[80px] sm:text-[200px] lg:text-[300px] -mb-10 sm:-mb-24 lg:-mb-40">
           inTesters
