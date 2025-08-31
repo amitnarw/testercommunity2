@@ -46,6 +46,11 @@ export default function RootLayout({
   const isDashboardPage = isAuthenticated && dashboardPages.some(p => pathname.startsWith(p));
   
   const renderLayout = () => {
+    if (!isAuthChecked) {
+      // Render nothing until we have confirmed the auth status on the client
+      return null;
+    }
+
     if (isDashboardPage) {
       return (
         <div className="flex flex-1">
@@ -104,7 +109,7 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <div className="relative flex flex-col min-h-screen">
-            {isAuthChecked ? renderLayout() : null}
+            {renderLayout()}
           </div>
           <Toaster />
         </ThemeProvider>
