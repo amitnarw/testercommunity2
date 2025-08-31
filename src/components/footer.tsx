@@ -82,8 +82,9 @@ export function Footer() {
               <ul className="space-y-2">
                 {navItems.map((item) => (
                   <li key={item.name}>
-                     <Link href={item.href} className="sliding-text-hover text-muted-foreground hover:text-primary transition-colors relative z-10 block" data-text={item.name}>
-                        <span>{item.name}</span>
+                     <Link href={item.href} className="group text-muted-foreground hover:text-primary transition-colors relative block overflow-hidden">
+                        <span className="block transition-transform duration-300 ease-in-out group-hover:-translate-y-full">{item.name}</span>
+                        <span className="absolute inset-0 block translate-y-full transition-transform duration-300 ease-in-out group-hover:translate-y-0 text-primary">{item.name}</span>
                      </Link>
                   </li>
                 ))}
@@ -94,8 +95,9 @@ export function Footer() {
               <ul className="space-y-2">
                 {resourceItems.map((item) => (
                   <li key={item.name}>
-                     <Link href={item.href} className="sliding-text-hover text-muted-foreground hover:text-primary transition-colors relative z-10 block" data-text={item.name}>
-                        <span>{item.name}</span>
+                     <Link href={item.href} className="group text-muted-foreground hover:text-primary transition-colors relative block overflow-hidden">
+                        <span className="block transition-transform duration-300 ease-in-out group-hover:-translate-y-full">{item.name}</span>
+                        <span className="absolute inset-0 block translate-y-full transition-transform duration-300 ease-in-out group-hover:translate-y-0 text-primary">{item.name}</span>
                      </Link>
                   </li>
                 ))}
@@ -106,8 +108,9 @@ export function Footer() {
               <ul className="space-y-2">
                 {legalItems.map((item) => (
                   <li key={item.name}>
-                     <Link href={item.href} className="sliding-text-hover text-muted-foreground hover:text-primary transition-colors relative z-10 block" data-text={item.name}>
-                        <span>{item.name}</span>
+                     <Link href={item.href} className="group text-muted-foreground hover:text-primary transition-colors relative block overflow-hidden">
+                        <span className="block transition-transform duration-300 ease-in-out group-hover:-translate-y-full">{item.name}</span>
+                        <span className="absolute inset-0 block translate-y-full transition-transform duration-300 ease-in-out group-hover:translate-y-0 text-primary">{item.name}</span>
                      </Link>
                   </li>
                 ))}
