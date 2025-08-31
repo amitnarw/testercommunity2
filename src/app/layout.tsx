@@ -24,14 +24,16 @@ export default function RootLayout({
   const [isAuthChecked, setIsAuthChecked] = useState(false);
 
   useEffect(() => {
+    // This effect runs only on the client side after hydration.
     const authStatus = localStorage.getItem('isAuthenticated') === 'true';
     setIsAuthenticated(authStatus);
-    setIsAuthChecked(true);
-  }, [pathname]);
+    setIsAuthChecked(true); // Mark that we have checked for authentication.
+  }, [pathname]); // Re-check on path change to handle login/logout navigation
 
   const handleLogout = () => {
     localStorage.removeItem('isAuthenticated');
     setIsAuthenticated(false);
+    // No need to manually navigate, the layout will re-render correctly.
   };
   
   const authPages = ['/login', '/signup'];
@@ -43,56 +45,29 @@ export default function RootLayout({
   ];
 
   const isAuthPage = authPages.includes(pathname);
-  const isDashboardPage = isAuthenticated && dashboardPages.some(p => pathname.startsWith(p));
   
-  const renderLayout = () => {
-    if (!isAuthChecked) {
-      // Render nothing until we have confirmed the auth status on the client
-      return null;
-    }
+  // This value is now reliable because we check `isAuthChecked` before using it.
+  const isDashboardPage = isAuthenticated && dashboardPages.some(p => pathname.startsWith(p));
 
-    if (isDashboardPage) {
-      return (
-        <div className="flex flex-1">
-          <Sidebar 
-            onLogout={handleLogout} 
-            isCollapsed={isSidebarCollapsed}
-            setIsCollapsed={setIsSidebarCollapsed}
-          />
-          <div className="flex flex-col flex-1 md:pl-20">
-              <CommunityNavbar 
-                onLogout={handleLogout}
-              />
-              <main className="flex-1">
-                {children}
-              </main>
-              <DashboardFooter />
-          </div>
-        </div>
-      );
-    } else {
-      return (
-        <>
-          {!isAuthPage && (
-            <Header 
-              isAuthenticated={isAuthenticated}
-              isDashboardPage={false}
-              isMobileMenuOpen={isMobileMenuOpen} 
-              setMobileMenuOpen={setIsMobileMenuOpen}
-              isSidebarCollapsed={isSidebarCollapsed}
-              setSidebarCollapsed={setIsSidebarCollapsed}
-              onLogout={handleLogout}
-            />
-          )}
-          <main className="flex-1">
-            {children}
-          </main>
-          {!isAuthPage && <Footer />}
-        </>
-      );
-    }
-  };
+  // Do not render anything until we have checked the auth status on the client.
+  // This is the key to preventing the layout flash.
+  if (!isAuthChecked) {
+    return (
+      <html lang="en" className="!scroll-smooth" suppressHydrationWarning>
+        <head>
+          <title>inTesters | App Testing Community Platform</title>
+          <link rel="preconnect" href="https://fonts.googleapis.com" />
+          <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+          <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700;800&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet" />
+        </head>
+        <body className="font-body antialiased bg-background text-foreground">
+            {/* Render a blank body or a loading spinner while checking auth */}
+        </body>
+      </html>
+    );
+  }
 
+  // Once auth is checked, render the correct layout
   return (
     <html lang="en" className="!scroll-smooth" suppressHydrationWarning>
       <head>
@@ -109,7 +84,42 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <div className="relative flex flex-col min-h-screen">
-            {renderLayout()}
+            {isDashboardPage ? (
+              <div className="flex flex-1">
+                <Sidebar 
+                  onLogout={handleLogout} 
+                  isCollapsed={isSidebarCollapsed}
+                  setIsCollapsed={setIsSidebarCollapsed}
+                />
+                <div className="flex flex-col flex-1 md:pl-20">
+                    <CommunityNavbar 
+                      onLogout={handleLogout}
+                    />
+                    <main className="flex-1">
+                      {children}
+                    </main>
+                    <DashboardFooter />
+                </div>
+              </div>
+            ) : (
+              <>
+                {!isAuthPage && (
+                  <Header 
+                    isAuthenticated={isAuthenticated}
+                    isDashboardPage={false}
+                    isMobileMenuOpen={isMobileMenuOpen} 
+                    setMobileMenuOpen={setIsMobileMenuOpen}
+                    isSidebarCollapsed={isSidebarCollapsed}
+                    setSidebarCollapsed={setIsSidebarCollapsed}
+                    onLogout={handleLogout}
+                  />
+                )}
+                <main className="flex-1">
+                  {children}
+                </main>
+                {!isAuthPage && <Footer />}
+              </>
+            )}
           </div>
           <Toaster />
         </ThemeProvider>
