@@ -17,6 +17,7 @@ interface AnimatedRoundedButtonProps extends React.HTMLAttributes<HTMLDivElement
   paddingXmobile?: string;
   paddingY?: string;
   paddingX?: string;
+  border?: boolean
 }
 
 export default function AnimatedRoundedButton({
@@ -30,6 +31,7 @@ export default function AnimatedRoundedButton({
   paddingXmobile="4",
   paddingY="2",
   paddingX="5",
+  border=false,
   className,
   ...attributes
 }: AnimatedRoundedButtonProps) {
@@ -63,7 +65,7 @@ export default function AnimatedRoundedButton({
   return (
     <div
       className={cn(
-        `group relative flex cursor-pointer items-center justify-center overflow-hidden px-${paddingX} py-${paddingY}`,
+        `group relative ${border ? "border" : ""} flex cursor-pointer items-center justify-center overflow-hidden px-${paddingX} py-${paddingY}`,
         className
       )}
       style={{ borderRadius, backgroundColor }}

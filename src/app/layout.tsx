@@ -96,7 +96,7 @@ export default function RootLayout({
                       onLogout={handleLogout}
                     />
                   )}
-                  <div className="relative z-[1] bg-background pb-[450px]">
+                  <div className="relative z-[1] bg-background pb-10">
                     <main className="flex-1">
                         {children}
                     </main>

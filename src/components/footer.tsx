@@ -39,9 +39,9 @@ export function Footer() {
   return (
     <footer
       ref={footerRef}
-      className="bg-secondary/50 sticky bottom-0 overflow-hidden h-[450px]"
+      className="bg-secondary/50 sticky bottom-0 overflow-hidden"
     >
-      <div className="container mx-auto px-4 md:px-6 py-20">
+      <div className="container mx-auto px-4 md:px-6 pt-14 pb-14 sm:pb-32">
         <div className="grid gap-8 lg:grid-cols-3">
           <div className="space-y-4">
             <Link href="/" className="items-center gap-2 hidden sm:flex">
@@ -82,7 +82,7 @@ export function Footer() {
               <ul className="space-y-2">
                 {navItems.map((item) => (
                   <li key={item.name}>
-                     <Link href={item.href} className="group text-muted-foreground hover:text-primary transition-colors relative block overflow-hidden">
+                     <Link href={item.href} className="group text-muted-foreground hover:text-primary transition-colors relative block overflow-hidden text-sm sm:text-[16px]">
                         <span className="block transition-transform duration-300 ease-in-out group-hover:-translate-y-full">{item.name}</span>
                         <span className="absolute inset-0 block translate-y-full transition-transform duration-300 ease-in-out group-hover:translate-y-0 text-primary">{item.name}</span>
                      </Link>
@@ -95,7 +95,7 @@ export function Footer() {
               <ul className="space-y-2">
                 {resourceItems.map((item) => (
                   <li key={item.name}>
-                     <Link href={item.href} className="group text-muted-foreground hover:text-primary transition-colors relative block overflow-hidden">
+                     <Link href={item.href} className="group text-muted-foreground hover:text-primary transition-colors relative block overflow-hidden text-sm sm:text-[16px]">
                         <span className="block transition-transform duration-300 ease-in-out group-hover:-translate-y-full">{item.name}</span>
                         <span className="absolute inset-0 block translate-y-full transition-transform duration-300 ease-in-out group-hover:translate-y-0 text-primary">{item.name}</span>
                      </Link>
@@ -108,7 +108,7 @@ export function Footer() {
               <ul className="space-y-2">
                 {legalItems.map((item) => (
                   <li key={item.name}>
-                     <Link href={item.href} className="group text-muted-foreground hover:text-primary transition-colors relative block overflow-hidden">
+                     <Link href={item.href} className="group text-muted-foreground hover:text-primary transition-colors relative block overflow-hidden text-sm sm:text-[16px]">
                         <span className="block transition-transform duration-300 ease-in-out group-hover:-translate-y-full">{item.name}</span>
                         <span className="absolute inset-0 block translate-y-full transition-transform duration-300 ease-in-out group-hover:translate-y-0 text-primary">{item.name}</span>
                      </Link>
@@ -118,7 +118,7 @@ export function Footer() {
             </div>
           </div>
         </div>
-        <div className="mt-4 pt-8 flex flex-col md:flex-row justify-between items-center text-sm text-muted-foreground">
+        <div className="mt-4 pt-8 flex flex-col md:flex-row justify-between items-center text-sm text-muted-foreground/50">
           <p>&copy; {new Date().getFullYear()} inTesters, Inc. All rights reserved.</p>
           <p>A Testing Community at its best.</p>
         </div>
