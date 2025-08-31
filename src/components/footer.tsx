@@ -81,12 +81,10 @@ export function Footer() {
               <ul className="space-y-2">
                 {navItems.map((item) => (
                   <li key={item.name}>
-                    <Link
-                      href={item.href}
-                      className="text-muted-foreground hover:text-primary transition-colors sliding-text-hover"
-                      data-text={item.name}
-                    >
-                      <span>{item.name}</span>
+                    <Link href={item.href} className="text-muted-foreground hover:text-primary transition-colors">
+                      <div className="sliding-text-hover" data-text={item.name}>
+                        <span>{item.name}</span>
+                      </div>
                     </Link>
                   </li>
                 ))}
@@ -97,12 +95,10 @@ export function Footer() {
               <ul className="space-y-2">
                 {resourceItems.map((item) => (
                   <li key={item.name}>
-                    <Link
-                      href={item.href}
-                      className="text-muted-foreground hover:text-primary transition-colors sliding-text-hover"
-                      data-text={item.name}
-                    >
-                      <span>{item.name}</span>
+                    <Link href={item.href} className="text-muted-foreground hover:text-primary transition-colors">
+                       <div className="sliding-text-hover" data-text={item.name}>
+                        <span>{item.name}</span>
+                      </div>
                     </Link>
                   </li>
                 ))}
@@ -113,12 +109,10 @@ export function Footer() {
               <ul className="space-y-2">
                 {legalItems.map((item) => (
                   <li key={item.name}>
-                    <Link
-                      href={item.href}
-                      className="text-muted-foreground hover:text-primary transition-colors sliding-text-hover"
-                      data-text={item.name}
-                    >
-                      <span>{item.name}</span>
+                    <Link href={item.href} className="text-muted-foreground hover:text-primary transition-colors">
+                       <div className="sliding-text-hover" data-text={item.name}>
+                        <span>{item.name}</span>
+                      </div>
                     </Link>
                   </li>
                 ))}
