@@ -75,7 +75,7 @@ export default function RootLayout({
                   />
                   <div className="flex flex-col flex-1 md:pl-20">
                       <CommunityNavbar 
-                        onLogout={onLogout}
+                        onLogout={handleLogout}
                       />
                       <main className="flex-1">
                         {children}
