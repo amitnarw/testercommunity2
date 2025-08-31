@@ -21,17 +21,17 @@ export default function RootLayout({
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(true);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isAuthChecked, setIsAuthChecked] = useState(false);
 
   useEffect(() => {
-    // Check localStorage only on the client side
     const authStatus = localStorage.getItem('isAuthenticated') === 'true';
     setIsAuthenticated(authStatus);
-  }, [pathname]); // Re-check on path change
+    setIsAuthChecked(true);
+  }, [pathname]);
 
   const handleLogout = () => {
     localStorage.removeItem('isAuthenticated');
     setIsAuthenticated(false);
-    // Optionally redirect to home or login page
   };
   
   const authPages = ['/login', '/signup'];
@@ -44,7 +44,49 @@ export default function RootLayout({
 
   const isAuthPage = authPages.includes(pathname);
   const isDashboardPage = isAuthenticated && dashboardPages.some(p => pathname.startsWith(p));
-
+  
+  const renderLayout = () => {
+    if (isDashboardPage) {
+      return (
+        <div className="flex flex-1">
+          <Sidebar 
+            onLogout={handleLogout} 
+            isCollapsed={isSidebarCollapsed}
+            setIsCollapsed={setIsSidebarCollapsed}
+          />
+          <div className="flex flex-col flex-1 md:pl-20">
+              <CommunityNavbar 
+                onLogout={handleLogout}
+              />
+              <main className="flex-1">
+                {children}
+              </main>
+              <DashboardFooter />
+          </div>
+        </div>
+      );
+    } else {
+      return (
+        <>
+          {!isAuthPage && (
+            <Header 
+              isAuthenticated={isAuthenticated}
+              isDashboardPage={false}
+              isMobileMenuOpen={isMobileMenuOpen} 
+              setMobileMenuOpen={setIsMobileMenuOpen}
+              isSidebarCollapsed={isSidebarCollapsed}
+              setSidebarCollapsed={setIsSidebarCollapsed}
+              onLogout={handleLogout}
+            />
+          )}
+          <main className="flex-1">
+            {children}
+          </main>
+          {!isAuthPage && <Footer />}
+        </>
+      );
+    }
+  };
 
   return (
     <html lang="en" className="!scroll-smooth" suppressHydrationWarning>
@@ -62,42 +104,7 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <div className="relative flex flex-col min-h-screen">
-             {isDashboardPage ? (
-               <div className="flex flex-1">
-                  <Sidebar 
-                    onLogout={handleLogout} 
-                    isCollapsed={isSidebarCollapsed}
-                    setIsCollapsed={setIsSidebarCollapsed}
-                  />
-                  <div className="flex flex-col flex-1 md:pl-20">
-                     <CommunityNavbar 
-                        onLogout={handleLogout}
-                     />
-                     <main className="flex-1">
-                        {children}
-                      </main>
-                      <DashboardFooter />
-                  </div>
-               </div>
-            ) : (
-              <>
-                {!isAuthPage && (
-                  <Header 
-                    isAuthenticated={isAuthenticated}
-                    isDashboardPage={false}
-                    isMobileMenuOpen={isMobileMenuOpen} 
-                    setMobileMenuOpen={setIsMobileMenuOpen}
-                    isSidebarCollapsed={isSidebarCollapsed}
-                    setSidebarCollapsed={setIsSidebarCollapsed}
-                    onLogout={handleLogout}
-                  />
-                )}
-                <main className="flex-1">
-                  {children}
-                </main>
-                {!isAuthPage && <Footer />}
-              </>
-            )}
+            {isAuthChecked ? renderLayout() : null}
           </div>
           <Toaster />
         </ThemeProvider>
