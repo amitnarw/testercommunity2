@@ -28,11 +28,11 @@ export const blogPosts: BlogPost[] = [
     content: `<p>Automated testing is a cornerstone of modern software development. By letting scripts and tools do the repetitive work, you can focus on what truly matters: building great features. This guide will walk you through the basics.</p><p>We'll cover topics like:</p><ul><li>Choosing the right automation framework</li><li>Writing your first test script</li><li>Integrating tests into your CI/CD pipeline</li><li>Analyzing test results</li></ul>`,
     author: {
       name: 'Alice Johnson',
-      avatarUrl: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=400&auto=format=fit=crop',
+      avatarUrl: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=400&auto=format&fit=crop',
       dataAiHint: 'woman developer',
     },
     date: '2024-05-15',
-    imageUrl: 'https://images.unsplash.com/photo-1516116216624-53e697320f64?q=80&w=600&auto=format=fit=crop',
+    imageUrl: 'https://images.unsplash.com/photo-1516116216624-53e697320f64?q=80&w=600&auto=format&fit=crop',
     dataAiHint: 'code testing',
     tags: ['Automation', 'Beginner', 'CI/CD'],
   },
@@ -44,11 +44,11 @@ export const blogPosts: BlogPost[] = [
     content: `<p>UX testing goes beyond identifying functional bugs. It's about understanding how users feel when they interact with your product. A seamless UX can be the difference between a good app and a great one.</p><p>In this article, we explore:</p><ul><li>Heuristic evaluation</li><li>Usability testing methods</li><li>Gathering and interpreting user feedback</li><li>The connection between UX and business success</li></ul>`,
     author: {
       name: 'Hannah Wright',
-      avatarUrl: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?q=80&w=400&auto=format=fit=crop',
+      avatarUrl: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?q=80&w=400&auto=format&fit=crop',
       dataAiHint: 'woman tech',
     },
     date: '2024-05-20',
-    imageUrl: 'https://images.unsplash.com/photo-1587440871875-191322ee64b0?q=80&w=600&auto=format=fit=crop',
+    imageUrl: 'https://images.unsplash.com/photo-1587440871875-191322ee64b0?q=80&w=600&auto=format&fit=crop',
     dataAiHint: 'ux design',
     tags: ['UI/UX', 'Design', 'User Research'],
   },
@@ -60,11 +60,11 @@ export const blogPosts: BlogPost[] = [
     content: `<p>Mobile security is not a feature; it's a necessity. With increasing threats, robust security testing is crucial. This checklist provides a starting point for testers to ensure an app is secure.</p><p>Key areas covered:</p><ul><li>Data storage and encryption</li><li>Network communication vulnerabilities</li><li>Authentication and authorization</li><li>Code obfuscation and anti-tampering</li></ul>`,
     author: {
       name: 'George Hill',
-      avatarUrl: 'https://images.unsplash.com/photo-1527982987257-d3abc440f2ba?q=80&w=400&auto=format=fit=crop',
+      avatarUrl: 'https://images.unsplash.com/photo-1527982987257-d3abc440f2ba?q=80&w=400&auto=format&fit=crop',
       dataAiHint: 'man portrait',
     },
     date: '2024-05-25',
-    imageUrl: 'https://images.unsplash.com/photo-1555949963-ff9fe0c870eb?q=80&w=600&auto=format=fit=crop',
+    imageUrl: 'https://images.unsplash.com/photo-1555949963-ff9fe0c870eb?q=80&w=600&auto=format&fit=crop',
     dataAiHint: 'cyber security',
     tags: ['Security', 'Mobile', 'Checklist'],
   },
@@ -74,35 +74,35 @@ export const testimonials: Testimonial[] = [
   {
     name: 'Sarah Jennings',
     role: 'Lead Developer, TechNova',
-    avatar: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?q=80&w=400&auto=format=fit=crop',
+    avatar: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?q=80&w=400&auto=format&fit=crop',
     dataAiHint: 'woman portrait',
     comment: 'inTesters has revolutionized our QA process. The real-time feedback and detailed reports are game-changers. The platform isn\'t just functional, it\'s a joy to use!',
   },
   {
     name: 'Mike Valerio',
     role: 'Indie Game Developer',
-    avatar: 'https://images.unsplash.com/photo-1564564321837-a57b7070ac4f?q=80&w=400&auto=format=fit=crop',
+    avatar: 'https://images.unsplash.com/photo-1564564321837-a57b7070ac4f?q=80&w=400&auto=format&fit=crop',
     dataAiHint: 'man smiling',
     comment: 'Finding the right testers used to be a nightmare. The gamified marketplace made it fun and easy to connect with experienced, reliable people. My app is better for it.',
   },
   {
     name: 'Chen Lin',
     role: 'Product Manager, Innovate Inc.',
-    avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=400&auto=format=fit=crop',
+    avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=400&auto=format&fit=crop',
     dataAiHint: 'person glasses',
     comment: 'The dashboards are incredible. Being able to visualize our testing data with such clarity and beauty has helped us identify critical issues faster than ever before.',
   },
   {
     name: 'David Kim',
     role: 'QA Engineer, GameSphere',
-    avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=400&auto=format=fit=crop',
+    avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=400&auto=format&fit=crop',
     dataAiHint: 'man portrait',
     comment: 'As a tester, the gamified reputation system is fantastic. It motivates me to do my best work and get recognized for it. I\'ve gotten more high-quality projects through inTesters than any other platform.',
   },
   {
     name: 'Maria Garcia',
     role: 'Mobile App Developer',
-    avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=400&auto=format=fit=crop',
+    avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=400&auto=format&fit=crop',
     dataAiHint: 'woman developer',
     comment: 'The community aspect is what sets inTesters apart. It\'s not just a service; it\'s a network of professionals passionate about quality. The collaboration tools are excellent.',
   },
@@ -200,7 +200,7 @@ export const professionalPathSteps: RoadmapStep[] = [
     {
         step: 4,
         title: "Launch with Certainty",
-        description: "With the 14-day/12-tester requirement met and your app polished by experts, you can submit to the Google Play Store with the highest degree of confidence.",
+        description: "With the 14-day/20-tester requirement met and your app polished by experts, you can submit to the Google Play Store with the highest degree of confidence.",
         badgeText: "Cycle: Defined & Completed",
         details: [
             { title: "Official Confirmation", description: "Receive an official completion report for your records." },
@@ -492,7 +492,7 @@ export const communityApps: CommunityApp[] = [
         estimatedTime: '20-30 min',
         playStoreUrl: 'https://play.google.com/store/apps/details?id=com.supercell.clashofclans',
         screenshots: [
-            { url: 'https://play-lh.googleusercontent.com/f-p-g-Y-g-X-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c=w526-h296-rw', alt: 'Clash of Clans Screenshot 1', dataAiHint: 'village base' },
+            { url: 'https://play-lh.googleusercontent.com/f-p-g-Y-g-X-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z=w526-h296-rw', alt: 'Clash of Clans Screenshot 1', dataAiHint: 'village base' },
             { url: 'https://play-lh.googleusercontent.com/p-c-g-Y-g-X-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c=w526-h296-rw', alt: 'Clash of Clans Screenshot 2', dataAiHint: 'battle scene' }
         ],
         testingInstructions: 'Participate in a Clan War. Attack an enemy base and check if the replay functionality works correctly. Report any visual glitches during the battle.',
@@ -761,23 +761,23 @@ export const pointsPackages: PointsPackage[] = [
     {
         name: "Booster",
         price: 699,
-        points: 10000,
+        points: 1,
         description: "Perfect for a quick professional test cycle for a single app.",
-        features: ["Managed by inTesters team", "Community support"],
+        features: ["1 Professional Test Package", "Managed by inTesters team", "Community support"],
     },
     {
         name: "Accelerator",
         price: 1799,
-        points: 35000,
+        points: 3,
         description: "Great value for teams with multiple apps or frequent releases.",
-        features: ["Priority in testing queue", "Direct chat with project manager"],
+        features: ["3 Professional Test Packages", "Priority in testing queue", "Direct chat with project manager"],
     },
     {
         name: "Launchpad",
         price: 2899,
-        points: 60000,
+        points: 6,
         description: "For agencies and enterprises needing extensive testing.",
-        features: ["Highest queue priority", "Dedicated account manager"],
+        features: ["6 Professional Test Packages", "Highest queue priority", "Dedicated account manager"],
     }
 ];
 
@@ -1031,6 +1031,29 @@ export const projects: Project[] = [
       chartData: []
     },
     {
+      id: 7,
+      name: "SoundWave",
+      packageName: "com.soundwave.beta",
+      icon: "https://images.unsplash.com/photo-1549492423-4002122c3954?w=50&h=50&fit=crop",
+      dataAiHint: "sound wave",
+      status: "Draft",
+      testersStarted: 0,
+      testersCompleted: 0,
+      totalDays: 0,
+      avgTestersPerDay: 0,
+      startedFrom: "N/A",
+      description: "AI-powered music creation studio. Describe a mood or a scene and let our AI generate a unique soundtrack for you.",
+      reviewNotes: "Submission is incomplete.",
+      crashFreeRate: 100,
+      feedbackBreakdown: { total: 0, critical: 0, high: 0, low: 0 },
+      performanceMetrics: { avgStartupTime: "N/A", frozenFrames: "N/A" },
+       deviceCoverage: [],
+      osCoverage: [],
+       topGeographies: [],
+      feedback: [],
+      chartData: []
+    },
+    {
       id: 4,
       name: "Google Wallet",
       packageName: "com.google.android.apps.walletnfcrel",
@@ -1141,3 +1164,4 @@ export const projects: Project[] = [
 
 
     
+

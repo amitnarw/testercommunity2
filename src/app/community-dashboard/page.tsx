@@ -198,7 +198,10 @@ export default function CommunityDashboardPage() {
                                                 <PaginationLink
                                                     href="#"
                                                     isActive={pagination.available === page}
-                                                    onClick={(e) => { e.preventDefault(); handlePageChange('available', page); }}
+                                                    onClick={(e) => {
+                                                        e.preventDefault();
+                                                        handlePageChange('available', page);
+                                                    }}
                                                 >
                                                     {page}
                                                 </PaginationLink>
