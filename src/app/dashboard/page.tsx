@@ -145,7 +145,6 @@ export default function DashboardPage() {
                 <div className="text-2xl font-bold text-white">
                     {availablePackages}<span className="text-lg text-white/70">/{totalPackages}</span>
                 </div>
-                <p className="text-xs text-white/80">{usedPackages} package used</p>
               </CardContent>
             </Card>
 
