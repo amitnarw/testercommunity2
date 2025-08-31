@@ -58,7 +58,7 @@ const formSteps = [
 
 const Section = ({ id, title, description, children }: { id: string, title: string, description: string, children: React.ReactNode }) => {
     return (
-        <section id={id} className="min-h-[85vh] flex flex-col justify-center scroll-mt-[80px]">
+        <section id={id} className="min-h-[85vh] flex flex-col justify-center scroll-mt-24 pt-16">
             <div className="mb-8">
                 <h2 className="text-3xl font-bold">{title}</h2>
                 <p className="text-muted-foreground mt-2">{description}</p>
@@ -92,7 +92,7 @@ export default function SubmitAppPage() {
                     }
                 });
             },
-            { rootMargin: "0px 0px -80% 0px" } 
+            { rootMargin: "-50% 0px -50% 0px" }
         );
 
         const sections = document.querySelectorAll('section[id]');
