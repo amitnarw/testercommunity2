@@ -142,8 +142,8 @@ export default function DashboardPage() {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold text-white">
-                    {availablePackages}<span className="text-lg text-white/70">/{totalPackages}</span>
+                <div className="text-5xl font-bold text-white">
+                    {availablePackages}<span className="text-3xl text-white/70">/{totalPackages}</span>
                 </div>
               </CardContent>
             </Card>
