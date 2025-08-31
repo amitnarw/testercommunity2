@@ -5,7 +5,7 @@ import { useState, useEffect, useRef } from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
-import { motion, useInView } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { useTheme } from 'next-themes';
 
 import { Card, CardContent } from '@/components/ui/card';
@@ -57,17 +57,8 @@ const formSteps = [
 ];
 
 const Section = ({ id, title, description, children }: { id: string, title: string, description: string, children: React.ReactNode }) => {
-    const ref = useRef(null);
-    const isInView = useInView(ref, { margin: "-40% 0px -60% 0px" });
-
-    useEffect(() => {
-        if (isInView) {
-            window.history.replaceState(null, '', `#${id}`);
-        }
-    }, [isInView, id]);
-
     return (
-        <section ref={ref} id={id} className="min-h-[85vh] flex flex-col justify-center scroll-mt-[80px]">
+        <section id={id} className="min-h-[85vh] flex flex-col justify-center scroll-mt-[80px]">
             <div className="mb-8">
                 <h2 className="text-3xl font-bold">{title}</h2>
                 <p className="text-muted-foreground mt-2">{description}</p>
@@ -93,30 +84,22 @@ export default function SubmitAppPage() {
     }
 
     useEffect(() => {
-        const handleHashChange = () => {
-            const hash = window.location.hash.replace('#', '');
-            if (formSteps.some(step => step.id === hash)) {
-                setActiveStep(hash);
-            }
-        };
-
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    setActiveStep(entry.target.id);
-                }
-            });
-        }, { rootMargin: "-40% 0px -60% 0px" });
+        const observer = new IntersectionObserver(
+            (entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        setActiveStep(entry.target.id);
+                    }
+                });
+            },
+            { rootMargin: "0px 0px -80% 0px" } 
+        );
 
         const sections = document.querySelectorAll('section[id]');
-        sections.forEach(section => observer.observe(section));
-
-        window.addEventListener('hashchange', handleHashChange);
-        handleHashChange(); // Initial check
+        sections.forEach((section) => observer.observe(section));
 
         return () => {
-            sections.forEach(section => observer.unobserve(section));
-            window.removeEventListener('hashchange', handleHashChange);
+            sections.forEach((section) => observer.unobserve(section));
         };
     }, []);
 
@@ -167,6 +150,10 @@ export default function SubmitAppPage() {
                         <a
                             key={`mobile-${step.id}`}
                             href={`#${step.id}`}
+                            onClick={(e) => {
+                                e.preventDefault();
+                                document.getElementById(step.id)?.scrollIntoView({ behavior: 'smooth' });
+                            }}
                             className={cn(
                                 "flex-1 flex items-center justify-center gap-2 text-center p-3 text-sm font-medium transition-all text-muted-foreground relative",
                                 activeStep === step.id && "text-primary"
@@ -191,11 +178,17 @@ export default function SubmitAppPage() {
                         <div className="sticky top-36">
                             <nav>
                                 <ul className="space-y-2">
-                                    {formSteps.map((step, index) => (
+                                    {formSteps.map((step) => (
                                         <li key={step.id}>
-                                            <a href={`#${step.id}`} className={cn(
-                                                "flex items-center gap-3 p-3 rounded-lg transition-all",
-                                                activeStep === step.id ? "bg-primary/10 text-primary" : "text-muted-foreground hover:bg-secondary/50"
+                                            <a 
+                                                href={`#${step.id}`}
+                                                onClick={(e) => {
+                                                    e.preventDefault();
+                                                    document.getElementById(step.id)?.scrollIntoView({ behavior: 'smooth' });
+                                                }}
+                                                className={cn(
+                                                    "flex items-center gap-3 p-3 rounded-lg transition-all",
+                                                    activeStep === step.id ? "bg-primary/10 text-primary" : "text-muted-foreground hover:bg-secondary/50"
                                             )}>
                                                 <div className={cn(
                                                     "p-2 rounded-full flex items-center justify-center border-2 transition-all",
