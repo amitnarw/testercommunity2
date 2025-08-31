@@ -29,14 +29,14 @@ const faqs = [
 
 export function FaqSection() {
     return (
-        <Accordion type="single" collapsible className="w-full">
+        <Accordion type="single" collapsible className="w-full space-y-2">
             {faqs.map((faq, i) => (
                  <AccordionItem 
                     key={i} 
                     value={`item-${i}`}
-                    className="border-b"
+                    className=""
                 >
-                    <AccordionTrigger className="text-left font-semibold hover:no-underline text-base py-6">
+                    <AccordionTrigger className="text-left font-semibold hover:no-underline text-base p-6 bg-gray-100/40 rounded-2xl hover:bg-gray-100 dark:bg-gray-800/30 rounded-2xl hover:dark:bg-gray-800/60 duration-300">
                         <span>{faq.question}</span>
                     </AccordionTrigger>
                     <AccordionContent className="text-muted-foreground pb-6">

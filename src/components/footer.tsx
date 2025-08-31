@@ -41,7 +41,7 @@ export function Footer() {
       ref={footerRef}
       className="bg-secondary/50 sticky bottom-0 overflow-hidden"
     >
-      <div className="container mx-auto px-4 md:px-6 pt-14 pb-14 sm:pb-32">
+      <div className="container mx-auto px-4 md:px-6 pt-14 pb-14 sm:pb-44">
         <div className="grid gap-8 lg:grid-cols-3">
           <div className="space-y-4">
             <Link href="/" className="items-center gap-2 hidden sm:flex">
@@ -79,7 +79,7 @@ export function Footer() {
           <div className="grid grid-cols-2 md:grid-cols-3 gap-8 lg:col-span-2">
             <div className="space-y-4">
               <h4 className="font-semibold">Platform</h4>
-              <ul className="space-y-2">
+              <ul className="space-y-4">
                 {navItems.map((item) => (
                   <li key={item.name}>
                      <Link href={item.href} className="group text-muted-foreground hover:text-primary transition-colors relative block overflow-hidden text-sm sm:text-[16px]">
@@ -92,7 +92,7 @@ export function Footer() {
             </div>
             <div className="space-y-4">
               <h4 className="font-semibold">Resources</h4>
-              <ul className="space-y-2">
+              <ul className="space-y-4">
                 {resourceItems.map((item) => (
                   <li key={item.name}>
                      <Link href={item.href} className="group text-muted-foreground hover:text-primary transition-colors relative block overflow-hidden text-sm sm:text-[16px]">
@@ -105,7 +105,7 @@ export function Footer() {
             </div>
             <div className="space-y-4">
               <h4 className="font-semibold">Legal</h4>
-              <ul className="space-y-2">
+              <ul className="space-y-4">
                 {legalItems.map((item) => (
                   <li key={item.name}>
                      <Link href={item.href} className="group text-muted-foreground hover:text-primary transition-colors relative block overflow-hidden text-sm sm:text-[16px]">
