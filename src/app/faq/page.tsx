@@ -41,7 +41,7 @@ export default function FaqPage() {
                         >
                             <AccordionTrigger className="text-left font-semibold hover:no-underline text-base py-6">
                                 {faq.question}
-                            </Trigger>
+                            </AccordionTrigger>
                             <AccordionContent className="text-muted-foreground pb-6">
                                 {faq.answer}
                             </AccordionContent>
