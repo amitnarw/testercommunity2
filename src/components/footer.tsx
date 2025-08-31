@@ -82,11 +82,9 @@ export function Footer() {
               <ul className="space-y-2">
                 {navItems.map((item) => (
                   <li key={item.name}>
-                     <div className="sliding-text-hover text-muted-foreground hover:text-primary transition-colors" data-text={item.name}>
-                        <Link href={item.href} className="relative z-10 block">
-                           <span>{item.name}</span>
-                        </Link>
-                     </div>
+                     <Link href={item.href} className="sliding-text-hover text-muted-foreground hover:text-primary transition-colors relative z-10 block" data-text={item.name}>
+                        <span>{item.name}</span>
+                     </Link>
                   </li>
                 ))}
               </ul>
@@ -96,11 +94,9 @@ export function Footer() {
               <ul className="space-y-2">
                 {resourceItems.map((item) => (
                   <li key={item.name}>
-                     <div className="sliding-text-hover text-muted-foreground hover:text-primary transition-colors" data-text={item.name}>
-                        <Link href={item.href} className="relative z-10 block">
-                           <span>{item.name}</span>
-                        </Link>
-                     </div>
+                     <Link href={item.href} className="sliding-text-hover text-muted-foreground hover:text-primary transition-colors relative z-10 block" data-text={item.name}>
+                        <span>{item.name}</span>
+                     </Link>
                   </li>
                 ))}
               </ul>
@@ -110,11 +106,9 @@ export function Footer() {
               <ul className="space-y-2">
                 {legalItems.map((item) => (
                   <li key={item.name}>
-                     <div className="sliding-text-hover text-muted-foreground hover:text-primary transition-colors" data-text={item.name}>
-                        <Link href={item.href} className="relative z-10 block">
-                           <span>{item.name}</span>
-                        </Link>
-                     </div>
+                     <Link href={item.href} className="sliding-text-hover text-muted-foreground hover:text-primary transition-colors relative z-10 block" data-text={item.name}>
+                        <span>{item.name}</span>
+                     </Link>
                   </li>
                 ))}
               </ul>
