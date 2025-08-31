@@ -12,6 +12,7 @@ import { useState, useEffect } from 'react';
 import { useTheme } from 'next-themes';
 import { UserNav } from './user-nav';
 import MobileMenu from './mobile-menu';
+import { AnimatedLink } from './ui/animated-link';
 
 
 const visitorNavItems = [
@@ -72,17 +73,13 @@ export function Header({
 
             <nav className="hidden md:flex items-center gap-6">
               {navItems.map((item) => (
-                <Link
+                <AnimatedLink
                   key={item.name}
                   href={item.href}
-                  data-text={item.name}
-                  className={cn(
-                    'font-medium transition-colors sliding-text-hover',
-                    (pathname.startsWith(item.href) && item.href !== '/') || (pathname === '/' && item.href === '/') ? 'text-primary' : 'text-muted-foreground'
-                  )}
+                  className="font-medium text-base"
                 >
-                  <span>{item.name}</span>
-                </Link>
+                  {item.name}
+                </AnimatedLink>
               ))}
             </nav>
 
