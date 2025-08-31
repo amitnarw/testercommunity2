@@ -134,14 +134,14 @@ export default function DashboardPage() {
 
             </div>
 
-            <Card className="rounded-xl border-0 bg-gradient-to-br from-primary to-primary/40 relative overflow-hidden col-span-1">
-              <Package size={100} className='text-white/20 absolute -top-5 -right-5 rotate-45' />
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+            <Card className="rounded-xl border-0 bg-gradient-to-br from-primary to-primary/40 relative overflow-hidden col-span-1 flex flex-row sm:flex-col justify-between sm:justify-center gap-2 p-4 pr-10">
+              <Package size={100} className='text-white/10 sm:text-white/20 absolute -top-5 -right-5 rotate-45' />
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 p-0">
                 <CardTitle className="text-sm font-medium text-white/80">
                   Available Packages
                 </CardTitle>
               </CardHeader>
-              <CardContent>
+              <CardContent className='p-0'>
                 <div className="text-5xl font-bold text-white">
                     {availablePackages}<span className="text-3xl text-white/70">/{totalPackages}</span>
                 </div>
