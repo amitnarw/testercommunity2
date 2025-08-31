@@ -79,6 +79,11 @@ export default function DashboardPage() {
   const ongoingApps = allProjects.filter(p => ["In Testing", "In Review"].includes(p.status));
   const completedApps = allProjects.filter(p => ["Completed", "Archived"].includes(p.status));
 
+  // Dummy data for packages
+  const totalPackages = 3;
+  const usedPackages = 1;
+  const availablePackages = totalPackages - usedPackages;
+
 
   return (
     <>
@@ -137,8 +142,10 @@ export default function DashboardPage() {
                 </CardTitle>
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold text-white">2</div>
-                <p className="text-xs text-white/80">1 package used</p>
+                <div className="text-2xl font-bold text-white">
+                    {availablePackages}<span className="text-lg text-white/70">/{totalPackages}</span>
+                </div>
+                <p className="text-xs text-white/80">{usedPackages} package used</p>
               </CardContent>
             </Card>
 
