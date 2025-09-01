@@ -19,11 +19,6 @@ const PointsPackageCard = ({ plan, isPopular }: { plan: PointsPackage, isPopular
                 ? "border-2 border-primary shadow-2xl shadow-primary/20 bg-card" 
                 : "border-border/50 hover:shadow-xl hover:shadow-primary/10 hover:-translate-y-2 bg-secondary/50"
         )}>
-            {isPopular && (
-                <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground px-4 py-1 rounded-full text-sm font-bold flex items-center gap-1 z-10">
-                    <Star className="w-4 h-4" /> Best Value
-                </div>
-            )}
             <CardHeader className="pt-10 text-center">
                 <CardTitle className="text-2xl">{plan.name}</CardTitle>
                 <CardDescription className="pt-1">{plan.description}</CardDescription>
