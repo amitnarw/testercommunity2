@@ -24,8 +24,13 @@ const PointsPackageCard = ({ plan, isPopular }: { plan: PointsPackage, isPopular
                 </div>
             )}
             <CardHeader className="pt-10">
-                <CardTitle className="text-2xl">{plan.name} Package</CardTitle>
-                <CardDescription>{plan.description}</CardDescription>
+                <div className="flex items-baseline gap-3">
+                    <div className="bg-primary/10 p-3 rounded-lg text-primary">
+                        <Package className="w-6 h-6" />
+                    </div>
+                    <CardTitle className="text-2xl">{plan.name} Plan</CardTitle>
+                </div>
+                 <CardDescription className="pt-2">{plan.description}</CardDescription>
             </CardHeader>
             <CardContent className="flex-grow space-y-6">
                  <div className="flex items-baseline gap-2">
@@ -33,7 +38,7 @@ const PointsPackageCard = ({ plan, isPopular }: { plan: PointsPackage, isPopular
                      <span className="text-muted-foreground">/ one-time</span>
                 </div>
 
-                <ul className="space-y-3">
+                <ul className="space-y-3 text-left">
                     {plan.features.map(feature => (
                         <li key={feature} className="flex items-center gap-2 text-muted-foreground">
                             <CheckCircle className="w-5 h-5 text-primary flex-shrink-0" />
@@ -44,7 +49,7 @@ const PointsPackageCard = ({ plan, isPopular }: { plan: PointsPackage, isPopular
             </CardContent>
             <CardFooter>
                 <Button className="w-full text-lg py-6 font-bold">
-                    Buy {plan.name} Package
+                    Get {plan.points} {plan.points > 1 ? 'Packages' : 'Package'}
                 </Button>
             </CardFooter>
         </Card>

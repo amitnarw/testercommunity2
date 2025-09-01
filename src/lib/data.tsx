@@ -64,7 +64,7 @@ export const blogPosts: BlogPost[] = [
       dataAiHint: 'man portrait',
     },
     date: '2024-05-25',
-    imageUrl: 'https://images.unsplash.com/photo-1555949963-ff9fe0c870eb?q=80&w=600&auto=format&fit=crop',
+    imageUrl: 'https://images.unsplash.com/photo-1555949963-ff9fe0c870eb?q=80&w=600&auto=format=fit=crop',
     dataAiHint: 'cyber security',
     tags: ['Security', 'Mobile', 'Checklist'],
   },
@@ -81,28 +81,28 @@ export const testimonials: Testimonial[] = [
   {
     name: 'Mike Valerio',
     role: 'Indie Game Developer',
-    avatar: 'https://images.unsplash.com/photo-1564564321837-a57b7070ac4f?q=80&w=400&auto=format&fit=crop',
+    avatar: 'https://images.unsplash.com/photo-1564564321837-a57b7070ac4f?q=80&w=400&auto=format=fit=crop',
     dataAiHint: 'man smiling',
     comment: 'Finding the right testers used to be a nightmare. The gamified marketplace made it fun and easy to connect with experienced, reliable people. My app is better for it.',
   },
   {
     name: 'Chen Lin',
     role: 'Product Manager, Innovate Inc.',
-    avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=400&auto=format&fit=crop',
+    avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=400&auto=format=fit=crop',
     dataAiHint: 'person glasses',
     comment: 'The dashboards are incredible. Being able to visualize our testing data with such clarity and beauty has helped us identify critical issues faster than ever before.',
   },
   {
     name: 'David Kim',
     role: 'QA Engineer, GameSphere',
-    avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=400&auto=format&fit=crop',
+    avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=400&auto=format=fit=crop',
     dataAiHint: 'man portrait',
     comment: 'As a tester, the gamified reputation system is fantastic. It motivates me to do my best work and get recognized for it. I\'ve gotten more high-quality projects through inTesters than any other platform.',
   },
   {
     name: 'Maria Garcia',
     role: 'Mobile App Developer',
-    avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=400&auto=format&fit=crop',
+    avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=400&auto=format=fit=crop',
     dataAiHint: 'woman developer',
     comment: 'The community aspect is what sets inTesters apart. It\'s not just a service; it\'s a network of professionals passionate about quality. The collaboration tools are excellent.',
   },
@@ -763,21 +763,39 @@ export const pointsPackages: PointsPackage[] = [
         price: 699,
         points: 1,
         description: "Perfect for a quick professional test cycle for a single app.",
-        features: ["1 Professional Test Package", "Managed by inTesters team", "Community support"],
+        features: [
+            "1 Professional Test Package", 
+            "Managed by inTesters team", 
+            "Priority in testing queue",
+            "Direct chat with project manager",
+            "Community support"
+        ],
     },
     {
         name: "Accelerator",
         price: 1799,
-        points: 3,
+        points: 5,
         description: "Great value for teams with multiple apps or frequent releases.",
-        features: ["3 Professional Test Packages", "Priority in testing queue", "Direct chat with project manager"],
+        features: [
+            "5 Professional Test Packages",
+            "Managed by inTesters team", 
+            "Priority in testing queue",
+            "Direct chat with project manager",
+            "Community support"
+        ],
     },
     {
         name: "Launchpad",
         price: 2899,
-        points: 6,
+        points: 10,
         description: "For agencies and enterprises needing extensive testing.",
-        features: ["6 Professional Test Packages", "Highest queue priority", "Dedicated account manager"],
+        features: [
+            "10 Professional Test Packages",
+            "Managed by inTesters team", 
+            "Priority in testing queue",
+            "Direct chat with project manager",
+            "Community support"
+        ],
     }
 ];
 
@@ -1164,4 +1182,3 @@ export const projects: Project[] = [
 
 
     
-
