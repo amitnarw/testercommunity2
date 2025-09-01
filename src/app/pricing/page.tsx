@@ -32,13 +32,7 @@ const PointsPackageCard = ({ plan, isPopular }: { plan: PointsPackage, isPopular
                     <span className="text-4xl font-bold">₹{plan.price.toLocaleString('en-IN')}</span>
                      <span className="text-muted-foreground">/ one-time</span>
                 </div>
-                <div className="bg-secondary/50 p-3 rounded-lg text-center flex items-center justify-center gap-4">
-                     <Star className="w-8 h-8 text-primary" />
-                    <div>
-                        <p className="text-lg font-bold text-primary">{plan.points.toLocaleString()} Points</p>
-                        <p className="text-xs text-muted-foreground">To spend on professional testing services</p>
-                    </div>
-                </div>
+
                 <ul className="space-y-3">
                     {plan.features.map(feature => (
                         <li key={feature} className="flex items-center gap-2 text-muted-foreground">

@@ -8,7 +8,6 @@ import { Button } from './ui/button';
 import { Github, Twitter, Linkedin } from 'lucide-react';
 import Image from 'next/image';
 import { useScroll, useTransform, motion } from 'framer-motion';
-import { AnimatedLink } from './ui/animated-link';
 
 const navItems = [
   { name: 'Home', href: '/' },
@@ -40,9 +39,9 @@ export function Footer() {
   return (
     <footer
       ref={footerRef}
-      className="bg-secondary/50"
+      className="bg-secondary/50 sticky bottom-0 overflow-hidden"
     >
-      <div className="container mx-auto px-4 md:px-6 pt-14 pb-14">
+      <div className="container mx-auto px-4 md:px-6 pt-14 pb-14 sm:pb-44">
         <div className="grid gap-8 lg:grid-cols-3">
           <div className="space-y-4">
             <Link href="/" className="items-center gap-2 hidden sm:flex">
@@ -83,7 +82,10 @@ export function Footer() {
               <ul className="space-y-4">
                 {navItems.map((item) => (
                   <li key={item.name}>
-                     <AnimatedLink href={item.href}>{item.name}</AnimatedLink>
+                     <Link href={item.href} className="group text-muted-foreground hover:text-primary transition-colors relative block overflow-hidden text-sm sm:text-[16px]">
+                        <span className="block transition-transform duration-300 ease-in-out group-hover:-translate-y-full">{item.name}</span>
+                        <span className="absolute inset-0 block translate-y-full transition-transform duration-300 ease-in-out group-hover:translate-y-0 text-primary">{item.name}</span>
+                     </Link>
                   </li>
                 ))}
               </ul>
@@ -93,7 +95,10 @@ export function Footer() {
               <ul className="space-y-4">
                 {resourceItems.map((item) => (
                   <li key={item.name}>
-                     <AnimatedLink href={item.href}>{item.name}</AnimatedLink>
+                     <Link href={item.href} className="group text-muted-foreground hover:text-primary transition-colors relative block overflow-hidden text-sm sm:text-[16px]">
+                        <span className="block transition-transform duration-300 ease-in-out group-hover:-translate-y-full">{item.name}</span>
+                        <span className="absolute inset-0 block translate-y-full transition-transform duration-300 ease-in-out group-hover:translate-y-0 text-primary">{item.name}</span>
+                     </Link>
                   </li>
                 ))}
               </ul>
@@ -103,7 +108,10 @@ export function Footer() {
               <ul className="space-y-4">
                 {legalItems.map((item) => (
                   <li key={item.name}>
-                     <AnimatedLink href={item.href}>{item.name}</AnimatedLink>
+                     <Link href={item.href} className="group text-muted-foreground hover:text-primary transition-colors relative block overflow-hidden text-sm sm:text-[16px]">
+                        <span className="block transition-transform duration-300 ease-in-out group-hover:-translate-y-full">{item.name}</span>
+                        <span className="absolute inset-0 block translate-y-full transition-transform duration-300 ease-in-out group-hover:translate-y-0 text-primary">{item.name}</span>
+                     </Link>
                   </li>
                 ))}
               </ul>
@@ -116,6 +124,14 @@ export function Footer() {
         </div>
       </div>
 
+      <motion.div
+        style={{ y: testersY }}
+        className="z-10 absolute bottom-0 flex items-end justify-center w-full overflow-hidden pointer-events-none"
+      >
+        <p className="font-black text-primary/10 dark:text-secondary/50 text-[80px] sm:text-[200px] lg:text-[300px] -mb-10 sm:-mb-24 lg:-mb-40">
+          inTesters
+        </p>
+      </motion.div>
     </footer>
   );
 }

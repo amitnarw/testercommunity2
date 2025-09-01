@@ -89,10 +89,10 @@ export default function DashboardPage() {
     <>
       <div className="min-h-screen bg-secondary/50">
         <div className="container mx-auto px-4 md:px-6">
-          <header className="mb-8 pt-12">
+          <header className="mb-6">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
               <div>
-                <h1 className="text-4xl font-bold bg-gradient-to-b from-primary to-primary/40 bg-clip-text text-transparent">Developer Dashboard</h1>
+                <h1 className="text-4xl font-bold bg-gradient-to-b from-primary to-primary/40 bg-clip-text text-transparent leading-[unset]">Developer Dashboard</h1>
                 <p className="text-muted-foreground">Manage your apps and professional testing projects.</p>
               </div>
             </div>
@@ -163,7 +163,7 @@ export default function DashboardPage() {
 
           </div>
 
-          <main className="mt-8">
+          <main className="mt-12">
              <Tabs defaultValue="ongoing" className="w-full">
                 <TabsList className="grid w-full grid-cols-3">
                     <TabsTrigger value="ongoing">Ongoing ({ongoingApps.length})</TabsTrigger>

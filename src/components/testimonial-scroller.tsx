@@ -77,10 +77,10 @@ export function TestimonialScroller({ testimonials }: TestimonialScrollerProps) 
     return (
         <div className="w-full">
             <div className="flex flex-col gap-4">
-               <HorizontalLooper speed={20} reversed={false}>
+               <HorizontalLooper speed={40} reversed={false}>
                     {cards}
                 </HorizontalLooper>
-                <HorizontalLooper speed={20} reversed={true}>
+                <HorizontalLooper speed={40} reversed={true}>
                     {cards}
                 </HorizontalLooper>
             </div>

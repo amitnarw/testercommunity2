@@ -24,7 +24,7 @@ export function BackButton({ href, className }: BackButtonProps) {
 
     const commonProps = {
         variant: "outline" as const,
-        className: cn("rounded-full px-5 group pl-12 border-0 shadow-lg shadow-[hsl(var(--primary))]/10 hover:bg-white hover:text-[hsl(var(--primary))]", className),
+        className: cn("rounded-full px-5 group pl-12 border-0 shadow-lg shadow-[hsl(var(--primary))]/10 hover:bg-white hover:dark:bg-secondary hover:text-[hsl(var(--primary))]", className),
     };
 
     const content = (
