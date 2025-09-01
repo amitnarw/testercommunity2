@@ -48,7 +48,7 @@ export const blogPosts: BlogPost[] = [
       dataAiHint: 'woman tech',
     },
     date: '2024-05-20',
-    imageUrl: 'https://images.unsplash.com/photo-1587440871875-191322ee64b0?q=80&w=600&auto=format&fit=crop',
+    imageUrl: 'https://images.unsplash.com/photo-1587440871875-191322ee64b0?q=80&w=600&auto=format=fit=crop',
     dataAiHint: 'ux design',
     tags: ['UI/UX', 'Design', 'User Research'],
   },
@@ -60,7 +60,7 @@ export const blogPosts: BlogPost[] = [
     content: `<p>Mobile security is not a feature; it's a necessity. With increasing threats, robust security testing is crucial. This checklist provides a starting point for testers to ensure an app is secure.</p><p>Key areas covered:</p><ul><li>Data storage and encryption</li><li>Network communication vulnerabilities</li><li>Authentication and authorization</li><li>Code obfuscation and anti-tampering</li></ul>`,
     author: {
       name: 'George Hill',
-      avatarUrl: 'https://images.unsplash.com/photo-1527982987257-d3abc440f2ba?q=80&w=400&auto=format&fit=crop',
+      avatarUrl: 'https://images.unsplash.com/photo-1527982987257-d3abc440f2ba?q=80&w=400&auto=format=fit=crop',
       dataAiHint: 'man portrait',
     },
     date: '2024-05-25',
@@ -74,7 +74,7 @@ export const testimonials: Testimonial[] = [
   {
     name: 'Sarah Jennings',
     role: 'Lead Developer, TechNova',
-    avatar: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?q=80&w=400&auto=format&fit=crop',
+    avatar: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?q=80&w=400&auto=format=fit=crop',
     dataAiHint: 'woman portrait',
     comment: 'inTesters has revolutionized our QA process. The real-time feedback and detailed reports are game-changers. The platform isn\'t just functional, it\'s a joy to use!',
   },
@@ -102,7 +102,7 @@ export const testimonials: Testimonial[] = [
   {
     name: 'Maria Garcia',
     role: 'Mobile App Developer',
-    avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=400&auto=format=fit=crop',
+    avatar: 'https://images.unsplash.com/photo-14947901083_77-be9c29b29330?q=80&w=400&auto=format=fit=crop',
     dataAiHint: 'woman developer',
     comment: 'The community aspect is what sets inTesters apart. It\'s not just a service; it\'s a network of professionals passionate about quality. The collaboration tools are excellent.',
   },
@@ -438,7 +438,7 @@ export const communityApps: CommunityApp[] = [
         playStoreUrl: 'https://play.google.com/store/apps/details?id=com.zhiliaoapp.musically',
         screenshots: [
             { url: 'https://play-lh.googleusercontent.com/M3jcFp_6m-Zg-p-v3-q2YJS2I-V_mV1nZJ-J6eTjL_zHlQ-3-k3g-p-C-G-U-L-R-g=w526-h296-rw', alt: 'TikTok Screenshot 1', dataAiHint: 'video feed interface' },
-            { url: 'https://play-lh.googleusercontent.com/yv-65V-T-7-I-fL-Y-f-k-w-z-y-f-k-w-z-y-f-k-w-z-y-f-k-w-z-y-f-k-w-z-y-f-k-w-z-y-f-k=w526-h296-rw', alt: 'TikTok Screenshot 2', dataAiHint: 'video creation tools' }
+            { url: 'https://play-lh.googleusercontent.com/yv-65V-T-7-I-fL-Y-f-k-w-z-y-f-k-w-z-y-f-k-w-z-y-f-k-w-z-y-f-k-w-z-y-f-k=w526-h296-rw', alt: 'TikTok Screenshot 2', dataAiHint: 'video creation tools' }
         ],
         testingInstructions: 'Test the new "Stitch" feature with a video from your "For You" page. Ensure the editing tools work as expected and the final video posts correctly.',
         status: 'available',
@@ -757,45 +757,34 @@ export const communityApps: CommunityApp[] = [
     },
 ];
 
+export const professionalPathFeatures: string[] = [
+    "14-Day Testing Cycle",
+    "20+ Vetted Testers",
+    "Managed by inTesters Team",
+    "Detailed Bug Reports",
+    "Device & OS Coverage Stats",
+    "Google Play Compliance Check",
+];
+
+
 export const pointsPackages: PointsPackage[] = [
     {
         name: "Booster",
         price: 699,
         points: 1,
-        description: "Perfect for a quick professional test cycle for a single app.",
-        features: [
-            "1 Professional Test Package", 
-            "Managed by inTesters team", 
-            "Priority in testing queue",
-            "Direct chat with project manager",
-            "Community support"
-        ],
+        description: "Perfect for a single app.",
     },
     {
         name: "Accelerator",
         price: 1799,
         points: 5,
-        description: "Great value for teams with multiple apps or frequent releases.",
-        features: [
-            "5 Professional Test Packages",
-            "Managed by inTesters team", 
-            "Priority in testing queue",
-            "Direct chat with project manager",
-            "Community support"
-        ],
+        description: "Great value for teams.",
     },
     {
         name: "Launchpad",
         price: 2899,
         points: 10,
-        description: "For agencies and enterprises needing extensive testing.",
-        features: [
-            "10 Professional Test Packages",
-            "Managed by inTesters team", 
-            "Priority in testing queue",
-            "Direct chat with project manager",
-            "Community support"
-        ],
+        description: "For agencies & enterprises.",
     }
 ];
 
@@ -1182,3 +1171,4 @@ export const projects: Project[] = [
 
 
     
+
