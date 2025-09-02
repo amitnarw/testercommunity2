@@ -4,7 +4,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import * * as z from 'zod';
+import * as z from 'zod';
 import { motion } from 'framer-motion';
 import { useTheme } from 'next-themes';
 import { useInView } from 'react-intersection-observer';
