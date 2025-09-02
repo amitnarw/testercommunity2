@@ -15,8 +15,8 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Slider } from '@/components/ui/slider';
-import { FileText, Settings, Link as LinkIcon, Users } from 'lucide-react';
-import { FormField, FormControl, FormItem, FormMessage, FormLabel } from '@/components/ui/form';
+import { FileText, Settings, Link as LinkIcon, Users, AlertCircle } from 'lucide-react';
+import { FormField, FormControl, FormItem, FormMessage, FormLabel, FormDescription } from '@/components/ui/form';
 import { cn } from '@/lib/utils';
 import AnimatedRoundedButton from '@/components/ui/animated-rounded-button';
 import { BackButton } from '@/components/back-button';
@@ -58,7 +58,7 @@ const formSteps = [
     },
 ];
 
-const Section = ({ id, title, description, children, sectionRef }: { id: string, title: string, description: string, children: React.ReactNode, sectionRef: React.RefObject<HTMLDivElement> }) => {
+const Section = ({ id, title, description, children, sectionRef }: { id: string, title: string, description: string, children: React.ReactNode, sectionRef: React.Ref<HTMLDivElement> }) => {
     return (
         <section ref={sectionRef} id={id} className="min-h-[85vh] flex flex-col justify-center scroll-mt-24 pt-16">
             <div className="mb-8">
@@ -206,7 +206,7 @@ export default function SubmitAppPage() {
                     <main className="lg:col-span-9">
                         <FormProvider {...form}>
                             <form onSubmit={form.handleSubmit(onSubmit)}>
-                                <Section sectionRef={connectRef as any} id="connect" title="1. Connect Your App" description="Provide the essential links and name for your project.">
+                                <Section sectionRef={connectRef} id="connect" title="1. Connect Your App" description="Provide the essential links and name for your project.">
                                     <Card className="bg-secondary/30 border-dashed">
                                         <CardContent className="p-6 grid md:grid-cols-2 gap-6">
                                             <FormField
@@ -239,7 +239,7 @@ export default function SubmitAppPage() {
                                     </Card>
                                 </Section>
 
-                                <Section sectionRef={describeRef as any} id="describe" title="2. Describe Your Project" description="Give testers the context they need for quality feedback.">
+                                <Section sectionRef={describeRef} id="describe" title="2. Describe Your Project" description="Give testers the context they need for quality feedback.">
                                     <Card className="bg-secondary/30 border-dashed">
                                         <CardContent className="p-6 space-y-6">
                                             <FormField
@@ -283,7 +283,7 @@ export default function SubmitAppPage() {
                                     </Card>
                                 </Section>
 
-                                <Section sectionRef={configureRef as any} id="configure" title="3. Configure Your Test" description="Set the final parameters for your testing cycle. You must have enough earned points to cover this budget.">
+                                <Section sectionRef={configureRef} id="configure" title="3. Configure Your Test" description="Set the final parameters for your testing cycle. You must have enough earned points to cover this budget.">
                                     <Card className="bg-secondary/30 border-dashed">
                                         <CardContent className="p-6 grid md:grid-cols-2 gap-6">
                                             <FormField
@@ -318,6 +318,12 @@ export default function SubmitAppPage() {
                                                                 <div className="font-bold text-lg text-primary w-[15%] text-center">{field.value}</div>
                                                              </div>
                                                         </FormControl>
+                                                         <FormDescription className="mt-4 flex items-start gap-2 bg-secondary/80 p-3 rounded-lg border border-border">
+                                                            <AlertCircle className="w-5 h-5 text-muted-foreground mt-0.5 flex-shrink-0" />
+                                                            <div>
+                                                                <span className='font-semibold text-foreground'>Pro Tip:</span> We recommend selecting at least 15-20 testers. Since we don't have direct control over community testers, some may drop out. Choosing extra testers provides a buffer to ensure you meet Google's 14-day/20-tester requirement without delays.
+                                                            </div>
+                                                        </FormDescription>
                                                         <FormMessage />
                                                     </FormItem>
                                                 )}
@@ -334,3 +340,5 @@ export default function SubmitAppPage() {
         </div>
     );
 }
+
+    
