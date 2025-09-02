@@ -4,68 +4,102 @@
 import React, { useState, useEffect, useRef } from 'react';
 
 export default function TestPage() {
-  const [isAnimating, setIsAnimating] = useState(false);
   const cardRef = useRef<HTMLElement>(null);
   const checkRef = useRef<HTMLDivElement>(null);
   const gradientRef = useRef<HTMLDivElement>(null);
 
-  const restartPulse = () => {
-    if (!gradientRef.current) return;
-    gradientRef.current.style.opacity = '0';
-    requestAnimationFrame(() => {
-      if (!gradientRef.current) return;
-      gradientRef.current.style.opacity = '1';
-      gradientRef.current.classList.add('animate');
-    });
-  };
-
-  const stopPulse = () => {
-    if (!gradientRef.current) return;
-    gradientRef.current.style.opacity = '0';
-    setTimeout(() => {
-      gradientRef.current?.classList.remove('animate');
-    }, 150);
-  };
-  
-  const handlePointerDown = () => {
-    if (!checkRef.current) return;
-    checkRef.current.classList.remove('animate');
-    checkRef.current.style.transitionDuration = '1s';
-    requestAnimationFrame(() => {
-       if (checkRef.current) checkRef.current.style.transform = 'scale(1.4)';
-    });
-    stopPulse();
-  };
-  
-  const handlePointerUp = () => {
-    if (!checkRef.current) return;
-    checkRef.current.classList.add('animate');
-    checkRef.current.style.transitionDuration = '0.25s';
-    checkRef.current.style.transform = '';
-    restartPulse();
-  };
-
-  // Initial animation
   useEffect(() => {
-    const timer = setTimeout(() => {
-        if (checkRef.current) {
-            checkRef.current.classList.remove('animate');
-             requestAnimationFrame(() => {
-                if(checkRef.current) checkRef.current.classList.add('animate');
-            })
-        }
+    const $card = cardRef.current;
+    const $check = checkRef.current;
+    const $gradient = gradientRef.current;
+
+    if (!$card || !$check || !$gradient) return;
+
+    const repaint = (cb: () => void, delay = 0) => {
+        requestAnimationFrame(() => {
+            setTimeout(cb, delay);
+        });
+    };
+
+    const stopPulse = () => {
+        if (!$gradient) return;
+        $gradient.style.opacity = '0';
+        repaint(() => {
+            $gradient.classList.remove('animate');
+        },150);
+    };
+
+    const restartPulse = () => {
+        if (!$gradient) return;
+        $gradient.style.opacity = '0';
+        repaint(() => {
+            if (!$gradient) return;
+            $gradient.style.opacity = '1';
+            $gradient.classList.add('animate');
+        }, 150);
+    };
+
+    const replayBounce = () => {
+        if (!$check) return;
+        $check.classList.remove('animate');
+        repaint(() => {
+            $check.classList.add('animate');
+        })
+    };
+    
+    const onPointerDown = (e: PointerEvent) => {
+        if ((e.target as HTMLElement).matches('input')) return;
+        if (!$check) return;
+        $check.classList.remove('animate');
+        $check.style.transitionDuration = '1s';
+        repaint(() => {
+            if ($check) $check.style.transform = 'scale(1.4)';
+        });
+        stopPulse();
+    };
+
+    const onPointerUp = (e: PointerEvent) => {
+        if ((e.target as HTMLElement).matches('input')) return;
+        if (!$check) return;
+        $check.classList.add('animate');
+        $check.style.transitionDuration = '0.25s';
+        $check.style.transform = '';
+        restartPulse();
+    };
+    
+    const onKeyPress = () => {
+        stopPulse();
+        repaint(() => {
+            replayBounce();
+            restartPulse();
+        }, 100);
+    };
+
+    $card.addEventListener('pointerdown', onPointerDown);
+    $card.addEventListener('pointerup', onPointerUp);
+    $check.addEventListener('keypress', onKeyPress);
+    
+    repaint(() => {
+        replayBounce();
         restartPulse();
     }, 1000);
-    return () => clearTimeout(timer);
-  }, [])
+
+
+    return () => {
+        $card.removeEventListener('pointerdown', onPointerDown);
+        $card.removeEventListener('pointerup', onPointerUp);
+        $check.removeEventListener('keypress', onKeyPress);
+    };
+
+  }, []);
+
 
   return (
     <>
       <style jsx global>{`
         :root {
-          /* Neon Green */
-          --hue1: 120; /* hsl(120, 100%, 50%) is pure green */
-          --hue2: 120;
+          --hue1: 123;
+          --hue2: 145;
           --pads: 1rem;
         }
 
@@ -110,10 +144,10 @@ export default function TestPage() {
           initial-value: 0deg;
         }
 
-        .card-container {
+        #app {
             display: grid;
             place-content: center;
-            min-height: calc(100vh - 200px);
+            min-height: 100vh;
         }
 
         .card {
@@ -123,21 +157,21 @@ export default function TestPage() {
           height: 600px;
           max-height: 600px;
           border-radius: 1.768em;
-          background: hsl(0 0% 12%);
+          background: hsl(260, 25%, 95%);
           isolation: isolate;
           display: grid;
           overflow: hidden;
-          box-shadow: 
-              rgba(0, 0, 0, 0.1) 0px 1px 2px, 
-              rgba(0, 0, 0, 0.1) 0px 2px 4px, 
-              rgba(0, 0, 0, 0.1) 0px 4px 8px, 
-              rgba(0, 0, 0, 0.1) 0px 8px 16px, 
-              rgba(0, 0, 0, 0.1) 0px 16px 32px, 
-              rgba(0, 0, 0, 0.1) 0px 32px 64px;
+           box-shadow: 
+                rgba(0, 0, 0, 0.1) 0px 1px 2px, 
+                rgba(0, 0, 0, 0.1) 0px 2px 4px, 
+                rgba(0, 0, 0, 0.1) 0px 4px 8px, 
+                rgba(0, 0, 0, 0.1) 0px 8px 16px, 
+                rgba(0, 0, 0, 0.1) 0px 16px 32px, 
+                rgba(0, 0, 0, 0.1) 0px 32px 64px;
         }
 
         .inner {
-          color: white;
+          color: black;
           text-align: center;
           display: flex;
           flex-direction: column;
@@ -145,6 +179,17 @@ export default function TestPage() {
           container-type: inline-size;
           position: relative;
           z-index: 1;
+        }
+        
+        .inner header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5em 1em;
+        }
+        
+        .inner svg {
+            height: 24px;
         }
 
         .check {
@@ -161,7 +206,7 @@ export default function TestPage() {
           border-radius: 100%;
           color: white;
           transition: transform 1s ease-in-out;
-          background: oklch(0.6 0.2 var(--hue2) / 75%);
+          background: oklch(0.7 0.05 var(--hue2) / 75%);
           cursor: pointer;
         }
         .check:focus-visible {
@@ -177,7 +222,7 @@ export default function TestPage() {
           opacity: 0;
           transition: opacity 0.33s ease-in-out;
           transition-delay: 0.1s;
-          width: 24px;
+           width: 24px;
           height: 24px;
         }
         .check [clock] {
@@ -212,14 +257,14 @@ export default function TestPage() {
           background-color: transparent;
           background-image: radial-gradient(
               circle at 50% var(--radial-center),
-              oklch(0.8 0.25 var(--hue2) / var(--opc)) 10%,
+              oklch(0.8853 0.2532 var(--hue2) / var(--opc)) 10%,
               transparent 66%
             ),
             conic-gradient(
               from var(--conic-rotate) at 50% var(--radial-center),
-              oklch(0.7 0.25 var(--hue1) / var(--opc)) 15%,
-              oklch(0.7 0.29 var(--hue2) / var(--opc)) 57%,
-              oklch(0.7 0.25 var(--hue1) / var(--opc)) 100%
+              oklch(0.8853 0.2532 var(--hue1) / var(--opc)) 15%,
+              oklch(0.8618 0.2902 var(--hue2) / var(--opc)) 57%,
+              oklch(0.8853 0.2532 var(--hue1) / var(--opc)) 100%
             );
           mask-image: radial-gradient(
             var(--gradient-w) var(--gradient-h) at 50% var(--radial-center),
@@ -283,8 +328,14 @@ export default function TestPage() {
             transform: scale(1.4);
           }
         }
+        
+        @keyframes fadeIn {
+            to {
+                opacity: 1;
+            }
+        }
       `}</style>
-      <main id="app" className="card-container">
+      <main id="app">
         <section className="card" ref={cardRef}>
           <div className="gradient-mask">
             <div
@@ -300,35 +351,9 @@ export default function TestPage() {
               tabIndex={0}
               className="check"
               ref={checkRef}
-              title="Click to restart the animation!"
-              onPointerDown={handlePointerDown}
-              onPointerUp={handlePointerUp}
-              onKeyPress={(e) => e.key === 'Enter' && handlePointerUp()}
+              title="click to restart the animation!"
             >
-              <svg clock="" viewBox="0 0 24 24">
-                <path
-                  fill="currentColor"
-                  d="M12,1A11,11,0,1,0,23,12,11,11,0,0,0,12,1Zm0,20a9,9,0,1,1,9-9A9,9,0,0,1,12,21Z"
-                />
-                <rect width="2" height="7" x="11" y="6" fill="currentColor" rx="1">
-                  <animateTransform
-                    attributeName="transform"
-                    dur="9s"
-                    repeatCount="indefinite"
-                    type="rotate"
-                    values="0 12 12;360 12 12"
-                  />
-                </rect>
-                <rect width="2" height="9" x="11" y="11" fill="currentColor" rx="1">
-                  <animateTransform
-                    attributeName="transform"
-                    dur="0.75s"
-                    repeatCount="indefinite"
-                    type="rotate"
-                    values="0 12 12;360 12 12"
-                  />
-                </rect>
-              </svg>
+               <svg clock="" viewBox="0 0 24 24"><path fill="currentColor" d="M12,1A11,11,0,1,0,23,12,11,11,0,0,0,12,1Zm0,20a9,9,0,1,1,9-9A9,9,0,0,1,12,21Z"/><rect width="2" height="7" x="11" y="6" fill="currentColor" rx="1"><animateTransform attributeName="transform" dur="9s" repeatCount="indefinite" type="rotate" values="0 12 12;360 12 12"/></rect><rect width="2" height="9" x="11" y="11" fill="currentColor" rx="1"><animateTransform attributeName="transform" dur="0.75s" repeatCount="indefinite" type="rotate" values="0 12 12;360 12 12"/></rect></svg>
                <svg tick="" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <path d="M20 6 9 17l-5-5"/>
               </svg>
