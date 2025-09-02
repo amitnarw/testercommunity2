@@ -10,7 +10,7 @@ import { Badge } from '@/components/ui/badge';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Star, Upload, ExternalLink, Smartphone, Clock, FileText, Check, Hourglass, Send } from 'lucide-react';
+import { Star, Upload, ExternalLink, Smartphone, Clock, FileText, Check, Hourglass, Send, X, Expand } from 'lucide-react';
 import { communityApps } from '@/lib/data';
 import { cn } from '@/lib/utils';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -115,6 +115,8 @@ export default function AppTestingPage({ params }: { params: { id: string } }) {
     const { theme } = useTheme();
     const [testingState, setTestingState] = useState<TestingState>('idle');
     const [rating, setRating] = useState(0);
+    const [fullscreenImage, setFullscreenImage] = useState<string | null>(null);
+
 
     const app = communityApps.find(p => p.id.toString() === params.id);
 
@@ -149,11 +151,17 @@ export default function AppTestingPage({ params }: { params: { id: string } }) {
 
                         <section>
                             <h2 className="text-2xl font-bold mb-4">Screenshots</h2>
-                            {/* <div className="grid grid-cols-1 sm:grid-cols-2 gap-4"> */}
-                            <div className="flex flex-row gap-2">
+                            <div className="flex flex-row gap-2 overflow-x-auto pb-4 max-h-[500px]">
                                 {app.screenshots.map((ss, index) => (
-                                    <div key={index} className="overflow-hidden rounded-xl w-60">
-                                        <Image src={ss.url} alt={ss.alt} width={400} height={800} className="object-cover hover:scale-105 transition-transform duration-300" data-ai-hint={ss.dataAiHint} />
+                                    <div 
+                                        key={index} 
+                                        className="overflow-hidden rounded-xl flex-shrink-0 w-60 relative group cursor-pointer"
+                                        onClick={() => setFullscreenImage(ss.url)}
+                                    >
+                                        <Image src={ss.url} alt={ss.alt} width={400} height={800} className="object-cover h-full w-full hover:scale-105 transition-transform duration-300" data-ai-hint={ss.dataAiHint} />
+                                        <div className="absolute inset-0 bg-black/30 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                            <Expand className="w-8 h-8 text-white" />
+                                        </div>
                                     </div>
                                 ))}
                             </div>
@@ -234,6 +242,31 @@ export default function AppTestingPage({ params }: { params: { id: string } }) {
                     </aside>
                 </main>
             </div>
+             {fullscreenImage && (
+                <div
+                    className="fixed inset-0 bg-black/80 z-[60] flex items-center justify-center p-4 animate-in fade-in-0"
+                    onClick={() => setFullscreenImage(null)}
+                >
+                    <Button
+                        variant="ghost"
+                        size="icon"
+                        className="absolute top-4 right-4 text-white hover:text-white hover:bg-white/20 h-12 w-12 rounded-full"
+                        onClick={() => setFullscreenImage(null)}
+                    >
+                        <X className="w-8 h-8" />
+                        <span className="sr-only">Close</span>
+                    </Button>
+                    <div className="relative w-full h-full max-w-4xl max-h-[90vh]">
+                        <Image
+                            src={fullscreenImage}
+                            alt="Fullscreen view"
+                            layout="fill"
+                            objectFit="contain"
+                            className="animate-in zoom-in-95"
+                        />
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
