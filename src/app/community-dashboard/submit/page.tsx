@@ -14,6 +14,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Slider } from '@/components/ui/slider';
 import { FileText, Settings, Link as LinkIcon, Users } from 'lucide-react';
 import { FormField, FormControl, FormItem, FormMessage, FormLabel } from '@/components/ui/form';
 import { cn } from '@/lib/utils';
@@ -27,7 +28,7 @@ const submissionSchema = z.object({
     category: z.string({ required_error: "Please select a category." }),
     appDesc: z.string().min(50, "Please provide a detailed description of at least 50 characters."),
     androidVersion: z.string().min(1, "Please specify the minimum Android version."),
-    numberOfTesters: z.string({ required_error: "Please select the number of testers." }),
+    numberOfTesters: z.coerce.number().min(5, { message: 'A minimum of 5 testers is required.' }).max(50),
 });
 
 type SubmissionFormData = z.infer<typeof submissionSchema>;
@@ -77,6 +78,9 @@ export default function SubmitAppPage() {
     const form = useForm<SubmissionFormData>({
         resolver: zodResolver(submissionSchema),
         mode: 'onBlur',
+        defaultValues: {
+            numberOfTesters: 10, // Default value for the slider
+        }
     });
 
     const onSubmit = (data: SubmissionFormData) => {
@@ -301,18 +305,19 @@ export default function SubmitAppPage() {
                                                 render={({ field }) => (
                                                     <FormItem>
                                                         <FormLabel>Number of Testers (Your balance: 1,250 Points)</FormLabel>
-                                                        <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                                            <FormControl>
-                                                                <SelectTrigger className="h-12">
-                                                                    <SelectValue placeholder="Select number of testers" />
-                                                                </SelectTrigger>
-                                                            </FormControl>
-                                                            <SelectContent>
-                                                                <SelectItem value="5">5 Testers (Basic Feedback)</SelectItem>
-                                                                <SelectItem value="10">10 Testers (Recommended)</SelectItem>
-                                                                <SelectItem value="20">20 Testers (In-depth Feedback)</SelectItem>
-                                                            </SelectContent>
-                                                        </Select>
+                                                        <FormControl>
+                                                             <div className="flex items-center gap-4 pt-2">
+                                                                <Slider
+                                                                    defaultValue={[field.value]}
+                                                                    min={5}
+                                                                    max={50}
+                                                                    step={5}
+                                                                    onValueChange={(value) => field.onChange(value[0])}
+                                                                    className={cn("w-[85%]", field.name)}
+                                                                />
+                                                                <div className="font-bold text-lg text-primary w-[15%] text-center">{field.value}</div>
+                                                             </div>
+                                                        </FormControl>
                                                         <FormMessage />
                                                     </FormItem>
                                                 )}
