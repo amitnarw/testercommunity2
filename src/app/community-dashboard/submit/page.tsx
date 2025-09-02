@@ -321,7 +321,7 @@ export default function SubmitAppPage() {
                                                          <FormDescription className="mt-4 flex items-start gap-2 bg-secondary/80 p-3 rounded-lg border border-border">
                                                             <AlertCircle className="w-5 h-5 text-muted-foreground mt-0.5 flex-shrink-0" />
                                                             <div>
-                                                                <span className='font-semibold text-foreground'>Pro Tip:</span> We recommend selecting at least 15-20 testers. Since we don't have direct control over community testers, some may drop out. Choosing extra testers provides a buffer to ensure you meet Google's 14-day/20-tester requirement without delays.
+                                                                <span className='font-semibold text-foreground'>Pro Tip:</span> We recommend selecting at least 15-20 testers. Since community testers can drop out, choosing extra provides a buffer to ensure you meet Google's 14-day/12-tester requirement without delays.
                                                             </div>
                                                         </FormDescription>
                                                         <FormMessage />
@@ -340,5 +340,7 @@ export default function SubmitAppPage() {
         </div>
     );
 }
+
+    
 
     

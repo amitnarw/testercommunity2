@@ -48,7 +48,7 @@ export const blogPosts: BlogPost[] = [
       dataAiHint: 'woman tech',
     },
     date: '2024-05-20',
-    imageUrl: 'https://images.unsplash.com/photo-1587440871875-191322ee64b0?q=80&w=600&auto=format=fit=crop',
+    imageUrl: 'https://images.unsplash.com/photo-1587440871875-191322ee64b0?q=80&w=600&auto=format&fit=crop',
     dataAiHint: 'ux design',
     tags: ['UI/UX', 'Design', 'User Research'],
   },
@@ -60,11 +60,11 @@ export const blogPosts: BlogPost[] = [
     content: `<p>Mobile security is not a feature; it's a necessity. With increasing threats, robust security testing is crucial. This checklist provides a starting point for testers to ensure an app is secure.</p><p>Key areas covered:</p><ul><li>Data storage and encryption</li><li>Network communication vulnerabilities</li><li>Authentication and authorization</li><li>Code obfuscation and anti-tampering</li></ul>`,
     author: {
       name: 'George Hill',
-      avatarUrl: 'https://images.unsplash.com/photo-1527982987257-d3abc440f2ba?q=80&w=400&auto=format=fit=crop',
+      avatarUrl: 'https://images.unsplash.com/photo-1527982987257-d3abc440f2ba?q=80&w=400&auto=format&fit=crop',
       dataAiHint: 'man portrait',
     },
     date: '2024-05-25',
-    imageUrl: 'https://images.unsplash.com/photo-1555949963-ff9fe0c870eb?q=80&w=600&auto=format=fit=crop',
+    imageUrl: 'https://images.unsplash.com/photo-1555949963-ff9fe0c870eb?q=80&w=600&auto=format&fit=crop',
     dataAiHint: 'cyber security',
     tags: ['Security', 'Mobile', 'Checklist'],
   },
@@ -74,35 +74,35 @@ export const testimonials: Testimonial[] = [
   {
     name: 'Sarah Jennings',
     role: 'Lead Developer, TechNova',
-    avatar: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?q=80&w=400&auto=format=fit=crop',
+    avatar: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?q=80&w=400&auto=format&fit=crop',
     dataAiHint: 'woman portrait',
     comment: 'inTesters has revolutionized our QA process. The real-time feedback and detailed reports are game-changers. The platform isn\'t just functional, it\'s a joy to use!',
   },
   {
     name: 'Mike Valerio',
     role: 'Indie Game Developer',
-    avatar: 'https://images.unsplash.com/photo-1564564321837-a57b7070ac4f?q=80&w=400&auto=format=fit=crop',
+    avatar: 'https://images.unsplash.com/photo-1564564321837-a57b7070ac4f?q=80&w=400&auto=format&fit=crop',
     dataAiHint: 'man smiling',
     comment: 'Finding the right testers used to be a nightmare. The gamified marketplace made it fun and easy to connect with experienced, reliable people. My app is better for it.',
   },
   {
     name: 'Chen Lin',
     role: 'Product Manager, Innovate Inc.',
-    avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=400&auto=format=fit=crop',
+    avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=400&auto=format&fit=crop',
     dataAiHint: 'person glasses',
     comment: 'The dashboards are incredible. Being able to visualize our testing data with such clarity and beauty has helped us identify critical issues faster than ever before.',
   },
   {
     name: 'David Kim',
     role: 'QA Engineer, GameSphere',
-    avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=400&auto=format=fit=crop',
+    avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=400&auto=format&fit=crop',
     dataAiHint: 'man portrait',
     comment: 'As a tester, the gamified reputation system is fantastic. It motivates me to do my best work and get recognized for it. I\'ve gotten more high-quality projects through inTesters than any other platform.',
   },
   {
     name: 'Maria Garcia',
     role: 'Mobile App Developer',
-    avatar: 'https://images.unsplash.com/photo-14947901083_77-be9c29b29330?q=80&w=400&auto=format=fit=crop',
+    avatar: 'https://images.unsplash.com/photo-14947901083_77-be9c29b29330?q=80&w=400&auto=format&fit=crop',
     dataAiHint: 'woman developer',
     comment: 'The community aspect is what sets inTesters apart. It\'s not just a service; it\'s a network of professionals passionate about quality. The collaboration tools are excellent.',
   },
@@ -200,7 +200,7 @@ export const professionalPathSteps: RoadmapStep[] = [
     {
         step: 4,
         title: "Launch with Certainty",
-        description: "With the 14-day/20-tester requirement met and your app polished by experts, you can submit to the Google Play Store with the highest degree of confidence.",
+        description: "With the 14-day/12-tester requirement met and your app polished by experts, you can submit to the Google Play Store with the highest degree of confidence.",
         badgeText: "Cycle: Defined & Completed",
         details: [
             { title: "Official Confirmation", description: "Receive an official completion report for your records." },
@@ -1172,3 +1172,6 @@ export const projects: Project[] = [
 
     
 
+
+
+    
