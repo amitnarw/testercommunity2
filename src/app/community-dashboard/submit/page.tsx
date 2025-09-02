@@ -4,7 +4,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import * as z from 'zod';
+import * * as z from 'zod';
 import { motion } from 'framer-motion';
 import { useTheme } from 'next-themes';
 import { useInView } from 'react-intersection-observer';
@@ -15,7 +15,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Slider } from '@/components/ui/slider';
-import { FileText, Settings, Link as LinkIcon, Users, AlertCircle } from 'lucide-react';
+import { FileText, Settings, Link as LinkIcon, Users, AlertCircle, CalendarClock } from 'lucide-react';
 import { FormField, FormControl, FormItem, FormMessage, FormLabel, FormDescription } from '@/components/ui/form';
 import { cn } from '@/lib/utils';
 import AnimatedRoundedButton from '@/components/ui/animated-rounded-button';
@@ -29,6 +29,7 @@ const submissionSchema = z.object({
     appDesc: z.string().min(50, "Please provide a detailed description of at least 50 characters."),
     androidVersion: z.string().min(1, "Please specify the minimum Android version."),
     numberOfTesters: z.coerce.number().min(5, { message: 'A minimum of 5 testers is required.' }).max(50),
+    testDuration: z.coerce.number().min(14, { message: 'A minimum of 14 days is required.' }).max(30),
 });
 
 type SubmissionFormData = z.infer<typeof submissionSchema>;
@@ -53,7 +54,7 @@ const formSteps = [
         id: 'configure',
         title: 'Configure',
         icon: <Users className="w-5 h-5" />,
-        fields: ['androidVersion', 'numberOfTesters'],
+        fields: ['androidVersion', 'numberOfTesters', 'testDuration'],
         description: 'Finally, set the technical parameters and choose how many testers you need. Points will be deducted after admin review.'
     },
 ];
@@ -79,7 +80,8 @@ export default function SubmitAppPage() {
         resolver: zodResolver(submissionSchema),
         mode: 'onBlur',
         defaultValues: {
-            numberOfTesters: 10, // Default value for the slider
+            numberOfTesters: 10,
+            testDuration: 14,
         }
     });
 
@@ -285,7 +287,7 @@ export default function SubmitAppPage() {
 
                                 <Section sectionRef={configureRef} id="configure" title="3. Configure Your Test" description="Set the final parameters for your testing cycle. You must have enough earned points to cover this budget.">
                                     <Card className="bg-secondary/30 border-dashed">
-                                        <CardContent className="p-6 grid md:grid-cols-2 gap-6">
+                                        <CardContent className="p-6 grid md:grid-cols-1 gap-8">
                                             <FormField
                                                 control={form.control}
                                                 name="androidVersion"
@@ -328,6 +330,35 @@ export default function SubmitAppPage() {
                                                     </FormItem>
                                                 )}
                                             />
+                                             <FormField
+                                                control={form.control}
+                                                name="testDuration"
+                                                render={({ field }) => (
+                                                    <FormItem>
+                                                        <FormLabel>Test Duration (Days)</FormLabel>
+                                                        <FormControl>
+                                                             <div className="flex items-center gap-4 pt-2">
+                                                                <Slider
+                                                                    defaultValue={[field.value]}
+                                                                    min={14}
+                                                                    max={30}
+                                                                    step={1}
+                                                                    onValueChange={(value) => field.onChange(value[0])}
+                                                                    className={cn("w-[85%]", field.name)}
+                                                                />
+                                                                <div className="font-bold text-lg text-primary w-[15%] text-center">{field.value}</div>
+                                                             </div>
+                                                        </FormControl>
+                                                         <FormDescription className="mt-4 flex items-start gap-2 bg-secondary/80 p-3 rounded-lg border border-border">
+                                                            <AlertCircle className="w-5 h-5 text-muted-foreground mt-0.5 flex-shrink-0" />
+                                                            <div>
+                                                                <span className='font-semibold text-foreground'>Pro Tip:</span> While the minimum is 14 days, we suggest 16-20 days. This gives community testers a flexible window to complete the test period without pressure.
+                                                            </div>
+                                                        </FormDescription>
+                                                        <FormMessage />
+                                                    </FormItem>
+                                                )}
+                                            />
                                         </CardContent>
                                     </Card>
                                 </Section>
@@ -339,8 +370,5 @@ export default function SubmitAppPage() {
             </div>
         </div>
     );
-}
-
-    
 
     
