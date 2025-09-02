@@ -22,10 +22,54 @@ import { useTheme } from 'next-themes';
 
 type TestingState = 'idle' | 'requested' | 'approved';
 
-const AppInfoSidebar = ({ app }: { app: any }) => (
+const AppInfoSidebar = ({ app, testingState, handleRequestToJoin, hoverBgColor, hoverTextColor }: { app: any, testingState: TestingState, handleRequestToJoin: () => void, hoverBgColor: "white" | "black", hoverTextColor: "white" | "black" }) => (
     <div className="sticky top-24 space-y-6">
-        <Card className="border-0 rounded-2xl shadow-xl shadow-gray-100 dark:shadow-gray-900">
-            <CardContent className="p-6">
+        <AnimatePresence mode="wait">
+            <motion.div
+                key={testingState}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="w-auto"
+            >
+                {testingState === 'idle' && (
+                    <div onClick={handleRequestToJoin} className='relative w-full m-auto'>
+                        <AnimatedRoundedButton
+                            backgroundColor="hsl(var(--primary))"
+                            animatedBackgroundColor={hoverBgColor}
+                            hoverTextColor={hoverTextColor}
+                            borderRadius='9999px'
+                            paddingY="4"
+                            paddingX="5"
+                        >
+                            <div className="flex items-center gap-2">
+                                <span className='hidden sm:inline'>Request to Join Testing</span>
+                                <span className='sm:hidden'>Request</span>
+                            </div>
+
+                        </AnimatedRoundedButton>
+                        <div className="p-2 rounded-3xl bg-white absolute top-2 right-2">
+                            <Send className="text-primary" />
+                        </div>
+
+                    </div>
+                )}
+                {testingState === 'requested' && (
+                    <Button size="lg" className="w-full text-lg h-14" disabled>
+                        <Hourglass className="mr-2 h-5 w-5 animate-spin" /> Awaiting Approval...
+                    </Button>
+                )}
+                {testingState === 'approved' && (
+                    <Button size="lg" asChild className="w-full text-lg h-14 bg-green-600 hover:bg-green-700">
+                        <a href={app.playStoreUrl} target="_blank" rel="noopener noreferrer">
+                            <Check className="mr-2 h-5 w-5" /> Start Testing on Google Play <ExternalLink className="ml-2 h-4 w-4" />
+                        </a>
+                    </Button>
+                )}
+            </motion.div>
+        </AnimatePresence>
+
+        <Card className="border-0 rounded-2xl shadow-xl shadow-gray-100 dark:shadow-gray-900 overflow-hidden">
+            <CardContent className="p-6 pb-0">
                 <div className="flex items-center gap-4 mb-4">
                     <Image src={app.icon} alt={app.name} width={100} height={100} className="rounded-xl border bg-background shadow-sm" data-ai-hint={app.dataAiHint} />
                     <div className='flex flex-col items-start justify-between gap-2'>
@@ -35,12 +79,12 @@ const AppInfoSidebar = ({ app }: { app: any }) => (
                     </div>
                 </div>
             </CardContent>
-            <CardFooter className="p-6 pt-0">
-                <div className="w-full bg-primary/10 border border-primary/20 p-4 rounded-xl text-center">
-                    <p className="text-sm font-semibold text-primary">REWARD</p>
-                    <div className="text-3xl font-bold text-foreground flex items-center gap-2 justify-center mt-1">
-                        <Star className="w-7 h-7 text-amber-400 fill-amber-400" />
+            <CardFooter className="p-6 pt-0 bg-gradient-to-b from-primary/0 to-primary/60 rounded-b-2xl relative">
+                <div className="w-full p-4 rounded-xl text-center">
+                    <p className="text-xl font-semibold text-primary text-start">REWARD</p>
+                    <div className="text-3xl font-bold text-foreground flex items-center gap-2 justify-start mt-1">
                         {app.points} Points
+                        <Star className="w-7 h-7 text-primary/0 fill-primary/20 scale-[6] absolute bottom-8 right-6 rotate-90" />
                     </div>
                 </div>
             </CardFooter>
@@ -117,54 +161,8 @@ export default function AppTestingPage({ params }: { params: { id: string } }) {
 
                         {/* Sidebar for mobile, shown in flow */}
                         <div className="block lg:hidden">
-                            <AppInfoSidebar app={app} />
+                            <AppInfoSidebar app={app} testingState={testingState} handleRequestToJoin={handleRequestToJoin} hoverBgColor={hoverBgColor} hoverTextColor={hoverTextColor} />
                         </div>
-
-
-                        <AnimatePresence mode="wait">
-                            <motion.div
-                                key={testingState}
-                                initial={{ opacity: 0, y: 10 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                className="w-auto"
-                            >
-                                {testingState === 'idle' && (
-                                    <div onClick={handleRequestToJoin} className='relative w-96 m-auto'>
-                                        <AnimatedRoundedButton
-                                            backgroundColor="hsl(var(--primary))"
-                                            animatedBackgroundColor={hoverBgColor}
-                                            hoverTextColor={hoverTextColor}
-                                            borderRadius='9999px'
-                                            paddingY="4"
-                                            paddingX="5"
-                                        >
-                                            <div className="flex items-center gap-2">
-                                                <span className='hidden sm:inline'>Request to Join Testing</span>
-                                                <span className='sm:hidden'>Request</span>
-                                            </div>
-
-                                        </AnimatedRoundedButton>
-                                        <div className="p-2 rounded-3xl bg-white absolute top-2 right-2">
-                                            <Send className="text-primary" />
-                                        </div>
-
-                                    </div>
-                                )}
-                                {testingState === 'requested' && (
-                                    <Button size="lg" className="w-full text-lg h-14" disabled>
-                                        <Hourglass className="mr-2 h-5 w-5 animate-spin" /> Awaiting Approval...
-                                    </Button>
-                                )}
-                                {testingState === 'approved' && (
-                                    <Button size="lg" asChild className="w-full text-lg h-14 bg-green-600 hover:bg-green-700">
-                                        <a href={app.playStoreUrl} target="_blank" rel="noopener noreferrer">
-                                            <Check className="mr-2 h-5 w-5" /> Start Testing on Google Play <ExternalLink className="ml-2 h-4 w-4" />
-                                        </a>
-                                    </Button>
-                                )}
-                            </motion.div>
-                        </AnimatePresence>
-
 
                         <div className="relative space-y-12">
                             <AnimatePresence>
@@ -232,7 +230,7 @@ export default function AppTestingPage({ params }: { params: { id: string } }) {
                         </div>
                     </div>
                     <aside className="lg:col-span-1 hidden lg:block">
-                        <AppInfoSidebar app={app} />
+                        <AppInfoSidebar app={app} testingState={testingState} handleRequestToJoin={handleRequestToJoin} hoverBgColor={hoverBgColor} hoverTextColor={hoverTextColor} />
                     </aside>
                 </main>
             </div>
