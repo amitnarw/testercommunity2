@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { useForm, FormProvider } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -15,7 +15,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Slider } from '@/components/ui/slider';
-import { FileText, Settings, Link as LinkIcon, Users, AlertCircle, CalendarClock } from 'lucide-react';
+import { FileText, Link as LinkIcon, Users, AlertCircle } from 'lucide-react';
 import { FormField, FormControl, FormItem, FormMessage, FormLabel, FormDescription } from '@/components/ui/form';
 import { cn } from '@/lib/utils';
 import AnimatedRoundedButton from '@/components/ui/animated-rounded-button';
