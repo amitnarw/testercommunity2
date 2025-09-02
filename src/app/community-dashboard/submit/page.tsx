@@ -14,7 +14,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { FileText, Settings, Link as LinkIcon } from 'lucide-react';
+import { FileText, Settings, Link as LinkIcon, Users } from 'lucide-react';
 import { FormField, FormControl, FormItem, FormMessage, FormLabel } from '@/components/ui/form';
 import { cn } from '@/lib/utils';
 import AnimatedRoundedButton from '@/components/ui/animated-rounded-button';
@@ -27,7 +27,7 @@ const submissionSchema = z.object({
     category: z.string({ required_error: "Please select a category." }),
     appDesc: z.string().min(50, "Please provide a detailed description of at least 50 characters."),
     androidVersion: z.string().min(1, "Please specify the minimum Android version."),
-    pointsToSpend: z.string().min(1, "Please specify the number of points to spend."),
+    numberOfTesters: z.string({ required_error: "Please select the number of testers." }),
 });
 
 type SubmissionFormData = z.infer<typeof submissionSchema>;
@@ -51,9 +51,9 @@ const formSteps = [
     {
         id: 'configure',
         title: 'Configure',
-        icon: <Settings className="w-5 h-5" />,
-        fields: ['androidVersion', 'pointsToSpend'],
-        description: 'Finally, set the technical parameters and points budget for your test run.'
+        icon: <Users className="w-5 h-5" />,
+        fields: ['androidVersion', 'numberOfTesters'],
+        description: 'Finally, set the technical parameters and choose how many testers you need. Points will be deducted after admin review.'
     },
 ];
 
@@ -297,20 +297,20 @@ export default function SubmitAppPage() {
                                             />
                                             <FormField
                                                 control={form.control}
-                                                name="pointsToSpend"
+                                                name="numberOfTesters"
                                                 render={({ field }) => (
                                                     <FormItem>
-                                                        <FormLabel>Points to Spend (Your balance: 1,250)</FormLabel>
+                                                        <FormLabel>Number of Testers (Your balance: 1,250 Points)</FormLabel>
                                                         <Select onValueChange={field.onChange} defaultValue={field.value}>
                                                             <FormControl>
                                                                 <SelectTrigger className="h-12">
-                                                                    <SelectValue placeholder="Select a points budget" />
+                                                                    <SelectValue placeholder="Select number of testers" />
                                                                 </SelectTrigger>
                                                             </FormControl>
                                                             <SelectContent>
-                                                                <SelectItem value="500">500 Points (Basic Feedback)</SelectItem>
-                                                                <SelectItem value="1000">1000 Points (Recommended)</SelectItem>
-                                                                <SelectItem value="2000">2000 Points (In-depth Feedback)</SelectItem>
+                                                                <SelectItem value="5">5 Testers (Basic Feedback)</SelectItem>
+                                                                <SelectItem value="10">10 Testers (Recommended)</SelectItem>
+                                                                <SelectItem value="20">20 Testers (In-depth Feedback)</SelectItem>
                                                             </SelectContent>
                                                         </Select>
                                                         <FormMessage />
@@ -328,5 +328,4 @@ export default function SubmitAppPage() {
             </div>
         </div>
     );
-
-    
+}
