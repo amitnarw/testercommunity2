@@ -196,9 +196,18 @@ export default function AppTestingPage({ params }: { params: { id: string } }) {
                                 </Card>
                             </div>
                         </section>
+
+                        <section>
+                            <h2 className="text-2xl font-bold mb-4">Developer's Instructions <span className="text-primary font-bold">Important</span></h2>
+                            <div className="prose prose-base dark:prose-invert text-muted-foreground leading-relaxed bg-secondary/50 p-6 rounded-lg border-l-4 border-primary">
+                                <p>{app.testingInstructions}</p>
+                            </div>
+                        </section>
+                        
+                        <Separator />
                         
                         <section>
-                            <h2 className="text-2xl font-bold mb-4 flex items-center gap-2"><ListChecks className="w-6 h-6 text-primary" /> General Testing Instructions</h2>
+                            <h2 className="text-2xl font-bold mb-4">General Testing Instructions</h2>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                                 <div className="bg-secondary/50 p-4 rounded-lg flex items-start gap-3">
                                     <Compass className="w-6 h-6 text-primary flex-shrink-0 mt-1" />
@@ -231,14 +240,6 @@ export default function AppTestingPage({ params }: { params: { id: string } }) {
                             </div>
                         </section>
                         
-                        <Separator />
-
-                        <section>
-                            <h2 className="text-2xl font-bold mb-4 flex items-center gap-2"><MessagesSquare className="w-6 h-6 text-primary" /> Developer's Instructions</h2>
-                            <div className="prose prose-base dark:prose-invert text-muted-foreground leading-relaxed bg-secondary/50 p-6 rounded-lg border-l-4 border-primary">
-                                <p>{app.testingInstructions}</p>
-                            </div>
-                        </section>
                     </div>
                     <aside className="lg:col-span-1 hidden lg:block">
                         <AppInfoSidebar app={app} testingState={testingState} handleRequestToJoin={handleRequestToJoin} hoverBgColor={hoverBgColor} hoverTextColor={hoverTextColor} />
