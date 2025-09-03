@@ -235,7 +235,7 @@ export default function AppTestingPage({ params }: { params: { id: string } }) {
 
                         <section>
                             <h2 className="text-2xl font-bold mb-4 flex items-center gap-2"><MessagesSquare className="w-6 h-6 text-primary" /> Developer's Instructions</h2>
-                            <div className="prose prose-base dark:prose-invert text-muted-foreground leading-relaxed">
+                            <div className="prose prose-base dark:prose-invert text-muted-foreground leading-relaxed bg-secondary/50 p-6 rounded-lg border-l-4 border-primary">
                                 <p>{app.testingInstructions}</p>
                             </div>
                         </section>
