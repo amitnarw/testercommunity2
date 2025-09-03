@@ -115,7 +115,6 @@ const AppInfoSidebar = ({ app, testingState, handleRequestToJoin, hoverBgColor, 
 export default function AppTestingPage({ params }: { params: { id: string } }) {
     const { theme } = useTheme();
     const [testingState, setTestingState] = useState<TestingState>('idle');
-    const [rating, setRating] = useState(0);
     const [fullscreenImage, setFullscreenImage] = useState<string | null>(null);
 
     const app = communityApps.find(p => p.id.toString() === params.id);
@@ -131,15 +130,8 @@ export default function AppTestingPage({ params }: { params: { id: string } }) {
         }, 2000);
     }
 
-    const isFeedbackDisabled = testingState !== 'approved';
     const hoverTextColor = theme === 'dark' ? 'black' : 'white';
     const hoverBgColor = theme === 'dark' ? 'white' : 'black';
-
-    // Mock submitted feedback
-    const submittedFeedback = [
-        { type: 'Bug', comment: 'App crashes on launch sometimes.' },
-        { type: 'Suggestion', comment: 'A dark mode would be great for night use.' },
-    ]
 
     return (
         <div className="bg-[#f8fafc] dark:bg-[#0f151e] text-foreground min-h-screen">
@@ -206,82 +198,6 @@ export default function AppTestingPage({ params }: { params: { id: string } }) {
                             <div className="prose prose-base dark:prose-invert text-muted-foreground leading-relaxed">
                                 <p>{app.testingInstructions}</p>
                             </div>
-                        </section>
-
-                        <Separator />
-
-                        <section>
-                            <h2 className="text-2xl font-bold mb-2">Submit Feedback</h2>
-                            <p className="text-muted-foreground mb-6">Found something? Submit it here. You can submit feedback multiple times during the test.</p>
-                             <Card className={cn("transition-opacity", isFeedbackDisabled && "opacity-50 pointer-events-none")}>
-                                <CardContent className="p-6 space-y-8">
-                                    <div>
-                                        <h3 className="font-semibold mb-4 text-lg flex items-center gap-2"><Lightbulb className="w-5 h-5 text-amber-500" /> My Submitted Feedback</h3>
-                                        {submittedFeedback.length > 0 ? (
-                                            <div className="border rounded-lg overflow-hidden">
-                                                <Table>
-                                                    <TableHeader>
-                                                        <TableRow>
-                                                            <TableHead className="w-[120px]">Type</TableHead>
-                                                            <TableHead>Comment</TableHead>
-                                                        </TableRow>
-                                                    </TableHeader>
-                                                    <TableBody>
-                                                        {submittedFeedback.map((fb, i) => (
-                                                            <TableRow key={i}>
-                                                                <TableCell className="font-medium">{fb.type}</TableCell>
-                                                                <TableCell className="text-muted-foreground">{fb.comment}</TableCell>
-                                                            </TableRow>
-                                                        ))}
-                                                    </TableBody>
-                                                </Table>
-                                            </div>
-                                        ) : (
-                                            <div className="text-center py-8 text-muted-foreground bg-secondary/50 rounded-lg">
-                                                You haven't submitted any feedback for this app yet.
-                                            </div>
-                                        )}
-                                    </div>
-                                    
-                                    <Separator />
-
-                                    <div className="space-y-3">
-                                        <Label className="text-base">What worked well? What did you like?</Label>
-                                        <Textarea placeholder="e.g., The onboarding was very smooth and the main feature is intuitive." disabled={isFeedbackDisabled} className="min-h-[120px] text-base" />
-                                    </div>
-                                    <div className="space-y-3">
-                                        <Label className="text-base">Did you find any bugs or issues?</Label>
-                                        <Textarea placeholder="e.g., The app crashed when I tried to upload a photo from the gallery." disabled={isFeedbackDisabled} className="min-h-[120px] text-base" />
-                                    </div>
-                                    <div className="space-y-3">
-                                        <Label className="text-base">Overall Rating</Label>
-                                        <div className="flex items-center gap-1">
-                                            {[1, 2, 3, 4, 5].map(star => (
-                                                <Star
-                                                    key={star}
-                                                    className={cn(`w-8 h-8 transition-all`, isFeedbackDisabled ? 'text-muted-foreground/30' : 'cursor-pointer', rating >= star ? 'text-amber-400 fill-amber-400' : 'text-muted-foreground/50')}
-                                                    onClick={() => !isFeedbackDisabled && setRating(star)}
-                                                />
-                                            ))}
-                                        </div>
-                                    </div>
-                                    <div className="space-y-3">
-                                        <Label className="text-base">Upload Screenshot (Optional)</Label>
-                                        <div className={cn(`border-2 border-dashed rounded-lg p-6 flex flex-col items-center justify-center text-center transition-colors`, isFeedbackDisabled ? 'border-muted-foreground/20' : 'border-muted-foreground/50 cursor-pointer hover:border-primary hover:bg-secondary/50')}>
-                                            <Upload className="w-8 h-8 text-muted-foreground mb-2" />
-                                            <p className="font-semibold">Click or drag file to upload</p>
-                                            <p className="text-sm text-muted-foreground">PNG, JPG up to 5MB</p>
-                                        </div>
-                                    </div>
-                                    <div className="pt-4">
-                                        <div className="flex items-center space-x-3 mb-6">
-                                            <Checkbox id="confirmation" disabled={isFeedbackDisabled} />
-                                            <Label htmlFor="confirmation" className={cn(`text-base font-normal`, isFeedbackDisabled ? 'text-muted-foreground/50' : 'text-muted-foreground')}>I confirm I have installed and tested the app.</Label>
-                                        </div>
-                                        <Button size="lg" className="w-full text-lg h-14" disabled={isFeedbackDisabled}>Submit Feedback & Claim {app.points} Points</Button>
-                                    </div>
-                                </CardContent>
-                            </Card>
                         </section>
                     </div>
                     <aside className="lg:col-span-1 hidden lg:block">
