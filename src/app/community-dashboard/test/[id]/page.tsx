@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
@@ -233,7 +233,3 @@ export default function AppTestingPage({ params }: { params: { id: string } }) {
         </div>
     );
 }
-
-    
-
-    
