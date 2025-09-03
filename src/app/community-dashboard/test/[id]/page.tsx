@@ -10,7 +10,7 @@ import { Badge } from '@/components/ui/badge';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Star, Upload, ExternalLink, Smartphone, Clock, FileText, Check, Hourglass, Send, X, Expand, Info, ListChecks, MessagesSquare, Lightbulb } from 'lucide-react';
+import { Star, Upload, ExternalLink, Smartphone, Clock, FileText, Check, Hourglass, Send, X, Expand, Info, ListChecks, MessagesSquare } from 'lucide-react';
 import { communityApps } from '@/lib/data';
 import { cn } from '@/lib/utils';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -179,7 +179,7 @@ export default function AppTestingPage({ params }: { params: { id: string } }) {
                                 <CardContent className="space-y-4 text-sm text-muted-foreground">
                                    <p><strong>1. Complete the Full Cycle:</strong> You must keep the app installed and use it occasionally for the entire 14-day testing period. Points are only awarded after successful completion.</p>
                                    <p><strong>2. No Skipping Days:</strong> If you uninstall the app or fail to engage with it, your testing progress will reset to Day 1. Consistency is key!</p>
-                                   <p><strong>3. Provide Quality Feedback:</strong> Use the form below to submit bugs, suggestions, or general feedback. You can see a log of your submitted feedback on this page.</p>
+                                   <p><strong>3. Provide Quality Feedback:</strong> Once your test is ongoing, you'll be able to submit bugs, suggestions, or general feedback via the 'Ongoing Tests' tab. You will be able to see a log of your submitted feedback on that page.</p>
                                 </CardContent>
                             </Card>
                         </section>
@@ -233,5 +233,7 @@ export default function AppTestingPage({ params }: { params: { id: string } }) {
         </div>
     );
 }
+
+    
 
     
