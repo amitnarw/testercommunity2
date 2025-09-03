@@ -7,10 +7,44 @@ import Link from 'next/link';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { ExternalLink } from 'lucide-react';
+import { ExternalLink, CheckCircle } from 'lucide-react';
 import { communityApps } from '@/lib/data';
-import { Progress } from '@/components/ui/progress';
 import { BackButton } from '@/components/back-button';
+import { cn } from '@/lib/utils';
+
+const DailyProgress = ({ progress }: { progress: number }) => {
+    const totalDays = 14;
+    const completedDays = Math.floor(totalDays * (progress || 0) / 100);
+    const currentDay = completedDays;
+
+    return (
+        <div className="grid grid-cols-7 gap-3">
+            {Array.from({ length: totalDays }, (_, i) => {
+                const dayNumber = i + 1;
+                const isCompleted = dayNumber <= completedDays;
+                const isCurrent = dayNumber === currentDay + 1;
+                
+                return (
+                    <div
+                        key={dayNumber}
+                        className={cn(
+                            "p-3 rounded-lg text-center border-2",
+                            isCompleted 
+                                ? "bg-green-500/10 border-green-500/30 text-green-700 dark:text-green-300" 
+                                : isCurrent 
+                                    ? "bg-primary/10 border-primary/30 text-primary animate-pulse" 
+                                    : "bg-secondary/50 border-border/50 text-muted-foreground"
+                        )}
+                    >
+                        <p className="text-xs">Day {dayNumber}</p>
+                        {isCompleted && <CheckCircle className="w-5 h-5 mx-auto mt-1" />}
+                    </div>
+                );
+            })}
+        </div>
+    );
+};
+
 
 export default function AppTestingOngoingPage({ params }: { params: { id: string } }) {
     const app = communityApps.find(p => p.id.toString() === params.id && p.status === 'ongoing');
@@ -18,6 +52,9 @@ export default function AppTestingOngoingPage({ params }: { params: { id: string
     if (!app) {
         notFound();
     }
+    
+    const totalDays = 14;
+    const daysCompleted = Math.floor(totalDays * (app.progress || 0) / 100);
 
     return (
         <div className="bg-secondary/50 min-h-screen">
@@ -42,16 +79,10 @@ export default function AppTestingOngoingPage({ params }: { params: { id: string
                     <Card className="rounded-xl mb-8">
                         <CardHeader>
                             <CardTitle>Testing in Progress</CardTitle>
-                            <CardDescription>You have started testing this app. Complete the test to claim your points.</CardDescription>
+                            <CardDescription>You have completed {daysCompleted} of {totalDays} days. Keep the app installed and use it occasionally to complete the test.</CardDescription>
                         </CardHeader>
                         <CardContent>
-                            <div className="space-y-2">
-                                <div className="flex justify-between items-center text-sm text-muted-foreground mb-1">
-                                    <span>Time Remaining</span>
-                                    <span>{14 - Math.floor(14 * (app.progress || 0) / 100)} days left</span>
-                                </div>
-                                <Progress value={app.progress} className="h-3" />
-                            </div>
+                            <DailyProgress progress={app.progress || 0} />
                         </CardContent>
                     </Card>
 
