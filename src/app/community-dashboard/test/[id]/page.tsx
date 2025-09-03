@@ -10,7 +10,7 @@ import { Badge } from '@/components/ui/badge';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Star, Upload, ExternalLink, Smartphone, Clock, FileText, Check, Hourglass, Send, X, Expand, Info, ListChecks, MessagesSquare, Trophy, RefreshCw, CheckCircle } from 'lucide-react';
+import { Star, Upload, ExternalLink, Smartphone, Clock, FileText, Check, Hourglass, Send, X, Expand, Info, ListChecks, MessagesSquare, Trophy, RefreshCw, CheckCircle, Compass, PenTool, Smile, ThumbsUp } from 'lucide-react';
 import { communityApps } from '@/lib/data';
 import { cn } from '@/lib/utils';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -196,11 +196,38 @@ export default function AppTestingPage({ params }: { params: { id: string } }) {
                                 </Card>
                             </div>
                         </section>
-
+                        
                         <section>
                             <h2 className="text-2xl font-bold mb-4 flex items-center gap-2"><ListChecks className="w-6 h-6 text-primary" /> General Testing Instructions</h2>
-                            <div className="prose prose-base dark:prose-invert text-muted-foreground leading-relaxed">
-                                <p>Welcome, tester! Your mission is to use this app as you normally would. Explore its features, try different functions, and see how it feels. Pay attention to anything that seems confusing, broken, or particularly delightful. All feedback is valuable!</p>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                                <div className="bg-secondary/50 p-4 rounded-lg flex items-start gap-3">
+                                    <Compass className="w-6 h-6 text-primary flex-shrink-0 mt-1" />
+                                    <div>
+                                        <h4 className="font-semibold">Explore Freely</h4>
+                                        <p className="text-muted-foreground">Use the app as you normally would. Explore different screens, features, and user flows.</p>
+                                    </div>
+                                </div>
+                                <div className="bg-secondary/50 p-4 rounded-lg flex items-start gap-3">
+                                    <Smile className="w-6 h-6 text-primary flex-shrink-0 mt-1" />
+                                    <div>
+                                        <h4 className="font-semibold">Note Your Feelings</h4>
+                                        <p className="text-muted-foreground">Pay attention to what feels delightful, confusing, or frustrating. All emotional feedback is valuable.</p>
+                                    </div>
+                                </div>
+                                <div className="bg-secondary/50 p-4 rounded-lg flex items-start gap-3">
+                                    <PenTool className="w-6 h-6 text-primary flex-shrink-0 mt-1" />
+                                    <div>
+                                        <h4 className="font-semibold">Be Specific</h4>
+                                        <p className="text-muted-foreground">When you find a bug, describe the steps to reproduce it. Clear context helps developers fix issues faster.</p>
+                                    </div>
+                                </div>
+                                <div className="bg-secondary/50 p-4 rounded-lg flex items-start gap-3">
+                                    <ThumbsUp className="w-6 h-6 text-primary flex-shrink-0 mt-1" />
+                                    <div>
+                                        <h4 className="font-semibold">Be Constructive</h4>
+                                        <p className="text-muted-foreground">The goal is to help developers improve. Frame your feedback constructively and respectfully.</p>
+                                    </div>
+                                </div>
                             </div>
                         </section>
                         
