@@ -79,12 +79,12 @@ const AppInfoSidebar = ({ app, testingState, handleRequestToJoin, hoverBgColor, 
                     </div>
                 </div>
             </CardContent>
-            <CardFooter className="p-6 pt-0 bg-gradient-to-b from-primary/0 to-primary/60 rounded-b-2xl relative">
+            <CardFooter className="p-2 bg-gradient-to-b from-primary/0 to-primary/60 rounded-b-2xl relative">
                 <div className="w-full p-4 rounded-xl text-center">
-                    <p className="text-xl font-semibold text-primary text-start">REWARD</p>
+                    <p className="text-lg font-semibold text-primary text-start">REWARD</p>
                     <div className="text-3xl font-bold text-foreground flex items-center gap-2 justify-start mt-1">
                         {app.points} Points
-                        <Star className="w-7 h-7 text-primary/0 fill-primary/20 scale-[6] absolute bottom-8 right-6 rotate-90" />
+                        <Star className="w-7 h-7 text-primary/0 fill-primary/20  scale-[6] absolute bottom-8 right-6 rotate-90" />
                     </div>
                 </div>
             </CardFooter>
@@ -158,8 +158,8 @@ export default function AppTestingPage({ params }: { params: { id: string } }) {
                                         className="overflow-hidden rounded-xl flex-shrink-0 w-60 relative group cursor-pointer"
                                         onClick={() => setFullscreenImage(ss.url)}
                                     >
-                                        <Image src={ss.url} alt={ss.alt} width={400} height={800} className="object-cover h-full w-full hover:scale-105 transition-transform duration-300" data-ai-hint={ss.dataAiHint} />
-                                        <div className="absolute inset-0 bg-black/30 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                        <Image src={ss.url} alt={ss.alt} width={400} height={800} className="object-cover h-full w-full group-hover:scale-105 transition-transform duration-300" data-ai-hint={ss.dataAiHint} />
+                                        <div className="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
                                             <Expand className="w-8 h-8 text-white" />
                                         </div>
                                     </div>
