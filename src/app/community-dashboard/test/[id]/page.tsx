@@ -10,7 +10,7 @@ import { Badge } from '@/components/ui/badge';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Star, Upload, ExternalLink, Smartphone, Clock, FileText, Check, Hourglass, Send, X, Expand, Info, ListChecks, MessagesSquare } from 'lucide-react';
+import { Star, Upload, ExternalLink, Smartphone, Clock, FileText, Check, Hourglass, Send, X, Expand, Info, ListChecks, MessagesSquare, Trophy, RefreshCw, CheckCircle } from 'lucide-react';
 import { communityApps } from '@/lib/data';
 import { cn } from '@/lib/utils';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -171,17 +171,30 @@ export default function AppTestingPage({ params }: { params: { id: string } }) {
                         </div>
                         
                         <section>
-                            <Card className="bg-secondary/30 border-dashed">
-                                <CardHeader>
-                                    <CardTitle className="flex items-center gap-2"><Info className="w-6 h-6 text-primary" /> How Testing Works</CardTitle>
-                                    <CardDescription>Read these rules carefully to ensure you get your points.</CardDescription>
-                                </CardHeader>
-                                <CardContent className="space-y-4 text-sm text-muted-foreground">
-                                   <p><strong>1. Complete the Full Cycle:</strong> You must keep the app installed and use it occasionally for the entire 14-day testing period. Points are only awarded after successful completion.</p>
-                                   <p><strong>2. No Skipping Days:</strong> If you uninstall the app or fail to engage with it, your testing progress will reset to Day 1. Consistency is key!</p>
-                                   <p><strong>3. Provide Quality Feedback:</strong> Once your test is ongoing, you'll be able to submit bugs, suggestions, or general feedback via the 'Ongoing Tests' tab. You will be able to see a log of your submitted feedback on that page.</p>
-                                </CardContent>
-                            </Card>
+                            <h2 className="text-2xl font-bold mb-4">Testing Protocol</h2>
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <Card className="p-4 bg-gradient-to-br from-secondary to-secondary/50 hover:shadow-lg transition-shadow">
+                                    <div className="flex items-center gap-3 mb-2">
+                                        <div className="p-2 bg-primary/10 rounded-lg text-primary"><CheckCircle className="w-5 h-5"/></div>
+                                        <h3 className="font-semibold">Complete the Full Cycle</h3>
+                                    </div>
+                                    <p className="text-xs text-muted-foreground">You must keep the app installed for the entire 14-day period. Points are awarded only after successful completion.</p>
+                                </Card>
+                                <Card className="p-4 bg-gradient-to-br from-secondary to-secondary/50 hover:shadow-lg transition-shadow">
+                                     <div className="flex items-center gap-3 mb-2">
+                                        <div className="p-2 bg-primary/10 rounded-lg text-primary"><RefreshCw className="w-5 h-5"/></div>
+                                        <h3 className="font-semibold">No Skipping Days</h3>
+                                    </div>
+                                    <p className="text-xs text-muted-foreground">If you uninstall the app or fail to engage, your progress will reset to Day 1. Consistency is key!</p>
+                                </Card>
+                                <Card className="p-4 bg-gradient-to-br from-secondary to-secondary/50 hover:shadow-lg transition-shadow">
+                                     <div className="flex items-center gap-3 mb-2">
+                                        <div className="p-2 bg-primary/10 rounded-lg text-primary"><Trophy className="w-5 h-5"/></div>
+                                        <h3 className="font-semibold">Provide Quality Feedback</h3>
+                                    </div>
+                                    <p className="text-xs text-muted-foreground">Once ongoing, you can submit feedback via the 'Ongoing Tests' tab. Quality feedback helps everyone.</p>
+                                </Card>
+                            </div>
                         </section>
 
                         <section>
@@ -233,3 +246,5 @@ export default function AppTestingPage({ params }: { params: { id: string } }) {
         </div>
     );
 }
+
+    
