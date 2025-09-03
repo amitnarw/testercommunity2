@@ -4,13 +4,13 @@
 import { useState } from 'react';
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardFooter, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Star, Upload, ExternalLink, Smartphone, Clock, FileText, Check, Hourglass, Send, X, Expand } from 'lucide-react';
+import { Star, Upload, ExternalLink, Smartphone, Clock, FileText, Check, Hourglass, Send, X, Expand, Info, ListChecks, MessagesSquare, Lightbulb } from 'lucide-react';
 import { communityApps } from '@/lib/data';
 import { cn } from '@/lib/utils';
 import { AnimatePresence, motion } from 'framer-motion';
@@ -19,6 +19,7 @@ import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { BackButton } from '@/components/back-button';
 import AnimatedRoundedButton from '@/components/ui/animated-rounded-button';
 import { useTheme } from 'next-themes';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 
 type TestingState = 'idle' | 'requested' | 'approved';
 
@@ -117,7 +118,6 @@ export default function AppTestingPage({ params }: { params: { id: string } }) {
     const [rating, setRating] = useState(0);
     const [fullscreenImage, setFullscreenImage] = useState<string | null>(null);
 
-
     const app = communityApps.find(p => p.id.toString() === params.id);
 
     if (!app) {
@@ -134,6 +134,12 @@ export default function AppTestingPage({ params }: { params: { id: string } }) {
     const isFeedbackDisabled = testingState !== 'approved';
     const hoverTextColor = theme === 'dark' ? 'black' : 'white';
     const hoverBgColor = theme === 'dark' ? 'white' : 'black';
+
+    // Mock submitted feedback
+    const submittedFeedback = [
+        { type: 'Bug', comment: 'App crashes on launch sometimes.' },
+        { type: 'Suggestion', comment: 'A dark mode would be great for night use.' },
+    ]
 
     return (
         <div className="bg-[#f8fafc] dark:bg-[#0f151e] text-foreground min-h-screen">
@@ -171,33 +177,74 @@ export default function AppTestingPage({ params }: { params: { id: string } }) {
                         <div className="block lg:hidden">
                             <AppInfoSidebar app={app} testingState={testingState} handleRequestToJoin={handleRequestToJoin} hoverBgColor={hoverBgColor} hoverTextColor={hoverTextColor} />
                         </div>
+                        
+                        <section>
+                            <Card className="bg-secondary/30 border-dashed">
+                                <CardHeader>
+                                    <CardTitle className="flex items-center gap-2"><Info className="w-6 h-6 text-primary" /> How Testing Works</CardTitle>
+                                    <CardDescription>Read these rules carefully to ensure you get your points.</CardDescription>
+                                </CardHeader>
+                                <CardContent className="space-y-4 text-sm text-muted-foreground">
+                                   <p><strong>1. Complete the Full Cycle:</strong> You must keep the app installed and use it occasionally for the entire 14-day testing period. Points are only awarded after successful completion.</p>
+                                   <p><strong>2. No Skipping Days:</strong> If you uninstall the app or fail to engage with it, your testing progress will reset to Day 1. Consistency is key!</p>
+                                   <p><strong>3. Provide Quality Feedback:</strong> Use the form below to submit bugs, suggestions, or general feedback. You can see a log of your submitted feedback on this page.</p>
+                                </CardContent>
+                            </Card>
+                        </section>
 
-                        <div className="relative space-y-12">
-                            <AnimatePresence>
-                                {isFeedbackDisabled && (
-                                    <motion.div
-                                        className="absolute inset-0 bg-background/80 backdrop-blur-md z-10 rounded-xl"
-                                        initial={{ opacity: 1 }}
-                                        animate={{ opacity: 1 }}
-                                        exit={{ opacity: 0 }}
-                                        transition={{ duration: 0.5 }}
-                                    ></motion.div>
-                                )}
-                            </AnimatePresence>
+                        <section>
+                            <h2 className="text-2xl font-bold mb-4 flex items-center gap-2"><ListChecks className="w-6 h-6 text-primary" /> General Testing Instructions</h2>
+                            <div className="prose prose-base dark:prose-invert text-muted-foreground leading-relaxed">
+                                <p>Welcome, tester! Your mission is to use this app as you normally would. Explore its features, try different functions, and see how it feels. Pay attention to anything that seems confusing, broken, or particularly delightful. All feedback is valuable!</p>
+                            </div>
+                        </section>
+                        
+                        <Separator />
 
-                            <section>
-                                <h2 className="text-2xl font-bold mb-4 flex items-center gap-2"><FileText className="w-6 h-6 text-primary" /> Testing Instructions</h2>
-                                <div className="prose prose-base dark:prose-invert text-muted-foreground leading-relaxed">
-                                    <p>{app.testingInstructions}</p>
-                                </div>
-                            </section>
+                        <section>
+                            <h2 className="text-2xl font-bold mb-4 flex items-center gap-2"><MessagesSquare className="w-6 h-6 text-primary" /> Developer's Instructions</h2>
+                            <div className="prose prose-base dark:prose-invert text-muted-foreground leading-relaxed">
+                                <p>{app.testingInstructions}</p>
+                            </div>
+                        </section>
 
-                            <Separator />
+                        <Separator />
 
-                            <section>
-                                <h2 className="text-2xl font-bold mb-2">Submit Feedback</h2>
-                                <p className="text-muted-foreground mb-8">Once you've tested the app, fill out this form to claim your points.</p>
-                                <div className="space-y-8">
+                        <section>
+                            <h2 className="text-2xl font-bold mb-2">Submit Feedback</h2>
+                            <p className="text-muted-foreground mb-6">Found something? Submit it here. You can submit feedback multiple times during the test.</p>
+                             <Card className={cn("transition-opacity", isFeedbackDisabled && "opacity-50 pointer-events-none")}>
+                                <CardContent className="p-6 space-y-8">
+                                    <div>
+                                        <h3 className="font-semibold mb-4 text-lg flex items-center gap-2"><Lightbulb className="w-5 h-5 text-amber-500" /> My Submitted Feedback</h3>
+                                        {submittedFeedback.length > 0 ? (
+                                            <div className="border rounded-lg overflow-hidden">
+                                                <Table>
+                                                    <TableHeader>
+                                                        <TableRow>
+                                                            <TableHead className="w-[120px]">Type</TableHead>
+                                                            <TableHead>Comment</TableHead>
+                                                        </TableRow>
+                                                    </TableHeader>
+                                                    <TableBody>
+                                                        {submittedFeedback.map((fb, i) => (
+                                                            <TableRow key={i}>
+                                                                <TableCell className="font-medium">{fb.type}</TableCell>
+                                                                <TableCell className="text-muted-foreground">{fb.comment}</TableCell>
+                                                            </TableRow>
+                                                        ))}
+                                                    </TableBody>
+                                                </Table>
+                                            </div>
+                                        ) : (
+                                            <div className="text-center py-8 text-muted-foreground bg-secondary/50 rounded-lg">
+                                                You haven't submitted any feedback for this app yet.
+                                            </div>
+                                        )}
+                                    </div>
+                                    
+                                    <Separator />
+
                                     <div className="space-y-3">
                                         <Label className="text-base">What worked well? What did you like?</Label>
                                         <Textarea placeholder="e.g., The onboarding was very smooth and the main feature is intuitive." disabled={isFeedbackDisabled} className="min-h-[120px] text-base" />
@@ -233,9 +280,9 @@ export default function AppTestingPage({ params }: { params: { id: string } }) {
                                         </div>
                                         <Button size="lg" className="w-full text-lg h-14" disabled={isFeedbackDisabled}>Submit Feedback & Claim {app.points} Points</Button>
                                     </div>
-                                </div>
-                            </section>
-                        </div>
+                                </CardContent>
+                            </Card>
+                        </section>
                     </div>
                     <aside className="lg:col-span-1 hidden lg:block">
                         <AppInfoSidebar app={app} testingState={testingState} handleRequestToJoin={handleRequestToJoin} hoverBgColor={hoverBgColor} hoverTextColor={hoverTextColor} />
