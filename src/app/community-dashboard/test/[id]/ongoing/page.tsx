@@ -3,11 +3,10 @@
 
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
-import Link from 'next/link';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { ExternalLink, CheckCircle, Star, Lightbulb, Upload } from 'lucide-react';
+import { ExternalLink, CheckCircle, Star, Lightbulb, Upload, Edit, Trash2 } from 'lucide-react';
 import { communityApps } from '@/lib/data';
 import { BackButton } from '@/components/back-button';
 import { cn } from '@/lib/utils';
@@ -98,89 +97,94 @@ export default function AppTestingOngoingPage({ params }: { params: { id: string
                         </CardContent>
                     </Card>
 
-                    <Card className="rounded-xl">
-                         <CardHeader>
-                            <CardTitle>Instructions</CardTitle>
-                            <CardDescription>Remember to follow the developer's instructions.</CardDescription>
-                        </CardHeader>
-                        <CardContent className="prose prose-sm dark:prose-invert text-muted-foreground">
+                    <section>
+                        <h2 className="text-2xl font-bold mb-4">Developer's Instructions <span className="bg-gradient-to-b from-primary to-primary/50 text-white font-bold rounded-lg px-4 py-0.5 text-xl ml-2">Important</span></h2>
+                        <div className="prose prose-base dark:prose-invert leading-relaxed text-white dark:text-black bg-[#121212] dark:bg-white p-6 rounded-lg border-primary border-l-4 shadow-xl shadow-gray-300 dark:shadow-gray-700">
                             <p>{app.testingInstructions}</p>
+                        </div>
+                    </section>
+                    
+                    <Card>
+                        <CardHeader>
+                            <CardTitle className="flex items-center gap-2"><Lightbulb className="w-5 h-5 text-amber-500" /> My Submitted Feedback</CardTitle>
+                            <CardDescription>Here is the feedback you've submitted so far. You can edit or delete your comments.</CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                            {submittedFeedback.length > 0 ? (
+                                <div className="border rounded-lg overflow-hidden">
+                                    <Table>
+                                        <TableHeader>
+                                            <TableRow>
+                                                <TableHead className="w-[120px]">Type</TableHead>
+                                                <TableHead>Comment</TableHead>
+                                                <TableHead className="text-right w-[120px]">Actions</TableHead>
+                                            </TableRow>
+                                        </TableHeader>
+                                        <TableBody>
+                                            {submittedFeedback.map((fb, i) => (
+                                                <TableRow key={i}>
+                                                    <TableCell className="font-medium">{fb.type}</TableCell>
+                                                    <TableCell className="text-muted-foreground">{fb.comment}</TableCell>
+                                                    <TableCell className="text-right">
+                                                        <Button variant="ghost" size="icon"><Edit className="w-4 h-4" /></Button>
+                                                        <Button variant="ghost" size="icon" className="text-red-500 hover:text-red-600"><Trash2 className="w-4 h-4" /></Button>
+                                                    </TableCell>
+                                                </TableRow>
+                                            ))}
+                                        </TableBody>
+                                    </Table>
+                                </div>
+                            ) : (
+                                <div className="text-center py-8 text-muted-foreground bg-secondary/50 rounded-lg">
+                                    You haven't submitted any feedback for this app yet.
+                                </div>
+                            )}
                         </CardContent>
                     </Card>
-                    
-                    <section>
-                        <h2 className="text-2xl font-bold mb-2">Submit Feedback</h2>
-                        <p className="text-muted-foreground mb-6">Found something? Submit it here. You can submit feedback multiple times during the test.</p>
-                        <Card>
-                            <CardContent className="p-6 space-y-8">
-                                <div>
-                                    <h3 className="font-semibold mb-4 text-lg flex items-center gap-2"><Lightbulb className="w-5 h-5 text-amber-500" /> My Submitted Feedback</h3>
-                                    {submittedFeedback.length > 0 ? (
-                                        <div className="border rounded-lg overflow-hidden">
-                                            <Table>
-                                                <TableHeader>
-                                                    <TableRow>
-                                                        <TableHead className="w-[120px]">Type</TableHead>
-                                                        <TableHead>Comment</TableHead>
-                                                    </TableRow>
-                                                </TableHeader>
-                                                <TableBody>
-                                                    {submittedFeedback.map((fb, i) => (
-                                                        <TableRow key={i}>
-                                                            <TableCell className="font-medium">{fb.type}</TableCell>
-                                                            <TableCell className="text-muted-foreground">{fb.comment}</TableCell>
-                                                        </TableRow>
-                                                    ))}
-                                                </TableBody>
-                                            </Table>
-                                        </div>
-                                    ) : (
-                                        <div className="text-center py-8 text-muted-foreground bg-secondary/50 rounded-lg">
-                                            You haven't submitted any feedback for this app yet.
-                                        </div>
-                                    )}
-                                </div>
-                                
-                                <Separator />
 
-                                <div className="space-y-3">
-                                    <Label className="text-base">What worked well? What did you like?</Label>
-                                    <Textarea placeholder="e.g., The onboarding was very smooth and the main feature is intuitive." className="min-h-[120px] text-base" />
+                    <Card>
+                        <CardHeader>
+                             <h2 className="text-2xl font-bold">Submit New Feedback</h2>
+                             <CardDescription>Found something new? Submit it here. You can submit feedback multiple times.</CardDescription>
+                        </CardHeader>
+                        <CardContent className="p-6 space-y-8">
+                            <div className="space-y-3">
+                                <Label className="text-base">What worked well? What did you like?</Label>
+                                <Textarea placeholder="e.g., The onboarding was very smooth and the main feature is intuitive." className="min-h-[120px] text-base" />
+                            </div>
+                            <div className="space-y-3">
+                                <Label className="text-base">Did you find any bugs or issues?</Label>
+                                <Textarea placeholder="e.g., The app crashed when I tried to upload a photo from the gallery." className="min-h-[120px] text-base" />
+                            </div>
+                            <div className="space-y-3">
+                                <Label className="text-base">Overall Rating</Label>
+                                <div className="flex items-center gap-1">
+                                    {[1, 2, 3, 4, 5].map(star => (
+                                        <Star
+                                            key={star}
+                                            className={cn(`w-8 h-8 transition-all cursor-pointer`, rating >= star ? 'text-amber-400 fill-amber-400' : 'text-muted-foreground/50')}
+                                            onClick={() => setRating(star)}
+                                        />
+                                    ))}
                                 </div>
-                                <div className="space-y-3">
-                                    <Label className="text-base">Did you find any bugs or issues?</Label>
-                                    <Textarea placeholder="e.g., The app crashed when I tried to upload a photo from the gallery." className="min-h-[120px] text-base" />
+                            </div>
+                            <div className="space-y-3">
+                                <Label className="text-base">Upload Screenshot (Optional)</Label>
+                                <div className={cn(`border-2 border-dashed rounded-lg p-6 flex flex-col items-center justify-center text-center transition-colors border-muted-foreground/50 cursor-pointer hover:border-primary hover:bg-secondary/50`)}>
+                                    <Upload className="w-8 h-8 text-muted-foreground mb-2" />
+                                    <p className="font-semibold">Click or drag file to upload</p>
+                                    <p className="text-sm text-muted-foreground">PNG, JPG up to 5MB</p>
                                 </div>
-                                <div className="space-y-3">
-                                    <Label className="text-base">Overall Rating</Label>
-                                    <div className="flex items-center gap-1">
-                                        {[1, 2, 3, 4, 5].map(star => (
-                                            <Star
-                                                key={star}
-                                                className={cn(`w-8 h-8 transition-all cursor-pointer`, rating >= star ? 'text-amber-400 fill-amber-400' : 'text-muted-foreground/50')}
-                                                onClick={() => setRating(star)}
-                                            />
-                                        ))}
-                                    </div>
+                            </div>
+                            <div className="pt-4">
+                                <div className="flex items-center space-x-3 mb-6">
+                                    <Checkbox id="confirmation" />
+                                    <Label htmlFor="confirmation" className="text-base font-normal text-muted-foreground">I confirm my feedback is accurate and constructive.</Label>
                                 </div>
-                                <div className="space-y-3">
-                                    <Label className="text-base">Upload Screenshot (Optional)</Label>
-                                    <div className={cn(`border-2 border-dashed rounded-lg p-6 flex flex-col items-center justify-center text-center transition-colors border-muted-foreground/50 cursor-pointer hover:border-primary hover:bg-secondary/50`)}>
-                                        <Upload className="w-8 h-8 text-muted-foreground mb-2" />
-                                        <p className="font-semibold">Click or drag file to upload</p>
-                                        <p className="text-sm text-muted-foreground">PNG, JPG up to 5MB</p>
-                                    </div>
-                                </div>
-                                <div className="pt-4">
-                                    <div className="flex items-center space-x-3 mb-6">
-                                        <Checkbox id="confirmation" />
-                                        <Label htmlFor="confirmation" className="text-base font-normal text-muted-foreground">I confirm I have installed and tested the app.</Label>
-                                    </div>
-                                    <Button size="lg" className="w-full text-lg h-14">Submit Feedback</Button>
-                                </div>
-                            </CardContent>
-                        </Card>
-                    </section>
+                                <Button size="lg" className="w-full text-lg h-14">Submit Feedback</Button>
+                            </div>
+                        </CardContent>
+                    </Card>
 
                     <div className="mt-8">
                          <Button size="lg" variant="outline" asChild className="w-full">
@@ -194,3 +198,4 @@ export default function AppTestingOngoingPage({ params }: { params: { id: string
         </div>
     );
 }
+
