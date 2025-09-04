@@ -6,7 +6,7 @@ import Image from 'next/image';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { ExternalLink, CheckCircle, Star, Lightbulb, Upload, Edit, Trash2 } from 'lucide-react';
+import { ExternalLink, CheckCircle, Star, Lightbulb, Upload, Edit, Trash2, ListChecks, MessagesSquare } from 'lucide-react';
 import { communityApps } from '@/lib/data';
 import { BackButton } from '@/components/back-button';
 import { cn } from '@/lib/utils';
@@ -17,8 +17,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Separator } from '@/components/ui/separator';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 
-const DailyProgress = ({ progress }: { progress: number }) => {
-    const totalDays = 14;
+const DailyProgress = ({ progress, totalDays }: { progress: number, totalDays: number }) => {
     const completedDays = Math.floor(totalDays * (progress || 0) / 100);
     const currentDay = completedDays + 1;
 
@@ -35,9 +34,9 @@ const DailyProgress = ({ progress }: { progress: number }) => {
                         className={cn(
                             "flex-grow basis-16 h-20 rounded-xl flex flex-col items-center justify-center p-2 transition-all duration-300",
                             isCompleted 
-                                ? "bg-green-100 dark:bg-green-900/50 border border-green-500/30 text-green-700 dark:text-green-300 shadow-inner" 
+                                ? "bg-green-100 dark:bg-green-900/50 text-green-700 dark:text-green-300 shadow-inner" 
                                 : isCurrent 
-                                    ? "bg-primary/10 border-2 border-primary text-primary animate-pulse shadow-md shadow-primary/20" 
+                                    ? "bg-primary/10 text-primary shadow-md shadow-primary/20" 
                                     : "bg-secondary/60 dark:bg-secondary/30 text-muted-foreground"
                         )}
                     >
@@ -95,13 +94,13 @@ export default function AppTestingOngoingPage({ params }: { params: { id: string
                             <CardDescription>You have completed {daysCompleted} of {totalDays} days. Keep the app installed and use it occasionally to complete the test.</CardDescription>
                         </CardHeader>
                         <CardContent>
-                            <DailyProgress progress={app.progress || 0} />
+                            <DailyProgress progress={app.progress || 0} totalDays={totalDays} />
                         </CardContent>
                     </Card>
 
                     <section>
-                        <h2 className="text-2xl font-bold mb-4">Developer's Instructions <span className="bg-gradient-to-b from-primary to-primary/50 text-white font-bold rounded-lg px-4 py-0.5 text-xl ml-2">Important</span></h2>
-                        <div className="prose prose-base dark:prose-invert leading-relaxed text-white dark:text-black bg-[#121212] dark:bg-white p-6 rounded-lg border-primary border-l-4 shadow-xl shadow-gray-300 dark:shadow-gray-700">
+                        <h2 className="text-2xl font-bold mb-4">Developer's Instructions <span className="text-primary font-bold text-xl ml-2">Important</span></h2>
+                        <div className="prose prose-base dark:prose-invert leading-relaxed bg-card p-6 rounded-lg border-primary border-l-4 shadow-lg">
                             <p>{app.testingInstructions}</p>
                         </div>
                     </section>
