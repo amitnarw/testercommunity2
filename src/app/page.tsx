@@ -2,7 +2,7 @@
 'use client';
 
 import Link from 'next/link';
-import { ArrowRight, BadgeCheck, ChevronRight } from 'lucide-react';
+import { ChevronsRight, BadgeCheck, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { CardContent, CardHeader, CardTitle, FeatureCard } from '@/components/ui/card';
 import Image from "next/image";
@@ -42,6 +42,7 @@ const features = [
 ];
 
 export default function Home() {
+
     return (
         <div className="flex flex-col min-h-screen bg-background">
             <main className="flex-1">
@@ -70,7 +71,7 @@ export default function Home() {
                                         <Link href="/signup">
                                             <span className="relative z-10 font-bold">Submit Your App Now</span>
                                             <div className="relative inline-flex items-center justify-center w-8 h-8 rounded-full bg-primary-foreground/20 group-hover:bg-black dark:group-hover:bg-white transition-all duration-500 group-hover:scale-[2] ml-3 sm:ml-4">
-                                                <ArrowRight className="w-4 h-4 text-primary-foreground group-hover:text-white dark:group-hover:text-black transition-colors duration-300" />
+                                                <ChevronRight className="w-4 h-4 text-primary-foreground group-hover:text-white dark:group-hover:text-black transition-colors duration-300" />
                                             </div>
                                         </Link>
                                     </Button>
@@ -149,7 +150,7 @@ export default function Home() {
                                 <FaqSection />
                                 <div className="mt-8 text-center">
                                     <Button asChild variant="outline">
-                                        <Link href="/faq">View All FAQs <ArrowRight className="ml-2" /></Link>
+                                        <Link href="/faq">View All FAQs <ChevronRight className="ml-2" /></Link>
                                     </Button>
                                 </div>
                             </div>
@@ -165,10 +166,16 @@ export default function Home() {
                             </p>
                             <div className="mt-8 flex justify-center">
                                 <Link href="/signup">
-                                    <AnimatedRoundedButton>
+                                    <AnimatedRoundedButton
+                                        normalTextColor="hsl(var(--primary))"
+                                        hoverTextColor="white"
+                                        border={true}
+                                        paddingY="4"
+                                        paddingX="8"
+                                    >
                                         <div className="flex items-center gap-2">
                                             <span>Sign Up Now</span>
-                                            <ArrowRight />
+                                            <ChevronsRight />
                                         </div>
                                     </AnimatedRoundedButton>
                                 </Link>

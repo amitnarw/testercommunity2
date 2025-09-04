@@ -13,7 +13,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Link from 'next/link';
-import { LayoutDashboard, Users2, User, Gift, LifeBuoy, LogOut, ChevronDown } from 'lucide-react';
+import { LayoutDashboard, Users2, User, Gem, LifeBuoy, LogOut, ChevronDown, Package } from 'lucide-react';
 import { demoUser } from "@/lib/data";
 
 interface UserNavProps {
@@ -76,8 +76,8 @@ export function UserNav({ onLogout }: UserNavProps) {
                     </Link>
                     <Link href="/pricing">
                         <DropdownMenuItem className="h-10">
-                            <Gift className="mr-2" />
-                            <span>Buy Points</span>
+                            <Package className="mr-2" />
+                            <span>Buy Packages</span>
                         </DropdownMenuItem>
                     </Link>
                     <Link href="/help">

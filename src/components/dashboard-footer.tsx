@@ -3,7 +3,8 @@ import Link from 'next/link';
 
 export function DashboardFooter() {
   return (
-    <footer className="bg-secondary/50 border-t">
+    <footer className="bg-secondary/50 pt-10">
+      <hr />
       <div className="container mx-auto px-4 md:px-6 py-4">
         <div className="flex flex-col md:flex-row justify-between items-center text-sm text-muted-foreground">
           <p>&copy; {new Date().getFullYear()} inTesters, Inc. All rights reserved.</p>

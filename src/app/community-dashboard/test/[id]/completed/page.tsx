@@ -5,11 +5,11 @@ import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { ArrowLeft, CheckCircle, Star } from 'lucide-react';
+import { CheckCircle, Star } from 'lucide-react';
 import { communityApps } from '@/lib/data';
 import { Separator } from '@/components/ui/separator';
+import { BackButton } from '@/components/back-button';
 
 export default function AppTestingCompletedPage({ params }: { params: { id: string } }) {
     const app = communityApps.find(p => p.id.toString() === params.id && p.status === 'completed');
@@ -22,9 +22,7 @@ export default function AppTestingCompletedPage({ params }: { params: { id: stri
         <div className="bg-secondary/50 min-h-screen">
             <div className="container mx-auto px-4 md:px-6 py-12">
                  <header className="mb-8 max-w-4xl mx-auto">
-                    <Button variant="ghost" asChild className="mb-4">
-                        <Link href="/community-dashboard"><ArrowLeft className="mr-2 h-4 w-4" /> Back to Community Hub</Link>
-                    </Button>
+                    <BackButton href="/community-dashboard" className="mb-4" />
                      <div className="flex items-start gap-6">
                         <Image src={app.icon} alt={app.name} width={100} height={100} className="rounded-2xl border" data-ai-hint={app.dataAiHint} />
                         <div>

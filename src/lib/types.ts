@@ -1,4 +1,5 @@
 
+
 import type { ReactNode } from 'react';
 
 export type BlogPost = {
@@ -52,7 +53,6 @@ export type PointsPackage = {
     points: number;
     description: string;
     features: string[];
-    pricePerPoint?: number;
 };
 
 export type ProcessStep = {
@@ -109,7 +109,7 @@ export type Project = {
   packageName: string;
   icon: string;
   dataAiHint?: string;
-  status: "In Testing" | "Completed" | "Archived" | "In Review";
+  status: "In Testing" | "Completed" | "Archived" | "In Review" | "Draft";
   testersStarted: number;
   testersCompleted: number;
   totalDays: number;

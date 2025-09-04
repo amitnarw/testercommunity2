@@ -3,49 +3,38 @@
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { CheckCircle, Star, HelpCircle, Phone } from "lucide-react";
+import { CheckCircle, Star, HelpCircle, Phone, Package, IndianRupee, ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import type { PointsPackage } from "@/lib/types";
-import { pointsPackages, pricingFaqs } from "@/lib/data";
+import { pointsPackages, pricingFaqs, professionalPathFeatures } from "@/lib/data";
 
 
 const PointsPackageCard = ({ plan, isPopular }: { plan: PointsPackage, isPopular: boolean }) => {
     return (
         <Card className={cn(
-            "flex flex-col rounded-2xl h-full transition-all duration-300",
-            isPopular ? "border-2 border-primary shadow-2xl shadow-primary/20 transform scale-105" : "border-border/50 hover:shadow-xl hover:shadow-primary/10 hover:-translate-y-2"
+            "flex flex-col rounded-3xl h-full transition-all duration-300 group",
+            isPopular 
+                ? "border-2 border-primary shadow-2xl shadow-primary/20 bg-card" 
+                : "border-border/50 hover:shadow-xl hover:shadow-primary/10 hover:-translate-y-2 bg-secondary/50"
         )}>
-            {isPopular && (
-                <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground px-4 py-1 rounded-full text-sm font-bold flex items-center gap-1">
-                    <Star className="w-4 h-4" /> Best Value
-                </div>
-            )}
-            <CardHeader className="pt-10">
+            <CardHeader className="pt-10 text-center">
                 <CardTitle className="text-2xl">{plan.name}</CardTitle>
-                <CardDescription>{plan.description}</CardDescription>
+                <CardDescription className="pt-1">{plan.description}</CardDescription>
             </CardHeader>
-            <CardContent className="flex-grow space-y-6">
+            <CardContent className="flex-grow flex flex-col items-center justify-center space-y-6">
                  <div className="flex items-baseline gap-2">
-                    <span className="text-4xl font-bold">₹{plan.price.toLocaleString('en-IN')}</span>
+                    <span className="text-5xl font-bold">₹{plan.price.toLocaleString('en-IN')}</span>
+                     <span className="text-muted-foreground">/ one-time</span>
                 </div>
-                <div className="bg-secondary/50 p-3 rounded-lg text-center">
-                    <p className="text-2xl font-bold text-primary">{plan.points.toLocaleString('en-IN')} Points</p>
-                    {plan.pricePerPoint && <p className="text-xs text-muted-foreground">Just ₹{plan.pricePerPoint.toFixed(2)} per point</p>}
+                <div className="text-center bg-primary/10 text-primary font-bold py-2 px-4 rounded-full">
+                    {plan.points} {plan.points > 1 ? 'Packages' : 'Package'} Included
                 </div>
-                <ul className="space-y-3">
-                    {plan.features.map(feature => (
-                        <li key={feature} className="flex items-center gap-2 text-muted-foreground">
-                            <CheckCircle className="w-5 h-5 text-primary flex-shrink-0" />
-                            <span>{feature}</span>
-                        </li>
-                    ))}
-                </ul>
             </CardContent>
-            <CardFooter>
-                <Button className="w-full text-lg py-6 font-bold">
-                    Buy {plan.name} Pack
+            <CardFooter className="p-6">
+                <Button className="w-full text-lg py-6 font-bold group-hover:bg-primary/90">
+                    Get Started <ArrowRight className="ml-2 transition-transform duration-300 group-hover:translate-x-1" />
                 </Button>
             </CardFooter>
         </Card>
@@ -57,10 +46,25 @@ export default function PricingPage() {
         <div className="bg-background text-foreground">
             <div className="container mx-auto px-4 md:px-6 py-20">
                 <section className="text-center max-w-3xl mx-auto">
-                    <h1 className="text-4xl md:text-6xl font-bold">Get a <span className="bg-gradient-to-br from-primary to-accent bg-clip-text text-transparent">Points Boost</span></h1>
+                    <h1 className="text-4xl md:text-6xl font-bold">Professional Testing <span className="bg-gradient-to-br from-primary to-accent bg-clip-text text-transparent">Packages</span></h1>
                     <p className="mt-4 text-lg text-muted-foreground">
-                        Earn points for free by testing apps in the Community Hub, or buy a package to fund your testing needs instantly.
+                        For free community testing, earn points by testing other apps. For guaranteed professional results, purchase a package below.
                     </p>
+                </section>
+                
+                <section className="mt-20 max-w-4xl mx-auto">
+                    <div className="text-center mb-12">
+                        <h2 className="text-3xl font-bold">What's Included in Every Package?</h2>
+                        <p className="text-muted-foreground mt-2">Every professional testing package comes with our full suite of features to ensure a successful launch.</p>
+                    </div>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                        {professionalPathFeatures.map((feature, index) => (
+                            <div key={index} className="flex items-center gap-3 p-4 rounded-lg bg-secondary/50">
+                                <CheckCircle className="w-5 h-5 text-primary flex-shrink-0" />
+                                <span>{feature}</span>
+                            </div>
+                        ))}
+                    </div>
                 </section>
 
                 <section className="mt-20 max-w-6xl mx-auto">
@@ -78,7 +82,7 @@ export default function PricingPage() {
                         <div>
                             <CardTitle className="text-2xl">Enterprise & Custom Plans</CardTitle>
                             <CardDescription className="mt-2 max-w-2xl">
-                                Need a massive points top-up, custom integrations, or dedicated account management? We can build a plan tailored to your specific requirements.
+                                Need a bulk package purchase, custom integrations, or dedicated account management? We can build a plan tailored to your specific requirements.
                             </CardDescription>
                         </div>
                         <Button asChild className="text-lg py-6 font-bold mt-4 md:mt-0 flex-shrink-0" variant="outline">
@@ -92,7 +96,7 @@ export default function PricingPage() {
                 <section className="mt-28 max-w-4xl mx-auto">
                      <div className="text-center mb-12">
                         <HelpCircle className="w-12 h-12 text-primary mx-auto mb-4" />
-                        <h2 className="text-3xl md:text-4xl font-bold">Points Explained</h2>
+                        <h2 className="text-3xl md:text-4xl font-bold">Packages & Pricing Explained</h2>
                         <p className="mt-4 text-muted-foreground">
                             Got questions? We've got answers.
                         </p>

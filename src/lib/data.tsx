@@ -1,4 +1,5 @@
 
+
 import type { BlogPost, Testimonial, RoadmapStep, UserProfileData, ProcessStep, CommunityApp, PointsPackage, FaqItem, Notification, Project } from './types';
 
 export const chartData = [
@@ -27,11 +28,11 @@ export const blogPosts: BlogPost[] = [
     content: `<p>Automated testing is a cornerstone of modern software development. By letting scripts and tools do the repetitive work, you can focus on what truly matters: building great features. This guide will walk you through the basics.</p><p>We'll cover topics like:</p><ul><li>Choosing the right automation framework</li><li>Writing your first test script</li><li>Integrating tests into your CI/CD pipeline</li><li>Analyzing test results</li></ul>`,
     author: {
       name: 'Alice Johnson',
-      avatarUrl: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=400&auto=format=fit=crop',
+      avatarUrl: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=400&auto=format&fit=crop',
       dataAiHint: 'woman developer',
     },
     date: '2024-05-15',
-    imageUrl: 'https://images.unsplash.com/photo-1516116216624-53e697320f64?q=80&w=600&auto=format=fit=crop',
+    imageUrl: 'https://images.unsplash.com/photo-1516116216624-53e697320f64?q=80&w=600&auto=format&fit=crop',
     dataAiHint: 'code testing',
     tags: ['Automation', 'Beginner', 'CI/CD'],
   },
@@ -43,11 +44,11 @@ export const blogPosts: BlogPost[] = [
     content: `<p>UX testing goes beyond identifying functional bugs. It's about understanding how users feel when they interact with your product. A seamless UX can be the difference between a good app and a great one.</p><p>In this article, we explore:</p><ul><li>Heuristic evaluation</li><li>Usability testing methods</li><li>Gathering and interpreting user feedback</li><li>The connection between UX and business success</li></ul>`,
     author: {
       name: 'Hannah Wright',
-      avatarUrl: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?q=80&w=400&auto=format=fit=crop',
+      avatarUrl: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?q=80&w=400&auto=format&fit=crop',
       dataAiHint: 'woman tech',
     },
     date: '2024-05-20',
-    imageUrl: 'https://images.unsplash.com/photo-1587440871875-191322ee64b0?q=80&w=600&auto=format=fit=crop',
+    imageUrl: 'https://images.unsplash.com/photo-1587440871875-191322ee64b0?q=80&w=600&auto=format&fit=crop',
     dataAiHint: 'ux design',
     tags: ['UI/UX', 'Design', 'User Research'],
   },
@@ -59,11 +60,11 @@ export const blogPosts: BlogPost[] = [
     content: `<p>Mobile security is not a feature; it's a necessity. With increasing threats, robust security testing is crucial. This checklist provides a starting point for testers to ensure an app is secure.</p><p>Key areas covered:</p><ul><li>Data storage and encryption</li><li>Network communication vulnerabilities</li><li>Authentication and authorization</li><li>Code obfuscation and anti-tampering</li></ul>`,
     author: {
       name: 'George Hill',
-      avatarUrl: 'https://images.unsplash.com/photo-1527982987257-d3abc440f2ba?q=80&w=400&auto=format=fit=crop',
+      avatarUrl: 'https://images.unsplash.com/photo-1527982987257-d3abc440f2ba?q=80&w=400&auto=format&fit=crop',
       dataAiHint: 'man portrait',
     },
     date: '2024-05-25',
-    imageUrl: 'https://images.unsplash.com/photo-1555949963-ff9fe0c870eb?q=80&w=600&auto=format=fit=crop',
+    imageUrl: 'https://images.unsplash.com/photo-1555949963-ff9fe0c870eb?q=80&w=600&auto=format&fit=crop',
     dataAiHint: 'cyber security',
     tags: ['Security', 'Mobile', 'Checklist'],
   },
@@ -73,35 +74,35 @@ export const testimonials: Testimonial[] = [
   {
     name: 'Sarah Jennings',
     role: 'Lead Developer, TechNova',
-    avatar: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?q=80&w=400&auto=format=fit=crop',
+    avatar: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?q=80&w=400&auto=format&fit=crop',
     dataAiHint: 'woman portrait',
     comment: 'inTesters has revolutionized our QA process. The real-time feedback and detailed reports are game-changers. The platform isn\'t just functional, it\'s a joy to use!',
   },
   {
     name: 'Mike Valerio',
     role: 'Indie Game Developer',
-    avatar: 'https://images.unsplash.com/photo-1564564321837-a57b7070ac4f?q=80&w=400&auto=format=fit=crop',
+    avatar: 'https://images.unsplash.com/photo-1564564321837-a57b7070ac4f?q=80&w=400&auto=format&fit=crop',
     dataAiHint: 'man smiling',
     comment: 'Finding the right testers used to be a nightmare. The gamified marketplace made it fun and easy to connect with experienced, reliable people. My app is better for it.',
   },
   {
     name: 'Chen Lin',
     role: 'Product Manager, Innovate Inc.',
-    avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=400&auto=format=fit=crop',
+    avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=400&auto=format&fit=crop',
     dataAiHint: 'person glasses',
     comment: 'The dashboards are incredible. Being able to visualize our testing data with such clarity and beauty has helped us identify critical issues faster than ever before.',
   },
   {
     name: 'David Kim',
     role: 'QA Engineer, GameSphere',
-    avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=400&auto=format=fit=crop',
+    avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=400&auto=format&fit=crop',
     dataAiHint: 'man portrait',
     comment: 'As a tester, the gamified reputation system is fantastic. It motivates me to do my best work and get recognized for it. I\'ve gotten more high-quality projects through inTesters than any other platform.',
   },
   {
     name: 'Maria Garcia',
     role: 'Mobile App Developer',
-    avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=400&auto=format=fit=crop',
+    avatar: 'https://images.unsplash.com/photo-14947901083_77-be9c29b29330?q=80&w=400&auto=format&fit=crop',
     dataAiHint: 'woman developer',
     comment: 'The community aspect is what sets inTesters apart. It\'s not just a service; it\'s a network of professionals passionate about quality. The collaboration tools are excellent.',
   },
@@ -162,21 +163,21 @@ export const communityPathSteps: RoadmapStep[] = [
 export const professionalPathSteps: RoadmapStep[] = [
     {
         step: 1,
-        title: "Purchase Points",
-        description: "Fast-track your testing by purchasing a points package. This is your currency for all professional services on the platform, allowing you to skip community testing entirely.",
+        title: "Purchase a Package",
+        description: "Fast-track your testing by purchasing a test package. This gives you one full, professional test cycle, allowing you to skip community testing entirely.",
         badgeText: "Time: 2 Mins • Cost: Varies",
         details: [
-            { title: "Flexible Packages", description: "Choose a points package that fits your project's budget and scope." },
+            { title: "Flexible Packages", description: "Choose a package that fits your project's budget and scope." },
             { title: "Instant Access", description: "No need to earn points; get started with professional testing right away." },
             { title: "Secure Payment", description: "All transactions are handled securely through our trusted payment processor." },
-            { title: "Points Never Expire", description: "Your purchased points are yours to use whenever you're ready." },
+            { title: "Use Anytime", description: "Your purchased packages are yours to use whenever you're ready." },
         ]
     },
     {
         step: 2,
         title: "Submit & Forget",
         description: "Submit your app through the Developer Dashboard. Provide us with your build and instructions, and we'll handle the rest. Our project managers take over from here.",
-        badgeText: "Requirement: Points Purchased",
+        badgeText: "Requirement: 1 Package per App",
         details: [
             { title: "Simple Submission", description: "A straightforward form to provide your app and testing requirements." },
             { title: "Managed Process", description: "Our team assigns the best-suited professional testers to your project." },
@@ -263,7 +264,7 @@ export const communityApps: CommunityApp[] = [
     {
         id: 2,
         name: 'Brawl Stars',
-        icon: 'https://play-lh.googleusercontent.com/algsmuhitlyCU_Y2_1l2Y3-pGg2uM8LTrE8G2aB-4C-Y00sR_Bof8omwbig3xV2Wabk=s96-rw',
+        icon: 'https://play-lh.googleusercontent.com/vJkYN1DjWBfyvycAH4AipXaiqJ9i6Ug01zU-qhyFNLrhsMTElDzLNTJ_KBd4g9IKYYc=s96-rw',
         dataAiHint: 'game character icon',
         category: 'Games',
         shortDescription: 'Fast-paced 3v3 multiplayer and battle royale made for mobile!',
@@ -272,8 +273,8 @@ export const communityApps: CommunityApp[] = [
         estimatedTime: '20-30 min',
         playStoreUrl: 'https://play.google.com/store/apps/details?id=com.supercell.brawlstars',
         screenshots: [
-            { url: 'https://play-lh.googleusercontent.com/7sL_s3G-y3xDE_d2s-n2nI_p3t0aXpW2YPTz_cKiZG9xVlM6q-Jtrw8pSC7K9s2B-3I=w526-h296-rw', alt: 'Brawl Stars Screenshot 1', dataAiHint: 'gameplay screenshot' },
-            { url: 'https://play-lh.googleusercontent.com/j-rnkkrY1Aa_eJ8v0ke_c_fcaq2NBdE3zXwPqK-9pT0e-mS8UW-c-yL-VRp7VuKkfw=w526-h296-rw', alt: 'Brawl Stars Screenshot 2', dataAiHint: 'game characters' }
+            { url: 'https://play-lh.googleusercontent.com/7cbF0CaotSfUmbK7UMt9NJdKP445eLN58Tf84P7qkyiS92gwnZg8A58Nkc45ZkAVOQ=w5120-h2880-rw', alt: 'Brawl Stars Screenshot 1', dataAiHint: 'gameplay screenshot' },
+            { url: 'https://play-lh.googleusercontent.com/fI4YdE1laVv-hKex_etmpvr5_gSTIv9uGMua_KsFWb7lIxdGTdN82wESwewYzTt1bA=w5120-h2880-rw', alt: 'Brawl Stars Screenshot 2', dataAiHint: 'game characters' }
         ],
         testingInstructions: 'Play the new "Gem Grab" mode. We are looking for feedback on matchmaking balance, performance during intense fights, and the new Brawler\'s abilities.',
         status: 'completed',
@@ -282,7 +283,7 @@ export const communityApps: CommunityApp[] = [
      {
         id: 3,
         name: 'AccuWeather',
-        icon: 'https://play-lh.googleusercontent.com/U03_StX1YhEt2Hi-gEY53nLwYt6-mRglvT5Y3j7IJCg3nEJOa2v2-s24hB3wLgq_jA=s96-rw',
+        icon: 'https://play-lh.googleusercontent.com/EgDT3XrIaJbhZjINCWsiqjzonzqve7LgAbim8kHXWgg6fZnQebqIWjE6UcGahJ6yugU=w480-h960-rw',
         dataAiHint: 'sun cloud icon',
         category: 'Weather',
         shortDescription: 'Live weather radar & forecast, severe weather alerts, and more.',
@@ -291,8 +292,8 @@ export const communityApps: CommunityApp[] = [
         estimatedTime: '5-10 min',
         playStoreUrl: 'https://play.google.com/store/apps/details?id=com.accuweather.android',
         screenshots: [
-            { url: 'https://play-lh.googleusercontent.com/2Uoj6wreTtrVA7-qXweWJ5AczgQG6K0pW4tqjGj8T8gZ-5uFhnpNT2w_4n5TqOSAx_U=w526-h296-rw', alt: 'AccuWeather Screenshot 1', dataAiHint: 'weather map' },
-            { url: 'https://play-lh.googleusercontent.com/mO24j9y7dGDAXG7a2aPAn8e1B3I4iUgNVaHj-YSg2sRurG4HeqYfK1cQO-e5C46p4A=w526-h296-rw', alt: 'AccuWeather Screenshot 2', dataAiHint: 'hourly forecast' }
+            { url: 'https://play-lh.googleusercontent.com/OVNqxXWPyZUilt-abUeBHuML5_nrqJvFP7MTvhWS0JqIAyjUUgte7c0NKBdGakdF97JjPiGz0DgWNr05YMFkkOg=w5120-h2880-rw', alt: 'AccuWeather Screenshot 1', dataAiHint: 'weather map' },
+            { url: 'https://play-lh.googleusercontent.com/iVDM63eIo8Gs74i1tD3I_oOubcxQZmapkrSQGj3UI0ECO-PoHDK7Rdicf4Ak2CK-S7Ua3EItYmnOGEZcJpi4RA=w5120-h2880-rw', alt: 'AccuWeather Screenshot 2', dataAiHint: 'hourly forecast' }
         ],
         testingInstructions: 'Check the "Minutecast" feature for your current location. Please verify if the precipitation forecast is accurate and report any UI issues with the radar map.',
         status: 'available',
@@ -300,7 +301,7 @@ export const communityApps: CommunityApp[] = [
     {
         id: 4,
         name: 'Reddit',
-        icon: 'https://play-lh.googleusercontent.com/J8k5q78xv4R8SmiMhOE2i38B99qQJgHjX9gH2e_S-c26w1aO3xV3T0l_DPDXJ2c=s96-rw',
+        icon: 'https://play-lh.googleusercontent.com/YlsjgA1pFEUqNaypaxE5ajushTBOt8IxVk_UEqzaXT7_n3JDgFq6KgtuE8tPBpvaCntB=w480-h960-rw',
         dataAiHint: 'alien robot icon',
         category: 'Social',
         shortDescription: 'Dive into anything. News, trends, and communities on every topic.',
@@ -309,8 +310,8 @@ export const communityApps: CommunityApp[] = [
         estimatedTime: '25-35 min',
         playStoreUrl: 'https://play.google.com/store/apps/details?id=com.reddit.frontpage',
         screenshots: [
-            { url: 'https://play-lh.googleusercontent.com/yF-C9YjGEnv2Fw5iSTs25i2RjQeWBzT0kHw-v55K-w5-y3vJ4m8v-U-ok_i5XQ-K0Q=w526-h296-rw', alt: 'Reddit Screenshot 1', dataAiHint: 'social feed' },
-            { url: 'https://play-lh.googleusercontent.com/1-1250bGo3x2C9m8AtbrdnrW65Gz_I37Zg0ZpM1aHJW-46tY2zB3yAI5LdykGqC-Yg=w526-h296-rw', alt: 'Reddit Screenshot 2', dataAiHint: 'community page' }
+            { url: 'https://play-lh.googleusercontent.com/VuG8-L7VopdChWJSvh5HC_o4KZpoP_qVU_4NjsJ1KUWO1cmK2hchaZnyWEtmN38CeQ=w5120-h2880-rw', alt: 'Reddit Screenshot 1', dataAiHint: 'social feed' },
+            { url: 'https://play-lh.googleusercontent.com/x7SelyleRNR8Un3SAKzpu9eKeX6tTEhZsM5EW5vxcHQG2KnM0_wmZkfa92SLwPraKFla=w5120-h2880-rw', alt: 'Reddit Screenshot 2', dataAiHint: 'community page' }
         ],
         testingInstructions: 'Test the new video player controls. Try watching several videos, scrubbing, and changing the playback speed. Report any crashes or performance issues.',
         status: 'available',
@@ -318,7 +319,7 @@ export const communityApps: CommunityApp[] = [
     {
         id: 5,
         name: 'Subway Surfers',
-        icon: 'https://play-lh.googleusercontent.com/H9jdtLqCj9Js-2f_2224omx1Z-G0qf_9M2i3k2i42bTfG2Cu2T1HAm5S-v4_eA=s96-rw',
+        icon: 'https://play-lh.googleusercontent.com/x0gzuXNOIe_RISFYF9YeBI1h6Xxb7ZKFgyz0bl_nNd59turcpwrg4WOl2r_FNCzAwA=s96-rw',
         dataAiHint: 'boy running',
         category: 'Games',
         shortDescription: 'An endless runner game. DASH as fast as you can! DODGE the oncoming trains!',
@@ -327,8 +328,8 @@ export const communityApps: CommunityApp[] = [
         estimatedTime: '10-15 min',
         playStoreUrl: 'https://play.google.com/store/apps/details?id=com.kiloo.subwaysurf',
         screenshots: [
-            { url: 'https://play-lh.googleusercontent.com/Z5oHmW82IqVv24eXnCj2Yg_tTSS-eLw9sDNIy_j0fO2o-2_s-i0L2aiwBqg0gVb0J-0=w526-h296-rw', alt: 'Subway Surfers Screenshot 1', dataAiHint: 'game character running' },
-            { url: 'https://play-lh.googleusercontent.com/hYgAn5WgfzAbq_FkX2dO9s-p0nSvsKx53aJ5rT-1oXqjMUPHhJvO1s8KzdaFARvWYw=w526-h296-rw', alt: 'Subway Surfers Screenshot 2', dataAiHint: 'gameplay obstacles' }
+            { url: 'https://play-lh.googleusercontent.com/MYxB6AedO95sOoYM5B3q7_DDbYAzonV_15V8tuabDEyhM9NQTmoL0y-oDA7NCnp6oMU=w1052-h592-rw', alt: 'Subway Surfers Screenshot 1', dataAiHint: 'game character running' },
+            { url: 'https://play-lh.googleusercontent.com/sQPwy6UqraoYT-gL3Gvx6R0HXfEGOvKWs8buCzRLJYIyHlp9skdVwnnOcG3dwo33ChF6=w1052-h592-rw', alt: 'Subway Surfers Screenshot 2', dataAiHint: 'gameplay obstacles' }
         ],
         testingInstructions: 'Play the game until you can afford the new "Super Sneaker" power-up. We are looking for feedback on its price balance and overall usefulness.',
         status: 'available',
@@ -336,7 +337,7 @@ export const communityApps: CommunityApp[] = [
     {
         id: 6,
         name: 'Notion',
-        icon: 'https://play-lh.googleusercontent.com/9YA6bSrgj1ZNDsJ99aYqlVd-24o7jF0smV51T-I5CMEo90hG2pT0g1Ih_HwzJ-ggEg=s96-rw',
+        icon: 'https://play-lh.googleusercontent.com/vaxxIC1qaXOd1q1hmL7c66N-Mp4LXuQIuBZGM0dPIbwmyWcJAXbhIIZ8hNBWvar54c_j=w480-h960-rw',
         dataAiHint: 'letter N block',
         category: 'Productivity',
         shortDescription: 'Write, plan, and get organized. Your connected workspace for docs, wikis, and projects.',
@@ -345,8 +346,8 @@ export const communityApps: CommunityApp[] = [
         estimatedTime: '20-25 min',
         playStoreUrl: 'https://play.google.com/store/apps/details?id=notion.id',
         screenshots: [
-            { url: 'https://play-lh.googleusercontent.com/lM3Gg-l2b7yv017ye2a8uR4NfUdfmMAg7X5b5Zl-4nCGFcSsCqDqG5jHq2M0N8-9oQ=w526-h296-rw', alt: 'Notion Screenshot 1', dataAiHint: 'project document' },
-            { url: 'https://play-lh.googleusercontent.com/d9h4-S-8a1de2M-AlK28v5rQ43JymP_c0w4WRjP6T-l5VccgL-A_M7e0_XkM-4kNaSk=w526-h296-rw', alt: 'Notion Screenshot 2', dataAiHint: 'database table view' }
+            { url: 'https://play-lh.googleusercontent.com/IDtkl9rmDFCaMHVpIHEUy6YvaQ7dZbc19v7zXU2637hJOqPzFo6-WS6TUaIe45L8dZrXURDBQMZGpOnZL8hNtA=w1052-h592-rw', alt: 'Notion Screenshot 1', dataAiHint: 'project document' },
+            { url: 'https://play-lh.googleusercontent.com/oRlLXgugaEQwBZky-psvZuaPpJr-56kS6AhZULtHi2n_96qHj27EpE3OZqJtzBG2WoWxvb13OlN33DsWjHG5qQ=w1052-h592-rw', alt: 'Notion Screenshot 2', dataAiHint: 'database table view' }
         ],
         testingInstructions: 'Create a new database, add at least 5 entries with different properties (text, date, select). Test the filtering and sorting functionality.',
         status: 'available',
@@ -354,7 +355,7 @@ export const communityApps: CommunityApp[] = [
     {
         id: 7,
         name: 'Duolingo',
-        icon: 'https://play-lh.googleusercontent.com/MmLHNN4_w_n_iwybVv5l_2n2tLg3yN6cI4z8Lg2j_X5_3eY2-0W-l_sR_S-G=s96-rw',
+        icon: 'https://play-lh.googleusercontent.com/Rz4JVKiQM7ZnLYTEzwzpvWROphw5Wo6kh3vnx8HhgHTaOzsknlTLmXUsknurSqTqUj0=w480-h960-rw',
         dataAiHint: 'green bird cartoon',
         category: 'Education',
         shortDescription: 'Learn a new language with the world’s most-downloaded education app!',
@@ -363,8 +364,8 @@ export const communityApps: CommunityApp[] = [
         estimatedTime: '5-10 min',
         playStoreUrl: 'https://play.google.com/store/apps/details?id=com.duolingo',
         screenshots: [
-            { url: 'https://play-lh.googleusercontent.com/T0bHDE7-tLh8I-tQ0bYyegx9A5vOik_1I0X4gEtB3A_GjGNRl0i9v_NHI0S3Bcw0aw=w526-h296-rw', alt: 'Duolingo Screenshot 1', dataAiHint: 'language lesson' },
-            { url: 'https://play-lh.googleusercontent.com/gKjG1o_P24KRAwBw29AYU0i5w6lT5b-9bC-b-9xKkza8w0j_XvW53DNj7E4GEv44uQ=w526-h296-rw', alt: 'Duolingo Screenshot 2', dataAiHint: 'learning path' }
+            { url: 'https://play-lh.googleusercontent.com/bpbZj-0dChEpZ2X1pT83gZJi0CFHdVlK3Ja_nC1bDGzpX5aPTyCQDQ-s4gn6fBXmsQ=w1052-h592-rw', alt: 'Duolingo Screenshot 1', dataAiHint: 'language lesson' },
+            { url: 'https://play-lh.googleusercontent.com/ERs3Y-33zoFG7aIaRYdg67QwHb6YOJB0lZdM9U8x3YMvT8m1XTXf5WRS-CzymdEoJw=w1052-h592-rw', alt: 'Duolingo Screenshot 2', dataAiHint: 'learning path' }
         ],
         testingInstructions: 'Complete one full lesson in any language. Verify that the progress is saved correctly and check for any issues with audio playback during exercises.',
         status: 'available',
@@ -372,7 +373,7 @@ export const communityApps: CommunityApp[] = [
     {
         id: 8,
         name: 'Spotify',
-        icon: 'https://play-lh.googleusercontent.com/cShys-AmJ93dB0SV8kE6Fl5e4MbZJp25DILYfxNQuYFobIm9SRAlSwOO7sqcUY5U64w=s96-rw',
+        icon: 'https://play-lh.googleusercontent.com/7ynvVIRdhJNAngCg_GI7i8TtH8BqkJYmffeUHsG-mJOdzt1XLvGmbsKuc5Q1SInBjDKN=w480-h960-rw',
         dataAiHint: 'green circle logo',
         category: 'Music',
         shortDescription: 'Listen to music, podcasts & more. Find your favorite songs.',
@@ -381,8 +382,8 @@ export const communityApps: CommunityApp[] = [
         estimatedTime: '15-20 min',
         playStoreUrl: 'https://play.google.com/store/apps/details?id=com.spotify.music',
         screenshots: [
-            { url: 'https://play-lh.googleusercontent.com/Iykqbus64sB6194sgGjfGwbq-n0Xis0Q4M2kEpM231i-j0B0s-p-sLFHv9XqLRXzCg=w526-h296-rw', alt: 'Spotify Screenshot 1', dataAiHint: 'now playing screen' },
-            { url: 'https://play-lh.googleusercontent.com/u_pP86nB4h0s5n1p-D43GjH5vQaKNCnKzB4flv2r2qC3Wb_93G28-Qp-w4jG_A=w526-h296-rw', alt: 'Spotify Screenshot 2', dataAiHint: 'music playlist' }
+            { url: 'https://play-lh.googleusercontent.com/fOaUJKnuMPk02Gl5qu_B6ePw0myxaNJx3QZihKxsaAix5TYKl1NnfmvzZ52nSAc3w8nD=w1052-h592-rw', alt: 'Spotify Screenshot 1', dataAiHint: 'now playing screen' },
+            { url: 'https://play-lh.googleusercontent.com/a7950Z_tJAMl7t9mh62ZBJianaWewvFqSXbpp4XqnrShHD1x4_JzB4ONSfM124rAvd3J=w1052-h592-rw', alt: 'Spotify Screenshot 2', dataAiHint: 'music playlist' }
         ],
         testingInstructions: 'Test the "Blend" feature with a friend. Create a new Blend playlist and check if it updates correctly after both of you listen to more music.',
         status: 'available',
@@ -390,7 +391,7 @@ export const communityApps: CommunityApp[] = [
     {
         id: 9,
         name: 'Netflix',
-        icon: 'https://play-lh.googleusercontent.com/TBRwjS_qfJCSj1m7zZB93FnpJM5fSpMA_wUlFDLxWAb45T9RmWROIO-wPpLpDlJyPiA=s96-rw',
+        icon: 'https://play-lh.googleusercontent.com/TBRwjS_qfJCSj1m7zZB93FnpJM5fSpMA_wUlFDLxWAb45T9RmwBvQd5cWR5viJJOhkI=w480-h960-rw',
         dataAiHint: 'letter N red',
         category: 'Entertainment',
         shortDescription: 'Looking for the most talked about TV shows and movies from the around the world?',
@@ -399,8 +400,8 @@ export const communityApps: CommunityApp[] = [
         estimatedTime: '15-20 min',
         playStoreUrl: 'https://play.google.com/store/apps/details?id=com.netflix.mediaclient',
         screenshots: [
-            { url: 'https://play-lh.googleusercontent.com/x0I4cQ2sTNSj-Jc-2pDDh6c_zVdn2-v-b6pG0vM9O327u4jLg-IChEh4i6B-M0s_Lg=w526-h296-rw', alt: 'Netflix Screenshot 1', dataAiHint: 'movie selection screen' },
-            { url: 'https://play-lh.googleusercontent.com/Kq-pT8G_g0-LA41Z2YhMnsy-Y2x3B2i2bQJg9l48t-v-CKi9s6M43yB0y76-Lh-VNg=w526-h296-rw', alt: 'Netflix Screenshot 2', dataAiHint: 'tv show profile page' }
+            { url: 'https://play-lh.googleusercontent.com/Uev9_yBzAAhQJAxF2OH2chJM5ZtldwS2QLZuRna6Sxa-E8_V2DNTvhM1ErtO9Y-EovEW=w1052-h592-rw', alt: 'Netflix Screenshot 1', dataAiHint: 'movie selection screen' },
+            { url: 'https://play-lh.googleusercontent.com/kgPN0hxOygJ0BvBKO_MppY5ffCxgjVby_4I8qZVOG3ZP1LkZsk6yR6kiACfo1G_jX3FA=w1052-h592-rw', alt: 'Netflix Screenshot 2', dataAiHint: 'tv show profile page' }
         ],
         testingInstructions: 'Test the download feature for offline viewing. Download a show, put your phone in airplane mode, and try to play it. Report any issues.',
         status: 'ongoing',
@@ -409,7 +410,7 @@ export const communityApps: CommunityApp[] = [
     {
         id: 10,
         name: 'Minecraft',
-        icon: 'https://play-lh.googleusercontent.com/VSwHQjcAttxsLE47RuS4PqpC4LT7lCoSjE7Hx5AW_yCxtDvcnsHH42OUAF2Bka7SXWE=s96-rw',
+        icon: 'https://play-lh.googleusercontent.com/27O5tpaYE82W6m30rJ_MX3-UvshlDM6O8oXDxb6GseYW2T7P8UNT19727MGmz-0q3w=s96-rw',
         dataAiHint: 'pixelated grass block',
         category: 'Games',
         shortDescription: 'Explore infinite worlds and build everything from the simplest of homes to the grandest of castles.',
@@ -418,8 +419,8 @@ export const communityApps: CommunityApp[] = [
         estimatedTime: '30-40 min',
         playStoreUrl: 'https://play.google.com/store/apps/details?id=com.mojang.minecraftpe',
         screenshots: [
-             { url: 'https://play-lh.googleusercontent.com/y-z3djrE-9Z2U3koJ2B-JpNa5bBSAlqu1YQ3I_z3uvch0iXqS2-i5c2lTC-2hdL-Ryk=w526-h296-rw', alt: 'Minecraft Screenshot 1', dataAiHint: 'game world' },
-             { url: 'https://play-lh.googleusercontent.com/3Y-o2C_2jl_BqdJptY3y-DA6iV_jfpX-pG0vO_BCoXPaO199L2c_8W2Cs-O5k0V6iQ=w526-h296-rw', alt: 'Minecraft Screenshot 2', dataAiHint: 'underwater gameplay' }
+             { url: 'https://play-lh.googleusercontent.com/TuldCmJnsld3yG9AG_vvVsWtJQhd0KGOekfZgZpjqGiT-CVQ3J5uuUyMEdF7e6X86W29=w1052-h592-rw', alt: 'Minecraft Screenshot 1', dataAiHint: 'game world' },
+             { url: 'https://play-lh.googleusercontent.com/Oy0VBqSTujyHQdqbSPD4GvuKYb01OdY_36OAZV1JozE5J62e-Ok12BSwPCw4w72nU6c=w1052-h592-rw', alt: 'Minecraft Screenshot 2', dataAiHint: 'underwater gameplay' }
         ],
         testingInstructions: 'Join a multiplayer server and play for at least 15 minutes. We are looking for any connection issues, lag, or graphical glitches during multiplayer sessions.',
         status: 'available',
@@ -427,7 +428,7 @@ export const communityApps: CommunityApp[] = [
     {
         id: 11,
         name: 'TikTok',
-        icon: 'https://play-lh.googleusercontent.com/Y-hStYw2yJz2fHh2-StSg98M12JPEhY22I8hWzGkXn49p_lE-ccpobf3z1J5B-R-6g=s96-rw',
+        icon: 'https://play-lh.googleusercontent.com/BmUViDVOKNJe0GYJe22hsr7juFndRVbvr1fGmHGXqHfJjNAXjd26bfuGRQpVrpJ6YbA=w480-h960-rw',
         dataAiHint: 'music note logo',
         category: 'Social',
         shortDescription: 'TikTok is THE destination for mobile videos. On TikTok, short-form videos are exciting, spontaneous, and genuine.',
@@ -436,8 +437,8 @@ export const communityApps: CommunityApp[] = [
         estimatedTime: '10-15 min',
         playStoreUrl: 'https://play.google.com/store/apps/details?id=com.zhiliaoapp.musically',
         screenshots: [
-            { url: 'https://play-lh.googleusercontent.com/M3jcFp_6m-Zg-p-v3-q2YJS2I-V_mV1nZJ-J6eTjL_zHlQ-3-k3g-p-C-G-U-L-R-g=w526-h296-rw', alt: 'TikTok Screenshot 1', dataAiHint: 'video feed interface' },
-            { url: 'https://play-lh.googleusercontent.com/yv-65V-T-7-I-fL-Y-f-k-w-z-y-f-k-w-z-y-f-k-w-z-y-f-k-w-z-y-f-k-w-z-y-f-k-w-z-y-f-k=w526-h296-rw', alt: 'TikTok Screenshot 2', dataAiHint: 'video creation tools' }
+            { url: 'https://play-lh.googleusercontent.com/xVRB5spVTzA2TX9R9E2XxcFmLncAQGUvR6N25-2D0f2LtZfOsOvUEMeJd8m3I9_Ytw=w1052-h592-rw', alt: 'TikTok Screenshot 1', dataAiHint: 'video feed interface' },
+            { url: 'https://play-lh.googleusercontent.com/MzHRecSy-VSHfikBu1nWferUxTc9EJKE4BJODAffLQPiEpkjVKMvun02jn-KMKtIMQ=w1052-h592-rw', alt: 'TikTok Screenshot 2', dataAiHint: 'video creation tools' }
         ],
         testingInstructions: 'Test the new "Stitch" feature with a video from your "For You" page. Ensure the editing tools work as expected and the final video posts correctly.',
         status: 'available',
@@ -445,7 +446,7 @@ export const communityApps: CommunityApp[] = [
     {
         id: 12,
         name: 'Amazon Shopping',
-        icon: 'https://play-lh.googleusercontent.com/m21M0_yM2RssAD2iS-0c2yqKX-K_95TcK02D3_LgODp_T9-O-2T-L-2bSOcH5m_wog=s96-rw',
+        icon: 'https://play-lh.googleusercontent.com/1Ns1T_qN0pEXMvZeZ5lQNAR8z4blP7ce2J2Nn5doXvt2T1g_W7VMORdWHaApkOooupI=s96-rw',
         dataAiHint: 'shopping cart arrow',
         category: 'Shopping',
         shortDescription: 'Amazon Shopping offers a wide range of products at great prices.',
@@ -454,8 +455,8 @@ export const communityApps: CommunityApp[] = [
         estimatedTime: '10-15 min',
         playStoreUrl: 'https://play.google.com/store/apps/details?id=com.amazon.mShop.android.shopping',
         screenshots: [
-            { url: 'https://play-lh.googleusercontent.com/9C6ZI_4h-4Yh-3-q7j-y_m-z-p-c-v-z-p-c-v-z-p-c-v-z-p-c-v-z-p-c-v-z-p-c-v-z-p-c=w526-h296-rw', alt: 'Amazon Screenshot 1', dataAiHint: 'product page' },
-            { url: 'https://play-lh.googleusercontent.com/T-c-Y-Y-Q-A-Z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c=w526-h296-rw', alt: 'Amazon Screenshot 2', dataAiHint: 'home page deals' }
+            { url: 'https://play-lh.googleusercontent.com/Bt95BAHb_F8Wdn_Xt1z7sBjUXAD-UIYX_mqAhhRFIv5PobR3vpteXfzNC0ZYiVJPSgM=w1052-h592-rw', alt: 'Amazon Screenshot 1', dataAiHint: 'product page' },
+            { url: 'https://play-lh.googleusercontent.com/q-3YfdVSQGgEJ9gj8KCnS17bu4fJmDZxkNzTeaR7bQg2p0lwHFSmBlYCUlW84g32A6w=w1052-h592-rw', alt: 'Amazon Screenshot 2', dataAiHint: 'home page deals' }
         ],
         testingInstructions: 'Add three different items to your cart and proceed to the checkout page. Do not complete the purchase. Report any UI issues or calculation errors in the subtotal.',
         status: 'completed',
@@ -464,7 +465,7 @@ export const communityApps: CommunityApp[] = [
     {
         id: 13,
         name: 'Microsoft Outlook',
-        icon: 'https://play-lh.googleusercontent.com/3ZTk2DdxNttV4-w-1i_5bSPQk3v1n2R2CIIO-c-iTNKs-3YSU3n8ge-2Vv2S_F41iXU=s96-rw',
+        icon: 'https://play-lh.googleusercontent.com/Zk9elS0eGXDr0L4W6-Ey7YwHbRNjkyezHC8iCc8rWp64lNIjlByS8TDF9qDSZbiEWY4=s96-rw',
         dataAiHint: 'blue letter O',
         category: 'Productivity',
         shortDescription: 'Outlook for Android is the app that helps millions of users connect all their email accounts, calendars, and files in one convenient spot.',
@@ -473,8 +474,8 @@ export const communityApps: CommunityApp[] = [
         estimatedTime: '15-20 min',
         playStoreUrl: 'https://play.google.com/store/apps/details?id=com.microsoft.office.outlook',
         screenshots: [
-            { url: 'https://play-lh.googleusercontent.com/i9dNB_2-n20t72yFGbZgGZgTGV-YvZmzX_9tY-M-R-U-p-Q-L-f-G-I-R-g=w526-h296-rw', alt: 'Outlook Screenshot 1', dataAiHint: 'email inbox' },
-            { url: 'https://play-lh.googleusercontent.com/t-T-I-q-g-Y-f-k-w-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c=w526-h296-rw', alt: 'Outlook Screenshot 2', dataAiHint: 'calendar view' }
+            { url: 'https://play-lh.googleusercontent.com/yN0lBHFPoxRoYQS872mYCIQjx0-OA_JCNBWFr1484s0bpRbJip_3hGKGLgyqvbsn8uk=w1052-h592-rw', alt: 'Outlook Screenshot 1', dataAiHint: 'email inbox' },
+            { url: 'https://play-lh.googleusercontent.com/Kxy-pmgAqC1CqO_Qpke7zdZ4ca1UR9cUFp_ovRZNcGtzJ1QWJJrNEcKQc_Xbbatbfw63=w1052-h592-rw', alt: 'Outlook Screenshot 2', dataAiHint: 'calendar view' }
         ],
         testingInstructions: 'Test the search functionality. Search for an email by sender and then by subject. Verify that the results are accurate and load quickly.',
         status: 'available',
@@ -482,7 +483,7 @@ export const communityApps: CommunityApp[] = [
     {
         id: 14,
         name: 'Clash of Clans',
-        icon: 'https://play-lh.googleusercontent.com/LByrur1mbl5a4i2NShAZveTgivTRxrIW-2I5Z_Drcv5NvgrPQcrUTu4u_M31Updfew=s96-rw',
+        icon: 'https://play-lh.googleusercontent.com/Z1f_1uaCTgQNPjTz7erPfKDjoSwsbIMcoAXU5MV5mI9_dkUsTP2I0Fha3NkKCZvydWatCPSoTCGzFYCguXUL3CQ=s96-rw',
         dataAiHint: 'barbarian character',
         category: 'Games',
         shortDescription: 'Join millions of players worldwide as you build your village, raise a clan, and compete in epic Clan Wars!',
@@ -491,8 +492,8 @@ export const communityApps: CommunityApp[] = [
         estimatedTime: '20-30 min',
         playStoreUrl: 'https://play.google.com/store/apps/details?id=com.supercell.clashofclans',
         screenshots: [
-            { url: 'https://play-lh.googleusercontent.com/f-p-g-Y-g-X-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c=w526-h296-rw', alt: 'Clash of Clans Screenshot 1', dataAiHint: 'village base' },
-            { url: 'https://play-lh.googleusercontent.com/p-c-g-Y-g-X-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c=w526-h296-rw', alt: 'Clash of Clans Screenshot 2', dataAiHint: 'battle scene' }
+            { url: 'https://play-lh.googleusercontent.com/NedHTUnKlJffJLyfv86IyDqyCwTfUSvr_5KldNbeWaZgtNe-aWlqwglcGcvRn_awTPA=w1052-h592-rw', alt: 'Clash of Clans Screenshot 1', dataAiHint: 'village base' },
+            { url: 'https://play-lh.googleusercontent.com/jifDVIpK_477kQvBYnXknD4DtGAyzYhIM7zamo-QQdFDaT7uqQoCtljM5Bf_2DcixRlN=w1052-h592-rw', alt: 'Clash of Clans Screenshot 2', dataAiHint: 'battle scene' }
         ],
         testingInstructions: 'Participate in a Clan War. Attack an enemy base and check if the replay functionality works correctly. Report any visual glitches during the battle.',
         status: 'available',
@@ -500,7 +501,7 @@ export const communityApps: CommunityApp[] = [
     {
         id: 15,
         name: 'Google Photos',
-        icon: 'https://play-lh.googleusercontent.com/pZqmEG309a-32Cpfb9g7sA59oHSu2-aOf2y2d0VBAqvw3UfQf2a-5Ea6sL-G90hUvA=s96-rw',
+        icon: 'https://play-lh.googleusercontent.com/ZyWNGIfzUyoajtFcD7NhMksHEZh37f-MkHVGr5Yfefa-IX7yj9SMfI82Z7a2wpdKCA=w480-h960-rw',
         dataAiHint: 'pinwheel colorful',
         category: 'Photos & Video',
         shortDescription: 'Google Photos is the home for all your photos and videos, automatically organized and easy to share.',
@@ -509,8 +510,8 @@ export const communityApps: CommunityApp[] = [
         estimatedTime: '10-15 min',
         playStoreUrl: 'https://play.google.com/store/apps/details?id=com.google.android.apps.photos',
         screenshots: [
-            { url: 'https://play-lh.googleusercontent.com/v-V-I-q-g-Y-f-k-w-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c=w526-h296-rw', alt: 'Google Photos Screenshot 1', dataAiHint: 'photo gallery' },
-            { url: 'https://play-lh.googleusercontent.com/y-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z=w526-h296-rw', alt: 'Google Photos Screenshot 2', dataAiHint: 'photo editing' }
+            { url: 'https://play-lh.googleusercontent.com/txZg8DG_fuYDdhiH0haLYd6zHpokFpzXP9gb_3ljVHI8VeVzCkMy-YFZ9-fxXM_cHuwl=w1052-h592-rw', alt: 'Google Photos Screenshot 1', dataAiHint: 'photo gallery' },
+            { url: 'https://play-lh.googleusercontent.com/-dmhCalMOHT7z0RyDFaMuSUy3C6dSoWQfJuyvgJiu0m6hCKhoP-iSm7o7Hrfcyucm2E=w1052-h592-rw', alt: 'Google Photos Screenshot 2', dataAiHint: 'photo editing' }
         ],
         testingInstructions: 'Use the "Memories" feature. View a few memories and try to customize one by adding or removing photos. Ensure the changes are saved correctly.',
         status: 'ongoing',
@@ -519,7 +520,7 @@ export const communityApps: CommunityApp[] = [
     {
         id: 16,
         name: 'Uber',
-        icon: 'https://play-lh.googleusercontent.com/r_t2KjSAI2Hh1B3i4V2G7lD0erYx0c7Qyv2U044_y0JfeZCCDjE-1lBIv_ZlqTZnzQ=s96-rw',
+        icon: 'https://play-lh.googleusercontent.com/AQtSF5Sl18yp3mQ2tcbOrBLekb7cyP3kyg5BB1uUuc55zfcnbkCDLHFTBwZfYiu1aDI=w480-h960-rw',
         dataAiHint: 'black app icon',
         category: 'Travel & Local',
         shortDescription: 'We’re committed to your safety at Uber. We’ve established a Door-to-Door Safety Standard to help you feel safe every time you ride.',
@@ -528,8 +529,8 @@ export const communityApps: CommunityApp[] = [
         estimatedTime: '5-10 min',
         playStoreUrl: 'https://play.google.com/store/apps/details?id=com.ubercab',
         screenshots: [
-            { url: 'https://play-lh.googleusercontent.com/g-I-j-Y-g-X-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c=w526-h296-rw', alt: 'Uber Screenshot 1', dataAiHint: 'map with car' },
-            { url: 'https://play-lh.googleusercontent.com/Y-g-X-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c=w526-h296-rw', alt: 'Uber Screenshot 2', dataAiHint: 'ride options' }
+            { url: 'https://play-lh.googleusercontent.com/JWzREHRyz1VttPQfiKXlMRYOAvz78h6SY_1RUoDjJvW4ClVYoHEZA3tkJ_1RaFe2JA=w1052-h592-rw', alt: 'Uber Screenshot 1', dataAiHint: 'map with car' },
+            { url: 'https://play-lh.googleusercontent.com/cZUMicgTrQQkFashDnSRHl0yFl75_EAIJmCT6Sq6SeVbdh96ASMJBRAqZ0DLWBILWJ4=w1052-h592-rw', alt: 'Uber Screenshot 2', dataAiHint: 'ride options' }
         ],
         testingInstructions: 'Set a destination and view the different ride options (UberX, Comfort, etc.). Do not book a ride. Report any issues with the map display or price estimation.',
         status: 'available',
@@ -537,7 +538,7 @@ export const communityApps: CommunityApp[] = [
     {
         id: 17,
         name: 'LinkedIn',
-        icon: 'https://play-lh.googleusercontent.com/kMofEFLjobZy_bCuaiDogzBcUT-dz3BBbOrIEjJ-hqOabjK8ieuevGe6wlTD15QzOqw=s96-rw',
+        icon: 'https://play-lh.googleusercontent.com/kMofEFLjobZy_bCuaiDogzBcUT-dz3BBbOrIEjJ-hqOabjK8ieuevGe6wlTD15QzOqw=w480-h960-rw',
         dataAiHint: 'in logo blue',
         category: 'Social',
         shortDescription: 'Connect with your professional network, build your career, and find your next job.',
@@ -546,8 +547,8 @@ export const communityApps: CommunityApp[] = [
         estimatedTime: '15-20 min',
         playStoreUrl: 'https://play.google.com/store/apps/details?id=com.linkedin.android',
         screenshots: [
-            { url: 'https://play-lh.googleusercontent.com/p-I-j-Y-g-X-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c=w526-h296-rw', alt: 'LinkedIn Screenshot 1', dataAiHint: 'professional profile' },
-            { url: 'https://play-lh.googleusercontent.com/I-j-Y-g-X-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z=w526-h296-rw', alt: 'LinkedIn Screenshot 2', dataAiHint: 'professional network feed' }
+            { url: 'https://play-lh.googleusercontent.com/ERlslwKS3qgVxLm9KBkIPBg7JFexcing9c0oljWBZpdZb6gY_O5B08r_YqERKqdVUw=w1052-h592-rw', alt: 'LinkedIn Screenshot 1', dataAiHint: 'professional profile' },
+            { url: 'https://play-lh.googleusercontent.com/fzAm6QzzZ0BPmtLdgaL6Au1aQWoYvGPQ-KPP621JRcKcL5nNujyYDUhhww4KyxpTDA=w1052-h592-rw', alt: 'LinkedIn Screenshot 2', dataAiHint: 'professional network feed' }
         ],
         testingInstructions: 'Update a section of your profile (e.g., add a new skill). Check that the changes are reflected correctly across the app. Then, view a job posting and save it.',
         status: 'completed',
@@ -556,7 +557,7 @@ export const communityApps: CommunityApp[] = [
     {
         id: 18,
         name: 'Zoom',
-        icon: 'https://play-lh.googleusercontent.com/X6srKxT6nK7aOJ5vT5Y8AFpaFwJ5EaD2iQRHhB1-wsbCoGaQj_32hQWbS347vj2_0g=s96-rw',
+        icon: 'https://play-lh.googleusercontent.com/yZsmiNjmji3ZoOuLthoVvptLB9cZ0vCmitcky4OUXNcEFV3IEQkrBD2uu5kuWRF5_ERA=w480-h960-rw',
         dataAiHint: 'video camera icon',
         category: 'Business',
         shortDescription: 'Work from anywhere with a single app that combines team chat, phone, whiteboard, meetings, and more.',
@@ -565,8 +566,8 @@ export const communityApps: CommunityApp[] = [
         estimatedTime: '10-15 min',
         playStoreUrl: 'https://play.google.com/store/apps/details?id=us.zoom.videomeetings',
         screenshots: [
-            { url: 'https://play-lh.googleusercontent.com/I-j-Y-g-X-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z=w526-h296-rw', alt: 'Zoom Screenshot 1', dataAiHint: 'video conference call' },
-            { url: 'https://play-lh.googleusercontent.com/j-Y-g-X-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c=w526-h296-rw', alt: 'Zoom Screenshot 2', dataAiHint: 'meeting schedule' }
+            { url: 'https://play-lh.googleusercontent.com/cDeHHV-DBIdqrd7o--FYHbDjd845Uupm_lbCrSc-O7wSaHSjnsMo9CCzDHEQI3i9TnP-=w1052-h592-rw', alt: 'Zoom Screenshot 1', dataAiHint: 'video conference call' },
+            { url: 'https://play-lh.googleusercontent.com/wf50ibsSuh3Y74yhgSjp_sF5hQuaQC4qaad7Z5_xPG0BPwR6D8wWlwDgHVTo0-ikfw=w1052-h592-rw', alt: 'Zoom Screenshot 2', dataAiHint: 'meeting schedule' }
         ],
         testingInstructions: 'Start a new meeting with only yourself. Test the virtual background feature. Ensure that the background applies correctly and there is no significant performance drop.',
         status: 'available',
@@ -574,7 +575,7 @@ export const communityApps: CommunityApp[] = [
     {
         id: 19,
         name: 'Discord',
-        icon: 'https://play-lh.googleusercontent.com/0oO5sAneb9lJP6l8c6DH4aj6f85qNpplYpBYb3sfVTqk3SziUFCLhr21wGilD-iDpy2g=s96-rw',
+        icon: 'https://play-lh.googleusercontent.com/0oO5sAneb9lJP6l8c6DH4aj6f85qNpplQVHmPmbbBxAukDnlO7DarDW0b-kEIHa8SQ=s96-rw',
         dataAiHint: 'game controller logo',
         category: 'Communication',
         shortDescription: 'Discord is where you can make a home for your communities and friends. Where you can stay close and have fun over text, voice, and video.',
@@ -583,8 +584,8 @@ export const communityApps: CommunityApp[] = [
         estimatedTime: '20-25 min',
         playStoreUrl: 'https://play.google.com/store/apps/details?id=com.discord',
         screenshots: [
-            { url: 'https://play-lh.googleusercontent.com/p-I-j-Y-g-X-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c=w526-h296-rw', alt: 'Discord Screenshot 1', dataAiHint: 'chat server interface' },
-            { url: 'https://play-lh.googleusercontent.com/g-X-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z=w526-h296-rw', alt: 'Discord Screenshot 2', dataAiHint: 'voice channel' }
+            { url: 'https://play-lh.googleusercontent.com/zMi_TI6DqxBnylsqmO10TaKknp-su3HdHu5lpYQlxAUfTE13tAswW8KnB4UiUFCrH2s=w1052-h592-rw', alt: 'Discord Screenshot 1', dataAiHint: 'chat server interface' },
+            { url: 'https://play-lh.googleusercontent.com/LUbhjBDsItfhj8FnM3mDhekkaUCecqF6s49T2AyhgRyZsFijrw7lcKd74gM2E9ctGQ=w1052-h592-rw', alt: 'Discord Screenshot 2', dataAiHint: 'voice channel' }
         ],
         testingInstructions: 'Join a voice channel in a server. Test the noise suppression feature by enabling it and speaking with background noise. Report on its effectiveness.',
         status: 'available',
@@ -592,7 +593,7 @@ export const communityApps: CommunityApp[] = [
     {
         id: 20,
         name: 'Pinterest',
-        icon: 'https://play-lh.googleusercontent.com/dVsv8Hc4TOUeLFAahxR8L2jB_8vLgZETIZzXpcCktrd9ZNe0b-v_keLAo26G_7u62w=s96-rw',
+        icon: 'https://play-lh.googleusercontent.com/6CFQQ0b9r5fzF1v6f0gIirWsOGL7sGWkJifuUQxxhbCMcBx5aSG_cNXpjDKDn5c1jwjq=w480-h960-rw',
         dataAiHint: 'letter P red',
         category: 'Lifestyle',
         shortDescription: 'Pinterest is the place to explore inspiration. You can: Discover new ideas, save what inspires you, shop to make them yours, share what you love.',
@@ -601,8 +602,8 @@ export const communityApps: CommunityApp[] = [
         estimatedTime: '10-15 min',
         playStoreUrl: 'https://play.google.com/store/apps/details?id=com.pinterest',
         screenshots: [
-            { url: 'https://play-lh.googleusercontent.com/g-Y-g-X-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c=w526-h296-rw', alt: 'Pinterest Screenshot 1', dataAiHint: 'image grid feed' },
-            { url: 'https://play-lh.googleusercontent.com/Y-g-X-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c=w526-h296-rw', alt: 'Pinterest Screenshot 2', dataAiHint: 'pin detail view' }
+            { url: 'https://play-lh.googleusercontent.com/utDtGKlNK8rh0D0NN0exEvS-utQ2r_1se_sjVPYH31oIBcQo0bkooPFH1Dd9IMhGJ3UpFMJtPcVf-9wHoePQ3g=w1052-h592-rw', alt: 'Pinterest Screenshot 1', dataAiHint: 'image grid feed' },
+            { url: 'https://play-lh.googleusercontent.com/b7wC5dtsv1qdp-ys_GwoNNsvu2-CCFuntridk6sr13Wg_bX3r7UPKgOpWF9CXPzf36cdG1E06ID9EpKmxFSvyA=w1052-h592-rw', alt: 'Pinterest Screenshot 2', dataAiHint: 'pin detail view' }
         ],
         testingInstructions: 'Create a new board and save at least 5 pins to it. Test the "More ideas" section on the board to see if the suggestions are relevant.',
         status: 'available',
@@ -610,7 +611,7 @@ export const communityApps: CommunityApp[] = [
     {
         id: 21,
         name: 'Airbnb',
-        icon: 'https://play-lh.googleusercontent.com/1-hPxafOxdYpYZEOKzNIkSP43sZxMA0GvtEDHOTdnSP8VvDeAqCAMVSOIdwoWw5fMA=s96-rw',
+        icon: 'https://play-lh.googleusercontent.com/5ZOQbuxacVOWK6AM4Env-adyEWRUCJt0VrUl9bWKW4Z4qLSjJUBuMP8-dALMy9oWu530=w480-h960-rw',
         dataAiHint: 'pink abstract logo',
         category: 'Travel & Local',
         shortDescription: 'Book places to stay and things to do.',
@@ -619,8 +620,8 @@ export const communityApps: CommunityApp[] = [
         estimatedTime: '15-20 min',
         playStoreUrl: 'https://play.google.com/store/apps/details?id=com.airbnb.android',
         screenshots: [
-            { url: 'https://play-lh.googleusercontent.com/p-g-Y-g-X-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z=w526-h296-rw', alt: 'Airbnb Screenshot 1', dataAiHint: 'home rental listing' },
-            { url: 'https://play-lh.googleusercontent.com/c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c=w526-h296-rw', alt: 'Airbnb Screenshot 2', dataAiHint: 'map view with prices' }
+            { url: 'https://play-lh.googleusercontent.com/Os5RuUgRRPskSEWwMOCgySW7wxUIBYuTYEP5DRxQi7naVkqdZmTrpB1z3ERPN_1RqO_j=w1052-h592-rw', alt: 'Airbnb Screenshot 1', dataAiHint: 'home rental listing' },
+            { url: 'https://play-lh.googleusercontent.com/2QLnpUwoUtj9I3iTT0yd2nMJezAQD4YCk6FyCzsgrZTP74SgfxmE_Uyqs4fU7d4SlII=w1052-h592-rw', alt: 'Airbnb Screenshot 2', dataAiHint: 'map view with prices' }
         ],
         testingInstructions: 'Search for a stay in any city for a future date. Apply at least 3 filters (e.g., Wi-Fi, Kitchen, Price Range) and check if the results update correctly.',
         status: 'available',
@@ -628,7 +629,7 @@ export const communityApps: CommunityApp[] = [
     {
         id: 22,
         name: 'Microsoft OneDrive',
-        icon: 'https://play-lh.googleusercontent.com/6_SbV4MV-z-Y23DcwLaGgnqG9l6F2D40pW3h3b-A-1yXN8-_B3i00eD69-T5ThsWwA=s96-rw',
+        icon: 'https://play-lh.googleusercontent.com/6AWr-qrhGT0ohjw0koq3bM8GHEFg1gTurald4FjCDg2RulTp4y_VVsYWUtw7Fo6lsQo=s96-rw',
         dataAiHint: 'blue cloud',
         category: 'Productivity',
         shortDescription: 'Do more on the go with Microsoft OneDrive. Get to and share your documents, photos, and other files from your Android device.',
@@ -637,8 +638,8 @@ export const communityApps: CommunityApp[] = [
         estimatedTime: '10-15 min',
         playStoreUrl: 'https://play.google.com/store/apps/details?id=com.microsoft.skydrive',
         screenshots: [
-            { url: 'https://play-lh.googleusercontent.com/t-I-j-Y-g-X-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z=w526-h296-rw', alt: 'OneDrive Screenshot 1', dataAiHint: 'file browser' },
-            { url: 'https://play-lh.googleusercontent.com/I-j-Y-g-X-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z=w526-h296-rw', alt: 'OneDrive Screenshot 2', dataAiHint: 'photo view' }
+            { url: 'https://play-lh.googleusercontent.com/z_Fhk7tBiw-Uj0kdr3xC0PcpGrf8QNo3theULld7m_S5TiPGs82vU_gLYkiPyOjkew=w1052-h592-rw', alt: 'OneDrive Screenshot 1', dataAiHint: 'file browser' },
+            { url: 'https://play-lh.googleusercontent.com/6kpAhVXfEBoGHf3AF27S2lm99kUoA8p0X4Gjvphw4evsPE4aGO8iddyQjT0OwUQDE7xG=w1052-h592-rw', alt: 'OneDrive Screenshot 2', dataAiHint: 'photo view' }
         ],
         testingInstructions: 'Upload a photo to your OneDrive. Then, try to share the link to that photo with another app (e.g., messaging app). Report any issues with the sharing process.',
         status: 'ongoing',
@@ -647,7 +648,7 @@ export const communityApps: CommunityApp[] = [
     {
         id: 23,
         name: 'Audible',
-        icon: 'https://play-lh.googleusercontent.com/y3WECKV1-kOAyf22IobD9xXjLSnSgIrdh2eX6p3HhE7C2-oFp-rQBlH3G-wFsbk0Jg=s96-rw',
+        icon: 'https://play-lh.googleusercontent.com/pwzZK-7oQexraeU0mOrQgFIck-QSS89rH0eWjehctp8XskRSpixPNVlA0YYlRXHbA2Iz=w480-h960-rw',
         dataAiHint: 'orange app icon',
         category: 'Books & Reference',
         shortDescription: 'The home of storytelling. Find your next great listen. Audiobooks, podcasts, and exclusive Originals.',
@@ -656,8 +657,8 @@ export const communityApps: CommunityApp[] = [
         estimatedTime: '10-15 min',
         playStoreUrl: 'https://play.google.com/store/apps/details?id=com.audible.application',
         screenshots: [
-            { url: 'https://play-lh.googleusercontent.com/p-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c=w526-h296-rw', alt: 'Audible Screenshot 1', dataAiHint: 'audiobook player' },
-            { url: 'https://play-lh.googleusercontent.com/c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c=w526-h296-rw', alt: 'Audible Screenshot 2', dataAiHint: 'library view' }
+            { url: 'https://play-lh.googleusercontent.com/EbBpHZ0sYqgZ2c6lbtldTrpnL2kL2fbI9aZjxodLi3p9shnIyRsoPOfK9ueieK4P6s4=w1052-h592-rw', alt: 'Audible Screenshot 1', dataAiHint: 'audiobook player' },
+            { url: 'https://play-lh.googleusercontent.com/MdfmlSGUqETv3zLRTDflkFY5IG-70dGBUFNYarO4wEl9mqbAczJyr16pO3CZF0V5Mw8=w1052-h592-rw', alt: 'Audible Screenshot 2', dataAiHint: 'library view' }
         ],
         testingInstructions: 'Listen to a sample of any audiobook. Test the sleep timer feature by setting it for 5 minutes. Verify that the playback stops after the set time.',
         status: 'available',
@@ -665,7 +666,7 @@ export const communityApps: CommunityApp[] = [
     {
         id: 24,
         name: 'Google Maps',
-        icon: 'https://play-lh.googleusercontent.com/Kf8WTct65hFJxBUDm5E-EpYsiDoLpdqCAQMh5U421C2de1HsoHcaA4UGFd1MOVEBA9Y=s96-rw',
+        icon: 'https://play-lh.googleusercontent.com/Kf8WTct65hFJxBUDm5E-EpYsiDoLQiGGbnuyP6HBNax43YShXti9THPon1YKB6zPYpA=w480-h960-rw',
         dataAiHint: 'map pin icon',
         category: 'Travel & Local',
         shortDescription: 'Navigate your world faster and easier with Google Maps. Over 220 countries and territories mapped and hundreds of millions of businesses and places on the map.',
@@ -674,8 +675,8 @@ export const communityApps: CommunityApp[] = [
         estimatedTime: '10-15 min',
         playStoreUrl: 'https://play.google.com/store/apps/details?id=com.google.android.apps.maps',
         screenshots: [
-            { url: 'https://play-lh.googleusercontent.com/g-I-j-Y-g-X-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z=w526-h296-rw', alt: 'Google Maps Screenshot 1', dataAiHint: 'navigation view' },
-            { url: 'https://play-lh.googleusercontent.com/I-j-Y-g-X-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z=w526-h296-rw', alt: 'Google Maps Screenshot 2', dataAiHint: 'explore places' }
+            { url: 'https://play-lh.googleusercontent.com/s06uBXcm9aDF3xQsgFGuaMgtqEbeJi1WBw0P1mFYKPoBCiVTCv7DoW5RYXLEYNK_mRPp=w1052-h592-rw', alt: 'Google Maps Screenshot 1', dataAiHint: 'navigation view' },
+            { url: 'https://play-lh.googleusercontent.com/UnOWNTXSmmaaQP2bFAnOZo0G77yUcauw_ce5RxoOIEAqjlLHmaIO8v8gxlEemuU14_U=w1052-h592-rw', alt: 'Google Maps Screenshot 2', dataAiHint: 'explore places' }
         ],
         testingInstructions: 'Find directions to a location using public transit. Check if the app provides multiple route options and accurate departure times. Report any discrepancies.',
         status: 'completed',
@@ -684,7 +685,7 @@ export const communityApps: CommunityApp[] = [
     {
         id: 25,
         name: 'Twitch',
-        icon: 'https://play-lh.googleusercontent.com/QLQzL-MXtxKEDlbhrQLmafUoFDOhYQjoLeJ5kfqSEEuDk-rptK_b5scLW33U32S_cAs=s96-rw',
+        icon: 'https://play-lh.googleusercontent.com/Y6epalNGUKPgWyQpDCgVL621EgmOmXBWfQoJdaM8v0irKWEII5bEDvpaWp7Mey2MVg=w480-h960-rw',
         dataAiHint: 'purple chat bubble',
         category: 'Entertainment',
         shortDescription: 'Twitch is where millions of people come together live every day to chat, interact, and make their own entertainment together.',
@@ -693,8 +694,8 @@ export const communityApps: CommunityApp[] = [
         estimatedTime: '15-20 min',
         playStoreUrl: 'https://play.google.com/store/apps/details?id=tv.twitch.android.app',
         screenshots: [
-            { url: 'https://play-lh.googleusercontent.com/p-I-j-Y-g-X-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z=w526-h296-rw', alt: 'Twitch Screenshot 1', dataAiHint: 'live stream view' },
-            { url: 'https://play-lh.googleusercontent.com/j-Y-g-X-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c=w526-h296-rw', alt: 'Twitch Screenshot 2', dataAiHint: 'channel page' }
+            { url: 'https://play-lh.googleusercontent.com/sSTOCmOjUM98O7Cx9ScaaNevgl3MT8vGqQ8J793xckZORDKGC3DYLVEQCNAwErWcSNg=w1052-h592-rw', alt: 'Twitch Screenshot 1', dataAiHint: 'live stream view' },
+            { url: 'https://play-lh.googleusercontent.com/Pe2oAtIT8__GC7t_DSBHDySeRTsXtWDeasIJRYHRkppgTFlZZqwk7y-thE0GYctRCTk=w1052-h592-rw', alt: 'Twitch Screenshot 2', dataAiHint: 'channel page' }
         ],
         testingInstructions: 'Watch a live stream and try using Channel Points to redeem a reward. Verify that the reward activates correctly and your points balance is updated.',
         status: 'available',
@@ -702,7 +703,7 @@ export const communityApps: CommunityApp[] = [
     {
         id: 26,
         name: 'Shazam',
-        icon: 'https://play-lh.googleusercontent.com/UIWRH-4o9NnsV-G29s4cK1sg1pM2sBw7D9zV2a4R2q3joVqg4ignrYgPj2P-tujWzQ=s96-rw',
+        icon: 'https://play-lh.googleusercontent.com/mwTU9-4NX-_QlATb6lILSinKI47wAtOM38GjPYRPQSsQOG2hVRY4h9OfEhDxpf8ADQ=w480-h960-rw',
         dataAiHint: 'blue s logo',
         category: 'Music & Audio',
         shortDescription: 'Shazam will identify any song in seconds. Discover, artists, lyrics, videos & playlists, all for free.',
@@ -711,8 +712,8 @@ export const communityApps: CommunityApp[] = [
         estimatedTime: '5-10 min',
         playStoreUrl: 'https://play.google.com/store/apps/details?id=com.shazam.android',
         screenshots: [
-            { url: 'https://play-lh.googleusercontent.com/I-j-Y-g-X-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z=w526-h296-rw', alt: 'Shazam Screenshot 1', dataAiHint: 'song identification screen' },
-            { url: 'https://play-lh.googleusercontent.com/j-Y-g-X-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c=w526-h296-rw', alt: 'Shazam Screenshot 2', dataAiHint: 'song details page' }
+            { url: 'https://play-lh.googleusercontent.com/RmO2rsRpDZn_t4gvHS0AovZvm0Bf6wwsIDvPjGoKGhCbKBRvZuFOdqNiegftaopKuJUo=w1052-h592-rw', alt: 'Shazam Screenshot 1', dataAiHint: 'song identification screen' },
+            { url: 'https://play-lh.googleusercontent.com/r2aQs5r_jnqEc1DQCRnfPjEhpH_Adqw60we7kReYylUssw23xN9c95MdxkiNcFYbOA=w1052-h592-rw', alt: 'Shazam Screenshot 2', dataAiHint: 'song details page' }
         ],
         testingInstructions: 'Identify a song by playing music from another device. After identification, check if the lyrics are available and sync correctly with the song.',
         status: 'available',
@@ -720,7 +721,7 @@ export const communityApps: CommunityApp[] = [
     {
         id: 27,
         name: 'Telegram',
-        icon: 'https://play-lh.googleusercontent.com/ZU9cSsyIJZo6Oy7HTHiEPwZg0m2vpsEJcBQCqJK__HiptDRG9ZNlueaeXzRyLxcEA_w=s96-rw',
+        icon: 'https://play-lh.googleusercontent.com/ZU9cSsyIJZo6Oy7HTHiEPwZg0m2Crep-d5ZrfajqtsH-qgUXSqKpNA2FpPDTn-7qA5Q=w480-h960-rw',
         dataAiHint: 'paper airplane icon',
         category: 'Communication',
         shortDescription: 'Telegram is a messaging app with a focus on speed and security, it’s super-fast, simple and free.',
@@ -729,8 +730,8 @@ export const communityApps: CommunityApp[] = [
         estimatedTime: '10-15 min',
         playStoreUrl: 'https://play.google.com/store/apps/details?id=org.telegram.messenger',
         screenshots: [
-            { url: 'https://play-lh.googleusercontent.com/p-g-Y-g-X-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z=w526-h296-rw', alt: 'Telegram Screenshot 1', dataAiHint: 'chat interface' },
-            { url: 'https://play-lh.googleusercontent.com/c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c=w526-h296-rw', alt: 'Telegram Screenshot 2', dataAiHint: 'channel view' }
+            { url: 'https://play-lh.googleusercontent.com/wlwY1vowGxTrvQMRDHJD21iYBG7S_E09QbKPY-L6dqEc4UxCi0fDQiNuCBonFYED1yU=w1052-h592-rw', alt: 'Telegram Screenshot 1', dataAiHint: 'chat interface' },
+            { url: 'https://play-lh.googleusercontent.com/NaeXtT-aGP9_R8LROs3XyWVc6eU7sxYuuywNwg3c99AjRtj6cCoPaJynhP0t8uynF6hm=w1052-h592-rw', alt: 'Telegram Screenshot 2', dataAiHint: 'channel view' }
         ],
         testingInstructions: 'Create a new sticker pack by uploading an image. Ensure the sticker is created successfully and can be sent in a chat.',
         status: 'ongoing',
@@ -739,7 +740,7 @@ export const communityApps: CommunityApp[] = [
     {
         id: 28,
         name: 'Signal Private Messenger',
-        icon: 'https://play-lh.googleusercontent.com/y-3mZQRqTjW23H-pbtT0601fR2c2n84QLxGvI1g0iKPlh6y3JqXAPXv2nJt-AdHywA=s96-rw',
+        icon: 'https://play-lh.googleusercontent.com/FtGKSwVtpmMxKoJrJuI837DkYGRsqlMdiVPAd8bomLQZ3_Hc55XokY_dYdXKgGagiYs=w480-h960-rw',
         dataAiHint: 'blue chat bubble',
         category: 'Communication',
         shortDescription: 'Millions of people use Signal every day for free and instantaneous communication anywhere in the world.',
@@ -748,57 +749,91 @@ export const communityApps: CommunityApp[] = [
         estimatedTime: '10-15 min',
         playStoreUrl: 'https://play.google.com/store/apps/details?id=org.thoughtcrime.securesms',
         screenshots: [
-            { url: 'https://play-lh.googleusercontent.com/I-j-Y-g-X-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z=w526-h296-rw', alt: 'Signal Screenshot 1', dataAiHint: 'encrypted chat' },
-            { url: 'https://play-lh.googleusercontent.com/j-Y-g-X-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c-v-z-c=w526-h296-rw', alt: 'Signal Screenshot 2', dataAiHint: 'group call' }
+            { url: 'https://play-lh.googleusercontent.com/xRXui7PTkU-MrsnbuCPc0Y1ThX5uDUA-i0J5HGIxTM53aVL7ea_QdyO4jz8qXhNZODpu=w1052-h592-rw', alt: 'Signal Screenshot 1', dataAiHint: 'encrypted chat' },
+            { url: 'https://play-lh.googleusercontent.com/oWgzBb5N9ktqX0VQRHwoZsLRDt4CTvhv-lCE30PUemIKm12kdFpYVa5z4Zs2XDkMFI8=w1052-h592-rw', alt: 'Signal Screenshot 2', dataAiHint: 'group call' }
         ],
         testingInstructions: 'Send a disappearing message with a custom timer. Verify that the message disappears for both you and the recipient after the timer expires.',
         status: 'available',
     },
 ];
 
+export const professionalPathFeatures: string[] = [
+    "14-Day Testing Cycle",
+    "20+ Vetted Testers",
+    "Managed by inTesters Team",
+    "Detailed Bug Reports",
+    "Device & OS Coverage Stats",
+    "Google Play Compliance Check",
+];
+
+
 export const pointsPackages: PointsPackage[] = [
     {
         name: "Booster",
-        price: 499,
-        points: 500,
-        description: "Perfect for a quick test cycle for a small app or feature.",
-        features: ["Fund one small project", "Basic bug reports", "Community support"],
-        pricePerPoint: 499 / 500
+        price: 699,
+        points: 1,
+        description: "Perfect for a single app.",
     },
     {
         name: "Accelerator",
-        price: 1999,
-        points: 2500,
-        description: "Great for medium-sized projects or a few rounds of testing.",
-        features: ["Fund multiple test cycles", "More detailed reports", "Priority in queue"],
-        pricePerPoint: 1999 / 2500
+        price: 1799,
+        points: 5,
+        description: "Great value for teams.",
     },
     {
         name: "Launchpad",
-        price: 4999,
-        points: 7500,
-        description: "Ideal for large apps or extensive pre-launch testing.",
-        features: ["Sufficient for major releases", "Highest queue priority", "Dedicated community manager"],
-        pricePerPoint: 4999 / 7500
+        price: 2899,
+        points: 10,
+        description: "For agencies & enterprises.",
+    }
+];
+
+export const generalFaqs: FaqItem[] = [
+    {
+        question: "What is inTesters?",
+        answer: "inTesters is a platform designed to help Android developers meet the Google Play Store's requirement of having their app tested by at least 20 people for 14 days. We offer two paths: a free, community-driven approach and a paid, professional service."
+    },
+    {
+        question: "Who is inTesters for?",
+        answer: "inTesters is for any Android developer, from solo indie devs to large companies, who need to fulfill Google's pre-launch testing requirements quickly and efficiently."
+    },
+     {
+        question: "How do I get started?",
+        answer: "Just sign up for a free account! From there, you can choose your path. You can start testing other apps to earn points via the Community Hub, or you can purchase a package and submit your app for professional testing via the Developer Dashboard."
+    }
+];
+
+export const communityFaqs: FaqItem[] = [
+    {
+        question: "How does the 'Community Path' work?",
+        answer: "It's a reciprocal ecosystem. You test apps submitted by other community members. For each valid test you complete, you earn points. You must have enough points to submit your own app for free testing by the community."
+    },
+    {
+        question: "Is the Community Path really free?",
+        answer: "Yes, in terms of money. It requires your time and effort to test other apps, which is how you contribute to the community and earn your own testing credits (points). You cannot buy points for community testing; they must be earned."
+    },
+    {
+        question: "What kind of feedback can I expect from the community?",
+        answer: "You'll receive feedback from a diverse range of real users on real devices. This often uncovers usability issues, device-specific bugs, and general feedback that you might not find in a controlled environment."
     }
 ];
 
 export const pricingFaqs: FaqItem[] = [
     {
-        question: "What can I use points for?",
-        answer: "Points are the currency of inTesters. You use them to 'pay' community members for testing your app. The more points you offer for your project, the more attractive it is to testers, and the faster you'll likely receive feedback."
+        question: "What is a Professional Testing Package?",
+        answer: "A package is what you buy to get one app fully tested by our professional, vetted QA team. It covers one complete testing cycle (14 days, 20+ testers) to meet Google's requirements. This is separate from the community points system."
     },
     {
-        question: "Do my purchased points expire?",
-        answer: "No, your points never expire. You can use them whenever you're ready to start a new testing cycle for your app."
+        question: "Do my purchased packages expire?",
+        answer: "No, your packages never expire. You can use them whenever you're ready to start a new professional testing cycle for an app."
     },
     {
-        question: "What's the difference between earning and buying points?",
-        answer: "Earning points is free—you contribute your time and skill by testing other apps. Buying points is a shortcut that lets you fund your projects immediately without having to test other apps first. It's perfect for when you're on a tight deadline."
+        question: "What is the difference between packages and points?",
+        answer: "Packages are purchased for the Professional Path to have our team test your app. Points are earned for free on the Community Path by testing other apps, and are used to have the community test your app. They are two separate systems."
     },
     {
-        question: "Can I get a refund on purchased points?",
-        answer: "Points that have not been spent on a testing project are eligible for a refund within 14 days of purchase. Please contact our support team for assistance."
+        question: "Can I get a refund on purchased packages?",
+        answer: "Unused packages are eligible for a refund within 14 days of purchase. Please contact our support team for assistance."
     }
 ];
 
@@ -880,7 +915,7 @@ export const projects: Project[] = [
       id: 1,
       name: "Canva",
       packageName: "com.canva.editor",
-      icon: "https://play-lh.googleusercontent.com/3_f3P-6o76y_R3IMSvEAnwe0-3-U9d_AFbTJSbifHCr20NlT0vj1V-r8-aUEg2z_4A=s96-rw",
+      icon: "https://play-lh.googleusercontent.com/3aWGqSf3T_p3F6wc8FFvcZcnjWlxpZdNaqFVEvPwQ1gTOPkVoZwq6cYvfK9eCkwCXbRY=s96-rw",
       dataAiHint: "design logo",
       status: "In Testing",
       testersStarted: 14,
@@ -915,7 +950,7 @@ export const projects: Project[] = [
       id: 2,
       name: "Figma",
       packageName: "com.figma.mirror",
-      icon: "https://play-lh.googleusercontent.com/y5NkHwARz7i_n1s-9X4h8gADg5y-2i24-cgJjDL1-hVIgJIL1L8m-98Yy18h-h2xUoM=s96-rw",
+      icon: "https://play-lh.googleusercontent.com/hoVBnPBRehmXsCqESLXRH2E3OTxklkwKZlb1psn7imm0VUSobn2nevS9RRFWb9GM4-o=s96-rw",
       dataAiHint: "geometric shapes",
       status: "In Testing",
       testersStarted: 12,
@@ -950,7 +985,7 @@ export const projects: Project[] = [
       id: 3,
       name: "Slack",
       packageName: "com.Slack",
-      icon: "https://play-lh.googleusercontent.com/lV1itd-iif4I-6w0l29-03csI0QYpY9b0Kj3o3F-4z7cwsI6K20rZkOY0pIUNeAABg=s96-rw",
+      icon: "https://play-lh.googleusercontent.com/mzJpTCsTW_FuR6YqOPaLHrSEVCSJuXzCljdxnCKhVZMcu6EESZBQTCHxMh8slVtnKqo=w480-h960-rw",
       dataAiHint: "colorful hash",
       status: "Completed",
       testersStarted: 20,
@@ -983,7 +1018,7 @@ export const projects: Project[] = [
       id: 6,
       name: "Asana",
       packageName: "com.asana.app",
-      icon: "https://play-lh.googleusercontent.com/s_2334grImpi1J5Wr1p9s-0x2w9p50kNOu5Mw0YJcsW0Y2DO5ZasifL25sB2ORWBxQ=s96-rw",
+      icon: "https://play-lh.googleusercontent.com/SWbS8z3NqFVHCEQc_6l-ZDdDj5qPGrWSK8hEWRSPHYm9s8958y6nTnoLolVHXlgKfXw=s96-rw",
       dataAiHint: "three dots logo",
       status: "In Review",
       testersStarted: 0,
@@ -1003,10 +1038,33 @@ export const projects: Project[] = [
       chartData: []
     },
     {
+      id: 7,
+      name: "Brain Waves - Binaural Beats",
+      packageName: "net.luizmello.brainwaves",
+      icon: "https://play-lh.googleusercontent.com/VH5xLXzIfJadh3Wfb5s7GMq5kfpGsib8qfu1Qexu-P84klFc4s5AMbNC4Gp-BXhrg1s=w480-h960-rw",
+      dataAiHint: "sound wave",
+      status: "Draft",
+      testersStarted: 0,
+      testersCompleted: 0,
+      totalDays: 0,
+      avgTestersPerDay: 0,
+      startedFrom: "N/A",
+      description: "With this app, you can easily generate pure tones that help stimulate focus, meditation, or deep relaxation.",
+      reviewNotes: "Submission is incomplete.",
+      crashFreeRate: 100,
+      feedbackBreakdown: { total: 0, critical: 0, high: 0, low: 0 },
+      performanceMetrics: { avgStartupTime: "N/A", frozenFrames: "N/A" },
+       deviceCoverage: [],
+      osCoverage: [],
+       topGeographies: [],
+      feedback: [],
+      chartData: []
+    },
+    {
       id: 4,
       name: "Google Wallet",
       packageName: "com.google.android.apps.walletnfcrel",
-      icon: "https://play-lh.googleusercontent.com/PymMg-2X7d-l-N-3lofsH_bGOJ2k8Cj-hM2WJp-5K2z-MIs-2-X91wB29-o7n_EwYg=s96-rw",
+      icon: "https://play-lh.googleusercontent.com/DHBlQKvUNbopIS-VjQb3fUKQ_QH0Em-Q66AwG6LwD1Sach3lUvEWDb6hh8xNvKGmctU=w480-h960-rw",
       dataAiHint: "colorful wallet",
       status: "Completed",
       testersStarted: 15,
@@ -1036,7 +1094,7 @@ export const projects: Project[] = [
       id: 5,
       name: "Trello",
       packageName: "com.trello",
-      icon: "https://play-lh.googleusercontent.com/y4__fJ8K9y4l_G6LSb0s-1hsvNBb8XJ3vrf_f3i5mYp2l3gH2-Sj-cs-2KFaGq4bGA=s96-rw",
+      icon: "https://play-lh.googleusercontent.com/Tt-6ZaQDUAjfSNSeLz4XyYkPsEQfVVp0lBtwrnuyqubhCna0LKu5OZxKgegBJIrEhz8=s96-rw",
       dataAiHint: "blue squares",
       status: "Archived",
       testersStarted: 25,
@@ -1108,6 +1166,10 @@ export const projects: Project[] = [
       }
     })
   ]
+    
+
+
+
     
 
 

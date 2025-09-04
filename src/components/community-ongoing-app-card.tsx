@@ -12,6 +12,9 @@ interface CommunityOngoingAppCardProps {
 }
 
 export function CommunityOngoingAppCard({ app }: CommunityOngoingAppCardProps) {
+    const totalDays = 14;
+    const daysCompleted = Math.floor(totalDays * (app.progress || 0) / 100);
+
     return (
         <Link href={`/community-dashboard/test/${app.id}/ongoing`} className="group block">
             <Card className="flex flex-col h-full overflow-hidden rounded-2xl transition-all duration-300 group-hover:shadow-lg group-hover:-translate-y-1 border-0">
@@ -42,7 +45,7 @@ export function CommunityOngoingAppCard({ app }: CommunityOngoingAppCardProps) {
                     <div className='w-full'>
                         <div className="flex justify-between items-center text-xs text-muted-foreground mb-1">
                             <span>Progress</span>
-                            <span>{app.progress}%</span>
+                            <span>{daysCompleted} / {totalDays} days</span>
                         </div>
                         <Progress value={app.progress} className="h-2" />
                     </div>

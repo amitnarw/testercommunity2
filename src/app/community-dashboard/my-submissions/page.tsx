@@ -14,6 +14,7 @@ import Image from 'next/image';
 import { cn } from '@/lib/utils';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Separator } from '@/components/ui/separator';
+import { BackButton } from '@/components/back-button';
 
 const PROJECTS_PER_PAGE = 6;
 
@@ -41,12 +42,13 @@ const ProjectCard = ({ project }: { project: Project }) => {
                         <CardTitle className="text-base">{project.name}</CardTitle>
                         <p className="text-xs text-muted-foreground">{project.packageName}</p>
                     </div>
-                     <ArrowRight className="absolute top-4 right-4 text-muted-foreground/30 transition-all duration-300 group-hover:text-primary group-hover:translate-x-1 group-hover:-translate-y-1" size={20} />
+                    <ArrowRight className="absolute top-4 right-4 text-muted-foreground/30 transition-all duration-300 group-hover:text-primary group-hover:translate-x-1 group-hover:-translate-y-1" size={20} />
                 </CardHeader>
-                <CardContent className="p-5 pt-0 flex-grow">
-                   <p className="text-sm text-muted-foreground h-12 line-clamp-2">{project.description}</p>
+                <CardContent className="p-5 pt-0 flex-grow relative">
+                    <p className="text-sm text-muted-foreground line-clamp-3">{project.description}</p>
+                    <div className="absolute bottom-0 left-0 right-0 h-8 bg-gradient-to-t from-background to-transparent"></div>
                 </CardContent>
-                <CardFooter className="p-3 bg-secondary/50 m-2 rounded-lg">
+                <CardFooter className="p-3 bg-secondary/50 m-2 rounded-lg mt-auto">
                     <div className="flex items-center gap-2">
                         <div className={cn("p-1.5 rounded-full bg-background", statusConfig.className)}>
                             {statusConfig.icon}
@@ -60,18 +62,18 @@ const ProjectCard = ({ project }: { project: Project }) => {
                     </div>
                 </CardFooter>
             </Link>
-         </Card>
+        </Card>
     );
 }
 
 const EmptyState = () => (
     <div className="col-span-full text-center py-20 bg-background rounded-2xl">
-         <FileClock className="mx-auto h-12 w-12 text-muted-foreground" />
-         <h3 className="mt-4 text-lg font-semibold">No Submissions Here</h3>
-         <p className="mt-2 text-sm text-muted-foreground">Submit your first app to get it tested by the community.</p>
-         <Button asChild className="mt-6">
+        <FileClock className="mx-auto h-12 w-12 text-muted-foreground" />
+        <h3 className="mt-4 text-lg font-semibold">No Submissions Here</h3>
+        <p className="mt-2 text-sm text-muted-foreground">Submit your first app to get it tested by the community.</p>
+        <Button asChild className="mt-6">
             <Link href="/community-dashboard/submit">Submit Your First App</Link>
-         </Button>
+        </Button>
     </div>
 );
 
@@ -96,36 +98,36 @@ const PaginatedProjectList = ({ projects }: { projects: Project[] }) => {
             ) : (
                 <EmptyState />
             )}
-             {totalPages > 1 && (
+            {totalPages > 1 && (
                 <Pagination className="mt-12">
-                <PaginationContent>
-                    <PaginationItem>
-                        <PaginationPrevious 
-                            href="#" 
-                            onClick={(e) => { e.preventDefault(); handlePageChange(currentPage - 1); }}
-                            className={currentPage === 1 ? 'pointer-events-none opacity-50' : undefined}
-                        />
-                    </PaginationItem>
-                    {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
-                        <PaginationItem key={page}>
-                            <PaginationLink 
-                                href="#" 
-                                isActive={currentPage === page}
-                                onClick={(e) => { e.preventDefault(); handlePageChange(page); }}
-                            >
-                                {page}
-                            </PaginationLink>
+                    <PaginationContent>
+                        <PaginationItem>
+                            <PaginationPrevious
+                                href="#"
+                                onClick={(e) => { e.preventDefault(); handlePageChange(currentPage - 1); }}
+                                className={currentPage === 1 ? 'pointer-events-none opacity-50' : undefined}
+                            />
                         </PaginationItem>
-                    ))}
-                    <PaginationItem>
-                        <PaginationNext 
-                            href="#" 
-                            onClick={(e) => { e.preventDefault(); handlePageChange(currentPage + 1); }}
-                            className={currentPage === totalPages ? 'pointer-events-none opacity-50' : undefined}
-                        />
-                    </PaginationItem>
-                </PaginationContent>
-            </Pagination>
+                        {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
+                            <PaginationItem key={page}>
+                                <PaginationLink
+                                    href="#"
+                                    isActive={currentPage === page}
+                                    onClick={(e) => { e.preventDefault(); handlePageChange(page); }}
+                                >
+                                    {page}
+                                </PaginationLink>
+                            </PaginationItem>
+                        ))}
+                        <PaginationItem>
+                            <PaginationNext
+                                href="#"
+                                onClick={(e) => { e.preventDefault(); handlePageChange(currentPage + 1); }}
+                                className={currentPage === totalPages ? 'pointer-events-none opacity-50' : undefined}
+                            />
+                        </PaginationItem>
+                    </PaginationContent>
+                </Pagination>
             )}
         </>
     );
@@ -133,41 +135,43 @@ const PaginatedProjectList = ({ projects }: { projects: Project[] }) => {
 
 
 export default function MySubmissionsPage() {
-  const inReviewApps = allProjects.filter(p => p.status === "In Review");
-  const publishedApps = allProjects.filter(p => ["In Testing", "Completed"].includes(p.status));
+    const inReviewApps = allProjects.filter(p => p.status === "In Review");
+    const publishedApps = allProjects.filter(p => ["In Testing", "Completed"].includes(p.status));
 
-  return (
-    <>
-      <div className="min-h-screen bg-secondary/50">
-        <div className="container mx-auto px-4 md:px-6 py-12">
-          <header className="mb-8 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-            <div>
-              <h1 className="text-4xl font-bold">My Submissions</h1>
-              <p className="text-muted-foreground">Track the progress of apps you've submitted for community testing.</p>
+    return (
+        <>
+            <div className="min-h-screen bg-secondary/50">
+                <div className="container mx-auto px-4 md:px-6">
+                    <header className="mb-8 pt-1">
+                        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                            <div className='flex flex-row gap-4 items-center justify-center'>
+                                <BackButton href="/community-dashboard" />
+                                <h1 className="text-xl font-bold">My Submissions</h1>
+                            </div>
+                            <Button asChild className='bg-gradient-to-b from-primary to-primary/40 text-primary-foreground'>
+                                <Link href="/community-dashboard/submit">
+                                    <PlusCircle className="mr-2 h-4 w-4" /> Submit a New App
+                                </Link>
+                            </Button>
+                        </div>
+                    </header>
+
+                    <main>
+                        <Tabs defaultValue="in-review" className="w-full">
+                            <TabsList className="grid w-full grid-cols-2">
+                                <TabsTrigger value="in-review">In Review ({inReviewApps.length})</TabsTrigger>
+                                <TabsTrigger value="published">Published ({publishedApps.length})</TabsTrigger>
+                            </TabsList>
+                            <TabsContent value="in-review" className="mt-6">
+                                <PaginatedProjectList projects={inReviewApps} />
+                            </TabsContent>
+                            <TabsContent value="published" className="mt-6">
+                                <PaginatedProjectList projects={publishedApps} />
+                            </TabsContent>
+                        </Tabs>
+                    </main>
+                </div>
             </div>
-            <Button asChild>
-                <Link href="/community-dashboard/submit">
-                  <PlusCircle className="mr-2 h-4 w-4" /> Submit a New App
-                </Link>
-            </Button>
-          </header>
-
-          <main>
-              <Tabs defaultValue="in-review" className="w-full">
-                <TabsList className="grid w-full grid-cols-2">
-                    <TabsTrigger value="in-review">In Review ({inReviewApps.length})</TabsTrigger>
-                    <TabsTrigger value="published">Published ({publishedApps.length})</TabsTrigger>
-                </TabsList>
-                <TabsContent value="in-review" className="mt-6">
-                    <PaginatedProjectList projects={inReviewApps} />
-                </TabsContent>
-                <TabsContent value="published" className="mt-6">
-                    <PaginatedProjectList projects={publishedApps} />
-                </TabsContent>
-              </Tabs>
-          </main>
-        </div>
-      </div>
-    </>
-  )
+        </>
+    )
 }

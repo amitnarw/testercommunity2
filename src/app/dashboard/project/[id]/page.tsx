@@ -3,12 +3,11 @@
 
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
-import Link from 'next/link';
 import { projects } from '@/lib/data';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { ArrowLeft, Bug, CheckCircle, Clock, Users, MessageSquare, Star, Smartphone, BarChart, MapPin, LayoutGrid, List, Copy, ExternalLink, User, Info,ClipboardList } from 'lucide-react';
+import { Bug, CheckCircle, Clock, Users, MessageSquare, Star, Smartphone, BarChart, MapPin, LayoutGrid, List, Copy, ExternalLink, User, Info,ClipboardList } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
 import {
   Table,
@@ -28,6 +27,7 @@ import { format } from 'date-fns';
 import { toast } from '@/hooks/use-toast';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { motion } from 'framer-motion';
+import { BackButton } from '@/components/back-button';
 
 
 const FEEDBACK_PER_PAGE = 10;
@@ -162,9 +162,7 @@ export default function ProjectDetailsPage({ params }: { params: { id: string } 
         <div className="container px-4 md:px-6 py-12">
             <motion.div initial="hidden" animate="visible" variants={pageVariants}>
                 <motion.div variants={itemVariants}>
-                    <Button variant="ghost" asChild className="mb-4">
-                        <Link href="/dashboard"><ArrowLeft className="mr-2 h-4 w-4" /> Back to Dashboard</Link>
-                    </Button>
+                    <BackButton href="/dashboard" className="mb-4" />
                     <div className="rounded-2xl overflow-hidden shadow-lg border-border/50 bg-card p-6 flex flex-col md:flex-row items-start gap-6">
                         <Image src={project.icon} alt={project.name} width={100} height={100} className="rounded-2xl border bg-background" data-ai-hint={project.dataAiHint} />
                         <div className="flex-grow">
@@ -217,7 +215,7 @@ export default function ProjectDetailsPage({ params }: { params: { id: string } 
                     <InfoCard icon={<User className="w-5 h-5" />} title="Developer Information">
                          <div className="flex items-center gap-4">
                             <Avatar className="h-12 w-12">
-                                <AvatarImage src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=400&auto=format=fit=crop" data-ai-hint="man smiling" />
+                                <AvatarImage src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=400&auto=format&fit=crop" data-ai-hint="man smiling" />
                                 <AvatarFallback>DV</AvatarFallback>
                             </Avatar>
                             <div>

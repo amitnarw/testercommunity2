@@ -2,12 +2,12 @@
 
 'use client';
 
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
+import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card'
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { ArrowRight, ArrowLeft, Expand, X, PlayCircle, ChevronDown, Clipboard, Check, Video, Upload, Link as LinkIcon } from 'lucide-react'
+import { ArrowRight, Expand, X, PlayCircle, ChevronDown, Clipboard, Check, Video, Upload, Link as LinkIcon } from 'lucide-react'
 import Link from 'next/link';
 import { useState, useEffect, useCallback } from 'react';
 import Image from 'next/image';
@@ -16,6 +16,7 @@ import { IconRain } from '@/components/icon-rain';
 import { useDropzone } from 'react-dropzone';
 import { toast } from '@/hooks/use-toast';
 import { Separator } from '@/components/ui/separator';
+import { BackButton } from '@/components/back-button';
 
 const Highlight = ({ children }: { children: React.ReactNode }) => (
     <span className="bg-primary/20 text-primary font-semibold px-1.5 py-0.5 rounded-md">{children}</span>
@@ -119,13 +120,11 @@ export default function AddAppPage() {
             <div className="min-h-screen bg-background">
                 <div className="container mx-auto px-4 md:px-6 py-12">
                     <header className="mb-8 max-w-4xl mx-auto">
-                        <Button variant="ghost" asChild className="mb-4">
-                            <Link href="/dashboard"><ArrowLeft className="mr-2 h-4 w-4" /> Back to Developer Dashboard</Link>
-                        </Button>
+                        <BackButton href="/dashboard" className="mb-4" />
                         <h1 className="text-4xl font-bold">Submit a New App</h1>
                         <p className="text-muted-foreground mt-2">
                             {step === 'guide'
-                                ? "Follow this simple guide to prepare and submit your app for testing."
+                                ? "Follow this simple guide to prepare your app. One package will be used upon submission."
                                 : "Fill in your app's details. You can edit this information later."
                             }
                         </p>
@@ -370,8 +369,8 @@ export default function AddAppPage() {
                                     </div>
                                 </CardContent>
                                 <CardHeader className="p-6 pt-0 flex flex-row justify-between items-center">
-                                    <Button variant="ghost" onClick={() => setStep('guide')}><ArrowLeft className="mr-2 h-4 w-4" /> Back to Guide</Button>
-                                    <Button type="submit" size="lg">Submit App</Button>
+                                    <Button variant="ghost" onClick={() => setStep('guide')}> Back to Guide</Button>
+                                    <Button type="submit" size="lg">Submit App (1 Package)</Button>
                                 </CardHeader>
                             </Card>
                         )}

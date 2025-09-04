@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useRef } from 'react';
@@ -38,9 +39,9 @@ export function Footer() {
   return (
     <footer
       ref={footerRef}
-      className="bg-secondary/50 sticky bottom-0 -z-10 overflow-hidden"
+      className="bg-secondary/50 sticky bottom-0 overflow-hidden"
     >
-      <div className="container mx-auto px-4 md:px-6 py-20">
+      <div className="container mx-auto px-4 md:px-6 pt-14 pb-14 sm:pb-44">
         <div className="grid gap-8 lg:grid-cols-3">
           <div className="space-y-4">
             <Link href="/" className="items-center gap-2 hidden sm:flex">
@@ -78,64 +79,54 @@ export function Footer() {
           <div className="grid grid-cols-2 md:grid-cols-3 gap-8 lg:col-span-2">
             <div className="space-y-4">
               <h4 className="font-semibold">Platform</h4>
-              <ul className="space-y-2">
+              <ul className="space-y-4">
                 {navItems.map((item) => (
                   <li key={item.name}>
-                    <Link
-                      href={item.href}
-                      className="text-muted-foreground hover:text-primary transition-colors sliding-text-hover"
-                      data-text={item.name}
-                    >
-                      <span>{item.name}</span>
-                    </Link>
+                     <Link href={item.href} className="group text-muted-foreground hover:text-primary transition-colors relative block overflow-hidden text-sm sm:text-[16px]">
+                        <span className="block transition-transform duration-300 ease-in-out group-hover:-translate-y-full">{item.name}</span>
+                        <span className="absolute inset-0 block translate-y-full transition-transform duration-300 ease-in-out group-hover:translate-y-0 text-primary">{item.name}</span>
+                     </Link>
                   </li>
                 ))}
               </ul>
             </div>
             <div className="space-y-4">
               <h4 className="font-semibold">Resources</h4>
-              <ul className="space-y-2">
+              <ul className="space-y-4">
                 {resourceItems.map((item) => (
                   <li key={item.name}>
-                    <Link
-                      href={item.href}
-                      className="text-muted-foreground hover:text-primary transition-colors sliding-text-hover"
-                      data-text={item.name}
-                    >
-                      <span>{item.name}</span>
-                    </Link>
+                     <Link href={item.href} className="group text-muted-foreground hover:text-primary transition-colors relative block overflow-hidden text-sm sm:text-[16px]">
+                        <span className="block transition-transform duration-300 ease-in-out group-hover:-translate-y-full">{item.name}</span>
+                        <span className="absolute inset-0 block translate-y-full transition-transform duration-300 ease-in-out group-hover:translate-y-0 text-primary">{item.name}</span>
+                     </Link>
                   </li>
                 ))}
               </ul>
             </div>
             <div className="space-y-4">
               <h4 className="font-semibold">Legal</h4>
-              <ul className="space-y-2">
+              <ul className="space-y-4">
                 {legalItems.map((item) => (
                   <li key={item.name}>
-                    <Link
-                      href={item.href}
-                      className="text-muted-foreground hover:text-primary transition-colors sliding-text-hover"
-                      data-text={item.name}
-                    >
-                      <span>{item.name}</span>
-                    </Link>
+                     <Link href={item.href} className="group text-muted-foreground hover:text-primary transition-colors relative block overflow-hidden text-sm sm:text-[16px]">
+                        <span className="block transition-transform duration-300 ease-in-out group-hover:-translate-y-full">{item.name}</span>
+                        <span className="absolute inset-0 block translate-y-full transition-transform duration-300 ease-in-out group-hover:translate-y-0 text-primary">{item.name}</span>
+                     </Link>
                   </li>
                 ))}
               </ul>
             </div>
           </div>
         </div>
-        <div className="mt-4 pt-8 sm:mb-24 flex flex-col md:flex-row justify-between items-center text-sm text-muted-foreground">
+        <div className="mt-4 pt-8 flex flex-col md:flex-row justify-between items-center text-sm text-muted-foreground/50">
           <p>&copy; {new Date().getFullYear()} inTesters, Inc. All rights reserved.</p>
           <p>A Testing Community at its best.</p>
         </div>
       </div>
 
-      {/* Only "inTesters" animates up as you scroll to the bottom */}
       <motion.div
         style={{ y: testersY }}
-        className="-z-10 absolute bottom-0 flex items-end justify-center w-full overflow-hidden pointer-events-none"
+        className="z-10 absolute bottom-0 flex items-end justify-center w-full overflow-hidden pointer-events-none"
       >
         <p className="font-black text-primary/10 dark:text-secondary/50 text-[80px] sm:text-[200px] lg:text-[300px] -mb-10 sm:-mb-24 lg:-mb-40">
           inTesters
