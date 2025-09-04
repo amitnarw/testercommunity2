@@ -6,7 +6,7 @@ import Image from 'next/image';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { ExternalLink, CheckCircle, Star, Lightbulb, Upload, Edit, Trash2, ListChecks, MessagesSquare, Info, PlusCircle, Compass, Smile, PenTool, ThumbsUp, Bug } from 'lucide-react';
+import { ExternalLink, CheckCircle, Star, Lightbulb, Upload, Edit, Trash2, Bug } from 'lucide-react';
 import { communityApps } from '@/lib/data';
 import { BackButton } from '@/components/back-button';
 import { cn } from '@/lib/utils';
@@ -18,50 +18,46 @@ import { Separator } from '@/components/ui/separator';
 import type { SubmittedFeedback } from '@/lib/types';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger, DialogClose } from '@/components/ui/dialog';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger, } from "@/components/ui/alert-dialog"
-
+import { PlusCircle } from 'lucide-react';
 
 const DailyProgress = ({ progress, totalDays }: { progress: number, totalDays: number }) => {
     const completedDays = Math.floor(totalDays * (progress || 0) / 100);
-    const currentDay = completedDays + 1;
-
-    const pastDays = Array.from({ length: completedDays }, (_, i) => i + 1);
-    const futureDays = Array.from({ length: Math.max(0, totalDays - currentDay) }, (_, i) => currentDay + i + 1);
 
     return (
-        <div className="w-full grid grid-cols-1 md:grid-cols-3 items-center gap-8">
-            {/* Past Days */}
-            <div className="flex flex-row md:flex-col gap-2 justify-center items-center md:items-end">
-                {pastDays.map(day => (
-                     <div key={`past-${day}`} className="flex items-center gap-2 text-muted-foreground p-2 rounded-lg bg-secondary/50 text-sm">
-                        <CheckCircle className="w-4 h-4 text-green-500"/>
-                        <span className="hidden sm:inline">Day {day}</span>
-                     </div>
-                ))}
-            </div>
-            
-            {/* Current Day */}
-            <div className="relative rounded-2xl p-6 text-center text-primary-foreground overflow-hidden bg-primary/10 min-h-[200px] flex flex-col items-center justify-center">
-                <div className="absolute inset-0 bg-gradient-to-br from-primary via-primary/80 to-accent z-0"></div>
-                <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_rgba(255,255,255,0.1)_0%,_rgba(255,255,255,0)_70%)] z-10"></div>
-
-                <div className="relative z-20">
-                     <p className="text-sm font-semibold opacity-80">Currently On</p>
-                    <p className="text-6xl font-black">{currentDay}</p>
-                    <p className="text-sm font-semibold opacity-80">Day of {totalDays}</p>
-                </div>
-            </div>
-
-             {/* Future Days */}
-             <div className="flex flex-row md:flex-col gap-2 justify-center items-center md:items-start">
-                {futureDays.map(day => (
-                     <div key={`future-${day}`} className="flex items-center gap-2 text-muted-foreground p-2 rounded-lg bg-secondary/50 text-sm">
-                        <span className="font-bold">{day}</span>
-                     </div>
-                ))}
-            </div>
+        <div className="w-full grid grid-cols-4 sm:grid-cols-7 gap-3">
+            {Array.from({ length: totalDays }, (_, i) => {
+                const day = i + 1;
+                const isCompleted = day <= completedDays;
+                const isCurrent = day === completedDays + 1;
+                
+                return (
+                    <div
+                        key={day}
+                        className={cn(
+                            "aspect-square rounded-2xl flex flex-col items-center justify-center p-2 transition-all duration-300",
+                            isCurrent 
+                                ? 'bg-gradient-to-br from-primary to-accent text-primary-foreground shadow-lg scale-105' 
+                                : 'bg-secondary',
+                            isCompleted 
+                                ? 'bg-secondary/50 text-muted-foreground shadow-inner' 
+                                : 'shadow-sm'
+                        )}
+                    >
+                        {isCompleted ? (
+                             <CheckCircle className="w-6 h-6 text-green-500" />
+                        ) : (
+                            <>
+                                <p className={cn("text-xs", isCurrent ? 'opacity-80' : 'text-muted-foreground')}>Day</p>
+                                <p className={cn("font-bold", isCurrent ? 'text-4xl' : 'text-2xl')}>{day}</p>
+                            </>
+                        )}
+                    </div>
+                );
+            })}
         </div>
     );
 };
+
 
 const FeedbackFormModal = ({
     feedback,
@@ -76,7 +72,6 @@ const FeedbackFormModal = ({
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        // In a real app, you'd handle form state more robustly (e.g., with react-hook-form)
         onSave({ rating });
     };
 
@@ -157,7 +152,6 @@ export default function AppTestingOngoingPage({ params }: { params: { id: string
     const daysCompleted = Math.floor((app.totalDays || 14) * (app.progress || 0) / 100);
 
     const handleSaveFeedback = (data: any) => {
-        // Logic to either create a new feedback or update an existing one
         console.log("Saving feedback:", data);
     }
     
@@ -186,19 +180,17 @@ export default function AppTestingOngoingPage({ params }: { params: { id: string
                 </header>
 
                 <main className="max-w-7xl mx-auto space-y-12">
-                    <section>
-                         <div className="text-center">
+                     <section>
+                        <div className="text-center mb-8">
                             <h2 className="text-2xl font-bold">Testing in Progress</h2>
                             <p className="text-muted-foreground mt-1">You have completed {daysCompleted} of {app.totalDays} days. Keep the app installed and use it occasionally to complete the test.</p>
                         </div>
-                        <div className="mt-8">
-                            <DailyProgress progress={app.progress || 0} totalDays={app.totalDays || 14} />
-                        </div>
+                        <DailyProgress progress={app.progress || 0} totalDays={app.totalDays} />
                     </section>
                     
                     <section>
-                        <h2 className="text-2xl font-bold mb-4">Developer's Instructions <span className="bg-gradient-to-b from-primary to-primary/50 text-white font-bold rounded-lg px-4 py-0.5 text-xl ml-2">Important</span></h2>
-                        <div className="prose prose-base dark:prose-invert leading-relaxed text-white dark:text-black bg-[#121212] dark:bg-white p-6 rounded-lg border-primary border-l-4 shadow-xl shadow-gray-300 dark:shadow-gray-700">
+                        <h2 className="text-2xl font-bold mb-4">Developer's Instructions <span className="text-primary font-semibold">Important</span></h2>
+                        <div className="prose prose-base dark:prose-invert leading-relaxed bg-card text-card-foreground p-6 rounded-lg border-primary/20 border-l-4 shadow-md">
                             <p>{app.testingInstructions}</p>
                         </div>
                     </section>
@@ -276,4 +268,3 @@ export default function AppTestingOngoingPage({ params }: { params: { id: string
         </div>
     );
 }
-
