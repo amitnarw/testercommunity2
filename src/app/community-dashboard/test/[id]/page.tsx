@@ -43,8 +43,7 @@ const AppInfoSidebar = ({ app, testingState, handleRequestToJoin, hoverBgColor, 
                             paddingX="5"
                         >
                             <div className="flex items-center gap-2">
-                                <span className='hidden sm:inline'>Request to Join Testing</span>
-                                <span className='sm:hidden'>Request</span>
+                                <span>Request to Join Testing</span>
                             </div>
 
                         </AnimatedRoundedButton>
@@ -170,7 +169,7 @@ export default function AppTestingPage({ params }: { params: { id: string } }) {
                             <AppInfoSidebar app={app} testingState={testingState} handleRequestToJoin={handleRequestToJoin} hoverBgColor={hoverBgColor} hoverTextColor={hoverTextColor} />
                         </div>
                         
-                        <section>
+                        <section className='!mt-20'>
                             <h2 className="text-2xl font-bold mb-4">Testing Protocol</h2>
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                                 <Card className="p-4 bg-gradient-to-br from-secondary to-secondary/50 hover:shadow-lg transition-shadow">
@@ -198,39 +197,37 @@ export default function AppTestingPage({ params }: { params: { id: string } }) {
                         </section>
 
                         <section>
-                            <h2 className="text-2xl font-bold mb-4">Developer's Instructions <span className="text-primary font-bold">Important</span></h2>
-                            <div className="prose prose-base dark:prose-invert text-muted-foreground leading-relaxed bg-secondary/50 p-6 rounded-lg border-l-4 border-primary">
+                            <h2 className="text-2xl font-bold mb-4">Developer's Instructions <span className="bg-gradient-to-b from-primary to-primary/50 text-white font-bold rounded-lg px-4 py-0.5 text-xl ml-2">Important</span></h2>
+                            <div className="prose prose-base dark:prose-invert leading-relaxed text-white dark:text-black bg-[#121212] dark:bg-white p-6 rounded-lg border-primary border-l-4 shadow-xl shadow-gray-300 dark:shadow-gray-700">
                                 <p>{app.testingInstructions}</p>
                             </div>
                         </section>
                         
-                        <Separator />
-                        
                         <section>
                             <h2 className="text-2xl font-bold mb-4">General Testing Instructions</h2>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-                                <div className="bg-secondary/50 p-4 rounded-lg flex items-start gap-3">
+                                <div className="bg-secondary p-4 rounded-lg flex items-start gap-3">
                                     <Compass className="w-6 h-6 text-primary flex-shrink-0 mt-1" />
                                     <div>
                                         <h4 className="font-semibold">Explore Freely</h4>
                                         <p className="text-muted-foreground">Use the app as you normally would. Explore different screens, features, and user flows.</p>
                                     </div>
                                 </div>
-                                <div className="bg-secondary/50 p-4 rounded-lg flex items-start gap-3">
+                                <div className="bg-secondary p-4 rounded-lg flex items-start gap-3">
                                     <Smile className="w-6 h-6 text-primary flex-shrink-0 mt-1" />
                                     <div>
                                         <h4 className="font-semibold">Note Your Feelings</h4>
                                         <p className="text-muted-foreground">Pay attention to what feels delightful, confusing, or frustrating. All emotional feedback is valuable.</p>
                                     </div>
                                 </div>
-                                <div className="bg-secondary/50 p-4 rounded-lg flex items-start gap-3">
+                                <div className="bg-secondary p-4 rounded-lg flex items-start gap-3">
                                     <PenTool className="w-6 h-6 text-primary flex-shrink-0 mt-1" />
                                     <div>
                                         <h4 className="font-semibold">Be Specific</h4>
                                         <p className="text-muted-foreground">When you find a bug, describe the steps to reproduce it. Clear context helps developers fix issues faster.</p>
                                     </div>
                                 </div>
-                                <div className="bg-secondary/50 p-4 rounded-lg flex items-start gap-3">
+                                <div className="bg-secondary p-4 rounded-lg flex items-start gap-3">
                                     <ThumbsUp className="w-6 h-6 text-primary flex-shrink-0 mt-1" />
                                     <div>
                                         <h4 className="font-semibold">Be Constructive</h4>
