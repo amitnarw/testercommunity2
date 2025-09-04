@@ -6,7 +6,7 @@ import Image from 'next/image';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { ExternalLink, CheckCircle, Star, Lightbulb, Upload, Edit, Trash2, ListChecks, MessagesSquare } from 'lucide-react';
+import { ExternalLink, CheckCircle, Star, Lightbulb, Upload, Edit, Trash2, ListChecks, MessagesSquare, Info } from 'lucide-react';
 import { communityApps } from '@/lib/data';
 import { BackButton } from '@/components/back-button';
 import { cn } from '@/lib/utils';
@@ -32,7 +32,7 @@ const DailyProgress = ({ progress, totalDays }: { progress: number, totalDays: n
                     <div
                         key={dayNumber}
                         className={cn(
-                            "flex-grow basis-16 h-20 rounded-xl flex flex-col items-center justify-center p-2 transition-all duration-300",
+                            "flex-shrink-0 basis-16 h-20 rounded-xl flex flex-col items-center justify-center p-2 transition-all duration-300",
                             isCompleted 
                                 ? "bg-green-100 dark:bg-green-900/50 text-green-700 dark:text-green-300 shadow-inner" 
                                 : isCurrent 
@@ -60,7 +60,7 @@ export default function AppTestingOngoingPage({ params }: { params: { id: string
         notFound();
     }
     
-    const totalDays = 14;
+    const totalDays = app.totalDays || 14;
     const daysCompleted = Math.floor(totalDays * (app.progress || 0) / 100);
 
     const submittedFeedback = [
@@ -97,10 +97,10 @@ export default function AppTestingOngoingPage({ params }: { params: { id: string
                             <DailyProgress progress={app.progress || 0} totalDays={totalDays} />
                         </CardContent>
                     </Card>
-
+                    
                     <section>
-                        <h2 className="text-2xl font-bold mb-4">Developer's Instructions <span className="text-primary font-bold text-xl ml-2">Important</span></h2>
-                        <div className="prose prose-base dark:prose-invert leading-relaxed bg-card p-6 rounded-lg border-primary border-l-4 shadow-lg">
+                        <h2 className="text-2xl font-bold mb-4">Developer's Instructions <span className="bg-gradient-to-b from-primary to-primary/50 text-white font-bold rounded-lg px-4 py-0.5 text-xl ml-2">Important</span></h2>
+                        <div className="prose prose-base dark:prose-invert leading-relaxed text-white dark:text-black bg-[#121212] dark:bg-white p-6 rounded-lg border-primary border-l-4 shadow-xl shadow-gray-300 dark:shadow-gray-700">
                             <p>{app.testingInstructions}</p>
                         </div>
                     </section>
@@ -199,3 +199,5 @@ export default function AppTestingOngoingPage({ params }: { params: { id: string
         </div>
     );
 }
+
+    

@@ -77,6 +77,7 @@ export type CommunityApp = {
     status: 'available' | 'ongoing' | 'completed';
     progress?: number;
     completedDate?: string;
+    totalDays: number;
 }
 
 export type FaqItem = {
@@ -144,3 +145,5 @@ export type Project = {
   chartData: { date: string; bugs: number }[];
   reviewNotes?: string;
 }
+
+    

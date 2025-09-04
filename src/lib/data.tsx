@@ -260,6 +260,7 @@ export const communityApps: CommunityApp[] = [
         testingInstructions: 'Please focus on the new team collaboration feature. Try creating a project, inviting a team member, and assigning a task. Check for notification accuracy and any sync issues.',
         status: 'ongoing',
         progress: 60,
+        totalDays: 14,
     },
     {
         id: 2,
@@ -279,6 +280,7 @@ export const communityApps: CommunityApp[] = [
         testingInstructions: 'Play the new "Gem Grab" mode. We are looking for feedback on matchmaking balance, performance during intense fights, and the new Brawler\'s abilities.',
         status: 'completed',
         completedDate: '2024-05-28',
+        totalDays: 16,
     },
      {
         id: 3,
@@ -297,6 +299,7 @@ export const communityApps: CommunityApp[] = [
         ],
         testingInstructions: 'Check the "Minutecast" feature for your current location. Please verify if the precipitation forecast is accurate and report any UI issues with the radar map.',
         status: 'available',
+        totalDays: 20,
     },
     {
         id: 4,
@@ -315,6 +318,7 @@ export const communityApps: CommunityApp[] = [
         ],
         testingInstructions: 'Test the new video player controls. Try watching several videos, scrubbing, and changing the playback speed. Report any crashes or performance issues.',
         status: 'available',
+        totalDays: 14,
     },
     {
         id: 5,
@@ -333,6 +337,7 @@ export const communityApps: CommunityApp[] = [
         ],
         testingInstructions: 'Play the game until you can afford the new "Super Sneaker" power-up. We are looking for feedback on its price balance and overall usefulness.',
         status: 'available',
+        totalDays: 15,
     },
     {
         id: 6,
@@ -351,6 +356,7 @@ export const communityApps: CommunityApp[] = [
         ],
         testingInstructions: 'Create a new database, add at least 5 entries with different properties (text, date, select). Test the filtering and sorting functionality.',
         status: 'available',
+        totalDays: 14,
     },
     {
         id: 7,
@@ -369,6 +375,7 @@ export const communityApps: CommunityApp[] = [
         ],
         testingInstructions: 'Complete one full lesson in any language. Verify that the progress is saved correctly and check for any issues with audio playback during exercises.',
         status: 'available',
+        totalDays: 18,
     },
     {
         id: 8,
@@ -387,6 +394,7 @@ export const communityApps: CommunityApp[] = [
         ],
         testingInstructions: 'Test the "Blend" feature with a friend. Create a new Blend playlist and check if it updates correctly after both of you listen to more music.',
         status: 'available',
+        totalDays: 14,
     },
     {
         id: 9,
@@ -406,6 +414,7 @@ export const communityApps: CommunityApp[] = [
         testingInstructions: 'Test the download feature for offline viewing. Download a show, put your phone in airplane mode, and try to play it. Report any issues.',
         status: 'ongoing',
         progress: 30,
+        totalDays: 20,
     },
     {
         id: 10,
@@ -424,6 +433,7 @@ export const communityApps: CommunityApp[] = [
         ],
         testingInstructions: 'Join a multiplayer server and play for at least 15 minutes. We are looking for any connection issues, lag, or graphical glitches during multiplayer sessions.',
         status: 'available',
+        totalDays: 25,
     },
     {
         id: 11,
@@ -442,6 +452,7 @@ export const communityApps: CommunityApp[] = [
         ],
         testingInstructions: 'Test the new "Stitch" feature with a video from your "For You" page. Ensure the editing tools work as expected and the final video posts correctly.',
         status: 'available',
+        totalDays: 14,
     },
     {
         id: 12,
@@ -461,6 +472,7 @@ export const communityApps: CommunityApp[] = [
         testingInstructions: 'Add three different items to your cart and proceed to the checkout page. Do not complete the purchase. Report any UI issues or calculation errors in the subtotal.',
         status: 'completed',
         completedDate: '2024-06-15',
+        totalDays: 14,
     },
     {
         id: 13,
@@ -479,6 +491,7 @@ export const communityApps: CommunityApp[] = [
         ],
         testingInstructions: 'Test the search functionality. Search for an email by sender and then by subject. Verify that the results are accurate and load quickly.',
         status: 'available',
+        totalDays: 14,
     },
     {
         id: 14,
@@ -497,6 +510,7 @@ export const communityApps: CommunityApp[] = [
         ],
         testingInstructions: 'Participate in a Clan War. Attack an enemy base and check if the replay functionality works correctly. Report any visual glitches during the battle.',
         status: 'available',
+        totalDays: 14,
     },
     {
         id: 15,
@@ -516,6 +530,7 @@ export const communityApps: CommunityApp[] = [
         testingInstructions: 'Use the "Memories" feature. View a few memories and try to customize one by adding or removing photos. Ensure the changes are saved correctly.',
         status: 'ongoing',
         progress: 80,
+        totalDays: 14,
     },
     {
         id: 16,
@@ -534,6 +549,7 @@ export const communityApps: CommunityApp[] = [
         ],
         testingInstructions: 'Set a destination and view the different ride options (UberX, Comfort, etc.). Do not book a ride. Report any issues with the map display or price estimation.',
         status: 'available',
+        totalDays: 14,
     },
     {
         id: 17,
@@ -553,6 +569,7 @@ export const communityApps: CommunityApp[] = [
         testingInstructions: 'Update a section of your profile (e.g., add a new skill). Check that the changes are reflected correctly across the app. Then, view a job posting and save it.',
         status: 'completed',
         completedDate: '2024-07-01',
+        totalDays: 14,
     },
     {
         id: 18,
@@ -571,6 +588,7 @@ export const communityApps: CommunityApp[] = [
         ],
         testingInstructions: 'Start a new meeting with only yourself. Test the virtual background feature. Ensure that the background applies correctly and there is no significant performance drop.',
         status: 'available',
+        totalDays: 14,
     },
     {
         id: 19,
@@ -589,6 +607,7 @@ export const communityApps: CommunityApp[] = [
         ],
         testingInstructions: 'Join a voice channel in a server. Test the noise suppression feature by enabling it and speaking with background noise. Report on its effectiveness.',
         status: 'available',
+        totalDays: 14,
     },
     {
         id: 20,
@@ -607,6 +626,7 @@ export const communityApps: CommunityApp[] = [
         ],
         testingInstructions: 'Create a new board and save at least 5 pins to it. Test the "More ideas" section on the board to see if the suggestions are relevant.',
         status: 'available',
+        totalDays: 14,
     },
     {
         id: 21,
@@ -625,6 +645,7 @@ export const communityApps: CommunityApp[] = [
         ],
         testingInstructions: 'Search for a stay in any city for a future date. Apply at least 3 filters (e.g., Wi-Fi, Kitchen, Price Range) and check if the results update correctly.',
         status: 'available',
+        totalDays: 14,
     },
     {
         id: 22,
@@ -644,6 +665,7 @@ export const communityApps: CommunityApp[] = [
         testingInstructions: 'Upload a photo to your OneDrive. Then, try to share the link to that photo with another app (e.g., messaging app). Report any issues with the sharing process.',
         status: 'ongoing',
         progress: 50,
+        totalDays: 14,
     },
     {
         id: 23,
@@ -662,6 +684,7 @@ export const communityApps: CommunityApp[] = [
         ],
         testingInstructions: 'Listen to a sample of any audiobook. Test the sleep timer feature by setting it for 5 minutes. Verify that the playback stops after the set time.',
         status: 'available',
+        totalDays: 14,
     },
     {
         id: 24,
@@ -681,6 +704,7 @@ export const communityApps: CommunityApp[] = [
         testingInstructions: 'Find directions to a location using public transit. Check if the app provides multiple route options and accurate departure times. Report any discrepancies.',
         status: 'completed',
         completedDate: '2024-07-10',
+        totalDays: 14,
     },
     {
         id: 25,
@@ -699,6 +723,7 @@ export const communityApps: CommunityApp[] = [
         ],
         testingInstructions: 'Watch a live stream and try using Channel Points to redeem a reward. Verify that the reward activates correctly and your points balance is updated.',
         status: 'available',
+        totalDays: 14,
     },
     {
         id: 26,
@@ -717,6 +742,7 @@ export const communityApps: CommunityApp[] = [
         ],
         testingInstructions: 'Identify a song by playing music from another device. After identification, check if the lyrics are available and sync correctly with the song.',
         status: 'available',
+        totalDays: 14,
     },
     {
         id: 27,
@@ -736,6 +762,7 @@ export const communityApps: CommunityApp[] = [
         testingInstructions: 'Create a new sticker pack by uploading an image. Ensure the sticker is created successfully and can be sent in a chat.',
         status: 'ongoing',
         progress: 20,
+        totalDays: 14,
     },
     {
         id: 28,
@@ -754,6 +781,7 @@ export const communityApps: CommunityApp[] = [
         ],
         testingInstructions: 'Send a disappearing message with a custom timer. Verify that the message disappears for both you and the recipient after the timer expires.',
         status: 'available',
+        totalDays: 14,
     },
 ];
 
@@ -1139,8 +1167,8 @@ export const projects: Project[] = [
         status: isCompleted ? "Completed" : (isOngoing ? "In Testing" : "In Review"),
         testersStarted: testersStarted,
         testersCompleted: testersCompleted,
-        totalDays: 14,
-        avgTestersPerDay: (testersStarted / 14),
+        totalDays: app.totalDays,
+        avgTestersPerDay: (testersStarted / app.totalDays),
         startedFrom: "15 Aug 2024",
         description: app.shortDescription,
         crashFreeRate: 99.5 - (app.id % 10)/10,
@@ -1173,5 +1201,7 @@ export const projects: Project[] = [
     
 
 
+
+    
 
     
