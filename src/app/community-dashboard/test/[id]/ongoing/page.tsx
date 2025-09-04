@@ -25,7 +25,7 @@ const DailyProgress = ({ progress, totalDays }: { progress: number, totalDays: n
     const currentDay = completedDays + 1;
 
     return (
-        <div className="flex flex-wrap gap-3">
+        <div className="flex flex-wrap gap-4 items-center justify-center">
             {Array.from({ length: totalDays }, (_, i) => {
                 const dayNumber = i + 1;
                 const isCompleted = dayNumber < currentDay;
@@ -35,17 +35,17 @@ const DailyProgress = ({ progress, totalDays }: { progress: number, totalDays: n
                     <div
                         key={dayNumber}
                         className={cn(
-                            "flex-shrink-0 basis-16 h-20 rounded-xl flex flex-col items-center justify-center p-2 transition-all duration-300",
+                            "flex-shrink-0 basis-20 h-24 rounded-xl flex flex-col items-center justify-center p-2 transition-all duration-300",
                             isCompleted 
                                 ? "bg-green-100 dark:bg-green-900/50 text-green-700 dark:text-green-300 shadow-inner" 
                                 : isCurrent 
-                                    ? "bg-primary/10 text-primary shadow-md shadow-primary/20" 
-                                    : "bg-secondary/60 dark:bg-secondary/30 text-muted-foreground"
+                                    ? "bg-primary/10 text-primary shadow-lg shadow-primary/20 scale-110" 
+                                    : "bg-secondary text-muted-foreground"
                         )}
                     >
                         <p className="text-xs font-medium">Day {dayNumber}</p>
                         <div className="text-2xl font-bold mt-1">
-                            {isCompleted ? <CheckCircle className="w-6 h-6" /> : dayNumber}
+                            {isCompleted ? <CheckCircle className="w-5 h-5" /> : dayNumber}
                         </div>
                     </div>
                 );
@@ -176,16 +176,16 @@ export default function AppTestingOngoingPage({ params }: { params: { id: string
                     </div>
                 </header>
 
-                <main className="max-w-7xl mx-auto space-y-8">
-                    <Card className="rounded-xl overflow-hidden">
-                        <CardHeader>
-                            <CardTitle>Testing in Progress</CardTitle>
-                            <CardDescription>You have completed {daysCompleted} of {app.totalDays} days. Keep the app installed and use it occasionally to complete the test.</CardDescription>
-                        </CardHeader>
-                        <CardContent>
-                            <DailyProgress progress={app.progress || 0} totalDays={app.totalDays} />
-                        </CardContent>
-                    </Card>
+                <main className="max-w-7xl mx-auto space-y-12">
+                    <section>
+                         <div className="text-center">
+                            <h2 className="text-2xl font-bold">Testing in Progress</h2>
+                            <p className="text-muted-foreground mt-1">You have completed {daysCompleted} of {app.totalDays} days. Keep the app installed and use it occasionally to complete the test.</p>
+                        </div>
+                        <div className="mt-8">
+                            <DailyProgress progress={app.progress || 0} totalDays={app.totalDays || 14} />
+                        </div>
+                    </section>
                     
                     <section>
                         <h2 className="text-2xl font-bold mb-4">Developer's Instructions <span className="bg-gradient-to-b from-primary to-primary/50 text-white font-bold rounded-lg px-4 py-0.5 text-xl ml-2">Important</span></h2>
