@@ -6,7 +6,7 @@ import Image from 'next/image';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { ExternalLink, CheckCircle, Star, Lightbulb, Upload, Edit, Trash2, ListChecks, MessagesSquare, Info } from 'lucide-react';
+import { ExternalLink, CheckCircle, Star, Lightbulb, Upload, Edit, Trash2, ListChecks, MessagesSquare, Info, PlusCircle } from 'lucide-react';
 import { communityApps } from '@/lib/data';
 import { BackButton } from '@/components/back-button';
 import { cn } from '@/lib/utils';
@@ -16,6 +16,10 @@ import { Textarea } from '@/components/ui/textarea';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Separator } from '@/components/ui/separator';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import type { SubmittedFeedback } from '@/lib/types';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger, DialogClose } from '@/components/ui/dialog';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger, } from "@/components/ui/alert-dialog"
+
 
 const DailyProgress = ({ progress, totalDays }: { progress: number, totalDays: number }) => {
     const completedDays = Math.floor(totalDays * (progress || 0) / 100);
@@ -51,10 +55,87 @@ const DailyProgress = ({ progress, totalDays }: { progress: number, totalDays: n
     );
 };
 
+const FeedbackFormModal = ({
+    feedback,
+    onSave,
+    children,
+}: {
+    feedback?: SubmittedFeedback | null;
+    onSave: (data: any) => void;
+    children: React.ReactNode;
+}) => {
+    const [rating, setRating] = useState(feedback?.rating || 0);
+
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+        // In a real app, you'd handle form state more robustly (e.g., with react-hook-form)
+        onSave({ rating });
+    };
+
+    return (
+        <Dialog>
+            <DialogTrigger asChild>{children}</DialogTrigger>
+            <DialogContent className="sm:max-w-[600px]">
+                <DialogHeader>
+                    <DialogTitle>{feedback ? 'Edit Feedback' : 'Submit New Feedback'}</DialogTitle>
+                    <DialogDescription>
+                        Your feedback helps developers build better apps. Provide clear and constructive comments.
+                    </DialogDescription>
+                </DialogHeader>
+                <form onSubmit={handleSubmit}>
+                    <div className="py-4 space-y-6 max-h-[60vh] overflow-y-auto px-1">
+                        <div className="space-y-3">
+                            <Label className="text-base">What worked well? What did you like?</Label>
+                            <Textarea defaultValue={feedback?.positive || ''} placeholder="e.g., The onboarding was very smooth..." className="min-h-[120px] text-base" />
+                        </div>
+                        <div className="space-y-3">
+                            <Label className="text-base">Did you find any bugs or issues?</Label>
+                            <Textarea defaultValue={feedback?.negative || ''} placeholder="e.g., The app crashed when..." className="min-h-[120px] text-base" />
+                        </div>
+                        <div className="space-y-3">
+                            <Label className="text-base">Overall Rating</Label>
+                            <div className="flex items-center gap-1">
+                                {[1, 2, 3, 4, 5].map(star => (
+                                    <Star
+                                        key={star}
+                                        className={cn(`w-8 h-8 transition-all cursor-pointer`, rating >= star ? 'text-amber-400 fill-amber-400' : 'text-muted-foreground/50')}
+                                        onClick={() => setRating(star)}
+                                    />
+                                ))}
+                            </div>
+                        </div>
+                        <div className="space-y-3">
+                            <Label className="text-base">Upload Screenshot (Optional)</Label>
+                            <div className={cn(`border-2 border-dashed rounded-lg p-6 flex flex-col items-center justify-center text-center transition-colors border-muted-foreground/50 cursor-pointer hover:border-primary hover:bg-secondary/50`)}>
+                                <Upload className="w-8 h-8 text-muted-foreground mb-2" />
+                                <p className="font-semibold">Click or drag file to upload</p>
+                                <p className="text-sm text-muted-foreground">PNG, JPG up to 5MB</p>
+                            </div>
+                        </div>
+                    </div>
+                    <DialogFooter className="pt-4 border-t">
+                         <div className="flex items-center space-x-3 mr-auto">
+                            <Checkbox id="confirmation" defaultChecked={true} />
+                            <Label htmlFor="confirmation" className="text-sm font-normal text-muted-foreground">I confirm my feedback is accurate.</Label>
+                        </div>
+                        <DialogClose asChild>
+                            <Button type="button" variant="outline">Cancel</Button>
+                        </DialogClose>
+                        <Button type="submit">Save Feedback</Button>
+                    </DialogFooter>
+                </form>
+            </DialogContent>
+        </Dialog>
+    );
+};
+
 
 export default function AppTestingOngoingPage({ params }: { params: { id: string } }) {
     const app = communityApps.find(p => p.id.toString() === params.id && p.status === 'ongoing');
-    const [rating, setRating] = useState(0);
+    const [submittedFeedback, setSubmittedFeedback] = useState<SubmittedFeedback[]>([
+        { id: 1, type: 'Bug', comment: 'App crashes on launch sometimes.', positive: '', negative: 'App crashes on launch sometimes.', rating: 2 },
+        { id: 2, type: 'Suggestion', comment: 'A dark mode would be great for night use.', positive: 'The UI is clean.', negative: 'A dark mode would be great for night use.', rating: 4 },
+    ]);
 
     if (!app) {
         notFound();
@@ -63,10 +144,15 @@ export default function AppTestingOngoingPage({ params }: { params: { id: string
     const totalDays = app.totalDays || 14;
     const daysCompleted = Math.floor(totalDays * (app.progress || 0) / 100);
 
-    const submittedFeedback = [
-        { type: 'Bug', comment: 'App crashes on launch sometimes.' },
-        { type: 'Suggestion', comment: 'A dark mode would be great for night use.' },
-    ]
+    const handleSaveFeedback = (data: any) => {
+        // Logic to either create a new feedback or update an existing one
+        console.log("Saving feedback:", data);
+    }
+    
+    const handleDeleteFeedback = (id: number) => {
+        setSubmittedFeedback(prev => prev.filter(fb => fb.id !== id));
+        console.log("Deleting feedback:", id);
+    }
 
     return (
         <div className="bg-secondary/50 min-h-screen">
@@ -106,9 +192,14 @@ export default function AppTestingOngoingPage({ params }: { params: { id: string
                     </section>
                     
                     <Card>
-                        <CardHeader>
-                            <CardTitle className="flex items-center gap-2"><Lightbulb className="w-5 h-5 text-amber-500" /> My Submitted Feedback</CardTitle>
-                            <CardDescription>Here is the feedback you've submitted so far. You can edit or delete your comments.</CardDescription>
+                        <CardHeader className="flex flex-row items-center justify-between">
+                            <div>
+                                <CardTitle className="flex items-center gap-2"><Lightbulb className="w-5 h-5 text-amber-500" /> My Submitted Feedback</CardTitle>
+                                <CardDescription>Here is the feedback you've submitted so far. You can edit or delete your comments.</CardDescription>
+                            </div>
+                             <FeedbackFormModal onSave={handleSaveFeedback}>
+                                <Button><PlusCircle className="mr-2 h-4 w-4"/> Submit New Feedback</Button>
+                            </FeedbackFormModal>
                         </CardHeader>
                         <CardContent>
                             {submittedFeedback.length > 0 ? (
@@ -127,8 +218,26 @@ export default function AppTestingOngoingPage({ params }: { params: { id: string
                                                     <TableCell className="font-medium">{fb.type}</TableCell>
                                                     <TableCell className="text-muted-foreground">{fb.comment}</TableCell>
                                                     <TableCell className="text-right">
-                                                        <Button variant="ghost" size="icon"><Edit className="w-4 h-4" /></Button>
-                                                        <Button variant="ghost" size="icon" className="text-red-500 hover:text-red-600"><Trash2 className="w-4 h-4" /></Button>
+                                                         <FeedbackFormModal feedback={fb} onSave={handleSaveFeedback}>
+                                                            <Button variant="ghost" size="icon"><Edit className="w-4 h-4" /></Button>
+                                                        </FeedbackFormModal>
+                                                         <AlertDialog>
+                                                            <AlertDialogTrigger asChild>
+                                                                <Button variant="ghost" size="icon" className="text-red-500 hover:text-red-600"><Trash2 className="w-4 h-4" /></Button>
+                                                            </AlertDialogTrigger>
+                                                            <AlertDialogContent>
+                                                                <AlertDialogHeader>
+                                                                    <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                                                                    <AlertDialogDescription>
+                                                                        This action cannot be undone. This will permanently delete your feedback.
+                                                                    </AlertDialogDescription>
+                                                                </AlertDialogHeader>
+                                                                <AlertDialogFooter>
+                                                                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                                                    <AlertDialogAction onClick={() => handleDeleteFeedback(fb.id)}>Delete</AlertDialogAction>
+                                                                </AlertDialogFooter>
+                                                            </AlertDialogContent>
+                                                        </AlertDialog>
                                                     </TableCell>
                                                 </TableRow>
                                             ))}
@@ -140,50 +249,6 @@ export default function AppTestingOngoingPage({ params }: { params: { id: string
                                     You haven't submitted any feedback for this app yet.
                                 </div>
                             )}
-                        </CardContent>
-                    </Card>
-
-                    <Card>
-                        <CardHeader>
-                             <h2 className="text-2xl font-bold">Submit New Feedback</h2>
-                             <CardDescription>Found something new? Submit it here. You can submit feedback multiple times.</CardDescription>
-                        </CardHeader>
-                        <CardContent className="p-6 space-y-8">
-                            <div className="space-y-3">
-                                <Label className="text-base">What worked well? What did you like?</Label>
-                                <Textarea placeholder="e.g., The onboarding was very smooth and the main feature is intuitive." className="min-h-[120px] text-base" />
-                            </div>
-                            <div className="space-y-3">
-                                <Label className="text-base">Did you find any bugs or issues?</Label>
-                                <Textarea placeholder="e.g., The app crashed when I tried to upload a photo from the gallery." className="min-h-[120px] text-base" />
-                            </div>
-                            <div className="space-y-3">
-                                <Label className="text-base">Overall Rating</Label>
-                                <div className="flex items-center gap-1">
-                                    {[1, 2, 3, 4, 5].map(star => (
-                                        <Star
-                                            key={star}
-                                            className={cn(`w-8 h-8 transition-all cursor-pointer`, rating >= star ? 'text-amber-400 fill-amber-400' : 'text-muted-foreground/50')}
-                                            onClick={() => setRating(star)}
-                                        />
-                                    ))}
-                                </div>
-                            </div>
-                            <div className="space-y-3">
-                                <Label className="text-base">Upload Screenshot (Optional)</Label>
-                                <div className={cn(`border-2 border-dashed rounded-lg p-6 flex flex-col items-center justify-center text-center transition-colors border-muted-foreground/50 cursor-pointer hover:border-primary hover:bg-secondary/50`)}>
-                                    <Upload className="w-8 h-8 text-muted-foreground mb-2" />
-                                    <p className="font-semibold">Click or drag file to upload</p>
-                                    <p className="text-sm text-muted-foreground">PNG, JPG up to 5MB</p>
-                                </div>
-                            </div>
-                            <div className="pt-4">
-                                <div className="flex items-center space-x-3 mb-6">
-                                    <Checkbox id="confirmation" />
-                                    <Label htmlFor="confirmation" className="text-base font-normal text-muted-foreground">I confirm my feedback is accurate and constructive.</Label>
-                                </div>
-                                <Button size="lg" className="w-full text-lg h-14">Submit Feedback</Button>
-                            </div>
                         </CardContent>
                     </Card>
 
@@ -199,5 +264,7 @@ export default function AppTestingOngoingPage({ params }: { params: { id: string
         </div>
     );
 }
+
+    
 
     

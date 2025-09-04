@@ -52,7 +52,6 @@ export type PointsPackage = {
     price: number;
     points: number;
     description: string;
-    features: string[];
 };
 
 export type ProcessStep = {
@@ -145,5 +144,15 @@ export type Project = {
   chartData: { date: string; bugs: number }[];
   reviewNotes?: string;
 }
+
+export type SubmittedFeedback = {
+  id: number;
+  type: 'Bug' | 'Suggestion';
+  comment: string;
+  positive: string;
+  negative: string;
+  rating: number;
+}
+    
 
     
