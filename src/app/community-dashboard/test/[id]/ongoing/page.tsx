@@ -6,7 +6,7 @@ import Image from 'next/image';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { ExternalLink, CheckCircle, Star, Lightbulb, Upload, Edit, Trash2, Bug } from 'lucide-react';
+import { ExternalLink, CheckCircle, Star, Lightbulb, Upload, Edit, Trash2, Bug, MessagesSquare } from 'lucide-react';
 import { communityApps } from '@/lib/data';
 import { BackButton } from '@/components/back-button';
 import { cn } from '@/lib/utils';
@@ -24,7 +24,7 @@ const DailyProgress = ({ progress, totalDays }: { progress: number, totalDays: n
     const completedDays = Math.floor(totalDays * (progress || 0) / 100);
 
     return (
-        <div className="w-full grid grid-cols-4 sm:grid-cols-7 gap-3">
+        <div className="w-full grid grid-cols-4 sm:grid-cols-7 gap-2">
             {Array.from({ length: totalDays }, (_, i) => {
                 const day = i + 1;
                 const isCompleted = day <= completedDays;
@@ -34,9 +34,9 @@ const DailyProgress = ({ progress, totalDays }: { progress: number, totalDays: n
                     <div
                         key={day}
                         className={cn(
-                            "aspect-square rounded-2xl flex flex-col items-center justify-center p-2 transition-all duration-300",
+                            "aspect-square rounded-lg flex flex-col items-center justify-center p-1 transition-all duration-300",
                             isCurrent 
-                                ? 'bg-gradient-to-br from-primary to-accent text-primary-foreground shadow-lg scale-105' 
+                                ? 'bg-gradient-to-br from-primary to-accent text-primary-foreground shadow-lg scale-110' 
                                 : 'bg-secondary',
                             isCompleted 
                                 ? 'bg-secondary/50 text-muted-foreground shadow-inner' 
@@ -44,11 +44,11 @@ const DailyProgress = ({ progress, totalDays }: { progress: number, totalDays: n
                         )}
                     >
                         {isCompleted ? (
-                             <CheckCircle className="w-6 h-6 text-green-500" />
+                             <CheckCircle className="w-5 h-5 text-green-500" />
                         ) : (
                             <>
-                                <p className={cn("text-xs", isCurrent ? 'opacity-80' : 'text-muted-foreground')}>Day</p>
-                                <p className={cn("font-bold", isCurrent ? 'text-4xl' : 'text-2xl')}>{day}</p>
+                                <p className={cn("text-[10px]", isCurrent ? 'opacity-80' : 'text-muted-foreground')}>Day</p>
+                                <p className={cn("font-bold", isCurrent ? 'text-2xl' : 'text-xl')}>{day}</p>
                             </>
                         )}
                     </div>
@@ -268,3 +268,5 @@ export default function AppTestingOngoingPage({ params }: { params: { id: string
         </div>
     );
 }
+
+    
