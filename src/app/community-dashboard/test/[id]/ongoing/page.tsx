@@ -71,7 +71,7 @@ export default function AppTestingOngoingPage({ params }: { params: { id: string
     return (
         <div className="bg-secondary/50 min-h-screen">
             <div className="container mx-auto px-4 md:px-6 py-12">
-                 <header className="mb-8 max-w-4xl mx-auto">
+                 <header className="mb-8 max-w-7xl mx-auto">
                     <BackButton href="/community-dashboard" className="mb-4" />
                      <div className="flex items-start gap-6">
                         <Image src={app.icon} alt={app.name} width={100} height={100} className="rounded-2xl border" data-ai-hint={app.dataAiHint} />
@@ -87,7 +87,7 @@ export default function AppTestingOngoingPage({ params }: { params: { id: string
                     </div>
                 </header>
 
-                <main className="max-w-4xl mx-auto space-y-8">
+                <main className="max-w-7xl mx-auto space-y-8">
                     <Card className="rounded-xl overflow-hidden">
                         <CardHeader>
                             <CardTitle>Testing in Progress</CardTitle>
