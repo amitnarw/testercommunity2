@@ -24,7 +24,7 @@ const DailyProgress = ({ progress, totalDays }: { progress: number, totalDays: n
     const completedDays = Math.floor(totalDays * (progress || 0) / 100);
 
     return (
-        <div className="w-full grid grid-cols-4 sm:grid-cols-8 lg:grid-cols-10 gap-3 sm:gap-4">
+        <div className="w-full grid grid-cols-4 sm:grid-cols-7 lg:grid-cols-10 gap-2 sm:gap-3">
             {Array.from({ length: totalDays }, (_, i) => {
                 const day = i + 1;
                 const isCompleted = day <= completedDays;
@@ -44,11 +44,11 @@ const DailyProgress = ({ progress, totalDays }: { progress: number, totalDays: n
                         )}
                     >
                         {isCompleted ? (
-                             <CheckCircle className="w-5 h-5 text-green-500" />
+                             <CheckCircle className="w-4 h-4 text-green-500" />
                         ) : (
                             <>
                                 <p className={cn("text-[10px] sm:text-xs", isCurrent ? 'opacity-80' : 'text-muted-foreground')}>Day</p>
-                                <p className={cn("font-bold", isCurrent ? 'text-2xl sm:text-4xl' : 'text-lg sm:text-2xl')}>{day}</p>
+                                <p className={cn("font-bold", isCurrent ? 'text-xl sm:text-2xl' : 'text-lg sm:text-xl')}>{day}</p>
                             </>
                         )}
                     </div>
@@ -165,17 +165,28 @@ export default function AppTestingOngoingPage({ params }: { params: { id: string
             <div className="container mx-auto px-4 md:px-6 py-12">
                  <header className="mb-8 max-w-7xl mx-auto">
                     <BackButton href="/community-dashboard" className="mb-4" />
-                     <div className="flex flex-col md:flex-row items-start gap-6">
-                        <Image src={app.icon} alt={app.name} width={100} height={100} className="rounded-2xl border bg-background" data-ai-hint={app.dataAiHint} />
-                        <div>
-                            <h1 className="text-4xl font-bold">{app.name}</h1>
-                             <div className="flex flex-wrap items-center gap-4 mt-2">
-                                <Badge variant="outline">{app.category}</Badge>
-                                <p className="text-sm text-muted-foreground">Requires Android {app.androidVersion}</p>
-                                <p className="text-sm text-muted-foreground">~{app.estimatedTime} test</p>
+                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
+                        <div className="md:col-span-2 flex flex-col md:flex-row items-start gap-6">
+                            <Image src={app.icon} alt={app.name} width={100} height={100} className="rounded-2xl border bg-background" data-ai-hint={app.dataAiHint} />
+                            <div>
+                                <h1 className="text-4xl font-bold">{app.name}</h1>
+                                <div className="flex flex-wrap items-center gap-4 mt-2">
+                                    <Badge variant="outline">{app.category}</Badge>
+                                    <p className="text-sm text-muted-foreground">Requires Android {app.androidVersion}</p>
+                                    <p className="text-sm text-muted-foreground">~{app.estimatedTime} test</p>
+                                </div>
                             </div>
-                            <p className="text-primary font-bold text-lg mt-1">Reward: {app.points} Points</p>
                         </div>
+                        <Card className="bg-primary/10 border-primary/20">
+                            <CardContent className="p-4 text-center">
+                                <p className="text-sm font-semibold text-primary">REWARD</p>
+                                <p className="text-4xl font-bold text-primary flex items-center justify-center gap-2">
+                                    <Star className="w-8 h-8" />
+                                    {app.points}
+                                </p>
+                                <p className="text-xs text-muted-foreground">Points upon completion</p>
+                            </CardContent>
+                        </Card>
                     </div>
                 </header>
 
@@ -268,5 +279,3 @@ export default function AppTestingOngoingPage({ params }: { params: { id: string
         </div>
     );
 }
-
-    
