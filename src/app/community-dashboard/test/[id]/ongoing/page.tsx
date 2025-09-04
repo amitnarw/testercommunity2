@@ -20,29 +20,31 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 const DailyProgress = ({ progress }: { progress: number }) => {
     const totalDays = 14;
     const completedDays = Math.floor(totalDays * (progress || 0) / 100);
-    const currentDay = completedDays;
+    const currentDay = completedDays + 1;
 
     return (
-        <div className="grid grid-cols-7 gap-3">
+        <div className="flex flex-wrap gap-3">
             {Array.from({ length: totalDays }, (_, i) => {
                 const dayNumber = i + 1;
-                const isCompleted = dayNumber <= completedDays;
-                const isCurrent = dayNumber === currentDay + 1;
+                const isCompleted = dayNumber < currentDay;
+                const isCurrent = dayNumber === currentDay;
                 
                 return (
                     <div
                         key={dayNumber}
                         className={cn(
-                            "p-3 rounded-lg text-center border-2",
+                            "flex-grow basis-16 h-20 rounded-xl flex flex-col items-center justify-center p-2 transition-all duration-300",
                             isCompleted 
-                                ? "bg-green-500/10 border-green-500/30 text-green-700 dark:text-green-300" 
+                                ? "bg-green-100 dark:bg-green-900/50 border border-green-500/30 text-green-700 dark:text-green-300 shadow-inner" 
                                 : isCurrent 
-                                    ? "bg-primary/10 border-primary/30 text-primary animate-pulse" 
-                                    : "bg-secondary/50 border-border/50 text-muted-foreground"
+                                    ? "bg-primary/10 border-2 border-primary text-primary animate-pulse shadow-md shadow-primary/20" 
+                                    : "bg-secondary/60 dark:bg-secondary/30 text-muted-foreground"
                         )}
                     >
-                        <p className="text-xs">Day {dayNumber}</p>
-                        {isCompleted && <CheckCircle className="w-5 h-5 mx-auto mt-1" />}
+                        <p className="text-xs font-medium">Day {dayNumber}</p>
+                        <div className="text-2xl font-bold mt-1">
+                            {isCompleted ? <CheckCircle className="w-6 h-6" /> : dayNumber}
+                        </div>
                     </div>
                 );
             })}
@@ -87,7 +89,7 @@ export default function AppTestingOngoingPage({ params }: { params: { id: string
                 </header>
 
                 <main className="max-w-4xl mx-auto space-y-8">
-                    <Card className="rounded-xl">
+                    <Card className="rounded-xl overflow-hidden">
                         <CardHeader>
                             <CardTitle>Testing in Progress</CardTitle>
                             <CardDescription>You have completed {daysCompleted} of {totalDays} days. Keep the app installed and use it occasionally to complete the test.</CardDescription>
@@ -198,4 +200,3 @@ export default function AppTestingOngoingPage({ params }: { params: { id: string
         </div>
     );
 }
-
