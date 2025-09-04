@@ -6,7 +6,7 @@ import Image from 'next/image';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { ExternalLink, CheckCircle, Star, Lightbulb, Upload, Edit, Trash2, ListChecks, MessagesSquare, Info, PlusCircle } from 'lucide-react';
+import { ExternalLink, CheckCircle, Star, Lightbulb, Upload, Edit, Trash2, ListChecks, MessagesSquare, Info, PlusCircle, Compass, Smile, PenTool, ThumbsUp, Bug } from 'lucide-react';
 import { communityApps } from '@/lib/data';
 import { BackButton } from '@/components/back-button';
 import { cn } from '@/lib/utils';
@@ -129,6 +129,11 @@ const FeedbackFormModal = ({
     );
 };
 
+const FeedbackIcon = ({ type }: { type: SubmittedFeedback['type'] }) => {
+    if (type === 'Bug') return <Bug className="w-5 h-5 text-red-500 flex-shrink-0" />;
+    return <Lightbulb className="w-5 h-5 text-amber-500 flex-shrink-0" />;
+}
+
 
 export default function AppTestingOngoingPage({ params }: { params: { id: string } }) {
     const app = communityApps.find(p => p.id.toString() === params.id && p.status === 'ongoing');
@@ -141,8 +146,7 @@ export default function AppTestingOngoingPage({ params }: { params: { id: string
         notFound();
     }
     
-    const totalDays = app.totalDays || 14;
-    const daysCompleted = Math.floor(totalDays * (app.progress || 0) / 100);
+    const daysCompleted = Math.floor((app.totalDays || 14) * (app.progress || 0) / 100);
 
     const handleSaveFeedback = (data: any) => {
         // Logic to either create a new feedback or update an existing one
@@ -160,7 +164,7 @@ export default function AppTestingOngoingPage({ params }: { params: { id: string
                  <header className="mb-8 max-w-7xl mx-auto">
                     <BackButton href="/community-dashboard" className="mb-4" />
                      <div className="flex items-start gap-6">
-                        <Image src={app.icon} alt={app.name} width={100} height={100} className="rounded-2xl border" data-ai-hint={app.dataAiHint} />
+                        <Image src={app.icon} alt={app.name} width={100} height={100} className="rounded-2xl border bg-background" data-ai-hint={app.dataAiHint} />
                         <div>
                             <h1 className="text-4xl font-bold">{app.name}</h1>
                              <div className="flex items-center gap-4 mt-2">
@@ -177,10 +181,10 @@ export default function AppTestingOngoingPage({ params }: { params: { id: string
                     <Card className="rounded-xl overflow-hidden">
                         <CardHeader>
                             <CardTitle>Testing in Progress</CardTitle>
-                            <CardDescription>You have completed {daysCompleted} of {totalDays} days. Keep the app installed and use it occasionally to complete the test.</CardDescription>
+                            <CardDescription>You have completed {daysCompleted} of {app.totalDays} days. Keep the app installed and use it occasionally to complete the test.</CardDescription>
                         </CardHeader>
                         <CardContent>
-                            <DailyProgress progress={app.progress || 0} totalDays={totalDays} />
+                            <DailyProgress progress={app.progress || 0} totalDays={app.totalDays} />
                         </CardContent>
                     </Card>
                     
@@ -194,7 +198,7 @@ export default function AppTestingOngoingPage({ params }: { params: { id: string
                     <Card>
                         <CardHeader className="flex flex-row items-center justify-between">
                             <div>
-                                <CardTitle className="flex items-center gap-2"><Lightbulb className="w-5 h-5 text-amber-500" /> My Submitted Feedback</CardTitle>
+                                <CardTitle className="flex items-center gap-2">My Submitted Feedback</CardTitle>
                                 <CardDescription>Here is the feedback you've submitted so far. You can edit or delete your comments.</CardDescription>
                             </div>
                              <FeedbackFormModal onSave={handleSaveFeedback}>
@@ -202,53 +206,53 @@ export default function AppTestingOngoingPage({ params }: { params: { id: string
                             </FeedbackFormModal>
                         </CardHeader>
                         <CardContent>
-                            {submittedFeedback.length > 0 ? (
-                                <div className="border rounded-lg overflow-hidden">
-                                    <Table>
-                                        <TableHeader>
-                                            <TableRow>
-                                                <TableHead className="w-[120px]">Type</TableHead>
-                                                <TableHead>Comment</TableHead>
-                                                <TableHead className="text-right w-[120px]">Actions</TableHead>
-                                            </TableRow>
-                                        </TableHeader>
-                                        <TableBody>
-                                            {submittedFeedback.map((fb, i) => (
-                                                <TableRow key={i}>
-                                                    <TableCell className="font-medium">{fb.type}</TableCell>
-                                                    <TableCell className="text-muted-foreground">{fb.comment}</TableCell>
-                                                    <TableCell className="text-right">
-                                                         <FeedbackFormModal feedback={fb} onSave={handleSaveFeedback}>
-                                                            <Button variant="ghost" size="icon"><Edit className="w-4 h-4" /></Button>
-                                                        </FeedbackFormModal>
-                                                         <AlertDialog>
-                                                            <AlertDialogTrigger asChild>
-                                                                <Button variant="ghost" size="icon" className="text-red-500 hover:text-red-600"><Trash2 className="w-4 h-4" /></Button>
-                                                            </AlertDialogTrigger>
-                                                            <AlertDialogContent>
-                                                                <AlertDialogHeader>
-                                                                    <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-                                                                    <AlertDialogDescription>
-                                                                        This action cannot be undone. This will permanently delete your feedback.
-                                                                    </AlertDialogDescription>
-                                                                </AlertDialogHeader>
-                                                                <AlertDialogFooter>
-                                                                    <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                                                    <AlertDialogAction onClick={() => handleDeleteFeedback(fb.id)}>Delete</AlertDialogAction>
-                                                                </AlertDialogFooter>
-                                                            </AlertDialogContent>
-                                                        </AlertDialog>
-                                                    </TableCell>
-                                                </TableRow>
-                                            ))}
-                                        </TableBody>
-                                    </Table>
-                                </div>
-                            ) : (
-                                <div className="text-center py-8 text-muted-foreground bg-secondary/50 rounded-lg">
-                                    You haven't submitted any feedback for this app yet.
-                                </div>
-                            )}
+                            <div className="space-y-4">
+                                {submittedFeedback.length > 0 ? (
+                                    submittedFeedback.map((fb, i) => (
+                                        <div key={fb.id} className="group">
+                                            <div className="flex items-start gap-4">
+                                                <div className="bg-secondary p-3 rounded-full mt-1">
+                                                    <FeedbackIcon type={fb.type} />
+                                                </div>
+                                                <div className="flex-grow">
+                                                    <p className="font-semibold">{fb.type}</p>
+                                                    <p className="text-sm text-muted-foreground">{fb.comment}</p>
+                                                </div>
+                                                <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                    <FeedbackFormModal feedback={fb} onSave={handleSaveFeedback}>
+                                                        <Button variant="ghost" size="icon"><Edit className="w-4 h-4" /></Button>
+                                                    </FeedbackFormModal>
+                                                    <AlertDialog>
+                                                        <AlertDialogTrigger asChild>
+                                                            <Button variant="ghost" size="icon" className="text-red-500 hover:text-red-600"><Trash2 className="w-4 h-4" /></Button>
+                                                        </AlertDialogTrigger>
+                                                        <AlertDialogContent>
+                                                            <AlertDialogHeader>
+                                                                <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                                                                <AlertDialogDescription>
+                                                                    This action cannot be undone. This will permanently delete your feedback.
+                                                                </AlertDialogDescription>
+                                                            </AlertDialogHeader>
+                                                            <AlertDialogFooter>
+                                                                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                                                <AlertDialogAction onClick={() => handleDeleteFeedback(fb.id)}>Delete</AlertDialogAction>
+                                                            </AlertDialogFooter>
+                                                        </AlertDialogContent>
+                                                    </AlertDialog>
+                                                </div>
+                                            </div>
+                                            {i < submittedFeedback.length - 1 && <Separator className="mt-4" />}
+                                        </div>
+                                    ))
+                                ) : (
+                                    <div className="text-center py-12 text-muted-foreground bg-secondary/50 rounded-lg">
+                                        <p className="mb-2">You haven't submitted any feedback for this app yet.</p>
+                                        <FeedbackFormModal onSave={handleSaveFeedback}>
+                                            <Button variant="outline"><PlusCircle className="mr-2 h-4 w-4"/> Submit Your First Feedback</Button>
+                                        </FeedbackFormModal>
+                                    </div>
+                                )}
+                            </div>
                         </CardContent>
                     </Card>
 
@@ -264,7 +268,3 @@ export default function AppTestingOngoingPage({ params }: { params: { id: string
         </div>
     );
 }
-
-    
-
-    
