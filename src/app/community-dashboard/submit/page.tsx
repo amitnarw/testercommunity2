@@ -89,7 +89,7 @@ export default function SubmitAppPage() {
         console.log("Form submitted:", data);
         alert("App submitted successfully! (Check console for data)");
     }
-    
+
     const { ref: connectRef, inView: connectInView } = useInView({ threshold: 0.5 });
     const { ref: describeRef, inView: describeInView } = useInView({ threshold: 0.5 });
     const { ref: configureRef, inView: configureInView } = useInView({ threshold: 0.5 });
@@ -99,7 +99,7 @@ export default function SubmitAppPage() {
         else if (describeInView) setActiveStep('describe');
         else if (configureInView) setActiveStep('configure');
     }, [connectInView, describeInView, configureInView]);
-    
+
 
     const [isMounted, setIsMounted] = useState(false);
     useEffect(() => {
@@ -178,7 +178,7 @@ export default function SubmitAppPage() {
                                 <ul className="space-y-2">
                                     {formSteps.map((step) => (
                                         <li key={step.id}>
-                                            <a 
+                                            <a
                                                 href={`#${step.id}`}
                                                 onClick={(e) => {
                                                     e.preventDefault();
@@ -187,7 +187,7 @@ export default function SubmitAppPage() {
                                                 className={cn(
                                                     "flex items-center gap-3 p-3 rounded-lg transition-all",
                                                     activeStep === step.id ? "bg-primary/10 text-primary" : "text-muted-foreground hover:bg-secondary/50"
-                                            )}>
+                                                )}>
                                                 <div className={cn(
                                                     "p-2 rounded-full flex items-center justify-center border-2 transition-all",
                                                     activeStep === step.id ? "bg-primary text-primary-foreground border-primary" : "bg-secondary border-border group-hover:border-primary/50"
@@ -308,7 +308,7 @@ export default function SubmitAppPage() {
                                                     <FormItem>
                                                         <FormLabel>Number of Testers (Your balance: 1,250 Points)</FormLabel>
                                                         <FormControl>
-                                                             <div className="flex items-center gap-4 pt-2">
+                                                            <div className="flex items-center gap-4 pt-2">
                                                                 <Slider
                                                                     defaultValue={[field.value]}
                                                                     min={5}
@@ -318,9 +318,9 @@ export default function SubmitAppPage() {
                                                                     className={cn("w-[85%]", field.name)}
                                                                 />
                                                                 <div className="font-bold text-lg text-primary w-[15%] text-center">{field.value}</div>
-                                                             </div>
+                                                            </div>
                                                         </FormControl>
-                                                         <FormDescription className="mt-4 flex items-start gap-2 bg-secondary/80 p-3 rounded-lg border border-border">
+                                                        <FormDescription className="mt-4 flex items-start gap-2 bg-secondary/80 p-3 rounded-lg border border-border">
                                                             <AlertCircle className="w-5 h-5 text-muted-foreground mt-0.5 flex-shrink-0" />
                                                             <div>
                                                                 <span className='font-semibold text-foreground'>Pro Tip:</span> We recommend selecting at least 15-20 testers. Since community testers can drop out, choosing extra provides a buffer to ensure you meet Google's 14-day/12-tester requirement without delays.
@@ -330,14 +330,14 @@ export default function SubmitAppPage() {
                                                     </FormItem>
                                                 )}
                                             />
-                                             <FormField
+                                            <FormField
                                                 control={form.control}
                                                 name="testDuration"
                                                 render={({ field }) => (
                                                     <FormItem>
                                                         <FormLabel>Test Duration (Days)</FormLabel>
                                                         <FormControl>
-                                                             <div className="flex items-center gap-4 pt-2">
+                                                            <div className="flex items-center gap-4 pt-2">
                                                                 <Slider
                                                                     defaultValue={[field.value]}
                                                                     min={14}
@@ -347,9 +347,9 @@ export default function SubmitAppPage() {
                                                                     className={cn("w-[85%]", field.name)}
                                                                 />
                                                                 <div className="font-bold text-lg text-primary w-[15%] text-center">{field.value}</div>
-                                                             </div>
+                                                            </div>
                                                         </FormControl>
-                                                         <FormDescription className="mt-4 flex items-start gap-2 bg-secondary/80 p-3 rounded-lg border border-border">
+                                                        <FormDescription className="mt-4 flex items-start gap-2 bg-secondary/80 p-3 rounded-lg border border-border">
                                                             <AlertCircle className="w-5 h-5 text-muted-foreground mt-0.5 flex-shrink-0" />
                                                             <div>
                                                                 <span className='font-semibold text-foreground'>Pro Tip:</span> While the minimum is 14 days, we suggest 16-20 days. This gives community testers a flexible window to complete the test period without pressure.
@@ -371,4 +371,4 @@ export default function SubmitAppPage() {
         </div>
     );
 
-    
+}
