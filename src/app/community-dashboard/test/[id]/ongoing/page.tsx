@@ -15,7 +15,6 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Separator } from '@/components/ui/separator';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import type { SubmittedFeedback } from '@/lib/types';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger, DialogClose } from '@/components/ui/dialog';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger, } from "@/components/ui/alert-dialog"
@@ -163,11 +162,11 @@ export default function AppTestingOngoingPage({ params }: { params: { id: string
             <div className="container mx-auto px-4 md:px-6 py-12">
                  <header className="mb-8 max-w-7xl mx-auto">
                     <BackButton href="/community-dashboard" className="mb-4" />
-                     <div className="flex items-start gap-6">
+                     <div className="flex flex-col md:flex-row items-start gap-6">
                         <Image src={app.icon} alt={app.name} width={100} height={100} className="rounded-2xl border bg-background" data-ai-hint={app.dataAiHint} />
                         <div>
                             <h1 className="text-4xl font-bold">{app.name}</h1>
-                             <div className="flex items-center gap-4 mt-2">
+                             <div className="flex flex-wrap items-center gap-4 mt-2">
                                 <Badge variant="outline">{app.category}</Badge>
                                 <p className="text-sm text-muted-foreground">Requires Android {app.androidVersion}</p>
                                 <p className="text-sm text-muted-foreground">~{app.estimatedTime} test</p>
@@ -196,7 +195,7 @@ export default function AppTestingOngoingPage({ params }: { params: { id: string
                     </section>
                     
                     <Card>
-                        <CardHeader className="flex flex-row items-center justify-between">
+                        <CardHeader className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                             <div>
                                 <CardTitle className="flex items-center gap-2">My Submitted Feedback</CardTitle>
                                 <CardDescription>Here is the feedback you've submitted so far. You can edit or delete your comments.</CardDescription>
