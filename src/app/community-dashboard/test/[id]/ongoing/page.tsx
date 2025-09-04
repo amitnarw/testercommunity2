@@ -24,32 +24,41 @@ const DailyProgress = ({ progress, totalDays }: { progress: number, totalDays: n
     const completedDays = Math.floor(totalDays * (progress || 0) / 100);
     const currentDay = completedDays + 1;
 
+    const pastDays = Array.from({ length: completedDays }, (_, i) => i + 1);
+    const futureDays = Array.from({ length: Math.max(0, totalDays - currentDay) }, (_, i) => currentDay + i + 1);
+
     return (
-        <div className="flex flex-wrap gap-4 items-center justify-center">
-            {Array.from({ length: totalDays }, (_, i) => {
-                const dayNumber = i + 1;
-                const isCompleted = dayNumber < currentDay;
-                const isCurrent = dayNumber === currentDay;
-                
-                return (
-                    <div
-                        key={dayNumber}
-                        className={cn(
-                            "flex-shrink-0 basis-20 h-24 rounded-xl flex flex-col items-center justify-center p-2 transition-all duration-300",
-                            isCompleted 
-                                ? "bg-green-100 dark:bg-green-900/50 text-green-700 dark:text-green-300 shadow-inner" 
-                                : isCurrent 
-                                    ? "bg-primary/10 text-primary shadow-lg shadow-primary/20 scale-110" 
-                                    : "bg-secondary text-muted-foreground"
-                        )}
-                    >
-                        <p className="text-xs font-medium">Day {dayNumber}</p>
-                        <div className="text-2xl font-bold mt-1">
-                            {isCompleted ? <CheckCircle className="w-5 h-5" /> : dayNumber}
-                        </div>
-                    </div>
-                );
-            })}
+        <div className="w-full grid grid-cols-1 md:grid-cols-3 items-center gap-8">
+            {/* Past Days */}
+            <div className="flex flex-row md:flex-col gap-2 justify-center items-center md:items-end">
+                {pastDays.map(day => (
+                     <div key={`past-${day}`} className="flex items-center gap-2 text-muted-foreground p-2 rounded-lg bg-secondary/50 text-sm">
+                        <CheckCircle className="w-4 h-4 text-green-500"/>
+                        <span className="hidden sm:inline">Day {day}</span>
+                     </div>
+                ))}
+            </div>
+            
+            {/* Current Day */}
+            <div className="relative rounded-2xl p-6 text-center text-primary-foreground overflow-hidden bg-primary/10 min-h-[200px] flex flex-col items-center justify-center">
+                <div className="absolute inset-0 bg-gradient-to-br from-primary via-primary/80 to-accent z-0"></div>
+                <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_rgba(255,255,255,0.1)_0%,_rgba(255,255,255,0)_70%)] z-10"></div>
+
+                <div className="relative z-20">
+                     <p className="text-sm font-semibold opacity-80">Currently On</p>
+                    <p className="text-6xl font-black">{currentDay}</p>
+                    <p className="text-sm font-semibold opacity-80">Day of {totalDays}</p>
+                </div>
+            </div>
+
+             {/* Future Days */}
+             <div className="flex flex-row md:flex-col gap-2 justify-center items-center md:items-start">
+                {futureDays.map(day => (
+                     <div key={`future-${day}`} className="flex items-center gap-2 text-muted-foreground p-2 rounded-lg bg-secondary/50 text-sm">
+                        <span className="font-bold">{day}</span>
+                     </div>
+                ))}
+            </div>
         </div>
     );
 };
@@ -267,3 +276,4 @@ export default function AppTestingOngoingPage({ params }: { params: { id: string
         </div>
     );
 }
+
