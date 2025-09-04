@@ -24,7 +24,7 @@ const DailyProgress = ({ progress, totalDays }: { progress: number, totalDays: n
     const completedDays = Math.floor(totalDays * (progress || 0) / 100);
 
     return (
-        <div className="w-full grid grid-cols-4 sm:grid-cols-7 gap-2">
+        <div className="w-full grid grid-cols-4 sm:grid-cols-8 lg:grid-cols-10 gap-3 sm:gap-4">
             {Array.from({ length: totalDays }, (_, i) => {
                 const day = i + 1;
                 const isCompleted = day <= completedDays;
@@ -34,12 +34,12 @@ const DailyProgress = ({ progress, totalDays }: { progress: number, totalDays: n
                     <div
                         key={day}
                         className={cn(
-                            "aspect-square rounded-lg flex flex-col items-center justify-center p-1 transition-all duration-300",
+                            "aspect-square rounded-xl flex flex-col items-center justify-center p-1 transition-all duration-300 shadow-none hover:scale-105",
                             isCurrent 
-                                ? 'bg-gradient-to-br from-primary to-accent text-primary-foreground shadow-lg scale-110' 
-                                : 'bg-secondary',
+                                ? 'bg-gradient-to-br from-primary to-accent text-primary-foreground scale-110 !shadow-primary/20' 
+                                : 'bg-gradient-to-br from-gray-400/20 to-gray-400/2 !shadow-gray-400/20',
                             isCompleted 
-                                ? 'bg-secondary/50 text-muted-foreground shadow-inner' 
+                                ? 'bg-gradient-to-br from-green-400/40 to-green-400/10 dark:from-green-400/60 dark:to-green-400/20 text-muted-foreground' 
                                 : 'shadow-sm'
                         )}
                     >
@@ -47,8 +47,8 @@ const DailyProgress = ({ progress, totalDays }: { progress: number, totalDays: n
                              <CheckCircle className="w-5 h-5 text-green-500" />
                         ) : (
                             <>
-                                <p className={cn("text-[10px]", isCurrent ? 'opacity-80' : 'text-muted-foreground')}>Day</p>
-                                <p className={cn("font-bold", isCurrent ? 'text-2xl' : 'text-xl')}>{day}</p>
+                                <p className={cn("text-[10px] sm:text-xs", isCurrent ? 'opacity-80' : 'text-muted-foreground')}>Day</p>
+                                <p className={cn("font-bold", isCurrent ? 'text-2xl sm:text-4xl' : 'text-lg sm:text-2xl')}>{day}</p>
                             </>
                         )}
                     </div>
