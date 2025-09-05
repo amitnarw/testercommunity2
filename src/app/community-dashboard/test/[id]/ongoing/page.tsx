@@ -18,13 +18,12 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger, } from "@/components/ui/alert-dialog"
 import { PlusCircle } from 'lucide-react';
 import { AppInfoSidebar } from '@/components/appInfoSidebar';
-import Image from 'next/image';
 
 const DailyProgress = ({ progress, totalDays }: { progress: number, totalDays: number }) => {
     const completedDays = Math.floor(totalDays * (progress || 0) / 100);
 
     return (
-        <div className="grid grid-cols-7 sm:grid-cols-10 md:grid-cols-14 gap-2">
+        <div className="w-full grid grid-cols-5 sm:grid-cols-10 gap-3 sm:gap-3">
             {Array.from({ length: totalDays }, (_, i) => {
                 const day = i + 1;
                 const isCompleted = day <= completedDays;
@@ -34,12 +33,12 @@ const DailyProgress = ({ progress, totalDays }: { progress: number, totalDays: n
                     <div
                         key={day}
                         className={cn(
-                            "aspect-square rounded-xl flex flex-col items-center justify-center p-1 transition-all duration-300 shadow-sm",
-                             isCurrent
-                                ? 'bg-gradient-to-br from-primary to-accent text-primary-foreground scale-110 shadow-lg shadow-primary/30'
-                                : 'bg-card hover:shadow-md',
+                            "aspect-square rounded-xl flex flex-col items-center justify-center p-1 transition-all duration-300 shadow-none hover:scale-105",
+                            isCurrent
+                                ? 'bg-gradient-to-br from-primary to-accent text-primary-foreground scale-110 !shadow-primary/20'
+                                : 'bg-gradient-to-br from-gray-400/20 to-gray-400/2 !shadow-gray-400/20',
                             isCompleted
-                                ? 'bg-gradient-to-br from-green-500/10 to-green-500/0 text-muted-foreground shadow-inner'
+                                ? 'bg-gradient-to-br from-green-400/40 to-green-400/10 dark:from-green-400/60 dark:to-green-400/20 text-muted-foreground'
                                 : 'shadow-sm'
                         )}
                     >
@@ -160,47 +159,26 @@ export default function AppTestingOngoingPage({ params }: { params: { id: string
 
     return (
         <div className="bg-secondary/50 min-h-screen">
-            <div className="container mx-auto px-4 md:px-6 py-12">
+            <div className="container mx-auto px-4 md:px-6">
                 <header className="mb-8 max-w-7xl mx-auto">
                     <BackButton href="/community-dashboard" className="mb-4" />
-                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-center">
-                         <div className="lg:col-span-2 flex flex-col sm:flex-row items-start gap-6">
-                            <Image src={app.icon} alt={app.name} width={100} height={100} className="rounded-2xl border bg-background flex-shrink-0" data-ai-hint={app.dataAiHint} />
-                            <div>
-                                <h1 className="text-4xl font-bold">{app.name}</h1>
-                                <p className="text-muted-foreground mt-2">{app.shortDescription}</p>
-                            </div>
-                        </div>
-                        <Card className="border-0 rounded-2xl shadow-xl shadow-primary/10 bg-gradient-to-br from-primary to-accent text-primary-foreground">
-                            <CardHeader>
-                                <CardTitle>Reward</CardTitle>
-                            </CardHeader>
-                            <CardContent>
-                                <p className="text-4xl font-bold flex items-center gap-2">
-                                    <Star className="w-8 h-8" /> {app.points.toLocaleString()}
-                                </p>
-                                <CardDescription className="text-primary-foreground/80">Points on completion</CardDescription>
-                            </CardContent>
-                        </Card>
-                    </div>
                 </header>
 
                 <main className="max-w-7xl mx-auto grid lg:grid-cols-3 gap-12">
                     <div className='flex flex-col gap-10 lg:col-span-2'>
-                       <section>
-                            <Card>
-                                <CardHeader>
-                                    <CardTitle>Testing in Progress</CardTitle>
-                                    <CardDescription>Keep the app installed and engage with it daily to complete the test.</CardDescription>
-                                </CardHeader>
-                                <CardContent>
-                                    <DailyProgress progress={app.progress || 0} totalDays={app.totalDays} />
-                                </CardContent>
-                            </Card>
-                        </section>
-                        
+                        <div className="lg:col-span-2 space-y-12">
+                            <section>
+                                <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-br from-primary to-accent bg-clip-text text-transparent">{app.name}</h1>
+                                <p className="text-muted-foreground text-lg mt-2 leading-relaxed">{app.shortDescription}</p>
+                            </section>
+
+                        </div>
                         <section>
-                            <h2 className="text-2xl font-bold mb-4">Developer's Instructions</h2>
+                            <DailyProgress progress={app.progress || 0} totalDays={app.totalDays} />
+                        </section>
+
+                        <section className='mt-12'>
+                            <h2 className="text-2xl font-bold mb-4">Developer's Instructions <span className="bg-gradient-to-b from-primary to-primary/50 text-white font-bold rounded-lg px-4 py-0.5 text-xl ml-2">Important</span></h2>
                             <div className="prose prose-base dark:prose-invert leading-relaxed text-white dark:text-black bg-[#121212] dark:bg-white p-6 rounded-lg border-primary border-l-4 shadow-xl shadow-gray-300 dark:shadow-gray-700">
                                 <p>{app.testingInstructions}</p>
                             </div>
@@ -275,4 +253,3 @@ export default function AppTestingOngoingPage({ params }: { params: { id: string
         </div>
     );
 }
-
