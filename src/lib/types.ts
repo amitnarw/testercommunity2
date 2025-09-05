@@ -147,11 +147,9 @@ export type Project = {
 
 export type SubmittedFeedback = {
   id: number;
-  type: 'Bug' | 'Suggestion';
+  type: 'Bug' | 'Suggestion' | 'Praise';
   comment: string;
-  positive: string;
-  negative: string;
-  rating: number;
+  screenshot: string | null;
 }
     
 
