@@ -4,7 +4,7 @@
 import { notFound } from 'next/navigation';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { ExternalLink, CheckCircle, Star, Lightbulb, Upload, Edit, Trash2, Bug, LayoutGrid, List } from 'lucide-react';
+import { LayoutGrid, CheckCircle, Star, Lightbulb, Upload, Edit, List, Bug, Trash2 } from 'lucide-react';
 import { communityApps } from '@/lib/data';
 import { BackButton } from '@/components/back-button';
 import { cn } from '@/lib/utils';
@@ -23,7 +23,7 @@ const DailyProgress = ({ progress, totalDays }: { progress: number, totalDays: n
     const completedDays = Math.floor(totalDays * (progress || 0) / 100);
 
     return (
-        <div className="grid grid-cols-7 gap-2 md:gap-3">
+        <div className="w-full grid grid-cols-5 sm:grid-cols-10 gap-3 sm:gap-3">
             {Array.from({ length: totalDays }, (_, i) => {
                 const day = i + 1;
                 const isCompleted = day <= completedDays;
@@ -33,21 +33,21 @@ const DailyProgress = ({ progress, totalDays }: { progress: number, totalDays: n
                     <div
                         key={day}
                         className={cn(
-                            "aspect-square rounded-2xl flex flex-col items-center justify-center p-2 transition-all duration-300 shadow-sm",
+                            "aspect-square rounded-xl flex flex-col items-center justify-center p-1 transition-all duration-300 shadow-none hover:scale-105",
                             isCurrent
-                                ? 'bg-gradient-to-br from-primary to-accent text-primary-foreground scale-110 shadow-lg shadow-primary/20'
-                                : 'bg-card',
+                                ? 'bg-gradient-to-br from-primary to-accent text-primary-foreground scale-110 !shadow-primary/20'
+                                : 'bg-gradient-to-br from-gray-400/20 to-gray-400/2 !shadow-gray-400/20',
                             isCompleted
-                                ? 'bg-background shadow-inner'
-                                : ''
+                                ? 'bg-gradient-to-br from-green-400/40 to-green-400/10 dark:from-green-400/60 dark:to-green-400/20 text-muted-foreground'
+                                : 'shadow-sm'
                         )}
                     >
                         {isCompleted ? (
-                            <CheckCircle className="w-5 h-5 text-green-500" />
+                            <CheckCircle className="w-4 h-4 text-green-500" />
                         ) : (
                             <>
-                                <p className={cn("text-xs", isCurrent ? 'opacity-80' : 'text-muted-foreground')}>Day</p>
-                                <p className={cn("font-bold", isCurrent ? 'text-4xl' : 'text-2xl')}>{day}</p>
+                                <p className={cn("text-[10px] sm:text-xs", isCurrent ? 'opacity-80' : 'text-muted-foreground')}>Day</p>
+                                <p className={cn("font-bold", isCurrent ? 'text-xl sm:text-2xl' : 'text-lg sm:text-xl')}>{day}</p>
                             </>
                         )}
                     </div>
@@ -134,7 +134,7 @@ const FeedbackFormModal = ({
 const FeedbackIcon = ({ type }: { type: SubmittedFeedback['type'] }) => {
     if (type === 'Bug') return <Bug className="w-5 h-5 text-red-500 flex-shrink-0" />;
     return <Lightbulb className="w-5 h-5 text-amber-500 flex-shrink-0" />;
-};
+}
 
 const FeedbackListItem = ({ fb, onSave, onDelete }: { fb: SubmittedFeedback, onSave: (data: any) => void, onDelete: (id: number) => void }) => (
     <Card className="bg-secondary/50 p-4 shadow-none border-0">
@@ -215,7 +215,6 @@ const FeedbackGridItem = ({ fb, onSave, onDelete }: { fb: SubmittedFeedback, onS
     </Card>
 );
 
-
 export default function AppTestingOngoingPage({ params }: { params: { id: string } }) {
     const app = communityApps.find(p => p.id.toString() === params.id && p.status === 'ongoing');
     const [viewMode, setViewMode] = useState<'grid' | 'list'>('list');
@@ -239,39 +238,22 @@ export default function AppTestingOngoingPage({ params }: { params: { id: string
 
     return (
         <div className="bg-secondary/50 min-h-screen">
-            <div className="container mx-auto px-4 md:px-6 py-8">
+            <div className="container mx-auto px-4 md:px-6">
                 <header className="mb-8 max-w-7xl mx-auto">
                     <BackButton href="/community-dashboard" className="mb-4" />
                 </header>
 
                 <main className="max-w-7xl mx-auto grid lg:grid-cols-3 gap-12">
                     <div className='flex flex-col gap-10 lg:col-span-2'>
-                        <section className="grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
-                            <div className="md:col-span-2">
-                                 <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-br from-primary to-accent bg-clip-text text-transparent">{app.name}</h1>
+                        <div className="lg:col-span-2 space-y-12">
+                            <section>
+                                <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-br from-primary to-accent bg-clip-text text-transparent">{app.name}</h1>
                                 <p className="text-muted-foreground text-lg mt-2 leading-relaxed">{app.shortDescription}</p>
-                            </div>
-                             <Card className="border-0 rounded-2xl shadow-xl shadow-gray-100 dark:shadow-gray-900 overflow-hidden bg-card">
-                                <CardFooter className="p-2 bg-gradient-to-b from-primary/0 to-primary/20 rounded-b-2xl relative">
-                                    <div className="w-full p-4 rounded-xl text-center">
-                                        <p className="text-lg font-semibold text-primary text-start">REWARD</p>
-                                        <div className="text-3xl font-bold text-foreground flex items-center gap-2 justify-start mt-1">
-                                            {app.points} Points
-                                            <Star className="w-7 h-7 text-primary/0 fill-primary/20 scale-[6] absolute bottom-8 right-6 rotate-90" />
-                                        </div>
-                                    </div>
-                                </CardFooter>
-                            </Card>
-                        </section>
+                            </section>
 
+                        </div>
                         <section>
-                            <CardHeader className="px-0">
-                                <CardTitle>Testing in Progress</CardTitle>
-                                <CardDescription>Keep the app installed and engage with it daily to complete the test.</CardDescription>
-                            </CardHeader>
-                            <CardContent className="p-0">
-                                <DailyProgress progress={app.progress || 0} totalDays={app.totalDays} />
-                            </CardContent>
+                            <DailyProgress progress={app.progress || 0} totalDays={app.totalDays} />
                         </section>
 
                         <section className='mt-12'>
@@ -282,14 +264,14 @@ export default function AppTestingOngoingPage({ params }: { params: { id: string
                         </section>
 
                         <section>
-                            <Card className="rounded-2xl bg-card p-6">
+                            <Card className="rounded-2xl bg-card p-6 border-none">
                                 <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
                                     <div>
                                         <h2 className="text-2xl font-bold">My Submitted Feedback</h2>
                                         <p className="text-muted-foreground">Here is the feedback you've submitted so far.</p>
                                     </div>
                                     <div className="flex items-center gap-2">
-                                        <div className="bg-secondary p-1 rounded-lg flex items-center gap-1">
+                                        <div className="flex items-center gap-1">
                                             <Button variant={viewMode === 'list' ? 'secondary' : 'ghost'} size="icon" onClick={() => setViewMode('list')}>
                                                 <List className="w-4 h-4" />
                                             </Button>
@@ -327,6 +309,7 @@ export default function AppTestingOngoingPage({ params }: { params: { id: string
                                 )}
                             </Card>
                         </section>
+
                     </div>
 
                     <aside className="lg:col-span-1">
@@ -337,5 +320,3 @@ export default function AppTestingOngoingPage({ params }: { params: { id: string
         </div>
     );
 }
-
-    
