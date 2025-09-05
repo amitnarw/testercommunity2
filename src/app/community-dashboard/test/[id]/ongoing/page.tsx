@@ -18,12 +18,13 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger, } from "@/components/ui/alert-dialog"
 import { PlusCircle } from 'lucide-react';
 import { AppInfoSidebar } from '@/components/appInfoSidebar';
+import Image from 'next/image';
 
 const DailyProgress = ({ progress, totalDays }: { progress: number, totalDays: number }) => {
     const completedDays = Math.floor(totalDays * (progress || 0) / 100);
 
     return (
-        <div className="w-full grid grid-cols-5 sm:grid-cols-10 gap-3 sm:gap-3">
+        <div className="grid grid-cols-7 sm:grid-cols-10 md:grid-cols-14 gap-2">
             {Array.from({ length: totalDays }, (_, i) => {
                 const day = i + 1;
                 const isCompleted = day <= completedDays;
@@ -33,12 +34,12 @@ const DailyProgress = ({ progress, totalDays }: { progress: number, totalDays: n
                     <div
                         key={day}
                         className={cn(
-                            "aspect-square rounded-xl flex flex-col items-center justify-center p-1 transition-all duration-300 shadow-none hover:scale-105",
-                            isCurrent
-                                ? 'bg-gradient-to-br from-primary to-accent text-primary-foreground scale-110 !shadow-primary/20'
-                                : 'bg-gradient-to-br from-gray-400/20 to-gray-400/2 !shadow-gray-400/20',
+                            "aspect-square rounded-xl flex flex-col items-center justify-center p-1 transition-all duration-300 shadow-sm",
+                             isCurrent
+                                ? 'bg-gradient-to-br from-primary to-accent text-primary-foreground scale-110 shadow-lg shadow-primary/30'
+                                : 'bg-card hover:shadow-md',
                             isCompleted
-                                ? 'bg-gradient-to-br from-green-400/40 to-green-400/10 dark:from-green-400/60 dark:to-green-400/20 text-muted-foreground'
+                                ? 'bg-gradient-to-br from-green-500/10 to-green-500/0 text-muted-foreground shadow-inner'
                                 : 'shadow-sm'
                         )}
                     >
@@ -159,91 +160,110 @@ export default function AppTestingOngoingPage({ params }: { params: { id: string
 
     return (
         <div className="bg-secondary/50 min-h-screen">
-            <div className="container mx-auto px-4 md:px-6">
+            <div className="container mx-auto px-4 md:px-6 py-12">
                 <header className="mb-8 max-w-7xl mx-auto">
                     <BackButton href="/community-dashboard" className="mb-4" />
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-center">
+                         <div className="lg:col-span-2 flex flex-col sm:flex-row items-start gap-6">
+                            <Image src={app.icon} alt={app.name} width={100} height={100} className="rounded-2xl border bg-background flex-shrink-0" data-ai-hint={app.dataAiHint} />
+                            <div>
+                                <h1 className="text-4xl font-bold">{app.name}</h1>
+                                <p className="text-muted-foreground mt-2">{app.shortDescription}</p>
+                            </div>
+                        </div>
+                        <Card className="border-0 rounded-2xl shadow-xl shadow-primary/10 bg-gradient-to-br from-primary to-accent text-primary-foreground">
+                            <CardHeader>
+                                <CardTitle>Reward</CardTitle>
+                            </CardHeader>
+                            <CardContent>
+                                <p className="text-4xl font-bold flex items-center gap-2">
+                                    <Star className="w-8 h-8" /> {app.points.toLocaleString()}
+                                </p>
+                                <CardDescription className="text-primary-foreground/80">Points on completion</CardDescription>
+                            </CardContent>
+                        </Card>
+                    </div>
                 </header>
 
                 <main className="max-w-7xl mx-auto grid lg:grid-cols-3 gap-12">
                     <div className='flex flex-col gap-10 lg:col-span-2'>
-                        <div className="lg:col-span-2 space-y-12">
-                            <section>
-                                <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-br from-primary to-accent bg-clip-text text-transparent">{app.name}</h1>
-                                <p className="text-muted-foreground text-lg mt-2 leading-relaxed">{app.shortDescription}</p>
-                            </section>
-
-                        </div>
-                        <section>
-                            <DailyProgress progress={app.progress || 0} totalDays={app.totalDays} />
+                       <section>
+                            <Card>
+                                <CardHeader>
+                                    <CardTitle>Testing in Progress</CardTitle>
+                                    <CardDescription>Keep the app installed and engage with it daily to complete the test.</CardDescription>
+                                </CardHeader>
+                                <CardContent>
+                                    <DailyProgress progress={app.progress || 0} totalDays={app.totalDays} />
+                                </CardContent>
+                            </Card>
                         </section>
-
-                        <section className='mt-12'>
-                            <h2 className="text-2xl font-bold mb-4">Developer's Instructions <span className="bg-gradient-to-b from-primary to-primary/50 text-white font-bold rounded-lg px-4 py-0.5 text-xl ml-2">Important</span></h2>
+                        
+                        <section>
+                            <h2 className="text-2xl font-bold mb-4">Developer's Instructions</h2>
                             <div className="prose prose-base dark:prose-invert leading-relaxed text-white dark:text-black bg-[#121212] dark:bg-white p-6 rounded-lg border-primary border-l-4 shadow-xl shadow-gray-300 dark:shadow-gray-700">
                                 <p>{app.testingInstructions}</p>
                             </div>
                         </section>
 
-                        <Card>
-                            <CardHeader className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                        <section>
+                             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
                                 <div>
-                                    <CardTitle className="flex items-center gap-2">My Submitted Feedback</CardTitle>
-                                    <CardDescription>Here is the feedback you've submitted so far. You can edit or delete your comments.</CardDescription>
+                                    <h2 className="text-2xl font-bold">My Submitted Feedback</h2>
+                                    <p className="text-muted-foreground">Here is the feedback you've submitted so far. You can edit or delete your comments.</p>
                                 </div>
                                 <FeedbackFormModal onSave={handleSaveFeedback}>
-                                    <Button><PlusCircle className="mr-2 h-4 w-4" /> Submit New Feedback</Button>
+                                    <Button><PlusCircle className="mr-2 h-4 w-4" /> Submit New</Button>
                                 </FeedbackFormModal>
-                            </CardHeader>
-                            <CardContent>
-                                <div className="space-y-4">
-                                    {submittedFeedback.length > 0 ? (
-                                        submittedFeedback.map((fb, i) => (
-                                            <div key={fb.id} className="group">
-                                                <div className="flex items-start gap-4">
-                                                    <div className="bg-secondary p-3 rounded-full mt-1">
-                                                        <FeedbackIcon type={fb.type} />
-                                                    </div>
-                                                    <div className="flex-grow">
-                                                        <p className="font-semibold">{fb.type}</p>
-                                                        <p className="text-sm text-muted-foreground">{fb.comment}</p>
-                                                    </div>
-                                                    <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                                                        <FeedbackFormModal feedback={fb} onSave={handleSaveFeedback}>
-                                                            <Button variant="ghost" size="icon"><Edit className="w-4 h-4" /></Button>
-                                                        </FeedbackFormModal>
-                                                        <AlertDialog>
-                                                            <AlertDialogTrigger asChild>
-                                                                <Button variant="ghost" size="icon" className="text-red-500 hover:text-red-600"><Trash2 className="w-4 h-4" /></Button>
-                                                            </AlertDialogTrigger>
-                                                            <AlertDialogContent>
-                                                                <AlertDialogHeader>
-                                                                    <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-                                                                    <AlertDialogDescription>
-                                                                        This action cannot be undone. This will permanently delete your feedback.
-                                                                    </AlertDialogDescription>
-                                                                </AlertDialogHeader>
-                                                                <AlertDialogFooter>
-                                                                    <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                                                    <AlertDialogAction onClick={() => handleDeleteFeedback(fb.id)}>Delete</AlertDialogAction>
-                                                                </AlertDialogFooter>
-                                                            </AlertDialogContent>
-                                                        </AlertDialog>
-                                                    </div>
+                            </div>
+
+                            <div className="space-y-4">
+                                {submittedFeedback.length > 0 ? (
+                                    submittedFeedback.map((fb) => (
+                                        <Card key={fb.id} className="p-4 bg-card shadow-sm hover:shadow-md transition-shadow">
+                                            <div className="flex items-start gap-4">
+                                                <div className="bg-secondary p-3 rounded-full mt-1">
+                                                    <FeedbackIcon type={fb.type} />
                                                 </div>
-                                                {i < submittedFeedback.length - 1 && <Separator className="mt-4" />}
+                                                <div className="flex-grow">
+                                                    <p className="font-semibold">{fb.type}</p>
+                                                    <p className="text-sm text-muted-foreground">{fb.comment}</p>
+                                                </div>
+                                                <div className="flex items-center gap-1">
+                                                    <FeedbackFormModal feedback={fb} onSave={handleSaveFeedback}>
+                                                        <Button variant="ghost" size="icon"><Edit className="w-4 h-4" /></Button>
+                                                    </FeedbackFormModal>
+                                                    <AlertDialog>
+                                                        <AlertDialogTrigger asChild>
+                                                            <Button variant="ghost" size="icon" className="text-red-500 hover:text-red-600"><Trash2 className="w-4 h-4" /></Button>
+                                                        </AlertDialogTrigger>
+                                                        <AlertDialogContent>
+                                                            <AlertDialogHeader>
+                                                                <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                                                                <AlertDialogDescription>
+                                                                    This action cannot be undone. This will permanently delete your feedback.
+                                                                </AlertDialogDescription>
+                                                            </AlertDialogHeader>
+                                                            <AlertDialogFooter>
+                                                                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                                                <AlertDialogAction onClick={() => handleDeleteFeedback(fb.id)}>Delete</AlertDialogAction>
+                                                            </AlertDialogFooter>
+                                                        </AlertDialogContent>
+                                                    </AlertDialog>
+                                                </div>
                                             </div>
-                                        ))
-                                    ) : (
-                                        <div className="text-center py-12 text-muted-foreground bg-secondary/50 rounded-lg">
-                                            <p className="mb-2">You haven't submitted any feedback for this app yet.</p>
-                                            <FeedbackFormModal onSave={handleSaveFeedback}>
-                                                <Button variant="outline"><PlusCircle className="mr-2 h-4 w-4" /> Submit Your First Feedback</Button>
-                                            </FeedbackFormModal>
-                                        </div>
-                                    )}
-                                </div>
-                            </CardContent>
-                        </Card>
+                                        </Card>
+                                    ))
+                                ) : (
+                                    <div className="text-center py-12 text-muted-foreground bg-card rounded-lg">
+                                        <p className="mb-2">You haven't submitted any feedback for this app yet.</p>
+                                        <FeedbackFormModal onSave={handleSaveFeedback}>
+                                            <Button variant="outline"><PlusCircle className="mr-2 h-4 w-4" /> Submit Your First Feedback</Button>
+                                        </FeedbackFormModal>
+                                    </div>
+                                )}
+                            </div>
+                        </section>
 
                     </div>
 
@@ -255,3 +275,4 @@ export default function AppTestingOngoingPage({ params }: { params: { id: string
         </div>
     );
 }
+
