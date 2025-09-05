@@ -2,11 +2,9 @@
 'use client';
 
 import { notFound } from 'next/navigation';
-import Image from 'next/image';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { ExternalLink, CheckCircle, Star, Lightbulb, Upload, Edit, Trash2, Bug, MessagesSquare } from 'lucide-react';
+import { ExternalLink, CheckCircle, Star, Lightbulb, Upload, Edit, Trash2, Bug } from 'lucide-react';
 import { communityApps } from '@/lib/data';
 import { BackButton } from '@/components/back-button';
 import { cn } from '@/lib/utils';
@@ -19,32 +17,33 @@ import type { SubmittedFeedback } from '@/lib/types';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger, DialogClose } from '@/components/ui/dialog';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger, } from "@/components/ui/alert-dialog"
 import { PlusCircle } from 'lucide-react';
+import { AppInfoSidebar } from '@/components/appInfoSidebar';
 
 const DailyProgress = ({ progress, totalDays }: { progress: number, totalDays: number }) => {
     const completedDays = Math.floor(totalDays * (progress || 0) / 100);
 
     return (
-        <div className="w-full grid grid-cols-4 sm:grid-cols-7 lg:grid-cols-10 gap-2 sm:gap-3">
+        <div className="w-full grid grid-cols-5 sm:grid-cols-10 gap-3 sm:gap-3">
             {Array.from({ length: totalDays }, (_, i) => {
                 const day = i + 1;
                 const isCompleted = day <= completedDays;
                 const isCurrent = day === completedDays + 1;
-                
+
                 return (
                     <div
                         key={day}
                         className={cn(
                             "aspect-square rounded-xl flex flex-col items-center justify-center p-1 transition-all duration-300 shadow-none hover:scale-105",
-                            isCurrent 
-                                ? 'bg-gradient-to-br from-primary to-accent text-primary-foreground scale-110 !shadow-primary/20' 
+                            isCurrent
+                                ? 'bg-gradient-to-br from-primary to-accent text-primary-foreground scale-110 !shadow-primary/20'
                                 : 'bg-gradient-to-br from-gray-400/20 to-gray-400/2 !shadow-gray-400/20',
-                            isCompleted 
-                                ? 'bg-gradient-to-br from-green-400/40 to-green-400/10 dark:from-green-400/60 dark:to-green-400/20 text-muted-foreground' 
+                            isCompleted
+                                ? 'bg-gradient-to-br from-green-400/40 to-green-400/10 dark:from-green-400/60 dark:to-green-400/20 text-muted-foreground'
                                 : 'shadow-sm'
                         )}
                     >
                         {isCompleted ? (
-                             <CheckCircle className="w-4 h-4 text-green-500" />
+                            <CheckCircle className="w-4 h-4 text-green-500" />
                         ) : (
                             <>
                                 <p className={cn("text-[10px] sm:text-xs", isCurrent ? 'opacity-80' : 'text-muted-foreground')}>Day</p>
@@ -117,7 +116,7 @@ const FeedbackFormModal = ({
                         </div>
                     </div>
                     <DialogFooter className="pt-4 border-t">
-                         <div className="flex items-center space-x-3 mr-auto">
+                        <div className="flex items-center space-x-3 mr-auto">
                             <Checkbox id="confirmation" defaultChecked={true} />
                             <Label htmlFor="confirmation" className="text-sm font-normal text-muted-foreground">I confirm my feedback is accurate.</Label>
                         </div>
@@ -148,13 +147,11 @@ export default function AppTestingOngoingPage({ params }: { params: { id: string
     if (!app) {
         notFound();
     }
-    
-    const daysCompleted = Math.floor((app.totalDays || 14) * (app.progress || 0) / 100);
 
     const handleSaveFeedback = (data: any) => {
         console.log("Saving feedback:", data);
     }
-    
+
     const handleDeleteFeedback = (id: number) => {
         setSubmittedFeedback(prev => prev.filter(fb => fb.id !== id));
         console.log("Deleting feedback:", id);
@@ -162,118 +159,97 @@ export default function AppTestingOngoingPage({ params }: { params: { id: string
 
     return (
         <div className="bg-secondary/50 min-h-screen">
-            <div className="container mx-auto px-4 md:px-6 py-12">
-                 <header className="mb-8 max-w-7xl mx-auto">
+            <div className="container mx-auto px-4 md:px-6">
+                <header className="mb-8 max-w-7xl mx-auto">
                     <BackButton href="/community-dashboard" className="mb-4" />
-                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
-                        <div className="md:col-span-2 flex flex-col md:flex-row items-start gap-6">
-                            <Image src={app.icon} alt={app.name} width={100} height={100} className="rounded-2xl border bg-background" data-ai-hint={app.dataAiHint} />
-                            <div>
-                                <h1 className="text-4xl font-bold">{app.name}</h1>
-                                <div className="flex flex-wrap items-center gap-4 mt-2">
-                                    <Badge variant="outline">{app.category}</Badge>
-                                    <p className="text-sm text-muted-foreground">Requires Android {app.androidVersion}</p>
-                                    <p className="text-sm text-muted-foreground">~{app.estimatedTime} test</p>
-                                </div>
-                            </div>
-                        </div>
-                        <Card className="bg-primary/10 border-primary/20">
-                            <CardContent className="p-4 text-center">
-                                <p className="text-sm font-semibold text-primary">REWARD</p>
-                                <p className="text-4xl font-bold text-primary flex items-center justify-center gap-2">
-                                    <Star className="w-8 h-8" />
-                                    {app.points}
-                                </p>
-                                <p className="text-xs text-muted-foreground">Points upon completion</p>
-                            </CardContent>
-                        </Card>
-                    </div>
                 </header>
 
-                <main className="max-w-7xl mx-auto space-y-12">
-                     <section>
-                        <div className="text-center mb-8">
-                            <h2 className="text-2xl font-bold">Testing in Progress</h2>
-                            <p className="text-muted-foreground mt-1">You have completed {daysCompleted} of {app.totalDays} days. Keep the app installed and use it occasionally to complete the test.</p>
-                        </div>
-                        <DailyProgress progress={app.progress || 0} totalDays={app.totalDays} />
-                    </section>
-                    
-                    <section>
-                        <h2 className="text-2xl font-bold mb-4">Developer's Instructions <span className="text-primary font-semibold">Important</span></h2>
-                        <div className="prose prose-base dark:prose-invert leading-relaxed bg-card text-card-foreground p-6 rounded-lg border-primary/20 border-l-4 shadow-md">
-                            <p>{app.testingInstructions}</p>
-                        </div>
-                    </section>
-                    
-                    <Card>
-                        <CardHeader className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                            <div>
-                                <CardTitle className="flex items-center gap-2">My Submitted Feedback</CardTitle>
-                                <CardDescription>Here is the feedback you've submitted so far. You can edit or delete your comments.</CardDescription>
-                            </div>
-                             <FeedbackFormModal onSave={handleSaveFeedback}>
-                                <Button><PlusCircle className="mr-2 h-4 w-4"/> Submit New Feedback</Button>
-                            </FeedbackFormModal>
-                        </CardHeader>
-                        <CardContent>
-                            <div className="space-y-4">
-                                {submittedFeedback.length > 0 ? (
-                                    submittedFeedback.map((fb, i) => (
-                                        <div key={fb.id} className="group">
-                                            <div className="flex items-start gap-4">
-                                                <div className="bg-secondary p-3 rounded-full mt-1">
-                                                    <FeedbackIcon type={fb.type} />
-                                                </div>
-                                                <div className="flex-grow">
-                                                    <p className="font-semibold">{fb.type}</p>
-                                                    <p className="text-sm text-muted-foreground">{fb.comment}</p>
-                                                </div>
-                                                <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                                                    <FeedbackFormModal feedback={fb} onSave={handleSaveFeedback}>
-                                                        <Button variant="ghost" size="icon"><Edit className="w-4 h-4" /></Button>
-                                                    </FeedbackFormModal>
-                                                    <AlertDialog>
-                                                        <AlertDialogTrigger asChild>
-                                                            <Button variant="ghost" size="icon" className="text-red-500 hover:text-red-600"><Trash2 className="w-4 h-4" /></Button>
-                                                        </AlertDialogTrigger>
-                                                        <AlertDialogContent>
-                                                            <AlertDialogHeader>
-                                                                <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-                                                                <AlertDialogDescription>
-                                                                    This action cannot be undone. This will permanently delete your feedback.
-                                                                </AlertDialogDescription>
-                                                            </AlertDialogHeader>
-                                                            <AlertDialogFooter>
-                                                                <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                                                <AlertDialogAction onClick={() => handleDeleteFeedback(fb.id)}>Delete</AlertDialogAction>
-                                                            </AlertDialogFooter>
-                                                        </AlertDialogContent>
-                                                    </AlertDialog>
-                                                </div>
-                                            </div>
-                                            {i < submittedFeedback.length - 1 && <Separator className="mt-4" />}
-                                        </div>
-                                    ))
-                                ) : (
-                                    <div className="text-center py-12 text-muted-foreground bg-secondary/50 rounded-lg">
-                                        <p className="mb-2">You haven't submitted any feedback for this app yet.</p>
-                                        <FeedbackFormModal onSave={handleSaveFeedback}>
-                                            <Button variant="outline"><PlusCircle className="mr-2 h-4 w-4"/> Submit Your First Feedback</Button>
-                                        </FeedbackFormModal>
-                                    </div>
-                                )}
-                            </div>
-                        </CardContent>
-                    </Card>
+                <main className="max-w-7xl mx-auto grid lg:grid-cols-3 gap-12">
+                    <div className='flex flex-col gap-10 lg:col-span-2'>
+                        <div className="lg:col-span-2 space-y-12">
+                            <section>
+                                <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-br from-primary to-accent bg-clip-text text-transparent">{app.name}</h1>
+                                <p className="text-muted-foreground text-lg mt-2 leading-relaxed">{app.shortDescription}</p>
+                            </section>
 
-                    <div className="mt-8">
-                         <Button size="lg" variant="outline" asChild className="w-full">
-                           <a href={app.playStoreUrl} target="_blank" rel="noopener noreferrer">
-                                Re-open in Google Play <ExternalLink className="ml-2 h-4 w-4" />
-                           </a>
-                        </Button>
+                        </div>
+                        <section>
+                            <DailyProgress progress={app.progress || 0} totalDays={app.totalDays} />
+                        </section>
+
+                        <section className='mt-12'>
+                            <h2 className="text-2xl font-bold mb-4">Developer's Instructions <span className="bg-gradient-to-b from-primary to-primary/50 text-white font-bold rounded-lg px-4 py-0.5 text-xl ml-2">Important</span></h2>
+                            <div className="prose prose-base dark:prose-invert leading-relaxed text-white dark:text-black bg-[#121212] dark:bg-white p-6 rounded-lg border-primary border-l-4 shadow-xl shadow-gray-300 dark:shadow-gray-700">
+                                <p>{app.testingInstructions}</p>
+                            </div>
+                        </section>
+
+                        <Card>
+                            <CardHeader className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                                <div>
+                                    <CardTitle className="flex items-center gap-2">My Submitted Feedback</CardTitle>
+                                    <CardDescription>Here is the feedback you've submitted so far. You can edit or delete your comments.</CardDescription>
+                                </div>
+                                <FeedbackFormModal onSave={handleSaveFeedback}>
+                                    <Button><PlusCircle className="mr-2 h-4 w-4" /> Submit New Feedback</Button>
+                                </FeedbackFormModal>
+                            </CardHeader>
+                            <CardContent>
+                                <div className="space-y-4">
+                                    {submittedFeedback.length > 0 ? (
+                                        submittedFeedback.map((fb, i) => (
+                                            <div key={fb.id} className="group">
+                                                <div className="flex items-start gap-4">
+                                                    <div className="bg-secondary p-3 rounded-full mt-1">
+                                                        <FeedbackIcon type={fb.type} />
+                                                    </div>
+                                                    <div className="flex-grow">
+                                                        <p className="font-semibold">{fb.type}</p>
+                                                        <p className="text-sm text-muted-foreground">{fb.comment}</p>
+                                                    </div>
+                                                    <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                        <FeedbackFormModal feedback={fb} onSave={handleSaveFeedback}>
+                                                            <Button variant="ghost" size="icon"><Edit className="w-4 h-4" /></Button>
+                                                        </FeedbackFormModal>
+                                                        <AlertDialog>
+                                                            <AlertDialogTrigger asChild>
+                                                                <Button variant="ghost" size="icon" className="text-red-500 hover:text-red-600"><Trash2 className="w-4 h-4" /></Button>
+                                                            </AlertDialogTrigger>
+                                                            <AlertDialogContent>
+                                                                <AlertDialogHeader>
+                                                                    <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                                                                    <AlertDialogDescription>
+                                                                        This action cannot be undone. This will permanently delete your feedback.
+                                                                    </AlertDialogDescription>
+                                                                </AlertDialogHeader>
+                                                                <AlertDialogFooter>
+                                                                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                                                    <AlertDialogAction onClick={() => handleDeleteFeedback(fb.id)}>Delete</AlertDialogAction>
+                                                                </AlertDialogFooter>
+                                                            </AlertDialogContent>
+                                                        </AlertDialog>
+                                                    </div>
+                                                </div>
+                                                {i < submittedFeedback.length - 1 && <Separator className="mt-4" />}
+                                            </div>
+                                        ))
+                                    ) : (
+                                        <div className="text-center py-12 text-muted-foreground bg-secondary/50 rounded-lg">
+                                            <p className="mb-2">You haven't submitted any feedback for this app yet.</p>
+                                            <FeedbackFormModal onSave={handleSaveFeedback}>
+                                                <Button variant="outline"><PlusCircle className="mr-2 h-4 w-4" /> Submit Your First Feedback</Button>
+                                            </FeedbackFormModal>
+                                        </div>
+                                    )}
+                                </div>
+                            </CardContent>
+                        </Card>
+
                     </div>
+
+                    <aside className="lg:col-span-1">
+                        <AppInfoSidebar app={app} buttonType="external" url={app?.playStoreUrl} />
+                    </aside>
                 </main>
             </div>
         </div>
