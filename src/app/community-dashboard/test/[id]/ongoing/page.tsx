@@ -16,42 +16,41 @@ import { SubmittedFeedback } from '@/components/submitted-feedback';
 
 const DailyProgress = ({ progress, totalDays }: { progress: number, totalDays: number }) => {
     const completedDays = Math.floor(totalDays * (progress || 0) / 100);
-    const isToday = (day: number) => day === completedDays + 1;
 
     return (
-        <div className="w-full grid grid-cols-5 sm:grid-cols-7 lg:grid-cols-10 gap-2 sm:gap-3">
+        <div className="w-full grid grid-cols-5 sm:grid-cols-10 gap-3 sm:gap-3">
             {Array.from({ length: totalDays }, (_, i) => {
                 const day = i + 1;
                 const isCompleted = day <= completedDays;
+                const isCurrent = day === completedDays + 1;
 
                 return (
-                    <Card
+                    <div
                         key={day}
                         className={cn(
-                            "aspect-square rounded-2xl flex flex-col items-center justify-center p-1.5 transition-all duration-300 shadow-md hover:scale-105",
-                            isToday(day)
-                                ? 'bg-gradient-to-br from-primary to-accent text-primary-foreground scale-110 shadow-lg shadow-primary/30'
-                                : 'bg-card',
+                            "aspect-square rounded-xl flex flex-col items-center justify-center p-1 transition-all duration-300 shadow-none hover:scale-105",
+                            isCurrent
+                                ? 'bg-gradient-to-br from-primary to-accent text-primary-foreground scale-110'
+                                : 'bg-gradient-to-br from-gray-400/20 to-gray-400/2',
                             isCompleted
-                                ? 'bg-secondary/50 shadow-inner'
+                                ? 'bg-gradient-to-br from-green-400/50 to-green-400/20 dark:from-green-400/60 dark:to-green-400/20 text-muted-foreground'
                                 : ''
                         )}
                     >
                         {isCompleted ? (
-                            <CheckCircle className="w-6 h-6 text-green-500" />
+                            <CheckCircle className="w-4 h-4 text-green-500" />
                         ) : (
                             <>
-                                <p className={cn("text-[10px] sm:text-xs", isToday(day) ? 'opacity-80' : 'text-muted-foreground')}>Day</p>
-                                <p className={cn("font-bold", isToday(day) ? 'text-4xl' : 'text-2xl')}>{day}</p>
+                                <p className={cn("text-[10px] sm:text-xs", isCurrent ? 'opacity-80' : 'text-muted-foreground')}>Day</p>
+                                <p className={cn("font-bold", isCurrent ? 'text-xl sm:text-2xl' : 'text-lg sm:text-xl')}>{day}</p>
                             </>
                         )}
-                    </Card>
+                    </div>
                 );
             })}
         </div>
     );
 };
-
 
 export default function AppTestingOngoingPage({ params }: { params: { id: string } }) {
     const app = communityApps.find(p => p.id.toString() === params.id && p.status === 'ongoing');
@@ -62,44 +61,26 @@ export default function AppTestingOngoingPage({ params }: { params: { id: string
 
     return (
         <div className="bg-secondary/50 min-h-screen">
-            <div className="container mx-auto px-4 md:px-6 py-12">
+            <div className="container mx-auto px-4 md:px-6">
                 <header className="mb-8 max-w-7xl mx-auto">
                     <BackButton href="/community-dashboard" className="mb-4" />
                 </header>
 
                 <main className="max-w-7xl mx-auto grid lg:grid-cols-3 gap-12">
                     <div className='flex flex-col gap-10 lg:col-span-2'>
+                        <div className="lg:col-span-2 space-y-12">
+                            <section>
+                                <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-br from-primary to-accent bg-clip-text text-transparent">{app.name}</h1>
+                                <p className="text-muted-foreground text-lg mt-2 leading-relaxed">{app.shortDescription}</p>
+                            </section>
+                        </div>
                         <section>
-                            <div className="grid md:grid-cols-3 items-center gap-6">
-                                <div className="flex items-center gap-4 md:col-span-2">
-                                     <Image src={app.icon} alt={app.name} width={100} height={100} className="rounded-2xl border bg-background shadow-md" data-ai-hint={app.dataAiHint} />
-                                    <div>
-                                        <h1 className="text-4xl font-bold">{app.name}</h1>
-                                        <p className="text-muted-foreground text-lg mt-1">{app.shortDescription}</p>
-                                    </div>
-                                </div>
-                                <Card className="p-4 bg-primary/10 border-primary/20">
-                                    <CardTitle className="text-sm text-primary">Reward</CardTitle>
-                                    <p className="text-3xl font-bold flex items-center gap-2">{app.points.toLocaleString()} Points <Star className="w-6 h-6 text-amber-400" /></p>
-                                </Card>
-                            </div>
+                            <DailyProgress progress={app.progress || 0} totalDays={app.totalDays} />
                         </section>
 
-                        <section>
-                             <Card>
-                                <CardHeader>
-                                    <CardTitle>Testing in Progress</CardTitle>
-                                    <CardDescription>Keep the app installed and engage with it daily to complete the test cycle.</CardDescription>
-                                </CardHeader>
-                                <CardContent>
-                                    <DailyProgress progress={app.progress || 0} totalDays={app.totalDays} />
-                                </CardContent>
-                            </Card>
-                        </section>
-
-                        <section className='mt-8'>
-                            <h2 className="text-2xl font-bold mb-4">Developer's Instructions</h2>
-                            <div className="prose prose-base dark:prose-invert bg-card p-6 rounded-lg border-primary/20 border-l-4">
+                        <section className='mt-16'>
+                            <h2 className="text-2xl font-bold mb-4">Developer's Instructions <span className="bg-gradient-to-b from-primary to-primary/50 text-white font-bold rounded-lg px-4 py-0.5 text-xl ml-2">Important</span></h2>
+                            <div className="prose prose-base dark:prose-invert leading-relaxed text-white dark:text-black bg-[#121212] dark:bg-white p-6 rounded-lg border-primary border-l-4 shadow-xl shadow-gray-300 dark:shadow-gray-700">
                                 <p>{app.testingInstructions}</p>
                             </div>
                         </section>

@@ -2,23 +2,19 @@
 'use client';
 
 import { useState, useCallback } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { LayoutGrid, CheckCircle, Star, Lightbulb, Upload, Edit, List, Bug, Trash2, Image as ImageIcon } from 'lucide-react';
-import { BackButton } from '@/components/back-button';
+import { LayoutGrid, Star, Lightbulb, Upload, Edit, List, Bug, Trash2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Separator } from '@/components/ui/separator';
 import type { SubmittedFeedback as SubmittedFeedbackType } from '@/lib/types';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger, DialogClose } from '@/components/ui/dialog';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger, } from "@/components/ui/alert-dialog"
 import { PlusCircle } from 'lucide-react';
-import { AppInfoSidebar } from '@/components/appInfoSidebar';
 import { useDropzone } from 'react-dropzone';
 import Image from 'next/image';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { motion } from 'framer-motion';
 
 
 const FeedbackFormModal = ({
@@ -125,22 +121,22 @@ const FeedbackIcon = ({ type }: { type: SubmittedFeedbackType['type'] }) => {
 }
 
 const FeedbackListItem = ({ fb, onSave, onDelete }: { fb: SubmittedFeedbackType, onSave: (data: any) => void, onDelete: (id: number) => void }) => (
-    <Card className="p-4 pt-2 pr-2 relative overflow-hidden pl-10 bg-secondary/50">
+    <Card className={`bg-gradient-to-tl ${fb.type === "Bug" ? "from-red-500/20" : fb.type === "Suggestion" ? "from-yellow-500/20" : "from-green-500/20"} ${fb.type === "Bug" ? "to-red-500/5" : fb.type === "Suggestion" ? "to-yellow-500/5" : "to-green-500/5"} p-4 pt-2 pr-2 shadow-none border-0 relative overflow-hidden pl-5`}>
         <div className="flex items-start flex-col gap-0">
-            <div className="absolute scale-[2.5] rotate-45 top-2 left-1 opacity-10">
+            <div className="absolute scale-[2.5] rotate-45 top-2 left-1 opacity-5 dark:opacity-10">
                 <FeedbackIcon type={fb.type} />
             </div>
             <div className="flex flex-row items-center justify-between w-full">
                 <p className="font-semibold">{fb.type}</p>
                 <div className="flex items-center gap-1">
                     <FeedbackFormModal feedback={fb} onSave={onSave}>
-                        <button className="hover:bg-white/50 dark:hover:bg-black/20 p-2 rounded-md duration-300">
+                        <button className="hover:bg-white/50 p-2 rounded-md duration-300">
                             <Edit className="w-4 h-4" />
                         </button>
                     </FeedbackFormModal>
                     <AlertDialog>
                         <AlertDialogTrigger asChild>
-                            <button className="hover:bg-red-500/10 p-2 rounded-md duration-300 text-red-500">
+                            <button className="hover:bg-red-200 p-2 rounded-md duration-300 text-red-500">
                                 <Trash2 className="w-4 h-4" />
                             </button>
                         </AlertDialogTrigger>
@@ -162,7 +158,7 @@ const FeedbackListItem = ({ fb, onSave, onDelete }: { fb: SubmittedFeedbackType,
             <p className="text-sm text-muted-foreground mt-1">{fb.comment}</p>
             {fb.screenshot && (
                 <div className="mt-3">
-                    <Image src={fb.screenshot} alt="Feedback screenshot" width={100} height={100} className="rounded-md border object-cover" />
+                    <Image src={fb.screenshot} alt="Feedback screenshot" width={40} height={100} className="rounded-sm border object-cover" />
                 </div>
             )}
         </div>
@@ -170,10 +166,10 @@ const FeedbackListItem = ({ fb, onSave, onDelete }: { fb: SubmittedFeedbackType,
 );
 
 const FeedbackGridItem = ({ fb, onSave, onDelete }: { fb: SubmittedFeedbackType, onSave: (data: any) => void, onDelete: (id: number) => void }) => (
-    <Card className="p-4 pr-2 h-full flex flex-col relative overflow-hidden bg-secondary/50">
+    <Card className={`bg-gradient-to-bl ${fb.type === "Bug" ? "from-red-500/20" : fb.type === "Suggestion" ? "from-yellow-500/20" : "from-green-500/20"} ${fb.type === "Bug" ? "to-red-500/10" : fb.type === "Suggestion" ? "to-yellow-500/10" : "to-green-500/10"} p-4 pr-2 shadow-none border-0 h-full flex flex-col relative overflow-hidden`}>
         <CardHeader className="p-0 flex-row items-center justify-between">
             <div className="flex items-center gap-3">
-                <div className="p-3 rounded-full absolute opacity-10 scale-[4] right-0 top-2 -rotate-45">
+                <div className="p-3 rounded-full absolute opacity-10 scale-[3] -right-1 -top-1 -rotate-45">
                     <FeedbackIcon type={fb.type} />
                 </div>
                 <CardTitle className="text-base">{fb.type}</CardTitle>
@@ -185,18 +181,16 @@ const FeedbackGridItem = ({ fb, onSave, onDelete }: { fb: SubmittedFeedbackType,
         <CardFooter className="p-0 pt-2 flex items-center justify-between">
             {fb.screenshot ? (
                 <div className="mt-3">
-                    <Image src={fb.screenshot} alt="Feedback screenshot" width={30} height={30} className="rounded-sm border object-cover" />
+                    <Image src={fb.screenshot} alt="Feedback screenshot" width={30} height={100} className="rounded-sm border object-cover" />
                 </div>
             ) : <div />}
             <div className="flex items-center gap-1">
-                 <FeedbackFormModal feedback={fb} onSave={onSave}>
-                    <button className="hover:bg-white/50 dark:hover:bg-black/20 p-2 rounded-md duration-300">
-                        <Edit className="w-4 h-4" />
-                    </button>
-                </FeedbackFormModal>
+                <button className="hover:bg-white/50 p-2 rounded-md duration-300">
+                    <Edit className="w-4 h-4" />
+                </button>
                 <AlertDialog>
                     <AlertDialogTrigger asChild>
-                        <button className="hover:bg-red-500/10 p-2 rounded-md duration-300 text-red-500">
+                        <button className="hover:bg-red-200 p-2 rounded-md duration-300 text-red-500">
                             <Trash2 className="w-4 h-4" />
                         </button>
                     </AlertDialogTrigger>
@@ -247,37 +241,36 @@ export function SubmittedFeedback({ isCompleted = false }: { isCompleted?: boole
         setSubmittedFeedback(prev => prev.filter(fb => fb.id !== id));
         console.log("Deleting feedback:", id);
     }
-    
-    const title = isCompleted ? "Your Submitted Feedback" : "My Submitted Feedback";
+
     const description = isCompleted ? "Here is a summary of the feedback you submitted." : "Here is the feedback you've submitted so far.";
 
     return (
         <section>
-            <Card className="bg-card rounded-2xl p-4 sm:p-6 sm:pt-4">
+            <div className="bg-card rounded-2xl p-4 sm:p-6 sm:pt-4">
                 <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
                     <div>
-                        <h2 className="text-2xl font-bold">{title}</h2>
+                        <h2 className="text-2xl font-bold">My Submitted Feedback</h2>
                         <p className="text-muted-foreground">{description}</p>
                     </div>
-                    {!isCompleted && (
-                        <div className="flex items-center gap-2">
-                            <div className="flex items-center gap-1">
-                                <Button variant={viewMode === 'list' ? 'secondary' : 'ghost'} size="icon" onClick={() => setViewMode('list')}>
-                                    <List className="w-4 h-4" />
-                                </Button>
-                                <Button variant={viewMode === 'grid' ? 'secondary' : 'ghost'} size="icon" onClick={() => setViewMode('grid')}>
-                                    <LayoutGrid className="w-4 h-4" />
-                                </Button>
-                            </div>
+                    <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-1">
+                            <Button variant={viewMode === 'list' ? 'secondary' : 'ghost'} size="icon" onClick={() => setViewMode('list')}>
+                                <List className="w-4 h-4" />
+                            </Button>
+                            <Button variant={viewMode === 'grid' ? 'secondary' : 'ghost'} size="icon" onClick={() => setViewMode('grid')}>
+                                <LayoutGrid className="w-4 h-4" />
+                            </Button>
+                        </div>
+                        {!isCompleted &&
                             <FeedbackFormModal onSave={handleSaveFeedback}>
                                 <Button><PlusCircle className="mr-2 h-4 w-4" /> Submit New</Button>
                             </FeedbackFormModal>
-                        </div>
-                    )}
+                        }
+                    </div>
                 </div>
 
                 {submittedFeedback.length > 0 ? (
-                    viewMode === 'list' || isCompleted ? (
+                    viewMode === 'list' ? (
                         <div className="space-y-3">
                             {submittedFeedback.map((fb) => (
                                 <FeedbackListItem key={fb.id} fb={fb} onSave={handleSaveFeedback} onDelete={handleDeleteFeedback} />
@@ -293,16 +286,14 @@ export function SubmittedFeedback({ isCompleted = false }: { isCompleted?: boole
                 ) : (
                     <div className="text-center py-12 text-muted-foreground bg-secondary/50 rounded-lg">
                         <p className="mb-2">You haven't submitted any feedback for this app yet.</p>
-                        {!isCompleted && (
-                             <FeedbackFormModal onSave={handleSaveFeedback}>
-                                <Button variant="outline">
-                                    <PlusCircle className="mr-2 h-4 w-4" /> Submit Your First Feedback
-                                </Button>
-                            </FeedbackFormModal>
-                        )}
+                        <FeedbackFormModal onSave={handleSaveFeedback}>
+                            <Button variant="outline">
+                                <PlusCircle className="mr-2 h-4 w-4" /> Submit Your First Feedback
+                            </Button>
+                        </FeedbackFormModal>
                     </div>
                 )}
-            </Card>
+            </div>
         </section>
     )
 }
