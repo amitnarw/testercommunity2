@@ -27,14 +27,14 @@ const TestCompleteSection = ({ app }: { app: any }) => {
     }, [inView]);
 
     return (
-        <motion.div
+        <Card
             ref={ref}
-            initial={{ opacity: 0, y: 20 }}
-            animate={inView ? { opacity: 1, y: 0 } : {}}
-            transition={{ duration: 0.6, ease: 'easeOut' }}
-            className="relative overflow-hidden rounded-2xl p-6 text-center bg-gradient-to-br from-green-400/20 to-green-400/5 mb-12"
+            className="relative overflow-hidden rounded-2xl p-6 text-center bg-background shadow-lg"
         >
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20">
+            <div className="absolute inset-0 flex items-center justify-center">
+                <div className="absolute w-64 h-64 bg-gradient-to-tr from-green-400/50 to-primary/30 rounded-full blur-3xl opacity-30 animate-pulse" />
+            </div>
+             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20">
                 <Confetti active={isConfettiActive} config={{
                     angle: 90,
                     spread: 200,
@@ -48,8 +48,10 @@ const TestCompleteSection = ({ app }: { app: any }) => {
                     colors: ["#a864fd", "#29cdff", "#78ff44", "#ff718d", "#fdff6a"]
                 }} />
             </div>
-             <div className="relative z-10">
-                <CheckCircle className="w-12 h-12 text-green-500 mx-auto mb-3" />
+             <div className="relative z-10 flex flex-col items-center">
+                <div className="p-3 bg-green-500/10 rounded-full border border-green-500/20 mb-3">
+                    <CheckCircle className="w-8 h-8 text-green-500" />
+                </div>
                 <h2 className="text-2xl font-bold">Test Complete!</h2>
                 
                 <div className="mt-4">
@@ -60,7 +62,7 @@ const TestCompleteSection = ({ app }: { app: any }) => {
                     <p className="text-xl font-semibold text-muted-foreground -mt-1">Points</p>
                 </div>
             </div>
-        </motion.div>
+        </Card>
     )
 }
 
