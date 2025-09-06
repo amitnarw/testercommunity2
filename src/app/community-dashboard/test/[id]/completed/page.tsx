@@ -32,7 +32,7 @@ const TestCompleteSection = ({ app }: { app: any }) => {
             initial={{ opacity: 0, y: 20 }}
             animate={inView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.6, ease: 'easeOut' }}
-            className="relative overflow-hidden rounded-2xl p-8 text-center bg-gradient-to-br from-green-500/10 via-background to-background mb-12"
+            className="relative overflow-hidden rounded-2xl p-6 text-center bg-gradient-to-br from-green-400/20 to-green-400/5 mb-12"
         >
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20">
                 <Confetti active={isConfettiActive} config={{
@@ -49,18 +49,15 @@ const TestCompleteSection = ({ app }: { app: any }) => {
                 }} />
             </div>
              <div className="relative z-10">
-                <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-4" />
-                <h2 className="text-3xl font-bold">Test Complete!</h2>
-                <p className="text-muted-foreground mt-1">Thank you for your contribution to the community.</p>
-
-                <div className="mt-6">
-                    <p className="text-sm text-green-700 dark:text-green-300">You Claimed</p>
-                    <p className="text-5xl font-bold text-green-600 dark:text-green-400 flex items-center justify-center gap-2">
-                        <Star className="w-10 h-10 fill-current" />{app.points.toLocaleString()}
+                <CheckCircle className="w-12 h-12 text-green-500 mx-auto mb-3" />
+                <h2 className="text-2xl font-bold">Test Complete!</h2>
+                
+                <div className="mt-4">
+                    <p className="text-sm text-muted-foreground">You earned</p>
+                    <p className="text-5xl font-bold bg-gradient-to-r from-green-400 to-emerald-600 bg-clip-text text-transparent flex items-center justify-center gap-2">
+                        <Star className="w-8 h-8 fill-green-500 text-green-500" />{app.points.toLocaleString()}
                     </p>
-                    <p className="text-2xl font-semibold text-green-600 dark:text-green-400">Points</p>
-
-                    {app.completedDate && <p className="text-xs text-muted-foreground mt-2">on {new Date(app.completedDate).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</p>}
+                    <p className="text-xl font-semibold text-muted-foreground -mt-1">Points</p>
                 </div>
             </div>
         </motion.div>
