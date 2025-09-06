@@ -2,8 +2,8 @@
 'use client';
 
 import { notFound } from 'next/navigation';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Star, CheckCircle } from 'lucide-react';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
+import { Star, CheckCircle, ArrowRight } from 'lucide-react';
 import { communityApps } from '@/lib/data';
 import { BackButton } from '@/components/back-button';
 import { AppInfoSidebar } from '@/components/appInfoSidebar';
@@ -12,6 +12,8 @@ import { useState, useEffect } from 'react';
 import Confetti from 'react-dom-confetti';
 import { useInView } from 'react-intersection-observer';
 import { motion } from 'framer-motion';
+import { Button } from '@/components/ui/button';
+import Link from 'next/link';
 
 const TestCompleteSection = ({ app }: { app: any }) => {
     const [isConfettiActive, setConfettiActive] = useState(false);
@@ -22,46 +24,51 @@ const TestCompleteSection = ({ app }: { app: any }) => {
 
     useEffect(() => {
         if (inView) {
-            setTimeout(() => setConfettiActive(true), 300);
+            setTimeout(() => setConfettiActive(true), 500);
         }
     }, [inView]);
 
     return (
         <Card
             ref={ref}
-            className="relative overflow-hidden rounded-2xl p-6 text-center bg-background shadow-lg"
+            className="relative overflow-hidden rounded-2xl bg-card shadow-lg text-center flex flex-col"
         >
-            <div className="absolute inset-0 flex items-center justify-center">
-                <div className="absolute w-64 h-64 bg-gradient-to-tr from-green-400/50 to-primary/30 rounded-full blur-3xl opacity-30 animate-pulse" />
-            </div>
-             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20">
-                <Confetti active={isConfettiActive} config={{
-                    angle: 90,
-                    spread: 200,
-                    startVelocity: 30,
-                    elementCount: 150,
-                    dragFriction: 0.1,
-                    duration: 4000,
-                    stagger: 3,
-                    width: "10px",
-                    height: "10px",
-                    colors: ["#a864fd", "#29cdff", "#78ff44", "#ff718d", "#fdff6a"]
-                }} />
-            </div>
-             <div className="relative z-10 flex flex-col items-center">
-                <div className="p-3 bg-green-500/10 rounded-full border border-green-500/20 mb-3">
+            <CardHeader className="p-6">
+                 <div className="w-16 h-16 bg-green-500/10 rounded-full flex items-center justify-center mx-auto border-4 border-green-500/20">
                     <CheckCircle className="w-8 h-8 text-green-500" />
                 </div>
-                <h2 className="text-2xl font-bold">Test Complete!</h2>
-                
-                <div className="mt-4">
+                <CardTitle className="text-2xl font-bold mt-2">Test Complete!</CardTitle>
+            </CardHeader>
+            <CardContent className="p-6 pt-0">
+                 <div className="relative">
                     <p className="text-sm text-muted-foreground">You earned</p>
-                    <p className="text-5xl font-bold bg-gradient-to-r from-green-400 to-emerald-600 bg-clip-text text-transparent flex items-center justify-center gap-2">
-                        <Star className="w-8 h-8 fill-green-500 text-green-500" />{app.points.toLocaleString()}
+                    <p className="text-6xl font-bold bg-gradient-to-r from-green-400 to-emerald-600 bg-clip-text text-transparent my-1">
+                       {app.points.toLocaleString()}
                     </p>
-                    <p className="text-xl font-semibold text-muted-foreground -mt-1">Points</p>
+                    <p className="text-2xl font-semibold text-muted-foreground -mt-1 flex items-center justify-center gap-2">
+                         <Star className="w-6 h-6 text-amber-400 fill-amber-400" /> Points
+                    </p>
                 </div>
-            </div>
+            </CardContent>
+             <CardFooter className="p-6 pt-0 mt-4">
+                 <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+                    <Confetti active={isConfettiActive} config={{
+                        angle: 90,
+                        spread: 360,
+                        startVelocity: 30,
+                        elementCount: 150,
+                        dragFriction: 0.1,
+                        duration: 4000,
+                        stagger: 3,
+                        width: "10px",
+                        height: "10px",
+                        colors: ["#a864fd", "#29cdff", "#78ff44", "#ff718d", "#fdff6a"]
+                    }} />
+                </div>
+                 <Button asChild className="w-full">
+                    <Link href="/community-dashboard">Back to Dashboard <ArrowRight className="ml-2 h-4 w-4" /></Link>
+                </Button>
+            </CardFooter>
         </Card>
     )
 }
