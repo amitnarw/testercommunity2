@@ -141,7 +141,7 @@ export default function AppTestingPage({ params }: { params: { id: string } }) {
                     <Button
                         variant="ghost"
                         size="icon"
-                        className="absolute top-4 right-4 text-white hover:text-white hover:bg-white/20 h-12 w-12 rounded-full"
+                        className="absolute top-4 right-4 text-white hover:text-white bg-red-500/60 hover:bg-red-500 h-12 w-12 rounded-lg"
                         onClick={() => setFullscreenImage(null)}
                     >
                         <X className="w-8 h-8" />

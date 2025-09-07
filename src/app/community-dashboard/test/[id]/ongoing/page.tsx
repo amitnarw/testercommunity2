@@ -2,15 +2,11 @@
 'use client';
 
 import { notFound } from 'next/navigation';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
 import { CheckCircle, Star } from 'lucide-react';
 import { communityApps } from '@/lib/data';
 import { BackButton } from '@/components/back-button';
 import { cn } from '@/lib/utils';
-import { useState } from 'react';
 import { AppInfoSidebar } from '@/components/appInfoSidebar';
-import Image from 'next/image';
 import { SubmittedFeedback } from '@/components/submitted-feedback';
 
 
@@ -70,8 +66,8 @@ export default function AppTestingOngoingPage({ params }: { params: { id: string
                     <div className='flex flex-col gap-10 lg:col-span-2'>
                         <div className="lg:col-span-2 space-y-12">
                             <section>
-                                <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-br from-primary to-accent bg-clip-text text-transparent">{app.name}</h1>
-                                <p className="text-muted-foreground text-lg mt-2 leading-relaxed">{app.shortDescription}</p>
+                                <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-br from-primary to-accent bg-clip-text text-transparent h-12 sm:h-14">{app.name}</h1>
+                                <p className="text-muted-foreground text-lg leading-relaxed">{app.shortDescription}</p>
                             </section>
                         </div>
                         <section>
