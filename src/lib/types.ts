@@ -52,7 +52,6 @@ export type PointsPackage = {
     price: number;
     points: number;
     description: string;
-    features: string[];
 };
 
 export type ProcessStep = {
@@ -77,6 +76,7 @@ export type CommunityApp = {
     status: 'available' | 'ongoing' | 'completed';
     progress?: number;
     completedDate?: string;
+    totalDays: number;
 }
 
 export type FaqItem = {
@@ -144,3 +144,13 @@ export type Project = {
   chartData: { date: string; bugs: number }[];
   reviewNotes?: string;
 }
+
+export type SubmittedFeedback = {
+  id: number;
+  type: 'Bug' | 'Suggestion' | 'Praise';
+  comment: string;
+  screenshot: string | null;
+}
+    
+
+    

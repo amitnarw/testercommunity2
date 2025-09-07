@@ -1,119 +1,19 @@
 
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
-import { Card, CardContent, CardFooter, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Card } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { Checkbox } from '@/components/ui/checkbox';
-import { Star, Upload, ExternalLink, Smartphone, Clock, FileText, Check, Hourglass, Send, X, Expand, Info, ListChecks, MessagesSquare, Trophy, RefreshCw, CheckCircle, Compass, PenTool, Smile, ThumbsUp } from 'lucide-react';
+import { Expand, Trophy, RefreshCw, CheckCircle, Compass, PenTool, Smile, ThumbsUp, X } from 'lucide-react';
 import { communityApps } from '@/lib/data';
-import { cn } from '@/lib/utils';
-import { AnimatePresence, motion } from 'framer-motion';
-import { Separator } from '@/components/ui/separator';
-import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { BackButton } from '@/components/back-button';
-import AnimatedRoundedButton from '@/components/ui/animated-rounded-button';
-import { useTheme } from 'next-themes';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-
-type TestingState = 'idle' | 'requested' | 'approved';
-
-const AppInfoSidebar = ({ app, testingState, handleRequestToJoin, hoverBgColor, hoverTextColor }: { app: any, testingState: TestingState, handleRequestToJoin: () => void, hoverBgColor: "white" | "black", hoverTextColor: "white" | "black" }) => (
-    <div className="sticky top-24 space-y-6">
-        <AnimatePresence mode="wait">
-            <motion.div
-                key={testingState}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="w-auto"
-            >
-                {testingState === 'idle' && (
-                    <div onClick={handleRequestToJoin} className='relative w-full m-auto'>
-                        <AnimatedRoundedButton
-                            backgroundColor="hsl(var(--primary))"
-                            animatedBackgroundColor={hoverBgColor}
-                            hoverTextColor={hoverTextColor}
-                            borderRadius='9999px'
-                            paddingY="4"
-                            paddingX="5"
-                        >
-                            <div className="flex items-center gap-2">
-                                <span>Request to Join Testing</span>
-                            </div>
-
-                        </AnimatedRoundedButton>
-                        <div className="p-2 rounded-3xl bg-white absolute top-2 right-2">
-                            <Send className="text-primary" />
-                        </div>
-
-                    </div>
-                )}
-                {testingState === 'requested' && (
-                    <Button size="lg" className="w-full text-lg h-14" disabled>
-                        <Hourglass className="mr-2 h-5 w-5 animate-spin" /> Awaiting Approval...
-                    </Button>
-                )}
-                {testingState === 'approved' && (
-                    <Button size="lg" asChild className="w-full text-lg h-14 bg-green-600 hover:bg-green-700">
-                        <a href={app.playStoreUrl} target="_blank" rel="noopener noreferrer">
-                            <Check className="mr-2 h-5 w-5" /> Start Testing on Google Play <ExternalLink className="ml-2 h-4 w-4" />
-                        </a>
-                    </Button>
-                )}
-            </motion.div>
-        </AnimatePresence>
-
-        <Card className="border-0 rounded-2xl shadow-xl shadow-gray-100 dark:shadow-gray-900 overflow-hidden">
-            <CardContent className="p-6 pb-0">
-                <div className="flex items-center gap-4 mb-4">
-                    <Image src={app.icon} alt={app.name} width={100} height={100} className="rounded-xl border bg-background shadow-sm" data-ai-hint={app.dataAiHint} />
-                    <div className='flex flex-col items-start justify-between gap-2'>
-                        <Badge variant="outline" className="mt-1 text-md border-none bg-gradient-to-b from-primary to-primary/50 !text-white text-normal">{app.category}</Badge>
-                        <div className="flex items-center gap-2 text-sm"><Smartphone className="w-5 h-5 text-primary/80" />Android {app.androidVersion}</div>
-                        <div className="flex items-center gap-2 text-sm"><Clock className="w-5 h-5 text-primary/80" /> ~{app.estimatedTime} test</div>
-                    </div>
-                </div>
-            </CardContent>
-            <CardFooter className="p-2 bg-gradient-to-b from-primary/0 to-primary/60 rounded-b-2xl relative">
-                <div className="w-full p-4 rounded-xl text-center">
-                    <p className="text-lg font-semibold text-primary text-start">REWARD</p>
-                    <div className="text-3xl font-bold text-foreground flex items-center gap-2 justify-start mt-1">
-                        {app.points} Points
-                        <Star className="w-7 h-7 text-primary/0 fill-primary/20  scale-[6] absolute bottom-8 right-6 rotate-90" />
-                    </div>
-                </div>
-            </CardFooter>
-        </Card>
-
-        <Card className="border-0 rounded-2xl shadow-xl shadow-gray-100 dark:shadow-gray-900">
-            <CardHeader>
-                <CardTitle className="text-base">Developer</CardTitle>
-            </CardHeader>
-            <CardContent>
-                <div className="flex items-center gap-3">
-                    <Avatar>
-                        <AvatarImage src="https://images.unsplash.com/photo-1560250097-0b93528c311a?q=80&w=400&auto=format&fit=crop" data-ai-hint="man developer" />
-                        <AvatarFallback>DV</AvatarFallback>
-                    </Avatar>
-                    <div>
-                        <p className="font-semibold text-sm">AppDev Co.</p>
-                        <p className="text-xs text-muted-foreground">Member since 2023</p>
-                    </div>
-                </div>
-            </CardContent>
-        </Card>
-    </div>
-);
+import { AppInfoSidebar } from '@/components/appInfoSidebar';
 
 
 export default function AppTestingPage({ params }: { params: { id: string } }) {
-    const { theme } = useTheme();
-    const [testingState, setTestingState] = useState<TestingState>('idle');
+
     const [fullscreenImage, setFullscreenImage] = useState<string | null>(null);
 
     const app = communityApps.find(p => p.id.toString() === params.id);
@@ -121,16 +21,6 @@ export default function AppTestingPage({ params }: { params: { id: string } }) {
     if (!app) {
         notFound();
     }
-
-    const handleRequestToJoin = () => {
-        setTestingState('requested');
-        setTimeout(() => {
-            setTestingState('approved');
-        }, 2000);
-    }
-
-    const hoverTextColor = theme === 'dark' ? 'black' : 'white';
-    const hoverBgColor = theme === 'dark' ? 'white' : 'black';
 
     return (
         <div className="bg-[#f8fafc] dark:bg-[#0f151e] text-foreground min-h-screen">
@@ -150,8 +40,8 @@ export default function AppTestingPage({ params }: { params: { id: string } }) {
                             <h2 className="text-2xl font-bold mb-4">Screenshots</h2>
                             <div className="flex flex-row gap-2 overflow-x-auto pb-4 max-h-[500px]">
                                 {app.screenshots.map((ss, index) => (
-                                    <div 
-                                        key={index} 
+                                    <div
+                                        key={index}
                                         className="overflow-hidden rounded-xl flex-shrink-0 w-60 relative group cursor-pointer"
                                         onClick={() => setFullscreenImage(ss.url)}
                                     >
@@ -166,29 +56,29 @@ export default function AppTestingPage({ params }: { params: { id: string } }) {
 
                         {/* Sidebar for mobile, shown in flow */}
                         <div className="block lg:hidden">
-                            <AppInfoSidebar app={app} testingState={testingState} handleRequestToJoin={handleRequestToJoin} hoverBgColor={hoverBgColor} hoverTextColor={hoverTextColor} />
+                            <AppInfoSidebar app={app} />
                         </div>
-                        
+
                         <section className='!mt-20'>
                             <h2 className="text-2xl font-bold mb-4">Testing Protocol</h2>
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                                 <Card className="p-4 bg-gradient-to-br from-secondary to-secondary/50 hover:shadow-lg transition-shadow">
                                     <div className="flex items-center gap-3 mb-2">
-                                        <div className="p-2 bg-primary/10 rounded-lg text-primary"><CheckCircle className="w-5 h-5"/></div>
+                                        <div className="p-2 bg-primary/10 rounded-lg text-primary"><CheckCircle className="w-5 h-5" /></div>
                                         <h3 className="font-semibold">Complete the Full Cycle</h3>
                                     </div>
                                     <p className="text-xs text-muted-foreground">You must keep the app installed for the entire 14-day period. Points are awarded only after successful completion.</p>
                                 </Card>
                                 <Card className="p-4 bg-gradient-to-br from-secondary to-secondary/50 hover:shadow-lg transition-shadow">
-                                     <div className="flex items-center gap-3 mb-2">
-                                        <div className="p-2 bg-primary/10 rounded-lg text-primary"><RefreshCw className="w-5 h-5"/></div>
+                                    <div className="flex items-center gap-3 mb-2">
+                                        <div className="p-2 bg-primary/10 rounded-lg text-primary"><RefreshCw className="w-5 h-5" /></div>
                                         <h3 className="font-semibold">No Skipping Days</h3>
                                     </div>
                                     <p className="text-xs text-muted-foreground">If you uninstall the app or fail to engage, your progress will reset to Day 1. Consistency is key!</p>
                                 </Card>
                                 <Card className="p-4 bg-gradient-to-br from-secondary to-secondary/50 hover:shadow-lg transition-shadow">
-                                     <div className="flex items-center gap-3 mb-2">
-                                        <div className="p-2 bg-primary/10 rounded-lg text-primary"><Trophy className="w-5 h-5"/></div>
+                                    <div className="flex items-center gap-3 mb-2">
+                                        <div className="p-2 bg-primary/10 rounded-lg text-primary"><Trophy className="w-5 h-5" /></div>
                                         <h3 className="font-semibold">Provide Quality Feedback</h3>
                                     </div>
                                     <p className="text-xs text-muted-foreground">Once ongoing, you can submit feedback via the 'Ongoing Tests' tab. Quality feedback helps everyone.</p>
@@ -202,7 +92,7 @@ export default function AppTestingPage({ params }: { params: { id: string } }) {
                                 <p>{app.testingInstructions}</p>
                             </div>
                         </section>
-                        
+
                         <section>
                             <h2 className="text-2xl font-bold mb-4">General Testing Instructions</h2>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
@@ -236,14 +126,14 @@ export default function AppTestingPage({ params }: { params: { id: string } }) {
                                 </div>
                             </div>
                         </section>
-                        
+
                     </div>
                     <aside className="lg:col-span-1 hidden lg:block">
-                        <AppInfoSidebar app={app} testingState={testingState} handleRequestToJoin={handleRequestToJoin} hoverBgColor={hoverBgColor} hoverTextColor={hoverTextColor} />
+                        <AppInfoSidebar app={app} />
                     </aside>
                 </main>
             </div>
-             {fullscreenImage && (
+            {fullscreenImage && (
                 <div
                     className="fixed inset-0 bg-black/80 z-[60] flex items-center justify-center p-4 animate-in fade-in-0"
                     onClick={() => setFullscreenImage(null)}
@@ -251,7 +141,7 @@ export default function AppTestingPage({ params }: { params: { id: string } }) {
                     <Button
                         variant="ghost"
                         size="icon"
-                        className="absolute top-4 right-4 text-white hover:text-white hover:bg-white/20 h-12 w-12 rounded-full"
+                        className="absolute top-4 right-4 text-white hover:text-white bg-red-500/60 hover:bg-red-500 h-12 w-12 rounded-lg"
                         onClick={() => setFullscreenImage(null)}
                     >
                         <X className="w-8 h-8" />
