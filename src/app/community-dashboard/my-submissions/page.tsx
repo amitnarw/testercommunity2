@@ -8,13 +8,13 @@ import Link from 'next/link';
 import { useState } from 'react';
 import { projects as allProjects } from '@/lib/data';
 import type { Project } from '@/lib/types';
-import { Pagination, PaginationContent, PaginationItem, PaginationPrevious, PaginationLink, PaginationNext } from '@/components/ui/pagination';
 import { Badge } from '@/components/ui/badge';
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Separator } from '@/components/ui/separator';
 import { BackButton } from '@/components/back-button';
+import { AppPagination } from '@/components/app-pagination';
 
 const PROJECTS_PER_PAGE = 6;
 
@@ -89,36 +89,6 @@ const PaginatedProjectList = ({ projects }: { projects: Project[] }) => {
         setCurrentPage(page);
     };
 
-    const getPaginationRange = () => {
-        const range: (number | string)[] = [];
-        if (totalPages <= 5) {
-            for (let i = 1; i <= totalPages; i++) {
-                range.push(i);
-            }
-        } else {
-            if (currentPage > 2) {
-                range.push(1);
-                if (currentPage > 3) range.push('...');
-            }
-            
-            let start = Math.max(1, currentPage - 1);
-            let end = Math.min(totalPages, currentPage + 1);
-    
-            if(currentPage === 1) end = 3;
-            if(currentPage === totalPages) start = totalPages - 2;
-    
-            for (let i = start; i <= end; i++) {
-                range.push(i);
-            }
-    
-            if (currentPage < totalPages - 1) {
-                if (currentPage < totalPages - 2) range.push('...');
-                range.push(totalPages);
-            }
-        }
-        return range.slice(0, 3);
-      };
-
     return (
         <>
             {currentProjects.length > 0 ? (
@@ -128,65 +98,11 @@ const PaginatedProjectList = ({ projects }: { projects: Project[] }) => {
             ) : (
                 <EmptyState />
             )}
-            {totalPages > 1 && (
-                <Pagination className="mt-12">
-                    <PaginationContent>
-                        <PaginationItem>
-                            <Button
-                                variant="ghost"
-                                size="icon"
-                                onClick={() => handlePageChange(currentPage - 1)}
-                                disabled={currentPage === 1}
-                                className='md:hidden'
-                            >
-                                <ChevronLeft className="h-4 w-4" />
-                            </Button>
-                             <Button
-                                variant="outline"
-                                onClick={() => handlePageChange(currentPage - 1)}
-                                disabled={currentPage === 1}
-                                className='hidden md:inline-flex'
-                            >
-                                Previous
-                            </Button>
-                        </PaginationItem>
-                        {getPaginationRange().map((page, index) => (
-                            <PaginationItem key={index}>
-                                {typeof page === 'number' ? (
-                                    <PaginationLink
-                                        href="#"
-                                        isActive={currentPage === page}
-                                        onClick={(e) => { e.preventDefault(); handlePageChange(page); }}
-                                    >
-                                        {page}
-                                    </PaginationLink>
-                                ) : (
-                                    <span className="px-4 py-2">...</span>
-                                )}
-                            </PaginationItem>
-                        ))}
-                        <PaginationItem>
-                            <Button
-                                variant="ghost"
-                                size="icon"
-                                onClick={() => handlePageChange(currentPage + 1)}
-                                disabled={currentPage === totalPages}
-                                className='md:hidden'
-                            >
-                                <ChevronRight className="h-4 w-4" />
-                            </Button>
-                            <Button
-                                variant="outline"
-                                onClick={() => handlePageChange(currentPage + 1)}
-                                disabled={currentPage === totalPages}
-                                className='hidden md:inline-flex'
-                            >
-                                Next
-                            </Button>
-                        </PaginationItem>
-                    </PaginationContent>
-                </Pagination>
-            )}
+            <AppPagination 
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={handlePageChange}
+            />
         </>
     );
 };

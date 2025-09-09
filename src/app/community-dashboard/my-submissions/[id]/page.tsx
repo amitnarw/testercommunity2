@@ -24,9 +24,9 @@ import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, Tooltip, CartesianG
 import { useState } from 'react';
 import type { ProjectFeedback } from '@/lib/types';
 import { cn } from '@/lib/utils';
-import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from '@/components/ui/pagination';
 import { format } from 'date-fns';
 import { BackButton } from '@/components/back-button';
+import { AppPagination } from '@/components/app-pagination';
 
 
 const FEEDBACK_PER_PAGE = 5;
@@ -94,36 +94,6 @@ export default function CommunitySubmissionDetailsPage({ params }: { params: { i
     setActiveTab(tab);
     setFeedbackPage(1);
   }
-
-  const getPaginationRange = () => {
-    const range: (number | string)[] = [];
-    if (totalFeedbackPages <= 5) {
-        for (let i = 1; i <= totalFeedbackPages; i++) {
-            range.push(i);
-        }
-    } else {
-        if (feedbackPage > 2) {
-            range.push(1);
-            if (feedbackPage > 3) range.push('...');
-        }
-        
-        let start = Math.max(1, feedbackPage - 1);
-        let end = Math.min(totalFeedbackPages, feedbackPage + 1);
-
-        if(feedbackPage === 1) end = 3;
-        if(feedbackPage === totalFeedbackPages) start = totalFeedbackPages - 2;
-
-        for (let i = start; i <= end; i++) {
-            range.push(i);
-        }
-
-        if (feedbackPage < totalFeedbackPages - 1) {
-            if (feedbackPage < totalFeedbackPages - 2) range.push('...');
-            range.push(totalFeedbackPages);
-        }
-    }
-    return range.slice(0, 3);
-  };
 
   return (
     <div className="bg-secondary/50 min-h-screen">
@@ -278,47 +248,11 @@ export default function CommunitySubmissionDetailsPage({ params }: { params: { i
                                     </div>
                                 )}
 
-                                {totalFeedbackPages > 1 && (
-                                    <Pagination className="mt-8">
-                                        <PaginationContent>
-                                            <PaginationItem>
-                                                <Button
-                                                    variant="ghost"
-                                                    size="icon"
-                                                    onClick={() => handleFeedbackPageChange(feedbackPage - 1)}
-                                                    disabled={feedbackPage === 1}
-                                                >
-                                                    <ChevronLeft className="h-4 w-4" />
-                                                </Button>
-                                            </PaginationItem>
-                                            {getPaginationRange().map((page, index) => (
-                                                <PaginationItem key={index}>
-                                                    {typeof page === 'number' ? (
-                                                        <PaginationLink
-                                                            href="#"
-                                                            isActive={feedbackPage === page}
-                                                            onClick={(e) => { e.preventDefault(); handleFeedbackPageChange(page); }}
-                                                        >
-                                                            {page}
-                                                        </PaginationLink>
-                                                    ) : (
-                                                        <span className="px-4 py-2">...</span>
-                                                    )}
-                                                </PaginationItem>
-                                            ))}
-                                            <PaginationItem>
-                                                <Button
-                                                    variant="ghost"
-                                                    size="icon"
-                                                    onClick={() => handleFeedbackPageChange(feedbackPage + 1)}
-                                                    disabled={feedbackPage === totalFeedbackPages}
-                                                >
-                                                    <ChevronRight className="h-4 w-4" />
-                                                </Button>
-                                            </PaginationItem>
-                                        </PaginationContent>
-                                    </Pagination>
-                                )}
+                                <AppPagination 
+                                    currentPage={feedbackPage}
+                                    totalPages={totalFeedbackPages}
+                                    onPageChange={handleFeedbackPageChange}
+                                />
                             </TabsContent>
                         </Tabs>
                     </CardContent>

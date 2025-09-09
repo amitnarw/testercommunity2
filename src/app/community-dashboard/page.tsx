@@ -12,8 +12,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { CommunityAvailableAppCard } from '@/components/community-available-app-card';
 import { CommunityOngoingAppCard } from '@/components/community-ongoing-app-card';
 import { CommunityCompletedAppCard } from '@/components/community-completed-app-card';
-import { Pagination, PaginationContent, PaginationItem, PaginationPrevious, PaginationLink, PaginationNext } from '@/components/ui/pagination';
 import Link from 'next/link';
+import { AppPagination } from '@/components/app-pagination';
 
 
 const APPS_PER_PAGE = 6;
@@ -65,36 +65,6 @@ export default function CommunityDashboardPage() {
         if (page >= 1 && page <= totalPages) {
             setPagination(prev => ({ ...prev, [type]: page }));
         }
-    };
-    
-    const getPaginationRange = (currentPage: number, totalPages: number) => {
-        const range: (number | string)[] = [];
-        if (totalPages <= 5) {
-            for (let i = 1; i <= totalPages; i++) {
-                range.push(i);
-            }
-        } else {
-            if (currentPage > 2) {
-                range.push(1);
-                if (currentPage > 3) range.push('...');
-            }
-            
-            let start = Math.max(1, currentPage - 1);
-            let end = Math.min(totalPages, currentPage + 1);
-    
-            if(currentPage === 1) end = 3;
-            if(currentPage === totalPages) start = totalPages - 2;
-    
-            for (let i = start; i <= end; i++) {
-                range.push(i);
-            }
-    
-            if (currentPage < totalPages - 1) {
-                if (currentPage < totalPages - 2) range.push('...');
-                range.push(totalPages);
-            }
-        }
-        return range.slice(0, 3);
     };
 
     const appsSubmitted = allProjects.length;
@@ -214,50 +184,11 @@ export default function CommunityDashboardPage() {
                                     <CommunityAvailableAppCard key={app.id} app={app} />
                                 ))}
                             </div>
-                            {totalAvailablePages > 1 && (
-                                <Pagination className="py-8">
-                                    <PaginationContent>
-                                        <PaginationItem>
-                                            <Button
-                                                variant="ghost"
-                                                size="icon"
-                                                onClick={() => handlePageChange('available', pagination.available - 1)}
-                                                disabled={pagination.available === 1}
-                                            >
-                                                <ChevronLeft className="h-4 w-4" />
-                                            </Button>
-                                        </PaginationItem>
-                                        {getPaginationRange(pagination.available, totalAvailablePages).map((page, index) => (
-                                            <PaginationItem key={index}>
-                                                {typeof page === 'number' ? (
-                                                    <PaginationLink
-                                                        href="#"
-                                                        isActive={pagination.available === page}
-                                                        onClick={(e) => {
-                                                            e.preventDefault();
-                                                            handlePageChange('available', page);
-                                                        }}
-                                                    >
-                                                        {page}
-                                                    </PaginationLink>
-                                                ) : (
-                                                    <span className="px-4 py-2">...</span>
-                                                )}
-                                            </PaginationItem>
-                                        ))}
-                                        <PaginationItem>
-                                            <Button
-                                                variant="ghost"
-                                                size="icon"
-                                                onClick={() => handlePageChange('available', pagination.available + 1)}
-                                                disabled={pagination.available === totalAvailablePages}
-                                            >
-                                                <ChevronRight className="h-4 w-4" />
-                                            </Button>
-                                        </PaginationItem>
-                                    </PaginationContent>
-                                </Pagination>
-                            )}
+                           <AppPagination 
+                                currentPage={pagination.available}
+                                totalPages={totalAvailablePages}
+                                onPageChange={(page) => handlePageChange('available', page)}
+                            />
                         </TabsContent>
                         <TabsContent value="ongoing">
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -269,47 +200,11 @@ export default function CommunityDashboardPage() {
                                     <div className="text-center py-12 text-muted-foreground col-span-full">You have no ongoing tests.</div>
                                 )}
                             </div>
-                            {totalOngoingPages > 1 && (
-                                <Pagination className="py-8">
-                                    <PaginationContent>
-                                        <PaginationItem>
-                                             <Button
-                                                variant="ghost"
-                                                size="icon"
-                                                onClick={() => handlePageChange('ongoing', pagination.ongoing - 1)}
-                                                disabled={pagination.ongoing === 1}
-                                            >
-                                                <ChevronLeft className="h-4 w-4" />
-                                            </Button>
-                                        </PaginationItem>
-                                        {getPaginationRange(pagination.ongoing, totalOngoingPages).map((page, index) => (
-                                            <PaginationItem key={index}>
-                                                {typeof page === 'number' ? (
-                                                <PaginationLink
-                                                    href="#"
-                                                    isActive={pagination.ongoing === page}
-                                                    onClick={(e) => { e.preventDefault(); handlePageChange('ongoing', page); }}
-                                                >
-                                                    {page}
-                                                </PaginationLink>
-                                                ) : (
-                                                    <span className="px-4 py-2">...</span>
-                                                )}
-                                            </PaginationItem>
-                                        ))}
-                                        <PaginationItem>
-                                            <Button
-                                                variant="ghost"
-                                                size="icon"
-                                                onClick={() => handlePageChange('ongoing', pagination.ongoing + 1)}
-                                                disabled={pagination.ongoing === totalOngoingPages}
-                                            >
-                                                <ChevronRight className="h-4 w-4" />
-                                            </Button>
-                                        </PaginationItem>
-                                    </PaginationContent>
-                                </Pagination>
-                            )}
+                           <AppPagination 
+                                currentPage={pagination.ongoing}
+                                totalPages={totalOngoingPages}
+                                onPageChange={(page) => handlePageChange('ongoing', page)}
+                            />
                         </TabsContent>
                         <TabsContent value="completed">
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -321,47 +216,11 @@ export default function CommunityDashboardPage() {
                                     <div className="text-center py-12 text-muted-foreground col-span-full">You have not completed any tests yet.</div>
                                 )}
                             </div>
-                            {totalCompletedPages > 1 && (
-                                <Pagination className="py-8">
-                                    <PaginationContent>
-                                        <PaginationItem>
-                                             <Button
-                                                variant="ghost"
-                                                size="icon"
-                                                onClick={() => handlePageChange('completed', pagination.completed - 1)}
-                                                disabled={pagination.completed === 1}
-                                            >
-                                                <ChevronLeft className="h-4 w-4" />
-                                            </Button>
-                                        </PaginationItem>
-                                        {getPaginationRange(pagination.completed, totalCompletedPages).map((page, index) => (
-                                            <PaginationItem key={index}>
-                                                 {typeof page === 'number' ? (
-                                                <PaginationLink
-                                                    href="#"
-                                                    isActive={pagination.completed === page}
-                                                    onClick={(e) => { e.preventDefault(); handlePageChange('completed', page); }}
-                                                >
-                                                    {page}
-                                                </PaginationLink>
-                                                 ) : (
-                                                    <span className="px-4 py-2">...</span>
-                                                )}
-                                            </PaginationItem>
-                                        ))}
-                                        <PaginationItem>
-                                             <Button
-                                                variant="ghost"
-                                                size="icon"
-                                                onClick={() => handlePageChange('completed', pagination.completed + 1)}
-                                                disabled={pagination.completed === totalCompletedPages}
-                                            >
-                                                <ChevronRight className="h-4 w-4" />
-                                            </Button>
-                                        </PaginationItem>
-                                    </PaginationContent>
-                                </Pagination>
-                            )}
+                            <AppPagination 
+                                currentPage={pagination.completed}
+                                totalPages={totalCompletedPages}
+                                onPageChange={(page) => handlePageChange('completed', page)}
+                            />
                         </TabsContent>
                     </Tabs>
                 </main>

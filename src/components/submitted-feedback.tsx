@@ -16,7 +16,7 @@ import { PlusCircle } from 'lucide-react';
 import { useDropzone } from 'react-dropzone';
 import Image from 'next/image';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from './ui/pagination';
+import { AppPagination } from './app-pagination';
 
 const FEEDBACK_PER_PAGE = 3;
 
@@ -239,36 +239,6 @@ export function SubmittedFeedback({ isCompleted = false }: { isCompleted?: boole
         setCurrentPage(page);
     };
 
-    const getPaginationRange = () => {
-        const range: (number | string)[] = [];
-        if (totalPages <= 5) {
-            for (let i = 1; i <= totalPages; i++) {
-                range.push(i);
-            }
-        } else {
-            if (currentPage > 2) {
-                range.push(1);
-                if (currentPage > 3) range.push('...');
-            }
-            
-            let start = Math.max(1, currentPage - 1);
-            let end = Math.min(totalPages, currentPage + 1);
-    
-            if(currentPage === 1) end = 3;
-            if(currentPage === totalPages) start = totalPages - 2;
-    
-            for (let i = start; i <= end; i++) {
-                range.push(i);
-            }
-    
-            if (currentPage < totalPages - 1) {
-                if (currentPage < totalPages - 2) range.push('...');
-                range.push(totalPages);
-            }
-        }
-        return range.slice(0, 3);
-      };
-
     const handleSaveFeedback = (data: Partial<SubmittedFeedbackType>) => {
         if (data.id) {
             // Edit existing
@@ -332,43 +302,11 @@ export function SubmittedFeedback({ isCompleted = false }: { isCompleted?: boole
                                     ))}
                                 </div>
                             )}
-                            {totalPages > 1 && (
-                                <Pagination className="mt-6">
-                                    <PaginationContent>
-                                        <PaginationItem>
-                                            <Button
-                                                variant="ghost"
-                                                size="icon"
-                                                onClick={() => handlePageChange(currentPage - 1)}
-                                                disabled={currentPage === 1}
-                                            >
-                                                <ChevronLeft className="h-4 w-4" />
-                                            </Button>
-                                        </PaginationItem>
-                                        {getPaginationRange().map((page, index) => (
-                                            <PaginationItem key={index}>
-                                                {typeof page === 'number' ? (
-                                                    <PaginationLink href="#" isActive={currentPage === page} onClick={(e) => { e.preventDefault(); handlePageChange(page); }}>
-                                                        {page}
-                                                    </PaginationLink>
-                                                ) : (
-                                                    <span className="px-4 py-2">...</span>
-                                                )}
-                                            </PaginationItem>
-                                        ))}
-                                        <PaginationItem>
-                                            <Button
-                                                variant="ghost"
-                                                size="icon"
-                                                onClick={() => handlePageChange(currentPage + 1)}
-                                                disabled={currentPage === totalPages}
-                                            >
-                                                <ChevronRight className="h-4 w-4" />
-                                            </Button>
-                                        </PaginationItem>
-                                    </PaginationContent>
-                                </Pagination>
-                            )}
+                            <AppPagination 
+                                currentPage={currentPage}
+                                totalPages={totalPages}
+                                onPageChange={handlePageChange}
+                            />
                         </>
                     ) : (
                         <div className="text-center py-12 text-muted-foreground bg-secondary/50 rounded-lg">
