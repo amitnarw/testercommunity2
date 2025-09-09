@@ -61,7 +61,7 @@ export function AppPagination({ currentPage, totalPages, onPageChange }: AppPagi
                         <ChevronLeft className="h-4 w-4" />
                     </Button>
                     <Button
-                        variant="outline"
+                        variant="ghost"
                         onClick={() => onPageChange(currentPage - 1)}
                         disabled={currentPage === 1}
                         className="hidden md:flex"
@@ -96,7 +96,7 @@ export function AppPagination({ currentPage, totalPages, onPageChange }: AppPagi
                         <ChevronRight className="h-4 w-4" />
                     </Button>
                      <Button
-                        variant="outline"
+                        variant="ghost"
                         onClick={() => onPageChange(currentPage + 1)}
                         disabled={currentPage === totalPages}
                         className="hidden md:flex"
