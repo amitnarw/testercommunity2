@@ -1,4 +1,5 @@
 
+
 'use client';
 
 import { notFound } from 'next/navigation';
@@ -8,7 +9,7 @@ import { projects as allProjects } from '@/lib/data'; // Using project data as i
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Bug, CheckCircle, Clock, Smartphone, MessageSquare, Star, BarChart, MapPin, LayoutGrid, List, Users } from 'lucide-react';
+import { Bug, CheckCircle, Clock, Smartphone, MessageSquare, Star, BarChart, MapPin, LayoutGrid, List, Users, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
 import {
   Table,
@@ -93,6 +94,36 @@ export default function CommunitySubmissionDetailsPage({ params }: { params: { i
     setActiveTab(tab);
     setFeedbackPage(1);
   }
+
+  const getPaginationRange = () => {
+    const range: (number | string)[] = [];
+    if (totalFeedbackPages <= 5) {
+        for (let i = 1; i <= totalFeedbackPages; i++) {
+            range.push(i);
+        }
+    } else {
+        if (feedbackPage > 2) {
+            range.push(1);
+            if (feedbackPage > 3) range.push('...');
+        }
+        
+        let start = Math.max(1, feedbackPage - 1);
+        let end = Math.min(totalFeedbackPages, feedbackPage + 1);
+
+        if(feedbackPage === 1) end = 3;
+        if(feedbackPage === totalFeedbackPages) start = totalFeedbackPages - 2;
+
+        for (let i = start; i <= end; i++) {
+            range.push(i);
+        }
+
+        if (feedbackPage < totalFeedbackPages - 1) {
+            if (feedbackPage < totalFeedbackPages - 2) range.push('...');
+            range.push(totalFeedbackPages);
+        }
+    }
+    return range.slice(0, 3);
+  };
 
   return (
     <div className="bg-secondary/50 min-h-screen">
@@ -251,29 +282,39 @@ export default function CommunitySubmissionDetailsPage({ params }: { params: { i
                                     <Pagination className="mt-8">
                                         <PaginationContent>
                                             <PaginationItem>
-                                                <PaginationPrevious 
-                                                    href="#" 
-                                                    onClick={(e) => { e.preventDefault(); handleFeedbackPageChange(feedbackPage - 1); }}
-                                                    className={feedbackPage === 1 ? 'pointer-events-none opacity-50' : undefined}
-                                                />
+                                                <Button
+                                                    variant="ghost"
+                                                    size="icon"
+                                                    onClick={() => handleFeedbackPageChange(feedbackPage - 1)}
+                                                    disabled={feedbackPage === 1}
+                                                >
+                                                    <ChevronLeft className="h-4 w-4" />
+                                                </Button>
                                             </PaginationItem>
-                                            {Array.from({ length: totalFeedbackPages }, (_, i) => i + 1).map(page => (
-                                                <PaginationItem key={page}>
-                                                    <PaginationLink 
-                                                        href="#" 
-                                                        isActive={feedbackPage === page}
-                                                        onClick={(e) => { e.preventDefault(); handleFeedbackPageChange(page); }}
-                                                    >
-                                                        {page}
-                                                    </PaginationLink>
+                                            {getPaginationRange().map((page, index) => (
+                                                <PaginationItem key={index}>
+                                                    {typeof page === 'number' ? (
+                                                        <PaginationLink
+                                                            href="#"
+                                                            isActive={feedbackPage === page}
+                                                            onClick={(e) => { e.preventDefault(); handleFeedbackPageChange(page); }}
+                                                        >
+                                                            {page}
+                                                        </PaginationLink>
+                                                    ) : (
+                                                        <span className="px-4 py-2">...</span>
+                                                    )}
                                                 </PaginationItem>
                                             ))}
                                             <PaginationItem>
-                                                <PaginationNext 
-                                                    href="#" 
-                                                    onClick={(e) => { e.preventDefault(); handleFeedbackPageChange(feedbackPage + 1); }}
-                                                    className={feedbackPage === totalFeedbackPages ? 'pointer-events-none opacity-50' : undefined}
-                                                />
+                                                <Button
+                                                    variant="ghost"
+                                                    size="icon"
+                                                    onClick={() => handleFeedbackPageChange(feedbackPage + 1)}
+                                                    disabled={feedbackPage === totalFeedbackPages}
+                                                >
+                                                    <ChevronRight className="h-4 w-4" />
+                                                </Button>
                                             </PaginationItem>
                                         </PaginationContent>
                                     </Pagination>

@@ -1,10 +1,11 @@
 
+
 'use client';
 
 import { useState } from 'react';
 import { CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { ListFilter, ArrowUpDown, PlusCircle, Star, LayoutPanelLeft, Activity } from 'lucide-react';
+import { ListFilter, ArrowUpDown, PlusCircle, Star, LayoutPanelLeft, Activity, ChevronLeft, ChevronRight } from 'lucide-react';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { communityApps, projects as allProjects } from '@/lib/data';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -64,6 +65,36 @@ export default function CommunityDashboardPage() {
         if (page >= 1 && page <= totalPages) {
             setPagination(prev => ({ ...prev, [type]: page }));
         }
+    };
+    
+    const getPaginationRange = (currentPage: number, totalPages: number) => {
+        const range: (number | string)[] = [];
+        if (totalPages <= 5) {
+            for (let i = 1; i <= totalPages; i++) {
+                range.push(i);
+            }
+        } else {
+            if (currentPage > 2) {
+                range.push(1);
+                if (currentPage > 3) range.push('...');
+            }
+            
+            let start = Math.max(1, currentPage - 1);
+            let end = Math.min(totalPages, currentPage + 1);
+    
+            if(currentPage === 1) end = 3;
+            if(currentPage === totalPages) start = totalPages - 2;
+    
+            for (let i = start; i <= end; i++) {
+                range.push(i);
+            }
+    
+            if (currentPage < totalPages - 1) {
+                if (currentPage < totalPages - 2) range.push('...');
+                range.push(totalPages);
+            }
+        }
+        return range.slice(0, 3);
     };
 
     const appsSubmitted = allProjects.length;
@@ -187,32 +218,42 @@ export default function CommunityDashboardPage() {
                                 <Pagination className="py-8">
                                     <PaginationContent>
                                         <PaginationItem>
-                                            <PaginationPrevious
-                                                href="#"
-                                                onClick={(e) => { e.preventDefault(); handlePageChange('available', pagination.available - 1); }}
-                                                className={pagination.available === 1 ? 'pointer-events-none opacity-50' : ''}
-                                            />
+                                            <Button
+                                                variant="ghost"
+                                                size="icon"
+                                                onClick={() => handlePageChange('available', pagination.available - 1)}
+                                                disabled={pagination.available === 1}
+                                            >
+                                                <ChevronLeft className="h-4 w-4" />
+                                            </Button>
                                         </PaginationItem>
-                                        {Array.from({ length: totalAvailablePages }, (_, i) => i + 1).map(page => (
-                                            <PaginationItem key={page}>
-                                                <PaginationLink
-                                                    href="#"
-                                                    isActive={pagination.available === page}
-                                                    onClick={(e) => {
-                                                        e.preventDefault();
-                                                        handlePageChange('available', page);
-                                                    }}
-                                                >
-                                                    {page}
-                                                </PaginationLink>
+                                        {getPaginationRange(pagination.available, totalAvailablePages).map((page, index) => (
+                                            <PaginationItem key={index}>
+                                                {typeof page === 'number' ? (
+                                                    <PaginationLink
+                                                        href="#"
+                                                        isActive={pagination.available === page}
+                                                        onClick={(e) => {
+                                                            e.preventDefault();
+                                                            handlePageChange('available', page);
+                                                        }}
+                                                    >
+                                                        {page}
+                                                    </PaginationLink>
+                                                ) : (
+                                                    <span className="px-4 py-2">...</span>
+                                                )}
                                             </PaginationItem>
                                         ))}
                                         <PaginationItem>
-                                            <PaginationNext
-                                                href="#"
-                                                onClick={(e) => { e.preventDefault(); handlePageChange('available', pagination.available + 1); }}
-                                                className={pagination.available === totalAvailablePages ? 'pointer-events-none opacity-50' : ''}
-                                            />
+                                            <Button
+                                                variant="ghost"
+                                                size="icon"
+                                                onClick={() => handlePageChange('available', pagination.available + 1)}
+                                                disabled={pagination.available === totalAvailablePages}
+                                            >
+                                                <ChevronRight className="h-4 w-4" />
+                                            </Button>
                                         </PaginationItem>
                                     </PaginationContent>
                                 </Pagination>
@@ -232,14 +273,18 @@ export default function CommunityDashboardPage() {
                                 <Pagination className="py-8">
                                     <PaginationContent>
                                         <PaginationItem>
-                                            <PaginationPrevious
-                                                href="#"
-                                                onClick={(e) => { e.preventDefault(); handlePageChange('ongoing', pagination.ongoing - 1); }}
-                                                className={pagination.ongoing === 1 ? 'pointer-events-none opacity-50' : ''}
-                                            />
+                                             <Button
+                                                variant="ghost"
+                                                size="icon"
+                                                onClick={() => handlePageChange('ongoing', pagination.ongoing - 1)}
+                                                disabled={pagination.ongoing === 1}
+                                            >
+                                                <ChevronLeft className="h-4 w-4" />
+                                            </Button>
                                         </PaginationItem>
-                                        {Array.from({ length: totalOngoingPages }, (_, i) => i + 1).map(page => (
-                                            <PaginationItem key={page}>
+                                        {getPaginationRange(pagination.ongoing, totalOngoingPages).map((page, index) => (
+                                            <PaginationItem key={index}>
+                                                {typeof page === 'number' ? (
                                                 <PaginationLink
                                                     href="#"
                                                     isActive={pagination.ongoing === page}
@@ -247,14 +292,20 @@ export default function CommunityDashboardPage() {
                                                 >
                                                     {page}
                                                 </PaginationLink>
+                                                ) : (
+                                                    <span className="px-4 py-2">...</span>
+                                                )}
                                             </PaginationItem>
                                         ))}
                                         <PaginationItem>
-                                            <PaginationNext
-                                                href="#"
-                                                onClick={(e) => { e.preventDefault(); handlePageChange('ongoing', pagination.ongoing + 1); }}
-                                                className={pagination.ongoing === totalOngoingPages ? 'pointer-events-none opacity-50' : ''}
-                                            />
+                                            <Button
+                                                variant="ghost"
+                                                size="icon"
+                                                onClick={() => handlePageChange('ongoing', pagination.ongoing + 1)}
+                                                disabled={pagination.ongoing === totalOngoingPages}
+                                            >
+                                                <ChevronRight className="h-4 w-4" />
+                                            </Button>
                                         </PaginationItem>
                                     </PaginationContent>
                                 </Pagination>
@@ -274,14 +325,18 @@ export default function CommunityDashboardPage() {
                                 <Pagination className="py-8">
                                     <PaginationContent>
                                         <PaginationItem>
-                                            <PaginationPrevious
-                                                href="#"
-                                                onClick={(e) => { e.preventDefault(); handlePageChange('completed', pagination.completed - 1); }}
-                                                className={pagination.completed === 1 ? 'pointer-events-none opacity-50' : ''}
-                                            />
+                                             <Button
+                                                variant="ghost"
+                                                size="icon"
+                                                onClick={() => handlePageChange('completed', pagination.completed - 1)}
+                                                disabled={pagination.completed === 1}
+                                            >
+                                                <ChevronLeft className="h-4 w-4" />
+                                            </Button>
                                         </PaginationItem>
-                                        {Array.from({ length: totalCompletedPages }, (_, i) => i + 1).map(page => (
-                                            <PaginationItem key={page}>
+                                        {getPaginationRange(pagination.completed, totalCompletedPages).map((page, index) => (
+                                            <PaginationItem key={index}>
+                                                 {typeof page === 'number' ? (
                                                 <PaginationLink
                                                     href="#"
                                                     isActive={pagination.completed === page}
@@ -289,14 +344,20 @@ export default function CommunityDashboardPage() {
                                                 >
                                                     {page}
                                                 </PaginationLink>
+                                                 ) : (
+                                                    <span className="px-4 py-2">...</span>
+                                                )}
                                             </PaginationItem>
                                         ))}
                                         <PaginationItem>
-                                            <PaginationNext
-                                                href="#"
-                                                onClick={(e) => { e.preventDefault(); handlePageChange('completed', pagination.completed + 1); }}
-                                                className={pagination.completed === totalCompletedPages ? 'pointer-events-none opacity-50' : ''}
-                                            />
+                                             <Button
+                                                variant="ghost"
+                                                size="icon"
+                                                onClick={() => handlePageChange('completed', pagination.completed + 1)}
+                                                disabled={pagination.completed === totalCompletedPages}
+                                            >
+                                                <ChevronRight className="h-4 w-4" />
+                                            </Button>
                                         </PaginationItem>
                                     </PaginationContent>
                                 </Pagination>

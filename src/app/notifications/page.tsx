@@ -1,14 +1,16 @@
 
+
 'use client';
 
 import { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { notifications as allNotifications } from '@/lib/data';
 import type { Notification } from '@/lib/types';
-import { Bell, Bug, CheckCircle, Gift, MessageSquare, Star } from 'lucide-react';
+import { Bell, Bug, CheckCircle, ChevronLeft, ChevronRight, Gift, MessageSquare, Star } from 'lucide-react';
 import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from '@/components/ui/pagination';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
+import { Button } from '@/components/ui/button';
 
 const NOTIFICATIONS_PER_PAGE = 8;
 
@@ -41,6 +43,36 @@ export default function NotificationsPage() {
         if (page < 1 || page > totalPages) return;
         setCurrentPage(page);
     };
+
+    const getPaginationRange = () => {
+        const range: (number | string)[] = [];
+        if (totalPages <= 5) {
+            for (let i = 1; i <= totalPages; i++) {
+                range.push(i);
+            }
+        } else {
+            if (currentPage > 2) {
+                range.push(1);
+                if (currentPage > 3) range.push('...');
+            }
+            
+            let start = Math.max(1, currentPage - 1);
+            let end = Math.min(totalPages, currentPage + 1);
+    
+            if(currentPage === 1) end = 3;
+            if(currentPage === totalPages) start = totalPages - 2;
+    
+            for (let i = start; i <= end; i++) {
+                range.push(i);
+            }
+    
+            if (currentPage < totalPages - 1) {
+                if (currentPage < totalPages - 2) range.push('...');
+                range.push(totalPages);
+            }
+        }
+        return range.slice(0, 3);
+      };
 
     return (
         <div className="container mx-auto px-4 md:px-6 py-12">
@@ -85,17 +117,35 @@ export default function NotificationsPage() {
                         <Pagination>
                             <PaginationContent>
                                 <PaginationItem>
-                                    <PaginationPrevious href="#" onClick={(e) => { e.preventDefault(); handlePageChange(currentPage - 1); }} />
+                                    <Button
+                                        variant="ghost"
+                                        size="icon"
+                                        onClick={() => handlePageChange(currentPage - 1)}
+                                        disabled={currentPage === 1}
+                                    >
+                                        <ChevronLeft className="h-4 w-4" />
+                                    </Button>
                                 </PaginationItem>
-                                {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
-                                    <PaginationItem key={page}>
-                                        <PaginationLink href="#" isActive={currentPage === page} onClick={(e) => { e.preventDefault(); handlePageChange(page); }}>
-                                            {page}
-                                        </PaginationLink>
+                                {getPaginationRange().map((page, index) => (
+                                    <PaginationItem key={index}>
+                                        {typeof page === 'number' ? (
+                                            <PaginationLink href="#" isActive={currentPage === page} onClick={(e) => { e.preventDefault(); handlePageChange(page); }}>
+                                                {page}
+                                            </PaginationLink>
+                                        ) : (
+                                            <span className="px-4 py-2">...</span>
+                                        )}
                                     </PaginationItem>
                                 ))}
                                 <PaginationItem>
-                                    <PaginationNext href="#" onClick={(e) => { e.preventDefault(); handlePageChange(currentPage + 1); }}/>
+                                    <Button
+                                        variant="ghost"
+                                        size="icon"
+                                        onClick={() => handlePageChange(currentPage + 1)}
+                                        disabled={currentPage === totalPages}
+                                    >
+                                        <ChevronRight className="h-4 w-4" />
+                                    </Button>
                                 </PaginationItem>
                             </PaginationContent>
                         </Pagination>
