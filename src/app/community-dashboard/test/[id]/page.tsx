@@ -25,11 +25,11 @@ export default function AppTestingPage({ params }: { params: { id: string } }) {
     return (
         <div className="bg-[#f8fafc] dark:bg-[#0f151e] text-foreground min-h-screen">
             <div className="container mx-auto px-4 md:px-6">
-                <header className="mb-8 max-w-7xl mx-auto">
-                    <BackButton href="/community-dashboard" className="mb-6" />
-                </header>
+                <div className="sticky top-0 z-30 bg-[#f8fafc] dark:bg-[#0f151e] py-4">
+                     <BackButton href="/community-dashboard" />
+                </div>
 
-                <main className="max-w-7xl mx-auto grid lg:grid-cols-3 gap-12">
+                <main className="max-w-7xl mx-auto grid lg:grid-cols-3 gap-12 mt-8">
                     <div className="lg:col-span-2 space-y-12">
                         <section>
                             <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-br from-primary to-accent bg-clip-text text-transparent">{app.name}</h1>

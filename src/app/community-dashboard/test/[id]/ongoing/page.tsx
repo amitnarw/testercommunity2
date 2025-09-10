@@ -58,11 +58,11 @@ export default function AppTestingOngoingPage({ params }: { params: { id: string
     return (
         <div className="bg-secondary/50 min-h-screen">
             <div className="container mx-auto px-4 md:px-6">
-                <header className="mb-8 max-w-7xl mx-auto">
-                    <BackButton href="/community-dashboard" className="mb-4" />
-                </header>
+                 <div className="sticky top-0 z-30 bg-secondary/50 py-4">
+                     <BackButton href="/community-dashboard" />
+                </div>
 
-                <main className="max-w-7xl mx-auto grid lg:grid-cols-3 gap-12">
+                <main className="max-w-7xl mx-auto grid lg:grid-cols-3 gap-12 mt-8">
                     <div className='flex flex-col gap-10 lg:col-span-2'>
                         <div className="lg:col-span-2 space-y-12">
                             <section>
