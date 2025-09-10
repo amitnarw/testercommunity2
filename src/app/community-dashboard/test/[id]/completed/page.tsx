@@ -62,11 +62,11 @@ const TestCompleteSection = ({ app }: { app: any }) => {
             </motion.div>
 
             <motion.div variants={itemVariants} className="bg-gradient-to-br from-primary to-primary/40 p-6 rounded-2xl flex flex-col justify-center items-center text-center overflow-hidden">
-                <p className="text-sm text-white/80">Points Earned</p>
+                <p className="text-xs sm:text-sm text-white/80">Points Earned</p>
                 <p className="text-6xl sm:text-7xl font-bold text-white">{app.points.toLocaleString()}</p>
             </motion.div>
 
-            <motion.div variants={itemVariants} className="bg-card p-6 pt-4 rounded-2xl col-span-2 row-start-2 flex flex-col justify-between relative overflow-hidden">
+            <motion.div variants={itemVariants} className="bg-card p-3 sm:p-6 pt-4 rounded-2xl col-span-2 row-start-2 flex flex-col justify-between relative overflow-hidden">
                 <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
                     <Confetti active={isConfettiActive} config={{
                         angle: 90,
@@ -81,7 +81,7 @@ const TestCompleteSection = ({ app }: { app: any }) => {
                         colors: ["#a864fd", "#29cdff", "#78ff44", "#ff718d", "#fdff6a"]
                     }} />
                 </div>
-                <h3 className="text-2xl font-semibold mb-3 bg-gradient-to-b from-primary to-primary/50 text-transparent bg-clip-text">Your Feedback Summary</h3>
+                <h3 className="text-xl sm:text-2xl font-semibold mb-3 bg-gradient-to-b from-primary to-primary/50 text-transparent bg-clip-text">Your Feedback Summary</h3>
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center">
                     <div className="bg-gradient-to-br from-primary to-primary/50 text-primary-foreground p-5 rounded-lg">
                         <p className="text-xs">Total Testers</p>
