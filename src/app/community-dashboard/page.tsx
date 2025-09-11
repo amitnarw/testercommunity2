@@ -99,36 +99,38 @@ export default function CommunityDashboardPage() {
                             </div>
                         </BentoCard>
 
-                        <BentoCard className="bg-gradient-to-br from-primary to-primary/40 text-primary-foreground relative overflow-hidden">
-                            <CardTitle className="text-sm font-medium flex items-center gap-2">
-                                <Star className="absolute top-5 left-5 scale-[6] text-white/20 rotate-45 w-4 h-4" /> My Points
-                            </CardTitle>
-                            <p className="text-3xl sm:text-5xl font-bold text-center my-auto">1,250</p>
-                        </BentoCard>
+                        <div className='flex flex-row gap-2 col-span-2'>
+                            <BentoCard className="bg-gradient-to-br from-primary to-primary/40 text-primary-foreground relative overflow-hidden w-5/12 sm:w-1/2">
+                                <CardTitle className="text-sm font-medium flex items-center gap-2">
+                                    <Star className="absolute top-5 left-5 scale-[6] text-white/20 rotate-45 w-4 h-4" /> My Points
+                                </CardTitle>
+                                <p className="text-3xl sm:text-5xl font-bold text-center my-auto">1,250</p>
+                            </BentoCard>
 
-                        <BentoCard>
-                            <CardTitle className="text-sm font-medium flex items-center gap-2 text-muted-foreground">
-                                My Testing
-                            </CardTitle>
-                            <div className="grid grid-cols-2 gap-2 w-full mt-2">
-                                <div className="text-center bg-secondary p-2 rounded-lg">
-                                    <p className="text-2xl font-bold">{ongoingApps.length}</p>
-                                    <p className="text-xs text-muted-foreground">Ongoing</p>
+                            <BentoCard className='w-7/12 sm:w-1/2 !p-2.5 sm:!p-4'>
+                                <CardTitle className="text-sm font-medium flex items-center gap-2 text-muted-foreground">
+                                    My Testing
+                                </CardTitle>
+                                <div className="grid grid-rows-2 grid-cols-1 sm:grid-cols-2 sm:grid-rows-1 gap-2 w-full mt-2 h-full">
+                                    <div className="text-center bg-secondary px-4 rounded-lg flex flex-row sm:flex-col items-center justify-between sm:justify-center">
+                                        <p className="text-xs text-muted-foreground">Ongoing</p>
+                                        <p className="text-2xl font-bold">{ongoingApps.length}</p>
+                                    </div>
+                                    <div className="text-center bg-secondary px-4 rounded-lg flex flex-row sm:flex-col items-center justify-between sm:justify-center">
+                                        <p className="text-xs text-muted-foreground">Completed</p>
+                                        <p className="text-2xl font-bold">{completedApps.length}</p>
+                                    </div>
                                 </div>
-                                <div className="text-center bg-secondary p-2 rounded-lg">
-                                    <p className="text-2xl font-bold">{completedApps.length}</p>
-                                    <p className="text-xs text-muted-foreground">Completed</p>
-                                </div>
-                            </div>
-                        </BentoCard>
+                            </BentoCard>
+                        </div>
 
-                        <BentoCard className="flex !flex-row sm:!flex-col gap-2 col-span-2 lg:col-span-1">
-                            <Button asChild className="w-full justify-start h-full bg-gradient-to-b from-primary to-primary/40 text-primary-foreground">
+                        <BentoCard className="flex !flex-row sm:!flex-col gap-2 col-span-2 lg:col-span-1 !p-2.5 sm:!p-4">
+                            <Button asChild className="w-full justify-start h-full bg-gradient-to-b from-primary to-primary/40 text-primary-foreground p-2 sm:p-auto">
                                 <Link href="/community-dashboard/submit">
-                                    <PlusCircle className="absolute sm:static left-0 top-0 scale-[2] text-white/20 sm:left-auto sm:top-auto sm:scale-[1] sm:text-white mr-2 h-4 w-4" /> Submit a New App
+                                    <PlusCircle className="absolute sm:static left-0 top-0 scale-[2] text-white/20 sm:left-auto sm:top-auto sm:scale-[1] sm:text-white mr-2 h-4 w-4" /> Submit New App
                                 </Link>
                             </Button>
-                            <Button asChild variant="outline" className="w-full justify-start h-full">
+                            <Button asChild variant="outline" className="w-full justify-start h-full p-2 sm:p-auto">
                                 <Link href="/community-dashboard/my-submissions">
                                     <LayoutPanelLeft className="absolute sm:static left-0 top-0 scale-[2] text-black/10 dark:text-white/15 sm:left-auto sm:top-auto sm:scale-[1] sm:text-black dark:sm:text-white mr-2 h-4 w-4" /> My Submissions
                                 </Link>
@@ -174,9 +176,9 @@ export default function CommunityDashboardPage() {
                             </div>
                         </div>
                         <TabsList className="grid w-full grid-cols-3 mb-6">
-                            <TabsTrigger value="available">Available ({availableApps.length})</TabsTrigger>
-                            <TabsTrigger value="ongoing">Ongoing ({ongoingApps.length})</TabsTrigger>
-                            <TabsTrigger value="completed">Completed ({completedApps.length})</TabsTrigger>
+                            <TabsTrigger value="available" className='text-xs sm:text-sm'>Available ({availableApps.length})</TabsTrigger>
+                            <TabsTrigger value="ongoing" className='text-xs sm:text-sm'>Ongoing ({ongoingApps.length})</TabsTrigger>
+                            <TabsTrigger value="completed" className='text-xs sm:text-sm'>Completed ({completedApps.length})</TabsTrigger>
                         </TabsList>
                         <TabsContent value="available">
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -184,7 +186,7 @@ export default function CommunityDashboardPage() {
                                     <CommunityAvailableAppCard key={app.id} app={app} />
                                 ))}
                             </div>
-                           <AppPagination 
+                            <AppPagination
                                 currentPage={pagination.available}
                                 totalPages={totalAvailablePages}
                                 onPageChange={(page) => handlePageChange('available', page)}
@@ -200,7 +202,7 @@ export default function CommunityDashboardPage() {
                                     <div className="text-center py-12 text-muted-foreground col-span-full">You have no ongoing tests.</div>
                                 )}
                             </div>
-                           <AppPagination 
+                            <AppPagination
                                 currentPage={pagination.ongoing}
                                 totalPages={totalOngoingPages}
                                 onPageChange={(page) => handlePageChange('ongoing', page)}
@@ -216,7 +218,7 @@ export default function CommunityDashboardPage() {
                                     <div className="text-center py-12 text-muted-foreground col-span-full">You have not completed any tests yet.</div>
                                 )}
                             </div>
-                            <AppPagination 
+                            <AppPagination
                                 currentPage={pagination.completed}
                                 totalPages={totalCompletedPages}
                                 onPageChange={(page) => handlePageChange('completed', page)}

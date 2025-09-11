@@ -81,7 +81,7 @@ const TestCompleteSection = ({ app }: { app: any }) => {
                         colors: ["#a864fd", "#29cdff", "#78ff44", "#ff718d", "#fdff6a"]
                     }} />
                 </div>
-                <h3 className="text-xl sm:text-2xl font-semibold mb-3 bg-gradient-to-b from-primary to-primary/50 text-transparent bg-clip-text">Your Feedback Summary</h3>
+                <h3 className="text-xl sm:text-2xl font-semibold mb-3 bg-gradient-to-b from-primary to-primary/50 text-transparent bg-clip-text">Feedback Summary</h3>
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center">
                     <div className="bg-gradient-to-br from-primary to-primary/50 text-primary-foreground p-5 rounded-lg">
                         <p className="text-xs">Total Testers</p>
@@ -124,7 +124,7 @@ export default function AppTestingCompletedPage({ params }: { params: { id: stri
     return (
         <div className="bg-secondary/50 min-h-screen">
             <div className="container mx-auto px-4 md:px-6">
-                <div className="sticky top-0 z-100 bg-secondary/50 py-4">
+                <div className="sticky top-0 z-[50] pt-2 sm:pt-3 pb-4 pl-0 xl:pl-8 w-1/2">
                     <BackButton href="/community-dashboard" />
                 </div>
                 

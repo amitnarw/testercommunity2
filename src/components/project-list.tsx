@@ -42,8 +42,8 @@ const getStatusConfig = (status: string) => {
 
 const Metric = ({ label, value }: { label: string, value: string | number }) => (
     <div className="bg-secondary/50 rounded-lg p-3 text-center">
-        <p className="text-xs text-muted-foreground">{label}</p>
         <p className="text-2xl font-bold">{value}</p>
+        <p className="text-xs text-muted-foreground">{label}</p>
     </div>
 );
 
@@ -70,7 +70,7 @@ export function ProjectList({ projects }: { projects: Project[] }) {
                     <div key={project.id} className="group relative">
                         <Link href={isDraft ? `/dashboard/add-app?draft_id=${project.id}` : `/dashboard/project/${project.id}`}>
                             <div className="rounded-2xl overflow-hidden bg-background hover:bg-secondary/50 transition-all duration-300 transform hover:-translate-y-1 hover:shadow-lg h-full flex flex-col">
-                                <CardHeader className="flex flex-row items-start justify-between gap-4 p-5">
+                                <CardHeader className="flex flex-row items-start justify-between gap-4 p-3 sm:p-5">
                                     <div className="flex items-center gap-4">
                                         <Image src={project.icon} alt={project.name} width={48} height={48} className="rounded-lg border bg-secondary" data-ai-hint={project.dataAiHint} />
                                         <div>
@@ -79,12 +79,12 @@ export function ProjectList({ projects }: { projects: Project[] }) {
                                         </div>
                                     </div>
 
-                                    <div className="absolute -top-11 -right-10 bg-primary/20 rounded-full flex items-center justify-center pointer-events-none group-hover:scale-110 group-hover:bg-primary/80 transition-transform p-12 duration-500">
+                                    <div className="absolute -top-11 -right-10 bg-gradient-to-bl from-primary/40 to-primary/0 rounded-full flex items-center justify-center pointer-events-none group-hover:scale-110 group-hover:from-primary group-hover:to-primary/20 transition-transform p-12 duration-500">
                                         <ArrowRight className="absolute top-12 right-12 text-primary group-hover:text-primary-foreground group-hover:-rotate-45 duration-300" size={24} />
                                     </div>
                                 </CardHeader>
 
-                                <CardContent className="p-5 pt-0 space-y-5 flex-grow">
+                                <CardContent className="p-3 sm:p-5 pt-0 space-y-5 flex-grow">
                                     <div className="flex flex-row items-center gap-2">
                                         <Badge variant={statusConfig.badgeVariant as any} className="text-xs">{project.status}</Badge>
                                         {!isDraft && <Badge variant="outline" className="text-xs font-light">Started from: {project.startedFrom}</Badge>}

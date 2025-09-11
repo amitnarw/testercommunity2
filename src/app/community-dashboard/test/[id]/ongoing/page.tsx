@@ -58,7 +58,7 @@ export default function AppTestingOngoingPage({ params }: { params: { id: string
     return (
         <div className="bg-secondary/50 min-h-screen">
             <div className="container mx-auto px-4 md:px-6">
-                 <div className="sticky top-0 z-30 bg-secondary/50 py-4">
+                 <div className="sticky top-0 z-[50] pt-2 sm:pt-3 pb-4 pl-0 xl:pl-8 w-1/2">
                      <BackButton href="/community-dashboard" />
                 </div>
 
@@ -75,9 +75,13 @@ export default function AppTestingOngoingPage({ params }: { params: { id: string
                         </section>
 
                         <section className='mt-16'>
-                            <h2 className="text-2xl font-bold mb-4">Developer's Instructions <span className="bg-gradient-to-b from-primary to-primary/50 text-white font-bold rounded-lg px-4 py-0.5 text-xl ml-2">Important</span></h2>
-                            <div className="prose prose-base dark:prose-invert leading-relaxed text-white dark:text-black bg-[#121212] dark:bg-white p-6 rounded-lg border-primary border-l-4 shadow-xl shadow-gray-300 dark:shadow-gray-700">
-                                <p>{app.testingInstructions}</p>
+                        <h2 className="mb-4 flex flex-row items-center justify-between gap-2 sm:justify-start">
+                                <span className="text-2xl font-bold whitespace-nowrap">Developer's Instructions</span>
+                                <span className="bg-gradient-to-b from-primary to-primary/50 text-white font-bold rounded-lg px-4 py-0.5 text-xl hidden sm:inline">Important</span>
+                            </h2>
+                            <div className="prose prose-base dark:prose-invert leading-relaxed text-white dark:text-black bg-[#121212] dark:bg-white p-3 sm:p-6 rounded-lg border-primary border-l-4 shadow-xl shadow-gray-300 dark:shadow-gray-700 text-sm sm:text-base">
+                            <span className="bg-gradient-to-b from-primary to-primary/50 text-white font-bold rounded-md px-4 py-0.5 text-lg inline sm:hidden">Important</span>
+                                <p className='mt-2 sm:mt-0'>{app.testingInstructions}</p>
                             </div>
                         </section>
 

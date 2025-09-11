@@ -77,6 +77,7 @@ export function AppPagination({ currentPage, totalPages, onPageChange }: AppPagi
                                 href="#"
                                 isActive={currentPage === page}
                                 onClick={(e) => { e.preventDefault(); onPageChange(page); }}
+                                className='!w-8 !h-8'
                             >
                                 {page}
                             </PaginationLink>

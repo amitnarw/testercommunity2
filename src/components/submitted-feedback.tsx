@@ -264,10 +264,10 @@ export function SubmittedFeedback({ isCompleted = false }: { isCompleted?: boole
     return (
         <>
             <section>
-                <div className="bg-card rounded-2xl p-4 sm:p-6 sm:pt-4">
+                <div className="bg-card/50 rounded-2xl p-4 sm:p-6 sm:pt-4">
                     <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
                         <div>
-                            <h2 className="text-xl sm:text-2xl font-bold">My Submitted Feedback</h2>
+                            <h2 className="text-xl sm:text-2xl font-bold">Submitted Feedback</h2>
                             <p className="text-sm sm:text-base text-muted-foreground">{description}</p>
                         </div>
                         <div className="flex items-center gap-2 justify-between w-full sm:w-auto">
