@@ -39,7 +39,7 @@ export default function AppTestingPage({ params }: { params: { id: string } }) {
                         <section>
                             <h2 className="text-2xl font-bold mb-4">Screenshots</h2>
                             <div className="w-full overflow-hidden">
-                                <div className="flex flex-row gap-2 overflow-x-auto pb-4 -mb-4">
+                                <div className="w-full flex flex-row gap-2 overflow-x-auto pb-4 -mb-4">
                                     {app.screenshots.map((ss, index) => (
                                         <div
                                             key={index}
