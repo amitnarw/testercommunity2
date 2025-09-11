@@ -30,7 +30,7 @@ export default function AppTestingPage({ params }: { params: { id: string } }) {
                 </div>
 
                 <main className="max-w-7xl mx-auto grid lg:grid-cols-3 gap-12 mt-8">
-                    <div className="lg:col-span-2 space-y-12">
+                    <div className="lg:col-span-2 space-y-12 overflow-hidden">
                         <section>
                             <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-br from-primary to-accent bg-clip-text text-transparent">{app.name}</h1>
                             <p className="text-muted-foreground text-lg mt-2 leading-relaxed">{app.shortDescription}</p>
@@ -38,8 +38,8 @@ export default function AppTestingPage({ params }: { params: { id: string } }) {
 
                         <section>
                             <h2 className="text-2xl font-bold mb-4">Screenshots</h2>
-                            <div className="w-full overflow-hidden">
-                                <div className="w-full flex flex-row gap-2 overflow-x-auto pb-4 -mb-4">
+                            <div className="w-full">
+                                <div className="flex flex-row gap-2 overflow-x-auto pb-4 -mb-4">
                                     {app.screenshots.map((ss, index) => (
                                         <div
                                             key={index}
