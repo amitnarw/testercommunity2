@@ -124,7 +124,7 @@ export default function AppTestingCompletedPage({ params }: { params: { id: stri
     return (
         <div className="bg-secondary/50 min-h-screen">
             <div className="container mx-auto px-4 md:px-6">
-                <div className="sticky top-0 z-30 bg-secondary/50 py-4">
+                <div className="sticky top-0 z-100 bg-secondary/50 py-4">
                     <BackButton href="/community-dashboard" />
                 </div>
                 

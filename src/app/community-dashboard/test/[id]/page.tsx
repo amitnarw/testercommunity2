@@ -25,7 +25,7 @@ export default function AppTestingPage({ params }: { params: { id: string } }) {
     return (
         <div className="bg-[#f8fafc] dark:bg-[#0f151e] text-foreground min-h-screen">
             <div className="container mx-auto px-4 md:px-6">
-                <div className="sticky top-0 z-30 bg-[#f8fafc] dark:bg-[#0f151e] py-4">
+                <div className="sticky top-0 z-30 bg-[#f8fafc]/80 dark:bg-[#0f151e]/80 backdrop-blur-lg pt-6 pb-4">
                      <BackButton href="/community-dashboard" />
                 </div>
 
@@ -38,19 +38,21 @@ export default function AppTestingPage({ params }: { params: { id: string } }) {
 
                         <section>
                             <h2 className="text-2xl font-bold mb-4">Screenshots</h2>
-                            <div className="flex flex-row gap-2 overflow-x-auto pb-4 max-h-[500px]">
-                                {app.screenshots.map((ss, index) => (
-                                    <div
-                                        key={index}
-                                        className="overflow-hidden rounded-xl flex-shrink-0 w-60 relative group cursor-pointer"
-                                        onClick={() => setFullscreenImage(ss.url)}
-                                    >
-                                        <Image src={ss.url} alt={ss.alt} width={400} height={800} className="object-cover h-full w-full group-hover:scale-105 transition-transform duration-300" data-ai-hint={ss.dataAiHint} />
-                                        <div className="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                                            <Expand className="w-8 h-8 text-white" />
+                            <div className="w-full overflow-hidden">
+                                <div className="flex flex-row gap-2 overflow-x-auto pb-4 -mb-4">
+                                    {app.screenshots.map((ss, index) => (
+                                        <div
+                                            key={index}
+                                            className="overflow-hidden rounded-xl flex-shrink-0 w-60 relative group cursor-pointer"
+                                            onClick={() => setFullscreenImage(ss.url)}
+                                        >
+                                            <Image src={ss.url} alt={ss.alt} width={400} height={800} className="object-cover h-full w-full group-hover:scale-105 transition-transform duration-300" data-ai-hint={ss.dataAiHint} />
+                                            <div className="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                                <Expand className="w-8 h-8 text-white" />
+                                            </div>
                                         </div>
-                                    </div>
-                                ))}
+                                    ))}
+                                </div>
                             </div>
                         </section>
 
