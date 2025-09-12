@@ -58,15 +58,12 @@ const ProjectCard = ({ project }: { project: Project }) => {
                             {statusConfig.icon}
                         </div>
                         <div>
-                            <Badge variant={statusConfig.badgeVariant as any} className={cn("text-xs font-semibold", statusConfig.className)}>
-                                {project.status}
-                            </Badge>
-                            {!isReviewOrDraft && (
-                                 <p className="text-xs text-muted-foreground mt-1">{project.testersCompleted} of {project.testersStarted} testers completed.</p>
-                            )}
-                            {isReviewOrDraft && (
-                                 <p className="text-xs text-muted-foreground mt-1">{statusConfig.description}</p>
-                            )}
+                             <p className="text-xs text-muted-foreground mt-1">
+                                {isReviewOrDraft 
+                                    ? statusConfig.description
+                                    : `${project.testersCompleted} of ${project.testersStarted} testers completed.`
+                                }
+                             </p>
                         </div>
                     </div>
                 </CardFooter>
@@ -142,7 +139,7 @@ export default function MySubmissionsPage() {
                                 <h1 className="text-2xl sm:text-3xl font-bold bg-gradient-to-b from-primary to-primary/10 bg-clip-text text-transparent">My Submissions</h1>
                                 <Button asChild className='bg-gradient-to-b from-primary to-primary/40 text-primary-foreground px-3 h-8 sm:p-auto sm:h-10'>
                                     <Link href="/community-dashboard/submit">
-                                        <PlusCircle className="h-4 w-4 absolute sm:static top-0 sm:top-auto left-0 sm:left-auto scale-[2] sm:scale-100 text-white/20 sm:text-white" />
+                                        <PlusCircle className="h-4 w-4 absolute sm:static top-0 sm:top-auto left-0 sm:left-auto scale-[2] sm:text-white/20 sm:text-white" />
                                         <span className='hidden sm:block'>Submit New App</span>
                                         <span className='sm:hidden block'>Submit</span>
                                     </Link>
