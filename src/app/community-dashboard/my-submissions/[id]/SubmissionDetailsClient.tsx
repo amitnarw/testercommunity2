@@ -6,7 +6,7 @@ import { projects as allProjects } from '@/lib/data'; // Using project data as i
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Bug, CheckCircle, Clock, Smartphone, MessageSquare, Star, BarChart, MapPin, LayoutGrid, List, Users, ChevronLeft, ChevronRight, Lightbulb, PartyPopper } from 'lucide-react';
+import { Bug, CheckCircle, Clock, Smartphone, MessageSquare, Star, BarChart, MapPin, LayoutGrid, List, Users, ChevronLeft, ChevronRight, Lightbulb, PartyPopper, Search } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
 import {
   Table,
@@ -35,6 +35,8 @@ const getStatusConfig = (status: string) => {
             return { badgeVariant: "destructive", icon: <Clock className="w-4 h-4" /> };
         case "Completed":
             return { badgeVariant: "secondary", icon: <CheckCircle className="w-4 h-4 text-green-500" /> };
+         case "In Review":
+            return { badgeVariant: "secondary", icon: <Search className="w-4 h-4" /> };
         default:
             return { badgeVariant: "secondary", icon: <Clock className="w-4 h-4" /> };
     }
@@ -65,8 +67,9 @@ export default function SubmissionDetailsClient({ project }: { project: Project 
   const [viewMode, setViewMode] = useState<'list' | 'grid'>('list');
 
   const statusConfig = getStatusConfig(project.status);
+  const isReview = project.status === 'In Review';
 
-  const filteredFeedback = project.feedback;
+  const filteredFeedback = isReview ? [] : project.feedback;
 
   const totalFeedbackPages = Math.ceil(filteredFeedback.length / FEEDBACK_PER_PAGE);
   const feedbackStartIndex = (feedbackPage - 1) * FEEDBACK_PER_PAGE;
@@ -122,7 +125,16 @@ export default function SubmissionDetailsClient({ project }: { project: Project 
                 </div>
             </header>
 
-            <main className="max-w-7xl mx-auto space-y-8">
+            <main className={cn("max-w-7xl mx-auto space-y-8 relative", isReview && "pointer-events-none")}>
+                 {isReview && (
+                    <div className="absolute inset-0 bg-background/50 backdrop-blur-sm z-20 rounded-2xl flex flex-col items-center justify-center">
+                        <div className="bg-secondary/80 p-4 rounded-full mb-4">
+                            <Search className="w-12 h-12 text-primary" />
+                        </div>
+                        <h2 className="text-2xl font-bold">In Review</h2>
+                        <p className="text-muted-foreground max-w-sm text-center">Our team is currently reviewing this submission. Testing data and feedback will appear here once the app is published.</p>
+                    </div>
+                )}
                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                      <Card>
                         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -130,8 +142,8 @@ export default function SubmissionDetailsClient({ project }: { project: Project 
                             <MessageSquare className="h-4 w-4 text-muted-foreground" />
                         </CardHeader>
                         <CardContent>
-                            <p className="text-2xl font-bold">{project.feedbackBreakdown.total}</p>
-                             <p className="text-xs text-muted-foreground">{project.feedbackBreakdown.critical} Critical / {project.feedbackBreakdown.high} High</p>
+                            <p className="text-2xl font-bold">{isReview ? 0 : project.feedbackBreakdown.total}</p>
+                             <p className="text-xs text-muted-foreground">{isReview ? 0 : project.feedbackBreakdown.critical} Critical / {isReview ? 0 : project.feedbackBreakdown.high} High</p>
                         </CardContent>
                     </Card>
                      <Card>
@@ -140,7 +152,7 @@ export default function SubmissionDetailsClient({ project }: { project: Project 
                             <Users className="h-4 w-4 text-muted-foreground" />
                         </CardHeader>
                         <CardContent>
-                            <p className="text-2xl font-bold">{project.testersStarted}</p>
+                            <p className="text-2xl font-bold">{isReview ? 0 : project.testersStarted}</p>
                             <p className="text-xs text-muted-foreground">Testers have started</p>
                         </CardContent>
                     </Card>
@@ -150,8 +162,8 @@ export default function SubmissionDetailsClient({ project }: { project: Project 
                             <Star className="h-4 w-4 text-muted-foreground" />
                         </CardHeader>
                         <CardContent>
-                            <p className="text-2xl font-bold">{(project.testersCompleted * 80).toLocaleString()}</p>
-                            <p className="text-xs text-muted-foreground">Across {project.testersCompleted} completed tests</p>
+                            <p className="text-2xl font-bold">{isReview ? 0 : (project.testersCompleted * 80).toLocaleString()}</p>
+                            <p className="text-xs text-muted-foreground">Across {isReview ? 0 : project.testersCompleted} completed tests</p>
                         </CardContent>
                     </Card>
                     <Card>
@@ -160,7 +172,7 @@ export default function SubmissionDetailsClient({ project }: { project: Project 
                             <Clock className="h-4 w-4 text-muted-foreground" />
                         </CardHeader>
                         <CardContent>
-                            <p className="text-2xl font-bold">{project.totalDays} / 14</p>
+                            <p className="text-2xl font-bold">{isReview ? 0 : project.totalDays} / 14</p>
                             <p className="text-xs text-muted-foreground">Days completed</p>
                         </CardContent>
                     </Card>
