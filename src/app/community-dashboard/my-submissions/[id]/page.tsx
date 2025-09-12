@@ -1,7 +1,4 @@
 
-
-'use client';
-
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -22,7 +19,7 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid } from 'recharts';
 import { useState } from 'react';
-import type { ProjectFeedback } from '@/lib/types';
+import type { Project, ProjectFeedback } from '@/lib/types';
 import { cn } from '@/lib/utils';
 import { format } from 'date-fns';
 import { BackButton } from '@/components/back-button';
@@ -62,18 +59,12 @@ const getSeverityBadge = (severity: string) => {
     }
 };
 
-
-export default function CommunitySubmissionDetailsPage({ params }: { params: { id: string } }) {
+function SubmissionDetailsClient({ project }: { project: Project }) {
+  'use client';
+  
   const [feedbackPage, setFeedbackPage] = useState(1);
   const [viewMode, setViewMode] = useState<'list' | 'grid'>('list');
 
-  // We'll use the rich `projects` data for this detail view
-  const project = allProjects.find(p => p.id.toString() === params.id);
-
-  if (!project) {
-    notFound();
-  }
-  
   const statusConfig = getStatusConfig(project.status);
 
   const filteredFeedback = project.feedback;
@@ -296,4 +287,15 @@ export default function CommunitySubmissionDetailsPage({ params }: { params: { i
         </div>
     </div>
   )
+}
+
+export default function CommunitySubmissionDetailsPage({ params }: { params: { id: string } }) {
+  // We'll use the rich `projects` data for this detail view
+  const project = allProjects.find(p => p.id.toString() === params.id);
+
+  if (!project) {
+    notFound();
+  }
+
+  return <SubmissionDetailsClient project={project} />;
 }
