@@ -95,10 +95,10 @@ export default function SubmissionDetailsClient({ project }: { project: Project 
   };
 
   const feedbackBreakdown = {
-      bugs: project.feedback.filter(fb => fb.type === 'Bug').length,
-      suggestions: project.feedback.filter(fb => fb.type === 'Suggestion').length,
-      praise: project.feedback.filter(fb => fb.type === 'Praise').length,
-      totalTesters: project.testersCompleted,
+      bugs: isReview ? 0 : project.feedback.filter(fb => fb.type === 'Bug').length,
+      suggestions: isReview ? 0 : project.feedback.filter(fb => fb.type === 'Suggestion').length,
+      praise: isReview ? 0 : project.feedback.filter(fb => fb.type === 'Praise').length,
+      totalTesters: isReview ? 0 : project.testersCompleted,
   };
 
 
@@ -178,43 +178,41 @@ export default function SubmissionDetailsClient({ project }: { project: Project 
                     </Card>
                 </div>
                 
-                 {project.status === 'Completed' && (
-                     <motion.div
-                        variants={containerVariants}
-                        initial="hidden"
-                        animate="visible"
-                        className="bg-card p-3 sm:p-6 pt-4 rounded-2xl col-span-2 row-start-2 flex flex-col justify-between relative overflow-hidden"
-                    >
-                        <h3 className="text-xl sm:text-2xl font-semibold mb-3 bg-gradient-to-b from-primary to-primary/50 text-transparent bg-clip-text">Feedback Summary</h3>
-                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center">
-                            <div className="bg-gradient-to-br from-primary to-primary/50 text-primary-foreground p-5 rounded-lg">
-                                <p className="text-xs">Total Testers</p>
-                                <p className="text-4xl font-bold">{feedbackBreakdown?.totalTesters}</p>
-                            </div>
-                            <div className="bg-gradient-to-bl from-red-500/20 to-red-500/10 p-5 rounded-lg relative overflow-hidden">
-                                <div className="p-3 rounded-full absolute opacity-10 scale-[2] -right-2 -top-1 -rotate-45 text-red-500">
-                                    <Bug />
-                                </div>
-                                <p className="text-xs text-muted-foreground">Bugs</p>
-                                <p className="text-4xl font-bold">{feedbackBreakdown.bugs}</p>
-                            </div>
-                            <div className="bg-gradient-to-bl from-yellow-500/20 to-yellow-500/10 p-5 rounded-lg relative overflow-hidden">
-                                <div className="p-3 rounded-full absolute opacity-10 scale-[2] -right-2 -top-1 -rotate-45 text-yellow-500">
-                                    <Lightbulb />
-                                </div>
-                                <p className="text-xs text-muted-foreground">Suggestions</p>
-                                <p className="text-4xl font-bold">{feedbackBreakdown.suggestions}</p>
-                            </div>
-                            <div className="bg-gradient-to-bl from-green-500/20 to-green-500/10 p-5 rounded-lg relative overflow-hidden">
-                                <div className="p-3 rounded-full absolute opacity-10 scale-[2] -right-2 -top-1 -rotate-90 text-green-500">
-                                    <PartyPopper />
-                                </div>
-                                <p className="text-xs text-muted-foreground">Praise</p>
-                                <p className="text-4xl font-bold">{feedbackBreakdown.praise}</p>
-                            </div>
+                 <motion.div
+                    variants={containerVariants}
+                    initial="hidden"
+                    animate="visible"
+                    className="bg-card p-3 sm:p-6 pt-4 rounded-2xl col-span-2 row-start-2 flex flex-col justify-between relative overflow-hidden"
+                >
+                    <h3 className="text-xl sm:text-2xl font-semibold mb-3 bg-gradient-to-b from-primary to-primary/50 text-transparent bg-clip-text">Feedback Summary</h3>
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center">
+                        <div className="bg-gradient-to-br from-primary to-primary/50 text-primary-foreground p-5 rounded-lg">
+                            <p className="text-xs">Total Testers</p>
+                            <p className="text-4xl font-bold">{feedbackBreakdown?.totalTesters}</p>
                         </div>
-                    </motion.div>
-                 )}
+                        <div className="bg-gradient-to-bl from-red-500/20 to-red-500/10 p-5 rounded-lg relative overflow-hidden">
+                            <div className="p-3 rounded-full absolute opacity-10 scale-[2] -right-2 -top-1 -rotate-45 text-red-500">
+                                <Bug />
+                            </div>
+                            <p className="text-xs text-muted-foreground">Bugs</p>
+                            <p className="text-4xl font-bold">{feedbackBreakdown.bugs}</p>
+                        </div>
+                        <div className="bg-gradient-to-bl from-yellow-500/20 to-yellow-500/10 p-5 rounded-lg relative overflow-hidden">
+                            <div className="p-3 rounded-full absolute opacity-10 scale-[2] -right-2 -top-1 -rotate-45 text-yellow-500">
+                                <Lightbulb />
+                            </div>
+                            <p className="text-xs text-muted-foreground">Suggestions</p>
+                            <p className="text-4xl font-bold">{feedbackBreakdown.suggestions}</p>
+                        </div>
+                        <div className="bg-gradient-to-bl from-green-500/20 to-green-500/10 p-5 rounded-lg relative overflow-hidden">
+                            <div className="p-3 rounded-full absolute opacity-10 scale-[2] -right-2 -top-1 -rotate-90 text-green-500">
+                                <PartyPopper />
+                            </div>
+                            <p className="text-xs text-muted-foreground">Praise</p>
+                            <p className="text-4xl font-bold">{feedbackBreakdown.praise}</p>
+                        </div>
+                    </div>
+                </motion.div>
 
                  <div className="bg-card/50 rounded-2xl p-4 sm:p-6 sm:pt-4">
                     <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
