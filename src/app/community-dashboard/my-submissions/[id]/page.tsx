@@ -227,11 +227,11 @@ export default function CommunitySubmissionDetailsPage({ params }: { params: { i
                             <CardDescription>All feedback submitted by testers for this project.</CardDescription>
                         </div>
                         <div className="flex items-center gap-2">
-                           <Button variant={viewMode === 'list' ? 'default' : 'outline'} size="icon" onClick={() => setViewMode('list')}>
+                           <Button variant={viewMode === 'list' ? 'secondary' : 'ghost'} size="icon" onClick={() => setViewMode('list')}>
                                 <LayoutGrid className="w-4 h-4" />
                                 <span className="sr-only">List View</span>
                            </Button>
-                            <Button variant={viewMode === 'table' ? 'default' : 'outline'} size="icon" onClick={() => setViewMode('table')}>
+                            <Button variant={viewMode === 'table' ? 'secondary' : 'ghost'} size="icon" onClick={() => setViewMode('table')}>
                                 <List className="w-4 h-4" />
                                 <span className="sr-only">Table View</span>
                            </Button>
@@ -322,3 +322,5 @@ export default function CommunitySubmissionDetailsPage({ params }: { params: { i
     </div>
   )
 }
+
+    
