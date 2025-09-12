@@ -9,7 +9,7 @@ import { projects as allProjects } from '@/lib/data'; // Using project data as i
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Bug, CheckCircle, Clock, Smartphone, MessageSquare, Star, BarChart, MapPin, LayoutGrid, List, Users, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Bug, CheckCircle, Clock, Smartphone, MessageSquare, Star, BarChart, MapPin, LayoutGrid, List, Users, ChevronLeft, ChevronRight, Lightbulb, PartyPopper } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
 import {
   Table,
@@ -27,6 +27,7 @@ import { cn } from '@/lib/utils';
 import { format } from 'date-fns';
 import { BackButton } from '@/components/back-button';
 import { AppPagination } from '@/components/app-pagination';
+import { motion } from 'framer-motion';
 
 
 const FEEDBACK_PER_PAGE = 5;
@@ -95,6 +96,27 @@ export default function CommunitySubmissionDetailsPage({ params }: { params: { i
     setFeedbackPage(1);
   }
 
+  const containerVariants = {
+      hidden: { opacity: 0 },
+      visible: {
+          opacity: 1,
+          transition: { staggerChildren: 0.1, delayChildren: 0.2 }
+      }
+  };
+
+  const itemVariants = {
+      hidden: { opacity: 0, y: 20 },
+      visible: { opacity: 1, y: 0, transition: { type: 'spring' } }
+  };
+
+  const feedbackBreakdown = {
+      bugs: project.feedback.filter(fb => fb.type === 'Bug').length,
+      suggestions: project.feedback.filter(fb => fb.type === 'Suggestion').length,
+      praise: project.feedback.filter(fb => fb.type === 'Praise').length,
+      totalTesters: project.testersCompleted,
+  };
+
+
   return (
     <div className="bg-secondary/50 min-h-screen">
         <div className="container mx-auto px-4 md:px-6 py-12">
@@ -160,6 +182,44 @@ export default function CommunitySubmissionDetailsPage({ params }: { params: { i
                     </Card>
                 </div>
                 
+                 {project.status === 'Completed' && (
+                     <motion.div
+                        variants={containerVariants}
+                        initial="hidden"
+                        animate="visible"
+                        className="bg-card p-3 sm:p-6 pt-4 rounded-2xl col-span-2 row-start-2 flex flex-col justify-between relative overflow-hidden"
+                    >
+                        <h3 className="text-xl sm:text-2xl font-semibold mb-3 bg-gradient-to-b from-primary to-primary/50 text-transparent bg-clip-text">Feedback Summary</h3>
+                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center">
+                            <div className="bg-gradient-to-br from-primary to-primary/50 text-primary-foreground p-5 rounded-lg">
+                                <p className="text-xs">Total Testers</p>
+                                <p className="text-4xl font-bold">{feedbackBreakdown?.totalTesters}</p>
+                            </div>
+                            <div className="bg-gradient-to-bl from-red-500/20 to-red-500/10 p-5 rounded-lg relative overflow-hidden">
+                                <div className="p-3 rounded-full absolute opacity-10 scale-[2] -right-2 -top-1 -rotate-45 text-red-500">
+                                    <Bug />
+                                </div>
+                                <p className="text-xs text-muted-foreground">Bugs</p>
+                                <p className="text-4xl font-bold">{feedbackBreakdown.bugs}</p>
+                            </div>
+                            <div className="bg-gradient-to-bl from-yellow-500/20 to-yellow-500/10 p-5 rounded-lg relative overflow-hidden">
+                                <div className="p-3 rounded-full absolute opacity-10 scale-[2] -right-2 -top-1 -rotate-45 text-yellow-500">
+                                    <Lightbulb />
+                                </div>
+                                <p className="text-xs text-muted-foreground">Suggestions</p>
+                                <p className="text-4xl font-bold">{feedbackBreakdown.suggestions}</p>
+                            </div>
+                            <div className="bg-gradient-to-bl from-green-500/20 to-green-500/10 p-5 rounded-lg relative overflow-hidden">
+                                <div className="p-3 rounded-full absolute opacity-10 scale-[2] -right-2 -top-1 -rotate-90 text-green-500">
+                                    <PartyPopper />
+                                </div>
+                                <p className="text-xs text-muted-foreground">Praise</p>
+                                <p className="text-4xl font-bold">{feedbackBreakdown.praise}</p>
+                            </div>
+                        </div>
+                    </motion.div>
+                 )}
+
                  <Card>
                     <CardHeader className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                         <div>
