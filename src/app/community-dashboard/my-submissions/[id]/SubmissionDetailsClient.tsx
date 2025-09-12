@@ -3,7 +3,7 @@
 
 import Image from 'next/image';
 import { projects as allProjects } from '@/lib/data'; // Using project data as it's richer
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Bug, CheckCircle, Clock, Smartphone, MessageSquare, Star, BarChart, MapPin, LayoutGrid, List, Users, ChevronLeft, ChevronRight, Lightbulb, PartyPopper } from 'lucide-react';
