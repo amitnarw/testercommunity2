@@ -7,6 +7,7 @@ import * as z from 'zod';
 import { motion } from 'framer-motion';
 import { useTheme } from 'next-themes';
 import { useInView } from 'react-intersection-observer';
+import Link from 'next/link';
 
 import { Card, CardContent } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
