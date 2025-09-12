@@ -15,6 +15,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Separator } from '@/components/ui/separator';
 import { BackButton } from '@/components/back-button';
 import { AppPagination } from '@/components/app-pagination';
+import { motion } from 'framer-motion';
 
 const PROJECTS_PER_PAGE = 6;
 
@@ -34,7 +35,7 @@ const getStatusConfig = (status: Project['status']) => {
 const ProjectCard = ({ project }: { project: Project }) => {
     const statusConfig = getStatusConfig(project.status as Project['status']);
     return (
-        <Card key={project.id} className="group relative overflow-hidden rounded-2xl bg-background hover:shadow-lg transition-shadow duration-300 flex flex-col h-full">
+        <Card key={project.id} className="group relative overflow-hidden rounded-2xl bg-background hover:shadow-lg transition-shadow duration-300 flex flex-col h-full border-0">
             <Link href={`/community-dashboard/my-submissions/${project.id}`} className="flex flex-col h-full">
                 <CardHeader className="flex flex-row items-start gap-4 p-5">
                     <Image src={project.icon} alt={project.name} width={48} height={48} className="rounded-lg border bg-secondary" data-ai-hint={project.dataAiHint} />
@@ -98,7 +99,7 @@ const PaginatedProjectList = ({ projects }: { projects: Project[] }) => {
             ) : (
                 <EmptyState />
             )}
-            <AppPagination 
+            <AppPagination
                 currentPage={currentPage}
                 totalPages={totalPages}
                 onPageChange={handlePageChange}
@@ -112,29 +113,60 @@ export default function MySubmissionsPage() {
     const inReviewApps = allProjects.filter(p => p.status === "In Review");
     const publishedApps = allProjects.filter(p => ["In Testing", "Completed"].includes(p.status));
 
+    const [selectedTab, setSelectedTab] = useState('in-review');
+    const tabs = [
+        { label: 'In Review', value: 'in-review', count: inReviewApps.length },
+        { label: 'Published', value: 'published', count: publishedApps.length }
+    ];
+
     return (
         <>
             <div className="min-h-screen bg-secondary/50">
                 <div className="container mx-auto px-4 md:px-6">
                     <header className="mb-8 pt-1">
                         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                            <div className='flex flex-row gap-4 items-center justify-center'>
+                            <div className="sticky top-0 z-[50] pt-2 sm:pt-3 pb-4 pl-0 xl:pl-8">
                                 <BackButton href="/community-dashboard" />
-                                <h1 className="text-xl font-bold">My Submissions</h1>
                             </div>
-                            <Button asChild className='bg-gradient-to-b from-primary to-primary/40 text-primary-foreground'>
-                                <Link href="/community-dashboard/submit">
-                                    <PlusCircle className="mr-2 h-4 w-4" /> Submit a New App
-                                </Link>
-                            </Button>
+                            <div className='flex flex-row items-center justify-between gap-4 w-full'>
+                                <h1 className="text-2xl sm:text-3xl font-bold bg-gradient-to-b from-primary to-primary/10 bg-clip-text text-transparent">My Submissions</h1>
+                                <Button asChild className='bg-gradient-to-b from-primary to-primary/40 text-primary-foreground px-3 h-8 sm:p-auto sm:h-10'>
+                                    <Link href="/community-dashboard/submit">
+                                        <PlusCircle className="h-4 w-4 absolute sm:static top-0 sm:top-auto left-0 sm:left-auto scale-[2] sm:scale-100 text-white/20 sm:text-white" />
+                                        <span className='hidden sm:block'>Submit New App</span>
+                                        <span className='sm:hidden block'>Submit</span>
+                                    </Link>
+                                </Button>
+                            </div>
                         </div>
                     </header>
 
                     <main>
-                        <Tabs defaultValue="in-review" className="w-full">
-                            <TabsList className="grid w-full grid-cols-2">
-                                <TabsTrigger value="in-review">In Review ({inReviewApps.length})</TabsTrigger>
-                                <TabsTrigger value="published">Published ({publishedApps.length})</TabsTrigger>
+                        <Tabs value={selectedTab} onValueChange={setSelectedTab} className="w-full">
+                            <TabsList className="relative grid w-full grid-cols-2 bg-muted p-1 rounded-full">
+                                {tabs.map((tab) => {
+                                    const isSelected = selectedTab === tab.value;
+
+                                    return (
+                                        <TabsTrigger
+                                            key={tab.value}
+                                            value={tab.value}
+                                            className={`relative px-3 py-1.5 text-xs sm:text-sm font-medium rounded-full transition-colors duration-200 ${isSelected ? 'text-foreground' : 'hover:bg-background/50'
+                                                }`}
+                                        >
+                                            {isSelected && (
+                                                <motion.span
+                                                    layoutId="bubble"
+                                                    className="absolute inset-0 z-10 bg-background rounded-full"
+                                                    transition={{ type: 'spring', bounce: 0.2, duration: 0.6 }}
+                                                />
+                                            )}
+                                            <span className="relative z-20">
+                                                {tab.label} ({tab.count})
+                                            </span>
+                                        </TabsTrigger>
+                                    );
+                                })}
                             </TabsList>
                             <TabsContent value="in-review" className="mt-6">
                                 <PaginatedProjectList projects={inReviewApps} />

@@ -14,6 +14,7 @@ import { CommunityOngoingAppCard } from '@/components/community-ongoing-app-card
 import { CommunityCompletedAppCard } from '@/components/community-completed-app-card';
 import Link from 'next/link';
 import { AppPagination } from '@/components/app-pagination';
+import { motion } from 'framer-motion';
 
 
 const APPS_PER_PAGE = 6;
@@ -33,6 +34,7 @@ export default function CommunityDashboardPage() {
         ongoing: 1,
         completed: 1,
     });
+    const [selectedTab, setSelectedTab] = useState('available');
 
     const ongoingApps = communityApps.filter(app => app.status === 'ongoing');
     const completedApps = communityApps.filter(app => app.status === 'completed');
@@ -41,6 +43,12 @@ export default function CommunityDashboardPage() {
     const totalAvailablePages = Math.ceil(availableApps.length / APPS_PER_PAGE);
     const totalOngoingPages = Math.ceil(ongoingApps.length / APPS_PER_PAGE);
     const totalCompletedPages = Math.ceil(completedApps.length / APPS_PER_PAGE);
+
+    const tabs = [
+        { label: 'Available', value: 'available', count: availableApps.length },
+        { label: 'Ongoing', value: 'ongoing', count: ongoingApps.length },
+        { label: 'Completed', value: 'completed', count: completedApps.length },
+    ];
 
     const currentAvailableApps = availableApps.slice(
         (pagination.available - 1) * APPS_PER_PAGE,
@@ -140,7 +148,7 @@ export default function CommunityDashboardPage() {
                 </header>
 
                 <main>
-                    <Tabs defaultValue="available" className="w-full">
+                    <Tabs value={selectedTab} onValueChange={setSelectedTab} className="w-full">
                         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
                             <div>
                                 <h2 className="text-2xl font-bold">Available Apps</h2>
@@ -175,10 +183,30 @@ export default function CommunityDashboardPage() {
                                 </DropdownMenu>
                             </div>
                         </div>
-                        <TabsList className="grid w-full grid-cols-3 mb-6">
-                            <TabsTrigger value="available" className='text-xs sm:text-sm'>Available ({availableApps.length})</TabsTrigger>
-                            <TabsTrigger value="ongoing" className='text-xs sm:text-sm'>Ongoing ({ongoingApps.length})</TabsTrigger>
-                            <TabsTrigger value="completed" className='text-xs sm:text-sm'>Completed ({completedApps.length})</TabsTrigger>
+                        <TabsList className="relative grid w-full grid-cols-3 bg-muted p-1 rounded-full">
+                            {tabs.map((tab) => {
+                                const isSelected = selectedTab === tab.value;
+
+                                return (
+                                    <TabsTrigger
+                                        key={tab.value}
+                                        value={tab.value}
+                                        className={`relative px-3 py-1.5 text-xs sm:text-sm font-medium rounded-full transition-colors duration-200 ${isSelected ? 'text-foreground' : 'hover:bg-background/50'
+                                            }`}
+                                    >
+                                        {isSelected && (
+                                            <motion.span
+                                                layoutId="bubble"
+                                                className="absolute inset-0 z-10 bg-background rounded-full"
+                                                transition={{ type: 'spring', bounce: 0.2, duration: 0.6 }}
+                                            />
+                                        )}
+                                        <span className="relative z-20">
+                                            {tab.label} ({tab.count})
+                                        </span>
+                                    </TabsTrigger>
+                                );
+                            })}
                         </TabsList>
                         <TabsContent value="available">
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
