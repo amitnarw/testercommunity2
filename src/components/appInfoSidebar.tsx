@@ -16,7 +16,7 @@ export const AppInfoSidebar = ({ app, handleRequestToJoin, buttonType, url }: { 
 
     return (
         <div className="sticky top-24 space-y-6">
-            <div onClick={handleRequestToJoin} className='relative w-full m-auto'>
+            <div onClick={handleRequestToJoin} className='w-full m-auto'>
                 {!buttonType ?
                     <>
                         <AnimatedRoundedButton
@@ -25,16 +25,14 @@ export const AppInfoSidebar = ({ app, handleRequestToJoin, buttonType, url }: { 
                             hoverTextColor={hoverTextColor}
                             borderRadius='9999px'
                             paddingY="4"
-                            paddingX="5"
+                            paddingX="0"
+                            className='py-2 sm:py-4 text-sm sm:text-base'
                         >
-                            <div className="flex items-center gap-2">
-                                <span>Request to Join Testing</span>
+                            <div className="flex items-center text-center gap-2">
+                                <span className="w-full">Request to Join Testing</span>
                             </div>
-
                         </AnimatedRoundedButton>
-                        <div className="p-2 rounded-3xl bg-white absolute top-2 right-2">
-                            <Send className="text-primary" />
-                        </div>
+
                     </>
                     :
                     <a href={url} target='_blank' className='flex flex-row gap-2 w-full border border-primary/50 rounded-full items-center justify-center py-2 text-primary'
@@ -50,8 +48,8 @@ export const AppInfoSidebar = ({ app, handleRequestToJoin, buttonType, url }: { 
                         <Image src={app.icon} alt={app.name} width={100} height={100} className="rounded-xl border bg-background shadow-sm" data-ai-hint={app.dataAiHint} />
                         <div className='flex flex-col items-start justify-between gap-2'>
                             <Badge variant="outline" className="mt-1 text-md border-none bg-gradient-to-b from-primary to-primary/50 !text-white text-normal">{app.category}</Badge>
-                            <div className="flex items-center gap-2 text-sm"><Smartphone className="w-5 h-5 text-primary/80" />Android {app.androidVersion}</div>
-                            <div className="flex items-center gap-2 text-sm"><Clock className="w-5 h-5 text-primary/80" /> ~{app.estimatedTime} test</div>
+                            <div className="flex items-center gap-2 text-xs sm:text-sm"><Smartphone className="w-5 h-5 text-primary/80" />Android {app.androidVersion}</div>
+                            <div className="flex items-center gap-2 text-xs sm:text-sm"><Clock className="w-5 h-5 text-primary/80" /> ~{app.estimatedTime} test</div>
                         </div>
                     </div>
                 </CardContent>
@@ -60,7 +58,7 @@ export const AppInfoSidebar = ({ app, handleRequestToJoin, buttonType, url }: { 
                         <p className="text-lg font-semibold text-primary text-start">REWARD</p>
                         <div className="text-3xl font-bold text-foreground flex items-center gap-2 justify-start mt-1">
                             {app.points} Points
-                            <Star className="w-7 h-7 text-primary/0 fill-primary/20  scale-[6] absolute bottom-8 right-6 rotate-90" />
+                            <Star className="w-7 h-7 text-primary/0 fill-primary/20 scale-[4] sm:scale-[6] absolute bottom-8 right-2 sm:right-6 rotate-90" />
                         </div>
                     </div>
                 </CardFooter>

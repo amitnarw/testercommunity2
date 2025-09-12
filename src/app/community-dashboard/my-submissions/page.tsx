@@ -3,18 +3,18 @@
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card'
 import { Button } from '@/components/ui/button';
-import { PlusCircle, FileClock, CheckCircle, Clock, ArrowRight, Search, FileCheck, Users } from 'lucide-react'
+import { PlusCircle, FileClock, CheckCircle, Clock, ArrowRight, Search, FileCheck, Users, ChevronLeft, ChevronRight } from 'lucide-react'
 import Link from 'next/link';
 import { useState } from 'react';
 import { projects as allProjects } from '@/lib/data';
 import type { Project } from '@/lib/types';
-import { Pagination, PaginationContent, PaginationItem, PaginationPrevious, PaginationLink, PaginationNext } from '@/components/ui/pagination';
 import { Badge } from '@/components/ui/badge';
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Separator } from '@/components/ui/separator';
 import { BackButton } from '@/components/back-button';
+import { AppPagination } from '@/components/app-pagination';
 
 const PROJECTS_PER_PAGE = 6;
 
@@ -98,37 +98,11 @@ const PaginatedProjectList = ({ projects }: { projects: Project[] }) => {
             ) : (
                 <EmptyState />
             )}
-            {totalPages > 1 && (
-                <Pagination className="mt-12">
-                    <PaginationContent>
-                        <PaginationItem>
-                            <PaginationPrevious
-                                href="#"
-                                onClick={(e) => { e.preventDefault(); handlePageChange(currentPage - 1); }}
-                                className={currentPage === 1 ? 'pointer-events-none opacity-50' : undefined}
-                            />
-                        </PaginationItem>
-                        {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
-                            <PaginationItem key={page}>
-                                <PaginationLink
-                                    href="#"
-                                    isActive={currentPage === page}
-                                    onClick={(e) => { e.preventDefault(); handlePageChange(page); }}
-                                >
-                                    {page}
-                                </PaginationLink>
-                            </PaginationItem>
-                        ))}
-                        <PaginationItem>
-                            <PaginationNext
-                                href="#"
-                                onClick={(e) => { e.preventDefault(); handlePageChange(currentPage + 1); }}
-                                className={currentPage === totalPages ? 'pointer-events-none opacity-50' : undefined}
-                            />
-                        </PaginationItem>
-                    </PaginationContent>
-                </Pagination>
-            )}
+            <AppPagination 
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={handlePageChange}
+            />
         </>
     );
 };

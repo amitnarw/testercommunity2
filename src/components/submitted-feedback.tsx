@@ -1,10 +1,11 @@
 
+
 'use client';
 
 import { useState, useCallback } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { LayoutGrid, Lightbulb, Upload, Edit, List, Bug, Trash2, X, PartyPopper } from 'lucide-react';
+import { LayoutGrid, Lightbulb, Upload, Edit, List, Bug, Trash2, X, PartyPopper, ChevronLeft, ChevronRight } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
@@ -15,7 +16,7 @@ import { PlusCircle } from 'lucide-react';
 import { useDropzone } from 'react-dropzone';
 import Image from 'next/image';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from './ui/pagination';
+import { AppPagination } from './app-pagination';
 
 const FEEDBACK_PER_PAGE = 3;
 
@@ -180,20 +181,20 @@ const FeedbackGridItem = ({ fb, onSave, onDelete, onImageClick }: { fb: Submitte
         <CardContent className="p-0 pt-2 flex-grow">
             <p className="text-sm text-muted-foreground line-clamp-3">{fb.comment}</p>
         </CardContent>
-        <CardFooter className="p-0 pt-2 flex items-center justify-between">
+        <CardFooter className="p-0 flex items-center justify-between">
             {fb.screenshot ? (
                 <div className="mt-3 cursor-pointer h-10" onClick={() => onImageClick(fb.screenshot!)}>
                     <Image src={fb.screenshot} alt="Feedback screenshot" width={30} height={100} className="rounded-sm border object-cover" />
                 </div>
             ) : <div />}
             <div className="flex items-center gap-1">
-                <button className="hover:bg-white/50 p-2 rounded-md duration-300">
-                    <Edit className="w-4 h-4" />
+                <button className="hover:bg-white/50 p-1 sm:p-2 rounded-md duration-300">
+                    <Edit className="w-3 h-3 sm:w-4 h-4" />
                 </button>
                 <AlertDialog>
                     <AlertDialogTrigger asChild>
-                        <button className="hover:bg-red-200 p-2 rounded-md duration-300 text-red-500">
-                            <Trash2 className="w-4 h-4" />
+                        <button className="hover:bg-red-200 p-1 sm:p-2 rounded-md duration-300 text-red-500">
+                            <Trash2 className="w-3 h-3 sm:w-4 h-4" />
                         </button>
                     </AlertDialogTrigger>
                     <AlertDialogContent>
@@ -263,13 +264,14 @@ export function SubmittedFeedback({ isCompleted = false }: { isCompleted?: boole
     return (
         <>
             <section>
-                <div className="bg-card rounded-2xl p-4 sm:p-6 sm:pt-4">
+                <div className="bg-card/50 rounded-2xl p-4 sm:p-6 sm:pt-4">
                     <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
                         <div>
-                            <h2 className="text-2xl font-bold">My Submitted Feedback</h2>
-                            <p className="text-muted-foreground">{description}</p>
+                            <h2 className="text-xl sm:text-2xl font-bold">Submitted Feedback</h2>
+                            <p className="text-sm sm:text-base text-muted-foreground">{description}</p>
                         </div>
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-2 justify-between w-full sm:w-auto">
+                            {isCompleted && <div />}
                             <div className="flex items-center gap-1">
                                 <Button variant={viewMode === 'list' ? 'secondary' : 'ghost'} size="icon" onClick={() => setViewMode('list')}>
                                     <List className="w-4 h-4" />
@@ -280,7 +282,7 @@ export function SubmittedFeedback({ isCompleted = false }: { isCompleted?: boole
                             </div>
                             {!isCompleted &&
                                 <FeedbackFormModal onSave={handleSaveFeedback}>
-                                    <Button><PlusCircle className="mr-2 h-4 w-4" /> Submit New</Button>
+                                    <Button className='relative overflow-hidden'><PlusCircle className="absolute sm:static mr-2 h-4 w-4 scale-[2.5] top-1 left-1 text-white/20 sm:text-white sm:scale-100" /> Submit New</Button>
                                 </FeedbackFormModal>
                             }
                         </div>
@@ -301,25 +303,11 @@ export function SubmittedFeedback({ isCompleted = false }: { isCompleted?: boole
                                     ))}
                                 </div>
                             )}
-                            {totalPages > 1 && (
-                                <Pagination className="mt-6">
-                                    <PaginationContent>
-                                        <PaginationItem>
-                                            <PaginationPrevious href="#" onClick={(e) => { e.preventDefault(); handlePageChange(currentPage - 1); }} />
-                                        </PaginationItem>
-                                        {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
-                                            <PaginationItem key={page}>
-                                                <PaginationLink href="#" isActive={currentPage === page} onClick={(e) => { e.preventDefault(); handlePageChange(page); }}>
-                                                    {page}
-                                                </PaginationLink>
-                                            </PaginationItem>
-                                        ))}
-                                        <PaginationItem>
-                                            <PaginationNext href="#" onClick={(e) => { e.preventDefault(); handlePageChange(currentPage + 1); }} />
-                                        </PaginationItem>
-                                    </PaginationContent>
-                                </Pagination>
-                            )}
+                            <AppPagination 
+                                currentPage={currentPage}
+                                totalPages={totalPages}
+                                onPageChange={handlePageChange}
+                            />
                         </>
                     ) : (
                         <div className="text-center py-12 text-muted-foreground bg-secondary/50 rounded-lg">

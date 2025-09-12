@@ -1,4 +1,5 @@
 
+
 'use client';
 
 import { notFound } from 'next/navigation';
@@ -8,7 +9,7 @@ import { projects as allProjects } from '@/lib/data'; // Using project data as i
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Bug, CheckCircle, Clock, Smartphone, MessageSquare, Star, BarChart, MapPin, LayoutGrid, List, Users } from 'lucide-react';
+import { Bug, CheckCircle, Clock, Smartphone, MessageSquare, Star, BarChart, MapPin, LayoutGrid, List, Users, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
 import {
   Table,
@@ -23,9 +24,9 @@ import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, Tooltip, CartesianG
 import { useState } from 'react';
 import type { ProjectFeedback } from '@/lib/types';
 import { cn } from '@/lib/utils';
-import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from '@/components/ui/pagination';
 import { format } from 'date-fns';
 import { BackButton } from '@/components/back-button';
+import { AppPagination } from '@/components/app-pagination';
 
 
 const FEEDBACK_PER_PAGE = 5;
@@ -247,37 +248,11 @@ export default function CommunitySubmissionDetailsPage({ params }: { params: { i
                                     </div>
                                 )}
 
-                                {totalFeedbackPages > 1 && (
-                                    <Pagination className="mt-8">
-                                        <PaginationContent>
-                                            <PaginationItem>
-                                                <PaginationPrevious 
-                                                    href="#" 
-                                                    onClick={(e) => { e.preventDefault(); handleFeedbackPageChange(feedbackPage - 1); }}
-                                                    className={feedbackPage === 1 ? 'pointer-events-none opacity-50' : undefined}
-                                                />
-                                            </PaginationItem>
-                                            {Array.from({ length: totalFeedbackPages }, (_, i) => i + 1).map(page => (
-                                                <PaginationItem key={page}>
-                                                    <PaginationLink 
-                                                        href="#" 
-                                                        isActive={feedbackPage === page}
-                                                        onClick={(e) => { e.preventDefault(); handleFeedbackPageChange(page); }}
-                                                    >
-                                                        {page}
-                                                    </PaginationLink>
-                                                </PaginationItem>
-                                            ))}
-                                            <PaginationItem>
-                                                <PaginationNext 
-                                                    href="#" 
-                                                    onClick={(e) => { e.preventDefault(); handleFeedbackPageChange(feedbackPage + 1); }}
-                                                    className={feedbackPage === totalFeedbackPages ? 'pointer-events-none opacity-50' : undefined}
-                                                />
-                                            </PaginationItem>
-                                        </PaginationContent>
-                                    </Pagination>
-                                )}
+                                <AppPagination 
+                                    currentPage={feedbackPage}
+                                    totalPages={totalFeedbackPages}
+                                    onPageChange={handleFeedbackPageChange}
+                                />
                             </TabsContent>
                         </Tabs>
                     </CardContent>

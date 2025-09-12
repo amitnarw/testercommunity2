@@ -1,14 +1,16 @@
 
+
 'use client';
 
 import { useState } from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { notifications as allNotifications } from '@/lib/data';
 import type { Notification } from '@/lib/types';
-import { Bell, Bug, CheckCircle, Gift, MessageSquare, Star } from 'lucide-react';
-import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from '@/components/ui/pagination';
+import { Bell, Bug, CheckCircle, ChevronLeft, ChevronRight, Gift, MessageSquare, Star } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
+import { Button } from '@/components/ui/button';
+import { AppPagination } from '@/components/app-pagination';
 
 const NOTIFICATIONS_PER_PAGE = 8;
 
@@ -80,27 +82,11 @@ export default function NotificationsPage() {
                     </CardContent>
                 </Card>
 
-                {totalPages > 1 && (
-                    <div className="mt-8">
-                        <Pagination>
-                            <PaginationContent>
-                                <PaginationItem>
-                                    <PaginationPrevious href="#" onClick={(e) => { e.preventDefault(); handlePageChange(currentPage - 1); }} />
-                                </PaginationItem>
-                                {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
-                                    <PaginationItem key={page}>
-                                        <PaginationLink href="#" isActive={currentPage === page} onClick={(e) => { e.preventDefault(); handlePageChange(page); }}>
-                                            {page}
-                                        </PaginationLink>
-                                    </PaginationItem>
-                                ))}
-                                <PaginationItem>
-                                    <PaginationNext href="#" onClick={(e) => { e.preventDefault(); handlePageChange(currentPage + 1); }}/>
-                                </PaginationItem>
-                            </PaginationContent>
-                        </Pagination>
-                    </div>
-                )}
+                <AppPagination 
+                    currentPage={currentPage}
+                    totalPages={totalPages}
+                    onPageChange={handlePageChange}
+                />
             </main>
         </div>
     );

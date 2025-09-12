@@ -25,12 +25,12 @@ export default function AppTestingPage({ params }: { params: { id: string } }) {
     return (
         <div className="bg-[#f8fafc] dark:bg-[#0f151e] text-foreground min-h-screen">
             <div className="container mx-auto px-4 md:px-6">
-                <header className="mb-8 max-w-7xl mx-auto">
-                    <BackButton href="/community-dashboard" className="mb-6" />
-                </header>
+                <div className="sticky top-0 z-[50] pt-2 sm:pt-3 pb-4 pl-0 xl:pl-8 w-1/2">
+                    <BackButton href="/community-dashboard" />
+                </div>
 
-                <main className="max-w-7xl mx-auto grid lg:grid-cols-3 gap-12">
-                    <div className="lg:col-span-2 space-y-12">
+                <main className="max-w-7xl mx-auto grid lg:grid-cols-3 gap-12 mt-8">
+                    <div className="lg:col-span-2 space-y-12 overflow-hidden">
                         <section>
                             <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-br from-primary to-accent bg-clip-text text-transparent">{app.name}</h1>
                             <p className="text-muted-foreground text-lg mt-2 leading-relaxed">{app.shortDescription}</p>
@@ -38,19 +38,21 @@ export default function AppTestingPage({ params }: { params: { id: string } }) {
 
                         <section>
                             <h2 className="text-2xl font-bold mb-4">Screenshots</h2>
-                            <div className="flex flex-row gap-2 overflow-x-auto pb-4 max-h-[500px]">
-                                {app.screenshots.map((ss, index) => (
-                                    <div
-                                        key={index}
-                                        className="overflow-hidden rounded-xl flex-shrink-0 w-60 relative group cursor-pointer"
-                                        onClick={() => setFullscreenImage(ss.url)}
-                                    >
-                                        <Image src={ss.url} alt={ss.alt} width={400} height={800} className="object-cover h-full w-full group-hover:scale-105 transition-transform duration-300" data-ai-hint={ss.dataAiHint} />
-                                        <div className="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                                            <Expand className="w-8 h-8 text-white" />
+                            <div className="w-full">
+                                <div className="flex flex-row gap-2 overflow-x-auto pb-4 -mb-4">
+                                    {app.screenshots.map((ss, index) => (
+                                        <div
+                                            key={index}
+                                            className="overflow-hidden rounded-xl flex-shrink-0 w-40 sm:w-60 relative group cursor-pointer"
+                                            onClick={() => setFullscreenImage(ss.url)}
+                                        >
+                                            <Image src={ss.url} alt={ss.alt} width={400} height={800} className="object-cover h-full w-full group-hover:scale-105 transition-transform duration-300" data-ai-hint={ss.dataAiHint} />
+                                            <div className="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                                <Expand className="w-8 h-8 text-white" />
+                                            </div>
                                         </div>
-                                    </div>
-                                ))}
+                                    ))}
+                                </div>
                             </div>
                         </section>
 
@@ -71,7 +73,9 @@ export default function AppTestingPage({ params }: { params: { id: string } }) {
                                 </Card>
                                 <Card className="p-4 bg-gradient-to-br from-secondary to-secondary/50 hover:shadow-lg transition-shadow">
                                     <div className="flex items-center gap-3 mb-2">
-                                        <div className="p-2 bg-primary/10 rounded-lg text-primary"><RefreshCw className="w-5 h-5" /></div>
+                                        <div className="p-2 bg-primary/10 rounded-lg text-primary">
+                                            <RefreshCw className="w-5 h-5" />
+                                        </div>
                                         <h3 className="font-semibold">No Skipping Days</h3>
                                     </div>
                                     <p className="text-xs text-muted-foreground">If you uninstall the app or fail to engage, your progress will reset to Day 1. Consistency is key!</p>
@@ -87,14 +91,18 @@ export default function AppTestingPage({ params }: { params: { id: string } }) {
                         </section>
 
                         <section>
-                            <h2 className="text-2xl font-bold mb-4">Developer's Instructions <span className="bg-gradient-to-b from-primary to-primary/50 text-white font-bold rounded-lg px-4 py-0.5 text-xl ml-2">Important</span></h2>
-                            <div className="prose prose-base dark:prose-invert leading-relaxed text-white dark:text-black bg-[#121212] dark:bg-white p-6 rounded-lg border-primary border-l-4 shadow-xl shadow-gray-300 dark:shadow-gray-700">
-                                <p>{app.testingInstructions}</p>
+                            <h2 className="mb-4 flex flex-row items-center justify-between gap-2 sm:justify-start">
+                                <span className="text-2xl font-bold whitespace-nowrap">Developer's Instructions</span>
+                                <span className="bg-gradient-to-b from-primary to-primary/50 text-white font-bold rounded-lg px-4 py-0.5 text-xl hidden sm:inline">Important</span>
+                            </h2>
+                            <div className="prose prose-base dark:prose-invert leading-relaxed text-white dark:text-black bg-[#121212] dark:bg-white p-3 sm:p-6 rounded-lg border-primary border-l-4 shadow-xl shadow-gray-300 dark:shadow-gray-700 text-sm sm:text-base">
+                            <span className="bg-gradient-to-b from-primary to-primary/50 text-white font-bold rounded-md px-4 py-0.5 text-lg inline sm:hidden">Important</span>
+                                <p className='mt-2 sm:mt-0'>{app.testingInstructions}</p>
                             </div>
                         </section>
 
                         <section>
-                            <h2 className="text-2xl font-bold mb-4">General Testing Instructions</h2>
+                            <h2 className="text-xl sm:text-2xl font-bold mb-4">General Testing Instructions</h2>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                                 <div className="bg-secondary p-4 rounded-lg flex items-start gap-3">
                                     <Compass className="w-6 h-6 text-primary flex-shrink-0 mt-1" />
@@ -141,7 +149,7 @@ export default function AppTestingPage({ params }: { params: { id: string } }) {
                     <Button
                         variant="ghost"
                         size="icon"
-                        className="absolute top-4 right-4 text-white hover:text-white bg-red-500/60 hover:bg-red-500 h-12 w-12 rounded-lg"
+                        className="absolute top-4 right-4 text-white hover:text-white bg-red-500/60 hover:bg-red-500 h-12 w-12 rounded-lg z-50"
                         onClick={() => setFullscreenImage(null)}
                     >
                         <X className="w-8 h-8" />

@@ -1,4 +1,5 @@
 
+
 'use client';
 
 import { notFound } from 'next/navigation';
@@ -7,7 +8,7 @@ import { projects } from '@/lib/data';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Bug, CheckCircle, Clock, Users, MessageSquare, Star, Smartphone, BarChart, MapPin, LayoutGrid, List, Copy, ExternalLink, User, Info,ClipboardList } from 'lucide-react';
+import { Bug, CheckCircle, Clock, Users, MessageSquare, Star, Smartphone, BarChart, MapPin, LayoutGrid, List, Copy, ExternalLink, User, Info,ClipboardList, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
 import {
   Table,
@@ -20,7 +21,6 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ResponsiveContainer, PieChart, Pie, Cell, Tooltip, Legend } from 'recharts';
 import { useState } from 'react';
-import { Pagination, PaginationContent, PaginationItem, PaginationLink, PaginationNext, PaginationPrevious } from '@/components/ui/pagination';
 import type { ProjectFeedback } from '@/lib/types';
 import { cn } from '@/lib/utils';
 import { format } from 'date-fns';
@@ -28,6 +28,7 @@ import { toast } from '@/hooks/use-toast';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { motion } from 'framer-motion';
 import { BackButton } from '@/components/back-button';
+import { AppPagination } from '@/components/app-pagination';
 
 
 const FEEDBACK_PER_PAGE = 10;
@@ -316,38 +317,11 @@ export default function ProjectDetailsPage({ params }: { params: { id: string } 
                                                 )}
                                             </div>
                                         )}
-
-                                        {totalFeedbackPages > 1 && (
-                                            <Pagination className="mt-6">
-                                                <PaginationContent>
-                                                    <PaginationItem>
-                                                        <PaginationPrevious 
-                                                            href="#" 
-                                                            onClick={(e) => { e.preventDefault(); handleFeedbackPageChange(feedbackPage - 1); }}
-                                                            className={feedbackPage === 1 ? 'pointer-events-none opacity-50' : undefined}
-                                                        />
-                                                    </PaginationItem>
-                                                    {Array.from({ length: totalFeedbackPages }, (_, i) => i + 1).map(page => (
-                                                        <PaginationItem key={page}>
-                                                            <PaginationLink 
-                                                                href="#" 
-                                                                isActive={feedbackPage === page}
-                                                                onClick={(e) => { e.preventDefault(); handleFeedbackPageChange(page); }}
-                                                            >
-                                                                {page}
-                                                            </PaginationLink>
-                                                        </PaginationItem>
-                                                    ))}
-                                                    <PaginationItem>
-                                                        <PaginationNext 
-                                                            href="#" 
-                                                            onClick={(e) => { e.preventDefault(); handleFeedbackPageChange(feedbackPage + 1); }}
-                                                            className={feedbackPage === totalFeedbackPages ? 'pointer-events-none opacity-50' : undefined}
-                                                        />
-                                                    </PaginationItem>
-                                                </PaginationContent>
-                                            </Pagination>
-                                        )}
+                                        <AppPagination 
+                                            currentPage={feedbackPage}
+                                            totalPages={totalFeedbackPages}
+                                            onPageChange={handleFeedbackPageChange}
+                                        />
                                     </TabsContent>
                                 </Tabs>
                             </CardContent>
@@ -412,5 +386,3 @@ export default function ProjectDetailsPage({ params }: { params: { id: string } 
     </div>
   );
 }
-
-    

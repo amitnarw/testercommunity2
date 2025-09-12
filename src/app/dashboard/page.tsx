@@ -3,15 +3,15 @@
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button';
-import { PlusCircle, Package } from 'lucide-react'
+import { PlusCircle, Package, ChevronLeft, ChevronRight } from 'lucide-react'
 import { ProjectList } from '@/components/project-list';
 import Link from 'next/link';
 import { Gem, Activity } from 'lucide-react';
 import { useState } from 'react';
 import { projects as allProjects } from '@/lib/data';
-import { Pagination, PaginationContent, PaginationItem, PaginationPrevious, PaginationLink, PaginationNext } from '@/components/ui/pagination';
 import type { Project } from '@/lib/types';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { AppPagination } from '@/components/app-pagination';
 
 
 const PROJECTS_PER_PAGE = 6;
@@ -23,58 +23,32 @@ const BentoCard = ({ children, className }: { children: React.ReactNode, classNa
 );
 
 const PaginatedProjectList = ({ projects }: { projects: Project[] }) => {
-    const [currentPage, setCurrentPage] = useState(1);
-    const totalPages = Math.ceil(projects.length / PROJECTS_PER_PAGE);
-    const startIndex = (currentPage - 1) * PROJECTS_PER_PAGE;
-    const endIndex = startIndex + PROJECTS_PER_PAGE;
-    const currentProjects = projects.slice(startIndex, endIndex);
+  const [currentPage, setCurrentPage] = useState(1);
+  const totalPages = Math.ceil(projects.length / PROJECTS_PER_PAGE);
+  const startIndex = (currentPage - 1) * PROJECTS_PER_PAGE;
+  const endIndex = startIndex + PROJECTS_PER_PAGE;
+  const currentProjects = projects.slice(startIndex, endIndex);
 
-    const handlePageChange = (page: number) => {
-        if (page < 1 || page > totalPages) return;
-        setCurrentPage(page);
-    };
+  const handlePageChange = (page: number) => {
+    if (page < 1 || page > totalPages) return;
+    setCurrentPage(page);
+  };
 
-    return (
-        <>
-            <ProjectList projects={currentProjects} />
-            {totalPages > 1 && (
-                <Pagination className="py-8">
-                    <PaginationContent>
-                        <PaginationItem>
-                            <PaginationPrevious
-                                href="#"
-                                onClick={(e) => { e.preventDefault(); handlePageChange(currentPage - 1); }}
-                                className={currentPage === 1 ? 'pointer-events-none opacity-50' : undefined}
-                            />
-                        </PaginationItem>
-                        {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
-                            <PaginationItem key={page}>
-                                <PaginationLink
-                                    href="#"
-                                    isActive={currentPage === page}
-                                    onClick={(e) => { e.preventDefault(); handlePageChange(page); }}
-                                >
-                                    {page}
-                                </PaginationLink>
-                            </PaginationItem>
-                        ))}
-                        <PaginationItem>
-                            <PaginationNext
-                                href="#"
-                                onClick={(e) => { e.preventDefault(); handlePageChange(currentPage + 1); }}
-                                className={currentPage === totalPages ? 'pointer-events-none opacity-50' : undefined}
-                            />
-                        </PaginationItem>
-                    </PaginationContent>
-                </Pagination>
-            )}
-        </>
-    );
+  return (
+    <>
+      <ProjectList projects={currentProjects} />
+      <AppPagination
+        currentPage={currentPage}
+        totalPages={totalPages}
+        onPageChange={handlePageChange}
+      />
+    </>
+  );
 };
 
 
 export default function DashboardPage() {
-  
+
   const draftApps = allProjects.filter(p => p.status === "Draft");
   const ongoingApps = allProjects.filter(p => ["In Testing", "In Review"].includes(p.status));
   const completedApps = allProjects.filter(p => ["Completed", "Archived"].includes(p.status));
@@ -92,7 +66,7 @@ export default function DashboardPage() {
           <header className="mb-6">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
               <div>
-                <h1 className="text-4xl font-bold bg-gradient-to-b from-primary to-primary/40 bg-clip-text text-transparent leading-[unset]">Developer Dashboard</h1>
+                <h1 className="text-4xl font-bold bg-gradient-to-b from-primary to-primary/40 bg-clip-text text-transparent leading-0">Developer Dashboard</h1>
                 <p className="text-muted-foreground">Manage your apps and professional testing projects.</p>
               </div>
             </div>
@@ -104,7 +78,7 @@ export default function DashboardPage() {
               <BentoCard className='grid gap-2 grid-cols-3 !p-0'>
                 <Card className="rounded-xl border-0 bg-secondary px-3 py-2">
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 p-0">
-                    <CardTitle className="text-sm font-medium text-muted-foreground">
+                    <CardTitle className="text-xs sm:text-sm font-medium text-muted-foreground">
                       Total Apps
                     </CardTitle>
                   </CardHeader>
@@ -114,7 +88,7 @@ export default function DashboardPage() {
                 </Card>
                 <Card className="rounded-xl border-0 bg-secondary px-3 py-2">
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 p-0">
-                    <CardTitle className="text-sm font-medium text-muted-foreground">
+                    <CardTitle className="text-xs sm:text-sm font-medium text-muted-foreground">
                       In Testing
                     </CardTitle>
                   </CardHeader>
@@ -124,7 +98,7 @@ export default function DashboardPage() {
                 </Card>
                 <Card className="rounded-xl border-0 bg-secondary px-3 py-2">
                   <CardHeader className="flex flex-row items-center justify-between space-y-0 p-0">
-                    <CardTitle className="text-sm font-medium text-muted-foreground">Completed</CardTitle>
+                    <CardTitle className="text-xs sm:text-sm font-medium text-muted-foreground">Completed</CardTitle>
                   </CardHeader>
                   <CardContent className='p-0'>
                     <div className="text-2xl font-bold">{completedApps.length}</div>
@@ -143,7 +117,7 @@ export default function DashboardPage() {
               </CardHeader>
               <CardContent className='p-0'>
                 <div className="text-5xl font-bold text-white">
-                    {availablePackages}<span className="text-3xl text-white/70">/{totalPackages}</span>
+                  {availablePackages}<span className="text-3xl text-white/70">/{totalPackages}</span>
                 </div>
               </CardContent>
             </Card>
@@ -164,22 +138,22 @@ export default function DashboardPage() {
           </div>
 
           <main className="mt-12">
-             <Tabs defaultValue="ongoing" className="w-full">
-                <TabsList className="grid w-full grid-cols-3">
-                    <TabsTrigger value="ongoing">Ongoing ({ongoingApps.length})</TabsTrigger>
-                    <TabsTrigger value="drafts">Drafts ({draftApps.length})</TabsTrigger>
-                    <TabsTrigger value="completed">Completed ({completedApps.length})</TabsTrigger>
-                </TabsList>
-                <TabsContent value="ongoing" className="mt-6">
-                    <PaginatedProjectList projects={ongoingApps} />
-                </TabsContent>
-                 <TabsContent value="drafts" className="mt-6">
-                    <PaginatedProjectList projects={draftApps} />
-                </TabsContent>
-                <TabsContent value="completed" className="mt-6">
-                    <PaginatedProjectList projects={completedApps} />
-                </TabsContent>
-              </Tabs>
+            <Tabs defaultValue="ongoing" className="w-full">
+              <TabsList className="grid w-full grid-cols-3">
+                <TabsTrigger value="ongoing" className="text-xs sm:text-sm">Ongoing ({ongoingApps.length})</TabsTrigger>
+                <TabsTrigger value="drafts" className="text-xs sm:text-sm">Drafts ({draftApps.length})</TabsTrigger>
+                <TabsTrigger value="completed" className="text-xs sm:text-sm">Completed ({completedApps.length})</TabsTrigger>
+              </TabsList>
+              <TabsContent value="ongoing" className="mt-6">
+                <PaginatedProjectList projects={ongoingApps} />
+              </TabsContent>
+              <TabsContent value="drafts" className="mt-6">
+                <PaginatedProjectList projects={draftApps} />
+              </TabsContent>
+              <TabsContent value="completed" className="mt-6">
+                <PaginatedProjectList projects={completedApps} />
+              </TabsContent>
+            </Tabs>
           </main>
         </div>
       </div>
