@@ -1,4 +1,6 @@
 
+'use client';
+
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -60,7 +62,6 @@ const getSeverityBadge = (severity: string) => {
 };
 
 function SubmissionDetailsClient({ project }: { project: Project }) {
-  'use client';
   
   const [feedbackPage, setFeedbackPage] = useState(1);
   const [viewMode, setViewMode] = useState<'list' | 'grid'>('list');
