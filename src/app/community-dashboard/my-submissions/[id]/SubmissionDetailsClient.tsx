@@ -50,6 +50,7 @@ const getFeedbackIcon = (type: string) => {
 };
 
 const getSeverityBadge = (severity: string) => {
+    if (severity === 'N/A') return null;
     switch (severity) {
         case 'Critical': return <Badge variant="destructive" className="bg-red-700 hover:bg-red-800">{severity}</Badge>;
         case 'High': return <Badge variant="destructive" className="bg-red-500/80 hover:bg-red-600">{severity}</Badge>;
@@ -233,7 +234,6 @@ export default function SubmissionDetailsClient({ project }: { project: Project 
                                                         <p className="font-semibold">{fb.type}</p>
                                                         {getSeverityBadge(fb.severity)}
                                                     </div>
-                                                    <Badge variant={fb.status === 'Resolved' || fb.status === 'Closed' ? 'secondary' : 'outline'}>{fb.status}</Badge>
                                                 </div>
                                                 <p className="text-sm text-muted-foreground mt-1">{fb.comment}</p>
                                                 <div className="flex items-center justify-between text-xs text-muted-foreground pt-3 border-t w-full mt-3">
@@ -247,9 +247,9 @@ export default function SubmissionDetailsClient({ project }: { project: Project 
                                     ))}
                                 </div>
                             ) : (
-                                <div className="grid grid-cols-2 md:grid-cols-3 gap-2 sm:gap-4">
+                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-4">
                                     {currentFeedback.map((fb) => (
-                                         <Card key={fb.id} className={`bg-gradient-to-bl ${fb.type === "Bug" ? "from-red-500/20" : fb.type === "Suggestion" ? "from-yellow-500/20" : "from-green-500/20"} ${fb.type === "Bug" ? "to-red-500/10" : fb.type === "Suggestion" ? "to-yellow-500/10" : "to-green-500/10"} p-4 pr-2 shadow-none border-0 h-full flex flex-col relative overflow-hidden`}>
+                                        <Card key={fb.id} className={`bg-gradient-to-bl ${fb.type === "Bug" ? "from-red-500/20" : fb.type === "Suggestion" ? "from-yellow-500/20" : "from-green-500/20"} ${fb.type === "Bug" ? "to-red-500/10" : fb.type === "Suggestion" ? "to-yellow-500/10" : "to-green-500/10"} p-4 pr-2 shadow-none border-0 h-full flex flex-col relative overflow-hidden`}>
                                             <CardHeader className="p-0 flex-row items-center justify-between">
                                                 <div className="flex items-center gap-3">
                                                     <div className="p-3 rounded-full absolute opacity-10 scale-[3] -right-1 -top-1 -rotate-45">
@@ -257,13 +257,14 @@ export default function SubmissionDetailsClient({ project }: { project: Project 
                                                     </div>
                                                     <CardTitle className="text-base">{fb.type}</CardTitle>
                                                 </div>
+                                                {getSeverityBadge(fb.severity)}
                                             </CardHeader>
                                             <CardContent className="p-0 pt-2 flex-grow">
                                                 <p className="text-sm text-muted-foreground line-clamp-3">{fb.comment}</p>
                                             </CardContent>
-                                            <CardFooter className="p-0 flex items-center justify-between text-xs text-muted-foreground">
+                                            <CardFooter className="p-0 flex items-center justify-between text-xs text-muted-foreground pt-2 mt-2 border-t">
                                                 <span>{fb.tester}</span>
-                                                {getSeverityBadge(fb.severity)}
+                                                <span>{format(new Date(fb.date), 'dd MMM yyyy')}</span>
                                             </CardFooter>
                                         </Card>
                                     ))}
