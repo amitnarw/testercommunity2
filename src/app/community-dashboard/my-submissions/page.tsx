@@ -1,4 +1,3 @@
-
 'use client';
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card'
@@ -34,6 +33,8 @@ const getStatusConfig = (status: Project['status']) => {
 
 const ProjectCard = ({ project }: { project: Project }) => {
     const statusConfig = getStatusConfig(project.status as Project['status']);
+    const isReviewOrDraft = project.status === "In Review" || project.status === "Draft";
+
     return (
         <Card key={project.id} className="group relative overflow-hidden rounded-2xl bg-background hover:shadow-lg transition-shadow duration-300 flex flex-col h-full border-0">
             <Link href={`/community-dashboard/my-submissions/${project.id}`} className="flex flex-col h-full">
@@ -46,11 +47,13 @@ const ProjectCard = ({ project }: { project: Project }) => {
                     <ArrowRight className="absolute top-4 right-4 text-muted-foreground/30 transition-all duration-300 group-hover:text-primary group-hover:translate-x-1 group-hover:-translate-y-1" size={20} />
                 </CardHeader>
                 <CardContent className="p-5 pt-0 flex-grow relative">
-                    <p className="text-sm text-muted-foreground line-clamp-3">{project.description}</p>
-                    <div className="absolute bottom-0 left-0 right-0 h-8 bg-gradient-to-t from-background to-transparent"></div>
+                    <p className="text-sm text-muted-foreground line-clamp-3 h-14">{project.description}</p>
+                    {isReviewOrDraft && (
+                         <div className="absolute bottom-0 left-0 right-0 h-8 bg-gradient-to-t from-background to-transparent"></div>
+                    )}
                 </CardContent>
                 <CardFooter className="p-3 bg-secondary/50 m-2 rounded-lg mt-auto">
-                    <div className="flex items-center gap-2">
+                     <div className="flex items-center gap-2">
                         <div className={cn("p-1.5 rounded-full bg-background", statusConfig.className)}>
                             {statusConfig.icon}
                         </div>
@@ -58,7 +61,12 @@ const ProjectCard = ({ project }: { project: Project }) => {
                             <Badge variant={statusConfig.badgeVariant as any} className={cn("text-xs font-semibold", statusConfig.className)}>
                                 {project.status}
                             </Badge>
-                            <p className="text-xs text-muted-foreground mt-1">{statusConfig.description}</p>
+                            {!isReviewOrDraft && (
+                                 <p className="text-xs text-muted-foreground mt-1">{project.testersCompleted} of {project.testersStarted} testers completed.</p>
+                            )}
+                            {isReviewOrDraft && (
+                                 <p className="text-xs text-muted-foreground mt-1">{statusConfig.description}</p>
+                            )}
                         </div>
                     </div>
                 </CardFooter>
@@ -71,7 +79,7 @@ const EmptyState = () => (
     <div className="col-span-full text-center py-20 bg-background rounded-2xl">
         <FileClock className="mx-auto h-12 w-12 text-muted-foreground" />
         <h3 className="mt-4 text-lg font-semibold">No Submissions Here</h3>
-        <p className="mt-2 text-sm text-muted-foreground">Submit your first app to get it tested by the community.</p>
+        <p className="mt-2 text-sm text-muted-foreground">This tab is empty. Check other tabs or submit a new app!</p>
         <Button asChild className="mt-6">
             <Link href="/community-dashboard/submit">Submit Your First App</Link>
         </Button>
@@ -111,12 +119,14 @@ const PaginatedProjectList = ({ projects }: { projects: Project[] }) => {
 
 export default function MySubmissionsPage() {
     const inReviewApps = allProjects.filter(p => p.status === "In Review");
-    const publishedApps = allProjects.filter(p => ["In Testing", "Completed"].includes(p.status));
+    const inTestingApps = allProjects.filter(p => p.status === "In Testing");
+    const completedApps = allProjects.filter(p => p.status === "Completed");
 
     const [selectedTab, setSelectedTab] = useState('in-review');
     const tabs = [
         { label: 'In Review', value: 'in-review', count: inReviewApps.length },
-        { label: 'Published', value: 'published', count: publishedApps.length }
+        { label: 'In Testing', value: 'in-testing', count: inTestingApps.length },
+        { label: 'Completed', value: 'completed', count: completedApps.length }
     ];
 
     return (
@@ -143,7 +153,7 @@ export default function MySubmissionsPage() {
 
                     <main>
                         <Tabs value={selectedTab} onValueChange={setSelectedTab} className="w-full">
-                            <TabsList className="relative grid w-full grid-cols-2 bg-muted p-1 rounded-full">
+                            <TabsList className="relative grid w-full grid-cols-3 bg-muted p-1 rounded-full">
                                 {tabs.map((tab) => {
                                     const isSelected = selectedTab === tab.value;
 
@@ -171,8 +181,11 @@ export default function MySubmissionsPage() {
                             <TabsContent value="in-review" className="mt-6">
                                 <PaginatedProjectList projects={inReviewApps} />
                             </TabsContent>
-                            <TabsContent value="published" className="mt-6">
-                                <PaginatedProjectList projects={publishedApps} />
+                            <TabsContent value="in-testing" className="mt-6">
+                                <PaginatedProjectList projects={inTestingApps} />
+                            </TabsContent>
+                            <TabsContent value="completed" className="mt-6">
+                                <PaginatedProjectList projects={completedApps} />
                             </TabsContent>
                         </Tabs>
                     </main>
