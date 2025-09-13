@@ -1,10 +1,9 @@
 
-
 'use client';
 
 import Image from 'next/image';
 import { projects as allProjects } from '@/lib/data'; // Using project data as it's richer
-import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Bug, CheckCircle, Clock, Smartphone, MessageSquare, Star, BarChart, MapPin, LayoutGrid, List, Users, ChevronLeft, ChevronRight, Lightbulb, PartyPopper, Search, ClipboardList } from 'lucide-react';
@@ -116,6 +115,7 @@ export default function SubmissionDetailsClient({ project }: { project: Project 
                     <div className="flex-grow">
                         <div className="flex items-center gap-4">
                              <h1 className="text-4xl font-bold">{project.name}</h1>
+                             <Badge variant="outline">{project.category}</Badge>
                              <Badge variant={statusConfig.badgeVariant as any} className="flex items-center gap-1.5 pr-3 text-base mt-1">
                                 {statusConfig.icon}
                                 {project.status}
@@ -137,47 +137,23 @@ export default function SubmissionDetailsClient({ project }: { project: Project 
                         <p className="text-muted-foreground max-w-sm text-center">Our team is currently reviewing this submission. Testing data and feedback will appear here once the app is published.</p>
                     </div>
                 )}
-                 <div className={cn("grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6", isReview && "pointer-events-none")}>
-                     <Card>
-                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                            <CardTitle className="text-sm font-medium">Points Cost</CardTitle>
-                            <Star className="h-4 w-4 text-muted-foreground" />
-                        </CardHeader>
-                        <CardContent>
-                            <p className="text-2xl font-bold">{project.pointsCost.toLocaleString()}</p>
-                            <p className="text-xs text-muted-foreground">Based on submission settings</p>
-                        </CardContent>
-                    </Card>
-                     <Card>
-                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                            <CardTitle className="text-sm font-medium">Testers Requested</CardTitle>
-                            <Users className="h-4 w-4 text-muted-foreground" />
-                        </CardHeader>
-                        <CardContent>
-                            <p className="text-2xl font-bold">{isReview ? 0 : project.testersStarted}</p>
-                            <p className="text-xs text-muted-foreground">Testers have started</p>
-                        </CardContent>
-                    </Card>
-                    <Card>
-                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                            <CardTitle className="text-sm font-medium">Android Version</CardTitle>
-                            <Smartphone className="h-4 w-4 text-muted-foreground" />
-                        </CardHeader>
-                        <CardContent>
-                            <p className="text-2xl font-bold">{project.androidVersion}</p>
-                            <p className="text-xs text-muted-foreground">Minimum version required</p>
-                        </CardContent>
-                    </Card>
-                    <Card>
-                        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                            <CardTitle className="text-sm font-medium">Test Duration</CardTitle>
-                            <Clock className="h-4 w-4 text-muted-foreground" />
-                        </CardHeader>
-                        <CardContent>
-                            <p className="text-2xl font-bold">{isReview ? 0 : project.totalDays} / {project.totalDays}</p>
-                            <p className="text-xs text-muted-foreground">Days in testing cycle</p>
-                        </CardContent>
-                    </Card>
+                 <div className={cn("grid grid-cols-2 lg:grid-cols-4 gap-4 text-center", isReview && "pointer-events-none")}>
+                     <div className="bg-gradient-to-br from-primary to-primary/50 text-primary-foreground p-5 rounded-lg flex flex-col justify-center">
+                        <p className="text-xs">Points Cost</p>
+                        <p className="text-4xl font-bold">{project.pointsCost.toLocaleString()}</p>
+                    </div>
+                     <div className="bg-gradient-to-bl from-secondary to-background p-5 rounded-lg flex flex-col justify-center">
+                        <p className="text-xs text-muted-foreground">Testers Requested</p>
+                        <p className="text-4xl font-bold">{isReview ? 0 : project.testersStarted}</p>
+                    </div>
+                    <div className="bg-gradient-to-bl from-secondary to-background p-5 rounded-lg flex flex-col justify-center">
+                        <p className="text-xs text-muted-foreground">Android Version</p>
+                        <p className="text-4xl font-bold">{project.androidVersion}</p>
+                    </div>
+                     <div className="bg-gradient-to-bl from-secondary to-background p-5 rounded-lg flex flex-col justify-center">
+                        <p className="text-xs text-muted-foreground">Test Duration</p>
+                        <p className="text-4xl font-bold">{project.totalDays} Days</p>
+                    </div>
                 </div>
                 
                  {(isCompleted || isReview) && (
@@ -315,3 +291,5 @@ export default function SubmissionDetailsClient({ project }: { project: Project 
     </div>
   )
 }
+
+    
