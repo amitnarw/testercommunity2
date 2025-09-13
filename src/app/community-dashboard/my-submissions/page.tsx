@@ -2,7 +2,7 @@
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card'
 import { Button } from '@/components/ui/button';
-import { PlusCircle, FileClock, CheckCircle, Clock, ArrowRight, Search, FileCheck, Users, ChevronLeft, ChevronRight } from 'lucide-react'
+import { PlusCircle, FileClock, CheckCircle, Clock, ArrowRight, Search, FileCheck, Users, ChevronLeft, ChevronRight, Star } from 'lucide-react'
 import Link from 'next/link';
 import { useState } from 'react';
 import { projects as allProjects } from '@/lib/data';
@@ -48,12 +48,9 @@ const ProjectCard = ({ project }: { project: Project }) => {
                     <ArrowRight className="absolute top-4 right-4 text-muted-foreground/30 transition-all duration-300 group-hover:text-primary group-hover:translate-x-1 group-hover:-translate-y-1" size={20} />
                 </CardHeader>
                 <CardContent className="p-5 pt-0 flex-grow relative">
-                    <p className="text-sm text-muted-foreground line-clamp-3 h-14">{project.description}</p>
-                    {isReviewOrDraft && (
-                         <div className="absolute bottom-0 left-0 right-0 h-8 bg-gradient-to-t from-background to-transparent"></div>
-                    )}
+                    <p className="text-sm text-muted-foreground line-clamp-2 h-10">{project.description}</p>
                 </CardContent>
-                <CardFooter className="p-3 bg-secondary/50 m-2 rounded-lg mt-auto">
+                <CardFooter className="p-3 bg-secondary/50 m-2 rounded-lg mt-auto flex-col items-start gap-3">
                      <div className="flex items-center gap-2">
                         <div className={cn("p-1.5 rounded-full bg-background", statusConfig.className)}>
                             {statusConfig.icon}
@@ -65,6 +62,19 @@ const ProjectCard = ({ project }: { project: Project }) => {
                                     : `${project.testersCompleted} of ${project.testersStarted} testers completed.`
                                 }
                              </p>
+                        </div>
+                    </div>
+                    <div className="flex justify-between w-full text-xs text-muted-foreground pt-2 border-t">
+                        <div className="flex items-center gap-1">
+                            <Star className="w-3 h-3 text-amber-500" />
+                            <span className="font-semibold text-foreground">{project.pointsCost.toLocaleString()} Pts</span>
+                        </div>
+                        <div className="flex items-center gap-1">
+                             <Clock className="w-3 h-3" />
+                             <span>{project.totalDays} Days</span>
+                        </div>
+                         <div className="flex items-center gap-1">
+                             <span>Android {project.androidVersion}</span>
                         </div>
                     </div>
                 </CardFooter>

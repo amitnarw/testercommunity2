@@ -1,4 +1,5 @@
 
+
 'use client';
 
 import Image from 'next/image';
@@ -6,7 +7,7 @@ import { projects as allProjects } from '@/lib/data'; // Using project data as i
 import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Bug, CheckCircle, Clock, Smartphone, MessageSquare, Star, BarChart, MapPin, LayoutGrid, List, Users, ChevronLeft, ChevronRight, Lightbulb, PartyPopper, Search } from 'lucide-react';
+import { Bug, CheckCircle, Clock, Smartphone, MessageSquare, Star, BarChart, MapPin, LayoutGrid, List, Users, ChevronLeft, ChevronRight, Lightbulb, PartyPopper, Search, ClipboardList } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
 import {
   Table,
@@ -68,6 +69,7 @@ export default function SubmissionDetailsClient({ project }: { project: Project 
 
   const statusConfig = getStatusConfig(project.status);
   const isReview = project.status === 'In Review';
+  const isCompleted = project.status === 'Completed';
 
   const filteredFeedback = isReview ? [] : project.feedback;
 
@@ -125,7 +127,7 @@ export default function SubmissionDetailsClient({ project }: { project: Project 
                 </div>
             </header>
 
-            <main className={cn("max-w-7xl mx-auto space-y-8 relative", isReview && "pointer-events-none")}>
+            <main className="max-w-7xl mx-auto space-y-8">
                  {isReview && (
                     <div className="absolute inset-0 bg-background/50 backdrop-blur-sm z-20 rounded-2xl flex flex-col items-center justify-center">
                         <div className="bg-secondary/80 p-4 rounded-full mb-4">
@@ -135,20 +137,20 @@ export default function SubmissionDetailsClient({ project }: { project: Project 
                         <p className="text-muted-foreground max-w-sm text-center">Our team is currently reviewing this submission. Testing data and feedback will appear here once the app is published.</p>
                     </div>
                 )}
-                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                 <div className={cn("grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6", isReview && "pointer-events-none")}>
                      <Card>
                         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                            <CardTitle className="text-sm font-medium">Total Feedback</CardTitle>
-                            <MessageSquare className="h-4 w-4 text-muted-foreground" />
+                            <CardTitle className="text-sm font-medium">Points Cost</CardTitle>
+                            <Star className="h-4 w-4 text-muted-foreground" />
                         </CardHeader>
                         <CardContent>
-                            <p className="text-2xl font-bold">{isReview ? 0 : project.feedbackBreakdown.total}</p>
-                             <p className="text-xs text-muted-foreground">{isReview ? 0 : project.feedbackBreakdown.critical} Critical / {isReview ? 0 : project.feedbackBreakdown.high} High</p>
+                            <p className="text-2xl font-bold">{project.pointsCost.toLocaleString()}</p>
+                            <p className="text-xs text-muted-foreground">Based on submission settings</p>
                         </CardContent>
                     </Card>
                      <Card>
                         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                            <CardTitle className="text-sm font-medium">Testers Engaged</CardTitle>
+                            <CardTitle className="text-sm font-medium">Testers Requested</CardTitle>
                             <Users className="h-4 w-4 text-muted-foreground" />
                         </CardHeader>
                         <CardContent>
@@ -158,63 +160,79 @@ export default function SubmissionDetailsClient({ project }: { project: Project 
                     </Card>
                     <Card>
                         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                            <CardTitle className="text-sm font-medium">Points Cost</CardTitle>
-                            <Star className="h-4 w-4 text-muted-foreground" />
+                            <CardTitle className="text-sm font-medium">Android Version</CardTitle>
+                            <Smartphone className="h-4 w-4 text-muted-foreground" />
                         </CardHeader>
                         <CardContent>
-                            <p className="text-2xl font-bold">{isReview ? 0 : (project.testersCompleted * 80).toLocaleString()}</p>
-                            <p className="text-xs text-muted-foreground">Across {isReview ? 0 : project.testersCompleted} completed tests</p>
+                            <p className="text-2xl font-bold">{project.androidVersion}</p>
+                            <p className="text-xs text-muted-foreground">Minimum version required</p>
                         </CardContent>
                     </Card>
                     <Card>
                         <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                            <CardTitle className="text-sm font-medium">Time in Test</CardTitle>
+                            <CardTitle className="text-sm font-medium">Test Duration</CardTitle>
                             <Clock className="h-4 w-4 text-muted-foreground" />
                         </CardHeader>
                         <CardContent>
-                            <p className="text-2xl font-bold">{isReview ? 0 : project.totalDays} / 14</p>
-                            <p className="text-xs text-muted-foreground">Days completed</p>
+                            <p className="text-2xl font-bold">{isReview ? 0 : project.totalDays} / {project.totalDays}</p>
+                            <p className="text-xs text-muted-foreground">Days in testing cycle</p>
                         </CardContent>
                     </Card>
                 </div>
                 
-                 <motion.div
-                    variants={containerVariants}
-                    initial="hidden"
-                    animate="visible"
-                    className="bg-card p-3 sm:p-6 pt-4 rounded-2xl col-span-2 row-start-2 flex flex-col justify-between relative overflow-hidden"
-                >
-                    <h3 className="text-xl sm:text-2xl font-semibold mb-3 bg-gradient-to-b from-primary to-primary/50 text-transparent bg-clip-text">Feedback Summary</h3>
-                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center">
-                        <div className="bg-gradient-to-br from-primary to-primary/50 text-primary-foreground p-5 rounded-lg">
-                            <p className="text-xs">Total Testers</p>
-                            <p className="text-4xl font-bold">{feedbackBreakdown?.totalTesters}</p>
-                        </div>
-                        <div className="bg-gradient-to-bl from-red-500/20 to-red-500/10 p-5 rounded-lg relative overflow-hidden">
-                            <div className="p-3 rounded-full absolute opacity-10 scale-[2] -right-2 -top-1 -rotate-45 text-red-500">
-                                <Bug />
+                 {(isCompleted || isReview) && (
+                    <motion.div
+                        variants={containerVariants}
+                        initial="hidden"
+                        animate="visible"
+                        className={cn("bg-card p-3 sm:p-6 pt-4 rounded-2xl col-span-2 row-start-2 flex flex-col justify-between relative overflow-hidden", isReview && "pointer-events-none")}
+                    >
+                        <h3 className="text-xl sm:text-2xl font-semibold mb-3 bg-gradient-to-b from-primary to-primary/50 text-transparent bg-clip-text">Feedback Summary</h3>
+                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center">
+                            <div className="bg-gradient-to-br from-primary to-primary/50 text-primary-foreground p-5 rounded-lg">
+                                <p className="text-xs">Total Testers</p>
+                                <p className="text-4xl font-bold">{feedbackBreakdown?.totalTesters}</p>
                             </div>
-                            <p className="text-xs text-muted-foreground">Bugs</p>
-                            <p className="text-4xl font-bold">{feedbackBreakdown.bugs}</p>
-                        </div>
-                        <div className="bg-gradient-to-bl from-yellow-500/20 to-yellow-500/10 p-5 rounded-lg relative overflow-hidden">
-                            <div className="p-3 rounded-full absolute opacity-10 scale-[2] -right-2 -top-1 -rotate-45 text-yellow-500">
-                                <Lightbulb />
+                            <div className="bg-gradient-to-bl from-red-500/20 to-red-500/10 p-5 rounded-lg relative overflow-hidden">
+                                <div className="p-3 rounded-full absolute opacity-10 scale-[2] -right-2 -top-1 -rotate-45 text-red-500">
+                                    <Bug />
+                                </div>
+                                <p className="text-xs text-muted-foreground">Bugs</p>
+                                <p className="text-4xl font-bold">{feedbackBreakdown.bugs}</p>
                             </div>
-                            <p className="text-xs text-muted-foreground">Suggestions</p>
-                            <p className="text-4xl font-bold">{feedbackBreakdown.suggestions}</p>
-                        </div>
-                        <div className="bg-gradient-to-bl from-green-500/20 to-green-500/10 p-5 rounded-lg relative overflow-hidden">
-                            <div className="p-3 rounded-full absolute opacity-10 scale-[2] -right-2 -top-1 -rotate-90 text-green-500">
-                                <PartyPopper />
+                            <div className="bg-gradient-to-bl from-yellow-500/20 to-yellow-500/10 p-5 rounded-lg relative overflow-hidden">
+                                <div className="p-3 rounded-full absolute opacity-10 scale-[2] -right-2 -top-1 -rotate-45 text-yellow-500">
+                                    <Lightbulb />
+                                </div>
+                                <p className="text-xs text-muted-foreground">Suggestions</p>
+                                <p className="text-4xl font-bold">{feedbackBreakdown.suggestions}</p>
                             </div>
-                            <p className="text-xs text-muted-foreground">Praise</p>
-                            <p className="text-4xl font-bold">{feedbackBreakdown.praise}</p>
+                            <div className="bg-gradient-to-bl from-green-500/20 to-green-500/10 p-5 rounded-lg relative overflow-hidden">
+                                <div className="p-3 rounded-full absolute opacity-10 scale-[2] -right-2 -top-1 -rotate-90 text-green-500">
+                                    <PartyPopper />
+                                </div>
+                                <p className="text-xs text-muted-foreground">Praise</p>
+                                <p className="text-4xl font-bold">{feedbackBreakdown.praise}</p>
+                            </div>
                         </div>
-                    </div>
-                </motion.div>
+                    </motion.div>
+                )}
 
-                 <div className="bg-card/50 rounded-2xl p-4 sm:p-6 sm:pt-4">
+                 <Card className={cn("bg-card/50 rounded-2xl p-4 sm:p-6", isReview && "pointer-events-none")}>
+                    <CardHeader className="p-0 mb-4">
+                        <CardTitle className="flex items-center gap-2">
+                            <ClipboardList className="w-5 h-5 text-primary"/> Instructions for Testers
+                        </CardTitle>
+                    </CardHeader>
+                    <CardContent className="p-0">
+                        <p className="text-sm text-muted-foreground italic">
+                           "{project.testingInstructions}"
+                        </p>
+                    </CardContent>
+                </Card>
+
+
+                 <div className={cn("bg-card/50 rounded-2xl p-4 sm:p-6 sm:pt-4", isReview && "pointer-events-none")}>
                     <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
                          <div>
                             <h2 className="text-xl sm:text-2xl font-bold">Detailed Feedback Log</h2>

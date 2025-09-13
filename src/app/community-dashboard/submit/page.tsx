@@ -28,6 +28,7 @@ const submissionSchema = z.object({
     appName: z.string().min(3, "App name must be at least 3 characters."),
     category: z.string({ required_error: "Please select a category." }),
     appDesc: z.string().min(50, "Please provide a detailed description of at least 50 characters."),
+    testingInstructions: z.string().min(50, "Please provide instructions of at least 50 characters."),
     androidVersion: z.string().min(1, "Please specify the minimum Android version."),
     numberOfTesters: z.coerce.number().min(5, { message: 'A minimum of 5 testers is required.' }).max(50),
     testDuration: z.coerce.number().min(14, { message: 'A minimum of 14 days is required.' }).max(30),
@@ -47,7 +48,7 @@ const formSteps = [
         id: 'describe',
         title: 'Describe',
         icon: <FileText className="w-5 h-5" />,
-        fields: ['category', 'appDesc'],
+        fields: ['category', 'appDesc', 'testingInstructions'],
         description: 'Tell us about your app and what you want testers to focus on. The more detail, the better the feedback.'
     },
     {
@@ -291,9 +292,22 @@ export default function SubmitAppPage() {
                                                     name="appDesc"
                                                     render={({ field }) => (
                                                         <FormItem>
-                                                            <Label htmlFor="appDesc">Description & Instructions for Testers</Label>
+                                                            <Label htmlFor="appDesc">App Description</Label>
                                                             <FormControl>
-                                                                <Textarea id="appDesc" placeholder="Describe your app and any specific areas or features you want testers to focus on." className="min-h-[150px]" {...field} />
+                                                                <Textarea id="appDesc" placeholder="Briefly describe what your app does." className="min-h-[120px]" {...field} />
+                                                            </FormControl>
+                                                            <FormMessage />
+                                                        </FormItem>
+                                                    )}
+                                                />
+                                                <FormField
+                                                    control={form.control}
+                                                    name="testingInstructions"
+                                                    render={({ field }) => (
+                                                        <FormItem>
+                                                            <Label htmlFor="testingInstructions">Instructions for Testers</Label>
+                                                            <FormControl>
+                                                                <Textarea id="testingInstructions" placeholder="Any specific areas or features you want testers to focus on? (e.g., 'Please test the new checkout flow')." className="min-h-[120px]" {...field} />
                                                             </FormControl>
                                                             <FormMessage />
                                                         </FormItem>

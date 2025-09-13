@@ -117,6 +117,9 @@ export type Project = {
   avgTestersPerDay: number;
   startedFrom: string;
   description: string;
+  testingInstructions: string;
+  androidVersion: string;
+  pointsCost: number;
   crashFreeRate: number;
   feedbackBreakdown: {
     total: number;
