@@ -44,6 +44,7 @@ const ProjectCard = ({ project }: { project: Project }) => {
                         <CardTitle className="text-base">{project.name}</CardTitle>
                         <p className="text-xs text-muted-foreground">{project.packageName}</p>
                     </div>
+                    <Badge variant="outline" className="ml-auto flex-shrink-0">{project.category}</Badge>
                     <ArrowRight className="absolute top-4 right-4 text-muted-foreground/30 transition-all duration-300 group-hover:text-primary group-hover:translate-x-1 group-hover:-translate-y-1" size={20} />
                 </CardHeader>
                 <CardContent className="p-5 pt-0 flex-grow relative">

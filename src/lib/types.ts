@@ -109,6 +109,7 @@ export type Project = {
   packageName: string;
   icon: string;
   dataAiHint?: string;
+  category: string;
   status: "In Testing" | "Completed" | "Archived" | "In Review" | "Draft";
   testersStarted: number;
   testersCompleted: number;
