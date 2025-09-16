@@ -242,9 +242,11 @@ export default function SubmissionDetailsClient({ project }: { project: Project 
                                                         <p className="text-sm text-muted-foreground mt-1">{fb.comment}</p>
                                                     </div>
                                                     <div className="flex items-center justify-between text-xs text-muted-foreground w-full mt-3 bg-black/5 dark:bg-white/10 px-5 py-1">
-                                                        <div className="mt-3 cursor-pointer h-10 w-5 relative" onClick={() => setFullscreenImage(fb.screenshot!)}>
-                                                            <Image src={fb.screenshot} alt="Feedback screenshot" fill className="absolute rounded-sm border object-cover" />
-                                                        </div>
+                                                        {fb.screenshot ? (
+                                                            <div className="mt-3 cursor-pointer h-10 w-5 relative" onClick={() => setFullscreenImage(fb.screenshot)}>
+                                                                <Image src={fb.screenshot} alt="Feedback screenshot" fill className="absolute rounded-sm border object-cover" />
+                                                            </div>
+                                                        ) : <div />}
                                                         <div className='flex flex-col sm:flex-row gap-0 sm:gap-5 items-end'>
                                                             <div>
                                                                 <span className="font-semibold text-foreground">{fb.tester}</span>
@@ -272,9 +274,11 @@ export default function SubmissionDetailsClient({ project }: { project: Project 
                                                         <p className="text-xs sm:text-sm text-muted-foreground line-clamp-3">{fb.comment}</p>
                                                     </CardContent>
                                                     <CardFooter className="p-0 flex items-center justify-between text-xs text-muted-foreground pt-2 mt-2 border-t border-black/20 dark:border-white/20">
-                                                        <div className="mt-3 cursor-pointer h-10 w-5 relative" onClick={() => setFullscreenImage(fb.screenshot!)}>
-                                                            <Image src={fb.screenshot} alt="Feedback screenshot" fill className="absolute rounded-sm border object-cover" />
-                                                        </div>
+                                                         {fb.screenshot ? (
+                                                            <div className="mt-3 cursor-pointer h-10 w-5 relative" onClick={() => setFullscreenImage(fb.screenshot)}>
+                                                                <Image src={fb.screenshot} alt="Feedback screenshot" fill className="absolute rounded-sm border object-cover" />
+                                                            </div>
+                                                        ) : <div />}
                                                         <div className='flex flex-col sm:flex-row gap-0 sm:gap-5 items-end'>
                                                             <div>
                                                                 <span className="font-semibold text-foreground text-[10px] sm:text-[12px]">{fb.tester}</span>
@@ -303,5 +307,5 @@ export default function SubmissionDetailsClient({ project }: { project: Project 
             </div>
         </div>
     )
-}
 
+    
