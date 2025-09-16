@@ -1,8 +1,8 @@
 'use client';
 
-import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card'
+import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card'
 import { Button } from '@/components/ui/button';
-import { PlusCircle, FileClock, CheckCircle, Clock, ArrowRight, Search, FileCheck, Users, ChevronLeft, ChevronRight, Star } from 'lucide-react'
+import { PlusCircle, FileClock, CheckCircle, Clock, Search, Star } from 'lucide-react'
 import Link from 'next/link';
 import { useState } from 'react';
 import { projects as allProjects } from '@/lib/data';
@@ -11,7 +11,6 @@ import { Badge } from '@/components/ui/badge';
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Separator } from '@/components/ui/separator';
 import { BackButton } from '@/components/back-button';
 import { AppPagination } from '@/components/app-pagination';
 import { motion } from 'framer-motion';
@@ -40,12 +39,11 @@ const ProjectCard = ({ project }: { project: Project }) => {
             <Link href={`/community-dashboard/my-submissions/${project.id}`} className="flex flex-col h-full">
                 <CardHeader className="flex flex-row items-start gap-4 p-5">
                     <Image src={project.icon} alt={project.name} width={48} height={48} className="rounded-lg border bg-secondary" data-ai-hint={project.dataAiHint} />
-                    <div className="flex-grow">
+                    <div className="flex-grow overflow-hidden">
                         <CardTitle className="text-base">{project.name}</CardTitle>
                         <p className="text-xs text-muted-foreground">{project.packageName}</p>
                     </div>
-                    <Badge variant="outline" className="ml-auto flex-shrink-0">{project.category}</Badge>
-                    <ArrowRight className="absolute top-4 right-4 text-muted-foreground/30 transition-all duration-300 group-hover:text-primary group-hover:translate-x-1 group-hover:-translate-y-1" size={20} />
+                    <Badge variant="outline" className="ml-auto flex-shrink-0 absolute sm:static top-1 right-2 text-[10px] sm:text-xs">{project.category}</Badge>
                 </CardHeader>
                 <CardContent className="p-5 pt-0 flex-grow relative">
                     <p className="text-sm text-muted-foreground line-clamp-2 h-10">{project.description}</p>
@@ -142,15 +140,15 @@ export default function MySubmissionsPage() {
             <div className="min-h-screen bg-secondary/50">
                 <div className="container mx-auto px-4 md:px-6">
                     <header className="mb-8 pt-1">
-                        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-8">
                             <div className="sticky top-0 z-[50] pt-2 sm:pt-3 pb-4 pl-0 xl:pl-8">
                                 <BackButton href="/community-dashboard" />
                             </div>
                             <div className='flex flex-row items-center justify-between gap-4 w-full'>
-                                <h1 className="text-2xl sm:text-3xl font-bold bg-gradient-to-b from-primary to-primary/10 bg-clip-text text-transparent">My Submissions</h1>
+                                <h1 className="text-2xl sm:text-3xl font-extrabold bg-gradient-to-br from-primary to-primary/10 bg-clip-text text-transparent">My Submissions</h1>
                                 <Button asChild className='bg-gradient-to-b from-primary to-primary/40 text-primary-foreground px-3 h-8 sm:p-auto sm:h-10'>
                                     <Link href="/community-dashboard/submit">
-                                        <PlusCircle className="h-4 w-4 absolute sm:static top-0 sm:top-auto left-0 sm:left-auto scale-[2] sm:text-white/20 sm:text-white" />
+                                        <PlusCircle className="h-4 w-4 absolute sm:static top-0 sm:top-auto left-0 sm:left-auto scale-[2] sm:scale-100 text-white/20 sm:text-white" />
                                         <span className='hidden sm:block'>Submit New App</span>
                                         <span className='sm:hidden block'>Submit</span>
                                     </Link>

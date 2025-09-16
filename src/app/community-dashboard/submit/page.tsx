@@ -62,7 +62,7 @@ const formSteps = [
 
 const Section = ({ id, title, description, children, sectionRef }: { id: string, title: string, description: string, children: React.ReactNode, sectionRef: React.Ref<HTMLDivElement> }) => {
     return (
-        <section ref={sectionRef} id={id} className="min-h-[85vh] flex flex-col justify-center scroll-mt-24 pt-16">
+        <section ref={sectionRef} id={id} className="min-h-[85vh] flex flex-col justify-center scroll-mt-10 py-16">
             <div className="mb-8">
                 <h2 className="text-3xl font-bold">{title}</h2>
                 <p className="text-muted-foreground mt-2">{description}</p>
@@ -109,7 +109,7 @@ export default function SubmitAppPage() {
 
     const { ref: connectRef, inView: connectInView } = useInView({ threshold: 0.5 });
     const { ref: describeRef, inView: describeInView } = useInView({ threshold: 0.5 });
-    const { ref: configureRef, inView: configureInView } = useInView({ threshold: 0.5 });
+    const { ref: configureRef, inView: configureInView } = useInView({ threshold: 0.4 });
 
     useEffect(() => {
         if (connectInView) setActiveStep('connect');
@@ -136,7 +136,7 @@ export default function SubmitAppPage() {
             <div className="bg-[#f8fafc] dark:bg-[#0f151e] min-h-screen">
                 <div className="sticky top-0 z-40 backdrop-blur-lg">
                     <header className="container mx-auto px-4 md:px-6">
-                        <div className="flex items-center justify-between h-20">
+                        <div className="flex items-center justify-between py-2 sm:py-4">
                             <div className="flex items-center gap-4">
                                 <BackButton href="/community-dashboard" />
                                 <div className='hidden sm:block'>
@@ -161,8 +161,13 @@ export default function SubmitAppPage() {
                             </div>
                         </div>
                     </header>
-                    {/* Mobile Step Navigator */}
-                    <nav className="lg:hidden sticky top-20 z-30 flex items-center justify-around border-b bg-background/80 backdrop-blur-lg">
+                    
+                </div>
+
+                <div className="container mx-auto px-2 py-5">
+                    <div className="lg:grid lg:grid-cols-12 lg:gap-16 bg-background rounded-3xl px-5">
+                        {/* Mobile Step Navigator */}
+                    <nav className="lg:hidden sticky top-14 z-30 flex items-center justify-around border-b bg-background/80 backdrop-blur-lg">
                         {formSteps.map((step) => (
                             <a
                                 key={`mobile-${step.id}`}
@@ -176,7 +181,6 @@ export default function SubmitAppPage() {
                                     activeStep === step.id && "text-primary"
                                 )}
                             >
-                                {step.icon}
                                 {step.title}
                                 {activeStep === step.id && (
                                     <motion.div
@@ -187,10 +191,6 @@ export default function SubmitAppPage() {
                             </a>
                         ))}
                     </nav>
-                </div>
-
-                <div className="container mx-auto px-2 py-5">
-                    <div className="lg:grid lg:grid-cols-12 lg:gap-16 bg-background rounded-3xl px-5">
                         <aside className="hidden lg:block lg:col-span-3 py-16">
                             <div className="sticky top-36">
                                 <nav>
