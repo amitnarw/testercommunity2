@@ -6,7 +6,7 @@ import { projects as allProjects } from '@/lib/data'; // Using project data as i
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Bug, CheckCircle, Clock, Smartphone, MessageSquare, Star, BarChart, MapPin, LayoutGrid, List, Users, ChevronLeft, ChevronRight, Lightbulb, PartyPopper, Search, ClipboardList } from 'lucide-react';
+import { Bug, CheckCircle, Clock, Smartphone, MessageSquare, Star, BarChart, MapPin, LayoutGrid, List, Users, ChevronLeft, ChevronRight, Lightbulb, PartyPopper, Search, ClipboardList, X } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
 import {
     Table,
@@ -305,9 +305,34 @@ export default function SubmissionDetailsClient({ project }: { project: Project 
                     </div>
                 </main>
             </div>
+
+            {fullscreenImage && (
+                <div
+                    className="fixed inset-0 bg-black/80 z-[60] flex items-center justify-center p-4 animate-in fade-in-0"
+                    onClick={() => setFullscreenImage(null)}
+                >
+                    <Button
+                        variant="ghost"
+                        size="icon"
+                        className="absolute top-4 right-4 text-white hover:text-white bg-red-500/60 hover:bg-red-500 h-12 w-12 rounded-lg z-50"
+                        onClick={() => setFullscreenImage(null)}
+                    >
+                        <X className="w-8 h-8" />
+                        <span className="sr-only">Close</span>
+                    </Button>
+                    <div className="relative w-full h-full max-w-4xl max-h-[90vh]">
+                        <Image
+                            src={fullscreenImage}
+                            alt="Fullscreen view"
+                            layout="fill"
+                            objectFit="contain"
+                            className="animate-in zoom-in-95"
+                        />
+                    </div>
+                </div>
+            )}
         </div>
     )
-
-    
+}
 
     
