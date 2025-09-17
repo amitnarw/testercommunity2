@@ -1,3 +1,4 @@
+
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -354,9 +355,9 @@ export default function SubmitAppPage() {
                                                             </FormControl>
                                                             <FormDescription className="mt-4 flex items-start gap-2 bg-secondary/80 p-3 rounded-lg border border-border">
                                                                 <AlertCircle className="w-5 h-5 text-muted-foreground mt-0.5 flex-shrink-0" />
-                                                                <div>
+                                                                <span>
                                                                     <span className='font-semibold text-foreground'>Pro Tip:</span> We recommend selecting at least 15-20 testers. Since community testers can drop out, choosing extra provides a buffer to ensure you meet Google's 14-day/12-tester requirement without delays.
-                                                                </div>
+                                                                </span>
                                                             </FormDescription>
                                                             <FormMessage />
                                                         </FormItem>
@@ -383,9 +384,9 @@ export default function SubmitAppPage() {
                                                             </FormControl>
                                                             <FormDescription className="mt-4 flex items-start gap-2 bg-secondary/80 p-3 rounded-lg border border-border">
                                                                 <AlertCircle className="w-5 h-5 text-muted-foreground mt-0.5 flex-shrink-0" />
-                                                                <div>
+                                                                <span>
                                                                     <span className='font-semibold text-foreground'>Pro Tip:</span> While the minimum is 14 days, we suggest 16-20 days. This gives community testers a flexible window to complete the test period without pressure.
-                                                                </div>
+                                                                </span>
                                                             </FormDescription>
                                                             <FormMessage />
                                                         </FormItem>
