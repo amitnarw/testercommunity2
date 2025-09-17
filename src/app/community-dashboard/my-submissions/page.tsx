@@ -1,8 +1,9 @@
+
 'use client';
 
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card'
 import { Button } from '@/components/ui/button';
-import { PlusCircle, FileClock, CheckCircle, Clock, Search, Star } from 'lucide-react'
+import { PlusCircle, FileClock, CheckCircle, Clock, Search, Star, XCircle } from 'lucide-react'
 import Link from 'next/link';
 import { useState } from 'react';
 import { projects as allProjects } from '@/lib/data';
@@ -20,19 +21,21 @@ const PROJECTS_PER_PAGE = 6;
 const getStatusConfig = (status: Project['status']) => {
     switch (status) {
         case "In Review":
-            return { badgeVariant: "secondary", icon: <Search className="w-3 h-3" />, description: "Our team is reviewing your submission." };
+            return { icon: <Search className="w-3 h-3" />, description: "Our team is reviewing your submission." };
         case "In Testing":
-            return { badgeVariant: "destructive", icon: <Clock className="w-3 h-3" />, description: "Community members are actively testing your app." };
+            return { icon: <Clock className="w-3 h-3" />, description: "Community members are actively testing your app." };
         case "Completed":
-            return { badgeVariant: "default", className: "bg-green-600 hover:bg-green-700", icon: <CheckCircle className="w-3 h-3" />, description: "Test cycle complete! Check your feedback." };
+            return { icon: <CheckCircle className="w-3 h-3" />, description: "Test cycle complete! Check your feedback." };
+        case "Rejected":
+            return { icon: <XCircle className="w-3 h-3" />, description: "Submission rejected. Check review notes." };
         default:
-            return { badgeVariant: "outline", icon: <FileClock className="w-3 h-3" />, description: "Your app is published and awaiting testers." };
+            return { icon: <FileClock className="w-3 h-3" />, description: "Your app is published and awaiting testers." };
     }
 }
 
 const ProjectCard = ({ project }: { project: Project }) => {
     const statusConfig = getStatusConfig(project.status as Project['status']);
-    const isReviewOrDraft = project.status === "In Review" || project.status === "Draft";
+    const isReviewOrDraft = project.status === "In Review" || project.status === "Draft" || project.status === "Rejected";
 
     return (
         <Card key={project.id} className="group relative overflow-hidden rounded-2xl bg-background hover:shadow-lg transition-shadow duration-300 flex flex-col h-full border-0">
@@ -50,7 +53,12 @@ const ProjectCard = ({ project }: { project: Project }) => {
                 </CardContent>
                 <CardFooter className="p-3 bg-secondary/50 m-2 rounded-lg mt-auto flex-col items-start gap-3">
                      <div className="flex items-center gap-2">
-                        <div className={cn("p-1.5 rounded-full bg-background", statusConfig.className)}>
+                        <div className={cn("p-1.5 rounded-full bg-background", 
+                            project.status === 'In Testing' ? 'text-destructive' 
+                            : project.status === 'Completed' ? 'text-green-600' 
+                            : project.status === 'Rejected' ? 'text-red-500'
+                            : 'text-muted-foreground'
+                        )}>
                             {statusConfig.icon}
                         </div>
                         <div>
@@ -127,12 +135,14 @@ export default function MySubmissionsPage() {
     const inReviewApps = allProjects.filter(p => p.status === "In Review");
     const inTestingApps = allProjects.filter(p => p.status === "In Testing");
     const completedApps = allProjects.filter(p => p.status === "Completed");
+    const rejectedApps = allProjects.filter(p => p.status === "Rejected");
 
     const [selectedTab, setSelectedTab] = useState('in-review');
     const tabs = [
         { label: 'In Review', value: 'in-review', count: inReviewApps.length },
         { label: 'In Testing', value: 'in-testing', count: inTestingApps.length },
-        { label: 'Completed', value: 'completed', count: completedApps.length }
+        { label: 'Completed', value: 'completed', count: completedApps.length },
+        { label: 'Rejected', value: 'rejected', count: rejectedApps.length },
     ];
 
     return (
@@ -159,7 +169,7 @@ export default function MySubmissionsPage() {
 
                     <main>
                         <Tabs value={selectedTab} onValueChange={setSelectedTab} className="w-full">
-                            <TabsList className="relative grid w-full grid-cols-3 bg-muted p-1 rounded-full">
+                            <TabsList className="relative grid w-full grid-cols-4 bg-muted p-1 rounded-full">
                                 {tabs.map((tab) => {
                                     const isSelected = selectedTab === tab.value;
 
@@ -192,6 +202,9 @@ export default function MySubmissionsPage() {
                             </TabsContent>
                             <TabsContent value="completed" className="mt-6">
                                 <PaginatedProjectList projects={completedApps} />
+                            </TabsContent>
+                            <TabsContent value="rejected" className="mt-6">
+                                <PaginatedProjectList projects={rejectedApps} />
                             </TabsContent>
                         </Tabs>
                     </main>

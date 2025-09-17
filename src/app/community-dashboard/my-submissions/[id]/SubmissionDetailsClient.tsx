@@ -1,4 +1,5 @@
 
+
 'use client';
 
 import Image from 'next/image';
@@ -6,7 +7,7 @@ import { projects as allProjects } from '@/lib/data'; // Using project data as i
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Bug, CheckCircle, Clock, Smartphone, MessageSquare, Star, BarChart, MapPin, LayoutGrid, List, Users, ChevronLeft, ChevronRight, Lightbulb, PartyPopper, Search, ClipboardList, X } from 'lucide-react';
+import { Bug, CheckCircle, Clock, Smartphone, MessageSquare, Star, BarChart, MapPin, LayoutGrid, List, Users, ChevronLeft, ChevronRight, Lightbulb, PartyPopper, Search, ClipboardList, X, XCircle } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
 import {
     Table,
@@ -38,6 +39,8 @@ const getStatusConfig = (status: string) => {
             return { badgeVariant: "secondary", icon: <CheckCircle className="w-5 h-5" /> };
         case "In Review":
             return { badgeVariant: "secondary", icon: <Search className="w-5 h-5" /> };
+        case "Rejected":
+            return { badgeVariant: "destructive", icon: <XCircle className="w-5 h-5" /> };
         default:
             return { badgeVariant: "secondary", icon: <Clock className="w-5 h-5" /> };
     }
@@ -69,10 +72,10 @@ export default function SubmissionDetailsClient({ project }: { project: Project 
     const [fullscreenImage, setFullscreenImage] = useState<string | null>(null);
 
     const statusConfig = getStatusConfig(project.status);
-    const isReview = project.status === 'In Review';
+    const isUnderReviewOrRejected = project.status === 'In Review' || project.status === 'Rejected';
     const isCompleted = project.status === 'Completed';
 
-    const filteredFeedback = isReview ? [] : project.feedback;
+    const filteredFeedback = isUnderReviewOrRejected ? [] : project.feedback;
 
     const totalFeedbackPages = Math.ceil(filteredFeedback.length / FEEDBACK_PER_PAGE);
     const feedbackStartIndex = (feedbackPage - 1) * FEEDBACK_PER_PAGE;
@@ -98,10 +101,10 @@ export default function SubmissionDetailsClient({ project }: { project: Project 
     };
 
     const feedbackBreakdown = {
-        bugs: isReview ? 0 : project.feedback.filter(fb => fb.type === 'Bug').length,
-        suggestions: isReview ? 0 : project.feedback.filter(fb => fb.type === 'Suggestion').length,
-        praise: isReview ? 0 : project.feedback.filter(fb => fb.type === 'Praise').length,
-        totalTesters: isReview ? 0 : project.testersCompleted,
+        bugs: isUnderReviewOrRejected ? 0 : project.feedback.filter(fb => fb.type === 'Bug').length,
+        suggestions: isUnderReviewOrRejected ? 0 : project.feedback.filter(fb => fb.type === 'Suggestion').length,
+        praise: isUnderReviewOrRejected ? 0 : project.feedback.filter(fb => fb.type === 'Praise').length,
+        totalTesters: isUnderReviewOrRejected ? 0 : project.testersCompleted,
     };
 
 
@@ -137,7 +140,7 @@ export default function SubmissionDetailsClient({ project }: { project: Project 
 
                             <div className="flex flex-col items-start justify-center gap-2 col-span-4 sm:col-span-1">
                                 <p className='text-black dark:text-white font-bold'>STATUS</p>
-                                <p className={`flex flex-row items-center gap-4 justify-center w-full text-lg sm:text-2xl font-bold rounded-xl p-3 ${project.status === "In Testing" ? "bg-gradient-to-br from-red-500/60 to-red-500/20 dark:from-red-500/30 dark:to-red-500/5" : project.status === "Completed" ? "bg-gradient-to-br from-green-500/60 to-green-500/20 dark:from-green-500/30 dark:to-green-500/5" : "bg-gradient-to-br from-yellow-500/60 to-yellow-500/20 dark:from-yellow-500/30 dark:to-yellow-500/5"} ${project.status === "In Testing" ? "text-red-800 dark:text-red-500" : project.status === "Completed" ? "text-green-800 dark:text-green-500" : "text-yellow-800 dark:text-yellow-500"}`}>
+                                <p className={`flex flex-row items-center gap-4 justify-center w-full text-lg sm:text-2xl font-bold rounded-xl p-3 ${project.status === "In Testing" || project.status === "Rejected" ? "bg-gradient-to-br from-red-500/60 to-red-500/20 dark:from-red-500/30 dark:to-red-500/5" : project.status === "Completed" ? "bg-gradient-to-br from-green-500/60 to-green-500/20 dark:from-green-500/30 dark:to-green-500/5" : "bg-gradient-to-br from-yellow-500/60 to-yellow-500/20 dark:from-yellow-500/30 dark:to-yellow-500/5"} ${project.status === "In Testing" || project.status === "Rejected" ? "text-red-800 dark:text-red-500" : project.status === "Completed" ? "text-green-800 dark:text-green-500" : "text-yellow-800 dark:text-yellow-500"}`}>
                                     <span>{statusConfig.icon}</span>
                                     <span>{project.status}</span>
                                 </p>
@@ -147,16 +150,21 @@ export default function SubmissionDetailsClient({ project }: { project: Project 
                     </header>
 
                     <div className='relative flex flex-col gap-10 !mt-14'>
-                        {isReview && (
+                        {isUnderReviewOrRejected && (
                             <div className="absolute inset-0 bg-background/70 backdrop-blur-sm z-20 rounded-2xl flex flex-col items-center justify-center">
                                 <div className="bg-secondary/80 p-4 rounded-full mb-4">
-                                    <Search className="w-12 h-12 text-primary" />
+                                    {project.status === 'In Review' ? <Search className="w-12 h-12 text-primary" /> : <XCircle className="w-12 h-12 text-destructive" />}
                                 </div>
-                                <h2 className="text-2xl font-bold">In Review</h2>
-                                <p className="text-muted-foreground max-w-sm text-center">Our team is currently reviewing this submission. Testing data and feedback will appear here once the app is published.</p>
+                                <h2 className="text-2xl font-bold">{project.status}</h2>
+                                <p className="text-muted-foreground max-w-sm text-center">
+                                    {project.status === 'In Review' 
+                                        ? "Our team is currently reviewing this submission. Testing data and feedback will appear here once the app is published."
+                                        : "This submission was rejected. Please check your email or dashboard notifications for details from our review team."
+                                    }
+                                </p>
                             </div>
                         )}
-                        <div className={cn("grid grid-cols-1 lg:grid-cols-3 gap-2 sm:gap-4 text-center", isReview && "pointer-events-none")}>
+                        <div className={cn("grid grid-cols-1 lg:grid-cols-3 gap-2 sm:gap-4 text-center", isUnderReviewOrRejected && "pointer-events-none")}>
                             <div className='flex flex-row gap-1 items-center justify-center rounded-2xl overflow-hidden'>
                                 <div className="bg-gradient-to-tl from-primary/20 to-primary text-primary-foreground p-5 h-full w-full flex flex-col justify-center gap-1">
                                     <p className="text-xs">Total Testers</p>
@@ -164,7 +172,7 @@ export default function SubmissionDetailsClient({ project }: { project: Project 
                                 </div>
                                 <div className="bg-gradient-to-tr from-primary/20 to-primary text-primary-foreground p-5 h-full w-full flex flex-col justify-center gap-1">
                                     <p className="text-xs">Total Days</p>
-                                    <p className="text-4xl sm:text-5xl font-bold">{project.totalDays}</p>
+                                    <p className="text-4xl sm:text-5xl font-bold">{isUnderReviewOrRejected ? 0 : project.totalDays}</p>
                                 </div>
                             </div>
                             <div className='flex flex-col gap-2 items-center justify-center bg-card rounded-2xl p-3'>
@@ -197,18 +205,18 @@ export default function SubmissionDetailsClient({ project }: { project: Project 
                             <div className='flex flex-row gap-2 items-center jutify-center'>
                                 <div className="bg-card p-3 pt-4 rounded-2xl flex flex-col justify-center h-full w-full">
                                     <p className="text-xs sm:text-sm mb-3">Points Cost</p>
-                                    <p className="text-2xl sm:text-4xl font-bold bg-secondary rounded-lg h-full w-full flex flex items-center justify-center">{project.pointsCost.toLocaleString()}</p>
+                                    <p className="text-2xl sm:text-4xl font-bold bg-secondary rounded-lg h-full w-full flex flex items-center justify-center">{isUnderReviewOrRejected ? 0 : project.pointsCost.toLocaleString()}</p>
                                 </div>
                                 <div className="bg-card p-3 pt-4 rounded-2xl flex flex-col justify-center h-full w-full">
                                     <p className="text-xs sm:text-sm mb-3">Android Version</p>
-                                    <p className="text-2xl sm:text-4xl py-2 sm:py-0 font-bold bg-secondary rounded-lg h-full w-full flex flex items-center justify-center">{project.androidVersion}</p>
+                                    <p className="text-2xl sm:text-4xl py-2 sm:py-0 font-bold bg-secondary rounded-lg h-full w-full flex flex items-center justify-center">{isUnderReviewOrRejected ? 'N/A' : project.androidVersion}</p>
                                 </div>
                             </div>
                         </div>
 
                         <DeveloperInstructions title='Instructions for Testers' instruction={`"${project.testingInstructions}"`} mt={8} />
 
-                        <div className={cn("bg-card/50 rounded-2xl p-2 sm:p-6 sm:pt-4", isReview && "pointer-events-none")}>
+                        <div className={cn("bg-card/50 rounded-2xl p-2 sm:p-6 sm:pt-4", isUnderReviewOrRejected && "pointer-events-none")}>
                             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
                                 <div>
                                     <h2 className="text-xl sm:text-2xl font-bold">Detailed Feedback Log</h2>
@@ -334,4 +342,3 @@ export default function SubmissionDetailsClient({ project }: { project: Project 
         </div>
     )
 }
-
