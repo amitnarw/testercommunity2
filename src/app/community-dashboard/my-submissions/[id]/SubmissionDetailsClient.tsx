@@ -208,7 +208,7 @@ export default function SubmissionDetailsClient({ project }: { project: Project 
 
                         <DeveloperInstructions title='Instructions for Testers' instruction={`"${project.testingInstructions}"`} mt={8} />
 
-                        <div className={cn("bg-card/50 rounded-2xl p-4 sm:p-6 sm:pt-4", isReview && "pointer-events-none")}>
+                        <div className={cn("bg-card/50 rounded-2xl p-2 sm:p-6 sm:pt-4", isReview && "pointer-events-none")}>
                             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
                                 <div>
                                     <h2 className="text-xl sm:text-2xl font-bold">Detailed Feedback Log</h2>
@@ -229,7 +229,7 @@ export default function SubmissionDetailsClient({ project }: { project: Project 
                                         <div className="space-y-3">
                                             {currentFeedback.map((fb) => (
                                                 <Card key={fb.id} className={`bg-gradient-to-tl ${fb.type === "Bug" ? "from-red-500/20" : fb.type === "Suggestion" ? "from-yellow-500/20" : "from-green-500/20"} ${fb.type === "Bug" ? "to-red-500/5" : fb.type === "Suggestion" ? "to-yellow-500/5" : "to-green-500/5"} p-0 pt-2 shadow-none border-0 relative overflow-hidden`}>
-                                                    <div className="flex items-start flex-col gap-0 pt-4 pr-2 pl-5">
+                                                    <div className="flex items-start flex-col gap-0 pr-2 pl-5">
                                                         <div className="absolute scale-[2.5] rotate-45 top-2 left-1 opacity-5 dark:opacity-10">
                                                             {getFeedbackIcon(fb.type)}
                                                         </div>
@@ -241,10 +241,10 @@ export default function SubmissionDetailsClient({ project }: { project: Project 
                                                         </div>
                                                         <p className="text-sm text-muted-foreground mt-1">{fb.comment}</p>
                                                     </div>
-                                                    <div className="flex items-center justify-between text-xs text-muted-foreground w-full mt-3 bg-black/5 dark:bg-white/10 px-5 py-1">
+                                                    <div className="flex items-center justify-between text-xs text-muted-foreground w-full mt-3 bg-black/5 dark:bg-white/10 px-5 h-12">
                                                         {fb.screenshot ? (
-                                                            <div className="mt-3 cursor-pointer h-10 w-5 relative" onClick={() => setFullscreenImage(fb.screenshot)}>
-                                                                <Image src={fb.screenshot} alt="Feedback screenshot" fill className="absolute rounded-sm border object-cover" />
+                                                            <div className="cursor-pointer h-10 w-7 relative" onClick={() => setFullscreenImage(fb.screenshot)}>
+                                                                <Image src={fb.screenshot} alt="Feedback screenshot" fill className="absolute rounded border object-cover" />
                                                             </div>
                                                         ) : <div />}
                                                         <div className='flex flex-col sm:flex-row gap-0 sm:gap-5 items-end'>
@@ -260,8 +260,8 @@ export default function SubmissionDetailsClient({ project }: { project: Project 
                                     ) : (
                                         <div className="grid grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-4">
                                             {currentFeedback.map((fb) => (
-                                                <Card key={fb.id} className={`bg-gradient-to-bl ${fb.type === "Bug" ? "from-red-500/20" : fb.type === "Suggestion" ? "from-yellow-500/20" : "from-green-500/20"} ${fb.type === "Bug" ? "to-red-500/10" : fb.type === "Suggestion" ? "to-yellow-500/10" : "to-green-500/10"} p-4 py-2 pr-2 shadow-none border-0 h-full flex flex-col relative overflow-hidden`}>
-                                                    <CardHeader className="p-0 flex-row items-center justify-between">
+                                                <Card key={fb.id} className={`bg-gradient-to-bl ${fb.type === "Bug" ? "from-red-500/20" : fb.type === "Suggestion" ? "from-yellow-500/20" : "from-green-500/20"} ${fb.type === "Bug" ? "to-red-500/10" : fb.type === "Suggestion" ? "to-yellow-500/10" : "to-green-500/10"} shadow-none border-0 h-full flex flex-col relative gap-1 sm:gap-2 overflow-hidden`}>
+                                                    <CardHeader className="p-2 px-3 pb-0 sm:px-4 flex-row items-center justify-between">
                                                         <div className="flex items-center gap-3">
                                                             <div className={`p-3 rounded-full absolute opacity-10 scale-[3] -right-1 -top-1 ${fb.type === "Praise" ? "-rotate-90" : "-rotate-45"}`}>
                                                                 {getFeedbackIcon(fb.type)}
@@ -270,21 +270,21 @@ export default function SubmissionDetailsClient({ project }: { project: Project 
                                                         </div>
                                                         {getSeverityBadge(fb.severity)}
                                                     </CardHeader>
-                                                    <CardContent className="p-0 pt-2 flex-grow">
-                                                        <p className="text-xs sm:text-sm text-muted-foreground line-clamp-3">{fb.comment}</p>
+                                                    <CardContent className="p-2 px-3 py-0 sm:px-4 flex-grow">
+                                                        <p className="text-xs sm:text-sm text-muted-foreground">{fb.comment}</p>
                                                     </CardContent>
-                                                    <CardFooter className="p-0 flex items-center justify-between text-xs text-muted-foreground pt-2 mt-2 border-t border-black/20 dark:border-white/20">
-                                                         {fb.screenshot ? (
-                                                            <div className="mt-3 cursor-pointer h-10 w-5 relative" onClick={() => setFullscreenImage(fb.screenshot)}>
-                                                                <Image src={fb.screenshot} alt="Feedback screenshot" fill className="absolute rounded-sm border object-cover" />
+                                                    <CardFooter className="p-2 px-3 sm:px-4 flex items-center justify-between text-xs text-muted-foreground mt-2 h-10 bg-black/5 dark:bg-white/10">
+                                                            {fb.screenshot ? (
+                                                                <div className="cursor-pointer h-8 w-6 relative" onClick={() => setFullscreenImage(fb.screenshot)}>
+                                                                    <Image src={fb.screenshot} alt="Feedback screenshot" fill className="absolute rounded-sm border object-cover" />
+                                                                </div>
+                                                            ) : <div />}
+                                                            <div className='flex flex-col sm:flex-row gap-0 sm:gap-5 items-end'>
+                                                                <div>
+                                                                    <span className="font-semibold text-foreground text-[10px] sm:text-[12px]">{fb.tester}</span>
+                                                                </div>
+                                                                <span className='text-[8px] sm:text-[10px]'>{format(new Date(fb.date), 'dd MMM yyyy')}</span>
                                                             </div>
-                                                        ) : <div />}
-                                                        <div className='flex flex-col sm:flex-row gap-0 sm:gap-5 items-end'>
-                                                            <div>
-                                                                <span className="font-semibold text-foreground text-[10px] sm:text-[12px]">{fb.tester}</span>
-                                                            </div>
-                                                            <span className='text-[8px] sm:text-[10px]'>{format(new Date(fb.date), 'dd MMM yyyy')}</span>
-                                                        </div>
                                                     </CardFooter>
                                                 </Card>
                                             ))}
@@ -335,4 +335,3 @@ export default function SubmissionDetailsClient({ project }: { project: Project 
     )
 }
 
-    
