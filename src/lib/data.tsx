@@ -908,25 +908,27 @@ export const notifications: Notification[] = Array.from({ length: 25 }, (_, i) =
 });
 
 const generateFeedback = (projectName: string) => {
-    const feedbackTypes: ProjectFeedback['type'][] = ['Bug', 'Suggestion', 'Praise', 'Bug', 'Bug'];
+    const feedbackTypes: ('Bug' | 'Suggestion' | 'Praise')[] = ['Bug', 'Suggestion', 'Praise', 'Bug', 'Bug'];
     const comments = {
         'Bug': `Found a crash in ${projectName} when trying to open the settings page.`,
         'Suggestion': `It would be great if ${projectName} had a dark mode option.`,
         'Praise': `The new update for ${projectName} is fantastic! The UI is so much smoother.`
     }
-    const severities: ProjectFeedback['severity'][] = ['Critical', 'Low', 'N/A', 'High', 'Medium'];
-    const statuses: ProjectFeedback['status'][] = ['New', 'Closed', 'Closed', 'In Progress', 'Resolved'];
+    const severities: ('Critical' | 'High' | 'Medium' | 'Low' | 'N/A')[] = ['Critical', 'Low', 'N/A', 'High', 'Medium'];
+    const statuses: ('New' | 'In Progress' | 'Resolved' | 'Closed')[] = ['New', 'Closed', 'Closed', 'In Progress', 'Resolved'];
 
     return Array.from({ length: 15 }, (_, i) => {
         const type = feedbackTypes[i % feedbackTypes.length];
+        const hasScreenshot = i % 3 === 0;
         return {
             id: i + 1,
             tester: `Tester${100 + i}`,
             type: type,
             severity: type === 'Bug' ? severities[i % severities.length] : 'N/A',
             status: statuses[i % statuses.length],
-            comment: comments[type] || `Generic feedback item #${i+1}`,
-            date: `2024-08-${20- (i % 10)}`
+            comment: comments[type as keyof typeof comments] || `Generic feedback item #${i+1}`,
+            date: `2024-08-${20- (i % 10)}`,
+            screenshot: hasScreenshot ? `https://picsum.photos/seed/${projectName.length + i}/400/800` : null
         }
     });
 };
@@ -1233,6 +1235,8 @@ export const projects: Project[] = [
     
 
 
+
+    
 
     
 

@@ -101,6 +101,7 @@ export type ProjectFeedback = {
     status: 'New' | 'In Progress' | 'Resolved' | 'Closed';
     comment: string;
     date: string;
+    screenshot?: string | null;
 }
 
 export type Project = {
@@ -155,6 +156,8 @@ export type SubmittedFeedback = {
   comment: string;
   screenshot: string | null;
 }
+    
+
     
 
     
