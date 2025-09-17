@@ -8,7 +8,7 @@ import { projects } from '@/lib/data';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Bug, CheckCircle, Clock, Users, MessageSquare, Star, Smartphone, BarChart, MapPin, LayoutGrid, List, Copy, ExternalLink, User, Info,ClipboardList, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Bug, CheckCircle, Clock, Users, MessageSquare, Star, Smartphone, BarChart, MapPin, LayoutGrid, List, Copy, ExternalLink, User, Info,ClipboardList, ChevronLeft, ChevronRight, XCircle } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
 import {
   Table,
@@ -39,8 +39,8 @@ const getStatusConfig = (status: string) => {
             return { badgeVariant: "destructive", icon: <Clock className="w-4 h-4" />, color: 'text-destructive' };
         case "Completed":
             return { badgeVariant: "secondary", icon: <CheckCircle className="w-4 h-4 text-green-500" />, color: "text-green-500" };
-        case "Archived":
-            return { badgeVariant: "outline", icon: <CheckCircle className="w-4 h-4" />, color: "text-muted-foreground" };
+        case "Rejected":
+            return { badgeVariant: "destructive", icon: <XCircle className="w-4 h-4" />, color: "text-destructive" };
         default:
             return { badgeVariant: "secondary", icon: <Clock className="w-4 h-4" />, color: "text-muted-foreground" };
     }

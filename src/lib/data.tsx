@@ -1151,7 +1151,7 @@ export const projects: Project[] = [
       icon: "https://play-lh.googleusercontent.com/Tt-6ZaQDUAjfSNSeLz4XyYkPsEQfVVp0lBtwrnuyqubhCna0LKu5OZxKgegBJIrEhz8=s96-rw",
       dataAiHint: "blue squares",
       category: "Productivity",
-      status: "Archived",
+      status: "Rejected",
       testersStarted: 25,
       testersCompleted: 25,
       totalDays: 14,

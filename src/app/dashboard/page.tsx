@@ -1,4 +1,5 @@
 
+
 'use client';
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -52,7 +53,7 @@ export default function DashboardPage() {
 
   const draftApps = allProjects.filter(p => p.status === "Draft");
   const ongoingApps = allProjects.filter(p => ["In Testing", "In Review"].includes(p.status));
-  const completedApps = allProjects.filter(p => ["Completed", "Archived"].includes(p.status));
+  const completedApps = allProjects.filter(p => p.status === "Completed");
 
   const tabs = [
     { label: 'Ongoing', value: 'ongoing', count: ongoingApps?.length },
