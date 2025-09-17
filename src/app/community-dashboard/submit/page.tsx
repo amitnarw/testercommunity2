@@ -16,7 +16,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Slider } from '@/components/ui/slider';
-import { FileText, Link as LinkIcon, Users, AlertCircle, Wallet } from 'lucide-react';
+import { FileText, Link as LinkIcon, Users, AlertCircle, Wallet, Image as ImageIcon } from 'lucide-react';
 import { FormField, FormControl, FormItem, FormMessage, FormLabel, FormDescription } from '@/components/ui/form';
 import { cn } from '@/lib/utils';
 import AnimatedRoundedButton from '@/components/ui/animated-rounded-button';
@@ -27,6 +27,9 @@ import { Button } from '@/components/ui/button';
 const submissionSchema = z.object({
     appLink: z.string().url("Please enter a valid Google Play testing URL."),
     appName: z.string().min(3, "App name must be at least 3 characters."),
+    appLogo: z.string().url("Please enter a valid URL for the app logo."),
+    screenshot1: z.string().url("Please enter a valid URL for the first screenshot."),
+    screenshot2: z.string().url("Please enter a valid URL for the second screenshot."),
     category: z.string({ required_error: "Please select a category." }),
     appDesc: z.string().min(50, "Please provide a detailed description of at least 50 characters."),
     testingInstructions: z.string().min(50, "Please provide instructions of at least 50 characters."),
@@ -42,7 +45,7 @@ const formSteps = [
         id: 'connect',
         title: 'Connect',
         icon: <LinkIcon className="w-5 h-5" />,
-        fields: ['appName', 'appLink'],
+        fields: ['appName', 'appLink', 'appLogo', 'screenshot1', 'screenshot2'],
         description: 'First, provide a link to your app on the Google Play Console internal testing track. This allows our testers to securely download it.'
     },
     {
@@ -257,6 +260,45 @@ export default function SubmitAppPage() {
                                                         </FormItem>
                                                     )}
                                                 />
+                                                 <FormField
+                                                    control={form.control}
+                                                    name="appLogo"
+                                                    render={({ field }) => (
+                                                        <FormItem>
+                                                            <Label htmlFor="appLogo">App Logo URL</Label>
+                                                            <FormControl>
+                                                                <Input id="appLogo" placeholder="https://play-lh.googleusercontent.com/..." {...field} className="h-12" />
+                                                            </FormControl>
+                                                            <FormMessage />
+                                                        </FormItem>
+                                                    )}
+                                                />
+                                                 <FormField
+                                                    control={form.control}
+                                                    name="screenshot1"
+                                                    render={({ field }) => (
+                                                        <FormItem>
+                                                            <Label htmlFor="screenshot1">Screenshot 1 URL</Label>
+                                                            <FormControl>
+                                                                <Input id="screenshot1" placeholder="https://play-lh.googleusercontent.com/..." {...field} className="h-12" />
+                                                            </FormControl>
+                                                            <FormMessage />
+                                                        </FormItem>
+                                                    )}
+                                                />
+                                                 <FormField
+                                                    control={form.control}
+                                                    name="screenshot2"
+                                                    render={({ field }) => (
+                                                        <FormItem>
+                                                            <Label htmlFor="screenshot2">Screenshot 2 URL</Label>
+                                                            <FormControl>
+                                                                <Input id="screenshot2" placeholder="https://play-lh.googleusercontent.com/..." {...field} className="h-12" />
+                                                            </FormControl>
+                                                            <FormMessage />
+                                                        </FormItem>
+                                                    )}
+                                                />
                                             </CardContent>
                                         </Card>
                                     </Section>
@@ -435,3 +477,5 @@ export default function SubmitAppPage() {
     );
 
 }
+
+    
