@@ -164,7 +164,7 @@ export default function MySubmissionsPage() {
                                 <h1 className="text-2xl sm:text-3xl font-extrabold bg-gradient-to-br from-primary to-primary/10 bg-clip-text text-transparent">My Submissions</h1>
                                 <Button asChild className='bg-gradient-to-b from-primary to-primary/40 text-primary-foreground px-3 h-8 sm:p-auto sm:h-10'>
                                     <Link href="/community-dashboard/submit">
-                                        <PlusCircle className="h-4 w-4 absolute sm:static top-0 sm:top-auto left-0 sm:left-auto scale-[2] sm:text-white/20 sm:text-white" />
+                                        <PlusCircle className="h-4 w-4 absolute sm:static top-0 sm:top-auto left-0 sm:left-auto scale-[2] sm:scale-100 text-white/20 sm:text-white" />
                                         <span className='hidden sm:block'>Submit New App</span>
                                         <span className='sm:hidden block'>Submit</span>
                                     </Link>
@@ -199,21 +199,22 @@ export default function MySubmissionsPage() {
                                 })}
                             </TabsList>
                             <TabsContent value="pending" className="mt-6">
-                               <Tabs value={pendingSubTab} onValueChange={setPendingSubTab}>
-                                   <TabsList className="grid w-full grid-cols-2 bg-muted/50">
-                                       {pendingTabs.map((tab) => (
-                                           <TabsTrigger key={tab.value} value={tab.value}>
+                                <div className="flex justify-start mb-6">
+                                    <div className="flex items-center gap-2 p-1 bg-muted rounded-full">
+                                        {pendingTabs.map((tab) => (
+                                            <Button
+                                                key={tab.value}
+                                                variant={pendingSubTab === tab.value ? 'default' : 'ghost'}
+                                                onClick={() => setPendingSubTab(tab.value)}
+                                                className="rounded-full px-4 py-1.5 text-sm h-auto"
+                                            >
                                                 {tab.label} ({tab.count})
-                                           </TabsTrigger>
-                                       ))}
-                                   </TabsList>
-                                   <TabsContent value="in-review" className="mt-6">
-                                       <PaginatedProjectList projects={inReviewApps} />
-                                   </TabsContent>
-                                   <TabsContent value="rejected" className="mt-6">
-                                       <PaginatedProjectList projects={rejectedApps} />
-                                   </TabsContent>
-                               </Tabs>
+                                            </Button>
+                                        ))}
+                                    </div>
+                                </div>
+                                {pendingSubTab === 'in-review' && <PaginatedProjectList projects={inReviewApps} />}
+                                {pendingSubTab === 'rejected' && <PaginatedProjectList projects={rejectedApps} />}
                             </TabsContent>
                             <TabsContent value="testing" className="mt-6">
                                 <PaginatedProjectList projects={inTestingApps} />
@@ -228,3 +229,4 @@ export default function MySubmissionsPage() {
         </>
     )
 }
+
