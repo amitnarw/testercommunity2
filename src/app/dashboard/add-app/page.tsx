@@ -2,481 +2,360 @@
 
 'use client';
 
-import { useState, useEffect } from 'react';
-import { useForm, FormProvider } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import * as z from 'zod';
-import { motion } from 'framer-motion';
-import { useTheme } from 'next-themes';
-import { useInView } from 'react-intersection-observer';
-import Link from 'next/link';
-
-import { Card, CardContent } from '@/components/ui/card';
+import { Card, CardContent, CardHeader } from '@/components/ui/card'
+import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Slider } from '@/components/ui/slider';
-import { FileText, Link as LinkIcon, Users, AlertCircle, Wallet, Image as ImageIcon } from 'lucide-react';
-import { FormField, FormControl, FormItem, FormMessage, FormLabel, FormDescription } from '@/components/ui/form';
-import { cn } from '@/lib/utils';
-import AnimatedRoundedButton from '@/components/ui/animated-rounded-button';
+import { ArrowRight, Expand, X, PlayCircle, Clipboard, Check } from 'lucide-react'
+import { useState, useEffect, useCallback } from 'react';
+import Image from 'next/image';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
+import { IconRain } from '@/components/icon-rain';
+import { toast } from '@/hooks/use-toast';
 import { BackButton } from '@/components/back-button';
-import { AlertDialog, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
-import { Button } from '@/components/ui/button';
+import AnimatedRoundedButton from '@/components/ui/animated-rounded-button';
+import { useTheme } from 'next-themes';
 
-const submissionSchema = z.object({
-    appLink: z.string().url("Please enter a valid Google Play testing URL."),
-    appName: z.string().min(3, "App name must be at least 3 characters."),
-    appLogo: z.string().url("Please enter a valid URL for the app logo."),
-    screenshot1: z.string().url("Please enter a valid URL for the first screenshot."),
-    screenshot2: z.string().url("Please enter a valid URL for the second screenshot."),
-    category: z.string({ required_error: "Please select a category." }),
-    appDesc: z.string().min(50, "Please provide a detailed description of at least 50 characters."),
-    testingInstructions: z.string().min(50, "Please provide instructions of at least 50 characters."),
-    androidVersion: z.string().min(1, "Please specify the minimum Android version."),
-    numberOfTesters: z.coerce.number().min(5, { message: 'A minimum of 5 testers is required.' }).max(50),
-    testDuration: z.coerce.number().min(14, { message: 'A minimum of 14 days is required.' }).max(30),
-});
+const Highlight = ({ children }: { children: React.ReactNode }) => (
+    <span className="bg-primary/20 text-primary font-semibold px-1.5 py-0.5 rounded-md">{children}</span>
+);
 
-type SubmissionFormData = z.infer<typeof submissionSchema>;
+const CopyBlock = ({ textToCopy }: { textToCopy: string }) => {
+    const [copied, setCopied] = useState(false);
 
-const formSteps = [
-    {
-        id: 'connect',
-        title: 'Connect',
-        icon: <LinkIcon className="w-5 h-5" />,
-        fields: ['appName', 'appLink', 'appLogo', 'screenshot1', 'screenshot2'],
-        description: 'First, provide a link to your app on the Google Play Console internal testing track. This allows our testers to securely download it.'
-    },
-    {
-        id: 'describe',
-        title: 'Describe',
-        icon: <FileText className="w-5 h-5" />,
-        fields: ['category', 'appDesc', 'testingInstructions'],
-        description: 'Tell us about your app and what you want testers to focus on. The more detail, the better the feedback.'
-    },
-    {
-        id: 'configure',
-        title: 'Configure',
-        icon: <Users className="w-5 h-5" />,
-        fields: ['androidVersion', 'numberOfTesters', 'testDuration'],
-        description: 'Finally, set the technical parameters and choose how many testers you need. Points will be deducted after admin review.'
-    },
-];
+    const handleCopy = () => {
+        navigator.clipboard.writeText(textToCopy);
+        setCopied(true);
+        setTimeout(() => setCopied(false), 2000); // Reset after 2 seconds
+    };
 
-const Section = ({ id, title, description, children, sectionRef }: { id: string, title: string, description: string, children: React.ReactNode, sectionRef: React.Ref<HTMLDivElement> }) => {
     return (
-        <section ref={sectionRef} id={id} className="min-h-[85vh] flex flex-col justify-center scroll-mt-10 py-16">
-            <div className="mb-8">
-                <h2 className="text-2xl sm:text-3xl font-bold">{title}</h2>
-                <p className="text-sm sm:text-base text-muted-foreground mt-2">{description}</p>
-            </div>
-            {children}
-        </section>
+        <div className="bg-secondary/50 p-4 py-2 rounded-lg flex items-center justify-between my-4">
+            <code className="text-sm text-muted-foreground">{textToCopy}</code>
+            <Button variant="ghost" size="icon" onClick={handleCopy}>
+                {copied ? <Check className="w-4 h-4 text-green-500" /> : <Clipboard className="w-4 h-4" />}
+            </Button>
+        </div>
     );
 };
 
+const processSteps = [
+    {
+        title: "Grant Our Testers Access",
+        imageUrl: "/add-app-1.webp",
+        dataAiHint: "team collaboration"
+    },
+    {
+        title: "Enable Global Reach",
+        imageUrl: "/add-app-2.webp",
+        dataAiHint: "world map data"
+    },
+    {
+        title: "Submit for Google's Review",
+        imageUrl: "/add-app-3.webp",
+        dataAiHint: "checklist document"
+    },
+    {
+        title: "Activate Your Test Cycle",
+        imageUrl: "/add-app-4.webp",
+        dataAiHint: "scientist laboratory"
+    },
+];
 
-export default function SubmitAppPage() {
-    const [activeStep, setActiveStep] = useState(formSteps[0].id);
-    const [isErrorModalOpen, setIsErrorModalOpen] = useState(false);
+
+export default function AddAppPage() {
     const { theme } = useTheme();
-    const [cost, setCost] = useState(0);
 
-    const form = useForm<SubmissionFormData>({
-        resolver: zodResolver(submissionSchema),
-        mode: 'onBlur',
-        defaultValues: {
-            numberOfTesters: 10,
-            testDuration: 14,
-        }
-    });
-
-    const userBalance = 1250;
-    const testers = form.watch('numberOfTesters');
-    const isBalanceInsufficient = cost > userBalance;
+    const [step, setStep] = useState<'guide' | 'form'>('guide');
+    const [fullscreenImage, setFullscreenImage] = useState<string | null>(null);
+    const [isVideoExpanded, setIsVideoExpanded] = useState(false);
+    const [isClient, setIsClient] = useState(false);
 
     useEffect(() => {
-        const calculatedCost = testers * 100;
-        setCost(calculatedCost);
-    }, [testers]);
-
-
-    const onSubmit = (data: SubmissionFormData) => {
-        if (isBalanceInsufficient) {
-            setIsErrorModalOpen(true);
-            return;
-        }
-        console.log("Form submitted:", data);
-        alert("App submitted successfully! (Check console for data)");
-    }
-
-    const { ref: connectRef, inView: connectInView } = useInView({ threshold: 0.5 });
-    const { ref: describeRef, inView: describeInView } = useInView({ threshold: 0.5 });
-    const { ref: configureRef, inView: configureInView } = useInView({ threshold: 0.4 });
-
-    useEffect(() => {
-        if (connectInView) setActiveStep('connect');
-        else if (describeInView) setActiveStep('describe');
-        else if (configureInView) setActiveStep('configure');
-    }, [connectInView, describeInView, configureInView]);
-
-
-    const [isMounted, setIsMounted] = useState(false);
-    useEffect(() => {
-        setIsMounted(true);
+        setIsClient(true);
     }, []);
 
-    if (!isMounted) {
-        return null;
-    }
+    const handleGetStarted = () => {
+        setStep('form');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
 
     const hoverTextColor = theme === 'dark' ? 'black' : 'white';
     const hoverBgColor = theme === 'dark' ? 'white' : 'black';
 
-
     return (
         <>
-            <div className="bg-[#f8fafc] dark:bg-[#0f151e] min-h-screen">
-                <div className="sticky top-0 z-40 backdrop-blur-lg">
-                    <header className="container mx-auto px-4 md:px-6">
-                        <div className="flex items-center justify-between py-2 sm:py-4">
-                            <div className="flex items-center gap-4">
-                                <BackButton href="/community-dashboard" />
-                                <div className='hidden sm:block'>
-                                    <h1 className="text-xl font-bold">Submit Your App</h1>
+            <div className="min-h-screen bg-[#f8fafc] dark:bg-[#0f151e]">
+                <div className="container mx-auto px-4 md:px-6">
+                    <div className="sticky top-0 z-[50] pt-2 sm:pt-3 pb-10 max-w-4xl mx-auto">
+                        <BackButton href="/dashboard" />
+                    </div>
+                    <header className="mb-8 max-w-4xl mx-auto">
+                        <h1 className="text-3xl sm:text-4xl font-bold bg-gradient-to-br from-primary to-accent bg-clip-text text-transparent">Submit a New App</h1>
+                        <p className="text-muted-foreground mt-2">
+                            {step === 'guide'
+                                ? "Follow this simple guide to prepare your app. One package will be used upon submission."
+                                : "Fill in your app's details. You can edit this information later."
+                            }
+                        </p>
+                    </header>
+
+                    <main className="max-w-4xl mx-auto">
+                        {step === 'guide' ? (
+                            <div className="space-y-8">
+                                <div className="rounded-xl overflow-hidden shadow-lg relative bg-gradient-to-br from-primary/50 to-primary">
+                                    {isClient && <IconRain />}
+                                    {isVideoExpanded ? (
+                                        <div className="relative aspect-video">
+                                            <iframe
+                                                className="absolute top-0 left-0 w-full h-full"
+                                                src="https://www.youtube.com/embed/9M1Cv8V_I3U?autoplay=1"
+                                                title="YouTube video player"
+                                                frameBorder="0"
+                                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                                allowFullScreen
+                                            ></iframe>
+                                        </div>
+                                    ) : (
+                                        <div
+                                            className="p-6 py-10 flex flex-col md:flex-row items-center justify-between gap-4 cursor-pointer relative z-10"
+                                            onClick={() => setIsVideoExpanded(true)}
+                                        >
+                                            <div>
+                                                <h3 className="font-bold text-xl sm:text-2xl mb-1 flex flex-col sm:flex-row items-center sm:gap-3 text-white">Quick Walkthrough <span className="text-sm font-medium text-black">(2-min watch)</span></h3>
+                                                <p className="text-white/80 text-sm text-center sm:text-start">Watch a short video on how to submit your app.</p>
+                                            </div>
+                                            <Button size="lg" variant="outline">
+                                                <PlayCircle className="mr-2 h-5 w-5" />
+                                                Watch Guide
+                                            </Button>
+                                        </div>
+                                    )}
+                                </div>
+
+                                <p className="text-center text-muted-foreground text-sm">
+                                    You can either watch the video above or follow the step-by-step guide below. Both cover the same process.
+                                </p>
+
+                                <Accordion type="single" collapsible className="w-full space-y-4">
+                                    <AccordionItem value="item-1" className="bg-white dark:bg-secondary/80 rounded-xl overflow-hidden shadow-xl shadow-gray-200/70 dark:shadow-black/20">
+                                        <AccordionTrigger className="p-6 text-left hover:no-underline flex flex-row items-center justify-between w-full relative">
+                                            <div className="flex items-start flex-1">
+                                                <span className="text-7xl md:text-5xl font-black bg-gradient-to-br from-primary/20 to-primary/0 bg-clip-text text-transparent md:w-20 absolute -top-3 -left-3 md:relative md:top-auto md:left-auto">01</span>
+                                                <div>
+                                                    <h3 className="font-bold text-xl mb-1">Grant Our Testers Access</h3>
+                                                    <p className="text-muted-foreground text-sm text-left">Add our official tester group to your app's internal test track.</p>
+                                                </div>
+                                            </div>
+                                        </AccordionTrigger>
+                                        <AccordionContent className="px-6 pb-6">
+                                            <div className="flex flex-col gap-6 items-start">
+                                                <div className="flex-1 space-y-4 text-muted-foreground">
+                                                    <p>First, head to the Google Play Console and select your app.</p>
+                                                    <ol className="list-decimal list-inside space-y-3 pl-2">
+                                                        <li>Navigate to the <Highlight>Internal Testing</Highlight> page from the side menu.</li>
+                                                        <li>Go to the <Highlight>Testers</Highlight> tab.</li>
+                                                        <li>Find the "Tester lists" section and click "Create email list" if you don't have one, or select an existing one.</li>
+                                                        <li>In the "Add email addresses" field, paste the following Google Group address. This is our secure, private group of vetted testers.</li>
+                                                    </ol>
+                                                    <CopyBlock textToCopy="testers-community@googlegroups.com" />
+                                                    <p className="text-xs italic"><strong>Why?</strong> This allows our testers to securely download your app from the Play Store for the 14-day test cycle. Your app remains invisible to the public.</p>
+                                                </div>
+                                                <div className="w-full flex-shrink-0">
+                                                    <div
+                                                        className="relative w-full rounded-lg overflow-hidden group cursor-pointer bg-black/10"
+                                                        onClick={() => setFullscreenImage(processSteps[0].imageUrl)}
+                                                    >
+                                                        <Image src={processSteps[0].imageUrl} data-ai-hint={processSteps[0].dataAiHint} alt={processSteps[0].title} layout="responsive" width={1200} height={750} className="transition-transform duration-300 group-hover:scale-105" />
+                                                        <div className="absolute inset-0 bg-black/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                                            <Expand className="w-8 h-8 text-white" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </AccordionContent>
+                                    </AccordionItem>
+
+                                    <AccordionItem value="item-2" className="bg-white dark:bg-secondary/80 rounded-xl overflow-hidden shadow-xl shadow-gray-200/70 dark:shadow-black/20">
+                                        <AccordionTrigger className="p-6 text-left hover:no-underline flex flex-row items-center justify-between w-full relative">
+                                            <div className="flex items-start flex-1">
+                                                <span className="text-7xl md:text-5xl font-black bg-gradient-to-br from-primary/20 to-primary/0 bg-clip-text text-transparent md:w-20 absolute -top-3 -left-3 md:relative md:top-auto md:left-auto">02</span>
+                                                <div>
+                                                    <h3 className="font-bold text-xl mb-1">Enable Global Reach</h3>
+                                                    <p className="text-muted-foreground text-sm text-left">Make your app available in all countries for maximum test coverage.</p>
+                                                </div>
+                                            </div>
+                                        </AccordionTrigger>
+                                        <AccordionContent className="px-6 pb-6">
+                                            <div className="flex flex-col gap-6 items-start">
+                                                <div className="flex-1 space-y-4 text-muted-foreground">
+                                                    <p>To ensure our diverse, international team can test your app, you must enable worldwide distribution.</p>
+                                                    <ol className="list-decimal list-inside space-y-3 pl-2">
+                                                        <li>While still on the internal testing track, click the <Highlight>Countries / regions</Highlight> tab.</li>
+                                                        <li>Click <Highlight>Add countries / regions</Highlight>.</li>
+                                                        <li>For the best results and maximum coverage, we highly recommend selecting the first checkbox to include <Highlight>All</Highlight> countries and regions.</li>
+                                                    </ol>
+                                                    <p className="text-xs italic"><strong>Benefit:</strong> This simple step allows testers from different regions with varied network conditions and device models to test your app, uncovering bugs you might otherwise miss.</p>
+                                                </div>
+                                                <div className="w-full flex-shrink-0">
+                                                    <div
+                                                        className="relative w-full rounded-lg overflow-hidden group cursor-pointer bg-black/10"
+                                                        onClick={() => setFullscreenImage(processSteps[1].imageUrl)}
+                                                    >
+                                                        <Image src={processSteps[1].imageUrl} data-ai-hint={processSteps[1].dataAiHint} alt={processSteps[1].title} layout="responsive" width={1200} height={750} className="transition-transform duration-300 group-hover:scale-105" />
+                                                        <div className="absolute inset-0 bg-black/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                                            <Expand className="w-8 h-8 text-white" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </AccordionContent>
+                                    </AccordionItem>
+
+                                    <AccordionItem value="item-3" className="bg-white dark:bg-secondary/80 rounded-xl overflow-hidden shadow-xl shadow-gray-200/70 dark:shadow-black/20">
+                                        <AccordionTrigger className="p-6 text-left hover:no-underline flex flex-row items-center justify-between w-full relative">
+                                            <div className="flex items-start flex-1">
+                                                <span className="text-7xl md:text-5xl font-black bg-gradient-to-br from-primary/20 to-primary/0 bg-clip-text text-transparent md:w-20 absolute -top-3 -left-3 md:relative md:top-auto md:left-auto">03</span>
+                                                <div>
+                                                    <h3 className="font-bold text-xl mb-1">Submit for Google's Review</h3>
+                                                    <p className="text-muted-foreground text-sm text-left">Save your changes and submit them to Google for a quick review.</p>
+                                                </div>
+                                            </div>
+                                        </AccordionTrigger>
+                                        <AccordionContent className="px-6 pb-6">
+                                            <div className="flex flex-col gap-6 items-start">
+                                                <div className="flex-1 space-y-4 text-muted-foreground">
+                                                    <p>After configuring the tester list and countries, you just need to save the changes.</p>
+                                                    <ol className="list-decimal list-inside space-y-3 pl-2">
+                                                        <li>Click the <Highlight>Save</Highlight> button at the bottom right of the page.</li>
+                                                        <li>This will submit your changes to Google for a standard, automated process to ensure the track is set up correctly.</li>
+                                                    </ol>
+                                                    <p className="text-xs italic"><strong>What to expect:</strong> This is not a full app review. It is a quick check of your testing configuration. Approval is typically very fast, often taking anywhere from a few minutes to a couple of hours.</p>
+                                                </div>
+                                                <div className="w-full flex-shrink-0">
+                                                    <div
+                                                        className="relative w-full rounded-lg overflow-hidden group cursor-pointer bg-black/10"
+                                                        onClick={() => setFullscreenImage(processSteps[2].imageUrl)}
+                                                    >
+                                                        <Image src={processSteps[2].imageUrl} data-ai-hint={processSteps[2].dataAiHint} alt={processSteps[2].title} layout="responsive" width={1200} height={750} className="transition-transform duration-300 group-hover:scale-105" />
+                                                        <div className="absolute inset-0 bg-black/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                                            <Expand className="w-8 h-8 text-white" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </AccordionContent>
+                                    </AccordionItem>
+
+                                    <AccordionItem value="item-4" className="bg-white dark:bg-secondary/80 rounded-xl overflow-hidden shadow-xl shadow-gray-200/70 dark:shadow-black/20">
+                                        <AccordionTrigger className="p-6 text-left hover:no-underline flex flex-row items-center justify-between w-full relative">
+                                            <div className="flex items-start flex-1">
+                                                <span className="text-7xl md:text-5xl font-black bg-gradient-to-br from-primary/20 to-primary/0 bg-clip-text text-transparent md:w-20 absolute -top-3 -left-3 md:relative md:top-auto md:left-auto">04</span>
+                                                <div>
+                                                    <h3 className="font-bold text-xl mb-1">Activate Your Test Cycle</h3>
+                                                    <p className="text-muted-foreground text-sm text-left">Come back to inTesters with your test URL to begin.</p>
+                                                </div>
+                                            </div>
+                                        </AccordionTrigger>
+                                        <AccordionContent className="px-6 pb-6">
+                                            <div className="flex flex-col gap-6 items-start">
+                                                <div className="flex-1 space-y-4 text-muted-foreground">
+                                                    <p>Once Google approves your changes, you're ready to activate the test cycle!</p>
+                                                    <ol className="list-decimal list-inside space-y-3 pl-2">
+                                                        <li>On your internal testing page, look for the <Highlight>Join on the web</Highlight> link.</li>
+                                                        <li>Click the copy icon next to it to copy the URL.</li>
+                                                        <li>Come back to this page, click "Get Started" below, and paste this URL into the <Highlight>Testing URL</Highlight> field in the form.</li>
+                                                    </ol>
+                                                    <p className="text-xs italic"><strong>Final Step:</strong> After you fill out the form and submit, our testers will be notified automatically, and your 14-day testing cycle will officially begin!</p>
+                                                </div>
+                                                <div className="w-full flex-shrink-0">
+                                                    <div
+                                                        className="relative w-full rounded-lg overflow-hidden group cursor-pointer bg-black/10"
+                                                        onClick={() => setFullscreenImage(processSteps[3].imageUrl)}
+                                                    >
+                                                        <Image src={processSteps[3].imageUrl} data-ai-hint={processSteps[3].dataAiHint} alt={processSteps[3].title} layout="responsive" width={1200} height={750} className="transition-transform duration-300 group-hover:scale-105" />
+                                                        <div className="absolute inset-0 bg-black/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                                            <Expand className="w-8 h-8 text-white" />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </AccordionContent>
+                                    </AccordionItem>
+                                </Accordion>
+
+                                <div className="pt-6 flex justify-end">
+                                    <Button onClick={handleGetStarted} size="lg">
+                                        Get Started <ArrowRight className="ml-2" />
+                                    </Button>
                                 </div>
                             </div>
-                            <div className="flex items-center gap-1 sm:gap-3">
-                                <div onClick={form.handleSubmit(onSubmit)} className={cn("cursor-pointer", isBalanceInsufficient && "cursor-not-allowed opacity-50")}>
+                        ) : (
+                            <Card className="rounded-xl bg-card border-border shadow-lg">
+                                <CardContent className="p-6 space-y-6">
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <div className="space-y-2">
+                                            <Label htmlFor="name">App Name</Label>
+                                            <Input id="name" placeholder="E.g., Project Phoenix" />
+                                        </div>
+                                        <div className="space-y-2">
+                                            <Label htmlFor="url">Testing URL</Label>
+                                            <Input id="url" placeholder="https://play.google.com/store/apps/details?id=com.example.app" />
+                                        </div>
+                                    </div>
+
+                                    <div className="space-y-2">
+                                        <Label htmlFor="instructions">Test Credentials & Instructions (Optional)</Label>
+                                        <Textarea id="instructions" placeholder="e.g., Use user: demo@test.com, pass: 1234. Focus on the new checkout flow." className="min-h-[120px]" />
+                                    </div>
+                                </CardContent>
+                                <CardHeader className="p-6 pt-0 flex flex-row justify-between items-center">
+                                    <Button variant="ghost" onClick={() => setStep('guide')}>Back to Guide</Button>
                                     <AnimatedRoundedButton
                                         backgroundColor="hsl(var(--primary))"
                                         animatedBackgroundColor={hoverBgColor}
                                         hoverTextColor={hoverTextColor}
-                                        borderRadius='9999px'
-                                        className={cn(isBalanceInsufficient && "!bg-destructive")}
+                                        borderRadius='12px'
+                                        className='py-3 px-8'
                                     >
-                                        <div className="flex items-center gap-2">
-                                            <span className='hidden sm:inline'>Submit for Review</span>
-                                            <span className='sm:hidden'>Submit</span>
+                                        <div className="flex items-center text-center gap-2 font-semibold">
+                                            <span>Submit App (1 Package)</span>
                                         </div>
                                     </AnimatedRoundedButton>
-                                </div>
-                            </div>
-                        </div>
-                    </header>
-                    
-                </div>
-
-                <div className="container mx-auto px-2 py-5">
-                    <div className="lg:grid lg:grid-cols-12 lg:gap-16 bg-background rounded-3xl px-3 sm:px-5">
-                        {/* Mobile Step Navigator */}
-                    <nav className="lg:hidden sticky top-14 z-30 flex items-center justify-around border-b bg-background/80 backdrop-blur-lg">
-                        {formSteps.map((step) => (
-                            <a
-                                key={`mobile-${step.id}`}
-                                href={`#${step.id}`}
-                                onClick={(e) => {
-                                    e.preventDefault();
-                                    document.getElementById(step.id)?.scrollIntoView({ behavior: 'smooth' });
-                                }}
-                                className={cn(
-                                    "flex-1 flex items-center justify-center gap-2 text-center p-3 text-sm font-medium transition-all text-muted-foreground relative",
-                                    activeStep === step.id && "text-primary"
-                                )}
-                            >
-                                {step.title}
-                                {activeStep === step.id && (
-                                    <motion.div
-                                        className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary"
-                                        layoutId="mobile-active-step-indicator"
-                                    />
-                                )}
-                            </a>
-                        ))}
-                    </nav>
-                        <aside className="hidden lg:block lg:col-span-3 py-16">
-                            <div className="sticky top-36">
-                                <nav>
-                                    <ul className="space-y-2">
-                                        {formSteps.map((step) => (
-                                            <li key={step.id}>
-                                                <a
-                                                    href={`#${step.id}`}
-                                                    onClick={(e) => {
-                                                        e.preventDefault();
-                                                        document.getElementById(step.id)?.scrollIntoView({ behavior: 'smooth' });
-                                                    }}
-                                                    className={cn(
-                                                        "flex items-center gap-3 p-3 rounded-lg transition-all",
-                                                        activeStep === step.id ? "bg-primary/10 text-primary" : "text-muted-foreground hover:bg-secondary/50"
-                                                    )}>
-                                                    <div className={cn(
-                                                        "p-2 rounded-full flex items-center justify-center border-2 transition-all",
-                                                        activeStep === step.id ? "bg-primary text-primary-foreground border-primary" : "bg-secondary border-border group-hover:border-primary/50"
-                                                    )}>
-                                                        {step.icon}
-                                                    </div>
-                                                    <div>
-                                                        <p className={cn("font-bold transition-all", activeStep === step.id ? "text-primary" : "text-foreground")}>{step.title}</p>
-                                                        <p className="text-xs">{step.description.split('.')[0]}</p>
-                                                    </div>
-                                                </a>
-                                            </li>
-                                        ))}
-                                    </ul>
-                                </nav>
-                            </div>
-                        </aside>
-                        <main className="lg:col-span-9">
-                            <FormProvider {...form}>
-                                <form onSubmit={form.handleSubmit(onSubmit)}>
-                                    <Section sectionRef={connectRef} id="connect" title="1. Connect Your App" description="Provide the essential links and name for your project.">
-                                        <Card className="bg-secondary/30 border-dashed">
-                                            <CardContent className="grid md:grid-cols-2 gap-3 sm:gap-6 p-3 sm:p-6">
-                                                <FormField
-                                                    control={form.control}
-                                                    name="appLink"
-                                                    render={({ field }) => (
-                                                        <FormItem>
-                                                            <Label htmlFor="appLink">Google Play Testing Link</Label>
-                                                            <FormControl>
-                                                                <Input id="appLink" placeholder="https://play.google.com/apps/testing/..." {...field} className="py-0" />
-                                                            </FormControl>
-                                                            <FormMessage />
-                                                        </FormItem>
-                                                    )}
-                                                />
-                                                <FormField
-                                                    control={form.control}
-                                                    name="appName"
-                                                    render={({ field }) => (
-                                                        <FormItem>
-                                                            <Label htmlFor="appName">App Name</Label>
-                                                            <FormControl>
-                                                                <Input id="appName" placeholder="e.g., PhotoSnap Editor" {...field} className="py-0" />
-                                                            </FormControl>
-                                                            <FormMessage />
-                                                        </FormItem>
-                                                    )}
-                                                />
-                                                 <FormField
-                                                    control={form.control}
-                                                    name="appLogo"
-                                                    render={({ field }) => (
-                                                        <FormItem>
-                                                            <Label htmlFor="appLogo">App Logo URL</Label>
-                                                            <FormControl>
-                                                                <Input id="appLogo" placeholder="https://play-lh.googleusercontent.com/..." {...field} className="py-0" />
-                                                            </FormControl>
-                                                            <FormMessage />
-                                                        </FormItem>
-                                                    )}
-                                                />
-                                                 <FormField
-                                                    control={form.control}
-                                                    name="screenshot1"
-                                                    render={({ field }) => (
-                                                        <FormItem>
-                                                            <Label htmlFor="screenshot1">Screenshot 1 URL</Label>
-                                                            <FormControl>
-                                                                <Input id="screenshot1" placeholder="https://play-lh.googleusercontent.com/..." {...field} className="py-0" />
-                                                            </FormControl>
-                                                            <FormMessage />
-                                                        </FormItem>
-                                                    )}
-                                                />
-                                                 <FormField
-                                                    control={form.control}
-                                                    name="screenshot2"
-                                                    render={({ field }) => (
-                                                        <FormItem>
-                                                            <Label htmlFor="screenshot2">Screenshot 2 URL</Label>
-                                                            <FormControl>
-                                                                <Input id="screenshot2" placeholder="https://play-lh.googleusercontent.com/..." {...field} className="py-0" />
-                                                            </FormControl>
-                                                            <FormMessage />
-                                                        </FormItem>
-                                                    )}
-                                                />
-                                            </CardContent>
-                                        </Card>
-                                    </Section>
-
-                                    <Section sectionRef={describeRef} id="describe" title="2. Describe Your Project" description="Give testers the context they need for quality feedback.">
-                                        <Card className="bg-secondary/30 border-dashed">
-                                            <CardContent className="p-6 space-y-6">
-                                                <FormField
-                                                    control={form.control}
-                                                    name="category"
-                                                    render={({ field }) => (
-                                                        <FormItem>
-                                                            <Label>Category</Label>
-                                                            <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                                                <FormControl>
-                                                                    <SelectTrigger className="py-0">
-                                                                        <SelectValue placeholder="Select a category" />
-                                                                    </SelectTrigger>
-                                                                </FormControl>
-                                                                <SelectContent>
-                                                                    <SelectItem value="Games">Games</SelectItem>
-                                                                    <SelectItem value="Productivity">Productivity</SelectItem>
-                                                                    <SelectItem value="Social">Social</SelectItem>
-                                                                    <SelectItem value="Utilities">Utilities</SelectItem>
-                                                                    <SelectItem value="Other">Other</SelectItem>
-                                                                </SelectContent>
-                                                            </Select>
-                                                            <FormMessage />
-                                                        </FormItem>
-                                                    )}
-                                                />
-                                                <FormField
-                                                    control={form.control}
-                                                    name="appDesc"
-                                                    render={({ field }) => (
-                                                        <FormItem>
-                                                            <Label htmlFor="appDesc">App Description</Label>
-                                                            <FormControl>
-                                                                <Textarea id="appDesc" placeholder="Briefly describe what your app does." className="min-h-[120px]" {...field} />
-                                                            </FormControl>
-                                                            <FormMessage />
-                                                        </FormItem>
-                                                    )}
-                                                />
-                                                <FormField
-                                                    control={form.control}
-                                                    name="testingInstructions"
-                                                    render={({ field }) => (
-                                                        <FormItem>
-                                                            <Label htmlFor="testingInstructions">Instructions for Testers</Label>
-                                                            <FormControl>
-                                                                <Textarea id="testingInstructions" placeholder="Any specific areas or features you want testers to focus on? (e.g., 'Please test the new checkout flow')." className="min-h-[120px]" {...field} />
-                                                            </FormControl>
-                                                            <FormMessage />
-                                                        </FormItem>
-                                                    )}
-                                                />
-                                            </CardContent>
-                                        </Card>
-                                    </Section>
-
-                                    <Section sectionRef={configureRef} id="configure" title="3. Configure Your Test" description="Set the final parameters for your testing cycle. You must have enough earned points to cover this budget.">
-                                        <Card className="bg-secondary/30 border-dashed">
-                                            <CardContent className="p-6 grid md:grid-cols-1 gap-8">
-                                                <FormField
-                                                    control={form.control}
-                                                    name="androidVersion"
-                                                    render={({ field }) => (
-                                                        <FormItem>
-                                                            <Label htmlFor="androidVersion">Min. Android Version</Label>
-                                                            <FormControl>
-                                                                <Input id="androidVersion" placeholder="e.g., 10+" {...field} className="py-0" />
-                                                            </FormControl>
-                                                            <FormMessage />
-                                                        </FormItem>
-                                                    )}
-                                                />
-                                                <FormField
-                                                    control={form.control}
-                                                    name="numberOfTesters"
-                                                    render={({ field }) => (
-                                                        <FormItem>
-                                                            <FormLabel>Number of Testers</FormLabel>
-                                                            <FormControl>
-                                                                <div className="flex items-center gap-4 pt-2">
-                                                                    <Slider
-                                                                        defaultValue={[field.value]}
-                                                                        min={5}
-                                                                        max={50}
-                                                                        step={5}
-                                                                        onValueChange={(value) => field.onChange(value[0])}
-                                                                        className={cn("w-[85%]", field.name)}
-                                                                    />
-                                                                    <div className="font-bold text-lg text-primary w-[15%] text-center">{field.value}</div>
-                                                                </div>
-                                                            </FormControl>
-                                                            <FormDescription className="mt-4 flex items-start gap-2 bg-secondary/80 p-3 rounded-lg border border-border">
-                                                                <AlertCircle className="w-5 h-5 text-muted-foreground mt-0.5 flex-shrink-0" />
-                                                                <span>
-                                                                    <span className='font-semibold text-foreground'>Pro Tip:</span> We recommend selecting at least 15-20 testers. Since community testers can drop out, choosing extra provides a buffer to ensure you meet Google's 14-day/12-tester requirement without delays.
-                                                                </span>
-                                                            </FormDescription>
-                                                            <FormMessage />
-                                                        </FormItem>
-                                                    )}
-                                                />
-                                                <FormField
-                                                    control={form.control}
-                                                    name="testDuration"
-                                                    render={({ field }) => (
-                                                        <FormItem>
-                                                            <FormLabel>Test Duration (Days)</FormLabel>
-                                                            <FormControl>
-                                                                <div className="flex items-center gap-4 pt-2">
-                                                                    <Slider
-                                                                        defaultValue={[field.value]}
-                                                                        min={14}
-                                                                        max={30}
-                                                                        step={1}
-                                                                        onValueChange={(value) => field.onChange(value[0])}
-                                                                        className={cn("w-[85%]", field.name)}
-                                                                    />
-                                                                    <div className="font-bold text-lg text-primary w-[15%] text-center">{field.value}</div>
-                                                                </div>
-                                                            </FormControl>
-                                                            <FormDescription className="mt-4 flex items-start gap-2 bg-secondary/80 p-3 rounded-lg border border-border">
-                                                                <AlertCircle className="w-5 h-5 text-muted-foreground mt-0.5 flex-shrink-0" />
-                                                                <span>
-                                                                    <span className='font-semibold text-foreground'>Pro Tip:</span> While the minimum is 14 days, we suggest 16-20 days. This gives community testers a flexible window to complete the test period without pressure.
-                                                                </span>
-                                                            </FormDescription>
-                                                            <FormMessage />
-                                                        </FormItem>
-                                                    )}
-                                                />
-                                                <div className={cn("p-4 rounded-lg flex flex-col items-center justify-center transition-colors", isBalanceInsufficient ? "bg-destructive/10 border-destructive" : "bg-primary/10 border-primary/20", "border")}>
-                                                    <div className="flex items-center gap-3 text-sm font-semibold mb-1">
-                                                        <Wallet className={cn("w-5 h-5", isBalanceInsufficient ? "text-destructive" : "text-primary")} />
-                                                        <span>Point Budget</span>
-                                                    </div>
-                                                    <p className="text-3xl font-bold">{cost.toLocaleString()} <span className="text-lg font-medium text-muted-foreground">Points</span></p>
-                                                    <p className={cn("text-xs mt-1", isBalanceInsufficient ? "text-destructive font-semibold" : "text-muted-foreground")}>
-                                                        Your balance: {userBalance.toLocaleString()} points.
-                                                    </p>
-                                                </div>
-                                            </CardContent>
-                                        </Card>
-                                    </Section>
-
-                                </form>
-                            </FormProvider>
-                        </main>
-                    </div>
+                                </CardHeader>
+                            </Card>
+                        )}
+                    </main>
                 </div>
             </div>
-
-            <AlertDialog open={isErrorModalOpen} onOpenChange={setIsErrorModalOpen}>
-                <AlertDialogContent>
-                    <AlertDialogHeader>
-                        <AlertDialogTitle>Insufficient Points</AlertDialogTitle>
-                        <AlertDialogDescription>
-                            You do not have enough points to fund this test configuration. Your current balance is {userBalance.toLocaleString()} points, but you need {cost.toLocaleString()} points.
-                            <br /><br />
-                            Please either reduce the number of testers or earn more points by testing other apps in the Community Hub.
-                        </AlertDialogDescription>
-                    </AlertDialogHeader>
-                    <AlertDialogFooter>
-                        <Button onClick={() => setIsErrorModalOpen(false)}>Okay, I'll adjust</Button>
-                        <Button variant="outline" asChild>
-                            <Link href="/community-dashboard">Go to Community Hub</Link>
-                        </Button>
-                    </AlertDialogFooter>
-                </AlertDialogContent>
-            </AlertDialog>
+            {fullscreenImage && (
+                <div
+                    className="fixed inset-0 bg-black/80 z-[60] flex items-center justify-center p-4 animate-in fade-in-0"
+                    onClick={() => setFullscreenImage(null)}
+                >
+                    <Button
+                        variant="ghost"
+                        size="icon"
+                        className="absolute top-4 right-4 text-white hover:text-white hover:bg-white/20 h-12 w-12 rounded-full"
+                        onClick={() => setFullscreenImage(null)}
+                    >
+                        <X className="w-8 h-8" />
+                        <span className="sr-only">Close</span>
+                    </Button>
+                    <div className="relative w-full h-full max-w-5xl max-h-[85vh]">
+                        <Image
+                            src={fullscreenImage}
+                            alt="Fullscreen view"
+                            layout="fill"
+                            objectFit="contain"
+                            className="animate-in zoom-in-95"
+                        />
+                    </div>
+                </div>
+            )}
         </>
     );
-
 }
 
     

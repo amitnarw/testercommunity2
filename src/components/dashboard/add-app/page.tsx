@@ -329,9 +329,9 @@ export default function AddAppPage() {
                                 </div>
                             </div>
                         ) : (
-                            <Card className="rounded-xl bg-white/0 border-0">
-                                <CardContent className="p-0 space-y-6">
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-background p-4 rounded-xl shadow-xl shadow-gray-200 dark:shadow-black/20">
+                            <Card className="rounded-xl bg-card border-border shadow-lg">
+                                <CardContent className="p-6 space-y-6">
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                         <div className="space-y-2">
                                             <Label htmlFor="name">App Name</Label>
                                             <Input id="name" placeholder="E.g., Project Phoenix" />
@@ -347,22 +347,17 @@ export default function AddAppPage() {
                                         <Textarea id="instructions" placeholder="e.g., Use user: demo@test.com, pass: 1234. Focus on the new checkout flow." className="min-h-[120px]" />
                                     </div>
                                 </CardContent>
-                                <CardHeader className="p-0 pt-0 flex flex-row justify-between items-center">
-                                    <Button variant="ghost" onClick={() => setStep('guide')} className="hidden sm:block"><span >Back to Guide</span></Button>
-                                    <Button variant="ghost" onClick={() => setStep('guide')} className="block sm:hidden"><span >Back</span></Button>
-
+                                <CardHeader className="p-6 pt-0 flex flex-row justify-between items-center">
+                                    <Button variant="ghost" onClick={() => setStep('guide')}>Back to Guide</Button>
                                     <AnimatedRoundedButton
                                         backgroundColor="hsl(var(--primary))"
                                         animatedBackgroundColor={hoverBgColor}
                                         hoverTextColor={hoverTextColor}
-                                        borderRadius='20px'
-                                        paddingY="4"
-                                        paddingX="0"
-                                        className='py-2 sm:py-3 text-sm sm:text-base px-5 sm:px-10'
+                                        borderRadius='12px'
+                                        className='py-3 px-8'
                                     >
-                                        <div className="flex items-center text-center gap-2">
-                                            <span className="hidden sm:block w-full">Submit App (1 Package)</span>
-                                            <span className="block sm:hidden w-full">Submit (1 Package)</span>
+                                        <div className="flex items-center text-center gap-2 font-semibold">
+                                            <span>Submit App (1 Package)</span>
                                         </div>
                                     </AnimatedRoundedButton>
                                 </CardHeader>
@@ -399,3 +394,5 @@ export default function AddAppPage() {
         </>
     );
 }
+
+    

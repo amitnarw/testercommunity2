@@ -13,8 +13,6 @@ interface AnimatedRoundedButtonProps extends React.HTMLAttributes<HTMLDivElement
   normalTextColor?: string;
   hoverTextColor?: string;
   borderRadius?: string;
-  paddingYmobile?: string;
-  paddingXmobile?: string;
   paddingY?: string;
   paddingX?: string;
   border?: boolean
@@ -27,8 +25,6 @@ export default function AnimatedRoundedButton({
   normalTextColor = "hsl(var(--primary-foreground))",
   hoverTextColor = "hsl(var(--foreground))",
   borderRadius = "9999px",
-  paddingYmobile="2",
-  paddingXmobile="4",
   paddingY="2",
   paddingX="5",
   border=false,
@@ -87,3 +83,5 @@ export default function AnimatedRoundedButton({
     </div>
   );
 }
+
+    
