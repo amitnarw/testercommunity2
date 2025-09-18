@@ -147,7 +147,7 @@ export default function DashboardPage() {
 
           <main className="mt-12">
             <Tabs value={selectedTab} onValueChange={setSelectedTab} className="w-full">
-              <TabsList className="relative grid w-full grid-cols-3 bg-muted p-1 rounded-full">
+              <TabsList className="relative grid w-full grid-cols-3 bg-muted p-1 rounded-lg h-auto">
                 {tabs.map((tab) => {
                   const isSelected = selectedTab === tab.value;
 
@@ -155,7 +155,7 @@ export default function DashboardPage() {
                     <TabsTrigger
                       key={tab.value}
                       value={tab.value}
-                      className={`relative px-3 py-1.5 text-xs sm:text-sm font-medium rounded-full transition-colors duration-200 ${isSelected ? 'text-foreground' : 'hover:bg-background/50'
+                      className={`relative px-3 py-2 text-xs sm:text-sm font-medium rounded-lg transition-colors duration-200 ${isSelected ? 'text-foreground' : 'hover:bg-background/50'
                         }`}
                     >
                       {isSelected && (
