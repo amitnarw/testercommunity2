@@ -1,16 +1,14 @@
-
-
 'use client';
 
 import { useState, useCallback } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { LayoutGrid, Lightbulb, Upload, Edit, List, Bug, Trash2, X, PartyPopper, ChevronLeft, ChevronRight } from 'lucide-react';
+import { LayoutGrid, Lightbulb, Upload, Edit, List, Bug, Trash2, X, PartyPopper } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import type { SubmittedFeedback as SubmittedFeedbackType } from '@/lib/types';
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger, DialogClose } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger, } from "@/components/ui/alert-dialog"
 import { PlusCircle } from 'lucide-react';
 import { useDropzone } from 'react-dropzone';
@@ -59,22 +57,22 @@ const FeedbackFormModal = ({
     return (
         <Dialog>
             <DialogTrigger asChild>{children}</DialogTrigger>
-            <DialogContent className="sm:max-w-[600px]">
-                <DialogHeader>
+            <DialogContent className="sm:max-w-[600px] p-0 bg-white dark:bg-[#121212] border-0 h-full sm:h-auto gap-0">
+                <DialogHeader className='p-6 pb-4 border-b'>
                     <DialogTitle>{feedback ? 'Edit Feedback' : 'Submit New Feedback'}</DialogTitle>
                     <DialogDescription>
                         Your feedback helps developers build better apps. Provide clear and constructive comments.
                     </DialogDescription>
                 </DialogHeader>
                 <form onSubmit={handleSubmit}>
-                    <div className="py-4 space-y-6 max-h-[60vh] overflow-y-auto px-1">
+                    <div className="py-4 space-y-6 max-h-[60vh] overflow-y-auto px-6">
                         <div className="space-y-3">
                             <Label className="text-base">Feedback Type</Label>
                             <Select onValueChange={(value) => setType(value as SubmittedFeedbackType['type'])} defaultValue={type}>
-                                <SelectTrigger>
+                                <SelectTrigger className="bg-gray-100 dark:bg-black border-0">
                                     <SelectValue placeholder="Select feedback type" />
                                 </SelectTrigger>
-                                <SelectContent>
+                                <SelectContent className='z-[60] bg-white dark:bg-[#121212] shadow-2xl dark:shadow-black border-[1px] border-gray-200 dark:border-[#232323] w-[98%] m-auto !py-0'>
                                     <SelectItem value="Bug">Bug Report</SelectItem>
                                     <SelectItem value="Suggestion">Suggestion</SelectItem>
                                     <SelectItem value="Praise">Praise</SelectItem>
@@ -83,7 +81,7 @@ const FeedbackFormModal = ({
                         </div>
                         <div className="space-y-3">
                             <Label className="text-base">Comment</Label>
-                            <Textarea value={comment} onChange={(e) => setComment(e.target.value)} placeholder="e.g., The app crashed when..." className="min-h-[120px] text-base" />
+                            <Textarea value={comment} onChange={(e) => setComment(e.target.value)} placeholder="e.g., The app crashed when..." className="min-h-[120px] text-base bg-gray-100 dark:bg-black border-0" />
                         </div>
 
                         <div className="space-y-3">
@@ -105,10 +103,7 @@ const FeedbackFormModal = ({
                             )}
                         </div>
                     </div>
-                    <DialogFooter className="pt-4 border-t">
-                        <DialogClose asChild>
-                            <Button type="button" variant="outline">Cancel</Button>
-                        </DialogClose>
+                    <DialogFooter className="border-t p-6">
                         <Button type="submit">Save Feedback</Button>
                     </DialogFooter>
                 </form>
@@ -143,7 +138,7 @@ const FeedbackListItem = ({ fb, onSave, onDelete, onImageClick }: { fb: Submitte
                                 <Trash2 className="w-4 h-4" />
                             </button>
                         </AlertDialogTrigger>
-                        <AlertDialogContent>
+                        <AlertDialogContent className='w-[90vw] rounded-2xl bg-white dark:bg-[#121212] border-0'>
                             <AlertDialogHeader>
                                 <AlertDialogTitle>Are you sure?</AlertDialogTitle>
                                 <AlertDialogDescription>
@@ -151,8 +146,8 @@ const FeedbackListItem = ({ fb, onSave, onDelete, onImageClick }: { fb: Submitte
                                 </AlertDialogDescription>
                             </AlertDialogHeader>
                             <AlertDialogFooter>
-                                <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                <AlertDialogAction onClick={() => onDelete(fb.id)}>Delete</AlertDialogAction>
+                                <AlertDialogCancel className='bg-white dark:bg-[#121212]'>Cancel</AlertDialogCancel>
+                                <AlertDialogAction className='bg-gradient-to-br from-red-500 to-red-500/40 dark:from-red-500/80 dark:to-red-500/20 hover:bg-red-500/50 !shadow-red-500/50' onClick={() => onDelete(fb.id)}>Delete</AlertDialogAction>
                             </AlertDialogFooter>
                         </AlertDialogContent>
                     </AlertDialog>
@@ -188,16 +183,18 @@ const FeedbackGridItem = ({ fb, onSave, onDelete, onImageClick }: { fb: Submitte
                 </div>
             ) : <div />}
             <div className="flex items-center gap-1">
-                <button className="hover:bg-white/50 p-1 sm:p-2 rounded-md duration-300">
-                    <Edit className="w-3 h-3 sm:w-4 h-4" />
-                </button>
+                <FeedbackFormModal feedback={fb} onSave={onSave}>
+                    <button className="hover:bg-white/50 p-1 sm:p-2 rounded-md duration-300">
+                        <Edit className="w-3 h-3 sm:w-4 h-4" />
+                    </button>
+                </FeedbackFormModal>
                 <AlertDialog>
                     <AlertDialogTrigger asChild>
-                        <button className="hover:bg-red-200 p-1 sm:p-2 rounded-md duration-300 text-red-500">
-                            <Trash2 className="w-3 h-3 sm:w-4 h-4" />
+                        <button className="hover:bg-red-200 p-2 rounded-md duration-300 text-red-500">
+                            <Trash2 className="w-4 h-4" />
                         </button>
                     </AlertDialogTrigger>
-                    <AlertDialogContent>
+                    <AlertDialogContent className='w-[90vw] rounded-2xl bg-white dark:bg-[#121212] border-0'>
                         <AlertDialogHeader>
                             <AlertDialogTitle>Are you sure?</AlertDialogTitle>
                             <AlertDialogDescription>
@@ -205,8 +202,8 @@ const FeedbackGridItem = ({ fb, onSave, onDelete, onImageClick }: { fb: Submitte
                             </AlertDialogDescription>
                         </AlertDialogHeader>
                         <AlertDialogFooter>
-                            <AlertDialogCancel>Cancel</AlertDialogCancel>
-                            <AlertDialogAction onClick={() => onDelete(fb.id)}>Delete</AlertDialogAction>
+                            <AlertDialogCancel className='bg-white dark:bg-[#121212]'>Cancel</AlertDialogCancel>
+                            <AlertDialogAction className='bg-gradient-to-br from-red-500 to-red-500/40 dark:from-red-500/80 dark:to-red-500/20 hover:bg-red-500/50 !shadow-red-500/50' onClick={() => onDelete(fb.id)}>Delete</AlertDialogAction>
                         </AlertDialogFooter>
                     </AlertDialogContent>
                 </AlertDialog>
@@ -303,7 +300,7 @@ export function SubmittedFeedback({ isCompleted = false }: { isCompleted?: boole
                                     ))}
                                 </div>
                             )}
-                            <AppPagination 
+                            <AppPagination
                                 currentPage={currentPage}
                                 totalPages={totalPages}
                                 onPageChange={handlePageChange}

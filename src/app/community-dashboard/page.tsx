@@ -135,12 +135,14 @@ export default function CommunityDashboardPage() {
                         <BentoCard className="flex !flex-row sm:!flex-col gap-2 col-span-2 lg:col-span-1 !p-2.5 sm:!p-4">
                             <Button asChild className="w-full justify-start h-full bg-gradient-to-b from-primary to-primary/40 text-primary-foreground p-2 sm:p-auto">
                                 <Link href="/community-dashboard/submit">
-                                    <PlusCircle className="absolute sm:static left-0 top-0 scale-[2] text-white/20 sm:left-auto sm:top-auto sm:scale-[1] sm:text-white mr-2 h-4 w-4" /> Submit New App
+                                    <PlusCircle className="absolute sm:static left-0 top-0 scale-[2] text-white/20 sm:left-auto sm:top-auto sm:scale-[1] sm:text-white mr-2 h-4 w-4" />
+                                    <p className='text-center sm:text-start w-full'>Submit New App</p>
                                 </Link>
                             </Button>
                             <Button asChild variant="outline" className="w-full justify-start h-full p-2 sm:p-auto">
                                 <Link href="/community-dashboard/my-submissions">
-                                    <LayoutPanelLeft className="absolute sm:static left-0 top-0 scale-[2] text-black/10 dark:text-white/15 sm:left-auto sm:top-auto sm:scale-[1] sm:text-black dark:sm:text-white mr-2 h-4 w-4" /> My Submissions
+                                    <LayoutPanelLeft className="absolute sm:static left-0 top-0 scale-[2] text-black/10 dark:text-white/15 sm:left-auto sm:top-auto sm:scale-[1] sm:text-black dark:sm:text-white mr-2 h-4 w-4" />
+                                    <p className='text-center sm:text-start w-full'>My Submissions</p>
                                 </Link>
                             </Button>
                         </BentoCard>
@@ -183,7 +185,7 @@ export default function CommunityDashboardPage() {
                                 </DropdownMenu>
                             </div>
                         </div>
-                        <TabsList className="relative grid w-full grid-cols-3 bg-muted p-1 rounded-lg h-auto">
+                        <TabsList className="relative grid w-full grid-cols-3 bg-muted p-1 rounded-lg h-auto mb-3">
                             {tabs.map((tab) => {
                                 const isSelected = selectedTab === tab.value;
 

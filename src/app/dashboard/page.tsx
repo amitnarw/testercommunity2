@@ -74,7 +74,7 @@ export default function DashboardPage() {
           <header className="mb-6">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
               <div>
-                <h1 className="text-4xl font-bold bg-gradient-to-b from-primary to-primary/40 bg-clip-text text-transparent leading-0">Developer Dashboard</h1>
+                <h1 className="text-2xl sm:text-4xl font-bold bg-gradient-to-b from-primary to-primary/40 bg-clip-text text-transparent leading-0">Developer Dashboard</h1>
                 <p className="text-muted-foreground">Manage your apps and professional testing projects.</p>
               </div>
             </div>
@@ -125,7 +125,7 @@ export default function DashboardPage() {
               </CardHeader>
               <CardContent className='p-0'>
                 <div className="text-5xl font-bold text-white">
-                  {availablePackages}<span className="text-3xl text-white/70">/{totalPackages}</span>
+                  {availablePackages}
                 </div>
               </CardContent>
             </Card>

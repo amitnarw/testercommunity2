@@ -2,13 +2,12 @@
 
 'use client';
 
-import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card'
+import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { ArrowRight, Expand, X, PlayCircle, ChevronDown, Clipboard, Check, Video, Upload, Link as LinkIcon } from 'lucide-react'
-import Link from 'next/link';
+import { ArrowRight, Expand, X, PlayCircle, Clipboard, Check, Upload, Link as LinkIcon } from 'lucide-react'
 import { useState, useEffect, useCallback } from 'react';
 import Image from 'next/image';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
@@ -17,6 +16,8 @@ import { useDropzone } from 'react-dropzone';
 import { toast } from '@/hooks/use-toast';
 import { Separator } from '@/components/ui/separator';
 import { BackButton } from '@/components/back-button';
+import AnimatedRoundedButton from '@/components/ui/animated-rounded-button';
+import { useTheme } from 'next-themes';
 
 const Highlight = ({ children }: { children: React.ReactNode }) => (
     <span className="bg-primary/20 text-primary font-semibold px-1.5 py-0.5 rounded-md">{children}</span>
@@ -66,6 +67,8 @@ const processSteps = [
 
 
 export default function AddAppPage() {
+    const { theme } = useTheme();
+
     const [step, setStep] = useState<'guide' | 'form'>('guide');
     const [fullscreenImage, setFullscreenImage] = useState<string | null>(null);
     const [isVideoExpanded, setIsVideoExpanded] = useState(false);
@@ -115,13 +118,18 @@ export default function AddAppPage() {
         window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
+    const hoverTextColor = theme === 'dark' ? 'black' : 'white';
+    const hoverBgColor = theme === 'dark' ? 'white' : 'black';
+
     return (
         <>
-            <div className="min-h-screen bg-background">
-                <div className="container mx-auto px-4 md:px-6 py-12">
+            <div className="min-h-screen bg-[#f8fafc] dark:bg-[#0f151e]">
+                <div className="container mx-auto px-4 md:px-6">
+                    <div className="sticky top-0 z-[50] pt-2 sm:pt-3 pb-10 max-w-4xl pl-0 xl:pl-56 w-1/2">
+                        <BackButton href="/dashboard" />
+                    </div>
                     <header className="mb-8 max-w-4xl mx-auto">
-                        <BackButton href="/dashboard" className="mb-4" />
-                        <h1 className="text-4xl font-bold">Submit a New App</h1>
+                        <h1 className="text-3xl sm:text-4xl font-bold bg-gradient-to-br from-primary to-accent bg-clip-text text-transparent">Submit a New App</h1>
                         <p className="text-muted-foreground mt-2">
                             {step === 'guide'
                                 ? "Follow this simple guide to prepare your app. One package will be used upon submission."
@@ -133,7 +141,7 @@ export default function AddAppPage() {
                     <main className="max-w-4xl mx-auto">
                         {step === 'guide' ? (
                             <div className="space-y-8">
-                                <div className="rounded-xl overflow-hidden shadow-lg border relative bg-secondary/30">
+                                <div className="rounded-xl overflow-hidden shadow-lg relative bg-gradient-to-br from-primary/50 to-primary">
                                     {isClient && <IconRain />}
                                     {isVideoExpanded ? (
                                         <div className="relative aspect-video">
@@ -152,8 +160,8 @@ export default function AddAppPage() {
                                             onClick={() => setIsVideoExpanded(true)}
                                         >
                                             <div>
-                                                <h3 className="font-bold text-xl mb-1 flex flex-col sm:flex-row items-center sm:gap-3">Quick Walkthrough <span className="text-sm font-medium text-primary">(2-min watch)</span></h3>
-                                                <p className="text-muted-foreground text-sm">Watch a short video on how to submit your app.</p>
+                                                <h3 className="font-bold text-xl sm:text-2xl mb-1 flex flex-col sm:flex-row items-center sm:gap-3 text-white">Quick Walkthrough <span className="text-sm font-medium text-black">(2-min watch)</span></h3>
+                                                <p className="text-white/80 text-sm text-center sm:text-start">Watch a short video on how to submit your app.</p>
                                             </div>
                                             <Button size="lg" variant="outline">
                                                 <PlayCircle className="mr-2 h-5 w-5" />
@@ -168,7 +176,7 @@ export default function AddAppPage() {
                                 </p>
 
                                 <Accordion type="single" collapsible className="w-full space-y-4">
-                                    <AccordionItem value="item-1" className="bg-secondary/30 rounded-xl border overflow-hidden">
+                                    <AccordionItem value="item-1" className="bg-white dark:bg-secondary/80 rounded-xl overflow-hidden shadow-xl shadow-gray-200/70 dark:shadow-black/20">
                                         <AccordionTrigger className="p-6 text-left hover:no-underline flex flex-row items-center justify-between w-full relative">
                                             <div className="flex items-start flex-1">
                                                 <span className="text-7xl md:text-5xl font-black bg-gradient-to-br from-primary/20 to-primary/0 bg-clip-text text-transparent md:w-20 absolute -top-3 -left-3 md:relative md:top-auto md:left-auto">01</span>
@@ -206,7 +214,7 @@ export default function AddAppPage() {
                                         </AccordionContent>
                                     </AccordionItem>
 
-                                    <AccordionItem value="item-2" className="bg-secondary/30 rounded-xl border overflow-hidden">
+                                    <AccordionItem value="item-2" className="bg-white dark:bg-secondary/80 rounded-xl overflow-hidden shadow-xl shadow-gray-200/70 dark:shadow-black/20">
                                         <AccordionTrigger className="p-6 text-left hover:no-underline flex flex-row items-center justify-between w-full relative">
                                             <div className="flex items-start flex-1">
                                                 <span className="text-7xl md:text-5xl font-black bg-gradient-to-br from-primary/20 to-primary/0 bg-clip-text text-transparent md:w-20 absolute -top-3 -left-3 md:relative md:top-auto md:left-auto">02</span>
@@ -242,7 +250,7 @@ export default function AddAppPage() {
                                         </AccordionContent>
                                     </AccordionItem>
 
-                                    <AccordionItem value="item-3" className="bg-secondary/30 rounded-xl border overflow-hidden">
+                                    <AccordionItem value="item-3" className="bg-white dark:bg-secondary/80 rounded-xl overflow-hidden shadow-xl shadow-gray-200/70 dark:shadow-black/20">
                                         <AccordionTrigger className="p-6 text-left hover:no-underline flex flex-row items-center justify-between w-full relative">
                                             <div className="flex items-start flex-1">
                                                 <span className="text-7xl md:text-5xl font-black bg-gradient-to-br from-primary/20 to-primary/0 bg-clip-text text-transparent md:w-20 absolute -top-3 -left-3 md:relative md:top-auto md:left-auto">03</span>
@@ -277,7 +285,7 @@ export default function AddAppPage() {
                                         </AccordionContent>
                                     </AccordionItem>
 
-                                    <AccordionItem value="item-4" className="bg-secondary/30 rounded-xl border overflow-hidden">
+                                    <AccordionItem value="item-4" className="bg-white dark:bg-secondary/80 rounded-xl overflow-hidden shadow-xl shadow-gray-200/70 dark:shadow-black/20">
                                         <AccordionTrigger className="p-6 text-left hover:no-underline flex flex-row items-center justify-between w-full relative">
                                             <div className="flex items-start flex-1">
                                                 <span className="text-7xl md:text-5xl font-black bg-gradient-to-br from-primary/20 to-primary/0 bg-clip-text text-transparent md:w-20 absolute -top-3 -left-3 md:relative md:top-auto md:left-auto">04</span>
@@ -321,9 +329,9 @@ export default function AddAppPage() {
                                 </div>
                             </div>
                         ) : (
-                            <Card className="rounded-xl">
-                                <CardContent className="p-6 space-y-6">
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <Card className="rounded-xl bg-white/0 border-0">
+                                <CardContent className="p-0 space-y-6">
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 bg-background p-4 rounded-xl shadow-xl shadow-gray-200 dark:shadow-black/20">
                                         <div className="space-y-2">
                                             <Label htmlFor="name">App Name</Label>
                                             <Input id="name" placeholder="E.g., Project Phoenix" />
@@ -333,44 +341,30 @@ export default function AddAppPage() {
                                             <Input id="url" placeholder="https://play.google.com/store/apps/details?id=com.example.app" />
                                         </div>
                                     </div>
+
                                     <div className="space-y-2">
-                                        <Label htmlFor="icon">App Icon</Label>
-                                        {iconPreview ? (
-                                            <div className="relative w-full h-48">
-                                                <Image src={iconPreview} alt="App icon preview" layout="fill" objectFit="contain" className="rounded-lg p-2 border" />
-                                                <Button variant="destructive" size="icon" className="absolute top-2 right-2 h-7 w-7" onClick={(e) => { e.stopPropagation(); setIconPreview(null); }}>
-                                                    <X className="h-4 w-4" />
-                                                </Button>
-                                            </div>
-                                        ) : (
-                                            <div className="relative border border-dashed rounded-lg p-0 grid grid-cols-1 md:grid-cols-2">
-                                                <div {...getRootProps()} className={`flex flex-col items-center justify-center p-8 cursor-pointer hover:bg-secondary/50 rounded-l-md transition-colors ${isDragActive ? 'bg-secondary' : ''}`}>
-                                                    <input {...getInputProps()} />
-                                                    <Upload className="w-10 h-10 text-muted-foreground mb-2" />
-                                                    <p className="font-semibold text-center">Select Image to Upload</p>
-                                                    <p className="text-xs text-muted-foreground text-center">or drag and drop</p>
-                                                </div>
-                                                <div className="p-8 flex flex-col items-center justify-center border-t border-dashed md:border-t-0 md:border-l">
-                                                    <LinkIcon className="w-10 h-10 text-muted-foreground mb-2" />
-                                                    <p className="font-semibold text-center mb-2">Paste image URL</p>
-                                                    <Input type="text" placeholder="https://..." onPaste={handlePaste} className="text-center" />
-                                                </div>
-                                                <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 hidden md:flex items-center">
-                                                    <Separator orientation="vertical" className="h-16" />
-                                                    <div className="mx-2 bg-background px-1 text-xs text-muted-foreground font-bold rounded-full border">OR</div>
-                                                    <Separator orientation="vertical" className="h-16" />
-                                                </div>
-                                            </div>
-                                        )}
-                                    </div>
-                                    <div className="space-y-2">
-                                        <Label htmlFor="instructions">Test Credentials & Instructions</Label>
+                                        <Label htmlFor="instructions">Test Credentials & Instructions (Optional)</Label>
                                         <Textarea id="instructions" placeholder="e.g., Use user: demo@test.com, pass: 1234. Focus on the new checkout flow." className="min-h-[120px]" />
                                     </div>
                                 </CardContent>
-                                <CardHeader className="p-6 pt-0 flex flex-row justify-between items-center">
-                                    <Button variant="ghost" onClick={() => setStep('guide')}> Back to Guide</Button>
-                                    <Button type="submit" size="lg">Submit App (1 Package)</Button>
+                                <CardHeader className="p-0 pt-0 flex flex-row justify-between items-center">
+                                    <Button variant="ghost" onClick={() => setStep('guide')} className="hidden sm:block"><span >Back to Guide</span></Button>
+                                    <Button variant="ghost" onClick={() => setStep('guide')} className="block sm:hidden"><span >Back</span></Button>
+
+                                    <AnimatedRoundedButton
+                                        backgroundColor="hsl(var(--primary))"
+                                        animatedBackgroundColor={hoverBgColor}
+                                        hoverTextColor={hoverTextColor}
+                                        borderRadius='20px'
+                                        paddingY="4"
+                                        paddingX="0"
+                                        className='py-2 sm:py-3 text-sm sm:text-base px-5 sm:px-10'
+                                    >
+                                        <div className="flex items-center text-center gap-2">
+                                            <span className="hidden sm:block w-full">Submit App (1 Package)</span>
+                                            <span className="block sm:hidden w-full">Submit (1 Package)</span>
+                                        </div>
+                                    </AnimatedRoundedButton>
                                 </CardHeader>
                             </Card>
                         )}

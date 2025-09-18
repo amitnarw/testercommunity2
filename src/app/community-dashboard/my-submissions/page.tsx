@@ -52,22 +52,22 @@ const ProjectCard = ({ project }: { project: Project }) => {
                     <p className="text-sm text-muted-foreground line-clamp-2 h-10">{project.description}</p>
                 </CardContent>
                 <CardFooter className="p-3 bg-secondary/50 m-2 rounded-lg mt-auto flex-col items-start gap-3">
-                     <div className="flex items-center gap-2">
-                        <div className={cn("p-1.5 rounded-full bg-background", 
-                            project.status === 'In Testing' ? 'text-destructive' 
-                            : project.status === 'Completed' ? 'text-green-600' 
-                            : project.status === 'Rejected' ? 'text-red-500'
-                            : 'text-muted-foreground'
+                    <div className="flex items-center gap-2">
+                        <div className={cn("p-1.5 rounded-full bg-background",
+                            project.status === 'In Testing' ? 'text-destructive'
+                                : project.status === 'Completed' ? 'text-green-600'
+                                    : project.status === 'Rejected' ? 'text-red-500'
+                                        : 'text-muted-foreground'
                         )}>
                             {statusConfig.icon}
                         </div>
                         <div>
-                             <p className="text-xs text-muted-foreground mt-1">
-                                {isReviewOrDraft 
+                            <p className="text-xs text-muted-foreground mt-1">
+                                {isReviewOrDraft
                                     ? statusConfig.description
                                     : `${project.testersCompleted} of ${project.testersStarted} testers completed.`
                                 }
-                             </p>
+                            </p>
                         </div>
                     </div>
                     <div className="flex justify-between w-full text-xs text-muted-foreground pt-2 border-t">
@@ -76,11 +76,11 @@ const ProjectCard = ({ project }: { project: Project }) => {
                             <span className="font-semibold text-foreground">{project.pointsCost.toLocaleString()} Pts</span>
                         </div>
                         <div className="flex items-center gap-1">
-                             <Clock className="w-3 h-3" />
-                             <span>{project.totalDays} Days</span>
+                            <Clock className="w-3 h-3" />
+                            <span>{project.totalDays} Days</span>
                         </div>
-                         <div className="flex items-center gap-1">
-                             <span>Android {project.androidVersion}</span>
+                        <div className="flex items-center gap-1">
+                            <span>Android {project.androidVersion}</span>
                         </div>
                     </div>
                 </CardFooter>
@@ -145,7 +145,7 @@ export default function MySubmissionsPage() {
         { label: 'Testing', value: 'testing', count: inTestingApps.length },
         { label: 'Completed', value: 'completed', count: completedApps.length },
     ];
-    
+
     const pendingTabs = [
         { label: 'In Review', value: 'in-review', count: inReviewApps.length },
         { label: 'Rejected', value: 'rejected', count: rejectedApps.length },
@@ -155,25 +155,26 @@ export default function MySubmissionsPage() {
         <>
             <div className="min-h-screen bg-secondary/50">
                 <div className="container mx-auto px-4 md:px-6">
-                    <header className="mb-8 pt-1">
-                        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-8">
-                            <div className="sticky top-0 z-[50] pt-2 sm:pt-3 pb-4 pl-0 xl:pl-8">
-                                <BackButton href="/community-dashboard" />
-                            </div>
-                            <div className='flex flex-row items-center justify-between gap-4 w-full'>
-                                <h1 className="text-2xl sm:text-3xl font-extrabold bg-gradient-to-br from-primary to-primary/10 bg-clip-text text-transparent">My Submissions</h1>
-                                <Button asChild className='bg-gradient-to-b from-primary to-primary/40 text-primary-foreground px-3 h-8 sm:p-auto sm:h-10'>
-                                    <Link href="/community-dashboard/submit">
-                                        <PlusCircle className="h-4 w-4 absolute sm:static top-0 sm:top-auto left-0 sm:left-auto scale-[2] sm:scale-100 text-white/20 sm:text-white" />
-                                        <span className='hidden sm:block'>Submit New App</span>
-                                        <span className='sm:hidden block'>Submit</span>
-                                    </Link>
-                                </Button>
-                            </div>
-                        </div>
-                    </header>
-
                     <main>
+                        <div className="sticky top-0 z-[50] pt-2 sm:pt-3 pb-4">
+                            <BackButton href="/community-dashboard" />
+                        </div>
+                        <header className="mb-8 pt-1">
+                            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-8">
+                                <div className='flex flex-row items-center justify-between gap-4 w-full'>
+                                    <h1 className="text-2xl sm:text-3xl font-extrabold bg-gradient-to-br from-primary to-primary/10 bg-clip-text text-transparent">My Submissions</h1>
+                                    <Button asChild className='bg-gradient-to-b from-primary to-primary/40 text-primary-foreground px-3 h-8 sm:p-auto sm:h-10'>
+                                        <Link href="/community-dashboard/submit">
+                                            <PlusCircle className="h-4 w-4 absolute sm:static top-0 sm:top-auto left-0 sm:left-auto scale-[2] sm:scale-100 text-white/20 sm:text-white" />
+                                            <span className='hidden sm:block'>Submit New App</span>
+                                            <span className='sm:hidden block'>Submit</span>
+                                        </Link>
+                                    </Button>
+                                </div>
+                            </div>
+                        </header>
+
+
                         <Tabs value={mainTab} onValueChange={setMainTab} className="w-full">
                             <TabsList className="relative grid w-full grid-cols-3 bg-muted p-1 h-auto rounded-lg">
                                 {mainTabs.map((tab) => {

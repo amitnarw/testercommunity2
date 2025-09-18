@@ -2,7 +2,7 @@
 
 import { useTheme } from 'next-themes';
 import Image from 'next/image';
-import { Send, Star, Smartphone, Clock, SquareArrowOutUpRight } from 'lucide-react';
+import { Star, Smartphone, Clock, SquareArrowOutUpRight } from 'lucide-react';
 import AnimatedRoundedButton from '@/components/ui/animated-rounded-button';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
