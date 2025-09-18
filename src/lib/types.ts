@@ -148,6 +148,12 @@ export type Project = {
   feedback: ProjectFeedback[];
   chartData: { date: string; bugs: number }[];
   reviewNotes?: string;
+  rejectionReason?: {
+    title: string;
+    description: string;
+    imageUrl?: string;
+    dataAiHint?: string;
+  }
 }
 
 export type SubmittedFeedback = {

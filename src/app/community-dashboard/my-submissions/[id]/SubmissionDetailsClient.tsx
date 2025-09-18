@@ -7,7 +7,7 @@ import { projects as allProjects } from '@/lib/data'; // Using project data as i
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Bug, CheckCircle, Clock, Smartphone, MessageSquare, Star, BarChart, MapPin, LayoutGrid, List, Users, ChevronLeft, ChevronRight, Lightbulb, PartyPopper, Search, ClipboardList, X, XCircle } from 'lucide-react';
+import { Bug, CheckCircle, Clock, Smartphone, MessageSquare, Star, BarChart, MapPin, LayoutGrid, List, Users, ChevronLeft, ChevronRight, Lightbulb, PartyPopper, Search, ClipboardList, X, XCircle, AlertTriangle } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
 import {
     Table,
@@ -149,6 +149,35 @@ export default function SubmissionDetailsClient({ project }: { project: Project 
                         </div>
                     </header>
 
+                    {project.status === 'Rejected' && project.rejectionReason && (
+                         <section className="bg-destructive/10 border-2 border-dashed border-destructive/30 rounded-2xl p-6">
+                            <div className="flex items-center gap-3 mb-4">
+                                <div className="bg-destructive/10 p-3 rounded-full text-destructive">
+                                    <AlertTriangle className="w-8 h-8" />
+                                </div>
+                                <h2 className="text-2xl font-bold text-destructive">{project.rejectionReason.title}</h2>
+                            </div>
+                            <div className="grid md:grid-cols-2 gap-6 items-start">
+                                <p className="text-destructive/80 leading-relaxed">{project.rejectionReason.description}</p>
+                                {project.rejectionReason.imageUrl && (
+                                     <div className="relative rounded-lg overflow-hidden group cursor-pointer" onClick={() => setFullscreenImage(project.rejectionReason.imageUrl!)}>
+                                        <Image
+                                            src={project.rejectionReason.imageUrl}
+                                            alt={project.rejectionReason.title}
+                                            width={600}
+                                            height={400}
+                                            className="object-cover w-full h-auto transition-transform duration-300 group-hover:scale-105"
+                                            data-ai-hint={project.rejectionReason.dataAiHint}
+                                        />
+                                        <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
+                                            <Search className="w-10 h-10 text-white" />
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+                        </section>
+                    )}
+
                     <div className='relative flex flex-col gap-10 !mt-14'>
                         {isUnderReviewOrRejected && (
                             <div className="absolute inset-0 bg-background/70 backdrop-blur-sm z-20 rounded-2xl flex flex-col items-center justify-center">
@@ -159,7 +188,7 @@ export default function SubmissionDetailsClient({ project }: { project: Project 
                                 <p className="text-muted-foreground max-w-sm text-center">
                                     {project.status === 'In Review' 
                                         ? "Our team is currently reviewing this submission. Testing data and feedback will appear here once the app is published."
-                                        : "This submission was rejected. Please check your email or dashboard notifications for details from our review team."
+                                        : "This submission was rejected. Please check the rejection reason above for details from our review team."
                                     }
                                 </p>
                             </div>

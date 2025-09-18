@@ -987,7 +987,7 @@ export const projects: Project[] = [
       icon: "https://play-lh.googleusercontent.com/hoVBnPBRehmXsCqESLXRH2E3OTxklkwKZlb1psn7imm0VUSobn2nevS9RRFWb9GM4-o=s96-rw",
       dataAiHint: "geometric shapes",
       category: "Productivity",
-      status: "In Testing",
+      status: "Rejected",
       testersStarted: 12,
       testersCompleted: 10,
       totalDays: 10,
@@ -1017,7 +1017,11 @@ export const projects: Project[] = [
           { country: "Nigeria", testers: 2, flag: "🇳🇬" },
       ],
       feedback: generateFeedback("Figma"),
-      chartData: generateChartData(15)
+      chartData: generateChartData(15),
+      rejectionReason: {
+        title: "Incomplete Testing Instructions",
+        description: "The instructions provided for testers were not detailed enough. To ensure our community can provide valuable feedback, please specify which features or user flows you want them to focus on. For example, instead of 'Test the app', try 'Please test the new user onboarding flow and report any confusion or bugs'. You can resubmit after updating the instructions.",
+      }
     },
     {
       id: 3,
@@ -1181,7 +1185,13 @@ export const projects: Project[] = [
           { country: "South Korea", testers: 5, flag: "🇰🇷" },
       ],
       feedback: generateFeedback("Trello"),
-      chartData: generateChartData(40)
+      chartData: generateChartData(40),
+      rejectionReason: {
+        title: "App Not Available in All Regions",
+        description: "Our review found that the app is currently restricted to North America. To ensure our global community of testers can access your app, please make it available in all countries/regions within your Google Play Console settings. This allows for diverse testing across different devices and network conditions.",
+        imageUrl: "https://images.unsplash.com/photo-1605837198348-52b8c53873d9?q=80&w=600&auto=format&fit=crop",
+        dataAiHint: "world map",
+      }
     },
     ...communityApps.map(app => {
       const isCompleted = app.status === 'completed';
@@ -1241,3 +1251,4 @@ export const projects: Project[] = [
     
 
     
+
