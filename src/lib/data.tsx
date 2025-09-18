@@ -480,7 +480,7 @@ export const communityApps: CommunityApp[] = [
         icon: 'https://play-lh.googleusercontent.com/Zk9elS0eGXDr0L4W6-Ey7YwHbRNjkyezHC8iCc8rWp64lNIjlByS8TDF9qDSZbiEWY4=s96-rw',
         dataAiHint: 'blue letter O',
         category: 'Productivity',
-        shortDescription: 'Outlook for Android is the app that helps millions of users connect all their email accounts, calendars, and files in one convenient spot.',
+        shortDescription: 'Do more on the go with Microsoft OneDrive. Get to and share your documents, photos, and other files from your Android device.',
         points: 125,
         androidVersion: '11+',
         estimatedTime: '15-20 min',
@@ -908,25 +908,27 @@ export const notifications: Notification[] = Array.from({ length: 25 }, (_, i) =
 });
 
 const generateFeedback = (projectName: string) => {
-    const feedbackTypes: ProjectFeedback['type'][] = ['Bug', 'Suggestion', 'Praise', 'Bug', 'Bug'];
+    const feedbackTypes: ('Bug' | 'Suggestion' | 'Praise')[] = ['Bug', 'Suggestion', 'Praise', 'Bug', 'Bug'];
     const comments = {
         'Bug': `Found a crash in ${projectName} when trying to open the settings page.`,
         'Suggestion': `It would be great if ${projectName} had a dark mode option.`,
         'Praise': `The new update for ${projectName} is fantastic! The UI is so much smoother.`
     }
-    const severities: ProjectFeedback['severity'][] = ['Critical', 'Low', 'N/A', 'High', 'Medium'];
-    const statuses: ProjectFeedback['status'][] = ['New', 'Closed', 'Closed', 'In Progress', 'Resolved'];
+    const severities: ('Critical' | 'High' | 'Medium' | 'Low' | 'N/A')[] = ['Critical', 'Low', 'N/A', 'High', 'Medium'];
+    const statuses: ('New' | 'In Progress' | 'Resolved' | 'Closed')[] = ['New', 'Closed', 'Closed', 'In Progress', 'Resolved'];
 
     return Array.from({ length: 15 }, (_, i) => {
         const type = feedbackTypes[i % feedbackTypes.length];
+        const hasScreenshot = i % 3 === 0;
         return {
             id: i + 1,
             tester: `Tester${100 + i}`,
             type: type,
             severity: type === 'Bug' ? severities[i % severities.length] : 'N/A',
             status: statuses[i % statuses.length],
-            comment: comments[type] || `Generic feedback item #${i+1}`,
-            date: `2024-08-${20- (i % 10)}`
+            comment: comments[type as keyof typeof comments] || `Generic feedback item #${i+1}`,
+            date: `2024-08-${20- (i % 10)}`,
+            screenshot: hasScreenshot ? `https://picsum.photos/seed/${projectName.length + i}/400/800` : null
         }
     });
 };
@@ -945,6 +947,7 @@ export const projects: Project[] = [
       packageName: "com.canva.editor",
       icon: "https://play-lh.googleusercontent.com/3aWGqSf3T_p3F6wc8FFvcZcnjWlxpZdNaqFVEvPwQ1gTOPkVoZwq6cYvfK9eCkwCXbRY=s96-rw",
       dataAiHint: "design logo",
+      category: "Art & Design",
       status: "In Testing",
       testersStarted: 14,
       testersCompleted: 8,
@@ -952,6 +955,9 @@ export const projects: Project[] = [
       avgTestersPerDay: 1.2,
       startedFrom: "22 Aug 2024",
       description: "Canva makes design and video editing amazingly simple (and fun)! Create stunning designs with your photos and videos—even if you’re not a design expert!",
+      testingInstructions: "Please focus on the new video export feature. Try exporting a short video with animations and text overlays. Report any issues with export quality or speed.",
+      androidVersion: "11+",
+      pointsCost: 1400,
       crashFreeRate: 99.8,
       feedbackBreakdown: { total: 45, critical: 3, high: 12, low: 30 },
       performanceMetrics: { avgStartupTime: "350ms", frozenFrames: "0.2%" },
@@ -980,13 +986,17 @@ export const projects: Project[] = [
       packageName: "com.figma.mirror",
       icon: "https://play-lh.googleusercontent.com/hoVBnPBRehmXsCqESLXRH2E3OTxklkwKZlb1psn7imm0VUSobn2nevS9RRFWb9GM4-o=s96-rw",
       dataAiHint: "geometric shapes",
-      status: "In Testing",
+      category: "Productivity",
+      status: "Rejected",
       testersStarted: 12,
       testersCompleted: 10,
       totalDays: 10,
       avgTestersPerDay: 1.0,
       startedFrom: "15 Jul 2024",
       description: "Figma is the all-in-one design platform for teams. Brainstorm, design, and build better products—from start to finish.",
+      testingInstructions: "Test the prototyping links. Create a simple prototype with a few screens and share the link. Verify that it opens correctly on different devices.",
+      androidVersion: "10+",
+      pointsCost: 1200,
       crashFreeRate: 99.9,
       feedbackBreakdown: { total: 30, critical: 1, high: 5, low: 24 },
       performanceMetrics: { avgStartupTime: "450ms", frozenFrames: "0.1%" },
@@ -1007,7 +1017,11 @@ export const projects: Project[] = [
           { country: "Nigeria", testers: 2, flag: "🇳🇬" },
       ],
       feedback: generateFeedback("Figma"),
-      chartData: generateChartData(15)
+      chartData: generateChartData(15),
+      rejectionReason: {
+        title: "Incomplete Testing Instructions",
+        description: "The instructions provided for testers were not detailed enough. To ensure our community can provide valuable feedback, please specify which features or user flows you want them to focus on. For example, instead of 'Test the app', try 'Please test the new user onboarding flow and report any confusion or bugs'. You can resubmit after updating the instructions.",
+      }
     },
     {
       id: 3,
@@ -1015,6 +1029,7 @@ export const projects: Project[] = [
       packageName: "com.Slack",
       icon: "https://play-lh.googleusercontent.com/mzJpTCsTW_FuR6YqOPaLHrSEVCSJuXzCljdxnCKhVZMcu6EESZBQTCHxMh8slVtnKqo=w480-h960-rw",
       dataAiHint: "colorful hash",
+      category: "Business",
       status: "Completed",
       testersStarted: 20,
       testersCompleted: 20,
@@ -1022,6 +1037,9 @@ export const projects: Project[] = [
       avgTestersPerDay: 1.4,
       startedFrom: "01 Jun 2024",
       description: "Slack brings team communication and collaboration into one place so you can get more work done, whether you belong to a large enterprise or a small business.",
+      testingInstructions: "Please check the notification settings. Configure custom notifications for a specific channel and verify that you receive them as expected.",
+      androidVersion: "9+",
+      pointsCost: 2000,
       crashFreeRate: 100,
       feedbackBreakdown: { total: 15, critical: 0, high: 2, low: 13 },
       performanceMetrics: { avgStartupTime: "250ms", frozenFrames: "0.05%" },
@@ -1048,6 +1066,7 @@ export const projects: Project[] = [
       packageName: "com.asana.app",
       icon: "https://play-lh.googleusercontent.com/SWbS8z3NqFVHCEQc_6l-ZDdDj5qPGrWSK8hEWRSPHYm9s8958y6nTnoLolVHXlgKfXw=s96-rw",
       dataAiHint: "three dots logo",
+      category: "Productivity",
       status: "In Review",
       testersStarted: 0,
       testersCompleted: 0,
@@ -1055,6 +1074,9 @@ export const projects: Project[] = [
       avgTestersPerDay: 0,
       startedFrom: "28 Aug 2024",
       description: "Asana is the easiest way to manage team projects and your individual tasks. From the small stuff to the big picture, Asana organizes work so you and your teams are clear on what to do, why it matters, and how to get it done.",
+      testingInstructions: "We are launching a new 'Goals' feature. Please try creating a new goal, linking it to a project, and updating its status. We're interested in feedback on the UI and ease of use.",
+      androidVersion: "12+",
+      pointsCost: 1500,
       reviewNotes: "Initial review in progress. Checking for policy compliance and testability.",
       crashFreeRate: 100,
       feedbackBreakdown: { total: 0, critical: 0, high: 0, low: 0 },
@@ -1071,6 +1093,7 @@ export const projects: Project[] = [
       packageName: "net.luizmello.brainwaves",
       icon: "https://play-lh.googleusercontent.com/VH5xLXzIfJadh3Wfb5s7GMq5kfpGsib8qfu1Qexu-P84klFc4s5AMbNC4Gp-BXhrg1s=w480-h960-rw",
       dataAiHint: "sound wave",
+      category: "Health & Fitness",
       status: "Draft",
       testersStarted: 0,
       testersCompleted: 0,
@@ -1078,6 +1101,9 @@ export const projects: Project[] = [
       avgTestersPerDay: 0,
       startedFrom: "N/A",
       description: "With this app, you can easily generate pure tones that help stimulate focus, meditation, or deep relaxation.",
+      testingInstructions: "",
+      androidVersion: "",
+      pointsCost: 0,
       reviewNotes: "Submission is incomplete.",
       crashFreeRate: 100,
       feedbackBreakdown: { total: 0, critical: 0, high: 0, low: 0 },
@@ -1094,6 +1120,7 @@ export const projects: Project[] = [
       packageName: "com.google.android.apps.walletnfcrel",
       icon: "https://play-lh.googleusercontent.com/DHBlQKvUNbopIS-VjQb3fUKQ_QH0Em-Q66AwG6LwD1Sach3lUvEWDb6hh8xNvKGmctU=w480-h960-rw",
       dataAiHint: "colorful wallet",
+      category: "Finance",
       status: "Completed",
       testersStarted: 15,
       testersCompleted: 15,
@@ -1101,6 +1128,9 @@ export const projects: Project[] = [
       avgTestersPerDay: 1.1,
       startedFrom: "10 May 2024",
       description: "Google Wallet gives you fast, secure access to your everyday essentials. Tap to pay everywhere Google Pay is accepted, board a flight, go to a movie, and more - all with just your phone.",
+      testingInstructions: "Test adding a new loyalty card by searching for a merchant. Also, try reordering the cards in your wallet.",
+      androidVersion: "9+",
+      pointsCost: 1500,
       crashFreeRate: 99.95,
       feedbackBreakdown: { total: 22, critical: 2, high: 8, low: 12 },
       performanceMetrics: { avgStartupTime: "150ms", frozenFrames: "0.01%" },
@@ -1124,13 +1154,17 @@ export const projects: Project[] = [
       packageName: "com.trello",
       icon: "https://play-lh.googleusercontent.com/Tt-6ZaQDUAjfSNSeLz4XyYkPsEQfVVp0lBtwrnuyqubhCna0LKu5OZxKgegBJIrEhz8=s96-rw",
       dataAiHint: "blue squares",
-      status: "Archived",
+      category: "Productivity",
+      status: "Rejected",
       testersStarted: 25,
       testersCompleted: 25,
       totalDays: 14,
       avgTestersPerDay: 1.8,
       startedFrom: "05 Apr 2024",
       description: "Trello is the visual tool that empowers your team to manage any type of project, workflow, or task tracking. Add files, checklists, or even automation: Customize it all for how your team works best.",
+      testingInstructions: "Focus on the automation feature (Butler). Create a rule that moves a card to a different list when a label is added. Verify it works as expected.",
+      androidVersion: "10+",
+      pointsCost: 2500,
       crashFreeRate: 98.5,
       feedbackBreakdown: { total: 88, critical: 15, high: 40, low: 33 },
       performanceMetrics: { avgStartupTime: "600ms", frozenFrames: "1.5%" },
@@ -1151,7 +1185,13 @@ export const projects: Project[] = [
           { country: "South Korea", testers: 5, flag: "🇰🇷" },
       ],
       feedback: generateFeedback("Trello"),
-      chartData: generateChartData(40)
+      chartData: generateChartData(40),
+      rejectionReason: {
+        title: "App Not Available in All Regions",
+        description: "Our review found that the app is currently restricted to North America. To ensure our global community of testers can access your app, please make it available in all countries/regions within your Google Play Console settings. This allows for diverse testing across different devices and network conditions.",
+        imageUrl: "https://images.unsplash.com/photo-1601034913836-a1f43e143611?q=50&w=500&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+        dataAiHint: "world map",
+      }
     },
     ...communityApps.map(app => {
       const isCompleted = app.status === 'completed';
@@ -1164,6 +1204,7 @@ export const projects: Project[] = [
         packageName: `com.example.${app.name.toLowerCase().replace(/[^a-z0-9]/g, '')}`,
         icon: app.icon,
         dataAiHint: app.dataAiHint,
+        category: app.category,
         status: isCompleted ? "Completed" : (isOngoing ? "In Testing" : "In Review"),
         testersStarted: testersStarted,
         testersCompleted: testersCompleted,
@@ -1171,6 +1212,9 @@ export const projects: Project[] = [
         avgTestersPerDay: (testersStarted / app.totalDays),
         startedFrom: "15 Aug 2024",
         description: app.shortDescription,
+        testingInstructions: app.testingInstructions,
+        androidVersion: app.androidVersion,
+        pointsCost: testersStarted * 80,
         crashFreeRate: 99.5 - (app.id % 10)/10,
         feedbackBreakdown: { total: testersCompleted * 3, critical: Math.floor(testersCompleted/5), high: Math.floor(testersCompleted/3), low: testersCompleted * 2 },
         performanceMetrics: { avgStartupTime: `${300 + (app.id % 10) * 10}ms`, frozenFrames: `0.${app.id % 10}%` },
@@ -1205,3 +1249,6 @@ export const projects: Project[] = [
     
 
     
+
+    
+

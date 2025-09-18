@@ -10,17 +10,12 @@ import { Expand, Trophy, RefreshCw, CheckCircle, Compass, PenTool, Smile, Thumbs
 import { communityApps } from '@/lib/data';
 import { BackButton } from '@/components/back-button';
 import { AppInfoSidebar } from '@/components/appInfoSidebar';
+import type { CommunityApp } from '@/lib/types';
 
 
-export default function AppTestingPage({ params }: { params: { id: string } }) {
+function AppTestingPageClient({ app }: { app: CommunityApp }) {
 
     const [fullscreenImage, setFullscreenImage] = useState<string | null>(null);
-
-    const app = communityApps.find(p => p.id.toString() === params.id);
-
-    if (!app) {
-        notFound();
-    }
 
     return (
         <div className="bg-[#f8fafc] dark:bg-[#0f151e] text-foreground min-h-screen">
@@ -168,4 +163,14 @@ export default function AppTestingPage({ params }: { params: { id: string } }) {
             )}
         </div>
     );
+}
+
+export default function AppTestingPage({ params }: { params: { id: string } }) {
+    const app = communityApps.find(p => p.id.toString() === params.id);
+
+    if (!app) {
+        notFound();
+    }
+
+    return <AppTestingPageClient app={app} />;
 }

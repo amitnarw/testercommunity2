@@ -1,4 +1,5 @@
 
+
 'use client';
 
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
@@ -12,7 +13,7 @@ import { projects as allProjects } from '@/lib/data';
 import type { Project } from '@/lib/types';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { AppPagination } from '@/components/app-pagination';
-
+import { motion } from 'framer-motion';
 
 const PROJECTS_PER_PAGE = 6;
 
@@ -48,10 +49,17 @@ const PaginatedProjectList = ({ projects }: { projects: Project[] }) => {
 
 
 export default function DashboardPage() {
+  const [selectedTab, setSelectedTab] = useState('ongoing');
 
   const draftApps = allProjects.filter(p => p.status === "Draft");
   const ongoingApps = allProjects.filter(p => ["In Testing", "In Review"].includes(p.status));
-  const completedApps = allProjects.filter(p => ["Completed", "Archived"].includes(p.status));
+  const completedApps = allProjects.filter(p => p.status === "Completed");
+
+  const tabs = [
+    { label: 'Ongoing', value: 'ongoing', count: ongoingApps?.length },
+    { label: 'Drafts', value: 'drafts', count: draftApps?.length },
+    { label: 'Completed', value: 'completed', count: completedApps?.length },
+  ];
 
   // Dummy data for packages
   const totalPackages = 3;
@@ -138,11 +146,31 @@ export default function DashboardPage() {
           </div>
 
           <main className="mt-12">
-            <Tabs defaultValue="ongoing" className="w-full">
-              <TabsList className="grid w-full grid-cols-3">
-                <TabsTrigger value="ongoing" className="text-xs sm:text-sm">Ongoing ({ongoingApps.length})</TabsTrigger>
-                <TabsTrigger value="drafts" className="text-xs sm:text-sm">Drafts ({draftApps.length})</TabsTrigger>
-                <TabsTrigger value="completed" className="text-xs sm:text-sm">Completed ({completedApps.length})</TabsTrigger>
+            <Tabs value={selectedTab} onValueChange={setSelectedTab} className="w-full">
+              <TabsList className="relative grid w-full grid-cols-3 bg-muted p-1 rounded-lg h-auto">
+                {tabs.map((tab) => {
+                  const isSelected = selectedTab === tab.value;
+
+                  return (
+                    <TabsTrigger
+                      key={tab.value}
+                      value={tab.value}
+                      className={`relative px-3 py-2 text-xs sm:text-sm font-medium rounded-lg transition-colors duration-200 ${isSelected ? 'text-foreground' : 'hover:bg-background/50'
+                        }`}
+                    >
+                      {isSelected && (
+                        <motion.span
+                          layoutId="bubble"
+                          className="absolute inset-0 z-10 bg-background rounded-full"
+                          transition={{ type: 'spring', bounce: 0.2, duration: 0.6 }}
+                        />
+                      )}
+                      <span className="relative z-20">
+                        {tab.label} ({tab.count})
+                      </span>
+                    </TabsTrigger>
+                  );
+                })}
               </TabsList>
               <TabsContent value="ongoing" className="mt-6">
                 <PaginatedProjectList projects={ongoingApps} />

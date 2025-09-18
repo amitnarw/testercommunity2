@@ -101,6 +101,7 @@ export type ProjectFeedback = {
     status: 'New' | 'In Progress' | 'Resolved' | 'Closed';
     comment: string;
     date: string;
+    screenshot?: string | null;
 }
 
 export type Project = {
@@ -109,13 +110,17 @@ export type Project = {
   packageName: string;
   icon: string;
   dataAiHint?: string;
-  status: "In Testing" | "Completed" | "Archived" | "In Review" | "Draft";
+  category: string;
+  status: "In Testing" | "Completed" | "In Review" | "Draft" | "Rejected";
   testersStarted: number;
   testersCompleted: number;
   totalDays: number;
   avgTestersPerDay: number;
   startedFrom: string;
   description: string;
+  testingInstructions: string;
+  androidVersion: string;
+  pointsCost: number;
   crashFreeRate: number;
   feedbackBreakdown: {
     total: number;
@@ -143,6 +148,12 @@ export type Project = {
   feedback: ProjectFeedback[];
   chartData: { date: string; bugs: number }[];
   reviewNotes?: string;
+  rejectionReason?: {
+    title: string;
+    description: string;
+    imageUrl?: string;
+    dataAiHint?: string;
+  }
 }
 
 export type SubmittedFeedback = {
@@ -151,6 +162,8 @@ export type SubmittedFeedback = {
   comment: string;
   screenshot: string | null;
 }
+    
+
     
 
     

@@ -123,7 +123,6 @@ export function Footer() {
           <p>A Testing Community at its best.</p>
         </div>
       </div>
-
       <motion.div
         style={{ y: testersY }}
         className="z-10 absolute bottom-0 flex items-end justify-center w-full overflow-hidden pointer-events-none"
