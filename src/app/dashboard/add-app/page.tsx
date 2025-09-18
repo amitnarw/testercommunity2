@@ -1,5 +1,4 @@
 
-
 'use client';
 
 import { Card, CardContent, CardHeader } from '@/components/ui/card'
@@ -7,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { ArrowRight, Expand, X, PlayCircle, Clipboard, Check } from 'lucide-react'
+import { ArrowRight, Expand, X, PlayCircle, Clipboard, Check, Link as LinkIcon, FileText, Info } from 'lucide-react'
 import { useState, useEffect, useCallback } from 'react';
 import Image from 'next/image';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
@@ -292,22 +291,29 @@ export default function AddAppPage() {
                                 </div>
                             </div>
                         ) : (
-                            <Card className="rounded-xl bg-card border-border shadow-lg">
-                                <CardContent className="p-6 space-y-6">
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                        <div className="space-y-2">
-                                            <Label htmlFor="name">App Name</Label>
-                                            <Input id="name" placeholder="E.g., Project Phoenix" />
+                             <Card className="rounded-xl bg-card border-border/50 shadow-lg bg-gradient-to-br from-card to-secondary/20">
+                                <CardContent className="p-8 space-y-8">
+                                    <div className="space-y-2">
+                                        <Label htmlFor="name" className="text-base font-semibold text-muted-foreground">App Name</Label>
+                                        <div className="relative flex items-center">
+                                            <FileText className="absolute left-4 w-5 h-5 text-muted-foreground" />
+                                            <Input id="name" placeholder="E.g., Project Phoenix" className="pl-12 h-12 text-base rounded-lg bg-secondary/40 border-border/50 focus-visible:ring-primary/50" />
                                         </div>
-                                        <div className="space-y-2">
-                                            <Label htmlFor="url">Testing URL</Label>
-                                            <Input id="url" placeholder="https://play.google.com/store/apps/details?id=com.example.app" />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <Label htmlFor="url" className="text-base font-semibold text-muted-foreground">Testing URL</Label>
+                                        <div className="relative flex items-center">
+                                             <LinkIcon className="absolute left-4 w-5 h-5 text-muted-foreground" />
+                                            <Input id="url" placeholder="https://play.google.com/store/apps/details?id=com.example.app" className="pl-12 h-12 text-base rounded-lg bg-secondary/40 border-border/50 focus-visible:ring-primary/50" />
                                         </div>
                                     </div>
 
                                     <div className="space-y-2">
-                                        <Label htmlFor="instructions">Test Credentials & Instructions (Optional)</Label>
-                                        <Textarea id="instructions" placeholder="e.g., Use user: demo@test.com, pass: 1234. Focus on the new checkout flow." className="min-h-[120px]" />
+                                        <Label htmlFor="instructions" className="text-base font-semibold text-muted-foreground">Test Credentials & Instructions <span className="text-xs">(Optional)</span></Label>
+                                        <div className="relative">
+                                            <Info className="absolute left-4 top-4 w-5 h-5 text-muted-foreground" />
+                                            <Textarea id="instructions" placeholder="e.g., Use user: demo@test.com, pass: 1234. Focus on the new checkout flow." className="min-h-[140px] pl-12 pt-4 text-base rounded-lg bg-secondary/40 border-border/50 focus-visible:ring-primary/50" />
+                                        </div>
                                     </div>
                                 </CardContent>
                                 <CardHeader className="p-6 pt-0 flex flex-row justify-between items-center">
