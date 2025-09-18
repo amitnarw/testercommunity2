@@ -68,8 +68,8 @@ const Section = ({ id, title, description, children, sectionRef }: { id: string,
     return (
         <section ref={sectionRef} id={id} className="min-h-[85vh] flex flex-col justify-center scroll-mt-10 py-16">
             <div className="mb-8">
-                <h2 className="text-3xl font-bold">{title}</h2>
-                <p className="text-muted-foreground mt-2">{description}</p>
+                <h2 className="text-2xl sm:text-3xl font-bold">{title}</h2>
+                <p className="text-sm sm:text-base text-muted-foreground mt-2">{description}</p>
             </div>
             {children}
         </section>
@@ -169,7 +169,7 @@ export default function SubmitAppPage() {
                 </div>
 
                 <div className="container mx-auto px-2 py-5">
-                    <div className="lg:grid lg:grid-cols-12 lg:gap-16 bg-background rounded-3xl px-5">
+                    <div className="lg:grid lg:grid-cols-12 lg:gap-16 bg-background rounded-3xl px-3 sm:px-5">
                         {/* Mobile Step Navigator */}
                     <nav className="lg:hidden sticky top-14 z-30 flex items-center justify-around border-b bg-background/80 backdrop-blur-lg">
                         {formSteps.map((step) => (
@@ -233,7 +233,7 @@ export default function SubmitAppPage() {
                                 <form onSubmit={form.handleSubmit(onSubmit)}>
                                     <Section sectionRef={connectRef} id="connect" title="1. Connect Your App" description="Provide the essential links and name for your project.">
                                         <Card className="bg-secondary/30 border-dashed">
-                                            <CardContent className="p-6 grid md:grid-cols-2 gap-6">
+                                            <CardContent className="grid md:grid-cols-2 gap-3 sm:gap-6 p-3 sm:p-6">
                                                 <FormField
                                                     control={form.control}
                                                     name="appLink"
@@ -241,7 +241,7 @@ export default function SubmitAppPage() {
                                                         <FormItem>
                                                             <Label htmlFor="appLink">Google Play Testing Link</Label>
                                                             <FormControl>
-                                                                <Input id="appLink" placeholder="https://play.google.com/apps/testing/..." {...field} className="h-12" />
+                                                                <Input id="appLink" placeholder="https://play.google.com/apps/testing/..." {...field} className="py-0" />
                                                             </FormControl>
                                                             <FormMessage />
                                                         </FormItem>
@@ -254,7 +254,7 @@ export default function SubmitAppPage() {
                                                         <FormItem>
                                                             <Label htmlFor="appName">App Name</Label>
                                                             <FormControl>
-                                                                <Input id="appName" placeholder="e.g., PhotoSnap Editor" {...field} className="h-12" />
+                                                                <Input id="appName" placeholder="e.g., PhotoSnap Editor" {...field} className="py-0" />
                                                             </FormControl>
                                                             <FormMessage />
                                                         </FormItem>
@@ -267,7 +267,7 @@ export default function SubmitAppPage() {
                                                         <FormItem>
                                                             <Label htmlFor="appLogo">App Logo URL</Label>
                                                             <FormControl>
-                                                                <Input id="appLogo" placeholder="https://play-lh.googleusercontent.com/..." {...field} className="h-12" />
+                                                                <Input id="appLogo" placeholder="https://play-lh.googleusercontent.com/..." {...field} className="py-0" />
                                                             </FormControl>
                                                             <FormMessage />
                                                         </FormItem>
@@ -280,7 +280,7 @@ export default function SubmitAppPage() {
                                                         <FormItem>
                                                             <Label htmlFor="screenshot1">Screenshot 1 URL</Label>
                                                             <FormControl>
-                                                                <Input id="screenshot1" placeholder="https://play-lh.googleusercontent.com/..." {...field} className="h-12" />
+                                                                <Input id="screenshot1" placeholder="https://play-lh.googleusercontent.com/..." {...field} className="py-0" />
                                                             </FormControl>
                                                             <FormMessage />
                                                         </FormItem>
@@ -293,7 +293,7 @@ export default function SubmitAppPage() {
                                                         <FormItem>
                                                             <Label htmlFor="screenshot2">Screenshot 2 URL</Label>
                                                             <FormControl>
-                                                                <Input id="screenshot2" placeholder="https://play-lh.googleusercontent.com/..." {...field} className="h-12" />
+                                                                <Input id="screenshot2" placeholder="https://play-lh.googleusercontent.com/..." {...field} className="py-0" />
                                                             </FormControl>
                                                             <FormMessage />
                                                         </FormItem>
@@ -314,7 +314,7 @@ export default function SubmitAppPage() {
                                                             <Label>Category</Label>
                                                             <Select onValueChange={field.onChange} defaultValue={field.value}>
                                                                 <FormControl>
-                                                                    <SelectTrigger className="h-12">
+                                                                    <SelectTrigger className="py-0">
                                                                         <SelectValue placeholder="Select a category" />
                                                                     </SelectTrigger>
                                                                 </FormControl>
@@ -370,7 +370,7 @@ export default function SubmitAppPage() {
                                                         <FormItem>
                                                             <Label htmlFor="androidVersion">Min. Android Version</Label>
                                                             <FormControl>
-                                                                <Input id="androidVersion" placeholder="e.g., 10+" {...field} className="h-12" />
+                                                                <Input id="androidVersion" placeholder="e.g., 10+" {...field} className="py-0" />
                                                             </FormControl>
                                                             <FormMessage />
                                                         </FormItem>

@@ -1189,7 +1189,7 @@ export const projects: Project[] = [
       rejectionReason: {
         title: "App Not Available in All Regions",
         description: "Our review found that the app is currently restricted to North America. To ensure our global community of testers can access your app, please make it available in all countries/regions within your Google Play Console settings. This allows for diverse testing across different devices and network conditions.",
-        imageUrl: "https://images.unsplash.com/photo-1605837198348-52b8c53873d9?q=80&w=600&auto=format&fit=crop",
+        imageUrl: "https://images.unsplash.com/photo-1601034913836-a1f43e143611?q=50&w=500&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
         dataAiHint: "world map",
       }
     },

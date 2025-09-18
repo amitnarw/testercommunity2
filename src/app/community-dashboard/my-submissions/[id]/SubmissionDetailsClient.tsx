@@ -7,7 +7,7 @@ import { projects as allProjects } from '@/lib/data'; // Using project data as i
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Bug, CheckCircle, Clock, Smartphone, MessageSquare, Star, BarChart, MapPin, LayoutGrid, List, Users, ChevronLeft, ChevronRight, Lightbulb, PartyPopper, Search, ClipboardList, X, XCircle, AlertTriangle } from 'lucide-react';
+import { Bug, CheckCircle, Clock, Smartphone, MessageSquare, Star, BarChart, MapPin, LayoutGrid, List, Users, ChevronLeft, ChevronRight, Lightbulb, PartyPopper, Search, ClipboardList, X, XCircle, AlertTriangle, Expand } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
 import {
     Table,
@@ -123,8 +123,8 @@ export default function SubmissionDetailsClient({ project }: { project: Project 
                                     <Image src={project.icon} alt={project.name} fill className="absolute rounded-2xl bg-background shadow-xl shadow-gray-500/10" data-ai-hint={project.dataAiHint} />
                                 </div>
                                 <div>
-                                    <div className="flex items-start sm:items-center flex-col sm:flex-row justify-between sm:justify-start gap-0 sm:gap-4">
-                                        <h1 className="text-2xl sm:text-4xl font-bold bg-gradient-to-b from-primary to-primary/50 bg-clip-text text-transparent leading-[unset]">{project.name}</h1>
+                                    <div className="flex items-start sm:items-center flex-col sm:flex-row justify-between sm:justify-start gap-2 sm:gap-4">
+                                        <h1 className="text-2xl sm:text-4xl font-bold bg-gradient-to-b from-primary to-primary/50 bg-clip-text text-transparent leading-0">{project.name}</h1>
                                         <Badge variant="outline" className="text-sm sm:text-lg border-none bg-gradient-to-b from-primary to-primary/50 !text-white text-normal px-5">{project.category}</Badge>
                                     </div>
 
@@ -150,17 +150,17 @@ export default function SubmissionDetailsClient({ project }: { project: Project 
                     </header>
 
                     {project.status === 'Rejected' && project.rejectionReason && (
-                         <section className="bg-destructive/10 border-2 border-dashed border-destructive/30 rounded-2xl p-6">
+                         <section className="bg-destructive/10 border-2 border-dashed border-destructive/10 rounded-2xl p-6 relative overflow-hidden">
                             <div className="flex items-center gap-3 mb-4">
-                                <div className="bg-destructive/10 p-3 rounded-full text-destructive">
-                                    <AlertTriangle className="w-8 h-8" />
+                                <div className="bg-destructive/5 p-3 sm:bg-destructive/10 p-3 rounded-full text-destructive absolute sm:static top-2 right-0 sm:top-auto sm:right-auto scale-[3] sm:scale-100">
+                                    <AlertTriangle className="w-8 h-8 text-destructive/20 sm:text-destructive" />
                                 </div>
-                                <h2 className="text-2xl font-bold text-destructive">{project.rejectionReason.title}</h2>
+                                <h2 className="text-xl sm:text-2xl font-bold text-destructive dark:text-red-500">{project.rejectionReason.title}</h2>
                             </div>
-                            <div className="grid md:grid-cols-2 gap-6 items-start">
-                                <p className="text-destructive/80 leading-relaxed">{project.rejectionReason.description}</p>
+                            <div className="flex flex-row gap-6 items-start">
+                                <p className="text-destructive/80 dark:text-red-500/80 leading-relaxed">{project.rejectionReason.description}</p>
                                 {project.rejectionReason.imageUrl && (
-                                     <div className="relative rounded-lg overflow-hidden group cursor-pointer" onClick={() => setFullscreenImage(project.rejectionReason.imageUrl!)}>
+                                     <div className="relative rounded-lg overflow-hidden group cursor-pointer" onClick={() => setFullscreenImage(project?.rejectionReason?.imageUrl!)}>
                                         <Image
                                             src={project.rejectionReason.imageUrl}
                                             alt={project.rejectionReason.title}
@@ -170,7 +170,7 @@ export default function SubmissionDetailsClient({ project }: { project: Project 
                                             data-ai-hint={project.rejectionReason.dataAiHint}
                                         />
                                         <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
-                                            <Search className="w-10 h-10 text-white" />
+                                            <Expand className="w-10 h-10 text-white" />
                                         </div>
                                     </div>
                                 )}
@@ -180,12 +180,12 @@ export default function SubmissionDetailsClient({ project }: { project: Project 
 
                     <div className='relative flex flex-col gap-10 !mt-14'>
                         {isUnderReviewOrRejected && (
-                            <div className="absolute inset-0 bg-background/70 backdrop-blur-sm z-20 rounded-2xl flex flex-col items-center justify-center">
+                            <div className="absolute inset-0 bg-background/70 backdrop-blur-[10px] z-20 rounded-2xl flex flex-col items-center justify-center">
                                 <div className="bg-secondary/80 p-4 rounded-full mb-4">
                                     {project.status === 'In Review' ? <Search className="w-12 h-12 text-primary" /> : <XCircle className="w-12 h-12 text-destructive" />}
                                 </div>
                                 <h2 className="text-2xl font-bold">{project.status}</h2>
-                                <p className="text-muted-foreground max-w-sm text-center">
+                                <p className="text-black/80 dark:text-white/80 max-w-sm text-center">
                                     {project.status === 'In Review' 
                                         ? "Our team is currently reviewing this submission. Testing data and feedback will appear here once the app is published."
                                         : "This submission was rejected. Please check the rejection reason above for details from our review team."
@@ -280,7 +280,7 @@ export default function SubmissionDetailsClient({ project }: { project: Project 
                                                     </div>
                                                     <div className="flex items-center justify-between text-xs text-muted-foreground w-full mt-3 bg-black/5 dark:bg-white/10 px-5 h-12">
                                                         {fb.screenshot ? (
-                                                            <div className="cursor-pointer h-10 w-7 relative" onClick={() => setFullscreenImage(fb.screenshot)}>
+                                                            <div className="cursor-pointer h-10 w-7 relative" onClick={() => setFullscreenImage(fb?.screenshot)}>
                                                                 <Image src={fb.screenshot} alt="Feedback screenshot" fill className="absolute rounded border object-cover" />
                                                             </div>
                                                         ) : <div />}
@@ -312,7 +312,7 @@ export default function SubmissionDetailsClient({ project }: { project: Project 
                                                     </CardContent>
                                                     <CardFooter className="p-2 px-3 sm:px-4 flex items-center justify-between text-xs text-muted-foreground mt-2 h-10 bg-black/5 dark:bg-white/10">
                                                             {fb.screenshot ? (
-                                                                <div className="cursor-pointer h-8 w-6 relative" onClick={() => setFullscreenImage(fb.screenshot)}>
+                                                                <div className="cursor-pointer h-8 w-6 relative" onClick={() => setFullscreenImage(fb?.screenshot)}>
                                                                     <Image src={fb.screenshot} alt="Feedback screenshot" fill className="absolute rounded-sm border object-cover" />
                                                                 </div>
                                                             ) : <div />}
