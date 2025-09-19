@@ -11,7 +11,6 @@ import { useState, useEffect, useCallback } from 'react';
 import Image from 'next/image';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { IconRain } from '@/components/icon-rain';
-import { toast } from '@/hooks/use-toast';
 import { BackButton } from '@/components/back-button';
 import AnimatedRoundedButton from '@/components/ui/animated-rounded-button';
 import { useTheme } from 'next-themes';
@@ -87,7 +86,7 @@ export default function AddAppPage() {
         <>
             <div className="min-h-screen bg-[#f8fafc] dark:bg-[#0f151e]">
                 <div className="container mx-auto px-4 md:px-6">
-                    <div className="sticky top-0 z-[50] pt-2 sm:pt-3 pb-10 max-w-4xl mx-auto">
+                    <div className="sticky top-0 z-[50] pt-2 sm:pt-3 pb-10 max-w-[50%] sm:max-w-4xl mx-0 sm:mx-auto">
                         <BackButton href="/dashboard" />
                     </div>
                     <header className="mb-8 max-w-4xl mx-auto">
@@ -294,25 +293,26 @@ export default function AddAppPage() {
                              <Card className="rounded-xl bg-card border-border/50 shadow-lg bg-gradient-to-br from-card to-secondary/20">
                                 <CardContent className="p-4 sm:p-8 space-y-8">
                                     <div className="space-y-2">
-                                        <Label htmlFor="name" className="text-base font-semibold text-muted-foreground">App Name</Label>
+                                        <Label htmlFor="name" className="text-sm sm:text-base font-semibold text-muted-foreground">App Name</Label>
                                         <div className="relative flex items-center">
-                                            <FileText className="absolute left-4 w-5 h-5 text-muted-foreground" />
-                                            <Input id="name" placeholder="E.g., Project Phoenix" className="pl-12 h-12 text-base rounded-lg bg-secondary/40 border-border/50 focus-visible:ring-primary/50" />
+                                            <FileText className="absolute left-2 w-4 h-4 sm:left-4 sm:w-5 sm:h-5 text-muted-foreground" />
+                                            <Input id="name" placeholder="E.g., Project Phoenix" className="pl-8 sm:pl-12 py-3 h-auto text-sm sm:text-base rounded-lg bg-secondary/40 border-border/50 focus-visible:ring-primary/50" />
                                         </div>
                                     </div>
                                     <div className="space-y-2">
-                                        <Label htmlFor="url" className="text-base font-semibold text-muted-foreground">Testing URL</Label>
+                                        <Label htmlFor="url" className="text-sm sm:text-base font-semibold text-muted-foreground">Testing URL</Label>
                                         <div className="relative flex items-center">
-                                             <LinkIcon className="absolute left-4 w-5 h-5 text-muted-foreground" />
-                                            <Input id="url" placeholder="https://play.google.com/store/apps/details?id=com.example.app" className="pl-12 h-12 text-base rounded-lg bg-secondary/40 border-border/50 focus-visible:ring-primary/50" />
+                                             <LinkIcon className="absolute left-2 w-4 h-4 sm:left-4 sm:w-5 sm:h-5 text-muted-foreground" />
+                                            <Input id="url" placeholder="https://play.google.com/store/apps/details?id=com.example.app" className="pl-8 sm:pl-12 py-3 h-auto text-sm sm:text-base rounded-lg bg-secondary/40 border-border/50 focus-visible:ring-primary/50" />
                                         </div>
                                     </div>
 
                                     <div className="space-y-2">
-                                        <Label htmlFor="instructions" className="text-base font-semibold text-muted-foreground">Test Credentials & Instructions <span className="text-xs">(Optional)</span></Label>
+                                        <Label htmlFor="instructions" className="text-sm sm:text-base font-semibold text-muted-foreground">Test Credentials & Instructions <span className="text-xs">(Optional)</span>
+                                        </Label>
                                         <div className="relative">
-                                            <Info className="absolute left-4 top-4 w-5 h-5 text-muted-foreground" />
-                                            <Textarea id="instructions" placeholder="e.g., Use user: demo@test.com, pass: 1234. Focus on the new checkout flow." className="min-h-[140px] pl-12 pt-4 text-base rounded-lg bg-secondary/40 border-border/50 focus-visible:ring-primary/50" />
+                                            <Info className="absolute left-2 w-4 h-4 sm:left-4 sm:w-5 sm:h-5 top-4 text-muted-foreground" />
+                                            <Textarea id="instructions" placeholder="e.g., User: demo@test.com, pass: 1234" className="pl-8 sm:pl-12 py-3 h-auto text-sm sm:text-base rounded-lg bg-secondary/40 border-border/50 focus-visible:ring-primary/50" />
                                         </div>
                                     </div>
                                 </CardContent>
