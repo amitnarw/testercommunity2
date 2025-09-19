@@ -49,17 +49,25 @@ const PaginatedProjectList = ({ projects }: { projects: Project[] }) => {
 
 
 export default function DashboardPage() {
-  const [selectedTab, setSelectedTab] = useState('ongoing');
+  const [mainTab, setMainTab] = useState('pending');
+  const [pendingSubTab, setPendingSubTab] = useState('drafts');
 
   const draftApps = allProjects.filter(p => p.status === "Draft");
-  const ongoingApps = allProjects.filter(p => ["In Testing", "In Review"].includes(p.status));
+  const inReviewApps = allProjects.filter(p => p.status === "In Review");
+  const ongoingApps = allProjects.filter(p => p.status === "In Testing");
   const completedApps = allProjects.filter(p => p.status === "Completed");
 
-  const tabs = [
-    { label: 'Ongoing', value: 'ongoing', count: ongoingApps?.length },
-    { label: 'Drafts', value: 'drafts', count: draftApps?.length },
-    { label: 'Completed', value: 'completed', count: completedApps?.length },
+  const mainTabs = [
+    { label: 'Pending', value: 'pending', count: draftApps.length + inReviewApps.length },
+    { label: 'Ongoing', value: 'ongoing', count: ongoingApps.length },
+    { label: 'Completed', value: 'completed', count: completedApps.length },
   ];
+
+  const pendingTabs = [
+      { label: 'Drafts', value: 'drafts', count: draftApps.length },
+      { label: 'In Review', value: 'in-review', count: inReviewApps.length },
+  ];
+
 
   // Dummy data for packages
   const totalPackages = 3;
@@ -146,10 +154,10 @@ export default function DashboardPage() {
           </div>
 
           <main className="mt-12">
-            <Tabs value={selectedTab} onValueChange={setSelectedTab} className="w-full">
+            <Tabs value={mainTab} onValueChange={setMainTab} className="w-full">
               <TabsList className="relative grid w-full grid-cols-3 bg-muted p-1 rounded-lg h-auto">
-                {tabs.map((tab) => {
-                  const isSelected = selectedTab === tab.value;
+                {mainTabs.map((tab) => {
+                  const isSelected = mainTab === tab.value;
 
                   return (
                     <TabsTrigger
@@ -161,7 +169,7 @@ export default function DashboardPage() {
                       {isSelected && (
                         <motion.span
                           layoutId="bubble"
-                          className="absolute inset-0 z-10 bg-background rounded-full"
+                          className="absolute inset-0 z-10 bg-background rounded-lg"
                           transition={{ type: 'spring', bounce: 0.2, duration: 0.6 }}
                         />
                       )}
@@ -172,11 +180,25 @@ export default function DashboardPage() {
                   );
                 })}
               </TabsList>
+              <TabsContent value="pending" className="mt-6">
+                  <div className="flex justify-start mb-2">
+                      <div className="flex items-center gap-2 bg-muted rounded-lg">
+                          {pendingTabs.map((tab) => (
+                              <button
+                                  key={tab.value}
+                                  onClick={() => setPendingSubTab(tab.value)}
+                                  className={`rounded-lg px-4 py-1.5 text-xs sm:text-sm h-auto ${pendingSubTab === tab.value ? "bg-black text-white dark:bg-white dark:text-black" : "text-black/70 dark:text-white/70"}`}
+                              >
+                                  {tab.label} ({tab.count})
+                              </button>
+                          ))}
+                      </div>
+                  </div>
+                  {pendingSubTab === 'drafts' && <PaginatedProjectList projects={draftApps} />}
+                  {pendingSubTab === 'in-review' && <PaginatedProjectList projects={inReviewApps} />}
+              </TabsContent>
               <TabsContent value="ongoing" className="mt-6">
                 <PaginatedProjectList projects={ongoingApps} />
-              </TabsContent>
-              <TabsContent value="drafts" className="mt-6">
-                <PaginatedProjectList projects={draftApps} />
               </TabsContent>
               <TabsContent value="completed" className="mt-6">
                 <PaginatedProjectList projects={completedApps} />

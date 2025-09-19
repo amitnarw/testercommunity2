@@ -292,7 +292,7 @@ export default function AddAppPage() {
                             </div>
                         ) : (
                              <Card className="rounded-xl bg-card border-border/50 shadow-lg bg-gradient-to-br from-card to-secondary/20">
-                                <CardContent className="p-8 space-y-8">
+                                <CardContent className="p-4 sm:p-8 space-y-8">
                                     <div className="space-y-2">
                                         <Label htmlFor="name" className="text-base font-semibold text-muted-foreground">App Name</Label>
                                         <div className="relative flex items-center">
@@ -316,17 +316,18 @@ export default function AddAppPage() {
                                         </div>
                                     </div>
                                 </CardContent>
-                                <CardHeader className="p-6 pt-0 flex flex-row justify-between items-center">
+                                <CardHeader className="p-6 pt-0 flex flex-col sm:flex-row gap-2 justify-between items-center">
                                     <Button variant="ghost" onClick={() => setStep('guide')}>Back to Guide</Button>
                                     <AnimatedRoundedButton
                                         backgroundColor="hsl(var(--primary))"
                                         animatedBackgroundColor={hoverBgColor}
                                         hoverTextColor={hoverTextColor}
                                         borderRadius='12px'
-                                        className='py-3 px-8'
+                                        className='py-3 px-8 w-full sm:w-auto'
                                     >
-                                        <div className="flex items-center text-center gap-2 font-semibold">
-                                            <span>Submit App (1 Package)</span>
+                                        <div className="flex flex-col gap-0 sm:flex-row sm:gap-2 items-center text-center">
+                                            <span>Submit App</span>
+                                            <span className="text-xs">(1 Package)</span>
                                         </div>
                                     </AnimatedRoundedButton>
                                 </CardHeader>
