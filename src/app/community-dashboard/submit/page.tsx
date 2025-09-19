@@ -135,7 +135,6 @@ export default function SubmitAppPage() {
     const hoverTextColor = theme === 'dark' ? 'black' : 'white';
     const hoverBgColor = theme === 'dark' ? 'white' : 'black';
 
-
     return (
         <>
             <div className="bg-[#f8fafc] dark:bg-[#0f151e] min-h-screen">
@@ -234,7 +233,7 @@ export default function SubmitAppPage() {
                                 <form onSubmit={form.handleSubmit(onSubmit)}>
                                     <Section sectionRef={connectRef} id="connect" title="1. Connect Your App" description="Provide the essential links and name for your project.">
                                         <Card className="bg-secondary/30 border-dashed">
-                                            <CardContent className="grid md:grid-cols-2 gap-3 sm:gap-6 p-3 sm:p-6">
+                                            <CardContent className="grid md:grid-cols-2 gap-6 sm:gap-6 p-3 sm:p-6">
                                                 <FormField
                                                     control={form.control}
                                                     name="appLink"
@@ -306,7 +305,7 @@ export default function SubmitAppPage() {
 
                                     <Section sectionRef={describeRef} id="describe" title="2. Describe Your Project" description="Give testers the context they need for quality feedback.">
                                         <Card className="bg-secondary/30 border-dashed">
-                                            <CardContent className="p-6 space-y-6">
+                                            <CardContent className="p-3 sm:p-6 space-y-6">
                                                 <FormField
                                                     control={form.control}
                                                     name="category"
@@ -363,7 +362,7 @@ export default function SubmitAppPage() {
 
                                     <Section sectionRef={configureRef} id="configure" title="3. Configure Your Test" description="Set the final parameters for your testing cycle. You must have enough earned points to cover this budget.">
                                         <Card className="bg-secondary/30 border-dashed">
-                                            <CardContent className="p-6 grid md:grid-cols-1 gap-8">
+                                            <CardContent className="p-3 sm:p-6 grid md:grid-cols-1 gap-8">
                                                 <FormField
                                                     control={form.control}
                                                     name="androidVersion"
