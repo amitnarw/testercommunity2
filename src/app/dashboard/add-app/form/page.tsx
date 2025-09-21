@@ -11,6 +11,7 @@ import { useTheme } from 'next-themes';
 import AnimatedRoundedButton from '@/components/ui/animated-rounded-button';
 import { BackButton } from '@/components/back-button';
 import { FileText, Link as LinkIcon, Info } from 'lucide-react';
+import Link from 'next/link';
 
 export default function AddAppFormPage() {
     const { theme } = useTheme();
