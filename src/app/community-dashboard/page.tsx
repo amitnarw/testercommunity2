@@ -60,51 +60,55 @@ const PaginatedAppList = ({ apps, emptyMessage, card: CardComponent }: { apps: C
 };
 
 const RequestedAppCard = ({ app }: { app: CommunityApp }) => (
-    <Card className="flex flex-col h-full overflow-hidden rounded-2xl transition-all duration-300 bg-secondary dark:bg-secondary/30 border-0">
-        <CardContent className="p-4 flex-grow flex flex-col">
-            <div className="flex items-start gap-4 mb-4">
-                <Image
-                    src={app.icon}
-                    alt={app.name}
-                    width={64}
-                    height={64}
-                    className="rounded-lg border"
-                    data-ai-hint={app.dataAiHint}
-                />
-                <div className="flex-grow text-right">
-                    <Badge variant="secondary">Requested</Badge>
+    <Link href={`/community-dashboard/test/${app.id}`} className="group block h-full">
+        <Card className="flex flex-col h-full overflow-hidden rounded-2xl transition-all duration-300 bg-secondary dark:bg-secondary/30 border-0 group-hover:-translate-y-1">
+            <CardContent className="p-4 flex-grow flex flex-col">
+                <div className="flex items-start gap-4 mb-4">
+                    <Image
+                        src={app.icon}
+                        alt={app.name}
+                        width={64}
+                        height={64}
+                        className="rounded-lg border"
+                        data-ai-hint={app.dataAiHint}
+                    />
+                    <div className="flex-grow text-right">
+                        <Badge variant="secondary">Requested</Badge>
+                    </div>
                 </div>
-            </div>
-            <div className='flex-grow'>
-                <h3 className="text-lg font-bold transition-colors">{app.name}</h3>
-                <p className="text-sm text-muted-foreground mt-1 h-10 line-clamp-2">{app.shortDescription}</p>
-            </div>
-        </CardContent>
-    </Card>
+                <div className='flex-grow'>
+                    <h3 className="text-lg font-bold transition-colors group-hover:text-primary">{app.name}</h3>
+                    <p className="text-sm text-muted-foreground mt-1 h-10 line-clamp-2">{app.shortDescription}</p>
+                </div>
+            </CardContent>
+        </Card>
+    </Link>
 );
 
 const RejectedRequestCard = ({ app }: { app: CommunityApp }) => (
-    <Card className="flex flex-col h-full overflow-hidden rounded-2xl transition-all duration-300 bg-destructive/10 border border-dashed border-destructive/20">
-        <CardContent className="p-4 flex-grow flex flex-col">
-            <div className="flex items-start gap-4 mb-4">
-                <Image
-                    src={app.icon}
-                    alt={app.name}
-                    width={64}
-                    height={64}
-                    className="rounded-lg border"
-                    data-ai-hint={app.dataAiHint}
-                />
-                 <div className="flex-grow text-right">
-                    <Badge variant="destructive" className="flex items-center gap-1.5"><XCircle className="w-3 h-3" />Rejected</Badge>
+     <Link href={`/community-dashboard/test/${app.id}`} className="group block h-full">
+        <Card className="flex flex-col h-full overflow-hidden rounded-2xl transition-all duration-300 bg-destructive/10 border border-dashed border-destructive/20 group-hover:-translate-y-1">
+            <CardContent className="p-4 flex-grow flex flex-col">
+                <div className="flex items-start gap-4 mb-4">
+                    <Image
+                        src={app.icon}
+                        alt={app.name}
+                        width={64}
+                        height={64}
+                        className="rounded-lg border"
+                        data-ai-hint={app.dataAiHint}
+                    />
+                    <div className="flex-grow text-right">
+                        <Badge variant="destructive" className="flex items-center gap-1.5"><XCircle className="w-3 h-3" />Rejected</Badge>
+                    </div>
                 </div>
-            </div>
-            <div className='flex-grow'>
-                <h3 className="text-lg font-bold transition-colors">{app.name}</h3>
-                <p className="text-sm text-destructive/80 mt-1">{app.rejectionReason}</p>
-            </div>
-        </CardContent>
-    </Card>
+                <div className='flex-grow'>
+                    <h3 className="text-lg font-bold transition-colors group-hover:text-destructive">{app.name}</h3>
+                    <p className="text-sm text-destructive/80 mt-1">{app.rejectionReason}</p>
+                </div>
+            </CardContent>
+        </Card>
+    </Link>
 );
 
 export default function CommunityDashboardPage() {
