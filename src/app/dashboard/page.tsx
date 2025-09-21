@@ -50,22 +50,24 @@ const PaginatedProjectList = ({ projects }: { projects: Project[] }) => {
 
 export default function DashboardPage() {
   const [mainTab, setMainTab] = useState('pending');
-  const [pendingSubTab, setPendingSubTab] = useState('drafts');
+  const [pendingSubTab, setPendingSubTab] = useState('in-review');
 
   const draftApps = allProjects.filter(p => p.status === "Draft");
   const inReviewApps = allProjects.filter(p => p.status === "In Review");
+  const rejectedApps = allProjects.filter(p => p.status === "Rejected");
   const ongoingApps = allProjects.filter(p => p.status === "In Testing");
   const completedApps = allProjects.filter(p => p.status === "Completed");
 
   const mainTabs = [
-    { label: 'Pending', value: 'pending', count: draftApps.length + inReviewApps.length },
+    { label: 'Pending', value: 'pending', count: draftApps.length + inReviewApps.length + rejectedApps.length },
     { label: 'Ongoing', value: 'ongoing', count: ongoingApps.length },
     { label: 'Completed', value: 'completed', count: completedApps.length },
   ];
 
   const pendingTabs = [
-      { label: 'Drafts', value: 'drafts', count: draftApps.length },
       { label: 'In Review', value: 'in-review', count: inReviewApps.length },
+      { label: 'Drafts', value: 'drafts', count: draftApps.length },
+      { label: 'Rejected', value: 'rejected', count: rejectedApps.length },
   ];
 
 
@@ -194,8 +196,9 @@ export default function DashboardPage() {
                           ))}
                       </div>
                   </div>
-                  {pendingSubTab === 'drafts' && <PaginatedProjectList projects={draftApps} />}
                   {pendingSubTab === 'in-review' && <PaginatedProjectList projects={inReviewApps} />}
+                  {pendingSubTab === 'drafts' && <PaginatedProjectList projects={draftApps} />}
+                  {pendingSubTab === 'rejected' && <PaginatedProjectList projects={rejectedApps} />}
               </TabsContent>
               <TabsContent value="ongoing" className="mt-6">
                 <PaginatedProjectList projects={ongoingApps} />
