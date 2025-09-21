@@ -2,11 +2,58 @@
 
 import { useTheme } from 'next-themes';
 import Image from 'next/image';
-import { Star, Smartphone, Clock, SquareArrowOutUpRight } from 'lucide-react';
+import { Star, Smartphone, Clock, SquareArrowOutUpRight, Send, XCircle } from 'lucide-react';
 import AnimatedRoundedButton from '@/components/ui/animated-rounded-button';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { cn } from '@/lib/utils';
+
+const SidebarButton = ({ app, handleRequestToJoin, buttonType, url, hoverTextColor, hoverBgColor }: any) => {
+    if (buttonType === 'external') {
+        return (
+            <a href={url} target='_blank' className='flex flex-row gap-2 w-full border border-primary/50 rounded-full items-center justify-center py-2 text-primary'>
+                Re-open Google Play <SquareArrowOutUpRight size={20} />
+            </a>
+        );
+    }
+
+    switch (app.status) {
+        case 'requested':
+            return (
+                <div className="w-full text-center py-3 bg-secondary text-muted-foreground rounded-full text-sm font-semibold flex items-center justify-center gap-2">
+                    <Send className="w-4 h-4" />
+                    Request Sent
+                </div>
+            );
+        case 'request_rejected':
+            return (
+                 <div className="w-full text-center py-3 bg-destructive/10 text-destructive rounded-full text-sm font-semibold flex items-center justify-center gap-2">
+                    <XCircle className="w-4 h-4" />
+                    Request Rejected
+                </div>
+            );
+        default: // 'available'
+            return (
+                <div onClick={handleRequestToJoin} className='w-full m-auto'>
+                    <AnimatedRoundedButton
+                        backgroundColor="hsl(var(--primary))"
+                        animatedBackgroundColor={hoverBgColor}
+                        hoverTextColor={hoverTextColor}
+                        borderRadius='9999px'
+                        paddingY="4"
+                        paddingX="0"
+                        className='py-2 sm:py-4 text-sm sm:text-base'
+                    >
+                        <div className="flex items-center text-center gap-2">
+                            <span className="w-full">Request to Join Testing</span>
+                        </div>
+                    </AnimatedRoundedButton>
+                </div>
+            );
+    }
+}
+
 
 export const AppInfoSidebar = ({ app, handleRequestToJoin, buttonType, url }: { app: any, handleRequestToJoin?: () => void, buttonType?: string, url?: string }) => {
     const { theme } = useTheme();
@@ -16,31 +63,14 @@ export const AppInfoSidebar = ({ app, handleRequestToJoin, buttonType, url }: { 
 
     return (
         <div className="sticky top-24 space-y-6">
-            <div onClick={handleRequestToJoin} className='w-full m-auto'>
-                {!buttonType ?
-                    <>
-                        <AnimatedRoundedButton
-                            backgroundColor="hsl(var(--primary))"
-                            animatedBackgroundColor={hoverBgColor}
-                            hoverTextColor={hoverTextColor}
-                            borderRadius='9999px'
-                            paddingY="4"
-                            paddingX="0"
-                            className='py-2 sm:py-4 text-sm sm:text-base'
-                        >
-                            <div className="flex items-center text-center gap-2">
-                                <span className="w-full">Request to Join Testing</span>
-                            </div>
-                        </AnimatedRoundedButton>
-
-                    </>
-                    :
-                    <a href={url} target='_blank' className='flex flex-row gap-2 w-full border border-primary/50 rounded-full items-center justify-center py-2 text-primary'
-                    >
-                        Re-open Google Play <SquareArrowOutUpRight size={20} />
-                    </a>
-                }
-            </div>
+            <SidebarButton 
+                app={app} 
+                handleRequestToJoin={handleRequestToJoin} 
+                buttonType={buttonType} 
+                url={url} 
+                hoverTextColor={hoverTextColor}
+                hoverBgColor={hoverBgColor}
+            />
 
             <Card className="border-0 rounded-2xl shadow-xl shadow-gray-100 dark:shadow-gray-900 overflow-hidden">
                 <CardContent className="p-6 pb-0">

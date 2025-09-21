@@ -4,9 +4,9 @@
 import { useState } from 'react';
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
-import { Card } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Expand, Trophy, RefreshCw, CheckCircle, Compass, PenTool, Smile, ThumbsUp, X } from 'lucide-react';
+import { Expand, Trophy, RefreshCw, CheckCircle, Compass, PenTool, Smile, ThumbsUp, X, AlertTriangle } from 'lucide-react';
 import { communityApps } from '@/lib/data';
 import { BackButton } from '@/components/back-button';
 import { AppInfoSidebar } from '@/components/appInfoSidebar';
@@ -30,6 +30,21 @@ function AppTestingPageClient({ app }: { app: CommunityApp }) {
                             <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-br from-primary to-accent bg-clip-text text-transparent">{app.name}</h1>
                             <p className="text-muted-foreground text-lg mt-2 leading-relaxed">{app.shortDescription}</p>
                         </section>
+
+                        {app.status === 'request_rejected' && app.rejectionReason && (
+                             <Card className="bg-destructive/10 border-2 border-dashed border-destructive/20 p-6">
+                                <CardHeader className="p-0 flex-row items-center gap-3">
+                                    <div className="bg-destructive/10 p-2 rounded-full text-destructive">
+                                        <AlertTriangle className="w-5 h-5" />
+                                    </div>
+                                    <CardTitle className="text-xl text-destructive">Request Rejected</CardTitle>
+                                </CardHeader>
+                                <CardContent className="p-0 pt-4">
+                                    <p className="text-destructive/80 leading-relaxed">{app.rejectionReason}</p>
+                                </CardContent>
+                            </Card>
+                        )}
+
 
                         <section>
                             <h2 className="text-2xl font-bold mb-4">Screenshots</h2>
