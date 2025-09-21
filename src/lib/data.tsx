@@ -28,11 +28,11 @@ export const blogPosts: BlogPost[] = [
     content: `<p>Automated testing is a cornerstone of modern software development. By letting scripts and tools do the repetitive work, you can focus on what truly matters: building great features. This guide will walk you through the basics.</p><p>We'll cover topics like:</p><ul><li>Choosing the right automation framework</li><li>Writing your first test script</li><li>Integrating tests into your CI/CD pipeline</li><li>Analyzing test results</li></ul>`,
     author: {
       name: 'Alice Johnson',
-      avatarUrl: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=400&auto=format&fit=crop',
+      avatarUrl: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=400&auto=format=fit=crop',
       dataAiHint: 'woman developer',
     },
     date: '2024-05-15',
-    imageUrl: 'https://images.unsplash.com/photo-1516116216624-53e697320f64?q=80&w=600&auto=format&fit=crop',
+    imageUrl: 'https://images.unsplash.com/photo-1516116216624-53e697320f64?q=80&w=600&auto=format=fit=crop',
     dataAiHint: 'code testing',
     tags: ['Automation', 'Beginner', 'CI/CD'],
   },
@@ -44,11 +44,11 @@ export const blogPosts: BlogPost[] = [
     content: `<p>UX testing goes beyond identifying functional bugs. It's about understanding how users feel when they interact with your product. A seamless UX can be the difference between a good app and a great one.</p><p>In this article, we explore:</p><ul><li>Heuristic evaluation</li><li>Usability testing methods</li><li>Gathering and interpreting user feedback</li><li>The connection between UX and business success</li></ul>`,
     author: {
       name: 'Hannah Wright',
-      avatarUrl: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?q=80&w=400&auto=format&fit=crop',
+      avatarUrl: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?q=80&w=400&auto=format=fit=crop',
       dataAiHint: 'woman tech',
     },
     date: '2024-05-20',
-    imageUrl: 'https://images.unsplash.com/photo-1587440871875-191322ee64b0?q=80&w=600&auto=format&fit=crop',
+    imageUrl: 'https://images.unsplash.com/photo-1587440871875-191322ee64b0?q=80&w=600&auto=format=fit=crop',
     dataAiHint: 'ux design',
     tags: ['UI/UX', 'Design', 'User Research'],
   },
@@ -60,11 +60,11 @@ export const blogPosts: BlogPost[] = [
     content: `<p>Mobile security is not a feature; it's a necessity. With increasing threats, robust security testing is crucial. This checklist provides a starting point for testers to ensure an app is secure.</p><p>Key areas covered:</p><ul><li>Data storage and encryption</li><li>Network communication vulnerabilities</li><li>Authentication and authorization</li><li>Code obfuscation and anti-tampering</li></ul>`,
     author: {
       name: 'George Hill',
-      avatarUrl: 'https://images.unsplash.com/photo-1527982987257-d3abc440f2ba?q=80&w=400&auto=format&fit=crop',
+      avatarUrl: 'https://images.unsplash.com/photo-1527982987257-d3abc440f2ba?q=80&w=400&auto=format=fit=crop',
       dataAiHint: 'man portrait',
     },
     date: '2024-05-25',
-    imageUrl: 'https://images.unsplash.com/photo-1555949963-ff9fe0c870eb?q=80&w=600&auto=format&fit=crop',
+    imageUrl: 'https://images.unsplash.com/photo-1555949963-ff9fe0c870eb?q=80&w=600&auto=format=fit=crop',
     dataAiHint: 'cyber security',
     tags: ['Security', 'Mobile', 'Checklist'],
   },
@@ -74,35 +74,35 @@ export const testimonials: Testimonial[] = [
   {
     name: 'Sarah Jennings',
     role: 'Lead Developer, TechNova',
-    avatar: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?q=80&w=400&auto=format&fit=crop',
+    avatar: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?q=80&w=400&auto=format=fit=crop',
     dataAiHint: 'woman portrait',
     comment: 'inTesters has revolutionized our QA process. The real-time feedback and detailed reports are game-changers. The platform isn\'t just functional, it\'s a joy to use!',
   },
   {
     name: 'Mike Valerio',
     role: 'Indie Game Developer',
-    avatar: 'https://images.unsplash.com/photo-1564564321837-a57b7070ac4f?q=80&w=400&auto=format&fit=crop',
+    avatar: 'https://images.unsplash.com/photo-1564564321837-a57b7070ac4f?q=80&w=400&auto=format=fit=crop',
     dataAiHint: 'man smiling',
     comment: 'Finding the right testers used to be a nightmare. The gamified marketplace made it fun and easy to connect with experienced, reliable people. My app is better for it.',
   },
   {
     name: 'Chen Lin',
     role: 'Product Manager, Innovate Inc.',
-    avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=400&auto=format&fit=crop',
+    avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=400&auto=format=fit=crop',
     dataAiHint: 'person glasses',
     comment: 'The dashboards are incredible. Being able to visualize our testing data with such clarity and beauty has helped us identify critical issues faster than ever before.',
   },
   {
     name: 'David Kim',
     role: 'QA Engineer, GameSphere',
-    avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=400&auto=format&fit=crop',
+    avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=400&auto=format=fit=crop',
     dataAiHint: 'man portrait',
     comment: 'As a tester, the gamified reputation system is fantastic. It motivates me to do my best work and get recognized for it. I\'ve gotten more high-quality projects through inTesters than any other platform.',
   },
   {
     name: 'Maria Garcia',
     role: 'Mobile App Developer',
-    avatar: 'https://images.unsplash.com/photo-14947901083_77-be9c29b29330?q=80&w=400&auto=format&fit=crop',
+    avatar: 'https://images.unsplash.com/photo-14947901083_77-be9c29b29330?q=80&w=400&auto=format=fit=crop',
     dataAiHint: 'woman developer',
     comment: 'The community aspect is what sets inTesters apart. It\'s not just a service; it\'s a network of professionals passionate about quality. The collaboration tools are excellent.',
   },
@@ -298,7 +298,8 @@ export const communityApps: CommunityApp[] = [
             { url: 'https://play-lh.googleusercontent.com/iVDM63eIo8Gs74i1tD3I_oOubcxQZmapkrSQGj3UI0ECO-PoHDK7Rdicf4Ak2CK-S7Ua3EItYmnOGEZcJpi4RA=w5120-h2880-rw', alt: 'AccuWeather Screenshot 2', dataAiHint: 'hourly forecast' }
         ],
         testingInstructions: 'Check the "Minutecast" feature for your current location. Please verify if the precipitation forecast is accurate and report any UI issues with the radar map.',
-        status: 'available',
+        status: 'request_rejected',
+        rejectionReason: 'Your account does not meet the minimum tester level required for this app.',
         totalDays: 20,
     },
     {
@@ -374,7 +375,7 @@ export const communityApps: CommunityApp[] = [
             { url: 'https://play-lh.googleusercontent.com/ERs3Y-33zoFG7aIaRYdg67QwHb6YOJB0lZdM9U8x3YMvT8m1XTXf5WRS-CzymdEoJw=w1052-h592-rw', alt: 'Duolingo Screenshot 2', dataAiHint: 'learning path' }
         ],
         testingInstructions: 'Complete one full lesson in any language. Verify that the progress is saved correctly and check for any issues with audio playback during exercises.',
-        status: 'available',
+        status: 'requested',
         totalDays: 18,
     },
     {
@@ -606,7 +607,7 @@ export const communityApps: CommunityApp[] = [
             { url: 'https://play-lh.googleusercontent.com/LUbhjBDsItfhj8FnM3mDhekkaUCecqF6s49T2AyhgRyZsFijrw7lcKd74gM2E9ctGQ=w1052-h592-rw', alt: 'Discord Screenshot 2', dataAiHint: 'voice channel' }
         ],
         testingInstructions: 'Join a voice channel in a server. Test the noise suppression feature by enabling it and speaking with background noise. Report on its effectiveness.',
-        status: 'available',
+        status: 'requested',
         totalDays: 14,
     },
     {
@@ -644,7 +645,8 @@ export const communityApps: CommunityApp[] = [
             { url: 'https://play-lh.googleusercontent.com/2QLnpUwoUtj9I3iTT0yd2nMJezAQD4YCk6FyCzsgrZTP74SgfxmE_Uyqs4fU7d4SlII=w1052-h592-rw', alt: 'Airbnb Screenshot 2', dataAiHint: 'map view with prices' }
         ],
         testingInstructions: 'Search for a stay in any city for a future date. Apply at least 3 filters (e.g., Wi-Fi, Kitchen, Price Range) and check if the results update correctly.',
-        status: 'available',
+        status: 'request_rejected',
+        rejectionReason: 'The developer has paused new tester requests for this app.',
         totalDays: 14,
     },
     {
@@ -1248,5 +1250,6 @@ export const projects: Project[] = [
     
 
     
+
 
 

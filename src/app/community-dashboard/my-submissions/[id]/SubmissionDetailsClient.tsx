@@ -27,6 +27,7 @@ import { BackButton } from '@/components/back-button';
 import { AppPagination } from '@/components/app-pagination';
 import { motion } from 'framer-motion';
 import DeveloperInstructions from '@/components/developerInstructions';
+import AppInfoHeader from '@/components/app-info-header';
 
 
 const FEEDBACK_PER_PAGE = 5;
@@ -116,38 +117,8 @@ export default function SubmissionDetailsClient({ project }: { project: Project 
                     <div className="sticky top-0 z-[50] pt-2 sm:pt-3 pb-4 pl-0 w-1/2">
                         <BackButton href="/community-dashboard/my-submissions" />
                     </div>
-                    <header className="mb-8">
-                        <div className="grid grid-cols-4 gap-8 sm:gap-4">
-                            <div className='flex flex-row items-start justify-start gap-5 col-span-4 sm:col-span-3'>
-                                <div className='min-w-20 h-20 sm:min-w-32 sm:h-32 relative'>
-                                    <Image src={project.icon} alt={project.name} fill className="absolute rounded-2xl bg-background shadow-xl shadow-gray-500/10" data-ai-hint={project.dataAiHint} />
-                                </div>
-                                <div>
-                                    <div className="flex items-start sm:items-center flex-col sm:flex-row justify-between sm:justify-start gap-2 sm:gap-4">
-                                        <h1 className="text-2xl sm:text-4xl font-bold bg-gradient-to-b from-primary to-primary/50 bg-clip-text text-transparent leading-0">{project.name}</h1>
-                                        <Badge variant="outline" className="text-sm sm:text-lg border-none bg-gradient-to-b from-primary to-primary/50 !text-white text-normal px-5">{project.category}</Badge>
-                                    </div>
 
-                                    <div className='hidden sm:block mt-4 max-w-3xl'>
-                                        <p className="text-muted-foreground line-clamp-2">{project.description}</p>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div className='block sm:hidden col-span-4 w-full'>
-                                <p className="text-muted-foreground w-full !line-clamp-2">{project.description}</p>
-                            </div>
-
-                            <div className="flex flex-col items-start justify-center gap-2 col-span-4 sm:col-span-1">
-                                <p className='text-black dark:text-white font-bold'>STATUS</p>
-                                <p className={`flex flex-row items-center gap-4 justify-center w-full text-lg sm:text-2xl font-bold rounded-xl p-3 ${project.status === "In Testing" || project.status === "Rejected" ? "bg-gradient-to-br from-red-500/60 to-red-500/20 dark:from-red-500/30 dark:to-red-500/5" : project.status === "Completed" ? "bg-gradient-to-br from-green-500/60 to-green-500/20 dark:from-green-500/30 dark:to-green-500/5" : "bg-gradient-to-br from-yellow-500/60 to-yellow-500/20 dark:from-yellow-500/30 dark:to-yellow-500/5"} ${project.status === "In Testing" || project.status === "Rejected" ? "text-red-800 dark:text-red-500" : project.status === "Completed" ? "text-green-800 dark:text-green-500" : "text-yellow-800 dark:text-yellow-500"}`}>
-                                    <span>{statusConfig.icon}</span>
-                                    <span>{project.status}</span>
-                                </p>
-                            </div>
-
-                        </div>
-                    </header>
+                    <AppInfoHeader logo={project.icon} name={project.name} dataAiHint={project.dataAiHint} category={project.category} description={project.description} status={project.status} statusConfig={statusConfig} />
 
                     {project.status === 'Rejected' && project.rejectionReason && (
                          <section className="bg-destructive/10 border-2 border-dashed border-destructive/10 rounded-2xl p-6 relative overflow-hidden">
@@ -178,8 +149,8 @@ export default function SubmissionDetailsClient({ project }: { project: Project 
                         </section>
                     )}
 
-                    <div className='relative flex flex-col gap-10 !mt-14'>
-                        {isUnderReviewOrRejected && (
+                    <div className={`relative flex flex-col gap-10 !mt-14 ${isUnderReviewOrRejected ? "blur-md pointer-events-none" : ""}`}>
+                        {/* {isUnderReviewOrRejected && (
                             <div className="absolute inset-0 bg-background/70 backdrop-blur-[10px] z-20 rounded-2xl flex flex-col items-center justify-center">
                                 <div className="bg-secondary/80 p-4 rounded-full mb-4">
                                     {project.status === 'In Review' ? <Search className="w-12 h-12 text-primary" /> : <XCircle className="w-12 h-12 text-destructive" />}
@@ -192,7 +163,7 @@ export default function SubmissionDetailsClient({ project }: { project: Project 
                                     }
                                 </p>
                             </div>
-                        )}
+                        )} */}
                         <div className={cn("grid grid-cols-1 lg:grid-cols-3 gap-2 sm:gap-4 text-center", isUnderReviewOrRejected && "pointer-events-none")}>
                             <div className='flex flex-row gap-1 items-center justify-center rounded-2xl overflow-hidden'>
                                 <div className="bg-gradient-to-tl from-primary/20 to-primary text-primary-foreground p-5 h-full w-full flex flex-col justify-center gap-1">

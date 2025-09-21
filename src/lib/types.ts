@@ -73,10 +73,11 @@ export type CommunityApp = {
     playStoreUrl?: string;
     screenshots: { url: string; alt: string; dataAiHint?: string }[];
     testingInstructions: string;
-    status: 'available' | 'ongoing' | 'completed';
+    status: 'available' | 'ongoing' | 'completed' | 'requested' | 'request_rejected';
     progress?: number;
     completedDate?: string;
     totalDays: number;
+    rejectionReason?: string;
 }
 
 export type FaqItem = {
@@ -167,3 +168,4 @@ export type SubmittedFeedback = {
     
 
     
+

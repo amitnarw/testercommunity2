@@ -5,7 +5,7 @@
 import { useState } from 'react';
 import { CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { ListFilter, ArrowUpDown, PlusCircle, Star, LayoutPanelLeft, Activity, ChevronLeft, ChevronRight } from 'lucide-react';
+import { ListFilter, ArrowUpDown, PlusCircle, Star, LayoutPanelLeft, Activity, ChevronLeft, ChevronRight, XCircle } from 'lucide-react';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 import { communityApps, projects as allProjects } from '@/lib/data';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -15,6 +15,10 @@ import { CommunityCompletedAppCard } from '@/components/community-completed-app-
 import Link from 'next/link';
 import { AppPagination } from '@/components/app-pagination';
 import { motion } from 'framer-motion';
+import { Card, CardContent } from '@/components/ui/card';
+import Image from 'next/image';
+import { Badge } from '@/components/ui/badge';
+import type { CommunityApp } from '@/lib/types';
 
 
 const APPS_PER_PAGE = 6;
@@ -25,55 +29,107 @@ const BentoCard = ({ children, className }: { children: React.ReactNode, classNa
     </div>
 );
 
+const PaginatedAppList = ({ apps, emptyMessage, card: CardComponent }: { apps: CommunityApp[], emptyMessage: string, card: React.FC<{ app: CommunityApp }> }) => {
+    const [currentPage, setCurrentPage] = useState(1);
+    const totalPages = Math.ceil(apps.length / APPS_PER_PAGE);
+    const startIndex = (currentPage - 1) * APPS_PER_PAGE;
+    const endIndex = startIndex + APPS_PER_PAGE;
+    const currentApps = apps.slice(startIndex, endIndex);
+
+    const handlePageChange = (page: number) => {
+        if (page < 1 || page > totalPages) return;
+        setCurrentPage(page);
+    };
+
+    return (
+        <>
+            {currentApps.length > 0 ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {currentApps.map(app => <CardComponent key={app.id} app={app} />)}
+                </div>
+            ) : (
+                <div className="text-center py-12 text-muted-foreground col-span-full">{emptyMessage}</div>
+            )}
+            <AppPagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={handlePageChange}
+            />
+        </>
+    );
+};
+
+const RequestedAppCard = ({ app }: { app: CommunityApp }) => (
+    <Card className="flex flex-col h-full overflow-hidden rounded-2xl transition-all duration-300 bg-secondary dark:bg-secondary/30 border-0">
+        <CardContent className="p-4 flex-grow flex flex-col">
+            <div className="flex items-start gap-4 mb-4">
+                <Image
+                    src={app.icon}
+                    alt={app.name}
+                    width={64}
+                    height={64}
+                    className="rounded-lg border"
+                    data-ai-hint={app.dataAiHint}
+                />
+                <div className="flex-grow text-right">
+                    <Badge variant="secondary">Requested</Badge>
+                </div>
+            </div>
+            <div className='flex-grow'>
+                <h3 className="text-lg font-bold transition-colors">{app.name}</h3>
+                <p className="text-sm text-muted-foreground mt-1 h-10 line-clamp-2">{app.shortDescription}</p>
+            </div>
+        </CardContent>
+    </Card>
+);
+
+const RejectedRequestCard = ({ app }: { app: CommunityApp }) => (
+    <Card className="flex flex-col h-full overflow-hidden rounded-2xl transition-all duration-300 bg-destructive/10 border border-dashed border-destructive/20">
+        <CardContent className="p-4 flex-grow flex flex-col">
+            <div className="flex items-start gap-4 mb-4">
+                <Image
+                    src={app.icon}
+                    alt={app.name}
+                    width={64}
+                    height={64}
+                    className="rounded-lg border"
+                    data-ai-hint={app.dataAiHint}
+                />
+                 <div className="flex-grow text-right">
+                    <Badge variant="destructive" className="flex items-center gap-1.5"><XCircle className="w-3 h-3" />Rejected</Badge>
+                </div>
+            </div>
+            <div className='flex-grow'>
+                <h3 className="text-lg font-bold transition-colors">{app.name}</h3>
+                <p className="text-sm text-destructive/80 mt-1">{app.rejectionReason}</p>
+            </div>
+        </CardContent>
+    </Card>
+);
 
 export default function CommunityDashboardPage() {
     const [filter, setFilter] = useState('All');
     const [sort, setSort] = useState('Most Recent');
-    const [pagination, setPagination] = useState({
-        available: 1,
-        ongoing: 1,
-        completed: 1,
-    });
     const [selectedTab, setSelectedTab] = useState('available');
+    const [ongoingSubTab, setOngoingSubTab] = useState('ongoing');
 
     const ongoingApps = communityApps.filter(app => app.status === 'ongoing');
+    const requestedApps = communityApps.filter(app => app.status === 'requested');
+    const rejectedRequestApps = communityApps.filter(app => app.status === 'request_rejected');
     const completedApps = communityApps.filter(app => app.status === 'completed');
     const availableApps = communityApps.filter(app => app.status === 'available');
-
-    const totalAvailablePages = Math.ceil(availableApps.length / APPS_PER_PAGE);
-    const totalOngoingPages = Math.ceil(ongoingApps.length / APPS_PER_PAGE);
-    const totalCompletedPages = Math.ceil(completedApps.length / APPS_PER_PAGE);
-
+    
     const tabs = [
         { label: 'Available', value: 'available', count: availableApps.length },
-        { label: 'Ongoing', value: 'ongoing', count: ongoingApps.length },
+        { label: 'Ongoing', value: 'ongoing', count: ongoingApps.length + requestedApps.length + rejectedRequestApps.length },
         { label: 'Completed', value: 'completed', count: completedApps.length },
     ];
-
-    const currentAvailableApps = availableApps.slice(
-        (pagination.available - 1) * APPS_PER_PAGE,
-        pagination.available * APPS_PER_PAGE
-    );
-    const currentOngoingApps = ongoingApps.slice(
-        (pagination.ongoing - 1) * APPS_PER_PAGE,
-        pagination.ongoing * APPS_PER_PAGE
-    );
-    const currentCompletedApps = completedApps.slice(
-        (pagination.completed - 1) * APPS_PER_PAGE,
-        pagination.completed * APPS_PER_PAGE
-    );
-
-    const handlePageChange = (type: 'available' | 'ongoing' | 'completed', page: number) => {
-        const totalPages = {
-            available: totalAvailablePages,
-            ongoing: totalOngoingPages,
-            completed: totalCompletedPages,
-        }[type];
-
-        if (page >= 1 && page <= totalPages) {
-            setPagination(prev => ({ ...prev, [type]: page }));
-        }
-    };
+    
+    const ongoingTabs = [
+        { label: 'Ongoing', value: 'ongoing', count: ongoingApps.length },
+        { label: 'Requested', value: 'requested', count: requestedApps.length },
+        { label: 'Rejected', value: 'rejected', count: rejectedRequestApps.length },
+    ];
 
     const appsSubmitted = allProjects.length;
     const testersEngaged = allProjects.reduce((sum, p) => sum + p.testersStarted, 0);
@@ -211,47 +267,35 @@ export default function CommunityDashboardPage() {
                             })}
                         </TabsList>
                         <TabsContent value="available">
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                                {currentAvailableApps.map(app => (
-                                    <CommunityAvailableAppCard key={app.id} app={app} />
-                                ))}
-                            </div>
-                            <AppPagination
-                                currentPage={pagination.available}
-                                totalPages={totalAvailablePages}
-                                onPageChange={(page) => handlePageChange('available', page)}
+                            <PaginatedAppList
+                                apps={availableApps}
+                                emptyMessage="No available apps for testing right now. Check back soon!"
+                                card={CommunityAvailableAppCard}
                             />
                         </TabsContent>
-                        <TabsContent value="ongoing">
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                                {currentOngoingApps.length > 0 ? (
-                                    currentOngoingApps.map(app => (
-                                        <CommunityOngoingAppCard key={app.id} app={app} />
-                                    ))
-                                ) : (
-                                    <div className="text-center py-12 text-muted-foreground col-span-full">You have no ongoing tests.</div>
-                                )}
+                        <TabsContent value="ongoing" className="mt-6">
+                            <div className="flex justify-start mb-4">
+                                <div className="flex items-center gap-2 bg-muted rounded-lg">
+                                    {ongoingTabs.map((tab) => (
+                                        <button
+                                            key={tab.value}
+                                            onClick={() => setOngoingSubTab(tab.value)}
+                                            className={`rounded-lg px-4 py-1.5 text-xs sm:text-sm h-auto ${ongoingSubTab === tab.value ? "bg-black text-white dark:bg-white dark:text-black" : "text-black/70 dark:text-white/70"}`}
+                                        >
+                                            {tab.label} ({tab.count})
+                                        </button>
+                                    ))}
+                                </div>
                             </div>
-                            <AppPagination
-                                currentPage={pagination.ongoing}
-                                totalPages={totalOngoingPages}
-                                onPageChange={(page) => handlePageChange('ongoing', page)}
-                            />
+                             {ongoingSubTab === 'ongoing' && <PaginatedAppList apps={ongoingApps} emptyMessage="You have no ongoing tests." card={CommunityOngoingAppCard} />}
+                             {ongoingSubTab === 'requested' && <PaginatedAppList apps={requestedApps} emptyMessage="You have no pending test requests." card={RequestedAppCard} />}
+                             {ongoingSubTab === 'rejected' && <PaginatedAppList apps={rejectedRequestApps} emptyMessage="You have no rejected test requests." card={RejectedRequestCard} />}
                         </TabsContent>
                         <TabsContent value="completed">
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                                {currentCompletedApps.length > 0 ? (
-                                    currentCompletedApps.map(app => (
-                                        <CommunityCompletedAppCard key={app.id} app={app} />
-                                    ))
-                                ) : (
-                                    <div className="text-center py-12 text-muted-foreground col-span-full">You have not completed any tests yet.</div>
-                                )}
-                            </div>
-                            <AppPagination
-                                currentPage={pagination.completed}
-                                totalPages={totalCompletedPages}
-                                onPageChange={(page) => handlePageChange('completed', page)}
+                            <PaginatedAppList
+                                apps={completedApps}
+                                emptyMessage="You have not completed any tests yet."
+                                card={CommunityCompletedAppCard}
                             />
                         </TabsContent>
                     </Tabs>
