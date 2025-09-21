@@ -987,7 +987,7 @@ export const projects: Project[] = [
       icon: "https://play-lh.googleusercontent.com/hoVBnPBRehmXsCqESLXRH2E3OTxklkwKZlb1psn7imm0VUSobn2nevS9RRFWb9GM4-o=s96-rw",
       dataAiHint: "geometric shapes",
       category: "Productivity",
-      status: "Rejected",
+      status: "In Review",
       testersStarted: 12,
       testersCompleted: 10,
       totalDays: 10,
@@ -1018,10 +1018,7 @@ export const projects: Project[] = [
       ],
       feedback: generateFeedback("Figma"),
       chartData: generateChartData(15),
-      rejectionReason: {
-        title: "Incomplete Testing Instructions",
-        description: "The instructions provided for testers were not detailed enough. To ensure our community can provide valuable feedback, please specify which features or user flows you want them to focus on. For example, instead of 'Test the app', try 'Please test the new user onboarding flow and report any confusion or bugs'. You can resubmit after updating the instructions.",
-      }
+      reviewNotes: "Initial review in progress. Checking for policy compliance and testability.",
     },
     {
       id: 3,
@@ -1251,4 +1248,5 @@ export const projects: Project[] = [
     
 
     
+
 
