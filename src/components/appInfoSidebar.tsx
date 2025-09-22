@@ -7,7 +7,6 @@ import AnimatedRoundedButton from '@/components/ui/animated-rounded-button';
 import { Avatar, AvatarImage, AvatarFallback } from '@/components/ui/avatar';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { cn } from '@/lib/utils';
 
 const SidebarButton = ({ app, handleRequestToJoin, buttonType, url, hoverTextColor, hoverBgColor }: any) => {
     if (buttonType === 'external') {
@@ -28,7 +27,7 @@ const SidebarButton = ({ app, handleRequestToJoin, buttonType, url, hoverTextCol
             );
         case 'request_rejected':
             return (
-                 <div className="w-full text-center py-3 bg-destructive/10 text-destructive rounded-full text-sm font-semibold flex items-center justify-center gap-2">
+                 <div className="w-full text-center py-3 bg-red-500/15 text-destructive dark:text-red-500 rounded-full text-sm font-semibold flex items-center justify-center gap-2">
                     <XCircle className="w-4 h-4" />
                     Request Rejected
                 </div>

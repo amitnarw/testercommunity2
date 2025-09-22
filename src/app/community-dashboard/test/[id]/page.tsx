@@ -32,19 +32,33 @@ function AppTestingPageClient({ app }: { app: CommunityApp }) {
                         </section>
 
                         {app.status === 'request_rejected' && app.rejectionReason && (
-                             <Card className="bg-destructive/10 border-2 border-dashed border-destructive/20 p-6">
-                                <CardHeader className="p-0 flex-row items-center gap-3">
-                                    <div className="bg-destructive/10 p-2 rounded-full text-destructive">
-                                        <AlertTriangle className="w-5 h-5" />
+                            <section className="bg-destructive/10 border-2 border-dashed border-destructive/10 rounded-2xl p-6 relative overflow-hidden">
+                                <div className="flex items-center gap-3 mb-4">
+                                    <div className="bg-destructive/5 p-3 sm:bg-destructive/10 p-3 rounded-full text-destructive absolute sm:static top-2 right-0 sm:top-auto sm:right-auto scale-[3] sm:scale-100">
+                                        <AlertTriangle className="w-8 h-8 text-destructive/20 sm:text-destructive" />
                                     </div>
-                                    <CardTitle className="text-xl text-destructive">Request Rejected</CardTitle>
-                                </CardHeader>
-                                <CardContent className="p-0 pt-4">
-                                    <p className="text-destructive/80 leading-relaxed">{app.rejectionReason}</p>
-                                </CardContent>
-                            </Card>
+                                    <h2 className="text-xl sm:text-2xl font-bold text-destructive dark:text-red-500">Request Rejected</h2>
+                                </div>
+                                <div className="flex flex-row gap-6 items-start">
+                                    <p className="text-destructive/80 dark:text-red-500/80 leading-relaxed">{app.rejectionReason}</p>
+                                    {app.rejectionReason?.imageUrl && (
+                                        <div className="relative rounded-lg overflow-hidden group cursor-pointer" onClick={() => setFullscreenImage(app?.rejectionReason?.imageUrl!)}>
+                                            <Image
+                                                src={app.rejectionReason?.imageUrl}
+                                                alt="Request Rejected"
+                                                width={600}
+                                                height={400}
+                                                className="object-cover w-full h-auto transition-transform duration-300 group-hover:scale-105"
+                                                data-ai-hint={app.rejectionReason.dataAiHint}
+                                            />
+                                            <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
+                                                <Expand className="w-10 h-10 text-white" />
+                                            </div>
+                                        </div>
+                                    )}
+                                </div>
+                            </section>
                         )}
-
 
                         <section>
                             <h2 className="text-2xl font-bold mb-4">Screenshots</h2>
@@ -106,7 +120,7 @@ function AppTestingPageClient({ app }: { app: CommunityApp }) {
                                 <span className="bg-gradient-to-b from-primary to-primary/50 text-white font-bold rounded-lg px-4 py-0.5 text-xl hidden sm:inline">Important</span>
                             </h2>
                             <div className="prose prose-base dark:prose-invert leading-relaxed text-white dark:text-black bg-[#121212] dark:bg-white p-3 sm:p-6 rounded-lg border-primary border-l-4 shadow-xl shadow-gray-300 dark:shadow-gray-700 text-sm sm:text-base">
-                            <span className="bg-gradient-to-b from-primary to-primary/50 text-white font-bold rounded-md px-4 py-0.5 text-lg inline sm:hidden">Important</span>
+                                <span className="bg-gradient-to-b from-primary to-primary/50 text-white font-bold rounded-md px-4 py-0.5 text-lg inline sm:hidden">Important</span>
                                 <p className='mt-2 sm:mt-0'>{app.testingInstructions}</p>
                             </div>
                         </section>
