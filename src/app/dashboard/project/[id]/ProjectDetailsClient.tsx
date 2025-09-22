@@ -8,7 +8,7 @@ import { projects as allProjects } from '@/lib/data';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Bug, CheckCircle, Clock, Users, MessageSquare, Star, Smartphone, BarChart, MapPin, LayoutGrid, List, Copy, ExternalLink, User, Info, ClipboardList, ChevronLeft, ChevronRight, XCircle, Search, AlertTriangle, Expand, X, PartyPopper, Lightbulb } from 'lucide-react';
+import { Bug, CheckCircle, Clock, Users, MessageSquare, Star, Smartphone, BarChart, MapPin, LayoutGrid, List, Copy, ExternalLink, User, Info, ClipboardList, ChevronLeft, ChevronRight, XCircle, Search, AlertTriangle, Expand, X, PartyPopper, Lightbulb, Video } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
 import {
     Table,
@@ -21,7 +21,7 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ResponsiveContainer, PieChart, Pie, Cell, Tooltip, Legend } from 'recharts';
 import { useState } from 'react';
-import type { Project, ProjectFeedback } from '@/lib/types';
+import type { Project, ProjectFeedback, TesterDetails } from '@/lib/types';
 import { cn } from '@/lib/utils';
 import { format } from 'date-fns';
 import { toast } from '@/hooks/use-toast';
@@ -33,6 +33,8 @@ import AppInfoHeader from '@/components/app-info-header';
 
 
 const FEEDBACK_PER_PAGE = 10;
+const TESTERS_PER_PAGE = 10;
+
 
 const getStatusConfig = (status: string) => {
     switch (status) {
@@ -52,8 +54,8 @@ const getStatusConfig = (status: string) => {
 const getFeedbackIcon = (type: string) => {
     switch (type) {
         case "Bug": return <Bug className="w-4 h-4 text-red-500" />;
-        case "Suggestion": return <MessageSquare className="w-4 h-4 text-blue-500" />;
-        case "Praise": return <Star className="w-4 h-4 text-amber-500" />;
+        case "Suggestion": return <Lightbulb className="w-4 h-4 text-amber-500" />;
+        case "Praise": return <PartyPopper className="w-4 h-4 text-green-500" />;
         default: return <MessageSquare className="w-4 h-4" />;
     }
 };
@@ -100,6 +102,7 @@ const CustomTooltip = ({ active, payload }: any) => {
 
 export default function ProjectDetailsClient({ project }: { project: Project }) {
     const [feedbackPage, setFeedbackPage] = useState(1);
+    const [testersPage, setTestersPage] = useState(1);
     const [activeTab, setActiveTab] = useState('bug');
     const [viewMode, setViewMode] = useState<'table' | 'list'>('table');
     const [fullscreenImage, setFullscreenImage] = useState<string | null>(null);
@@ -118,9 +121,20 @@ export default function ProjectDetailsClient({ project }: { project: Project }) 
     const feedbackEndIndex = feedbackStartIndex + FEEDBACK_PER_PAGE;
     const currentFeedback = filteredFeedback.slice(feedbackStartIndex, feedbackEndIndex);
 
+    const totalTestersPages = Math.ceil(project.testers.length / TESTERS_PER_PAGE);
+    const testersStartIndex = (testersPage - 1) * TESTERS_PER_PAGE;
+    const testersEndIndex = testersStartIndex + TESTERS_PER_PAGE;
+    const currentTesters = project.testers.slice(testersStartIndex, testersEndIndex);
+
+
     const handleFeedbackPageChange = (page: number) => {
         if (page < 1 || page > totalFeedbackPages) return;
         setFeedbackPage(page);
+    };
+
+    const handleTestersPageChange = (page: number) => {
+        if (page < 1 || page > totalTestersPages) return;
+        setTestersPage(page);
     };
 
     const handleTabChange = (tab: string) => {
@@ -283,6 +297,74 @@ export default function ProjectDetailsClient({ project }: { project: Project }) 
                             </InfoCard>
                         </motion.div>
 
+                         <motion.div variants={itemVariants} className="mt-8">
+                             <Card className="bg-card">
+                                <CardHeader>
+                                    <CardTitle>Tester & Device Details</CardTitle>
+                                    <CardDescription>Comprehensive information about the testers and devices in your project.</CardDescription>
+                                </CardHeader>
+                                <CardContent>
+                                     <div className="border rounded-lg overflow-hidden">
+                                        <Table>
+                                            <TableHeader>
+                                                <TableRow>
+                                                    <TableHead>Tester</TableHead>
+                                                    <TableHead>Country</TableHead>
+                                                    <TableHead>Device</TableHead>
+                                                    <TableHead>RAM</TableHead>
+                                                    <TableHead>OS</TableHead>
+                                                    <TableHead>Screen</TableHead>
+                                                    <TableHead>Language</TableHead>
+                                                    <TableHead>Network</TableHead>
+                                                    <TableHead className="text-right">Rating</TableHead>
+                                                </TableRow>
+                                            </TableHeader>
+                                            <TableBody>
+                                                 {currentTesters.length > 0 ? currentTesters.map(tester => (
+                                                    <TableRow key={tester.id}>
+                                                        <TableCell>
+                                                            <div className="flex items-center gap-2">
+                                                                <Avatar className="w-8 h-8">
+                                                                    <AvatarImage src={tester.avatar} />
+                                                                    <AvatarFallback>{tester.name.charAt(0)}</AvatarFallback>
+                                                                </Avatar>
+                                                                <span className="font-medium">{tester.name}</span>
+                                                            </div>
+                                                        </TableCell>
+                                                        <TableCell>{tester.country}</TableCell>
+                                                        <TableCell>{tester.device}</TableCell>
+                                                        <TableCell>{tester.ram}</TableCell>
+                                                        <TableCell>{tester.os}</TableCell>
+                                                        <TableCell>{tester.screenSize}</TableCell>
+                                                        <TableCell>{tester.language}</TableCell>
+                                                        <TableCell><Badge variant={tester.network === 'WiFi' ? 'secondary' : 'outline'}>{tester.network}</Badge></TableCell>
+                                                        <TableCell className="text-right">
+                                                            <div className="flex items-center justify-end gap-1">
+                                                                <Star className="w-4 h-4 text-amber-400 fill-amber-400" />
+                                                                <span className="font-bold">{tester.rating.toFixed(1)}</span>
+                                                            </div>
+                                                        </TableCell>
+                                                    </TableRow>
+                                                )) : (
+                                                    <TableRow>
+                                                        <TableCell colSpan={9} className="text-center h-24 text-muted-foreground">
+                                                            No tester data available for this project yet.
+                                                        </TableCell>
+                                                    </TableRow>
+                                                )}
+                                            </TableBody>
+                                        </Table>
+                                    </div>
+                                    <AppPagination
+                                        currentPage={testersPage}
+                                        totalPages={totalTestersPages}
+                                        onPageChange={handleTestersPageChange}
+                                    />
+                                </CardContent>
+                             </Card>
+                        </motion.div>
+
+
                         <main className="w-full mx-auto mt-8 grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
                             <motion.div variants={itemVariants} className="lg:col-span-2">
                                 <Card className="bg-card">
@@ -315,26 +397,43 @@ export default function ProjectDetailsClient({ project }: { project: Project }) 
                                                         <Table>
                                                             <TableHeader>
                                                                 <TableRow>
-                                                                    <TableHead className="w-[120px]">Type</TableHead>
-                                                                    <TableHead className="w-[120px]">Severity</TableHead>
+                                                                    <TableHead>Tester</TableHead>
+                                                                    <TableHead>Type</TableHead>
+                                                                    <TableHead>Severity</TableHead>
                                                                     <TableHead>Comment</TableHead>
-                                                                    <TableHead className="w-[150px]">Tester</TableHead>
+                                                                    <TableHead>Media</TableHead>
                                                                 </TableRow>
                                                             </TableHeader>
                                                             <TableBody>
                                                                 {currentFeedback.length > 0 ? currentFeedback.map(fb => (
                                                                     <TableRow key={fb.id}>
+                                                                        <TableCell>{fb.tester}</TableCell>
                                                                         <TableCell className="font-medium flex items-center gap-2">
                                                                             {getFeedbackIcon(fb.type)}
                                                                             {fb.type}
                                                                         </TableCell>
                                                                         <TableCell>{getSeverityBadge(fb.severity)}</TableCell>
                                                                         <TableCell className="text-muted-foreground">{fb.comment}</TableCell>
-                                                                        <TableCell>{fb.tester}</TableCell>
+                                                                         <TableCell>
+                                                                            <div className="flex items-center gap-2">
+                                                                                {fb.screenshot && (
+                                                                                    <Button variant="outline" size="icon" onClick={() => setFullscreenImage(fb.screenshot!)}>
+                                                                                        <Smartphone className="w-4 h-4" />
+                                                                                    </Button>
+                                                                                )}
+                                                                                {fb.videoUrl && (
+                                                                                    <Button variant="outline" size="icon" asChild>
+                                                                                        <a href={fb.videoUrl} target="_blank" rel="noopener noreferrer">
+                                                                                            <Video className="w-4 h-4" />
+                                                                                        </a>
+                                                                                    </Button>
+                                                                                )}
+                                                                            </div>
+                                                                        </TableCell>
                                                                     </TableRow>
                                                                 )) : (
                                                                     <TableRow>
-                                                                        <TableCell colSpan={4} className="text-center h-24 text-muted-foreground">
+                                                                        <TableCell colSpan={5} className="text-center h-24 text-muted-foreground">
                                                                             No {activeTab} feedback yet for this project.
                                                                         </TableCell>
                                                                     </TableRow>

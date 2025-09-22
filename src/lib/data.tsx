@@ -1,6 +1,6 @@
 
 
-import type { BlogPost, Testimonial, RoadmapStep, UserProfileData, ProcessStep, CommunityApp, PointsPackage, FaqItem, Notification, Project } from './types';
+import type { BlogPost, Testimonial, RoadmapStep, UserProfileData, ProcessStep, CommunityApp, PointsPackage, FaqItem, Notification, Project, TesterDetails } from './types';
 
 export const chartData = [
     { month: 'January', reports: 186, resolved: 80 },
@@ -922,6 +922,7 @@ const generateFeedback = (projectName: string) => {
     return Array.from({ length: 15 }, (_, i) => {
         const type = feedbackTypes[i % feedbackTypes.length];
         const hasScreenshot = i % 3 === 0;
+        const hasVideo = i % 5 === 0;
         return {
             id: i + 1,
             tester: `Tester${100 + i}`,
@@ -930,10 +931,33 @@ const generateFeedback = (projectName: string) => {
             status: statuses[i % statuses.length],
             comment: comments[type as keyof typeof comments] || `Generic feedback item #${i+1}`,
             date: `2024-08-${20- (i % 10)}`,
-            screenshot: hasScreenshot ? `https://picsum.photos/seed/${projectName.length + i}/400/800` : null
+            screenshot: hasScreenshot ? `https://picsum.photos/seed/${projectName.length + i}/400/800` : null,
+            videoUrl: hasVideo ? 'https://www.youtube.com/watch?v=dQw4w9WgXcQ' : null,
         }
     });
 };
+
+const generateTesters = (count: number): TesterDetails[] => {
+    const devices = ["Pixel 8 Pro", "Galaxy S24 Ultra", "OnePlus 12", "Xiaomi 14", "Pixel 7a"];
+    const countries = [{c: "USA", s: "California"}, {c: "India", s: "Maharashtra"}, {c: "Germany", s: "Berlin"}, {c: "Brazil", s: "São Paulo"}, {c: "Nigeria", s: "Lagos"}];
+    const languages = ["en-US", "en-GB", "es-ES", "hi-IN", "pt-BR"];
+
+    return Array.from({length: count}, (_, i) => ({
+        id: `tester-${101 + i}`,
+        name: `Tester ${101+i}`,
+        avatar: `https://i.pravatar.cc/150?u=tester${101+i}`,
+        country: countries[i % countries.length].c,
+        state: countries[i % countries.length].s,
+        device: devices[i % devices.length],
+        ram: `${[4, 6, 8, 12][i % 4]}GB`,
+        os: `Android ${12 + (i % 3)}`,
+        screenSize: `${['1080x2400', '1440x3120', '1080x2340'][i % 3]}`,
+        language: languages[i % languages.length],
+        network: i % 3 === 0 ? 'Cellular' : 'WiFi',
+        rating: Math.round((3.5 + Math.random() * 1.5) * 2) / 2, // 3.5 to 5.0 in 0.5 increments
+    }));
+}
+
 
 const generateChartData = (baseBugs: number) => {
     return Array.from({length: 14}, (_, i) => ({
@@ -981,7 +1005,8 @@ export const projects: Project[] = [
           { country: "Germany", testers: 2, flag: "🇩🇪" },
       ],
       feedback: generateFeedback("Canva"),
-      chartData: generateChartData(20)
+      chartData: generateChartData(20),
+      testers: generateTesters(14),
     },
     {
       id: 2,
@@ -1023,6 +1048,7 @@ export const projects: Project[] = [
       feedback: generateFeedback("Figma"),
       chartData: generateChartData(15),
       reviewNotes: "Initial review in progress. Checking for policy compliance and testability.",
+      testers: generateTesters(12),
     },
     {
       id: 3,
@@ -1060,7 +1086,8 @@ export const projects: Project[] = [
           { country: "Australia", testers: 5, flag: "🇦🇺" },
       ],
       feedback: generateFeedback("Slack"),
-      chartData: generateChartData(5)
+      chartData: generateChartData(5),
+      testers: generateTesters(20),
     },
      {
       id: 6,
@@ -1088,7 +1115,8 @@ export const projects: Project[] = [
       osCoverage: [],
        topGeographies: [],
       feedback: [],
-      chartData: []
+      chartData: [],
+      testers: [],
     },
     {
       id: 7,
@@ -1116,7 +1144,8 @@ export const projects: Project[] = [
       osCoverage: [],
        topGeographies: [],
       feedback: [],
-      chartData: []
+      chartData: [],
+      testers: [],
     },
     {
       id: 4,
@@ -1151,7 +1180,8 @@ export const projects: Project[] = [
           { country: "Germany", testers: 5, flag: "🇩🇪" },
       ],
       feedback: generateFeedback("Google Wallet"),
-      chartData: generateChartData(12)
+      chartData: generateChartData(12),
+      testers: generateTesters(15),
     },
       {
       id: 5,
@@ -1197,7 +1227,8 @@ export const projects: Project[] = [
         description: "Our review found that the app is currently restricted to North America. To ensure our global community of testers can access your app, please make it available in all countries/regions within your Google Play Console settings. This allows for diverse testing across different devices and network conditions.",
         imageUrl: "https://images.unsplash.com/photo-1601034913836-a1f43e143611?q=50&w=500&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
         dataAiHint: "world map",
-      }
+      },
+      testers: generateTesters(25),
     },
     ...communityApps.map(app => {
       const isCompleted = app.status === 'completed';
@@ -1242,6 +1273,7 @@ export const projects: Project[] = [
         feedback: generateFeedback(app.name),
         chartData: generateChartData(testersCompleted),
         reviewNotes: app.status === 'available' ? "Pending tester availability." : undefined,
+        testers: generateTesters(testersStarted),
       }
     })
   ]
@@ -1258,6 +1290,7 @@ export const projects: Project[] = [
     
 
     
+
 
 
 

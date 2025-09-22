@@ -103,6 +103,22 @@ export type ProjectFeedback = {
     comment: string;
     date: string;
     screenshot?: string | null;
+    videoUrl?: string | null;
+}
+
+export type TesterDetails = {
+    id: string;
+    name: string;
+    avatar: string;
+    country: string;
+    state: string;
+    device: string;
+    ram: string;
+    os: string;
+    screenSize: string;
+    language: string;
+    network: 'WiFi' | 'Cellular';
+    rating: number;
 }
 
 export type Project = {
@@ -155,7 +171,8 @@ export type Project = {
     description: string;
     imageUrl?: string;
     dataAiHint?: string;
-  }
+  };
+  testers: TesterDetails[];
 }
 
 export type SubmittedFeedback = {
@@ -169,4 +186,5 @@ export type SubmittedFeedback = {
     
 
     
+
 
