@@ -470,7 +470,7 @@ export const communityApps: CommunityApp[] = [
             { url: 'https://play-lh.googleusercontent.com/Bt95BAHb_F8Wdn_Xt1z7sBjUXAD-UIYX_mqAhhRFIv5PobR3vpteXfzNC0ZYiVJPSgM=w1052-h592-rw', alt: 'Amazon Screenshot 1', dataAiHint: 'product page' },
             { url: 'https://play-lh.googleusercontent.com/q-3YfdVSQGgEJ9gj8KCnS17bu4fJmDZxkNzTeaR7bQg2p0lwHFSmBlYCUlW84g32A6w=w1052-h592-rw', alt: 'Amazon Screenshot 2', dataAiHint: 'home page deals' }
         ],
-        testingInstructions: 'Add three different items to your cart and proceed to the checkout page. Do not complete the purchase. Report any UI issues or calculation errors in the subtotal.',
+        testingInstructions: 'Add three different items to your cart and proceed to the checkout page. Do not complete the purchase. Report any issues with the UI or calculation errors in the subtotal.',
         status: 'completed',
         completedDate: '2024-06-15',
         totalDays: 14,
@@ -961,6 +961,7 @@ export const projects: Project[] = [
       androidVersion: "11+",
       pointsCost: 1400,
       crashFreeRate: 99.8,
+      overallRating: 4.2,
       feedbackBreakdown: { total: 45, critical: 3, high: 12, low: 30 },
       performanceMetrics: { avgStartupTime: "350ms", frozenFrames: "0.2%" },
       deviceCoverage: [
@@ -1000,6 +1001,7 @@ export const projects: Project[] = [
       androidVersion: "10+",
       pointsCost: 1200,
       crashFreeRate: 99.9,
+      overallRating: 4.8,
       feedbackBreakdown: { total: 30, critical: 1, high: 5, low: 24 },
       performanceMetrics: { avgStartupTime: "450ms", frozenFrames: "0.1%" },
        deviceCoverage: [
@@ -1040,6 +1042,7 @@ export const projects: Project[] = [
       androidVersion: "9+",
       pointsCost: 2000,
       crashFreeRate: 100,
+      overallRating: 4.5,
       feedbackBreakdown: { total: 15, critical: 0, high: 2, low: 13 },
       performanceMetrics: { avgStartupTime: "250ms", frozenFrames: "0.05%" },
       deviceCoverage: [
@@ -1078,6 +1081,7 @@ export const projects: Project[] = [
       pointsCost: 1500,
       reviewNotes: "Initial review in progress. Checking for policy compliance and testability.",
       crashFreeRate: 100,
+      overallRating: 0,
       feedbackBreakdown: { total: 0, critical: 0, high: 0, low: 0 },
       performanceMetrics: { avgStartupTime: "N/A", frozenFrames: "N/A" },
        deviceCoverage: [],
@@ -1105,6 +1109,7 @@ export const projects: Project[] = [
       pointsCost: 0,
       reviewNotes: "Submission is incomplete.",
       crashFreeRate: 100,
+      overallRating: 0,
       feedbackBreakdown: { total: 0, critical: 0, high: 0, low: 0 },
       performanceMetrics: { avgStartupTime: "N/A", frozenFrames: "N/A" },
        deviceCoverage: [],
@@ -1131,6 +1136,7 @@ export const projects: Project[] = [
       androidVersion: "9+",
       pointsCost: 1500,
       crashFreeRate: 99.95,
+      overallRating: 3.9,
       feedbackBreakdown: { total: 22, critical: 2, high: 8, low: 12 },
       performanceMetrics: { avgStartupTime: "150ms", frozenFrames: "0.01%" },
        deviceCoverage: [
@@ -1165,6 +1171,7 @@ export const projects: Project[] = [
       androidVersion: "10+",
       pointsCost: 2500,
       crashFreeRate: 98.5,
+      overallRating: 3.5,
       feedbackBreakdown: { total: 88, critical: 15, high: 40, low: 33 },
       performanceMetrics: { avgStartupTime: "600ms", frozenFrames: "1.5%" },
        deviceCoverage: [
@@ -1215,6 +1222,7 @@ export const projects: Project[] = [
         androidVersion: app.androidVersion,
         pointsCost: testersStarted * 80,
         crashFreeRate: 99.5 - (app.id % 10)/10,
+        overallRating: 4.0 + (app.id % 10)/10,
         feedbackBreakdown: { total: testersCompleted * 3, critical: Math.floor(testersCompleted/5), high: Math.floor(testersCompleted/3), low: testersCompleted * 2 },
         performanceMetrics: { avgStartupTime: `${300 + (app.id % 10) * 10}ms`, frozenFrames: `0.${app.id % 10}%` },
         deviceCoverage: [
@@ -1250,6 +1258,7 @@ export const projects: Project[] = [
     
 
     
+
 
 
 

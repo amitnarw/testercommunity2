@@ -1,4 +1,5 @@
 
+
 'use client';
 
 import { notFound } from 'next/navigation';
@@ -7,7 +8,7 @@ import { projects as allProjects } from '@/lib/data';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Bug, CheckCircle, Clock, Users, MessageSquare, Star, Smartphone, BarChart, MapPin, LayoutGrid, List, Copy, ExternalLink, User, Info, ClipboardList, ChevronLeft, ChevronRight, XCircle, Search, AlertTriangle, Expand, X } from 'lucide-react';
+import { Bug, CheckCircle, Clock, Users, MessageSquare, Star, Smartphone, BarChart, MapPin, LayoutGrid, List, Copy, ExternalLink, User, Info, ClipboardList, ChevronLeft, ChevronRight, XCircle, Search, AlertTriangle, Expand, X, PartyPopper, Lightbulb } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
 import {
     Table,
@@ -153,6 +154,12 @@ export default function ProjectDetailsClient({ project }: { project: Project }) 
         hidden: { opacity: 0, y: 20 },
         visible: { opacity: 1, y: 0, transition: { type: 'spring', stiffness: 100 } }
     };
+    
+    const feedbackBreakdown = {
+        bugs: isUnderReviewOrRejected ? 0 : project.feedback.filter(fb => fb.type === 'Bug').length,
+        suggestions: isUnderReviewOrRejected ? 0 : project.feedback.filter(fb => fb.type === 'Suggestion').length,
+        praise: isUnderReviewOrRejected ? 0 : project.feedback.filter(fb => fb.type === 'Praise').length,
+    };
 
 
     return (
@@ -161,33 +168,8 @@ export default function ProjectDetailsClient({ project }: { project: Project }) 
                 <motion.div initial="hidden" animate="visible" variants={pageVariants} className='max-w-7xl mx-auto'>
 
                     <div className="sticky top-0 z-[50] pt-2 sm:pt-3 pb-4 pl-0 w-1/2">
-                        <BackButton href="/community-dashboard/my-submissions" />
+                        <BackButton href="/dashboard" />
                     </div>
-
-                    {/* <motion.div variants={itemVariants}>
-                        <BackButton href="/dashboard" className="mb-4" />
-                        <div className="rounded-2xl overflow-hidden shadow-lg border-border/50 bg-card p-6 flex flex-col md:flex-row items-start gap-6">
-                            <Image src={project.icon} alt={project.name} width={100} height={100} className="rounded-2xl border bg-background" data-ai-hint={project.dataAiHint} />
-                            <div className="flex-grow">
-                                <Badge variant={statusConfig.badgeVariant as any} className={cn("flex items-center gap-1.5 w-fit", statusConfig.color)}>
-                                    {statusConfig.icon}
-                                    {project.status}
-                                </Badge>
-                                <h1 className="text-4xl font-bold mt-2">{project.name}</h1>
-                                <p className="text-muted-foreground mt-1">{project.description}</p>
-                            </div>
-                            <div className='flex flex-row gap-5'>
-                                <div className="text-center">
-                                    <p className="text-4xl font-bold text-primary">{currentTestDay}</p>
-                                    <p className="text-xs text-muted-foreground">Day of 14</p>
-                                </div>
-                                <div className="text-center">
-                                    <p className="text-4xl font-bold">{project.testersStarted - project.testersCompleted}</p>
-                                    <p className="text-xs text-muted-foreground">Testers Active</p>
-                                </div>
-                            </div>
-                        </div>
-                    </motion.div> */}
 
                     <AppInfoHeader logo={project.icon} name={project.name} dataAiHint={project.dataAiHint} category={project.category} description={project.description} status={project.status} statusConfig={statusConfig} />
 
@@ -222,25 +204,56 @@ export default function ProjectDetailsClient({ project }: { project: Project }) 
 
 
                     <div className={`relative ${isUnderReviewOrRejected ? "blur-md pointer-events-none" : ""}`}>
-                        {/* {isUnderReviewOrRejected && (
-                            <div className="absolute inset-0 bg-secondary/30 backdrop-blur-md z-20 rounded-2xl flex flex-col items-center justify-center text-center p-4 mt-8">
-                                <div className="bg-background/80 p-4 rounded-full mb-4">
-                                    {project.status === 'In Review' ? <Search className="w-12 h-12 text-primary" /> : <XCircle className="w-12 h-12 text-destructive" />}
-                                </div>
-                                <h2 className="text-2xl font-bold">{project.status}</h2>
-                                <p className="text-muted-foreground max-w-sm">
-                                    {project.status === 'In Review'
-                                        ? "Our team is currently reviewing this submission. Testing data and feedback will appear here once the app is published for professional testing."
-                                        : "This submission was rejected. Please check the rejection reason above for details from our review team."
-                                    }
-                                </p>
-                            </div>
-                        )} */}
                         <motion.div
                             variants={{
                                 visible: { transition: { staggerChildren: 0.15 } }
                             }}
-                            className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-8">
+                            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mt-8">
+                            
+                            <InfoCard icon={<Users className="w-5 h-5" />} title="Active Testers" className='lg:col-span-1'>
+                                <p className="text-4xl font-bold">{project.testersStarted - project.testersCompleted}</p>
+                                <p className="text-xs text-muted-foreground">{project.testersCompleted} of {project.testersStarted} testers have completed the test.</p>
+                                <Progress value={(project.testersCompleted / project.testersStarted) * 100} className="mt-2 h-2" />
+                            </InfoCard>
+
+                            <InfoCard icon={<MessageSquare className="w-5 h-5" />} title="Feedback Breakdown" className='lg:col-span-2'>
+                                <div className='grid grid-cols-3 gap-2'>
+                                     <div className="bg-gradient-to-bl from-red-500/20 to-red-500/10 p-5 rounded-lg relative overflow-hidden w-full text-center">
+                                        <div className="p-3 rounded-full absolute opacity-10 scale-[2] -right-2 -top-1 -rotate-45 text-red-500">
+                                            <Bug />
+                                        </div>
+                                        <p className="text-xs text-muted-foreground">Bugs</p>
+                                        <p className="text-4xl font-bold">{feedbackBreakdown.bugs}</p>
+                                    </div>
+                                    <div className="bg-gradient-to-bl from-yellow-500/20 to-yellow-500/10 p-5 rounded-lg relative overflow-hidden w-full text-center">
+                                        <div className="p-3 rounded-full absolute opacity-10 scale-[2] -right-2 -top-1 -rotate-45 text-yellow-500">
+                                            <Lightbulb />
+                                        </div>
+                                        <p className="text-xs text-muted-foreground">Suggestions</p>
+                                        <p className="text-4xl font-bold">{feedbackBreakdown.suggestions}</p>
+                                    </div>
+                                    <div className="bg-gradient-to-bl from-green-500/20 to-green-500/10 p-5 rounded-lg relative overflow-hidden w-full text-center">
+                                        <div className="p-3 rounded-full absolute opacity-10 scale-[2] -right-2 -top-1 -rotate-90 text-green-500">
+                                            <PartyPopper />
+                                        </div>
+                                        <p className="text-xs text-muted-foreground">Praise</p>
+                                        <p className="text-4xl font-bold">{feedbackBreakdown.praise}</p>
+                                    </div>
+                                </div>
+                            </InfoCard>
+                            
+                            <InfoCard icon={<Star className="w-5 h-5" />} title="Overall Rating" className='lg:col-span-1'>
+                                <div className="flex items-baseline gap-2">
+                                    <p className="text-4xl font-bold">{project.overallRating.toFixed(1)}</p>
+                                    <p className="text-muted-foreground">/ 5.0</p>
+                                </div>
+                                <div className="flex mt-1">
+                                    {[...Array(5)].map((_, i) => (
+                                        <Star key={i} className={cn("w-5 h-5", i < Math.round(project.overallRating) ? "text-amber-400 fill-amber-400" : "text-muted-foreground/30")} />
+                                    ))}
+                                </div>
+                            </InfoCard>
+                            
                             <InfoCard icon={<Info className="w-5 h-5" />} title="App Information">
                                 <div className="space-y-3 text-sm">
                                     <div className="flex justify-between">
@@ -262,74 +275,13 @@ export default function ProjectDetailsClient({ project }: { project: Project }) 
                                     </div>
                                 </div>
                             </InfoCard>
-                            <InfoCard icon={<User className="w-5 h-5" />} title="Developer Information">
-                                <div className="flex items-center gap-4">
-                                    <Avatar className="h-12 w-12">
-                                        <AvatarImage src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=400&auto=format&fit=crop" data-ai-hint="man smiling" />
-                                        <AvatarFallback>DV</AvatarFallback>
-                                    </Avatar>
-                                    <div>
-                                        <p className="font-bold">Demo User</p>
-                                        <p className="text-sm text-muted-foreground">demo@inTesters.com</p>
-                                    </div>
-                                </div>
-                            </InfoCard>
-                            <InfoCard icon={<ClipboardList className="w-5 h-5" />} title="Instructions for Testers">
+
+                            <InfoCard icon={<ClipboardList className="w-5 h-5" />} title="Instructions for Testers" className='lg:col-span-3'>
                                 <p className="text-sm text-muted-foreground italic">
                                     "{project.testingInstructions}"
                                 </p>
                             </InfoCard>
                         </motion.div>
-
-                        {/* <div className={cn("grid grid-cols-1 lg:grid-cols-3 gap-2 sm:gap-4 text-center", isUnderReviewOrRejected && "pointer-events-none")}>
-                            <div className='flex flex-row gap-1 items-center justify-center rounded-2xl overflow-hidden'>
-                                <div className="bg-gradient-to-tl from-primary/20 to-primary text-primary-foreground p-5 h-full w-full flex flex-col justify-center gap-1">
-                                    <p className="text-xs">Total Testers</p>
-                                    <p className="text-4xl sm:text-5xl font-bold">{feedbackBreakdown?.totalTesters}</p>
-                                </div>
-                                <div className="bg-gradient-to-tr from-primary/20 to-primary text-primary-foreground p-5 h-full w-full flex flex-col justify-center gap-1">
-                                    <p className="text-xs">Total Days</p>
-                                    <p className="text-4xl sm:text-5xl font-bold">{isUnderReviewOrRejected ? 0 : project.totalDays}</p>
-                                </div>
-                            </div>
-                            <div className='flex flex-col gap-2 items-center justify-center bg-card rounded-2xl p-3'>
-                                <p className='text-xs sm:text-sm'>Feedback</p>
-                                <div className='flex flex-row gap-2 items-center justify-center w-full'>
-                                    <div className="bg-gradient-to-bl from-red-500/20 to-red-500/10 p-2 sm:p-5 rounded-lg relative overflow-hidden w-full">
-                                        <div className="p-3 rounded-full absolute opacity-10 scale-[2] -right-2 -top-1 -rotate-45 text-red-500">
-                                            <Bug />
-                                        </div>
-                                        <p className="text-[10px] sm:text-xs text-muted-foreground">Bugs</p>
-                                        <p className="text-3xl sm:text-4xl font-bold">{feedbackBreakdown.bugs}</p>
-                                    </div>
-                                    <div className="bg-gradient-to-bl from-yellow-500/20 to-yellow-500/10 p-2 sm:p-5 rounded-lg relative overflow-hidden w-full">
-                                        <div className="p-3 rounded-full absolute opacity-10 scale-[2] -right-2 -top-1 -rotate-45 text-yellow-500">
-                                            <Lightbulb />
-                                        </div>
-                                        <p className="text-[10px] sm:text-xs text-muted-foreground">Suggestions</p>
-                                        <p className="text-3xl sm:text-4xl font-bold">{feedbackBreakdown.suggestions}</p>
-                                    </div>
-                                    <div className="bg-gradient-to-bl from-green-500/20 to-green-500/10 p-2 sm:p-5 rounded-lg relative overflow-hidden w-full">
-                                        <div className="p-3 rounded-full absolute opacity-10 scale-[2] -right-2 -top-1 -rotate-90 text-green-500">
-                                            <PartyPopper />
-                                        </div>
-                                        <p className="text-[10px] sm:text-xs text-muted-foreground">Praise</p>
-                                        <p className="text-3xl sm:text-4xl font-bold">{feedbackBreakdown.praise}</p>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div className='flex flex-row gap-2 items-center jutify-center'>
-                                <div className="bg-card p-3 pt-4 rounded-2xl flex flex-col justify-center h-full w-full">
-                                    <p className="text-xs sm:text-sm mb-3">Points Cost</p>
-                                    <p className="text-2xl sm:text-4xl font-bold bg-secondary rounded-lg h-full w-full flex flex items-center justify-center">{isUnderReviewOrRejected ? 0 : project.pointsCost.toLocaleString()}</p>
-                                </div>
-                                <div className="bg-card p-3 pt-4 rounded-2xl flex flex-col justify-center h-full w-full">
-                                    <p className="text-xs sm:text-sm mb-3">Android Version</p>
-                                    <p className="text-2xl sm:text-4xl py-2 sm:py-0 font-bold bg-secondary rounded-lg h-full w-full flex flex items-center justify-center">{isUnderReviewOrRejected ? 'N/A' : project.androidVersion}</p>
-                                </div>
-                            </div>
-                        </div> */}
 
                         <main className="w-full mx-auto mt-8 grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
                             <motion.div variants={itemVariants} className="lg:col-span-2">
@@ -427,22 +379,19 @@ export default function ProjectDetailsClient({ project }: { project: Project }) 
                                 </Card>
                             </motion.div>
                             <motion.div variants={itemVariants} className="lg:col-span-1 space-y-8">
-                                <Card>
+                                 <Card>
                                     <CardHeader>
-                                        <CardTitle className="flex items-center gap-2"><Smartphone className="w-5 h-5 text-primary" /> Device Coverage</CardTitle>
+                                        <CardTitle className="flex items-center gap-2"><Smartphone className="w-5 h-5 text-primary" /> Tested Devices</CardTitle>
                                     </CardHeader>
-                                    <CardContent className="h-[250px] w-full">
-                                        <ResponsiveContainer width="100%" height="100%">
-                                            <PieChart>
-                                                <Pie data={deviceData} cx="50%" cy="50%" labelLine={false} innerRadius={60} outerRadius={80} dataKey="value" paddingAngle={5}>
-                                                    {deviceData.map((entry, index) => (
-                                                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                                                    ))}
-                                                </Pie>
-                                                <Tooltip content={<CustomTooltip />} />
-                                                <Legend iconType="circle" />
-                                            </PieChart>
-                                        </ResponsiveContainer>
+                                    <CardContent>
+                                        <ul className="space-y-3 text-sm">
+                                            {project.deviceCoverage.map(d => (
+                                                 <li key={d.device} className="flex items-center justify-between">
+                                                    <span className="font-semibold">{d.device}</span>
+                                                    <span className="font-mono text-muted-foreground">{d.testers} testers</span>
+                                                </li>
+                                            ))}
+                                        </ul>
                                     </CardContent>
                                 </Card>
                                 <Card>

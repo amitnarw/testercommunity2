@@ -123,6 +123,7 @@ export type Project = {
   androidVersion: string;
   pointsCost: number;
   crashFreeRate: number;
+  overallRating: number;
   feedbackBreakdown: {
     total: number;
     critical: number;
