@@ -1,59 +1,58 @@
-
 'use client';
 
-import { usePathname, useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
-import { Sidebar } from '@/components/sidebar';
-import { CommunityNavbar } from '@/components/community-navbar';
-import { DashboardFooter } from '@/components/dashboard-footer';
+// import { Header } from '@/components/header';
+import Navbar from '@/components/authenticated/navbar';
+// import { Footer } from '@/components/footer';
+import Footer from '@/components/authenticated/footer';
+import { usePathname } from 'next/navigation';
+import { Sidebar } from '@/components/authenticated/sidebar';
 
-export default function AppLayout({
+export default function PublicLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(true);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isAuthChecked, setIsAuthChecked] = useState(false);
-  const router = useRouter();
+  const pathname = usePathname();
 
   useEffect(() => {
     // In a real app, this would be a call to an auth service
-    // For now, we'll use a mock cookie check, but middleware handles redirection
     const authStatus = document.cookie.includes('isAuthenticated=true');
-    setIsAuthenticated(authStatus);
     setIsAuthChecked(true);
-    if (!authStatus) {
-      router.replace('/login');
-    }
-  }, [router]);
+  }, []);
 
   const handleLogout = () => {
-    document.cookie = 'isAuthenticated=false; path=/; max-age=0';
-    setIsAuthenticated(false);
-    router.push('/login');
+    localStorage.removeItem('isAuthenticated');
   };
 
-  if (!isAuthChecked || !isAuthenticated) {
+  const isAuthPage = pathname === '/login' || pathname === '/signup';
+
+  if (!isAuthChecked) {
     return null; // Or a loading spinner
   }
-  
+
+  if (isAuthPage) {
+    return <main className="flex-1 bg-background">{children}</main>;
+  }
+
   return (
-    <div className="flex flex-1">
-        <Sidebar 
-            onLogout={handleLogout} 
-            isCollapsed={isSidebarCollapsed}
-            setIsCollapsed={setIsSidebarCollapsed}
+    <div className="relative flex flex-col min-h-screen">
+      <div className="flex flex-1">
+        <Sidebar
+          onLogout={handleLogout}
+          isCollapsed={isSidebarCollapsed}
+          setIsCollapsed={setIsSidebarCollapsed}
         />
         <div className="flex flex-col flex-1 md:pl-20">
-            <CommunityNavbar 
-                onLogout={handleLogout}
-            />
-            <main className="flex-1">
-                {children}
-            </main>
-            <DashboardFooter />
+          <Navbar onLogout={handleLogout} />
+          <main className="flex-1">
+            {children}
+          </main>
+          <Footer />
         </div>
+      </div>
     </div>
   );
 }

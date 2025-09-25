@@ -3,9 +3,9 @@
 
 import { usePathname, useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
-import { AdminHeader } from '@/components/admin/admin-header';
-import { AdminSidebar } from '@/components/admin/admin-sidebar';
-import { AdminFooter } from '@/components/admin/admin-footer';
+import { AdminHeader } from '@/components/admin/header';
+import { AdminSidebar } from '@/components/admin/sidebar';
+import { AdminFooter } from '@/components/admin/footer';
 import { SiteLogo } from '@/components/icons';
 
 export default function AdminLayout({

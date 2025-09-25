@@ -3,13 +3,13 @@
 
 import { useState, useEffect } from 'react';
 import { useTheme } from 'next-themes';
-import { Button } from './ui/button';
+import { Button } from '../ui/button';
 import { Sun, Moon } from 'lucide-react';
-import { UserNav } from './user-nav';
-import MobileMenu from './mobile-menu';
+import { UserNav } from '../user-nav';
+import MobileMenu from '../mobile-menu';
 
 
-export function CommunityNavbar({ onLogout }: { onLogout: () => void }) {
+export default function Navbar({ onLogout }: { onLogout: () => void }) {
     const { theme, setTheme } = useTheme();
     const [greeting, setGreeting] = useState('');
     const [isMenuOpen, setIsMenuOpen] = useState(false);

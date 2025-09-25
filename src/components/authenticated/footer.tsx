@@ -1,7 +1,7 @@
 
 import Link from 'next/link';
 
-export function DashboardFooter() {
+export default function Footer() {
   return (
     <footer className="bg-secondary/50 pt-10">
       <hr />

@@ -49,7 +49,7 @@ export default function PublicLayout({
             setSidebarCollapsed={() => {}}
             onLogout={handleLogout}
         />
-        <main className="flex-1 bg-background">
+        <main className="flex-1 bg-background z-10">
             {children}
         </main>
         <Footer />
