@@ -167,12 +167,12 @@ export default function SubmissionDetailsClient({ project }: { project: Project 
                         <div className={cn("grid grid-cols-1 lg:grid-cols-3 gap-2 sm:gap-4 text-center", isUnderReviewOrRejected && "pointer-events-none")}>
                             <div className='flex flex-row gap-1 items-center justify-center rounded-2xl overflow-hidden'>
                                 <div className="bg-gradient-to-tl from-primary/20 to-primary text-primary-foreground p-5 h-full w-full flex flex-col justify-center gap-1">
-                                    <p className="text-xs">Total Testers</p>
-                                    <p className="text-4xl sm:text-5xl font-bold">{feedbackBreakdown?.totalTesters}</p>
+                                    <p className="text-xs">Testers</p>
+                                    <p className="text-4xl sm:text-5xl font-bold">{feedbackBreakdown?.totalTesters}<span className='text-2xl text-white/50'>/14</span></p>
                                 </div>
                                 <div className="bg-gradient-to-tr from-primary/20 to-primary text-primary-foreground p-5 h-full w-full flex flex-col justify-center gap-1">
-                                    <p className="text-xs">Total Days</p>
-                                    <p className="text-4xl sm:text-5xl font-bold">{isUnderReviewOrRejected ? 0 : project.totalDays}</p>
+                                    <p className="text-xs">Days</p>
+                                    <p className="text-4xl sm:text-5xl font-bold">{isUnderReviewOrRejected ? 0 : project.totalDays}<span className='text-2xl text-white/50'>/16</span></p>
                                 </div>
                             </div>
                             <div className='flex flex-col gap-2 items-center justify-center bg-card rounded-2xl p-3'>

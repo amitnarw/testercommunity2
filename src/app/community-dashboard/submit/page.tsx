@@ -35,8 +35,8 @@ const submissionSchema = z.object({
     appDesc: z.string().min(50, "Please provide a detailed description of at least 50 characters."),
     testingInstructions: z.string().min(50, "Please provide instructions of at least 50 characters."),
     androidVersion: z.string().min(1, "Please specify the minimum Android version."),
-    numberOfTesters: z.coerce.number().min(5, { message: 'A minimum of 5 testers is required.' }).max(50),
-    testDuration: z.coerce.number().min(14, { message: 'A minimum of 14 days is required.' }).max(30),
+    numberOfTesters: z.coerce.number().min(1).max(14),
+    testDuration: z.coerce.number().min(1).max(16),
 });
 
 type SubmissionFormData = z.infer<typeof submissionSchema>;
@@ -386,9 +386,9 @@ export default function SubmitAppPage() {
                                                                 <div className="flex items-center gap-4 pt-2">
                                                                     <Slider
                                                                         defaultValue={[field.value]}
-                                                                        min={5}
-                                                                        max={50}
-                                                                        step={5}
+                                                                        min={1}
+                                                                        max={14}
+                                                                        step={1}
                                                                         onValueChange={(value) => field.onChange(value[0])}
                                                                         className={cn("w-[85%]", field.name)}
                                                                     />
@@ -415,8 +415,8 @@ export default function SubmitAppPage() {
                                                                 <div className="flex items-center gap-4 pt-2">
                                                                     <Slider
                                                                         defaultValue={[field.value]}
-                                                                        min={14}
-                                                                        max={30}
+                                                                        min={1}
+                                                                        max={16}
                                                                         step={1}
                                                                         onValueChange={(value) => field.onChange(value[0])}
                                                                         className={cn("w-[85%]", field.name)}
@@ -477,5 +477,7 @@ export default function SubmitAppPage() {
     );
 
 }
+
+    
 
     

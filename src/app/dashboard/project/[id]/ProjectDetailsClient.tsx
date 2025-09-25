@@ -30,6 +30,7 @@ import { motion } from 'framer-motion';
 import { BackButton } from '@/components/back-button';
 import { AppPagination } from '@/components/app-pagination';
 import AppInfoHeader from '@/components/app-info-header';
+import DeveloperInstructions from '@/components/developerInstructions';
 
 
 const FEEDBACK_PER_PAGE = 10;
@@ -70,16 +71,15 @@ const getSeverityBadge = (severity: string) => {
     }
 };
 
-const InfoCard = ({ icon, title, children, className }: { icon: React.ReactNode, title: string, children: React.ReactNode, className?: string }) => (
+const InfoCard = ({ title, children, className }: { title: string, children: React.ReactNode, className?: string }) => (
     <motion.div
         variants={{
             hidden: { opacity: 0, y: 20 },
             visible: { opacity: 1, y: 0 }
         }}
-        className={cn("rounded-2xl border bg-card text-card-foreground p-6 shadow-sm", className)}>
+        className={cn("rounded-2xl bg-card text-card-foreground p-3 shadow-sm", className)}>
         <div className="flex items-center gap-3 mb-3">
-            <div className="bg-primary/10 p-2 rounded-lg text-primary">{icon}</div>
-            <h3 className="text-base font-semibold">{title}</h3>
+            <h3 className="text-sm text-center w-full">{title}</h3>
         </div>
         <div>
             {children}
@@ -168,7 +168,7 @@ export default function ProjectDetailsClient({ project }: { project: Project }) 
         hidden: { opacity: 0, y: 20 },
         visible: { opacity: 1, y: 0, transition: { type: 'spring', stiffness: 100 } }
     };
-    
+
     const feedbackBreakdown = {
         bugs: isUnderReviewOrRejected ? 0 : project.feedback.filter(fb => fb.type === 'Bug').length,
         suggestions: isUnderReviewOrRejected ? 0 : project.feedback.filter(fb => fb.type === 'Suggestion').length,
@@ -222,17 +222,22 @@ export default function ProjectDetailsClient({ project }: { project: Project }) 
                             variants={{
                                 visible: { transition: { staggerChildren: 0.15 } }
                             }}
-                            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mt-8">
-                            
-                            <InfoCard icon={<Users className="w-5 h-5" />} title="Active Testers" className='lg:col-span-1'>
-                                <p className="text-4xl font-bold">{project.testersStarted - project.testersCompleted}</p>
-                                <p className="text-xs text-muted-foreground">{project.testersCompleted} of {project.testersStarted} testers have completed the test.</p>
-                                <Progress value={(project.testersCompleted / project.testersStarted) * 100} className="mt-2 h-2" />
-                            </InfoCard>
+                            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4 mt-8">
 
-                            <InfoCard icon={<MessageSquare className="w-5 h-5" />} title="Feedback Breakdown" className='lg:col-span-2'>
+                            <div className='flex flex-row gap-1 items-center justify-center rounded-2xl overflow-hidden col-span-2'>
+                                <div className="bg-gradient-to-tl from-primary/20 to-primary text-primary-foreground p-5 h-full w-full flex flex-col items-center justify-center gap-1">
+                                    <p className="text-xs">Testers</p>
+                                    <p className="text-4xl sm:text-5xl font-bold">{project.testersStarted}<span className='text-2xl text-white/50'>/14</span></p>
+                                </div>
+                                <div className="bg-gradient-to-tr from-primary/20 to-primary text-primary-foreground p-5 h-full w-full flex flex-col items-center justify-center gap-1">
+                                    <p className="text-xs">Days</p>
+                                    <p className="text-4xl sm:text-5xl font-bold">{isUnderReviewOrRejected ? 0 : project.totalDays}<span className='text-2xl text-white/50'>/16</span></p>
+                                </div>
+                            </div>
+
+                            <InfoCard title="Feedback Breakdown" className='lg:col-span-2'>
                                 <div className='grid grid-cols-3 gap-2'>
-                                     <div className="bg-gradient-to-bl from-red-500/20 to-red-500/10 p-5 rounded-lg relative overflow-hidden w-full text-center">
+                                    <div className="bg-gradient-to-bl from-red-500/20 to-red-500/10 p-5 rounded-lg relative overflow-hidden w-full text-center">
                                         <div className="p-3 rounded-full absolute opacity-10 scale-[2] -right-2 -top-1 -rotate-45 text-red-500">
                                             <Bug />
                                         </div>
@@ -255,27 +260,31 @@ export default function ProjectDetailsClient({ project }: { project: Project }) 
                                     </div>
                                 </div>
                             </InfoCard>
-                            
-                            <InfoCard icon={<Star className="w-5 h-5" />} title="Overall Rating" className='lg:col-span-1'>
-                                <div className="flex items-baseline gap-2">
-                                    <p className="text-4xl font-bold">{project.overallRating.toFixed(1)}</p>
-                                    <p className="text-muted-foreground">/ 5.0</p>
+
+                            <section className='flex flex-col items-center rounded-2xl bg-card text-card-foreground p-3 shadow-sm relative overflow-hidden'>
+                                <div className="flex items-center gap-3 mb-3">
+                                    <h3 className="text-sm text-center w-full">Overall Rating</h3>
                                 </div>
-                                <div className="flex mt-1">
-                                    {[...Array(5)].map((_, i) => (
-                                        <Star key={i} className={cn("w-5 h-5", i < Math.round(project.overallRating) ? "text-amber-400 fill-amber-400" : "text-muted-foreground/30")} />
-                                    ))}
-                                </div>
-                            </InfoCard>
-                            
-                            <InfoCard icon={<Info className="w-5 h-5" />} title="App Information">
-                                <div className="space-y-3 text-sm">
-                                    <div className="flex justify-between">
-                                        <span className="text-muted-foreground">Package Name</span>
-                                        <span className="font-mono text-foreground truncate">{project.packageName}</span>
+                                <div className='flex flex-col items-center justify-center h-full w-full'>
+                                <Star className="w-5 h-5 text-amber-400/0 fill-amber-400/20 scale-[2] absolute top-2 left-2 rotate-45" />
+                                    <div className="flex items-center justify-center gap-2 bg-secondary rounded-lg h-full w-full z-10">
+                                        <p className="text-4xl font-bold">{project.overallRating.toFixed(1)}</p>
+                                        <p className="text-muted-foreground">/ 5.0</p>
                                     </div>
-                                    <div className="flex flex-col items-start gap-2">
-                                        <span className="text-muted-foreground">Play Store Link</span>
+                                    <Star className="w-5 h-5 text-amber-400/0 fill-amber-400/20 scale-[3] absolute top-7 right-2 rotate-90" />
+                                </div>
+                            </section>
+
+                            <section className='flex flex-col items-center rounded-2xl bg-card text-card-foreground p-3 shadow-sm'>
+                                <div className="flex items-center gap-3 mb-3">
+                                    <h3 className="text-sm text-center w-full">App Information</h3>
+                                </div>
+                                <div className='flex flex-col items-center justify-center h-full space-y-3 text-sm w-full'>
+                                    <div className="flex flex-col items-center justify-between">
+                                        <span className="text-xs text-muted-foreground">Package Name</span>
+                                        <span className="font-mono text-primary truncate">{project.packageName}</span>
+                                    </div>
+                                    <div className="flex flex-col items-start gap-2 w-full">
                                         <div className="flex gap-2 w-full">
                                             <Button variant="outline" size="sm" className="flex-1" onClick={() => copyToClipboard(`https://play.google.com/store/apps/details?id=${project.packageName}`)}>
                                                 <Copy className="mr-2 h-4 w-4" /> Copy
@@ -288,80 +297,87 @@ export default function ProjectDetailsClient({ project }: { project: Project }) 
                                         </div>
                                     </div>
                                 </div>
-                            </InfoCard>
+                            </section>
 
-                            <InfoCard icon={<ClipboardList className="w-5 h-5" />} title="Instructions for Testers" className='lg:col-span-3'>
-                                <p className="text-sm text-muted-foreground italic">
-                                    "{project.testingInstructions}"
-                                </p>
-                            </InfoCard>
                         </motion.div>
 
-                         <motion.div variants={itemVariants} className="mt-8">
-                             <Card className="bg-card">
+                        <DeveloperInstructions title='Instructions for Testers' instruction={`"${project?.testingInstructions}"`} mt={8} />
+
+                        <motion.div variants={itemVariants} className="mt-8">
+                            <Card className="bg-card">
                                 <CardHeader>
                                     <CardTitle>Tester & Device Details</CardTitle>
                                     <CardDescription>Comprehensive information about the testers and devices in your project.</CardDescription>
                                 </CardHeader>
                                 <CardContent>
-                                     <div className="border rounded-lg overflow-hidden">
-                                        <Table>
-                                            <TableHeader>
-                                                <TableRow>
-                                                    <TableHead>Tester</TableHead>
-                                                    <TableHead>Country</TableHead>
-                                                    <TableHead>Device</TableHead>
-                                                    <TableHead>RAM</TableHead>
-                                                    <TableHead>OS</TableHead>
-                                                    <TableHead>Screen</TableHead>
-                                                    <TableHead>Language</TableHead>
-                                                    <TableHead>Network</TableHead>
-                                                    <TableHead className="text-right">Rating</TableHead>
-                                                </TableRow>
-                                            </TableHeader>
-                                            <TableBody>
-                                                 {currentTesters.length > 0 ? currentTesters.map(tester => (
-                                                    <TableRow key={tester.id}>
-                                                        <TableCell>
-                                                            <div className="flex items-center gap-2">
-                                                                <Avatar className="w-8 h-8">
-                                                                    <AvatarImage src={tester.avatar} />
-                                                                    <AvatarFallback>{tester.name.charAt(0)}</AvatarFallback>
-                                                                </Avatar>
-                                                                <span className="font-medium">{tester.name}</span>
-                                                            </div>
-                                                        </TableCell>
-                                                        <TableCell>{tester.country}</TableCell>
-                                                        <TableCell>{tester.device}</TableCell>
-                                                        <TableCell>{tester.ram}</TableCell>
-                                                        <TableCell>{tester.os}</TableCell>
-                                                        <TableCell>{tester.screenSize}</TableCell>
-                                                        <TableCell>{tester.language}</TableCell>
-                                                        <TableCell><Badge variant={tester.network === 'WiFi' ? 'secondary' : 'outline'}>{tester.network}</Badge></TableCell>
-                                                        <TableCell className="text-right">
-                                                            <div className="flex items-center justify-end gap-1">
-                                                                <Star className="w-4 h-4 text-amber-400 fill-amber-400" />
-                                                                <span className="font-bold">{tester.rating.toFixed(1)}</span>
-                                                            </div>
-                                                        </TableCell>
-                                                    </TableRow>
-                                                )) : (
-                                                    <TableRow>
-                                                        <TableCell colSpan={9} className="text-center h-24 text-muted-foreground">
-                                                            No tester data available for this project yet.
-                                                        </TableCell>
-                                                    </TableRow>
-                                                )}
-                                            </TableBody>
-                                        </Table>
-                                    </div>
-                                    <AppPagination
-                                        currentPage={testersPage}
-                                        totalPages={totalTestersPages}
-                                        onPageChange={handleTestersPageChange}
-                                    />
-                                </CardContent>
-                             </Card>
+  <div className="w-full overflow-x-auto">
+    <div className="min-w-full inline-block align-middle">
+      <div className="overflow-hidden border rounded-lg">
+        <Table className="min-w-[900px]">
+          <TableHeader>
+            <TableRow>
+              <TableHead>Tester</TableHead>
+              <TableHead>Country</TableHead>
+              <TableHead>Device</TableHead>
+              <TableHead>RAM</TableHead>
+              <TableHead>OS</TableHead>
+              <TableHead>Screen</TableHead>
+              <TableHead>Language</TableHead>
+              <TableHead>Network</TableHead>
+              <TableHead className="text-right">Rating</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {currentTesters.length > 0 ? currentTesters.map(tester => (
+              <TableRow key={tester.id}>
+                <TableCell>
+                  <div className="flex items-center gap-2">
+                    <Avatar className="w-8 h-8">
+                      <AvatarImage src={tester.avatar} />
+                      <AvatarFallback>{tester.name.charAt(0)}</AvatarFallback>
+                    </Avatar>
+                    <span className="font-medium">{tester.name}</span>
+                  </div>
+                </TableCell>
+                <TableCell>{tester.country}</TableCell>
+                <TableCell>{tester.device}</TableCell>
+                <TableCell>{tester.ram}</TableCell>
+                <TableCell>{tester.os}</TableCell>
+                <TableCell>{tester.screenSize}</TableCell>
+                <TableCell>{tester.language}</TableCell>
+                <TableCell>
+                  <Badge variant={tester.network === 'WiFi' ? 'secondary' : 'outline'}>
+                    {tester.network}
+                  </Badge>
+                </TableCell>
+                <TableCell className="text-right">
+                  <div className="flex items-center justify-end gap-1">
+                    <Star className="w-4 h-4 text-amber-400 fill-amber-400" />
+                    <span className="font-bold">{tester.rating.toFixed(1)}</span>
+                  </div>
+                </TableCell>
+              </TableRow>
+            )) : (
+              <TableRow>
+                <TableCell colSpan={9} className="text-center h-24 text-muted-foreground">
+                  No tester data available for this project yet.
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      </div>
+    </div>
+  </div>
+
+  <AppPagination
+    currentPage={testersPage}
+    totalPages={totalTestersPages}
+    onPageChange={handleTestersPageChange}
+  />
+</CardContent>
+
+                            </Card>
                         </motion.div>
 
 
@@ -414,7 +430,7 @@ export default function ProjectDetailsClient({ project }: { project: Project }) 
                                                                         </TableCell>
                                                                         <TableCell>{getSeverityBadge(fb.severity)}</TableCell>
                                                                         <TableCell className="text-muted-foreground">{fb.comment}</TableCell>
-                                                                         <TableCell>
+                                                                        <TableCell>
                                                                             <div className="flex items-center gap-2">
                                                                                 {fb.screenshot && (
                                                                                     <Button variant="outline" size="icon" onClick={() => setFullscreenImage(fb.screenshot!)}>
@@ -478,14 +494,14 @@ export default function ProjectDetailsClient({ project }: { project: Project }) 
                                 </Card>
                             </motion.div>
                             <motion.div variants={itemVariants} className="lg:col-span-1 space-y-8">
-                                 <Card>
+                                <Card>
                                     <CardHeader>
                                         <CardTitle className="flex items-center gap-2"><Smartphone className="w-5 h-5 text-primary" /> Tested Devices</CardTitle>
                                     </CardHeader>
                                     <CardContent>
                                         <ul className="space-y-3 text-sm">
                                             {project.deviceCoverage.map(d => (
-                                                 <li key={d.device} className="flex items-center justify-between">
+                                                <li key={d.device} className="flex items-center justify-between">
                                                     <span className="font-semibold">{d.device}</span>
                                                     <span className="font-mono text-muted-foreground">{d.testers} testers</span>
                                                 </li>
