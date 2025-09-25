@@ -1,7 +1,6 @@
 
 'use client';
 
-import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
@@ -72,7 +71,7 @@ export default function AdminUsersPage() {
                                     <TableCell>
                                         <Badge
                                             variant={user.status === 'Banned' ? 'destructive' : 'secondary'}
-                                            className={user.status === 'Active' ? 'bg-green-500/20 text-green-700' : ''}
+                                            className={user.status === 'Active' ? 'bg-green-500/20 text-green-700 dark:bg-green-500/10 dark:text-green-400' : ''}
                                         >
                                             {user.status}
                                         </Badge>
@@ -91,7 +90,7 @@ export default function AdminUsersPage() {
                                                 <DropdownMenuItem>View Activity</DropdownMenuItem>
                                                 <DropdownMenuSeparator />
                                                 <DropdownMenuItem>Reset Password</DropdownMenuItem>
-                                                <DropdownMenuItem className="text-destructive focus:bg-destructive/10">Ban User</DropdownMenuItem>
+                                                <DropdownMenuItem className="text-destructive focus:bg-destructive/10 focus:text-destructive">Ban User</DropdownMenuItem>
                                             </DropdownMenuContent>
                                         </DropdownMenu>
                                     </TableCell>

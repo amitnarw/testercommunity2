@@ -8,7 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuItem } from "@/components/ui/dropdown-menu";
-import { Search, MoreHorizontal, ArrowRight } from "lucide-react";
+import { Search, MoreHorizontal } from "lucide-react";
 import Link from 'next/link';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
@@ -76,7 +76,7 @@ export default function AdminSubmissionsPage() {
                                     <TableCell>
                                         <Badge
                                             variant={submission.status === 'Rejected' ? 'destructive' : 'secondary'}
-                                            className={submission.status === 'Approved' ? 'bg-green-500/20 text-green-700' : ''}
+                                            className={submission.status === 'Approved' ? 'bg-green-500/20 text-green-700 dark:bg-green-500/10 dark:text-green-400' : ''}
                                         >
                                             {submission.status}
                                         </Badge>
@@ -96,7 +96,7 @@ export default function AdminSubmissionsPage() {
                                                 </Link>
                                                 <DropdownMenuItem>Mark as Urgent</DropdownMenuItem>
                                                 <DropdownMenuSeparator />
-                                                <DropdownMenuItem className="text-destructive focus:bg-destructive/10">Archive</DropdownMenuItem>
+                                                <DropdownMenuItem className="text-destructive focus:bg-destructive/10 focus:text-destructive">Archive</DropdownMenuItem>
                                             </DropdownMenuContent>
                                         </DropdownMenu>
                                     </TableCell>

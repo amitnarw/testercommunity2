@@ -56,7 +56,7 @@ export default function ProfessionalDashboardPage() {
       </div>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        <Card className="bg-card">
+        <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Lifetime Earnings</CardTitle>
             <DollarSign className="h-4 w-4 text-muted-foreground" />
@@ -66,7 +66,7 @@ export default function ProfessionalDashboardPage() {
             <p className="text-xs text-muted-foreground">+20.1% from last month</p>
           </CardContent>
         </Card>
-        <Card className="bg-card">
+        <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Tests Completed</CardTitle>
             <CheckCircle className="h-4 w-4 text-muted-foreground" />
@@ -76,7 +76,7 @@ export default function ProfessionalDashboardPage() {
             <p className="text-xs text-muted-foreground">+18 from last month</p>
           </CardContent>
         </Card>
-        <Card className="bg-card">
+        <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Active Projects</CardTitle>
             <Clock className="h-4 w-4 text-muted-foreground" />
@@ -89,7 +89,7 @@ export default function ProfessionalDashboardPage() {
       </div>
 
        <div className="grid grid-cols-1 lg:grid-cols-5 gap-4">
-            <Card className="lg:col-span-3 bg-card">
+            <Card className="lg:col-span-3">
               <CardHeader>
                 <CardTitle>Assigned Projects</CardTitle>
                 <CardDescription>
@@ -99,7 +99,7 @@ export default function ProfessionalDashboardPage() {
               <CardContent>
                 <div className="space-y-4">
                   {assignedProjects.map((project) => (
-                    <div key={project.id} className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 rounded-2xl bg-secondary/50">
+                    <div key={project.id} className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 rounded-xl bg-secondary">
                        <div className="flex items-center gap-4 mb-3 sm:mb-0">
                           <Avatar className="h-10 w-10">
                               <AvatarImage src={project.icon} data-ai-hint={project.dataAiHint} />
@@ -131,7 +131,7 @@ export default function ProfessionalDashboardPage() {
                 </div>
               </CardContent>
             </Card>
-            <Card className="lg:col-span-2 bg-card">
+            <Card className="lg:col-span-2">
               <CardHeader>
                 <CardTitle>Earnings Overview</CardTitle>
                  <CardDescription>Your earnings for the last 6 months.</CardDescription>
@@ -140,10 +140,10 @@ export default function ProfessionalDashboardPage() {
                  <ChartContainer config={chartConfig} className="min-h-60 w-full">
                     <ResponsiveContainer width="100%" height={250}>
                         <BarChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                            <XAxis dataKey="month" tickLine={false} axisLine={false} stroke="#888888" fontSize={12} />
-                            <YAxis tickLine={false} axisLine={false} stroke="#888888" fontSize={12} />
+                            <XAxis dataKey="month" tickLine={false} axisLine={false} stroke="hsl(var(--muted-foreground))" fontSize={12} />
+                            <YAxis tickLine={false} axisLine={false} stroke="hsl(var(--muted-foreground))" fontSize={12} />
                             <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
-                            <Bar dataKey="earnings" fill="var(--color-earnings)" radius={8} />
+                            <Bar dataKey="earnings" fill="hsl(var(--primary))" radius={8} />
                         </BarChart>
                     </ResponsiveContainer>
                 </ChartContainer>
@@ -152,7 +152,7 @@ export default function ProfessionalDashboardPage() {
         </div>
 
       <div>
-        <Card className="bg-card">
+        <Card>
           <CardHeader>
             <CardTitle>Available Projects</CardTitle>
             <CardDescription>
@@ -162,7 +162,7 @@ export default function ProfessionalDashboardPage() {
           <CardContent>
             <div className="space-y-4">
               {availableProjects.map((project) => (
-                 <div key={project.id} className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 rounded-2xl bg-secondary/50">
+                 <div key={project.id} className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 rounded-xl bg-secondary">
                    <div className="flex items-center gap-4 mb-3 sm:mb-0">
                       <Avatar className="h-10 w-10">
                           <AvatarImage src={project.icon} data-ai-hint={project.dataAiHint} />

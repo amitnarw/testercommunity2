@@ -6,7 +6,7 @@ import Image from 'next/image';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Smartphone, Info, Calendar, Users, Type, Check, X, ArrowLeft, Download } from "lucide-react";
+import { Smartphone, Calendar, Users, Type, Check, X, ArrowLeft, Download } from "lucide-react";
 import Link from 'next/link';
 import { projects } from '@/lib/data';
 import { notFound } from 'next/navigation';
@@ -81,7 +81,7 @@ export default function AdminSubmissionDetailPage({ params }: { params: { id: st
                             <CardDescription>Instructions provided by the developer for the testers.</CardDescription>
                         </CardHeader>
                         <CardContent>
-                            <div className="prose dark:prose-invert text-sm p-4 bg-secondary/50 rounded-lg">
+                            <div className="prose dark:prose-invert text-sm p-4 bg-secondary rounded-lg">
                                 <p>{project.testingInstructions}</p>
                             </div>
                         </CardContent>
@@ -108,7 +108,7 @@ export default function AdminSubmissionDetailPage({ params }: { params: { id: st
                                     <Button variant="destructive" onClick={handleReject}>
                                         <X className="mr-2 h-4 w-4" /> Reject
                                     </Button>
-                                    <Button className="bg-green-600 hover:bg-green-700" onClick={handleApprove}>
+                                    <Button className="bg-green-600 hover:bg-green-700 text-white dark:bg-green-700 dark:hover:bg-green-800" onClick={handleApprove}>
                                         <Check className="mr-2 h-4 w-4" /> Approve
                                     </Button>
                                 </div>

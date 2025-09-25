@@ -2,11 +2,10 @@
 'use client';
 
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
-import { Users, FileText, Bug, Eye, UserCheck, BarChart3, ArrowRight } from "lucide-react";
+import { Users, FileText, Bug, UserCheck, ArrowRight } from "lucide-react";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Link from "next/link";
 import {
   ChartContainer,
@@ -53,7 +52,7 @@ export default function AdminDashboardPage() {
         </div>
       </div>
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <Card className="bg-card">
+        <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Total Users</CardTitle>
             <Users className="h-4 w-4 text-muted-foreground" />
@@ -63,7 +62,7 @@ export default function AdminDashboardPage() {
             <p className="text-xs text-muted-foreground">+20.1% from last month</p>
           </CardContent>
         </Card>
-        <Card className="bg-card">
+        <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Submissions for Review</CardTitle>
             <FileText className="h-4 w-4 text-muted-foreground" />
@@ -73,7 +72,7 @@ export default function AdminDashboardPage() {
             <p className="text-xs text-muted-foreground">10 new submissions today</p>
           </CardContent>
         </Card>
-        <Card className="bg-card">
+        <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Open Bug Reports</CardTitle>
             <Bug className="h-4 w-4 text-muted-foreground" />
@@ -83,7 +82,7 @@ export default function AdminDashboardPage() {
             <p className="text-xs text-muted-foreground">+19% from last month</p>
           </CardContent>
         </Card>
-         <Card className="bg-card">
+         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-sm font-medium">Active Testers</CardTitle>
             <UserCheck className="h-4 w-4 text-muted-foreground" />
@@ -96,7 +95,7 @@ export default function AdminDashboardPage() {
       </div>
       
       <div className="grid grid-cols-1 lg:grid-cols-7 gap-4">
-        <Card className="lg:col-span-4 bg-card">
+        <Card className="lg:col-span-4">
             <CardHeader>
                 <CardTitle>Recent Submissions</CardTitle>
                 <CardDescription>The latest apps submitted by developers for review.</CardDescription>
@@ -123,7 +122,7 @@ export default function AdminDashboardPage() {
                                 <TableCell>
                                     <Badge 
                                         variant={submission.status === 'Rejected' ? 'destructive' : 'secondary'}
-                                        className={submission.status === 'Approved' ? 'bg-green-500/20 text-green-700' : ''}
+                                        className={submission.status === 'Approved' ? 'bg-green-500/20 text-green-700 dark:bg-green-500/10 dark:text-green-400' : ''}
                                     >
                                         {submission.status}
                                     </Badge>
@@ -139,7 +138,7 @@ export default function AdminDashboardPage() {
                 </Table>
             </CardContent>
         </Card>
-        <Card className="lg:col-span-3 bg-card">
+        <Card className="lg:col-span-3">
           <CardHeader>
             <CardTitle>New Users Overview</CardTitle>
             <CardDescription>January - June 2024</CardDescription>
@@ -148,10 +147,10 @@ export default function AdminDashboardPage() {
             <ChartContainer config={chartConfig} className="min-h-60 w-full">
                 <ResponsiveContainer width="100%" height={250}>
                     <BarChart data={chartData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
-                        <XAxis dataKey="month" tickLine={false} axisLine={false} stroke="#888888" fontSize={12} />
-                        <YAxis tickLine={false} axisLine={false} stroke="#888888" fontSize={12} />
+                        <XAxis dataKey="month" tickLine={false} axisLine={false} stroke="hsl(var(--muted-foreground))" fontSize={12} />
+                        <YAxis tickLine={false} axisLine={false} stroke="hsl(var(--muted-foreground))" fontSize={12} />
                         <ChartTooltip cursor={false} content={<ChartTooltipContent />} />
-                        <Bar dataKey="desktop" fill="var(--color-desktop)" radius={8} />
+                        <Bar dataKey="desktop" fill="hsl(var(--primary))" radius={8} />
                     </BarChart>
                 </ResponsiveContainer>
             </ChartContainer>
