@@ -1,5 +1,4 @@
 
-
 import { notFound } from 'next/navigation';
 import { projects as allProjects } from '@/lib/data';
 import type { Project } from '@/lib/types';
