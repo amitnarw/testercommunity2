@@ -95,12 +95,13 @@ export default function SubmitAppPage() {
 
     const userBalance = 1250;
     const testers = form.watch('numberOfTesters');
+    const duration = form.watch('testDuration');
     const isBalanceInsufficient = cost > userBalance;
 
     useEffect(() => {
-        const calculatedCost = testers * 100;
+        const calculatedCost = (testers * 80) + (duration * 10);
         setCost(calculatedCost);
-    }, [testers]);
+    }, [testers, duration]);
 
 
     const onSubmit = (data: SubmissionFormData) => {
