@@ -20,7 +20,8 @@ export default function AdminLayout({
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(true);
 
   useEffect(() => {
-    const authStatus = localStorage.getItem('isAdminAuthenticated') === 'true';
+    // In a real app, this would be a call to an auth service
+    const authStatus = document.cookie.includes('isAdminAuthenticated=true');
     setIsAuthenticated(authStatus);
     setIsAuthChecked(true);
 
@@ -30,7 +31,7 @@ export default function AdminLayout({
   }, [pathname, router]);
 
   const handleLogout = () => {
-    localStorage.removeItem('isAdminAuthenticated');
+    document.cookie = 'isAdminAuthenticated=false; path=/; max-age=0';
     setIsAuthenticated(false);
     router.push('/admin/login');
   };
@@ -47,6 +48,10 @@ export default function AdminLayout({
 
   if (isLoginPage) {
     return <main className="flex-1 bg-background">{children}</main>;
+  }
+  
+  if (!isAuthenticated) {
+      return null;
   }
   
   return (

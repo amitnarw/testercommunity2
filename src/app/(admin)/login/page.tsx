@@ -13,7 +13,7 @@ const AdminLoginForm = () => {
     const handleAdminLogin = (e: React.FormEvent) => {
         e.preventDefault();
         // In a real app, you would verify credentials here
-        localStorage.setItem('isAdminAuthenticated', 'true');
+        document.cookie = "isAdminAuthenticated=true; path=/; max-age=" + 60 * 60 * 24 * 7;
         router.push('/admin/dashboard');
     }
 

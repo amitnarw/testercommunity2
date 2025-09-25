@@ -1,0 +1,55 @@
+import { NextResponse } from 'next/server'
+import type { NextRequest } from 'next/server'
+
+export function middleware(request: NextRequest) {
+  const isAuthenticated = request.cookies.get('isAuthenticated')?.value === 'true';
+  const isAdmin = request.cookies.get('isAdminAuthenticated')?.value === 'true';
+  const isProfessional = request.cookies.get('isProfessionalAuthenticated')?.value === 'true';
+
+  const { pathname } = request.nextUrl;
+
+  const authRoutes = ['/login', '/signup'];
+  const authenticatedRoutes = ['/dashboard', '/community-dashboard', '/notifications', '/profile'];
+  const adminRoutes = ['/admin'];
+  const professionalRoutes = ['/professional'];
+
+  // If user is authenticated and tries to access login/signup, redirect to dashboard
+  if (isAuthenticated && authRoutes.some(route => pathname.startsWith(route))) {
+    return NextResponse.redirect(new URL('/dashboard', request.url));
+  }
+  
+  if (isAdmin && pathname.startsWith('/admin/login')) {
+      return NextResponse.redirect(new URL('/admin/dashboard', request.url));
+  }
+
+  // If user is not authenticated and tries to access a protected route, redirect to login
+  if (!isAuthenticated && authenticatedRoutes.some(route => pathname.startsWith(route))) {
+    return NextResponse.redirect(new URL('/login', request.url));
+  }
+  
+  if (!isAdmin && adminRoutes.some(route => pathname.startsWith(route)) && pathname !== '/admin/login') {
+      return NextResponse.redirect(new URL('/admin/login', request.url));
+  }
+  
+  if (!isProfessional && professionalRoutes.some(route => pathname.startsWith(route))) {
+      // Assuming professional users also have a login page, though not explicitly created yet.
+      // For now, let's redirect them to the main login.
+      return NextResponse.redirect(new URL('/login', request.url));
+  }
+
+
+  return NextResponse.next()
+}
+
+export const config = {
+  matcher: [
+    /*
+     * Match all request paths except for the ones starting with:
+     * - api (API routes)
+     * - _next/static (static files)
+     * - _next/image (image optimization files)
+     * - favicon.ico (favicon file)
+     */
+    '/((?!api|_next/static|_next/image|favicon.ico).*)',
+  ],
+}

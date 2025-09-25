@@ -1,31 +1,57 @@
-
 'use client';
 
-import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useState, useEffect } from 'react';
+import { Header } from '@/components/header';
+import { Footer } from '@/components/footer';
+import { usePathname } from 'next/navigation';
 
-export default function AuthLayout({
+export default function PublicLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const router = useRouter();
-  const [isAuthChecked, setIsAuthChecked] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isAuthChecked, setIsAuthChecked] = useState(false);
+  const pathname = usePathname();
 
-  useEffect(() => {
-    const authStatus = localStorage.getItem('isAuthenticated') === 'true';
+   useEffect(() => {
+    // In a real app, this would be a call to an auth service
+    const authStatus = document.cookie.includes('isAuthenticated=true');
     setIsAuthenticated(authStatus);
     setIsAuthChecked(true);
+  }, []);
 
-    if (authStatus) {
-      router.replace('/dashboard');
-    }
-  }, [router]);
+  const handleLogout = () => {
+    document.cookie = 'isAuthenticated=false; path=/; max-age=0';
+    setIsAuthenticated(false);
+  };
 
-  if (!isAuthChecked || isAuthenticated) {
-    return null; // Or a loading spinner
+  const isAuthPage = pathname === '/login' || pathname === '/signup';
+
+  if (!isAuthChecked) {
+      return null; // Or a loading spinner
   }
 
-  return <main className="flex-1 bg-background">{children}</main>;
+  if (isAuthPage) {
+    return <main className="flex-1 bg-background">{children}</main>;
+  }
+
+  return (
+    <div className="relative flex flex-col min-h-screen">
+        <Header 
+            isAuthenticated={isAuthenticated}
+            isDashboardPage={false}
+            isMobileMenuOpen={isMobileMenuOpen} 
+            setMobileMenuOpen={setIsMobileMenuOpen}
+            isSidebarCollapsed={true}
+            setSidebarCollapsed={() => {}}
+            onLogout={handleLogout}
+        />
+        <main className="flex-1 bg-background">
+            {children}
+        </main>
+        <Footer />
+    </div>
+  );
 }

@@ -4,6 +4,7 @@
 import { useState, useEffect } from 'react';
 import { Header } from '@/components/header';
 import { Footer } from '@/components/footer';
+import { usePathname } from 'next/navigation';
 
 export default function PublicLayout({
   children,
@@ -13,20 +14,28 @@ export default function PublicLayout({
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isAuthChecked, setIsAuthChecked] = useState(false);
+  const pathname = usePathname();
 
    useEffect(() => {
-    const authStatus = localStorage.getItem('isAuthenticated') === 'true';
+    // In a real app, this would be a call to an auth service
+    const authStatus = document.cookie.includes('isAuthenticated=true');
     setIsAuthenticated(authStatus);
     setIsAuthChecked(true);
   }, []);
 
   const handleLogout = () => {
-    localStorage.removeItem('isAuthenticated');
+    document.cookie = 'isAuthenticated=false; path=/; max-age=0';
     setIsAuthenticated(false);
   };
 
+  const isAuthPage = pathname === '/login' || pathname === '/signup';
+
   if (!isAuthChecked) {
       return null; // Or a loading spinner
+  }
+
+  if (isAuthPage) {
+    return <main className="flex-1 bg-background">{children}</main>;
   }
 
   return (
