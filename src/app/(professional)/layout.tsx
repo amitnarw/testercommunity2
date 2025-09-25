@@ -3,8 +3,9 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { ProfessionalHeader } from '@/components/professional/professional-header';
-import { ProfessionalSidebar } from '@/components/professional/professional-sidebar';
+import Navbar from '@/components/authenticated/navbar';
+import Footer from '@/components/authenticated/footer';
+import { Sidebar } from '@/components/authenticated/sidebar';
 
 // Mock authentication
 const useMockAuth = () => {
@@ -41,17 +42,19 @@ export default function ProfessionalLayout({
   }
 
   return (
-    <div className="relative flex min-h-screen bg-secondary/50">
-      <ProfessionalSidebar
-        isCollapsed={isSidebarCollapsed}
-        setIsCollapsed={setIsSidebarCollapsed}
-      />
-      <div className={`flex flex-col flex-1 transition-all duration-300 ${isSidebarCollapsed ? 'md:pl-20' : 'md:pl-72'}`}>
-        <ProfessionalHeader onLogout={handleLogout} />
-        <main className="flex-1">
-          {children}
-        </main>
-      </div>
+    <div className="relative flex min-h-screen">
+        <Sidebar
+          onLogout={handleLogout}
+          isCollapsed={isSidebarCollapsed}
+          setIsCollapsed={setIsSidebarCollapsed}
+        />
+        <div className={`flex flex-col flex-1 transition-all duration-300 md:pl-20`}>
+          <Navbar onLogout={handleLogout} />
+          <main className="flex-1 bg-secondary/50">
+            {children}
+          </main>
+          <Footer />
+        </div>
     </div>
   );
 }

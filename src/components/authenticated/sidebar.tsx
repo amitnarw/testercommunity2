@@ -4,19 +4,33 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { LayoutDashboard, Users2, LogOut, Bell, ChevronRight, ChevronLeft } from "lucide-react";
+import { LayoutDashboard, Users2, LogOut, Bell, ChevronRight, ChevronLeft, Briefcase, DollarSign, LifeBuoy, FileCheck, Bug, Users } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../ui/tooltip";
 import { InTestersLogoShortHeader } from "../icons";
 
 const mainNavLinks = [
-    { name: "Developer Dashboard", href: "/dashboard", icon: LayoutDashboard },
-    { name: "Community Hub", href: "/community-dashboard", icon: Users2 },
-    { name: "Notifications", href: "/notifications", icon: Bell },
+    { name: "Developer Dashboard", href: "/dashboard", icon: LayoutDashboard, section: 'main' },
+    { name: "Community Hub", href: "/community-dashboard", icon: Users2, section: 'main' },
+    { name: "Notifications", href: "/notifications", icon: Bell, section: 'main' },
+];
+
+const proNavLinks = [
+    { name: "Dashboard", href: "/professional/tester/dashboard", icon: LayoutDashboard, section: 'pro' },
+    { name: "Projects", href: "/professional/projects", icon: Briefcase, section: 'pro' },
+    { name: "Earnings", href: "/professional/earnings", icon: DollarSign, section: 'pro' },
+    { name: "Support", href: "/professional/support", icon: LifeBuoy, section: 'pro' },
+];
+
+const adminNavLinks = [
+    { name: "Dashboard", href: "/admin/dashboard", icon: LayoutDashboard, section: 'admin' },
+    { name: "User Management", href: "/admin/users", icon: Users, section: 'admin' },
+    { name: "Submissions", href: "/admin/submissions", icon: FileCheck, section: 'admin' },
+    { name: "Bug Reports", href: "/admin/bugs", icon: Bug, section: 'admin' },
 ];
 
 const NavLink = ({ href, icon: Icon, isCollapsed, children }: { href: string, icon: React.ElementType, isCollapsed: boolean, children: React.ReactNode }) => {
     const pathname = usePathname();
-    const isActive = pathname === href || (href !== '/' && pathname.startsWith(href));
+    const isActive = pathname.startsWith(href);
 
     return (
         <TooltipProvider>
@@ -47,6 +61,15 @@ interface SidebarProps {
 }
 
 export function Sidebar({ onLogout, isCollapsed, setIsCollapsed }: SidebarProps) {
+    const pathname = usePathname();
+    
+    let navLinks = mainNavLinks;
+    if (pathname.startsWith('/admin')) {
+        navLinks = adminNavLinks;
+    } else if (pathname.startsWith('/professional')) {
+        navLinks = proNavLinks;
+    }
+
     return (
         <div className="fixed z-[55] h-full hidden md:flex items-center justify-center pl-4 bg-[#f8fafc] dark:bg-[#0f151e]">
             <aside className={cn(
@@ -70,7 +93,7 @@ export function Sidebar({ onLogout, isCollapsed, setIsCollapsed }: SidebarProps)
                     </div>
 
                     <nav className="flex flex-col items-center gap-2 h-full w-full px-2">
-                        {mainNavLinks.map(link => (
+                        {navLinks.map(link => (
                             <NavLink key={link.href} href={link.href} icon={link.icon} isCollapsed={isCollapsed}>
                                 {link.name}
                             </NavLink>
@@ -78,9 +101,22 @@ export function Sidebar({ onLogout, isCollapsed, setIsCollapsed }: SidebarProps)
                     </nav>
 
                     <div className="flex flex-col items-center gap-2 w-full px-2">
-                        <div onClick={onLogout} className="w-full">
-                            <NavLink href="/" icon={LogOut} isCollapsed={isCollapsed}>Log Out</NavLink>
-                        </div>
+                         <TooltipProvider>
+                            <Tooltip delayDuration={0}>
+                                <TooltipTrigger asChild>
+                                    <button onClick={onLogout} className={cn(
+                                        "flex items-center justify-start w-full h-12 rounded-xl text-white/70 dark:text-black/70 transition-all duration-300 px-3.5",
+                                        "hover:bg-white/20 hover:text-white"
+                                    )}>
+                                        <LogOut className="h-5 w-5 flex-shrink-0" />
+                                        {!isCollapsed && <span className="ml-4 font-light whitespace-nowrap">Log Out</span>}
+                                    </button>
+                                </TooltipTrigger>
+                                {isCollapsed && <TooltipContent side="right" className="bg-black text-white border-white/20 ml-2">
+                                    Log Out
+                                </TooltipContent>}
+                            </Tooltip>
+                        </TooltipProvider>
                     </div>
                 </div>
             </aside>
