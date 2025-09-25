@@ -9,23 +9,23 @@ import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../ui/
 import { InTestersLogoShortHeader } from "../icons";
 
 const mainNavLinks = [
-    { name: "Developer Dashboard", href: "/dashboard", icon: LayoutDashboard, section: 'main' },
-    { name: "Community Hub", href: "/community-dashboard", icon: Users2, section: 'main' },
-    { name: "Notifications", href: "/notifications", icon: Bell, section: 'main' },
+    { name: "Developer Dashboard", href: "/dashboard", icon: LayoutDashboard },
+    { name: "Community Hub", href: "/community-dashboard", icon: Users2 },
+    { name: "Notifications", href: "/notifications", icon: Bell },
 ];
 
 const proNavLinks = [
-    { name: "Dashboard", href: "/professional/tester/dashboard", icon: LayoutDashboard, section: 'pro' },
-    { name: "Projects", href: "/professional/projects", icon: Briefcase, section: 'pro' },
-    { name: "Earnings", href: "/professional/earnings", icon: DollarSign, section: 'pro' },
-    { name: "Support", href: "/professional/support", icon: LifeBuoy, section: 'pro' },
+    { name: "Pro Dashboard", href: "/professional/tester/dashboard", icon: LayoutDashboard },
+    { name: "Projects", href: "/professional/projects", icon: Briefcase },
+    { name: "Earnings", href: "/professional/earnings", icon: DollarSign },
+    { name: "Support", href: "/professional/support", icon: LifeBuoy },
 ];
 
 const adminNavLinks = [
-    { name: "Dashboard", href: "/admin/dashboard", icon: LayoutDashboard, section: 'admin' },
-    { name: "User Management", href: "/admin/users", icon: Users, section: 'admin' },
-    { name: "Submissions", href: "/admin/submissions", icon: FileCheck, section: 'admin' },
-    { name: "Bug Reports", href: "/admin/bugs", icon: Bug, section: 'admin' },
+    { name: "Admin Dashboard", href: "/admin/dashboard", icon: LayoutDashboard },
+    { name: "Users", href: "/admin/users", icon: Users },
+    { name: "Submissions", href: "/admin/submissions", icon: FileCheck },
+    { name: "Bug Reports", href: "/admin/bugs", icon: Bug },
 ];
 
 const NavLink = ({ href, icon: Icon, isCollapsed, children }: { href: string, icon: React.ElementType, isCollapsed: boolean, children: React.ReactNode }) => {

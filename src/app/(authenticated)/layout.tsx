@@ -1,14 +1,13 @@
+
 'use client';
 
 import { useState, useEffect } from 'react';
-// import { Header } from '@/components/header';
 import Navbar from '@/components/authenticated/navbar';
-// import { Footer } from '@/components/footer';
 import Footer from '@/components/authenticated/footer';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { Sidebar } from '@/components/authenticated/sidebar';
 
-export default function PublicLayout({
+export default function AuthenticatedLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
@@ -16,27 +15,26 @@ export default function PublicLayout({
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(true);
   const [isAuthChecked, setIsAuthChecked] = useState(false);
   const pathname = usePathname();
+  const router = useRouter();
 
   useEffect(() => {
     // In a real app, this would be a call to an auth service
     const authStatus = document.cookie.includes('isAuthenticated=true');
     setIsAuthChecked(true);
-  }, []);
+    if (!authStatus) {
+        router.replace('/login');
+    }
+  }, [pathname, router]);
 
   const handleLogout = () => {
-    localStorage.removeItem('isAuthenticated');
+    document.cookie = 'isAuthenticated=false; path=/; max-age=0';
+    router.push('/login');
   };
-
-  const isAuthPage = pathname === '/login' || pathname === '/signup';
 
   if (!isAuthChecked) {
     return null; // Or a loading spinner
   }
-
-  if (isAuthPage) {
-    return <main className="flex-1 bg-background">{children}</main>;
-  }
-
+  
   return (
     <div className="relative flex flex-col min-h-screen">
       <div className="flex flex-1">

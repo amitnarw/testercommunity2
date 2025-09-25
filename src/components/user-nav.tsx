@@ -13,7 +13,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Link from 'next/link';
-import { LayoutDashboard, Users2, User, Gem, LifeBuoy, LogOut, ChevronDown, Package } from 'lucide-react';
+import { usePathname } from 'next/navigation';
+import { LayoutDashboard, Users2, User, Gem, LifeBuoy, LogOut, ChevronDown, Package, Briefcase, DollarSign, FileCheck, Bug, Users } from 'lucide-react';
 import { demoUser } from "@/lib/data";
 
 interface UserNavProps {
@@ -21,35 +22,35 @@ interface UserNavProps {
 }
 
 export function UserNav({ onLogout }: UserNavProps) {
-    return (
-        <DropdownMenu>
-            <DropdownMenuTrigger asChild>
-                 <Button variant="ghost" className="relative h-auto rounded-full p-1.5">
-                    <div className="flex items-center gap-2">
-                        <Avatar className="h-10 w-10">
-                            <AvatarImage src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=400&auto=format=fit=crop" data-ai-hint="man smiling" alt="User Avatar" />
-                            <AvatarFallback>{demoUser.role.charAt(0).toUpperCase()}</AvatarFallback>
-                        </Avatar>
-                        <ChevronDown className="h-4 w-4 text-muted-foreground" />
-                    </div>
-                </Button>
-            </DropdownMenuTrigger>
-            <DropdownMenuContent className="w-64 rounded-xl shadow-xl border-border/10 p-2" align="end" forceMount>
-                <DropdownMenuLabel className="font-normal p-2">
-                    <div className="flex items-center gap-3">
-                        <Avatar className="h-10 w-10">
-                            <AvatarImage src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=400&auto=format=fit=crop" alt="User Avatar" />
-                            <AvatarFallback>{demoUser.role.charAt(0).toUpperCase()}</AvatarFallback>
-                        </Avatar>
-                         <div>
-                            <p className="text-sm font-bold leading-none text-foreground">Demo User</p>
-                            <p className="text-xs leading-none text-muted-foreground mt-1">
-                                demo@inTesters.com
-                            </p>
-                        </div>
-                    </div>
-                </DropdownMenuLabel>
-                <DropdownMenuSeparator />
+    const pathname = usePathname();
+
+    const isAdmin = pathname.startsWith('/admin');
+    const isPro = pathname.startsWith('/professional');
+
+    const getNavLinks = () => {
+        if (isAdmin) {
+            return (
+                <DropdownMenuGroup>
+                    <DropdownMenuLabel className="px-2 py-1.5 text-xs font-semibold text-muted-foreground">Admin Menu</DropdownMenuLabel>
+                    <Link href="/admin/dashboard"><DropdownMenuItem className="h-10"><LayoutDashboard className="mr-2" /><span>Dashboard</span></DropdownMenuItem></Link>
+                    <Link href="/admin/users"><DropdownMenuItem className="h-10"><Users className="mr-2" /><span>Users</span></DropdownMenuItem></Link>
+                    <Link href="/admin/submissions"><DropdownMenuItem className="h-10"><FileCheck className="mr-2" /><span>Submissions</span></DropdownMenuItem></Link>
+                    <Link href="/admin/bugs"><DropdownMenuItem className="h-10"><Bug className="mr-2" /><span>Bugs</span></DropdownMenuItem></Link>
+                </DropdownMenuGroup>
+            );
+        }
+        if (isPro) {
+            return (
+                 <DropdownMenuGroup>
+                    <DropdownMenuLabel className="px-2 py-1.5 text-xs font-semibold text-muted-foreground">Pro Menu</DropdownMenuLabel>
+                    <Link href="/professional/tester/dashboard"><DropdownMenuItem className="h-10"><LayoutDashboard className="mr-2" /><span>Pro Dashboard</span></DropdownMenuItem></Link>
+                    <Link href="/professional/projects"><DropdownMenuItem className="h-10"><Briefcase className="mr-2" /><span>Projects</span></DropdownMenuItem></Link>
+                    <Link href="/professional/earnings"><DropdownMenuItem className="h-10"><DollarSign className="mr-2" /><span>Earnings</span></DropdownMenuItem></Link>
+                </DropdownMenuGroup>
+            )
+        }
+        return (
+            <>
                 <DropdownMenuGroup>
                     <DropdownMenuLabel className="px-2 py-1.5 text-xs font-semibold text-muted-foreground">Dashboards</DropdownMenuLabel>
                     <Link href="/dashboard">
@@ -87,6 +88,40 @@ export function UserNav({ onLogout }: UserNavProps) {
                         </DropdownMenuItem>
                     </Link>
                 </DropdownMenuGroup>
+            </>
+        );
+    }
+
+    return (
+        <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+                 <Button variant="ghost" className="relative h-auto rounded-full p-1.5">
+                    <div className="flex items-center gap-2">
+                        <Avatar className="h-10 w-10">
+                            <AvatarImage src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=400&auto=format=fit=crop" data-ai-hint="man smiling" alt="User Avatar" />
+                            <AvatarFallback>{demoUser.role.charAt(0).toUpperCase()}</AvatarFallback>
+                        </Avatar>
+                        <ChevronDown className="h-4 w-4 text-muted-foreground" />
+                    </div>
+                </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="w-64 rounded-xl shadow-xl border-border/10 p-2" align="end" forceMount>
+                <DropdownMenuLabel className="font-normal p-2">
+                    <div className="flex items-center gap-3">
+                        <Avatar className="h-10 w-10">
+                            <AvatarImage src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=400&auto=format=fit=crop" alt="User Avatar" />
+                            <AvatarFallback>{demoUser.role.charAt(0).toUpperCase()}</AvatarFallback>
+                        </Avatar>
+                         <div>
+                            <p className="text-sm font-bold leading-none text-foreground">Demo User</p>
+                            <p className="text-xs leading-none text-muted-foreground mt-1">
+                                demo@inTesters.com
+                            </p>
+                        </div>
+                    </div>
+                </DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                {getNavLinks()}
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={onLogout} className="h-10 text-red-500 focus:bg-red-500/10 focus:text-red-600">
                     <LogOut className="mr-2" />
