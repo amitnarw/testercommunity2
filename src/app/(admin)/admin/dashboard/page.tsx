@@ -16,10 +16,10 @@ import {
 import { BarChart, Bar, ResponsiveContainer, XAxis, YAxis } from "recharts"
 
 const recentSubmissions = [
-    { name: "QuantumLeap CRM", developer: "Stark Industries", date: "2024-08-15", status: "In Review" },
-    { name: "Project Phoenix", developer: "Wayne Enterprises", date: "2024-08-14", status: "Approved" },
-    { name: "Nexus Browser", developer: "Cyberdyne Systems", date: "2024-08-12", status: "Rejected" },
-    { name: "Odyssey Social", developer: "Globex Corporation", date: "2024-08-11", status: "Approved" },
+    { id: 1, name: "QuantumLeap CRM", developer: "Stark Industries", date: "2024-08-15", status: "In Review" },
+    { id: 2, name: "Project Phoenix", developer: "Wayne Enterprises", date: "2024-08-14", status: "Approved" },
+    { id: 3, name: "Nexus Browser", developer: "Cyberdyne Systems", date: "2024-08-12", status: "Rejected" },
+    { id: 4, name: "Odyssey Social", developer: "Globex Corporation", date: "2024-08-11", status: "Approved" },
 ];
 
 const chartData = [
@@ -47,8 +47,8 @@ export default function AdminDashboardPage() {
             <p className="text-muted-foreground">Oversee and manage the inTesters platform.</p>
         </div>
         <div className="flex items-center space-x-2">
-            <Button>
-                View Analytics
+            <Button asChild>
+                <Link href="/admin/submissions">Manage Submissions</Link>
             </Button>
         </div>
       </div>
@@ -113,8 +113,8 @@ export default function AdminDashboardPage() {
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {recentSubmissions.map((submission, index) => (
-                            <TableRow key={index}>
+                        {recentSubmissions.map((submission) => (
+                            <TableRow key={submission.id}>
                                 <TableCell>
                                     <div className="font-medium">{submission.name}</div>
                                 </TableCell>
@@ -129,8 +129,8 @@ export default function AdminDashboardPage() {
                                     </Badge>
                                 </TableCell>
                                 <TableCell className="text-right">
-                                    <Button variant="ghost" size="icon" asChild>
-                                        <Link href="#"><Eye className="h-4 w-4" /></Link>
+                                    <Button variant="outline" size="sm" asChild>
+                                        <Link href={`/admin/submissions/${submission.id}`}>View <ArrowRight className="ml-2 h-4 w-4" /></Link>
                                     </Button>
                                 </TableCell>
                             </TableRow>
