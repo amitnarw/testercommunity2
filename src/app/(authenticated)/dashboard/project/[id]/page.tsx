@@ -1,4 +1,3 @@
-
 'use client';
 
 import { notFound } from 'next/navigation';
@@ -309,43 +308,39 @@ function ProjectDetailsClient({ project }: { project: Project }) {
                             </motion.div>
 
                             <motion.div variants={itemVariants} className="lg:col-span-1 space-y-8">
-                                <Card>
+                                 <Card>
                                     <CardHeader>
-                                        <CardTitle className="flex items-center gap-2"><Smartphone className="w-5 h-5 text-primary" /> Device & OS Coverage</CardTitle>
+                                        <CardTitle className="flex items-center gap-2"><Smartphone className="w-5 h-5 text-primary" /> Device &amp; OS Coverage</CardTitle>
                                     </CardHeader>
-                                    <CardContent>
-                                        <Tabs defaultValue="os">
-                                            <TabsList className="grid w-full grid-cols-2">
-                                                <TabsTrigger value="os">OS Version</TabsTrigger>
-                                                <TabsTrigger value="devices">Devices</TabsTrigger>
-                                            </TabsList>
-                                            <TabsContent value="os" className="h-[250px] w-full pt-4">
-                                                <ResponsiveContainer width="100%" height="100%">
-                                                    <PieChart>
-                                                        <Pie data={osData} cx="50%" cy="50%" labelLine={false} innerRadius={60} outerRadius={80} dataKey="value" paddingAngle={5}>
-                                                            {osData.map((entry, index) => (
-                                                                <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                                                            ))}
-                                                        </Pie>
-                                                        <Tooltip content={<CustomTooltip />} />
-                                                        <Legend iconType="circle" />
-                                                    </PieChart>
-                                                </ResponsiveContainer>
-                                            </TabsContent>
-                                            <TabsContent value="devices" className="h-[250px] w-full pt-4">
-                                                 <ResponsiveContainer width="100%" height="100%">
-                                                    <PieChart>
-                                                        <Pie data={deviceData} cx="50%" cy="50%" labelLine={false} innerRadius={60} outerRadius={80} dataKey="value" paddingAngle={5}>
-                                                            {deviceData.map((entry, index) => (
-                                                                <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                                                            ))}
-                                                        </Pie>
-                                                        <Tooltip content={<CustomTooltip />} />
-                                                        <Legend iconType="circle" />
-                                                    </PieChart>
-                                                </ResponsiveContainer>
-                                            </TabsContent>
-                                        </Tabs>
+                                    <CardContent className="grid grid-cols-2 gap-4 h-[250px]">
+                                        <div className="flex flex-col items-center">
+                                            <h4 className="text-sm font-semibold mb-2">OS Version</h4>
+                                            <ResponsiveContainer width="100%" height="100%">
+                                                <PieChart>
+                                                    <Pie data={osData} cx="50%" cy="50%" labelLine={false} innerRadius={40} outerRadius={60} dataKey="value" paddingAngle={5}>
+                                                        {osData.map((entry, index) => (
+                                                            <Cell key={`cell-os-${index}`} fill={COLORS[index % COLORS.length]} />
+                                                        ))}
+                                                    </Pie>
+                                                    <Tooltip content={<CustomTooltip />} />
+                                                    <Legend wrapperStyle={{fontSize: '12px'}}/>
+                                                </PieChart>
+                                            </ResponsiveContainer>
+                                        </div>
+                                        <div className="flex flex-col items-center">
+                                            <h4 className="text-sm font-semibold mb-2">Devices</h4>
+                                            <ResponsiveContainer width="100%" height="100%">
+                                                <PieChart>
+                                                    <Pie data={deviceData} cx="50%" cy="50%" labelLine={false} innerRadius={40} outerRadius={60} dataKey="value" paddingAngle={5}>
+                                                        {deviceData.map((entry, index) => (
+                                                            <Cell key={`cell-device-${index}`} fill={COLORS[index % COLORS.length]} />
+                                                        ))}
+                                                    </Pie>
+                                                    <Tooltip content={<CustomTooltip />} />
+                                                     <Legend wrapperStyle={{fontSize: '12px'}}/>
+                                                </PieChart>
+                                            </ResponsiveContainer>
+                                        </div>
                                     </CardContent>
                                 </Card>
                                 <Card>
@@ -369,7 +364,7 @@ function ProjectDetailsClient({ project }: { project: Project }) {
                         <motion.div variants={itemVariants} className="mt-8">
                             <Card className="bg-card">
                                 <CardHeader>
-                                    <CardTitle>Tester & Device Details</CardTitle>
+                                    <CardTitle>Tester &amp; Device Details</CardTitle>
                                     <CardDescription>Comprehensive information about the testers and devices in your project.</CardDescription>
                                 </CardHeader>
                                 <CardContent>
