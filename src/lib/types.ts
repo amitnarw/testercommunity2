@@ -180,11 +180,14 @@ export type SubmittedFeedback = {
   type: 'Bug' | 'Suggestion' | 'Praise';
   comment: string;
   screenshot: string | null;
+  tester: string;
+  severity: 'Critical' | 'High' | 'Medium' | 'Low' | 'N/A';
 }
     
 
     
 
     
+
 
 

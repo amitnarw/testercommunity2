@@ -15,8 +15,19 @@ import { useDropzone } from 'react-dropzone';
 import Image from 'next/image';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { AppPagination } from '../app-pagination';
+import { Badge } from '../ui/badge';
 
 const FEEDBACK_PER_PAGE = 3;
+
+const getSeverityBadge = (severity: string) => {
+    switch (severity) {
+        case 'Critical': return <Badge variant="destructive" className="bg-red-700 hover:bg-red-800">{severity}</Badge>;
+        case 'High': return <Badge variant="destructive" className="bg-red-500/80 hover:bg-red-600">{severity}</Badge>;
+        case 'Medium': return <Badge variant="secondary" className="bg-amber-500/80 hover:bg-amber-600 text-white">{severity}</Badge>;
+        case 'Low': return <Badge variant="secondary" className="bg-yellow-500/80 hover:bg-yellow-600 text-white">{severity}</Badge>;
+        default: return null;
+    }
+};
 
 const FeedbackFormModal = ({
     feedback,
@@ -119,34 +130,41 @@ const FeedbackIcon = ({ type }: { type: SubmittedFeedbackType['type'] }) => {
 }
 
 const FeedbackListItem = ({ fb, onImageClick, onVideoClick }: { fb: SubmittedFeedbackType, onImageClick: (url: string) => void, onVideoClick: (url: string) => void }) => (
-    <Card className={`bg-gradient-to-tl ${fb.type === "Bug" ? "from-red-500/20" : fb.type === "Suggestion" ? "from-yellow-500/20" : "from-green-500/20"} ${fb.type === "Bug" ? "to-red-500/5" : fb.type === "Suggestion" ? "to-yellow-500/5" : "to-green-500/5"} p-4 pt-2 pr-2 shadow-none border-0 relative overflow-hidden pl-5`}>
+    <Card className={`bg-gradient-to-tl ${fb.type === "Bug" ? "from-red-500/20" : fb.type === "Suggestion" ? "from-yellow-500/20" : "from-green-500/20"} ${fb.type === "Bug" ? "to-red-500/5" : fb.type === "Suggestion" ? "to-yellow-500/5" : "to-green-500/5"} p-4 pt-2 pr-2 shadow-none border-0 relative overflow-hidden`}>
         <div className="flex items-start flex-col gap-0">
-            <div className="absolute scale-[2.5] rotate-45 top-2 left-1 opacity-5 dark:opacity-10">
+            <div className="absolute scale-[2.5] rotate-45 top-2 left-2 opacity-5 dark:opacity-10">
                 <FeedbackIcon type={fb.type} />
             </div>
-            <div className="flex flex-row items-center justify-between w-full">
-                <p className="font-semibold">{fb.type}</p>
+            <div className="flex flex-row items-center justify-between w-full pl-3">
+                <div className="flex items-center gap-3">
+                    <p className="font-semibold">{fb.type}</p>
+                    {getSeverityBadge(fb.severity)}
+                </div>
             </div>
-            <p className="text-sm text-muted-foreground mt-1">{fb.comment}</p>
-            <div className='flex flex-row gap-2 mt-3'>
-                {fb.screenshot && (
-                    <div className="cursor-pointer h-14 w-10" onClick={() => onImageClick(fb.screenshot!)}>
-                        <Image src={fb.screenshot} alt="Feedback screenshot" width={40} height={100} className="rounded-sm border object-cover" />
-                    </div>
-                )}
-                {fb.screenshot && (
-                    <div className="cursor-pointer h-14 w-20 relative" onClick={() => onVideoClick(fb.screenshot!)}>
-                        <Image src={fb.screenshot} alt="Feedback screenshot" width={100} height={100} className="rounded-sm border object-cover w-full h-full" />
-                        <CirclePlay className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-white shadow-lg backdrop-blur-sm rounded-full p-1" size={30} />
-                    </div>
-                )}
+            <p className="text-sm text-muted-foreground mt-1 pl-3">{fb.comment}</p>
+            <div className='flex flex-row justify-between w-full mt-3 items-end'>
+                <div className='flex flex-row gap-2 pl-3'>
+                    {fb.screenshot && (
+                        <div className="cursor-pointer h-14 w-10 relative" onClick={() => onImageClick(fb.screenshot!)}>
+                            <Image src={fb.screenshot} alt="Feedback screenshot" fill className="rounded-sm border object-cover" />
+                        </div>
+                    )}
+                    {fb.screenshot && (
+                        <div className="cursor-pointer h-14 w-20 relative" onClick={() => onVideoClick(fb.screenshot!)}>
+                            <Image src={fb.screenshot} alt="Feedback screenshot" fill className="rounded-sm border object-cover w-full h-full" />
+                            <CirclePlay className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-white shadow-lg backdrop-blur-sm rounded-full p-1" size={30} />
+                        </div>
+                    )}
+                </div>
+                <span className="text-xs text-muted-foreground pr-3">by {fb.tester}</span>
             </div>
         </div>
     </Card>
 );
 
+
 const FeedbackGridItem = ({ fb, onImageClick, onVideoClick }: { fb: SubmittedFeedbackType, onImageClick: (url: string) => void, onVideoClick: (url: string) => void }) => (
-    <Card className={`bg-gradient-to-bl ${fb.type === "Bug" ? "from-red-500/20" : fb.type === "Suggestion" ? "from-yellow-500/20" : "from-green-500/20"} ${fb.type === "Bug" ? "to-red-500/10" : fb.type === "Suggestion" ? "to-yellow-500/10" : "to-green-500/10"} p-4 pr-2 shadow-none border-0 h-full flex flex-col relative overflow-hidden`}>
+    <Card className={`bg-gradient-to-bl ${fb.type === "Bug" ? "from-red-500/20" : fb.type === "Suggestion" ? "from-yellow-500/20" : "from-green-500/20"} ${fb.type === "Bug" ? "to-red-500/10" : fb.type === "Suggestion" ? "to-yellow-500/10" : "to-green-500/10"} p-4 shadow-none border-0 h-full flex flex-col relative overflow-hidden`}>
         <CardHeader className="p-0 flex-row items-center justify-between">
             <div className="flex items-center gap-3">
                 <div className="p-3 rounded-full absolute opacity-10 scale-[3] -right-1 -top-1 -rotate-45">
@@ -154,22 +172,26 @@ const FeedbackGridItem = ({ fb, onImageClick, onVideoClick }: { fb: SubmittedFee
                 </div>
                 <CardTitle className="text-base">{fb.type}</CardTitle>
             </div>
+            {getSeverityBadge(fb.severity)}
         </CardHeader>
         <CardContent className="p-0 pt-2 flex-grow">
             <p className="text-sm text-muted-foreground line-clamp-3">{fb.comment}</p>
         </CardContent>
-        <CardFooter className="p-0 flex gap-1 mt-3">
-            {fb.screenshot && (
-                <div className="cursor-pointer h-10" onClick={() => onImageClick(fb.screenshot!)}>
-                    <Image src={fb.screenshot} alt="Feedback screenshot" width={30} height={100} className="rounded-sm border object-cover" />
-                </div>
-            )}
-            {fb.screenshot && (
-                <div className="cursor-pointer h-10 w-16 relative" onClick={() => onVideoClick(fb.screenshot!)}>
-                    <Image src={fb.screenshot} alt="Feedback screenshot" width={100} height={100} className="rounded-sm border object-cover w-full h-full" />
-                    <CirclePlay className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-white shadow-lg backdrop-blur-sm rounded-full p-1" size={30} />
-                </div>
-            )}
+        <CardFooter className="p-0 flex flex-col items-start gap-1 mt-3">
+             <div className='flex flex-row gap-1'>
+                {fb.screenshot && (
+                    <div className="cursor-pointer h-10 w-8" onClick={() => onImageClick(fb.screenshot!)}>
+                        <Image src={fb.screenshot} alt="Feedback screenshot" width={30} height={100} className="rounded-sm border object-cover" />
+                    </div>
+                )}
+                {fb.screenshot && (
+                    <div className="cursor-pointer h-10 w-16 relative" onClick={() => onVideoClick(fb.screenshot!)}>
+                        <Image src={fb.screenshot} alt="Feedback screenshot" width={100} height={100} className="rounded-sm border object-cover w-full h-full" />
+                        <CirclePlay className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-white shadow-lg backdrop-blur-sm rounded-full p-1" size={30} />
+                    </div>
+                )}
+            </div>
+             <span className="text-xs text-muted-foreground pt-2">by {fb.tester}</span>
         </CardFooter>
     </Card>
 );
@@ -181,12 +203,12 @@ export function SubmittedFeedback({ isCompleted = false }: { isCompleted?: boole
     const [fullscreenVideo, setFullscreenVideo] = useState<string | null>(null);
 
     const [submittedFeedback, setSubmittedFeedback] = useState<SubmittedFeedbackType[]>([
-        { id: 1, type: 'Bug', comment: 'App crashes on launch sometimes.', screenshot: null },
-        { id: 2, type: 'Suggestion', comment: 'A dark mode would be great for night use.', screenshot: null },
-        { id: 3, type: 'Praise', comment: 'The new UI is super clean and intuitive. Great job!', screenshot: 'https://images.unsplash.com/photo-1601042879364-f3947d3f9c16?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' },
-        { id: 4, type: 'Bug', comment: 'The settings icon is misaligned on tablets.', screenshot: 'https://images.unsplash.com/photo-1756303018960-e5279e145963?q=80&w=719&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' },
-        { id: 5, type: 'Suggestion', comment: 'Could we get an option to export data to CSV?', screenshot: null },
-        { id: 6, type: 'Praise', comment: 'The performance improvement in the latest update is very noticeable!', screenshot: null },
+        { id: 1, type: 'Bug', comment: 'App crashes on launch sometimes.', screenshot: null, tester: 'Tester101', severity: 'Critical' },
+        { id: 2, type: 'Suggestion', comment: 'A dark mode would be great for night use.', screenshot: null, tester: 'Tester102', severity: 'N/A' },
+        { id: 3, type: 'Praise', comment: 'The new UI is super clean and intuitive. Great job!', screenshot: 'https://images.unsplash.com/photo-1601042879364-f3947d3f9c16?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', tester: 'Tester103', severity: 'N/A' },
+        { id: 4, type: 'Bug', comment: 'The settings icon is misaligned on tablets.', screenshot: 'https://images.unsplash.com/photo-1756303018960-e5279e145963?q=80&w=719&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', tester: 'Tester104', severity: 'Medium' },
+        { id: 5, type: 'Suggestion', comment: 'Could we get an option to export data to CSV?', screenshot: null, tester: 'Tester105', severity: 'N/A' },
+        { id: 6, type: 'Praise', comment: 'The performance improvement in the latest update is very noticeable!', screenshot: null, tester: 'Tester106', severity: 'N/A' },
     ]);
 
     const totalPages = Math.ceil(submittedFeedback.length / FEEDBACK_PER_PAGE);
@@ -209,14 +231,12 @@ export function SubmittedFeedback({ isCompleted = false }: { isCompleted?: boole
                 id: Date.now(),
                 type: data.type!,
                 comment: data.comment!,
-                screenshot: data.screenshot || null
+                screenshot: data.screenshot || null,
+                tester: 'Developer',
+                severity: 'N/A'
             }
             setSubmittedFeedback(prev => [...prev, newFeedback]);
         }
-    }
-
-    const handleDeleteFeedback = (id: number) => {
-        setSubmittedFeedback(prev => prev.filter(fb => fb.id !== id));
     }
 
     const description = isCompleted ? "Here is a summary of the feedback you submitted." : "Here is the feedback you've submitted so far.";
@@ -227,11 +247,10 @@ export function SubmittedFeedback({ isCompleted = false }: { isCompleted?: boole
                 <div className="bg-card/50 rounded-2xl p-4 sm:p-6 sm:pt-4">
                     <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
                         <div>
-                            <h2 className="text-xl sm:text-2xl font-bold">Submitted Feedback</h2>
+                            <h2 className="text-xl sm:text-2xl font-bold">Feedback from Testers</h2>
                             <p className="text-sm sm:text-base text-muted-foreground">{description}</p>
                         </div>
                         <div className="flex items-center gap-2 justify-between w-full sm:w-auto">
-                            {isCompleted && <div />}
                             <div className="flex items-center gap-1">
                                 <Button variant={viewMode === 'list' ? 'secondary' : 'ghost'} size="icon" onClick={() => setViewMode('list')}>
                                     <List className="w-4 h-4" />
@@ -266,12 +285,7 @@ export function SubmittedFeedback({ isCompleted = false }: { isCompleted?: boole
                         </>
                     ) : (
                         <div className="text-center py-12 text-muted-foreground bg-secondary/50 rounded-lg">
-                            <p className="mb-2">You haven't submitted any feedback for this app yet.</p>
-                            <FeedbackFormModal onSave={handleSaveFeedback}>
-                                <Button variant="outline">
-                                    <PlusCircle className="mr-2 h-4 w-4" /> Submit Your First Feedback
-                                </Button>
-                            </FeedbackFormModal>
+                            <p className="mb-2">No feedback submitted for this app yet.</p>
                         </div>
                     )}
                 </div>
@@ -309,21 +323,14 @@ export function SubmittedFeedback({ isCompleted = false }: { isCompleted?: boole
                     <Button
                         variant="ghost"
                         size="icon"
-                        className="absolute top-4 right-4 text-white hover:text-white bg-red-500/60 hover:bg-red-500 h-12 w-12 rounded-lg"
+                        className="absolute top-4 right-4 text-white hover:text-white bg-red-500/60 hover:bg-red-500 h-12 w-12 rounded-lg z-50"
                         onClick={() => setFullscreenVideo(null)}
                     >
                         <X className="w-8 h-8" />
                         <span className="sr-only">Close</span>
                     </Button>
                     <div className="relative w-full h-full max-w-4xl max-h-[90vh]">
-                        <video src='fullscreenVideo'></video>
-                        {/* <Image
-                            src={fullscreenVideo}
-                            alt="Fullscreen view"
-                            layout="fill"
-                            objectFit="contain"
-                            className="animate-in zoom-in-95"
-                        /> */}
+                        <video src={fullscreenVideo} controls autoPlay className="w-full h-full animate-in zoom-in-95"></video>
                     </div>
                 </div>
             )}
