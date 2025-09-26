@@ -15,7 +15,8 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { LayoutDashboard, Users2, User, Gem, LifeBuoy, LogOut, ChevronDown, Package, Briefcase, DollarSign, FileCheck, Bug, Users, UserPlus } from 'lucide-react';
-import { demoUser } from "@/lib/data";
+import { useEffect, useState } from "react";
+
 
 interface UserNavProps {
     onLogout: () => void;
@@ -23,6 +24,15 @@ interface UserNavProps {
 
 export function UserNav({ onLogout }: UserNavProps) {
     const pathname = usePathname();
+    const [user, setUser] = useState({ name: 'Demo User', email: 'demo@inTesters.com', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=400&auto=format=fit=crop' });
+
+    useEffect(() => {
+        const name = document.cookie.split('; ').find(row => row.startsWith('user_name='))?.split('=')[1] || 'Demo User';
+        const email = document.cookie.split('; ').find(row => row.startsWith('user_email='))?.split('=')[1] || 'demo@inTesters.com';
+        const avatar = document.cookie.split('; ').find(row => row.startsWith('user_avatar='))?.split('=')[1] || 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=400&auto=format=fit=crop';
+        setUser({ name: decodeURIComponent(name), email: decodeURIComponent(email), avatar: decodeURIComponent(avatar) });
+    }, [pathname]);
+
 
     const isAdmin = pathname.startsWith('/admin');
     const isPro = pathname.startsWith('/professional');
@@ -99,8 +109,8 @@ export function UserNav({ onLogout }: UserNavProps) {
                  <Button variant="ghost" className="relative h-auto rounded-full p-1.5">
                     <div className="flex items-center gap-2">
                         <Avatar className="h-10 w-10">
-                            <AvatarImage src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=400&auto=format=fit=crop" data-ai-hint="man smiling" alt="User Avatar" />
-                            <AvatarFallback>{demoUser.role.charAt(0).toUpperCase()}</AvatarFallback>
+                            <AvatarImage src={user.avatar} data-ai-hint="user avatar" alt="User Avatar" />
+                            <AvatarFallback>{user.name.charAt(0).toUpperCase()}</AvatarFallback>
                         </Avatar>
                         <ChevronDown className="h-4 w-4 text-muted-foreground" />
                     </div>
@@ -110,13 +120,13 @@ export function UserNav({ onLogout }: UserNavProps) {
                 <DropdownMenuLabel className="font-normal p-2">
                     <div className="flex items-center gap-3">
                         <Avatar className="h-10 w-10">
-                            <AvatarImage src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=400&auto=format=fit=crop" alt="User Avatar" />
-                            <AvatarFallback>{demoUser.role.charAt(0).toUpperCase()}</AvatarFallback>
+                             <AvatarImage src={user.avatar} data-ai-hint="user avatar" alt="User Avatar" />
+                             <AvatarFallback>{user.name.charAt(0).toUpperCase()}</AvatarFallback>
                         </Avatar>
                          <div>
-                            <p className="text-sm font-bold leading-none text-foreground">Demo User</p>
+                            <p className="text-sm font-bold leading-none text-foreground">{user.name}</p>
                             <p className="text-xs leading-none text-muted-foreground mt-1">
-                                demo@inTesters.com
+                                {user.email}
                             </p>
                         </div>
                     </div>

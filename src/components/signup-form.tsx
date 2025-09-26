@@ -9,6 +9,7 @@ import { Input } from './ui/input';
 import { Label } from './ui/label';
 import { Separator } from './ui/separator';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 import {
   Form,
@@ -40,6 +41,7 @@ const GoogleIcon = (props: React.SVGProps<SVGSVGElement>) => (
 );
 
 export function SignupForm() {
+    const router = useRouter();
     const form = useForm<SignupFormData>({
         resolver: zodResolver(signupSchema),
         mode: 'onChange',
@@ -47,12 +49,24 @@ export function SignupForm() {
 
     const processForm: SubmitHandler<SignupFormData> = (data) => {
         console.log('Final form data:', data);
-        // Handle final submission logic here
+        document.cookie = "isAuthenticated=true; path=/; max-age=" + 60 * 60 * 24 * 7;
+        router.push('/dashboard');
     };
+    
+    const handleGoogleSignup = () => {
+        // In a real app, this would trigger the Google OAuth flow.
+        // For demonstration, we'll simulate a successful signup.
+        console.log("Signing up with Google...");
+        document.cookie = "isAuthenticated=true; path=/; max-age=" + 60 * 60 * 24 * 7;
+        document.cookie = `user_name=Demo User; path=/; max-age=${60 * 60 * 24 * 7}`;
+        document.cookie = `user_email=demo.user@gmail.com; path=/; max-age=${60 * 60 * 24 * 7}`;
+        document.cookie = `user_avatar=https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=400&auto=format=fit=crop; path=/; max-age=${60 * 60 * 24 * 7}`;
+        router.push('/dashboard');
+    }
 
     return (
         <div className="space-y-6">
-            <Button variant="outline" className="w-full rounded-xl py-6 text-base">
+            <Button variant="outline" className="w-full rounded-xl py-6 text-base" onClick={handleGoogleSignup}>
                 <GoogleIcon className="mr-3" />
                 Sign up with Google
             </Button>
