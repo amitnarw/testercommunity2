@@ -14,6 +14,8 @@ const applications = [
     { id: 1, name: "Maria Garcia", email: "maria@example.com", date: "2024-08-20", experience: "3-5 years", expertise: ["Manual", "Usability"] },
     { id: 2, name: "David Kim", email: "david@example.com", date: "2024-08-19", experience: "5+ years", expertise: ["Automation", "Performance", "API"] },
     { id: 3, name: "Alex Johnson", email: "alex@example.com", date: "2024-08-18", experience: "1-3 years", expertise: ["Manual"] },
+    { id: 4, name: "Priya Patel", email: "priya@example.com", date: "2024-08-17", experience: "3-5 years", expertise: ["Security", "Manual"] },
+    { id: 5, name: "Michael Chen", email: "michael@example.com", date: "2024-08-16", experience: "5+ years", expertise: ["Automation", "API", "Performance"] },
 ];
 
 export default function AdminApplicationsPage() {
