@@ -1,4 +1,4 @@
-const DeveloperInstructions = ({ title, instruction, mt }: { title?: string, instruction: string, mt?: number }) => {
+const DeveloperInstructions = ({ title, instruction, mt }: { title?: string, instruction: string, mt?: number | string }) => {
     return (
         <section className={`${mt ? "mt-"+mt : "mt-16"}`}>
             <h2 className="mb-4 flex flex-row items-center justify-between gap-2 sm:justify-start">

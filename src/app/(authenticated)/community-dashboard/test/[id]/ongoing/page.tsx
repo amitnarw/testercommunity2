@@ -7,7 +7,7 @@ import { communityApps } from '@/lib/data';
 import { BackButton } from '@/components/back-button';
 import { cn } from '@/lib/utils';
 import { AppInfoSidebar } from '@/components/appInfoSidebar';
-import { SubmittedFeedback } from '@/components/submitted-feedback';
+import { SubmittedFeedback } from '@/components/community-dashboard/submitted-feedback';
 import DeveloperInstructions from '@/components/developerInstructions';
 
 

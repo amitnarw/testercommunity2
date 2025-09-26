@@ -30,6 +30,7 @@ import { BackButton } from '@/components/back-button';
 import { AppPagination } from '@/components/app-pagination';
 import AppInfoHeader from '@/components/app-info-header';
 import DeveloperInstructions from '@/components/developerInstructions';
+import { SubmittedFeedback } from '@/components/dashboard/submitted-feedback';
 
 
 const FEEDBACK_PER_PAGE = 10;
@@ -174,7 +175,6 @@ function ProjectDetailsClient({ project }: { project: Project }) {
         praise: isUnderReviewOrRejected ? 0 : project.feedback.filter(fb => fb.type === 'Praise').length,
     };
 
-
     return (
         <div className="bg-[#f8fafc] dark:bg-[#0f151e] min-h-screen">
             <div className="container px-4 md:px-6">
@@ -300,87 +300,14 @@ function ProjectDetailsClient({ project }: { project: Project }) {
 
                         </motion.div>
 
-                        <DeveloperInstructions title='Instructions for Testers' instruction={`"${project?.testingInstructions}"`} mt={8} />
-
-                        <motion.div variants={itemVariants} className="mt-8">
-                            <Card className="bg-card">
-                                <CardHeader>
-                                    <CardTitle>Tester & Device Details</CardTitle>
-                                    <CardDescription>Comprehensive information about the testers and devices in your project.</CardDescription>
-                                </CardHeader>
-                                <CardContent>
-                                    <div className="w-full overflow-x-auto">
-                                        <div className="min-w-full inline-block align-middle">
-                                            <div className="overflow-hidden border rounded-lg">
-                                                <Table className="min-w-[900px]">
-                                                    <TableHeader>
-                                                        <TableRow>
-                                                            <TableHead>Tester</TableHead>
-                                                            <TableHead>Country</TableHead>
-                                                            <TableHead>Device</TableHead>
-                                                            <TableHead>RAM</TableHead>
-                                                            <TableHead>OS</TableHead>
-                                                            <TableHead>Screen</TableHead>
-                                                            <TableHead>Language</TableHead>
-                                                            <TableHead>Network</TableHead>
-                                                            <TableHead className="text-right">Rating</TableHead>
-                                                        </TableRow>
-                                                    </TableHeader>
-                                                    <TableBody>
-                                                        {currentTesters.length > 0 ? currentTesters.map(tester => (
-                                                            <TableRow key={tester.id}>
-                                                                <TableCell>
-                                                                    <div className="flex items-center gap-2">
-                                                                        <Avatar className="w-8 h-8">
-                                                                            <AvatarImage src={tester.avatar} />
-                                                                            <AvatarFallback>{tester.name.charAt(0)}</AvatarFallback>
-                                                                        </Avatar>
-                                                                        <span className="font-medium">{tester.name}</span>
-                                                                    </div>
-                                                                </TableCell>
-                                                                <TableCell>{tester.country}</TableCell>
-                                                                <TableCell>{tester.device}</TableCell>
-                                                                <TableCell>{tester.ram}</TableCell>
-                                                                <TableCell>{tester.os}</TableCell>
-                                                                <TableCell>{tester.screenSize}</TableCell>
-                                                                <TableCell>{tester.language}</TableCell>
-                                                                <TableCell>
-                                                                    <Badge variant={tester.network === 'WiFi' ? 'secondary' : 'outline'}>
-                                                                        {tester.network}
-                                                                    </Badge>
-                                                                </TableCell>
-                                                                <TableCell className="text-right">
-                                                                    <div className="flex items-center justify-end gap-1">
-                                                                        <Star className="w-4 h-4 text-amber-400 fill-amber-400" />
-                                                                        <span className="font-bold">{tester.rating.toFixed(1)}</span>
-                                                                    </div>
-                                                                </TableCell>
-                                                            </TableRow>
-                                                        )) : (
-                                                            <TableRow>
-                                                                <TableCell colSpan={9} className="text-center h-24 text-muted-foreground">
-                                                                    No tester data available for this project yet.
-                                                                </TableCell>
-                                                            </TableRow>
-                                                        )}
-                                                    </TableBody>
-                                                </Table>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <AppPagination
-                                        currentPage={testersPage}
-                                        totalPages={totalTestersPages}
-                                        onPageChange={handleTestersPageChange}
-                                    />
-                                </CardContent>
-
-                            </Card>
-                        </motion.div>
-
+                        <DeveloperInstructions title='Instructions for Testers' instruction={`"${project?.testingInstructions}"`} mt={20} />
 
                         <main className="w-full mx-auto mt-8 grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+
+                            <motion.div variants={itemVariants} className="lg:col-span-2">
+                                <SubmittedFeedback />
+                            </motion.div>
+
                             <motion.div variants={itemVariants} className="lg:col-span-2">
                                 <Card className="bg-card">
                                     <CardHeader className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
@@ -492,6 +419,7 @@ function ProjectDetailsClient({ project }: { project: Project }) {
                                     </CardContent>
                                 </Card>
                             </motion.div>
+
                             <motion.div variants={itemVariants} className="lg:col-span-1 space-y-8">
                                 <Card>
                                     <CardHeader>
@@ -543,6 +471,85 @@ function ProjectDetailsClient({ project }: { project: Project }) {
                                 </Card>
                             </motion.div>
                         </main>
+
+                        <motion.div variants={itemVariants} className="mt-8">
+                            <Card className="bg-card">
+                                <CardHeader>
+                                    <CardTitle>Tester & Device Details</CardTitle>
+                                    <CardDescription>Comprehensive information about the testers and devices in your project.</CardDescription>
+                                </CardHeader>
+                                <CardContent>
+                                    <div className="w-full overflow-x-auto">
+                                        <div className="min-w-full inline-block align-middle">
+                                            <div className="overflow-hidden border rounded-lg">
+                                                <Table className="min-w-[900px]">
+                                                    <TableHeader>
+                                                        <TableRow>
+                                                            <TableHead>Tester</TableHead>
+                                                            <TableHead>Country</TableHead>
+                                                            <TableHead>Device</TableHead>
+                                                            <TableHead>RAM</TableHead>
+                                                            <TableHead>OS</TableHead>
+                                                            <TableHead>Screen</TableHead>
+                                                            <TableHead>Language</TableHead>
+                                                            <TableHead>Network</TableHead>
+                                                            <TableHead className="text-right">Rating</TableHead>
+                                                        </TableRow>
+                                                    </TableHeader>
+                                                    <TableBody>
+                                                        {currentTesters.length > 0 ? currentTesters.map(tester => (
+                                                            <TableRow key={tester.id}>
+                                                                <TableCell>
+                                                                    <div className="flex items-center gap-2">
+                                                                        <Avatar className="w-8 h-8">
+                                                                            <AvatarImage src={tester.avatar} />
+                                                                            <AvatarFallback>{tester.name.charAt(0)}</AvatarFallback>
+                                                                        </Avatar>
+                                                                        <span className="font-medium">{tester.name}</span>
+                                                                    </div>
+                                                                </TableCell>
+                                                                <TableCell>{tester.country}</TableCell>
+                                                                <TableCell>{tester.device}</TableCell>
+                                                                <TableCell>{tester.ram}</TableCell>
+                                                                <TableCell>{tester.os}</TableCell>
+                                                                <TableCell>{tester.screenSize}</TableCell>
+                                                                <TableCell>{tester.language}</TableCell>
+                                                                <TableCell>
+                                                                    <Badge variant={tester.network === 'WiFi' ? 'secondary' : 'outline'}>
+                                                                        {tester.network}
+                                                                    </Badge>
+                                                                </TableCell>
+                                                                <TableCell className="text-right">
+                                                                    <div className="flex items-center justify-end gap-1">
+                                                                        <Star className="w-4 h-4 text-amber-400 fill-amber-400" />
+                                                                        <span className="font-bold">{tester.rating.toFixed(1)}</span>
+                                                                    </div>
+                                                                </TableCell>
+                                                            </TableRow>
+                                                        )) : (
+                                                            <TableRow>
+                                                                <TableCell colSpan={9} className="text-center h-24 text-muted-foreground">
+                                                                    No tester data available for this project yet.
+                                                                </TableCell>
+                                                            </TableRow>
+                                                        )}
+                                                    </TableBody>
+                                                </Table>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <AppPagination
+                                        currentPage={testersPage}
+                                        totalPages={totalTestersPages}
+                                        onPageChange={handleTestersPageChange}
+                                    />
+                                </CardContent>
+
+                            </Card>
+                        </motion.div>
+
+
                     </div>
                 </motion.div>
                 {fullscreenImage && (
@@ -576,11 +583,11 @@ function ProjectDetailsClient({ project }: { project: Project }) {
 }
 
 export default function ProjectDetailsPage({ params }: { params: { id: string } }) {
-  const project = allProjects.find(p => p.id.toString() === params.id);
+    const project = allProjects.find(p => p.id.toString() === params.id);
 
-  if (!project) {
-    notFound();
-  }
+    if (!project) {
+        notFound();
+    }
 
-  return <ProjectDetailsClient project={project} />;
+    return <ProjectDetailsClient project={project} />;
 }

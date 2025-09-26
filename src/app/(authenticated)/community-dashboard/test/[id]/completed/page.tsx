@@ -6,7 +6,7 @@ import { CheckCircle, Bug, Lightbulb, PartyPopper } from 'lucide-react';
 import { communityApps } from '@/lib/data';
 import { BackButton } from '@/components/back-button';
 import { AppInfoSidebar } from '@/components/appInfoSidebar';
-import { SubmittedFeedback } from '@/components/submitted-feedback';
+import { SubmittedFeedback } from '@/components/community-dashboard/submitted-feedback';
 import { useState, useEffect } from 'react';
 import Confetti from 'react-dom-confetti';
 import { useInView } from 'react-intersection-observer';

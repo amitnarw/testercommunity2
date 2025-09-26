@@ -183,12 +183,12 @@ export default function DashboardPage() {
               </TabsList>
               <TabsContent value="pending" className="mt-6">
                   <div className="flex justify-start mb-2">
-                      <div className="flex items-center gap-2 bg-muted rounded-lg">
+                      <div className="flex items-center gap-2 rounded-lg border p-0.5">
                           {pendingTabs.map((tab) => (
                               <button
                                   key={tab.value}
                                   onClick={() => setPendingSubTab(tab.value)}
-                                  className={`rounded-lg px-4 py-1.5 text-xs sm:text-sm h-auto ${pendingSubTab === tab.value ? "bg-black text-white dark:bg-white dark:text-black" : "text-black/70 dark:text-white/70"}`}
+                                  className={`rounded-md px-4 py-1.5 h-auto ${pendingSubTab === tab.value ? "bg-black text-white dark:bg-white dark:text-black text-xs sm:text-sm" : "text-black/70 dark:text-white/70 text-[10px] sm:text-xs"}`}
                               >
                                   {tab.label} ({tab.count})
                               </button>

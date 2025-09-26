@@ -3,7 +3,7 @@
 import { useState, useCallback } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { LayoutGrid, Lightbulb, Upload, Edit, List, Bug, Trash2, X, PartyPopper } from 'lucide-react';
+import { LayoutGrid, Lightbulb, Upload, Edit, List, Bug, Trash2, X, PartyPopper, CirclePlay } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
@@ -14,7 +14,7 @@ import { PlusCircle } from 'lucide-react';
 import { useDropzone } from 'react-dropzone';
 import Image from 'next/image';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { AppPagination } from './app-pagination';
+import { AppPagination } from '../app-pagination';
 
 const FEEDBACK_PER_PAGE = 3;
 
@@ -118,7 +118,7 @@ const FeedbackIcon = ({ type }: { type: SubmittedFeedbackType['type'] }) => {
     return <PartyPopper className="w-5 h-5 text-green-500 flex-shrink-0" />;
 }
 
-const FeedbackListItem = ({ fb, onSave, onDelete, onImageClick }: { fb: SubmittedFeedbackType, onSave: (data: any) => void, onDelete: (id: number) => void, onImageClick: (url: string) => void }) => (
+const FeedbackListItem = ({ fb, onImageClick, onVideoClick }: { fb: SubmittedFeedbackType, onImageClick: (url: string) => void, onVideoClick: (url: string) => void }) => (
     <Card className={`bg-gradient-to-tl ${fb.type === "Bug" ? "from-red-500/20" : fb.type === "Suggestion" ? "from-yellow-500/20" : "from-green-500/20"} ${fb.type === "Bug" ? "to-red-500/5" : fb.type === "Suggestion" ? "to-yellow-500/5" : "to-green-500/5"} p-4 pt-2 pr-2 shadow-none border-0 relative overflow-hidden pl-5`}>
         <div className="flex items-start flex-col gap-0">
             <div className="absolute scale-[2.5] rotate-45 top-2 left-1 opacity-5 dark:opacity-10">
@@ -126,44 +126,26 @@ const FeedbackListItem = ({ fb, onSave, onDelete, onImageClick }: { fb: Submitte
             </div>
             <div className="flex flex-row items-center justify-between w-full">
                 <p className="font-semibold">{fb.type}</p>
-                <div className="flex items-center gap-1">
-                    <FeedbackFormModal feedback={fb} onSave={onSave}>
-                        <button className="hover:bg-white/50 p-2 rounded-md duration-300">
-                            <Edit className="w-4 h-4" />
-                        </button>
-                    </FeedbackFormModal>
-                    <AlertDialog>
-                        <AlertDialogTrigger asChild>
-                            <button className="hover:bg-red-200 p-2 rounded-md duration-300 text-red-500">
-                                <Trash2 className="w-4 h-4" />
-                            </button>
-                        </AlertDialogTrigger>
-                        <AlertDialogContent className='w-[90vw] rounded-2xl bg-white dark:bg-[#121212] border-0'>
-                            <AlertDialogHeader>
-                                <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-                                <AlertDialogDescription>
-                                    This action cannot be undone. This will permanently delete your feedback.
-                                </AlertDialogDescription>
-                            </AlertDialogHeader>
-                            <AlertDialogFooter>
-                                <AlertDialogCancel className='bg-white dark:bg-[#121212]'>Cancel</AlertDialogCancel>
-                                <AlertDialogAction className='bg-gradient-to-br from-red-500 to-red-500/40 dark:from-red-500/80 dark:to-red-500/20 hover:bg-red-500/50 !shadow-red-500/50' onClick={() => onDelete(fb.id)}>Delete</AlertDialogAction>
-                            </AlertDialogFooter>
-                        </AlertDialogContent>
-                    </AlertDialog>
-                </div>
             </div>
             <p className="text-sm text-muted-foreground mt-1">{fb.comment}</p>
-            {fb.screenshot && (
-                <div className="mt-3 cursor-pointer h-14" onClick={() => onImageClick(fb.screenshot!)}>
-                    <Image src={fb.screenshot} alt="Feedback screenshot" width={40} height={100} className="rounded-sm border object-cover" />
-                </div>
-            )}
+            <div className='flex flex-row gap-2 mt-3'>
+                {fb.screenshot && (
+                    <div className="cursor-pointer h-14 w-10" onClick={() => onImageClick(fb.screenshot!)}>
+                        <Image src={fb.screenshot} alt="Feedback screenshot" width={40} height={100} className="rounded-sm border object-cover" />
+                    </div>
+                )}
+                {fb.screenshot && (
+                    <div className="cursor-pointer h-14 w-20 relative" onClick={() => onVideoClick(fb.screenshot!)}>
+                        <Image src={fb.screenshot} alt="Feedback screenshot" width={100} height={100} className="rounded-sm border object-cover w-full h-full" />
+                        <CirclePlay className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-white shadow-lg backdrop-blur-sm rounded-full p-1" size={30} />
+                    </div>
+                )}
+            </div>
         </div>
     </Card>
 );
 
-const FeedbackGridItem = ({ fb, onSave, onDelete, onImageClick }: { fb: SubmittedFeedbackType, onSave: (data: any) => void, onDelete: (id: number) => void, onImageClick: (url: string) => void }) => (
+const FeedbackGridItem = ({ fb, onImageClick, onVideoClick }: { fb: SubmittedFeedbackType, onImageClick: (url: string) => void, onVideoClick: (url: string) => void }) => (
     <Card className={`bg-gradient-to-bl ${fb.type === "Bug" ? "from-red-500/20" : fb.type === "Suggestion" ? "from-yellow-500/20" : "from-green-500/20"} ${fb.type === "Bug" ? "to-red-500/10" : fb.type === "Suggestion" ? "to-yellow-500/10" : "to-green-500/10"} p-4 pr-2 shadow-none border-0 h-full flex flex-col relative overflow-hidden`}>
         <CardHeader className="p-0 flex-row items-center justify-between">
             <div className="flex items-center gap-3">
@@ -176,38 +158,18 @@ const FeedbackGridItem = ({ fb, onSave, onDelete, onImageClick }: { fb: Submitte
         <CardContent className="p-0 pt-2 flex-grow">
             <p className="text-sm text-muted-foreground line-clamp-3">{fb.comment}</p>
         </CardContent>
-        <CardFooter className="p-0 flex items-center justify-between">
-            {fb.screenshot ? (
-                <div className="mt-3 cursor-pointer h-10" onClick={() => onImageClick(fb.screenshot!)}>
+        <CardFooter className="p-0 flex gap-1 mt-3">
+            {fb.screenshot && (
+                <div className="cursor-pointer h-10" onClick={() => onImageClick(fb.screenshot!)}>
                     <Image src={fb.screenshot} alt="Feedback screenshot" width={30} height={100} className="rounded-sm border object-cover" />
                 </div>
-            ) : <div />}
-            <div className="flex items-center gap-1">
-                <FeedbackFormModal feedback={fb} onSave={onSave}>
-                    <button className="hover:bg-white/50 p-1 sm:p-2 rounded-md duration-300">
-                        <Edit className="w-3 h-3 sm:w-4 h-4" />
-                    </button>
-                </FeedbackFormModal>
-                <AlertDialog>
-                    <AlertDialogTrigger asChild>
-                        <button className="hover:bg-red-200 p-2 rounded-md duration-300 text-red-500">
-                            <Trash2 className="w-4 h-4" />
-                        </button>
-                    </AlertDialogTrigger>
-                    <AlertDialogContent className='w-[90vw] rounded-2xl bg-white dark:bg-[#121212] border-0'>
-                        <AlertDialogHeader>
-                            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-                            <AlertDialogDescription>
-                                This action cannot be undone. This will permanently delete your feedback.
-                            </AlertDialogDescription>
-                        </AlertDialogHeader>
-                        <AlertDialogFooter>
-                            <AlertDialogCancel className='bg-white dark:bg-[#121212]'>Cancel</AlertDialogCancel>
-                            <AlertDialogAction className='bg-gradient-to-br from-red-500 to-red-500/40 dark:from-red-500/80 dark:to-red-500/20 hover:bg-red-500/50 !shadow-red-500/50' onClick={() => onDelete(fb.id)}>Delete</AlertDialogAction>
-                        </AlertDialogFooter>
-                    </AlertDialogContent>
-                </AlertDialog>
-            </div>
+            )}
+            {fb.screenshot && (
+                <div className="cursor-pointer h-10 w-16 relative" onClick={() => onVideoClick(fb.screenshot!)}>
+                    <Image src={fb.screenshot} alt="Feedback screenshot" width={100} height={100} className="rounded-sm border object-cover w-full h-full" />
+                    <CirclePlay className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-white shadow-lg backdrop-blur-sm rounded-full p-1" size={30} />
+                </div>
+            )}
         </CardFooter>
     </Card>
 );
@@ -216,6 +178,7 @@ export function SubmittedFeedback({ isCompleted = false }: { isCompleted?: boole
     const [viewMode, setViewMode] = useState<'grid' | 'list'>('list');
     const [currentPage, setCurrentPage] = useState(1);
     const [fullscreenImage, setFullscreenImage] = useState<string | null>(null);
+    const [fullscreenVideo, setFullscreenVideo] = useState<string | null>(null);
 
     const [submittedFeedback, setSubmittedFeedback] = useState<SubmittedFeedbackType[]>([
         { id: 1, type: 'Bug', comment: 'App crashes on launch sometimes.', screenshot: null },
@@ -277,11 +240,6 @@ export function SubmittedFeedback({ isCompleted = false }: { isCompleted?: boole
                                     <LayoutGrid className="w-4 h-4" />
                                 </Button>
                             </div>
-                            {!isCompleted &&
-                                <FeedbackFormModal onSave={handleSaveFeedback}>
-                                    <Button className='relative overflow-hidden'><PlusCircle className="absolute sm:static mr-2 h-4 w-4 scale-[2.5] top-1 left-1 text-white/20 sm:text-white sm:scale-100" /> Submit New</Button>
-                                </FeedbackFormModal>
-                            }
                         </div>
                     </div>
 
@@ -290,13 +248,13 @@ export function SubmittedFeedback({ isCompleted = false }: { isCompleted?: boole
                             {viewMode === 'list' ? (
                                 <div className="space-y-3">
                                     {currentFeedback.map((fb) => (
-                                        <FeedbackListItem key={fb.id} fb={fb} onSave={handleSaveFeedback} onDelete={handleDeleteFeedback} onImageClick={setFullscreenImage} />
+                                        <FeedbackListItem key={fb.id} fb={fb} onImageClick={setFullscreenImage} onVideoClick={setFullscreenVideo} />
                                     ))}
                                 </div>
                             ) : (
                                 <div className="grid grid-cols-2 md:grid-cols-3 gap-2 sm:gap-4">
                                     {currentFeedback.map((fb) => (
-                                        <FeedbackGridItem key={fb.id} fb={fb} onSave={handleSaveFeedback} onDelete={handleDeleteFeedback} onImageClick={setFullscreenImage} />
+                                        <FeedbackGridItem key={fb.id} fb={fb} onImageClick={setFullscreenImage} onVideoClick={setFullscreenVideo} />
                                     ))}
                                 </div>
                             )}
@@ -326,7 +284,7 @@ export function SubmittedFeedback({ isCompleted = false }: { isCompleted?: boole
                     <Button
                         variant="ghost"
                         size="icon"
-                        className="absolute top-4 right-4 text-white hover:text-white bg-red-500/60 hover:bg-red-500 h-12 w-12 rounded-lg"
+                        className="absolute top-4 right-4 text-white hover:text-white bg-red-500/60 hover:bg-red-500 h-12 w-12 rounded-lg z-10"
                         onClick={() => setFullscreenImage(null)}
                     >
                         <X className="w-8 h-8" />
@@ -340,6 +298,32 @@ export function SubmittedFeedback({ isCompleted = false }: { isCompleted?: boole
                             objectFit="contain"
                             className="animate-in zoom-in-95"
                         />
+                    </div>
+                </div>
+            )}
+            {fullscreenVideo && (
+                <div
+                    className="fixed inset-0 bg-black/80 z-[60] flex items-center justify-center p-4 animate-in fade-in-0"
+                    onClick={() => setFullscreenVideo(null)}
+                >
+                    <Button
+                        variant="ghost"
+                        size="icon"
+                        className="absolute top-4 right-4 text-white hover:text-white bg-red-500/60 hover:bg-red-500 h-12 w-12 rounded-lg"
+                        onClick={() => setFullscreenVideo(null)}
+                    >
+                        <X className="w-8 h-8" />
+                        <span className="sr-only">Close</span>
+                    </Button>
+                    <div className="relative w-full h-full max-w-4xl max-h-[90vh]">
+                        <video src='fullscreenVideo'></video>
+                        {/* <Image
+                            src={fullscreenVideo}
+                            alt="Fullscreen view"
+                            layout="fill"
+                            objectFit="contain"
+                            className="animate-in zoom-in-95"
+                        /> */}
                     </div>
                 </div>
             )}
