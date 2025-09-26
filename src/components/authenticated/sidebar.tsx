@@ -4,7 +4,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { LayoutDashboard, Users2, LogOut, Bell, ChevronRight, ChevronLeft, Briefcase, DollarSign, LifeBuoy, FileCheck, Bug, Users } from "lucide-react";
+import { LayoutDashboard, Users2, LogOut, Bell, ChevronRight, ChevronLeft, Briefcase, DollarSign, LifeBuoy, FileCheck, Bug, Users, UserPlus } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../ui/tooltip";
 import { InTestersLogoShortHeader } from "../icons";
 
@@ -25,6 +25,7 @@ const adminNavLinks = [
     { name: "Admin Dashboard", href: "/admin/dashboard", icon: LayoutDashboard },
     { name: "Users", href: "/admin/users", icon: Users },
     { name: "Submissions", href: "/admin/submissions", icon: FileCheck },
+    { name: "Applications", href: "/admin/applications", icon: UserPlus },
     { name: "Bug Reports", href: "/admin/bugs", icon: Bug },
 ];
 

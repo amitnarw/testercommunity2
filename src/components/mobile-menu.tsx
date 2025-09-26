@@ -1,7 +1,7 @@
 
 "use client"
 
-import { Menu, X, LayoutDashboard, Users2, Bell, Briefcase, DollarSign, LifeBuoy, Users, FileCheck, Bug } from 'lucide-react';
+import { Menu, X, LayoutDashboard, Users2, Bell, Briefcase, DollarSign, LifeBuoy, Users, FileCheck, Bug, UserPlus } from 'lucide-react';
 import { Button } from './ui/button';
 import { Sheet, SheetContent, SheetHeader, SheetClose, SheetTrigger } from './ui/sheet';
 import Link from 'next/link';
@@ -25,6 +25,7 @@ const adminNavItems = [
     { name: 'Admin Dashboard', href: '/admin/dashboard', icon: LayoutDashboard },
     { name: 'Users', href: '/admin/users', icon: Users },
     { name: 'Submissions', href: '/admin/submissions', icon: FileCheck },
+    { name: 'Applications', href: '/admin/applications', icon: UserPlus },
     { name: 'Bug Reports', href: '/admin/bugs', icon: Bug },
 ];
 
@@ -41,7 +42,7 @@ export default function MobileMenu({ isMenuOpen, setIsMenuOpen, onLogout }: {
         navItems = proNavItems;
     }
     
-    const isAuthenticated = !pathname.startsWith('/login') && !pathname.startsWith('/signup');
+    const isAuthenticated = !pathname.startsWith('/login') && !pathname.startsWith('/signup') && !pathname.startsWith('/professional/login') && !pathname.startsWith('/professional/register');
     
     const publicNavItems = [
       { name: 'Home', href: '/' },
