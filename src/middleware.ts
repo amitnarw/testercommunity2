@@ -12,7 +12,8 @@ export function middleware(request: NextRequest) {
   const authRoutes = ['/login', '/signup'];
   const authenticatedRoutes = ['/dashboard', '/community-dashboard', '/notifications', '/profile'];
   const adminRoutes = ['/admin'];
-  const professionalRoutes = ['/professional'];
+  const professionalTesterAuthRoutes = ['/tester/login', '/tester/register'];
+  const professionalRoutes = ['/professional/tester/dashboard'];
 
   // If user is authenticated and tries to access login/signup, redirect to dashboard
   if (isAuthenticated && authRoutes.some(route => pathname.startsWith(route))) {
@@ -23,7 +24,7 @@ export function middleware(request: NextRequest) {
       return NextResponse.redirect(new URL('/admin/dashboard', request.url));
   }
 
-  if (isProfessional && (pathname.startsWith('/professional/tester/login') || pathname.startsWith('/professional/tester/register'))) {
+  if (isProfessional && professionalTesterAuthRoutes.some(route => pathname.startsWith(route))) {
       return NextResponse.redirect(new URL('/professional/tester/dashboard', request.url));
   }
 
@@ -36,8 +37,8 @@ export function middleware(request: NextRequest) {
       return NextResponse.redirect(new URL('/admin/login', request.url));
   }
   
-  if (!isProfessional && professionalRoutes.some(route => pathname.startsWith(route)) && !pathname.startsWith('/professional/tester/login') && !pathname.startsWith('/professional/tester/register')) {
-      return NextResponse.redirect(new URL('/professional/tester/login', request.url));
+  if (!isProfessional && professionalRoutes.some(route => pathname.startsWith(route))) {
+      return NextResponse.redirect(new URL('/tester/login', request.url));
   }
 
 

@@ -24,10 +24,10 @@ export default function ProfessionalLayout({
     setIsAuthenticated(authStatus);
     setIsAuthChecked(true);
 
-    if (!authStatus && pathname !== '/professional/tester/login' && pathname !== '/professional/tester/register') {
-      router.replace('/professional/tester/login');
+    if (!authStatus && pathname !== '/tester/login' && pathname !== '/tester/register') {
+      router.replace('/tester/login');
     }
-     if (authStatus && (pathname === '/professional/tester/login' || pathname === '/professional/tester/register')) {
+     if (authStatus && (pathname === '/tester/login' || pathname === '/tester/register')) {
       router.replace('/professional/tester/dashboard');
     }
   }, [pathname, router]);
@@ -35,10 +35,10 @@ export default function ProfessionalLayout({
   const handleLogout = () => {
     document.cookie = 'isProfessionalAuthenticated=false; path=/; max-age=0';
     setIsAuthenticated(false);
-    router.push('/professional/tester/login');
+    router.push('/tester/login');
   };
 
-  const isAuthPage = pathname === '/professional/tester/login' || pathname === '/professional/tester/register';
+  const isAuthPage = pathname === '/tester/login' || pathname === '/tester/register';
 
   if (!isAuthChecked) {
     return null; // Or a loading spinner
