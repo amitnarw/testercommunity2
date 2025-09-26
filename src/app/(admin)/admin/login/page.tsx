@@ -9,29 +9,31 @@ import { Input } from '@/components/ui/input';
 import { useTheme } from 'next-themes';
 import { Moon, Sun } from 'lucide-react';
 import { BackButton } from '@/components/back-button';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
-const AdminLoginForm = () => {
+const LoginForm = ({ role }: { role: 'Admin' | 'Moderator' }) => {
     const router = useRouter();
 
-    const handleAdminLogin = (e: React.FormEvent) => {
+    const handleLogin = (e: React.FormEvent) => {
         e.preventDefault();
-        // In a real app, you would verify credentials here
-        document.cookie = "isAdminAuthenticated=true; path=/; max-age=" + 60 * 60 * 24 * 7;
+        // In a real app, you would verify credentials and set role-based permissions
+        document.cookie = `isAdminAuthenticated=true; path=/; max-age=${60 * 60 * 24 * 7}`;
+        document.cookie = `userRole=${role}; path=/; max-age=${60 * 60 * 24 * 7}`;
         router.push('/admin/dashboard');
     }
 
     return (
-        <form onSubmit={handleAdminLogin} className="space-y-6">
+        <form onSubmit={handleLogin} className="space-y-6">
              <div className="space-y-2">
-                <label htmlFor="email">Admin Email</label>
-                <Input id="email" type="email" placeholder="admin@example.com" defaultValue="admin@inTesters.com" className="flex h-10 w-full rounded-md border-input bg-transparent px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50" />
+                <label htmlFor={`${role}-email`}>{role} Email</label>
+                <Input id={`${role}-email`} type="email" placeholder={`${role.toLowerCase()}@example.com`} defaultValue={`${role.toLowerCase()}@inTesters.com`} className="flex h-10 w-full rounded-md border-input bg-transparent px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50" />
             </div>
             <div className="space-y-2">
-                <label htmlFor="password">Password</label>
-                <Input id="password" type="password" placeholder="••••••••" defaultValue="password" className="flex h-10 w-full rounded-md border-input bg-transparent px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50" />
+                <label htmlFor={`${role}-password`}>Password</label>
+                <Input id={`${role}-password`} type="password" placeholder="••••••••" defaultValue="password" className="flex h-10 w-full rounded-md border-input bg-transparent px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50" />
             </div>
             <div className="space-y-2">
-                <Button type="submit" className="w-full rounded-xl py-6 text-lg">Log In</Button>
+                <Button type="submit" className="w-full rounded-xl py-6 text-lg">Log In as {role}</Button>
             </div>
         </form>
     )
@@ -64,7 +66,18 @@ export default function AdminLoginPage() {
                         Please log in to continue.
                     </p>
                 </div>
-                <AdminLoginForm />
+                 <Tabs defaultValue="admin" className="w-full">
+                    <TabsList className="grid w-full grid-cols-2">
+                        <TabsTrigger value="admin">Admin</TabsTrigger>
+                        <TabsTrigger value="moderator">Moderator</TabsTrigger>
+                    </TabsList>
+                    <TabsContent value="admin" className="mt-6">
+                        <LoginForm role="Admin" />
+                    </TabsContent>
+                    <TabsContent value="moderator" className="mt-6">
+                        <LoginForm role="Moderator" />
+                    </TabsContent>
+                </Tabs>
             </div>
         </div>
         <div className="hidden lg:flex flex-col items-center justify-center p-6 text-center relative overflow-hidden bg-background">
