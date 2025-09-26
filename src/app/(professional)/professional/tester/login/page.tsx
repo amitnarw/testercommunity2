@@ -62,7 +62,7 @@ export default function ProfessionalLoginPage() {
                         Professional Tester Login
                     </h2>
                     <p className="text-muted-foreground mt-2">
-                        Not a pro tester yet? <Link href="/professional/register" className="text-primary hover:underline">Register here</Link>.
+                        Not a pro tester yet? <Link href="/professional/tester/register" className="text-primary hover:underline">Register here</Link>.
                     </p>
                 </div>
                 <ProLoginForm />

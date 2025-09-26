@@ -160,7 +160,7 @@ export default function ProfessionalRegisterPage() {
                             Become a Professional Tester
                         </h2>
                         <p className="text-muted-foreground mt-2">
-                            Already have an account? <Link href="/professional/login" className="text-primary hover:underline">Log in</Link>.
+                            Already have an account? <Link href="/professional/tester/login" className="text-primary hover:underline">Log in</Link>.
                         </p>
                     </div>
                     <FormProvider {...form}>

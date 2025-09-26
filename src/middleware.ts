@@ -23,7 +23,7 @@ export function middleware(request: NextRequest) {
       return NextResponse.redirect(new URL('/admin/dashboard', request.url));
   }
 
-  if (isProfessional && (pathname.startsWith('/professional/login') || pathname.startsWith('/professional/register'))) {
+  if (isProfessional && (pathname.startsWith('/professional/tester/login') || pathname.startsWith('/professional/tester/register'))) {
       return NextResponse.redirect(new URL('/professional/tester/dashboard', request.url));
   }
 
@@ -36,8 +36,8 @@ export function middleware(request: NextRequest) {
       return NextResponse.redirect(new URL('/admin/login', request.url));
   }
   
-  if (!isProfessional && professionalRoutes.some(route => pathname.startsWith(route)) && !pathname.startsWith('/professional/login') && !pathname.startsWith('/professional/register')) {
-      return NextResponse.redirect(new URL('/professional/login', request.url));
+  if (!isProfessional && professionalRoutes.some(route => pathname.startsWith(route)) && !pathname.startsWith('/professional/tester/login') && !pathname.startsWith('/professional/tester/register')) {
+      return NextResponse.redirect(new URL('/professional/tester/login', request.url));
   }
 
 
