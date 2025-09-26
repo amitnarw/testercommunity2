@@ -1,6 +1,7 @@
+
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { LayoutGrid, Lightbulb, Upload, List, Bug, Trash2, X, PartyPopper, CirclePlay } from 'lucide-react';
@@ -14,8 +15,6 @@ import Image from 'next/image';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { AppPagination } from '../app-pagination';
 import { Badge } from '../ui/badge';
-
-const FEEDBACK_PER_PAGE = 6;
 
 const getSeverityBadge = (severity: string) => {
     switch (severity) {
@@ -207,7 +206,19 @@ export function SubmittedFeedback({ isCompleted = false }: { isCompleted?: boole
         { id: 4, type: 'Bug', comment: 'The settings icon is misaligned on tablets.', screenshot: 'https://images.unsplash.com/photo-1756303018960-e5279e145963?q=80&w=719&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', tester: 'Tester104', severity: 'Medium' },
         { id: 5, type: 'Suggestion', comment: 'Could we get an option to export data to CSV?', screenshot: null, tester: 'Tester105', severity: 'N/A' },
         { id: 6, type: 'Praise', comment: 'The performance improvement in the latest update is very noticeable!', screenshot: null, tester: 'Tester106', severity: 'N/A' },
+        { id: 7, type: 'Bug', comment: 'Login button is unresponsive on older Android versions.', screenshot: 'https://images.unsplash.com/photo-1559136560-16de2dc70a2b?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', tester: 'Tester107', severity: 'High' },
+        { id: 8, type: 'Suggestion', comment: 'It would be helpful to have a tutorial for new users.', screenshot: null, tester: 'Tester108', severity: 'N/A' },
+        { id: 9, type: 'Praise', comment: 'This is one of the most stable beta apps I have tested.', screenshot: null, tester: 'Tester109', severity: 'N/A' },
+        { id: 10, type: 'Bug', comment: 'Text overlaps in the profile section on small screens.', screenshot: null, tester: 'Tester110', severity: 'Low' },
+        { id: 11, type: 'Suggestion', comment: 'Add integration with other project management tools.', screenshot: null, tester: 'Tester111', severity: 'N/A' },
+        { id: 12, type: 'Bug', comment: 'In-app purchases are not going through. Stuck on processing.', screenshot: 'https://images.unsplash.com/photo-1580674287405-80cd3582e3b9?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', tester: 'Tester112', severity: 'Critical' },
     ]);
+
+    const FEEDBACK_PER_PAGE = viewMode === 'list' ? 4 : 6;
+
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [viewMode]);
 
     const totalPages = Math.ceil(submittedFeedback.length / FEEDBACK_PER_PAGE);
     const startIndex = (currentPage - 1) * FEEDBACK_PER_PAGE;
