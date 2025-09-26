@@ -24,20 +24,32 @@ export default function ProfessionalLayout({
     setIsAuthenticated(authStatus);
     setIsAuthChecked(true);
 
-    if (!authStatus) {
-      router.replace('/login');
+    if (!authStatus && pathname !== '/professional/login' && pathname !== '/professional/register') {
+      router.replace('/professional/login');
+    }
+     if (authStatus && (pathname === '/professional/login' || pathname === '/professional/register')) {
+      router.replace('/professional/tester/dashboard');
     }
   }, [pathname, router]);
   
   const handleLogout = () => {
-    // Simulate logout
-    document.cookie = 'isAuthenticated=false; path=/; max-age=0';
     document.cookie = 'isProfessionalAuthenticated=false; path=/; max-age=0';
-    router.push('/login');
+    setIsAuthenticated(false);
+    router.push('/professional/login');
   };
 
-  if (!isAuthChecked || !isAuthenticated) {
+  const isAuthPage = pathname === '/professional/login' || pathname === '/professional/register';
+
+  if (!isAuthChecked) {
     return null; // Or a loading spinner
+  }
+
+  if (isAuthPage) {
+    return <main className="flex-1 bg-background">{children}</main>;
+  }
+  
+  if (!isAuthenticated) {
+      return null;
   }
 
   return (

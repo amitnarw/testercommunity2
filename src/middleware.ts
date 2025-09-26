@@ -1,3 +1,4 @@
+
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 
@@ -22,6 +23,10 @@ export function middleware(request: NextRequest) {
       return NextResponse.redirect(new URL('/admin/dashboard', request.url));
   }
 
+  if (isProfessional && (pathname.startsWith('/professional/login') || pathname.startsWith('/professional/register'))) {
+      return NextResponse.redirect(new URL('/professional/tester/dashboard', request.url));
+  }
+
   // If user is not authenticated and tries to access a protected route, redirect to login
   if (!isAuthenticated && authenticatedRoutes.some(route => pathname.startsWith(route))) {
     return NextResponse.redirect(new URL('/login', request.url));
@@ -31,10 +36,8 @@ export function middleware(request: NextRequest) {
       return NextResponse.redirect(new URL('/admin/login', request.url));
   }
   
-  if (!isProfessional && professionalRoutes.some(route => pathname.startsWith(route))) {
-      // Assuming professional users also have a login page, though not explicitly created yet.
-      // For now, let's redirect them to the main login.
-      return NextResponse.redirect(new URL('/login', request.url));
+  if (!isProfessional && professionalRoutes.some(route => pathname.startsWith(route)) && !pathname.startsWith('/professional/login') && !pathname.startsWith('/professional/register')) {
+      return NextResponse.redirect(new URL('/professional/login', request.url));
   }
 
 
