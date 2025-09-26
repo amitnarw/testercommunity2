@@ -11,7 +11,7 @@ import { Moon, Sun } from 'lucide-react';
 import { BackButton } from '@/components/back-button';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
-const LoginForm = ({ role }: { role: 'Admin' | 'Moderator' }) => {
+const LoginForm = ({ role }: { role: 'Super Admin' | 'Admin' | 'Moderator' }) => {
     const router = useRouter();
 
     const handleLogin = (e: React.FormEvent) => {
@@ -26,7 +26,7 @@ const LoginForm = ({ role }: { role: 'Admin' | 'Moderator' }) => {
         <form onSubmit={handleLogin} className="space-y-6">
              <div className="space-y-2">
                 <label htmlFor={`${role}-email`}>{role} Email</label>
-                <Input id={`${role}-email`} type="email" placeholder={`${role.toLowerCase()}@example.com`} defaultValue={`${role.toLowerCase()}@inTesters.com`} className="flex h-10 w-full rounded-md border-input bg-transparent px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50" />
+                <Input id={`${role}-email`} type="email" placeholder={`${role.toLowerCase().replace(' ', '')}@example.com`} defaultValue={`${role.toLowerCase().replace(' ', '')}@inTesters.com`} className="flex h-10 w-full rounded-md border-input bg-transparent px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50" />
             </div>
             <div className="space-y-2">
                 <label htmlFor={`${role}-password`}>Password</label>
@@ -67,10 +67,14 @@ export default function AdminLoginPage() {
                     </p>
                 </div>
                  <Tabs defaultValue="admin" className="w-full">
-                    <TabsList className="grid w-full grid-cols-2">
+                    <TabsList className="grid w-full grid-cols-3">
+                        <TabsTrigger value="super-admin">Super Admin</TabsTrigger>
                         <TabsTrigger value="admin">Admin</TabsTrigger>
                         <TabsTrigger value="moderator">Moderator</TabsTrigger>
                     </TabsList>
+                    <TabsContent value="super-admin" className="mt-6">
+                        <LoginForm role="Super Admin" />
+                    </TabsContent>
                     <TabsContent value="admin" className="mt-6">
                         <LoginForm role="Admin" />
                     </TabsContent>

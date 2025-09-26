@@ -33,6 +33,7 @@ export default function AdminLayout({
 
   const handleLogout = () => {
     document.cookie = 'isAdminAuthenticated=false; path=/; max-age=0';
+    document.cookie = 'userRole=; path=/; max-age=0';
     setIsAuthenticated(false);
     router.push('/admin/login');
   };

@@ -1,13 +1,14 @@
 
 'use client';
 
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuItem } from "@/components/ui/dropdown-menu";
-import { Search, MoreHorizontal, UserPlus } from "lucide-react";
+import { Search, MoreHorizontal, UserPlus, Shield, UserCog } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 
@@ -22,6 +23,12 @@ const testers = [
     { id: 5, name: "Clark Kent", email: "clark@dailyplanet.com", role: "Tester", status: "Active", avatar: "https://i.pravatar.cc/150?u=clark" },
     { id: 6, name: "Harley Quinn", email: "harleen@arkham.net", role: "Tester", status: "Banned", avatar: "https://i.pravatar.cc/150?u=harley" },
 ];
+
+const admins = [
+    { id: 7, name: "Nick Fury", email: "nick@shield.org", role: "Super Admin", status: "Active", avatar: "https://i.pravatar.cc/150?u=nick" },
+    { id: 8, name: "Maria Hill", email: "maria@shield.org", role: "Admin", status: "Active", avatar: "https://i.pravatar.cc/150?u=maria" },
+    { id: 9, name: "Phil Coulson", email: "phil@shield.org", role: "Moderator", status: "Active", avatar: "https://i.pravatar.cc/150?u=phil" },
+]
 
 const UserTable = ({ users }: { users: any[] }) => (
     <Table>
@@ -48,7 +55,7 @@ const UserTable = ({ users }: { users: any[] }) => (
                     </TableCell>
                     <TableCell className="hidden md:table-cell">{user.email}</TableCell>
                     <TableCell>
-                         <Badge variant={user.role === "Admin" ? "default" : "secondary"}>{user.role}</Badge>
+                         <Badge variant={user.role === "Developer" || user.role === "Tester" ? "secondary" : "default"}>{user.role}</Badge>
                     </TableCell>
                     <TableCell>
                         <Badge
@@ -83,6 +90,15 @@ const UserTable = ({ users }: { users: any[] }) => (
 );
 
 export default function AdminUsersPage() {
+    const [userRole, setUserRole] = useState('');
+
+    useEffect(() => {
+        const role = document.cookie.split('; ').find(row => row.startsWith('userRole='))?.split('=')[1] || '';
+        setUserRole(decodeURIComponent(role));
+    }, []);
+
+    const isSuperAdmin = userRole === 'Super Admin';
+
     return (
         <div className="flex-1 space-y-8 p-4 sm:p-8 pt-6">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between space-y-2">
@@ -90,9 +106,30 @@ export default function AdminUsersPage() {
                     <h2 className="text-3xl font-bold tracking-tight">User Management</h2>
                     <p className="text-muted-foreground">View, manage, and take action on all user accounts.</p>
                 </div>
-                <Button>
-                    <UserPlus className="mr-2 h-4 w-4" /> Add New User
-                </Button>
+                <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                        <Button>
+                            <UserPlus className="mr-2 h-4 w-4" /> Add New User
+                        </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                        <DropdownMenuLabel>Create New User</DropdownMenuLabel>
+                        <DropdownMenuItem>
+                             <UserPlus className="mr-2 h-4 w-4" /> Add Developer
+                        </DropdownMenuItem>
+                        <DropdownMenuItem>
+                             <UserPlus className="mr-2 h-4 w-4" /> Add Tester
+                        </DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem>
+                             <UserCog className="mr-2 h-4 w-4" /> Add Moderator
+                        </DropdownMenuItem>
+                         <DropdownMenuItem disabled={!isSuperAdmin}>
+                             <Shield className="mr-2 h-4 w-4" /> Add Admin
+                             {!isSuperAdmin && <span className="text-xs ml-2 text-muted-foreground">(Super Admin only)</span>}
+                        </DropdownMenuItem>
+                    </DropdownMenuContent>
+                </DropdownMenu>
             </div>
             
             <Tabs defaultValue="developers" className="w-full">
@@ -101,9 +138,10 @@ export default function AdminUsersPage() {
                         <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
                         <Input placeholder="Search users..." className="pl-8 w-full md:w-[300px]" />
                     </div>
-                    <TabsList className="grid w-full md:w-auto grid-cols-2">
+                    <TabsList className="grid w-full md:w-auto grid-cols-3">
                         <TabsTrigger value="developers">Developers</TabsTrigger>
                         <TabsTrigger value="testers">Testers</TabsTrigger>
+                        <TabsTrigger value="admins">Staff</TabsTrigger>
                     </TabsList>
                 </div>
                 <TabsContent value="developers" className="mt-4">
@@ -117,6 +155,13 @@ export default function AdminUsersPage() {
                      <Card>
                         <CardContent className="pt-6">
                            <UserTable users={testers} />
+                        </CardContent>
+                    </Card>
+                </TabsContent>
+                <TabsContent value="admins" className="mt-4">
+                     <Card>
+                        <CardContent className="pt-6">
+                           <UserTable users={admins} />
                         </CardContent>
                     </Card>
                 </TabsContent>
