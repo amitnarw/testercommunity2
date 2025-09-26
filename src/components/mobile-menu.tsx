@@ -1,7 +1,7 @@
 
 "use client"
 
-import { Menu, X, LayoutDashboard, Users2, Bell, Briefcase, DollarSign, LifeBuoy, Users, FileCheck, Bug, UserPlus } from 'lucide-react';
+import { Menu, X, LayoutDashboard, Users2, Bell, Briefcase, DollarSign, LifeBuoy, Users, FileCheck, Bug, UserPlus, MessageSquare, Lightbulb } from 'lucide-react';
 import { Button } from './ui/button';
 import { Sheet, SheetContent, SheetHeader, SheetClose, SheetTrigger } from './ui/sheet';
 import Link from 'next/link';
@@ -26,7 +26,8 @@ const adminNavItems = [
     { name: 'Users', href: '/admin/users', icon: Users },
     { name: 'Submissions', href: '/admin/submissions', icon: FileCheck },
     { name: 'Applications', href: '/admin/applications', icon: UserPlus },
-    { name: 'Bug Reports', href: '/admin/bugs', icon: Bug },
+    { name: "Feedback", href: "/admin/feedback", icon: MessageSquare },
+    { name: "Suggestions", href: "/admin/suggestions", icon: Lightbulb },
 ];
 
 

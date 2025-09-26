@@ -14,7 +14,7 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { LayoutDashboard, Users2, User, Gem, LifeBuoy, LogOut, ChevronDown, Package, Briefcase, DollarSign, FileCheck, Bug, Users, UserPlus } from 'lucide-react';
+import { LayoutDashboard, Users2, User, Gem, LifeBuoy, LogOut, ChevronDown, Package, Briefcase, DollarSign, FileCheck, Bug, Users, UserPlus, MessageSquare, Lightbulb } from 'lucide-react';
 import { useEffect, useState } from "react";
 
 
@@ -46,7 +46,8 @@ export function UserNav({ onLogout }: UserNavProps) {
                     <Link href="/admin/users"><DropdownMenuItem className="h-10"><Users className="mr-2" /><span>Users</span></DropdownMenuItem></Link>
                     <Link href="/admin/submissions"><DropdownMenuItem className="h-10"><FileCheck className="mr-2" /><span>Submissions</span></DropdownMenuItem></Link>
                     <Link href="/admin/applications"><DropdownMenuItem className="h-10"><UserPlus className="mr-2" /><span>Applications</span></DropdownMenuItem></Link>
-                    <Link href="/admin/bugs"><DropdownMenuItem className="h-10"><Bug className="mr-2" /><span>Bugs</span></DropdownMenuItem></Link>
+                    <Link href="/admin/feedback"><DropdownMenuItem className="h-10"><MessageSquare className="mr-2" /><span>Feedback</span></DropdownMenuItem></Link>
+                    <Link href="/admin/suggestions"><DropdownMenuItem className="h-10"><Lightbulb className="mr-2" /><span>Suggestions</span></DropdownMenuItem></Link>
                 </DropdownMenuGroup>
             );
         }
