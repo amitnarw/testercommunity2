@@ -15,10 +15,12 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Checkbox } from "@/components/ui/checkbox";
 import { FormField, FormControl, FormItem, FormMessage, FormLabel } from '@/components/ui/form';
 import { cn } from '@/lib/utils';
-import { ArrowLeft, ArrowRight, UserPlus, CheckCircle } from 'lucide-react';
+import { ArrowLeft, ArrowRight, UserPlus, CheckCircle, Moon, Sun } from 'lucide-react';
 import { SiteLogo } from '@/components/icons';
 import { BackgroundBeams } from '@/components/background-beams';
 import Link from 'next/link';
+import { useTheme } from 'next-themes';
+import { BackButton } from '@/components/back-button';
 
 const step1Schema = z.object({
   fullName: z.string().min(2, "Full name is required."),
@@ -35,9 +37,9 @@ const step2Schema = z.object({
 });
 
 const step3Schema = z.object({
-  devices: z.string().min(10, "Please list the devices you own for testing."),
-  os: z.string().min(1, "Please list the OS versions you can test on."),
-  languages: z.string().optional(),
+    devices: z.array(z.string()).refine(value => value.some(item => item), { message: "You must select at least one device." }),
+    osVersions: z.array(z.string()).refine(value => value.some(item => item), { message: "You must select at least one OS version." }),
+    languages: z.string().optional(),
 });
 
 const formSchemas = [step1Schema, step2Schema, step3Schema];
@@ -56,6 +58,22 @@ const testingTypeOptions = [
     { id: "usability", label: "Usability Testing" },
     { id: "api", label: "API Testing" },
 ] as const;
+
+const deviceOptions = [
+    { id: "pixel", label: "Google Pixel" },
+    { id: "samsung", label: "Samsung Galaxy" },
+    { id: "oneplus", label: "OnePlus" },
+    { id: "xiaomi", label: "Xiaomi/Redmi" },
+    { id: "oppo", label: "Oppo/Realme" },
+    { id: "other", label: "Other Brands" },
+];
+
+const osOptions = [
+    { id: "android_14", label: "Android 14" },
+    { id: "android_13", label: "Android 13" },
+    { id: "android_12", label: "Android 12" },
+    { id: "android_11", label: "Android 11 or older" },
+];
 
 const RegistrationSuccess = () => (
     <motion.div
@@ -78,10 +96,16 @@ export default function ProfessionalRegisterPage() {
     const [currentStep, setCurrentStep] = useState(0);
     const [previousStep, setPreviousStep] = useState(0);
     const [isSubmitted, setIsSubmitted] = useState(false);
+    const { setTheme, theme } = useTheme();
 
     const form = useForm({
         resolver: zodResolver(formSchemas[currentStep]),
         mode: 'onChange',
+        defaultValues: {
+            testingTypes: [],
+            devices: [],
+            osVersions: [],
+        }
     });
 
     const { trigger, handleSubmit } = form;
@@ -114,6 +138,18 @@ export default function ProfessionalRegisterPage() {
     return (
     <div className="min-h-screen w-full lg:grid lg:grid-cols-2">
         <div className="relative w-full h-screen flex flex-col items-center justify-center p-6 bg-background">
+             <div className="absolute top-4 right-4 flex items-center gap-4">
+                <BackButton href="/" />
+                <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+                >
+                    <Sun className="h-6 w-6 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+                    <Moon className="absolute h-6 w-6 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+                    <span className="sr-only">Toggle theme</span>
+                </Button>
+            </div>
             <div className="max-w-md w-full">
                 {isSubmitted ? (
                     <RegistrationSuccess />
@@ -197,12 +233,46 @@ export default function ProfessionalRegisterPage() {
                                         </div>
                                     )}
                                     {currentStep === 2 && (
-                                        <div className="space-y-4">
-                                            <FormField name="devices" render={({ field }) => (
-                                                <FormItem><FormLabel>Device Inventory</FormLabel><FormControl><Textarea placeholder="e.g., Google Pixel 8 Pro (Android 14), Samsung Galaxy Tab S9 (Android 13)..." {...field} /></FormControl><FormMessage /></FormItem>
+                                        <div className="space-y-6">
+                                            <FormField control={form.control} name="devices" render={() => (
+                                                <FormItem>
+                                                    <FormLabel>Device Inventory</FormLabel>
+                                                    <div className="grid grid-cols-2 gap-2">
+                                                    {deviceOptions.map((item) => (
+                                                        <FormField key={item.id} control={form.control} name="devices" render={({ field }) => (
+                                                            <FormItem key={item.id} className="flex flex-row items-start space-x-3 space-y-0">
+                                                                <FormControl>
+                                                                <Checkbox checked={field.value?.includes(item.id)} onCheckedChange={(checked) => {
+                                                                    return checked ? field.onChange([...(field.value || []), item.id]) : field.onChange(field.value?.filter((value) => value !== item.id))
+                                                                }} />
+                                                                </FormControl>
+                                                                <FormLabel className="text-sm font-normal">{item.label}</FormLabel>
+                                                            </FormItem>
+                                                        )} />
+                                                    ))}
+                                                    </div>
+                                                    <FormMessage />
+                                                </FormItem>
                                             )} />
-                                            <FormField name="os" render={({ field }) => (
-                                                <FormItem><FormLabel>Operating Systems</FormLabel><FormControl><Input placeholder="e.g., Android 12, 13, 14" {...field} /></FormControl><FormMessage /></FormItem>
+                                            <FormField control={form.control} name="osVersions" render={() => (
+                                                <FormItem>
+                                                    <FormLabel>Operating Systems</FormLabel>
+                                                    <div className="grid grid-cols-2 gap-2">
+                                                    {osOptions.map((item) => (
+                                                        <FormField key={item.id} control={form.control} name="osVersions" render={({ field }) => (
+                                                            <FormItem key={item.id} className="flex flex-row items-start space-x-3 space-y-0">
+                                                                <FormControl>
+                                                                <Checkbox checked={field.value?.includes(item.id)} onCheckedChange={(checked) => {
+                                                                    return checked ? field.onChange([...(field.value || []), item.id]) : field.onChange(field.value?.filter((value) => value !== item.id))
+                                                                }} />
+                                                                </FormControl>
+                                                                <FormLabel className="text-sm font-normal">{item.label}</FormLabel>
+                                                            </FormItem>
+                                                        )} />
+                                                    ))}
+                                                    </div>
+                                                     <FormMessage />
+                                                </FormItem>
                                             )} />
                                             <FormField name="languages" render={({ field }) => (
                                                 <FormItem><FormLabel>Programming/Scripting Languages (Optional)</FormLabel><FormControl><Input placeholder="e.g., Python, JavaScript, Java" {...field} /></FormControl><FormMessage /></FormItem>
