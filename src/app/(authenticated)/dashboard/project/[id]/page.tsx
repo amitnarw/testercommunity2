@@ -311,35 +311,41 @@ function ProjectDetailsClient({ project }: { project: Project }) {
                             <motion.div variants={itemVariants} className="lg:col-span-1 space-y-8">
                                 <Card>
                                     <CardHeader>
-                                        <CardTitle className="flex items-center gap-2"><Smartphone className="w-5 h-5 text-primary" /> Tested Devices</CardTitle>
+                                        <CardTitle className="flex items-center gap-2"><Smartphone className="w-5 h-5 text-primary" /> Device & OS Coverage</CardTitle>
                                     </CardHeader>
                                     <CardContent>
-                                        <ul className="space-y-3 text-sm">
-                                            {project.deviceCoverage.map(d => (
-                                                <li key={d.device} className="flex items-center justify-between">
-                                                    <span className="font-semibold">{d.device}</span>
-                                                    <span className="font-mono text-muted-foreground">{d.testers} testers</span>
-                                                </li>
-                                            ))}
-                                        </ul>
-                                    </CardContent>
-                                </Card>
-                                <Card>
-                                    <CardHeader>
-                                        <CardTitle className="flex items-center gap-2"><BarChart className="w-5 h-5 text-primary" /> OS Version</CardTitle>
-                                    </CardHeader>
-                                    <CardContent className="h-[250px] w-full">
-                                        <ResponsiveContainer width="100%" height="100%">
-                                            <PieChart>
-                                                <Pie data={osData} cx="50%" cy="50%" labelLine={false} innerRadius={60} outerRadius={80} dataKey="value" paddingAngle={5}>
-                                                    {osData.map((entry, index) => (
-                                                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                                                    ))}
-                                                </Pie>
-                                                <Tooltip content={<CustomTooltip />} />
-                                                <Legend iconType="circle" />
-                                            </PieChart>
-                                        </ResponsiveContainer>
+                                        <Tabs defaultValue="os">
+                                            <TabsList className="grid w-full grid-cols-2">
+                                                <TabsTrigger value="os">OS Version</TabsTrigger>
+                                                <TabsTrigger value="devices">Devices</TabsTrigger>
+                                            </TabsList>
+                                            <TabsContent value="os" className="h-[250px] w-full pt-4">
+                                                <ResponsiveContainer width="100%" height="100%">
+                                                    <PieChart>
+                                                        <Pie data={osData} cx="50%" cy="50%" labelLine={false} innerRadius={60} outerRadius={80} dataKey="value" paddingAngle={5}>
+                                                            {osData.map((entry, index) => (
+                                                                <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                                                            ))}
+                                                        </Pie>
+                                                        <Tooltip content={<CustomTooltip />} />
+                                                        <Legend iconType="circle" />
+                                                    </PieChart>
+                                                </ResponsiveContainer>
+                                            </TabsContent>
+                                            <TabsContent value="devices" className="h-[250px] w-full pt-4">
+                                                 <ResponsiveContainer width="100%" height="100%">
+                                                    <PieChart>
+                                                        <Pie data={deviceData} cx="50%" cy="50%" labelLine={false} innerRadius={60} outerRadius={80} dataKey="value" paddingAngle={5}>
+                                                            {deviceData.map((entry, index) => (
+                                                                <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                                                            ))}
+                                                        </Pie>
+                                                        <Tooltip content={<CustomTooltip />} />
+                                                        <Legend iconType="circle" />
+                                                    </PieChart>
+                                                </ResponsiveContainer>
+                                            </TabsContent>
+                                        </Tabs>
                                     </CardContent>
                                 </Card>
                                 <Card>
