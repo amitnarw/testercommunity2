@@ -3,21 +3,19 @@
 import { useState, useCallback } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { LayoutGrid, Lightbulb, Upload, Edit, List, Bug, Trash2, X, PartyPopper, CirclePlay } from 'lucide-react';
+import { LayoutGrid, Lightbulb, Upload, List, Bug, Trash2, X, PartyPopper, CirclePlay } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import type { SubmittedFeedback as SubmittedFeedbackType } from '@/lib/types';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger, } from "@/components/ui/alert-dialog"
-import { PlusCircle } from 'lucide-react';
 import { useDropzone } from 'react-dropzone';
 import Image from 'next/image';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { AppPagination } from '../app-pagination';
 import { Badge } from '../ui/badge';
 
-const FEEDBACK_PER_PAGE = 3;
+const FEEDBACK_PER_PAGE = 6;
 
 const getSeverityBadge = (severity: string) => {
     switch (severity) {
@@ -178,20 +176,20 @@ const FeedbackGridItem = ({ fb, onImageClick, onVideoClick }: { fb: SubmittedFee
             <p className="text-sm text-muted-foreground line-clamp-3">{fb.comment}</p>
         </CardContent>
         <CardFooter className="p-0 flex flex-col items-start gap-1 mt-3">
-             <div className='flex flex-row gap-1'>
+            <div className='flex flex-row gap-1'>
                 {fb.screenshot && (
-                    <div className="cursor-pointer h-10 w-8" onClick={() => onImageClick(fb.screenshot!)}>
-                        <Image src={fb.screenshot} alt="Feedback screenshot" width={30} height={100} className="rounded-sm border object-cover" />
+                    <div className="cursor-pointer h-10 w-8 relative" onClick={() => onImageClick(fb.screenshot!)}>
+                        <Image src={fb.screenshot} alt="Feedback screenshot" fill className="rounded-sm border object-cover" />
                     </div>
                 )}
                 {fb.screenshot && (
-                    <div className="cursor-pointer h-10 w-16 relative" onClick={() => onVideoClick(fb.screenshot!)}>
-                        <Image src={fb.screenshot} alt="Feedback screenshot" width={100} height={100} className="rounded-sm border object-cover w-full h-full" />
+                    <div className="cursor-pointer h-18 w-16 relative" onClick={() => onVideoClick(fb.screenshot!)}>
+                        <Image src={fb.screenshot} alt="Feedback screenshot" fill className="rounded-sm border object-cover w-full h-full" />
                         <CirclePlay className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-white shadow-lg backdrop-blur-sm rounded-full p-1" size={30} />
                     </div>
                 )}
             </div>
-             <span className="text-xs text-muted-foreground pt-2">by {fb.tester}</span>
+            <p className="text-xs text-muted-foreground pt-2 text-end w-full">by {fb.tester}</p>
         </CardFooter>
     </Card>
 );
