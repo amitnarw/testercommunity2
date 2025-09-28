@@ -26,7 +26,7 @@ const adminNavLinks = [
     { name: "Users", href: "/admin/users", icon: Users },
     { name: "Submissions", href: "/admin/submissions", icon: FileCheck },
     { name: "Applications", href: "/admin/applications", icon: UserPlus },
-    { name: "Feedback", href: "/admin/feedback", icon: MessageSquare },z
+    { name: "Feedback", href: "/admin/feedback", icon: MessageSquare },
     { name: "Suggestions", href: "/admin/suggestions", icon: Lightbulb },
 ];
 
