@@ -214,7 +214,6 @@ function ProjectDetailsClient({ project }: { project: Project }) {
                         </motion.section>
                     )}
 
-
                     <div className={`relative ${isUnderReviewOrRejected ? "blur-md pointer-events-none" : ""}`}>
                         <motion.div
                             variants={{
@@ -308,7 +307,7 @@ function ProjectDetailsClient({ project }: { project: Project }) {
                             </motion.div>
 
                             <motion.div variants={itemVariants} className="lg:col-span-1 space-y-8">
-                                 <Card>
+                                <Card className='shadow-none h-full'>
                                     <CardHeader>
                                         <CardTitle className="flex items-center gap-2"><Smartphone className="w-5 h-5 text-primary" /> Device &amp; OS Coverage</CardTitle>
                                     </CardHeader>
@@ -323,7 +322,7 @@ function ProjectDetailsClient({ project }: { project: Project }) {
                                                         ))}
                                                     </Pie>
                                                     <Tooltip content={<CustomTooltip />} />
-                                                    <Legend wrapperStyle={{fontSize: '12px'}}/>
+                                                    <Legend wrapperStyle={{ fontSize: '12px' }} />
                                                 </PieChart>
                                             </ResponsiveContainer>
                                         </div>
@@ -337,13 +336,13 @@ function ProjectDetailsClient({ project }: { project: Project }) {
                                                         ))}
                                                     </Pie>
                                                     <Tooltip content={<CustomTooltip />} />
-                                                     <Legend wrapperStyle={{fontSize: '12px'}}/>
+                                                    <Legend wrapperStyle={{ fontSize: '12px' }} />
                                                 </PieChart>
                                             </ResponsiveContainer>
                                         </div>
                                     </CardContent>
                                 </Card>
-                                <Card>
+                                <Card className='shadow-none h-full'>
                                     <CardHeader>
                                         <CardTitle className="flex items-center gap-2"><MapPin className="w-5 h-5 text-primary" /> Top Geographies</CardTitle>
                                     </CardHeader>
@@ -361,69 +360,81 @@ function ProjectDetailsClient({ project }: { project: Project }) {
                             </motion.div>
                         </main>
 
-                        <motion.div variants={itemVariants} className="mt-8">
-                            <Card className="bg-card">
-                                <CardHeader>
+                        <motion.div variants={itemVariants} className="mt-14">
+                            <Card className="bg-card/0 border-0 shadow-none">
+                                <CardHeader className="p-0">
                                     <CardTitle>Tester &amp; Device Details</CardTitle>
                                     <CardDescription>Comprehensive information about the testers and devices in your project.</CardDescription>
                                 </CardHeader>
-                                <CardContent>
+                                <CardContent className="p-0 mt-4">
                                     <div className="w-full overflow-x-auto">
                                         <div className="min-w-full inline-block align-middle">
-                                            <div className="overflow-hidden border rounded-lg">
-                                                <Table className="min-w-[900px]">
-                                                    <TableHeader>
-                                                        <TableRow>
-                                                            <TableHead>Tester</TableHead>
-                                                            <TableHead>Country</TableHead>
-                                                            <TableHead>Device</TableHead>
-                                                            <TableHead>RAM</TableHead>
-                                                            <TableHead>OS</TableHead>
-                                                            <TableHead>Screen</TableHead>
-                                                            <TableHead>Language</TableHead>
-                                                            <TableHead>Network</TableHead>
-                                                            <TableHead className="text-right">Rating</TableHead>
-                                                        </TableRow>
-                                                    </TableHeader>
-                                                    <TableBody>
-                                                        {currentTesters.length > 0 ? currentTesters.map(tester => (
-                                                            <TableRow key={tester.id}>
-                                                                <TableCell>
-                                                                    <div className="flex items-center gap-2">
-                                                                        <Avatar className="w-8 h-8">
-                                                                            <AvatarImage src={tester.avatar} />
-                                                                            <AvatarFallback>{tester.name.charAt(0)}</AvatarFallback>
-                                                                        </Avatar>
-                                                                        <span className="font-medium">{tester.name}</span>
-                                                                    </div>
-                                                                </TableCell>
-                                                                <TableCell>{tester.country}</TableCell>
-                                                                <TableCell>{tester.device}</TableCell>
-                                                                <TableCell>{tester.ram}</TableCell>
-                                                                <TableCell>{tester.os}</TableCell>
-                                                                <TableCell>{tester.screenSize}</TableCell>
-                                                                <TableCell>{tester.language}</TableCell>
-                                                                <TableCell>
-                                                                    <Badge variant={tester.network === 'WiFi' ? 'secondary' : 'outline'}>
-                                                                        {tester.network}
-                                                                    </Badge>
-                                                                </TableCell>
-                                                                <TableCell className="text-right">
-                                                                    <div className="flex items-center justify-end gap-1">
-                                                                        <Star className="w-4 h-4 text-amber-400 fill-amber-400" />
-                                                                        <span className="font-bold">{tester.rating.toFixed(1)}</span>
-                                                                    </div>
-                                                                </TableCell>
-                                                            </TableRow>
-                                                        )) : (
-                                                            <TableRow>
-                                                                <TableCell colSpan={9} className="text-center h-24 text-muted-foreground">
-                                                                    No tester data available for this project yet.
-                                                                </TableCell>
-                                                            </TableRow>
-                                                        )}
-                                                    </TableBody>
-                                                </Table>
+                                            <div className="overflow-hidden">
+                                                <div className="min-w-[900px] space-y-2">
+                                                    {/* Table Header */}
+                                                    <div className="rounded-xl shadow-sm bg-card overflow-hidden">
+                                                        <Table>
+                                                            <TableHeader>
+                                                                <TableRow className="!border-b-[8px] border-[#f8fafc] dark:border-[#0f151e]">
+                                                                    <TableHead className='py-6'>Tester</TableHead>
+                                                                    <TableHead>Country</TableHead>
+                                                                    <TableHead>Device</TableHead>
+                                                                    <TableHead>RAM</TableHead>
+                                                                    <TableHead>OS</TableHead>
+                                                                    <TableHead>Screen</TableHead>
+                                                                    <TableHead>Language</TableHead>
+                                                                    <TableHead>Network</TableHead>
+                                                                    <TableHead className="text-right">Rating</TableHead>
+                                                                </TableRow>
+                                                            </TableHeader>
+
+                                                            <TableBody>
+                                                                {currentTesters.length > 0 ? (
+                                                                    currentTesters.map((tester) => (
+                                                                        <TableRow
+                                                                            key={tester.id}
+                                                                            className="border-b-gray-100 dark:border-b-gray-900"
+                                                                        >
+                                                                            <TableCell>
+                                                                                <div className="flex items-center gap-2">
+                                                                                    <Avatar className="w-8 h-8">
+                                                                                        <AvatarImage src={tester.avatar} />
+                                                                                        <AvatarFallback>{tester.name.charAt(0)}</AvatarFallback>
+                                                                                    </Avatar>
+                                                                                    <span className="font-medium">{tester.name}</span>
+                                                                                </div>
+                                                                            </TableCell>
+                                                                            <TableCell>{tester.country}</TableCell>
+                                                                            <TableCell>{tester.device}</TableCell>
+                                                                            <TableCell>{tester.ram}</TableCell>
+                                                                            <TableCell>{tester.os}</TableCell>
+                                                                            <TableCell>{tester.screenSize}</TableCell>
+                                                                            <TableCell>{tester.language}</TableCell>
+                                                                            <TableCell>
+                                                                                <Badge variant={tester.network === 'WiFi' ? 'secondary' : 'outline'}>
+                                                                                    {tester.network}
+                                                                                </Badge>
+                                                                            </TableCell>
+                                                                            <TableCell className="text-right">
+                                                                                <div className="flex items-center justify-end gap-1">
+                                                                                    <Star className="w-4 h-4 text-amber-400 fill-amber-400" />
+                                                                                    <span className="font-bold">{tester.rating.toFixed(1)}</span>
+                                                                                </div>
+                                                                            </TableCell>
+                                                                        </TableRow>
+                                                                    ))
+                                                                ) : (
+                                                                    <TableRow>
+                                                                        <TableCell colSpan={9} className="text-center h-24 text-muted-foreground">
+                                                                            No tester data available for this project yet.
+                                                                        </TableCell>
+                                                                    </TableRow>
+                                                                )}
+                                                            </TableBody>
+                                                        </Table>
+                                                    </div>
+                                                </div>
+
                                             </div>
                                         </div>
                                     </div>
@@ -437,7 +448,6 @@ function ProjectDetailsClient({ project }: { project: Project }) {
 
                             </Card>
                         </motion.div>
-
 
                     </div>
                 </motion.div>

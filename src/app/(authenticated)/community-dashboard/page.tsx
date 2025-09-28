@@ -18,6 +18,7 @@ import { Card, CardContent } from '@/components/ui/card';
 import Image from 'next/image';
 import { Badge } from '@/components/ui/badge';
 import type { CommunityApp } from '@/lib/types';
+import SubTabUI from '@/components/sub-tab-ui';
 
 
 const APPS_PER_PAGE = 6;
@@ -85,7 +86,7 @@ const RequestedAppCard = ({ app }: { app: CommunityApp }) => (
 );
 
 const RejectedRequestCard = ({ app }: { app: CommunityApp }) => (
-     <Link href={`/community-dashboard/test/${app.id}`} className="group block h-full">
+    <Link href={`/community-dashboard/test/${app.id}`} className="group block h-full">
         <Card className="flex flex-col h-full overflow-hidden rounded-2xl transition-all duration-300 bg-destructive/10 border border-dashed border-destructive/20 group-hover:-translate-y-1">
             <CardContent className="p-4 flex-grow flex flex-col">
                 <div className="flex items-start gap-4 mb-4">
@@ -121,13 +122,13 @@ export default function CommunityDashboardPage() {
     const rejectedRequestApps = communityApps.filter(app => app.status === 'request_rejected');
     const completedApps = communityApps.filter(app => app.status === 'completed');
     const availableApps = communityApps.filter(app => app.status === 'available');
-    
+
     const tabs = [
         { label: 'Available', value: 'available', count: availableApps.length },
         { label: 'Ongoing', value: 'ongoing', count: ongoingApps.length + requestedApps.length + rejectedRequestApps.length },
         { label: 'Completed', value: 'completed', count: completedApps.length },
     ];
-    
+
     const ongoingTabs = [
         { label: 'Ongoing', value: 'ongoing', count: ongoingApps.length },
         { label: 'Requested', value: 'requested', count: requestedApps.length },
@@ -277,22 +278,12 @@ export default function CommunityDashboardPage() {
                             />
                         </TabsContent>
                         <TabsContent value="ongoing" className="mt-6">
-                            <div className="flex justify-start mb-4">
-                                <div className="flex items-center gap-2 bg-muted rounded-lg">
-                                    {ongoingTabs.map((tab) => (
-                                        <button
-                                            key={tab.value}
-                                            onClick={() => setOngoingSubTab(tab.value)}
-                                            className={`rounded-lg px-4 py-1.5 text-xs sm:text-sm h-auto ${ongoingSubTab === tab.value ? "bg-black text-white dark:bg-white dark:text-black" : "text-black/70 dark:text-white/70"}`}
-                                        >
-                                            {tab.label} ({tab.count})
-                                        </button>
-                                    ))}
-                                </div>
-                            </div>
-                             {ongoingSubTab === 'ongoing' && <PaginatedAppList apps={ongoingApps} emptyMessage="You have no ongoing tests." card={CommunityOngoingAppCard} />}
-                             {ongoingSubTab === 'requested' && <PaginatedAppList apps={requestedApps} emptyMessage="You have no pending test requests." card={RequestedAppCard} />}
-                             {ongoingSubTab === 'rejected' && <PaginatedAppList apps={rejectedRequestApps} emptyMessage="You have no rejected test requests." card={RejectedRequestCard} />}
+
+                            <SubTabUI pendingTabs={ongoingTabs} setPendingSubTab={setOngoingSubTab} pendingSubTab={ongoingSubTab} />
+
+                            {ongoingSubTab === 'ongoing' && <PaginatedAppList apps={ongoingApps} emptyMessage="You have no ongoing tests." card={CommunityOngoingAppCard} />}
+                            {ongoingSubTab === 'requested' && <PaginatedAppList apps={requestedApps} emptyMessage="You have no pending test requests." card={RequestedAppCard} />}
+                            {ongoingSubTab === 'rejected' && <PaginatedAppList apps={rejectedRequestApps} emptyMessage="You have no rejected test requests." card={RejectedRequestCard} />}
                         </TabsContent>
                         <TabsContent value="completed">
                             <PaginatedAppList

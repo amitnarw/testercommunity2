@@ -13,6 +13,7 @@ import type { Project } from '@/lib/types';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { AppPagination } from '@/components/app-pagination';
 import { motion } from 'framer-motion';
+import SubTabUI from '@/components/sub-tab-ui';
 
 const PROJECTS_PER_PAGE = 6;
 
@@ -64,9 +65,9 @@ export default function DashboardPage() {
   ];
 
   const pendingTabs = [
-      { label: 'In Review', value: 'in-review', count: inReviewApps.length },
-      { label: 'Drafts', value: 'drafts', count: draftApps.length },
-      { label: 'Rejected', value: 'rejected', count: rejectedApps.length },
+    { label: 'In Review', value: 'in-review', count: inReviewApps.length },
+    { label: 'Drafts', value: 'drafts', count: draftApps.length },
+    { label: 'Rejected', value: 'rejected', count: rejectedApps.length },
   ];
 
 
@@ -182,22 +183,12 @@ export default function DashboardPage() {
                 })}
               </TabsList>
               <TabsContent value="pending" className="mt-6">
-                  <div className="flex justify-start mb-2">
-                      <div className="flex items-center gap-2 rounded-lg border p-0.5">
-                          {pendingTabs.map((tab) => (
-                              <button
-                                  key={tab.value}
-                                  onClick={() => setPendingSubTab(tab.value)}
-                                  className={`rounded-md px-4 py-1.5 h-auto ${pendingSubTab === tab.value ? "bg-black text-white dark:bg-white dark:text-black text-xs sm:text-sm" : "text-black/70 dark:text-white/70 text-[10px] sm:text-xs"}`}
-                              >
-                                  {tab.label} ({tab.count})
-                              </button>
-                          ))}
-                      </div>
-                  </div>
-                  {pendingSubTab === 'in-review' && <PaginatedProjectList projects={inReviewApps} />}
-                  {pendingSubTab === 'drafts' && <PaginatedProjectList projects={draftApps} />}
-                  {pendingSubTab === 'rejected' && <PaginatedProjectList projects={rejectedApps} />}
+
+                <SubTabUI pendingTabs={pendingTabs} setPendingSubTab={setPendingSubTab} pendingSubTab={pendingSubTab} />
+
+                {pendingSubTab === 'in-review' && <PaginatedProjectList projects={inReviewApps} />}
+                {pendingSubTab === 'drafts' && <PaginatedProjectList projects={draftApps} />}
+                {pendingSubTab === 'rejected' && <PaginatedProjectList projects={rejectedApps} />}
               </TabsContent>
               <TabsContent value="ongoing" className="mt-6">
                 <PaginatedProjectList projects={ongoingApps} />

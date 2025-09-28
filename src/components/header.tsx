@@ -23,8 +23,11 @@ const visitorNavItems = [
 ];
 
 const authenticatedNavItems = [
-  { name: 'Developer', href: '/dashboard' },
+  { name: 'Home', href: '/' },
+  { name: 'Dashboard', href: '/dashboard' },
   { name: 'Community', href: '/community-dashboard' },
+  { name: 'Pricing', href: '/pricing' },
+  { name: 'Blog', href: '/blog' },
 ];
 
 interface HeaderProps {

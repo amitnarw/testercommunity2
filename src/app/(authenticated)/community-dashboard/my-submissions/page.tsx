@@ -15,6 +15,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { BackButton } from '@/components/back-button';
 import { AppPagination } from '@/components/app-pagination';
 import { motion } from 'framer-motion';
+import SubTabUI from '@/components/sub-tab-ui';
 
 const PROJECTS_PER_PAGE = 6;
 
@@ -62,7 +63,7 @@ const ProjectCard = ({ project }: { project: Project }) => {
                             {statusConfig.icon}
                         </div>
                         <div>
-                            <p className="text-xs text-muted-foreground mt-1">
+                            <p className="text-xs text-muted-foreground">
                                 {isReviewOrDraft
                                     ? statusConfig.description
                                     : `${project.testersCompleted} of ${project.testersStarted} testers completed.`
@@ -156,7 +157,7 @@ export default function MySubmissionsPage() {
             <div className="min-h-screen bg-secondary/50">
                 <div className="container mx-auto px-4 md:px-6">
                     <main>
-                        <div className="sticky top-0 z-[50] pt-2 sm:pt-3 pb-4">
+                        <div className="sticky top-0 z-[50] pt-2 sm:pt-3 pb-4 w-1/2">
                             <BackButton href="/community-dashboard" />
                         </div>
                         <header className="mb-8 pt-1">
@@ -200,19 +201,9 @@ export default function MySubmissionsPage() {
                                 })}
                             </TabsList>
                             <TabsContent value="pending" className="mt-6">
-                                <div className="flex justify-start mb-2">
-                                    <div className="flex items-center gap-2 bg-muted rounded-lg">
-                                        {pendingTabs.map((tab) => (
-                                            <button
-                                                key={tab.value}
-                                                onClick={() => setPendingSubTab(tab.value)}
-                                                className={`rounded-lg px-4 py-1.5 text-xs sm:text-sm h-auto ${pendingSubTab === tab.value ? "bg-black text-white dark:bg-white dark:text-black" : "text-black/70 dark:text-white/70"}`}
-                                            >
-                                                {tab.label} ({tab.count})
-                                            </button>
-                                        ))}
-                                    </div>
-                                </div>
+
+                                <SubTabUI pendingTabs={pendingTabs} setPendingSubTab={setPendingSubTab} pendingSubTab={pendingSubTab} />
+
                                 {pendingSubTab === 'in-review' && <PaginatedProjectList projects={inReviewApps} />}
                                 {pendingSubTab === 'rejected' && <PaginatedProjectList projects={rejectedApps} />}
                             </TabsContent>
