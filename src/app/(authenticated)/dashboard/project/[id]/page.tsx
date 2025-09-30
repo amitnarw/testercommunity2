@@ -479,3 +479,5 @@ export default function ProjectDetailsPage({ params }: { params: { id: string } 
 
     return <ProjectDetailsClient project={project} />;
 }
+
+    
