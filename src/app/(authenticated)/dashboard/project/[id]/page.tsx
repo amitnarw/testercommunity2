@@ -366,9 +366,9 @@ function ProjectDetailsClient({ project }: { project: Project }) {
                                     <CardTitle>Tester &amp; Device Details</CardTitle>
                                     <CardDescription>Comprehensive information about the testers and devices in your project.</CardDescription>
                                 </CardHeader>
-                                <CardContent className="p-0 mt-4">
-                                <div className="rounded-xl shadow-sm bg-card overflow-x-auto">
-                                <Table className="min-w-[1000px]">
+                                <div className="mt-4 rounded-xl shadow-sm bg-card overflow-hidden">
+                                    <div className="overflow-x-auto">
+                                        <Table className="min-w-[1000px]">
                                             <TableHeader>
                                                 <TableRow className="!border-b-[8px] border-[#f8fafc] dark:border-[#0f151e]">
                                                     <TableHead className='py-6'>Tester</TableHead>
@@ -382,7 +382,6 @@ function ProjectDetailsClient({ project }: { project: Project }) {
                                                     <TableHead className="text-right">Rating</TableHead>
                                                 </TableRow>
                                             </TableHeader>
-
                                             <TableBody>
                                                 {currentTesters.length > 0 ? (
                                                     currentTesters.map((tester) => (
@@ -428,14 +427,14 @@ function ProjectDetailsClient({ project }: { project: Project }) {
                                             </TableBody>
                                         </Table>
                                     </div>
-
+                                </div>
+                                <CardContent className="p-0 mt-4">
                                     <AppPagination
                                         currentPage={testersPage}
                                         totalPages={totalTestersPages}
                                         onPageChange={handleTestersPageChange}
                                     />
                                 </CardContent>
-
                             </Card>
                         </motion.div>
 
@@ -480,5 +479,3 @@ export default function ProjectDetailsPage({ params }: { params: { id: string } 
 
     return <ProjectDetailsClient project={project} />;
 }
-
-    
