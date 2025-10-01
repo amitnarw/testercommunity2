@@ -219,9 +219,9 @@ function ProjectDetailsClient({ project }: { project: Project }) {
                             variants={{
                                 visible: { transition: { staggerChildren: 0.15 } }
                             }}
-                            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4 mt-8">
+                            className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-6 gap-2 sm:gap-4 mt-8">
 
-                            <div className='flex flex-row gap-1 items-center justify-center rounded-2xl overflow-hidden col-span-2'>
+                            <div className='flex flex-row gap-1 items-center justify-center rounded-2xl overflow-hidden col-span-3 sm:col-span-2'>
                                 <div className="bg-gradient-to-tl from-primary/20 to-primary text-primary-foreground p-5 h-full w-full flex flex-col items-center justify-center gap-1">
                                     <p className="text-xs">Testers</p>
                                     <p className="text-4xl sm:text-5xl font-bold">{project.testersStarted}<span className='text-2xl text-white/50'>/14</span></p>
@@ -232,28 +232,28 @@ function ProjectDetailsClient({ project }: { project: Project }) {
                                 </div>
                             </div>
 
-                            <InfoCard title="Feedback Breakdown" className='lg:col-span-2'>
+                            <InfoCard title="Feedback Breakdown" className='col-span-3 lg:col-span-2'>
                                 <div className='grid grid-cols-3 gap-2'>
-                                    <div className="bg-gradient-to-bl from-red-500/20 to-red-500/10 p-5 rounded-lg relative overflow-hidden w-full text-center">
+                                    <div className="bg-gradient-to-bl from-red-500/20 to-red-500/10 p-2 sm:p-5 rounded-lg relative overflow-hidden w-full text-center">
                                         <div className="p-3 rounded-full absolute opacity-10 scale-[2] -right-2 -top-1 -rotate-45 text-red-500">
                                             <Bug />
                                         </div>
-                                        <p className="text-xs text-muted-foreground">Bugs</p>
-                                        <p className="text-4xl font-bold">{feedbackBreakdown.bugs}</p>
+                                        <p className="text-[10px] sm:text-xs text-muted-foreground">Bugs</p>
+                                        <p className="text-3xl sm:text-4xl font-bold">{feedbackBreakdown.bugs}</p>
                                     </div>
-                                    <div className="bg-gradient-to-bl from-yellow-500/20 to-yellow-500/10 p-5 rounded-lg relative overflow-hidden w-full text-center">
+                                    <div className="bg-gradient-to-bl from-yellow-500/20 to-yellow-500/10 p-2 sm:p-5 rounded-lg relative overflow-hidden w-full text-center">
                                         <div className="p-3 rounded-full absolute opacity-10 scale-[2] -right-2 -top-1 -rotate-45 text-yellow-500">
                                             <Lightbulb />
                                         </div>
-                                        <p className="text-xs text-muted-foreground">Suggestions</p>
-                                        <p className="text-4xl font-bold">{feedbackBreakdown.suggestions}</p>
+                                        <p className="text-[10px] sm:text-xs text-muted-foreground">Suggestions</p>
+                                        <p className="text-3xl sm:text-4xl font-bold">{feedbackBreakdown.suggestions}</p>
                                     </div>
-                                    <div className="bg-gradient-to-bl from-green-500/20 to-green-500/10 p-5 rounded-lg relative overflow-hidden w-full text-center">
+                                    <div className="bg-gradient-to-bl from-green-500/20 to-green-500/10 p-2 sm:p-5 rounded-lg relative overflow-hidden w-full text-center">
                                         <div className="p-3 rounded-full absolute opacity-10 scale-[2] -right-2 -top-1 -rotate-90 text-green-500">
                                             <PartyPopper />
                                         </div>
-                                        <p className="text-xs text-muted-foreground">Praise</p>
-                                        <p className="text-4xl font-bold">{feedbackBreakdown.praise}</p>
+                                        <p className="text-[10px] sm:text-xs text-muted-foreground">Praise</p>
+                                        <p className="text-3xl sm:text-4xl font-bold">{feedbackBreakdown.praise}</p>
                                     </div>
                                 </div>
                             </InfoCard>
@@ -266,7 +266,7 @@ function ProjectDetailsClient({ project }: { project: Project }) {
                                     <Star className="w-5 h-5 text-amber-400/0 fill-amber-400/20 scale-[2] absolute top-2 left-2 rotate-45" />
                                     <div className="flex items-center justify-center gap-2 bg-secondary rounded-lg h-full w-full z-10">
                                         <p className="text-4xl font-bold">{project.overallRating.toFixed(1)}</p>
-                                        <p className="text-muted-foreground">/ 5.0</p>
+                                        <p className="text-muted-foreground hidden sm:block">/ 5.0</p>
                                     </div>
                                     <Star className="w-5 h-5 text-amber-400/0 fill-amber-400/20 scale-[3] absolute top-7 right-2 rotate-90" />
                                 </div>
@@ -279,16 +279,16 @@ function ProjectDetailsClient({ project }: { project: Project }) {
                                 <div className='flex flex-col items-center justify-center h-full space-y-3 text-sm w-full'>
                                     <div className="flex flex-col items-center justify-between">
                                         <span className="text-xs text-muted-foreground">Package Name</span>
-                                        <span className="font-mono text-primary truncate">{project.packageName}</span>
+                                        <span className="font-mono text-primary break-all">{project.packageName}</span>
                                     </div>
                                     <div className="flex flex-col items-start gap-2 w-full">
-                                        <div className="flex gap-2 w-full">
-                                            <Button variant="outline" size="sm" className="flex-1" onClick={() => copyToClipboard(`https://play.google.com/store/apps/details?id=${project.packageName}`)}>
-                                                <Copy className="mr-2 h-4 w-4" /> Copy
+                                        <div className="flex flex-row gap-2 w-full">
+                                            <Button variant="outline" size="sm" className="flex-1 py-1.5" onClick={() => copyToClipboard(`https://play.google.com/store/apps/details?id=${project.packageName}`)}>
+                                                <Copy className="!h-3 !w-3" /> <span className="hidden sm:block text-xs">Copy</span>
                                             </Button>
-                                            <Button variant="outline" size="sm" className="flex-1" asChild>
+                                            <Button variant="outline" size="sm" className="flex-1 py-1.5" asChild>
                                                 <a href={`https://play.google.com/store/apps/details?id=${project.packageName}`} target="_blank" rel="noopener noreferrer">
-                                                    <ExternalLink className="mr-2 h-4 w-4" /> Open
+                                                    <ExternalLink className="!h-3 !w-3" /> <span className="hidden sm:block text-xs">Open</span>
                                                 </a>
                                             </Button>
                                         </div>
@@ -308,10 +308,10 @@ function ProjectDetailsClient({ project }: { project: Project }) {
 
                             <motion.div variants={itemVariants} className="lg:col-span-1 space-y-8">
                                 <Card className='shadow-none h-full'>
-                                    <CardHeader>
-                                        <CardTitle className="flex items-center gap-2"><Smartphone className="w-5 h-5 text-primary" /> Device &amp; OS Coverage</CardTitle>
+                                    <CardHeader className="p-3 sm:p-6 pb-0">
+                                        <CardTitle className="flex items-center gap-2 text-xl sm:text-2xl"><Smartphone className="w-5 h-5 text-primary" /> Device &amp; OS Coverage</CardTitle>
                                     </CardHeader>
-                                    <CardContent className="grid grid-cols-2 gap-4 h-[250px]">
+                                    <CardContent className="grid grid-cols-1 sm:grid-cols-2 gap-4 h-auto sm:h-[280px] p-3 sm:p-6">
                                         <div className="flex flex-col items-center">
                                             <h4 className="text-sm font-semibold mb-2">OS Version</h4>
                                             <ResponsiveContainer width="100%" height="100%">
@@ -342,36 +342,21 @@ function ProjectDetailsClient({ project }: { project: Project }) {
                                         </div>
                                     </CardContent>
                                 </Card>
-                                <Card className='shadow-none h-full'>
-                                    <CardHeader>
-                                        <CardTitle className="flex items-center gap-2"><MapPin className="w-5 h-5 text-primary" /> Top Geographies</CardTitle>
-                                    </CardHeader>
-                                    <CardContent>
-                                        <ul className="space-y-3 text-sm">
-                                            {project.topGeographies.map(geo => (
-                                                <li key={geo.country} className="flex items-center justify-between">
-                                                    <span className="flex items-center gap-2">{geo.flag} {geo.country}</span>
-                                                    <span className="font-mono text-muted-foreground">{geo.testers} testers</span>
-                                                </li>
-                                            ))}
-                                        </ul>
-                                    </CardContent>
-                                </Card>
                             </motion.div>
                         </main>
 
-                        <motion.div variants={itemVariants} className="mt-14">
+                        <motion.div variants={itemVariants} className="mt-14 bg-card sm:bg-card/0 p-3 rounded-xl">
                             <Card className="bg-card/0 border-0 shadow-none">
                                 <CardHeader className="p-0">
-                                    <CardTitle>Tester &amp; Device Details</CardTitle>
-                                    <CardDescription>Comprehensive information about the testers and devices in your project.</CardDescription>
+                                    <CardTitle className='text-xl sm:text-2xl'>Tester &amp; Device Details</CardTitle>
+                                    <CardDescription className='text-xs sm:text-sm'>Comprehensive information about the testers and devices in your project.</CardDescription>
                                 </CardHeader>
                             </Card>
                             <div className="mt-4 space-y-4 md:hidden">
                                 {currentTesters.length > 0 ? (
                                     currentTesters.map((tester) => (
-                                        <Card key={tester.id} className="rounded-xl overflow-hidden bg-card">
-                                            <CardHeader className="flex flex-row items-center gap-4 bg-secondary/50">
+                                        <Card key={tester.id} className="rounded-xl overflow-hidden bg-card shadow-[0_0_20px_rgba(0,0,0,0.2)] shadow-gray-100 dark:shadow-gray-900 border border-gray-100/80 dark:border-gray-900/80">
+                                            <CardHeader className="flex flex-row items-center gap-4 bg-secondary/50 p-3 sm:p-6">
                                                 <Avatar className="w-12 h-12">
                                                     <AvatarImage src={tester.avatar} />
                                                     <AvatarFallback>{tester.name.charAt(0)}</AvatarFallback>
@@ -385,13 +370,13 @@ function ProjectDetailsClient({ project }: { project: Project }) {
                                                     <span className="font-bold">{tester.rating.toFixed(1)}</span>
                                                 </div>
                                             </CardHeader>
-                                            <CardContent className="p-4 text-sm grid grid-cols-2 gap-4">
-                                                <div className="space-y-0.5"><p className="text-xs text-muted-foreground">Device</p><p>{tester.device}</p></div>
-                                                <div className="space-y-0.5"><p className="text-xs text-muted-foreground">OS</p><p>{tester.os}</p></div>
-                                                <div className="space-y-0.5"><p className="text-xs text-muted-foreground">Screen</p><p>{tester.screenSize}</p></div>
-                                                <div className="space-y-0.5"><p className="text-xs text-muted-foreground">Language</p><p>{tester.language}</p></div>
-                                                <div className="space-y-0.5"><p className="text-xs text-muted-foreground">RAM</p><p>{tester.ram}</p></div>
-                                                <div className="space-y-0.5"><p className="text-xs text-muted-foreground">Network</p><Badge variant={tester.network === 'WiFi' ? 'secondary' : 'outline'}>{tester.network}</Badge></div>
+                                            <CardContent className="p-4 text-sm grid grid-cols-2 gap-2">
+                                                <div><p className="text-[10px] text-muted-foreground">Device</p><p className="text-xs">{tester.device}</p></div>
+                                                <div><p className="text-[10px] text-muted-foreground">OS</p><p className="text-xs">{tester.os}</p></div>
+                                                <div><p className="text-[10px] text-muted-foreground">Screen</p><p className="text-xs">{tester.screenSize}</p></div>
+                                                <div><p className="text-[10px] text-muted-foreground">Language</p><p className="text-xs">{tester.language}</p></div>
+                                                <div><p className="text-[10px] text-muted-foreground">RAM</p><p className="text-xs">{tester.ram}</p></div>
+                                                <div><p className="text-[10px] text-muted-foreground">Network</p><Badge variant={tester.network === 'WiFi' ? 'secondary' : 'outline'}>{tester.network}</Badge></div>
                                             </CardContent>
                                         </Card>
                                     ))

@@ -18,10 +18,10 @@ import { Badge } from '../ui/badge';
 
 const getSeverityBadge = (severity: string) => {
     switch (severity) {
-        case 'Critical': return <Badge variant="destructive" className="bg-red-700 hover:bg-red-800">{severity}</Badge>;
-        case 'High': return <Badge variant="destructive" className="bg-red-500/80 hover:bg-red-600">{severity}</Badge>;
-        case 'Medium': return <Badge variant="secondary" className="bg-amber-500/80 hover:bg-amber-600 text-white">{severity}</Badge>;
-        case 'Low': return <Badge variant="secondary" className="bg-yellow-500/80 hover:bg-yellow-600 text-white">{severity}</Badge>;
+        case 'Critical': return <Badge variant="destructive" className="!mt-0 bg-red-700 hover:bg-red-800">{severity}</Badge>;
+        case 'High': return <Badge variant="destructive" className="!mt-0 bg-red-500/80 hover:bg-red-600">{severity}</Badge>;
+        case 'Medium': return <Badge variant="secondary" className="!mt-0 bg-amber-500/80 hover:bg-amber-600 text-white">{severity}</Badge>;
+        case 'Low': return <Badge variant="secondary" className="!mt-0 bg-yellow-500/80 hover:bg-yellow-600 text-white">{severity}</Badge>;
         default: return null;
     }
 };
@@ -127,7 +127,7 @@ const FeedbackIcon = ({ type }: { type: SubmittedFeedbackType['type'] }) => {
 }
 
 const FeedbackListItem = ({ fb, onImageClick, onVideoClick }: { fb: SubmittedFeedbackType, onImageClick: (url: string) => void, onVideoClick: (url: string) => void }) => (
-    <Card className={`bg-gradient-to-tl ${fb.type === "Bug" ? "from-red-500/20" : fb.type === "Suggestion" ? "from-yellow-500/20" : "from-green-500/20"} ${fb.type === "Bug" ? "to-red-500/5" : fb.type === "Suggestion" ? "to-yellow-500/5" : "to-green-500/5"} p-4 pt-2 pr-2 shadow-none border-0 relative overflow-hidden`}>
+    <Card className={`bg-gradient-to-tl ${fb.type === "Bug" ? "from-red-500/20" : fb.type === "Suggestion" ? "from-yellow-500/20" : "from-green-500/20"} ${fb.type === "Bug" ? "to-red-500/5" : fb.type === "Suggestion" ? "to-yellow-500/5" : "to-green-500/5"} p-2 sm:p-4 pt-2 pr-2 shadow-none border-0 relative overflow-hidden`}>
         <div className="flex items-start flex-col gap-0">
             <div className="absolute scale-[2.5] rotate-45 top-2 left-2 opacity-5 dark:opacity-10">
                 <FeedbackIcon type={fb.type} />
@@ -138,7 +138,7 @@ const FeedbackListItem = ({ fb, onImageClick, onVideoClick }: { fb: SubmittedFee
                     {getSeverityBadge(fb.severity)}
                 </div>
             </div>
-            <p className="text-sm text-muted-foreground mt-1 pl-3">{fb.comment}</p>
+            <p className="text-xs sm:text-sm text-muted-foreground mt-1 pl-3">{fb.comment}</p>
             <div className='flex flex-row justify-between w-full mt-3 items-end'>
                 <div className='flex flex-row gap-2 pl-3'>
                     {fb.screenshot && (
@@ -161,7 +161,7 @@ const FeedbackListItem = ({ fb, onImageClick, onVideoClick }: { fb: SubmittedFee
 
 
 const FeedbackGridItem = ({ fb, onImageClick, onVideoClick }: { fb: SubmittedFeedbackType, onImageClick: (url: string) => void, onVideoClick: (url: string) => void }) => (
-    <Card className={`bg-gradient-to-bl ${fb.type === "Bug" ? "from-red-500/20" : fb.type === "Suggestion" ? "from-yellow-500/20" : "from-green-500/20"} ${fb.type === "Bug" ? "to-red-500/10" : fb.type === "Suggestion" ? "to-yellow-500/10" : "to-green-500/10"} p-4 shadow-none border-0 h-full flex flex-col relative overflow-hidden`}>
+    <Card className={`bg-gradient-to-bl ${fb.type === "Bug" ? "from-red-500/20" : fb.type === "Suggestion" ? "from-yellow-500/20" : "from-green-500/20"} ${fb.type === "Bug" ? "to-red-500/10" : fb.type === "Suggestion" ? "to-yellow-500/10" : "to-green-500/10"} p-2 sm:p-4 shadow-none border-0 h-full flex flex-col relative overflow-hidden`}>
         <CardHeader className="p-0 flex-row items-center justify-between">
             <div className="flex items-center gap-3">
                 <div className="p-3 rounded-full absolute opacity-10 scale-[3] -right-1 -top-1 -rotate-45">
@@ -172,7 +172,7 @@ const FeedbackGridItem = ({ fb, onImageClick, onVideoClick }: { fb: SubmittedFee
             {getSeverityBadge(fb.severity)}
         </CardHeader>
         <CardContent className="p-0 pt-2 flex-grow">
-            <p className="text-sm text-muted-foreground line-clamp-3">{fb.comment}</p>
+            <p className="text-xs sm:text-sm text-muted-foreground line-clamp-3">{fb.comment}</p>
         </CardContent>
         <CardFooter className="p-0 flex flex-col items-start gap-1 mt-3">
             <div className='flex flex-row gap-1'>
@@ -253,7 +253,7 @@ export function SubmittedFeedback({ isCompleted = false }: { isCompleted?: boole
     return (
         <>
             <section>
-                <div className="bg-card/50 rounded-2xl p-4 sm:p-6 sm:pt-4">
+                <div className="bg-card/50 rounded-2xl p-2 sm:p-6 sm:pt-4">
                     <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
                         <div>
                             <h2 className="text-xl sm:text-2xl font-bold">Feedback from Testers</h2>

@@ -16,6 +16,7 @@ import { BackButton } from '@/components/back-button';
 import { AppPagination } from '@/components/app-pagination';
 import { motion } from 'framer-motion';
 import SubTabUI from '@/components/sub-tab-ui';
+import Confetti from 'react-dom-confetti';
 
 const PROJECTS_PER_PAGE = 6;
 
@@ -154,6 +155,18 @@ export default function MySubmissionsPage() {
 
     return (
         <>
+            <Confetti active={true} config={{
+                angle: 90,
+                spread: 360,
+                startVelocity: 30,
+                elementCount: 150,
+                dragFriction: 0.1,
+                duration: 4000,
+                stagger: 3,
+                width: "10px",
+                height: "10px",
+                colors: ["#a864fd", "#29cdff", "#78ff44", "#ff718d", "#fdff6a"]
+            }} />
             <div className="min-h-screen bg-secondary/50">
                 <div className="container mx-auto px-4 md:px-6">
                     <main>

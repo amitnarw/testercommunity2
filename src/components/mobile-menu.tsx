@@ -1,7 +1,7 @@
 
 "use client"
 
-import { Menu, X, LayoutDashboard, Users2, Bell, Briefcase, DollarSign, LifeBuoy, Users, FileCheck, Bug, UserPlus, MessageSquare, Lightbulb } from 'lucide-react';
+import { Menu, X, LayoutDashboard, Bell, Briefcase, DollarSign, LifeBuoy, Users, FileCheck, Bug, UserPlus, MessageSquare, Lightbulb } from 'lucide-react';
 import { Button } from './ui/button';
 import { Sheet, SheetContent, SheetHeader, SheetClose, SheetTrigger } from './ui/sheet';
 import Link from 'next/link';
@@ -9,9 +9,11 @@ import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
 
 const mainNavItems = [
-    { name: 'Developer Dashboard', href: '/dashboard', icon: LayoutDashboard },
-    { name: 'Community Hub', href: '/community-dashboard', icon: Users2 },
-    { name: 'Notifications', href: '/notifications', icon: Bell },
+    { name: 'Home', href: '/' },
+    { name: 'Dashboard', href: '/dashboard' },
+    { name: 'Community', href: '/community-dashboard' },
+    { name: 'Pricing', href: '/pricing' },
+    { name: 'Blog', href: '/blog' },
 ];
 
 const proNavItems = [
@@ -42,16 +44,16 @@ export default function MobileMenu({ isMenuOpen, setIsMenuOpen, onLogout }: {
     } else if (pathname.startsWith('/professional')) {
         navItems = proNavItems;
     }
-    
+
     const isAuthenticated = !pathname.startsWith('/login') && !pathname.startsWith('/signup') && !pathname.startsWith('/professional/login') && !pathname.startsWith('/professional/register');
-    
+
     const publicNavItems = [
-      { name: 'Home', href: '/' },
-      { name: 'How It Works', href: '/how-it-works' },
-      { name: 'Pricing', href: '/pricing' },
-      { name: 'Blog', href: '/blog' },
+        { name: 'Home', href: '/' },
+        { name: 'How It Works', href: '/how-it-works' },
+        { name: 'Pricing', href: '/pricing' },
+        { name: 'Blog', href: '/blog' },
     ];
-    
+
     const displayItems = isAuthenticated ? navItems : publicNavItems;
 
     return (
@@ -65,7 +67,13 @@ export default function MobileMenu({ isMenuOpen, setIsMenuOpen, onLogout }: {
                 </SheetTrigger>
                 <SheetContent side="top" className="flex flex-col h-full bg-background/95 backdrop-blur-lg">
                     <SheetHeader>
-                        <div className="flex justify-end items-center gap-2">
+                        <div className="flex justify-between items-center gap-2">
+                            <button onClick={() => setIsMenuOpen(false)}>
+                                <Link href={"/notifications"}>
+                                    <Bell className="h-5 w-5" />
+                                    <span className="sr-only">Close menu</span>
+                                </Link>
+                            </button>
                             <SheetClose asChild>
                                 <Button size="icon" variant="ghost">
                                     <X className="h-6 w-6" />
@@ -91,7 +99,7 @@ export default function MobileMenu({ isMenuOpen, setIsMenuOpen, onLogout }: {
                             ))}
                         </nav>
                         {isAuthenticated ? (
-                             <div className="flex justify-center items-center gap-2">
+                            <div className="flex justify-center items-center gap-2">
                                 <Button variant="ghost" asChild onClick={() => setIsMenuOpen(false)} className='w-full border'>
                                     <Link href="/profile">Profile</Link>
                                 </Button>
@@ -108,5 +116,5 @@ export default function MobileMenu({ isMenuOpen, setIsMenuOpen, onLogout }: {
                     </div>
                 </SheetContent>
             </Sheet>
-        </div>)
+        </div >)
 }
