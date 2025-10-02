@@ -19,7 +19,7 @@ import {
 } from "@/components/ui/table"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ResponsiveContainer, PieChart, Pie, Cell, Tooltip, Legend } from 'recharts';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import type { Project, ProjectFeedback, TesterDetails } from '@/lib/types';
 import { cn } from '@/lib/utils';
 import { format } from 'date-fns';
@@ -31,6 +31,8 @@ import { AppPagination } from '@/components/app-pagination';
 import AppInfoHeader from '@/components/app-info-header';
 import DeveloperInstructions from '@/components/developerInstructions';
 import { SubmittedFeedback } from '@/components/dashboard/submitted-feedback';
+import Confetti from 'react-dom-confetti';
+import { useInView } from 'react-intersection-observer';
 
 
 const FEEDBACK_PER_PAGE = 10;
@@ -107,6 +109,18 @@ function ProjectDetailsClient({ project }: { project: Project }) {
     const [viewMode, setViewMode] = useState<'table' | 'list'>('table');
     const [fullscreenImage, setFullscreenImage] = useState<string | null>(null);
     const [fullscreenVideo, setFullscreenVideo] = useState<string | null>(null);
+    const [isConfettiActive, setConfettiActive] = useState(false);
+
+    const { ref: confettiTriggerRef, inView: confettiInView } = useInView({
+        threshold: 0.5,
+        triggerOnce: true,
+    });
+
+    useEffect(() => {
+        if (confettiInView && project?.status === 'Completed') {
+            setTimeout(() => setConfettiActive(true), 300);
+        }
+    }, [confettiInView, project?.status]);
 
 
     const statusConfig = getStatusConfig(project.status);
@@ -181,7 +195,22 @@ function ProjectDetailsClient({ project }: { project: Project }) {
     };
 
     return (
-        <div className="bg-[#f8fafc] dark:bg-[#0f151e] min-h-screen">
+        <div className="bg-[#f8fafc] dark:bg-[#0f151e] min-h-screen relative overflow-hidden">
+             <div ref={confettiTriggerRef} className="absolute top-0 left-1/2 -translate-x-1/2 z-50">
+                <Confetti active={isConfettiActive} config={{
+                    angle: 90,
+                    spread: 360,
+                    startVelocity: 40,
+                    elementCount: 200,
+                    dragFriction: 0.12,
+                    duration: 5000,
+                    stagger: 3,
+                    width: "10px",
+                    height: "10px",
+                    perspective: "500px",
+                    colors: ["#a864fd", "#29cdff", "#78ff44", "#ff718d", "#fdff6a"]
+                }} />
+            </div>
             <div className="container px-4 md:px-6">
                 <motion.div initial="hidden" animate="visible" variants={pageVariants} className='max-w-7xl mx-auto'>
 
