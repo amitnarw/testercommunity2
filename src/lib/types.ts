@@ -183,11 +183,3 @@ export type SubmittedFeedback = {
   tester: string;
   severity: 'Critical' | 'High' | 'Medium' | 'Low' | 'N/A';
 }
-    
-
-    
-
-    
-
-
-

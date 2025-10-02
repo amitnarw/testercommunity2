@@ -7,7 +7,7 @@ import { projects as allProjects } from '@/lib/data';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Bug, CheckCircle, Clock, Users, MessageSquare, Star, Smartphone, BarChart, MapPin, LayoutGrid, List, Copy, ExternalLink, User, Info, ClipboardList, ChevronLeft, ChevronRight, XCircle, Search, AlertTriangle, Expand, X, PartyPopper, Lightbulb, Video, Globe } from 'lucide-react';
+import { Bug, CheckCircle, Clock, Users, MessageSquare, Star, Smartphone, BarChart, MapPin, LayoutGrid, List, Copy, ExternalLink, User, Info, ClipboardList, ChevronLeft, ChevronRight, XCircle, Search, AlertTriangle, Expand, X, PartyPopper, Lightbulb, Video, Globe, Camera, CirclePlay } from 'lucide-react';
 import { Progress } from '@/components/ui/progress';
 import {
     Table,
@@ -106,6 +106,8 @@ function ProjectDetailsClient({ project }: { project: Project }) {
     const [activeTab, setActiveTab] = useState('bug');
     const [viewMode, setViewMode] = useState<'table' | 'list'>('table');
     const [fullscreenImage, setFullscreenImage] = useState<string | null>(null);
+    const [fullscreenVideo, setFullscreenVideo] = useState<string | null>(null);
+
 
     const statusConfig = getStatusConfig(project.status);
     const completionPercentage = (project.testersCompleted / project.testersStarted) * 100;
@@ -125,6 +127,9 @@ function ProjectDetailsClient({ project }: { project: Project }) {
     const testersStartIndex = (testersPage - 1) * TESTERS_PER_PAGE;
     const testersEndIndex = testersStartIndex + TESTERS_PER_PAGE;
     const currentTesters = project.testers.slice(testersStartIndex, testersEndIndex);
+
+    const screenshots = project.feedback.map(fb => fb.screenshot).filter(Boolean) as string[];
+    const videos = project.feedback.map(fb => fb.videoUrl).filter(Boolean) as string[];
 
 
     const handleFeedbackPageChange = (page: number) => {
@@ -343,6 +348,50 @@ function ProjectDetailsClient({ project }: { project: Project }) {
                                         </div>
                                     </CardContent>
                                 </Card>
+
+                                <Card className='shadow-none h-full'>
+                                    <CardHeader className="p-3 sm:p-6">
+                                        <CardTitle className="flex items-center gap-2 text-xl sm:text-2xl">Media Gallery</CardTitle>
+                                        <CardDescription>All visual feedback submitted by testers.</CardDescription>
+                                    </CardHeader>
+                                    <CardContent className="p-3 sm:p-6 pt-0">
+                                        <Tabs defaultValue="screenshots">
+                                            <TabsList className="grid w-full grid-cols-2">
+                                                <TabsTrigger value="screenshots"><Camera className="mr-2" /> Screenshots ({screenshots.length})</TabsTrigger>
+                                                <TabsTrigger value="videos"><Video className="mr-2" /> Videos ({videos.length})</TabsTrigger>
+                                            </TabsList>
+                                            <TabsContent value="screenshots" className="mt-4">
+                                                {screenshots.length > 0 ? (
+                                                    <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+                                                        {screenshots.map((url, index) => (
+                                                            <div key={index} className="relative aspect-video rounded-lg overflow-hidden group cursor-pointer" onClick={() => setFullscreenImage(url)}>
+                                                                <Image src={url} alt={`Screenshot ${index + 1}`} layout="fill" objectFit="cover" className="transition-transform duration-300 group-hover:scale-105" />
+                                                                <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                                                    <Expand className="w-6 h-6 text-white" />
+                                                                </div>
+                                                            </div>
+                                                        ))}
+                                                    </div>
+                                                ) : <p className="text-center text-muted-foreground text-sm py-8">No screenshots submitted yet.</p>}
+                                            </TabsContent>
+                                            <TabsContent value="videos" className="mt-4">
+                                                {videos.length > 0 ? (
+                                                    <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+                                                        {videos.map((url, index) => (
+                                                            <div key={index} className="relative aspect-video rounded-lg overflow-hidden group cursor-pointer bg-black" onClick={() => setFullscreenVideo(url)}>
+                                                                <video src={url} className="w-full h-full object-cover" />
+                                                                <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                                                    <CirclePlay className="w-8 h-8 text-white" />
+                                                                </div>
+                                                            </div>
+                                                        ))}
+                                                    </div>
+                                                ) : <p className="text-center text-muted-foreground text-sm py-8">No videos submitted yet.</p>}
+                                            </TabsContent>
+                                        </Tabs>
+                                    </CardContent>
+                                </Card>
+
                             </motion.div>
                         </main>
 
@@ -483,6 +532,25 @@ function ProjectDetailsClient({ project }: { project: Project }) {
                         </div>
                     </div>
                 )}
+                 {fullscreenVideo && (
+                    <div
+                        className="fixed inset-0 bg-black/80 z-[60] flex items-center justify-center p-4 animate-in fade-in-0"
+                        onClick={() => setFullscreenVideo(null)}
+                    >
+                        <Button
+                            variant="ghost"
+                            size="icon"
+                            className="absolute top-4 right-4 text-white hover:text-white bg-red-500/60 hover:bg-red-500 h-12 w-12 rounded-lg z-50"
+                            onClick={() => setFullscreenVideo(null)}
+                        >
+                            <X className="w-8 h-8" />
+                            <span className="sr-only">Close</span>
+                        </Button>
+                        <div className="relative w-full max-w-4xl">
+                            <video src={fullscreenVideo} controls autoPlay className="w-full h-full animate-in zoom-in-95 rounded-lg" />
+                        </div>
+                    </div>
+                )}
             </div>
         </div>
     );
@@ -497,5 +565,3 @@ export default function ProjectDetailsPage({ params }: { params: { id: string } 
 
     return <ProjectDetailsClient project={project} />;
 }
-
-    
