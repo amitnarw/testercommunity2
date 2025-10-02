@@ -131,7 +131,7 @@ function SubmissionDetailsPage({ params }: { params: { id: string }}) {
 
     return (
         <div className="bg-[#f8fafc] dark:bg-[#0f151e] text-foreground min-h-screen relative">
-             <div ref={confettiTriggerRef} className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+             <div ref={confettiTriggerRef} className="absolute top-0 left-1/2 -translate-x-1/2">
                 <Confetti active={isConfettiActive} config={{
                     angle: 90,
                     spread: 360,
@@ -379,5 +379,7 @@ function SubmissionDetailsPage({ params }: { params: { id: string }}) {
 }
 
 export default SubmissionDetailsPage;
+
+    
 
     
