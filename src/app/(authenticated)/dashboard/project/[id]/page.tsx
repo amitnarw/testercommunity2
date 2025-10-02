@@ -7,8 +7,7 @@ import { projects as allProjects } from '@/lib/data';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
-import { Bug, CheckCircle, Clock, Users, MessageSquare, Star, Smartphone, BarChart, MapPin, LayoutGrid, List, Copy, ExternalLink, User, Info, ClipboardList, ChevronLeft, ChevronRight, XCircle, Search, AlertTriangle, Expand, X, PartyPopper, Lightbulb, Video, Globe, Camera, CirclePlay } from 'lucide-react';
-import { Progress } from '@/components/ui/progress';
+import { Bug, CheckCircle, Clock, Star, Smartphone, XCircle, Search, AlertTriangle, Expand, X, PartyPopper, Lightbulb, Video, Camera, CirclePlay } from 'lucide-react';
 import {
     Table,
     TableBody,
@@ -20,10 +19,7 @@ import {
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ResponsiveContainer, PieChart, Pie, Cell, Tooltip, Legend } from 'recharts';
 import { useState, useEffect } from 'react';
-import type { Project, ProjectFeedback, TesterDetails } from '@/lib/types';
-import { cn } from '@/lib/utils';
-import { format } from 'date-fns';
-import { toast } from '@/hooks/use-toast';
+import type { Project } from '@/lib/types';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { motion } from 'framer-motion';
 import { BackButton } from '@/components/back-button';
@@ -33,61 +29,24 @@ import DeveloperInstructions from '@/components/developerInstructions';
 import { SubmittedFeedback } from '@/components/dashboard/submitted-feedback';
 import Confetti from 'react-dom-confetti';
 import { useInView } from 'react-intersection-observer';
+import InfoBar from '@/components/dashboard/info-bar';
 
-
-const FEEDBACK_PER_PAGE = 10;
 const TESTERS_PER_PAGE = 10;
-
 
 const getStatusConfig = (status: string) => {
     switch (status) {
         case "In Testing":
-            return { badgeVariant: "destructive", icon: <Clock className="w-4 h-4" />, color: 'text-destructive' };
+            return { badgeVariant: "destructive", icon: <Clock className="w-5 h-5" />, color: 'text-destructive' };
         case "Completed":
-            return { badgeVariant: "secondary", icon: <CheckCircle className="w-4 h-4 text-green-500" />, color: "text-green-500" };
+            return { badgeVariant: "secondary", icon: <CheckCircle className="w-5 h-5" />, color: "text-green-500" };
         case "Rejected":
-            return { badgeVariant: "destructive", icon: <XCircle className="w-4 h-4" />, color: "text-destructive" };
+            return { badgeVariant: "destructive", icon: <XCircle className="w-5 h-5" />, color: "text-destructive" };
         case "In Review":
-            return { badgeVariant: "secondary", icon: <Search className="w-4 h-4" />, color: "text-muted-foreground" };
+            return { badgeVariant: "secondary", icon: <Search className="w-5 h-5" />, color: "text-muted-foreground" };
         default:
-            return { badgeVariant: "secondary", icon: <Clock className="w-4 h-4" />, color: "text-muted-foreground" };
+            return { badgeVariant: "secondary", icon: <Clock className="w-5 h-5" />, color: "text-muted-foreground" };
     }
 }
-
-const getFeedbackIcon = (type: string) => {
-    switch (type) {
-        case "Bug": return <Bug className="w-4 h-4 text-red-500" />;
-        case "Suggestion": return <Lightbulb className="w-4 h-4 text-amber-500" />;
-        case "Praise": return <PartyPopper className="w-4 h-4 text-green-500" />;
-        default: return <MessageSquare className="w-4 h-4" />;
-    }
-};
-
-const getSeverityBadge = (severity: string) => {
-    switch (severity) {
-        case 'Critical': return <Badge variant="destructive" className="bg-red-700 hover:bg-red-800">{severity}</Badge>;
-        case 'High': return <Badge variant="destructive" className="bg-red-500/80 hover:bg-red-600">{severity}</Badge>;
-        case 'Medium': return <Badge variant="secondary" className="bg-amber-500/80 hover:bg-amber-600 text-white">{severity}</Badge>;
-        case 'Low': return <Badge variant="secondary" className="bg-yellow-500/80 hover:bg-yellow-600 text-white">{severity}</Badge>;
-        default: return <Badge variant="outline">{severity}</Badge>;
-    }
-};
-
-const InfoCard = ({ title, children, className }: { title: string, children: React.ReactNode, className?: string }) => (
-    <motion.div
-        variants={{
-            hidden: { opacity: 0, y: 20 },
-            visible: { opacity: 1, y: 0 }
-        }}
-        className={cn("rounded-2xl bg-card text-card-foreground p-3 shadow-sm", className)}>
-        <div className="flex items-center gap-3 mb-3">
-            <h3 className="text-sm text-center w-full">{title}</h3>
-        </div>
-        <div>
-            {children}
-        </div>
-    </motion.div>
-);
 
 const CustomTooltip = ({ active, payload }: any) => {
     if (active && payload && payload.length) {
@@ -101,12 +60,94 @@ const CustomTooltip = ({ active, payload }: any) => {
     return null;
 };
 
+const TestCompleteSection = ({ app, isUnderReviewOrRejected }: { app: any, isUnderReviewOrRejected: boolean }) => {
+    const { ref, inView } = useInView({
+        threshold: 0.5,
+        triggerOnce: true,
+    });
+
+    const containerVariants = {
+        hidden: { opacity: 0 },
+        visible: {
+            opacity: 1,
+            transition: { staggerChildren: 0.1, delayChildren: 0.2 }
+        }
+    };
+
+    const itemVariants = {
+        hidden: { opacity: 0, y: 20 },
+        visible: { opacity: 1, y: 0, transition: { type: 'spring' } }
+    };
+
+    // Mock data for feedback breakdown, as it's not in the app object
+    const feedbackBreakdown = {
+        bugs: 3,
+        suggestions: 2,
+        praise: 1,
+        totalTesters: 15,
+    };
+
+    return (
+        <motion.div
+            ref={ref}
+            variants={containerVariants}
+            className="grid grid-cols-2 sm:grid-cols-4 gap-2"
+        >
+            <motion.div variants={itemVariants} className="bg-gradient-to-br from-green-500/20 to-green-500/10 p-6 rounded-2xl flex flex-col justify-center items-center text-center ">
+                <div className="w-16 h-16 bg-green-500/10 rounded-full flex items-center justify-center mx-auto border-4 border-green-500/20 mb-2">
+                    <CheckCircle className="w-8 h-8 text-green-500" />
+                </div>
+                <h2 className="text-md sm:text-lg font-bold text-green-500">Test Complete!</h2>
+            </motion.div>
+
+            <motion.div variants={itemVariants} className="flex flex-col sm:flex-row gap-1 items-center justify-center rounded-2xl overflow-hidden ">
+                <div className="bg-gradient-to-tl from-primary/20 to-primary text-primary-foreground p-2 sm:p-5 h-full w-full flex flex-col items-center justify-center gap-1">
+                    <p className="text-xs">Total Testers</p>
+                    <p className="text-4xl sm:text-5xl font-bold">{app.testersStarted}</p>
+                </div>
+                <div className="bg-gradient-to-tr from-primary/20 to-primary text-primary-foreground p-2 sm:p-5 h-full w-full flex flex-col items-center justify-center gap-1">
+                    <p className="text-xs">Total Days</p>
+                    <p className="text-4xl sm:text-5xl font-bold">{isUnderReviewOrRejected ? 0 : app.totalDays}</p>
+                </div>
+            </motion.div>
+
+            <motion.div variants={itemVariants} className="bg-card p-3 pt-2 rounded-2xl flex flex-col justify-between relative overflow-hidden col-span-2">
+                <h3 className="text-lg sm:text-xl font-semibold mb-1 bg-gradient-to-b from-primary to-primary/50 text-transparent bg-clip-text text-center">Feedback Breakdown</h3>
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center">
+                    <div className="bg-gradient-to-bl from-red-500/20 to-red-500/10 p-5 rounded-lg relative overflow-hidden">
+                        <div className="p-3 rounded-full absolute opacity-10 scale-[2] -right-2 -top-1 -rotate-45 text-red-500">
+                            <Bug />
+                        </div>
+                        <p className="text-xs text-muted-foreground">Bugs</p>
+                        <p className="text-4xl font-bold">{feedbackBreakdown.bugs}</p>
+                    </div>
+                    <div className="bg-gradient-to-bl from-yellow-500/20 to-yellow-500/10 p-5 rounded-lg relative overflow-hidden">
+                        <div className="p-3 rounded-full absolute opacity-10 scale-[2] -right-2 -top-1 -rotate-45 text-yellow-500">
+                            <Lightbulb />
+                        </div>
+                        <p className="text-xs text-muted-foreground">Suggestions</p>
+                        <p className="text-4xl font-bold">{feedbackBreakdown.suggestions}</p>
+                    </div>
+                    <div className="bg-gradient-to-bl from-green-500/20 to-green-500/10 p-5 rounded-lg relative overflow-hidden">
+                        <div className="p-3 rounded-full absolute opacity-10 scale-[2] -right-2 -top-1 -rotate-90 text-green-500">
+                            <PartyPopper />
+                        </div>
+                        <p className="text-xs text-muted-foreground">Praise</p>
+                        <p className="text-4xl font-bold">{feedbackBreakdown.praise}</p>
+                    </div>
+                    <div className="bg-gradient-to-br from-primary to-primary/50 text-primary-foreground p-5 rounded-lg">
+                        <p className="text-xs hidden sm:block">Average Rating</p>
+                        <p className="text-xs block sm:hidden">Avg. Rating</p>
+                        <p className="text-4xl font-bold">{app?.overallRating?.toFixed(1)}</p>
+                    </div>
+                </div>
+            </motion.div>
+        </motion.div>
+    )
+}
 
 function ProjectDetailsClient({ project }: { project: Project }) {
-    const [feedbackPage, setFeedbackPage] = useState(1);
     const [testersPage, setTestersPage] = useState(1);
-    const [activeTab, setActiveTab] = useState('bug');
-    const [viewMode, setViewMode] = useState<'table' | 'list'>('table');
     const [fullscreenImage, setFullscreenImage] = useState<string | null>(null);
     const [fullscreenVideo, setFullscreenVideo] = useState<string | null>(null);
     const [isConfettiActive, setConfettiActive] = useState(false);
@@ -122,20 +163,8 @@ function ProjectDetailsClient({ project }: { project: Project }) {
         }
     }, [confettiInView, project?.status]);
 
-
     const statusConfig = getStatusConfig(project.status);
-    const completionPercentage = (project.testersCompleted / project.testersStarted) * 100;
-    const currentTestDay = Math.min(project.totalDays, 14);
     const isUnderReviewOrRejected = project.status === 'In Review' || project.status === 'Rejected';
-
-    const filteredFeedback = isUnderReviewOrRejected ? [] : project.feedback.filter(fb => {
-        return fb.type.toLowerCase() === activeTab;
-    });
-
-    const totalFeedbackPages = Math.ceil(filteredFeedback.length / FEEDBACK_PER_PAGE);
-    const feedbackStartIndex = (feedbackPage - 1) * FEEDBACK_PER_PAGE;
-    const feedbackEndIndex = feedbackStartIndex + FEEDBACK_PER_PAGE;
-    const currentFeedback = filteredFeedback.slice(feedbackStartIndex, feedbackEndIndex);
 
     const totalTestersPages = Math.ceil(project.testers.length / TESTERS_PER_PAGE);
     const testersStartIndex = (testersPage - 1) * TESTERS_PER_PAGE;
@@ -145,29 +174,10 @@ function ProjectDetailsClient({ project }: { project: Project }) {
     const screenshots = project.feedback.map(fb => fb.screenshot).filter(Boolean) as string[];
     const videos = project.feedback.map(fb => fb.videoUrl).filter(Boolean) as string[];
 
-
-    const handleFeedbackPageChange = (page: number) => {
-        if (page < 1 || page > totalFeedbackPages) return;
-        setFeedbackPage(page);
-    };
-
     const handleTestersPageChange = (page: number) => {
         if (page < 1 || page > totalTestersPages) return;
         setTestersPage(page);
     };
-
-    const handleTabChange = (tab: string) => {
-        setActiveTab(tab);
-        setFeedbackPage(1); // Reset to first page on tab change
-    }
-
-    const copyToClipboard = (text: string) => {
-        navigator.clipboard.writeText(text);
-        toast({
-            title: "Copied to clipboard!",
-            description: text,
-        })
-    }
 
     const osData = project.osCoverage.map(os => ({ name: os.version, value: os.testers }));
     const deviceData = project.deviceCoverage.map(d => ({ name: d.device, value: d.testers }));
@@ -195,8 +205,9 @@ function ProjectDetailsClient({ project }: { project: Project }) {
     };
 
     return (
-        <div className="bg-[#f8fafc] dark:bg-[#0f151e] min-h-screen relative overflow-hidden">
-             <div ref={confettiTriggerRef} className="absolute top-0 left-1/2 -translate-x-1/2 z-50">
+        <div className="bg-[#f8fafc] dark:bg-[#0f151e] min-h-screen relative">
+
+            <div ref={confettiTriggerRef} className="absolute top-0 left-1/2 -translate-x-1/2 z-50">
                 <Confetti active={isConfettiActive} config={{
                     angle: 90,
                     spread: 360,
@@ -207,16 +218,16 @@ function ProjectDetailsClient({ project }: { project: Project }) {
                     stagger: 3,
                     width: "10px",
                     height: "10px",
-                    perspective: "500px",
                     colors: ["#a864fd", "#29cdff", "#78ff44", "#ff718d", "#fdff6a"]
                 }} />
             </div>
-            <div className="container px-4 md:px-6">
-                <motion.div initial="hidden" animate="visible" variants={pageVariants} className='max-w-7xl mx-auto'>
 
-                    <div className="sticky top-0 z-[50] pt-2 sm:pt-3 pb-4 pl-0 w-1/2">
-                        <BackButton href="/dashboard" />
-                    </div>
+            <div className="container px-4 md:px-6">
+                <div className="sticky top-0 z-[50] pt-2 sm:pt-3 pb-4 pl-0 xl:pl-8 w-1/2">
+                    <BackButton href="/dashboard" />
+                </div>
+
+                <motion.div initial="hidden" animate="visible" variants={pageVariants} className='max-w-7xl mx-auto'>
 
                     <AppInfoHeader logo={project.icon} name={project.name} dataAiHint={project.dataAiHint} category={project.category} description={project.description} status={project.status} statusConfig={statusConfig} />
 
@@ -249,89 +260,13 @@ function ProjectDetailsClient({ project }: { project: Project }) {
                         </motion.section>
                     )}
 
-                    <div className={`relative ${isUnderReviewOrRejected ? "blur-md pointer-events-none" : ""}`}>
-                        <motion.div
-                            variants={{
-                                visible: { transition: { staggerChildren: 0.15 } }
-                            }}
-                            className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-6 gap-2 sm:gap-4 mt-8">
+                    <div className={`relative z-10 ${isUnderReviewOrRejected ? "blur-md pointer-events-none" : ""}`}>
 
-                            <div className='flex flex-row gap-1 items-center justify-center rounded-2xl overflow-hidden col-span-3 sm:col-span-2'>
-                                <div className="bg-gradient-to-tl from-primary/20 to-primary text-primary-foreground p-5 h-full w-full flex flex-col items-center justify-center gap-1">
-                                    <p className="text-xs">Testers</p>
-                                    <p className="text-4xl sm:text-5xl font-bold">{project.testersStarted}<span className='text-2xl text-white/50'>/14</span></p>
-                                </div>
-                                <div className="bg-gradient-to-tr from-primary/20 to-primary text-primary-foreground p-5 h-full w-full flex flex-col items-center justify-center gap-1">
-                                    <p className="text-xs">Days</p>
-                                    <p className="text-4xl sm:text-5xl font-bold">{isUnderReviewOrRejected ? 0 : project.totalDays}<span className='text-2xl text-white/50'>/16</span></p>
-                                </div>
-                            </div>
-
-                            <InfoCard title="Feedback Breakdown" className='col-span-3 lg:col-span-2'>
-                                <div className='grid grid-cols-3 gap-2'>
-                                    <div className="bg-gradient-to-bl from-red-500/20 to-red-500/10 p-2 sm:p-5 rounded-lg relative overflow-hidden w-full text-center">
-                                        <div className="p-3 rounded-full absolute opacity-10 scale-[2] -right-2 -top-1 -rotate-45 text-red-500">
-                                            <Bug />
-                                        </div>
-                                        <p className="text-[10px] sm:text-xs text-muted-foreground">Bugs</p>
-                                        <p className="text-3xl sm:text-4xl font-bold">{feedbackBreakdown.bugs}</p>
-                                    </div>
-                                    <div className="bg-gradient-to-bl from-yellow-500/20 to-yellow-500/10 p-2 sm:p-5 rounded-lg relative overflow-hidden w-full text-center">
-                                        <div className="p-3 rounded-full absolute opacity-10 scale-[2] -right-2 -top-1 -rotate-45 text-yellow-500">
-                                            <Lightbulb />
-                                        </div>
-                                        <p className="text-[10px] sm:text-xs text-muted-foreground">Suggestions</p>
-                                        <p className="text-3xl sm:text-4xl font-bold">{feedbackBreakdown.suggestions}</p>
-                                    </div>
-                                    <div className="bg-gradient-to-bl from-green-500/20 to-green-500/10 p-2 sm:p-5 rounded-lg relative overflow-hidden w-full text-center">
-                                        <div className="p-3 rounded-full absolute opacity-10 scale-[2] -right-2 -top-1 -rotate-90 text-green-500">
-                                            <PartyPopper />
-                                        </div>
-                                        <p className="text-[10px] sm:text-xs text-muted-foreground">Praise</p>
-                                        <p className="text-3xl sm:text-4xl font-bold">{feedbackBreakdown.praise}</p>
-                                    </div>
-                                </div>
-                            </InfoCard>
-
-                            <section className='flex flex-col items-center rounded-2xl bg-card text-card-foreground p-3 shadow-sm relative overflow-hidden'>
-                                <div className="flex items-center gap-3 mb-3">
-                                    <h3 className="text-sm text-center w-full">Overall Rating</h3>
-                                </div>
-                                <div className='flex flex-col items-center justify-center h-full w-full'>
-                                    <Star className="w-5 h-5 text-amber-400/0 fill-amber-400/20 scale-[2] absolute top-2 left-2 rotate-45" />
-                                    <div className="flex items-center justify-center gap-2 bg-secondary rounded-lg h-full w-full z-10">
-                                        <p className="text-4xl font-bold">{project.overallRating.toFixed(1)}</p>
-                                        <p className="text-muted-foreground hidden sm:block">/ 5.0</p>
-                                    </div>
-                                    <Star className="w-5 h-5 text-amber-400/0 fill-amber-400/20 scale-[3] absolute top-7 right-2 rotate-90" />
-                                </div>
-                            </section>
-
-                            <section className='flex flex-col items-center rounded-2xl bg-card text-card-foreground p-3 shadow-sm'>
-                                <div className="flex items-center gap-3 mb-3">
-                                    <h3 className="text-sm text-center w-full">App Information</h3>
-                                </div>
-                                <div className='flex flex-col items-center justify-center h-full space-y-3 text-sm w-full'>
-                                    <div className="flex flex-col items-center justify-between">
-                                        <span className="text-xs text-muted-foreground">Package Name</span>
-                                        <span className="font-mono text-primary break-all">{project.packageName}</span>
-                                    </div>
-                                    <div className="flex flex-col items-start gap-2 w-full">
-                                        <div className="flex flex-row gap-2 w-full">
-                                            <Button variant="outline" size="sm" className="flex-1 py-1.5" onClick={() => copyToClipboard(`https://play.google.com/store/apps/details?id=${project.packageName}`)}>
-                                                <Copy className="!h-3 !w-3" /> <span className="hidden sm:block text-xs">Copy</span>
-                                            </Button>
-                                            <Button variant="outline" size="sm" className="flex-1 py-1.5" asChild>
-                                                <a href={`https://play.google.com/store/apps/details?id=${project.packageName}`} target="_blank" rel="noopener noreferrer">
-                                                    <ExternalLink className="!h-3 !w-3" /> <span className="hidden sm:block text-xs">Open</span>
-                                                </a>
-                                            </Button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </section>
-
-                        </motion.div>
+                        {project?.status !== 'Completed' ?
+                            <InfoBar project={project} isUnderReviewOrRejected={isUnderReviewOrRejected} feedbackBreakdown={feedbackBreakdown} />
+                            :
+                            <TestCompleteSection app={project} isUnderReviewOrRejected={isUnderReviewOrRejected} />
+                        }
 
                         <DeveloperInstructions title='Instructions for Testers' instruction={`"${project?.testingInstructions}"`} mt={20} />
 
@@ -535,6 +470,7 @@ function ProjectDetailsClient({ project }: { project: Project }) {
                         </motion.div>
 
                     </div>
+
                 </motion.div>
                 {fullscreenImage && (
                     <div
@@ -561,7 +497,7 @@ function ProjectDetailsClient({ project }: { project: Project }) {
                         </div>
                     </div>
                 )}
-                 {fullscreenVideo && (
+                {fullscreenVideo && (
                     <div
                         className="fixed inset-0 bg-black/80 z-[60] flex items-center justify-center p-4 animate-in fade-in-0"
                         onClick={() => setFullscreenVideo(null)}

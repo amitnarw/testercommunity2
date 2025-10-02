@@ -8,7 +8,7 @@ const AppInfoHeader = ({ logo, name, dataAiHint, category, description, status, 
     }
 }) => {
     return (
-        <header className="mb-8 mt-8">
+        <header className="mb-8 my-8">
             <div className="grid grid-cols-4 gap-8 sm:gap-4">
                 <div className='flex flex-row items-start justify-start gap-5 col-span-4 sm:col-span-3'>
                     <div className='min-w-20 h-20 sm:min-w-32 sm:h-32 relative'>
