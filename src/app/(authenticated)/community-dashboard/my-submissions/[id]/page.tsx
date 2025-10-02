@@ -19,7 +19,7 @@ import {
 } from "@/components/ui/table"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid } from 'recharts';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import type { Project, ProjectFeedback } from '@/lib/types';
 import { cn } from '@/lib/utils';
 import { format } from 'date-fns';
@@ -28,6 +28,8 @@ import { AppPagination } from '@/components/app-pagination';
 import { motion } from 'framer-motion';
 import DeveloperInstructions from '@/components/developerInstructions';
 import AppInfoHeader from '@/components/app-info-header';
+import Confetti from 'react-dom-confetti';
+import { useInView } from 'react-intersection-observer';
 
 
 const FEEDBACK_PER_PAGE = 5;
@@ -72,6 +74,19 @@ function SubmissionDetailsPage({ params }: { params: { id: string }}) {
     const [feedbackPage, setFeedbackPage] = useState(1);
     const [viewMode, setViewMode] = useState<'list' | 'grid'>('list');
     const [fullscreenImage, setFullscreenImage] = useState<string | null>(null);
+    const [isConfettiActive, setConfettiActive] = useState(false);
+
+    const { ref: confettiTriggerRef, inView: confettiInView } = useInView({
+        threshold: 0.5,
+        triggerOnce: true,
+    });
+
+    useEffect(() => {
+        if (confettiInView && project?.status === 'Completed') {
+            setTimeout(() => setConfettiActive(true), 300);
+        }
+    }, [confettiInView, project?.status]);
+
 
     if (!project) {
         return <div>Project not found</div>
@@ -115,7 +130,22 @@ function SubmissionDetailsPage({ params }: { params: { id: string }}) {
 
 
     return (
-        <div className="bg-[#f8fafc] dark:bg-[#0f151e] text-foreground min-h-screen">
+        <div className="bg-[#f8fafc] dark:bg-[#0f151e] text-foreground min-h-screen relative">
+             <div ref={confettiTriggerRef} className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+                <Confetti active={isConfettiActive} config={{
+                    angle: 90,
+                    spread: 360,
+                    startVelocity: 40,
+                    elementCount: 200,
+                    dragFriction: 0.12,
+                    duration: 5000,
+                    stagger: 3,
+                    width: "10px",
+                    height: "10px",
+                    perspective: "500px",
+                    colors: ["#a864fd", "#29cdff", "#78ff44", "#ff718d", "#fdff6a"]
+                }} />
+            </div>
             <div className="container mx-auto px-4 md:px-6">
 
                 <main className="max-w-7xl mx-auto space-y-8">
