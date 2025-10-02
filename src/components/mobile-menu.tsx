@@ -1,14 +1,14 @@
+
 "use client"
 
-import { Menu, X } from 'lucide-react';
+import { Menu, X, LayoutDashboard, Bell, Briefcase, DollarSign, LifeBuoy, Users, FileCheck, Bug, UserPlus, MessageSquare, Lightbulb } from 'lucide-react';
 import { Button } from './ui/button';
 import { Sheet, SheetContent, SheetHeader, SheetClose, SheetTrigger } from './ui/sheet';
-import { UserNav } from './user-nav';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
 
-const mobileAuthenticatedNavItems = [
+const mainNavItems = [
     { name: 'Home', href: '/' },
     { name: 'Dashboard', href: '/dashboard' },
     { name: 'Community', href: '/community-dashboard' },
@@ -16,11 +16,46 @@ const mobileAuthenticatedNavItems = [
     { name: 'Blog', href: '/blog' },
 ];
 
+const proNavItems = [
+    { name: 'Pro Dashboard', href: '/professional/tester/dashboard', icon: LayoutDashboard },
+    { name: 'Projects', href: '/professional/projects', icon: Briefcase },
+    { name: 'Earnings', href: '/professional/earnings', icon: DollarSign },
+    { name: 'Support', href: '/professional/support', icon: LifeBuoy },
+];
+
+const adminNavItems = [
+    { name: 'Admin Dashboard', href: '/admin/dashboard', icon: LayoutDashboard },
+    { name: 'Users', href: '/admin/users', icon: Users },
+    { name: 'Submissions', href: '/admin/submissions', icon: FileCheck },
+    { name: 'Applications', href: '/admin/applications', icon: UserPlus },
+    { name: "Feedback", href: "/admin/feedback", icon: MessageSquare },
+    { name: "Suggestions", href: "/admin/suggestions", icon: Lightbulb },
+];
+
 
 export default function MobileMenu({ isMenuOpen, setIsMenuOpen, onLogout }: {
     isMenuOpen: boolean, setIsMenuOpen: (value: boolean) => void, onLogout: () => void
 }) {
     const pathname = usePathname();
+
+    let navItems = mainNavItems;
+    if (pathname.startsWith('/admin')) {
+        navItems = adminNavItems;
+    } else if (pathname.startsWith('/professional')) {
+        navItems = proNavItems;
+    }
+
+    const isAuthenticated = !pathname.startsWith('/login') && !pathname.startsWith('/signup') && !pathname.startsWith('/professional/login') && !pathname.startsWith('/professional/register');
+
+    const publicNavItems = [
+        { name: 'Home', href: '/' },
+        { name: 'How It Works', href: '/how-it-works' },
+        { name: 'Pricing', href: '/pricing' },
+        { name: 'Blog', href: '/blog' },
+    ];
+
+    const displayItems = isAuthenticated ? navItems : publicNavItems;
+
     return (
         <div className="md:hidden">
             <Sheet open={isMenuOpen} onOpenChange={setIsMenuOpen}>
@@ -30,9 +65,15 @@ export default function MobileMenu({ isMenuOpen, setIsMenuOpen, onLogout }: {
                         <span className="sr-only">Open menu</span>
                     </Button>
                 </SheetTrigger>
-                <SheetContent side="top" className="flex flex-col h-full">
+                <SheetContent side="top" className="flex flex-col h-full bg-background/95 backdrop-blur-lg">
                     <SheetHeader>
-                        <div className="flex justify-end items-center gap-2">
+                        <div className="flex justify-between items-center gap-2">
+                            <button onClick={() => setIsMenuOpen(false)}>
+                                <Link href={"/notifications"}>
+                                    <Bell className="h-5 w-5" />
+                                    <span className="sr-only">Close menu</span>
+                                </Link>
+                            </button>
                             <SheetClose asChild>
                                 <Button size="icon" variant="ghost">
                                     <X className="h-6 w-6" />
@@ -43,7 +84,7 @@ export default function MobileMenu({ isMenuOpen, setIsMenuOpen, onLogout }: {
                     </SheetHeader>
                     <div className="flex flex-col h-full">
                         <nav className="flex flex-col items-center text-center justify-center gap-6 h-full">
-                            {mobileAuthenticatedNavItems.map((item) => (
+                            {displayItems.map((item) => (
                                 <Link
                                     key={item.name}
                                     href={item.href}
@@ -57,16 +98,23 @@ export default function MobileMenu({ isMenuOpen, setIsMenuOpen, onLogout }: {
                                 </Link>
                             ))}
                         </nav>
-                        <div className="flex justify-center items-center gap-2">
-                            <Button variant="ghost" asChild onClick={() => setIsMenuOpen(false)} className='w-full border'>
-                                <Link href="/profile">Profile</Link>
-                            </Button>
-                            <Button variant="ghost" onClick={() => { onLogout(); setIsMenuOpen(false); }} className='bg-red-500/20 w-full'>
-                                Log Out
-                            </Button>
-                        </div>
+                        {isAuthenticated ? (
+                            <div className="flex justify-center items-center gap-2">
+                                <Button variant="ghost" asChild onClick={() => setIsMenuOpen(false)} className='w-full border'>
+                                    <Link href="/profile">Profile</Link>
+                                </Button>
+                                <Button variant="ghost" onClick={() => { onLogout(); setIsMenuOpen(false); }} className='bg-red-500/20 w-full'>
+                                    Log Out
+                                </Button>
+                            </div>
+                        ) : (
+                            <div className="flex flex-col gap-2">
+                                <Button asChild size="lg" onClick={() => setIsMenuOpen(false)}><Link href="/login">Log In</Link></Button>
+                                <Button asChild size="lg" variant="outline" onClick={() => setIsMenuOpen(false)}><Link href="/signup">Sign Up</Link></Button>
+                            </div>
+                        )}
                     </div>
                 </SheetContent>
             </Sheet>
-        </div>)
+        </div >)
 }

@@ -37,7 +37,7 @@ export const IconRain = () => {
         return (
           <motion.div
             key={index}
-            className="absolute text-primary/10"
+            className="absolute text-white/20"
             style={{ left, top: initialY }}
             animate={{
               y: ['0%', '120vh'],

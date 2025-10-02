@@ -1,6 +1,6 @@
 
 
-import type { BlogPost, Testimonial, RoadmapStep, UserProfileData, ProcessStep, CommunityApp, PointsPackage, FaqItem, Notification, Project } from './types';
+import type { BlogPost, Testimonial, RoadmapStep, UserProfileData, ProcessStep, CommunityApp, PointsPackage, FaqItem, Notification, Project, TesterDetails } from './types';
 
 export const chartData = [
     { month: 'January', reports: 186, resolved: 80 },
@@ -28,11 +28,11 @@ export const blogPosts: BlogPost[] = [
     content: `<p>Automated testing is a cornerstone of modern software development. By letting scripts and tools do the repetitive work, you can focus on what truly matters: building great features. This guide will walk you through the basics.</p><p>We'll cover topics like:</p><ul><li>Choosing the right automation framework</li><li>Writing your first test script</li><li>Integrating tests into your CI/CD pipeline</li><li>Analyzing test results</li></ul>`,
     author: {
       name: 'Alice Johnson',
-      avatarUrl: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=400&auto=format&fit=crop',
+      avatarUrl: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=400&auto=format=fit=crop',
       dataAiHint: 'woman developer',
     },
     date: '2024-05-15',
-    imageUrl: 'https://images.unsplash.com/photo-1516116216624-53e697320f64?q=80&w=600&auto=format&fit=crop',
+    imageUrl: 'https://images.unsplash.com/photo-1516116216624-53e697320f64?q=80&w=600&auto=format=fit=crop',
     dataAiHint: 'code testing',
     tags: ['Automation', 'Beginner', 'CI/CD'],
   },
@@ -44,11 +44,11 @@ export const blogPosts: BlogPost[] = [
     content: `<p>UX testing goes beyond identifying functional bugs. It's about understanding how users feel when they interact with your product. A seamless UX can be the difference between a good app and a great one.</p><p>In this article, we explore:</p><ul><li>Heuristic evaluation</li><li>Usability testing methods</li><li>Gathering and interpreting user feedback</li><li>The connection between UX and business success</li></ul>`,
     author: {
       name: 'Hannah Wright',
-      avatarUrl: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?q=80&w=400&auto=format&fit=crop',
+      avatarUrl: 'https://images.unsplash.com/photo-1517841905240-472988babdf9?q=80&w=400&auto=format=fit=crop',
       dataAiHint: 'woman tech',
     },
     date: '2024-05-20',
-    imageUrl: 'https://images.unsplash.com/photo-1587440871875-191322ee64b0?q=80&w=600&auto=format&fit=crop',
+    imageUrl: 'https://images.unsplash.com/photo-1587440871875-191322ee64b0?q=80&w=600&auto=format=fit=crop',
     dataAiHint: 'ux design',
     tags: ['UI/UX', 'Design', 'User Research'],
   },
@@ -60,11 +60,11 @@ export const blogPosts: BlogPost[] = [
     content: `<p>Mobile security is not a feature; it's a necessity. With increasing threats, robust security testing is crucial. This checklist provides a starting point for testers to ensure an app is secure.</p><p>Key areas covered:</p><ul><li>Data storage and encryption</li><li>Network communication vulnerabilities</li><li>Authentication and authorization</li><li>Code obfuscation and anti-tampering</li></ul>`,
     author: {
       name: 'George Hill',
-      avatarUrl: 'https://images.unsplash.com/photo-1527982987257-d3abc440f2ba?q=80&w=400&auto=format&fit=crop',
+      avatarUrl: 'https://images.unsplash.com/photo-1527982987257-d3abc440f2ba?q=80&w=400&auto=format=fit=crop',
       dataAiHint: 'man portrait',
     },
     date: '2024-05-25',
-    imageUrl: 'https://images.unsplash.com/photo-1555949963-ff9fe0c870eb?q=80&w=600&auto=format&fit=crop',
+    imageUrl: 'https://images.unsplash.com/photo-1555949963-ff9fe0c870eb?q=80&w=600&auto=format=fit=crop',
     dataAiHint: 'cyber security',
     tags: ['Security', 'Mobile', 'Checklist'],
   },
@@ -74,35 +74,35 @@ export const testimonials: Testimonial[] = [
   {
     name: 'Sarah Jennings',
     role: 'Lead Developer, TechNova',
-    avatar: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?q=80&w=400&auto=format&fit=crop',
+    avatar: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?q=80&w=400&auto=format=fit=crop',
     dataAiHint: 'woman portrait',
     comment: 'inTesters has revolutionized our QA process. The real-time feedback and detailed reports are game-changers. The platform isn\'t just functional, it\'s a joy to use!',
   },
   {
     name: 'Mike Valerio',
     role: 'Indie Game Developer',
-    avatar: 'https://images.unsplash.com/photo-1564564321837-a57b7070ac4f?q=80&w=400&auto=format&fit=crop',
+    avatar: 'https://images.unsplash.com/photo-1564564321837-a57b7070ac4f?q=80&w=400&auto=format=fit=crop',
     dataAiHint: 'man smiling',
     comment: 'Finding the right testers used to be a nightmare. The gamified marketplace made it fun and easy to connect with experienced, reliable people. My app is better for it.',
   },
   {
     name: 'Chen Lin',
     role: 'Product Manager, Innovate Inc.',
-    avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=400&auto=format&fit=crop',
+    avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=400&auto=format=fit=crop',
     dataAiHint: 'person glasses',
     comment: 'The dashboards are incredible. Being able to visualize our testing data with such clarity and beauty has helped us identify critical issues faster than ever before.',
   },
   {
     name: 'David Kim',
     role: 'QA Engineer, GameSphere',
-    avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=400&auto=format&fit=crop',
+    avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=400&auto=format=fit=crop',
     dataAiHint: 'man portrait',
     comment: 'As a tester, the gamified reputation system is fantastic. It motivates me to do my best work and get recognized for it. I\'ve gotten more high-quality projects through inTesters than any other platform.',
   },
   {
     name: 'Maria Garcia',
     role: 'Mobile App Developer',
-    avatar: 'https://images.unsplash.com/photo-14947901083_77-be9c29b29330?q=80&w=400&auto=format&fit=crop',
+    avatar: 'https://images.unsplash.com/photo-14947901083_77-be9c29b29330?q=80&w=400&auto=format=fit=crop',
     dataAiHint: 'woman developer',
     comment: 'The community aspect is what sets inTesters apart. It\'s not just a service; it\'s a network of professionals passionate about quality. The collaboration tools are excellent.',
   },
@@ -298,7 +298,8 @@ export const communityApps: CommunityApp[] = [
             { url: 'https://play-lh.googleusercontent.com/iVDM63eIo8Gs74i1tD3I_oOubcxQZmapkrSQGj3UI0ECO-PoHDK7Rdicf4Ak2CK-S7Ua3EItYmnOGEZcJpi4RA=w5120-h2880-rw', alt: 'AccuWeather Screenshot 2', dataAiHint: 'hourly forecast' }
         ],
         testingInstructions: 'Check the "Minutecast" feature for your current location. Please verify if the precipitation forecast is accurate and report any UI issues with the radar map.',
-        status: 'available',
+        status: 'request_rejected',
+        rejectionReason: 'Your account does not meet the minimum tester level required for this app.',
         totalDays: 20,
     },
     {
@@ -374,7 +375,7 @@ export const communityApps: CommunityApp[] = [
             { url: 'https://play-lh.googleusercontent.com/ERs3Y-33zoFG7aIaRYdg67QwHb6YOJB0lZdM9U8x3YMvT8m1XTXf5WRS-CzymdEoJw=w1052-h592-rw', alt: 'Duolingo Screenshot 2', dataAiHint: 'learning path' }
         ],
         testingInstructions: 'Complete one full lesson in any language. Verify that the progress is saved correctly and check for any issues with audio playback during exercises.',
-        status: 'available',
+        status: 'requested',
         totalDays: 18,
     },
     {
@@ -469,7 +470,7 @@ export const communityApps: CommunityApp[] = [
             { url: 'https://play-lh.googleusercontent.com/Bt95BAHb_F8Wdn_Xt1z7sBjUXAD-UIYX_mqAhhRFIv5PobR3vpteXfzNC0ZYiVJPSgM=w1052-h592-rw', alt: 'Amazon Screenshot 1', dataAiHint: 'product page' },
             { url: 'https://play-lh.googleusercontent.com/q-3YfdVSQGgEJ9gj8KCnS17bu4fJmDZxkNzTeaR7bQg2p0lwHFSmBlYCUlW84g32A6w=w1052-h592-rw', alt: 'Amazon Screenshot 2', dataAiHint: 'home page deals' }
         ],
-        testingInstructions: 'Add three different items to your cart and proceed to the checkout page. Do not complete the purchase. Report any UI issues or calculation errors in the subtotal.',
+        testingInstructions: 'Add three different items to your cart and proceed to the checkout page. Do not complete the purchase. Report any issues with the UI or calculation errors in the subtotal.',
         status: 'completed',
         completedDate: '2024-06-15',
         totalDays: 14,
@@ -606,7 +607,7 @@ export const communityApps: CommunityApp[] = [
             { url: 'https://play-lh.googleusercontent.com/LUbhjBDsItfhj8FnM3mDhekkaUCecqF6s49T2AyhgRyZsFijrw7lcKd74gM2E9ctGQ=w1052-h592-rw', alt: 'Discord Screenshot 2', dataAiHint: 'voice channel' }
         ],
         testingInstructions: 'Join a voice channel in a server. Test the noise suppression feature by enabling it and speaking with background noise. Report on its effectiveness.',
-        status: 'available',
+        status: 'requested',
         totalDays: 14,
     },
     {
@@ -644,7 +645,8 @@ export const communityApps: CommunityApp[] = [
             { url: 'https://play-lh.googleusercontent.com/2QLnpUwoUtj9I3iTT0yd2nMJezAQD4YCk6FyCzsgrZTP74SgfxmE_Uyqs4fU7d4SlII=w1052-h592-rw', alt: 'Airbnb Screenshot 2', dataAiHint: 'map view with prices' }
         ],
         testingInstructions: 'Search for a stay in any city for a future date. Apply at least 3 filters (e.g., Wi-Fi, Kitchen, Price Range) and check if the results update correctly.',
-        status: 'available',
+        status: 'request_rejected',
+        rejectionReason: 'The developer has paused new tester requests for this app.',
         totalDays: 14,
     },
     {
@@ -920,6 +922,7 @@ const generateFeedback = (projectName: string) => {
     return Array.from({ length: 15 }, (_, i) => {
         const type = feedbackTypes[i % feedbackTypes.length];
         const hasScreenshot = i % 3 === 0;
+        const hasVideo = i % 5 === 0;
         return {
             id: i + 1,
             tester: `Tester${100 + i}`,
@@ -928,10 +931,33 @@ const generateFeedback = (projectName: string) => {
             status: statuses[i % statuses.length],
             comment: comments[type as keyof typeof comments] || `Generic feedback item #${i+1}`,
             date: `2024-08-${20- (i % 10)}`,
-            screenshot: hasScreenshot ? `https://picsum.photos/seed/${projectName.length + i}/400/800` : null
+            screenshot: hasScreenshot ? `https://picsum.photos/seed/${projectName.length + i}/400/800` : null,
+            videoUrl: hasVideo ? 'https://www.youtube.com/watch?v=dQw4w9WgXcQ' : null,
         }
     });
 };
+
+const generateTesters = (count: number): TesterDetails[] => {
+    const devices = ["Pixel 8 Pro", "Galaxy S24 Ultra", "OnePlus 12", "Xiaomi 14", "Pixel 7a"];
+    const countries = [{c: "USA", s: "California"}, {c: "India", s: "Maharashtra"}, {c: "Germany", s: "Berlin"}, {c: "Brazil", s: "São Paulo"}, {c: "Nigeria", s: "Lagos"}];
+    const languages = ["en-US", "en-GB", "es-ES", "hi-IN", "pt-BR"];
+
+    return Array.from({length: count}, (_, i) => ({
+        id: `tester-${101 + i}`,
+        name: `Tester ${101+i}`,
+        avatar: `https://i.pravatar.cc/150?u=tester${101+i}`,
+        country: countries[i % countries.length].c,
+        state: countries[i % countries.length].s,
+        device: devices[i % devices.length],
+        ram: `${[4, 6, 8, 12][i % 4]}GB`,
+        os: `Android ${12 + (i % 3)}`,
+        screenSize: `${['1080x2400', '1440x3120', '1080x2340'][i % 3]}`,
+        language: languages[i % languages.length],
+        network: i % 3 === 0 ? 'Cellular' : 'WiFi',
+        rating: Math.round((3.5 + Math.random() * 1.5) * 2) / 2, // 3.5 to 5.0 in 0.5 increments
+    }));
+}
+
 
 const generateChartData = (baseBugs: number) => {
     return Array.from({length: 14}, (_, i) => ({
@@ -959,6 +985,7 @@ export const projects: Project[] = [
       androidVersion: "11+",
       pointsCost: 1400,
       crashFreeRate: 99.8,
+      overallRating: 4.2,
       feedbackBreakdown: { total: 45, critical: 3, high: 12, low: 30 },
       performanceMetrics: { avgStartupTime: "350ms", frozenFrames: "0.2%" },
       deviceCoverage: [
@@ -978,7 +1005,8 @@ export const projects: Project[] = [
           { country: "Germany", testers: 2, flag: "🇩🇪" },
       ],
       feedback: generateFeedback("Canva"),
-      chartData: generateChartData(20)
+      chartData: generateChartData(20),
+      testers: generateTesters(14),
     },
     {
       id: 2,
@@ -987,7 +1015,7 @@ export const projects: Project[] = [
       icon: "https://play-lh.googleusercontent.com/hoVBnPBRehmXsCqESLXRH2E3OTxklkwKZlb1psn7imm0VUSobn2nevS9RRFWb9GM4-o=s96-rw",
       dataAiHint: "geometric shapes",
       category: "Productivity",
-      status: "Rejected",
+      status: "In Review",
       testersStarted: 12,
       testersCompleted: 10,
       totalDays: 10,
@@ -998,6 +1026,7 @@ export const projects: Project[] = [
       androidVersion: "10+",
       pointsCost: 1200,
       crashFreeRate: 99.9,
+      overallRating: 4.8,
       feedbackBreakdown: { total: 30, critical: 1, high: 5, low: 24 },
       performanceMetrics: { avgStartupTime: "450ms", frozenFrames: "0.1%" },
        deviceCoverage: [
@@ -1018,10 +1047,8 @@ export const projects: Project[] = [
       ],
       feedback: generateFeedback("Figma"),
       chartData: generateChartData(15),
-      rejectionReason: {
-        title: "Incomplete Testing Instructions",
-        description: "The instructions provided for testers were not detailed enough. To ensure our community can provide valuable feedback, please specify which features or user flows you want them to focus on. For example, instead of 'Test the app', try 'Please test the new user onboarding flow and report any confusion or bugs'. You can resubmit after updating the instructions.",
-      }
+      reviewNotes: "Initial review in progress. Checking for policy compliance and testability.",
+      testers: generateTesters(12),
     },
     {
       id: 3,
@@ -1041,6 +1068,7 @@ export const projects: Project[] = [
       androidVersion: "9+",
       pointsCost: 2000,
       crashFreeRate: 100,
+      overallRating: 4.5,
       feedbackBreakdown: { total: 15, critical: 0, high: 2, low: 13 },
       performanceMetrics: { avgStartupTime: "250ms", frozenFrames: "0.05%" },
       deviceCoverage: [
@@ -1058,7 +1086,8 @@ export const projects: Project[] = [
           { country: "Australia", testers: 5, flag: "🇦🇺" },
       ],
       feedback: generateFeedback("Slack"),
-      chartData: generateChartData(5)
+      chartData: generateChartData(5),
+      testers: generateTesters(20),
     },
      {
       id: 6,
@@ -1079,13 +1108,15 @@ export const projects: Project[] = [
       pointsCost: 1500,
       reviewNotes: "Initial review in progress. Checking for policy compliance and testability.",
       crashFreeRate: 100,
+      overallRating: 0,
       feedbackBreakdown: { total: 0, critical: 0, high: 0, low: 0 },
       performanceMetrics: { avgStartupTime: "N/A", frozenFrames: "N/A" },
        deviceCoverage: [],
       osCoverage: [],
        topGeographies: [],
       feedback: [],
-      chartData: []
+      chartData: [],
+      testers: [],
     },
     {
       id: 7,
@@ -1106,13 +1137,15 @@ export const projects: Project[] = [
       pointsCost: 0,
       reviewNotes: "Submission is incomplete.",
       crashFreeRate: 100,
+      overallRating: 0,
       feedbackBreakdown: { total: 0, critical: 0, high: 0, low: 0 },
       performanceMetrics: { avgStartupTime: "N/A", frozenFrames: "N/A" },
        deviceCoverage: [],
       osCoverage: [],
        topGeographies: [],
       feedback: [],
-      chartData: []
+      chartData: [],
+      testers: [],
     },
     {
       id: 4,
@@ -1132,6 +1165,7 @@ export const projects: Project[] = [
       androidVersion: "9+",
       pointsCost: 1500,
       crashFreeRate: 99.95,
+      overallRating: 3.9,
       feedbackBreakdown: { total: 22, critical: 2, high: 8, low: 12 },
       performanceMetrics: { avgStartupTime: "150ms", frozenFrames: "0.01%" },
        deviceCoverage: [
@@ -1146,7 +1180,8 @@ export const projects: Project[] = [
           { country: "Germany", testers: 5, flag: "🇩🇪" },
       ],
       feedback: generateFeedback("Google Wallet"),
-      chartData: generateChartData(12)
+      chartData: generateChartData(12),
+      testers: generateTesters(15),
     },
       {
       id: 5,
@@ -1166,6 +1201,7 @@ export const projects: Project[] = [
       androidVersion: "10+",
       pointsCost: 2500,
       crashFreeRate: 98.5,
+      overallRating: 3.5,
       feedbackBreakdown: { total: 88, critical: 15, high: 40, low: 33 },
       performanceMetrics: { avgStartupTime: "600ms", frozenFrames: "1.5%" },
        deviceCoverage: [
@@ -1191,7 +1227,8 @@ export const projects: Project[] = [
         description: "Our review found that the app is currently restricted to North America. To ensure our global community of testers can access your app, please make it available in all countries/regions within your Google Play Console settings. This allows for diverse testing across different devices and network conditions.",
         imageUrl: "https://images.unsplash.com/photo-1601034913836-a1f43e143611?q=50&w=500&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
         dataAiHint: "world map",
-      }
+      },
+      testers: generateTesters(25),
     },
     ...communityApps.map(app => {
       const isCompleted = app.status === 'completed';
@@ -1216,6 +1253,7 @@ export const projects: Project[] = [
         androidVersion: app.androidVersion,
         pointsCost: testersStarted * 80,
         crashFreeRate: 99.5 - (app.id % 10)/10,
+        overallRating: 4.0 + (app.id % 10)/10,
         feedbackBreakdown: { total: testersCompleted * 3, critical: Math.floor(testersCompleted/5), high: Math.floor(testersCompleted/3), low: testersCompleted * 2 },
         performanceMetrics: { avgStartupTime: `${300 + (app.id % 10) * 10}ms`, frozenFrames: `0.${app.id % 10}%` },
         deviceCoverage: [
@@ -1235,6 +1273,7 @@ export const projects: Project[] = [
         feedback: generateFeedback(app.name),
         chartData: generateChartData(testersCompleted),
         reviewNotes: app.status === 'available' ? "Pending tester availability." : undefined,
+        testers: generateTesters(testersStarted),
       }
     })
   ]
@@ -1251,4 +1290,8 @@ export const projects: Project[] = [
     
 
     
+
+
+
+
 

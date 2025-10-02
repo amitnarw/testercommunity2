@@ -1,4 +1,5 @@
 
+
 import {
     Card,
     CardContent,
@@ -25,9 +26,9 @@ const getStatusConfig = (status: string) => {
             return {
                 badgeVariant: "secondary",
             };
-        case "Archived":
+        case "Rejected":
             return {
-                badgeVariant: "outline",
+                badgeVariant: "destructive",
             };
         case "Draft":
              return {
@@ -68,7 +69,7 @@ export function ProjectList({ projects }: { projects: Project[] }) {
                 const isDraft = project.status === 'Draft';
                 return (
                     <div key={project.id} className="group relative">
-                        <Link href={isDraft ? `/dashboard/add-app?draft_id=${project.id}` : `/dashboard/project/${project.id}`}>
+                        <Link href={isDraft ? `/dashboard/add-app/form?draft_id=${project.id}` : `/dashboard/project/${project.id}`}>
                             <div className="rounded-2xl overflow-hidden bg-background hover:bg-secondary/50 transition-all duration-300 transform hover:-translate-y-1 hover:shadow-lg h-full flex flex-col">
                                 <CardHeader className="flex flex-row items-start justify-between gap-4 p-3 sm:p-5">
                                     <div className="flex items-center gap-4">

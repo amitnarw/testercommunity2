@@ -73,10 +73,11 @@ export type CommunityApp = {
     playStoreUrl?: string;
     screenshots: { url: string; alt: string; dataAiHint?: string }[];
     testingInstructions: string;
-    status: 'available' | 'ongoing' | 'completed';
+    status: 'available' | 'ongoing' | 'completed' | 'requested' | 'request_rejected';
     progress?: number;
     completedDate?: string;
     totalDays: number;
+    rejectionReason?: string;
 }
 
 export type FaqItem = {
@@ -102,6 +103,22 @@ export type ProjectFeedback = {
     comment: string;
     date: string;
     screenshot?: string | null;
+    videoUrl?: string | null;
+}
+
+export type TesterDetails = {
+    id: string;
+    name: string;
+    avatar: string;
+    country: string;
+    state: string;
+    device: string;
+    ram: string;
+    os: string;
+    screenSize: string;
+    language: string;
+    network: 'WiFi' | 'Cellular';
+    rating: number;
 }
 
 export type Project = {
@@ -122,6 +139,7 @@ export type Project = {
   androidVersion: string;
   pointsCost: number;
   crashFreeRate: number;
+  overallRating: number;
   feedbackBreakdown: {
     total: number;
     critical: number;
@@ -153,7 +171,8 @@ export type Project = {
     description: string;
     imageUrl?: string;
     dataAiHint?: string;
-  }
+  };
+  testers: TesterDetails[];
 }
 
 export type SubmittedFeedback = {
@@ -161,9 +180,6 @@ export type SubmittedFeedback = {
   type: 'Bug' | 'Suggestion' | 'Praise';
   comment: string;
   screenshot: string | null;
+  tester: string;
+  severity: 'Critical' | 'High' | 'Medium' | 'Low' | 'N/A';
 }
-    
-
-    
-
-    
