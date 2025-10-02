@@ -357,8 +357,8 @@ function ProjectDetailsClient({ project }: { project: Project }) {
                                     <CardContent className="p-3 sm:p-6 pt-0">
                                         <Tabs defaultValue="screenshots">
                                             <TabsList className="grid w-full grid-cols-2">
-                                                <TabsTrigger value="screenshots"><Camera className="mr-2" /> Screenshots ({screenshots.length})</TabsTrigger>
-                                                <TabsTrigger value="videos"><Video className="mr-2" /> Videos ({videos.length})</TabsTrigger>
+                                                <TabsTrigger value="screenshots"><Camera className="mr-2 hidden sm:block" size={15} /> <span className='text-xs sm:text-sm mr-1'>Screenshots</span> ({screenshots.length})</TabsTrigger>
+                                                <TabsTrigger value="videos"><Video className="mr-2 hidden sm:block" size={15} /> <span className='text-xs sm:text-sm mr-1'>Videos</span> ({videos.length})</TabsTrigger>
                                             </TabsList>
                                             <TabsContent value="screenshots" className="mt-4">
                                                 {screenshots.length > 0 ? (

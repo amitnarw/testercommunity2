@@ -255,8 +255,8 @@ function SubmissionDetailsPage({ params }: { params: { id: string }}) {
                                                         <p className="text-sm text-muted-foreground mt-1">{fb.comment}</p>
                                                     </div>
                                                     <div className="flex items-center justify-between text-xs text-muted-foreground w-full mt-3 bg-black/5 dark:bg-white/10 px-5 h-12">
-                                                        {fb.screenshot ? (
-                                                            <div className="cursor-pointer h-10 w-7 relative" onClick={() => setFullscreenImage(fb?.screenshot)}>
+                                                        {fb?.screenshot ? (
+                                                            <div className="cursor-pointer h-10 w-7 relative" onClick={() => setFullscreenImage(fb?.screenshot || "")}>
                                                                 <Image src={fb.screenshot} alt="Feedback screenshot" fill className="absolute rounded border object-cover" />
                                                             </div>
                                                         ) : <div />}
@@ -287,8 +287,8 @@ function SubmissionDetailsPage({ params }: { params: { id: string }}) {
                                                         <p className="text-xs sm:text-sm text-muted-foreground">{fb.comment}</p>
                                                     </CardContent>
                                                     <CardFooter className="p-2 px-3 sm:px-4 flex items-center justify-between text-xs text-muted-foreground mt-2 h-10 bg-black/5 dark:bg-white/10">
-                                                            {fb.screenshot ? (
-                                                                <div className="cursor-pointer h-8 w-6 relative" onClick={() => setFullscreenImage(fb?.screenshot)}>
+                                                            {fb?.screenshot ? (
+                                                                <div className="cursor-pointer h-8 w-6 relative" onClick={() => setFullscreenImage(fb?.screenshot || "")}>
                                                                     <Image src={fb.screenshot} alt="Feedback screenshot" fill className="absolute rounded-sm border object-cover" />
                                                                 </div>
                                                             ) : <div />}
