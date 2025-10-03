@@ -15,10 +15,10 @@ const mainNavLinks = [
 ];
 
 const proNavLinks = [
-    { name: "Pro Dashboard", href: "/professional/tester/dashboard", icon: LayoutDashboard },
-    { name: "Projects", href: "/professional/projects", icon: Briefcase },
-    { name: "Earnings", href: "/professional/earnings", icon: DollarSign },
-    { name: "Support", href: "/professional/support", icon: LifeBuoy },
+    { name: "Pro Dashboard", href: "/tester/dashboard", icon: LayoutDashboard },
+    { name: "Projects", href: "/tester/projects", icon: Briefcase },
+    { name: "Earnings", href: "/tester/earnings", icon: DollarSign },
+    { name: "Support", href: "/tester/support", icon: LifeBuoy },
 ];
 
 const adminNavLinks = [
@@ -68,7 +68,7 @@ export function Sidebar({ onLogout, isCollapsed, setIsCollapsed }: SidebarProps)
     let navLinks = mainNavLinks;
     if (pathname.startsWith('/admin')) {
         navLinks = adminNavLinks;
-    } else if (pathname.startsWith('/professional')) {
+    } else if (pathname.startsWith('/tester')) {
         navLinks = proNavLinks;
     }
 
