@@ -13,7 +13,7 @@ export function middleware(request: NextRequest) {
   const authenticatedRoutes = ['/dashboard', '/community-dashboard', '/notifications', '/profile'];
   const adminRoutes = ['/admin'];
   const professionalTesterAuthRoutes = ['/tester/login', '/tester/register'];
-  const professionalRoutes = ['/professional/tester/dashboard'];
+  const professionalRoutes = ['/tester/dashboard'];
 
   // If user is authenticated and tries to access login/signup, redirect to dashboard
   if (isAuthenticated && authRoutes.some(route => pathname.startsWith(route))) {
@@ -25,7 +25,7 @@ export function middleware(request: NextRequest) {
   }
 
   if (isProfessional && professionalTesterAuthRoutes.some(route => pathname.startsWith(route))) {
-      return NextResponse.redirect(new URL('/professional/tester/dashboard', request.url));
+      return NextResponse.redirect(new URL('/tester/dashboard', request.url));
   }
 
   // If user is not authenticated and tries to access a protected route, redirect to login
