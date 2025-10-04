@@ -1,8 +1,8 @@
 
 'use client';
 
-import { Card, CardDescription, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
-import { ArrowRight, BookOpen, Bot, DollarSign, LifeBuoy, Mail, ShieldCheck } from "lucide-react";
+import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { ArrowRight, BookOpen, Bot, DollarSign, LifeBuoy, Mail } from "lucide-react";
 import Link from "next/link";
 import { SupportChatbot } from "@/components/support-chatbot";
 
@@ -20,10 +20,10 @@ const helpOptions = [
         contact: "pro-billing@inTesters.com",
     },
     {
-        icon: <ShieldCheck className="w-8 h-8 text-primary" />,
-        title: "Account & Compliance",
-        description: "Need to update your profile, have questions about your NDA, or other compliance issues?",
-        contact: "pro-compliance@inTesters.com",
+        icon: <Mail className="w-8 h-8 text-primary" />,
+        title: "General Inquiries",
+        description: "Have a general question about our professional program, NDAs, or something else? We're here to chat.",
+        contact: "pro-info@inTesters.com",
     },
 ]
 

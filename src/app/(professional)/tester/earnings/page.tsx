@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { Download, CreditCard, Banknote, MoreHorizontal } from "lucide-react";
+import { Download, CreditCard, Banknote } from "lucide-react";
 
 const earningsHistory = [
     { id: 'PAY-001', date: '2024-08-01', project: 'Nexus Browser', amount: 6000, status: 'Paid' },
