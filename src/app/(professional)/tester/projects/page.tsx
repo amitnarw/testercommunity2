@@ -22,7 +22,7 @@ const ProjectRow = ({ project }: { project: Project }) => {
     const earnings = project.pointsCost * 5; // Example conversion
 
     return (
-        <div key={project.id} className="flex items-center justify-between p-3 rounded-xl bg-secondary">
+        <div key={project.id} className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-3 rounded-xl bg-secondary gap-4">
             <div className="flex items-center gap-3">
                 <Avatar className="h-10 w-10">
                     <AvatarImage src={project.icon} data-ai-hint={project.dataAiHint} />
@@ -30,10 +30,10 @@ const ProjectRow = ({ project }: { project: Project }) => {
                 </Avatar>
                 <div>
                     <p className="font-semibold text-sm">{project.name}</p>
-                    <p className="text-xs text-muted-foreground truncate w-40">{project.packageName}</p>
+                    <p className="text-xs text-muted-foreground truncate w-40 sm:w-auto">{project.packageName}</p>
                 </div>
             </div>
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-4 self-end sm:self-center">
                 <div className="text-sm text-right">
                     <p className="font-semibold text-primary">₹{earnings.toLocaleString('en-IN')}</p>
                 </div>
