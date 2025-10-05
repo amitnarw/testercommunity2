@@ -5,14 +5,17 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, CheckCircle, Clock } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import Link from 'next/link';
 import { projects } from '@/lib/data';
 import type { Project } from "@/lib/types";
+import { useState } from "react";
+import { AppPagination } from "@/components/app-pagination";
+
+const PROJECTS_PER_PAGE = 3;
 
 const assignedProjects = projects.filter(p => p.status === "In Testing" || p.status === "Completed");
 const availableProjects = projects.filter(p => p.status === "In Review");
-
 
 const ProjectRow = ({ project }: { project: Project }) => {
     const isAssigned = assignedProjects.some(p => p.id === project.id);
@@ -51,6 +54,34 @@ const ProjectRow = ({ project }: { project: Project }) => {
     );
 };
 
+const PaginatedProjectList = ({ projects }: { projects: Project[] }) => {
+    const [currentPage, setCurrentPage] = useState(1);
+    const totalPages = Math.ceil(projects.length / PROJECTS_PER_PAGE);
+    const startIndex = (currentPage - 1) * PROJECTS_PER_PAGE;
+    const endIndex = startIndex + PROJECTS_PER_PAGE;
+    const currentProjects = projects.slice(startIndex, endIndex);
+
+    const handlePageChange = (page: number) => {
+        if (page < 1 || page > totalPages) return;
+        setCurrentPage(page);
+    };
+
+    return (
+        <>
+            <div className="space-y-4">
+              {currentProjects.map((project) => (
+                <ProjectRow key={project.id} project={project} />
+              ))}
+            </div>
+            <AppPagination
+                currentPage={currentPage}
+                totalPages={totalPages}
+                onPageChange={handlePageChange}
+            />
+        </>
+    );
+}
+
 export default function ProfessionalProjectsPage() {
   return (
     <div className="flex-1 space-y-8 p-4 sm:p-8 pt-6">
@@ -69,12 +100,8 @@ export default function ProfessionalProjectsPage() {
               These are the projects currently assigned to you.
             </CardDescription>
           </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              {assignedProjects.map((project) => (
-                <ProjectRow key={project.id} project={project} />
-              ))}
-            </div>
+          <CardContent className="space-y-4">
+            <PaginatedProjectList projects={assignedProjects} />
           </CardContent>
         </Card>
 
@@ -85,12 +112,8 @@ export default function ProfessionalProjectsPage() {
               New projects from companies looking for your expertise.
             </CardDescription>
           </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              {availableProjects.map((project) => (
-                <ProjectRow key={project.id} project={project} />
-              ))}
-            </div>
+          <CardContent className="space-y-4">
+            <PaginatedProjectList projects={availableProjects} />
           </CardContent>
         </Card>
       </div>
