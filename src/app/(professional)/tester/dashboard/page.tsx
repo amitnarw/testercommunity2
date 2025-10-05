@@ -3,7 +3,7 @@
 
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, CheckCircle, Clock, DollarSign, Briefcase, Bell } from "lucide-react";
+import { ArrowRight, CheckCircle, Clock, DollarSign, Briefcase, Bell, Package } from "lucide-react";
 import Link from 'next/link';
 import {
   ChartContainer,
@@ -14,6 +14,7 @@ import { BarChart, Bar, ResponsiveContainer, XAxis, YAxis } from "recharts"
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
+import { projects } from "@/lib/data";
 
 const chartData = [
   { month: "Jan", earnings: 1860 },
@@ -30,16 +31,10 @@ const chartConfig = {
   },
 }
 
-const activeProjects = [
-    {
-        id: 1,
-        name: "QuantumLeap CRM",
-        icon: "https://play-lh.googleusercontent.com/3aWGqSf3T_p3F6wc8FFvcZcnjWlxpZdNaqFVEvPwQ1gTOPkVoZwq6cYvfK9eCkwCXbRY=s96-rw",
-        dataAiHint: "design logo",
-        payout: 7500,
-        endDate: "2024-09-10"
-    }
-];
+const activeProjects = projects.filter(p => p.status === "In Testing");
+const availableProjects = projects.filter(p => p.status === "In Review");
+const testsCompleted = projects.filter(p => p.status === "Completed").length;
+
 
 const recentActivity = [
     { id: 1, type: "payment", description: "Payment for 'Project Phoenix' processed.", date: "2024-08-20" },
@@ -56,6 +51,12 @@ const ActivityIcon = ({ type }: { type: string }) => {
     }
 }
 
+const BentoCard = ({ children, className }: { children: React.ReactNode, className?: string }) => (
+    <div className={`bg-card rounded-2xl p-4 flex flex-col justify-between ${className}`}>
+        {children}
+    </div>
+);
+
 
 export default function ProfessionalDashboardPage() {
   return (
@@ -66,48 +67,54 @@ export default function ProfessionalDashboardPage() {
             <p className="text-muted-foreground">Your central hub for professional testing projects.</p>
         </div>
          <Button asChild>
-            <Link href="/professional/projects">
+            <Link href="/professional/tester/projects">
                 <Briefcase className="mr-2 h-4 w-4" /> View All Projects
             </Link>
         </Button>
       </div>
 
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Lifetime Earnings</CardTitle>
-            <DollarSign className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">₹4,52,310</div>
-            <p className="text-xs text-muted-foreground">+20.1% from last month</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Tests Completed</CardTitle>
-            <CheckCircle className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">+235</div>
-            <p className="text-xs text-muted-foreground">+18 from last month</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Active Projects</CardTitle>
-            <Clock className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">1</div>
-            <p className="text-xs text-muted-foreground">3 pending invitations</p>
-          </CardContent>
-        </Card>
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
-        <div className="lg:col-span-3 space-y-6">
-             <Card>
+       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <BentoCard className="col-span-2 lg:col-span-2 bg-gradient-to-br from-primary to-primary/50 text-primary-foreground">
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 p-0">
+                    <CardTitle className="text-sm font-medium text-white/80">Lifetime Earnings</CardTitle>
+                    <DollarSign className="h-4 w-4 text-white/80" />
+                </CardHeader>
+                <CardContent className="p-0">
+                    <div className="text-4xl font-bold text-white">₹4,52,310</div>
+                    <p className="text-xs text-white/80">+20.1% from last month</p>
+                </CardContent>
+            </BentoCard>
+            <BentoCard>
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 p-0">
+                    <CardTitle className="text-sm font-medium">Tests Completed</CardTitle>
+                    <CheckCircle className="h-4 w-4 text-muted-foreground" />
+                </CardHeader>
+                <CardContent className="p-0">
+                    <div className="text-4xl font-bold">+{testsCompleted}</div>
+                    <p className="text-xs text-muted-foreground">+5 from last month</p>
+                </CardContent>
+            </BentoCard>
+             <BentoCard>
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 p-0">
+                    <CardTitle className="text-sm font-medium">Active Projects</CardTitle>
+                    <Clock className="h-4 w-4 text-muted-foreground" />
+                </CardHeader>
+                <CardContent className="p-0">
+                    <div className="text-4xl font-bold">{activeProjects.length}</div>
+                    <p className="text-xs text-muted-foreground">in progress</p>
+                </CardContent>
+            </BentoCard>
+             <BentoCard className="col-span-2 lg:col-span-2">
+                 <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2 p-0">
+                    <CardTitle className="text-sm font-medium">Available Projects</CardTitle>
+                    <Package className="h-4 w-4 text-muted-foreground" />
+                </CardHeader>
+                <CardContent className="p-0">
+                    <div className="text-4xl font-bold">{availableProjects.length}</div>
+                    <p className="text-xs text-muted-foreground">invitations waiting for you</p>
+                </CardContent>
+            </BentoCard>
+             <Card className="col-span-2 lg:col-span-2">
               <CardHeader>
                 <CardTitle>Earnings Overview</CardTitle>
                  <CardDescription>Your earnings for the last 6 months.</CardDescription>
@@ -125,35 +132,10 @@ export default function ProfessionalDashboardPage() {
                 </ChartContainer>
               </CardContent>
             </Card>
-        </div>
-        <div className="lg:col-span-2 space-y-6">
-             <Card>
-                <CardHeader>
-                    <CardTitle>Active Projects</CardTitle>
-                    <CardDescription>Projects you are currently testing.</CardDescription>
-                </CardHeader>
-                <CardContent>
-                    {activeProjects.map(project => (
-                        <div key={project.id} className="flex items-center justify-between p-3 rounded-lg bg-secondary">
-                             <div className="flex items-center gap-3">
-                                <Avatar className="h-10 w-10">
-                                    <AvatarImage src={project.icon} data-ai-hint={project.dataAiHint} />
-                                    <AvatarFallback>{project.name.charAt(0)}</AvatarFallback>
-                                </Avatar>
-                                <div>
-                                    <p className="font-semibold text-sm">{project.name}</p>
-                                    <p className="text-xs text-muted-foreground">Ends {project.endDate}</p>
-                                </div>
-                            </div>
-                            <Button variant="outline" size="sm" asChild>
-                                <Link href={`/professional/projects/${project.id}`}>
-                                    View <ArrowRight className="ml-2 h-4 w-4" />
-                                </Link>
-                            </Button>
-                        </div>
-                    ))}
-                </CardContent>
-            </Card>
+      </div>
+
+      <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
+        <div className="lg:col-span-5 space-y-6">
              <Card>
                 <CardHeader>
                     <CardTitle>Recent Activity</CardTitle>
