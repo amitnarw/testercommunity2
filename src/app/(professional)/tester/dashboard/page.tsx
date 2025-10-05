@@ -3,7 +3,7 @@
 
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, CheckCircle, Clock, DollarSign, Briefcase } from "lucide-react";
+import { ArrowRight, CheckCircle, Clock, DollarSign, Briefcase, Bell } from "lucide-react";
 import Link from 'next/link';
 import {
   ChartContainer,
@@ -11,6 +11,9 @@ import {
   ChartTooltipContent,
 } from "@/components/ui/chart"
 import { BarChart, Bar, ResponsiveContainer, XAxis, YAxis } from "recharts"
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
 
 const chartData = [
   { month: "Jan", earnings: 1860 },
@@ -26,6 +29,33 @@ const chartConfig = {
     color: "hsl(var(--chart-1))",
   },
 }
+
+const activeProjects = [
+    {
+        id: 1,
+        name: "QuantumLeap CRM",
+        icon: "https://play-lh.googleusercontent.com/3aWGqSf3T_p3F6wc8FFvcZcnjWlxpZdNaqFVEvPwQ1gTOPkVoZwq6cYvfK9eCkwCXbRY=s96-rw",
+        dataAiHint: "design logo",
+        payout: 7500,
+        endDate: "2024-09-10"
+    }
+];
+
+const recentActivity = [
+    { id: 1, type: "payment", description: "Payment for 'Project Phoenix' processed.", date: "2024-08-20" },
+    { id: 2, type: "completion", description: "Testing for 'Nexus Browser' completed.", date: "2024-08-18" },
+    { id: 3, type: "invitation", description: "You were invited to test 'Odyssey Social'.", date: "2024-08-17" },
+];
+
+const ActivityIcon = ({ type }: { type: string }) => {
+    switch (type) {
+        case "payment": return <DollarSign className="w-4 h-4 text-green-500" />;
+        case "completion": return <CheckCircle className="w-4 h-4 text-blue-500" />;
+        case "invitation": return <Briefcase className="w-4 h-4 text-purple-500" />;
+        default: return <Bell className="w-4 h-4 text-muted-foreground" />;
+    }
+}
+
 
 export default function ProfessionalDashboardPage() {
   return (
@@ -75,8 +105,9 @@ export default function ProfessionalDashboardPage() {
         </Card>
       </div>
 
-       <div className="grid grid-cols-1">
-            <Card>
+      <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
+        <div className="lg:col-span-3 space-y-6">
+             <Card>
               <CardHeader>
                 <CardTitle>Earnings Overview</CardTitle>
                  <CardDescription>Your earnings for the last 6 months.</CardDescription>
@@ -95,6 +126,60 @@ export default function ProfessionalDashboardPage() {
               </CardContent>
             </Card>
         </div>
+        <div className="lg:col-span-2 space-y-6">
+             <Card>
+                <CardHeader>
+                    <CardTitle>Active Projects</CardTitle>
+                    <CardDescription>Projects you are currently testing.</CardDescription>
+                </CardHeader>
+                <CardContent>
+                    {activeProjects.map(project => (
+                        <div key={project.id} className="flex items-center justify-between p-3 rounded-lg bg-secondary">
+                             <div className="flex items-center gap-3">
+                                <Avatar className="h-10 w-10">
+                                    <AvatarImage src={project.icon} data-ai-hint={project.dataAiHint} />
+                                    <AvatarFallback>{project.name.charAt(0)}</AvatarFallback>
+                                </Avatar>
+                                <div>
+                                    <p className="font-semibold text-sm">{project.name}</p>
+                                    <p className="text-xs text-muted-foreground">Ends {project.endDate}</p>
+                                </div>
+                            </div>
+                            <Button variant="outline" size="sm" asChild>
+                                <Link href={`/professional/projects/${project.id}`}>
+                                    View <ArrowRight className="ml-2 h-4 w-4" />
+                                </Link>
+                            </Button>
+                        </div>
+                    ))}
+                </CardContent>
+            </Card>
+             <Card>
+                <CardHeader>
+                    <CardTitle>Recent Activity</CardTitle>
+                </CardHeader>
+                <CardContent>
+                    <Table>
+                        <TableBody>
+                            {recentActivity.map(activity => (
+                                <TableRow key={activity.id}>
+                                    <TableCell className="w-10">
+                                        <div className="p-2 bg-secondary rounded-full">
+                                            <ActivityIcon type={activity.type} />
+                                        </div>
+                                    </TableCell>
+                                    <TableCell>
+                                        <p className="text-sm">{activity.description}</p>
+                                        <p className="text-xs text-muted-foreground">{activity.date}</p>
+                                    </TableCell>
+                                </TableRow>
+                            ))}
+                        </TableBody>
+                    </Table>
+                </CardContent>
+            </Card>
+        </div>
+      </div>
     </div>
   );
 }

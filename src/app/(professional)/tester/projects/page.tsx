@@ -19,42 +19,31 @@ const ProjectRow = ({ project }: { project: Project }) => {
     const earnings = project.pointsCost * 5; // Example conversion
 
     return (
-        <div key={project.id} className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 rounded-xl bg-secondary">
-            <div className="flex items-center gap-4 mb-3 sm:mb-0">
+        <div key={project.id} className="flex items-center justify-between p-3 rounded-xl bg-secondary">
+            <div className="flex items-center gap-3">
                 <Avatar className="h-10 w-10">
                     <AvatarImage src={project.icon} data-ai-hint={project.dataAiHint} />
                     <AvatarFallback>{project.name.charAt(0)}</AvatarFallback>
                 </Avatar>
                 <div>
-                    <p className="font-semibold">{project.name}</p>
-                    <p className="text-sm text-muted-foreground">{project.packageName}</p>
+                    <p className="font-semibold text-sm">{project.name}</p>
+                    <p className="text-xs text-muted-foreground truncate w-40">{project.packageName}</p>
                 </div>
             </div>
-            <div className="flex items-center gap-4 sm:gap-6 w-full sm:w-auto">
-                {isAssigned ? (
-                     <Badge variant={project.status === "Completed" ? "secondary" : "default"} className="py-1 px-3 rounded-lg">
-                        {project.status === 'In Testing' && <Clock className="mr-2 h-3 w-3" />}
-                        {project.status === 'Completed' && <CheckCircle className="mr-2 h-3 w-3" />}
-                        {project.status === 'In Testing' ? "In Progress" : project.status}
-                    </Badge>
-                ) : (
-                    <Badge variant="outline" className="py-1 px-3 rounded-lg">{project.category}</Badge>
-                )}
-
-                <div className="text-sm text-right sm:text-left">
+            <div className="flex items-center gap-4">
+                <div className="text-sm text-right">
                     <p className="font-semibold text-primary">₹{earnings.toLocaleString('en-IN')}</p>
-                    <p className="text-xs text-muted-foreground">Payout</p>
                 </div>
 
                 {isAssigned ? (
-                    <Button variant="outline" size="sm" asChild>
+                    <Button variant="outline" size="icon" asChild>
                         <Link href="#">
-                            View Details <ArrowRight className="ml-2 h-4 w-4" />
+                            <ArrowRight className="h-4 w-4" />
                         </Link>
                     </Button>
                 ) : (
                     <Button variant="default" size="sm">
-                        Apply Now <ArrowRight className="ml-2 h-4 w-4" />
+                        Apply
                     </Button>
                 )}
             </div>
@@ -72,7 +61,7 @@ export default function ProfessionalProjectsPage() {
         </div>
       </div>
       
-      <div className="space-y-8">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
         <Card>
           <CardHeader>
             <CardTitle>Assigned Projects</CardTitle>
