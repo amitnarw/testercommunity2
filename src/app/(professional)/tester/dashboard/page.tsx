@@ -70,53 +70,54 @@ export default function ProfessionalDashboardPage() {
                 </div>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 <BentoCard className="bg-gradient-to-br from-primary to-primary/50 text-primary-foreground">
                     <CardHeader className="p-0 pb-2.5">
                         <CardTitle className="text-sm font-medium text-white/80">Lifetime Earnings</CardTitle>
                     </CardHeader>
                     <CardContent className="p-0 space-y-1">
-                        <div className="text-4xl font-bold text-white">₹4,52,310</div>
+                        <div className="text-3xl font-bold text-white">₹4,52,310</div>
                         <p className="text-xs text-white/80">+20.1% from last month</p>
                     </CardContent>
                 </BentoCard>
 
-                <BentoCard className="flex !flex-row gap-4 !py-2">
+                <BentoCard className="!flex-row gap-4 !py-2">
                     <Card className="shadow-none w-full">
                         <CardHeader className="p-0 pb-1">
-                            <CardTitle className="text-sm font-medium">Tests Completed</CardTitle>
+                            <CardTitle className="text-xs sm:text-sm font-medium">Tests Completed</CardTitle>
                         </CardHeader>
                         <CardContent className="p-2 space-y-1 bg-secondary rounded-xl">
-                            <div className="text-4xl font-bold">+{testsCompleted}</div>
-                            <p className="text-xs text-muted-foreground">+5 from last month</p>
+                            <div className="text-3xl font-bold">+{testsCompleted}</div>
+                            <p className="text-[10px] sm:text-xs text-muted-foreground">+5 from last month</p>
                         </CardContent>
                     </Card>
                     <Card className="shadow-none w-full">
                         <CardHeader className="p-0 pb-1">
-                            <CardTitle className="text-sm font-medium">Active Projects</CardTitle>
+                            <CardTitle className="text-xs sm:text-sm font-medium">Active Projects</CardTitle>
                         </CardHeader>
                         <CardContent className="p-2 space-y-1 bg-secondary rounded-xl">
-                            <div className="text-4xl font-bold">{activeProjects.length}</div>
-                            <p className="text-xs text-muted-foreground">in progress</p>
+                            <div className="text-3xl font-bold">{activeProjects.length}</div>
+                            <p className="text-[10px] sm:text-xs text-muted-foreground">in progress</p>
                         </CardContent>
                     </Card>
                 </BentoCard>
 
-                <BentoCard>
-                    <CardHeader className="p-0 pb-1">
-                        <CardTitle className="text-sm font-medium">Available Projects</CardTitle>
-                    </CardHeader>
-                    <CardContent className="p-0 space-y-1">
-                        <div className="text-4xl font-bold">{availableProjects.length}</div>
-                        <p className="text-xs text-muted-foreground">waiting for you</p>
-                    </CardContent>
-                </BentoCard>
-
-                <BentoCard className="bg-card/0 !p-0">
-                    <Button asChild className="h-full">
+                <BentoCard className="bg-card/0 !p-0 !flex-row !justify-center gap-4">
+                    <Card className="w-full p-4 shadow-none">
+                        <CardHeader className="p-0 pb-1">
+                            <CardTitle className="text-xs sm:text-sm font-medium">Available Projects</CardTitle>
+                        </CardHeader>
+                        <CardContent className="p-0 space-y-1">
+                            <div className="text-3xl font-bold">{availableProjects.length}</div>
+                            <p className="text-[10px] sm:text-xs text-muted-foreground">waiting for you</p>
+                        </CardContent>
+                    </Card>
+                    <Button asChild className="h-full w-full">
                         <Link href="/professional/tester/projects" className="flex flex-col gap-2">
-                            <Briefcase className="!h-12 !w-12 p-2 rounded-full bg-card text-primary" />
-                            <span>View All Projects</span>
+                            <div className="rounded-full bg-card p-2 !h-9 !w-9 sm:!h-12 sm:!w-12 flex items-center justify-center">
+                                <Briefcase className="text-primary" size={30} />
+                            </div>
+                            <span className="text-xs sm:text-sm">View All Projects</span>
                         </Link>
                     </Button>
                 </BentoCard>

@@ -3,7 +3,6 @@
 
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import Link from 'next/link';
@@ -11,6 +10,8 @@ import { projects } from '@/lib/data';
 import type { Project } from "@/lib/types";
 import { useState } from "react";
 import { AppPagination } from "@/components/app-pagination";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { motion } from 'framer-motion';
 
 const PROJECTS_PER_PAGE = 3;
 
@@ -65,6 +66,10 @@ const PaginatedProjectList = ({ projects }: { projects: Project[] }) => {
         if (page < 1 || page > totalPages) return;
         setCurrentPage(page);
     };
+    
+    if (projects.length === 0) {
+        return <p className="text-muted-foreground text-center py-8">No projects in this category.</p>
+    }
 
     return (
         <>
@@ -83,6 +88,13 @@ const PaginatedProjectList = ({ projects }: { projects: Project[] }) => {
 }
 
 export default function ProfessionalProjectsPage() {
+    const [activeTab, setActiveTab] = useState('assigned');
+
+    const tabs = [
+        { label: 'Assigned', value: 'assigned', count: assignedProjects.length },
+        { label: 'Available', value: 'available', count: availableProjects.length },
+    ];
+    
   return (
     <div className="flex-1 space-y-8 p-4 sm:p-8 pt-6">
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between space-y-2">
@@ -92,31 +104,54 @@ export default function ProfessionalProjectsPage() {
         </div>
       </div>
       
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
-        <Card>
-          <CardHeader>
-            <CardTitle>Assigned Projects</CardTitle>
-            <CardDescription>
-              These are the projects currently assigned to you.
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <PaginatedProjectList projects={assignedProjects} />
-          </CardContent>
-        </Card>
+      <Card>
+        <CardContent className="p-6">
+            <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+                <TabsList className="relative grid w-full grid-cols-2 bg-muted p-1 rounded-lg h-auto mb-6">
+                     {tabs.map((tab) => {
+                        const isSelected = activeTab === tab.value;
+                        return (
+                            <TabsTrigger
+                                key={tab.value}
+                                value={tab.value}
+                                className={`relative px-3 py-2 text-xs sm:text-sm font-medium rounded-lg transition-colors duration-200 ${isSelected ? 'text-foreground' : 'hover:bg-background/50'}`}
+                            >
+                                {isSelected && (
+                                    <motion.span
+                                        layoutId="pro-project-bubble"
+                                        className="absolute inset-0 z-10 bg-background rounded-lg"
+                                        transition={{ type: 'spring', bounce: 0.2, duration: 0.6 }}
+                                    />
+                                )}
+                                <span className="relative z-20">
+                                    {tab.label} ({tab.count})
+                                </span>
+                            </TabsTrigger>
+                        );
+                    })}
+                </TabsList>
 
-        <Card>
-          <CardHeader>
-            <CardTitle>Available Projects</CardTitle>
-            <CardDescription>
-              New projects from companies looking for your expertise.
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <PaginatedProjectList projects={availableProjects} />
-          </CardContent>
-        </Card>
-      </div>
+                <TabsContent value="assigned">
+                    <CardHeader className="p-0 mb-4">
+                        <CardTitle>Assigned Projects</CardTitle>
+                        <CardDescription>
+                          These are the projects currently assigned to you.
+                        </CardDescription>
+                    </CardHeader>
+                     <PaginatedProjectList projects={assignedProjects} />
+                </TabsContent>
+                <TabsContent value="available">
+                     <CardHeader className="p-0 mb-4">
+                        <CardTitle>Available Projects</CardTitle>
+                        <CardDescription>
+                          New projects from companies looking for your expertise.
+                        </CardDescription>
+                    </CardHeader>
+                    <PaginatedProjectList projects={availableProjects} />
+                </TabsContent>
+            </Tabs>
+        </CardContent>
+      </Card>
     </div>
   );
 }
