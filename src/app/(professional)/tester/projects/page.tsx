@@ -25,44 +25,46 @@ const ProjectCard = ({ project, isOngoing }: { project: Project, isOngoing: bool
 
     return (
         <Card key={project.id} className="flex flex-col h-full overflow-hidden rounded-2xl transition-all duration-300 hover:shadow-lg hover:-translate-y-1 border">
-            <CardHeader className="flex flex-row items-start gap-4 p-4">
-                <Avatar className="h-12 w-12">
-                    <AvatarImage src={project.icon} data-ai-hint={project.dataAiHint} />
-                    <AvatarFallback>{project.name.charAt(0)}</AvatarFallback>
-                </Avatar>
-                <div>
-                    <CardTitle className="text-base">{project.name}</CardTitle>
-                    <CardDescription>{project.category}</CardDescription>
-                </div>
-            </CardHeader>
-            <CardContent className="p-4 pt-0 flex-grow">
-                 {isOngoing && (
-                    <div className="w-full">
-                        <div className="flex justify-between items-center text-xs text-muted-foreground mb-1">
-                            <span>Progress</span>
-                            <span>Day {daysCompleted} / {project.totalDays}</span>
-                        </div>
-                        <Progress value={(daysCompleted / project.totalDays) * 100} className="h-2" />
+            <Link href={`/professional/tester/projects/${project.id}`}>
+                <CardHeader className="flex flex-row items-start gap-4 p-4">
+                    <Avatar className="h-12 w-12">
+                        <AvatarImage src={project.icon} data-ai-hint={project.dataAiHint} />
+                        <AvatarFallback>{project.name.charAt(0)}</AvatarFallback>
+                    </Avatar>
+                    <div>
+                        <CardTitle className="text-base">{project.name}</CardTitle>
+                        <CardDescription>{project.category}</CardDescription>
                     </div>
-                )}
-            </CardContent>
-            <CardFooter className="p-4 bg-secondary/50 flex items-center justify-between">
-                <div className="text-sm text-right">
-                    <p className="text-muted-foreground text-xs">Payout</p>
-                    <p className="font-semibold text-primary">₹{earnings.toLocaleString('en-IN')}</p>
-                </div>
-                 {isOngoing ? (
-                    <Button variant="outline" size="sm" asChild>
-                        <Link href="#">
-                            Continue Testing <ArrowRight className="ml-2 h-4 w-4" />
-                        </Link>
-                    </Button>
-                ) : (
-                    <Button variant="default" size="sm">
-                        Apply
-                    </Button>
-                )}
-            </CardFooter>
+                </CardHeader>
+                <CardContent className="p-4 pt-0 flex-grow">
+                    {isOngoing && (
+                        <div className="w-full">
+                            <div className="flex justify-between items-center text-xs text-muted-foreground mb-1">
+                                <span>Progress</span>
+                                <span>Day {daysCompleted} / {project.totalDays}</span>
+                            </div>
+                            <Progress value={(daysCompleted / project.totalDays) * 100} className="h-2" />
+                        </div>
+                    )}
+                </CardContent>
+                <CardFooter className="p-4 bg-secondary/50 flex items-center justify-between">
+                    <div className="text-sm text-right">
+                        <p className="text-muted-foreground text-xs">Payout</p>
+                        <p className="font-semibold text-primary">₹{earnings.toLocaleString('en-IN')}</p>
+                    </div>
+                    {isOngoing ? (
+                        <Button variant="outline" size="sm" asChild>
+                            <Link href="#">
+                                Continue Testing <ArrowRight className="ml-2 h-4 w-4" />
+                            </Link>
+                        </Button>
+                    ) : (
+                        <Button variant="default" size="sm">
+                            Apply
+                        </Button>
+                    )}
+                </CardFooter>
+            </Link>
         </Card>
     );
 };
@@ -144,21 +146,9 @@ export default function ProfessionalProjectsPage() {
                 </TabsList>
 
                 <TabsContent value="ongoing">
-                    <CardHeader className="p-0 mb-4">
-                        <CardTitle>Ongoing Projects</CardTitle>
-                        <CardDescription>
-                          These are the projects currently assigned to you for testing.
-                        </CardDescription>
-                    </CardHeader>
                      <PaginatedProjectList projects={ongoingProjects} isOngoing={true} />
                 </TabsContent>
                 <TabsContent value="available">
-                     <CardHeader className="p-0 mb-4">
-                        <CardTitle>Available Projects</CardTitle>
-                        <CardDescription>
-                          New projects from companies looking for your expertise. Apply to get started.
-                        </CardDescription>
-                    </CardHeader>
                     <PaginatedProjectList projects={availableProjects} isOngoing={false} />
                 </TabsContent>
             </Tabs>

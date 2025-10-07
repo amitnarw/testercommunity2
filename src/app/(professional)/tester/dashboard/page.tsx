@@ -3,7 +3,7 @@
 
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, CheckCircle, Clock, DollarSign, Briefcase, Bell, Package } from "lucide-react";
+import { ArrowRight, CheckCircle, Clock, DollarSign, Briefcase, Bell, Package, Activity } from "lucide-react";
 import Link from 'next/link';
 import {
     ChartContainer,
@@ -123,8 +123,8 @@ export default function ProfessionalDashboardPage() {
                 </BentoCard>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-                <Card className="col-span-1 sm:col-span-2">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <Card className="col-span-1 lg:col-span-2">
                     <CardHeader>
                         <CardTitle>Earnings Overview</CardTitle>
                         <CardDescription>Your earnings for the last 6 months.</CardDescription>
@@ -144,8 +144,11 @@ export default function ProfessionalDashboardPage() {
                     </CardContent>
                 </Card>
                 <Card>
-                    <CardHeader>
+                    <CardHeader className="flex flex-row items-center justify-between">
                         <CardTitle>Recent Activity</CardTitle>
+                        <Button asChild variant="ghost" size="sm">
+                            <Link href="/professional/tester/activities">View All <ArrowRight className="ml-1 w-4 h-4" /></Link>
+                        </Button>
                     </CardHeader>
                     <CardContent>
                         <div className="flex flex-col gap-1.5">

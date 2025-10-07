@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/com
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { Download, CreditCard, Banknote } from "lucide-react";
+import { Download, CreditCard, Banknote, IndianRupee, Landmark } from "lucide-react";
 
 const earningsHistory = [
     { id: 'PAY-001', date: '2024-08-01', project: 'Nexus Browser', amount: 6000, status: 'Paid' },
@@ -22,7 +22,7 @@ export default function ProfessionalEarningsPage() {
                     <h2 className="text-3xl font-bold tracking-tight">Earnings</h2>
                     <p className="text-muted-foreground">Track your payouts and manage payment methods.</p>
                 </div>
-                <Button>
+                 <Button>
                     <Download className="mr-2 h-4 w-4" /> Download Statement
                 </Button>
             </div>
@@ -30,32 +30,33 @@ export default function ProfessionalEarningsPage() {
             <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
                 <Card>
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">Available for Payout</CardTitle>
+                        <CardTitle className="text-sm font-medium">Available for Withdrawal</CardTitle>
                         <Banknote className="h-4 w-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
                         <div className="text-2xl font-bold">₹5,000</div>
-                        <p className="text-xs text-muted-foreground">From Project Phoenix (In Progress)</p>
+                        <p className="text-xs text-muted-foreground">Ready for instant payout.</p>
+                         <Button size="sm" className="mt-4 w-full"><Landmark className="mr-2 h-4 w-4" /> Withdraw Funds</Button>
                     </CardContent>
                 </Card>
                 <Card>
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">Pending Payouts</CardTitle>
+                        <CardTitle className="text-sm font-medium">Pending Verification</CardTitle>
                         <Banknote className="h-4 w-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
                         <div className="text-2xl font-bold">₹7,500</div>
-                        <p className="text-xs text-muted-foreground">From 1 pending project</p>
+                        <p className="text-xs text-muted-foreground">From 1 ongoing project.</p>
                     </CardContent>
                 </Card>
                 <Card>
                     <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                        <CardTitle className="text-sm font-medium">Payment Method</CardTitle>
-                        <CreditCard className="h-4 w-4 text-muted-foreground" />
+                        <CardTitle className="text-sm font-medium">Lifetime Earnings</CardTitle>
+                        <IndianRupee className="h-4 w-4 text-muted-foreground" />
                     </CardHeader>
                     <CardContent>
-                        <div className="text-sm font-medium">Bank Account</div>
-                        <p className="text-xs text-muted-foreground">•••• •••• •••• 1234</p>
+                        <div className="text-2xl font-bold">₹4,52,310</div>
+                        <p className="text-xs text-muted-foreground">Total amount paid out.</p>
                     </CardContent>
                 </Card>
             </div>
