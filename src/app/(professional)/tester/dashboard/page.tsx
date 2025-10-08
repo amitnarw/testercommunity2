@@ -62,7 +62,7 @@ const BentoCard = ({ children, className }: { children: React.ReactNode, classNa
 
 export default function ProfessionalDashboardPage() {
     return (
-        <div className="flex-1 space-y-8 p-4 sm:p-8 pt-6">
+        <div className="flex-1 space-y-8 p-4 sm:p-8 pt-0 sm:pt-0">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between space-y-2">
                 <div>
                     <h2 className="text-2xl sm:text-4xl font-bold bg-gradient-to-br from-primary to-primary/40 bg-clip-text text-transparent leading-0">Tester Dashboard</h2>
@@ -147,7 +147,7 @@ export default function ProfessionalDashboardPage() {
                     <CardHeader className="flex flex-row items-center justify-between">
                         <CardTitle>Recent Activity</CardTitle>
                         <Button asChild variant="ghost" size="sm">
-                            <Link href="/professional/tester/activities">View All <ArrowRight className="ml-1 w-4 h-4" /></Link>
+                            <Link href="/tester/activities">View All <ArrowRight className="ml-1 w-4 h-4" /></Link>
                         </Button>
                     </CardHeader>
                     <CardContent>

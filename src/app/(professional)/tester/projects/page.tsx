@@ -24,7 +24,7 @@ const ProjectCard = ({ project, isOngoing }: { project: Project, isOngoing: bool
     const daysCompleted = Math.floor(project.totalDays * (project.testersCompleted / project.testersStarted));
 
     return (
-        <Card key={project.id} className="flex flex-col h-full overflow-hidden rounded-2xl transition-all duration-300 hover:shadow-lg hover:-translate-y-1 border">
+        <Card key={project.id} className="flex flex-col h-full overflow-hidden rounded-2xl transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
             <Link href={`/professional/tester/projects/${project.id}`}>
                 <CardHeader className="flex flex-row items-start gap-4 p-4">
                     <Avatar className="h-12 w-12">
@@ -47,7 +47,7 @@ const ProjectCard = ({ project, isOngoing }: { project: Project, isOngoing: bool
                         </div>
                     )}
                 </CardContent>
-                <CardFooter className="p-4 bg-secondary/50 flex items-center justify-between">
+                <CardFooter className="p-4 bg-gradient-to-t from-primary/20 to-primary/0 flex items-center justify-between">
                     <div className="text-sm text-right">
                         <p className="text-muted-foreground text-xs">Payout</p>
                         <p className="font-semibold text-primary">₹{earnings.toLocaleString('en-IN')}</p>
@@ -87,7 +87,7 @@ const PaginatedProjectList = ({ projects, isOngoing }: { projects: Project[], is
 
     return (
         <>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {currentProjects.map((project) => (
                 <ProjectCard key={project.id} project={project} isOngoing={isOngoing} />
               ))}
@@ -110,7 +110,7 @@ export default function ProfessionalProjectsPage() {
     ];
     
   return (
-    <div className="flex-1 space-y-8 p-4 sm:p-8 pt-6">
+    <div className="flex-1 space-y-8 p-4 sm:p-8 pt-0 sm:pt-0">
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between space-y-2">
         <div>
             <h2 className="text-3xl font-bold tracking-tight">Projects</h2>
@@ -118,8 +118,8 @@ export default function ProfessionalProjectsPage() {
         </div>
       </div>
       
-      <Card>
-        <CardContent className="p-6">
+      <div>
+        <CardContent className="p-0">
             <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
                 <TabsList className="relative grid w-full grid-cols-2 bg-muted p-1 rounded-lg h-auto mb-6">
                      {tabs.map((tab) => {
@@ -153,7 +153,7 @@ export default function ProfessionalProjectsPage() {
                 </TabsContent>
             </Tabs>
         </CardContent>
-      </Card>
+      </div>
     </div>
   );
 }
