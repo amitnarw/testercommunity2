@@ -16,7 +16,7 @@ const earningsHistory = [
 
 export default function ProfessionalEarningsPage() {
     return (
-        <div className="flex-1 space-y-8 p-4 sm:p-8 pt-6">
+        <div className="flex-1 space-y-8 p-4 sm:p-8 pt-0 sm:pt-0">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between space-y-2">
                 <div>
                     <h2 className="text-3xl font-bold tracking-tight">Earnings</h2>
