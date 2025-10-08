@@ -59,7 +59,7 @@ function ProjectDetailsClient({ project }: { project: Project }) {
 
             <div className="container px-4 md:px-6">
                 <div className="sticky top-0 z-[50] pt-2 sm:pt-3 pb-4 pl-0 xl:pl-8 w-1/2">
-                    <BackButton href="/professional/tester/projects" />
+                    <BackButton href="/tester/projects" />
                 </div>
 
                 <div className='max-w-7xl mx-auto'>

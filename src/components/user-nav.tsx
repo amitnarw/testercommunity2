@@ -55,9 +55,9 @@ export function UserNav({ onLogout }: UserNavProps) {
             return (
                  <DropdownMenuGroup>
                     <DropdownMenuLabel className="px-2 py-1.5 text-xs font-semibold text-muted-foreground">Pro Menu</DropdownMenuLabel>
-                    <Link href="/professional/tester/dashboard"><DropdownMenuItem className="h-10"><LayoutDashboard className="mr-2" /><span>Pro Dashboard</span></DropdownMenuItem></Link>
-                    <Link href="/professional/projects"><DropdownMenuItem className="h-10"><Briefcase className="mr-2" /><span>Projects</span></DropdownMenuItem></Link>
-                    <Link href="/professional/earnings"><DropdownMenuItem className="h-10"><DollarSign className="mr-2" /><span>Earnings</span></DropdownMenuItem></Link>
+                    <Link href="/tester/dashboard"><DropdownMenuItem className="h-10"><LayoutDashboard className="mr-2" /><span>Pro Dashboard</span></DropdownMenuItem></Link>
+                    <Link href="/projects"><DropdownMenuItem className="h-10"><Briefcase className="mr-2" /><span>Projects</span></DropdownMenuItem></Link>
+                    <Link href="/earnings"><DropdownMenuItem className="h-10"><DollarSign className="mr-2" /><span>Earnings</span></DropdownMenuItem></Link>
                 </DropdownMenuGroup>
             )
         }

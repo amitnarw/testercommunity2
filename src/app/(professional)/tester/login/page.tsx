@@ -29,7 +29,7 @@ const ProLoginForm = () => {
         e.preventDefault();
         // In a real app, you would verify credentials here
         document.cookie = "isProfessionalAuthenticated=true; path=/; max-age=" + 60 * 60 * 24 * 7;
-        router.push('/professional/tester/dashboard');
+        router.push('/tester/dashboard');
     }
     
      const handleGoogleLogin = () => {
@@ -38,7 +38,7 @@ const ProLoginForm = () => {
         document.cookie = `user_name=Pro Tester; path=/; max-age=${60 * 60 * 24 * 7}`;
         document.cookie = `user_email=pro.tester@gmail.com; path=/; max-age=${60 * 60 * 24 * 7}`;
         document.cookie = `user_avatar=https://images.unsplash.com/photo-1527982987257-d3abc440f2ba?q=80&w=400&auto=format=fit=crop; path=/; max-age=${60 * 60 * 24 * 7}`;
-        router.push('/professional/tester/dashboard');
+        router.push('/tester/dashboard');
     }
 
     return (

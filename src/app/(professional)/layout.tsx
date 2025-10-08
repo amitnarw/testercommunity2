@@ -28,7 +28,7 @@ export default function ProfessionalLayout({
       router.replace('/tester/login');
     }
      if (authStatus && (pathname === '/tester/login' || pathname === '/tester/register')) {
-      router.replace('/professional/tester/dashboard');
+      router.replace('/tester/dashboard');
     }
   }, [pathname, router]);
   

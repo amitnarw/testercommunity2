@@ -25,7 +25,7 @@ const ProjectCard = ({ project, isOngoing }: { project: Project, isOngoing: bool
 
     return (
         <Card key={project.id} className="flex flex-col h-full overflow-hidden rounded-2xl transition-all duration-300 hover:shadow-lg hover:-translate-y-1">
-            <Link href={`/professional/tester/projects/${project.id}`}>
+            <Link href={`/tester/projects/${project.id}`}>
                 <CardHeader className="flex flex-row items-start gap-4 p-4">
                     <Avatar className="h-12 w-12">
                         <AvatarImage src={project.icon} data-ai-hint={project.dataAiHint} />

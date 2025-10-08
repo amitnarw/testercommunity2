@@ -113,7 +113,7 @@ export default function ProfessionalDashboardPage() {
                         </CardContent>
                     </Card>
                     <Button asChild className="h-full w-full">
-                        <Link href="/professional/tester/projects" className="flex flex-col gap-2">
+                        <Link href="/tester/projects" className="flex flex-col gap-2">
                             <div className="rounded-full bg-card p-2 !h-9 !w-9 sm:!h-12 sm:!w-12 flex items-center justify-center">
                                 <Briefcase className="text-primary" size={30} />
                             </div>
