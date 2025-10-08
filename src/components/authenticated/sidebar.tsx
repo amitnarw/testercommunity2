@@ -4,7 +4,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { LayoutDashboard, Users2, LogOut, Bell, ChevronRight, ChevronLeft, Briefcase, DollarSign, LifeBuoy, FileCheck, House, Users, UserPlus, MessageSquare, Lightbulb } from "lucide-react";
+import { LayoutDashboard, Users2, LogOut, Bell, ChevronRight, ChevronLeft, Briefcase, DollarSign, LifeBuoy, FileCheck, House, Users, UserPlus, MessageSquare, Lightbulb, Activity } from "lucide-react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "../ui/tooltip";
 import { InTestersLogoShortHeader } from "../icons";
 
@@ -15,10 +15,11 @@ const mainNavLinks = [
 ];
 
 const proNavLinks = [
-    { name: "Pro Dashboard", href: "/professional/tester/dashboard", icon: LayoutDashboard },
-    { name: "Projects", href: "/professional/projects", icon: Briefcase },
-    { name: "Earnings", href: "/professional/earnings", icon: DollarSign },
-    { name: "Support", href: "/professional/support", icon: LifeBuoy },
+    { name: "Pro Dashboard", href: "/tester/dashboard", icon: LayoutDashboard },
+    { name: "Projects", href: "/tester/projects", icon: Briefcase },
+    { name: "Earnings", href: "/tester/earnings", icon: DollarSign },
+    { name: "Activities", href: "/tester/activities", icon: Activity },
+    { name: "Support", href: "/tester/support", icon: LifeBuoy },
 ];
 
 const adminNavLinks = [
@@ -68,7 +69,7 @@ export function Sidebar({ onLogout, isCollapsed, setIsCollapsed }: SidebarProps)
     let navLinks = mainNavLinks;
     if (pathname.startsWith('/admin')) {
         navLinks = adminNavLinks;
-    } else if (pathname.startsWith('/professional')) {
+    } else if (pathname.startsWith('/tester')) {
         navLinks = proNavLinks;
     }
 

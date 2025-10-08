@@ -17,10 +17,10 @@ const mainNavItems = [
 ];
 
 const proNavItems = [
-    { name: 'Pro Dashboard', href: '/professional/tester/dashboard', icon: LayoutDashboard },
-    { name: 'Projects', href: '/professional/projects', icon: Briefcase },
-    { name: 'Earnings', href: '/professional/earnings', icon: DollarSign },
-    { name: 'Support', href: '/professional/support', icon: LifeBuoy },
+    { name: 'Pro Dashboard', href: '/tester/tester/dashboard', icon: LayoutDashboard },
+    { name: 'Projects', href: '/tester/projects', icon: Briefcase },
+    { name: 'Earnings', href: '/tester/earnings', icon: DollarSign },
+    { name: 'Support', href: '/tester/support', icon: LifeBuoy },
 ];
 
 const adminNavItems = [
@@ -41,11 +41,11 @@ export default function MobileMenu({ isMenuOpen, setIsMenuOpen, onLogout }: {
     let navItems = mainNavItems;
     if (pathname.startsWith('/admin')) {
         navItems = adminNavItems;
-    } else if (pathname.startsWith('/professional')) {
+    } else if (pathname.startsWith('/tester')) {
         navItems = proNavItems;
     }
 
-    const isAuthenticated = !pathname.startsWith('/login') && !pathname.startsWith('/signup') && !pathname.startsWith('/professional/login') && !pathname.startsWith('/professional/register');
+    const isAuthenticated = !pathname.startsWith('/login') && !pathname.startsWith('/signup') && !pathname.startsWith('/tester/login') && !pathname.startsWith('/tester/register');
 
     const publicNavItems = [
         { name: 'Home', href: '/' },
