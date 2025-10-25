@@ -80,7 +80,7 @@ const PaginatedProjectList = ({ projects, isOngoing }: { projects: Project[], is
         if (page < 1 || page > totalPages) return;
         setCurrentPage(page);
     };
-    
+
     if (projects.length === 0) {
         return <p className="text-muted-foreground text-center py-8">No projects in this category.</p>
     }
@@ -88,9 +88,9 @@ const PaginatedProjectList = ({ projects, isOngoing }: { projects: Project[], is
     return (
         <>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {currentProjects.map((project) => (
-                <ProjectCard key={project.id} project={project} isOngoing={isOngoing} />
-              ))}
+                {currentProjects.map((project) => (
+                    <ProjectCard key={project.id} project={project} isOngoing={isOngoing} />
+                ))}
             </div>
             <AppPagination
                 currentPage={currentPage}
@@ -108,52 +108,52 @@ export default function ProfessionalProjectsPage() {
         { label: 'Ongoing', value: 'ongoing', count: ongoingProjects.length },
         { label: 'Available', value: 'available', count: availableProjects.length },
     ];
-    
-  return (
-    <div className="flex-1 space-y-8 p-4 sm:p-8 pt-0 sm:pt-0">
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between space-y-2">
-        <div>
-            <h2 className="text-3xl font-bold tracking-tight">Projects</h2>
-            <p className="text-muted-foreground">Manage your assigned projects and find new opportunities.</p>
-        </div>
-      </div>
-      
-      <div>
-        <CardContent className="p-0">
-            <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-                <TabsList className="relative grid w-full grid-cols-2 bg-muted p-1 rounded-lg h-auto mb-6">
-                     {tabs.map((tab) => {
-                        const isSelected = activeTab === tab.value;
-                        return (
-                            <TabsTrigger
-                                key={tab.value}
-                                value={tab.value}
-                                className={`relative px-3 py-2 text-xs sm:text-sm font-medium rounded-lg transition-colors duration-200 ${isSelected ? 'text-foreground' : 'hover:bg-background/50'}`}
-                            >
-                                {isSelected && (
-                                    <motion.span
-                                        layoutId="pro-project-bubble"
-                                        className="absolute inset-0 z-10 bg-background rounded-lg"
-                                        transition={{ type: 'spring', bounce: 0.2, duration: 0.6 }}
-                                    />
-                                )}
-                                <span className="relative z-20">
-                                    {tab.label} ({tab.count})
-                                </span>
-                            </TabsTrigger>
-                        );
-                    })}
-                </TabsList>
 
-                <TabsContent value="ongoing">
-                     <PaginatedProjectList projects={ongoingProjects} isOngoing={true} />
-                </TabsContent>
-                <TabsContent value="available">
-                    <PaginatedProjectList projects={availableProjects} isOngoing={false} />
-                </TabsContent>
-            </Tabs>
-        </CardContent>
-      </div>
-    </div>
-  );
+    return (
+        <div className="flex-1 space-y-8 p-4 sm:p-8 pt-0 sm:pt-0">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between space-y-2">
+                <div>
+                    <h2 className="text-2xl sm:text-4xl font-bold bg-gradient-to-b from-primary to-primary/40 bg-clip-text text-transparent leading-0 pb-[2px]">Projects</h2>
+                    <p className="text-muted-foreground">Manage your assigned projects and find new opportunities.</p>
+                </div>
+            </div>
+
+            <div>
+                <CardContent className="p-0">
+                    <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+                        <TabsList className="relative grid w-full grid-cols-2 bg-muted p-1 rounded-lg h-auto mb-6">
+                            {tabs.map((tab) => {
+                                const isSelected = activeTab === tab.value;
+                                return (
+                                    <TabsTrigger
+                                        key={tab.value}
+                                        value={tab.value}
+                                        className={`relative px-3 py-2 text-xs sm:text-sm font-medium rounded-lg transition-colors duration-200 ${isSelected ? 'text-foreground' : 'hover:bg-background/50'}`}
+                                    >
+                                        {isSelected && (
+                                            <motion.span
+                                                layoutId="pro-project-bubble"
+                                                className="absolute inset-0 z-10 bg-background rounded-lg"
+                                                transition={{ type: 'spring', bounce: 0.2, duration: 0.6 }}
+                                            />
+                                        )}
+                                        <span className="relative z-20">
+                                            {tab.label} ({tab.count})
+                                        </span>
+                                    </TabsTrigger>
+                                );
+                            })}
+                        </TabsList>
+
+                        <TabsContent value="ongoing">
+                            <PaginatedProjectList projects={ongoingProjects} isOngoing={true} />
+                        </TabsContent>
+                        <TabsContent value="available">
+                            <PaginatedProjectList projects={availableProjects} isOngoing={false} />
+                        </TabsContent>
+                    </Tabs>
+                </CardContent>
+            </div>
+        </div>
+    );
 }

@@ -15,7 +15,7 @@ const mainNavLinks = [
 ];
 
 const proNavLinks = [
-    { name: "Pro Dashboard", href: "/tester/dashboard", icon: LayoutDashboard },
+    { name: "Dashboard", href: "/tester/dashboard", icon: LayoutDashboard },
     { name: "Projects", href: "/tester/projects", icon: Briefcase },
     { name: "Earnings", href: "/tester/earnings", icon: DollarSign },
     { name: "Activities", href: "/tester/activities", icon: Activity },
