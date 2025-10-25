@@ -18,6 +18,7 @@ import Confetti from 'react-dom-confetti';
 import { useInView } from 'react-intersection-observer';
 import { Progress } from '@/components/ui/progress';
 import { SubmittedFeedback } from '@/components/dashboard/submitted-feedback';
+import { cn } from '@/lib/utils';
 
 const getStatusConfig = (status: string) => {
     switch (status) {
@@ -37,6 +38,8 @@ const getStatusConfig = (status: string) => {
 
 function ProjectDetailsClient({ project }: { project: Project }) {
     const [fullscreenImage, setFullscreenImage] = useState<string | null>(null);
+    const [rating, setRating] = useState(0);
+    const [hoverRating, setHoverRating] = useState(0);
 
     const { ref: confettiTriggerRef, inView: confettiInView } = useInView({
         threshold: 0.5,
@@ -90,6 +93,32 @@ function ProjectDetailsClient({ project }: { project: Project }) {
                             </CardContent>
                         </Card>
                     </div>
+
+                    <Card className="mt-6">
+                        <CardHeader>
+                            <CardTitle className="text-sm font-medium">Your Overall Rating</CardTitle>
+                            <CardDescription>Give your overall rating for this application.</CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                            <div className="flex items-center gap-2">
+                                {[...Array(5)].map((_, i) => {
+                                    const ratingValue = i + 1;
+                                    return (
+                                        <Star
+                                            key={ratingValue}
+                                            className={cn(
+                                                "w-8 h-8 cursor-pointer transition-colors",
+                                                ratingValue <= (hoverRating || rating) ? "text-amber-400 fill-amber-400" : "text-muted-foreground/50"
+                                            )}
+                                            onClick={() => setRating(ratingValue)}
+                                            onMouseEnter={() => setHoverRating(ratingValue)}
+                                            onMouseLeave={() => setHoverRating(0)}
+                                        />
+                                    );
+                                })}
+                            </div>
+                        </CardContent>
+                    </Card>
 
                     <DeveloperInstructions title='Testing Instructions' instruction={project.testingInstructions} mt={8} />
 
