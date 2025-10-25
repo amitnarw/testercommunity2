@@ -17,6 +17,7 @@ import DeveloperInstructions from '@/components/developerInstructions';
 import Confetti from 'react-dom-confetti';
 import { useInView } from 'react-intersection-observer';
 import { Progress } from '@/components/ui/progress';
+import { SubmittedFeedback } from '@/components/dashboard/submitted-feedback';
 
 const getStatusConfig = (status: string) => {
     switch (status) {
@@ -93,7 +94,7 @@ function ProjectDetailsClient({ project }: { project: Project }) {
                     <DeveloperInstructions title='Testing Instructions' instruction={project.testingInstructions} mt={8} />
 
                      <div className="mt-8">
-                        <Button className="w-full" size="lg">Submit Feedback</Button>
+                        <SubmittedFeedback isTester />
                     </div>
                 </div>
 
