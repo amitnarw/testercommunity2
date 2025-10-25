@@ -64,7 +64,7 @@ function ProjectDetailsClient({ project }: { project: Project }) {
                 </div>
 
                 <div className='max-w-7xl mx-auto'>
-                    <AppInfoHeader logo={project.icon} name={project.name} dataAiHint={project.dataAiHint} category={project.category} description={project.description} status={project.status} statusConfig={statusConfig} />
+                    <AppInfoHeader logo={project.icon} name={project.name} dataAiHint={project.dataAiHint} category={project.category} description={project.description} statusConfig={statusConfig} />
 
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
                         <Card>
