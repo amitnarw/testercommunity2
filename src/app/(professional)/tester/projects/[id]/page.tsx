@@ -19,6 +19,7 @@ import { useInView } from 'react-intersection-observer';
 import { Progress } from '@/components/ui/progress';
 import { SubmittedFeedback } from '@/components/dashboard/submitted-feedback';
 import { cn } from '@/lib/utils';
+import { copyToClipboard } from '@/components/copy-clipboard';
 
 const getStatusConfig = (status: string) => {
     switch (status) {
@@ -69,22 +70,47 @@ function ProjectDetailsClient({ project }: { project: Project }) {
                 <div className='max-w-7xl mx-auto'>
                     <AppInfoHeader logo={project.icon} name={project.name} dataAiHint={project.dataAiHint} category={project.category} description={project.description} statusConfig={statusConfig} />
 
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
-                        <Card>
-                            <CardHeader>
-                                <CardTitle className="text-sm font-medium">Project Payout</CardTitle>
-                            </CardHeader>
-                             <CardContent>
-                                <div className="text-3xl font-bold text-primary">₹{earnings.toLocaleString('en-IN')}</div>
-                                <p className="text-xs text-muted-foreground">Upon successful completion</p>
-                            </CardContent>
-                        </Card>
-                         <Card className="md:col-span-2">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-7 gap-4 mt-8">
+                        <div className='grid grid-cols-1 sm:grid-cols-2 gap-4 md:col-span-3'>
+                            <Card className='shadow-none bg-gradient-to-tr from-primary to-primary/60'>
+                                <CardHeader>
+                                    <CardTitle className="text-sm font-medium text-white">Project Payout</CardTitle>
+                                </CardHeader>
+                                <CardContent>
+                                    <div className="text-3xl font-bold text-white">₹{earnings.toLocaleString('en-IN')}</div>
+                                    <p className="text-xs text-white/80">Upon successful completion</p>
+                                </CardContent>
+                            </Card>
+                            <section className='flex flex-col items-center rounded-2xl bg-card text-card-foreground p-3'>
+                                <div className="flex items-center gap-3 mb-3">
+                                    <h3 className="text-sm text-center w-full">App Information</h3>
+                                </div>
+                                <div className='flex flex-col items-center justify-center h-full space-y-3 text-sm w-full'>
+                                    <div className="flex flex-col items-center justify-between">
+                                        <span className="text-xs text-muted-foreground">Package Name</span>
+                                        <span className="font-mono text-primary break-all">{project.packageName}</span>
+                                    </div>
+                                    <div className="flex flex-col items-start gap-2 w-full">
+                                        <div className="flex flex-row gap-2 w-full">
+                                            <Button variant="outline" size="sm" className="flex-1 py-1.5" onClick={() => copyToClipboard(`https://play.google.com/store/apps/details?id=${project.packageName}`)}>
+                                                <Copy className="!h-3 !w-3" /> <span className="hidden sm:block text-xs">Copy</span>
+                                            </Button>
+                                            <Button variant="outline" size="sm" className="flex-1 py-1.5" asChild>
+                                                <a href={`https://play.google.com/store/apps/details?id=${project.packageName}`} target="_blank" rel="noopener noreferrer">
+                                                    <ExternalLink className="!h-3 !w-3" /> <span className="hidden sm:block text-xs">Open</span>
+                                                </a>
+                                            </Button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </section>
+                        </div>
+                        <Card className='md:col-span-2 shadow-none'>
                             <CardHeader>
                                 <CardTitle className="text-sm font-medium">Testing Progress</CardTitle>
                             </CardHeader>
-                             <CardContent>
-                                 <div className="flex justify-between items-center text-xs text-muted-foreground mb-1">
+                            <CardContent>
+                                <div className="flex justify-between items-center text-xs text-muted-foreground mb-1">
                                     <span>Progress</span>
                                     <span>Day {daysCompleted} / {project.totalDays}</span>
                                 </div>
@@ -92,42 +118,42 @@ function ProjectDetailsClient({ project }: { project: Project }) {
                                 <p className="text-xs text-muted-foreground mt-2">{project.totalDays - daysCompleted} days remaining in test cycle.</p>
                             </CardContent>
                         </Card>
+                        <Card className='overflow-hidden md:col-span-2 shadow-none'>
+                            <CardHeader>
+                                <CardTitle className="text-sm font-medium">Your Overall Rating</CardTitle>
+                                <CardDescription>Give your overall rating for this application.</CardDescription>
+                            </CardHeader>
+                            <CardContent className='flex flex-row gap-5 items-center'>
+                                <div className="flex items-center gap-2">
+                                    {[...Array(5)].map((_, i) => {
+                                        const ratingValue = i + 1;
+                                        return (
+                                            <Star
+                                                key={ratingValue}
+                                                className={cn(
+                                                    "w-7 h-7 cursor-pointer transition-colors",
+                                                    ratingValue <= (hoverRating || rating) ? "text-amber-400 fill-amber-400" : "text-muted-foreground/50"
+                                                )}
+                                                onClick={() => setRating(ratingValue)}
+                                                onMouseEnter={() => setHoverRating(ratingValue)}
+                                                onMouseLeave={() => setHoverRating(0)}
+                                            />
+                                        );
+                                    })}
+                                </div>
+                                <span className='text-xl text-muted-foreground'>{rating?.toFixed(1)}</span>
+                            </CardContent>
+                        </Card>
                     </div>
 
-                    <Card className="mt-6">
-                        <CardHeader>
-                            <CardTitle className="text-sm font-medium">Your Overall Rating</CardTitle>
-                            <CardDescription>Give your overall rating for this application.</CardDescription>
-                        </CardHeader>
-                        <CardContent>
-                            <div className="flex items-center gap-2">
-                                {[...Array(5)].map((_, i) => {
-                                    const ratingValue = i + 1;
-                                    return (
-                                        <Star
-                                            key={ratingValue}
-                                            className={cn(
-                                                "w-8 h-8 cursor-pointer transition-colors",
-                                                ratingValue <= (hoverRating || rating) ? "text-amber-400 fill-amber-400" : "text-muted-foreground/50"
-                                            )}
-                                            onClick={() => setRating(ratingValue)}
-                                            onMouseEnter={() => setHoverRating(ratingValue)}
-                                            onMouseLeave={() => setHoverRating(0)}
-                                        />
-                                    );
-                                })}
-                            </div>
-                        </CardContent>
-                    </Card>
+                    <DeveloperInstructions title='Testing Instructions' instruction={project.testingInstructions} mt={20} />
 
-                    <DeveloperInstructions title='Testing Instructions' instruction={project.testingInstructions} mt={8} />
-
-                     <div className="mt-8">
+                    <div className="mt-10">
                         <SubmittedFeedback isTester />
                     </div>
                 </div>
 
-                 {fullscreenImage && (
+                {fullscreenImage && (
                     <div
                         className="fixed inset-0 bg-black/80 z-[60] flex items-center justify-center p-4 animate-in fade-in-0"
                         onClick={() => setFullscreenImage(null)}
