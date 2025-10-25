@@ -1230,32 +1230,41 @@ export const projects: Project[] = [
       },
       testers: generateTesters(25),
     },
-    ...communityApps.map(app => {
-      const isCompleted = app.status === 'completed';
-      const isOngoing = app.status === 'ongoing';
-      const testersCompleted = isCompleted ? 15 + (app.id % 5) : (isOngoing ? 5 + (app.id % 5) : 0);
-      const testersStarted = testersCompleted + (isOngoing ? 5 : 0) + (app.status === 'available' ? 2 : 0)
+    ...[
+        { id: 101, status: 'In Testing', name: 'Todoist' },
+        { id: 109, status: 'In Testing', name: 'Netflix' },
+        { id: 115, status: 'In Testing', name: 'Google Photos' },
+        { id: 122, status: 'In Testing', name: 'Microsoft OneDrive' },
+        { id: 127, status: 'In Testing', name: 'Telegram' },
+        { id: 102, status: 'In Testing', name: 'Brawl Stars' },
+        { id: 103, status: 'In Testing', name: 'AccuWeather' },
+    ].map((override, index) => {
+      const baseApp = communityApps.find(app => app.name === override.name) || communityApps[index % communityApps.length];
+      const isCompleted = override.status === 'Completed';
+      const isOngoing = override.status === 'In Testing';
+      const testersCompleted = isCompleted ? 15 + (override.id % 5) : (isOngoing ? 5 + (override.id % 5) : 0);
+      const testersStarted = testersCompleted + (isOngoing ? 5 : 0) + (override.status === 'In Review' ? 2 : 0)
       return {
-        id: app.id + 100, // Use a high offset to avoid ID conflicts
-        name: app.name,
-        packageName: `com.example.${app.name.toLowerCase().replace(/[^a-z0-9]/g, '')}`,
-        icon: app.icon,
-        dataAiHint: app.dataAiHint,
-        category: app.category,
-        status: isCompleted ? "Completed" : (isOngoing ? "In Testing" : "In Review"),
+        id: override.id,
+        name: baseApp.name,
+        packageName: `com.example.${baseApp.name.toLowerCase().replace(/[^a-z0-9]/g, '')}`,
+        icon: baseApp.icon,
+        dataAiHint: baseApp.dataAiHint,
+        category: baseApp.category,
+        status: override.status as "In Testing" | "Completed" | "In Review" | "Draft" | "Rejected",
         testersStarted: testersStarted,
         testersCompleted: testersCompleted,
-        totalDays: app.totalDays,
-        avgTestersPerDay: (testersStarted / app.totalDays),
+        totalDays: baseApp.totalDays,
+        avgTestersPerDay: (testersStarted / baseApp.totalDays),
         startedFrom: "15 Aug 2024",
-        description: app.shortDescription,
-        testingInstructions: app.testingInstructions,
-        androidVersion: app.androidVersion,
+        description: baseApp.shortDescription,
+        testingInstructions: baseApp.testingInstructions,
+        androidVersion: baseApp.androidVersion,
         pointsCost: testersStarted * 80,
-        crashFreeRate: 99.5 - (app.id % 10)/10,
-        overallRating: 4.0 + (app.id % 10)/10,
+        crashFreeRate: 99.5 - (override.id % 10)/10,
+        overallRating: 4.0 + (override.id % 10)/10,
         feedbackBreakdown: { total: testersCompleted * 3, critical: Math.floor(testersCompleted/5), high: Math.floor(testersCompleted/3), low: testersCompleted * 2 },
-        performanceMetrics: { avgStartupTime: `${300 + (app.id % 10) * 10}ms`, frozenFrames: `0.${app.id % 10}%` },
+        performanceMetrics: { avgStartupTime: `${300 + (override.id % 10) * 10}ms`, frozenFrames: `0.${override.id % 10}%` },
         deviceCoverage: [
           { device: "Google Pixel", testers: Math.floor(testersStarted / 2) },
           { device: "Samsung Galaxy", testers: Math.floor(testersStarted / 3) },
@@ -1270,9 +1279,9 @@ export const projects: Project[] = [
             { country: "India", testers: Math.floor(testersStarted / 4), flag: "🇮🇳" },
             { country: "Germany", testers: Math.floor(testersStarted / 4), flag: "🇩🇪" },
         ],
-        feedback: generateFeedback(app.name),
+        feedback: generateFeedback(baseApp.name),
         chartData: generateChartData(testersCompleted),
-        reviewNotes: app.status === 'available' ? "Pending tester availability." : undefined,
+        reviewNotes: override.status === 'In Review' ? "Pending tester availability." : undefined,
         testers: generateTesters(testersStarted),
       }
     })
@@ -1290,6 +1299,7 @@ export const projects: Project[] = [
     
 
     
+
 
 
 
