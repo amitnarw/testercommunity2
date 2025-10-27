@@ -2,8 +2,8 @@ import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
 import { Bug, Copy, ExternalLink, Lightbulb, PartyPopper, Star } from "lucide-react";
 import { Button } from "../ui/button";
-import { toast } from '@/hooks/use-toast';
 import { Project } from "@/lib/types";
+import { copyToClipboard } from "../copy-clipboard";
 
 
 const InfoCard = ({ title, children, className }: { title: string, children: React.ReactNode, className?: string }) => (
@@ -21,14 +21,6 @@ const InfoCard = ({ title, children, className }: { title: string, children: Rea
         </div>
     </motion.div>
 );
-
-const copyToClipboard = (text: string) => {
-    navigator.clipboard.writeText(text);
-    toast({
-        title: "Copied to clipboard!",
-        description: text,
-    })
-}
 
 export default function InfoBar({project, isUnderReviewOrRejected, feedbackBreakdown }: {project: Project, isUnderReviewOrRejected: boolean, feedbackBreakdown: {
     bugs: number;

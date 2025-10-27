@@ -35,7 +35,7 @@ export function UserNav({ onLogout }: UserNavProps) {
 
 
     const isAdmin = pathname.startsWith('/admin');
-    const isPro = pathname.startsWith('/professional');
+    const isPro = pathname.startsWith('/tester');
 
     const getNavLinks = () => {
         if (isAdmin) {
@@ -54,8 +54,8 @@ export function UserNav({ onLogout }: UserNavProps) {
         if (isPro) {
             return (
                  <DropdownMenuGroup>
-                    <DropdownMenuLabel className="px-2 py-1.5 text-xs font-semibold text-muted-foreground">Pro Menu</DropdownMenuLabel>
-                    <Link href="/tester/dashboard"><DropdownMenuItem className="h-10"><LayoutDashboard className="mr-2" /><span>Pro Dashboard</span></DropdownMenuItem></Link>
+                    <DropdownMenuLabel className="px-2 py-1.5 text-xs font-semibold text-muted-foreground">Menu</DropdownMenuLabel>
+                    <Link href="/tester/dashboard"><DropdownMenuItem className="h-10"><LayoutDashboard className="mr-2" /><span>Dashboard</span></DropdownMenuItem></Link>
                     <Link href="/projects"><DropdownMenuItem className="h-10"><Briefcase className="mr-2" /><span>Projects</span></DropdownMenuItem></Link>
                     <Link href="/earnings"><DropdownMenuItem className="h-10"><DollarSign className="mr-2" /><span>Earnings</span></DropdownMenuItem></Link>
                 </DropdownMenuGroup>
