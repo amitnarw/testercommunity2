@@ -11,6 +11,7 @@ import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuLab
 import { Search, MoreHorizontal } from "lucide-react";
 import Link from 'next/link';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { AppPagination } from '@/components/app-pagination';
 
 const submissions = [
     { id: 1, name: "QuantumLeap CRM", developer: "Stark Industries", date: "2024-08-15", status: "In Review", type: "Community" },
@@ -19,12 +20,39 @@ const submissions = [
     { id: 4, name: "Odyssey Social", developer: "Globex Corporation", date: "2024-08-11", status: "Approved", type: "Professional" },
     { id: 5, name: "Starlight Editor", developer: "Oscorp", date: "2024-08-10", status: "In Review", type: "Community" },
     { id: 6, name: "Helios Platform", developer: "Tyrell Corporation", date: "2024-08-09", status: "Approved", type: "Community" },
+    { id: 7, name: "Aperture Notes", developer: "Aperture Science", date: "2024-08-08", status: "In Review", type: "Professional" },
+    { id: 8, name: "Black Mesa OS", developer: "Black Mesa", date: "2024-08-07", status: "Rejected", type: "Community" },
+    { id: 9, name: "Blue Sun CRM", developer: "Blue Sun Corp", date: "2024-08-06", status: "Approved", type: "Professional" },
+    { id: 10, name: "Weyland-Yutani Suite", developer: "Weyland-Yutani", date: "2024-08-05", status: "In Review", type: "Community" },
+    { id: 11, name: "Virtucon Scheduler", developer: "Virtucon", date: "2024-08-04", status: "Approved", type: "Community" },
+    { id: 12, name: "Soylent Green Delivery", developer: "Soylent Corp", date: "2024-08-03", status: "In Review", type: "Professional" },
+    { id: 13, name: "InGen DB", developer: "InGen", date: "2024-08-02", status: "Rejected", type: "Community" },
+    { id: 14, name: "Roxxon Energy Tracker", developer: "Roxxon Corp", date: "2024-08-01", status: "Approved", type: "Professional" },
+    { id: 15, name: "Massive Dynamic Tools", developer: "Massive Dynamic", date: "2024-07-31", status: "In Review", type: "Community" },
 ];
+
+const ITEMS_PER_PAGE = 8;
 
 export default function AdminSubmissionsPage() {
     const [filter, setFilter] = useState('All');
+    const [currentPage, setCurrentPage] = useState(1);
 
     const filteredSubmissions = submissions.filter(s => filter === 'All' || s.status === filter);
+    const totalPages = Math.ceil(filteredSubmissions.length / ITEMS_PER_PAGE);
+
+    const paginatedSubmissions = filteredSubmissions.slice(
+        (currentPage - 1) * ITEMS_PER_PAGE,
+        currentPage * ITEMS_PER_PAGE
+    );
+    
+    const handlePageChange = (page: number) => {
+        setCurrentPage(page);
+    };
+
+    const handleFilterChange = (value: string) => {
+        setFilter(value);
+        setCurrentPage(1);
+    }
 
     return (
         <div className="flex-1 space-y-8 p-4 sm:p-8 pt-6">
@@ -42,7 +70,7 @@ export default function AdminSubmissionsPage() {
                             <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
                             <Input placeholder="Search submissions..." className="pl-8 w-full md:w-[300px]" />
                         </div>
-                         <Tabs defaultValue="All" onValueChange={setFilter} className="w-full md:w-auto">
+                         <Tabs defaultValue="All" onValueChange={handleFilterChange} className="w-full md:w-auto">
                             <TabsList className="grid w-full grid-cols-4">
                                 <TabsTrigger value="All">All</TabsTrigger>
                                 <TabsTrigger value="In Review">Pending</TabsTrigger>
@@ -65,7 +93,7 @@ export default function AdminSubmissionsPage() {
                             </TableRow>
                         </TableHeader>
                         <TableBody>
-                            {filteredSubmissions.map(submission => (
+                            {paginatedSubmissions.map(submission => (
                                 <TableRow key={submission.id}>
                                     <TableCell className="font-medium">{submission.name}</TableCell>
                                     <TableCell className="hidden sm:table-cell">{submission.developer}</TableCell>
@@ -106,6 +134,7 @@ export default function AdminSubmissionsPage() {
                     </Table>
                 </CardContent>
             </Card>
+            <AppPagination currentPage={currentPage} totalPages={totalPages} onPageChange={handlePageChange} />
         </div>
     );
 }

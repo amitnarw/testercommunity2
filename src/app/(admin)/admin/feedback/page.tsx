@@ -10,6 +10,7 @@ import { Input } from "@/components/ui/input";
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuLabel, DropdownMenuItem, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
 import { Search, MoreHorizontal, MessageSquare, PlusCircle } from "lucide-react";
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { AppPagination } from '@/components/app-pagination';
 
 const feedbackItems = [
     { id: 1, user: "Peter Parker", role: "Tester", feedback: "The dashboard loading speed is a bit slow on mobile.", date: "2024-08-20", status: "New" },
@@ -22,11 +23,35 @@ const feedbackItems = [
     { id: 8, user: "Arthur Curry", role: "Tester", feedback: "I can't seem to find where to edit my device list.", date: "2024-08-13", status: "Under Review" },
     { id: 9, user: "Hal Jordan", role: "Developer", feedback: "An option to duplicate a past submission would save a lot of time.", date: "2024-08-12", status: "New" },
     { id: 10, user: "Victor Stone", role: "Tester", feedback: "The bug reporting form should allow video attachments.", date: "2024-08-11", status: "Implemented" },
+    { id: 11, user: "Reed Richards", role: "Developer", feedback: "Platform feels snappy and responsive. Great job!", date: "2024-08-10", status: "Reviewed" },
+    { id: 12, user: "Sue Storm", role: "Tester", feedback: "The color contrast in light mode could be improved for accessibility.", date: "2024-08-09", status: "New" },
+    { id: 13, user: "Johnny Storm", role: "Tester", feedback: "More gamification elements would be awesome, like badges for streaks.", date: "2024-08-08", status: "Under Review" },
+    { id: 14, user: "Ben Grimm", role: "Developer", feedback: "Rock solid platform. No complaints.", date: "2024-08-07", status: "Reviewed" },
 ];
+
+const ITEMS_PER_PAGE = 7;
 
 export default function AdminFeedbackPage() {
     const [filter, setFilter] = useState('All');
+    const [currentPage, setCurrentPage] = useState(1);
+    
     const filteredFeedback = feedbackItems.filter(f => filter === 'All' || f.status === filter);
+    
+    const totalPages = Math.ceil(filteredFeedback.length / ITEMS_PER_PAGE);
+
+    const paginatedFeedback = filteredFeedback.slice(
+        (currentPage - 1) * ITEMS_PER_PAGE,
+        currentPage * ITEMS_PER_PAGE
+    );
+    
+    const handlePageChange = (page: number) => {
+        setCurrentPage(page);
+    };
+
+    const handleFilterChange = (value: string) => {
+        setFilter(value);
+        setCurrentPage(1);
+    }
 
     return (
         <div className="flex-1 space-y-8 p-4 sm:p-8 pt-6">
@@ -47,7 +72,7 @@ export default function AdminFeedbackPage() {
                             <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
                             <Input placeholder="Search feedback..." className="pl-8 w-full md:w-[300px]" />
                         </div>
-                        <Tabs defaultValue="All" onValueChange={setFilter} className="w-full md:w-auto">
+                        <Tabs defaultValue="All" onValueChange={handleFilterChange} className="w-full md:w-auto">
                             <TabsList className="grid w-full grid-cols-5">
                                 <TabsTrigger value="All">All</TabsTrigger>
                                 <TabsTrigger value="New">New</TabsTrigger>
@@ -71,7 +96,7 @@ export default function AdminFeedbackPage() {
                             </TableRow>
                         </TableHeader>
                         <TableBody>
-                            {filteredFeedback.map(item => (
+                            {paginatedFeedback.map(item => (
                                 <TableRow key={item.id}>
                                     <TableCell className="font-medium">{item.user}</TableCell>
                                     <TableCell className="hidden sm:table-cell">
@@ -110,6 +135,7 @@ export default function AdminFeedbackPage() {
                     </Table>
                 </CardContent>
             </Card>
+            <AppPagination currentPage={currentPage} totalPages={totalPages} onPageChange={handlePageChange} />
         </div>
     );
 }

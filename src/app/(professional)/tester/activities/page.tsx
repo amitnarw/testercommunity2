@@ -1,6 +1,7 @@
 
 'use client';
 
+import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
@@ -8,6 +9,7 @@ import { Bell, Briefcase, CheckCircle, DollarSign, ListFilter, Search } from "lu
 import { Input } from "@/components/ui/input";
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuCheckboxItem } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
+import { AppPagination } from '@/components/app-pagination';
 
 const allActivities = [
     { id: 1, type: "payment", description: "Payment for 'Project Phoenix' processed.", date: "2024-08-01T10:30:00Z" },
@@ -22,6 +24,9 @@ const allActivities = [
     { id: 10, type: "payment", description: "Payment for 'Blue Sun CRM' processed.", date: "2024-06-15T14:00:00Z" },
     { id: 11, type: "completion", description: "Testing for 'Weyland-Yutani Suite' completed.", date: "2024-06-10T11:20:00Z" },
     { id: 12, type: "invitation", description: "Invitation to test 'Virtucon Scheduler'.", date: "2024-06-05T09:30:00Z" },
+    { id: 13, type: "payment", description: "Payment for 'Soylent Green Delivery' processed.", date: "2024-05-28T10:00:00Z" },
+    { id: 14, type: "completion", description: "Testing for 'InGen DB' completed.", date: "2024-05-22T13:00:00Z" },
+    { id: 15, type: "invitation", description: "Invitation to test 'Roxxon Energy Tracker'.", date: "2024-05-19T11:00:00Z" },
 ];
 
 const ActivityIcon = ({ type }: { type: string }) => {
@@ -33,7 +38,22 @@ const ActivityIcon = ({ type }: { type: string }) => {
     }
 };
 
+const ITEMS_PER_PAGE = 7;
+
 export default function ProfessionalActivitiesPage() {
+    const [currentPage, setCurrentPage] = useState(1);
+    const totalPages = Math.ceil(allActivities.length / ITEMS_PER_PAGE);
+
+    const paginatedActivities = allActivities.slice(
+        (currentPage - 1) * ITEMS_PER_PAGE,
+        currentPage * ITEMS_PER_PAGE
+    );
+    
+    const handlePageChange = (page: number) => {
+        setCurrentPage(page);
+    };
+
+
     return (
         <div className="flex-1 space-y-8 p-4 sm:p-8 pt-0 sm:pt-0">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between space-y-2">
@@ -76,7 +96,7 @@ export default function ProfessionalActivitiesPage() {
                             </TableRow>
                         </TableHeader>
                         <TableBody>
-                            {allActivities.map((activity) => (
+                            {paginatedActivities.map((activity) => (
                                 <TableRow key={activity.id}>
                                     <TableCell>
                                         <div className="p-2 bg-secondary rounded-full inline-flex">
@@ -94,6 +114,7 @@ export default function ProfessionalActivitiesPage() {
                     </Table>
                 </CardContent>
             </Card>
+            <AppPagination currentPage={currentPage} totalPages={totalPages} onPageChange={handlePageChange} />
         </div>
     );
 }

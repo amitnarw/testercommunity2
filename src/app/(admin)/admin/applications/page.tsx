@@ -1,6 +1,7 @@
 
 'use client';
 
+import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
@@ -9,6 +10,7 @@ import { Input } from "@/components/ui/input";
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuLabel, DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import { Search, MoreHorizontal } from "lucide-react";
 import Link from 'next/link';
+import { AppPagination } from '@/components/app-pagination';
 
 const applications = [
     { id: 1, name: "Maria Garcia", email: "maria@example.com", date: "2024-08-20", experience: "3-5 years", expertise: ["Manual", "Usability"] },
@@ -16,9 +18,28 @@ const applications = [
     { id: 3, name: "Alex Johnson", email: "alex@example.com", date: "2024-08-18", experience: "1-3 years", expertise: ["Manual"] },
     { id: 4, name: "Priya Patel", email: "priya@example.com", date: "2024-08-17", experience: "3-5 years", expertise: ["Security", "Manual"] },
     { id: 5, name: "Michael Chen", email: "michael@example.com", date: "2024-08-16", experience: "5+ years", expertise: ["Automation", "API", "Performance"] },
+    { id: 6, name: "Emily White", email: "emily@example.com", date: "2024-08-15", experience: "1-3 years", expertise: ["Usability"] },
+    { id: 7, name: "James Brown", email: "james@example.com", date: "2024-08-14", experience: "3-5 years", expertise: ["Manual", "API"] },
+    { id: 8, name: "Olivia Green", email: "olivia@example.com", date: "2024-08-13", experience: "5+ years", expertise: ["Automation", "Security"] },
+    { id: 9, name: "William Black", email: "william@example.com", date: "2024-08-12", experience: "0-1 years", expertise: ["Manual"] },
+    { id: 10, name: "Sophia Grey", email: "sophia@example.com", date: "2024-08-11", experience: "3-5 years", expertise: ["Performance", "Usability"] },
 ];
 
+const ITEMS_PER_PAGE = 5;
+
 export default function AdminApplicationsPage() {
+    const [currentPage, setCurrentPage] = useState(1);
+    const totalPages = Math.ceil(applications.length / ITEMS_PER_PAGE);
+
+    const paginatedApplications = applications.slice(
+        (currentPage - 1) * ITEMS_PER_PAGE,
+        currentPage * ITEMS_PER_PAGE
+    );
+
+    const handlePageChange = (page: number) => {
+        setCurrentPage(page);
+    };
+
     return (
         <div className="flex-1 space-y-8 p-4 sm:p-8 pt-6">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between space-y-2">
@@ -50,7 +71,7 @@ export default function AdminApplicationsPage() {
                             </TableRow>
                         </TableHeader>
                         <TableBody>
-                            {applications.map(app => (
+                            {paginatedApplications.map(app => (
                                 <TableRow key={app.id}>
                                     <TableCell className="font-medium">{app.name}</TableCell>
                                     <TableCell className="hidden sm:table-cell">{app.email}</TableCell>
@@ -85,6 +106,7 @@ export default function AdminApplicationsPage() {
                     </Table>
                 </CardContent>
             </Card>
+            <AppPagination currentPage={currentPage} totalPages={totalPages} onPageChange={handlePageChange} />
         </div>
     );
 }
