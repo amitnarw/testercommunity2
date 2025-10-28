@@ -71,7 +71,7 @@ export default function AdminApplicationsPage() {
                                             </DropdownMenuTrigger>
                                             <DropdownMenuContent align="end">
                                                 <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                                                <Link href="#">
+                                                <Link href={`/admin/applications/${app.id}`}>
                                                     <DropdownMenuItem>View Application</DropdownMenuItem>
                                                 </Link>
                                                 <DropdownMenuItem className="text-green-600 focus:text-green-600 focus:bg-green-500/10">Approve</DropdownMenuItem>

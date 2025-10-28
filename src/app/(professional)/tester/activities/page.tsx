@@ -18,6 +18,10 @@ const allActivities = [
     { id: 6, type: "invitation", description: "Invitation to test 'Starlight Editor'.", date: "2024-07-08T14:30:00Z" },
     { id: 7, type: "payment", description: "Payment for 'QuantumLeap CRM' processed.", date: "2024-07-01T12:00:00Z" },
     { id: 8, type: "completion", description: "Testing for 'Project Chimera' completed.", date: "2024-06-25T16:45:00Z" },
+    { id: 9, type: "invitation", description: "Invitation to test 'Black Mesa OS'.", date: "2024-06-20T10:00:00Z" },
+    { id: 10, type: "payment", description: "Payment for 'Blue Sun CRM' processed.", date: "2024-06-15T14:00:00Z" },
+    { id: 11, type: "completion", description: "Testing for 'Weyland-Yutani Suite' completed.", date: "2024-06-10T11:20:00Z" },
+    { id: 12, type: "invitation", description: "Invitation to test 'Virtucon Scheduler'.", date: "2024-06-05T09:30:00Z" },
 ];
 
 const ActivityIcon = ({ type }: { type: string }) => {

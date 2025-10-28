@@ -17,6 +17,11 @@ const feedbackItems = [
     { id: 3, user: "Clark Kent", role: "Developer", feedback: "The submission form timed out once, lost all my data.", date: "2024-08-18", status: "Under Review" },
     { id: 4, user: "Bruce Wayne", role: "Developer", feedback: "The analytics chart on the project page is very helpful!", date: "2024-08-17", status: "Reviewed" },
     { id: 5, user: "Tony Stark", role: "Developer", feedback: "API documentation for integrations would be a game-changer.", date: "2024-08-16", status: "New" },
+    { id: 6, user: "Selina Kyle", role: "Tester", feedback: "The points system is a little confusing at first.", date: "2024-08-15", status: "Reviewed" },
+    { id: 7, user: "Barry Allen", role: "Developer", feedback: "Love the new professional testing option, super fast.", date: "2024-08-14", status: "Reviewed" },
+    { id: 8, user: "Arthur Curry", role: "Tester", feedback: "I can't seem to find where to edit my device list.", date: "2024-08-13", status: "Under Review" },
+    { id: 9, user: "Hal Jordan", role: "Developer", feedback: "An option to duplicate a past submission would save a lot of time.", date: "2024-08-12", status: "New" },
+    { id: 10, user: "Victor Stone", role: "Tester", feedback: "The bug reporting form should allow video attachments.", date: "2024-08-11", status: "Implemented" },
 ];
 
 export default function AdminFeedbackPage() {
