@@ -1,22 +1,43 @@
 
+
 'use client';
 
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import Image from 'next/image';
+import { useDropzone } from 'react-dropzone';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Smartphone, Calendar, Users, Type, Check, X, ArrowLeft, Download } from "lucide-react";
+import { Smartphone, Calendar, Users, Type, Check, X, ArrowLeft, Download, Upload, Trash2 } from "lucide-react";
 import Link from 'next/link';
 import { projects } from '@/lib/data';
 import { notFound } from 'next/navigation';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { toast } from '@/hooks/use-toast';
+import { cn } from '@/lib/utils';
 
 export default function AdminSubmissionDetailPage({ params }: { params: { id: string }}) {
     const [reviewNotes, setReviewNotes] = useState('');
+    const [rejectionImage, setRejectionImage] = useState<string | null>(null);
     const project = projects.find(p => p.id.toString() === params.id);
+
+    const onDrop = useCallback((acceptedFiles: File[]) => {
+        const file = acceptedFiles[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setRejectionImage(reader.result as string);
+            };
+            reader.readAsDataURL(file);
+        }
+    }, []);
+
+    const { getRootProps, getInputProps, isDragActive } = useDropzone({
+        onDrop,
+        accept: { 'image/*': ['.jpeg', '.png', '.jpg'] },
+        maxFiles: 1,
+    });
 
     if (!project) {
         notFound();
@@ -90,10 +111,10 @@ export default function AdminSubmissionDetailPage({ params }: { params: { id: st
                     <Card>
                         <CardHeader>
                             <CardTitle>Review & Action</CardTitle>
-                            <CardDescription>Add notes before approving or rejecting.</CardDescription>
+                            <CardDescription>Add notes and optional screenshot before approving or rejecting.</CardDescription>
                         </CardHeader>
                         <CardContent>
-                             <div className="space-y-4">
+                             <div className="space-y-6">
                                 <div className="space-y-2">
                                     <Label htmlFor="review-notes">Review Notes (Required for rejection)</Label>
                                     <Textarea
@@ -104,6 +125,26 @@ export default function AdminSubmissionDetailPage({ params }: { params: { id: st
                                         className="min-h-[120px]"
                                     />
                                 </div>
+
+                                <div className="space-y-2">
+                                    <Label htmlFor="rejection-image">Rejection Screenshot (Optional)</Label>
+                                    {rejectionImage ? (
+                                        <div className="relative">
+                                            <Image src={rejectionImage} alt="Rejection screenshot preview" width={550} height={300} className="rounded-lg object-contain border bg-secondary" />
+                                            <Button variant="destructive" size="icon" className="absolute top-2 right-2 h-7 w-7" onClick={() => setRejectionImage(null)}>
+                                                <Trash2 className="h-4 w-4" />
+                                            </Button>
+                                        </div>
+                                    ) : (
+                                        <div {...getRootProps()} className={cn(`border-2 border-dashed rounded-lg p-6 flex flex-col items-center justify-center text-center transition-colors cursor-pointer hover:border-primary hover:bg-secondary/50`, isDragActive && 'border-primary bg-primary/10')}>
+                                            <input {...getInputProps()} />
+                                            <Upload className="w-8 h-8 text-muted-foreground mb-2" />
+                                            <p className="font-semibold">Click or drag image to upload</p>
+                                            <p className="text-sm text-muted-foreground">Attach a screenshot to highlight an issue.</p>
+                                        </div>
+                                    )}
+                                </div>
+
                                 <div className="flex justify-end gap-4">
                                     <Button variant="destructive" onClick={handleReject}>
                                         <X className="mr-2 h-4 w-4" /> Reject

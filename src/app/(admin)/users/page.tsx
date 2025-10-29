@@ -1,4 +1,5 @@
 
+
 'use client';
 
 import React, { useState, useEffect } from 'react';
@@ -14,6 +15,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import Link from 'next/link';
+import { AppPagination } from '@/components/app-pagination';
 
 const usersData = [
     { id: 1, name: "Tony Stark", email: "tony@stark.io", role: "User", status: "Active", avatar: "https://i.pravatar.cc/150?u=tony", testingPaths: ["Professional"] },
@@ -44,6 +46,8 @@ const staffData = [
 ];
 
 type User = (typeof usersData[0] & { expertise?: string[], tests?: number }) | typeof testersData[0] | typeof staffData[0];
+
+const ITEMS_PER_PAGE = 5;
 
 const UserTable = ({ users, onEdit, onStatusChange, onDelete }: { users: User[], onEdit: (user: User) => void, onStatusChange: (user: User) => void, onDelete: (user: User) => void }) => (
     <Table>
@@ -243,6 +247,20 @@ export default function AdminUsersPage() {
     const [isStatusModalOpen, setIsStatusModalOpen] = useState(false);
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
+    const [usersPage, setUsersPage] = useState(1);
+    const [testersPage, setTestersPage] = useState(1);
+    const [staffPage, setStaffPage] = useState(1);
+
+    const usersTotalPages = Math.ceil(usersData.length / ITEMS_PER_PAGE);
+    const paginatedUsers = usersData.slice((usersPage - 1) * ITEMS_PER_PAGE, usersPage * ITEMS_PER_PAGE);
+    
+    const testersTotalPages = Math.ceil(testersData.length / ITEMS_PER_PAGE);
+    const paginatedTesters = testersData.slice((testersPage - 1) * ITEMS_PER_PAGE, testersPage * ITEMS_PER_PAGE);
+
+    const staffTotalPages = Math.ceil(staffData.length / ITEMS_PER_PAGE);
+    const paginatedStaff = staffData.slice((staffPage - 1) * ITEMS_PER_PAGE, staffPage * ITEMS_PER_PAGE);
+
+
     useEffect(() => {
         const role = document.cookie.split('; ').find(row => row.startsWith('userRole='))?.split('=')[1] || '';
         setUserRole(decodeURIComponent(role));
@@ -290,23 +308,26 @@ export default function AdminUsersPage() {
                 <TabsContent value="users" className="mt-4">
                      <Card>
                         <CardContent className="pt-6">
-                           <UserTable users={usersData} onEdit={handleEdit} onStatusChange={handleStatusChange} onDelete={handleDelete} />
+                           <UserTable users={paginatedUsers} onEdit={handleEdit} onStatusChange={handleStatusChange} onDelete={handleDelete} />
                         </CardContent>
                     </Card>
+                    <AppPagination currentPage={usersPage} totalPages={usersTotalPages} onPageChange={setUsersPage} />
                 </TabsContent>
                 <TabsContent value="testers" className="mt-4">
                      <Card>
                         <CardContent className="pt-6">
-                           <TesterTable users={testersData as any} onEdit={handleEdit} onStatusChange={handleStatusChange} onDelete={handleDelete} />
+                           <TesterTable users={paginatedTesters as any} onEdit={handleEdit} onStatusChange={handleStatusChange} onDelete={handleDelete} />
                         </CardContent>
                     </Card>
+                    <AppPagination currentPage={testersPage} totalPages={testersTotalPages} onPageChange={setTestersPage} />
                 </TabsContent>
                 <TabsContent value="staff" className="mt-4">
                      <Card>
                         <CardContent className="pt-6">
-                           <StaffTable users={staffData as any} onEdit={handleEdit} onStatusChange={handleStatusChange} onDelete={handleDelete} />
+                           <StaffTable users={paginatedStaff as any} onEdit={handleEdit} onStatusChange={handleStatusChange} onDelete={handleDelete} />
                         </CardContent>
                     </Card>
+                    <AppPagination currentPage={staffPage} totalPages={staffTotalPages} onPageChange={setStaffPage} />
                 </TabsContent>
             </Tabs>
 
@@ -389,5 +410,3 @@ export default function AdminUsersPage() {
         </div>
     );
 }
-
-    

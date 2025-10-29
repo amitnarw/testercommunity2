@@ -1,4 +1,5 @@
 
+
 'use client';
 
 import { ArrowLeft, Briefcase, Calendar, Edit, Mail, Phone, Shield, User, Users2 } from 'lucide-react';
@@ -156,5 +157,4 @@ export default function AdminUserDetailsPage() {
         </div>
     )
 }
-
     
