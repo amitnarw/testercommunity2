@@ -11,6 +11,7 @@ import { Input } from "@/components/ui/input";
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuLabel, DropdownMenuItem, DropdownMenuSeparator } from "@/components/ui/dropdown-menu";
 import { Search, MoreHorizontal, Lightbulb, PlusCircle } from "lucide-react";
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import Link from 'next/link';
 
 const suggestionItems = [
     { id: 1, user: "Tony Stark", role: "Developer", suggestion: "Add a 'duplicate project' button to easily re-run tests.", date: "2024-08-20", status: "Received" },
@@ -31,8 +32,10 @@ export default function AdminSuggestionsPage() {
                     <h2 className="text-3xl font-bold tracking-tight">Feature Suggestions</h2>
                     <p className="text-muted-foreground">Manage new feature ideas and suggestions from the community.</p>
                 </div>
-                 <Button>
-                    <PlusCircle className="mr-2 h-4 w-4" /> Add Suggestion Manually
+                 <Button asChild>
+                    <Link href="/admin/suggestions/add">
+                        <PlusCircle className="mr-2 h-4 w-4" /> Add Suggestion Manually
+                    </Link>
                 </Button>
             </div>
 
@@ -58,6 +61,7 @@ export default function AdminSuggestionsPage() {
                     <Table>
                         <TableHeader>
                             <TableRow>
+                                <TableHead className="w-[50px]">S.N.</TableHead>
                                 <TableHead>User</TableHead>
                                 <TableHead className="hidden sm:table-cell">Role</TableHead>
                                 <TableHead className="hidden md:table-cell w-2/5">Suggestion</TableHead>
@@ -67,8 +71,9 @@ export default function AdminSuggestionsPage() {
                             </TableRow>
                         </TableHeader>
                         <TableBody>
-                            {filteredSuggestions.map(item => (
+                            {filteredSuggestions.map((item, index) => (
                                 <TableRow key={item.id}>
+                                    <TableCell>{index + 1}</TableCell>
                                     <TableCell className="font-medium">{item.user}</TableCell>
                                     <TableCell className="hidden sm:table-cell">
                                          <Badge variant={item.role === "Developer" ? "default" : "secondary"}>{item.role}</Badge>
@@ -93,7 +98,9 @@ export default function AdminSuggestionsPage() {
                                             </DropdownMenuTrigger>
                                             <DropdownMenuContent align="end">
                                                 <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                                                <DropdownMenuItem>View Details</DropdownMenuItem>
+                                                <Link href={`/admin/suggestions/${item.id}`}>
+                                                    <DropdownMenuItem>View Details</DropdownMenuItem>
+                                                </Link>
                                                 <DropdownMenuItem>Update Status</DropdownMenuItem>
                                                 <DropdownMenuSeparator />
                                                 <DropdownMenuItem className="text-destructive focus:bg-destructive/10 focus:text-destructive">Delete Suggestion</DropdownMenuItem>

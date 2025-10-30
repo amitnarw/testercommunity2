@@ -12,6 +12,7 @@ import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuLab
 import { Search, MoreHorizontal, MessageSquare, PlusCircle } from "lucide-react";
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { AppPagination } from '@/components/app-pagination';
+import Link from 'next/link';
 
 const feedbackItems = [
     { id: 1, user: "Peter Parker", role: "Tester", feedback: "The dashboard loading speed is a bit slow on mobile.", date: "2024-08-20", status: "New" },
@@ -61,8 +62,10 @@ export default function AdminFeedbackPage() {
                     <h2 className="text-3xl font-bold tracking-tight">Platform Feedback</h2>
                     <p className="text-muted-foreground">Review and manage feedback submitted by users about the inTesters platform.</p>
                 </div>
-                <Button>
-                    <PlusCircle className="mr-2 h-4 w-4" /> Add Feedback Manually
+                <Button asChild>
+                    <Link href="/admin/feedback/add">
+                        <PlusCircle className="mr-2 h-4 w-4" /> Add Feedback Manually
+                    </Link>
                 </Button>
             </div>
 
@@ -88,6 +91,7 @@ export default function AdminFeedbackPage() {
                     <Table>
                         <TableHeader>
                             <TableRow>
+                                <TableHead className="w-[50px]">S.N.</TableHead>
                                 <TableHead>User</TableHead>
                                 <TableHead className="hidden sm:table-cell">Role</TableHead>
                                 <TableHead className="hidden md:table-cell w-2/5">Feedback</TableHead>
@@ -97,8 +101,9 @@ export default function AdminFeedbackPage() {
                             </TableRow>
                         </TableHeader>
                         <TableBody>
-                            {paginatedFeedback.map(item => (
+                            {paginatedFeedback.map((item, index) => (
                                 <TableRow key={item.id}>
+                                    <TableCell>{(currentPage - 1) * ITEMS_PER_PAGE + index + 1}</TableCell>
                                     <TableCell className="font-medium">{item.user}</TableCell>
                                     <TableCell className="hidden sm:table-cell">
                                          <Badge variant={item.role === "Developer" ? "default" : "secondary"}>{item.role}</Badge>
@@ -123,7 +128,9 @@ export default function AdminFeedbackPage() {
                                             </DropdownMenuTrigger>
                                             <DropdownMenuContent align="end">
                                                 <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                                                <DropdownMenuItem>View Details</DropdownMenuItem>
+                                                <Link href={`/admin/feedback/${item.id}`}>
+                                                    <DropdownMenuItem>View Details</DropdownMenuItem>
+                                                </Link>
                                                 <DropdownMenuItem>Change Status</DropdownMenuItem>
                                                 <DropdownMenuSeparator />
                                                 <DropdownMenuItem className="text-destructive focus:bg-destructive/10 focus:text-destructive">Delete Feedback</DropdownMenuItem>
