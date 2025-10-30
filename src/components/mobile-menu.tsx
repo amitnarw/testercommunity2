@@ -1,7 +1,7 @@
 
 "use client"
 
-import { Menu, X, LayoutDashboard, Bell, Briefcase, DollarSign, LifeBuoy, Users, FileCheck, Bug, UserPlus, MessageSquare, Lightbulb } from 'lucide-react';
+import { Menu, X, LayoutDashboard, Bell, Briefcase, DollarSign, LifeBuoy, Users, FileCheck, Bug, UserPlus, MessageSquare, Lightbulb, Activity } from 'lucide-react';
 import { Button } from './ui/button';
 import { Sheet, SheetContent, SheetHeader, SheetClose, SheetTrigger } from './ui/sheet';
 import Link from 'next/link';
@@ -17,9 +17,10 @@ const mainNavItems = [
 ];
 
 const proNavItems = [
-    { name: 'Pro Dashboard', href: '/tester/tester/dashboard', icon: LayoutDashboard },
+    { name: 'Pro Dashboard', href: '/tester/dashboard', icon: LayoutDashboard },
     { name: 'Projects', href: '/tester/projects', icon: Briefcase },
     { name: 'Earnings', href: '/tester/earnings', icon: DollarSign },
+    { name: 'Activities', href: '/tester/activities', icon: Activity },
     { name: 'Support', href: '/tester/support', icon: LifeBuoy },
 ];
 
@@ -39,10 +40,14 @@ export default function MobileMenu({ isMenuOpen, setIsMenuOpen, onLogout }: {
     const pathname = usePathname();
 
     let navItems = mainNavItems;
+    let notificationHref = '/notifications';
+
     if (pathname.startsWith('/admin')) {
         navItems = adminNavItems;
+        notificationHref = '/admin/notifications';
     } else if (pathname.startsWith('/tester')) {
         navItems = proNavItems;
+        notificationHref = '/tester/notifications';
     }
 
     const isAuthenticated = !pathname.startsWith('/login') && !pathname.startsWith('/signup') && !pathname.startsWith('/tester/login') && !pathname.startsWith('/tester/register');
@@ -69,7 +74,7 @@ export default function MobileMenu({ isMenuOpen, setIsMenuOpen, onLogout }: {
                     <SheetHeader>
                         <div className="flex justify-between items-center gap-2">
                             <button onClick={() => setIsMenuOpen(false)}>
-                                <Link href={"/notifications"}>
+                                <Link href={notificationHref}>
                                     <Bell className="h-5 w-5" />
                                     <span className="sr-only">Close menu</span>
                                 </Link>
