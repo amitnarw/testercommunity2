@@ -10,6 +10,8 @@ import Link from 'next/link';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Separator } from '@/components/ui/separator';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { useState } from 'react';
 
 
 const usersData = [
@@ -46,14 +48,17 @@ const allUsers = [...usersData, ...testersData, ...staffData];
 export default function AdminUserDetailsPage() {
     const params = useParams();
     const user = allUsers.find(u => u.id.toString() === params.id);
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
     if (!user) {
         notFound();
     }
 
     const isTester = 'tests' in user;
+    const isUser = 'testingPaths' in user;
 
     return (
+        <>
         <div className="flex-1 space-y-8 p-4 sm:p-8 pt-6">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
                  <div className="flex items-center gap-4">
@@ -70,7 +75,9 @@ export default function AdminUserDetailsPage() {
                 </div>
                  <div className="flex gap-4">
                     <Button variant="outline"><Edit className="mr-2 h-4 w-4" /> Edit Profile</Button>
-                    <Button variant="destructive"><Trash2 className="mr-2 h-4 w-4" /> Delete User</Button>
+                    <Button variant="destructive" onClick={() => setIsDeleteModalOpen(true)}>
+                        <Trash2 className="mr-2 h-4 w-4" /> Delete User
+                    </Button>
                 </div>
             </div>
             
@@ -118,7 +125,7 @@ export default function AdminUserDetailsPage() {
                         </Card>
                     )}
 
-                    {'testingPaths' in user && user.testingPaths && (
+                    {isUser && user.testingPaths && (
                          <Card>
                             <CardHeader>
                                 <CardTitle>Testing Paths</CardTitle>
@@ -180,6 +187,7 @@ export default function AdminUserDetailsPage() {
                         <Card>
                             <CardHeader>
                                 <CardTitle>User Activity</CardTitle>
+                                <CardDescription>Recent actions and submissions by this user.</CardDescription>
                             </CardHeader>
                             <CardContent>
                                  <div className="text-center py-20 bg-muted rounded-lg">
@@ -192,5 +200,22 @@ export default function AdminUserDetailsPage() {
                 </div>
             </div>
         </div>
+        <Dialog open={isDeleteModalOpen} onOpenChange={setIsDeleteModalOpen}>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle>Delete {user?.name}?</DialogTitle>
+                        <DialogDescription>
+                            This action cannot be undone. This will permanently delete the account and all associated data.
+                        </DialogDescription>
+                    </DialogHeader>
+                    <DialogFooter>
+                        <Button variant="ghost" onClick={() => setIsDeleteModalOpen(false)}>Cancel</Button>
+                        <Button variant="destructive" onClick={() => setIsDeleteModalOpen(false)}>
+                            <Trash2 className="mr-2 h-4 w-4" /> Permanently Delete
+                        </Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
+        </>
     )
 }

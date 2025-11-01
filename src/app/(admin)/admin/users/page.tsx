@@ -1,5 +1,4 @@
 
-
 'use client';
 
 import React, { useState, useEffect } from 'react';
@@ -400,7 +399,10 @@ export default function AdminUsersPage() {
                     </DialogHeader>
                     <DialogFooter>
                         <Button variant="ghost" onClick={() => setIsDeleteModalOpen(false)}>Cancel</Button>
-                        <Button variant="destructive" onClick={() => setIsDeleteModalOpen(false)}>
+                        <Button variant="destructive" onClick={() => {
+                            console.log('Deleting user', selectedUser?.id)
+                            setIsDeleteModalOpen(false)
+                        }}>
                             <Trash2 className="mr-2 h-4 w-4" /> Delete User
                         </Button>
                     </DialogFooter>
