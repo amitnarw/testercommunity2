@@ -61,8 +61,7 @@ export default function AdminUserDetailsPage() {
         notFound();
     }
     
-    const handleSaveChanges = (newRole: string, newStatus: string) => {
-        setCurrentUser(prevUser => prevUser ? { ...prevUser, role: newRole, status: newStatus } : undefined);
+    const handleSaveChanges = () => {
         setIsEditModalOpen(false);
         toast({
             title: "Profile Updated",
@@ -228,7 +227,7 @@ export default function AdminUserDetailsPage() {
                 <div className="py-4 space-y-4">
                     <div className="space-y-2">
                         <label>Role</label>
-                        <Select defaultValue={currentUser.role} onValueChange={(value) => setCurrentUser(prev => prev ? {...prev, role: value} : undefined)}>
+                        <Select defaultValue={currentUser.role} onValueChange={(value) => setCurrentUser(prev => prev ? {...prev, role: value} as User : undefined)}>
                             <SelectTrigger>
                                 <SelectValue placeholder="Select a role" />
                             </SelectTrigger>
@@ -260,7 +259,7 @@ export default function AdminUserDetailsPage() {
                         setIsEditModalOpen(false)
                         setCurrentUser(user) // Reset changes if cancelled
                     }}>Cancel</Button>
-                    <Button onClick={() => handleSaveChanges(currentUser.role, currentUser.status)}>Save Changes</Button>
+                    <Button onClick={handleSaveChanges}>Save Changes</Button>
                 </DialogFooter>
             </DialogContent>
         </Dialog>
