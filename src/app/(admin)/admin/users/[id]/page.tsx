@@ -48,6 +48,12 @@ const allUsers = [...usersData, ...testersData, ...staffData];
 
 type User = typeof allUsers[0];
 
+const userSubmissions = [
+    { id: 1, name: "QuantumLeap CRM", date: "2024-08-15", status: "In Review", type: "Community" },
+    { id: 2, name: "Project Phoenix", date: "2024-08-14", status: "Approved", type: "Professional" },
+    { id: 3, name: "Starlight Editor", date: "2024-08-10", status: "In Review", type: "Community" },
+];
+
 export default function AdminUserDetailsPage() {
     const params = useParams();
     const user = allUsers.find(u => u.id.toString() === params.id);
@@ -218,12 +224,40 @@ export default function AdminUserDetailsPage() {
                         <Card>
                             <CardHeader>
                                 <CardTitle>User Activity</CardTitle>
-                                <CardDescription>Recent actions and submissions by this user.</CardDescription>
+                                <CardDescription>Recent app submissions by this user.</CardDescription>
                             </CardHeader>
                             <CardContent>
-                                 <div className="text-center py-20 bg-muted rounded-lg">
-                                    <p>Activity log for this user is not yet implemented.</p>
-                                </div>
+                               <Table>
+                                    <TableHeader>
+                                        <TableRow>
+                                            <TableHead>Application</TableHead>
+                                            <TableHead>Date</TableHead>
+                                            <TableHead>Type</TableHead>
+                                            <TableHead>Status</TableHead>
+                                        </TableRow>
+                                    </TableHeader>
+                                    <TableBody>
+                                        {userSubmissions.map(submission => (
+                                            <TableRow key={submission.id}>
+                                                <TableCell className="font-medium">{submission.name}</TableCell>
+                                                <TableCell>{submission.date}</TableCell>
+                                                <TableCell>
+                                                    <Badge variant={submission.type === "Professional" ? "default" : "secondary"}>
+                                                        {submission.type}
+                                                    </Badge>
+                                                </TableCell>
+                                                <TableCell>
+                                                    <Badge
+                                                        variant={submission.status === 'Rejected' ? 'destructive' : 'secondary'}
+                                                        className={submission.status === 'Approved' ? 'bg-green-500/20 text-green-700 dark:bg-green-500/10 dark:text-green-400' : ''}
+                                                    >
+                                                        {submission.status}
+                                                    </Badge>
+                                                </TableCell>
+                                            </TableRow>
+                                        ))}
+                                    </TableBody>
+                                </Table>
                             </CardContent>
                         </Card>
                     )}
