@@ -12,6 +12,8 @@ import { Separator } from '@/components/ui/separator';
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { useState } from 'react';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { useToast } from '@/hooks/use-toast';
 
 
 const usersData = [
@@ -44,18 +46,32 @@ const staffData = [
 
 const allUsers = [...usersData, ...testersData, ...staffData];
 
+type User = typeof allUsers[0];
 
 export default function AdminUserDetailsPage() {
     const params = useParams();
     const user = allUsers.find(u => u.id.toString() === params.id);
+    
+    const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+    const [currentUser, setCurrentUser] = useState<User | undefined>(user);
+    const { toast } = useToast();
 
-    if (!user) {
+    if (!currentUser) {
         notFound();
     }
+    
+    const handleSaveChanges = (newRole: string, newStatus: string) => {
+        setCurrentUser(prevUser => prevUser ? { ...prevUser, role: newRole, status: newStatus } : undefined);
+        setIsEditModalOpen(false);
+        toast({
+            title: "Profile Updated",
+            description: `${currentUser.name}'s profile has been successfully updated.`,
+        });
+    }
 
-    const isTester = 'tests' in user;
-    const isUser = 'testingPaths' in user;
+    const isTester = 'tests' in currentUser;
+    const isUser = 'testingPaths' in currentUser;
 
     return (
         <>
@@ -70,11 +86,11 @@ export default function AdminUserDetailsPage() {
                     </Button>
                     <div>
                         <h2 className="text-3xl font-bold tracking-tight">User Details</h2>
-                        <p className="text-muted-foreground">Viewing profile for {user.name}.</p>
+                        <p className="text-muted-foreground">Viewing profile for {currentUser.name}.</p>
                     </div>
                 </div>
                  <div className="flex gap-4">
-                    <Button variant="outline"><Edit className="mr-2 h-4 w-4" /> Edit Profile</Button>
+                    <Button variant="outline" onClick={() => setIsEditModalOpen(true)}><Edit className="mr-2 h-4 w-4" /> Edit Profile</Button>
                     <Button variant="destructive" onClick={() => setIsDeleteModalOpen(true)}>
                         <Trash2 className="mr-2 h-4 w-4" /> Delete User
                     </Button>
@@ -86,24 +102,24 @@ export default function AdminUserDetailsPage() {
                      <Card>
                         <CardContent className="pt-6 flex flex-col items-center text-center">
                             <Avatar className="h-24 w-24 mb-4">
-                                <AvatarImage src={user.avatar} />
-                                <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
+                                <AvatarImage src={currentUser.avatar} />
+                                <AvatarFallback>{currentUser.name.charAt(0)}</AvatarFallback>
                             </Avatar>
-                            <h3 className="text-xl font-bold">{user.name}</h3>
-                            <p className="text-sm text-muted-foreground">{user.email}</p>
+                            <h3 className="text-xl font-bold">{currentUser.name}</h3>
+                            <p className="text-sm text-muted-foreground">{currentUser.email}</p>
                             <div className="flex gap-2 mt-4">
-                               <Badge variant={user.role === "User" || user.role === "Tester" ? "secondary" : "default"}>{user.role}</Badge>
+                               <Badge variant={currentUser.role === "User" || currentUser.role === "Tester" ? "secondary" : "default"}>{currentUser.role}</Badge>
                                <Badge
-                                    variant={user.status === 'Banned' || user.status === 'Inactive' ? 'destructive' : 'secondary'}
-                                    className={user.status === 'Active' ? 'bg-green-500/20 text-green-700 dark:bg-green-500/10 dark:text-green-400' : ''}
+                                    variant={currentUser.status === 'Banned' || currentUser.status === 'Inactive' ? 'destructive' : 'secondary'}
+                                    className={currentUser.status === 'Active' ? 'bg-green-500/20 text-green-700 dark:bg-green-500/10 dark:text-green-400' : ''}
                                 >
-                                    {user.status}
+                                    {currentUser.status}
                                 </Badge>
                             </div>
                         </CardContent>
                     </Card>
 
-                    {isTester && (
+                    {isTester && 'tests' in currentUser && (
                          <Card>
                             <CardHeader>
                                 <CardTitle>Tester Stats</CardTitle>
@@ -111,27 +127,27 @@ export default function AdminUserDetailsPage() {
                             <CardContent className="space-y-4">
                                 <div className="flex items-center justify-between text-sm">
                                     <span className="text-muted-foreground flex items-center gap-2"><CheckCircle className="w-4 h-4"/> Tests Completed</span>
-                                    <span className="font-bold text-lg">{user.tests}</span>
+                                    <span className="font-bold text-lg">{currentUser.tests}</span>
                                 </div>
                                  <div className="flex items-center justify-between text-sm">
                                     <span className="text-muted-foreground flex items-center gap-2"><Bug className="w-4 h-4"/> Bugs Reported</span>
-                                    <span className="font-bold text-lg">{user.bugs}</span>
+                                    <span className="font-bold text-lg">{currentUser.bugs}</span>
                                 </div>
                                 <div className="flex items-center justify-between text-sm">
                                     <span className="text-muted-foreground flex items-center gap-2"><Lightbulb className="w-4 h-4"/> Suggestions Made</span>
-                                    <span className="font-bold text-lg">{user.suggestions}</span>
+                                    <span className="font-bold text-lg">{currentUser.suggestions}</span>
                                 </div>
                             </CardContent>
                         </Card>
                     )}
 
-                    {isUser && user.testingPaths && (
+                    {isUser && 'testingPaths' in currentUser && currentUser.testingPaths && (
                          <Card>
                             <CardHeader>
                                 <CardTitle>Testing Paths</CardTitle>
                             </CardHeader>
                             <CardContent className="flex flex-wrap gap-2">
-                               {user.testingPaths.map(path => (
+                               {currentUser.testingPaths.map(path => (
                                    <Badge key={path} variant={path === 'Professional' ? 'default' : 'secondary'} className="text-sm py-1 px-3 flex items-center gap-2">
                                        {path === 'Professional' ? <Package className="w-4 h-4" /> : <Users className="w-4 h-4" />}
                                        {path}
@@ -142,7 +158,7 @@ export default function AdminUserDetailsPage() {
                     )}
                 </div>
                 <div className="lg:col-span-2 space-y-8">
-                     {isTester && (
+                     {isTester && 'expertise' in currentUser && (
                         <>
                         <Card>
                            <CardHeader>
@@ -150,7 +166,7 @@ export default function AdminUserDetailsPage() {
                            </CardHeader>
                            <CardContent>
                                 <div className="flex flex-wrap gap-2">
-                                    {user.expertise?.map(e => <Badge key={e} variant="outline" className="text-base py-1 px-3 flex items-center gap-2"><Shield className="w-4 h-4" />{e}</Badge>)}
+                                    {currentUser.expertise?.map(e => <Badge key={e} variant="outline" className="text-base py-1 px-3 flex items-center gap-2"><Shield className="w-4 h-4" />{e}</Badge>)}
                                 </div>
                            </CardContent>
                        </Card>
@@ -169,7 +185,7 @@ export default function AdminUserDetailsPage() {
                                         </TableRow>
                                     </TableHeader>
                                     <TableBody>
-                                        {user.projects?.map(project => (
+                                        {'projects' in currentUser && currentUser.projects?.map(project => (
                                             <TableRow key={project}>
                                                 <TableCell className="font-medium">{project}</TableCell>
                                                 <TableCell>{Math.floor(Math.random() * 10) + 1}</TableCell>
@@ -200,17 +216,69 @@ export default function AdminUserDetailsPage() {
                 </div>
             </div>
         </div>
+
+        <Dialog open={isEditModalOpen} onOpenChange={setIsEditModalOpen}>
+            <DialogContent>
+                <DialogHeader>
+                    <DialogTitle>Edit {currentUser.name}</DialogTitle>
+                    <DialogDescription>
+                        Modify the user's role and status.
+                    </DialogDescription>
+                </DialogHeader>
+                <div className="py-4 space-y-4">
+                    <div className="space-y-2">
+                        <label>Role</label>
+                        <Select defaultValue={currentUser.role} onValueChange={(value) => setCurrentUser(prev => prev ? {...prev, role: value} : undefined)}>
+                            <SelectTrigger>
+                                <SelectValue placeholder="Select a role" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="User">User</SelectItem>
+                                <SelectItem value="Tester">Tester</SelectItem>
+                                <SelectItem value="Moderator">Moderator</SelectItem>
+                                <SelectItem value="Admin">Admin</SelectItem>
+                                <SelectItem value="Super Admin">Super Admin</SelectItem>
+                            </SelectContent>
+                        </Select>
+                    </div>
+                    <div className="space-y-2">
+                        <label>Status</label>
+                        <Select defaultValue={currentUser.status} onValueChange={(value) => setCurrentUser(prev => prev ? {...prev, status: value} : undefined)}>
+                            <SelectTrigger>
+                                <SelectValue placeholder="Select a status" />
+                            </SelectTrigger>
+                            <SelectContent>
+                                <SelectItem value="Active">Active</SelectItem>
+                                <SelectItem value="Inactive">Inactive</SelectItem>
+                                <SelectItem value="Banned">Banned</SelectItem>
+                            </SelectContent>
+                        </Select>
+                    </div>
+                </div>
+                <DialogFooter>
+                    <Button variant="ghost" onClick={() => {
+                        setIsEditModalOpen(false)
+                        setCurrentUser(user) // Reset changes if cancelled
+                    }}>Cancel</Button>
+                    <Button onClick={() => handleSaveChanges(currentUser.role, currentUser.status)}>Save Changes</Button>
+                </DialogFooter>
+            </DialogContent>
+        </Dialog>
+
         <Dialog open={isDeleteModalOpen} onOpenChange={setIsDeleteModalOpen}>
                 <DialogContent>
                     <DialogHeader>
-                        <DialogTitle>Delete {user?.name}?</DialogTitle>
+                        <DialogTitle>Delete {currentUser?.name}?</DialogTitle>
                         <DialogDescription>
                             This action cannot be undone. This will permanently delete the account and all associated data.
                         </DialogDescription>
                     </DialogHeader>
                     <DialogFooter>
                         <Button variant="ghost" onClick={() => setIsDeleteModalOpen(false)}>Cancel</Button>
-                        <Button variant="destructive" onClick={() => setIsDeleteModalOpen(false)}>
+                        <Button variant="destructive" onClick={() => {
+                             setIsDeleteModalOpen(false);
+                             toast({ variant: 'destructive', title: "User Deleted", description: `${currentUser.name} has been permanently deleted.`})
+                        }}>
                             <Trash2 className="mr-2 h-4 w-4" /> Permanently Delete
                         </Button>
                     </DialogFooter>
@@ -219,5 +287,3 @@ export default function AdminUserDetailsPage() {
         </>
     )
 }
-
-    
