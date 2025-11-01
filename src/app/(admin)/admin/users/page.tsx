@@ -49,199 +49,193 @@ type User = (typeof usersData[0] & { expertise?: string[], tests?: number }) | t
 const ITEMS_PER_PAGE = 5;
 
 const UserTable = ({ users, onEdit, onStatusChange, onDelete }: { users: User[], onEdit: (user: User) => void, onStatusChange: (user: User) => void, onDelete: (user: User) => void }) => (
-    <div className="overflow-x-auto">
-        <Table>
-            <TableHeader>
-                <TableRow>
-                    <TableHead>User</TableHead>
-                    <TableHead className="hidden md:table-cell">Email</TableHead>
-                    <TableHead>Testing Paths</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead><span className="sr-only">Actions</span></TableHead>
+    <Table>
+        <TableHeader>
+            <TableRow>
+                <TableHead>User</TableHead>
+                <TableHead className="hidden md:table-cell">Email</TableHead>
+                <TableHead>Testing Paths</TableHead>
+                <TableHead>Status</TableHead>
+                <TableHead><span className="sr-only">Actions</span></TableHead>
+            </TableRow>
+        </TableHeader>
+        <TableBody>
+            {users.map(user => (
+                <TableRow key={user.id}>
+                    <TableCell>
+                        <div className="flex items-center gap-3">
+                            <Avatar>
+                                <AvatarImage src={user.avatar} />
+                                <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
+                            </Avatar>
+                            <span className="font-medium">{user.name}</span>
+                        </div>
+                    </TableCell>
+                    <TableCell className="hidden md:table-cell">{user.email}</TableCell>
+                    <TableCell>
+                        <div className="flex gap-1">
+                            {'testingPaths' in user && user.testingPaths.map(path => (
+                                <Badge key={path} variant="outline" className="flex items-center gap-1.5">
+                                    {path === 'Professional' ? <Briefcase className="w-3 h-3" /> : <Users2 className="w-3 h-3" />}
+                                    {path}
+                                </Badge>
+                            ))}
+                        </div>
+                    </TableCell>
+                    <TableCell>
+                        <Badge
+                            variant={user.status === 'Banned' || user.status === 'Inactive' ? 'destructive' : 'secondary'}
+                            className={user.status === 'Active' ? 'bg-green-500/20 text-green-700 dark:bg-green-500/10 dark:text-green-400' : ''}
+                        >
+                            {user.status}
+                        </Badge>
+                    </TableCell>
+                    <TableCell className="text-right">
+                        <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                                <Button aria-haspopup="true" size="icon" variant="ghost">
+                                    <MoreHorizontal className="h-4 w-4" />
+                                    <span className="sr-only">Toggle menu</span>
+                                </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end">
+                                <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                                <Link href={`/admin/users/${user.id}`}><DropdownMenuItem>View Details</DropdownMenuItem></Link>
+                                <DropdownMenuItem onClick={() => onEdit(user)}>Edit Role</DropdownMenuItem>
+                                <DropdownMenuItem onClick={() => onStatusChange(user)}>Change Status</DropdownMenuItem>
+                                <DropdownMenuSeparator />
+                                <DropdownMenuItem className="text-destructive focus:bg-destructive/10 focus:text-destructive" onClick={() => onDelete(user)}>Delete User</DropdownMenuItem>
+                            </DropdownMenuContent>
+                        </DropdownMenu>
+                    </TableCell>
                 </TableRow>
-            </TableHeader>
-            <TableBody>
-                {users.map(user => (
-                    <TableRow key={user.id}>
-                        <TableCell>
-                            <div className="flex items-center gap-3">
-                                <Avatar>
-                                    <AvatarImage src={user.avatar} />
-                                    <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
-                                </Avatar>
-                                <span className="font-medium">{user.name}</span>
-                            </div>
-                        </TableCell>
-                        <TableCell className="hidden md:table-cell">{user.email}</TableCell>
-                        <TableCell>
-                            <div className="flex gap-1">
-                                {'testingPaths' in user && user.testingPaths.map(path => (
-                                    <Badge key={path} variant="outline" className="flex items-center gap-1.5">
-                                        {path === 'Professional' ? <Briefcase className="w-3 h-3" /> : <Users2 className="w-3 h-3" />}
-                                        {path}
-                                    </Badge>
-                                ))}
-                            </div>
-                        </TableCell>
-                        <TableCell>
-                            <Badge
-                                variant={user.status === 'Banned' || user.status === 'Inactive' ? 'destructive' : 'secondary'}
-                                className={user.status === 'Active' ? 'bg-green-500/20 text-green-700 dark:bg-green-500/10 dark:text-green-400' : ''}
-                            >
-                                {user.status}
-                            </Badge>
-                        </TableCell>
-                        <TableCell className="text-right">
-                            <DropdownMenu>
-                                <DropdownMenuTrigger asChild>
-                                    <Button aria-haspopup="true" size="icon" variant="ghost">
-                                        <MoreHorizontal className="h-4 w-4" />
-                                        <span className="sr-only">Toggle menu</span>
-                                    </Button>
-                                </DropdownMenuTrigger>
-                                <DropdownMenuContent align="end">
-                                    <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                                    <Link href={`/admin/users/${user.id}`}><DropdownMenuItem>View Details</DropdownMenuItem></Link>
-                                    <DropdownMenuItem onClick={() => onEdit(user)}>Edit Role</DropdownMenuItem>
-                                    <DropdownMenuItem onClick={() => onStatusChange(user)}>Change Status</DropdownMenuItem>
-                                    <DropdownMenuSeparator />
-                                    <DropdownMenuItem className="text-destructive focus:bg-destructive/10 focus:text-destructive" onClick={() => onDelete(user)}>Delete User</DropdownMenuItem>
-                                </DropdownMenuContent>
-                            </DropdownMenu>
-                        </TableCell>
-                    </TableRow>
-                ))}
-            </TableBody>
-        </Table>
-    </div>
+            ))}
+        </TableBody>
+    </Table>
 );
 
 const TesterTable = ({ users, onEdit, onStatusChange, onDelete }: { users: User[], onEdit: (user: User) => void, onStatusChange: (user: User) => void, onDelete: (user: User) => void }) => (
-    <div className="overflow-x-auto">
-        <Table>
-            <TableHeader>
-                <TableRow>
-                    <TableHead>Tester</TableHead>
-                    <TableHead className="hidden lg:table-cell">Email</TableHead>
-                    <TableHead>Expertise</TableHead>
-                    <TableHead>Tests Done</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead><span className="sr-only">Actions</span></TableHead>
+    <Table>
+        <TableHeader>
+            <TableRow>
+                <TableHead>Tester</TableHead>
+                <TableHead className="hidden lg:table-cell">Email</TableHead>
+                <TableHead>Expertise</TableHead>
+                <TableHead>Tests Done</TableHead>
+                <TableHead>Status</TableHead>
+                <TableHead><span className="sr-only">Actions</span></TableHead>
+            </TableRow>
+        </TableHeader>
+        <TableBody>
+            {users.map(user => (
+                <TableRow key={user.id}>
+                    <TableCell>
+                        <div className="flex items-center gap-3">
+                            <Avatar>
+                                <AvatarImage src={user.avatar} />
+                                <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
+                            </Avatar>
+                            <span className="font-medium">{user.name}</span>
+                        </div>
+                    </TableCell>
+                    <TableCell className="hidden lg:table-cell">{user.email}</TableCell>
+                    <TableCell>
+                        <div className="flex flex-wrap gap-1">
+                            {'expertise' in user && user.expertise?.map(e => <Badge key={e} variant="secondary">{e}</Badge>)}
+                        </div>
+                    </TableCell>
+                    <TableCell>
+                        {'tests' in user && user.tests}
+                    </TableCell>
+                    <TableCell>
+                        <Badge
+                            variant={user.status === 'Banned' || user.status === 'Inactive' ? 'destructive' : 'secondary'}
+                            className={user.status === 'Active' ? 'bg-green-500/20 text-green-700 dark:bg-green-500/10 dark:text-green-400' : ''}
+                        >
+                            {user.status}
+                        </Badge>
+                    </TableCell>
+                    <TableCell className="text-right">
+                        <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                                <Button aria-haspopup="true" size="icon" variant="ghost">
+                                    <MoreHorizontal className="h-4 w-4" />
+                                    <span className="sr-only">Toggle menu</span>
+                                </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end">
+                                <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                                <Link href={`/admin/users/${user.id}`}><DropdownMenuItem>View Details</DropdownMenuItem></Link>
+                                <DropdownMenuItem onClick={() => onEdit(user)}>Edit Role</DropdownMenuItem>
+                                <DropdownMenuItem onClick={() => onStatusChange(user)}>Change Status</DropdownMenuItem>
+                                <DropdownMenuSeparator />
+                                <DropdownMenuItem className="text-destructive focus:bg-destructive/10 focus:text-destructive" onClick={() => onDelete(user)}>Delete User</DropdownMenuItem>
+                            </DropdownMenuContent>
+                        </DropdownMenu>
+                    </TableCell>
                 </TableRow>
-            </TableHeader>
-            <TableBody>
-                {users.map(user => (
-                    <TableRow key={user.id}>
-                        <TableCell>
-                            <div className="flex items-center gap-3">
-                                <Avatar>
-                                    <AvatarImage src={user.avatar} />
-                                    <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
-                                </Avatar>
-                                <span className="font-medium">{user.name}</span>
-                            </div>
-                        </TableCell>
-                        <TableCell className="hidden lg:table-cell">{user.email}</TableCell>
-                        <TableCell>
-                            <div className="flex flex-wrap gap-1">
-                                {'expertise' in user && user.expertise?.map(e => <Badge key={e} variant="secondary">{e}</Badge>)}
-                            </div>
-                        </TableCell>
-                        <TableCell>
-                            {'tests' in user && user.tests}
-                        </TableCell>
-                        <TableCell>
-                            <Badge
-                                variant={user.status === 'Banned' || user.status === 'Inactive' ? 'destructive' : 'secondary'}
-                                className={user.status === 'Active' ? 'bg-green-500/20 text-green-700 dark:bg-green-500/10 dark:text-green-400' : ''}
-                            >
-                                {user.status}
-                            </Badge>
-                        </TableCell>
-                        <TableCell className="text-right">
-                            <DropdownMenu>
-                                <DropdownMenuTrigger asChild>
-                                    <Button aria-haspopup="true" size="icon" variant="ghost">
-                                        <MoreHorizontal className="h-4 w-4" />
-                                        <span className="sr-only">Toggle menu</span>
-                                    </Button>
-                                </DropdownMenuTrigger>
-                                <DropdownMenuContent align="end">
-                                    <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                                    <Link href={`/admin/users/${user.id}`}><DropdownMenuItem>View Details</DropdownMenuItem></Link>
-                                    <DropdownMenuItem onClick={() => onEdit(user)}>Edit Role</DropdownMenuItem>
-                                    <DropdownMenuItem onClick={() => onStatusChange(user)}>Change Status</DropdownMenuItem>
-                                    <DropdownMenuSeparator />
-                                    <DropdownMenuItem className="text-destructive focus:bg-destructive/10 focus:text-destructive" onClick={() => onDelete(user)}>Delete User</DropdownMenuItem>
-                                </DropdownMenuContent>
-                            </DropdownMenu>
-                        </TableCell>
-                    </TableRow>
-                ))}
-            </TableBody>
-        </Table>
-    </div>
+            ))}
+        </TableBody>
+    </Table>
 );
 
 const StaffTable = ({ users, onEdit, onStatusChange, onDelete }: { users: User[], onEdit: (user: User) => void, onStatusChange: (user: User) => void, onDelete: (user: User) => void }) => (
-    <div className="overflow-x-auto">
-        <Table>
-            <TableHeader>
-                <TableRow>
-                    <TableHead>Staff Member</TableHead>
-                    <TableHead className="hidden md:table-cell">Email</TableHead>
-                    <TableHead>Role</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead><span className="sr-only">Actions</span></TableHead>
+    <Table>
+        <TableHeader>
+            <TableRow>
+                <TableHead>Staff Member</TableHead>
+                <TableHead className="hidden md:table-cell">Email</TableHead>
+                <TableHead>Role</TableHead>
+                <TableHead>Status</TableHead>
+                <TableHead><span className="sr-only">Actions</span></TableHead>
+            </TableRow>
+        </TableHeader>
+        <TableBody>
+            {users.map(user => (
+                <TableRow key={user.id}>
+                    <TableCell>
+                        <div className="flex items-center gap-3">
+                            <Avatar>
+                                <AvatarImage src={user.avatar} />
+                                <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
+                            </Avatar>
+                            <span className="font-medium">{user.name}</span>
+                        </div>
+                    </TableCell>
+                    <TableCell className="hidden md:table-cell">{user.email}</TableCell>
+                    <TableCell>
+                        <Badge variant={user.role === "User" || user.role === "Tester" ? "secondary" : "default"}>{user.role}</Badge>
+                    </TableCell>
+                    <TableCell>
+                        <Badge
+                            variant={user.status === 'Banned' || user.status === 'Inactive' ? 'destructive' : 'secondary'}
+                            className={user.status === 'Active' ? 'bg-green-500/20 text-green-700 dark:bg-green-500/10 dark:text-green-400' : ''}
+                        >
+                            {user.status}
+                        </Badge>
+                    </TableCell>
+                    <TableCell className="text-right">
+                        <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                                <Button aria-haspopup="true" size="icon" variant="ghost">
+                                    <MoreHorizontal className="h-4 w-4" />
+                                    <span className="sr-only">Toggle menu</span>
+                                </Button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end">
+                                <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                                <Link href={`/admin/users/${user.id}`}><DropdownMenuItem>View Details</DropdownMenuItem></Link>
+                                <DropdownMenuItem onClick={() => onEdit(user)}>Edit Role</DropdownMenuItem>
+                                <DropdownMenuItem onClick={() => onStatusChange(user)}>Change Status</DropdownMenuItem>
+                                <DropdownMenuSeparator />
+                                <DropdownMenuItem className="text-destructive focus:bg-destructive/10 focus:text-destructive" onClick={() => onDelete(user)}>Delete User</DropdownMenuItem>
+                            </DropdownMenuContent>
+                        </DropdownMenu>
+                    </TableCell>
                 </TableRow>
-            </TableHeader>
-            <TableBody>
-                {users.map(user => (
-                    <TableRow key={user.id}>
-                        <TableCell>
-                            <div className="flex items-center gap-3">
-                                <Avatar>
-                                    <AvatarImage src={user.avatar} />
-                                    <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
-                                </Avatar>
-                                <span className="font-medium">{user.name}</span>
-                            </div>
-                        </TableCell>
-                        <TableCell className="hidden md:table-cell">{user.email}</TableCell>
-                        <TableCell>
-                            <Badge variant={user.role === "User" || user.role === "Tester" ? "secondary" : "default"}>{user.role}</Badge>
-                        </TableCell>
-                        <TableCell>
-                            <Badge
-                                variant={user.status === 'Banned' || user.status === 'Inactive' ? 'destructive' : 'secondary'}
-                                className={user.status === 'Active' ? 'bg-green-500/20 text-green-700 dark:bg-green-500/10 dark:text-green-400' : ''}
-                            >
-                                {user.status}
-                            </Badge>
-                        </TableCell>
-                        <TableCell className="text-right">
-                            <DropdownMenu>
-                                <DropdownMenuTrigger asChild>
-                                    <Button aria-haspopup="true" size="icon" variant="ghost">
-                                        <MoreHorizontal className="h-4 w-4" />
-                                        <span className="sr-only">Toggle menu</span>
-                                    </Button>
-                                </DropdownMenuTrigger>
-                                <DropdownMenuContent align="end">
-                                    <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                                    <Link href={`/admin/users/${user.id}`}><DropdownMenuItem>View Details</DropdownMenuItem></Link>
-                                    <DropdownMenuItem onClick={() => onEdit(user)}>Edit Role</DropdownMenuItem>
-                                    <DropdownMenuItem onClick={() => onStatusChange(user)}>Change Status</DropdownMenuItem>
-                                    <DropdownMenuSeparator />
-                                    <DropdownMenuItem className="text-destructive focus:bg-destructive/10 focus:text-destructive" onClick={() => onDelete(user)}>Delete User</DropdownMenuItem>
-                                </DropdownMenuContent>
-                            </DropdownMenu>
-                        </TableCell>
-                    </TableRow>
-                ))}
-            </TableBody>
-        </Table>
-    </div>
+            ))}
+        </TableBody>
+    </Table>
 );
 
 
@@ -311,27 +305,33 @@ export default function AdminUsersPage() {
                     </TabsList>
                 </div>
                 <TabsContent value="users" className="mt-4">
-                    <Card>
-                        <CardContent className="pt-6">
-                            <UserTable users={paginatedUsers} onEdit={handleEdit} onStatusChange={handleStatusChange} onDelete={handleDelete} />
-                        </CardContent>
-                    </Card>
+                    <div className="overflow-x-auto">
+                        <Card>
+                            <CardContent className="p-0">
+                                <UserTable users={paginatedUsers} onEdit={handleEdit} onStatusChange={handleStatusChange} onDelete={handleDelete} />
+                            </CardContent>
+                        </Card>
+                    </div>
                     <AppPagination currentPage={usersPage} totalPages={usersTotalPages} onPageChange={setUsersPage} />
                 </TabsContent>
                 <TabsContent value="testers" className="mt-4">
-                    <Card>
-                        <CardContent className="pt-6">
-                            <TesterTable users={paginatedTesters as any} onEdit={handleEdit} onStatusChange={handleStatusChange} onDelete={handleDelete} />
-                        </CardContent>
-                    </Card>
+                    <div className="overflow-x-auto">
+                        <Card>
+                            <CardContent className="p-0">
+                                <TesterTable users={paginatedTesters as any} onEdit={handleEdit} onStatusChange={handleStatusChange} onDelete={handleDelete} />
+                            </CardContent>
+                        </Card>
+                    </div>
                     <AppPagination currentPage={testersPage} totalPages={testersTotalPages} onPageChange={setTestersPage} />
                 </TabsContent>
                 <TabsContent value="staff" className="mt-4">
-                    <Card>
-                        <CardContent className="pt-6">
-                            <StaffTable users={paginatedStaff as any} onEdit={handleEdit} onStatusChange={handleStatusChange} onDelete={handleDelete} />
-                        </CardContent>
-                    </Card>
+                    <div className="overflow-x-auto">
+                        <Card>
+                            <CardContent className="p-0">
+                                <StaffTable users={paginatedStaff as any} onEdit={handleEdit} onStatusChange={handleStatusChange} onDelete={handleDelete} />
+                            </CardContent>
+                        </Card>
+                    </div>
                     <AppPagination currentPage={staffPage} totalPages={staffTotalPages} onPageChange={setStaffPage} />
                 </TabsContent>
             </Tabs>
