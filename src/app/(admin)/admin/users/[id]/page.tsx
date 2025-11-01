@@ -17,31 +17,31 @@ import { useToast } from '@/hooks/use-toast';
 
 
 const usersData = [
-    { id: 1, name: "Tony Stark", email: "tony@stark.io", role: "User", status: "Active", avatar: "https://i.pravatar.cc/150?u=tony", testingPaths: ["Professional"] },
-    { id: 2, name: "Bruce Wayne", email: "bruce@wayne.com", role: "User", status: "Active", avatar: "https://i.pravatar.cc/150?u=bruce", testingPaths: ["Professional", "Community"] },
-    { id: 10, name: "Stephen Strange", email: "stephen@sanctum.com", role: "User", status: "Active", avatar: "https://i.pravatar.cc/150?u=stephen", testingPaths: ["Community"] },
-    { id: 11, name: "Wanda Maximoff", email: "wanda@westview.com", role: "User", status: "Inactive", avatar: "https://i.pravatar.cc/150?u=wanda", testingPaths: ["Community"] },
-    { id: 12, name: "Natasha Romanoff", email: "natasha@shield.org", role: "User", status: "Active", avatar: "https://i.pravatar.cc/150?u=natasha", testingPaths: ["Professional"] },
-    { id: 13, name: "Steve Rogers", email: "steve@avengers.com", role: "User", status: "Active", avatar: "https://i.pravatar.cc/150?u=steve", testingPaths: ["Community", "Professional"] },
-    { id: 14, name: "Thor Odinson", email: "thor@asgard.com", role: "User", status: "Active", avatar: "https://i.pravatar.cc/150?u=thor", testingPaths: ["Community"] },
+    { id: 1, name: "Tony Stark", email: "tony@stark.io", phone: "555-0110", role: "User", status: "Active", avatar: "https://i.pravatar.cc/150?u=tony", testingPaths: ["Professional"] },
+    { id: 2, name: "Bruce Wayne", email: "bruce@wayne.com", phone: "555-0111", role: "User", status: "Active", avatar: "https://i.pravatar.cc/150?u=bruce", testingPaths: ["Professional", "Community"] },
+    { id: 10, name: "Stephen Strange", email: "stephen@sanctum.com", phone: "555-0112", role: "User", status: "Active", avatar: "https://i.pravatar.cc/150?u=stephen", testingPaths: ["Community"] },
+    { id: 11, name: "Wanda Maximoff", email: "wanda@westview.com", phone: "555-0113", role: "User", status: "Inactive", avatar: "https://i.pravatar.cc/150?u=wanda", testingPaths: ["Community"] },
+    { id: 12, name: "Natasha Romanoff", email: "natasha@shield.org", phone: "555-0114", role: "User", status: "Active", avatar: "https://i.pravatar.cc/150?u=natasha", testingPaths: ["Professional"] },
+    { id: 13, name: "Steve Rogers", email: "steve@avengers.com", phone: "555-0115", role: "User", status: "Active", avatar: "https://i.pravatar.cc/150?u=steve", testingPaths: ["Community", "Professional"] },
+    { id: 14, name: "Thor Odinson", email: "thor@asgard.com", phone: "555-0116", role: "User", status: "Active", avatar: "https://i.pravatar.cc/150?u=thor", testingPaths: ["Community"] },
 ];
 
 const testersData = [
-    { id: 3, name: "Peter Parker", email: "peter@dailybugle.com", role: "Tester", status: "Active", avatar: "https://i.pravatar.cc/150?u=peter", expertise: ["Manual", "Usability"], tests: 25, bugs: 120, suggestions: 30, projects: ["Nexus Browser", "QuantumLeap CRM", "Starlight Editor"] },
-    { id: 4, name: "Diana Prince", email: "diana@them.com", role: "Tester", status: "Inactive", avatar: "https://i.pravatar.cc/150?u=diana", expertise: ["Performance"], tests: 12, bugs: 45, suggestions: 10, projects: ["Project Phoenix", "Helios Platform"] },
-    { id: 5, name: "Clark Kent", email: "clark@dailyplanet.com", role: "Tester", status: "Active", avatar: "https://i.pravatar.cc/150?u=clark", expertise: ["Automation", "Security"], tests: 42, bugs: 250, suggestions: 5, projects: ["Odyssey Social", "Aperture Notes"] },
-    { id: 6, name: "Harley Quinn", email: "harleen@arkham.net", role: "Tester", status: "Banned", avatar: "https://i.pravatar.cc/150?u=harley", expertise: ["Manual"], tests: 5, bugs: 15, suggestions: 2, projects: ["Black Mesa OS"] },
-    { id: 15, name: "Barry Allen", email: "barry@ccpd.com", role: "Tester", status: "Active", avatar: "https://i.pravatar.cc/150?u=barry", expertise: ["Performance", "API"], tests: 33, bugs: 180, suggestions: 25, projects: ["Blue Sun CRM", "Virtucon Scheduler"] },
-    { id: 16, name: "Arthur Curry", email: "arthur@atlantis.com", role: "Tester", status: "Active", avatar: "https://i.pravatar.cc/150?u=arthur", expertise: ["Manual", "Usability"], tests: 18, bugs: 90, suggestions: 15, projects: ["Soylent Green Delivery", "InGen DB"] },
-    { id: 17, name: "Selina Kyle", email: "selina@gotham.com", role: "Tester", status: "Active", avatar: "https://i.pravatar.cc/150?u=selina", expertise: ["Security"], tests: 21, bugs: 110, suggestions: 20, projects: ["Roxxon Energy Tracker", "Massive Dynamic Tools"] },
+    { id: 3, name: "Peter Parker", email: "peter@dailybugle.com", phone: "555-0117", role: "Tester", status: "Active", avatar: "https://i.pravatar.cc/150?u=peter", expertise: ["Manual", "Usability"], tests: 25, bugs: 120, suggestions: 30, projects: ["Nexus Browser", "QuantumLeap CRM", "Starlight Editor"] },
+    { id: 4, name: "Diana Prince", email: "diana@them.com", phone: "555-0118", role: "Tester", status: "Inactive", avatar: "https://i.pravatar.cc/150?u=diana", expertise: ["Performance"], tests: 12, bugs: 45, suggestions: 10, projects: ["Project Phoenix", "Helios Platform"] },
+    { id: 5, name: "Clark Kent", email: "clark@dailyplanet.com", phone: "555-0119", role: "Tester", status: "Active", avatar: "https://i.pravatar.cc/150?u=clark", expertise: ["Automation", "Security"], tests: 42, bugs: 250, suggestions: 5, projects: ["Odyssey Social", "Aperture Notes"] },
+    { id: 6, name: "Harley Quinn", email: "harleen@arkham.net", phone: "555-0120", role: "Tester", status: "Banned", avatar: "https://i.pravatar.cc/150?u=harley", expertise: ["Manual"], tests: 5, bugs: 15, suggestions: 2, projects: ["Black Mesa OS"] },
+    { id: 15, name: "Barry Allen", email: "barry@ccpd.com", phone: "555-0121", role: "Tester", status: "Active", avatar: "https://i.pravatar.cc/150?u=barry", expertise: ["Performance", "API"], tests: 33, bugs: 180, suggestions: 25, projects: ["Blue Sun CRM", "Virtucon Scheduler"] },
+    { id: 16, name: "Arthur Curry", email: "arthur@atlantis.com", phone: "555-0122", role: "Tester", status: "Active", avatar: "https://i.pravatar.cc/150?u=arthur", expertise: ["Manual", "Usability"], tests: 18, bugs: 90, suggestions: 15, projects: ["Soylent Green Delivery", "InGen DB"] },
+    { id: 17, name: "Selina Kyle", email: "selina@gotham.com", phone: "555-0123", role: "Tester", status: "Active", avatar: "https://i.pravatar.cc/150?u=selina", expertise: ["Security"], tests: 21, bugs: 110, suggestions: 20, projects: ["Roxxon Energy Tracker", "Massive Dynamic Tools"] },
 ];
 
 const staffData = [
-    { id: 7, name: "Nick Fury", email: "nick@shield.org", role: "Super Admin", status: "Active", avatar: "https://i.pravatar.cc/150?u=nick" },
-    { id: 8, name: "Maria Hill", email: "maria@shield.org", role: "Admin", status: "Active", avatar: "https://i.pravatar.cc/150?u=maria" },
-    { id: 9, name: "Phil Coulson", email: "phil@shield.org", role: "Moderator", status: "Active", avatar: "https://i.pravatar.cc/150?u=phil" },
-    { id: 18, name: "Peggy Carter", email: "peggy@ssr.gov", role: "Admin", status: "Active", avatar: "https://i.pravatar.cc/150?u=peggy" },
-    { id: 19, name: "Melinda May", email: "melinda@shield.org", role: "Moderator", status: "Active", avatar: "https://i.pravatar.cc/150?u=melinda" },
+    { id: 7, name: "Nick Fury", email: "nick@shield.org", phone: "555-0124", role: "Super Admin", status: "Active", avatar: "https://i.pravatar.cc/150?u=nick" },
+    { id: 8, name: "Maria Hill", email: "maria@shield.org", phone: "555-0125", role: "Admin", status: "Active", avatar: "https://i.pravatar.cc/150?u=maria" },
+    { id: 9, name: "Phil Coulson", email: "phil@shield.org", phone: "555-0126", role: "Moderator", status: "Active", avatar: "https://i.pravatar.cc/150?u=phil" },
+    { id: 18, name: "Peggy Carter", email: "peggy@ssr.gov", phone: "555-0127", role: "Admin", status: "Active", avatar: "https://i.pravatar.cc/150?u=peggy" },
+    { id: 19, name: "Melinda May", email: "melinda@shield.org", phone: "555-0128", role: "Moderator", status: "Active", avatar: "https://i.pravatar.cc/150?u=melinda" },
 ];
 
 const allUsers = [...usersData, ...testersData, ...staffData];
@@ -114,6 +114,22 @@ export default function AdminUserDetailsPage() {
                                 >
                                     {currentUser.status}
                                 </Badge>
+                            </div>
+                        </CardContent>
+                    </Card>
+
+                    <Card>
+                        <CardHeader>
+                            <CardTitle>Contact Information</CardTitle>
+                        </CardHeader>
+                        <CardContent className="space-y-4 text-sm">
+                            <div className="flex items-center gap-3">
+                                <Mail className="w-4 h-4 text-muted-foreground" />
+                                <a href={`mailto:${currentUser.email}`} className="hover:underline">{currentUser.email}</a>
+                            </div>
+                            <div className="flex items-center gap-3">
+                                <Phone className="w-4 h-4 text-muted-foreground" />
+                                <span>{currentUser.phone}</span>
                             </div>
                         </CardContent>
                     </Card>
@@ -286,3 +302,5 @@ export default function AdminUserDetailsPage() {
         </>
     )
 }
+
+    
