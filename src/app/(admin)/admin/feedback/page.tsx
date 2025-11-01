@@ -56,10 +56,10 @@ export default function AdminFeedbackPage() {
     }
 
     return (
-        <div className="flex-1 space-y-8 p-4 sm:p-8 pt-6">
+        <div className="flex-1 space-y-8 container mx-auto px-4 md:px-6">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between space-y-2">
                 <div>
-                    <h2 className="text-3xl font-bold tracking-tight">Platform Feedback</h2>
+                    <h2 className="text-2xl sm:text-4xl font-bold bg-gradient-to-b from-primary to-primary/40 bg-clip-text text-transparent leading-[unset]">Platform Feedback</h2>
                     <p className="text-muted-foreground">Review and manage feedback submitted by users about the inTesters platform.</p>
                 </div>
                 <Button asChild>

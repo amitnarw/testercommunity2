@@ -26,10 +26,10 @@ export default function AdminSuggestionsPage() {
     const filteredSuggestions = suggestionItems.filter(s => filter === 'All' || s.status === filter);
 
     return (
-        <div className="flex-1 space-y-8 p-4 sm:p-8 pt-6">
+        <div className="flex-1 space-y-8 container mx-auto px-4 md:px-6">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between space-y-2">
                 <div>
-                    <h2 className="text-3xl font-bold tracking-tight">Feature Suggestions</h2>
+                    <h2 className="text-2xl sm:text-4xl font-bold bg-gradient-to-b from-primary to-primary/40 bg-clip-text text-transparent leading-[unset]">Feature Suggestions</h2>
                     <p className="text-muted-foreground">Manage new feature ideas and suggestions from the community.</p>
                 </div>
                  <Button asChild>

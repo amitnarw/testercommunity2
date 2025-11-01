@@ -1,29 +1,195 @@
 
-
 'use client';
 
-import { ArrowLeft } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { notFound, useParams } from 'next/navigation';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { ArrowLeft, Mail, Phone, Shield, User, Users, CheckCircle, Bug, Lightbulb, Package, Edit, Trash2 } from "lucide-react";
 import Link from 'next/link';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Separator } from '@/components/ui/separator';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
 
-export default function AdminUserDetailsPage({ params }: { params: { id: string }}) {
+
+const usersData = [
+    { id: 1, name: "Tony Stark", email: "tony@stark.io", role: "User", status: "Active", avatar: "https://i.pravatar.cc/150?u=tony", testingPaths: ["Professional"] },
+    { id: 2, name: "Bruce Wayne", email: "bruce@wayne.com", role: "User", status: "Active", avatar: "https://i.pravatar.cc/150?u=bruce", testingPaths: ["Professional", "Community"] },
+    { id: 10, name: "Stephen Strange", email: "stephen@sanctum.com", role: "User", status: "Active", avatar: "https://i.pravatar.cc/150?u=stephen", testingPaths: ["Community"] },
+    { id: 11, name: "Wanda Maximoff", email: "wanda@westview.com", role: "User", status: "Inactive", avatar: "https://i.pravatar.cc/150?u=wanda", testingPaths: ["Community"] },
+    { id: 12, name: "Natasha Romanoff", email: "natasha@shield.org", role: "User", status: "Active", avatar: "https://i.pravatar.cc/150?u=natasha", testingPaths: ["Professional"] },
+    { id: 13, name: "Steve Rogers", email: "steve@avengers.com", role: "User", status: "Active", avatar: "https://i.pravatar.cc/150?u=steve", testingPaths: ["Community", "Professional"] },
+    { id: 14, name: "Thor Odinson", email: "thor@asgard.com", role: "User", status: "Active", avatar: "https://i.pravatar.cc/150?u=thor", testingPaths: ["Community"] },
+];
+
+const testersData = [
+    { id: 3, name: "Peter Parker", email: "peter@dailybugle.com", role: "Tester", status: "Active", avatar: "https://i.pravatar.cc/150?u=peter", expertise: ["Manual", "Usability"], tests: 25, bugs: 120, suggestions: 30, projects: ["Nexus Browser", "QuantumLeap CRM", "Starlight Editor"] },
+    { id: 4, name: "Diana Prince", email: "diana@them.com", role: "Tester", status: "Inactive", avatar: "https://i.pravatar.cc/150?u=diana", expertise: ["Performance"], tests: 12, bugs: 45, suggestions: 10, projects: ["Project Phoenix", "Helios Platform"] },
+    { id: 5, name: "Clark Kent", email: "clark@dailyplanet.com", role: "Tester", status: "Active", avatar: "https://i.pravatar.cc/150?u=clark", expertise: ["Automation", "Security"], tests: 42, bugs: 250, suggestions: 5, projects: ["Odyssey Social", "Aperture Notes"] },
+    { id: 6, name: "Harley Quinn", email: "harleen@arkham.net", role: "Tester", status: "Banned", avatar: "https://i.pravatar.cc/150?u=harley", expertise: ["Manual"], tests: 5, bugs: 15, suggestions: 2, projects: ["Black Mesa OS"] },
+    { id: 15, name: "Barry Allen", email: "barry@ccpd.com", role: "Tester", status: "Active", avatar: "https://i.pravatar.cc/150?u=barry", expertise: ["Performance", "API"], tests: 33, bugs: 180, suggestions: 25, projects: ["Blue Sun CRM", "Virtucon Scheduler"] },
+    { id: 16, name: "Arthur Curry", email: "arthur@atlantis.com", role: "Tester", status: "Active", avatar: "https://i.pravatar.cc/150?u=arthur", expertise: ["Manual", "Usability"], tests: 18, bugs: 90, suggestions: 15, projects: ["Soylent Green Delivery", "InGen DB"] },
+    { id: 17, name: "Selina Kyle", email: "selina@gotham.com", role: "Tester", status: "Active", avatar: "https://i.pravatar.cc/150?u=selina", expertise: ["Security"], tests: 21, bugs: 110, suggestions: 20, projects: ["Roxxon Energy Tracker", "Massive Dynamic Tools"] },
+];
+
+const staffData = [
+    { id: 7, name: "Nick Fury", email: "nick@shield.org", role: "Super Admin", status: "Active", avatar: "https://i.pravatar.cc/150?u=nick" },
+    { id: 8, name: "Maria Hill", email: "maria@shield.org", role: "Admin", status: "Active", avatar: "https://i.pravatar.cc/150?u=maria" },
+    { id: 9, name: "Phil Coulson", email: "phil@shield.org", role: "Moderator", status: "Active", avatar: "https://i.pravatar.cc/150?u=phil" },
+    { id: 18, name: "Peggy Carter", email: "peggy@ssr.gov", role: "Admin", status: "Active", avatar: "https://i.pravatar.cc/150?u=peggy" },
+    { id: 19, name: "Melinda May", email: "melinda@shield.org", role: "Moderator", status: "Active", avatar: "https://i.pravatar.cc/150?u=melinda" },
+];
+
+const allUsers = [...usersData, ...testersData, ...staffData];
+
+
+export default function AdminUserDetailsPage() {
+    const params = useParams();
+    const user = allUsers.find(u => u.id.toString() === params.id);
+
+    if (!user) {
+        notFound();
+    }
+
+    const isTester = 'tests' in user;
+
     return (
         <div className="flex-1 space-y-8 p-4 sm:p-8 pt-6">
-            <div className="flex items-center gap-4">
-                 <Button variant="outline" size="icon" asChild>
-                    <Link href="/admin/users">
-                        <ArrowLeft className="h-4 w-4" />
-                        <span className="sr-only">Back to users</span>
-                    </Link>
-                </Button>
-                <div>
-                    <h2 className="text-3xl font-bold tracking-tight">User Details</h2>
-                    <p className="text-muted-foreground">Viewing details for user ID: {params.id}.</p>
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                 <div className="flex items-center gap-4">
+                    <Button variant="outline" size="icon" asChild>
+                        <Link href="/admin/users">
+                            <ArrowLeft className="h-4 w-4" />
+                            <span className="sr-only">Back to users</span>
+                        </Link>
+                    </Button>
+                    <div>
+                        <h2 className="text-3xl font-bold tracking-tight">User Details</h2>
+                        <p className="text-muted-foreground">Viewing profile for {user.name}.</p>
+                    </div>
+                </div>
+                 <div className="flex gap-4">
+                    <Button variant="outline"><Edit className="mr-2 h-4 w-4" /> Edit Profile</Button>
+                    <Button variant="destructive"><Trash2 className="mr-2 h-4 w-4" /> Delete User</Button>
                 </div>
             </div>
             
-            <div className="text-center py-20 bg-muted rounded-lg">
-                <p>User details page content to be built here.</p>
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                <div className="lg:col-span-1 space-y-8">
+                     <Card>
+                        <CardContent className="pt-6 flex flex-col items-center text-center">
+                            <Avatar className="h-24 w-24 mb-4">
+                                <AvatarImage src={user.avatar} />
+                                <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
+                            </Avatar>
+                            <h3 className="text-xl font-bold">{user.name}</h3>
+                            <p className="text-sm text-muted-foreground">{user.email}</p>
+                            <div className="flex gap-2 mt-4">
+                               <Badge variant={user.role === "User" || user.role === "Tester" ? "secondary" : "default"}>{user.role}</Badge>
+                               <Badge
+                                    variant={user.status === 'Banned' || user.status === 'Inactive' ? 'destructive' : 'secondary'}
+                                    className={user.status === 'Active' ? 'bg-green-500/20 text-green-700 dark:bg-green-500/10 dark:text-green-400' : ''}
+                                >
+                                    {user.status}
+                                </Badge>
+                            </div>
+                        </CardContent>
+                    </Card>
+
+                    {isTester && (
+                         <Card>
+                            <CardHeader>
+                                <CardTitle>Tester Stats</CardTitle>
+                            </CardHeader>
+                            <CardContent className="space-y-4">
+                                <div className="flex items-center justify-between text-sm">
+                                    <span className="text-muted-foreground flex items-center gap-2"><CheckCircle className="w-4 h-4"/> Tests Completed</span>
+                                    <span className="font-bold text-lg">{user.tests}</span>
+                                </div>
+                                 <div className="flex items-center justify-between text-sm">
+                                    <span className="text-muted-foreground flex items-center gap-2"><Bug className="w-4 h-4"/> Bugs Reported</span>
+                                    <span className="font-bold text-lg">{user.bugs}</span>
+                                </div>
+                                <div className="flex items-center justify-between text-sm">
+                                    <span className="text-muted-foreground flex items-center gap-2"><Lightbulb className="w-4 h-4"/> Suggestions Made</span>
+                                    <span className="font-bold text-lg">{user.suggestions}</span>
+                                </div>
+                            </CardContent>
+                        </Card>
+                    )}
+
+                    {'testingPaths' in user && user.testingPaths && (
+                         <Card>
+                            <CardHeader>
+                                <CardTitle>Testing Paths</CardTitle>
+                            </CardHeader>
+                            <CardContent className="flex flex-wrap gap-2">
+                               {user.testingPaths.map(path => (
+                                   <Badge key={path} variant={path === 'Professional' ? 'default' : 'secondary'} className="text-sm py-1 px-3 flex items-center gap-2">
+                                       {path === 'Professional' ? <Package className="w-4 h-4" /> : <Users className="w-4 h-4" />}
+                                       {path}
+                                   </Badge>
+                               ))}
+                            </CardContent>
+                        </Card>
+                    )}
+                </div>
+                <div className="lg:col-span-2 space-y-8">
+                     {isTester && (
+                        <>
+                        <Card>
+                           <CardHeader>
+                               <CardTitle>Areas of Expertise</CardTitle>
+                           </CardHeader>
+                           <CardContent>
+                                <div className="flex flex-wrap gap-2">
+                                    {user.expertise?.map(e => <Badge key={e} variant="outline" className="text-base py-1 px-3 flex items-center gap-2"><Shield className="w-4 h-4" />{e}</Badge>)}
+                                </div>
+                           </CardContent>
+                       </Card>
+                        <Card>
+                            <CardHeader>
+                                <CardTitle>Recent Project History</CardTitle>
+                                <CardDescription>Projects this tester has contributed to.</CardDescription>
+                            </CardHeader>
+                            <CardContent>
+                                <Table>
+                                    <TableHeader>
+                                        <TableRow>
+                                            <TableHead>Project</TableHead>
+                                            <TableHead>Bugs</TableHead>
+                                            <TableHead>Suggestions</TableHead>
+                                        </TableRow>
+                                    </TableHeader>
+                                    <TableBody>
+                                        {user.projects?.map(project => (
+                                            <TableRow key={project}>
+                                                <TableCell className="font-medium">{project}</TableCell>
+                                                <TableCell>{Math.floor(Math.random() * 10) + 1}</TableCell>
+                                                <TableCell>{Math.floor(Math.random() * 5)}</TableCell>
+                                            </TableRow>
+                                        ))}
+                                    </TableBody>
+                                </Table>
+                            </CardContent>
+                        </Card>
+                        </>
+                    )}
+
+                    {!isTester && (
+                        <Card>
+                            <CardHeader>
+                                <CardTitle>User Activity</CardTitle>
+                            </CardHeader>
+                            <CardContent>
+                                 <div className="text-center py-20 bg-muted rounded-lg">
+                                    <p>Activity log for this user is not yet implemented.</p>
+                                </div>
+                            </CardContent>
+                        </Card>
+                    )}
+                   
+                </div>
             </div>
         </div>
     )

@@ -47,13 +47,13 @@ export function NotificationsPageContent({ title, description, notifications }: 
     };
 
     return (
-        <div className="container mx-auto px-4 md:px-6 py-12">
+        <div className="container mx-auto px-4 md:px-6">
             <header className="mb-8">
-              <h1 className="text-4xl font-bold">{title}</h1>
+              <h1 className="text-2xl sm:text-4xl font-bold bg-gradient-to-b from-primary to-primary/40 bg-clip-text text-transparent leading-[unset]">{title}</h1>
               <p className="text-muted-foreground">{description}</p>
             </header>
 
-            <main className="max-w-4xl mx-auto">
+            <main className="mx-auto">
                 <Card className="rounded-xl">
                     <CardContent className="p-0">
                         <div className="divide-y">
