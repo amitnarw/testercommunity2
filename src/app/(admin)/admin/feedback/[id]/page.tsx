@@ -9,12 +9,13 @@ import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useState } from "react";
+import { BackButton } from "@/components/back-button";
 
 
 const feedbackItems = [
@@ -45,46 +46,46 @@ export default function FeedbackDetailsPage() {
     if (!item) {
         notFound();
     }
-    
+
     const statusOptions = ["New", "Under Review", "Reviewed", "Implemented"];
 
     return (
-        <div className="flex-1 space-y-8 p-4 sm:p-8 pt-6">
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                 <div className="flex items-center gap-4">
-                    <Button variant="outline" size="icon" asChild>
-                        <Link href="/admin/feedback">
-                            <ArrowLeft className="h-4 w-4" />
-                        </Link>
-                    </Button>
+        <div className="container mx-auto px-4 md:px-6">
+            <div className="sticky top-0 z-[50] pt-2 sm:pt-3 pb-4 w-1/2">
+                <BackButton href="/community-dashboard" />
+            </div>
+            <div className="flex flex-row items-center justify-between gap-4">
+                <div className="flex items-center gap-4">
                     <div>
-                        <h2 className="text-3xl font-bold tracking-tight">Feedback Details</h2>
-                        <p className="text-muted-foreground">Viewing feedback ID: {item.id}</p>
+                        <h2 className="text-2xl sm:text-3xl font-extrabold bg-gradient-to-br from-primary to-primary/10 bg-clip-text text-transparent">Feedback Details</h2>
                     </div>
                 </div>
-                 <DropdownMenu>
+                <DropdownMenu>
                     <DropdownMenuTrigger asChild>
-                        <Button variant="outline"><Edit className="mr-2 h-4 w-4" /> Change Status</Button>
+                        <Button variant="outline" className="px-3">
+                            <Edit className="sm:mr-2 !h-3 !w-3 sm:!h-4 sm:!w-4" />
+                            <span className="hidden sm:block">Change Status</span>
+                        </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
                         {statusOptions.map(option => (
-                             <DropdownMenuItem key={option} onSelect={() => setStatus(option)}>
+                            <DropdownMenuItem key={option} onSelect={() => setStatus(option)}>
                                 {option}
                             </DropdownMenuItem>
                         ))}
                     </DropdownMenuContent>
                 </DropdownMenu>
             </div>
-            
-            <Card className="rounded-2xl shadow-xl overflow-hidden">
+
+            <Card className="rounded-2xl shadow-xl overflow-hidden mt-10">
                 <CardHeader className="bg-secondary/30 p-6">
-                    <CardTitle className="text-2xl">Feedback from {item.user}</CardTitle>
+                    <CardTitle className="text-lg sm:text-xl">Feedback from {item.user}</CardTitle>
                     <CardDescription>Submitted on {new Date(item.date).toLocaleDateString()}</CardDescription>
                 </CardHeader>
-                <CardContent className="p-0">
+                <CardContent className="p-0 bg-transparent">
                     <div className="grid grid-cols-1 lg:grid-cols-3">
                         <div className="lg:col-span-2 p-6 space-y-6">
-                             <div className="space-y-3">
+                            <div className="space-y-3">
                                 <h3 className="font-semibold flex items-center gap-2 text-muted-foreground"><MessageSquare className="w-5 h-5" /> Content</h3>
                                 <blockquote className="border-l-4 border-primary pl-4 italic bg-secondary p-4 rounded-r-lg">
                                     "{item.feedback}"
@@ -92,7 +93,7 @@ export default function FeedbackDetailsPage() {
                             </div>
                         </div>
                         <div className="lg:col-span-1 bg-secondary/50 p-6 space-y-6 border-l">
-                             <div className="space-y-2">
+                            <div className="space-y-2">
                                 <h3 className="font-semibold flex items-center gap-2 text-muted-foreground"><User className="w-5 h-5" /> Submitted By</h3>
                                 <div className="flex items-center gap-3">
                                     <p className="font-bold text-lg">{item.user}</p>
@@ -105,7 +106,7 @@ export default function FeedbackDetailsPage() {
                                 <p className="font-medium">{new Date(item.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
                             </div>
                             <Separator />
-                             <div className="space-y-2">
+                            <div className="space-y-2">
                                 <h3 className="font-semibold flex items-center gap-2 text-muted-foreground"><Tag className="w-5 h-5" /> Status</h3>
                                 <Badge
                                     variant={status === 'Implemented' ? 'secondary' : 'outline'}

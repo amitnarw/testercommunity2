@@ -14,6 +14,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { useState } from 'react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
+import { BackButton } from '@/components/back-button';
 
 
 const usersData = [
@@ -57,7 +58,7 @@ const userSubmissions = [
 export default function AdminUserDetailsPage() {
     const params = useParams();
     const user = allUsers.find(u => u.id.toString() === params.id);
-    
+
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [currentUser, setCurrentUser] = useState<User | undefined>(user);
@@ -66,7 +67,7 @@ export default function AdminUserDetailsPage() {
     if (!currentUser) {
         notFound();
     }
-    
+
     const handleSaveChanges = () => {
         setIsEditModalOpen(false);
         toast({
@@ -80,241 +81,241 @@ export default function AdminUserDetailsPage() {
 
     return (
         <>
-        <div className="flex-1 space-y-8 p-4 sm:p-8 pt-6">
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                 <div className="flex items-center gap-4">
-                    <Button variant="outline" size="icon" asChild>
-                        <Link href="/admin/users">
-                            <ArrowLeft className="h-4 w-4" />
-                            <span className="sr-only">Back to users</span>
-                        </Link>
-                    </Button>
-                    <div>
-                        <h2 className="text-3xl font-bold tracking-tight">User Details</h2>
-                        <p className="text-muted-foreground">Viewing profile for {currentUser.name}.</p>
+            <div className="container mx-auto px-4 md:px-6">
+                <div className="sticky top-0 z-[50] pt-2 sm:pt-3 pb-4 w-1/2">
+                    <BackButton href="/community-dashboard" />
+                </div>
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                    <div className="flex items-center justify-between gap-4 w-full">
+                        <div>
+                            <h2 className="text-2xl sm:text-3xl font-extrabold bg-gradient-to-br from-primary to-primary/10 bg-clip-text text-transparent">User Details</h2>
+                        </div>
+                        <div className="flex gap-2 sm:gap-4">
+                            <Button variant="outline" className='px-3' onClick={() => setIsEditModalOpen(true)}>
+                                <Edit className="sm:mr-2 !h-3 !w-3 sm:!h-4 sm:!w-4" />
+                                <span className='hidden sm:block'>Edit Profile</span>
+                            </Button>
+                            <Button variant="destructive" className='px-3' onClick={() => setIsDeleteModalOpen(true)}>
+                                <Trash2 className="sm:mr-2 !h-3 !w-3 sm:!h-4 sm:!w-4" />
+                                <span className='hidden sm:block'>Delete User</span>
+                            </Button>
+                        </div>
                     </div>
                 </div>
-                 <div className="flex gap-4">
-                    <Button variant="outline" onClick={() => setIsEditModalOpen(true)}><Edit className="mr-2 h-4 w-4" /> Edit Profile</Button>
-                    <Button variant="destructive" onClick={() => setIsDeleteModalOpen(true)}>
-                        <Trash2 className="mr-2 h-4 w-4" /> Delete User
-                    </Button>
+
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-10">
+                    <div className="lg:col-span-1 space-y-8">
+                        <Card>
+                            <CardContent className="pt-6 flex flex-col items-center text-center">
+                                <Avatar className="h-24 w-24 mb-4">
+                                    <AvatarImage src={currentUser.avatar} />
+                                    <AvatarFallback>{currentUser.name.charAt(0)}</AvatarFallback>
+                                </Avatar>
+                                <h3 className="text-xl font-bold">{currentUser.name}</h3>
+                                <p className="text-sm text-muted-foreground">{currentUser.email}</p>
+                                <div className="flex gap-2 mt-4">
+                                    <Badge variant={currentUser.role === "User" || currentUser.role === "Tester" ? "secondary" : "default"}>{currentUser.role}</Badge>
+                                    <Badge
+                                        variant={currentUser.status === 'Banned' || currentUser.status === 'Inactive' ? 'destructive' : 'secondary'}
+                                        className={currentUser.status === 'Active' ? 'bg-green-500/20 text-green-700 dark:bg-green-500/10 dark:text-green-400' : ''}
+                                    >
+                                        {currentUser.status}
+                                    </Badge>
+                                </div>
+                            </CardContent>
+                        </Card>
+
+                        <Card>
+                            <CardHeader>
+                                <CardTitle>Contact Information</CardTitle>
+                            </CardHeader>
+                            <CardContent className="space-y-4 text-sm">
+                                <div className="flex items-center gap-3">
+                                    <Mail className="w-4 h-4 text-muted-foreground" />
+                                    <a href={`mailto:${currentUser.email}`} className="hover:underline">{currentUser.email}</a>
+                                </div>
+                                <div className="flex items-center gap-3">
+                                    <Phone className="w-4 h-4 text-muted-foreground" />
+                                    <span>{currentUser.phone}</span>
+                                </div>
+                            </CardContent>
+                        </Card>
+
+                        {isTester && 'tests' in currentUser && (
+                            <Card>
+                                <CardHeader>
+                                    <CardTitle>Tester Stats</CardTitle>
+                                </CardHeader>
+                                <CardContent className="space-y-4">
+                                    <div className="flex items-center justify-between text-sm">
+                                        <span className="text-muted-foreground flex items-center gap-2"><CheckCircle className="w-4 h-4" /> Tests Completed</span>
+                                        <span className="font-bold text-lg">{currentUser.tests}</span>
+                                    </div>
+                                    <div className="flex items-center justify-between text-sm">
+                                        <span className="text-muted-foreground flex items-center gap-2"><Bug className="w-4 h-4" /> Bugs Reported</span>
+                                        <span className="font-bold text-lg">{currentUser.bugs}</span>
+                                    </div>
+                                    <div className="flex items-center justify-between text-sm">
+                                        <span className="text-muted-foreground flex items-center gap-2"><Lightbulb className="w-4 h-4" /> Suggestions Made</span>
+                                        <span className="font-bold text-lg">{currentUser.suggestions}</span>
+                                    </div>
+                                </CardContent>
+                            </Card>
+                        )}
+
+                        {isUser && 'testingPaths' in currentUser && currentUser.testingPaths && (
+                            <Card>
+                                <CardHeader>
+                                    <CardTitle>Testing Paths</CardTitle>
+                                </CardHeader>
+                                <CardContent className="flex flex-wrap gap-2">
+                                    {currentUser.testingPaths.map(path => (
+                                        <Badge key={path} variant={path === 'Professional' ? 'default' : 'secondary'} className="text-sm py-1 px-3 flex items-center gap-2">
+                                            {path === 'Professional' ? <Package className="w-4 h-4" /> : <Users className="w-4 h-4" />}
+                                            {path}
+                                        </Badge>
+                                    ))}
+                                </CardContent>
+                            </Card>
+                        )}
+                    </div>
+                    <div className="lg:col-span-2 space-y-8">
+                        {isTester && 'expertise' in currentUser && (
+                            <>
+                                <Card>
+                                    <CardHeader>
+                                        <CardTitle>Areas of Expertise</CardTitle>
+                                    </CardHeader>
+                                    <CardContent>
+                                        <div className="flex flex-wrap gap-2">
+                                            {currentUser.expertise?.map(e => <Badge key={e} variant="outline" className="text-base py-1 px-3 flex items-center gap-2"><Shield className="w-4 h-4" />{e}</Badge>)}
+                                        </div>
+                                    </CardContent>
+                                </Card>
+                                <Card>
+                                    <CardHeader>
+                                        <CardTitle>Recent Project History</CardTitle>
+                                        <CardDescription>Projects this tester has contributed to.</CardDescription>
+                                    </CardHeader>
+                                    <CardContent>
+                                        <Table>
+                                            <TableHeader>
+                                                <TableRow>
+                                                    <TableHead>Project</TableHead>
+                                                    <TableHead>Bugs</TableHead>
+                                                    <TableHead>Suggestions</TableHead>
+                                                </TableRow>
+                                            </TableHeader>
+                                            <TableBody>
+                                                {'projects' in currentUser && currentUser.projects?.map(project => (
+                                                    <TableRow key={project}>
+                                                        <TableCell className="font-medium">{project}</TableCell>
+                                                        <TableCell>{Math.floor(Math.random() * 10) + 1}</TableCell>
+                                                        <TableCell>{Math.floor(Math.random() * 5)}</TableCell>
+                                                    </TableRow>
+                                                ))}
+                                            </TableBody>
+                                        </Table>
+                                    </CardContent>
+                                </Card>
+                            </>
+                        )}
+
+                        {!isTester && (
+                            <Card>
+                                <CardHeader>
+                                    <CardTitle>User Activity</CardTitle>
+                                    <CardDescription>Recent app submissions by this user.</CardDescription>
+                                </CardHeader>
+                                <CardContent>
+                                    <Table>
+                                        <TableHeader>
+                                            <TableRow>
+                                                <TableHead>Application</TableHead>
+                                                <TableHead>Date</TableHead>
+                                                <TableHead>Type</TableHead>
+                                                <TableHead>Status</TableHead>
+                                            </TableRow>
+                                        </TableHeader>
+                                        <TableBody>
+                                            {userSubmissions.map(submission => (
+                                                <TableRow key={submission.id}>
+                                                    <TableCell className="font-medium">{submission.name}</TableCell>
+                                                    <TableCell>{submission.date}</TableCell>
+                                                    <TableCell>
+                                                        <Badge variant={submission.type === "Professional" ? "default" : "secondary"}>
+                                                            {submission.type}
+                                                        </Badge>
+                                                    </TableCell>
+                                                    <TableCell>
+                                                        <Badge
+                                                            variant={submission.status === 'Rejected' ? 'destructive' : 'secondary'}
+                                                            className={submission.status === 'Approved' ? 'bg-green-500/20 text-green-700 dark:bg-green-500/10 dark:text-green-400' : ''}
+                                                        >
+                                                            {submission.status}
+                                                        </Badge>
+                                                    </TableCell>
+                                                </TableRow>
+                                            ))}
+                                        </TableBody>
+                                    </Table>
+                                </CardContent>
+                            </Card>
+                        )}
+
+                    </div>
                 </div>
             </div>
-            
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                <div className="lg:col-span-1 space-y-8">
-                     <Card>
-                        <CardContent className="pt-6 flex flex-col items-center text-center">
-                            <Avatar className="h-24 w-24 mb-4">
-                                <AvatarImage src={currentUser.avatar} />
-                                <AvatarFallback>{currentUser.name.charAt(0)}</AvatarFallback>
-                            </Avatar>
-                            <h3 className="text-xl font-bold">{currentUser.name}</h3>
-                            <p className="text-sm text-muted-foreground">{currentUser.email}</p>
-                            <div className="flex gap-2 mt-4">
-                               <Badge variant={currentUser.role === "User" || currentUser.role === "Tester" ? "secondary" : "default"}>{currentUser.role}</Badge>
-                               <Badge
-                                    variant={currentUser.status === 'Banned' || currentUser.status === 'Inactive' ? 'destructive' : 'secondary'}
-                                    className={currentUser.status === 'Active' ? 'bg-green-500/20 text-green-700 dark:bg-green-500/10 dark:text-green-400' : ''}
-                                >
-                                    {currentUser.status}
-                                </Badge>
-                            </div>
-                        </CardContent>
-                    </Card>
 
-                    <Card>
-                        <CardHeader>
-                            <CardTitle>Contact Information</CardTitle>
-                        </CardHeader>
-                        <CardContent className="space-y-4 text-sm">
-                            <div className="flex items-center gap-3">
-                                <Mail className="w-4 h-4 text-muted-foreground" />
-                                <a href={`mailto:${currentUser.email}`} className="hover:underline">{currentUser.email}</a>
-                            </div>
-                            <div className="flex items-center gap-3">
-                                <Phone className="w-4 h-4 text-muted-foreground" />
-                                <span>{currentUser.phone}</span>
-                            </div>
-                        </CardContent>
-                    </Card>
-
-                    {isTester && 'tests' in currentUser && (
-                         <Card>
-                            <CardHeader>
-                                <CardTitle>Tester Stats</CardTitle>
-                            </CardHeader>
-                            <CardContent className="space-y-4">
-                                <div className="flex items-center justify-between text-sm">
-                                    <span className="text-muted-foreground flex items-center gap-2"><CheckCircle className="w-4 h-4"/> Tests Completed</span>
-                                    <span className="font-bold text-lg">{currentUser.tests}</span>
-                                </div>
-                                 <div className="flex items-center justify-between text-sm">
-                                    <span className="text-muted-foreground flex items-center gap-2"><Bug className="w-4 h-4"/> Bugs Reported</span>
-                                    <span className="font-bold text-lg">{currentUser.bugs}</span>
-                                </div>
-                                <div className="flex items-center justify-between text-sm">
-                                    <span className="text-muted-foreground flex items-center gap-2"><Lightbulb className="w-4 h-4"/> Suggestions Made</span>
-                                    <span className="font-bold text-lg">{currentUser.suggestions}</span>
-                                </div>
-                            </CardContent>
-                        </Card>
-                    )}
-
-                    {isUser && 'testingPaths' in currentUser && currentUser.testingPaths && (
-                         <Card>
-                            <CardHeader>
-                                <CardTitle>Testing Paths</CardTitle>
-                            </CardHeader>
-                            <CardContent className="flex flex-wrap gap-2">
-                               {currentUser.testingPaths.map(path => (
-                                   <Badge key={path} variant={path === 'Professional' ? 'default' : 'secondary'} className="text-sm py-1 px-3 flex items-center gap-2">
-                                       {path === 'Professional' ? <Package className="w-4 h-4" /> : <Users className="w-4 h-4" />}
-                                       {path}
-                                   </Badge>
-                               ))}
-                            </CardContent>
-                        </Card>
-                    )}
-                </div>
-                <div className="lg:col-span-2 space-y-8">
-                     {isTester && 'expertise' in currentUser && (
-                        <>
-                        <Card>
-                           <CardHeader>
-                               <CardTitle>Areas of Expertise</CardTitle>
-                           </CardHeader>
-                           <CardContent>
-                                <div className="flex flex-wrap gap-2">
-                                    {currentUser.expertise?.map(e => <Badge key={e} variant="outline" className="text-base py-1 px-3 flex items-center gap-2"><Shield className="w-4 h-4" />{e}</Badge>)}
-                                </div>
-                           </CardContent>
-                       </Card>
-                        <Card>
-                            <CardHeader>
-                                <CardTitle>Recent Project History</CardTitle>
-                                <CardDescription>Projects this tester has contributed to.</CardDescription>
-                            </CardHeader>
-                            <CardContent>
-                                <Table>
-                                    <TableHeader>
-                                        <TableRow>
-                                            <TableHead>Project</TableHead>
-                                            <TableHead>Bugs</TableHead>
-                                            <TableHead>Suggestions</TableHead>
-                                        </TableRow>
-                                    </TableHeader>
-                                    <TableBody>
-                                        {'projects' in currentUser && currentUser.projects?.map(project => (
-                                            <TableRow key={project}>
-                                                <TableCell className="font-medium">{project}</TableCell>
-                                                <TableCell>{Math.floor(Math.random() * 10) + 1}</TableCell>
-                                                <TableCell>{Math.floor(Math.random() * 5)}</TableCell>
-                                            </TableRow>
-                                        ))}
-                                    </TableBody>
-                                </Table>
-                            </CardContent>
-                        </Card>
-                        </>
-                    )}
-
-                    {!isTester && (
-                        <Card>
-                            <CardHeader>
-                                <CardTitle>User Activity</CardTitle>
-                                <CardDescription>Recent app submissions by this user.</CardDescription>
-                            </CardHeader>
-                            <CardContent>
-                               <Table>
-                                    <TableHeader>
-                                        <TableRow>
-                                            <TableHead>Application</TableHead>
-                                            <TableHead>Date</TableHead>
-                                            <TableHead>Type</TableHead>
-                                            <TableHead>Status</TableHead>
-                                        </TableRow>
-                                    </TableHeader>
-                                    <TableBody>
-                                        {userSubmissions.map(submission => (
-                                            <TableRow key={submission.id}>
-                                                <TableCell className="font-medium">{submission.name}</TableCell>
-                                                <TableCell>{submission.date}</TableCell>
-                                                <TableCell>
-                                                    <Badge variant={submission.type === "Professional" ? "default" : "secondary"}>
-                                                        {submission.type}
-                                                    </Badge>
-                                                </TableCell>
-                                                <TableCell>
-                                                    <Badge
-                                                        variant={submission.status === 'Rejected' ? 'destructive' : 'secondary'}
-                                                        className={submission.status === 'Approved' ? 'bg-green-500/20 text-green-700 dark:bg-green-500/10 dark:text-green-400' : ''}
-                                                    >
-                                                        {submission.status}
-                                                    </Badge>
-                                                </TableCell>
-                                            </TableRow>
-                                        ))}
-                                    </TableBody>
-                                </Table>
-                            </CardContent>
-                        </Card>
-                    )}
-                   
-                </div>
-            </div>
-        </div>
-
-        <Dialog open={isEditModalOpen} onOpenChange={setIsEditModalOpen}>
-            <DialogContent>
-                <DialogHeader>
-                    <DialogTitle>Edit {currentUser.name}</DialogTitle>
-                    <DialogDescription>
-                        Modify the user's role and status.
-                    </DialogDescription>
-                </DialogHeader>
-                <div className="py-4 space-y-4">
-                    <div className="space-y-2">
-                        <label>Role</label>
-                        <Select defaultValue={currentUser.role} onValueChange={(value) => setCurrentUser(prev => prev ? {...prev, role: value} as User : undefined)}>
-                            <SelectTrigger>
-                                <SelectValue placeholder="Select a role" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectItem value="User">User</SelectItem>
-                                <SelectItem value="Tester">Tester</SelectItem>
-                                <SelectItem value="Moderator">Moderator</SelectItem>
-                                <SelectItem value="Admin">Admin</SelectItem>
-                                <SelectItem value="Super Admin">Super Admin</SelectItem>
-                            </SelectContent>
-                        </Select>
+            <Dialog open={isEditModalOpen} onOpenChange={setIsEditModalOpen}>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle>Edit {currentUser.name}</DialogTitle>
+                        <DialogDescription>
+                            Modify the user's role and status.
+                        </DialogDescription>
+                    </DialogHeader>
+                    <div className="py-4 space-y-4">
+                        <div className="space-y-2">
+                            <label>Role</label>
+                            <Select defaultValue={currentUser.role} onValueChange={(value) => setCurrentUser(prev => prev ? { ...prev, role: value } as User : undefined)}>
+                                <SelectTrigger>
+                                    <SelectValue placeholder="Select a role" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="User">User</SelectItem>
+                                    <SelectItem value="Tester">Tester</SelectItem>
+                                    <SelectItem value="Moderator">Moderator</SelectItem>
+                                    <SelectItem value="Admin">Admin</SelectItem>
+                                    <SelectItem value="Super Admin">Super Admin</SelectItem>
+                                </SelectContent>
+                            </Select>
+                        </div>
+                        <div className="space-y-2">
+                            <label>Status</label>
+                            <Select defaultValue={currentUser.status} onValueChange={(value) => setCurrentUser(prev => prev ? { ...prev, status: value } : undefined)}>
+                                <SelectTrigger>
+                                    <SelectValue placeholder="Select a status" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectItem value="Active">Active</SelectItem>
+                                    <SelectItem value="Inactive">Inactive</SelectItem>
+                                    <SelectItem value="Banned">Banned</SelectItem>
+                                </SelectContent>
+                            </Select>
+                        </div>
                     </div>
-                    <div className="space-y-2">
-                        <label>Status</label>
-                        <Select defaultValue={currentUser.status} onValueChange={(value) => setCurrentUser(prev => prev ? {...prev, status: value} : undefined)}>
-                            <SelectTrigger>
-                                <SelectValue placeholder="Select a status" />
-                            </SelectTrigger>
-                            <SelectContent>
-                                <SelectItem value="Active">Active</SelectItem>
-                                <SelectItem value="Inactive">Inactive</SelectItem>
-                                <SelectItem value="Banned">Banned</SelectItem>
-                            </SelectContent>
-                        </Select>
-                    </div>
-                </div>
-                <DialogFooter>
-                    <Button variant="ghost" onClick={() => {
-                        setIsEditModalOpen(false)
-                        setCurrentUser(user) // Reset changes if cancelled
-                    }}>Cancel</Button>
-                    <Button onClick={handleSaveChanges}>Save Changes</Button>
-                </DialogFooter>
-            </DialogContent>
-        </Dialog>
+                    <DialogFooter>
+                        <Button variant="ghost" onClick={() => {
+                            setIsEditModalOpen(false)
+                            setCurrentUser(user) // Reset changes if cancelled
+                        }}>Cancel</Button>
+                        <Button onClick={handleSaveChanges}>Save Changes</Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
 
-        <Dialog open={isDeleteModalOpen} onOpenChange={setIsDeleteModalOpen}>
+            <Dialog open={isDeleteModalOpen} onOpenChange={setIsDeleteModalOpen}>
                 <DialogContent>
                     <DialogHeader>
                         <DialogTitle>Delete {currentUser?.name}?</DialogTitle>
@@ -325,8 +326,8 @@ export default function AdminUserDetailsPage() {
                     <DialogFooter>
                         <Button variant="ghost" onClick={() => setIsDeleteModalOpen(false)}>Cancel</Button>
                         <Button variant="destructive" onClick={() => {
-                             setIsDeleteModalOpen(false);
-                             toast({ variant: 'destructive', title: "User Deleted", description: `${currentUser.name} has been permanently deleted.`})
+                            setIsDeleteModalOpen(false);
+                            toast({ variant: 'destructive', title: "User Deleted", description: `${currentUser.name} has been permanently deleted.` })
                         }}>
                             <Trash2 className="mr-2 h-4 w-4" /> Permanently Delete
                         </Button>
@@ -337,4 +338,3 @@ export default function AdminUserDetailsPage() {
     )
 }
 
-    

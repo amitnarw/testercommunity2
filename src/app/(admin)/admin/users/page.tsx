@@ -10,7 +10,7 @@ import { Input } from "@/components/ui/input";
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import { Search, MoreHorizontal, UserPlus, Briefcase, Users2, CheckCircle, Ban, Trash2 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Tabs, TabsList, TabsContent } from "@/components/ui/tabs";
+import { Tabs, TabsList, TabsContent, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter } from '@/components/ui/dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import Link from 'next/link';
@@ -74,12 +74,12 @@ const UserTable = ({ users, onEdit, onStatusChange, onDelete }: { users: User[],
                     <TableCell className="hidden md:table-cell">{user.email}</TableCell>
                     <TableCell>
                         <div className="flex gap-1">
-                        {'testingPaths' in user && user.testingPaths.map(path => (
-                            <Badge key={path} variant="outline" className="flex items-center gap-1.5">
-                                {path === 'Professional' ? <Briefcase className="w-3 h-3" /> : <Users2 className="w-3 h-3" />}
-                                {path}
-                            </Badge>
-                        ))}
+                            {'testingPaths' in user && user.testingPaths.map(path => (
+                                <Badge key={path} variant="outline" className="flex items-center gap-1.5">
+                                    {path === 'Professional' ? <Briefcase className="w-3 h-3" /> : <Users2 className="w-3 h-3" />}
+                                    {path}
+                                </Badge>
+                            ))}
                         </div>
                     </TableCell>
                     <TableCell>
@@ -130,7 +130,7 @@ const TesterTable = ({ users, onEdit, onStatusChange, onDelete }: { users: User[
             {users.map(user => (
                 <TableRow key={user.id}>
                     <TableCell>
-                         <div className="flex items-center gap-3">
+                        <div className="flex items-center gap-3">
                             <Avatar>
                                 <AvatarImage src={user.avatar} />
                                 <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
@@ -139,12 +139,12 @@ const TesterTable = ({ users, onEdit, onStatusChange, onDelete }: { users: User[
                         </div>
                     </TableCell>
                     <TableCell className="hidden lg:table-cell">{user.email}</TableCell>
-                     <TableCell>
+                    <TableCell>
                         <div className="flex flex-wrap gap-1">
                             {'expertise' in user && user.expertise?.map(e => <Badge key={e} variant="secondary">{e}</Badge>)}
                         </div>
                     </TableCell>
-                     <TableCell>
+                    <TableCell>
                         {'tests' in user && user.tests}
                     </TableCell>
                     <TableCell>
@@ -194,7 +194,7 @@ const StaffTable = ({ users, onEdit, onStatusChange, onDelete }: { users: User[]
             {users.map(user => (
                 <TableRow key={user.id}>
                     <TableCell>
-                         <div className="flex items-center gap-3">
+                        <div className="flex items-center gap-3">
                             <Avatar>
                                 <AvatarImage src={user.avatar} />
                                 <AvatarFallback>{user.name.charAt(0)}</AvatarFallback>
@@ -204,7 +204,7 @@ const StaffTable = ({ users, onEdit, onStatusChange, onDelete }: { users: User[]
                     </TableCell>
                     <TableCell className="hidden md:table-cell">{user.email}</TableCell>
                     <TableCell>
-                         <Badge variant={user.role === "User" || user.role === "Tester" ? "secondary" : "default"}>{user.role}</Badge>
+                        <Badge variant={user.role === "User" || user.role === "Tester" ? "secondary" : "default"}>{user.role}</Badge>
                     </TableCell>
                     <TableCell>
                         <Badge
@@ -252,7 +252,7 @@ export default function AdminUsersPage() {
 
     const usersTotalPages = Math.ceil(usersData.length / ITEMS_PER_PAGE);
     const paginatedUsers = usersData.slice((usersPage - 1) * ITEMS_PER_PAGE, usersPage * ITEMS_PER_PAGE);
-    
+
     const testersTotalPages = Math.ceil(testersData.length / ITEMS_PER_PAGE);
     const paginatedTesters = testersData.slice((testersPage - 1) * ITEMS_PER_PAGE, testersPage * ITEMS_PER_PAGE);
 
@@ -271,7 +271,7 @@ export default function AdminUsersPage() {
         setSelectedUser(user);
         setIsEditModalOpen(true);
     };
-    
+
     const handleStatusChange = (user: User) => {
         setSelectedUser(user);
         setIsStatusModalOpen(true);
@@ -281,17 +281,17 @@ export default function AdminUsersPage() {
         setSelectedUser(user);
         setIsDeleteModalOpen(true);
     }
-    
+
     return (
         <div className="flex-1 space-y-8 container mx-auto px-4 md:px-6">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between space-y-2">
                 <div>
-                    <h2 className="text-4xl font-bold bg-gradient-to-b from-primary to-primary/40 bg-clip-text text-transparent leading-[unset]">User Management</h2>
+                    <h2 className="text-2xl sm:text-4xl font-bold bg-gradient-to-b from-primary to-primary/40 bg-clip-text text-transparent leading-[unset]">User Management</h2>
                     <p className="text-muted-foreground">View, manage, and take action on all user accounts.</p>
                 </div>
                 <Button><UserPlus className="mr-2 h-4 w-4" /> Add New User</Button>
             </div>
-            
+
             <Tabs defaultValue="users" className="w-full">
                 <div className="flex flex-col md:flex-row items-center justify-between gap-4">
                     <div className="relative w-full md:w-auto">
@@ -305,32 +305,32 @@ export default function AdminUsersPage() {
                     </TabsList>
                 </div>
                 <TabsContent value="users" className="mt-4">
-                     <Card>
+                    <Card>
                         <CardContent className="pt-6">
-                           <UserTable users={paginatedUsers} onEdit={handleEdit} onStatusChange={handleStatusChange} onDelete={handleDelete} />
+                            <UserTable users={paginatedUsers} onEdit={handleEdit} onStatusChange={handleStatusChange} onDelete={handleDelete} />
                         </CardContent>
                     </Card>
                     <AppPagination currentPage={usersPage} totalPages={usersTotalPages} onPageChange={setUsersPage} />
                 </TabsContent>
                 <TabsContent value="testers" className="mt-4">
-                     <Card>
+                    <Card>
                         <CardContent className="pt-6">
-                           <TesterTable users={paginatedTesters as any} onEdit={handleEdit} onStatusChange={handleStatusChange} onDelete={handleDelete} />
+                            <TesterTable users={paginatedTesters as any} onEdit={handleEdit} onStatusChange={handleStatusChange} onDelete={handleDelete} />
                         </CardContent>
                     </Card>
                     <AppPagination currentPage={testersPage} totalPages={testersTotalPages} onPageChange={setTestersPage} />
                 </TabsContent>
                 <TabsContent value="staff" className="mt-4">
-                     <Card>
+                    <Card>
                         <CardContent className="pt-6">
-                           <StaffTable users={paginatedStaff as any} onEdit={handleEdit} onStatusChange={handleStatusChange} onDelete={handleDelete} />
+                            <StaffTable users={paginatedStaff as any} onEdit={handleEdit} onStatusChange={handleStatusChange} onDelete={handleDelete} />
                         </CardContent>
                     </Card>
                     <AppPagination currentPage={staffPage} totalPages={staffTotalPages} onPageChange={setStaffPage} />
                 </TabsContent>
             </Tabs>
 
-             {/* Edit Role Modal */}
+            {/* Edit Role Modal */}
             <Dialog open={isEditModalOpen} onOpenChange={setIsEditModalOpen}>
                 <DialogContent>
                     <DialogHeader>
@@ -340,7 +340,7 @@ export default function AdminUsersPage() {
                         </DialogDescription>
                     </DialogHeader>
                     <div className="py-4">
-                         <Select defaultValue={selectedUser?.role}>
+                        <Select defaultValue={selectedUser?.role}>
                             <SelectTrigger>
                                 <SelectValue placeholder="Select a role" />
                             </SelectTrigger>
@@ -369,26 +369,26 @@ export default function AdminUsersPage() {
                         </DialogDescription>
                     </DialogHeader>
                     <div className="py-4 flex flex-col gap-4">
-                        <Button 
+                        <Button
                             variant={selectedUser?.status === 'Active' ? 'outline' : 'default'}
                             className="w-full justify-start gap-2"
                         >
                             <CheckCircle className="h-4 w-4" /> Activate Account
                         </Button>
-                        <Button 
-                            variant={selectedUser?.status === 'Banned' ? 'destructive' : 'outline'} 
+                        <Button
+                            variant={selectedUser?.status === 'Banned' ? 'destructive' : 'outline'}
                             className="w-full justify-start gap-2"
                         >
                             <Ban className="h-4 w-4" /> Ban Account
                         </Button>
-                     </div>
+                    </div>
                     <DialogFooter>
                         <Button variant="ghost" onClick={() => setIsStatusModalOpen(false)}>Cancel</Button>
                     </DialogFooter>
                 </DialogContent>
             </Dialog>
 
-             {/* Delete User Modal */}
+            {/* Delete User Modal */}
             <Dialog open={isDeleteModalOpen} onOpenChange={setIsDeleteModalOpen}>
                 <DialogContent>
                     <DialogHeader>
@@ -413,4 +413,3 @@ export default function AdminUsersPage() {
     );
 }
 
-    

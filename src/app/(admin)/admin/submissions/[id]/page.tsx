@@ -16,8 +16,9 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { toast } from '@/hooks/use-toast';
 import { cn } from '@/lib/utils';
+import { BackButton } from '@/components/back-button';
 
-export default function AdminSubmissionDetailPage({ params }: { params: { id: string }}) {
+export default function AdminSubmissionDetailPage({ params }: { params: { id: string } }) {
     const [reviewNotes, setReviewNotes] = useState('');
     const [rejectionImage, setRejectionImage] = useState<string | null>(null);
     const project = projects.find(p => p.id.toString() === params.id);
@@ -42,17 +43,17 @@ export default function AdminSubmissionDetailPage({ params }: { params: { id: st
     if (!project) {
         notFound();
     }
-    
+
     const handleApprove = () => {
         toast({
             title: "Submission Approved",
             description: `${project.name} has been approved and moved to the testing queue.`,
         });
     }
-    
+
     const handleReject = () => {
         if (!reviewNotes) {
-             toast({
+            toast({
                 variant: 'destructive',
                 title: "Rejection Failed",
                 description: "Review notes are required to reject a submission.",
@@ -67,21 +68,17 @@ export default function AdminSubmissionDetailPage({ params }: { params: { id: st
     }
 
     return (
-        <div className="flex-1 space-y-8 p-4 sm:p-8 pt-6">
+        <div className="container mx-auto px-4 md:px-6">
+            <div className="sticky top-0 z-[50] pt-2 sm:pt-3 pb-4 w-1/2">
+                <BackButton href="/community-dashboard" />
+            </div>
             <div className="flex items-center gap-4">
-                <Button variant="outline" size="icon" asChild>
-                    <Link href="/admin/submissions">
-                        <ArrowLeft className="h-4 w-4" />
-                        <span className="sr-only">Back to submissions</span>
-                    </Link>
-                </Button>
                 <div>
-                    <h2 className="text-3xl font-bold tracking-tight">Submission Details</h2>
-                    <p className="text-muted-foreground">Review and take action on {project.name}.</p>
+                    <h2 className="text-2xl sm:text-3xl font-extrabold bg-gradient-to-br from-primary to-primary/10 bg-clip-text text-transparent">Submission Details</h2>
                 </div>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-10">
                 <div className="lg:col-span-2 space-y-8">
                     <Card>
                         <CardHeader className="flex flex-row items-start gap-4">
@@ -107,14 +104,14 @@ export default function AdminSubmissionDetailPage({ params }: { params: { id: st
                             </div>
                         </CardContent>
                     </Card>
-                    
+
                     <Card>
                         <CardHeader>
                             <CardTitle>Review & Action</CardTitle>
                             <CardDescription>Add notes and optional screenshot before approving or rejecting.</CardDescription>
                         </CardHeader>
                         <CardContent>
-                             <div className="space-y-6">
+                            <div className="space-y-6">
                                 <div className="space-y-2">
                                     <Label htmlFor="review-notes">Review Notes (Required for rejection)</Label>
                                     <Textarea
@@ -169,11 +166,11 @@ export default function AdminSubmissionDetailPage({ params }: { params: { id: st
                                 <span className="text-muted-foreground flex items-center gap-2"><Type className="w-4 h-4" /> Type</span>
                                 <Badge variant="secondary">Community</Badge>
                             </div>
-                             <div className="flex items-center justify-between">
+                            <div className="flex items-center justify-between">
                                 <span className="text-muted-foreground flex items-center gap-2"><Smartphone className="w-4 h-4" /> Android Version</span>
                                 <span className="font-medium">{project.androidVersion}</span>
                             </div>
-                             <div className="flex items-center justify-between">
+                            <div className="flex items-center justify-between">
                                 <span className="text-muted-foreground flex items-center gap-2"><Users className="w-4 h-4" /> Testers</span>
                                 <span className="font-medium">{project.testersStarted}</span>
                             </div>
@@ -183,16 +180,16 @@ export default function AdminSubmissionDetailPage({ params }: { params: { id: st
                             </div>
                         </CardContent>
                     </Card>
-                     <Card>
+                    <Card>
                         <CardHeader>
                             <CardTitle>Developer Info</CardTitle>
                         </CardHeader>
                         <CardContent className="space-y-4 text-sm">
-                           <div className="flex items-center justify-between">
+                            <div className="flex items-center justify-between">
                                 <span className="text-muted-foreground">Name</span>
                                 <span className="font-medium">Stark Industries</span>
                             </div>
-                             <div className="flex items-center justify-between">
+                            <div className="flex items-center justify-between">
                                 <span className="text-muted-foreground">Email</span>
                                 <span className="font-medium">tony@stark.io</span>
                             </div>

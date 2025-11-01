@@ -10,6 +10,7 @@ import { ArrowLeft, Check, Download, Mail, Phone, Shield, User, X } from "lucide
 import Link from 'next/link';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Separator } from '@/components/ui/separator';
+import { BackButton } from '@/components/back-button';
 
 const applications = [
     { id: 1, name: "Maria Garcia", email: "maria@example.com", date: "2024-08-20", experience: "3-5 years", expertise: ["Manual", "Usability"], bio: "Detail-oriented QA tester with over 4 years of experience in manual and usability testing for mobile applications. Passionate about ensuring a seamless user experience and identifying critical bugs before they reach production. Proficient in JIRA, TestRail, and Charles Proxy.", avatar: "https://i.pravatar.cc/150?u=maria-garcia", phone: "555-0101" },
@@ -20,7 +21,7 @@ const applications = [
 ];
 
 
-export default function AdminApplicationDetailPage({ params }: { params: { id: string }}) {
+export default function AdminApplicationDetailPage({ params }: { params: { id: string } }) {
     const application = applications.find(app => app.id.toString() === params.id);
 
     if (!application) {
@@ -28,29 +29,32 @@ export default function AdminApplicationDetailPage({ params }: { params: { id: s
     }
 
     return (
-        <div className="flex-1 space-y-8 p-4 sm:p-8 pt-6">
-             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                <div className="flex items-center gap-4">
-                    <Button variant="outline" size="icon" asChild>
-                        <Link href="/admin/applications">
-                            <ArrowLeft className="h-4 w-4" />
-                            <span className="sr-only">Back to applications</span>
-                        </Link>
-                    </Button>
-                    <div>
-                        <h2 className="text-3xl font-bold tracking-tight">Tester Application</h2>
-                        <p className="text-muted-foreground">Reviewing application from {application.name}.</p>
+        <div className="container mx-auto px-4 md:px-6">
+            <div className="sticky top-0 z-[50] pt-2 sm:pt-3 pb-4 w-1/2">
+                <BackButton href="/community-dashboard" />
+            </div>
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                <div className="flex items-center justify-between gap-4 w-full">
+                    <div className='flex flex-col sm:flex-row items-start sm:items-center sm:gap-2'>
+                        <h2 className="text-2xl sm:text-3xl font-extrabold bg-gradient-to-br from-primary to-primary/10 bg-clip-text text-transparent">Application</h2>
+                        <p className="text-lg sm:text-xl bg-gradient-to-br from-primary to-primary/10 bg-clip-text text-transparent">( Tester )</p>
                     </div>
-                </div>
-                <div className="flex gap-4">
-                    <Button variant="destructive"><X className="mr-2 h-4 w-4" /> Reject Application</Button>
-                    <Button className="bg-green-600 hover:bg-green-700"><Check className="mr-2 h-4 w-4" /> Approve Application</Button>
+                    <div className="flex gap-4">
+                        <Button variant="destructive">
+                            <X className="sm:mr-2 !h-3 !w-3 sm:!h-4 sm:!w-4" />
+                            <span className='hidden sm:block'>Reject Application</span>
+                        </Button>
+                        <Button className="bg-green-600 hover:bg-green-700">
+                            <Check className="sm:mr-2 !h-3 !w-3 sm:!h-4 sm:!w-4" />
+                            <span className='hidden sm:block'>Approve Application</span>
+                        </Button>
+                    </div>
                 </div>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-10">
                 <div className="lg:col-span-1 space-y-8">
-                     <Card>
+                    <Card>
                         <CardContent className="pt-6 flex flex-col items-center text-center">
                             <Avatar className="h-24 w-24 mb-4">
                                 <AvatarImage src={application.avatar} />
@@ -67,7 +71,7 @@ export default function AdminApplicationDetailPage({ params }: { params: { id: s
                             <CardTitle>Contact</CardTitle>
                         </CardHeader>
                         <CardContent className="space-y-4 text-sm">
-                             <div className="flex items-center gap-3">
+                            <div className="flex items-center gap-3">
                                 <Mail className="w-4 h-4 text-muted-foreground" />
                                 <a href={`mailto:${application.email}`} className="hover:underline">{application.email}</a>
                             </div>
@@ -77,44 +81,44 @@ export default function AdminApplicationDetailPage({ params }: { params: { id: s
                             </div>
                         </CardContent>
                     </Card>
-                    
+
                     <Button variant="outline" className="w-full">
                         <Download className="mr-2 h-4 w-4" /> Download Resume/CV
                     </Button>
                 </div>
                 <div className="lg:col-span-2 space-y-8">
-                   <Card>
-                       <CardHeader>
-                           <CardTitle>Professional Background</CardTitle>
-                       </CardHeader>
-                       <CardContent>
-                           <p className="text-muted-foreground">{application.bio}</p>
-                           <Separator className="my-6" />
-                           <div className="grid grid-cols-2 gap-4 text-sm">
-                               <div>
-                                   <p className="font-semibold text-muted-foreground">Experience</p>
-                                   <p className="font-bold text-lg">{application.experience}</p>
-                               </div>
-                               <div>
-                                   <p className="font-semibold text-muted-foreground">Submitted</p>
-                                   <p>{new Date(application.date).toLocaleDateString()}</p>
-                               </div>
-                           </div>
-                           <Separator className="my-6" />
+                    <Card>
+                        <CardHeader>
+                            <CardTitle>Professional Background</CardTitle>
+                        </CardHeader>
+                        <CardContent>
+                            <p className="text-muted-foreground">{application.bio}</p>
+                            <Separator className="my-6" />
+                            <div className="grid grid-cols-2 gap-4 text-sm">
+                                <div>
+                                    <p className="font-semibold text-muted-foreground">Experience</p>
+                                    <p className="font-bold text-lg">{application.experience}</p>
+                                </div>
+                                <div>
+                                    <p className="font-semibold text-muted-foreground">Submitted</p>
+                                    <p>{new Date(application.date).toLocaleDateString()}</p>
+                                </div>
+                            </div>
+                            <Separator className="my-6" />
                             <div>
                                 <p className="font-semibold text-muted-foreground mb-3">Areas of Expertise</p>
                                 <div className="flex flex-wrap gap-2">
                                     {application.expertise.map(e => <Badge key={e} variant="outline" className="text-base py-1 px-3 flex items-center gap-2"><Shield className="w-4 h-4" />{e}</Badge>)}
                                 </div>
                             </div>
-                       </CardContent>
-                   </Card>
+                        </CardContent>
+                    </Card>
                     <Card>
-                       <CardHeader>
-                           <CardTitle>Screening Questions</CardTitle>
-                           <CardDescription>Responses to our standard screening questions.</CardDescription>
-                       </CardHeader>
-                       <CardContent className="space-y-6">
+                        <CardHeader>
+                            <CardTitle>Screening Questions</CardTitle>
+                            <CardDescription>Responses to our standard screening questions.</CardDescription>
+                        </CardHeader>
+                        <CardContent className="space-y-6">
                             <div>
                                 <h4 className="font-semibold mb-1">Describe a critical bug you found and how you reported it.</h4>
                                 <p className="text-sm text-muted-foreground bg-secondary p-3 rounded-md">"In a previous project, I found a race condition that could lead to data corruption during simultaneous write operations. I reported it with detailed replication steps, logs, and a video recording, classifying it as 'Critical'. The developers were able to fix it before the production release."</p>
@@ -123,8 +127,8 @@ export default function AdminApplicationDetailPage({ params }: { params: { id: s
                                 <h4 className="font-semibold mb-1">How do you approach testing a new feature?</h4>
                                 <p className="text-sm text-muted-foreground bg-secondary p-3 rounded-md">"I start by understanding the requirements and user stories. Then, I create a test plan covering functional, UI, and edge cases. I execute the tests manually first to get a feel for the feature, and then identify candidates for automation to ensure long-term quality."</p>
                             </div>
-                       </CardContent>
-                   </Card>
+                        </CardContent>
+                    </Card>
                 </div>
             </div>
         </div>
