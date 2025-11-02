@@ -19,6 +19,7 @@ const proNavLinks = [
     { name: "Projects", href: "/tester/projects", icon: Briefcase },
     { name: "Earnings", href: "/tester/earnings", icon: DollarSign },
     { name: "Activities", href: "/tester/activities", icon: Activity },
+    { name: "Notifications", href: "/tester/notifications", icon: Bell },
     { name: "Support", href: "/tester/support", icon: LifeBuoy },
 ];
 
@@ -29,6 +30,7 @@ const adminNavLinks = [
     { name: "Applications", href: "/admin/applications", icon: UserPlus },
     { name: "Feedback", href: "/admin/feedback", icon: MessageSquare },
     { name: "Suggestions", href: "/admin/suggestions", icon: Lightbulb },
+    { name: "Notifications", href: "/admin/notifications", icon: Bell },
 ];
 
 const NavLink = ({ href, icon: Icon, isCollapsed, children }: { href: string, icon: React.ElementType, isCollapsed: boolean, children: React.ReactNode }) => {

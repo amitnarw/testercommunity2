@@ -2,9 +2,9 @@ import Image from 'next/image';
 import { Badge } from './ui/badge';
 
 const AppInfoHeader = ({ logo, name, dataAiHint, category, description, status, statusConfig }: {
-    logo: string, name: string, dataAiHint?: string, category: string, description: string, status?: string, statusConfig: {
-        badgeVariant: string;
-        icon: JSX.Element;
+    logo: string, name: string, dataAiHint?: string, category: string, description: string, status?: string, statusConfig?: {
+        badgeVariant?: string;
+        icon?: JSX.Element;
     }
 }) => {
     return (
@@ -30,7 +30,7 @@ const AppInfoHeader = ({ logo, name, dataAiHint, category, description, status, 
                     <p className="text-muted-foreground w-full !line-clamp-2">{description}</p>
                 </div>
 
-                {status &&
+                {status && statusConfig &&
                     <div className="flex flex-col items-start justify-center gap-2 col-span-4 sm:col-span-1">
                         <p className='text-black dark:text-white font-bold'>STATUS</p>
                         <p className={`flex flex-row items-center gap-4 justify-center w-full text-lg sm:text-2xl font-bold rounded-xl p-3 ${status === "In Testing" || status === "Rejected" ? "bg-gradient-to-br from-red-500/60 to-red-500/20 dark:from-red-500/30 dark:to-red-500/5" : status === "Completed" ? "bg-gradient-to-br from-green-500/60 to-green-500/20 dark:from-green-500/30 dark:to-green-500/5" : "bg-gradient-to-br from-yellow-500/60 to-yellow-500/20 dark:from-yellow-500/30 dark:to-yellow-500/5"} ${status === "In Testing" || status === "Rejected" ? "text-red-800 dark:text-red-500" : status === "Completed" ? "text-green-800 dark:text-green-500" : "text-yellow-800 dark:text-yellow-500"}`}>
