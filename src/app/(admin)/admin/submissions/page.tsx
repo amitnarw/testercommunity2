@@ -59,13 +59,13 @@ export default function AdminSubmissionsPage() {
         <div className="flex-1 space-y-8 container mx-auto px-4 md:px-6">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between space-y-2">
                 <div>
-                    <h2 className="text-4xl font-bold bg-gradient-to-b from-primary to-primary/40 bg-clip-text text-transparent leading-[unset]">Submissions</h2>
-                    <p className="text-muted-foreground">Review, approve, or reject developer app submissions.</p>
+                    <h2 className="text-2xl sm:text-3xl font-bold bg-gradient-to-b from-primary to-primary/40 bg-clip-text text-transparent leading-[unset]">Submissions</h2>
+                    <p className="text-sm sm:text-md text-muted-foreground">Review, approve, or reject developer app submissions.</p>
                 </div>
             </div>
 
             <Card>
-                <CardHeader>
+                <CardHeader className='p-2 sm:p-6'>
                     <div className="flex flex-col md:flex-row items-center justify-between gap-4">
                         <div className="relative w-full md:w-auto">
                             <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
@@ -73,15 +73,15 @@ export default function AdminSubmissionsPage() {
                         </div>
                          <Tabs defaultValue="All" onValueChange={handleFilterChange} className="w-full md:w-auto">
                             <TabsList className="grid w-full grid-cols-4">
-                                <TabsTrigger value="All">All</TabsTrigger>
-                                <TabsTrigger value="In Review">Pending</TabsTrigger>
-                                <TabsTrigger value="Approved">Approved</TabsTrigger>
-                                <TabsTrigger value="Rejected">Rejected</TabsTrigger>
+                                <TabsTrigger value="All" className='text-xs sm:text-sm'>All</TabsTrigger>
+                                <TabsTrigger value="In Review" className='text-xs sm:text-sm'>Pending</TabsTrigger>
+                                <TabsTrigger value="Approved" className='text-xs sm:text-sm'>Approved</TabsTrigger>
+                                <TabsTrigger value="Rejected" className='text-xs sm:text-sm'>Rejected</TabsTrigger>
                             </TabsList>
                         </Tabs>
                     </div>
                 </CardHeader>
-                <CardContent>
+                <CardContent className='grid grid-cols-1'>
                     <Table>
                         <TableHeader>
                             <TableRow>

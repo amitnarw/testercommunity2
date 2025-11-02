@@ -45,13 +45,13 @@ export default function AdminApplicationsPage() {
         <div className="flex-1 space-y-8 container mx-auto px-4 md:px-6">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between space-y-2">
                 <div>
-                    <h2 className="text-4xl font-bold bg-gradient-to-b from-primary to-primary/40 bg-clip-text text-transparent leading-[unset]">Tester Applications</h2>
-                    <p className="text-muted-foreground">Review and process applications from prospective professional testers.</p>
+                    <h2 className="text-2xl sm:text-4xl font-bold bg-gradient-to-b from-primary to-primary/40 bg-clip-text text-transparent leading-[unset]">Tester Applications</h2>
+                    <p className="text-sm sm:text-md text-muted-foreground">Review and process applications from prospective professional testers.</p>
                 </div>
             </div>
 
             <Card>
-                <CardHeader>
+                <CardHeader className="p-2 sm:p-6">
                     <div className="flex flex-col md:flex-row items-center justify-between gap-4">
                         <div className="relative w-full md:w-auto">
                             <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
@@ -59,7 +59,7 @@ export default function AdminApplicationsPage() {
                         </div>
                     </div>
                 </CardHeader>
-                <CardContent>
+                <CardContent className='grid grid-cols-1 p-2 sm:p-6'>
                     <Table>
                         <TableHeader>
                             <TableRow>

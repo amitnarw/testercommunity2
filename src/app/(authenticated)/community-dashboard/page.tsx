@@ -145,8 +145,8 @@ export default function CommunityDashboardPage() {
             <div className="container mx-auto px-4 md:px-6">
                 <header className="mb-12">
                     <div className="mb-6">
-                        <h1 className="text-4xl font-bold bg-gradient-to-b from-primary to-primary/40 bg-clip-text text-transparent leading-[unset]">Community Hub</h1>
-                        <p className="text-muted-foreground max-w-xl">Test apps, earn points, and help fellow developers build better products.</p>
+                        <h1 className="text-2xl sm:text-4xl font-bold bg-gradient-to-b from-primary to-primary/40 bg-clip-text text-transparent leading-[unset]">Community Hub</h1>
+                        <p className="text-sm sm:text-md text-muted-foreground max-w-xl">Test apps, earn points, and help fellow developers build better products.</p>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
                         <BentoCard className='col-span-2'>

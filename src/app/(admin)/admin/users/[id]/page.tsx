@@ -179,7 +179,7 @@ export default function AdminUserDetailsPage() {
                             </Card>
                         )}
                     </div>
-                    <div className="lg:col-span-2 space-y-8">
+                    <div className="">
                         {isTester && 'expertise' in currentUser && (
                             <>
                                 <Card>

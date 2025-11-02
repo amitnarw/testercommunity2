@@ -304,7 +304,7 @@ export default function AdminUsersPage() {
                         <TabsTrigger value="staff">Staff ({staffData.length})</TabsTrigger>
                     </TabsList>
                 </div>
-                <TabsContent value="users" className="mt-4">
+                <TabsContent value="users" className="mt-4 grid grid-cols-1">
                     <div className="overflow-x-auto">
                         <Card>
                             <CardContent className="p-0">
@@ -314,7 +314,7 @@ export default function AdminUsersPage() {
                     </div>
                     <AppPagination currentPage={usersPage} totalPages={usersTotalPages} onPageChange={setUsersPage} />
                 </TabsContent>
-                <TabsContent value="testers" className="mt-4">
+                <TabsContent value="testers" className="mt-4 grid grid-cols-1">
                     <div className="overflow-x-auto">
                         <Card>
                             <CardContent className="p-0">
@@ -324,7 +324,7 @@ export default function AdminUsersPage() {
                     </div>
                     <AppPagination currentPage={testersPage} totalPages={testersTotalPages} onPageChange={setTestersPage} />
                 </TabsContent>
-                <TabsContent value="staff" className="mt-4">
+                <TabsContent value="staff" className="mt-4 grid grid-cols-1">
                     <div className="overflow-x-auto">
                         <Card>
                             <CardContent className="p-0">
