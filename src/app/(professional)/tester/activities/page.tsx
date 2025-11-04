@@ -58,13 +58,13 @@ export default function ProfessionalActivitiesPage() {
         <div className="flex-1 space-y-8 p-4 sm:p-8 pt-0 sm:pt-0">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between space-y-2">
                 <div>
-                    <h2 className="text-3xl font-bold tracking-tight">My Activities</h2>
-                    <p className="text-muted-foreground">A complete log of your professional testing activities.</p>
+                    <h2 className="text-2xl sm:text-3xl font-bold bg-gradient-to-br from-primary to-primary/40 bg-clip-text text-transparent leading-[unset]">My Activities</h2>
+                    <p className="ttext-sm sm:text-md text-muted-foreground">A complete log of your professional testing activities.</p>
                 </div>
             </div>
 
             <Card>
-                <CardHeader>
+                <CardHeader className='p-2 sm:p-6'>
                     <div className="flex flex-col md:flex-row items-center justify-between gap-4">
                         <div className="relative w-full md:w-auto">
                             <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
@@ -85,7 +85,7 @@ export default function ProfessionalActivitiesPage() {
                         </DropdownMenu>
                     </div>
                 </CardHeader>
-                <CardContent>
+                <CardContent className='grid grid-cols-1 p-2 sm:p-6'>
                     <Table>
                         <TableHeader>
                             <TableRow>
