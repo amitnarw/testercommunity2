@@ -40,6 +40,29 @@ export default function ProfessionalEarningsPage() {
         setCurrentPage(page);
     };
 
+    const handleDownloadStatement = () => {
+        const headers = ["Payout ID", "Date", "Project", "Amount (INR)", "Status"];
+        const csvContent = [
+            headers.join(','),
+            ...earningsHistory.map(item => 
+                `${item.id},${item.date},"${item.project}",${item.amount},${item.status}`
+            )
+        ].join('\n');
+
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement('a');
+        if (link.href) {
+            URL.revokeObjectURL(link.href);
+        }
+        const url = URL.createObjectURL(blob);
+        link.href = url;
+        link.setAttribute('download', 'earnings-statement.csv');
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    };
+
+
     return (
         <div className="flex-1 space-y-8 container mx-auto px-4 md:px-6">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between space-y-2">
@@ -47,7 +70,7 @@ export default function ProfessionalEarningsPage() {
                     <h2 className="text-2xl sm:text-3xl font-bold bg-gradient-to-br from-primary to-primary/40 bg-clip-text text-transparent leading-[unset]">Earnings</h2>
                     <p className="text-sm sm:text-md text-muted-foreground">Track your payouts and manage payment methods.</p>
                 </div>
-                <Button>
+                <Button onClick={handleDownloadStatement}>
                     <Download className="mr-2 h-4 w-4" /> Download Statement
                 </Button>
             </div>
