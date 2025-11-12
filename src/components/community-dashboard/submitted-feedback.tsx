@@ -118,7 +118,7 @@ const FeedbackIcon = ({ type }: { type: SubmittedFeedbackType['type'] }) => {
     return <PartyPopper className="w-5 h-5 text-green-500 flex-shrink-0" />;
 }
 
-const FeedbackListItem = ({ fb, onSave, onDelete, onImageClick }: { fb: SubmittedFeedbackType, onSave: (data: any) => void, onDelete: (id: number) => void, onImageClick: (url: string) => void }) => (
+const FeedbackListItem = ({ fb, onSave, onDelete, onImageClick, isCompleted }: { fb: SubmittedFeedbackType, onSave: (data: any) => void, onDelete: (id: number) => void, onImageClick: (url: string) => void, isCompleted: boolean }) => (
     <Card className={`bg-gradient-to-tl ${fb.type === "Bug" ? "from-red-500/20" : fb.type === "Suggestion" ? "from-yellow-500/20" : "from-green-500/20"} ${fb.type === "Bug" ? "to-red-500/5" : fb.type === "Suggestion" ? "to-yellow-500/5" : "to-green-500/5"} p-4 pt-2 pr-2 shadow-none border-0 relative overflow-hidden pl-5`}>
         <div className="flex items-start flex-col gap-0">
             <div className="absolute scale-[2.5] rotate-45 top-2 left-1 opacity-5 dark:opacity-10">
@@ -126,7 +126,7 @@ const FeedbackListItem = ({ fb, onSave, onDelete, onImageClick }: { fb: Submitte
             </div>
             <div className="flex flex-row items-center justify-between w-full">
                 <p className="font-semibold">{fb.type}</p>
-                <div className="flex items-center gap-1">
+                <div className={`flex items-center gap-1 ${isCompleted && "hidden"}`}>
                     <FeedbackFormModal feedback={fb} onSave={onSave}>
                         <button className="hover:bg-white/50 p-2 rounded-md duration-300">
                             <Edit className="w-4 h-4" />
@@ -163,7 +163,7 @@ const FeedbackListItem = ({ fb, onSave, onDelete, onImageClick }: { fb: Submitte
     </Card>
 );
 
-const FeedbackGridItem = ({ fb, onSave, onDelete, onImageClick }: { fb: SubmittedFeedbackType, onSave: (data: any) => void, onDelete: (id: number) => void, onImageClick: (url: string) => void }) => (
+const FeedbackGridItem = ({ fb, onSave, onDelete, onImageClick, isCompleted }: { fb: SubmittedFeedbackType, onSave: (data: any) => void, onDelete: (id: number) => void, onImageClick: (url: string) => void, isCompleted: boolean }) => (
     <Card className={`bg-gradient-to-bl ${fb.type === "Bug" ? "from-red-500/20" : fb.type === "Suggestion" ? "from-yellow-500/20" : "from-green-500/20"} ${fb.type === "Bug" ? "to-red-500/10" : fb.type === "Suggestion" ? "to-yellow-500/10" : "to-green-500/10"} p-4 pr-2 shadow-none border-0 h-full flex flex-col relative overflow-hidden`}>
         <CardHeader className="p-0 flex-row items-center justify-between">
             <div className="flex items-center gap-3">
@@ -182,7 +182,7 @@ const FeedbackGridItem = ({ fb, onSave, onDelete, onImageClick }: { fb: Submitte
                     <Image src={fb.screenshot} alt="Feedback screenshot" width={30} height={100} className="rounded-sm border object-cover" />
                 </div>
             ) : <div />}
-            <div className="flex items-center gap-1">
+            <div className={`flex items-center gap-1 ${isCompleted && "hidden"}`}>
                 <FeedbackFormModal feedback={fb} onSave={onSave}>
                     <button className="hover:bg-white/50 p-1 sm:p-2 rounded-md duration-300">
                         <Edit className="w-3 h-3 sm:w-4 h-4" />
@@ -290,13 +290,13 @@ export function SubmittedFeedback({ isCompleted = false }: { isCompleted?: boole
                             {viewMode === 'list' ? (
                                 <div className="space-y-3">
                                     {currentFeedback.map((fb) => (
-                                        <FeedbackListItem key={fb.id} fb={fb} onSave={handleSaveFeedback} onDelete={handleDeleteFeedback} onImageClick={setFullscreenImage} />
+                                        <FeedbackListItem key={fb.id} fb={fb} onSave={handleSaveFeedback} onDelete={handleDeleteFeedback} onImageClick={setFullscreenImage} isCompleted={isCompleted} />
                                     ))}
                                 </div>
                             ) : (
                                 <div className="grid grid-cols-2 md:grid-cols-3 gap-2 sm:gap-4">
                                     {currentFeedback.map((fb) => (
-                                        <FeedbackGridItem key={fb.id} fb={fb} onSave={handleSaveFeedback} onDelete={handleDeleteFeedback} onImageClick={setFullscreenImage} />
+                                        <FeedbackGridItem key={fb.id} fb={fb} onSave={handleSaveFeedback} onDelete={handleDeleteFeedback} onImageClick={setFullscreenImage} isCompleted={isCompleted} />
                                     ))}
                                 </div>
                             )}
