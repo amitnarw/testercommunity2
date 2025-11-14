@@ -28,7 +28,7 @@ export default function PublicLayout({
     setIsAuthenticated(false);
   };
 
-  const isAuthPage = pathname === '/login' || pathname === '/signup';
+  const isAuthPage = pathname === '/login' || pathname === '/register';
 
   if (!isAuthChecked) {
       return null; // Or a loading spinner

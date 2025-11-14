@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { useTheme } from 'next-themes';
 import { Moon, Sun } from 'lucide-react';
-import { BackgroundBeams } from '@/components/background-beams';
+import { BackgroundBeams } from '@/components/background-beams';    
 import { useRouter } from 'next/navigation';
 import { BackButton } from '@/components/back-button';
 
