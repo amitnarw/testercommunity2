@@ -1,7 +1,7 @@
 
 'use client';
 
-import React, { useState, useRef, useEffect, useLayoutEffect } from 'react';
+import React, { useState } from 'react';
 import { useForm, type SubmitHandler, FormProvider } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -19,13 +19,11 @@ import {
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { ArrowLeft, ArrowRight, Save, CheckCircle, Check } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Save, CheckCircle } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { UserProfileType, UserJobRole, UserExperienceLevel, UserCompanySize, UserCompanyPosition, UserTotalPublishedApps, UserDevelopmentPlatform, UserPublishFrequency, UserTestingServiceReason, UserCommunicationMethod, UserNotificationPreference } from '@/lib/types';
 import { Checkbox } from '@/components/ui/checkbox';
 import Link from 'next/link';
-import { Stepper, Step, StepIndicator, StepStatus, StepSeparator } from '@/components/ui/stepper';
-
 
 const profileStepSchema = z.object({
   profileType: z.nativeEnum(UserProfileType).optional(),
@@ -71,8 +69,10 @@ const RegistrationSuccess = () => (
     </motion.div>
 );
 
-export default function ProfileSetupPage() {
+
+function ProfileSetupPage() {
     const [currentStep, setCurrentStep] = useState(0);
+    const [previousStep, setPreviousStep] = useState(0);
     const [isSubmitted, setIsSubmitted] = useState(false);
     
     const form = useForm<ProfileFormData>({
@@ -97,12 +97,33 @@ export default function ProfileSetupPage() {
         }
     });
 
-    const { handleSubmit } = form;
+    const { trigger, handleSubmit } = form;
+    
+    const next = async () => {
+        const fields = formSteps[currentStep].fields;
+        const output = await trigger(fields as (keyof ProfileFormData)[] | undefined, { shouldFocus: true });
+    
+        if (!output) return;
+    
+        if (currentStep < formSteps.length - 1) {
+            setPreviousStep(currentStep)
+            setCurrentStep(step => step + 1);
+        }
+    };
+
+    const prev = () => {
+        if (currentStep > 0) {
+            setPreviousStep(currentStep)
+            setCurrentStep(step => step - 1);
+        }
+    };
 
     const processForm: SubmitHandler<any> = (data) => {
         console.log('Final profile data:', data);
         setIsSubmitted(true);
     };
+
+    const delta = currentStep - previousStep;
 
     return (
         <div className="min-h-screen w-full bg-secondary/30 p-4 md:p-8 flex items-center justify-center">
@@ -118,26 +139,10 @@ export default function ProfileSetupPage() {
                         </p>
                     </div>
 
-                     <div className="relative mb-8 flex justify-center">
-                       <Stepper>
+                    <div className="w-full max-w-md mx-auto mb-8 flex items-center justify-center gap-2">
                         {formSteps.map((step, index) => (
-                            <React.Fragment key={step.id}>
-                                <Step
-                                    label={step.title}
-                                    onClick={() => setCurrentStep(index)}
-                                    >
-                                    <StepIndicator status={currentStep >= index ? 'active' : 'inactive'}>
-                                        <StepStatus
-                                        status={currentStep >= index ? 'active' : 'inactive'}
-                                        >
-                                        {currentStep > index && <Check />}
-                                        </StepStatus>
-                                    </StepIndicator>
-                                </Step>
-                                {index < formSteps.length -1 && <StepSeparator />}
-                            </React.Fragment>
+                             <div key={step.id} className={cn("h-2 rounded-full transition-all", currentStep >= index ? "bg-primary w-12" : "bg-muted w-4")}></div>
                         ))}
-                       </Stepper>
                     </div>
 
 
@@ -302,7 +307,7 @@ export default function ProfileSetupPage() {
                                             )}
 
                                             <div className="mt-8 pt-5 border-t flex justify-between">
-                                                <Button type="button" onClick={() => setCurrentStep(currentStep - 1)} disabled={currentStep === 0} variant="ghost" className={cn(currentStep === 0 && "invisible")}>
+                                                <Button type="button" onClick={prev} disabled={currentStep === 0} variant="ghost" className={cn(currentStep === 0 && "invisible")}>
                                                     <ArrowLeft className="mr-2 h-4 w-4" /> Back
                                                 </Button>
                                                 <div className="flex items-center gap-4">
@@ -311,7 +316,7 @@ export default function ProfileSetupPage() {
                                                     </Button>
                                                     <Button
                                                         type="button"
-                                                        onClick={() => setCurrentStep(currentStep + 1)}
+                                                        onClick={next}
                                                         className={cn(currentStep === formSteps.length -1 && "hidden")}
                                                     >
                                                         Next <ArrowRight className="mr-2 h-4 w-4" />
@@ -320,7 +325,7 @@ export default function ProfileSetupPage() {
                                                         type="submit"
                                                         className={cn(currentStep !== formSteps.length -1 && "hidden")}
                                                     >
-                                                        <Save className="mr-2 h-4 w-4"/> Finish Setup
+                                                       <Save className="mr-2 h-4 w-4"/> Finish Setup
                                                     </Button>
                                                 </div>
                                             </div>
@@ -336,3 +341,5 @@ export default function ProfileSetupPage() {
         </div>
     );
 }
+
+export default ProfileSetupPage;
