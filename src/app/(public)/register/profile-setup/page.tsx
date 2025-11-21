@@ -105,7 +105,7 @@ export default function ProfileSetupPage() {
 
      const updateArrowPosition = () => {
         if (stepperRef.current) {
-            const activeStepElement = stepperRef.current.children[currentStep] as HTMLElement;
+            const activeStepElement = stepperRef.current.querySelector(`[data-step-index="${currentStep}"]`) as HTMLElement;
             if (activeStepElement) {
                 const isMobile = window.innerWidth < 1024;
                 if (isMobile) {
@@ -144,33 +144,41 @@ export default function ProfileSetupPage() {
                         </p>
                     </div>
 
-                    <div ref={stepperRef} className="flex flex-col lg:flex-row items-start lg:items-center justify-center lg:justify-start relative">
-                        {formSteps.map((step, index) => (
-                            <React.Fragment key={step.id}>
-                                <div className="flex items-center gap-4 lg:gap-0 lg:flex-col p-4 cursor-pointer" onClick={() => setCurrentStep(index)}>
-                                    <div
-                                        className={cn(
-                                            "w-10 h-10 rounded-full flex items-center justify-center transition-colors duration-300 border-2",
-                                            currentStep > index ? "bg-green-500 border-green-500 text-white" :
-                                            currentStep === index ? "bg-primary border-primary text-primary-foreground" :
-                                            "bg-muted border-border"
-                                        )}
+                    <div className="relative">
+                        <div ref={stepperRef} className="flex flex-col lg:flex-row items-start lg:items-center justify-center relative">
+                            <div className="absolute top-1/2 left-0 right-0 h-[2px] bg-border hidden lg:block -translate-y-1/2"></div>
+                            <div className="absolute left-4 top-0 bottom-0 w-[2px] bg-border block lg:hidden -translate-x-1/2"></div>
+                            
+                            {formSteps.map((step, index) => (
+                                <React.Fragment key={step.id}>
+                                    <div 
+                                        data-step-index={index}
+                                        className="flex items-center gap-4 lg:flex-col p-4 cursor-pointer relative z-10" 
+                                        onClick={() => setCurrentStep(index)}
                                     >
-                                        {currentStep > index ? <Check className="w-5 h-5" /> : index + 1}
+                                        <div className={cn(
+                                            "w-8 h-8 rounded-full flex items-center justify-center transition-colors duration-300 border-2 bg-background",
+                                            currentStep > index ? "bg-green-500 border-green-500 text-white" :
+                                            currentStep === index ? "border-primary" : "border-border"
+                                        )}>
+                                            {currentStep > index ? <Check className="w-5 h-5" /> : (
+                                                <div className={cn("w-3 h-3 rounded-full transition-colors duration-300", currentStep === index && "bg-primary")}></div>
+                                            )}
+                                        </div>
                                     </div>
-                                    <div className="text-left lg:text-center">
-                                        <p className={cn("font-semibold", currentStep >= index ? "text-foreground" : "text-muted-foreground")}>{step.title}</p>
-                                        <p className="text-xs text-muted-foreground hidden lg:block">{step.description}</p>
-                                    </div>
-                                </div>
-                                {index < formSteps.length - 1 && (
-                                    <div className={cn("lg:flex-auto h-16 w-[2px] lg:h-[2px] lg:w-full transition-colors duration-300 -ml-[19px] mr-auto lg:m-0", currentStep > index ? "bg-green-500" : "bg-border")}></div>
-                                )}
-                            </React.Fragment>
-                        ))}
+                                    {index < formSteps.length - 1 && (
+                                        <div className="flex-1 h-12 w-[2px] lg:h-[2px] lg:w-auto bg-border -ml-4 lg:m-0"></div>
+                                    )}
+                                </React.Fragment>
+                            ))}
+                        </div>
                     </div>
 
+
                      <div className="mt-8 relative">
+                        <div className="text-center mb-4">
+                            <h3 className="font-semibold text-lg">{formSteps[currentStep].title}</h3>
+                        </div>
                         <div 
                             className="w-4 h-4 bg-card absolute z-10"
                             style={{ ...arrowStyle, clipPath: 'polygon(0 50%, 100% 0, 100% 100%)' }}
@@ -185,6 +193,7 @@ export default function ProfileSetupPage() {
                                         exit={{ opacity: 0, y: -20, transition: { duration: 0.3, ease: 'easeIn' } }}
                                     >
                                         <div className="bg-card p-8 rounded-2xl shadow-lg">
+                                            <p className="text-muted-foreground mb-6 text-center">{formSteps[currentStep].description}</p>
                                             {currentStep === 0 && (
                                                 <div className="space-y-6">
                                                     <FormField
@@ -340,11 +349,19 @@ export default function ProfileSetupPage() {
                                                     <Button type="button" variant="ghost" asChild>
                                                         <Link href="/dashboard">Skip for now</Link>
                                                     </Button>
-                                                    {currentStep < formSteps.length - 1 ? (
-                                                        <Button type="button" onClick={() => setCurrentStep(currentStep + 1)}> Next <ArrowRight className="ml-2 h-4 w-4" /></Button>
-                                                    ) : (
-                                                        <Button type="submit"> Finish Setup </Button>
-                                                    )}
+                                                    <Button
+                                                        type="button"
+                                                        onClick={() => setCurrentStep(currentStep + 1)}
+                                                        className={cn(currentStep === formSteps.length -1 && "hidden")}
+                                                    >
+                                                        Next <ArrowRight className="ml-2 h-4 w-4" />
+                                                    </Button>
+                                                    <Button
+                                                        type="submit"
+                                                        className={cn(currentStep !== formSteps.length -1 && "hidden")}
+                                                    >
+                                                        <Save className="mr-2 h-4 w-4"/> Finish Setup
+                                                    </Button>
                                                 </div>
                                             </div>
                                         </div>
