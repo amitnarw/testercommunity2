@@ -9,7 +9,14 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { FormField, FormControl, FormItem, FormMessage, FormLabel } from '@/components/ui/form';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormMessage,
+  FormLabel,
+} from "@/components/ui/form"
 import { cn } from '@/lib/utils';
 import { ArrowLeft, ArrowRight, UserPlus, CheckCircle, Moon, Sun, Check } from 'lucide-react';
 import { SiteLogo } from '@/components/icons';
@@ -20,6 +27,11 @@ import { Separator } from '@/components/ui/separator';
 import { UserProfileForm } from '@/components/user-profile-form';
 import Image from 'next/image';
 import { BackgroundBeams } from '@/components/background-beams';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { Label } from '@/components/ui/label';
+import { UserCompanyPosition, UserCompanySize, UserDevelopmentPlatform, UserExperienceLevel, UserJobRole, UserProfileType, UserPublishFrequency, UserTestingServiceReason, UserTotalPublishedApps } from '@/lib/types';
+import { Checkbox } from '@/components/ui/checkbox';
 
 
 const GoogleIcon = (props: React.HTMLAttributes<HTMLImageElement>) => (
@@ -27,16 +39,44 @@ const GoogleIcon = (props: React.HTMLAttributes<HTMLImageElement>) => (
 );
 
 const step1Schema = z.object({
-  fullName: z.string().min(2, "Full name is required."),
+  firstName: z.string().min(2, "First name is required."),
+  lastName: z.string().min(2, "Last name is required."),
   email: z.string().email("Please enter a valid email."),
   password: z.string().min(8, "Password must be at least 8 characters.").optional(),
 });
 
-const formSchemas = [step1Schema];
+const step2Schema = z.object({
+  country: z.string().optional(),
+  phone: z.string().optional(),
+  profileType: z.nativeEnum(UserProfileType).optional(),
+  jobRole: z.nativeEnum(UserJobRole).optional(),
+  experienceLevel: z.nativeEnum(UserExperienceLevel).optional(),
+});
+
+const step3Schema = z.object({
+    companyName: z.string().optional(),
+    companyWebsite: z.string().optional(),
+    companySize: z.nativeEnum(UserCompanySize).optional(),
+    positionInCompany: z.nativeEnum(UserCompanyPosition).optional(),
+});
+
+const step4Schema = z.object({
+    totalPublishedApps: z.nativeEnum(UserTotalPublishedApps).optional(),
+    platformDevelopment: z.nativeEnum(UserDevelopmentPlatform).optional(),
+    publishFrequency: z.nativeEnum(UserPublishFrequency).optional(),
+    serviceUsage: z.array(z.nativeEnum(UserTestingServiceReason)).optional(),
+    communicationMethods: z.array(z.nativeEnum(UserCommunicationMethod)).optional(),
+    notificationPreference: z.array(z.nativeEnum(UserNotificationPreference)).optional(),
+});
+
+
+const formSchemas = [step1Schema, step2Schema, step3Schema, step4Schema];
 
 const formSteps = [
-    { id: 'account', title: 'Create Account', description: 'Enter your personal details.', fields: ['fullName', 'email', 'password'] },
-    { id: 'profile', title: 'Tell us about yourself', description: 'Help us tailor your experience.' },
+    { id: 'account', title: 'Create Account', description: 'Enter your personal details.', fields: ['firstName', 'lastName', 'email', 'password'] },
+    { id: 'role', title: 'Your Role', description: 'Tell us about your professional background.', fields: ['country', 'phone', 'profileType', 'jobRole', 'experienceLevel'] },
+    { id: 'company', title: 'Your Company', description: 'Information about your organization.', fields: ['companyName', 'companyWebsite', 'companySize', 'positionInCompany'] },
+    { id: 'projects', title: 'Your Projects', description: 'Details about your development work.', fields: ['totalPublishedApps', 'platformDevelopment', 'publishFrequency', 'serviceUsage', 'communicationMethods', 'notificationPreference'] },
 ];
 
 const RegistrationSuccess = () => (
@@ -67,9 +107,25 @@ export default function RegisterPage() {
         resolver: zodResolver(formSchemas[currentStep]),
         mode: 'onChange',
         defaultValues: {
-            fullName: '',
+            firstName: '',
+            lastName: '',
             email: '',
             password: '',
+            country: undefined,
+            phone: undefined,
+            profileType: undefined,
+            jobRole: undefined,
+            experienceLevel: undefined,
+            companyName: undefined,
+            companyWebsite: undefined,
+            companySize: undefined,
+            positionInCompany: undefined,
+            totalPublishedApps: undefined,
+            platformDevelopment: undefined,
+            publishFrequency: undefined,
+            serviceUsage: [],
+            communicationMethods: [],
+            notificationPreference: [],
         }
     });
 
@@ -108,7 +164,8 @@ export default function RegisterPage() {
 
      const handleGoogleRegister = () => {
         setIsGoogleAuth(true);
-        setValue('fullName', 'Demo User', { shouldValidate: true });
+        setValue('firstName', 'Demo', { shouldValidate: true });
+        setValue('lastName', 'User', { shouldValidate: true });
         setValue('email', 'demo.user@gmail.com', { shouldValidate: true });
         next();
     }
@@ -221,9 +278,14 @@ export default function RegisterPage() {
                                                     <span className="text-xs text-muted-foreground">OR</span>
                                                     <Separator className="flex-1 bg-border/50" />
                                                 </div>
-                                                <FormField name="fullName" render={({ field }) => (
-                                                    <FormItem><FormLabel>Full Name</FormLabel><FormControl><Input placeholder="John Doe" {...field} /></FormControl><FormMessage /></FormItem>
-                                                )} />
+                                                <div className="grid grid-cols-2 gap-4">
+                                                    <FormField name="firstName" render={({ field }) => (
+                                                        <FormItem><FormLabel>First Name</FormLabel><FormControl><Input placeholder="John" {...field} /></FormControl><FormMessage /></FormItem>
+                                                    )} />
+                                                    <FormField name="lastName" render={({ field }) => (
+                                                        <FormItem><FormLabel>Last Name</FormLabel><FormControl><Input placeholder="Doe" {...field} /></FormControl><FormMessage /></FormItem>
+                                                    )} />
+                                                </div>
                                                 <FormField name="email" render={({ field }) => (
                                                     <FormItem><FormLabel>Email</FormLabel><FormControl><Input placeholder="you@example.com" {...field} /></FormControl><FormMessage /></FormItem>
                                                 )} />
@@ -233,18 +295,135 @@ export default function RegisterPage() {
                                             </div>
                                         )}
                                         {currentStep === 1 && (
-                                            <UserProfileForm user={{ role: '', companySize: '', primaryGoal: '', monthlyBudget: '' }} />
+                                            <div className="space-y-4">
+                                                <FormField name="country" render={({ field }) => (
+                                                    <FormItem><FormLabel>Country</FormLabel><FormControl><Input placeholder="e.g., United States" {...field} /></FormControl><FormMessage /></FormItem>
+                                                )} />
+                                                <FormField name="phone" render={({ field }) => (
+                                                    <FormItem><FormLabel>Phone Number</FormLabel><FormControl><Input placeholder="+1 123 456 7890" {...field} /></FormControl><FormMessage /></FormItem>
+                                                )} />
+                                                <FormField
+                                                    control={form.control}
+                                                    name="profileType"
+                                                    render={({ field }) => (
+                                                        <FormItem className="space-y-3">
+                                                        <FormLabel>What best describes you?</FormLabel>
+                                                        <FormControl>
+                                                            <RadioGroup onValueChange={field.onChange} defaultValue={field.value} className="grid grid-cols-2 gap-4">
+                                                                {Object.values(UserProfileType).map((type) => (
+                                                                    <FormItem key={type}>
+                                                                        <RadioGroupItem value={type} id={type} className="peer sr-only" />
+                                                                        <Label htmlFor={type} className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary">{type.replace('_', ' ')}</Label>
+                                                                    </FormItem>
+                                                                ))}
+                                                            </RadioGroup>
+                                                        </FormControl>
+                                                        <FormMessage />
+                                                        </FormItem>
+                                                    )}
+                                                />
+                                            </div>
+                                        )}
+                                        {currentStep === 2 && (
+                                           <div className="space-y-4">
+                                             <FormField name="companyName" render={({ field }) => (
+                                                    <FormItem><FormLabel>Company Name</FormLabel><FormControl><Input placeholder="Your Company Inc." {...field} /></FormControl><FormMessage /></FormItem>
+                                             )} />
+                                             <FormField name="companyWebsite" render={({ field }) => (
+                                                    <FormItem><FormLabel>Company Website</FormLabel><FormControl><Input placeholder="https://example.com" {...field} /></FormControl><FormMessage /></FormItem>
+                                             )} />
+                                             <FormField name="companySize" render={({ field }) => (
+                                                    <FormItem><FormLabel>Company Size</FormLabel>
+                                                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                                        <FormControl><SelectTrigger><SelectValue placeholder="Select company size" /></SelectTrigger></FormControl>
+                                                        <SelectContent>
+                                                            {Object.values(UserCompanySize).map(size => <SelectItem key={size} value={size}>{size.replace('SIZE_', '').replace('_', '-')}</SelectItem>)}
+                                                        </SelectContent>
+                                                    </Select>
+                                                    <FormMessage /></FormItem>
+                                             )} />
+                                             <FormField name="positionInCompany" render={({ field }) => (
+                                                <FormItem><FormLabel>Your Position</FormLabel>
+                                                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                                        <FormControl><SelectTrigger><SelectValue placeholder="Select your position" /></SelectTrigger></FormControl>
+                                                        <SelectContent>
+                                                            {Object.values(UserCompanyPosition).map(pos => <SelectItem key={pos} value={pos}>{pos.replace('_', ' ')}</SelectItem>)}
+                                                        </SelectContent>
+                                                    </Select>
+                                                <FormMessage /></FormItem>
+                                             )} />
+                                           </div>
+                                        )}
+                                        {currentStep === 3 && (
+                                            <div className="space-y-4">
+                                                <FormField name="totalPublishedApps" render={({ field }) => (
+                                                    <FormItem><FormLabel>Total Published Apps</FormLabel>
+                                                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                                            <FormControl><SelectTrigger><SelectValue placeholder="Select number of apps" /></SelectTrigger></FormControl>
+                                                            <SelectContent>
+                                                                {Object.values(UserTotalPublishedApps).map(val => <SelectItem key={val} value={val}>{val.replace('PUB_', '').replace('_', '-')}</SelectItem>)}
+                                                            </SelectContent>
+                                                        </Select>
+                                                    <FormMessage /></FormItem>
+                                                )} />
+                                                <FormField name="platformDevelopment" render={({ field }) => (
+                                                    <FormItem><FormLabel>Primary Development Platform</FormLabel>
+                                                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                                            <FormControl><SelectTrigger><SelectValue placeholder="Select platform" /></SelectTrigger></FormControl>
+                                                            <SelectContent>
+                                                                {Object.values(UserDevelopmentPlatform).map(val => <SelectItem key={val} value={val}>{val.replace('_', ' ')}</SelectItem>)}
+                                                            </SelectContent>
+                                                        </Select>
+                                                    <FormMessage /></FormItem>
+                                                )} />
+                                                <FormField name="serviceUsage" render={({ field }) => (
+                                                    <FormItem>
+                                                        <FormLabel>Why are you using our service?</FormLabel>
+                                                        <div className="grid grid-cols-2 gap-2">
+                                                        {Object.values(UserTestingServiceReason).map((item) => (
+                                                            <FormField key={item} control={form.control} name="serviceUsage" render={({ field }) => (
+                                                                <FormItem key={item} className="flex flex-row items-center space-x-3 space-y-0">
+                                                                    <FormControl>
+                                                                        <Checkbox checked={field.value?.includes(item)} onCheckedChange={(checked) => {
+                                                                            return checked ? field.onChange([...(field.value || []), item]) : field.onChange(field.value?.filter((value) => value !== item))
+                                                                        }} />
+                                                                    </FormControl>
+                                                                    <FormLabel className="text-sm font-normal">{item.replace('_', ' ')}</FormLabel>
+                                                                </FormItem>
+                                                            )} />
+                                                        ))}
+                                                        </div>
+                                                        <FormMessage />
+                                                    </FormItem>
+                                                )} />
+
+                                            </div>
                                         )}
                                     </motion.div>
                                 </AnimatePresence>
                                 <div className="mt-8 pt-5 border-t">
                                     <div className="flex justify-between">
-                                        <Button type="button" onClick={prev} disabled={currentStep === 0} variant="ghost" className={cn(currentStep === 0 && "invisible")}>
+                                        <Button
+                                            type="button"
+                                            onClick={prev}
+                                            disabled={currentStep === 0}
+                                            variant="ghost"
+                                            className={cn(currentStep === 0 && "invisible")}
+                                        >
                                             <ArrowLeft className="mr-2 h-4 w-4" /> Back
                                         </Button>
-                                        <Button type="button" onClick={next}>
-                                            {currentStep === formSteps.length - 1 ? 'Finish' : 'Next'} 
-                                            <ArrowRight className="ml-2 h-4 w-4" />
+                                        <Button
+                                            type="button"
+                                            onClick={next}
+                                            className={cn(currentStep === formSteps.length -1 && "hidden")}
+                                        >
+                                            Next <ArrowRight className="ml-2 h-4 w-4" />
+                                        </Button>
+                                         <Button
+                                            type="submit"
+                                            className={cn(currentStep !== formSteps.length -1 && "hidden")}
+                                        >
+                                            Finish <Check className="ml-2 h-4 w-4" />
                                         </Button>
                                     </div>
                                 </div>

@@ -40,12 +40,139 @@ export type RoadmapStep = {
     details: RoadmapDetail[];
 };
 
+export enum UserProfileType {
+  INDIVIDUAL = 'INDIVIDUAL',
+  COMPANY = 'COMPANY',
+  AGENCY = 'AGENCY',
+  CLIENT_MANAGER = 'CLIENT_MANAGER',
+}
+
+export enum UserJobRole {
+  DEVELOPER = 'DEVELOPER',
+  QA_TESTER = 'QA_TESTER',
+  PRODUCT_MANAGER = 'PRODUCT_MANAGER',
+  DESIGNER = 'DESIGNER',
+  BUSINESS_OWNER = 'BUSINESS_OWNER',
+  MARKETING = 'MARKETING',
+  SALES = 'SALES',
+  PROJECT_MANAGER = 'PROJECT_MANAGER',
+  STUDENT = 'STUDENT',
+  HOBBYIST = 'HOBBYIST',
+  AGENCY = 'AGENCY',
+  OTHER = 'OTHER',
+}
+
+export enum UserCompanySize {
+  SIZE_1 = 'SIZE_1',
+  SIZE_2_10 = 'SIZE_2_10',
+  SIZE_11_50 = 'SIZE_11_50',
+  SIZE_51_200 = 'SIZE_51_200',
+  SIZE_201_500 = 'SIZE_201_500',
+  SIZE_501_1000 = 'SIZE_501_1000',
+  SIZE_1001_5000 = 'SIZE_1001_5000',
+  SIZE_5001_10000 = 'SIZE_5001_10000',
+  SIZE_10000_PLUS = 'SIZE_10000_PLUS',
+}
+
+export enum UserCompanyPosition {
+  FOUNDER_CEO = 'FOUNDER_CEO',
+  CTO_TECH_LEAD = 'CTO_TECH_LEAD',
+  PRODUCT_MANAGER = 'PRODUCT_MANAGER',
+  PROJECT_MANAGER = 'PROJECT_MANAGER',
+  SOFTWARE_ENGINEER = 'SOFTWARE_ENGINEER',
+  QA_TESTER = 'QA_TESTER',
+  DESIGNER = 'DESIGNER',
+  MARKETING = 'MARKETING',
+  SALES_BUSINESS_DEV = 'SALES_BUSINESS_DEV',
+  OPERATIONS_ADMIN = 'OPERATIONS_ADMIN',
+  CUSTOMER_SUPPORT = 'CUSTOMER_SUPPORT',
+  OTHER = 'OTHER',
+}
+
+export enum UserExperienceLevel {
+  INTERN = 'INTERN',
+  JUNIOR = 'JUNIOR',
+  MID = 'MID',
+  SENIOR = 'SENIOR',
+  LEAD = 'LEAD',
+  DIRECTOR = 'DIRECTOR',
+  OTHER = 'OTHER',
+}
+
+export enum UserTotalPublishedApps {
+  PUB_0 = 'PUB_0',
+  PUB_1_5 = 'PUB_1_5',
+  PUB_6_10 = 'PUB_6_10',
+  PUB_11_20 = 'PUB_11_20',
+  PUB_21_50 = 'PUB_21_50',
+  PUB_51_PLUS = 'PUB_51_PLUS',
+}
+
+export enum UserDevelopmentPlatform {
+  NATIVE_IOS = 'NATIVE_IOS',
+  NATIVE_ANDROID = 'NATIVE_ANDROID',
+  FLUTTER = 'FLUTTER',
+  REACT_NATIVE = 'REACT_NATIVE',
+  UNITY = 'UNITY',
+  DRAG_AND_DROP = 'DRAG_AND_DROP',
+  OTHER = 'OTHER',
+}
+
+export enum UserPublishFrequency {
+  FIRST_APP = 'FIRST_APP',
+  OCCASIONAL = 'OCCASIONAL',
+  REGULAR = 'REGULAR',
+  FREQUENT = 'FREQUENT',
+  OTHER = 'OTHER',
+}
+
+export enum UserTestingServiceReason {
+  VERIFY_FUNCTIONALITY = 'VERIFY_FUNCTIONALITY',
+  USER_FEEDBACK = 'USER_FEEDBACK',
+  COMPLIANCE_GOOGLE_PLAY = 'COMPLIANCE_GOOGLE_PLAY',
+  SAVE_TIME = 'SAVE_TIME',
+  OTHER = 'OTHER',
+}
+
+export enum UserCommunicationMethod {
+  EMAIL = 'EMAIL',
+  PHONE = 'PHONE',
+  WHATSAPP = 'WHATSAPP',
+  TELEGRAM = 'TELEGRAM',
+  SLACK = 'SLACK',
+  OTHER = 'OTHER',
+}
+
+export enum UserNotificationPreference {
+  APP_SUBMITTED = 'APP_SUBMITTED',
+  TEST_COMPLETED = 'TEST_COMPLETED',
+  TEST_ASSIGNED = 'TEST_ASSIGNED',
+  COMMENT_ADDED = 'COMMENT_ADDED',
+  PROMOTIONS = 'PROMOTIONS',
+  OTHER = 'OTHER',
+}
+
+
 export type UserProfileData = {
-    role: string;
-    companySize: string;
-    primaryGoal: string;
-    monthlyBudget: string;
+  firstName?: string;
+  lastName?: string;
+  country?: string;
+  phone?: string;
+  profileType?: UserProfileType;
+  jobRole?: UserJobRole;
+  companyName?: string;
+  companySize?: UserCompanySize;
+  positionInCompany?: UserCompanyPosition;
+  companyWebsite?: string;
+  experienceLevel?: UserExperienceLevel;
+  totalPublishedApps?: UserTotalPublishedApps;
+  platformDevelopment?: UserDevelopmentPlatform;
+  publishFrequency?: UserPublishFrequency;
+  serviceUsage?: UserTestingServiceReason[];
+  communicationMethods?: UserCommunicationMethod[];
+  notificationPreference?: UserNotificationPreference[];
 };
+
 
 export type PointsPackage = {
     name: string;
