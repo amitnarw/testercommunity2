@@ -25,18 +25,20 @@ const { Stepper, useStepper } = defineStepper(
 
 export function ProfileStepper({ form, onSubmit }: { form: any, onSubmit: () => void }) {
   const isMobile = useMediaQuery("(max-width: 768px)");
-  const { state, goTo, next, prev, isFirst, isLast, current, all, utils } = useStepper();
+  const { state, goTo, next, prev, isFirst, isLast, current, all } = useStepper();
 
   const handleNext = async () => {
-    const fieldsForStep = {
+    const fieldsForStep: { [key: string]: (keyof typeof form.getValues)[] } = {
         role: ['profileType', 'jobRole', 'experienceLevel'],
         company: ['companyName', 'companyWebsite', 'companySize', 'positionInCompany'],
         projects: ['totalPublishedApps', 'platformDevelopment', 'publishFrequency'],
         contact: ['serviceUsage', 'communicationMethods']
-    }[current.id];
+    };
 
-    if (fieldsForStep) {
-        const output = await form.trigger(fieldsForStep);
+    const fields = fieldsForStep[current.id];
+
+    if (fields) {
+        const output = await form.trigger(fields);
         if (!output) return;
     }
     next();
@@ -70,12 +72,10 @@ export function ProfileStepper({ form, onSubmit }: { form: any, onSubmit: () => 
                 exit={{ opacity: 0, y: -20, transition: { duration: 0.3, ease: 'easeIn' } }}
                 className="mt-8"
             >
-                {utils.switch({
-                    "role": <RoleStep form={form} />,
-                    "company": <CompanyStep form={form} />,
-                    "projects": <ProjectsStep form={form} />,
-                    "contact": <ContactStep form={form} />,
-                })}
+                {current.id === 'role' && <RoleStep form={form} />}
+                {current.id === 'company' && <CompanyStep form={form} />}
+                {current.id === 'projects' && <ProjectsStep form={form} />}
+                {current.id === 'contact' && <ContactStep form={form} />}
             </motion.div>
         </AnimatePresence>
 
