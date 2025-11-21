@@ -17,7 +17,7 @@ import {
   FormLabel,
 } from "@/components/ui/form"
 import { cn } from '@/lib/utils';
-import { ArrowLeft, ArrowRight, UserPlus, CheckCircle, Moon, Sun, Check } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Save, CheckCircle, Moon, Sun, Check } from 'lucide-react';
 import { SiteLogo } from '@/components/icons';
 import Link from 'next/link';
 import { useTheme } from 'next-themes';
@@ -28,9 +28,8 @@ import { BackgroundBeams } from '@/components/background-beams';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
-import { UserCompanyPosition, UserCompanySize, UserDevelopmentPlatform, UserExperienceLevel, UserJobRole, UserProfileType, UserPublishFrequency, UserTestingServiceReason, UserTotalPublishedApps, UserCommunicationMethod, UserNotificationPreference } from '@/lib/types';
+import { UserProfileType, UserJobRole, UserExperienceLevel, UserCompanySize, UserCompanyPosition, UserTotalPublishedApps, UserDevelopmentPlatform, UserPublishFrequency, UserTestingServiceReason, UserCommunicationMethod, UserNotificationPreference } from '@/lib/types';
 import { Checkbox } from '@/components/ui/checkbox';
-
 
 const GoogleIcon = (props: React.HTMLAttributes<HTMLImageElement>) => (
     <Image src="/google.svg" alt="Google" width={24} height={24} {...props} />
@@ -66,7 +65,6 @@ const step4Schema = z.object({
     communicationMethods: z.array(z.nativeEnum(UserCommunicationMethod)).optional(),
     notificationPreference: z.array(z.nativeEnum(UserNotificationPreference)).optional(),
 });
-
 
 const formSchemas = [step1Schema, step2Schema, step3Schema, step4Schema];
 
@@ -154,7 +152,6 @@ export default function RegisterPage() {
         console.log("Account data:", data);
         setPreviousStep(currentStep);
         setCurrentStep(step => step + 1);
-        // After the last step, you might want to show success or redirect
         if (currentStep === formSteps.length - 1) {
             setIsSubmitted(true);
         }
@@ -204,17 +201,22 @@ export default function RegisterPage() {
                                     <div className="absolute inset-0 flex items-center" aria-hidden="true">
                                         <div className={cn("h-0.5 w-full", currentStep > stepIdx ? "bg-primary" : "bg-muted")} />
                                     </div>
-                                    <div className={cn("relative flex h-8 w-8 items-center justify-center rounded-full",
-                                        currentStep > stepIdx ? "bg-primary" : currentStep === stepIdx ? "border-2 border-primary bg-background" : "border-2 border-muted bg-background"
-                                    )}>
+                                     <div
+                                        className={cn(
+                                            "relative flex h-8 w-8 items-center justify-center rounded-full transition-colors duration-300",
+                                            currentStep > stepIdx ? "bg-primary" :
+                                            currentStep === stepIdx ? "border-2 border-primary bg-background" :
+                                            "border-2 border-muted bg-background"
+                                        )}
+                                    >
                                         {currentStep > stepIdx ? (
                                             <Check className="h-5 w-5 text-primary-foreground" aria-hidden="true" />
-                                        ) : currentStep === stepIdx ? (
-                                            <span className="h-2.5 w-2.5 rounded-full bg-primary" aria-hidden="true" />
-                                        ) : null}
+                                        ) : (
+                                            <span className={cn("h-2.5 w-2.5 rounded-full transition-colors duration-300", currentStep === stepIdx ? 'bg-primary' : 'bg-transparent')} />
+                                        )}
                                     </div>
-                                    <div className="absolute -bottom-10 w-max text-center -translate-x-1/2 left-1/2">
-                                        <p className={cn("text-sm font-semibold", currentStep === stepIdx ? "text-primary" : "text-muted-foreground")}>{step.title}</p>
+                                    <div className="absolute mt-2 w-max text-center -translate-x-1/2 left-1/2">
+                                        <p className={cn("text-xs font-medium", currentStep >= stepIdx ? "text-primary" : "text-muted-foreground")}>{step.title}</p>
                                     </div>
                                 </li>
                                 ))}
@@ -229,7 +231,7 @@ export default function RegisterPage() {
                 ) : (
                     <div className="w-full">
                         <FormProvider {...form}>
-                            <form onSubmit={handleSubmit(processForm)} className="space-y-6 overflow-hidden relative">
+                            <form onSubmit={handleSubmit(processForm)} className="overflow-hidden relative">
                                 <AnimatePresence initial={false} custom={delta}>
                                     <motion.div
                                         key={currentStep}
@@ -239,19 +241,13 @@ export default function RegisterPage() {
                                         exit={{ opacity: 0, x: delta > 0 ? -300 : 300 }}
                                         transition={{ type: 'tween', duration: 0.3, ease: 'easeInOut' }}
                                     >
-                                        <div className={cn(currentStep > 0 && "mb-8")}>
-                                            <h3 className="font-bold text-xl mb-2">{formSteps[currentStep].title}</h3>
-                                            <p className="text-muted-foreground text-sm">{formSteps[currentStep].description}</p>
+                                        <div className={cn("mb-8", currentStep === 0 && "text-center")}>
+                                            <h2 className={cn("font-bold tracking-tight", currentStep > 0 ? "text-2xl" : "text-3xl")}>{formSteps[currentStep].title}</h2>
+                                            <p className="text-muted-foreground mt-2 text-sm">{formSteps[currentStep].description}</p>
                                         </div>
 
                                         {currentStep === 0 && (
-                                            <div className="space-y-4 min-h-[350px]">
-                                                <div className="text-center mb-8">
-                                                    <h2 className="text-2xl font-bold tracking-tight text-foreground">Create an Account</h2>
-                                                    <p className="text-muted-foreground mt-2">
-                                                        Already have one? <Link href="/login" className="text-primary hover:underline">Log in</Link>
-                                                    </p>
-                                                </div>
+                                            <div className="space-y-4">
                                                 <Button variant="outline" className="w-full rounded-xl py-6 text-base" onClick={handleGoogleRegister}>
                                                     <GoogleIcon className="mr-3" />
                                                     Sign up with Google
@@ -278,18 +274,19 @@ export default function RegisterPage() {
                                             </div>
                                         )}
                                         {currentStep === 1 && (
-                                            <div className="space-y-4">
+                                             <div className="space-y-6">
                                                 <FormField
                                                     control={form.control}
                                                     name="profileType"
                                                     render={({ field }) => (
                                                         <FormItem className="space-y-3">
+                                                        <FormLabel>You are a...</FormLabel>
                                                         <FormControl>
                                                             <RadioGroup onValueChange={field.onChange} defaultValue={field.value} className="grid grid-cols-2 gap-4">
                                                                 {Object.values(UserProfileType).map((type) => (
                                                                     <FormItem key={type}>
                                                                         <RadioGroupItem value={type} id={type} className="peer sr-only" />
-                                                                        <Label htmlFor={type} className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary">{type.replace('_', ' ')}</Label>
+                                                                        <Label htmlFor={type} className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary cursor-pointer">{type.replace('_', ' ')}</Label>
                                                                     </FormItem>
                                                                 ))}
                                                             </RadioGroup>
@@ -298,6 +295,14 @@ export default function RegisterPage() {
                                                         </FormItem>
                                                     )}
                                                 />
+                                                 <FormField name="jobRole" render={({ field }) => (
+                                                    <FormItem><FormLabel>Your Job Role</FormLabel>
+                                                    <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                                        <FormControl><SelectTrigger><SelectValue placeholder="Select your primary role" /></SelectTrigger></FormControl>
+                                                        <SelectContent>{Object.values(UserJobRole).map(role => <SelectItem key={role} value={role}>{role.replace('_', ' ')}</SelectItem>)}</SelectContent>
+                                                    </Select>
+                                                    <FormMessage /></FormItem>
+                                                )} />
                                             </div>
                                         )}
                                         {currentStep === 2 && (
@@ -372,7 +377,6 @@ export default function RegisterPage() {
                                                         <FormMessage />
                                                     </FormItem>
                                                 )} />
-
                                             </div>
                                         )}
                                     </motion.div>
