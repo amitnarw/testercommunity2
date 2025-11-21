@@ -148,7 +148,7 @@ export default function RegisterPage() {
     };
     
     const processForm: SubmitHandler<any> = (data) => {
-        console.log("Account data:", data);
+        console.log('Account data:', data);
         setPreviousStep(currentStep);
         setCurrentStep(step => step + 1);
         if (currentStep === formSteps.length - 1) {
@@ -201,12 +201,9 @@ export default function RegisterPage() {
                                 <div key={step.id} className="flex-1">
                                     <div
                                         className={cn(
-                                            "h-12 flex items-center justify-center relative transition-colors duration-300 pl-8",
+                                            "h-12 flex items-center justify-center relative transition-colors duration-300 stepper-item",
                                             isCompleted ? "bg-green-500" : isCurrent ? "bg-primary" : "bg-muted",
                                         )}
-                                        style={{
-                                            clipPath: 'polygon(0 0, calc(100% - 24px) 0, 100% 50%, calc(100% - 24px) 100%, 0 100%)'
-                                        }}
                                     >
                                     <span className={cn(
                                         "font-semibold text-xs sm:text-sm",

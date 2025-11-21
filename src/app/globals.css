@@ -101,5 +101,17 @@
     position: relative;
     z-index: 2;
   }
+  .stepper-item {
+    clip-path: polygon(0% 0%, calc(100% - 24px) 0, 100% 50%, calc(100% - 24px) 100%, 0% 100%, 12px 50%);
+  }
+  .stepper-item:first-child {
+      clip-path: polygon(0% 0%, calc(100% - 24px) 0, 100% 50%, calc(100% - 24px) 100%, 0% 100%);
+  }
+  .stepper-item:last-child {
+      clip-path: polygon(0% 0%, 100% 0, 100% 100%, 0% 100%, 12px 50%);
+  }
+  .stepper-item:first-child:last-child {
+      clip-path: polygon(0% 0%, 100% 0, 100% 100%, 0% 100%);
+  }
 }
     
