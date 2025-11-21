@@ -19,7 +19,7 @@ import {
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Save, CheckCircle, Check } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Save, CheckCircle, Check } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { UserProfileType, UserJobRole, UserExperienceLevel, UserCompanySize, UserCompanyPosition, UserTotalPublishedApps, UserDevelopmentPlatform, UserPublishFrequency, UserTestingServiceReason, UserCommunicationMethod, UserNotificationPreference } from '@/lib/types';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -339,11 +339,16 @@ export default function ProfileSetupPage() {
 
                                             <div className="mt-8 pt-5 border-t flex justify-between">
                                                 <Button type="button" onClick={() => setCurrentStep(currentStep - 1)} disabled={currentStep === 0} variant="ghost" className={cn(currentStep === 0 && "invisible")}> Back </Button>
-                                                {currentStep < formSteps.length - 1 ? (
-                                                    <Button type="button" onClick={() => setCurrentStep(currentStep + 1)}> Next </Button>
-                                                ) : (
-                                                    <Button type="submit"> Finish Setup </Button>
-                                                )}
+                                                <div className="flex items-center gap-4">
+                                                    <Button type="button" variant="ghost" asChild>
+                                                        <Link href="/dashboard">Skip for now</Link>
+                                                    </Button>
+                                                    {currentStep < formSteps.length - 1 ? (
+                                                        <Button type="button" onClick={() => setCurrentStep(currentStep + 1)}> Next </Button>
+                                                    ) : (
+                                                        <Button type="submit"> Finish Setup </Button>
+                                                    )}
+                                                </div>
                                             </div>
                                         </div>
                                     </motion.div>
