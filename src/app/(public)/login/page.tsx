@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Separator } from '@/components/ui/separator';
 import { useTheme } from 'next-themes';
 import { Moon, Sun } from 'lucide-react';
-import { BackgroundBeams } from '@/components/background-beams';
+import { BackgroundBeams } from '@/components/background-beams';    
 import { useRouter } from 'next/navigation';
 import { BackButton } from '@/components/back-button';
 
@@ -81,7 +81,7 @@ export default function LoginPage() {
                     Log in to your account
                     </h2>
                     <p className="text-muted-foreground mt-2">
-                        Or <Link href="/signup" className="text-primary hover:underline">create a new account</Link>
+                        Or <Link href="/register" className="text-primary hover:underline">create a new account</Link>
                     </p>
                 </div>
                 <LoginForm />

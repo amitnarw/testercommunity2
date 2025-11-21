@@ -14,7 +14,7 @@ import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { LayoutDashboard, Users2, User, Gem, LifeBuoy, LogOut, ChevronDown, Package, Briefcase, DollarSign, FileCheck, Bug, Users, UserPlus, MessageSquare, Lightbulb } from 'lucide-react';
+import { LayoutDashboard, Users2, User, Gem, LifeBuoy, LogOut, ChevronDown, Package, Briefcase, DollarSign, FileCheck, Bug, Users, UserPlus, MessageSquare, Lightbulb, Activity } from 'lucide-react';
 import { useEffect, useState } from "react";
 
 
@@ -42,6 +42,7 @@ export function UserNav({ onLogout }: UserNavProps) {
             return (
                 <DropdownMenuGroup>
                     <DropdownMenuLabel className="px-2 py-1.5 text-xs font-semibold text-muted-foreground">Admin Menu</DropdownMenuLabel>
+                    <Link href="/admin/profile"><DropdownMenuItem className="h-10"><User className="mr-2" /><span>Profile</span></DropdownMenuItem></Link>
                     <Link href="/admin/dashboard"><DropdownMenuItem className="h-10"><LayoutDashboard className="mr-2" /><span>Dashboard</span></DropdownMenuItem></Link>
                     <Link href="/admin/users"><DropdownMenuItem className="h-10"><Users className="mr-2" /><span>Users</span></DropdownMenuItem></Link>
                     <Link href="/admin/submissions"><DropdownMenuItem className="h-10"><FileCheck className="mr-2" /><span>Submissions</span></DropdownMenuItem></Link>
@@ -55,9 +56,10 @@ export function UserNav({ onLogout }: UserNavProps) {
             return (
                  <DropdownMenuGroup>
                     <DropdownMenuLabel className="px-2 py-1.5 text-xs font-semibold text-muted-foreground">Menu</DropdownMenuLabel>
+                    <Link href="/tester/profile"><DropdownMenuItem className="h-10"><User className="mr-2" /><span>Profile</span></DropdownMenuItem></Link>
                     <Link href="/tester/dashboard"><DropdownMenuItem className="h-10"><LayoutDashboard className="mr-2" /><span>Dashboard</span></DropdownMenuItem></Link>
-                    <Link href="/projects"><DropdownMenuItem className="h-10"><Briefcase className="mr-2" /><span>Projects</span></DropdownMenuItem></Link>
-                    <Link href="/earnings"><DropdownMenuItem className="h-10"><DollarSign className="mr-2" /><span>Earnings</span></DropdownMenuItem></Link>
+                    <Link href="/tester/projects"><DropdownMenuItem className="h-10"><Briefcase className="mr-2" /><span>Projects</span></DropdownMenuItem></Link>
+                    <Link href="/tester/earnings"><DropdownMenuItem className="h-10"><DollarSign className="mr-2" /><span>Earnings</span></DropdownMenuItem></Link>
                 </DropdownMenuGroup>
             )
         }
