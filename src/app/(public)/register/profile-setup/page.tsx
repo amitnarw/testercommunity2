@@ -19,7 +19,7 @@ import {
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { ArrowLeft, ArrowRight, Save, CheckCircle } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Save, CheckCircle, Briefcase, User, Lightbulb } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { UserProfileType, UserJobRole, UserExperienceLevel, UserCompanySize, UserCompanyPosition, UserTotalPublishedApps, UserDevelopmentPlatform, UserPublishFrequency, UserTestingServiceReason, UserCommunicationMethod, UserNotificationPreference } from '@/lib/types';
 import { Checkbox } from '@/components/ui/checkbox';
@@ -46,10 +46,10 @@ const profileStepSchema = z.object({
 type ProfileFormData = z.infer<typeof profileStepSchema>;
 
 const formSteps = [
-    { id: 'role', title: 'Your Role', description: 'Tell us about your professional background.' },
-    { id: 'company', title: 'Your Company', description: 'Information about your organization.' },
-    { id: 'projects', title: 'Your Projects', description: 'Details about your development work.' },
-    { id: 'contact', title: 'Contact', description: 'How we can reach you.' },
+    { id: 'role', title: 'Your Role', description: 'Tell us about your professional background.', icon: User, fields: ['profileType', 'jobRole', 'experienceLevel'] },
+    { id: 'company', title: 'Your Company', description: 'Information about your organization.', icon: Briefcase, fields: ['companyName', 'companyWebsite', 'companySize', 'positionInCompany'] },
+    { id: 'projects', title: 'Your Projects', description: 'Details about your development work.', icon: Lightbulb, fields: ['totalPublishedApps', 'platformDevelopment', 'publishFrequency'] },
+    { id: 'contact', title: 'Contact Preferences', description: 'How we can reach you and what you want to hear about.', icon: User, fields: ['serviceUsage', 'communicationMethods', 'notificationPreference'] },
 ];
 
 const RegistrationSuccess = () => (
@@ -71,9 +71,9 @@ const RegistrationSuccess = () => (
 
 
 function ProfileSetupPage() {
+    const [isSubmitted, setIsSubmitted] = useState(false);
     const [currentStep, setCurrentStep] = useState(0);
     const [previousStep, setPreviousStep] = useState(0);
-    const [isSubmitted, setIsSubmitted] = useState(false);
     
     const form = useForm<ProfileFormData>({
         resolver: zodResolver(profileStepSchema),
@@ -98,10 +98,10 @@ function ProfileSetupPage() {
     });
 
     const { trigger, handleSubmit } = form;
-    
-    const next = async () => {
+
+     const next = async () => {
         const fields = formSteps[currentStep].fields;
-        const output = await trigger(fields as (keyof ProfileFormData)[] | undefined, { shouldFocus: true });
+        const output = await trigger(fields as (keyof ProfileFormData)[], { shouldFocus: true });
     
         if (!output) return;
     
@@ -139,199 +139,205 @@ function ProfileSetupPage() {
                         </p>
                     </div>
 
-                    <div className="w-full max-w-md mx-auto mb-8 flex items-center justify-center gap-2">
-                        {formSteps.map((step, index) => (
-                             <div key={step.id} className={cn("h-2 rounded-full transition-all", currentStep >= index ? "bg-primary w-12" : "bg-muted w-4")}></div>
-                        ))}
-                    </div>
-
-
-                     <div className="mt-8 relative">
+                    <div className="mt-8 relative">
                         <FormProvider {...form}>
-                            <form onSubmit={handleSubmit(processForm)}>
-                                <AnimatePresence mode="wait">
-                                    <motion.div
-                                        key={currentStep}
-                                        initial={{ opacity: 0, y: 20 }}
-                                        animate={{ opacity: 1, y: 0, transition: { duration: 0.3, ease: 'easeOut' } }}
-                                        exit={{ opacity: 0, y: -20, transition: { duration: 0.3, ease: 'easeIn' } }}
-                                    >
-                                        <div className="bg-card p-8 rounded-2xl shadow-lg">
-                                            <p className="text-muted-foreground mb-6 text-center">{formSteps[currentStep].description}</p>
+                            <form onSubmit={form.handleSubmit(processForm)}>
+                                <div className="bg-card p-8 rounded-2xl shadow-lg mt-8">
+                                        <AnimatePresence mode="wait">
+                                            <motion.div
+                                                key={currentStep}
+                                                initial={{ opacity: 0, y: 20 }}
+                                                animate={{ opacity: 1, y: 0, transition: { duration: 0.3, ease: 'easeOut' } }}
+                                                exit={{ opacity: 0, y: -20, transition: { duration: 0.3, ease: 'easeIn' } }}
+                                            >
+
                                             {currentStep === 0 && (
-                                                <div className="space-y-6">
-                                                    <FormField
-                                                        control={form.control}
-                                                        name="profileType"
-                                                        render={({ field }) => (
-                                                            <FormItem className="space-y-3">
-                                                            <FormControl>
-                                                                <RadioGroup onValueChange={field.onChange} defaultValue={field.value} className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-                                                                    {Object.values(UserProfileType).map((type) => (
-                                                                        <FormItem key={type}>
-                                                                            <RadioGroupItem value={type} id={type} className="peer sr-only" />
-                                                                            <Label htmlFor={type} className="flex h-full flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary cursor-pointer">{type.replace('_', ' ')}</Label>
-                                                                        </FormItem>
-                                                                    ))}
-                                                                </RadioGroup>
-                                                            </FormControl>
-                                                            <FormMessage />
-                                                            </FormItem>
-                                                        )}
-                                                    />
-                                                    <FormField name="jobRole" render={({ field }) => (
-                                                        <FormItem><FormLabel>Your Job Role</FormLabel>
-                                                        <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                                            <FormControl><SelectTrigger><SelectValue placeholder="Select your primary role" /></SelectTrigger></FormControl>
-                                                            <SelectContent>{Object.values(UserJobRole).map(role => <SelectItem key={role} value={role}>{role.replace(/_/g, ' ')}</SelectItem>)}</SelectContent>
-                                                        </Select>
-                                                        <FormMessage /></FormItem>
-                                                    )} />
-                                                     <FormField name="experienceLevel" render={({ field }) => (
-                                                        <FormItem><FormLabel>Your Experience Level</FormLabel>
-                                                        <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                                            <FormControl><SelectTrigger><SelectValue placeholder="Select your experience level" /></SelectTrigger></FormControl>
-                                                            <SelectContent>{Object.values(UserExperienceLevel).map(level => <SelectItem key={level} value={level}>{level.replace(/_/g, ' ')}</SelectItem>)}</SelectContent>
-                                                        </Select>
-                                                        <FormMessage /></FormItem>
-                                                    )} />
-                                                </div>
+                                                 <div className="space-y-6">
+                                                         <FormField
+                                                            control={form.control}
+                                                            name="profileType"
+                                                            render={({ field }) => (
+                                                                <FormItem className="space-y-3">
+                                                                <FormControl>
+                                                                    <RadioGroup onValueChange={field.onChange} defaultValue={field.value} className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                                                                        {Object.values(UserProfileType).map((type) => (
+                                                                            <FormItem key={type}>
+                                                                                <RadioGroupItem value={type} id={type} className="peer sr-only" />
+                                                                                <Label htmlFor={type} className="flex h-full flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary cursor-pointer">{type.replace('_', ' ')}</Label>
+                                                                            </FormItem>
+                                                                        ))}
+                                                                    </RadioGroup>
+                                                                </FormControl>
+                                                                <FormMessage />
+                                                                </FormItem>
+                                                            )}
+                                                        />
+                                                        <FormField name="jobRole" render={({ field }) => (
+                                                            <FormItem><FormLabel>Your Job Role</FormLabel>
+                                                            <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                                                <FormControl><SelectTrigger><SelectValue placeholder="Select your primary role" /></SelectTrigger></FormControl>
+                                                                <SelectContent>{Object.values(UserJobRole).map(role => <SelectItem key={role} value={role}>{role.replace(/_/g, ' ')}</SelectItem>)}</SelectContent>
+                                                            </Select>
+                                                            <FormMessage /></FormItem>
+                                                        )} />
+                                                        <FormField name="experienceLevel" render={({ field }) => (
+                                                            <FormItem><FormLabel>Your Experience Level</FormLabel>
+                                                            <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                                                <FormControl><SelectTrigger><SelectValue placeholder="Select your experience level" /></SelectTrigger></FormControl>
+                                                                <SelectContent>{Object.values(UserExperienceLevel).map(level => <SelectItem key={level} value={level}>{level.replace(/_/g, ' ')}</SelectItem>)}</SelectContent>
+                                                            </Select>
+                                                            <FormMessage /></FormItem>
+                                                        )} />
+                                                    </div>
                                             )}
+
                                             {currentStep === 1 && (
                                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                                <FormField name="companyName" render={({ field }) => (
-                                                        <FormItem><FormLabel>Company Name</FormLabel><FormControl><Input placeholder="Your Company Inc." {...field} /></FormControl><FormMessage /></FormItem>
-                                                )} />
-                                                <FormField name="companyWebsite" render={({ field }) => (
-                                                        <FormItem><FormLabel>Company Website</FormLabel><FormControl><Input placeholder="https://example.com" {...field} /></FormControl><FormMessage /></FormItem>
-                                                )} />
-                                                <FormField name="companySize" render={({ field }) => (
-                                                        <FormItem><FormLabel>Company Size</FormLabel>
-                                                        <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                                            <FormControl><SelectTrigger><SelectValue placeholder="Select company size" /></SelectTrigger></FormControl>
-                                                            <SelectContent>
-                                                                {Object.values(UserCompanySize).map(size => <SelectItem key={size} value={size}>{size.replace('SIZE_', '').replace(/_/g, '-')}</SelectItem>)}
-                                                            </SelectContent>
-                                                        </Select>
-                                                        <FormMessage /></FormItem>
-                                                )} />
-                                                <FormField name="positionInCompany" render={({ field }) => (
-                                                    <FormItem><FormLabel>Your Position</FormLabel>
-                                                        <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                                            <FormControl><SelectTrigger><SelectValue placeholder="Select your position" /></SelectTrigger></FormControl>
-                                                            <SelectContent>
-                                                                {Object.values(UserCompanyPosition).map(pos => <SelectItem key={pos} value={pos}>{pos.replace(/_/g, ' ')}</SelectItem>)}
-                                                            </SelectContent>
-                                                        </Select>
-                                                    <FormMessage /></FormItem>
-                                                )} />
-                                            </div>
+                                                        <FormField name="companyName" render={({ field }) => (
+                                                                <FormItem><FormLabel>Company Name</FormLabel><FormControl><Input placeholder="Your Company Inc." {...field} /></FormControl><FormMessage /></FormItem>
+                                                        )} />
+                                                        <FormField name="companyWebsite" render={({ field }) => (
+                                                                <FormItem><FormLabel>Company Website</FormLabel><FormControl><Input placeholder="https://example.com" {...field} /></FormControl><FormMessage /></FormItem>
+                                                        )} />
+                                                        <FormField name="companySize" render={({ field }) => (
+                                                                <FormItem><FormLabel>Company Size</FormLabel>
+                                                                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                                                    <FormControl><SelectTrigger><SelectValue placeholder="Select company size" /></SelectTrigger></FormControl>
+                                                                    <SelectContent>
+                                                                        {Object.values(UserCompanySize).map(size => <SelectItem key={size} value={size}>{size.replace('SIZE_', '').replace(/_/g, '-')}</SelectItem>)}
+                                                                    </SelectContent>
+                                                                </Select>
+                                                                <FormMessage /></FormItem>
+                                                        )} />
+                                                        <FormField name="positionInCompany" render={({ field }) => (
+                                                            <FormItem><FormLabel>Your Position</FormLabel>
+                                                                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                                                    <FormControl><SelectTrigger><SelectValue placeholder="Select your position" /></SelectTrigger></FormControl>
+                                                                    <SelectContent>
+                                                                        {Object.values(UserCompanyPosition).map(pos => <SelectItem key={pos} value={pos}>{pos.replace(/_/g, ' ')}</SelectItem>)}
+                                                                    </SelectContent>
+                                                                </Select>
+                                                            <FormMessage /></FormItem>
+                                                        )} />
+                                                    </div>
                                             )}
+                                                
                                             {currentStep === 2 && (
-                                                <div className="space-y-6">
-                                                    <FormField name="totalPublishedApps" render={({ field }) => (
-                                                        <FormItem><FormLabel>Total Published Apps</FormLabel>
-                                                            <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                                                <FormControl><SelectTrigger><SelectValue placeholder="Select number of apps" /></SelectTrigger></FormControl>
-                                                                <SelectContent>
-                                                                    {Object.values(UserTotalPublishedApps).map(val => <SelectItem key={val} value={val}>{val.replace('PUB_', '').replace(/_/g, '-')}</SelectItem>)}
-                                                                </SelectContent>
-                                                            </Select>
-                                                        <FormMessage /></FormItem>
-                                                    )} />
-                                                    <FormField name="platformDevelopment" render={({ field }) => (
-                                                        <FormItem><FormLabel>Primary Development Platform</FormLabel>
-                                                            <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                                                <FormControl><SelectTrigger><SelectValue placeholder="Select platform" /></SelectTrigger></FormControl>
-                                                                <SelectContent>
-                                                                    {Object.values(UserDevelopmentPlatform).map(val => <SelectItem key={val} value={val}>{val.replace(/_/g, ' ')}</SelectItem>)}
-                                                                </SelectContent>
-                                                            </Select>
-                                                        <FormMessage /></FormItem>
-                                                    )} />
-                                                    <FormField name="publishFrequency" render={({ field }) => (
-                                                        <FormItem><FormLabel>App Publish Frequency</FormLabel>
-                                                            <Select onValueChange={field.onChange} defaultValue={field.value}>
-                                                                <FormControl><SelectTrigger><SelectValue placeholder="Select frequency" /></SelectTrigger></FormControl>
-                                                                <SelectContent>
-                                                                    {Object.values(UserPublishFrequency).map(val => <SelectItem key={val} value={val}>{val.replace(/_/g, ' ')}</SelectItem>)}
-                                                                </SelectContent>
-                                                            </Select>
-                                                        <FormMessage /></FormItem>
-                                                    )} />
-                                                </div>
-                                            )}
-                                            {currentStep === 3 && (
                                                  <div className="space-y-6">
-                                                     <FormField name="serviceUsage" render={({ field }) => (
-                                                        <FormItem>
-                                                            <FormLabel>Why are you using our service?</FormLabel>
-                                                            <div className="grid grid-cols-2 gap-4">
-                                                            {Object.values(UserTestingServiceReason).map((item) => (
-                                                                <FormField key={item} control={form.control} name="serviceUsage" render={({ field }) => (
-                                                                    <FormItem key={item} className="flex flex-row items-center space-x-3 space-y-0 rounded-md border p-4 has-[:checked]:border-primary">
-                                                                        <FormControl>
-                                                                            <Checkbox checked={field.value?.includes(item)} onCheckedChange={(checked) => {
-                                                                                return checked ? field.onChange([...(field.value || []), item]) : field.onChange(field.value?.filter((value) => value !== item))
-                                                                            }} />
-                                                                        </FormControl>
-                                                                        <FormLabel className="text-sm font-normal">{item.replace(/_/g, ' ')}</FormLabel>
-                                                                    </FormItem>
-                                                                )} />
-                                                            ))}
-                                                            </div>
-                                                            <FormMessage />
-                                                        </FormItem>
-                                                    )} />
-                                                     <FormField name="communicationMethods" render={({ field }) => (
-                                                        <FormItem>
-                                                            <FormLabel>Preferred Communication</FormLabel>
-                                                            <div className="grid grid-cols-3 gap-4">
-                                                            {Object.values(UserCommunicationMethod).map((item) => (
-                                                                <FormField key={item} control={form.control} name="communicationMethods" render={({ field }) => (
-                                                                    <FormItem key={item} className="flex flex-row items-center space-x-3 space-y-0 rounded-md border p-4 has-[:checked]:border-primary">
-                                                                        <FormControl>
-                                                                            <Checkbox checked={field.value?.includes(item)} onCheckedChange={(checked) => {
-                                                                                return checked ? field.onChange([...(field.value || []), item]) : field.onChange(field.value?.filter((value) => value !== item))
-                                                                            }} />
-                                                                        </FormControl>
-                                                                        <FormLabel className="text-sm font-normal">{item.replace(/_/g, ' ')}</FormLabel>
-                                                                    </FormItem>
-                                                                )} />
-                                                            ))}
-                                                            </div>
-                                                            <FormMessage />
-                                                        </FormItem>
-                                                    )} />
-                                                 </div>
+                                                        <FormField name="totalPublishedApps" render={({ field }) => (
+                                                            <FormItem><FormLabel>Total Published Apps</FormLabel>
+                                                                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                                                    <FormControl><SelectTrigger><SelectValue placeholder="Select number of apps" /></SelectTrigger></FormControl>
+                                                                    <SelectContent>
+                                                                        {Object.values(UserTotalPublishedApps).map(val => <SelectItem key={val} value={val}>{val.replace('PUB_', '').replace(/_/g, '-')}</SelectItem>)}
+                                                                    </SelectContent>
+                                                                </Select>
+                                                            <FormMessage /></FormItem>
+                                                        )} />
+                                                        <FormField name="platformDevelopment" render={({ field }) => (
+                                                            <FormItem><FormLabel>Primary Development Platform</FormLabel>
+                                                                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                                                    <FormControl><SelectTrigger><SelectValue placeholder="Select platform" /></SelectTrigger></FormControl>
+                                                                    <SelectContent>
+                                                                        {Object.values(UserDevelopmentPlatform).map(val => <SelectItem key={val} value={val}>{val.replace(/_/g, ' ')}</SelectItem>)}
+                                                                    </SelectContent>
+                                                                </Select>
+                                                            <FormMessage /></FormItem>
+                                                        )} />
+                                                        <FormField name="publishFrequency" render={({ field }) => (
+                                                            <FormItem><FormLabel>App Publish Frequency</FormLabel>
+                                                                <Select onValueChange={field.onChange} defaultValue={field.value}>
+                                                                    <FormControl><SelectTrigger><SelectValue placeholder="Select frequency" /></SelectTrigger></FormControl>
+                                                                    <SelectContent>
+                                                                        {Object.values(UserPublishFrequency).map(val => <SelectItem key={val} value={val}>{val.replace(/_/g, ' ')}</SelectItem>)}
+                                                                    </SelectContent>
+                                                                </Select>
+                                                            <FormMessage /></FormItem>
+                                                        )} />
+                                                    </div>
+                                            )}
+                                                
+                                            {currentStep === 3 && (
+                                                <div className="space-y-6">
+                                                        <FormField name="serviceUsage" render={({ field }) => (
+                                                            <FormItem>
+                                                                <FormLabel>Why are you using our service?</FormLabel>
+                                                                <div className="grid grid-cols-2 gap-4">
+                                                                {Object.values(UserTestingServiceReason).map((item) => (
+                                                                    <FormField key={item} control={form.control} name="serviceUsage" render={({ field }) => (
+                                                                        <FormItem key={item} className="flex flex-row items-center space-x-3 space-y-0 rounded-md border p-4 has-[:checked]:border-primary">
+                                                                            <FormControl>
+                                                                                <Checkbox checked={field.value?.includes(item)} onCheckedChange={(checked) => {
+                                                                                    return checked ? field.onChange([...(field.value || []), item]) : field.onChange(field.value?.filter((value) => value !== item))
+                                                                                }} />
+                                                                            </FormControl>
+                                                                            <FormLabel className="text-sm font-normal">{item.replace(/_/g, ' ')}</FormLabel>
+                                                                        </FormItem>
+                                                                    )} />
+                                                                ))}
+                                                                </div>
+                                                                <FormMessage />
+                                                            </FormItem>
+                                                        )} />
+                                                        <FormField name="communicationMethods" render={({ field }) => (
+                                                            <FormItem>
+                                                                <FormLabel>Preferred Communication</FormLabel>
+                                                                <div className="grid grid-cols-3 gap-4">
+                                                                {Object.values(UserCommunicationMethod).map((item) => (
+                                                                    <FormField key={item} control={form.control} name="communicationMethods" render={({ field }) => (
+                                                                        <FormItem key={item} className="flex flex-row items-center space-x-3 space-y-0 rounded-md border p-4 has-[:checked]:border-primary">
+                                                                            <FormControl>
+                                                                                <Checkbox checked={field.value?.includes(item)} onCheckedChange={(checked) => {
+                                                                                    return checked ? field.onChange([...(field.value || []), item]) : field.onChange(field.value?.filter((value) => value !== item))
+                                                                                }} />
+                                                                            </FormControl>
+                                                                            <FormLabel className="text-sm font-normal">{item.replace(/_/g, ' ')}</FormLabel>
+                                                                        </FormItem>
+                                                                    )} />
+                                                                ))}
+                                                                </div>
+                                                                <FormMessage />
+                                                            </FormItem>
+                                                        )} />
+                                                    </div>
                                             )}
 
-                                            <div className="mt-8 pt-5 border-t flex justify-between">
-                                                <Button type="button" onClick={prev} disabled={currentStep === 0} variant="ghost" className={cn(currentStep === 0 && "invisible")}>
-                                                    <ArrowLeft className="mr-2 h-4 w-4" /> Back
+                                            </motion.div>
+                                        </AnimatePresence>
+                                        <div className="mt-8 pt-5 border-t flex justify-between">
+                                            <Button
+                                                type="button"
+                                                onClick={prev}
+                                                disabled={currentStep === 0}
+                                                variant="ghost"
+                                                className={cn(currentStep === 0 && "invisible")}
+                                            >
+                                                <ArrowLeft className="mr-2 h-4 w-4" /> Back
+                                            </Button>
+                                            
+                                            <div className="flex items-center gap-4">
+                                                <Button type="button" variant="ghost" asChild>
+                                                    <Link href="/dashboard">Skip for now</Link>
                                                 </Button>
-                                                <div className="flex items-center gap-4">
-                                                    <Button type="button" variant="ghost" asChild>
-                                                        <Link href="/dashboard">Skip for now</Link>
-                                                    </Button>
+                                                
+                                                {currentStep < formSteps.length - 1 && (
                                                     <Button
                                                         type="button"
                                                         onClick={next}
-                                                        className={cn(currentStep === formSteps.length -1 && "hidden")}
+                                                        variant="outline"
                                                     >
-                                                        Next <ArrowRight className="mr-2 h-4 w-4" />
+                                                        Next <ArrowRight className="ml-2 h-4 w-4" />
                                                     </Button>
-                                                    <Button
-                                                        type="submit"
-                                                        className={cn(currentStep !== formSteps.length -1 && "hidden")}
-                                                    >
-                                                       <Save className="mr-2 h-4 w-4"/> Finish Setup
+                                                )}
+
+                                                {currentStep === formSteps.length - 1 && (
+                                                     <Button type="submit">
+                                                        <Save className="mr-2 h-4 w-4"/> Finish Setup
                                                     </Button>
-                                                </div>
+                                                )}
                                             </div>
                                         </div>
-                                    </motion.div>
-                                </AnimatePresence>
+                                </div>
                             </form>
                         </FormProvider>
                      </div>
