@@ -16,7 +16,7 @@ import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { UserProfileType, UserJobRole, UserExperienceLevel, UserCompanySize, UserCompanyPosition, UserTotalPublishedApps, UserDevelopmentPlatform, UserPublishFrequency, UserTestingServiceReason, UserCommunicationMethod } from "@/lib/types";
 
-const { Stepper, useStepper } = defineStepper(
+const { Stepper, useStepper, utils } = defineStepper(
     { id: 'role', title: 'Your Role', description: 'Tell us about you.', icon: User },
     { id: 'company', title: 'Your Company', description: 'Info about your organization.', icon: Briefcase },
     { id: 'projects', title: 'Your Projects', description: 'About your work.', icon: Lightbulb },
@@ -25,7 +25,7 @@ const { Stepper, useStepper } = defineStepper(
 
 export function ProfileStepper({ form, onSubmit }: { form: any, onSubmit: () => void }) {
   const isMobile = useMediaQuery("(max-width: 768px)");
-  const { state, goTo, next, prev, isFirst, isLast, current, all, utils } = useStepper();
+  const { state, goTo, next, prev, isFirst, isLast, current, all } = useStepper();
 
   const handleNext = async () => {
     const fieldsForStep: { [key: string]: (keyof typeof form.getValues)[] } = {
@@ -52,23 +52,33 @@ export function ProfileStepper({ form, onSubmit }: { form: any, onSubmit: () => 
         onStepChange={goTo}
       >
         <Stepper.Navigation>
-            {all.map((step) => (
-              <Stepper.Step key={step.id} of={step.id} icon={step.icon}>
+            {all.map((step) => {
+              const rolePanel = <RoleStep form={form} />;
+              const companyPanel = <CompanyStep form={form} />;
+              const projectsPanel = <ProjectsStep form={form} />;
+              const contactPanel = <ContactStep form={form} />;
+              
+              let panel;
+              if (step.id === 'role') panel = rolePanel;
+              else if (step.id === 'company') panel = companyPanel;
+              else if (step.id === 'projects') panel = projectsPanel;
+              else if (step.id === 'contact') panel = contactPanel;
+
+              return (
+                <Stepper.Step key={step.id} of={step.id} icon={step.icon}>
                     <Stepper.Title>{step.title}</Stepper.Title>
                     {!isMobile && (
                         <Stepper.Description>{step.description}</Stepper.Description>
                     )}
                      {isMobile &&
-                        utils.when(step.id, (step) => (
-                        <Stepper.Panel className="h-[200px] content-center rounded border bg-slate-50 p-8">
-                            {step.id === 'role' && <RoleStep form={form} />}
-                            {step.id === 'company' && <CompanyStep form={form} />}
-                            {step.id === 'projects' && <ProjectsStep form={form} />}
-                            {step.id === 'contact' && <ContactStep form={form} />}
-                        </Stepper.Panel>
-                    ))}
+                        utils.when(step.id, () => (
+                          <Stepper.Panel className="h-auto content-center rounded border bg-slate-50 p-8">
+                             {panel}
+                          </Stepper.Panel>
+                      ))}
                 </Stepper.Step>
-            ))}
+              )
+            })}
         </Stepper.Navigation>
 
         {!isMobile && (
@@ -80,12 +90,10 @@ export function ProfileStepper({ form, onSubmit }: { form: any, onSubmit: () => 
                     exit={{ opacity: 0, y: -20, transition: { duration: 0.3, ease: 'easeIn' } }}
                     className="mt-8"
                 >
-                    {utils.switch({
-                        "role": <RoleStep form={form} />,
-                        "company": <CompanyStep form={form} />,
-                        "projects": <ProjectsStep form={form} />,
-                        "contact": <ContactStep form={form} />,
-                    })}
+                    {current.id === 'role' && <RoleStep form={form} />}
+                    {current.id === 'company' && <CompanyStep form={form} />}
+                    {current.id === 'projects' && <ProjectsStep form={form} />}
+                    {current.id === 'contact' && <ContactStep form={form} />}
                 </motion.div>
             </AnimatePresence>
         )}
@@ -278,5 +286,3 @@ const ContactStep = ({ form }: { form: any }) => (
         )} />
     </div>
 );
-
-    

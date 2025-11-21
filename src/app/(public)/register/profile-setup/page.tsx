@@ -113,7 +113,8 @@ function ProfileSetupPage() {
                     <div className="mt-8 relative">
                         <FormProvider {...form}>
                             <form onSubmit={form.handleSubmit(processForm)}>
-                                <ProfileStepper form={form} onSubmit={form.handleSubmit(processForm)} />
+                                <p>Stepper component will go here.</p>
+                                <Button type="submit">Submit</Button>
                             </form>
                         </FormProvider>
                      </div>

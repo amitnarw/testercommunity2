@@ -1,4 +1,3 @@
-
 "use client";
 
 import { Slot } from "@radix-ui/react-slot";
@@ -374,7 +373,7 @@ const CircleStepIndicator = ({
 const classForNavigationList = cva("flex gap-2", {
   variants: {
     variant: {
-      horizontal: "flex-row items-center justify-between",
+      horizontal: "flex-row items-start justify-between",
       vertical: "flex-col",
       circle: "flex-row items-center justify-between",
     },
@@ -528,5 +527,3 @@ type AsChildProps<T extends React.ElementType> = React.ComponentProps<T> & {
 };
 
 export { defineStepper };
-
-    
