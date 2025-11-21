@@ -15,7 +15,7 @@ import {
   FormItem,
   FormMessage,
   FormLabel,
-} from "@/components/ui/form"
+} from "@/components/ui/form";
 import { cn } from '@/lib/utils';
 import { ArrowLeft, ArrowRight, Save, CheckCircle, Moon, Sun, Check } from 'lucide-react';
 import { SiteLogo } from '@/components/icons';
@@ -68,10 +68,10 @@ const step4Schema = z.object({
 const formSchemas = [step1Schema, step2Schema, step3Schema, step4Schema];
 
 const formSteps = [
-    { id: 'account', title: 'Create Account', description: 'Enter your personal details.' },
-    { id: 'role', title: 'Your Role', description: 'Tell us about your professional background.' },
-    { id: 'company', title: 'Your Company', description: 'Information about your organization.' },
-    { id: 'projects', title: 'Your Projects', description: 'Details about your development work.' },
+    { id: 'account', title: 'Create Account', description: 'Enter your personal details.', fields: ['firstName', 'lastName', 'email', 'password'] },
+    { id: 'role', title: 'Your Role', description: 'Tell us about your professional background.', fields: ['profileType', 'jobRole', 'experienceLevel'] },
+    { id: 'company', title: 'Your Company', description: 'Information about your organization.', fields: ['companyName', 'companyWebsite', 'companySize', 'positionInCompany'] },
+    { id: 'projects', title: 'Your Projects', description: 'Details about your development work.', fields: ['totalPublishedApps', 'platformDevelopment', 'publishFrequency', 'serviceUsage'] },
 ];
 
 const RegistrationSuccess = () => (
@@ -200,11 +200,13 @@ export default function RegisterPage() {
                                 return (
                                 <div key={step.id} className="flex-1">
                                     <div
-                                    className={cn(
-                                        "h-12 flex items-center justify-center relative transition-colors duration-300",
-                                        isCompleted ? "bg-green-500" : isCurrent ? "bg-primary" : "bg-muted",
-                                        index === 0 && "rounded-l-full",
-                                    )}
+                                        className={cn(
+                                            "h-12 flex items-center justify-center relative transition-colors duration-300 pl-8",
+                                            isCompleted ? "bg-green-500" : isCurrent ? "bg-primary" : "bg-muted",
+                                        )}
+                                        style={{
+                                            clipPath: 'polygon(0 0, calc(100% - 24px) 0, 100% 50%, calc(100% - 24px) 100%, 0 100%)'
+                                        }}
                                     >
                                     <span className={cn(
                                         "font-semibold text-xs sm:text-sm",
@@ -212,15 +214,6 @@ export default function RegisterPage() {
                                     )}>
                                         {step.title}
                                     </span>
-                                    {index < formSteps.length -1 && (
-                                         <div
-                                            className={cn(
-                                                "absolute right-0 top-0 h-full w-6 -mr-3 overflow-hidden",
-                                            )}
-                                        >
-                                            <div className={cn("h-full w-full bg-inherit transform -rotate-45 ")}></div>
-                                        </div>
-                                    )}
                                     </div>
                                 </div>
                                 );
@@ -406,6 +399,7 @@ export default function RegisterPage() {
                                                 <Button
                                                     type="submit"
                                                     className={cn(currentStep !== formSteps.length -1 && "hidden")}
+                                                    onClick={handleSubmit(processForm)}
                                                 >
                                                     Finish <Check className="ml-2 h-4 w-4" />
                                                 </Button>
@@ -440,4 +434,3 @@ export default function RegisterPage() {
     </div>
     );
 }
-
