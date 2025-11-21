@@ -22,7 +22,6 @@ import { SiteLogo } from '@/components/icons';
 import Link from 'next/link';
 import { useTheme } from 'next-themes';
 import { BackButton } from '@/components/back-button';
-import { Separator } from '@/components/ui/separator';
 import Image from 'next/image';
 import { BackgroundBeams } from '@/components/background-beams';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -69,10 +68,10 @@ const step4Schema = z.object({
 const formSchemas = [step1Schema, step2Schema, step3Schema, step4Schema];
 
 const formSteps = [
-    { id: 'account', title: 'Create Account', description: 'Enter your personal details.', fields: ['firstName', 'lastName', 'email', 'password'] },
-    { id: 'role', title: 'Your Role', description: 'Tell us about your professional background.', fields: ['country', 'phone', 'profileType', 'jobRole', 'experienceLevel'] },
-    { id: 'company', title: 'Your Company', description: 'Information about your organization.', fields: ['companyName', 'companyWebsite', 'companySize', 'positionInCompany'] },
-    { id: 'projects', title: 'Your Projects', description: 'Details about your development work.', fields: ['totalPublishedApps', 'platformDevelopment', 'publishFrequency', 'serviceUsage', 'communicationMethods', 'notificationPreference'] },
+    { id: 'account', title: 'Create Account', description: 'Enter your personal details.' },
+    { id: 'role', title: 'Your Role', description: 'Tell us about your professional background.' },
+    { id: 'company', title: 'Your Company', description: 'Information about your organization.' },
+    { id: 'projects', title: 'Your Projects', description: 'Details about your development work.' },
 ];
 
 const RegistrationSuccess = () => (
@@ -183,7 +182,7 @@ export default function RegisterPage() {
                 </Button>
             </div>
             
-            <div className={cn("w-full transition-all duration-300", currentStep > 0 ? "max-w-2xl" : "max-w-md")}>
+            <div className={cn("w-full transition-all duration-300", currentStep > 0 ? "max-w-3xl" : "max-w-md")}>
                 <AnimatePresence mode="wait">
                 {currentStep > 0 && !isSubmitted && (
                     <motion.div
@@ -194,34 +193,39 @@ export default function RegisterPage() {
                         transition={{ duration: 0.3 }}
                         className="mb-16 mt-8"
                     >
-                        <nav aria-label="Progress">
-                            <ol role="list" className="flex items-center">
-                                {formSteps.map((step, stepIdx) => (
-                                <li key={step.title} className={cn("relative flex-1", { 'pr-8 sm:pr-20': stepIdx !== formSteps.length - 1 })}>
-                                    <div className="absolute inset-0 flex items-center" aria-hidden="true">
-                                        <div className={cn("h-0.5 w-full", currentStep > stepIdx ? "bg-primary" : "bg-muted")} />
-                                    </div>
-                                     <div
-                                        className={cn(
-                                            "relative flex h-8 w-8 items-center justify-center rounded-full transition-colors duration-300",
-                                            currentStep > stepIdx ? "bg-primary" :
-                                            currentStep === stepIdx ? "border-2 border-primary bg-background" :
-                                            "border-2 border-muted bg-background"
-                                        )}
+                         <div className="flex w-full">
+                            {formSteps.map((step, index) => {
+                                const isCompleted = currentStep > index;
+                                const isCurrent = currentStep === index;
+                                return (
+                                <div key={step.id} className="flex-1">
+                                    <div
+                                    className={cn(
+                                        "h-12 flex items-center justify-center relative transition-colors duration-300",
+                                        isCompleted ? "bg-green-500" : isCurrent ? "bg-primary" : "bg-muted",
+                                        index === 0 && "rounded-l-full",
+                                    )}
                                     >
-                                        {currentStep > stepIdx ? (
-                                            <Check className="h-5 w-5 text-primary-foreground" aria-hidden="true" />
-                                        ) : (
-                                            <span className={cn("h-2.5 w-2.5 rounded-full transition-colors duration-300", currentStep === stepIdx ? 'bg-primary' : 'bg-transparent')} />
-                                        )}
+                                    <span className={cn(
+                                        "font-semibold text-xs sm:text-sm",
+                                        isCompleted ? "text-white" : isCurrent ? "text-primary-foreground" : "text-muted-foreground"
+                                    )}>
+                                        {step.title}
+                                    </span>
+                                    {index < formSteps.length -1 && (
+                                         <div
+                                            className={cn(
+                                                "absolute right-0 top-0 h-full w-6 -mr-3 overflow-hidden",
+                                            )}
+                                        >
+                                            <div className={cn("h-full w-full bg-inherit transform -rotate-45 ")}></div>
+                                        </div>
+                                    )}
                                     </div>
-                                    <div className="absolute mt-2 w-max text-center -translate-x-1/2 left-1/2">
-                                        <p className={cn("text-xs font-medium", currentStep >= stepIdx ? "text-primary" : "text-muted-foreground")}>{step.title}</p>
-                                    </div>
-                                </li>
-                                ))}
-                            </ol>
-                        </nav>
+                                </div>
+                                );
+                            })}
+                        </div>
                     </motion.div>
                 )}
                 </AnimatePresence>
@@ -240,6 +244,7 @@ export default function RegisterPage() {
                                         animate={{ opacity: 1, x: 0 }}
                                         exit={{ opacity: 0, x: delta > 0 ? -300 : 300 }}
                                         transition={{ type: 'tween', duration: 0.3, ease: 'easeInOut' }}
+                                        className={cn("bg-card border rounded-2xl p-6", currentStep > 0 && "shadow-lg")}
                                     >
                                         <div className={cn("mb-8", currentStep === 0 && "text-center")}>
                                             <h2 className={cn("font-bold tracking-tight", currentStep > 0 ? "text-2xl" : "text-3xl")}>{formSteps[currentStep].title}</h2>
@@ -253,9 +258,9 @@ export default function RegisterPage() {
                                                     Sign up with Google
                                                 </Button>
                                                 <div className="flex items-center gap-4">
-                                                    <Separator className="flex-1 bg-border/50" />
+                                                    <div className="flex-1 border-t"></div>
                                                     <span className="text-xs text-muted-foreground">OR</span>
-                                                    <Separator className="flex-1 bg-border/50" />
+                                                    <div className="flex-1 border-t"></div>
                                                 </div>
                                                 <div className="grid grid-cols-2 gap-4">
                                                     <FormField name="firstName" render={({ field }) => (
@@ -282,11 +287,11 @@ export default function RegisterPage() {
                                                         <FormItem className="space-y-3">
                                                         <FormLabel>You are a...</FormLabel>
                                                         <FormControl>
-                                                            <RadioGroup onValueChange={field.onChange} defaultValue={field.value} className="grid grid-cols-2 gap-4">
+                                                            <RadioGroup onValueChange={field.onChange} defaultValue={field.value} className="grid grid-cols-2 lg:grid-cols-4 gap-4">
                                                                 {Object.values(UserProfileType).map((type) => (
                                                                     <FormItem key={type}>
                                                                         <RadioGroupItem value={type} id={type} className="peer sr-only" />
-                                                                        <Label htmlFor={type} className="flex flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary cursor-pointer">{type.replace('_', ' ')}</Label>
+                                                                        <Label htmlFor={type} className="flex h-full flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary cursor-pointer">{type.replace('_', ' ')}</Label>
                                                                     </FormItem>
                                                                 ))}
                                                             </RadioGroup>
@@ -306,7 +311,7 @@ export default function RegisterPage() {
                                             </div>
                                         )}
                                         {currentStep === 2 && (
-                                           <div className="space-y-4">
+                                           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                              <FormField name="companyName" render={({ field }) => (
                                                     <FormItem><FormLabel>Company Name</FormLabel><FormControl><Input placeholder="Your Company Inc." {...field} /></FormControl><FormMessage /></FormItem>
                                              )} />
@@ -360,10 +365,10 @@ export default function RegisterPage() {
                                                 <FormField name="serviceUsage" render={({ field }) => (
                                                     <FormItem>
                                                         <FormLabel>Why are you using our service?</FormLabel>
-                                                        <div className="grid grid-cols-2 gap-2">
+                                                        <div className="grid grid-cols-2 gap-4">
                                                         {Object.values(UserTestingServiceReason).map((item) => (
                                                             <FormField key={item} control={form.control} name="serviceUsage" render={({ field }) => (
-                                                                <FormItem key={item} className="flex flex-row items-center space-x-3 space-y-0">
+                                                                <FormItem key={item} className="flex flex-row items-center space-x-3 space-y-0 rounded-md border p-4 has-[:checked]:border-primary">
                                                                     <FormControl>
                                                                         <Checkbox checked={field.value?.includes(item)} onCheckedChange={(checked) => {
                                                                             return checked ? field.onChange([...(field.value || []), item]) : field.onChange(field.value?.filter((value) => value !== item))
@@ -379,34 +384,35 @@ export default function RegisterPage() {
                                                 )} />
                                             </div>
                                         )}
+
+                                        <div className="mt-8 pt-5 border-t">
+                                            <div className="flex justify-between">
+                                                <Button
+                                                    type="button"
+                                                    onClick={prev}
+                                                    disabled={currentStep === 0}
+                                                    variant="ghost"
+                                                    className={cn(currentStep === 0 && "invisible")}
+                                                >
+                                                    <ArrowLeft className="mr-2 h-4 w-4" /> Back
+                                                </Button>
+                                                <Button
+                                                    type="button"
+                                                    onClick={next}
+                                                    className={cn(currentStep === formSteps.length -1 && "hidden")}
+                                                >
+                                                    Next <ArrowRight className="ml-2 h-4 w-4" />
+                                                </Button>
+                                                <Button
+                                                    type="submit"
+                                                    className={cn(currentStep !== formSteps.length -1 && "hidden")}
+                                                >
+                                                    Finish <Check className="ml-2 h-4 w-4" />
+                                                </Button>
+                                            </div>
+                                        </div>
                                     </motion.div>
                                 </AnimatePresence>
-                                <div className="mt-8 pt-5 border-t">
-                                    <div className="flex justify-between">
-                                        <Button
-                                            type="button"
-                                            onClick={prev}
-                                            disabled={currentStep === 0}
-                                            variant="ghost"
-                                            className={cn(currentStep === 0 && "invisible")}
-                                        >
-                                            <ArrowLeft className="mr-2 h-4 w-4" /> Back
-                                        </Button>
-                                        <Button
-                                            type="button"
-                                            onClick={next}
-                                            className={cn(currentStep === formSteps.length -1 && "hidden")}
-                                        >
-                                            Next <ArrowRight className="ml-2 h-4 w-4" />
-                                        </Button>
-                                         <Button
-                                            type="submit"
-                                            className={cn(currentStep !== formSteps.length -1 && "hidden")}
-                                        >
-                                            Finish <Check className="ml-2 h-4 w-4" />
-                                        </Button>
-                                    </div>
-                                </div>
                             </form>
                         </FormProvider>
                     </div>
@@ -434,3 +440,4 @@ export default function RegisterPage() {
     </div>
     );
 }
+
