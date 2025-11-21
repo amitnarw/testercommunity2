@@ -145,9 +145,9 @@ export default function ProfileSetupPage() {
                     </div>
 
                     <div className="relative">
-                        <div ref={stepperRef} className="flex flex-col lg:flex-row items-start lg:items-center justify-center relative">
+                        <div ref={stepperRef} className="flex flex-col lg:flex-row items-start lg:items-center justify-between relative">
                             <div className="absolute top-1/2 left-0 right-0 h-[2px] bg-border hidden lg:block -translate-y-1/2"></div>
-                            <div className="absolute left-4 top-0 bottom-0 w-[2px] bg-border block lg:hidden -translate-x-1/2"></div>
+                            <div className="absolute left-4 top-0 bottom-0 w-[2px] bg-border block lg:hidden"></div>
                             
                             {formSteps.map((step, index) => (
                                 <React.Fragment key={step.id}>
@@ -165,10 +165,8 @@ export default function ProfileSetupPage() {
                                                 <div className={cn("w-3 h-3 rounded-full transition-colors duration-300", currentStep === index && "bg-primary")}></div>
                                             )}
                                         </div>
+                                         <p className="font-semibold text-sm lg:mt-2">{step.title}</p>
                                     </div>
-                                    {index < formSteps.length - 1 && (
-                                        <div className="flex-1 h-12 w-[2px] lg:h-[2px] lg:w-auto bg-border -ml-4 lg:m-0"></div>
-                                    )}
                                 </React.Fragment>
                             ))}
                         </div>
@@ -176,9 +174,6 @@ export default function ProfileSetupPage() {
 
 
                      <div className="mt-8 relative">
-                        <div className="text-center mb-4">
-                            <h3 className="font-semibold text-lg">{formSteps[currentStep].title}</h3>
-                        </div>
                         <div 
                             className="w-4 h-4 bg-card absolute z-10"
                             style={{ ...arrowStyle, clipPath: 'polygon(0 50%, 100% 0, 100% 100%)' }}
