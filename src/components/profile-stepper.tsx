@@ -25,7 +25,7 @@ const { Stepper, useStepper } = defineStepper(
 
 export function ProfileStepper({ form, onSubmit }: { form: any, onSubmit: () => void }) {
   const isMobile = useMediaQuery("(max-width: 768px)");
-  const { state, goTo, next, prev, isFirst, isLast, current, all } = useStepper();
+  const { state, goTo, next, prev, isFirst, isLast, current, all, utils } = useStepper();
 
   const handleNext = async () => {
     const fieldsForStep: { [key: string]: (keyof typeof form.getValues)[] } = {
@@ -53,31 +53,42 @@ export function ProfileStepper({ form, onSubmit }: { form: any, onSubmit: () => 
       >
         <Stepper.Navigation>
             {all.map((step) => (
-                <Stepper.Step key={step.id} of={step.id} icon={step.icon}>
+              <Stepper.Step key={step.id} of={step.id} icon={step.icon}>
+                    <Stepper.Title>{step.title}</Stepper.Title>
                     {!isMobile && (
-                        <>
-                            <Stepper.Title>{step.title}</Stepper.Title>
-                            <Stepper.Description>{step.description}</Stepper.Description>
-                        </>
+                        <Stepper.Description>{step.description}</Stepper.Description>
                     )}
+                     {isMobile &&
+                        utils.when(step.id, (step) => (
+                        <Stepper.Panel className="h-[200px] content-center rounded border bg-slate-50 p-8">
+                            {step.id === 'role' && <RoleStep form={form} />}
+                            {step.id === 'company' && <CompanyStep form={form} />}
+                            {step.id === 'projects' && <ProjectsStep form={form} />}
+                            {step.id === 'contact' && <ContactStep form={form} />}
+                        </Stepper.Panel>
+                    ))}
                 </Stepper.Step>
             ))}
         </Stepper.Navigation>
 
-        <AnimatePresence mode="wait">
-            <motion.div
-                key={current.id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0, transition: { duration: 0.3, ease: 'easeOut' } }}
-                exit={{ opacity: 0, y: -20, transition: { duration: 0.3, ease: 'easeIn' } }}
-                className="mt-8"
-            >
-                {current.id === 'role' && <RoleStep form={form} />}
-                {current.id === 'company' && <CompanyStep form={form} />}
-                {current.id === 'projects' && <ProjectsStep form={form} />}
-                {current.id === 'contact' && <ContactStep form={form} />}
-            </motion.div>
-        </AnimatePresence>
+        {!isMobile && (
+            <AnimatePresence mode="wait">
+                <motion.div
+                    key={current.id}
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0, transition: { duration: 0.3, ease: 'easeOut' } }}
+                    exit={{ opacity: 0, y: -20, transition: { duration: 0.3, ease: 'easeIn' } }}
+                    className="mt-8"
+                >
+                    {utils.switch({
+                        "role": <RoleStep form={form} />,
+                        "company": <CompanyStep form={form} />,
+                        "projects": <ProjectsStep form={form} />,
+                        "contact": <ContactStep form={form} />,
+                    })}
+                </motion.div>
+            </AnimatePresence>
+        )}
 
         <div className="mt-8 pt-5 border-t flex justify-between">
             <Button
@@ -267,3 +278,5 @@ const ContactStep = ({ form }: { form: any }) => (
         )} />
     </div>
 );
+
+    

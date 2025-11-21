@@ -1,3 +1,6 @@
+
+"use client";
+
 import { Slot } from "@radix-ui/react-slot";
 import * as Stepperize from "@stepperize/react";
 import { type VariantProps, cva } from "class-variance-authority";
@@ -111,7 +114,6 @@ const defineStepper = <const Steps extends Stepperize.Step[]>(
 
         const title = childMap.get("title");
         const description = childMap.get("description");
-        const panel = childMap.get("panel");
 
         if (variant === "circle") {
           return (
@@ -204,27 +206,21 @@ const defineStepper = <const Steps extends Stepperize.Step[]>(
                 disabled={props.disabled}
               />
             )}
-
-            {variant === "vertical" && (
-              <div className="flex gap-4">
-                {!isLast && (
-                  <div className="flex justify-center ps-[calc(var(--spacing)_*_4.5_-_1px)]">
-                    <StepperSeparator
-                      orientation="vertical"
-                      isLast={isLast}
-                      state={dataState}
-                      disabled={props.disabled}
-                    />
-                  </div>
-                )}
-                <div className="my-3 flex-1 ps-4">{panel}</div>
+             {variant === "vertical" && !isLast && (
+              <div className="flex justify-center ps-[calc(var(--spacing)_*_4.5_-_1px)] h-full min-h-16">
+                  <StepperSeparator
+                    orientation="vertical"
+                    isLast={isLast}
+                    state={dataState}
+                    disabled={props.disabled}
+                  />
               </div>
             )}
           </>
         );
       },
-      Title,
-      Description,
+      Title: Title,
+      Description: Description,
       Panel: ({ children, asChild, ...props }) => {
         const Comp = asChild ? Slot : "div";
         const { tracking } = useStepperProvider();
@@ -255,16 +251,15 @@ const defineStepper = <const Steps extends Stepperize.Step[]>(
   };
 };
 
-const Title = ({
-  children,
-  className,
-  asChild,
-  ...props
-}: React.ComponentProps<"h4"> & { asChild?: boolean }) => {
+const Title = React.forwardRef<
+  HTMLHeadingElement,
+  React.ComponentProps<"h4"> & { asChild?: boolean }
+>(({ children, className, asChild, ...props }, ref) => {
   const Comp = asChild ? Slot : "h4";
 
   return (
     <Comp
+      ref={ref}
       date-component="stepper-step-title"
       className={cn("text-base font-medium", className)}
       {...props}
@@ -272,18 +267,19 @@ const Title = ({
       {children}
     </Comp>
   );
-};
+});
+Title.displayName = "Stepper.Title";
 
-const Description = ({
-  children,
-  className,
-  asChild,
-  ...props
-}: React.ComponentProps<"p"> & { asChild?: boolean }) => {
+
+const Description = React.forwardRef<
+  HTMLParagraphElement,
+  React.ComponentProps<"p"> & { asChild?: boolean }
+>(({ children, className, asChild, ...props }, ref) => {
   const Comp = asChild ? Slot : "p";
 
   return (
     <Comp
+      ref={ref}
       date-component="stepper-step-description"
       className={cn("text-sm text-muted-foreground", className)}
       {...props}
@@ -291,7 +287,9 @@ const Description = ({
       {children}
     </Comp>
   );
-};
+});
+Description.displayName = "Stepper.Description";
+
 
 const StepperSeparator = ({
   orientation,
@@ -530,3 +528,5 @@ type AsChildProps<T extends React.ElementType> = React.ComponentProps<T> & {
 };
 
 export { defineStepper };
+
+    
