@@ -2,7 +2,7 @@
 'use client';
 
 import { useState } from 'react';
-import { useForm, FormProvider, type SubmitHandler } from 'react-hook-form';
+import { useForm, type SubmitHandler, FormProvider } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -19,6 +19,7 @@ import { BackButton } from '@/components/back-button';
 import { Separator } from '@/components/ui/separator';
 import { UserProfileForm } from '@/components/user-profile-form';
 import Image from 'next/image';
+import { BackgroundBeams } from '@/components/background-beams';
 
 
 const GoogleIcon = (props: React.HTMLAttributes<HTMLImageElement>) => (
@@ -34,7 +35,7 @@ const step1Schema = z.object({
 const formSchemas = [step1Schema];
 
 const formSteps = [
-    { id: 'account', title: 'Create Account', description: 'Enter your personal details.' },
+    { id: 'account', title: 'Create Account', description: 'Enter your personal details.', fields: ['fullName', 'email', 'password'] },
     { id: 'profile', title: 'Tell us about yourself', description: 'Help us tailor your experience.' },
 ];
 
@@ -115,126 +116,162 @@ export default function RegisterPage() {
     const delta = currentStep - previousStep;
 
     return (
-    <div className="min-h-screen w-full flex flex-col items-center justify-center p-4 bg-background">
-        <div className="absolute top-4 right-4 flex items-center gap-4">
-            <BackButton href="/" />
-            <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-            >
-                <Sun className="h-6 w-6 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-                <Moon className="absolute h-6 w-6 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-                <span className="sr-only">Toggle theme</span>
-            </Button>
-        </div>
-        
-        <div className="w-full max-w-2xl mx-auto">
-             <div className="mb-12">
-                <nav aria-label="Progress">
-                    <ol role="list" className="flex items-center">
-                        {formSteps.map((step, stepIdx) => (
-                        <li key={step.title} className={cn("relative flex-1", { 'pr-8 sm:pr-20': stepIdx !== formSteps.length - 1 })}>
-                            {stepIdx < currentStep ? (
-                            <>
-                                <div className="absolute inset-0 flex items-center" aria-hidden="true">
-                                <div className="h-0.5 w-full bg-primary" />
-                                </div>
-                                <div className="relative flex h-8 w-8 items-center justify-center rounded-full bg-primary">
-                                <Check className="h-5 w-5 text-white" aria-hidden="true" />
-                                </div>
-                            </>
-                            ) : stepIdx === currentStep ? (
-                            <>
-                                <div className="absolute inset-0 flex items-center" aria-hidden="true">
-                                <div className="h-0.5 w-full bg-gray-200 dark:bg-gray-700" />
-                                </div>
-                                <div className="relative flex h-8 w-8 items-center justify-center rounded-full border-2 border-primary bg-background">
-                                <span className="h-2.5 w-2.5 rounded-full bg-primary" aria-hidden="true" />
-                                </div>
-                                <div className="absolute top-10 w-max text-center">
-                                    <p className="text-sm font-semibold">{step.title}</p>
-                                    <p className="text-xs text-muted-foreground">{step.description}</p>
-                                </div>
-                            </>
-                            ) : (
-                            <>
-                                <div className="absolute inset-0 flex items-center" aria-hidden="true">
-                                <div className="h-0.5 w-full bg-gray-200 dark:bg-gray-700" />
-                                </div>
-                                <div className="relative flex h-8 w-8 items-center justify-center rounded-full border-2 border-gray-300 bg-background dark:border-gray-600">
-                                </div>
-                                <div className="absolute top-10 w-max text-center">
-                                    <p className="text-sm font-semibold text-muted-foreground">{step.title}</p>
-                                    <p className="text-xs text-muted-foreground">{step.description}</p>
-                                </div>
-                            </>
-                            )}
-                        </li>
-                        ))}
-                    </ol>
-                </nav>
+    <div className={cn("min-h-screen w-full lg:grid", currentStep > 0 ? "lg:grid-cols-1" : "lg:grid-cols-2")}>
+        <div className="relative w-full h-screen flex flex-col items-center justify-center p-6 bg-background">
+            <div className="absolute top-4 right-4 flex items-center gap-4">
+                <BackButton href="/" />
+                <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+                >
+                    <Sun className="h-6 w-6 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+                    <Moon className="absolute h-6 w-6 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+                    <span className="sr-only">Toggle theme</span>
+                </Button>
             </div>
-        
-            {isSubmitted ? (
-                <RegistrationSuccess />
-            ) : (
-                <div className="w-full max-w-md mx-auto">
-                    <FormProvider {...form}>
-                        <form onSubmit={handleSubmit(processForm)} className="space-y-6 overflow-hidden relative">
-                            <AnimatePresence initial={false} custom={delta}>
-                                <motion.div
-                                    key={currentStep}
-                                    custom={delta}
-                                    initial={{ opacity: 0, x: delta > 0 ? 300 : -300 }}
-                                    animate={{ opacity: 1, x: 0 }}
-                                    exit={{ opacity: 0, x: delta > 0 ? -300 : 300 }}
-                                    transition={{ type: 'tween', duration: 0.3, ease: 'easeInOut' }}
-                                >
-                                    {currentStep === 0 && (
-                                        <div className="space-y-4 min-h-[350px]">
-                                            <Button variant="outline" className="w-full rounded-xl py-6 text-base" onClick={handleGoogleRegister}>
-                                                <GoogleIcon className="mr-3" />
-                                                Sign up with Google
-                                            </Button>
-                                            <div className="flex items-center gap-4">
-                                                <Separator className="flex-1 bg-border/50" />
-                                                <span className="text-xs text-muted-foreground">OR</span>
-                                                <Separator className="flex-1 bg-border/50" />
-                                            </div>
-                                            <FormField name="fullName" render={({ field }) => (
-                                                <FormItem><FormLabel>Full Name</FormLabel><FormControl><Input placeholder="John Doe" {...field} /></FormControl><FormMessage /></FormItem>
-                                            )} />
-                                            <FormField name="email" render={({ field }) => (
-                                                <FormItem><FormLabel>Email</FormLabel><FormControl><Input placeholder="you@example.com" {...field} /></FormControl><FormMessage /></FormItem>
-                                            )} />
-                                            <FormField name="password" render={({ field }) => (
-                                                <FormItem><FormLabel>Password</FormLabel><FormControl><Input type="password" placeholder="••••••••" {...field} /></FormControl><FormMessage /></FormItem>
-                                            )} />
+            
+            <div className={cn("w-full mx-auto", currentStep > 0 ? "max-w-2xl" : "max-w-md")}>
+                <AnimatePresence mode="wait">
+                {currentStep > 0 && (
+                    <motion.div
+                        key="stepper"
+                        initial={{ opacity: 0, y: -20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -20 }}
+                        transition={{ duration: 0.3 }}
+                        className="mb-12"
+                    >
+                        <nav aria-label="Progress">
+                            <ol role="list" className="flex items-center">
+                                {formSteps.map((step, stepIdx) => (
+                                <li key={step.title} className={cn("relative flex-1", { 'pr-8 sm:pr-20': stepIdx !== formSteps.length - 1 })}>
+                                    {stepIdx < currentStep ? (
+                                    <>
+                                        <div className="absolute inset-0 flex items-center" aria-hidden="true">
+                                        <div className="h-0.5 w-full bg-primary" />
                                         </div>
+                                        <div className="relative flex h-8 w-8 items-center justify-center rounded-full bg-primary">
+                                        <Check className="h-5 w-5 text-white" aria-hidden="true" />
+                                        </div>
+                                    </>
+                                    ) : stepIdx === currentStep ? (
+                                    <>
+                                        <div className="absolute inset-0 flex items-center" aria-hidden="true">
+                                        <div className="h-0.5 w-full bg-gray-200 dark:bg-gray-700" />
+                                        </div>
+                                        <div className="relative flex h-8 w-8 items-center justify-center rounded-full border-2 border-primary bg-background">
+                                        <span className="h-2.5 w-2.5 rounded-full bg-primary" aria-hidden="true" />
+                                        </div>
+                                        <div className="absolute top-10 w-max text-center">
+                                            <p className="text-sm font-semibold">{step.title}</p>
+                                            <p className="text-xs text-muted-foreground">{step.description}</p>
+                                        </div>
+                                    </>
+                                    ) : (
+                                    <>
+                                        <div className="absolute inset-0 flex items-center" aria-hidden="true">
+                                        <div className="h-0.5 w-full bg-gray-200 dark:bg-gray-700" />
+                                        </div>
+                                        <div className="relative flex h-8 w-8 items-center justify-center rounded-full border-2 border-gray-300 bg-background dark:border-gray-600">
+                                        </div>
+                                        <div className="absolute top-10 w-max text-center">
+                                            <p className="text-sm font-semibold text-muted-foreground">{step.title}</p>
+                                            <p className="text-xs text-muted-foreground">{step.description}</p>
+                                        </div>
+                                    </>
                                     )}
-                                     {currentStep === 1 && (
-                                        <UserProfileForm user={{ role: '', companySize: '', primaryGoal: '', monthlyBudget: '' }} />
-                                    )}
-                                </motion.div>
-                            </AnimatePresence>
-                            <div className="mt-8 pt-5">
-                                <div className="flex justify-between">
-                                    <Button type="button" onClick={prev} disabled={currentStep === 0} variant="ghost" className={cn(currentStep === 0 && "invisible")}>
-                                        <ArrowLeft className="mr-2 h-4 w-4" /> Back
-                                    </Button>
-                                    <Button type="button" onClick={next}>
-                                        {currentStep === formSteps.length - 1 ? 'Finish' : 'Next'} 
-                                        <ArrowRight className="ml-2 h-4 w-4" />
-                                    </Button>
+                                </li>
+                                ))}
+                            </ol>
+                        </nav>
+                    </motion.div>
+                )}
+                </AnimatePresence>
+            
+                {isSubmitted ? (
+                    <RegistrationSuccess />
+                ) : (
+                    <div className="w-full">
+                        <FormProvider {...form}>
+                            <form onSubmit={handleSubmit(processForm)} className="space-y-6 overflow-hidden relative">
+                                <AnimatePresence initial={false} custom={delta}>
+                                    <motion.div
+                                        key={currentStep}
+                                        custom={delta}
+                                        initial={{ opacity: 0, x: delta > 0 ? 300 : -300 }}
+                                        animate={{ opacity: 1, x: 0 }}
+                                        exit={{ opacity: 0, x: delta > 0 ? -300 : 300 }}
+                                        transition={{ type: 'tween', duration: 0.3, ease: 'easeInOut' }}
+                                    >
+                                        {currentStep === 0 && (
+                                            <div className="space-y-4 min-h-[350px]">
+                                                <div className="text-center mb-8">
+                                                    <h2 className="text-2xl font-bold tracking-tight text-foreground">Create an Account</h2>
+                                                    <p className="text-muted-foreground mt-2">
+                                                        Already have one? <Link href="/login" className="text-primary hover:underline">Log in</Link>
+                                                    </p>
+                                                </div>
+                                                <Button variant="outline" className="w-full rounded-xl py-6 text-base" onClick={handleGoogleRegister}>
+                                                    <GoogleIcon className="mr-3" />
+                                                    Sign up with Google
+                                                </Button>
+                                                <div className="flex items-center gap-4">
+                                                    <Separator className="flex-1 bg-border/50" />
+                                                    <span className="text-xs text-muted-foreground">OR</span>
+                                                    <Separator className="flex-1 bg-border/50" />
+                                                </div>
+                                                <FormField name="fullName" render={({ field }) => (
+                                                    <FormItem><FormLabel>Full Name</FormLabel><FormControl><Input placeholder="John Doe" {...field} /></FormControl><FormMessage /></FormItem>
+                                                )} />
+                                                <FormField name="email" render={({ field }) => (
+                                                    <FormItem><FormLabel>Email</FormLabel><FormControl><Input placeholder="you@example.com" {...field} /></FormControl><FormMessage /></FormItem>
+                                                )} />
+                                                <FormField name="password" render={({ field }) => (
+                                                    <FormItem><FormLabel>Password</FormLabel><FormControl><Input type="password" placeholder="••••••••" {...field} /></FormControl><FormMessage /></FormItem>
+                                                )} />
+                                            </div>
+                                        )}
+                                        {currentStep === 1 && (
+                                            <UserProfileForm user={{ role: '', companySize: '', primaryGoal: '', monthlyBudget: '' }} />
+                                        )}
+                                    </motion.div>
+                                </AnimatePresence>
+                                <div className="mt-8 pt-5 border-t">
+                                    <div className="flex justify-between">
+                                        <Button type="button" onClick={prev} disabled={currentStep === 0} variant="ghost" className={cn(currentStep === 0 && "invisible")}>
+                                            <ArrowLeft className="mr-2 h-4 w-4" /> Back
+                                        </Button>
+                                        <Button type="button" onClick={next}>
+                                            {currentStep === formSteps.length - 1 ? 'Finish' : 'Next'} 
+                                            <ArrowRight className="ml-2 h-4 w-4" />
+                                        </Button>
+                                    </div>
                                 </div>
-                            </div>
-                        </form>
-                    </FormProvider>
-                </div>
-            )}
+                            </form>
+                        </FormProvider>
+                    </div>
+                )}
+            </div>
         </div>
+        <AnimatePresence>
+        {currentStep === 0 && (
+             <motion.div 
+                className="hidden lg:flex flex-col items-center justify-center p-6 text-center relative overflow-hidden bg-background"
+                initial={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: 300, transition: { duration: 0.3, ease: "easeIn" } }}
+             >
+                <BackgroundBeams />
+                <div className="relative z-10 flex flex-col items-center">
+                    <SiteLogo className="h-20 w-auto mb-4" />
+                    <h1 className="text-3xl font-bold tracking-tight text-foreground">Join the Community</h1>
+                    <p className="mt-2 max-w-md mx-auto text-muted-foreground">
+                       Start your journey to building flawless apps with a global community of testers.
+                    </p>
+                </div>
+            </motion.div>
+        )}
+        </AnimatePresence>
     </div>
     );
-
-    
+}
