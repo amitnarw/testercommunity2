@@ -10,7 +10,6 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
-  Form,
   FormControl,
   FormField,
   FormItem,
@@ -24,7 +23,6 @@ import Link from 'next/link';
 import { useTheme } from 'next-themes';
 import { BackButton } from '@/components/back-button';
 import { Separator } from '@/components/ui/separator';
-import { UserProfileForm } from '@/components/user-profile-form';
 import Image from 'next/image';
 import { BackgroundBeams } from '@/components/background-beams';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -174,7 +172,7 @@ export default function RegisterPage() {
 
     return (
     <div className={cn("min-h-screen w-full lg:grid", currentStep > 0 ? "lg:grid-cols-1" : "lg:grid-cols-2")}>
-        <div className="relative w-full h-screen flex flex-col items-center justify-center p-6 bg-background">
+        <div className="relative w-full min-h-screen flex flex-col items-center justify-center p-6 bg-background">
             <div className="absolute top-4 right-4 flex items-center gap-4">
                 <BackButton href="/" />
                 <Button
@@ -188,56 +186,36 @@ export default function RegisterPage() {
                 </Button>
             </div>
             
-            <div className={cn("w-full mx-auto", currentStep > 0 ? "max-w-2xl" : "max-w-md")}>
+            <div className={cn("w-full transition-all duration-300", currentStep > 0 ? "max-w-2xl" : "max-w-md")}>
                 <AnimatePresence mode="wait">
-                {currentStep > 0 && (
+                {currentStep > 0 && !isSubmitted && (
                     <motion.div
                         key="stepper"
                         initial={{ opacity: 0, y: -20 }}
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -20 }}
                         transition={{ duration: 0.3 }}
-                        className="mb-12"
+                        className="mb-16 mt-8"
                     >
                         <nav aria-label="Progress">
                             <ol role="list" className="flex items-center">
                                 {formSteps.map((step, stepIdx) => (
                                 <li key={step.title} className={cn("relative flex-1", { 'pr-8 sm:pr-20': stepIdx !== formSteps.length - 1 })}>
-                                    {stepIdx < currentStep ? (
-                                    <>
-                                        <div className="absolute inset-0 flex items-center" aria-hidden="true">
-                                        <div className="h-0.5 w-full bg-primary" />
-                                        </div>
-                                        <div className="relative flex h-8 w-8 items-center justify-center rounded-full bg-primary">
-                                        <Check className="h-5 w-5 text-white" aria-hidden="true" />
-                                        </div>
-                                    </>
-                                    ) : stepIdx === currentStep ? (
-                                    <>
-                                        <div className="absolute inset-0 flex items-center" aria-hidden="true">
-                                        <div className="h-0.5 w-full bg-gray-200 dark:bg-gray-700" />
-                                        </div>
-                                        <div className="relative flex h-8 w-8 items-center justify-center rounded-full border-2 border-primary bg-background">
-                                        <span className="h-2.5 w-2.5 rounded-full bg-primary" aria-hidden="true" />
-                                        </div>
-                                        <div className="absolute top-10 w-max text-center">
-                                            <p className="text-sm font-semibold">{step.title}</p>
-                                            <p className="text-xs text-muted-foreground">{step.description}</p>
-                                        </div>
-                                    </>
-                                    ) : (
-                                    <>
-                                        <div className="absolute inset-0 flex items-center" aria-hidden="true">
-                                        <div className="h-0.5 w-full bg-gray-200 dark:bg-gray-700" />
-                                        </div>
-                                        <div className="relative flex h-8 w-8 items-center justify-center rounded-full border-2 border-gray-300 bg-background dark:border-gray-600">
-                                        </div>
-                                        <div className="absolute top-10 w-max text-center">
-                                            <p className="text-sm font-semibold text-muted-foreground">{step.title}</p>
-                                            <p className="text-xs text-muted-foreground">{step.description}</p>
-                                        </div>
-                                    </>
-                                    )}
+                                    <div className="absolute inset-0 flex items-center" aria-hidden="true">
+                                        <div className={cn("h-0.5 w-full", currentStep > stepIdx ? "bg-primary" : "bg-muted")} />
+                                    </div>
+                                    <div className={cn("relative flex h-8 w-8 items-center justify-center rounded-full",
+                                        currentStep > stepIdx ? "bg-primary" : currentStep === stepIdx ? "border-2 border-primary bg-background" : "border-2 border-muted bg-background"
+                                    )}>
+                                        {currentStep > stepIdx ? (
+                                            <Check className="h-5 w-5 text-primary-foreground" aria-hidden="true" />
+                                        ) : currentStep === stepIdx ? (
+                                            <span className="h-2.5 w-2.5 rounded-full bg-primary" aria-hidden="true" />
+                                        ) : null}
+                                    </div>
+                                    <div className="absolute -bottom-10 w-max text-center -translate-x-1/2 left-1/2">
+                                        <p className={cn("text-sm font-semibold", currentStep === stepIdx ? "text-primary" : "text-muted-foreground")}>{step.title}</p>
+                                    </div>
                                 </li>
                                 ))}
                             </ol>
@@ -261,6 +239,11 @@ export default function RegisterPage() {
                                         exit={{ opacity: 0, x: delta > 0 ? -300 : 300 }}
                                         transition={{ type: 'tween', duration: 0.3, ease: 'easeInOut' }}
                                     >
+                                        <div className={cn(currentStep > 0 && "mb-8")}>
+                                            <h3 className="font-bold text-xl mb-2">{formSteps[currentStep].title}</h3>
+                                            <p className="text-muted-foreground text-sm">{formSteps[currentStep].description}</p>
+                                        </div>
+
                                         {currentStep === 0 && (
                                             <div className="space-y-4 min-h-[350px]">
                                                 <div className="text-center mb-8">
@@ -296,18 +279,11 @@ export default function RegisterPage() {
                                         )}
                                         {currentStep === 1 && (
                                             <div className="space-y-4">
-                                                <FormField name="country" render={({ field }) => (
-                                                    <FormItem><FormLabel>Country</FormLabel><FormControl><Input placeholder="e.g., United States" {...field} /></FormControl><FormMessage /></FormItem>
-                                                )} />
-                                                <FormField name="phone" render={({ field }) => (
-                                                    <FormItem><FormLabel>Phone Number</FormLabel><FormControl><Input placeholder="+1 123 456 7890" {...field} /></FormControl><FormMessage /></FormItem>
-                                                )} />
                                                 <FormField
                                                     control={form.control}
                                                     name="profileType"
                                                     render={({ field }) => (
                                                         <FormItem className="space-y-3">
-                                                        <FormLabel>What best describes you?</FormLabel>
                                                         <FormControl>
                                                             <RadioGroup onValueChange={field.onChange} defaultValue={field.value} className="grid grid-cols-2 gap-4">
                                                                 {Object.values(UserProfileType).map((type) => (
@@ -355,7 +331,7 @@ export default function RegisterPage() {
                                            </div>
                                         )}
                                         {currentStep === 3 && (
-                                            <div className="space-y-4">
+                                            <div className="space-y-6">
                                                 <FormField name="totalPublishedApps" render={({ field }) => (
                                                     <FormItem><FormLabel>Total Published Apps</FormLabel>
                                                         <Select onValueChange={field.onChange} defaultValue={field.value}>
@@ -454,5 +430,3 @@ export default function RegisterPage() {
     </div>
     );
 }
-
-    
