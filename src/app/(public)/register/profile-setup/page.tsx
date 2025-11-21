@@ -24,6 +24,7 @@ import { cn } from '@/lib/utils';
 import { UserProfileType, UserJobRole, UserExperienceLevel, UserCompanySize, UserCompanyPosition, UserTotalPublishedApps, UserDevelopmentPlatform, UserPublishFrequency, UserTestingServiceReason, UserCommunicationMethod, UserNotificationPreference } from '@/lib/types';
 import { Checkbox } from '@/components/ui/checkbox';
 import Link from 'next/link';
+import { Stepper, Step, StepIndicator, StepStatus, StepSeparator } from '@/components/ui/stepper';
 
 
 const profileStepSchema = z.object({
@@ -73,12 +74,7 @@ const RegistrationSuccess = () => (
 export default function ProfileSetupPage() {
     const [currentStep, setCurrentStep] = useState(0);
     const [isSubmitted, setIsSubmitted] = useState(false);
-    const [arrowStyle, setArrowStyle] = useState({});
-
-    const stepperRef = useRef<HTMLDivElement>(null);
-    const contentRef = useRef<HTMLDivElement>(null);
-
-
+    
     const form = useForm<ProfileFormData>({
         resolver: zodResolver(profileStepSchema),
         mode: 'onChange',
@@ -103,28 +99,6 @@ export default function ProfileSetupPage() {
 
     const { handleSubmit } = form;
 
-     const updateArrowPosition = () => {
-        if (stepperRef.current) {
-            const activeStepElement = stepperRef.current.querySelector(`[data-step-index="${currentStep}"]`) as HTMLElement;
-            if (activeStepElement) {
-                const isMobile = window.innerWidth < 1024;
-                if (isMobile) {
-                    const top = activeStepElement.offsetTop + activeStepElement.offsetHeight / 2;
-                    setArrowStyle({ top: `${top}px`, left: '100%', right: 'auto', transform: 'translateY(-50%) rotate(0deg)' });
-                } else {
-                    const left = activeStepElement.offsetLeft + activeStepElement.offsetWidth / 2;
-                    setArrowStyle({ left: `${left}px`, top: '100%', right: 'auto', transform: 'translateX(-50%) rotate(0deg)' });
-                }
-            }
-        }
-    };
-    
-    useLayoutEffect(() => {
-        updateArrowPosition();
-        window.addEventListener('resize', updateArrowPosition);
-        return () => window.removeEventListener('resize', updateArrowPosition);
-    }, [currentStep]);
-
     const processForm: SubmitHandler<any> = (data) => {
         console.log('Final profile data:', data);
         setIsSubmitted(true);
@@ -144,48 +118,32 @@ export default function ProfileSetupPage() {
                         </p>
                     </div>
 
-                     <div className="relative mb-4">
-                        <div ref={stepperRef} className="relative flex lg:justify-between">
-                            {/* Desktop Line */}
-                            <div className="absolute top-1/2 left-0 w-full h-0.5 bg-border hidden lg:block -translate-y-1/2"></div>
-                            {/* Mobile Line */}
-                            <div className="absolute left-4 top-0 h-full w-0.5 bg-border block lg:hidden"></div>
-
-                            {formSteps.map((step, index) => (
-                                <div
-                                    key={step.id}
-                                    data-step-index={index}
-                                    className="flex items-center gap-4 lg:flex-col lg:gap-2 p-4 cursor-pointer relative z-10 lg:w-20"
+                     <div className="relative mb-8 flex justify-center">
+                       <Stepper>
+                        {formSteps.map((step, index) => (
+                            <React.Fragment key={step.id}>
+                                <Step
+                                    label={step.title}
                                     onClick={() => setCurrentStep(index)}
-                                >
-                                    <div className={cn(
-                                        "w-8 h-8 rounded-full flex items-center justify-center transition-colors duration-300 border-2 bg-background flex-shrink-0",
-                                        currentStep > index ? "bg-green-500 border-green-500 text-white" :
-                                        currentStep === index ? "border-primary" : "border-border"
-                                    )}>
-                                        {currentStep > index ? <Check className="w-5 h-5" /> : (
-                                            <div className={cn("w-3 h-3 rounded-full transition-colors duration-300", currentStep === index && "bg-primary")}></div>
-                                        )}
-                                    </div>
-                                    <div className="lg:text-center">
-                                       <p className="font-semibold text-sm lg:mt-2 hidden lg:block">{step.title}</p>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
+                                    >
+                                    <StepIndicator status={currentStep >= index ? 'active' : 'inactive'}>
+                                        <StepStatus
+                                        status={currentStep >= index ? 'active' : 'inactive'}
+                                        >
+                                        {currentStep > index && <Check />}
+                                        </StepStatus>
+                                    </StepIndicator>
+                                </Step>
+                                {index < formSteps.length -1 && <StepSeparator />}
+                            </React.Fragment>
+                        ))}
+                       </Stepper>
                     </div>
 
 
                      <div className="mt-8 relative">
-                         <div className="text-center mb-2">
-                            <h3 className="font-bold text-xl">{formSteps[currentStep].title}</h3>
-                        </div>
-                        <div 
-                            className="w-4 h-4 bg-card absolute z-10"
-                            style={{ ...arrowStyle, clipPath: 'polygon(0 50%, 100% 0, 100% 100%)' }}
-                        ></div>
                         <FormProvider {...form}>
-                            <form ref={contentRef} onSubmit={handleSubmit(processForm)}>
+                            <form onSubmit={handleSubmit(processForm)}>
                                 <AnimatePresence mode="wait">
                                     <motion.div
                                         key={currentStep}
