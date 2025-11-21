@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useState, useRef, useEffect, useLayoutEffect } from 'react';
+import React, { useState, useRef, useEffect, useLayoutEffect } from 'react';
 import { useForm, type SubmitHandler, FormProvider } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -357,4 +357,3 @@ export default function ProfileSetupPage() {
         </div>
     );
 }
-
