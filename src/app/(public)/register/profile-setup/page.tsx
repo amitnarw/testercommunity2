@@ -21,7 +21,7 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { ArrowLeft, ArrowRight, Save, CheckCircle, Moon, Sun, Check } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import type { UserProfileData, UserProfileType, UserJobRole, UserExperienceLevel, UserCompanySize, UserCompanyPosition, UserTotalPublishedApps, UserDevelopmentPlatform, UserPublishFrequency, UserTestingServiceReason, UserCommunicationMethod, UserNotificationPreference } from '@/lib/types';
+import { UserProfileType, UserJobRole, UserExperienceLevel, UserCompanySize, UserCompanyPosition, UserTotalPublishedApps, UserDevelopmentPlatform, UserPublishFrequency, UserTestingServiceReason, UserCommunicationMethod, UserNotificationPreference } from '@/lib/types';
 import { Checkbox } from '@/components/ui/checkbox';
 import Link from 'next/link';
 
@@ -75,6 +75,16 @@ export default function ProfileSetupPage() {
         resolver: zodResolver(profileStepSchema),
         mode: 'onChange',
         defaultValues: {
+            profileType: undefined,
+            jobRole: undefined,
+            experienceLevel: undefined,
+            companyName: '',
+            companyWebsite: '',
+            companySize: undefined,
+            positionInCompany: undefined,
+            totalPublishedApps: undefined,
+            platformDevelopment: undefined,
+            publishFrequency: undefined,
             serviceUsage: [],
             communicationMethods: [],
             notificationPreference: [],
@@ -163,7 +173,7 @@ export default function ProfileSetupPage() {
                                                     <FormItem><FormLabel>Your Job Role</FormLabel>
                                                     <Select onValueChange={field.onChange} defaultValue={field.value}>
                                                         <FormControl><SelectTrigger><SelectValue placeholder="Select your primary role" /></SelectTrigger></FormControl>
-                                                        <SelectContent>{Object.values(UserJobRole).map(role => <SelectItem key={role} value={role}>{role.replace('_', ' ')}</SelectItem>)}</SelectContent>
+                                                        <SelectContent>{Object.values(UserJobRole).map(role => <SelectItem key={role} value={role}>{role.replace(/_/g, ' ')}</SelectItem>)}</SelectContent>
                                                     </Select>
                                                     <FormMessage /></FormItem>
                                                 )} />
@@ -182,7 +192,7 @@ export default function ProfileSetupPage() {
                                                     <Select onValueChange={field.onChange} defaultValue={field.value}>
                                                         <FormControl><SelectTrigger><SelectValue placeholder="Select company size" /></SelectTrigger></FormControl>
                                                         <SelectContent>
-                                                            {Object.values(UserCompanySize).map(size => <SelectItem key={size} value={size}>{size.replace('SIZE_', '').replace('_', '-')}</SelectItem>)}
+                                                            {Object.values(UserCompanySize).map(size => <SelectItem key={size} value={size}>{size.replace('SIZE_', '').replace(/_/g, '-')}</SelectItem>)}
                                                         </SelectContent>
                                                     </Select>
                                                     <FormMessage /></FormItem>
@@ -192,7 +202,7 @@ export default function ProfileSetupPage() {
                                                     <Select onValueChange={field.onChange} defaultValue={field.value}>
                                                         <FormControl><SelectTrigger><SelectValue placeholder="Select your position" /></SelectTrigger></FormControl>
                                                         <SelectContent>
-                                                            {Object.values(UserCompanyPosition).map(pos => <SelectItem key={pos} value={pos}>{pos.replace('_', ' ')}</SelectItem>)}
+                                                            {Object.values(UserCompanyPosition).map(pos => <SelectItem key={pos} value={pos}>{pos.replace(/_/g, ' ')}</SelectItem>)}
                                                         </SelectContent>
                                                     </Select>
                                                 <FormMessage /></FormItem>
@@ -206,7 +216,7 @@ export default function ProfileSetupPage() {
                                                         <Select onValueChange={field.onChange} defaultValue={field.value}>
                                                             <FormControl><SelectTrigger><SelectValue placeholder="Select number of apps" /></SelectTrigger></FormControl>
                                                             <SelectContent>
-                                                                {Object.values(UserTotalPublishedApps).map(val => <SelectItem key={val} value={val}>{val.replace('PUB_', '').replace('_', '-')}</SelectItem>)}
+                                                                {Object.values(UserTotalPublishedApps).map(val => <SelectItem key={val} value={val}>{val.replace('PUB_', '').replace(/_/g, '-')}</SelectItem>)}
                                                             </SelectContent>
                                                         </Select>
                                                     <FormMessage /></FormItem>
@@ -216,7 +226,7 @@ export default function ProfileSetupPage() {
                                                         <Select onValueChange={field.onChange} defaultValue={field.value}>
                                                             <FormControl><SelectTrigger><SelectValue placeholder="Select platform" /></SelectTrigger></FormControl>
                                                             <SelectContent>
-                                                                {Object.values(UserDevelopmentPlatform).map(val => <SelectItem key={val} value={val}>{val.replace('_', ' ')}</SelectItem>)}
+                                                                {Object.values(UserDevelopmentPlatform).map(val => <SelectItem key={val} value={val}>{val.replace(/_/g, ' ')}</SelectItem>)}
                                                             </SelectContent>
                                                         </Select>
                                                     <FormMessage /></FormItem>
@@ -233,7 +243,7 @@ export default function ProfileSetupPage() {
                                                                             return checked ? field.onChange([...(field.value || []), item]) : field.onChange(field.value?.filter((value) => value !== item))
                                                                         }} />
                                                                     </FormControl>
-                                                                    <FormLabel className="text-sm font-normal">{item.replace('_', ' ')}</FormLabel>
+                                                                    <FormLabel className="text-sm font-normal">{item.replace(/_/g, ' ')}</FormLabel>
                                                                 </FormItem>
                                                             )} />
                                                         ))}
@@ -270,4 +280,3 @@ export default function ProfileSetupPage() {
         </div>
     );
 }
-
