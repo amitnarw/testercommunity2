@@ -68,7 +68,7 @@ export default function Home() {
                             <div className="mt-5 inline-block p-4">
                                 <MagneticButton>
                                     <Button asChild size="lg" variant="default" className="group text-sm sm:text-base px-4 sm:px-6 sm:pr-3 py-6 sm:py-7 rounded-full shadow-lg shadow-primary/30">
-                                        <Link href="/signup">
+                                        <Link href="/register">
                                             <span className="relative z-10 font-bold">Submit Your App Now</span>
                                             <div className="relative inline-flex items-center justify-center w-8 h-8 rounded-full bg-primary-foreground/20 group-hover:bg-black dark:group-hover:bg-white transition-all duration-500 group-hover:scale-[2] ml-3 sm:ml-4">
                                                 <ChevronRight className="w-4 h-4 text-primary-foreground group-hover:text-white dark:group-hover:text-black transition-colors duration-300" />
@@ -165,7 +165,7 @@ export default function Home() {
                                 Join the community and experience the future of app testing today. It's free to get started.
                             </p>
                             <div className="mt-8 flex justify-center">
-                                <Link href="/signup">
+                                <Link href="/register">
                                     <AnimatedRoundedButton
                                         normalTextColor="hsl(var(--primary))"
                                         hoverTextColor="white"

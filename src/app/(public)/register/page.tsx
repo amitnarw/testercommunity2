@@ -11,9 +11,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { FormField, FormControl, FormItem, FormMessage, FormLabel } from '@/components/ui/form';
 import { cn } from '@/lib/utils';
-import { ArrowLeft, ArrowRight, UserPlus, CheckCircle, Moon, Sun } from 'lucide-react';
+import { ArrowLeft, ArrowRight, UserPlus, CheckCircle, Moon, Sun, Check } from 'lucide-react';
 import { SiteLogo } from '@/components/icons';
-import { BackgroundBeams } from '@/components/background-beams';
 import Link from 'next/link';
 import { useTheme } from 'next-themes';
 import { BackButton } from '@/components/back-button';
@@ -35,8 +34,8 @@ const step1Schema = z.object({
 const formSchemas = [step1Schema];
 
 const formSteps = [
-    { id: 'account', title: 'Create your inTesters Account', fields: ['fullName', 'email', 'password'] },
-    { id: 'profile', title: 'Tell us about yourself' },
+    { id: 'account', title: 'Create Account', description: 'Enter your personal details.' },
+    { id: 'profile', title: 'Tell us about yourself', description: 'Help us tailor your experience.' },
 ];
 
 const RegistrationSuccess = () => (
@@ -85,8 +84,7 @@ export default function RegisterPage() {
             setPreviousStep(currentStep)
             setCurrentStep(step => step + 1);
         } else {
-            // This is the final step of the form part
-             handleSubmit(processForm)();
+            handleSubmit(processForm)();
         }
     };
 
@@ -101,11 +99,14 @@ export default function RegisterPage() {
         console.log("Account data:", data);
         setPreviousStep(currentStep);
         setCurrentStep(step => step + 1);
+        // After the last step, you might want to show success or redirect
+        if (currentStep === formSteps.length - 1) {
+            setIsSubmitted(true);
+        }
     };
 
      const handleGoogleRegister = () => {
         setIsGoogleAuth(true);
-        // Simulate pre-filling form with Google data
         setValue('fullName', 'Demo User', { shouldValidate: true });
         setValue('email', 'demo.user@gmail.com', { shouldValidate: true });
         next();
@@ -114,33 +115,71 @@ export default function RegisterPage() {
     const delta = currentStep - previousStep;
 
     return (
-    <div className="min-h-screen w-full lg:grid lg:grid-cols-2">
-        <div className="relative w-full h-screen flex flex-col items-center justify-center p-6 bg-background">
-             <div className="absolute top-4 right-4 flex items-center gap-4">
-                <BackButton href="/" />
-                <Button
-                    variant="ghost"
-                    size="icon"
-                    onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-                >
-                    <Sun className="h-6 w-6 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-                    <Moon className="absolute h-6 w-6 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-                    <span className="sr-only">Toggle theme</span>
-                </Button>
+    <div className="min-h-screen w-full flex flex-col items-center justify-center p-4 bg-background">
+        <div className="absolute top-4 right-4 flex items-center gap-4">
+            <BackButton href="/" />
+            <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+            >
+                <Sun className="h-6 w-6 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+                <Moon className="absolute h-6 w-6 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+                <span className="sr-only">Toggle theme</span>
+            </Button>
+        </div>
+        
+        <div className="w-full max-w-2xl mx-auto">
+             <div className="mb-12">
+                <nav aria-label="Progress">
+                    <ol role="list" className="flex items-center">
+                        {formSteps.map((step, stepIdx) => (
+                        <li key={step.title} className={cn("relative flex-1", { 'pr-8 sm:pr-20': stepIdx !== formSteps.length - 1 })}>
+                            {stepIdx < currentStep ? (
+                            <>
+                                <div className="absolute inset-0 flex items-center" aria-hidden="true">
+                                <div className="h-0.5 w-full bg-primary" />
+                                </div>
+                                <div className="relative flex h-8 w-8 items-center justify-center rounded-full bg-primary">
+                                <Check className="h-5 w-5 text-white" aria-hidden="true" />
+                                </div>
+                            </>
+                            ) : stepIdx === currentStep ? (
+                            <>
+                                <div className="absolute inset-0 flex items-center" aria-hidden="true">
+                                <div className="h-0.5 w-full bg-gray-200 dark:bg-gray-700" />
+                                </div>
+                                <div className="relative flex h-8 w-8 items-center justify-center rounded-full border-2 border-primary bg-background">
+                                <span className="h-2.5 w-2.5 rounded-full bg-primary" aria-hidden="true" />
+                                </div>
+                                <div className="absolute top-10 w-max text-center">
+                                    <p className="text-sm font-semibold">{step.title}</p>
+                                    <p className="text-xs text-muted-foreground">{step.description}</p>
+                                </div>
+                            </>
+                            ) : (
+                            <>
+                                <div className="absolute inset-0 flex items-center" aria-hidden="true">
+                                <div className="h-0.5 w-full bg-gray-200 dark:bg-gray-700" />
+                                </div>
+                                <div className="relative flex h-8 w-8 items-center justify-center rounded-full border-2 border-gray-300 bg-background dark:border-gray-600">
+                                </div>
+                                <div className="absolute top-10 w-max text-center">
+                                    <p className="text-sm font-semibold text-muted-foreground">{step.title}</p>
+                                    <p className="text-xs text-muted-foreground">{step.description}</p>
+                                </div>
+                            </>
+                            )}
+                        </li>
+                        ))}
+                    </ol>
+                </nav>
             </div>
-            <div className="max-w-md w-full">
-                {isSubmitted ? (
-                    <RegistrationSuccess />
-                ) : (
-                    <>
-                    <div className="text-center mb-8">
-                        <h2 className="text-2xl font-bold tracking-tight text-foreground">
-                           Get Started with inTesters
-                        </h2>
-                        <p className="text-muted-foreground mt-2">
-                            Already have an account? <Link href="/login" className="text-primary hover:underline">Log in</Link>.
-                        </p>
-                    </div>
+        
+            {isSubmitted ? (
+                <RegistrationSuccess />
+            ) : (
+                <div className="w-full max-w-md mx-auto">
                     <FormProvider {...form}>
                         <form onSubmit={handleSubmit(processForm)} className="space-y-6 overflow-hidden relative">
                             <AnimatePresence initial={false} custom={delta}>
@@ -152,8 +191,6 @@ export default function RegisterPage() {
                                     exit={{ opacity: 0, x: delta > 0 ? -300 : 300 }}
                                     transition={{ type: 'tween', duration: 0.3, ease: 'easeInOut' }}
                                 >
-                                    <h3 className="font-semibold text-lg mb-4">{formSteps[currentStep].title}</h3>
-
                                     {currentStep === 0 && (
                                         <div className="space-y-4 min-h-[350px]">
                                             <Button variant="outline" className="w-full rounded-xl py-6 text-base" onClick={handleGoogleRegister}>
@@ -194,21 +231,10 @@ export default function RegisterPage() {
                             </div>
                         </form>
                     </FormProvider>
-                    </>
-                )}
-            </div>
-        </div>
-        <div className="hidden lg:flex flex-col items-center justify-center p-6 text-center relative overflow-hidden bg-background">
-            <BackgroundBeams />
-            <div className="relative z-10 flex flex-col items-center">
-                <SiteLogo className="h-20 w-auto mb-4" />
-                <h1 className="text-3xl font-bold tracking-tight text-foreground">Join a Community of Innovators</h1>
-                <p className="mt-2 max-w-md mx-auto text-muted-foreground">
-                   Create your account to start testing apps, earning rewards, and shipping better products.
-                </p>
-            </div>
+                </div>
+            )}
         </div>
     </div>
     );
-}
 
+    

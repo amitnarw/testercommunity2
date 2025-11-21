@@ -147,7 +147,7 @@ export default function HowItWorksPage() {
                 </p>
                 <div className="mt-10">
                     <Button asChild size="lg" className="font-bold text-lg px-8 py-6 rounded-xl hover:shadow-lg hover:shadow-primary/30">
-                        <Link href="/signup">Begin Your Journey<ArrowRight className="ml-2" /></Link>
+                        <Link href="/register">Begin Your Journey<ArrowRight className="ml-2" /></Link>
                     </Button>
                 </div>
             </section>

@@ -50,7 +50,7 @@ export default function MobileMenu({ isMenuOpen, setIsMenuOpen, onLogout }: {
         notificationHref = '/tester/notifications';
     }
 
-    const isAuthenticated = !pathname.startsWith('/login') && !pathname.startsWith('/signup') && !pathname.startsWith('/tester/login') && !pathname.startsWith('/tester/register');
+    const isAuthenticated = !pathname.startsWith('/login') && !pathname.startsWith('/register') && !pathname.startsWith('/tester/login') && !pathname.startsWith('/tester/register');
 
     const publicNavItems = [
         { name: 'Home', href: '/' },
@@ -115,7 +115,7 @@ export default function MobileMenu({ isMenuOpen, setIsMenuOpen, onLogout }: {
                         ) : (
                             <div className="flex flex-col gap-2">
                                 <Button asChild size="lg" onClick={() => setIsMenuOpen(false)}><Link href="/login">Log In</Link></Button>
-                                <Button asChild size="lg" variant="outline" onClick={() => setIsMenuOpen(false)}><Link href="/signup">Sign Up</Link></Button>
+                                <Button asChild size="lg" variant="outline" onClick={() => setIsMenuOpen(false)}><Link href="/register">Sign Up</Link></Button>
                             </div>
                         )}
                     </div>

@@ -9,13 +9,13 @@ export function middleware(request: NextRequest) {
 
   const { pathname } = request.nextUrl;
 
-  const authRoutes = ['/login', '/signup'];
+  const authRoutes = ['/login', '/register'];
   const authenticatedRoutes = ['/dashboard', '/community-dashboard', '/notifications', '/profile'];
   const adminRoutes = ['/admin'];
   const professionalTesterAuthRoutes = ['/tester/login', '/tester/register'];
   const professionalRoutes = ['/tester/dashboard'];
 
-  // If user is authenticated and tries to access login/signup, redirect to dashboard
+  // If user is authenticated and tries to access login/register, redirect to dashboard
   if (isAuthenticated && authRoutes.some(route => pathname.startsWith(route))) {
     return NextResponse.redirect(new URL('/dashboard', request.url));
   }
