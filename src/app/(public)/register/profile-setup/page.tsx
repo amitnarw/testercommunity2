@@ -144,36 +144,42 @@ export default function ProfileSetupPage() {
                         </p>
                     </div>
 
-                    <div className="relative">
-                        <div ref={stepperRef} className="flex flex-col lg:flex-row items-start lg:items-center justify-between relative">
-                            <div className="absolute top-1/2 left-0 right-0 h-[2px] bg-border hidden lg:block -translate-y-1/2"></div>
-                            <div className="absolute left-4 top-0 bottom-0 w-[2px] bg-border block lg:hidden"></div>
-                            
+                     <div className="relative mb-4">
+                        <div ref={stepperRef} className="relative flex lg:justify-between">
+                            {/* Desktop Line */}
+                            <div className="absolute top-1/2 left-0 w-full h-0.5 bg-border hidden lg:block -translate-y-1/2"></div>
+                            {/* Mobile Line */}
+                            <div className="absolute left-4 top-0 h-full w-0.5 bg-border block lg:hidden"></div>
+
                             {formSteps.map((step, index) => (
-                                <React.Fragment key={step.id}>
-                                    <div 
-                                        data-step-index={index}
-                                        className="flex items-center gap-4 lg:flex-col p-4 cursor-pointer relative z-10" 
-                                        onClick={() => setCurrentStep(index)}
-                                    >
-                                        <div className={cn(
-                                            "w-8 h-8 rounded-full flex items-center justify-center transition-colors duration-300 border-2 bg-background",
-                                            currentStep > index ? "bg-green-500 border-green-500 text-white" :
-                                            currentStep === index ? "border-primary" : "border-border"
-                                        )}>
-                                            {currentStep > index ? <Check className="w-5 h-5" /> : (
-                                                <div className={cn("w-3 h-3 rounded-full transition-colors duration-300", currentStep === index && "bg-primary")}></div>
-                                            )}
-                                        </div>
-                                         <p className="font-semibold text-sm lg:mt-2">{step.title}</p>
+                                <div
+                                    key={step.id}
+                                    data-step-index={index}
+                                    className="flex items-center gap-4 lg:flex-col lg:gap-2 p-4 cursor-pointer relative z-10 lg:w-20"
+                                    onClick={() => setCurrentStep(index)}
+                                >
+                                    <div className={cn(
+                                        "w-8 h-8 rounded-full flex items-center justify-center transition-colors duration-300 border-2 bg-background flex-shrink-0",
+                                        currentStep > index ? "bg-green-500 border-green-500 text-white" :
+                                        currentStep === index ? "border-primary" : "border-border"
+                                    )}>
+                                        {currentStep > index ? <Check className="w-5 h-5" /> : (
+                                            <div className={cn("w-3 h-3 rounded-full transition-colors duration-300", currentStep === index && "bg-primary")}></div>
+                                        )}
                                     </div>
-                                </React.Fragment>
+                                    <div className="lg:text-center">
+                                       <p className="font-semibold text-sm lg:mt-2 hidden lg:block">{step.title}</p>
+                                    </div>
+                                </div>
                             ))}
                         </div>
                     </div>
 
 
                      <div className="mt-8 relative">
+                         <div className="text-center mb-2">
+                            <h3 className="font-bold text-xl">{formSteps[currentStep].title}</h3>
+                        </div>
                         <div 
                             className="w-4 h-4 bg-card absolute z-10"
                             style={{ ...arrowStyle, clipPath: 'polygon(0 50%, 100% 0, 100% 100%)' }}
@@ -196,7 +202,6 @@ export default function ProfileSetupPage() {
                                                         name="profileType"
                                                         render={({ field }) => (
                                                             <FormItem className="space-y-3">
-                                                            <FormLabel>You are a...</FormLabel>
                                                             <FormControl>
                                                                 <RadioGroup onValueChange={field.onChange} defaultValue={field.value} className="grid grid-cols-2 lg:grid-cols-4 gap-4">
                                                                     {Object.values(UserProfileType).map((type) => (
@@ -339,7 +344,9 @@ export default function ProfileSetupPage() {
                                             )}
 
                                             <div className="mt-8 pt-5 border-t flex justify-between">
-                                                <Button type="button" onClick={() => setCurrentStep(currentStep - 1)} disabled={currentStep === 0} variant="ghost" className={cn(currentStep === 0 && "invisible")}> Back </Button>
+                                                <Button type="button" onClick={() => setCurrentStep(currentStep - 1)} disabled={currentStep === 0} variant="ghost" className={cn(currentStep === 0 && "invisible")}>
+                                                    <ArrowLeft className="mr-2 h-4 w-4" /> Back
+                                                </Button>
                                                 <div className="flex items-center gap-4">
                                                     <Button type="button" variant="ghost" asChild>
                                                         <Link href="/dashboard">Skip for now</Link>
@@ -349,7 +356,7 @@ export default function ProfileSetupPage() {
                                                         onClick={() => setCurrentStep(currentStep + 1)}
                                                         className={cn(currentStep === formSteps.length -1 && "hidden")}
                                                     >
-                                                        Next <ArrowRight className="ml-2 h-4 w-4" />
+                                                        Next <ArrowRight className="mr-2 h-4 w-4" />
                                                     </Button>
                                                     <Button
                                                         type="submit"
