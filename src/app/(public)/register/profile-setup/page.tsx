@@ -121,6 +121,7 @@ function ProfileSetupPage() {
                 </>
                 )}
             </div>
+            <ProfileStepper form={form} />
         </div>
     );
 }
