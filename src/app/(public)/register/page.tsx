@@ -30,7 +30,7 @@ import { BackgroundBeams } from '@/components/background-beams';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Label } from '@/components/ui/label';
-import { UserCompanyPosition, UserCompanySize, UserDevelopmentPlatform, UserExperienceLevel, UserJobRole, UserProfileType, UserPublishFrequency, UserTestingServiceReason, UserTotalPublishedApps } from '@/lib/types';
+import { UserCompanyPosition, UserCompanySize, UserDevelopmentPlatform, UserExperienceLevel, UserJobRole, UserProfileType, UserPublishFrequency, UserTestingServiceReason, UserTotalPublishedApps, UserCommunicationMethod, UserNotificationPreference } from '@/lib/types';
 import { Checkbox } from '@/components/ui/checkbox';
 
 
@@ -454,3 +454,5 @@ export default function RegisterPage() {
     </div>
     );
 }
+
+    
