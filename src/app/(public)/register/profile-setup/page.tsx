@@ -138,10 +138,7 @@ export default function ProfileSetupPage() {
                 ) : (
                     <>
                     <div className="text-center mb-12">
-                        <h2 className="text-3xl font-bold">Set Up Your Profile</h2>
-                        <p className="text-muted-foreground mt-2">
-                            Tell us a bit about yourself to personalize your experience.
-                        </p>
+                        <h2 className="text-3xl font-bold">User Survey</h2>
                         <p className="text-primary font-semibold mt-2">
                             Complete your profile to receive a <span className="font-bold">200 point bonus</span> to get you started!
                         </p>
@@ -344,7 +341,7 @@ export default function ProfileSetupPage() {
                                                         <Link href="/dashboard">Skip for now</Link>
                                                     </Button>
                                                     {currentStep < formSteps.length - 1 ? (
-                                                        <Button type="button" onClick={() => setCurrentStep(currentStep + 1)}> Next </Button>
+                                                        <Button type="button" onClick={() => setCurrentStep(currentStep + 1)}> Next <ArrowRight className="ml-2 h-4 w-4" /></Button>
                                                     ) : (
                                                         <Button type="submit"> Finish Setup </Button>
                                                     )}
