@@ -11,10 +11,13 @@ import {
   Briefcase,
   Lightbulb,
   Phone,
+  Sun,
+  Moon,
+  Save,
 } from "lucide-react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
-import type {
+import {
   UserProfileData,
   UserProfileType,
   UserJobRole,
@@ -39,6 +42,8 @@ import {
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
+import { useTheme } from "next-themes";
+import { Progress } from "@/components/ui/progress";
 
 const RegistrationSuccess = () => (
   <motion.div
@@ -91,6 +96,7 @@ function ProfileSetupPage() {
   const [currentStep, setCurrentStep] = useState(0);
   const [previousStep, setPreviousStep] = useState(0);
   const delta = currentStep - previousStep;
+  const { setTheme, theme } = useTheme();
 
   const next = () => {
     if (currentStep < steps.length - 1) {
@@ -105,15 +111,35 @@ function ProfileSetupPage() {
       setCurrentStep((step) => step - 1);
     }
   };
+  
+  const goToStep = (index: number) => {
+    if (index < currentStep) {
+        setPreviousStep(currentStep);
+        setCurrentStep(index);
+    }
+  }
 
   const handleSubmit = () => {
     console.log("Final profile data:", profileData);
     setIsSubmitted(true);
   };
+  
+  const progress = ((currentStep + 1) / steps.length) * 100;
 
   return (
     <div className="min-h-screen w-full bg-background flex items-center justify-center p-4">
-      <div className="w-full max-w-4xl h-[70vh] min-h-[600px] bg-card rounded-2xl shadow-2xl shadow-primary/10 border flex overflow-hidden">
+      <Button
+        variant="ghost"
+        size="icon"
+        onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+        className="absolute top-4 right-4"
+      >
+        <Sun className="h-6 w-6 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+        <Moon className="absolute h-6 w-6 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+        <span className="sr-only">Toggle theme</span>
+      </Button>
+
+      <div className="w-full max-w-4xl h-auto min-h-[70vh] bg-card rounded-2xl shadow-2xl shadow-primary/10 border flex flex-col md:flex-row overflow-hidden">
         {isSubmitted ? (
           <RegistrationSuccess />
         ) : (
@@ -128,24 +154,28 @@ function ProfileSetupPage() {
                 </p>
                 <nav className="mt-12 space-y-2">
                   {steps.map((step, index) => (
-                    <div
+                    <button
                       key={step.id}
+                      onClick={() => goToStep(index)}
+                      disabled={index >= currentStep}
                       className={cn(
-                        "flex items-center gap-4 p-3 rounded-lg transition-all duration-300",
+                        "flex items-center gap-4 p-3 rounded-lg transition-all duration-300 w-full text-left",
                         currentStep === index
                           ? "bg-primary/10 text-primary"
-                          : "text-muted-foreground"
+                          : "text-muted-foreground",
+                        index < currentStep ? "hover:bg-accent cursor-pointer" : "cursor-not-allowed"
                       )}
                     >
                       <div
                         className={cn(
-                          "p-2 rounded-full border-2",
+                          "p-2 rounded-full border-2 transition-all",
                           currentStep === index
                             ? "bg-primary text-primary-foreground border-primary"
-                            : "bg-secondary border-border"
+                            : "bg-secondary border-border",
+                          index < currentStep && "bg-green-500/20 text-green-600 border-green-500/30"
                         )}
                       >
-                        <step.icon className="w-5 h-5" />
+                        {index < currentStep ? <CheckCircle className="w-5 h-5"/> : <step.icon className="w-5 h-5" />}
                       </div>
                       <div>
                         <p className="font-bold text-sm">
@@ -155,7 +185,7 @@ function ProfileSetupPage() {
                           {step.title}
                         </p>
                       </div>
-                    </div>
+                    </button>
                   ))}
                 </nav>
               </div>
@@ -164,10 +194,15 @@ function ProfileSetupPage() {
 
             {/* Main Content */}
             <main className="flex-1 flex flex-col p-6 md:p-8 overflow-y-auto">
-              <div className="flex items-center justify-between md:hidden mb-6">
-                <h2 className="text-lg font-bold">{steps[currentStep].title}</h2>
-                <span className="text-sm text-muted-foreground">Step {currentStep + 1} of {steps.length}</span>
-              </div>
+              {/* Mobile Stepper */}
+               <div className="md:hidden mb-6">
+                 <div className="flex items-center justify-between text-sm text-muted-foreground mb-2">
+                    <span>Step {currentStep + 1} of {steps.length}</span>
+                    <span>{steps[currentStep].title}</span>
+                 </div>
+                 <Progress value={progress} className="h-2" />
+               </div>
+
               <div className="flex-grow relative">
                 <AnimatePresence initial={false} custom={delta}>
                   <motion.div
@@ -197,13 +232,20 @@ function ProfileSetupPage() {
                   <ArrowLeft className="mr-2 h-4 w-4" /> Back
                 </Button>
 
-                {currentStep < steps.length - 1 ? (
-                  <Button onClick={next}>
-                    Next <ArrowRight className="ml-2 h-4 w-4" />
-                  </Button>
-                ) : (
-                  <Button onClick={handleSubmit}>Submit Profile</Button>
-                )}
+                 <div className="flex items-center gap-4">
+                    <Button asChild variant="ghost">
+                        <Link href="/dashboard">Skip for now</Link>
+                    </Button>
+                    {currentStep < steps.length - 1 ? (
+                    <Button onClick={next}>
+                        Next <ArrowRight className="ml-2 h-4 w-4" />
+                    </Button>
+                    ) : (
+                    <Button onClick={handleSubmit}>
+                        <Save className="mr-2 h-4 w-4" /> Finish & Save
+                    </Button>
+                    )}
+                 </div>
               </div>
             </main>
           </>
