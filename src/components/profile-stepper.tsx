@@ -5,7 +5,6 @@ import { defineStepper } from "@/components/ui/stepper";
 import { useMediaQuery } from "@/hooks/use-media-query";
 import { Button } from "@/components/ui/button";
 import { AnimatePresence, motion } from "framer-motion";
-import { FormField, FormControl, FormItem, FormLabel, FormMessage } from "./ui/form";
 import { RadioGroup, RadioGroupItem } from "./ui/radio-group";
 import { Label } from "./ui/label";
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "./ui/select";
@@ -14,7 +13,7 @@ import { Checkbox } from "./ui/checkbox";
 import { ArrowLeft, ArrowRight, Briefcase, Lightbulb, Save, User } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
-import { UserProfileType, UserJobRole, UserExperienceLevel, UserCompanySize, UserCompanyPosition, UserTotalPublishedApps, UserDevelopmentPlatform, UserPublishFrequency, UserTestingServiceReason, UserCommunicationMethod } from "@/lib/types";
+import { UserProfileType, UserJobRole, UserExperienceLevel, UserCompanySize, UserCompanyPosition, UserTotalPublishedApps, UserDevelopmentPlatform, UserPublishFrequency, UserTestingServiceReason, UserCommunicationMethod, UserProfileData } from "@/lib/types";
 
 const { Stepper, useStepper, utils } = defineStepper(
     { id: 'role', title: 'Your Role', description: 'Tell us about you.', icon: User },
@@ -23,26 +22,21 @@ const { Stepper, useStepper, utils } = defineStepper(
     { id: 'contact', title: 'Contact', description: 'How to reach you.', icon: User },
 );
 
-export function ProfileStepper({ form, onSubmit }: { form: any, onSubmit: () => void }) {
+interface ProfileStepperProps {
+    profileData: Partial<UserProfileData>;
+    setProfileData: React.Dispatch<React.SetStateAction<Partial<UserProfileData>>>;
+    onSubmit: () => void;
+}
+
+export function ProfileStepper({ profileData, setProfileData, onSubmit }: ProfileStepperProps) {
   const isMobile = useMediaQuery("(max-width: 768px)");
   const { state, goTo, next, prev, isFirst, isLast, current, all } = useStepper();
 
   const handleNext = async () => {
-    const fieldsForStep: { [key: string]: (keyof typeof form.getValues)[] } = {
-        role: ['profileType', 'jobRole', 'experienceLevel'],
-        company: ['companyName', 'companyWebsite', 'companySize', 'positionInCompany'],
-        projects: ['totalPublishedApps', 'platformDevelopment', 'publishFrequency'],
-        contact: ['serviceUsage', 'communicationMethods']
-    };
-
-    const fields = fieldsForStep[current.id];
-
-    if (fields) {
-        const output = await form.trigger(fields);
-        if (!output) return;
-    }
     next();
   }
+
+  const stepperProps = { profileData, setProfileData };
 
   return (
     <div className="bg-card p-4 sm:p-8 rounded-2xl shadow-lg">
@@ -53,11 +47,11 @@ export function ProfileStepper({ form, onSubmit }: { form: any, onSubmit: () => 
       >
         <Stepper.Navigation>
             {all.map((step) => {
-              const rolePanel = <RoleStep form={form} />;
-              const companyPanel = <CompanyStep form={form} />;
-              const projectsPanel = <ProjectsStep form={form} />;
-              const contactPanel = <ContactStep form={form} />;
-              
+              const rolePanel = <RoleStep {...stepperProps} />;
+              const companyPanel = <CompanyStep {...stepperProps} />;
+              const projectsPanel = <ProjectsStep {...stepperProps} />;
+              const contactPanel = <ContactStep {...stepperProps} />;
+
               let panel;
               if (step.id === 'role') panel = rolePanel;
               else if (step.id === 'company') panel = companyPanel;
@@ -90,10 +84,10 @@ export function ProfileStepper({ form, onSubmit }: { form: any, onSubmit: () => 
                     exit={{ opacity: 0, y: -20, transition: { duration: 0.3, ease: 'easeIn' } }}
                     className="mt-8"
                 >
-                    {current.id === 'role' && <RoleStep form={form} />}
-                    {current.id === 'company' && <CompanyStep form={form} />}
-                    {current.id === 'projects' && <ProjectsStep form={form} />}
-                    {current.id === 'contact' && <ContactStep form={form} />}
+                    {current.id === 'role' && <RoleStep {...stepperProps} />}
+                    {current.id === 'company' && <CompanyStep {...stepperProps} />}
+                    {current.id === 'projects' && <ProjectsStep {...stepperProps} />}
+                    {current.id === 'contact' && <ContactStep {...stepperProps} />}
                 </motion.div>
             </AnimatePresence>
         )}
@@ -136,153 +130,141 @@ export function ProfileStepper({ form, onSubmit }: { form: any, onSubmit: () => 
   );
 }
 
-const RoleStep = ({ form }: { form: any }) => (
+const RoleStep = ({ profileData, setProfileData }: ProfileStepperProps) => (
     <div className="space-y-6">
-        <FormField
-            control={form.control}
-            name="profileType"
-            render={({ field }: any) => (
-                <FormItem className="space-y-3">
-                <FormControl>
-                    <RadioGroup onValueChange={field.onChange} defaultValue={field.value} className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-                        {Object.values(UserProfileType).map((type) => (
-                            <FormItem key={type}>
-                                <RadioGroupItem value={type} id={type} className="peer sr-only" />
-                                <Label htmlFor={type} className="flex h-full flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary cursor-pointer">{type.replace('_', ' ')}</Label>
-                            </FormItem>
-                        ))}
-                    </RadioGroup>
-                </FormControl>
-                <FormMessage />
-                </FormItem>
-            )}
-        />
-        <FormField name="jobRole" render={({ field }: any) => (
-            <FormItem><FormLabel>Your Job Role</FormLabel>
-            <Select onValueChange={field.onChange} defaultValue={field.value}>
-                <FormControl><SelectTrigger><SelectValue placeholder="Select your primary role" /></SelectTrigger></FormControl>
+        <div className="space-y-3">
+             <RadioGroup
+                onValueChange={(value) => setProfileData(prev => ({...prev, profileType: value as UserProfileType}))}
+                defaultValue={profileData.profileType}
+                className="grid grid-cols-2 lg:grid-cols-4 gap-4"
+            >
+                {Object.values(UserProfileType).map((type) => (
+                    <div key={type}>
+                        <RadioGroupItem value={type} id={type} className="peer sr-only" />
+                        <Label htmlFor={type} className="flex h-full flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary cursor-pointer">{type.replace('_', ' ')}</Label>
+                    </div>
+                ))}
+            </RadioGroup>
+        </div>
+        <div>
+            <Label>Your Job Role</Label>
+            <Select onValueChange={(value) => setProfileData(prev => ({...prev, jobRole: value as UserJobRole}))} defaultValue={profileData.jobRole}>
+                <SelectTrigger><SelectValue placeholder="Select your primary role" /></SelectTrigger>
                 <SelectContent>{Object.values(UserJobRole).map(role => <SelectItem key={role} value={role}>{role.replace(/_/g, ' ')}</SelectItem>)}</SelectContent>
             </Select>
-            <FormMessage /></FormItem>
-        )} />
-        <FormField name="experienceLevel" render={({ field }: any) => (
-            <FormItem><FormLabel>Your Experience Level</FormLabel>
-            <Select onValueChange={field.onChange} defaultValue={field.value}>
-                <FormControl><SelectTrigger><SelectValue placeholder="Select your experience level" /></SelectTrigger></FormControl>
+        </div>
+        <div>
+            <Label>Your Experience Level</Label>
+            <Select onValueChange={(value) => setProfileData(prev => ({...prev, experienceLevel: value as UserExperienceLevel}))} defaultValue={profileData.experienceLevel}>
+                <SelectTrigger><SelectValue placeholder="Select your experience level" /></SelectTrigger>
                 <SelectContent>{Object.values(UserExperienceLevel).map(level => <SelectItem key={level} value={level}>{level.replace(/_/g, ' ')}</SelectItem>)}</SelectContent>
             </Select>
-            <FormMessage /></FormItem>
-        )} />
+        </div>
     </div>
 );
 
-const CompanyStep = ({ form }: { form: any }) => (
+const CompanyStep = ({ profileData, setProfileData }: ProfileStepperProps) => (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <FormField name="companyName" render={({ field }: any) => (
-                <FormItem><FormLabel>Company Name</FormLabel><FormControl><Input placeholder="Your Company Inc." {...field} /></FormControl><FormMessage /></FormItem>
-        )} />
-        <FormField name="companyWebsite" render={({ field }: any) => (
-                <FormItem><FormLabel>Company Website</FormLabel><FormControl><Input placeholder="https://example.com" {...field} /></FormControl><FormMessage /></FormItem>
-        )} />
-        <FormField name="companySize" render={({ field }: any) => (
-                <FormItem><FormLabel>Company Size</FormLabel>
-                <Select onValueChange={field.onChange} defaultValue={field.value}>
-                    <FormControl><SelectTrigger><SelectValue placeholder="Select company size" /></SelectTrigger></FormControl>
-                    <SelectContent>
-                        {Object.values(UserCompanySize).map(size => <SelectItem key={size} value={size}>{size.replace('SIZE_', '').replace(/_/g, '-')}</SelectItem>)}
-                    </SelectContent>
-                </Select>
-                <FormMessage /></FormItem>
-        )} />
-        <FormField name="positionInCompany" render={({ field }: any) => (
-            <FormItem><FormLabel>Your Position</FormLabel>
-                <Select onValueChange={field.onChange} defaultValue={field.value}>
-                    <FormControl><SelectTrigger><SelectValue placeholder="Select your position" /></SelectTrigger></FormControl>
-                    <SelectContent>
-                        {Object.values(UserCompanyPosition).map(pos => <SelectItem key={pos} value={pos}>{pos.replace(/_/g, ' ')}</SelectItem>)}
-                    </SelectContent>
-                </Select>
-            <FormMessage /></FormItem>
-        )} />
+        <div>
+            <Label>Company Name</Label>
+            <Input placeholder="Your Company Inc." value={profileData.companyName} onChange={e => setProfileData(prev => ({...prev, companyName: e.target.value}))} />
+        </div>
+        <div>
+            <Label>Company Website</Label>
+            <Input placeholder="https://example.com" value={profileData.companyWebsite} onChange={e => setProfileData(prev => ({...prev, companyWebsite: e.target.value}))} />
+        </div>
+        <div>
+            <Label>Company Size</Label>
+            <Select onValueChange={(value) => setProfileData(prev => ({...prev, companySize: value as UserCompanySize}))} defaultValue={profileData.companySize}>
+                <SelectTrigger><SelectValue placeholder="Select company size" /></SelectTrigger>
+                <SelectContent>
+                    {Object.values(UserCompanySize).map(size => <SelectItem key={size} value={size}>{size.replace('SIZE_', '').replace(/_/g, '-')}</SelectItem>)}
+                </SelectContent>
+            </Select>
+        </div>
+        <div>
+            <Label>Your Position</Label>
+            <Select onValueChange={(value) => setProfileData(prev => ({...prev, positionInCompany: value as UserCompanyPosition}))} defaultValue={profileData.positionInCompany}>
+                <SelectTrigger><SelectValue placeholder="Select your position" /></SelectTrigger>
+                <SelectContent>
+                    {Object.values(UserCompanyPosition).map(pos => <SelectItem key={pos} value={pos}>{pos.replace(/_/g, ' ')}</SelectItem>)}
+                </SelectContent>
+            </Select>
+        </div>
     </div>
 );
 
-const ProjectsStep = ({ form }: { form: any }) => (
+const ProjectsStep = ({ profileData, setProfileData }: ProfileStepperProps) => (
     <div className="space-y-6">
-        <FormField name="totalPublishedApps" render={({ field }: any) => (
-            <FormItem><FormLabel>Total Published Apps</FormLabel>
-                <Select onValueChange={field.onChange} defaultValue={field.value}>
-                    <FormControl><SelectTrigger><SelectValue placeholder="Select number of apps" /></SelectTrigger></FormControl>
-                    <SelectContent>
-                        {Object.values(UserTotalPublishedApps).map(val => <SelectItem key={val} value={val}>{val.replace('PUB_', '').replace(/_/g, '-')}</SelectItem>)}
-                    </SelectContent>
-                </Select>
-            <FormMessage /></FormItem>
-        )} />
-        <FormField name="platformDevelopment" render={({ field }: any) => (
-            <FormItem><FormLabel>Primary Development Platform</FormLabel>
-                <Select onValueChange={field.onChange} defaultValue={field.value}>
-                    <FormControl><SelectTrigger><SelectValue placeholder="Select platform" /></SelectTrigger></FormControl>
-                    <SelectContent>
-                        {Object.values(UserDevelopmentPlatform).map(val => <SelectItem key={val} value={val}>{val.replace(/_/g, ' ')}</SelectItem>)}
-                    </SelectContent>
-                </Select>
-            <FormMessage /></FormItem>
-        )} />
-        <FormField name="publishFrequency" render={({ field }: any) => (
-            <FormItem><FormLabel>App Publish Frequency</FormLabel>
-                <Select onValueChange={field.onChange} defaultValue={field.value}>
-                    <FormControl><SelectTrigger><SelectValue placeholder="Select frequency" /></SelectTrigger></FormControl>
-                    <SelectContent>
-                        {Object.values(UserPublishFrequency).map(val => <SelectItem key={val} value={val}>{val.replace(/_/g, ' ')}</SelectItem>)}
-                    </SelectContent>
-                </Select>
-            <FormMessage /></FormItem>
-        )} />
+        <div>
+            <Label>Total Published Apps</Label>
+            <Select onValueChange={(value) => setProfileData(prev => ({...prev, totalPublishedApps: value as UserTotalPublishedApps}))} defaultValue={profileData.totalPublishedApps}>
+                <SelectTrigger><SelectValue placeholder="Select number of apps" /></SelectTrigger>
+                <SelectContent>
+                    {Object.values(UserTotalPublishedApps).map(val => <SelectItem key={val} value={val}>{val.replace('PUB_', '').replace(/_/g, '-')}</SelectItem>)}
+                </SelectContent>
+            </Select>
+        </div>
+        <div>
+            <Label>Primary Development Platform</Label>
+            <Select onValueChange={(value) => setProfileData(prev => ({...prev, platformDevelopment: value as UserDevelopmentPlatform}))} defaultValue={profileData.platformDevelopment}>
+                <SelectTrigger><SelectValue placeholder="Select platform" /></SelectTrigger>
+                <SelectContent>
+                    {Object.values(UserDevelopmentPlatform).map(val => <SelectItem key={val} value={val}>{val.replace(/_/g, ' ')}</SelectItem>)}
+                </SelectContent>
+            </Select>
+        </div>
+        <div>
+            <Label>App Publish Frequency</Label>
+            <Select onValueChange={(value) => setProfileData(prev => ({...prev, publishFrequency: value as UserPublishFrequency}))} defaultValue={profileData.publishFrequency}>
+                <SelectTrigger><SelectValue placeholder="Select frequency" /></SelectTrigger>
+                <SelectContent>
+                    {Object.values(UserPublishFrequency).map(val => <SelectItem key={val} value={val}>{val.replace(/_/g, ' ')}</SelectItem>)}
+                </SelectContent>
+            </Select>
+        </div>
     </div>
 );
 
-const ContactStep = ({ form }: { form: any }) => (
+const ContactStep = ({ profileData, setProfileData }: ProfileStepperProps) => (
     <div className="space-y-6">
-        <FormField name="serviceUsage" render={() => (
-            <FormItem>
-                <FormLabel>Why are you using our service?</FormLabel>
-                <div className="grid grid-cols-2 gap-4">
-                {Object.values(UserTestingServiceReason).map((item) => (
-                    <FormField key={item} control={form.control} name="serviceUsage" render={({ field }: any) => (
-                        <FormItem key={item} className="flex flex-row items-center space-x-3 space-y-0 rounded-md border p-4 has-[:checked]:border-primary">
-                            <FormControl>
-                                <Checkbox checked={field.value?.includes(item)} onCheckedChange={(checked) => {
-                                    return checked ? field.onChange([...(field.value || []), item]) : field.onChange(field.value?.filter((value: any) => value !== item))
-                                }} />
-                            </FormControl>
-                            <FormLabel className="text-sm font-normal">{item.replace(/_/g, ' ')}</FormLabel>
-                        </FormItem>
-                    )} />
-                ))}
+        <div>
+            <Label>Why are you using our service?</Label>
+            <div className="grid grid-cols-2 gap-4">
+            {Object.values(UserTestingServiceReason).map((item) => (
+                <div key={item} className="flex flex-row items-center space-x-3 space-y-0 rounded-md border p-4 has-[:checked]:border-primary">
+                    <Checkbox 
+                        checked={profileData.serviceUsage?.includes(item)} 
+                        onCheckedChange={(checked) => {
+                            const current = profileData.serviceUsage || [];
+                            const updated = checked ? [...current, item] : current.filter(val => val !== item);
+                            setProfileData(prev => ({...prev, serviceUsage: updated}));
+                        }}
+                        id={`service-${item}`}
+                    />
+                    <Label htmlFor={`service-${item}`} className="text-sm font-normal">{item.replace(/_/g, ' ')}</Label>
                 </div>
-                <FormMessage />
-            </FormItem>
-        )} />
-        <FormField name="communicationMethods" render={() => (
-            <FormItem>
-                <FormLabel>Preferred Communication</FormLabel>
-                <div className="grid grid-cols-3 gap-4">
-                {Object.values(UserCommunicationMethod).map((item) => (
-                    <FormField key={item} control={form.control} name="communicationMethods" render={({ field }: any) => (
-                        <FormItem key={item} className="flex flex-row items-center space-x-3 space-y-0 rounded-md border p-4 has-[:checked]:border-primary">
-                            <FormControl>
-                                <Checkbox checked={field.value?.includes(item)} onCheckedChange={(checked) => {
-                                    return checked ? field.onChange([...(field.value || []), item]) : field.onChange(field.value?.filter((value: any) => value !== item))
-                                }} />
-                            </FormControl>
-                            <FormLabel className="text-sm font-normal">{item.replace(/_/g, ' ')}</FormLabel>
-                        </FormItem>
-                    )} />
-                ))}
+            ))}
+            </div>
+        </div>
+        <div>
+            <Label>Preferred Communication</Label>
+            <div className="grid grid-cols-3 gap-4">
+            {Object.values(UserCommunicationMethod).map((item) => (
+                <div key={item} className="flex flex-row items-center space-x-3 space-y-0 rounded-md border p-4 has-[:checked]:border-primary">
+                     <Checkbox 
+                        checked={profileData.communicationMethods?.includes(item)} 
+                        onCheckedChange={(checked) => {
+                            const current = profileData.communicationMethods || [];
+                            const updated = checked ? [...current, item] : current.filter(val => val !== item);
+                            setProfileData(prev => ({...prev, communicationMethods: updated}));
+                        }}
+                        id={`comm-${item}`}
+                    />
+                    <Label htmlFor={`comm-${item}`} className="text-sm font-normal">{item.replace(/_/g, ' ')}</Label>
                 </div>
-                <FormMessage />
-            </FormItem>
-        )} />
+            ))}
+            </div>
+        </div>
     </div>
 );

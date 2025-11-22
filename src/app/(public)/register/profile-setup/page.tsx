@@ -2,50 +2,12 @@
 'use client';
 
 import React, { useState } from 'react';
-import { useForm, type SubmitHandler, FormProvider } from 'react-hook-form';
-import { zodResolver } from '@hookform/resolvers/zod';
-import * as z from 'zod';
-import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import {
-  FormControl,
-  FormField,
-  FormItem,
-  FormMessage,
-  FormLabel,
-} from "@/components/ui/form";
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
-import { Label } from '@/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { ArrowLeft, ArrowRight, Save, CheckCircle, Briefcase, User, Lightbulb } from 'lucide-react';
-import { cn } from '@/lib/utils';
-import type { UserProfileData } from '@/lib/types';
-import { UserProfileType, UserJobRole, UserExperienceLevel, UserCompanySize, UserCompanyPosition, UserTotalPublishedApps, UserDevelopmentPlatform, UserPublishFrequency, UserTestingServiceReason, UserCommunicationMethod, UserNotificationPreference } from '@/lib/types';
-import { Checkbox } from '@/components/ui/checkbox';
+import { CheckCircle } from 'lucide-react';
 import Link from 'next/link';
-import { useMediaQuery } from "@/hooks/use-media-query";
+import { motion } from 'framer-motion';
 import { ProfileStepper } from '@/components/profile-stepper';
-
-const profileFormSchema = z.object({
-  profileType: z.nativeEnum(UserProfileType).optional(),
-  jobRole: z.nativeEnum(UserJobRole).optional(),
-  experienceLevel: z.nativeEnum(UserExperienceLevel).optional(),
-  companyName: z.string().optional(),
-  companyWebsite: z.string().optional(),
-  companySize: z.nativeEnum(UserCompanySize).optional(),
-  positionInCompany: z.nativeEnum(UserCompanyPosition).optional(),
-  totalPublishedApps: z.nativeEnum(UserTotalPublishedApps).optional(),
-  platformDevelopment: z.nativeEnum(UserDevelopmentPlatform).optional(),
-  publishFrequency: z.nativeEnum(UserPublishFrequency).optional(),
-  serviceUsage: z.array(z.nativeEnum(UserTestingServiceReason)).optional(),
-  communicationMethods: z.array(z.nativeEnum(UserCommunicationMethod)).optional(),
-  notificationPreference: z.array(z.nativeEnum(UserNotificationPreference)).optional(),
-  country: z.string().optional(),
-  phone: z.string().optional(),
-});
-
-type ProfileFormData = z.infer<typeof profileFormSchema>;
+import type { UserProfileData } from '@/lib/types';
 
 
 const RegistrationSuccess = () => (
@@ -68,31 +30,26 @@ const RegistrationSuccess = () => (
 
 function ProfileSetupPage() {
     const [isSubmitted, setIsSubmitted] = useState(false);
-    
-    const form = useForm<ProfileFormData>({
-        resolver: zodResolver(profileFormSchema),
-        mode: 'onChange',
-        defaultValues: {
-            profileType: undefined,
-            jobRole: undefined,
-            experienceLevel: undefined,
-            companyName: '',
-            companyWebsite: '',
-            companySize: undefined,
-            positionInCompany: undefined,
-            totalPublishedApps: undefined,
-            platformDevelopment: undefined,
-            publishFrequency: undefined,
-            serviceUsage: [],
-            communicationMethods: [],
-            notificationPreference: [],
-            country: '',
-            phone: '',
-        }
+    const [profileData, setProfileData] = useState<Partial<UserProfileData>>({
+        profileType: undefined,
+        jobRole: undefined,
+        experienceLevel: undefined,
+        companyName: '',
+        companyWebsite: '',
+        companySize: undefined,
+        positionInCompany: undefined,
+        totalPublishedApps: undefined,
+        platformDevelopment: undefined,
+        publishFrequency: undefined,
+        serviceUsage: [],
+        communicationMethods: [],
+        notificationPreference: [],
+        country: '',
+        phone: '',
     });
 
-    const processForm: SubmitHandler<any> = (data) => {
-        console.log('Final profile data:', data);
+    const handleSubmit = () => {
+        console.log('Final profile data:', profileData);
         setIsSubmitted(true);
     };
 
@@ -111,17 +68,15 @@ function ProfileSetupPage() {
                     </div>
 
                     <div className="mt-8 relative">
-                        <FormProvider {...form}>
-                            <form onSubmit={form.handleSubmit(processForm)}>
-                                <p>Stepper component will go here.</p>
-                                <Button type="submit">Submit</Button>
-                            </form>
-                        </FormProvider>
+                         <ProfileStepper
+                            profileData={profileData}
+                            setProfileData={setProfileData}
+                            onSubmit={handleSubmit}
+                        />
                      </div>
                 </>
                 )}
             </div>
-            <ProfileStepper form={form} />
         </div>
     );
 }
