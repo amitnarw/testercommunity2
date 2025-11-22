@@ -139,11 +139,11 @@ function ProfileSetupPage() {
         <span className="sr-only">Toggle theme</span>
       </Button>
 
-      <div className="w-full max-w-4xl h-auto min-h-[70vh] bg-card rounded-2xl shadow-2xl shadow-primary/10 border flex flex-col md:flex-row overflow-hidden">
+      <div className="w-full max-w-4xl h-auto min-h-[70vh] bg-card rounded-2xl shadow-2xl shadow-primary/10 border flex flex-col overflow-hidden">
         {isSubmitted ? (
           <RegistrationSuccess />
         ) : (
-          <>
+          <div className="flex flex-col md:flex-row flex-1">
             {/* Sidebar */}
             <aside className="hidden md:flex flex-col w-1/3 bg-secondary/50 p-8 justify-between border-r">
               <div>
@@ -193,17 +193,36 @@ function ProfileSetupPage() {
             </aside>
 
             {/* Main Content */}
-            <main className="flex-1 flex flex-col p-6 md:p-8 overflow-y-auto">
+            <main className="flex-1 flex flex-col p-6 md:p-8">
               {/* Mobile Stepper */}
                <div className="md:hidden mb-6">
-                 <div className="flex items-center justify-between text-sm text-muted-foreground mb-2">
-                    <span>Step {currentStep + 1} of {steps.length}</span>
-                    <span>{steps[currentStep].title}</span>
-                 </div>
-                 <Progress value={progress} className="h-2" />
+                 <nav className="flex items-center justify-around gap-2">
+                    {steps.map((step, index) => (
+                        <button
+                            key={`mobile-${step.id}`}
+                            onClick={() => goToStep(index)}
+                            disabled={index >= currentStep}
+                            className={cn(
+                                "flex flex-col items-center gap-2 p-2 rounded-lg transition-all duration-300 flex-1",
+                                currentStep === index ? "bg-primary/10" : "",
+                                index < currentStep ? "cursor-pointer" : "cursor-not-allowed opacity-50"
+                            )}
+                        >
+                            <div className={cn(
+                                "p-2 rounded-full border-2 transition-all",
+                                currentStep === index ? "border-primary" : "border-border",
+                                index < currentStep && "bg-green-500/20 border-green-500/30"
+                            )}>
+                                 {index < currentStep ? <CheckCircle className="w-5 h-5 text-green-600"/> : <step.icon className={cn("w-5 h-5", currentStep === index ? "text-primary" : "text-muted-foreground")} />}
+                            </div>
+                            <p className={cn("text-xs font-semibold", currentStep === index ? "text-primary" : "text-muted-foreground")}>{step.title}</p>
+                        </button>
+                    ))}
+                 </nav>
+                 <Progress value={progress} className="h-1 mt-4" />
                </div>
 
-              <div className="flex-grow relative">
+              <div className="flex-grow relative min-h-[300px] md:min-h-0">
                 <AnimatePresence initial={false} custom={delta}>
                   <motion.div
                     key={currentStep}
@@ -232,8 +251,8 @@ function ProfileSetupPage() {
                   <ArrowLeft className="mr-2 h-4 w-4" /> Back
                 </Button>
 
-                 <div className="flex items-center gap-4">
-                    <Button asChild variant="ghost">
+                 <div className="flex items-center gap-2 sm:gap-4">
+                    <Button asChild variant="ghost" size="sm">
                         <Link href="/dashboard">Skip for now</Link>
                     </Button>
                     {currentStep < steps.length - 1 ? (
@@ -248,7 +267,7 @@ function ProfileSetupPage() {
                  </div>
               </div>
             </main>
-          </>
+          </div>
         )}
       </div>
     </div>
