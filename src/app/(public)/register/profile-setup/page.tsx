@@ -173,9 +173,9 @@ function ProfileSetupPage() {
                   <motion.div
                     key={currentStep}
                     custom={delta}
-                    initial={{ opacity: 0, x: delta > 0 ? 30 : -30 }}
+                    initial={{ opacity: 0, x: delta > 0 ? 300 : -300 }}
                     animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: delta > 0 ? -30 : 30 }}
+                    exit={{ opacity: 0, x: delta > 0 ? -300 : 300 }}
                     transition={{ type: 'tween', duration: 0.3, ease: 'easeInOut' }}
                     className="absolute w-full h-full"
                   >
@@ -262,8 +262,8 @@ const RoleStep = ({ profileData, setProfileData }: ProfileStepperProps) => (
 
 const CompanyStep = ({ profileData, setProfileData }: ProfileStepperProps) => (
   <StepWrapper>
-    <div><Label>Company Name</Label><Input placeholder="Your Company Inc." value={profileData?.companyName} onChange={(e) => setProfileData((prev) => ({ ...prev, companyName: e.target.value }))} /></div>
-    <div><Label>Company Website</Label><Input placeholder="https://example.com" value={profileData?.companyWebsite} onChange={(e) => setProfileData((prev) => ({ ...prev, companyWebsite: e.target.value }))} /></div>
+    <div><Label>Company Name</Label><Input placeholder="Your Company Inc." value={profileData?.companyName || ''} onChange={(e) => setProfileData((prev) => ({ ...prev, companyName: e.target.value }))} /></div>
+    <div><Label>Company Website</Label><Input placeholder="https://example.com" value={profileData?.companyWebsite || ''} onChange={(e) => setProfileData((prev) => ({ ...prev, companyWebsite: e.target.value }))} /></div>
     <div>
       <Label>Company Size</Label>
       <Select onValueChange={(value) => setProfileData((prev) => ({ ...prev, companySize: value as UserCompanySize }))} defaultValue={profileData?.companySize}>
