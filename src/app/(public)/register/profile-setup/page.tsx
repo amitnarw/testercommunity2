@@ -196,14 +196,14 @@ function ProfileSetupPage() {
             <main className="flex-1 flex flex-col p-6 md:p-8">
               {/* Mobile Stepper */}
                <div className="md:hidden mb-6">
-                 <nav className="flex items-center justify-between gap-1">
+                 <nav className="grid grid-cols-4 gap-2">
                     {steps.map((step, index) => (
                         <button
                             key={`mobile-${step.id}`}
                             onClick={() => goToStep(index)}
                             disabled={index >= currentStep}
                             className={cn(
-                                "flex flex-col items-center gap-2 p-2 rounded-lg transition-all duration-300 flex-1",
+                                "flex flex-col items-center gap-2 p-2 rounded-lg transition-all duration-300",
                                 currentStep === index ? "bg-primary/10" : "",
                                 index < currentStep ? "cursor-pointer" : "cursor-not-allowed opacity-50"
                             )}
@@ -215,7 +215,7 @@ function ProfileSetupPage() {
                             )}>
                                  {index < currentStep ? <CheckCircle className="w-5 h-5 text-green-600"/> : <step.icon className={cn("w-5 h-5", currentStep === index ? "text-primary" : "text-muted-foreground")} />}
                             </div>
-                            <p className={cn("text-[10px] font-semibold", currentStep === index ? "text-primary" : "text-muted-foreground")}>{step.title}</p>
+                            <p className={cn("text-[10px] font-semibold text-center", currentStep === index ? "text-primary" : "text-muted-foreground")}>{step.title}</p>
                         </button>
                     ))}
                  </nav>
@@ -243,14 +243,16 @@ function ProfileSetupPage() {
               
               {/* Controls */}
               <div className="mt-8 pt-6 border-t flex items-center justify-between gap-4">
-                <Button
-                  variant="ghost"
-                  onClick={prev}
-                  className={cn("transition-opacity", currentStep === 0 ? "invisible opacity-0" : "visible opacity-100")}
-                  disabled={currentStep === 0}
-                >
-                  <ArrowLeft className="mr-2 h-4 w-4" /> Back
-                </Button>
+                <div>
+                  <Button
+                    variant="ghost"
+                    onClick={prev}
+                    className={cn("transition-opacity", currentStep === 0 ? "invisible opacity-0" : "visible opacity-100")}
+                    disabled={currentStep === 0}
+                  >
+                    <ArrowLeft className="mr-2 h-4 w-4" /> Back
+                  </Button>
+                </div>
 
                  <div className="flex items-center gap-2 sm:gap-4">
                     <Button asChild variant="ghost" size="sm">
