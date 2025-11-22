@@ -196,7 +196,7 @@ function ProfileSetupPage() {
             <main className="flex-1 flex flex-col p-6 md:p-8">
               {/* Mobile Stepper */}
                <div className="md:hidden mb-6">
-                 <nav className="flex items-center justify-around gap-2">
+                 <nav className="flex items-center justify-between gap-1">
                     {steps.map((step, index) => (
                         <button
                             key={`mobile-${step.id}`}
@@ -215,7 +215,7 @@ function ProfileSetupPage() {
                             )}>
                                  {index < currentStep ? <CheckCircle className="w-5 h-5 text-green-600"/> : <step.icon className={cn("w-5 h-5", currentStep === index ? "text-primary" : "text-muted-foreground")} />}
                             </div>
-                            <p className={cn("text-xs font-semibold", currentStep === index ? "text-primary" : "text-muted-foreground")}>{step.title}</p>
+                            <p className={cn("text-[10px] font-semibold", currentStep === index ? "text-primary" : "text-muted-foreground")}>{step.title}</p>
                         </button>
                     ))}
                  </nav>
@@ -242,11 +242,12 @@ function ProfileSetupPage() {
               </div>
               
               {/* Controls */}
-              <div className="mt-8 pt-6 border-t flex items-center justify-between">
+              <div className="mt-8 pt-6 border-t flex items-center justify-between gap-4">
                 <Button
                   variant="ghost"
                   onClick={prev}
-                  className={cn(currentStep === 0 ? "invisible" : "visible")}
+                  className={cn("transition-opacity", currentStep === 0 ? "invisible opacity-0" : "visible opacity-100")}
+                  disabled={currentStep === 0}
                 >
                   <ArrowLeft className="mr-2 h-4 w-4" /> Back
                 </Button>
