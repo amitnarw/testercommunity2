@@ -44,6 +44,7 @@ import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useTheme } from "next-themes";
 import { Progress } from "@/components/ui/progress";
+import { BackButton } from "@/components/back-button";
 
 const RegistrationSuccess = () => (
   <motion.div
@@ -128,16 +129,22 @@ function ProfileSetupPage() {
 
   return (
     <div className="min-h-screen w-full bg-background flex items-center justify-center p-4">
-      <Button
-        variant="ghost"
-        size="icon"
-        onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-        className="absolute top-4 right-4"
-      >
-        <Sun className="h-6 w-6 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-        <Moon className="absolute h-6 w-6 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-        <span className="sr-only">Toggle theme</span>
-      </Button>
+       <div className="absolute top-4 right-4 flex items-center gap-2">
+            <BackButton href="/register" />
+            <Button asChild variant="ghost" size="sm" className="hidden sm:inline-flex">
+                <Link href="/dashboard">Skip for now</Link>
+            </Button>
+            <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+            >
+                <Sun className="h-6 w-6 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+                <Moon className="absolute h-6 w-6 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+                <span className="sr-only">Toggle theme</span>
+            </Button>
+      </div>
+
 
       <div className="w-full max-w-4xl h-auto min-h-[70vh] bg-card rounded-2xl shadow-2xl shadow-primary/10 border flex flex-col overflow-hidden">
         {isSubmitted ? (
@@ -203,7 +210,7 @@ function ProfileSetupPage() {
                             onClick={() => goToStep(index)}
                             disabled={index >= currentStep}
                             className={cn(
-                                "flex flex-col items-center gap-2 p-2 rounded-lg transition-all duration-300",
+                                "flex flex-col items-center justify-center gap-2 py-2 rounded-lg transition-all duration-300",
                                 currentStep === index ? "bg-primary/10" : "",
                                 index < currentStep ? "cursor-pointer" : "cursor-not-allowed opacity-50"
                             )}
@@ -213,13 +220,13 @@ function ProfileSetupPage() {
                                 currentStep === index ? "border-primary" : "border-border",
                                 index < currentStep && "bg-green-500/20 border-green-500/30"
                             )}>
-                                 {index < currentStep ? <CheckCircle className="w-5 h-5 text-green-600"/> : <step.icon className={cn("w-5 h-5", currentStep === index ? "text-primary" : "text-muted-foreground")} />}
+                                 {index < currentStep ? <CheckCircle className="w-4 h-4 text-green-600"/> : <step.icon className={cn("w-4 h-4", currentStep === index ? "text-primary" : "text-muted-foreground")} />}
                             </div>
-                            <p className={cn("text-[10px] font-semibold text-center", currentStep === index ? "text-primary" : "text-muted-foreground")}>{step.title}</p>
                         </button>
                     ))}
                  </nav>
                  <Progress value={progress} className="h-1 mt-4" />
+                  <p className="text-center text-sm font-semibold text-muted-foreground mt-3">{steps[currentStep].title}</p>
                </div>
 
               <div className="flex-grow relative min-h-[300px] md:min-h-0">
@@ -243,8 +250,8 @@ function ProfileSetupPage() {
               
               {/* Controls */}
               <div className="mt-8 pt-6 border-t flex items-center justify-between gap-4">
-                <div>
                   <Button
+                    type="button"
                     variant="ghost"
                     onClick={prev}
                     className={cn("transition-opacity", currentStep === 0 ? "invisible opacity-0" : "visible opacity-100")}
@@ -252,18 +259,17 @@ function ProfileSetupPage() {
                   >
                     <ArrowLeft className="mr-2 h-4 w-4" /> Back
                   </Button>
-                </div>
-
-                 <div className="flex items-center gap-2 sm:gap-4">
-                    <Button asChild variant="ghost" size="sm">
-                        <Link href="/dashboard">Skip for now</Link>
+                
+                 <div className="flex items-center gap-4">
+                     <Button asChild variant="ghost" size="sm" className="sm:hidden">
+                        <Link href="/dashboard">Skip</Link>
                     </Button>
                     {currentStep < steps.length - 1 ? (
-                    <Button onClick={next}>
+                    <Button onClick={next} type="button">
                         Next <ArrowRight className="ml-2 h-4 w-4" />
                     </Button>
                     ) : (
-                    <Button onClick={handleSubmit}>
+                    <Button onClick={handleSubmit} type="button">
                         <Save className="mr-2 h-4 w-4" /> Finish & Save
                     </Button>
                     )}
@@ -422,3 +428,5 @@ interface ProfileStepperProps {
 }
 
 export default ProfileSetupPage;
+
+    
