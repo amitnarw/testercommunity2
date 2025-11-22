@@ -130,8 +130,7 @@ function ProfileSetupPage() {
   return (
     <div className="min-h-screen w-full bg-background flex items-center justify-center p-4">
        <div className="absolute top-4 right-4 flex items-center gap-2">
-            <BackButton href="/register" />
-            <Button asChild variant="ghost" size="sm" className="hidden sm:inline-flex">
+            <Button asChild variant="ghost" size="sm">
                 <Link href="/dashboard">Skip for now</Link>
             </Button>
             <Button
@@ -261,9 +260,6 @@ function ProfileSetupPage() {
                   </Button>
                 
                  <div className="flex items-center gap-4">
-                     <Button asChild variant="ghost" size="sm" className="sm:hidden">
-                        <Link href="/dashboard">Skip</Link>
-                    </Button>
                     {currentStep < steps.length - 1 ? (
                     <Button onClick={next} type="button">
                         Next <ArrowRight className="ml-2 h-4 w-4" />
@@ -430,3 +426,4 @@ interface ProfileStepperProps {
 export default ProfileSetupPage;
 
     
+
