@@ -1,18 +1,50 @@
+
 "use client";
 
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { CheckCircle } from "lucide-react";
+import {
+  CheckCircle,
+  ArrowLeft,
+  ArrowRight,
+  User,
+  Briefcase,
+  Lightbulb,
+  Phone,
+} from "lucide-react";
 import Link from "next/link";
-import { motion } from "framer-motion";
-import type { UserProfileData } from "@/lib/types";
-import { StepperWithResponsiveVariant } from "@/components/stepper-with-responsive-variant";
+import { motion, AnimatePresence } from "framer-motion";
+import type {
+  UserProfileData,
+  UserProfileType,
+  UserJobRole,
+  UserExperienceLevel,
+  UserCompanySize,
+  UserCompanyPosition,
+  UserTotalPublishedApps,
+  UserDevelopmentPlatform,
+  UserPublishFrequency,
+  UserTestingServiceReason,
+  UserCommunicationMethod,
+} from "@/lib/types";
+import { cn } from "@/lib/utils";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Input } from "@/components/ui/input";
+import { Checkbox } from "@/components/ui/checkbox";
 
 const RegistrationSuccess = () => (
   <motion.div
     initial={{ opacity: 0, scale: 0.95 }}
     animate={{ opacity: 1, scale: 1 }}
-    className="text-center py-12"
+    className="text-center py-12 flex flex-col items-center justify-center h-full"
   >
     <CheckCircle className="mx-auto h-16 w-16 text-green-500 mb-4" />
     <h2 className="text-2xl font-bold">Profile Setup Complete!</h2>
@@ -26,25 +58,53 @@ const RegistrationSuccess = () => (
   </motion.div>
 );
 
+const steps = [
+  {
+    id: "role",
+    title: "About You",
+    description: "Tell us about your professional role.",
+    icon: User,
+  },
+  {
+    id: "company",
+    title: "Your Company",
+    description: "A little about your organization.",
+    icon: Briefcase,
+  },
+  {
+    id: "projects",
+    title: "Your Projects",
+    description: "Details about your development work.",
+    icon: Lightbulb,
+  },
+  {
+    id: "contact",
+    title: "Preferences",
+    description: "How you'd like to use inTesters.",
+    icon: Phone,
+  },
+];
+
 function ProfileSetupPage() {
   const [isSubmitted, setIsSubmitted] = useState(false);
-  const [profileData, setProfileData] = useState<Partial<UserProfileData>>({
-    profileType: undefined,
-    jobRole: undefined,
-    experienceLevel: undefined,
-    companyName: "",
-    companyWebsite: "",
-    companySize: undefined,
-    positionInCompany: undefined,
-    totalPublishedApps: undefined,
-    platformDevelopment: undefined,
-    publishFrequency: undefined,
-    serviceUsage: [],
-    communicationMethods: [],
-    notificationPreference: [],
-    country: "",
-    phone: "",
-  });
+  const [profileData, setProfileData] = useState<Partial<UserProfileData>>({});
+  const [currentStep, setCurrentStep] = useState(0);
+  const [previousStep, setPreviousStep] = useState(0);
+  const delta = currentStep - previousStep;
+
+  const next = () => {
+    if (currentStep < steps.length - 1) {
+      setPreviousStep(currentStep);
+      setCurrentStep((step) => step + 1);
+    }
+  };
+
+  const prev = () => {
+    if (currentStep > 0) {
+      setPreviousStep(currentStep);
+      setCurrentStep((step) => step - 1);
+    }
+  };
 
   const handleSubmit = () => {
     console.log("Final profile data:", profileData);
@@ -52,33 +112,249 @@ function ProfileSetupPage() {
   };
 
   return (
-    <div className="min-h-screen w-full bg-secondary/30 p-4 md:p-8 flex items-center justify-center">
-      <div className="w-full max-w-4xl">
+    <div className="min-h-screen w-full bg-background flex items-center justify-center p-4">
+      <div className="w-full max-w-4xl h-[70vh] min-h-[600px] bg-card rounded-2xl shadow-2xl shadow-primary/10 border flex overflow-hidden">
         {isSubmitted ? (
           <RegistrationSuccess />
         ) : (
           <>
-            <div className="text-center mb-12">
-              <h2 className="text-3xl font-bold">User Survey</h2>
-              <p className="text-primary font-semibold mt-2">
-                Complete your profile to receive a{" "}
-                <span className="font-bold">200 point bonus</span> to get you
-                started!
-              </p>
-            </div>
+            {/* Sidebar */}
+            <aside className="hidden md:flex flex-col w-1/3 bg-secondary/50 p-8 justify-between border-r">
+              <div>
+                <h2 className="text-xl font-bold">Complete Your Profile</h2>
+                <p className="text-primary font-semibold mt-2 text-sm">
+                  Get a <span className="font-bold">200 point bonus</span> for
+                  completing your survey!
+                </p>
+                <nav className="mt-12 space-y-2">
+                  {steps.map((step, index) => (
+                    <div
+                      key={step.id}
+                      className={cn(
+                        "flex items-center gap-4 p-3 rounded-lg transition-all duration-300",
+                        currentStep === index
+                          ? "bg-primary/10 text-primary"
+                          : "text-muted-foreground"
+                      )}
+                    >
+                      <div
+                        className={cn(
+                          "p-2 rounded-full border-2",
+                          currentStep === index
+                            ? "bg-primary text-primary-foreground border-primary"
+                            : "bg-secondary border-border"
+                        )}
+                      >
+                        <step.icon className="w-5 h-5" />
+                      </div>
+                      <div>
+                        <p className="font-bold text-sm">
+                          Step {index + 1}
+                        </p>
+                        <p className="text-xs">
+                          {step.title}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+                </nav>
+              </div>
+              <p className="text-xs text-muted-foreground">© inTesters</p>
+            </aside>
 
-            <div className="mt-8 relative">
-              <StepperWithResponsiveVariant
-                profileData={profileData}
-                setProfileData={setProfileData}
-                onSubmit={handleSubmit}
-              />
-            </div>
+            {/* Main Content */}
+            <main className="flex-1 flex flex-col p-6 md:p-8 overflow-y-auto">
+              <div className="flex items-center justify-between md:hidden mb-6">
+                <h2 className="text-lg font-bold">{steps[currentStep].title}</h2>
+                <span className="text-sm text-muted-foreground">Step {currentStep + 1} of {steps.length}</span>
+              </div>
+              <div className="flex-grow relative">
+                <AnimatePresence initial={false} custom={delta}>
+                  <motion.div
+                    key={currentStep}
+                    custom={delta}
+                    initial={{ opacity: 0, x: delta > 0 ? 30 : -30 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    exit={{ opacity: 0, x: delta > 0 ? -30 : 30 }}
+                    transition={{ type: 'tween', duration: 0.3, ease: 'easeInOut' }}
+                    className="absolute w-full h-full"
+                  >
+                    {currentStep === 0 && <RoleStep profileData={profileData} setProfileData={setProfileData} />}
+                    {currentStep === 1 && <CompanyStep profileData={profileData} setProfileData={setProfileData} />}
+                    {currentStep === 2 && <ProjectsStep profileData={profileData} setProfileData={setProfileData} />}
+                    {currentStep === 3 && <ContactStep profileData={profileData} setProfileData={setProfileData} />}
+                  </motion.div>
+                </AnimatePresence>
+              </div>
+              
+              {/* Controls */}
+              <div className="mt-8 pt-6 border-t flex items-center justify-between">
+                <Button
+                  variant="ghost"
+                  onClick={prev}
+                  className={cn(currentStep === 0 ? "invisible" : "visible")}
+                >
+                  <ArrowLeft className="mr-2 h-4 w-4" /> Back
+                </Button>
+
+                {currentStep < steps.length - 1 ? (
+                  <Button onClick={next}>
+                    Next <ArrowRight className="ml-2 h-4 w-4" />
+                  </Button>
+                ) : (
+                  <Button onClick={handleSubmit}>Submit Profile</Button>
+                )}
+              </div>
+            </main>
           </>
         )}
       </div>
     </div>
   );
+}
+
+const StepWrapper = ({ children }: { children: React.ReactNode }) => (
+    <div className="space-y-6">{children}</div>
+);
+
+const RoleStep = ({ profileData, setProfileData }: ProfileStepperProps) => (
+  <StepWrapper>
+    <div className="space-y-2">
+      <Label>Your professional type</Label>
+      <RadioGroup
+        onValueChange={(value) => setProfileData((prev) => ({ ...prev, profileType: value as UserProfileType }))}
+        defaultValue={profileData?.profileType}
+        className="grid grid-cols-2 gap-4 pt-2"
+      >
+        {Object.values(UserProfileType).map((type) => (
+          <div key={type}>
+            <RadioGroupItem value={type} id={type} className="peer sr-only" />
+            <Label
+              htmlFor={type}
+              className="flex h-full flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary cursor-pointer"
+            >
+              {type.replace("_", " ")}
+            </Label>
+          </div>
+        ))}
+      </RadioGroup>
+    </div>
+    <div>
+      <Label>Your job role</Label>
+      <Select onValueChange={(value) => setProfileData((prev) => ({ ...prev, jobRole: value as UserJobRole }))} defaultValue={profileData?.jobRole}>
+        <SelectTrigger><SelectValue placeholder="Select your primary role" /></SelectTrigger>
+        <SelectContent>
+          {Object.values(UserJobRole).map((role) => <SelectItem key={role} value={role}>{role.replace(/_/g, " ")}</SelectItem>)}
+        </SelectContent>
+      </Select>
+    </div>
+    <div>
+      <Label>Your experience level</Label>
+      <Select onValueChange={(value) => setProfileData((prev) => ({ ...prev, experienceLevel: value as UserExperienceLevel }))} defaultValue={profileData?.experienceLevel}>
+        <SelectTrigger><SelectValue placeholder="Select your experience level" /></SelectTrigger>
+        <SelectContent>
+          {Object.values(UserExperienceLevel).map((level) => <SelectItem key={level} value={level}>{level.replace(/_/g, " ")}</SelectItem>)}
+        </SelectContent>
+      </Select>
+    </div>
+  </StepWrapper>
+);
+
+const CompanyStep = ({ profileData, setProfileData }: ProfileStepperProps) => (
+  <StepWrapper>
+    <div><Label>Company Name</Label><Input placeholder="Your Company Inc." value={profileData?.companyName} onChange={(e) => setProfileData((prev) => ({ ...prev, companyName: e.target.value }))} /></div>
+    <div><Label>Company Website</Label><Input placeholder="https://example.com" value={profileData?.companyWebsite} onChange={(e) => setProfileData((prev) => ({ ...prev, companyWebsite: e.target.value }))} /></div>
+    <div>
+      <Label>Company Size</Label>
+      <Select onValueChange={(value) => setProfileData((prev) => ({ ...prev, companySize: value as UserCompanySize }))} defaultValue={profileData?.companySize}>
+        <SelectTrigger><SelectValue placeholder="Select company size" /></SelectTrigger>
+        <SelectContent>
+          {Object.values(UserCompanySize).map((size) => <SelectItem key={size} value={size}>{size.replace("SIZE_", "").replace(/_/g, "-")}</SelectItem>)}
+        </SelectContent>
+      </Select>
+    </div>
+    <div>
+      <Label>Your Position</Label>
+      <Select onValueChange={(value) => setProfileData((prev) => ({ ...prev, positionInCompany: value as UserCompanyPosition }))} defaultValue={profileData?.positionInCompany}>
+        <SelectTrigger><SelectValue placeholder="Select your position" /></SelectTrigger>
+        <SelectContent>
+          {Object.values(UserCompanyPosition).map((pos) => <SelectItem key={pos} value={pos}>{pos.replace(/_/g, " ")}</SelectItem>)}
+        </SelectContent>
+      </Select>
+    </div>
+  </StepWrapper>
+);
+
+const ProjectsStep = ({ profileData, setProfileData }: ProfileStepperProps) => (
+  <StepWrapper>
+    <div>
+      <Label>Total Published Apps</Label>
+      <Select onValueChange={(value) => setProfileData((prev) => ({ ...prev, totalPublishedApps: value as UserTotalPublishedApps }))} defaultValue={profileData?.totalPublishedApps}>
+        <SelectTrigger><SelectValue placeholder="Select number of apps" /></SelectTrigger>
+        <SelectContent>
+          {Object.values(UserTotalPublishedApps).map((val) => <SelectItem key={val} value={val}>{val.replace("PUB_", "").replace(/_/g, "-")}</SelectItem>)}
+        </SelectContent>
+      </Select>
+    </div>
+    <div>
+      <Label>Primary Development Platform</Label>
+      <Select onValueChange={(value) => setProfileData((prev) => ({ ...prev, platformDevelopment: value as UserDevelopmentPlatform }))} defaultValue={profileData?.platformDevelopment}>
+        <SelectTrigger><SelectValue placeholder="Select platform" /></SelectTrigger>
+        <SelectContent>
+          {Object.values(UserDevelopmentPlatform).map((val) => <SelectItem key={val} value={val}>{val.replace(/_/g, " ")}</SelectItem>)}
+        </SelectContent>
+      </Select>
+    </div>
+    <div>
+      <Label>App Publish Frequency</Label>
+      <Select onValueChange={(value) => setProfileData((prev) => ({ ...prev, publishFrequency: value as UserPublishFrequency }))} defaultValue={profileData?.publishFrequency}>
+        <SelectTrigger><SelectValue placeholder="Select frequency" /></SelectTrigger>
+        <SelectContent>
+          {Object.values(UserPublishFrequency).map((val) => <SelectItem key={val} value={val}>{val.replace(/_/g, " ")}</SelectItem>)}
+        </SelectContent>
+      </Select>
+    </div>
+  </StepWrapper>
+);
+
+const ContactStep = ({ profileData, setProfileData }: ProfileStepperProps) => (
+    <StepWrapper>
+        <div>
+            <Label>Why are you using our service?</Label>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-2">
+                {Object.values(UserTestingServiceReason).map((item) => (
+                    <div key={item} className="flex items-center space-x-2 rounded-md border p-3 has-[:checked]:border-primary">
+                        <Checkbox checked={profileData?.serviceUsage?.includes(item)} onCheckedChange={(checked) => {
+                            const current = profileData?.serviceUsage || [];
+                            const updated = checked ? [...current, item] : current.filter((val) => val !== item);
+                            setProfileData((prev) => ({ ...prev, serviceUsage: updated }));
+                        }} id={`service-${item}`} />
+                        <Label htmlFor={`service-${item}`} className="text-sm font-normal cursor-pointer">{item.replace(/_/g, " ")}</Label>
+                    </div>
+                ))}
+            </div>
+        </div>
+        <div>
+            <Label>Preferred Communication Methods</Label>
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 pt-2">
+                {Object.values(UserCommunicationMethod).map((item) => (
+                     <div key={item} className="flex items-center space-x-2 rounded-md border p-3 has-[:checked]:border-primary">
+                        <Checkbox checked={profileData?.communicationMethods?.includes(item)} onCheckedChange={(checked) => {
+                            const current = profileData?.communicationMethods || [];
+                            const updated = checked ? [...current, item] : current.filter((val) => val !== item);
+                            setProfileData((prev) => ({ ...prev, communicationMethods: updated }));
+                        }} id={`comm-${item}`} />
+                        <Label htmlFor={`comm-${item}`} className="text-sm font-normal cursor-pointer">{item}</Label>
+                    </div>
+                ))}
+            </div>
+        </div>
+    </StepWrapper>
+);
+
+interface ProfileStepperProps {
+  profileData: Partial<UserProfileData>;
+  setProfileData: React.Dispatch<React.SetStateAction<Partial<UserProfileData>>>;
 }
 
 export default ProfileSetupPage;
