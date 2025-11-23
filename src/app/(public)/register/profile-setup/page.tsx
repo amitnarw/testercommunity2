@@ -90,6 +90,24 @@ const steps = [
   },
 ];
 
+const variants = {
+  enter: (direction: number) => ({
+    x: direction > 0 ? 300 : -300,
+    opacity: 0,
+  }),
+  center: {
+    zIndex: 1,
+    x: 0,
+    opacity: 1,
+  },
+  exit: (direction: number) => ({
+    zIndex: 0,
+    x: direction < 0 ? 300 : -300,
+    opacity: 0,
+  }),
+};
+
+
 function ProfileSetupPage() {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [profileData, setProfileData] = useState<Partial<UserProfileData>>({});
@@ -271,9 +289,10 @@ function ProfileSetupPage() {
                   <motion.div
                     key={currentStep}
                     custom={delta}
-                    initial={{ opacity: 0, x: delta > 0 ? 300 : -300 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    exit={{ opacity: 0, x: delta > 0 ? -300 : 300 }}
+                    variants={variants}
+                    initial="enter"
+                    animate="center"
+                    exit="exit"
                     transition={{
                       type: "tween",
                       duration: 0.4,
@@ -650,4 +669,3 @@ interface ProfileStepperProps {
 }
 
 export default ProfileSetupPage;
-
