@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useForm, type SubmitHandler, FormProvider } from "react-hook-form";
@@ -19,6 +20,7 @@ import { useTheme } from "next-themes";
 import { BackButton } from "@/components/back-button";
 import Image from "next/image";
 import { BackgroundBeams } from "@/components/background-beams";
+import { useRouter } from "next/navigation";
 
 const signupSchema = z.object({
   firstName: z.string().min(2, "First name is required."),
@@ -36,6 +38,7 @@ const GoogleIcon = (props: React.HTMLAttributes<HTMLImageElement>) => (
 
 export default function RegisterPage() {
   const { setTheme, theme } = useTheme();
+  const router = useRouter();
 
   const form = useForm({
     resolver: zodResolver(signupSchema),
@@ -47,16 +50,8 @@ export default function RegisterPage() {
   const processForm: SubmitHandler<any> = (data) => {
     console.log("Account data:", data);
     // In a real app, you would handle user creation and then navigate.
-    // For this demo, we'll link directly.
+    router.push('/register/profile-setup');
   };
-
-  // const handleGoogleRegister = () => {
-  //   setIsGoogleAuth(true);
-  //   setValue("firstName", "Demo", { shouldValidate: true });
-  //   setValue("lastName", "User", { shouldValidate: true });
-  //   setValue("email", "demo.user@gmail.com", { shouldValidate: true });
-  //   next();
-  // };
 
   return (
     <div className="min-h-screen w-full lg:grid lg:grid-cols-2">
@@ -161,11 +156,9 @@ export default function RegisterPage() {
 
                 <div className="mt-8 pt-5">
                   <div className="flex justify-end">
-                    <Button asChild>
-                      <Link href="/register/profile-setup">
-                        Create Account & Continue{" "}
-                        <ArrowRight className="ml-2 h-4 w-4" />
-                      </Link>
+                    <Button type="submit">
+                      Create Account & Continue{" "}
+                      <ArrowRight className="ml-2 h-4 w-4" />
                     </Button>
                   </div>
                 </div>
