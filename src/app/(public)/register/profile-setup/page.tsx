@@ -127,7 +127,7 @@ function ProfileSetupPage() {
   const progress = ((currentStep + 1) / steps.length) * 100;
 
   return (
-    <div className="min-h-screen w-full bg-background flex items-center justify-center p-2 sm:p-4">
+    <div className="min-h-screen w-full bg-background flex items-center justify-center p-2 pt-6 sm:p-4">
       <div className="absolute top-1 sm:top-4 right-4 flex items-center gap-2">
         <Button
           asChild
@@ -157,54 +157,54 @@ function ProfileSetupPage() {
             <aside className="hidden md:flex flex-col w-1/3 bg-secondary/50 p-8 justify-between border-r">
               <div>
                 <h2 className="text-xl font-bold">Complete Your Profile</h2>
-                <p className="text-muted-foreground mt-2 text-sm">
+                <p className="text-muted-foreground mt-2 text-xs">
                   This survey is optional, but you'll get a <span className="text-primary font-bold">200 point bonus</span> for completing it!
                 </p>
-                <nav className="mt-12 space-y-2">
-                  {steps.map((step, index) => (
-                    <button
-                      key={step.id}
-                      onClick={() => goToStep(index)}
-                      disabled={index >= currentStep}
+              </div>
+              <nav className="space-y-2">
+                {steps.map((step, index) => (
+                  <button
+                    key={step.id}
+                    onClick={() => goToStep(index)}
+                    disabled={index >= currentStep}
+                    className={cn(
+                      "flex items-center gap-4 p-3 rounded-lg transition-all duration-300 w-full text-left",
+                      currentStep === index
+                        ? "bg-primary/10 text-primary"
+                        : "text-muted-foreground",
+                      index < currentStep
+                        ? "hover:bg-accent cursor-pointer"
+                        : "cursor-not-allowed"
+                    )}
+                  >
+                    <div
                       className={cn(
-                        "flex items-center gap-4 p-3 rounded-lg transition-all duration-300 w-full text-left",
+                        "p-2 rounded-full border-2 transition-all",
                         currentStep === index
-                          ? "bg-primary/10 text-primary"
-                          : "text-muted-foreground",
-                        index < currentStep
-                          ? "hover:bg-accent cursor-pointer"
-                          : "cursor-not-allowed"
+                          ? "bg-primary text-primary-foreground border-primary"
+                          : "bg-secondary border-border",
+                        index < currentStep &&
+                        "bg-green-500/20 text-green-600 border-green-500/30"
                       )}
                     >
-                      <div
-                        className={cn(
-                          "p-2 rounded-full border-2 transition-all",
-                          currentStep === index
-                            ? "bg-primary text-primary-foreground border-primary"
-                            : "bg-secondary border-border",
-                          index < currentStep &&
-                            "bg-green-500/20 text-green-600 border-green-500/30"
-                        )}
-                      >
-                        {index < currentStep ? (
-                          <CheckCircle className="w-5 h-5" />
-                        ) : (
-                          <step.icon className="w-5 h-5" />
-                        )}
-                      </div>
-                      <div>
-                        <p className="font-bold text-sm">Step {index + 1}</p>
-                        <p className="text-xs">{step.title}</p>
-                      </div>
-                    </button>
-                  ))}
-                </nav>
-              </div>
+                      {index < currentStep ? (
+                        <CheckCircle className="w-5 h-5" />
+                      ) : (
+                        <step.icon className="w-5 h-5" />
+                      )}
+                    </div>
+                    <div>
+                      <p className="font-bold text-sm">Step {index + 1}</p>
+                      <p className="text-xs">{step.title}</p>
+                    </div>
+                  </button>
+                ))}
+              </nav>
               <p className="text-xs text-muted-foreground">© inTesters</p>
             </aside>
 
             {/* Main Content */}
-            <main className="flex-1 flex flex-col p-3 md:p-8">
+            <main className="flex-1 flex flex-col p-3 pt-6 md:p-8">
               {/* Mobile Stepper */}
               <div className="md:hidden mb-6">
                 <nav className="grid grid-cols-4 gap-2">
@@ -228,7 +228,7 @@ function ProfileSetupPage() {
                             ? "border-primary"
                             : "border-border",
                           index < currentStep &&
-                            "bg-green-500/20 border-green-500/30"
+                          "bg-green-500/20 border-green-500/30"
                         )}
                       >
                         {index < currentStep ? (
@@ -250,10 +250,10 @@ function ProfileSetupPage() {
                 <Progress value={progress} className="h-1 mt-4" />
                 <div className="text-center mt-3">
                   <p className="text-sm font-semibold text-muted-foreground">
-                      {steps[currentStep].title}
+                    {steps[currentStep].title}
                   </p>
-                  <p className="text-xs text-primary font-semibold mt-1">
-                    Optional Survey - Get 200 points for completion!
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Optional Survey - Get <span className="text-primary font-semibold">200 points</span> for completion!
                   </p>
                 </div>
               </div>
