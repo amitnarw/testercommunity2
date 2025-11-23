@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState } from "react";
@@ -43,7 +44,6 @@ import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useTheme } from "next-themes";
 import { Progress } from "@/components/ui/progress";
-import { BackButton } from "@/components/back-button";
 
 const RegistrationSuccess = () => (
   <motion.div
@@ -157,9 +157,8 @@ function ProfileSetupPage() {
             <aside className="hidden md:flex flex-col w-1/3 bg-secondary/50 p-8 justify-between border-r">
               <div>
                 <h2 className="text-xl font-bold">Complete Your Profile</h2>
-                <p className="text-primary font-semibold mt-2 text-sm">
-                  Get a <span className="font-bold">200 point bonus</span> for
-                  completing your survey!
+                <p className="text-muted-foreground mt-2 text-sm">
+                  This survey is optional, but you'll get a <span className="text-primary font-bold">200 point bonus</span> for completing it!
                 </p>
                 <nav className="mt-12 space-y-2">
                   {steps.map((step, index) => (
@@ -249,9 +248,14 @@ function ProfileSetupPage() {
                   ))}
                 </nav>
                 <Progress value={progress} className="h-1 mt-4" />
-                <p className="text-center text-sm font-semibold text-muted-foreground mt-3">
-                  {steps[currentStep].title}
-                </p>
+                <div className="text-center mt-3">
+                  <p className="text-sm font-semibold text-muted-foreground">
+                      {steps[currentStep].title}
+                  </p>
+                  <p className="text-xs text-primary font-semibold mt-1">
+                    Optional Survey - Get 200 points for completion!
+                  </p>
+                </div>
               </div>
 
               <div className="flex-grow relative min-h-[360px] md:min-h-0">
