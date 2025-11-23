@@ -44,6 +44,7 @@ import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useTheme } from "next-themes";
 import { Progress } from "@/components/ui/progress";
+import { useQuery } from "@tanstack/react-query";
 
 const RegistrationSuccess = () => (
   <motion.div
@@ -143,6 +144,19 @@ function ProfileSetupPage() {
   };
 
   const progress = ((currentStep + 1) / steps.length) * 100;
+
+  const { data, isLoading, error } = useQuery({
+    queryKey: ["hello"],
+    queryFn: async () => {
+      const res = await fetch("https://api.github.com/zen");
+      return res.text();
+    },
+  });
+
+  if (isLoading) return <p>Loading...</p>;
+  if (error) return <p>Error loading data</p>;
+
+  // return <h1>{data}</h1>;
 
   return (
     <div className="min-h-screen w-full bg-background flex items-center justify-center p-2 pt-6 sm:p-4">
