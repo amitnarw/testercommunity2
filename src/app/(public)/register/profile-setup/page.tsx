@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useState } from "react";
@@ -158,7 +157,11 @@ function ProfileSetupPage() {
               <div>
                 <h2 className="text-xl font-bold">Complete Your Profile</h2>
                 <p className="text-muted-foreground mt-2 text-xs">
-                  This survey is optional, but you'll get a <span className="text-primary font-bold">200 point bonus</span> for completing it!
+                  This survey is optional, but you'll get a{" "}
+                  <span className="text-primary font-bold">
+                    200 point bonus
+                  </span>{" "}
+                  for completing it!
                 </p>
               </div>
               <nav className="space-y-2">
@@ -184,7 +187,7 @@ function ProfileSetupPage() {
                           ? "bg-primary text-primary-foreground border-primary"
                           : "bg-secondary border-border",
                         index < currentStep &&
-                        "bg-green-500/20 text-green-600 border-green-500/30"
+                          "bg-green-500/20 text-green-600 border-green-500/30"
                       )}
                     >
                       {index < currentStep ? (
@@ -228,7 +231,7 @@ function ProfileSetupPage() {
                             ? "border-primary"
                             : "border-border",
                           index < currentStep &&
-                          "bg-green-500/20 border-green-500/30"
+                            "bg-green-500/20 border-green-500/30"
                         )}
                       >
                         {index < currentStep ? (
@@ -253,7 +256,11 @@ function ProfileSetupPage() {
                     {steps[currentStep].title}
                   </p>
                   <p className="text-xs text-muted-foreground mt-1">
-                    Optional Survey - Get <span className="text-primary font-semibold">200 points</span> for completion!
+                    Optional Survey - Get{" "}
+                    <span className="text-primary font-semibold">
+                      200 points
+                    </span>{" "}
+                    for completion!
                   </p>
                 </div>
               </div>
@@ -354,14 +361,14 @@ const RoleStep = ({ profileData, setProfileData }: ProfileStepperProps) => (
           }))
         }
         defaultValue={profileData?.profileType}
-        className="grid grid-cols-2 gap-4 pt-2"
+        className="grid grid-cols-2 gap-4"
       >
         {Object.values(UserProfileType).map((type) => (
           <div key={type}>
             <RadioGroupItem value={type} id={type} className="peer sr-only" />
             <Label
               htmlFor={type}
-              className="flex h-full flex-col items-center justify-between rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary cursor-pointer"
+              className="flex h-full flex-col items-center justify-center rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary cursor-pointer text-center"
             >
               {type.replace("_", " ")}
             </Label>
@@ -369,7 +376,7 @@ const RoleStep = ({ profileData, setProfileData }: ProfileStepperProps) => (
         ))}
       </RadioGroup>
     </div>
-    <div>
+    <div className="flex flex-col gap-2">
       <Label>Your job role</Label>
       <Select
         onValueChange={(value) =>
@@ -389,7 +396,7 @@ const RoleStep = ({ profileData, setProfileData }: ProfileStepperProps) => (
         </SelectContent>
       </Select>
     </div>
-    <div>
+    <div className="flex flex-col gap-2">
       <Label>Your experience level</Label>
       <Select
         onValueChange={(value) =>
@@ -417,7 +424,7 @@ const RoleStep = ({ profileData, setProfileData }: ProfileStepperProps) => (
 
 const CompanyStep = ({ profileData, setProfileData }: ProfileStepperProps) => (
   <StepWrapper>
-    <div>
+    <div className="flex flex-col gap-2">
       <Label>Company Name</Label>
       <Input
         placeholder="Your Company Inc."
@@ -427,7 +434,7 @@ const CompanyStep = ({ profileData, setProfileData }: ProfileStepperProps) => (
         }
       />
     </div>
-    <div>
+    <div className="flex flex-col gap-2">
       <Label>Company Website</Label>
       <Input
         placeholder="https://example.com"
@@ -440,7 +447,7 @@ const CompanyStep = ({ profileData, setProfileData }: ProfileStepperProps) => (
         }
       />
     </div>
-    <div>
+    <div className="flex flex-col gap-2">
       <Label>Company Size</Label>
       <Select
         onValueChange={(value) =>
@@ -463,7 +470,7 @@ const CompanyStep = ({ profileData, setProfileData }: ProfileStepperProps) => (
         </SelectContent>
       </Select>
     </div>
-    <div>
+    <div className="flex flex-col gap-2">
       <Label>Your Position</Label>
       <Select
         onValueChange={(value) =>
@@ -491,7 +498,7 @@ const CompanyStep = ({ profileData, setProfileData }: ProfileStepperProps) => (
 
 const ProjectsStep = ({ profileData, setProfileData }: ProfileStepperProps) => (
   <StepWrapper>
-    <div>
+    <div className="flex flex-col gap-2">
       <Label>Total Published Apps</Label>
       <Select
         onValueChange={(value) =>
@@ -514,7 +521,7 @@ const ProjectsStep = ({ profileData, setProfileData }: ProfileStepperProps) => (
         </SelectContent>
       </Select>
     </div>
-    <div>
+    <div className="flex flex-col gap-2">
       <Label>Primary Development Platform</Label>
       <Select
         onValueChange={(value) =>
@@ -537,7 +544,7 @@ const ProjectsStep = ({ profileData, setProfileData }: ProfileStepperProps) => (
         </SelectContent>
       </Select>
     </div>
-    <div>
+    <div className="flex flex-col gap-2">
       <Label>App Publish Frequency</Label>
       <Select
         onValueChange={(value) =>
@@ -590,7 +597,7 @@ const ContactStep = ({ profileData, setProfileData }: ProfileStepperProps) => (
               />
               <Label
                 htmlFor={`service-${item}`}
-                className="text-sm font-normal cursor-pointer"
+                className="text-sm font-normal cursor-pointer w-full"
               >
                 {item.replace(/_/g, " ")}
               </Label>
@@ -622,7 +629,7 @@ const ContactStep = ({ profileData, setProfileData }: ProfileStepperProps) => (
               />
               <Label
                 htmlFor={`comm-${item}`}
-                className="text-sm font-normal cursor-pointer"
+                className="text-sm font-normal cursor-pointer w-full"
               >
                 {item}
               </Label>
