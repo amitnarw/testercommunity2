@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useState } from "react";
@@ -252,10 +253,10 @@ function ProfileSetupPage() {
                 </nav>
                 <Progress value={progress} className="h-1 mt-4" />
                 <div className="text-center mt-3">
-                  <p className="text-sm font-semibold text-muted-foreground">
+                  <p className="text-sm font-semibold">
                     {steps[currentStep].title}
                   </p>
-                  <p className="text-xs text-muted-foreground mt-1">
+                   <p className="text-xs text-muted-foreground mt-1">
                     Optional Survey - Get{" "}
                     <span className="text-primary font-semibold">
                       200 points
@@ -275,7 +276,7 @@ function ProfileSetupPage() {
                     exit={{ opacity: 0, x: delta > 0 ? -300 : 300 }}
                     transition={{
                       type: "tween",
-                      duration: 0.3,
+                      duration: 0.4,
                       ease: "easeInOut",
                     }}
                     className="absolute w-full h-full"
@@ -649,3 +650,4 @@ interface ProfileStepperProps {
 }
 
 export default ProfileSetupPage;
+
