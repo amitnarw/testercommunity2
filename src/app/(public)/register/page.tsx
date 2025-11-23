@@ -29,7 +29,6 @@ const signupSchema = z.object({
   password: z
     .string()
     .min(8, "Password must be at least 8 characters.")
-    .optional(),
 });
 
 const GoogleIcon = (props: React.HTMLAttributes<HTMLImageElement>) => (
@@ -75,7 +74,7 @@ export default function RegisterPage() {
               onSubmit={handleSubmit(processForm)}
               className="overflow-hidden relative"
             >
-              <div className="bg-card border rounded-2xl p-6 shadow-lg">
+              <div className="rounded-2xl p-6 shadow-lg">
                 <div className="mb-8 text-center">
                   <h2 className="font-bold tracking-tight text-3xl">
                     Create an Account

@@ -147,7 +147,7 @@ function ProfileSetupPage() {
         </Button>
       </div>
 
-      <div className="w-full max-w-4xl h-auto min-h-[70vh] bg-card rounded-2xl shadow-2xl shadow-primary/10 border flex flex-col overflow-hidden">
+      <div className="w-full max-w-4xl h-auto min-h-[70vh] bg-card rounded-2xl shadow-2xl shadow-primary/10 border border-dashed flex flex-col overflow-hidden">
         {isSubmitted ? (
           <RegistrationSuccess />
         ) : (
