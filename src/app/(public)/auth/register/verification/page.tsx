@@ -5,7 +5,7 @@ import { Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { CheckCircle, MailWarning, Loader, ArrowRight } from 'lucide-react';
+import { CheckCircle, MailWarning, Loader, ArrowRight, Sun, Moon } from 'lucide-react';
 
 import { authClient } from '@/lib/auth-client';
 import { Button } from '@/components/ui/button';
@@ -13,12 +13,12 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { SiteLogo } from '@/components/icons';
 import Meteors from "@/components/ui/meteors";
 import Link from 'next/link';
+import { useTheme } from 'next-themes';
 
 type VerificationStatus = 'verifying' | 'success' | 'error';
 
 function VerificationContent() {
   const searchParams = useSearchParams();
-  const router = useRouter();
   const [status, setStatus] = useState<VerificationStatus>('verifying');
   const [errorMessage, setErrorMessage] = useState('');
 
@@ -37,10 +37,13 @@ function VerificationContent() {
         if (response.error) {
             throw new Error(response.error.message);
         }
-        setStatus('success');
+        // Add a small delay to show the loading animation
+        setTimeout(() => setStatus('success'), 1500);
       } catch (error: any) {
-        setStatus('error');
-        setErrorMessage(error.message || 'An unknown error occurred. Please try again.');
+        setTimeout(() => {
+            setStatus('error');
+            setErrorMessage(error.message || 'An unknown error occurred. Please try again.');
+        }, 1500);
       }
     };
 
@@ -112,6 +115,8 @@ function VerificationContent() {
 
 
 export default function VerificationPage() {
+    const { setTheme, theme } = useTheme();
+
     return (
         <div className="min-h-screen w-full flex flex-col items-center justify-center p-6 relative overflow-hidden bg-background">
             <Meteors />
@@ -119,6 +124,17 @@ export default function VerificationPage() {
                 <Link href="/">
                     <SiteLogo />
                 </Link>
+            </div>
+             <div className="absolute top-4 right-4 z-10">
+                 <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+                >
+                    <Sun className="h-6 w-6 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+                    <Moon className="absolute h-6 w-6 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+                    <span className="sr-only">Toggle theme</span>
+                </Button>
             </div>
             <Suspense fallback={<Loader className="h-16 w-16 text-primary animate-spin" />}>
                 <VerificationContent />

@@ -29,8 +29,8 @@ export const Meteors = ({
         <span
           key={"meteor" + idx}
           className={cn(
-            "animate-meteor-effect absolute h-0.5 w-0.5 rounded-[9999px] bg-primary shadow-[0_0_0_1px_#ffffff10]",
-            "before:absolute before:top-1/2 before:h-[1px] before:w-[50px] before:-translate-y-1/2 before:transform before:bg-gradient-to-r before:from-primary before:to-transparent"
+            "animate-meteor-effect absolute h-0.5 w-0.5 rounded-[9999px] bg-primary shadow-[0_0_10px_0px_#ffffff10]",
+            "before:absolute before:top-1/2 before:h-[1px] before:w-[50px] before:-translate-y-1/2 before:transform before:bg-gradient-to-r before:from-primary/50 before:to-transparent"
           )}
           style={style}
         ></span>
