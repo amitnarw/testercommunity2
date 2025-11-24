@@ -1,11 +1,10 @@
 
-
 'use client';
 
 import { SiteLogo } from '@/components/icons';
 import { Button } from '@/components/ui/button';
 import { useRouter } from 'next/navigation';
-import { BackgroundBeams } from '@/components/background-beams';
+import Meteors from "@/components/ui/meteors";
 import { Input } from '@/components/ui/input';
 import { useTheme } from 'next-themes';
 import { Moon, Sun } from 'lucide-react';
@@ -86,7 +85,7 @@ export default function AdminLoginPage() {
             </div>
         </div>
         <div className="hidden lg:flex flex-col items-center justify-center p-6 text-center relative overflow-hidden bg-background">
-            <BackgroundBeams />
+            <Meteors />
             <div className="relative z-10 flex flex-col items-center">
                 <SiteLogo className="h-20 w-auto mb-4" />
                 <h1 className="text-3xl font-bold tracking-tight text-foreground">Welcome Administrator</h1>

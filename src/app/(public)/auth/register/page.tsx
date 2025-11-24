@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useForm, type SubmitHandler, FormProvider } from "react-hook-form";
@@ -17,7 +18,7 @@ import { SiteLogo } from "@/components/icons";
 import { useTheme } from "next-themes";
 import { BackButton } from "@/components/back-button";
 import Image from "next/image";
-import { BackgroundBeams } from "@/components/background-beams";
+import Meteors from "@/components/ui/meteors";
 import { useRouter } from "next/navigation";
 import { useRegisterUser } from "@/hooks/useAuth";
 import LoadingIcon from "@/components/loadingIcon";
@@ -47,10 +48,11 @@ export default function RegisterPage() {
 
   const processForm: SubmitHandler<any> = (data) => {
     // In a real app, you would handle user creation and then navigate.
-    mutate(data);
-    if (isSuccess) {
-      router.push("/auth/register/profile-setup");
-    }
+    mutate(data, {
+        onSuccess: () => {
+             router.push("/auth/register/profile-setup");
+        }
+    });
   };
 
   return (
@@ -160,7 +162,7 @@ export default function RegisterPage() {
                       <LoadingIcon />
                     ) : (
                       <Button type="submit">
-                        Continue
+                        Create Account & Continue
                         <ArrowRight className="ml-2 h-4 w-4" />
                       </Button>
                     )}
@@ -180,7 +182,7 @@ export default function RegisterPage() {
         </div>
       </div>
       <div className="hidden lg:flex flex-col items-center justify-center p-6 text-center relative overflow-hidden bg-background">
-        <BackgroundBeams />
+        <Meteors />
         <div className="relative z-10 flex flex-col items-center">
           <SiteLogo className="h-20 w-auto mb-4" />
           <h1 className="text-3xl font-bold tracking-tight text-foreground">

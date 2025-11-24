@@ -11,7 +11,7 @@ import { authClient } from '@/lib/auth-client';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { SiteLogo } from '@/components/icons';
-import { BackgroundBeams } from '@/components/background-beams';
+import Meteors from "@/components/ui/meteors";
 import Link from 'next/link';
 
 type VerificationStatus = 'verifying' | 'success' | 'error';
@@ -114,7 +114,7 @@ function VerificationContent() {
 export default function VerificationPage() {
     return (
         <div className="min-h-screen w-full flex flex-col items-center justify-center p-6 relative overflow-hidden bg-background">
-            <BackgroundBeams />
+            <Meteors />
              <div className="absolute top-6 left-6 z-10">
                 <Link href="/">
                     <SiteLogo />
