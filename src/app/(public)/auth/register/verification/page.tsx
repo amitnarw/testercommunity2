@@ -44,7 +44,9 @@ function VerificationContent() {
       }
     };
 
-    verifyToken();
+    // This will run after the initial 5-second loading animation
+    const timer = setTimeout(verifyToken, 10);
+    return () => clearTimeout(timer);
   }, [searchParams]);
 
   const statusConfig = {
@@ -104,7 +106,7 @@ function VerificationContent() {
         transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
         className="w-full max-w-md"
       >
-        <Card className="relative z-10 w-full bg-background/60 backdrop-blur-lg border-border/20 shadow-2xl shadow-primary/10 rounded-2xl">
+        <Card className="relative z-10 w-full bg-background/30 backdrop-blur-xl border border-white/10 shadow-2xl shadow-primary/10 rounded-2xl">
           <CardHeader className="text-center items-center p-8">
             <motion.div
               initial={{ scale: 0.5, opacity: 0 }}
