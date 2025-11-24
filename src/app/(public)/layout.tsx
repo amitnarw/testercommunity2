@@ -28,7 +28,7 @@ export default function PublicLayout({
     setIsAuthenticated(false);
   };
 
-  const isAuthPage = pathname === '/auth/login' || pathname === '/auth/register' || pathname === '/auth/register/profile-setup';
+  const isAuthPage = pathname === '/auth/login' || pathname === '/auth/register' || pathname === '/auth/register/profile-setup' || pathname === '/auth/register/verification';
 
   if (!isAuthChecked) {
       return null; // Or a loading spinner
