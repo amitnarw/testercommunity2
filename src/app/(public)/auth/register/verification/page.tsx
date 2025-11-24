@@ -106,7 +106,7 @@ function VerificationContent() {
         transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
         className="w-full max-w-md"
       >
-        <Card className="relative z-10 w-full bg-background/30 backdrop-blur-xl border border-white/10 shadow-2xl shadow-primary/10 rounded-2xl">
+        <Card className="relative z-10 w-full bg-white/10 dark:bg-black/10 backdrop-blur-2xl border border-white/10 shadow-2xl shadow-primary/10 rounded-2xl">
           <CardHeader className="text-center items-center p-8">
             <motion.div
               initial={{ scale: 0.5, opacity: 0 }}
@@ -155,8 +155,8 @@ export default function VerificationPage() {
     }, []);
 
     return (
-        <div className="min-h-screen w-full flex flex-col items-center justify-center p-6 relative overflow-hidden bg-background">
-             <Meteors />
+        <div className="min-h-screen w-full relative overflow-hidden bg-background">
+            <Meteors />
              <div className="absolute top-4 right-4 flex items-center gap-4 z-10">
                 <Button
                     variant="ghost"
@@ -173,9 +173,11 @@ export default function VerificationPage() {
                     <SiteLogo />
                 </Link>
             </div>
-            <Suspense fallback={<InitialLoader />}>
-                {isLoading ? <InitialLoader /> : <VerificationContent />}
-            </Suspense>
+            <div className="flex flex-col items-center justify-center min-h-screen p-6">
+                <Suspense fallback={<InitialLoader />}>
+                    {isLoading ? <InitialLoader /> : <VerificationContent />}
+                </Suspense>
+            </div>
         </div>
     )
 }
