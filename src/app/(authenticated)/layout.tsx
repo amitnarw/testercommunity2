@@ -22,13 +22,13 @@ export default function AuthenticatedLayout({
     const authStatus = document.cookie.includes('isAuthenticated=true');
     setIsAuthChecked(true);
     if (!authStatus) {
-        router.replace('/login');
+        router.replace('/auth/login');
     }
   }, [pathname, router]);
 
   const handleLogout = () => {
     document.cookie = 'isAuthenticated=false; path=/; max-age=0';
-    router.push('/login');
+    router.push('/auth/login');
   };
 
   if (!isAuthChecked) {

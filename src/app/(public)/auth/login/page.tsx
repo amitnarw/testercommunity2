@@ -81,7 +81,7 @@ export default function LoginPage() {
                     Log in to your account
                     </h2>
                     <p className="text-muted-foreground mt-2">
-                        Or <Link href="/register" className="text-primary hover:underline">create a new account</Link>
+                        Or <Link href="/auth/register" className="text-primary hover:underline">create a new account</Link>
                     </p>
                 </div>
                 <LoginForm />

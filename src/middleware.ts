@@ -9,7 +9,7 @@ export function middleware(request: NextRequest) {
 
   const { pathname } = request.nextUrl;
 
-  const authRoutes = ['/login', '/register'];
+  const authRoutes = ['/auth/login', '/auth/register'];
   const authenticatedRoutes = ['/dashboard', '/community-dashboard', '/notifications', '/profile'];
   const adminRoutes = ['/admin'];
   const professionalTesterAuthRoutes = ['/tester/login', '/tester/register'];
@@ -30,7 +30,7 @@ export function middleware(request: NextRequest) {
 
   // If user is not authenticated and tries to access a protected route, redirect to login
   if (!isAuthenticated && authenticatedRoutes.some(route => pathname.startsWith(route))) {
-    return NextResponse.redirect(new URL('/login', request.url));
+    return NextResponse.redirect(new URL('/auth/login', request.url));
   }
   
   if (!isAdmin && adminRoutes.some(route => pathname.startsWith(route)) && pathname !== '/admin/login') {
