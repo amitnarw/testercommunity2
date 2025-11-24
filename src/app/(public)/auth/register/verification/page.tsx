@@ -2,16 +2,18 @@
 'use client';
 
 import { Suspense } from 'react';
-import { useSearchParams, useRouter } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { CheckCircle, MailWarning, Loader, ArrowRight } from 'lucide-react';
+import { CheckCircle, MailWarning, Loader, ArrowRight, Sun, Moon } from 'lucide-react';
+import { useTheme } from 'next-themes';
 
 import { authClient } from '@/lib/auth-client';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { SiteLogo } from '@/components/icons';
 import Link from 'next/link';
+import Meteors from '@/components/ui/meteors';
 
 type VerificationStatus = 'verifying' | 'success' | 'error';
 
@@ -31,17 +33,17 @@ function VerificationContent() {
 
     const verifyToken = async () => {
       try {
+        // Simulate network delay for loading animation
+        await new Promise(resolve => setTimeout(resolve, 1500));
+        
         const response = await authClient.verify.email({ token });
         if (response.error) {
             throw new Error(response.error.message);
         }
-        // Add a small delay to show the loading animation
-        setTimeout(() => setStatus('success'), 1500);
+        setStatus('success');
       } catch (error: any) {
-        setTimeout(() => {
-            setStatus('error');
-            setErrorMessage(error.message || 'An unknown error occurred. Please try again.');
-        }, 1500);
+        setStatus('error');
+        setErrorMessage(error.message || 'An unknown error occurred. Please try again.');
       }
     };
 
@@ -113,9 +115,22 @@ function VerificationContent() {
 
 
 export default function VerificationPage() {
+    const { setTheme, theme } = useTheme();
     return (
         <div className="min-h-screen w-full flex flex-col items-center justify-center p-6 relative overflow-hidden bg-background">
-             <div className="absolute top-6 left-6 z-10">
+             <Meteors />
+             <div className="absolute top-4 right-4 flex items-center gap-4 z-10">
+                <Button
+                    variant="ghost"
+                    size="icon"
+                    onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+                    >
+                    <Sun className="h-6 w-6 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+                    <Moon className="absolute h-6 w-6 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+                    <span className="sr-only">Toggle theme</span>
+                </Button>
+            </div>
+            <div className="absolute top-6 left-6 z-10">
                 <Link href="/">
                     <SiteLogo />
                 </Link>
