@@ -22,29 +22,29 @@ function VerificationContent() {
   const [status, setStatus] = useState<VerificationStatus>('verifying');
   const [errorMessage, setErrorMessage] = useState('');
 
-  useEffect(() => {
-    const token = searchParams.get('token');
+  // useEffect(() => {
+  //   const token = searchParams.get('token');
 
-    if (!token) {
-      router.replace('/auth/login');
-      return;
-    }
+  //   if (!token) {
+  //     router.replace('/auth/login');
+  //     return;
+  //   }
 
-    // MOCK: Simulate verification flow
-    const verificationTimeout = setTimeout(() => {
-      if (token === 'success') {
-        setStatus('success');
-      } else if (token === 'error') {
-        setStatus('error');
-        setErrorMessage('This verification link has expired. Please try registering again.');
-      } else {
-        setStatus('success'); // Default to success for demo
-      }
-    }, 5000);
+  //   // MOCK: Simulate verification flow
+  //   const verificationTimeout = setTimeout(() => {
+  //     if (token === 'success') {
+  //       setStatus('success');
+  //     } else if (token === 'error') {
+  //       setStatus('error');
+  //       setErrorMessage('This verification link has expired. Please try registering again.');
+  //     } else {
+  //       setStatus('success'); // Default to success for demo
+  //     }
+  //   }, 5000);
 
-    return () => clearTimeout(verificationTimeout);
+  //   return () => clearTimeout(verificationTimeout);
 
-  }, [searchParams, router]);
+  // }, [searchParams, router]);
 
   const statusConfig = {
     verifying: {
