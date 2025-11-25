@@ -14,20 +14,6 @@ import { InteractiveGridPattern } from '@/components/ui/interactive-grid-pattern
 import { cn } from '@/lib/utils';
 import LoadingIcon from '@/components/loadingIcon';
 
-function InitialLoader() {
-  return (
-    <div className="flex flex-col items-center justify-center w-full h-full z-10">
-      <motion.div
-        initial={{ opacity: 0, scale: 0.8 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.5, ease: 'backOut' }}
-      >
-        <SiteLogo className="h-24 w-24 animate-pulse" />
-      </motion.div>
-    </div>
-  )
-}
-
 function CheckEmailContent() {
     return (
         <AnimatePresence mode="wait">
@@ -73,7 +59,7 @@ export default function CheckEmailPage() {
     useEffect(() => {
         const timer = setTimeout(() => {
             setIsLoading(false);
-        }, 1000); 
+        }, 5000); 
         return () => clearTimeout(timer);
     }, []);
 
@@ -107,9 +93,8 @@ export default function CheckEmailPage() {
                 </Link>
             </div>
             <Suspense fallback={<LoadingIcon />}>
-                {isLoading ? <InitialLoader /> : <CheckEmailContent />}
+                {isLoading ? <LoadingIcon /> : <CheckEmailContent />}
             </Suspense>
         </div>
     )
 }
-

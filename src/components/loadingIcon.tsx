@@ -1,9 +1,12 @@
-import { Loader } from 'lucide-react';
+import { SiteLogo } from './icons';
 
-const LoadingIcon = ({ py }: { py?: string }) => {
+const LoadingIcon = () => {
   return (
-    <div className={`flex items-center justify-center ${py ? py : 'py-12'}`}>
-      <Loader className='h-6 w-6 animate-spin' />
+    <div className="flex items-center justify-center py-12">
+        <div className="relative flex items-center justify-center">
+            <div className="absolute h-24 w-24 rounded-full bg-primary/20 animate-ping"></div>
+            <SiteLogo className="h-16 w-16" />
+        </div>
     </div>
   );
 };

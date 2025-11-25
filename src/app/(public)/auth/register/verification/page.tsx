@@ -11,9 +11,9 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { SiteLogo } from '@/components/icons';
 import Link from 'next/link';
+import LoadingIcon from '@/components/loadingIcon';
 import { InteractiveGridPattern } from '@/components/ui/interactive-grid-pattern';
 import { cn } from '@/lib/utils';
-import LoadingIcon from '@/components/loadingIcon';
 
 type VerificationStatus = 'verifying' | 'success' | 'error';
 
@@ -27,37 +27,30 @@ function VerificationContent() {
     const token = searchParams.get('token');
 
     if (!token) {
-        router.replace('/auth/login');
-        return;
+      router.replace('/auth/login');
+      return;
     }
 
     // MOCK: Simulate verification flow
-    if (token === 'success') {
-      setTimeout(() => setStatus('success'), 1500);
-    } else if (token === 'error') {
-      setTimeout(() => {
-        setStatus('error');
-        setErrorMessage('This verification link has expired. Please try registering again.');
-      }, 1500);
-    } else {
-      setTimeout(() => setStatus('success'), 1500); // Default to success for demo
-    }
+    const verificationTimeout = setTimeout(() => {
+        if (token === 'success') {
+            setStatus('success');
+        } else if (token === 'error') {
+            setStatus('error');
+            setErrorMessage('This verification link has expired. Please try registering again.');
+        } else {
+            setStatus('success'); // Default to success for demo
+        }
+    }, 5000);
+
+    return () => clearTimeout(verificationTimeout);
 
   }, [searchParams, router]);
 
   const statusConfig = {
     verifying: {
       icon: (
-        <div className="relative w-16 h-16">
-          <motion.div
-            animate={{ rotate: 360 }}
-            transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-            className="absolute inset-0 rounded-full bg-gradient-to-tr from-primary/50 to-accent"
-          />
-          <div className="absolute inset-1 bg-background rounded-full flex items-center justify-center">
-            <MailWarning className="h-8 w-8 text-primary" />
-          </div>
-        </div>
+        <LoadingIcon />
       ),
       title: "Verifying Your Email",
       description: "Please wait a moment while we confirm your email address. This shouldn't take long.",
@@ -125,38 +118,16 @@ function VerificationContent() {
   );
 }
 
-function InitialLoader() {
-  return (
-    <div className="flex flex-col items-center justify-center w-full h-full z-10">
-      <motion.div
-        initial={{ opacity: 0, scale: 0.8 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.5, ease: 'backOut' }}
-      >
-        <SiteLogo className="h-24 w-24 animate-pulse" />
-      </motion.div>
-    </div>
-  )
-}
-
 export default function VerificationPage() {
   const { setTheme, theme } = useTheme();
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 5000);
-    return () => clearTimeout(timer);
-  }, []);
 
   return (
     <div className="min-h-screen w-full relative overflow-hidden flex flex-col items-center justify-center p-6 bg-background">
       <InteractiveGridPattern
         className={cn(
-            "absolute inset-0 h-full w-full",
-            "[mask-image:radial-gradient(700px_circle_at_center,white,transparent)]",
-            "transform -skew-y-12 scale-150"
+          "absolute inset-0 h-full w-full",
+          "[mask-image:radial-gradient(700px_circle_at_center,white,transparent)]",
+          "transform -skew-y-12 scale-150"
         )}
         width={30}
         height={30}
@@ -180,9 +151,8 @@ export default function VerificationPage() {
         </Link>
       </div>
       <Suspense fallback={<LoadingIcon />}>
-        {isLoading ? <InitialLoader /> : <VerificationContent />}
+        <VerificationContent />
       </Suspense>
     </div>
   )
 }
-
