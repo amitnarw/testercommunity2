@@ -1,7 +1,6 @@
 
 "use client";
 
-import { Suspense, useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MailCheck, Sun, Moon } from 'lucide-react';
 import { useTheme } from 'next-themes';
@@ -54,9 +53,9 @@ export default function CheckEmailPage() {
     const { setTheme, theme } = useTheme();
 
     return (
-        <div className="min-h-screen w-full relative flex flex-col items-center justify-center p-4 bg-background">
+        <div className="min-h-screen w-full relative overflow-hidden flex flex-col items-center justify-center p-6 bg-gray-100/50 dark:bg-zinc-900/50">
             <BackgroundBeams />
-            <div className="absolute top-4 right-4 z-20">
+            <div className="absolute top-4 right-4 flex items-center gap-4 z-20">
                 <Button
                     variant="ghost"
                     size="icon"
@@ -72,9 +71,7 @@ export default function CheckEmailPage() {
                     <SiteLogo />
                 </Link>
             </div>
-            <div className="relative z-10 w-full flex items-center justify-center">
-              <CheckEmailContent />
-            </div>
+            <CheckEmailContent />
         </div>
     )
 }
