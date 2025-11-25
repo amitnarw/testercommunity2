@@ -2,7 +2,7 @@
 'use client';
 
 import { Suspense, useEffect, useState } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import { CheckCircle, MailWarning, ArrowRight, Sun, Moon } from 'lucide-react';
 import { useTheme } from 'next-themes';
@@ -13,17 +13,23 @@ import { SiteLogo } from '@/components/icons';
 import Link from 'next/link';
 import { InteractiveGridPattern } from '@/components/ui/interactive-grid-pattern';
 import { cn } from '@/lib/utils';
-import { BackgroundBeams } from '@/components/ui/background-beams';
+import LoadingIcon from '@/components/loadingIcon';
 
 type VerificationStatus = 'verifying' | 'success' | 'error';
 
 function VerificationContent() {
   const searchParams = useSearchParams();
+  const router = useRouter();
   const [status, setStatus] = useState<VerificationStatus>('verifying');
   const [errorMessage, setErrorMessage] = useState('');
 
   useEffect(() => {
     const token = searchParams.get('token');
+
+    if (!token) {
+        router.replace('/auth/login');
+        return;
+    }
 
     // MOCK: Simulate verification flow
     if (token === 'success') {
@@ -37,7 +43,7 @@ function VerificationContent() {
       setTimeout(() => setStatus('success'), 1500); // Default to success for demo
     }
 
-  }, [searchParams]);
+  }, [searchParams, router]);
 
   const statusConfig = {
     verifying: {
@@ -146,7 +152,17 @@ export default function VerificationPage() {
 
   return (
     <div className="min-h-screen w-full relative overflow-hidden flex flex-col items-center justify-center p-6 bg-background">
-      <BackgroundBeams />
+      <InteractiveGridPattern
+        className={cn(
+            "absolute inset-0 h-full w-full",
+            "[mask-image:radial-gradient(700px_circle_at_center,white,transparent)]",
+            "transform -skew-y-12 scale-150"
+        )}
+        width={30}
+        height={30}
+        squares={[30, 30]}
+        squaresClassName="hover:fill-primary/10"
+      />
       <div className="absolute top-4 right-4 flex items-center gap-4 z-20">
         <Button
           variant="ghost"
@@ -163,9 +179,10 @@ export default function VerificationPage() {
           <SiteLogo />
         </Link>
       </div>
-      <Suspense fallback={<InitialLoader />}>
+      <Suspense fallback={<LoadingIcon />}>
         {isLoading ? <InitialLoader /> : <VerificationContent />}
       </Suspense>
     </div>
   )
 }
+

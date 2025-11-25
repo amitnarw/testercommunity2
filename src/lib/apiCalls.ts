@@ -18,7 +18,7 @@ export const register = async ({
       email,
       password,
       name: firstName + " " + lastName,
-      callbackURL: "/auth/register/verification",
+      callbackURL: "/auth/register/check-email",
     });
     if (response?.error) {
       throw new Error(response?.error?.message);
