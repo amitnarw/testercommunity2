@@ -8,8 +8,6 @@ import { useTheme } from "next-themes";
 import { Moon, Sun } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { BackButton } from "@/components/back-button";
-// import { InteractiveGridPattern } from '@/components/ui/interactive-grid-pattern';
-// import { cn } from '@/lib/utils';
 import { BackgroundBeams } from "@/components/ui/background-beams";
 
 const GoogleIcon = (props: React.SVGProps<SVGSVGElement>) => (
