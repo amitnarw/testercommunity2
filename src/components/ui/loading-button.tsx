@@ -21,19 +21,13 @@ const LoadingButton = forwardRef<HTMLButtonElement, LoadingButtonProps>(
         className={cn(
           "relative inline-flex items-center justify-center overflow-hidden h-10 text-sm font-medium transition-colors duration-300 disabled:pointer-events-none disabled:opacity-50",
           "bg-primary text-primary-foreground hover:bg-primary/90",
-          loading ? "rounded-full px-0" : "rounded-xl px-4 py-2",
+          loading ? "rounded-full w-10 px-0" : "rounded-xl px-4 py-2",
           className
         )}
-        initial={false}
-        animate={
-          loading
-            ? { width: "40px" }
-            : { width: "auto" }
-        }
         transition={{
-          type: "tween",
-          ease: "easeInOut",
-          duration: duration / 1000, // Convert ms to seconds
+          type: "spring",
+          stiffness: 300,
+          damping: 20,
         }}
         disabled={loading || props.disabled}
         {...props}
