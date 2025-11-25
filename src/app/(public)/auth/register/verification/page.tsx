@@ -4,7 +4,7 @@
 import { Suspense, useEffect, useState } from 'react';
 import { useSearchParams } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
-import { CheckCircle, MailWarning, Loader, ArrowRight, Sun, Moon } from 'lucide-react';
+import { CheckCircle, MailWarning, ArrowRight, Sun, Moon } from 'lucide-react';
 import { useTheme } from 'next-themes';
 
 import { authClient } from '@/lib/auth-client';
@@ -13,7 +13,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { SiteLogo } from '@/components/icons';
 import Link from 'next/link';
 import Meteors from '@/components/ui/meteors';
-import { cn } from '@/lib/utils';
 
 type VerificationStatus = 'verifying' | 'success' | 'error';
 
@@ -48,8 +47,7 @@ function VerificationContent() {
       }
     };
 
-    // This will run after the initial 5-second loading animation
-    const timer = setTimeout(verifyToken, 10);
+    const timer = setTimeout(verifyToken, 100);
     return () => clearTimeout(timer);
   }, [searchParams]);
 
@@ -110,7 +108,7 @@ function VerificationContent() {
         transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
         className="w-full max-w-md"
       >
-        <Card className="relative z-10 w-full bg-white/80 dark:bg-black/40 shadow-2xl shadow-primary/10 dark:shadow-primary/10 rounded-2xl">
+        <Card className="relative z-10 w-full bg-background/10 dark:bg-black/10 backdrop-blur-2xl shadow-2xl shadow-primary/10 dark:shadow-primary/10 border border-white/10 rounded-2xl">
           <CardHeader className="text-center items-center p-8">
             <motion.div
               initial={{ scale: 0.5, opacity: 0 }}
@@ -159,7 +157,8 @@ export default function VerificationPage() {
   }, []);
 
   return (
-    <div className="min-h-screen w-full relative overflow-hidden bg-gray-100/50 dark:bg-zinc-900/80">
+    <div className="min-h-screen w-full relative overflow-hidden flex flex-col items-center justify-center p-6 bg-background">
+      <div className="absolute inset-0 bg-gradient-to-b from-background via-background to-black/50"></div>
       <Meteors />
       <div className="absolute top-4 right-4 flex items-center gap-4 z-10">
         <Button
@@ -177,11 +176,9 @@ export default function VerificationPage() {
           <SiteLogo />
         </Link>
       </div>
-      <div className="flex flex-col items-center justify-center min-h-screen p-6">
-        <Suspense fallback={<InitialLoader />}>
-          {isLoading ? <InitialLoader /> : <VerificationContent />}
-        </Suspense>
-      </div>
+      <Suspense fallback={<InitialLoader />}>
+        {isLoading ? <InitialLoader /> : <VerificationContent />}
+      </Suspense>
     </div>
   )
 }
