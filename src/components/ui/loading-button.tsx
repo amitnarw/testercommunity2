@@ -16,6 +16,7 @@ const LoadingButton = forwardRef<HTMLButtonElement, LoadingButtonProps>(
     return (
       <motion.button
         ref={ref}
+        layout
         className={cn(
           "relative inline-flex items-center justify-center overflow-hidden h-10 px-4 py-2 text-sm font-medium transition-colors duration-300 disabled:pointer-events-none disabled:opacity-50",
           "bg-primary text-primary-foreground hover:bg-primary/90",
@@ -26,12 +27,12 @@ const LoadingButton = forwardRef<HTMLButtonElement, LoadingButtonProps>(
         animate={
           loading
             ? {
-                width: "40px", // h-10 is 40px
+                width: "40px",
                 borderRadius: "9999px",
               }
             : {
-                width: "auto",
-                borderRadius: "0.75rem", // Corresponds to rounded-xl
+                // width is now "auto" by default, letting layout animation handle it.
+                borderRadius: "0.75rem", 
               }
         }
         transition={{
