@@ -4,13 +4,14 @@
 import { SiteLogo } from '@/components/icons';
 import { Button } from '@/components/ui/button';
 import { useRouter } from 'next/navigation';
-import Meteors from "@/components/ui/meteors";
 import { Input } from '@/components/ui/input';
 import Link from 'next/link';
 import { useTheme } from 'next-themes';
 import { Moon, Sun } from 'lucide-react';
 import { BackButton } from '@/components/back-button';
 import { Separator } from '@/components/ui/separator';
+import { InteractiveGridPattern } from '@/components/ui/interactive-grid-pattern';
+import { cn } from '@/lib/utils';
 
 const GoogleIcon = (props: React.SVGProps<SVGSVGElement>) => (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="24px" height="24px" {...props}>
@@ -100,7 +101,16 @@ export default function ProfessionalLoginPage() {
             </div>
         </div>
         <div className="hidden lg:flex flex-col items-center justify-center p-6 text-center relative overflow-hidden bg-background">
-            <Meteors />
+             <InteractiveGridPattern
+                className={cn(
+                    "[mask-image:radial-gradient(700px_circle_at_center,rgba(255,255,255,0.6),transparent)]",
+                    "transform -skew-y-12"
+                )}
+                width={30}
+                height={30}
+                squares={[30, 30]}
+                squaresClassName="hover:fill-gray-100"
+            />
             <div className="relative z-10 flex flex-col items-center">
                 <SiteLogo className="h-20 w-auto mb-4" />
                 <h1 className="text-3xl font-bold tracking-tight text-foreground">Welcome Back, Professional</h1>

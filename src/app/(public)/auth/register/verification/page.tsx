@@ -12,6 +12,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { SiteLogo } from '@/components/icons';
 import Link from 'next/link';
 import { InteractiveGridPattern } from '@/components/ui/interactive-grid-pattern';
+import { cn } from '@/lib/utils';
 
 type VerificationStatus = 'verifying' | 'success' | 'error';
 
@@ -145,10 +146,13 @@ export default function VerificationPage() {
   return (
     <div className="min-h-screen w-full relative overflow-hidden flex flex-col items-center justify-center p-6 bg-background">
       <InteractiveGridPattern
+        className={cn(
+          "[mask-image:radial-gradient(700px_circle_at_center,rgba(255,255,255,0.6),transparent)]"
+        )}
         width={30}
         height={30}
-        squares={[30, 30]}
-        className="transform -skew-y-12 scale-150"
+        squares={[80, 80]}
+        squaresClassName="hover:fill-gray-100 transform -skew-y-12"
       />
 
       <div className="absolute top-4 right-4 flex items-center gap-4 z-20">
