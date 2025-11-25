@@ -10,7 +10,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { SiteLogo } from '@/components/icons';
 import Link from 'next/link';
 import { BackgroundBeams } from '@/components/ui/background-beams';
-import { cn } from '@/lib/utils';
 
 function CheckEmailContent() {
     return (
@@ -55,7 +54,7 @@ export default function CheckEmailPage() {
 
     return (
         <div className="min-h-screen w-full relative overflow-hidden flex flex-col items-center justify-center p-6 bg-gray-100/50 dark:bg-zinc-900/50">
-            <BackgroundBeams className="scale-150" />
+            <BackgroundBeams className="scale-150 sm:scale-100" />
             <div className="absolute top-4 right-4 flex items-center gap-4 z-20">
                 <Button
                     variant="ghost"
