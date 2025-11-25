@@ -20,8 +20,6 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useRegisterUser } from "@/hooks/useAuth";
 import LoadingIcon from "@/components/loadingIcon";
-// import { InteractiveGridPattern } from "@/components/ui/interactive-grid-pattern";
-// import { cn } from "@/lib/utils";
 import { BackgroundBeams } from "@/components/ui/background-beams";
 
 const signupSchema = z.object({
@@ -50,7 +48,7 @@ export default function RegisterPage() {
   const processForm: SubmitHandler<any> = (data) => {
     mutate(data, {
       onSuccess: () => {
-        router.push("/auth/register/profile-setup");
+        router.push("/auth/register/check-email");
       },
     });
   };

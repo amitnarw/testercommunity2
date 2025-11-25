@@ -12,8 +12,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { SiteLogo } from '@/components/icons';
 import Link from 'next/link';
 import LoadingIcon from '@/components/loadingIcon';
-import { InteractiveGridPattern } from '@/components/ui/interactive-grid-pattern';
-import { cn } from '@/lib/utils';
+import { BackgroundBeams } from '@/components/ui/background-beams';
 
 type VerificationStatus = 'verifying' | 'success' | 'error';
 
@@ -33,14 +32,14 @@ function VerificationContent() {
 
     // MOCK: Simulate verification flow
     const verificationTimeout = setTimeout(() => {
-        if (token === 'success') {
-            setStatus('success');
-        } else if (token === 'error') {
-            setStatus('error');
-            setErrorMessage('This verification link has expired. Please try registering again.');
-        } else {
-            setStatus('success'); // Default to success for demo
-        }
+      if (token === 'success') {
+        setStatus('success');
+      } else if (token === 'error') {
+        setStatus('error');
+        setErrorMessage('This verification link has expired. Please try registering again.');
+      } else {
+        setStatus('success'); // Default to success for demo
+      }
     }, 5000);
 
     return () => clearTimeout(verificationTimeout);
@@ -95,7 +94,7 @@ function VerificationContent() {
         transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
         className="w-full max-w-md z-10"
       >
-        <Card className="relative z-10 w-full bg-white/10 dark:bg-black/10 backdrop-blur-2xl shadow-2xl shadow-primary/10 dark:shadow-black/20 border border-white/10 dark:border-black/20 rounded-2xl">
+        <Card className="relative z-10 w-full bg-white/60 dark:bg-black/60 shadow-2xl shadow-primary/10 dark:shadow-primary/10 border border-white/10 dark:border-black/20 rounded-2xl">
           <CardHeader className="text-center items-center p-8">
             <motion.div
               initial={{ scale: 0.5, opacity: 0 }}
@@ -104,7 +103,7 @@ function VerificationContent() {
             >
               {currentStatus.icon}
             </motion.div>
-            <CardTitle className="text-2xl mt-4">{currentStatus.title}</CardTitle>
+            <CardTitle className="font-bold tracking-tight text-2xl sm:text-3xl bg-gradient-to-br from-primary to-accent bg-clip-text text-transparent mt-4">{currentStatus.title}</CardTitle>
             <CardDescription>{currentStatus.description}</CardDescription>
           </CardHeader>
           {currentStatus.cta && (
@@ -122,18 +121,8 @@ export default function VerificationPage() {
   const { setTheme, theme } = useTheme();
 
   return (
-    <div className="min-h-screen w-full relative overflow-hidden flex flex-col items-center justify-center p-6 bg-background">
-      <InteractiveGridPattern
-        className={cn(
-          "absolute inset-0 h-full w-full",
-          "[mask-image:radial-gradient(700px_circle_at_center,white,transparent)]",
-          "transform -skew-y-12 scale-150"
-        )}
-        width={30}
-        height={30}
-        squares={[30, 30]}
-        squaresClassName="hover:fill-primary/10"
-      />
+    <div className="min-h-screen w-full relative overflow-hidden flex flex-col items-center justify-center p-6 bg-gray-100/50 dark:bg-zinc-900/50">
+      <BackgroundBeams />
       <div className="absolute top-4 right-4 flex items-center gap-4 z-20">
         <Button
           variant="ghost"
