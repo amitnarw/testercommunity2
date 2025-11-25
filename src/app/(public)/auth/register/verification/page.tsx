@@ -7,12 +7,11 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { CheckCircle, MailWarning, ArrowRight, Sun, Moon } from 'lucide-react';
 import { useTheme } from 'next-themes';
 
-import { authClient } from '@/lib/auth-client';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { SiteLogo } from '@/components/icons';
 import Link from 'next/link';
-import Meteors from '@/components/ui/meteors';
+import { InteractiveGridPattern } from '@/components/ui/interactive-grid-pattern';
 
 type VerificationStatus = 'verifying' | 'success' | 'error';
 
@@ -24,31 +23,18 @@ function VerificationContent() {
   useEffect(() => {
     const token = searchParams.get('token');
 
-    if (!token) {
-      setStatus('error');
-      setErrorMessage('Verification token not found. Please check the link in your email.');
-      return;
+    // MOCK: Simulate verification flow
+    if (token === 'success') {
+       setTimeout(() => setStatus('success'), 1500);
+    } else if (token === 'error') {
+       setTimeout(() => {
+        setStatus('error');
+        setErrorMessage('This verification link has expired. Please try registering again.');
+       }, 1500);
+    } else {
+        setTimeout(() => setStatus('success'), 1500); // Default to success for demo
     }
 
-    const verifyToken = async () => {
-      try {
-        const response = await authClient.verifyEmail({
-          query: {
-            token
-          }
-        })
-        if (response.error) {
-          throw new Error(response.error.message);
-        }
-        setStatus('success');
-      } catch (error: any) {
-        setStatus('error');
-        setErrorMessage(error.message || 'An unknown error occurred. Please try again.');
-      }
-    };
-
-    const timer = setTimeout(verifyToken, 1000);
-    return () => clearTimeout(timer);
   }, [searchParams]);
 
   const statusConfig = {
@@ -106,7 +92,7 @@ function VerificationContent() {
         animate={{ opacity: 1, y: 0, scale: 1 }}
         exit={{ opacity: 0, y: -20, scale: 0.95 }}
         transition={{ duration: 0.5, ease: [0.16, 1, 0.3, 1] }}
-        className="w-full max-w-md"
+        className="w-full max-w-md z-10"
       >
         <Card className="relative z-10 w-full bg-white/10 dark:bg-black/10 backdrop-blur-2xl shadow-2xl shadow-primary/10 dark:shadow-black/20 border border-white/10 dark:border-black/20 rounded-2xl">
           <CardHeader className="text-center items-center p-8">
@@ -133,7 +119,7 @@ function VerificationContent() {
 
 function InitialLoader() {
   return (
-    <div className="flex flex-col items-center justify-center w-full h-full">
+    <div className="flex flex-col items-center justify-center w-full h-full z-10">
       <motion.div
         initial={{ opacity: 0, scale: 0.8 }}
         animate={{ opacity: 1, scale: 1 }}
@@ -158,14 +144,7 @@ export default function VerificationPage() {
 
   return (
     <div className="min-h-screen w-full relative overflow-hidden flex flex-col items-center justify-center p-6 bg-background">
-      <Meteors />
-      
-      {/* Ground silhouette */}
-      <div className="absolute bottom-0 left-0 w-full h-1/3 bg-gradient-to-t from-background via-background to-transparent z-10" />
-      <div className="absolute -bottom-20 left-0 w-full h-32 bg-background rounded-t-[100%] z-5" />
-      <div className="absolute -bottom-10 -left-20 w-1/2 h-40 bg-background rounded-t-[100%] z-5" />
-      <div className="absolute -bottom-10 -right-20 w-1/2 h-40 bg-background rounded-t-[100%] z-5" />
-
+      <InteractiveGridPattern />
 
       <div className="absolute top-4 right-4 flex items-center gap-4 z-20">
         <Button
