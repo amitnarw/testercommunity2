@@ -72,7 +72,9 @@ export default function RegisterPage() {
             <span className="sr-only">Toggle theme</span>
           </Button>
         </div>
-
+        <LoadingButton loading={isCHeck} onClick={() => setISCheck(!isCHeck)}>
+          click this button
+        </LoadingButton>
         <div className="w-full max-w-md">
           <FormProvider {...form}>
             <form
@@ -179,9 +181,6 @@ export default function RegisterPage() {
           </FormProvider>
         </div>
       </div>
-      <LoadingButton loading={isCHeck} onClick={()=>setISCheck(!isCHeck)}>
-        click this button
-      </LoadingButton>
       <div className="hidden lg:flex flex-col items-center justify-center p-6 text-center relative overflow-hidden bg-background">
         <BackgroundBeams />
         <div className="relative z-10 flex flex-col items-center">
