@@ -14,12 +14,19 @@ export const Meteors = ({
   const [meteorStyles, setMeteorStyles] = useState<React.CSSProperties[]>([]);
 
   useEffect(() => {
-    const styles = [...new Array(number || 20)].map(() => ({
-      top: -5,
-      left: `${Math.floor(Math.random() * 100)}%`,
-      animationDelay: `${Math.random() * 1 + 0.2}s`,
-      animationDuration: `${Math.floor(Math.random() * 8 + 2)}s`,
-    }));
+    const styles = [...new Array(number || 30)].map(() => {
+      const size = Math.random() * 0.4 + 0.3; // Random size between 0.3rem and 0.7rem
+      const tailLength = Math.floor(Math.random() * 150 + 50);
+      return {
+        top: -5,
+        left: `${Math.floor(Math.random() * 140) - 40}%`, // Start off-screen more
+        width: `${size}px`,
+        height: `${size}px`,
+        '--tail-width': `${tailLength}px`,
+        animationDelay: `${Math.random() * 1 + 0.2}s`,
+        animationDuration: `${Math.floor(Math.random() * 8 + 2)}s`,
+      };
+    });
     setMeteorStyles(styles);
   }, [number]);
 
@@ -29,8 +36,8 @@ export const Meteors = ({
         <span
           key={"meteor" + idx}
           className={cn(
-            "animate-meteor-effect absolute h-0.5 w-0.5 rounded-[9999px] bg-primary shadow-[0_0_10px_0px_hsl(var(--primary)/0.5)]",
-            "before:absolute before:top-1/2 before:h-[1px] before:w-[50px] before:-translate-y-1/2 before:transform before:bg-gradient-to-r before:from-primary before:to-transparent"
+            "animate-meteor-effect absolute rounded-[9999px] bg-white shadow-[0_0_15px_2px_rgba(255,255,255,0.2)]",
+            "before:absolute before:top-1/2 before:h-[1px] before:w-[var(--tail-width)] before:-translate-y-1/2 before:transform before:bg-gradient-to-r before:from-white/80 before:to-transparent"
           )}
           style={style}
         ></span>
