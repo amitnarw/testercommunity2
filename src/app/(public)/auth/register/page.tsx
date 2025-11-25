@@ -22,6 +22,7 @@ import { useRouter } from "next/navigation";
 import { useRegisterUser } from "@/hooks/useAuth";
 import { BackgroundBeams } from "@/components/ui/background-beams";
 import { LoadingButton } from "@/components/ui/loading-button";
+import { useState } from "react";
 
 const signupSchema = z.object({
   firstName: z.string().min(2, "First name is required."),
@@ -53,6 +54,8 @@ export default function RegisterPage() {
       },
     });
   };
+
+  const [isCHeck, setISCheck] = useState(false);
 
   return (
     <div className="min-h-screen w-full lg:grid lg:grid-cols-2">
@@ -158,8 +161,8 @@ export default function RegisterPage() {
                 <div className="mt-8 pt-5">
                   <div className="flex justify-end">
                     <LoadingButton type="submit" loading={isPending}>
-                        Create Account & Continue
-                        <ArrowRight className="ml-2 h-4 w-4" />
+                      Create Account & Continue
+                      <ArrowRight className="ml-2 h-4 w-4" />
                     </LoadingButton>
                   </div>
                 </div>
@@ -176,6 +179,9 @@ export default function RegisterPage() {
           </FormProvider>
         </div>
       </div>
+      <LoadingButton loading={isCHeck} onClick={()=>setISCheck(!isCHeck)}>
+        click this button
+      </LoadingButton>
       <div className="hidden lg:flex flex-col items-center justify-center p-6 text-center relative overflow-hidden bg-background">
         <BackgroundBeams />
         <div className="relative z-10 flex flex-col items-center">
