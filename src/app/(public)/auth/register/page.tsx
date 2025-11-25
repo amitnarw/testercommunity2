@@ -21,7 +21,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useRegisterUser } from "@/hooks/useAuth";
 import { BackgroundBeams } from "@/components/ui/background-beams";
-import ButtonLoadingIcon from "@/components/button-loading-icon";
+import { LoadingButton } from "@/components/ui/loading-button";
 
 const signupSchema = z.object({
   firstName: z.string().min(2, "First name is required."),
@@ -157,16 +157,10 @@ export default function RegisterPage() {
 
                 <div className="mt-8 pt-5">
                   <div className="flex justify-end">
-                    {isPending ? (
-                      <Button type="submit" disabled>
-                        <ButtonLoadingIcon />
-                      </Button>
-                    ) : (
-                      <Button type="submit">
+                    <LoadingButton type="submit" loading={isPending}>
                         Create Account & Continue
                         <ArrowRight className="ml-2 h-4 w-4" />
-                      </Button>
-                    )}
+                    </LoadingButton>
                   </div>
                 </div>
 
