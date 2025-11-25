@@ -144,7 +144,12 @@ export default function VerificationPage() {
 
   return (
     <div className="min-h-screen w-full relative overflow-hidden flex flex-col items-center justify-center p-6 bg-background">
-      <InteractiveGridPattern className="transform -skew-y-12 scale-150" />
+      <InteractiveGridPattern
+        width={30}
+        height={30}
+        squares={[30, 30]}
+        className="transform -skew-y-12 scale-150"
+      />
 
       <div className="absolute top-4 right-4 flex items-center gap-4 z-20">
         <Button
