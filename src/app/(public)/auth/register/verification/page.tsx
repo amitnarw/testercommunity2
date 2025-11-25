@@ -13,6 +13,7 @@ import { SiteLogo } from '@/components/icons';
 import Link from 'next/link';
 import { InteractiveGridPattern } from '@/components/ui/interactive-grid-pattern';
 import { cn } from '@/lib/utils';
+import { BackgroundBeams } from '@/components/ui/background-beams';
 
 type VerificationStatus = 'verifying' | 'success' | 'error';
 
@@ -26,14 +27,14 @@ function VerificationContent() {
 
     // MOCK: Simulate verification flow
     if (token === 'success') {
-       setTimeout(() => setStatus('success'), 1500);
+      setTimeout(() => setStatus('success'), 1500);
     } else if (token === 'error') {
-       setTimeout(() => {
+      setTimeout(() => {
         setStatus('error');
         setErrorMessage('This verification link has expired. Please try registering again.');
-       }, 1500);
+      }, 1500);
     } else {
-        setTimeout(() => setStatus('success'), 1500); // Default to success for demo
+      setTimeout(() => setStatus('success'), 1500); // Default to success for demo
     }
 
   }, [searchParams]);
@@ -145,16 +146,7 @@ export default function VerificationPage() {
 
   return (
     <div className="min-h-screen w-full relative overflow-hidden flex flex-col items-center justify-center p-6 bg-background">
-      <InteractiveGridPattern
-        className={cn(
-          "[mask-image:radial-gradient(700px_circle_at_center,rgba(255,255,255,0.6),transparent)]"
-        )}
-        width={30}
-        height={30}
-        squares={[80, 80]}
-        squaresClassName="hover:fill-gray-100 transform -skew-y-12"
-      />
-
+      <BackgroundBeams />
       <div className="absolute top-4 right-4 flex items-center gap-4 z-20">
         <Button
           variant="ghost"
