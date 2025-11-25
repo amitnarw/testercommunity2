@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useForm, type SubmitHandler, FormProvider } from "react-hook-form";
@@ -19,8 +20,8 @@ import { BackButton } from "@/components/back-button";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useRegisterUser } from "@/hooks/useAuth";
-import LoadingIcon from "@/components/loadingIcon";
 import { BackgroundBeams } from "@/components/ui/background-beams";
+import ButtonLoadingIcon from "@/components/button-loading-icon";
 
 const signupSchema = z.object({
   firstName: z.string().min(2, "First name is required."),
@@ -157,7 +158,9 @@ export default function RegisterPage() {
                 <div className="mt-8 pt-5">
                   <div className="flex justify-end">
                     {isPending ? (
-                      <LoadingIcon />
+                      <Button type="submit" disabled>
+                        <ButtonLoadingIcon />
+                      </Button>
                     ) : (
                       <Button type="submit">
                         Create Account & Continue
