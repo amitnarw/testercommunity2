@@ -17,13 +17,22 @@ const LoadingButton = forwardRef<HTMLButtonElement, LoadingButtonProps>(
     return (
       <motion.button
         ref={ref}
-        layout
         className={cn(
           "relative inline-flex items-center justify-center overflow-hidden h-10 text-sm font-medium transition-colors duration-300 disabled:pointer-events-none disabled:opacity-50",
           "bg-primary text-primary-foreground hover:bg-primary/90",
-          loading ? "rounded-full w-10 px-0" : "rounded-xl px-4 py-2",
           className
         )}
+        animate={loading ? "loading" : "idle"}
+        variants={{
+          idle: {
+            borderRadius: "0.75rem", // "rounded-xl"
+            width: "auto"
+          },
+          loading: {
+            borderRadius: "9999px", // "rounded-full"
+            width: "2.5rem", // "w-10"
+          },
+        }}
         transition={{
           type: "spring",
           stiffness: 300,
@@ -36,23 +45,23 @@ const LoadingButton = forwardRef<HTMLButtonElement, LoadingButtonProps>(
           {loading ? (
             <motion.div
               key="spinner"
-              initial={{ opacity: 0, y: -10, scale: 0.9 }}
-              animate={{ opacity: 1, y: 0, scale: 1, transition: { delay: duration / 2000 } }}
-              exit={{ opacity: 0, y: 10, scale: 0.9, transition: { duration: duration / 2000 } }}
+              initial={{ opacity: 0, scale: 0.5 }}
+              animate={{ opacity: 1, scale: 1, transition: { delay: 0.15 } }}
+              exit={{ opacity: 0, scale: 0.5, transition: { duration: 0.15 } }}
               className="absolute"
             >
               <Spinner className="h-5 w-5" />
             </motion.div>
           ) : (
-            <motion.div
+            <motion.span
               key="content"
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10, transition: { duration: duration / 2000 } }}
-              className="flex items-center justify-center gap-2"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1, transition: { delay: 0.15 } }}
+              exit={{ opacity: 0, transition: { duration: 0.15 } }}
+              className="flex items-center justify-center gap-2 px-4"
             >
               {children}
-            </motion.div>
+            </motion.span>
           )}
         </AnimatePresence>
       </motion.button>

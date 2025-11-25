@@ -72,7 +72,7 @@ export default function RegisterPage() {
             <span className="sr-only">Toggle theme</span>
           </Button>
         </div>
-        <LoadingButton loading={isCHeck} duration={500} onClick={() => setISCheck(!isCHeck)}>
+        <LoadingButton loading={isCHeck} duration={300} onClick={() => setISCheck(!isCHeck)}>
           click this button
         </LoadingButton>
         <div className="w-full max-w-md">
