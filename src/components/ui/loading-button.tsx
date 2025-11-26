@@ -24,29 +24,95 @@ const LoadingButton = React.forwardRef<
   ) => {
     const isShowingContent = !loading && !success;
 
+    const buttonVariants = {
+      idle: {
+        width: "auto",
+        borderRadius: "0.75rem", // Corresponds to rounded-xl
+        transition: {
+          type: "spring",
+          stiffness: 300,
+          damping: 20,
+        },
+      },
+      loading: {
+        width: "2.5rem", // h-10
+        borderRadius: "9999px",
+        transition: {
+          type: "spring",
+          stiffness: 300,
+          damping: 20,
+        },
+      },
+      success: {
+        width: "2.5rem", // h-10
+        borderRadius: "9999px",
+        backgroundColor: "rgb(34 197 94 / var(--tw-bg-opacity))", // bg-green-500
+        transition: {
+          type: "spring",
+          stiffness: 300,
+          damping: 20,
+        },
+      },
+    };
+    
+    const contentVariants = {
+      initial: {
+        opacity: 0,
+        y: -10,
+      },
+      animate: {
+        opacity: 1,
+        y: 0,
+        transition: {
+          type: "spring",
+          stiffness: 300,
+          damping: 20,
+          delay: 0.15,
+        }
+      },
+      exit: {
+        opacity: 0,
+        y: 10,
+        transition: {
+          duration: 0.15
+        }
+      },
+    };
+
     return (
       <motion.button
         ref={ref}
-        layout
-        transition={{ type: "spring", stiffness: 400, damping: 30 }}
+        variants={buttonVariants}
+        animate={success ? "success" : loading ? "loading" : "idle"}
         className={cn(
           "relative flex items-center justify-center overflow-hidden h-10 text-sm font-medium transition-colors duration-300 disabled:pointer-events-none disabled:opacity-50",
           "bg-primary text-primary-foreground hover:bg-primary/90",
-          (loading || success) ? "w-10 rounded-full" : "w-auto rounded-xl px-4",
-          success && "!bg-green-500",
           className
         )}
         disabled={loading || success || props.disabled}
         {...props}
       >
         <AnimatePresence mode="popLayout" initial={false}>
+          {isShowingContent && (
+            <motion.div
+              key="content"
+              initial="initial"
+              animate="animate"
+              exit="exit"
+              variants={contentVariants}
+              className="flex items-center gap-2"
+            >
+              {children}
+            </motion.div>
+          )}
+
           {loading && (
             <motion.div
               key="spinner"
-              initial={{ opacity: 0, scale: 0.5, rotate: -180 }}
-              animate={{ opacity: 1, scale: 1, rotate: 0 }}
-              exit={{ opacity: 0, scale: 0.5, rotate: 180 }}
-              transition={{ duration: 0.3, ease: "easeInOut" }}
+              initial="initial"
+              animate="animate"
+              exit="exit"
+              variants={contentVariants}
               className="absolute"
             >
               <Spinner className="h-5 w-5" />
@@ -56,26 +122,13 @@ const LoadingButton = React.forwardRef<
           {success && (
              <motion.div
               key="success"
-              initial={{ opacity: 0, scale: 0.5 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.5 }}
-              transition={{ duration: 0.3, ease: "easeOut" }}
+              initial="initial"
+              animate="animate"
+              exit="exit"
+              variants={contentVariants}
               className="absolute"
             >
               <Check className="h-5 w-5" />
-            </motion.div>
-          )}
-          
-          {isShowingContent && (
-            <motion.div
-              key="content"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.2, ease: "easeInOut" }}
-              className="flex items-center gap-2"
-            >
-              {children}
             </motion.div>
           )}
         </AnimatePresence>

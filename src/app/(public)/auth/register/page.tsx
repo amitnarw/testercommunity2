@@ -22,7 +22,7 @@ import { useRouter } from "next/navigation";
 import { useRegisterUser } from "@/hooks/useAuth";
 import { BackgroundBeams } from "@/components/ui/background-beams";
 import { LoadingButton } from "@/components/ui/loading-button";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const signupSchema = z.object({
   firstName: z.string().min(2, "First name is required."),
@@ -55,24 +55,37 @@ export default function RegisterPage() {
 
     // Simulate API call
     setTimeout(() => {
-        mutate(data, {
-            onSuccess: () => {
-                setIsSubmitting(false);
-                setIsSuccess(true);
-                setTimeout(() => {
-                    router.push("/auth/register/check-email");
-                }, 1000);
-            },
-            onError: () => {
-                 setIsSubmitting(false);
-                 setIsSuccess(false);
-            }
-        });
+      mutate(data, {
+        onSuccess: () => {
+          setIsSubmitting(false);
+          setIsSuccess(true);
+          setTimeout(() => {
+            router.push("/auth/register/check-email");
+          }, 1000);
+        },
+        onError: () => {
+          setIsSubmitting(false);
+          setIsSuccess(false);
+        }
+      });
     }, 2000);
   };
 
+  const [sub, setSub] = useState(false);
+  const [suc, setSuc] = useState(false);
+
+  // useEffect(()=>{
+  //   if(sub){
+  //     setSuc(true)
+  //   }
+  // }, [sub])
+
   return (
     <div className="min-h-screen w-full lg:grid lg:grid-cols-2">
+      <LoadingButton loading={sub} success={suc} onClick={() => setSub(true)}>
+        Create Account & Continue
+        <ArrowRight className="ml-2 h-4 w-4" />
+      </LoadingButton>
       <div className="relative w-full min-h-screen flex flex-col items-center justify-center px-2 sm:px-6 py-6 bg-background">
         <div className="absolute top-2 sm:top-4 right-4 flex items-center gap-4">
           <BackButton href="/" />
