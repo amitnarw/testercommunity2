@@ -26,6 +26,14 @@ const LoadingButton = React.forwardRef<
     const [initialWidth, setInitialWidth] = useState<number | 'auto'>('auto');
     const buttonRef = useRef<HTMLButtonElement>(null);
 
+    // Destructure all possible conflicting motion props from the passed-in props
+    const {
+        onAnimationStart, onDrag, onDragEnd, onDragStart, onDirectionLock,
+        onPan, onPanEnd, onPanStart, onPanSessionStart, onTap, onTapCancel, onTapStart,
+        onHoverStart, onHoverEnd, onFocus, onBlur, ...restProps
+    } = props;
+
+
     useEffect(() => {
         if (buttonRef.current && initialWidth === 'auto') {
             setInitialWidth(buttonRef.current.offsetWidth);
@@ -58,7 +66,7 @@ const LoadingButton = React.forwardRef<
     
     const contentVariants = {
       initial: { opacity: 0, y: -10, transition: { duration: 0.2, ease: "easeInOut" } },
-      animate: { opacity: 1, y: 0, transition: { delay: 0.2, ease: "easeInOut" } },
+      animate: { opacity: 1, y: 0, transition: { delay: duration / 1000 * 0.25, ease: "easeInOut" } },
       exit: { opacity: 0, y: 10, transition: { duration: 0.2, ease: "easeInOut" } },
     };
     
@@ -85,7 +93,7 @@ const LoadingButton = React.forwardRef<
            className
         )}
         disabled={loading || success || props.disabled}
-        {...props} // Pass the rest of the props here
+        {...restProps}
       >
         <AnimatePresence mode="popLayout" initial={false}>
           {isShowingContent && (
