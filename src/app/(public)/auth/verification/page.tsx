@@ -1,84 +1,100 @@
+"use client";
 
-'use client';
+import { Suspense, useEffect, useState } from "react";
+import { useSearchParams, useRouter } from "next/navigation";
+import { motion, AnimatePresence } from "framer-motion";
+import { CheckCircle, MailWarning, ArrowRight, Sun, Moon } from "lucide-react";
+import { useTheme } from "next-themes";
 
-import { Suspense, useEffect, useState } from 'react';
-import { useSearchParams, useRouter } from 'next/navigation';
-import { motion, AnimatePresence } from 'framer-motion';
-import { CheckCircle, MailWarning, ArrowRight, Sun, Moon } from 'lucide-react';
-import { useTheme } from 'next-themes';
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { SiteLogo } from "@/components/icons";
+import Link from "next/link";
+import LoadingIcon from "@/components/loadingIcon";
+import { BackgroundBeams } from "@/components/ui/background-beams";
+import { useEmailVerification } from "@/hooks/useAuth";
 
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { SiteLogo } from '@/components/icons';
-import Link from 'next/link';
-import LoadingIcon from '@/components/loadingIcon';
-import { BackgroundBeams } from '@/components/ui/background-beams';
-
-type VerificationStatus = 'verifying' | 'success' | 'error';
+type VerificationStatus = "verifying" | "success" | "error";
 
 function VerificationContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
-  const [status, setStatus] = useState<VerificationStatus>('verifying');
-  const [errorMessage, setErrorMessage] = useState('');
+  const [status, setStatus] = useState<VerificationStatus>("verifying");
+  const [errorMessage, setErrorMessage] = useState("");
 
-  // useEffect(() => {
-  //   const token = searchParams.get('token');
+  const { mutate, reset, isPending, isSuccess, isError, error } =
+    useEmailVerification();
 
-  //   if (!token) {
-  //     router.replace('/auth/login');
-  //     return;
-  //   }
+  useEffect(() => {
+    const token = searchParams.get("token");
 
-  //   // MOCK: Simulate verification flow
-  //   const verificationTimeout = setTimeout(() => {
-  //     if (token === 'success') {
-  //       setStatus('success');
-  //     } else if (token === 'error') {
-  //       setStatus('error');
-  //       setErrorMessage('This verification link has expired. Please try registering again.');
-  //     } else {
-  //       setStatus('success'); // Default to success for demo
-  //     }
-  //   }, 5000);
+    if (!token) {
+      router.replace("/auth/login");
+      return;
+    }
 
-  //   return () => clearTimeout(verificationTimeout);
+    reset();
+    mutate({ token });
+  }, [searchParams, router, mutate, reset]);
 
-  // }, [searchParams, router]);
+  useEffect(() => {
+    if (isPending) {
+      setStatus("verifying");
+    }
+    if (isSuccess) {
+      setStatus("success");
+    }
+    if (isError) {
+      setStatus("error");
+      setErrorMessage(
+        error instanceof Error ? error?.message : JSON.stringify(error)
+      );
+    }
+  }, [isPending, isSuccess, isError, error]);
 
   const statusConfig = {
     verifying: {
-      icon: (
-        <LoadingIcon />
-      ),
+      icon: <LoadingIcon />,
       title: "Verifying Your Email",
-      description: "Please wait a moment while we confirm your email address. This shouldn't take long.",
+      description:
+        "Please wait a moment while we confirm your email address. This shouldn't take long.",
       cta: null,
     },
     success: {
       icon: <CheckCircle className="h-16 w-16 text-green-500" />,
       title: "Verification Successful!",
-      description: "Your email has been successfully verified. You can now log in to your account.",
+      description:
+        "Your email has been successfully verified. You can now log in to your account.",
       cta: (
         <Button asChild className="mt-8">
-          <Link href="/auth/login">Proceed to Login <ArrowRight className="ml-2 h-4 w-4" /></Link>
+          <Link href="/auth/login">
+            Proceed to Login <ArrowRight className="ml-2 h-4 w-4" />
+          </Link>
         </Button>
-      )
+      ),
     },
     error: {
       icon: <MailWarning className="h-16 w-16 text-destructive" />,
       title: "Verification Failed",
-      description: errorMessage || "We couldn't verify your email. The link may have expired or is invalid.",
+      description:
+        errorMessage ||
+        "We couldn't verify your email. The link may have expired or is invalid.",
       cta: (
         <div className="flex gap-4 mt-8">
           <Button asChild variant="outline">
             <Link href="/auth/register">Re-register</Link>
           </Button>
-          <Button asChild >
+          <Button asChild>
             <Link href="/help">Contact Support</Link>
           </Button>
         </div>
-      )
+      ),
     },
   };
 
@@ -99,11 +115,13 @@ function VerificationContent() {
             <motion.div
               initial={{ scale: 0.5, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
-              transition={{ delay: 0.2, duration: 0.4, ease: 'easeOut' }}
+              transition={{ delay: 0.2, duration: 0.4, ease: "easeOut" }}
             >
               {currentStatus.icon}
             </motion.div>
-            <CardTitle className="font-bold tracking-tight text-2xl sm:text-3xl bg-gradient-to-br from-primary to-accent bg-clip-text text-transparent mt-4">{currentStatus.title}</CardTitle>
+            <CardTitle className="font-bold tracking-tight text-2xl sm:text-3xl bg-gradient-to-br from-primary to-accent bg-clip-text text-transparent mt-4">
+              {currentStatus.title}
+            </CardTitle>
             <CardDescription>{currentStatus.description}</CardDescription>
           </CardHeader>
           {currentStatus.cta && (
@@ -127,7 +145,7 @@ export default function VerificationPage() {
         <Button
           variant="ghost"
           size="icon"
-          onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+          onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
         >
           <Sun className="h-6 w-6 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
           <Moon className="absolute h-6 w-6 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
@@ -143,5 +161,5 @@ export default function VerificationPage() {
         <VerificationContent />
       </Suspense>
     </div>
-  )
+  );
 }

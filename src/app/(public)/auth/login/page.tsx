@@ -9,6 +9,8 @@ import { Moon, Sun } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { BackButton } from "@/components/back-button";
 import { BackgroundBeams } from "@/components/ui/background-beams";
+import { ChangeEvent, useState } from "react";
+import { z } from "zod";
 
 const GoogleIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg
@@ -37,15 +39,61 @@ const GoogleIcon = (props: React.SVGProps<SVGSVGElement>) => (
   </svg>
 );
 
+const signinSchema = z.object({
+  email: z
+    .string()
+    .email("Please enter a valid email.")
+    .refine((value) => value.toLowerCase().endsWith("@gmail.com"), {
+      message: "Only Gmail addresses are allowed.",
+    }),
+  password: z.string().min(8, "Password must be at least 8 characters."),
+});
+
 const LoginForm = () => {
   const router = useRouter();
+  const [loginValues, setLoginValues] = useState({
+    email: "",
+    password: "",
+  });
+  const [errors, setErrors] = useState<{
+    email?: string[] | undefined;
+    password?: string[] | undefined;
+  }>();
 
-  const handleDemoLogin = () => {
-    // Set a cookie to simulate login
-    document.cookie =
-      "isAuthenticated=true; path=/; max-age=" + 60 * 60 * 24 * 7;
-    router.push("/dashboard");
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setLoginValues((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+
+    const result = signinSchema.safeParse({
+      ...loginValues,
+      [e.target.name]: e.target.value,
+    });
+
+    if (!result.success) {
+      setErrors(result.error.flatten().fieldErrors);
+    } else {
+      setErrors({});
+    }
   };
+
+  const handleLogin = () => {
+    const result = signinSchema.safeParse(loginValues);
+
+    if (!result.success) {
+      // Zod error object
+      console.log(result.error.flatten());
+      return;
+    }
+
+    // Validated data is here
+    const data = result.data;
+  };
+
+  // const handleDemoLogin = () => {
+  //   // Set a cookie to simulate login
+  //   document.cookie =
+  //     "isAuthenticated=true; path=/; max-age=" + 60 * 60 * 24 * 7;
+  //   router.push("/dashboard");
+  // };
 
   return (
     <div className="space-y-6">
@@ -63,8 +111,11 @@ const LoginForm = () => {
         <input
           id="email"
           type="email"
+          name="email"
           placeholder="you@example.com"
           className="flex h-10 w-full rounded-none border-b border-input bg-transparent px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-0 focus-visible:border-primary disabled:cursor-not-allowed disabled:opacity-50"
+          value={loginValues?.email ?? ""}
+          onChange={handleChange}
         />
       </div>
       <div className="space-y-2">
@@ -72,20 +123,23 @@ const LoginForm = () => {
         <input
           id="password"
           type="password"
+          name="password"
           placeholder="••••••••"
           className="flex h-10 w-full rounded-none border-b border-input bg-transparent px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-0 focus-visible:border-primary disabled:cursor-not-allowed disabled:opacity-50"
+          value={loginValues?.password ?? ""}
+          onChange={handleChange}
         />
       </div>
       <div className="space-y-2">
         <Button
           className="w-full rounded-xl py-6 text-lg"
-          onClick={handleDemoLogin}
+          onClick={handleLogin}
         >
           Log In
         </Button>
-        <Button variant="link" className="w-full" onClick={handleDemoLogin}>
+        {/* <Button variant="link" className="w-full" onClick={handleDemoLogin}>
           Log in as Demo User
-        </Button>
+        </Button> */}
       </div>
     </div>
   );

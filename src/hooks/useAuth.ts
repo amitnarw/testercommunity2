@@ -1,4 +1,5 @@
 import {
+  emailVerification,
   fetchUser,
   register,
   // updateProfile
@@ -66,10 +67,24 @@ export function useRegisterUser() {
   const mutation = useMutation<RegisterResponse, Error, RegisterPayload>({
     mutationFn: (payload) => register(payload),
     onSuccess: (data) => {
-      console.log("Register success:", data);
+      console.log("Register success: ", data);
     },
     onError: (error) => {
-      console.error("Register failed:", error);
+      console.error("Register failed: ", error);
+    },
+  });
+
+  return mutation;
+}
+
+export function useEmailVerification() {
+  const mutation = useMutation({
+    mutationFn: (payload: { token: string }) => emailVerification(payload),
+    onSuccess: (data) => {
+      console.log("Email verified successfully: ", data);
+    },
+    onError: (error) => {
+      console.log("Email verification failed: " + error);
     },
   });
 

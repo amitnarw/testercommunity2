@@ -14,6 +14,11 @@ export const register = async ({
   lastName: string;
 }) => {
   try {
+    if (!email || !password || !firstName || !lastName) {
+      throw new Error(
+        "Please add email address, password, first and last name to register."
+      );
+    }
     const response = await authClient?.signUp.email({
       email,
       password,
@@ -67,6 +72,30 @@ export const logout = async () => {
   } catch (error) {
     console.error("Error registering user:", error);
     throw error;
+  }
+};
+
+export const emailVerification = async ({ token }: { token: string }) => {
+  try {
+    if (!token) {
+      throw new Error("Please send token to verify email address.");
+    }
+
+    const response = await authClient.verifyEmail({
+      query: {
+        token,
+      },
+    });
+
+    if (response?.error) {
+      throw new Error(response?.error?.message);
+    }
+    return { success: true, data: "Email address verified successfully" };
+  } catch (error) {
+    console.error("Error registering user:", error);
+    throw new Error(
+      error instanceof Error ? error?.message : JSON.stringify(error)
+    );
   }
 };
 

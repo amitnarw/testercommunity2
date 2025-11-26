@@ -21,12 +21,16 @@ import { useRouter } from "next/navigation";
 import { useRegisterUser } from "@/hooks/useAuth";
 import { BackgroundBeams } from "@/components/ui/background-beams";
 import { LoadingButton } from "@/components/ui/loading-button";
-import { useEffect, useState } from "react";
 
 const signupSchema = z.object({
   firstName: z.string().min(2, "First name is required."),
   lastName: z.string().min(2, "Last name is required."),
-  email: z.string().email("Please enter a valid email."),
+  email: z
+    .string()
+    .email("Please enter a valid email.")
+    .refine((value) => value.toLowerCase().endsWith("@gmail.com"), {
+      message: "Only Gmail addresses are allowed.",
+    }),
   password: z.string().min(8, "Password must be at least 8 characters."),
 });
 
@@ -44,41 +48,15 @@ export default function RegisterPage() {
   });
 
   const { handleSubmit } = form;
-  const { mutate, isError, error } = useRegisterUser();
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isSuccess, setIsSuccess] = useState(false);
+  const { mutate, isPending, isSuccess, isError, error } = useRegisterUser();
 
   const processForm: SubmitHandler<any> = (data) => {
-    setIsSubmitting(true);
-    setIsSuccess(false);
-
-    // Simulate API call
-    setTimeout(() => {
-      mutate(data, {
-        onSuccess: () => {
-          setIsSubmitting(false);
-          setIsSuccess(true);
-          setTimeout(() => {
-            router.push("/auth/register/check-email");
-          }, 1000);
-        },
-        onError: () => {
-          setIsSubmitting(false);
-          setIsSuccess(false);
-        },
-      });
-    }, 2000);
+    mutate(data, {
+      onSuccess: () => {
+        router.push("/auth/register/check-email");
+      },
+    });
   };
-
-  const [sub, setSub] = useState(false);
-  const [suc, setSuc] = useState(false);
-
-  useEffect(() => {
-    if (sub) {
-      setSuc(true);
-      setSub(false);
-    }
-  }, [sub]);
 
   return (
     <div className="min-h-screen w-full lg:grid lg:grid-cols-2">
@@ -95,15 +73,7 @@ export default function RegisterPage() {
             <span className="sr-only">Toggle theme</span>
           </Button>
         </div>
-        <LoadingButton
-          onClick={() => {
-            return new Promise((resolve) => {
-              setTimeout(resolve, 4000);
-            });
-          }}
-        >
-          Send message
-        </LoadingButton>
+
         <div className="w-full max-w-md">
           <FormProvider {...form}>
             <form
@@ -191,35 +161,18 @@ export default function RegisterPage() {
 
                 <div className="mt-8 pt-5">
                   <div className="flex justify-end">
-                    {/* <LoadingButton
-                      loading={sub}
-                      success={suc}
-                      onClick={() => setSub(true)}
+                    <LoadingButton
+                      isLoading={isPending}
+                      isSuccess={isSuccess}
+                      isError={isError}
+                      className="text-sm sm:text-base"
                     >
                       Create Account
-                      <ArrowRight className="ml-2 h-4 w-4" />
-                    </LoadingButton> */}
-                    <Button
-                      onClick={() => {
-                        return new Promise((resolve) => {
-                          setTimeout(resolve, 4000);
-                        });
-                      }}
-                    >
-                      Send message
-                    </Button>
-                    {/* <LoadingButton
-                      type="submit"
-                      loading={isSubmitting}
-                      success={isSuccess}
-                    >
-                      Create Account
-                      <ArrowRight className="ml-2 h-4 w-4" />
-                    </LoadingButton> */}
+                    </LoadingButton>
                   </div>
                 </div>
 
-                {isError && !isSubmitting && (
+                {isError && !isPending && (
                   <div className="bg-red-500 dark:bg-red-500/40 p-4 rounded-xl mt-2 border-l-4 border-red-300 dark:border-red-500">
                     <p className="italic text-sm text-white">
                       {error?.message}
