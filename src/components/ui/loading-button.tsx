@@ -1,150 +1,133 @@
+
 "use client";
 import { cn } from "@/lib/utils";
-import React from "react";
-import { motion, AnimatePresence, useAnimate } from "framer-motion";
+import React, { ButtonHTMLAttributes, useEffect, useRef, useState } from "react";
+import {
+  motion,
+  AnimatePresence,
+  useAnimate,
+  PanInfo,
+  HTMLMotionProps,
+} from "framer-motion";
 
-interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  className?: string;
+// Define a type that includes the props for a button, but also allows for framer-motion props.
+// This is a common pattern to avoid type conflicts.
+type MotionButtonProps = HTMLMotionProps<"button"> & {
+  loading?: boolean;
+  success?: boolean;
   children: React.ReactNode;
-}
+  className?: string;
+};
 
-export const LoadingButton = ({ className, children, ...props }: ButtonProps) => {
+export const LoadingButton = React.forwardRef<
+  HTMLButtonElement,
+  MotionButtonProps
+>(({ className, children, loading, success, ...props }, ref) => {
   const [scope, animate] = useAnimate();
+  const [buttonWidth, setButtonWidth] = useState<number | "auto">("auto");
 
-  const animateLoading = async () => {
+  // This ref is used to measure the initial width of the button
+  const buttonRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    if (buttonRef.current && !loading) {
+      setButtonWidth(buttonRef.current.offsetWidth);
+    }
+  }, [children, loading]);
+
+  const handleClick = async (
+    event: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => {
+    // 1. Animate text out
+    await animate(".text", { opacity: 0, y: 10 }, { duration: 0.2 });
+
+    // 2. Animate button collapse after text is gone
     await animate(
-      ".text",
-      {
-        width: "0px",
-        // scale: 1,
-        display: "none",
-      },
-      {
-        duration: 0.2,
-      },
+      scope.current,
+      { width: 40, height: 40, padding: 0 },
+      { duration: 0.7, ease: "easeInOut" }
     );
 
-    await animate(
+    // 3. Show loader
+    animate(
       ".loader",
-      {
-        width: "20px",
-        scale: 1,
-        display: "block",
-      },
-      {
-        duration: 0.2,
-      },
+      { opacity: 1, scale: 1, y: 0 },
+      { duration: 0.2, delay: 0.1 }
     );
-  };
 
-  const animateSuccess = async () => {
+    // Call original onClick if it exists, simulating the async operation
+    if (props.onClick) {
+      await (props.onClick as (
+        e: React.MouseEvent<HTMLButtonElement>
+      ) => Promise<void> | void)(event);
+    }
+
+    // 4. Animate loader out and check in
     await animate(
       ".loader",
-      {
-        width: "0px",
-        scale: 0,
-        display: "none",
-      },
-      {
-        duration: 0.2,
-      },
+      { opacity: 0, scale: 0 },
+      { duration: 0.2, at: "+0.5" }
     );
     await animate(
       ".check",
-      {
-        width: "20px",
-        scale: 1,
-        display: "block",
-      },
-      {
-        duration: 0.2,
-      },
+      { opacity: 1, scale: 1 },
+      { duration: 0.2 }
     );
 
-    // await animate(
-    //   ".check",
-    //   {
-    //     width: "0px",
-    //     scale: 0,
-    //     display: "none",
-    //   },
-    //   {
-    //     delay: 2,
-    //     duration: 0.2,
-    //   },
-    // );
-
-    // await animate(
-    //   ".text",
-    //   {
-    //     width: "0px",
-    //     scale: 0,
-    //     display: "none",
-    //   },
-    //   {
-    //     delay: 2,
-    //     duration: 0.2,
-    //   },
-    // );
+    // 5. Restore button
+    await animate(
+      scope.current,
+      { width: buttonWidth, height: "auto", padding: "0.5rem 1rem" },
+      { duration: 0.7, ease: "easeInOut", at: "+0.5" }
+    );
+    animate(".text", { opacity: 1, y: 0 }, { duration: 0.2 });
+    animate(".check", { opacity: 0, scale: 0 }); // Hide check for next click
   };
-
-  const handleClick = async (event: React.MouseEvent<HTMLButtonElement>) => {
-    await animateLoading();
-    await props.onClick?.(event);
-    await animateSuccess();
-  };
-
-  const {
-    onClick,
-    onDrag,
-    onDragStart,
-    onDragEnd,
-    onAnimationStart,
-    onAnimationEnd,
-    ...buttonProps
-  } = props;
 
   return (
     <motion.button
-      layout
-      layoutId="button"
-      ref={scope}
+      ref={buttonRef}
       className={cn(
-        "flex min-w-[120px] cursor-pointer items-center justify-center gap-2 rounded-full bg-green-500 px-4 py-2 font-medium text-white ring-offset-2 transition duration-200 hover:ring-2 hover:ring-green-500 dark:ring-offset-black",
-        className,
+        "relative flex items-center justify-center gap-2 overflow-hidden rounded-full bg-primary px-4 py-2 font-medium text-white ring-offset-2 transition duration-200 hover:ring-2 hover:ring-primary dark:ring-offset-black",
+        "disabled:pointer-events-none disabled:opacity-50",
+        className
       )}
-      {...buttonProps}
+      style={{ width: loading ? 40 : "auto" }}
+      {...props}
       onClick={handleClick}
+      disabled={loading}
     >
-      <motion.div layout className="flex items-center gap-2">
-        <Loader />
-        <CheckIcon />
-        <motion.span layout className="text">{children}</motion.span>
-      </motion.div>
+      <div ref={scope} className="relative flex items-center justify-center">
+        <motion.span
+          className="text"
+          initial={{ opacity: 1, y: 0 }}
+        >
+          {children}
+        </motion.span>
+        <motion.div
+          className="loader absolute"
+          initial={{ opacity: 0, scale: 0, y: -10 }}
+        >
+          <Loader />
+        </motion.div>
+        <motion.div
+          className="check absolute"
+          initial={{ opacity: 0, scale: 0 }}
+        >
+          <CheckIcon />
+        </motion.div>
+      </div>
     </motion.button>
   );
-};
+});
+LoadingButton.displayName = "LoadingButton";
+
 
 const Loader = () => {
   return (
     <motion.svg
-      animate={{
-        rotate: [0, 360],
-      }}
-      initial={{
-        scale: 0,
-        width: 0,
-        display: "none",
-      }}
-      style={{
-        scale: 0.5,
-        display: "none",
-      }}
-      transition={{
-        duration: 0.3,
-        repeat: Infinity,
-        ease: "linear",
-      }}
+      animate={{ rotate: 360 }}
+      transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
       xmlns="http://www.w3.org/2000/svg"
       width="24"
       height="24"
@@ -154,10 +137,9 @@ const Loader = () => {
       strokeWidth="2"
       strokeLinecap="round"
       strokeLinejoin="round"
-      className="loader text-white"
+      className="text-white"
     >
-      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-      <path d="M12 3a9 9 0 1 0 9 9" />
+      <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" />
     </motion.svg>
   );
 };
@@ -165,15 +147,9 @@ const Loader = () => {
 const CheckIcon = () => {
   return (
     <motion.svg
-      initial={{
-        scale: 0,
-        width: 0,
-        display: "none",
-      }}
-      style={{
-        scale: 0.5,
-        display: "none",
-      }}
+      initial={{ pathLength: 0 }}
+      animate={{ pathLength: 1 }}
+      transition={{ duration: 0.3, delay: 0.1, ease: "easeOut" }}
       xmlns="http://www.w3.org/2000/svg"
       width="24"
       height="24"
@@ -183,11 +159,9 @@ const CheckIcon = () => {
       strokeWidth="2"
       strokeLinecap="round"
       strokeLinejoin="round"
-      className="check text-white"
+      className="text-white"
     >
-      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-      <path d="M12 12m-9 0a9 9 0 1 0 18 0a9 9 0 1 0 -18 0" />
-      <path d="M9 12l2 2l4 -4" />
+      <path d="M20 6 9 17l-5-5" />
     </motion.svg>
   );
 };
