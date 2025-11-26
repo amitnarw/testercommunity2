@@ -27,65 +27,36 @@ const LoadingButton = React.forwardRef<
     const buttonVariants = {
       idle: {
         width: "auto",
-        borderRadius: "0.75rem", // Corresponds to rounded-xl
-        transition: {
-          type: "spring",
-          stiffness: 300,
-          damping: 20,
-        },
+        borderRadius: "0.75rem",
+        transition: { duration: 0.7, ease: "easeInOut" },
       },
       loading: {
-        width: "2.5rem", // h-10
+        width: "2.5rem",
         borderRadius: "9999px",
-        transition: {
-          type: "spring",
-          stiffness: 300,
-          damping: 20,
-        },
+        transition: { duration: 0.7, ease: "easeInOut" },
       },
       success: {
-        width: "2.5rem", // h-10
+        width: "2.5rem",
         borderRadius: "9999px",
-        backgroundColor: "rgb(34 197 94 / var(--tw-bg-opacity))", // bg-green-500
-        transition: {
-          type: "spring",
-          stiffness: 300,
-          damping: 20,
-        },
+        backgroundColor: "rgb(34 197 94 / 1)",
+        transition: { duration: 0.7, ease: "easeInOut" },
       },
     };
     
     const contentVariants = {
-      initial: {
-        opacity: 0,
-        y: -10,
-      },
-      animate: {
-        opacity: 1,
-        y: 0,
-        transition: {
-          type: "spring",
-          stiffness: 300,
-          damping: 20,
-          delay: 0.15,
-        }
-      },
-      exit: {
-        opacity: 0,
-        y: 10,
-        transition: {
-          duration: 0.15
-        }
-      },
+      initial: { opacity: 0, y: -10 },
+      animate: { opacity: 1, y: 0, transition: { delay: 0.35, ease: "easeInOut" } },
+      exit: { opacity: 0, y: 10, transition: { duration: 0.2, ease: "easeInOut" } },
     };
 
     return (
       <motion.button
         ref={ref}
         variants={buttonVariants}
+        initial="idle"
         animate={success ? "success" : loading ? "loading" : "idle"}
         className={cn(
-          "relative flex items-center justify-center overflow-hidden h-10 text-sm font-medium transition-colors duration-300 disabled:pointer-events-none disabled:opacity-50",
+          "relative flex items-center justify-center overflow-hidden h-10 px-6 text-sm font-medium transition-colors duration-300 disabled:pointer-events-none disabled:opacity-50",
           "bg-primary text-primary-foreground hover:bg-primary/90",
           className
         )}
