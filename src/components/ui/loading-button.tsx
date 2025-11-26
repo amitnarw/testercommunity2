@@ -1,19 +1,29 @@
 
 "use client";
 
-import React, { forwardRef } from "react";
+import React from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 import Spinner from "./spinner";
+import { Check } from "lucide-react";
 
 interface LoadingButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   loading?: boolean;
+  success?: boolean;
   children: React.ReactNode;
 }
 
-const LoadingButton = forwardRef<HTMLButtonElement, LoadingButtonProps>(
-  ({ loading = false, children, className, ...props }, ref) => {
+const LoadingButton = React.forwardRef<
+  HTMLButtonElement,
+  LoadingButtonProps
+>(
+  (
+    { loading = false, success = false, children, className, ...props },
+    ref
+  ) => {
+    const isShowingContent = !loading && !success;
+
     return (
       <motion.button
         ref={ref}
@@ -22,29 +32,47 @@ const LoadingButton = forwardRef<HTMLButtonElement, LoadingButtonProps>(
         className={cn(
           "relative flex items-center justify-center overflow-hidden h-10 text-sm font-medium transition-colors duration-300 disabled:pointer-events-none disabled:opacity-50",
           "bg-primary text-primary-foreground hover:bg-primary/90",
-          loading ? "w-10 rounded-full" : "w-auto rounded-xl px-4",
+          (loading || success) ? "w-10 rounded-full" : "w-auto rounded-xl px-4",
+          success && "!bg-green-500",
           className
         )}
-        disabled={loading || props.disabled}
+        disabled={loading || success || props.disabled}
         {...props}
       >
         <AnimatePresence mode="popLayout" initial={false}>
-          {loading ? (
+          {loading && (
             <motion.div
               key="spinner"
-              initial={{ opacity: 0, y: -20 }}
-              animate={{ opacity: 1, y: 0, transition: { delay: 0.15 } }}
-              exit={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, scale: 0.5, rotate: -180 }}
+              animate={{ opacity: 1, scale: 1, rotate: 0 }}
+              exit={{ opacity: 0, scale: 0.5, rotate: 180 }}
+              transition={{ duration: 0.3, ease: "easeInOut" }}
               className="absolute"
             >
               <Spinner className="h-5 w-5" />
             </motion.div>
-          ) : (
+          )}
+
+          {success && (
+             <motion.div
+              key="success"
+              initial={{ opacity: 0, scale: 0.5 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.5 }}
+              transition={{ duration: 0.3, ease: "easeOut" }}
+              className="absolute"
+            >
+              <Check className="h-5 w-5" />
+            </motion.div>
+          )}
+          
+          {isShowingContent && (
             <motion.div
               key="content"
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2, ease: "easeInOut" }}
               className="flex items-center gap-2"
             >
               {children}

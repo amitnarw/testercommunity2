@@ -45,17 +45,31 @@ export default function RegisterPage() {
   });
 
   const { handleSubmit } = form;
-  const { mutate, isPending, isError, error } = useRegisterUser();
+  const { mutate, isError, error } = useRegisterUser();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
 
   const processForm: SubmitHandler<any> = (data) => {
-    mutate(data, {
-      onSuccess: () => {
-        router.push("/auth/register/check-email");
-      },
-    });
-  };
+    setIsSubmitting(true);
+    setIsSuccess(false);
 
-  const [isCHeck, setISCheck] = useState(false);
+    // Simulate API call
+    setTimeout(() => {
+        mutate(data, {
+            onSuccess: () => {
+                setIsSubmitting(false);
+                setIsSuccess(true);
+                setTimeout(() => {
+                    router.push("/auth/register/check-email");
+                }, 1000);
+            },
+            onError: () => {
+                 setIsSubmitting(false);
+                 setIsSuccess(false);
+            }
+        });
+    }, 2000);
+  };
 
   return (
     <div className="min-h-screen w-full lg:grid lg:grid-cols-2">
@@ -72,9 +86,6 @@ export default function RegisterPage() {
             <span className="sr-only">Toggle theme</span>
           </Button>
         </div>
-        <LoadingButton loading={isCHeck} duration={3000} onClick={() => setISCheck(!isCHeck)}>
-          click this button
-        </LoadingButton>
         <div className="w-full max-w-md">
           <FormProvider {...form}>
             <form
@@ -162,14 +173,14 @@ export default function RegisterPage() {
 
                 <div className="mt-8 pt-5">
                   <div className="flex justify-end">
-                    <LoadingButton type="submit" loading={isPending}>
+                    <LoadingButton type="submit" loading={isSubmitting} success={isSuccess}>
                       Create Account & Continue
                       <ArrowRight className="ml-2 h-4 w-4" />
                     </LoadingButton>
                   </div>
                 </div>
 
-                {isError && !isPending && (
+                {isError && !isSubmitting && (
                   <div className="bg-red-500 dark:bg-red-500/40 p-4 rounded-xl mt-2 border-l-4 border-red-300 dark:border-red-500">
                     <p className="italic text-sm text-white">
                       {error?.message}
