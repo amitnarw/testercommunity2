@@ -1,18 +1,14 @@
 
 "use client";
 import { cn } from "@/lib/utils";
-import React, { ButtonHTMLAttributes, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   motion,
   AnimatePresence,
   useAnimate,
-  PanInfo,
-  HTMLMotionProps,
 } from "framer-motion";
 
-// Define a type that includes the props for a button, but also allows for framer-motion props.
-// This is a common pattern to avoid type conflicts.
-type MotionButtonProps = HTMLMotionProps<"button"> & {
+type MotionButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
   loading?: boolean;
   success?: boolean;
   children: React.ReactNode;
@@ -22,18 +18,22 @@ type MotionButtonProps = HTMLMotionProps<"button"> & {
 export const LoadingButton = React.forwardRef<
   HTMLButtonElement,
   MotionButtonProps
->(({ className, children, loading, success, ...props }, ref) => {
+>(({ className, children, ...props }, ref) => {
   const [scope, animate] = useAnimate();
   const [buttonWidth, setButtonWidth] = useState<number | "auto">("auto");
-
-  // This ref is used to measure the initial width of the button
+  const [padding, setPadding] = useState<{ pl: string, pr: string}>({ pl: "1rem", pr: "1rem"});
   const buttonRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
-    if (buttonRef.current && !loading) {
+    if (buttonRef.current) {
+      const computedStyle = window.getComputedStyle(buttonRef.current);
       setButtonWidth(buttonRef.current.offsetWidth);
+      setPadding({
+        pl: computedStyle.paddingLeft,
+        pr: computedStyle.paddingRight
+      });
     }
-  }, [children, loading]);
+  }, [children]);
 
   const handleClick = async (
     event: React.MouseEvent<HTMLButtonElement, MouseEvent>
@@ -44,7 +44,7 @@ export const LoadingButton = React.forwardRef<
     // 2. Animate button collapse after text is gone
     await animate(
       scope.current,
-      { width: 40, height: 40, padding: 0 },
+      { width: 40, height: 40, paddingLeft: "0px", paddingRight: "0px" },
       { duration: 0.7, ease: "easeInOut" }
     );
 
@@ -74,10 +74,10 @@ export const LoadingButton = React.forwardRef<
       { duration: 0.2 }
     );
 
-    // 5. Restore button
+    // 5. Restore button to its original state
     await animate(
       scope.current,
-      { width: buttonWidth, height: "auto", padding: "0.5rem 1rem" },
+      { width: buttonWidth, height: "auto", paddingLeft: padding.pl, paddingRight: padding.pr },
       { duration: 0.7, ease: "easeInOut", at: "+0.5" }
     );
     animate(".text", { opacity: 1, y: 0 }, { duration: 0.2 });
@@ -92,10 +92,8 @@ export const LoadingButton = React.forwardRef<
         "disabled:pointer-events-none disabled:opacity-50",
         className
       )}
-      style={{ width: loading ? 40 : "auto" }}
       {...props}
       onClick={handleClick}
-      disabled={loading}
     >
       <div ref={scope} className="relative flex items-center justify-center">
         <motion.span
@@ -165,3 +163,4 @@ const CheckIcon = () => {
     </motion.svg>
   );
 };
+
