@@ -95,6 +95,15 @@ export default function RegisterPage() {
             <span className="sr-only">Toggle theme</span>
           </Button>
         </div>
+        <LoadingButton
+          onClick={() => {
+            return new Promise((resolve) => {
+              setTimeout(resolve, 4000);
+            });
+          }}
+        >
+          Send message Send message Send message
+        </LoadingButton>
         <div className="w-full max-w-md">
           <FormProvider {...form}>
             <form
@@ -182,14 +191,23 @@ export default function RegisterPage() {
 
                 <div className="mt-8 pt-5">
                   <div className="flex justify-end">
-                    <LoadingButton
+                    {/* <LoadingButton
                       loading={sub}
                       success={suc}
                       onClick={() => setSub(true)}
                     >
                       Create Account
                       <ArrowRight className="ml-2 h-4 w-4" />
-                    </LoadingButton>
+                    </LoadingButton> */}
+                    <Button
+                      onClick={() => {
+                        return new Promise((resolve) => {
+                          setTimeout(resolve, 4000);
+                        });
+                      }}
+                    >
+                      Send message
+                    </Button>
                     {/* <LoadingButton
                       type="submit"
                       loading={isSubmitting}
