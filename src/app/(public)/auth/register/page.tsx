@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useForm, type SubmitHandler, FormProvider } from "react-hook-form";
@@ -66,7 +65,7 @@ export default function RegisterPage() {
         onError: () => {
           setIsSubmitting(false);
           setIsSuccess(false);
-        }
+        },
       });
     }, 2000);
   };
@@ -74,12 +73,12 @@ export default function RegisterPage() {
   const [sub, setSub] = useState(false);
   const [suc, setSuc] = useState(false);
 
-  useEffect(()=>{
-    if(sub){
-      setSuc(true)
-      setSub(false)
+  useEffect(() => {
+    if (sub) {
+      setSuc(true);
+      setSub(false);
     }
-  }, [sub])
+  }, [sub]);
 
   return (
     <div className="min-h-screen w-full lg:grid lg:grid-cols-2">
@@ -115,7 +114,7 @@ export default function RegisterPage() {
                 <div className="space-y-4">
                   <Button
                     variant="outline"
-                    className="w-full rounded-xl py-6 text-base"
+                    className="w-full rounded-xl py-2 sm:py-6 text-sm sm:text-base"
                   >
                     <GoogleIcon className="mr-3" />
                     Sign up with Google
@@ -183,14 +182,22 @@ export default function RegisterPage() {
 
                 <div className="mt-8 pt-5">
                   <div className="flex justify-end">
-                    <LoadingButton loading={sub} success={suc} onClick={() => setSub(true)}>
-                      Create Account & Continue
+                    <LoadingButton
+                      loading={sub}
+                      success={suc}
+                      onClick={() => setSub(true)}
+                    >
+                      Create Account
                       <ArrowRight className="ml-2 h-4 w-4" />
                     </LoadingButton>
-                    <LoadingButton type="submit" loading={isSubmitting} success={isSuccess}>
-                      Create Account & Continue
+                    {/* <LoadingButton
+                      type="submit"
+                      loading={isSubmitting}
+                      success={isSuccess}
+                    >
+                      Create Account
                       <ArrowRight className="ml-2 h-4 w-4" />
-                    </LoadingButton>
+                    </LoadingButton> */}
                   </div>
                 </div>
 

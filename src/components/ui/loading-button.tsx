@@ -37,7 +37,7 @@ const LoadingButton = React.forwardRef<
     const buttonVariants = {
       idle: {
         width: initialWidth === 'auto' ? 'auto' : initialWidth,
-        borderRadius: "0.75rem",
+        borderRadius: "9999px",
         paddingLeft: '1rem',
         paddingRight: '1rem',
       },
@@ -50,7 +50,7 @@ const LoadingButton = React.forwardRef<
       success: {
         width: "40px",
         borderRadius: "9999px",
-        backgroundColor: "rgb(22 163 74)", // green-500
+        backgroundColor: "rgb(22 163 74)",
         paddingLeft: '0px',
         paddingRight: '0px',
       },
