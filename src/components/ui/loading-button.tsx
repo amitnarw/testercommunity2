@@ -11,6 +11,7 @@ interface LoadingButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   loading?: boolean;
   success?: boolean;
+  duration?: number;
   children: React.ReactNode;
 }
 
@@ -19,44 +20,51 @@ const LoadingButton = React.forwardRef<
   LoadingButtonProps
 >(
   (
-    { loading = false, success = false, children, className, ...props },
+    { loading = false, success = false, duration = 700, children, className, ...props },
     ref
   ) => {
-    const isShowingContent = !loading && !success;
-    const buttonRef = useRef<HTMLButtonElement>(null);
     const [initialWidth, setInitialWidth] = useState<number | 'auto'>('auto');
+    const buttonRef = useRef<HTMLButtonElement>(null);
 
     useEffect(() => {
-      if (buttonRef.current && initialWidth === 'auto') {
-        setInitialWidth(buttonRef.current.offsetWidth);
-      }
+        if (buttonRef.current && initialWidth === 'auto') {
+            setInitialWidth(buttonRef.current.offsetWidth);
+        }
     }, [initialWidth]);
+
+    const isShowingContent = !loading && !success;
 
     const buttonVariants = {
       idle: {
-        width: initialWidth,
+        width: initialWidth === 'auto' ? 'auto' : initialWidth,
         borderRadius: "0.75rem",
+        paddingLeft: '1rem',
+        paddingRight: '1rem',
       },
       loading: {
         width: "40px",
         borderRadius: "9999px",
+        paddingLeft: '0px',
+        paddingRight: '0px',
       },
       success: {
         width: "40px",
         borderRadius: "9999px",
-        backgroundColor: "rgb(34 197 94 / 1)",
+        backgroundColor: "rgb(22 163 74)", // green-500
+        paddingLeft: '0px',
+        paddingRight: '0px',
       },
     };
     
     const contentVariants = {
-      initial: { opacity: 0, y: -10 },
+      initial: { opacity: 0, y: -10, transition: { duration: 0.2, ease: "easeInOut" } },
       animate: { opacity: 1, y: 0, transition: { delay: 0.2, ease: "easeInOut" } },
       exit: { opacity: 0, y: 10, transition: { duration: 0.2, ease: "easeInOut" } },
     };
     
-    const spinnerVariants = {
+    const iconVariants = {
       initial: { opacity: 0, y: -10, scale: 0.9 },
-      animate: { opacity: 1, y: 0, scale: 1, transition: { delay: 0.3, ease: "easeInOut" } },
+      animate: { opacity: 1, y: 0, scale: 1, transition: { delay: duration / 1000 * 0.5, ease: "easeInOut" } },
       exit: { opacity: 0, y: 10, scale: 0.9, transition: { duration: 0.2, ease: "easeInOut" } },
     };
 
@@ -68,16 +76,16 @@ const LoadingButton = React.forwardRef<
         animate={success ? "success" : loading ? "loading" : "idle"}
         transition={{
           type: "tween",
-          duration: 0.7,
+          duration: duration / 1000,
           ease: "easeInOut",
         }}
         className={cn(
-          "relative flex items-center justify-center overflow-hidden h-10 px-6 text-sm font-medium transition-colors disabled:pointer-events-none disabled:opacity-50",
+          "relative flex items-center justify-center overflow-hidden h-10 text-sm font-medium transition-colors disabled:pointer-events-none",
           "bg-primary text-primary-foreground hover:bg-primary/90",
-          className
+           className
         )}
         disabled={loading || success || props.disabled}
-        {...props}
+        {...props} // Pass the rest of the props here
       >
         <AnimatePresence mode="popLayout" initial={false}>
           {isShowingContent && (
@@ -99,7 +107,7 @@ const LoadingButton = React.forwardRef<
               initial="initial"
               animate="animate"
               exit="exit"
-              variants={spinnerVariants}
+              variants={iconVariants}
               className="absolute"
             >
               <Spinner className="h-5 w-5" />
@@ -112,7 +120,7 @@ const LoadingButton = React.forwardRef<
               initial="initial"
               animate="animate"
               exit="exit"
-              variants={spinnerVariants}
+              variants={iconVariants}
               className="absolute"
             >
               <Check className="h-5 w-5" />

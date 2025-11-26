@@ -74,18 +74,15 @@ export default function RegisterPage() {
   const [sub, setSub] = useState(false);
   const [suc, setSuc] = useState(false);
 
-  // useEffect(()=>{
-  //   if(sub){
-  //     setSuc(true)
-  //   }
-  // }, [sub])
+  useEffect(()=>{
+    if(sub){
+      setSuc(true)
+      setSub(false)
+    }
+  }, [sub])
 
   return (
     <div className="min-h-screen w-full lg:grid lg:grid-cols-2">
-      <LoadingButton loading={sub} success={suc} onClick={() => setSub(true)}>
-        Create Account & Continue
-        <ArrowRight className="ml-2 h-4 w-4" />
-      </LoadingButton>
       <div className="relative w-full min-h-screen flex flex-col items-center justify-center px-2 sm:px-6 py-6 bg-background">
         <div className="absolute top-2 sm:top-4 right-4 flex items-center gap-4">
           <BackButton href="/" />
@@ -186,6 +183,10 @@ export default function RegisterPage() {
 
                 <div className="mt-8 pt-5">
                   <div className="flex justify-end">
+                    <LoadingButton loading={sub} success={suc} onClick={() => setSub(true)}>
+                      Create Account & Continue
+                      <ArrowRight className="ml-2 h-4 w-4" />
+                    </LoadingButton>
                     <LoadingButton type="submit" loading={isSubmitting} success={isSuccess}>
                       Create Account & Continue
                       <ArrowRight className="ml-2 h-4 w-4" />
