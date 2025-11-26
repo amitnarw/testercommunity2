@@ -102,7 +102,7 @@ export default function RegisterPage() {
             });
           }}
         >
-          Send message Send message Send message
+          Send message
         </LoadingButton>
         <div className="w-full max-w-md">
           <FormProvider {...form}>

@@ -21,19 +21,7 @@ export const LoadingButton = React.forwardRef<
 >(({ className, children, ...props }, ref) => {
   const [scope, animate] = useAnimate();
   const [buttonWidth, setButtonWidth] = useState<number | "auto">("auto");
-  const [padding, setPadding] = useState<{ pl: string, pr: string}>({ pl: "1rem", pr: "1rem"});
   const buttonRef = useRef<HTMLButtonElement>(null);
-
-  useEffect(() => {
-    if (buttonRef.current) {
-      const computedStyle = window.getComputedStyle(buttonRef.current);
-      setButtonWidth(buttonRef.current.offsetWidth);
-      setPadding({
-        pl: computedStyle.paddingLeft,
-        pr: computedStyle.paddingRight
-      });
-    }
-  }, [children]);
 
   const handleClick = async (
     event: React.MouseEvent<HTMLButtonElement, MouseEvent>
@@ -44,7 +32,7 @@ export const LoadingButton = React.forwardRef<
     // 2. Animate button collapse after text is gone
     await animate(
       scope.current,
-      { width: 40, height: 40, paddingLeft: "0px", paddingRight: "0px" },
+      { width: 20, height: 35, paddingLeft: "0px", paddingRight: "0px" },
       { duration: 0.7, ease: "easeInOut" }
     );
 
@@ -77,7 +65,7 @@ export const LoadingButton = React.forwardRef<
     // 5. Restore button to its original state
     await animate(
       scope.current,
-      { width: buttonWidth, height: "auto", paddingLeft: padding.pl, paddingRight: padding.pr },
+      { width: buttonWidth, height: "auto" },
       { duration: 0.7, ease: "easeInOut", at: "+0.5" }
     );
     animate(".text", { opacity: 1, y: 0 }, { duration: 0.2 });
