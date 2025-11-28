@@ -5,38 +5,21 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { useTheme } from "next-themes";
-import { Moon, Sun } from "lucide-react";
+import { Eye, EyeOff, Moon, Sun } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { BackButton } from "@/components/back-button";
 import { BackgroundBeams } from "@/components/ui/background-beams";
 import { ChangeEvent, useState } from "react";
 import { z } from "zod";
+import Image from "next/image";
+import { LoadingButton } from "@/components/ui/loading-button";
+import { useLoginUser } from "@/hooks/useAuth";
+import { Input } from "@/components/ui/input";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Label } from "@/components/ui/label";
 
-const GoogleIcon = (props: React.SVGProps<SVGSVGElement>) => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    viewBox="0 0 48 48"
-    width="24px"
-    height="24px"
-    {...props}
-  >
-    <path
-      fill="#FFC107"
-      d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12s5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24s8.955,20,20,20s20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z"
-    />
-    <path
-      fill="#FF3D00"
-      d="M6.306,14.691l6.571,4.819C14.655,15.108,18.961,12,24,12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C16.318,4,9.656,8.337,6.306,14.691z"
-    />
-    <path
-      fill="#4CAF50"
-      d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36c-5.222,0-9.655-3.307-11.28-7.792l-6.522,5.025C9.505,39.556,16.227,44,24,44z"
-    />
-    <path
-      fill="#1976D2"
-      d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.574l6.19,5.238C39.99,36.626,44,31.1,44,24C44,22.659,43.862,21.35,43.611,20.083z"
-    />
-  </svg>
+const GoogleIcon = (props: React.HTMLAttributes<HTMLImageElement>) => (
+  <Image src="/google.svg" alt="Google" width={24} height={24} {...props} />
 );
 
 const signinSchema = z.object({
@@ -54,38 +37,48 @@ const LoginForm = () => {
   const [loginValues, setLoginValues] = useState({
     email: "",
     password: "",
+    rememberMe: false,
   });
   const [errors, setErrors] = useState<{
     email?: string[] | undefined;
     password?: string[] | undefined;
   }>();
+  const [showPassword, setShowPassword] = useState(false);
+
+  const { mutate, isPending, isSuccess, isError, error } = useLoginUser();
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setLoginValues((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+    const { name, value } = e.target;
 
-    const result = signinSchema.safeParse({
-      ...loginValues,
-      [e.target.name]: e.target.value,
-    });
+    setLoginValues((prev) => ({ ...prev, [name]: value }));
 
-    if (!result.success) {
-      setErrors(result.error.flatten().fieldErrors);
-    } else {
-      setErrors({});
-    }
+    const field = name as keyof typeof signinSchema.shape;
+
+    const fieldResult = signinSchema.shape[field].safeParse(value);
+
+    setErrors((prev) => ({
+      ...prev,
+      [name]: fieldResult.success
+        ? undefined
+        : fieldResult.error.errors.map((e) => e.message),
+    }));
   };
 
   const handleLogin = () => {
     const result = signinSchema.safeParse(loginValues);
 
     if (!result.success) {
-      // Zod error object
-      console.log(result.error.flatten());
+      console.log(result.error.flatten().fieldErrors);
+      setErrors(result.error.flatten().fieldErrors);
       return;
     }
 
-    // Validated data is here
     const data = result.data;
+    mutate({
+      email: data?.email,
+      password: data?.password,
+      rememberMe: loginValues?.rememberMe,
+    });
   };
 
   // const handleDemoLogin = () => {
@@ -97,7 +90,10 @@ const LoginForm = () => {
 
   return (
     <div className="space-y-6">
-      <Button variant="outline" className="w-full rounded-xl py-6 text-base">
+      <Button
+        variant="outline"
+        className="w-full rounded-xl py-2 sm:py-6 text-sm sm:text-base"
+      >
         <GoogleIcon className="mr-3" />
         Log in with Google
       </Button>
@@ -107,40 +103,92 @@ const LoginForm = () => {
         <Separator className="flex-1 bg-border/50" />
       </div>
       <div className="space-y-2">
-        <label htmlFor="email">Email</label>
-        <input
+        <label htmlFor="email" className="text-sm">
+          Email
+        </label>
+        <Input
           id="email"
           type="email"
           name="email"
           placeholder="you@example.com"
-          className="flex h-10 w-full rounded-none border-b border-input bg-transparent px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-0 focus-visible:border-primary disabled:cursor-not-allowed disabled:opacity-50"
           value={loginValues?.email ?? ""}
           onChange={handleChange}
         />
+        {errors?.email && (
+          <p className="text-red-500 text-sm">{errors?.email}</p>
+        )}
       </div>
       <div className="space-y-2">
-        <label htmlFor="password">Password</label>
-        <input
-          id="password"
-          type="password"
-          name="password"
-          placeholder="••••••••"
-          className="flex h-10 w-full rounded-none border-b border-input bg-transparent px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-0 focus-visible:border-primary disabled:cursor-not-allowed disabled:opacity-50"
-          value={loginValues?.password ?? ""}
-          onChange={handleChange}
+        <label htmlFor="password" className="text-sm">
+          Password
+        </label>
+        <div className="relative">
+          <Input
+            id="password"
+            type={showPassword ? "text" : "password"}
+            name="password"
+            placeholder="••••••••"
+            value={loginValues?.password ?? ""}
+            onChange={handleChange}
+          />
+          <button
+            className="text-muted-foreground absolute right-3 top-1/2 -translate-y-1/2"
+            onClick={() => setShowPassword(!showPassword)}
+          >
+            {showPassword ? <Eye size={20} /> : <EyeOff size={20} />}
+          </button>
+        </div>
+
+        {errors?.password && (
+          <p className="text-red-500 text-sm">{errors?.password}</p>
+        )}
+      </div>
+      <div className="flex items-center gap-3">
+        <Checkbox
+          id="rememberMe"
+          className="rounded-[5px]"
+          defaultChecked
+          checked={loginValues?.rememberMe}
+          onCheckedChange={() => {
+            setLoginValues((prev) => ({
+              ...prev,
+              rememberMe: !loginValues?.rememberMe,
+            }));
+          }}
         />
+        <Label htmlFor="rememberMe" className="text-muted-foreground">
+          Remember me
+        </Label>
       </div>
-      <div className="space-y-2">
+
+      {/* <div className="space-y-2">
         <Button
           className="w-full rounded-xl py-6 text-lg"
           onClick={handleLogin}
         >
           Log In
         </Button>
-        {/* <Button variant="link" className="w-full" onClick={handleDemoLogin}>
-          Log in as Demo User
-        </Button> */}
+      </div> */}
+
+      <div className="mt-8 pt-5">
+        <div className="flex justify-end">
+          <LoadingButton
+            isLoading={isPending}
+            isSuccess={isSuccess}
+            isError={isError}
+            className="text-sm sm:text-base"
+            onClick={handleLogin}
+          >
+            Log In
+          </LoadingButton>
+        </div>
       </div>
+
+      {isError && !isPending && (
+        <div className="absolute bottom-4 sm:bottom-6 bg-red-500 dark:bg-red-500/40 p-4 rounded-xl border-l-4 border-red-300 dark:border-red-500">
+          <p className="italic text-sm text-white">{error?.message}</p>
+        </div>
+      )}
     </div>
   );
 };

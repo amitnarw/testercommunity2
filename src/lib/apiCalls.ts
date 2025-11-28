@@ -52,9 +52,13 @@ export const login = async ({
       password,
       rememberMe,
     });
-    return response;
+    // return true
+    if (response?.error) {
+      throw new Error(response?.error?.message);
+    }
+    return { success: true, data: response };
   } catch (error) {
-    console.error("Error registering user:", error);
+    console.error("Error logging in user: ", error);
     throw error;
   }
 };

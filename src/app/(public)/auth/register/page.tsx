@@ -60,7 +60,7 @@ export default function RegisterPage() {
 
   return (
     <div className="min-h-screen w-full lg:grid lg:grid-cols-2">
-      <div className="relative w-full min-h-screen flex flex-col items-center justify-center px-2 sm:px-6 py-6 bg-background">
+      <div className="relative w-full min-h-screen flex flex-col items-center justify-center px-2 sm:px-6 bg-background">
         <div className="absolute top-2 sm:top-4 right-4 flex items-center gap-4">
           <BackButton href="/" />
           <Button
@@ -80,7 +80,7 @@ export default function RegisterPage() {
               onSubmit={handleSubmit(processForm)}
               className="overflow-hidden relative"
             >
-              <div className="rounded-2xl px-2 sm:px-6 py-6">
+              <div className="rounded-2xl px-2 sm:px-6 pt-10 pb-20">
                 <div className="mb-8 text-center">
                   <h2 className="font-bold tracking-tight text-2xl sm:text-3xl bg-gradient-to-br from-primary to-accent bg-clip-text text-transparent">
                     Create an Account
@@ -159,7 +159,7 @@ export default function RegisterPage() {
                   />
                 </div>
 
-                <div className="mt-8 pt-5">
+                <div className="mt-8">
                   <div className="flex justify-end">
                     <LoadingButton
                       isLoading={isPending}
@@ -173,7 +173,7 @@ export default function RegisterPage() {
                 </div>
 
                 {isError && !isPending && (
-                  <div className="bg-red-500 dark:bg-red-500/40 p-4 rounded-xl mt-2 border-l-4 border-red-300 dark:border-red-500">
+                  <div className="absolute bg-red-500 dark:bg-red-500/40 p-4 rounded-xl mt-2 border-l-4 border-red-300 dark:border-red-500">
                     <p className="italic text-sm text-white">
                       {error?.message}
                     </p>

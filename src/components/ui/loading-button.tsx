@@ -1,6 +1,6 @@
 "use client";
 import { cn } from "@/lib/utils";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { motion, useAnimate } from "framer-motion";
 import { CircleX } from "lucide-react";
 
@@ -34,10 +34,13 @@ export const LoadingButton = React.forwardRef<
     ref
   ) => {
     const [scope, animate] = useAnimate();
+    const [checkError, setCheckError] = useState(true);
 
     const runAnimation = async () => {
       // 1. Animate text out
       await animate(".text", { opacity: 0, y: 10 }, { duration: 0.2 });
+      animate(".check", { opacity: 0, scale: 0 });
+      animate(".error", { opacity: 0, scale: 0 });
 
       // 2. Animate button collapse after text is gone
       await animate(
@@ -63,6 +66,7 @@ export const LoadingButton = React.forwardRef<
         { width: "auto", height: "auto" },
         { duration: 0.7, ease: "easeInOut" }
       );
+      animate(".loader", { opacity: 0 });
       // animate(".text", { opacity: 1, y: 0 }, { duration: 0.2 });
       // animate(".check", { opacity: 0, scale: 0 });
     };
@@ -80,19 +84,24 @@ export const LoadingButton = React.forwardRef<
         { width: "auto", height: "auto" },
         { duration: 0.7, ease: "easeInOut" }
       );
-      // animate(".text", { opacity: 1, y: 0 }, { duration: 0.2 });
-      // animate(".error", { opacity: 0, scale: 0 });
+      animate(".loader", { opacity: 0, scale: 0 }, { duration: 0.2 });
+      animate(".text", { opacity: 1, y: 0 }, { duration: 0.2 });
+      animate(".error", { opacity: 0, scale: 0 }, { duration: 0.2 });
     };
 
     useEffect(() => {
-      if (isLoading) {
+      setCheckError(true);
+      if (isLoading && !isSuccess && !isError) {
         runAnimation();
       }
-      if (isSuccess) {
+      if (!isLoading && isSuccess && !isError) {
         runSuccessAnimation();
       }
-      if (isError) {
+      if (!isLoading && !isSuccess && isError) {
         runErrorAnimation();
+        setTimeout(() => {
+          setCheckError(false);
+        }, 1000);
       }
     }, [isLoading, isSuccess, isError]);
 
@@ -102,7 +111,7 @@ export const LoadingButton = React.forwardRef<
           `relative flex items-center justify-center gap-2 overflow-hidden rounded-full ${
             isSuccess
               ? "bg-green-500 hover:ring-green-500"
-              : isError
+              : isError && checkError
               ? "bg-red-500 hover:ring-red-500"
               : "bg-primary hover:ring-primary"
           } px-4 py-2 font-medium text-white ring-offset-2 transition duration-2000 hover:ring-2 dark:ring-offset-black`,

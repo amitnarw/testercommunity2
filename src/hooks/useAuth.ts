@@ -1,6 +1,7 @@
 import {
   emailVerification,
   fetchUser,
+  login,
   register,
   // updateProfile
 } from "@/lib/apiCalls";
@@ -85,6 +86,24 @@ export function useEmailVerification() {
     },
     onError: (error) => {
       console.log("Email verification failed: " + error);
+    },
+  });
+
+  return mutation;
+}
+
+export function useLoginUser() {
+  const mutation = useMutation({
+    mutationFn: (payload: {
+      email: string;
+      password: string;
+      rememberMe: boolean;
+    }) => login(payload),
+    onSuccess: (data) => {
+      console.log("Login success: " + data);
+    },
+    onError: (data) => {
+      console.log("Login failed: " + data);
     },
   });
 
