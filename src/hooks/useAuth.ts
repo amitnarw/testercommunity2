@@ -9,6 +9,7 @@ import {
   useQuery,
   useMutation,
   UseMutationResult,
+  UseMutationOptions,
 } from "@tanstack/react-query";
 
 export function useUser(id: string) {
@@ -92,7 +93,7 @@ export function useEmailVerification() {
   return mutation;
 }
 
-export function useLoginUser() {
+export function useLoginUser(options?: UseMutationOptions<any, any, any>) {
   const mutation = useMutation({
     mutationFn: (payload: {
       email: string;
@@ -105,6 +106,7 @@ export function useLoginUser() {
     onError: (data) => {
       console.log("Login failed: " + data);
     },
+    ...options,
   });
 
   return mutation;

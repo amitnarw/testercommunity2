@@ -45,7 +45,11 @@ const LoginForm = () => {
   }>();
   const [showPassword, setShowPassword] = useState(false);
 
-  const { mutate, isPending, isSuccess, isError, error } = useLoginUser();
+  const { mutate, isPending, isSuccess, isError, error } = useLoginUser({
+    onSuccess: () => {
+      router.push("/");
+    },
+  });
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
