@@ -24,6 +24,7 @@ export const register = async ({
       password,
       name: firstName + " " + lastName,
       // callbackURL: "/",
+      ...{ firstName, lastName, role: "user", authType: "EMAIL_PASSWORD" },
     });
     if (response?.error) {
       throw new Error(response?.error?.message);

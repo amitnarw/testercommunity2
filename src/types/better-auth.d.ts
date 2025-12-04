@@ -1,6 +1,6 @@
-import "better-auth/client";
+import "better-auth/react";
 
-declare module "better-auth/client" {
+declare module "better-auth/react" {
   interface Session {
     user: {
       id: string;
@@ -24,5 +24,8 @@ declare module "better-auth/client" {
         canDelete: boolean;
       }[];
     };
+  }
+  interface SignUpEmailOptions {
+    role: string;
   }
 }

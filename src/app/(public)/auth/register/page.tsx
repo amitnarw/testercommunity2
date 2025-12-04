@@ -12,7 +12,7 @@ import {
   FormMessage,
   FormLabel,
 } from "@/components/ui/form";
-import { ArrowRight, Moon, Sun } from "lucide-react";
+import { ArrowRight, Eye, EyeOff, Moon, Sun } from "lucide-react";
 import { SiteLogo } from "@/components/icons";
 import { useTheme } from "next-themes";
 import { BackButton } from "@/components/back-button";
@@ -21,6 +21,8 @@ import { useRouter } from "next/navigation";
 import { useRegisterUser } from "@/hooks/useAuth";
 import { BackgroundBeams } from "@/components/ui/background-beams";
 import { LoadingButton } from "@/components/ui/loading-button";
+import { useState } from "react";
+import Link from "next/link";
 
 const signupSchema = z.object({
   firstName: z.string().min(2, "First name is required."),
@@ -41,6 +43,8 @@ const GoogleIcon = (props: React.HTMLAttributes<HTMLImageElement>) => (
 export default function RegisterPage() {
   const { setTheme, theme } = useTheme();
   const router = useRouter();
+
+  const [showPassword, setShowPassword] = useState(false);
 
   const form = useForm({
     resolver: zodResolver(signupSchema),
@@ -85,8 +89,15 @@ export default function RegisterPage() {
                   <h2 className="font-bold tracking-tight text-2xl sm:text-3xl bg-gradient-to-br from-primary to-accent bg-clip-text text-transparent">
                     Create an Account
                   </h2>
-                  <p className="text-muted-foreground text-sm">
-                    Let's get started with creating an account.
+
+                  <p className="text-muted-foreground mt-2">
+                    Or{" "}
+                    <Link
+                      href="/auth/login"
+                      className="text-primary hover:underline"
+                    >
+                      login to your account
+                    </Link>
                   </p>
                 </div>
 
@@ -146,13 +157,28 @@ export default function RegisterPage() {
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Password</FormLabel>
-                        <FormControl>
-                          <Input
-                            type="password"
-                            placeholder="••••••••"
-                            {...field}
-                          />
-                        </FormControl>
+                        <div className="relative">
+                          <FormControl>
+                            <Input
+                              {...field}
+                              type={showPassword ? "text" : "password"}
+                              placeholder="Enter your password"
+                            />
+                          </FormControl>
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="icon"
+                            className="absolute right-0 top-1/2 -translate-y-1/2 p-0"
+                            onClick={() => setShowPassword(!showPassword)}
+                          >
+                            {showPassword ? (
+                              <EyeOff size={16} />
+                            ) : (
+                              <Eye size={16} />
+                            )}
+                          </Button>
+                        </div>
                         <FormMessage />
                       </FormItem>
                     )}

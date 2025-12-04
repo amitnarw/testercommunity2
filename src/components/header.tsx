@@ -56,7 +56,22 @@ interface HeaderProps {
       ipAddress?: string | null | undefined;
       userAgent?: string | null | undefined;
     };
-  };
+    role?: {
+      name: string;
+      permissions: {
+        id: number;
+        createdAt: Date;
+        updatedAt: Date;
+        roleId: number;
+        moduleId: number;
+        canReadList: boolean;
+        canReadSingle: boolean;
+        canCreate: boolean;
+        canUpdate: boolean;
+        canDelete: boolean;
+      }[];
+    };
+  } | null;
   isDashboardPage: boolean;
   isMobileMenuOpen: boolean;
   setMobileMenuOpen: (open: boolean) => void;
@@ -134,7 +149,10 @@ export function Header({
 
                   {session?.session?.id ? (
                     <div className="hidden md:block">
-                      <UserNav session={session} onLogout={() => handleLogout()} />
+                      <UserNav
+                        session={session}
+                        onLogout={() => handleLogout()}
+                      />
                     </div>
                   ) : (
                     <div className="hidden md:flex items-center gap-2">

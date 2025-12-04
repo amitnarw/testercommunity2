@@ -85,13 +85,6 @@ const LoginForm = () => {
     });
   };
 
-  // const handleDemoLogin = () => {
-  //   // Set a cookie to simulate login
-  //   document.cookie =
-  //     "isAuthenticated=true; path=/; max-age=" + 60 * 60 * 24 * 7;
-  //   router.push("/dashboard");
-  // };
-
   return (
     <div className="space-y-6">
       <Button

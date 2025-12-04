@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
 
 export default function PublicLayout({
@@ -14,6 +14,7 @@ export default function PublicLayout({
   const { data: session, isPending, error, refetch } = authClient.useSession();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const pathname = usePathname();
+  const router = useRouter();
 
   const isAuthPage =
     pathname === "/auth/login" ||
@@ -22,12 +23,19 @@ export default function PublicLayout({
     pathname === "/auth/verification" ||
     pathname === "/auth/register/check-email";
 
-  if (!session) {
-    return null;
-  }
+  useEffect(() => {
+    if (!isPending) {
+      if (session && isAuthPage) {
+        router.replace("/dashboard");
+      }
+    }
+  }, [session, isAuthPage, router]);
 
-  if (isAuthPage) {
+  if (!session && isAuthPage) {
     return <main className="flex-1 bg-background">{children}</main>;
+  }
+  if (session && isAuthPage) {
+    return null;
   }
 
   return (
