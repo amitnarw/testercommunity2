@@ -16,19 +16,19 @@ export default function ProfessionalLayout({
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(true);
   const router = useRouter();
   const pathname = usePathname();
-  const [isAuthChecked, setIsAuthChecked] = useState(false);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   useEffect(() => {
     if (
-      !session &&
-      pathname !== "/tester/login" &&
-      pathname !== "/tester/register"
+      !session?.user?.id ||
+      ((session as any)?.role !== "tester" &&
+        pathname !== "/tester/login" &&
+        pathname !== "/tester/register")
     ) {
       router.replace("/tester/login");
     }
     if (
-      session &&
+      session?.user?.id &&
+      (session as any)?.role === "tester" &&
       (pathname === "/tester/login" || pathname === "/tester/register")
     ) {
       router.replace("/tester/dashboard");
@@ -45,25 +45,17 @@ export default function ProfessionalLayout({
     });
   };
 
-  if (isPending) {
-    return <p>Loading...</p>;
-  }
-
   const isAuthPage =
     pathname === "/tester/login" || pathname === "/tester/register";
-
-  if (!isAuthChecked) {
-    return null;
-  }
 
   if (isAuthPage) {
     return <main className="flex-1 bg-background">{children}</main>;
   }
 
-  if (!isAuthenticated) {
+  if (!session?.user?.id) {
     return null;
   }
-  console.log(session, "klklkl");
+
   return (
     <div className="relative flex min-h-screen">
       <Sidebar

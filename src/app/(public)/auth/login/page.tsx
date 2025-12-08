@@ -17,6 +17,7 @@ import { useLoginUser } from "@/hooks/useAuth";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
+import { useUserProfileData, useUserProfileInitial } from "@/hooks/useUser";
 
 const GoogleIcon = (props: React.HTMLAttributes<HTMLImageElement>) => (
   <Image src="/google.svg" alt="Google" width={24} height={24} {...props} />
@@ -44,12 +45,26 @@ const LoginForm = () => {
     password?: string[] | undefined;
   }>();
   const [showPassword, setShowPassword] = useState(false);
+  const [skipClicked, setSkipClicked] = useState(false);
 
-  const { mutate, isPending, isSuccess, isError, error } = useLoginUser({
-    onSuccess: () => {
-      router.push("/");
-    },
+  const { mutate, isPending, isSuccess, isError, error } = useLoginUser();
+
+  const {
+    data: userProfileData,
+    isPending: userProfileIsPending,
+    isSuccess: userProfileIsSuccess,
+  } = useUserProfileData({
+    enabled: isSuccess,
   });
+
+  if (userProfileIsSuccess && userProfileData && !userProfileIsPending) {
+    if (!userProfileData?.initial) {
+      router.push("/profile/profile-setup");
+      // useUserProfileInitial({
+      //   enabled: skipClicked,
+      // });
+    }
+  }
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;

@@ -79,7 +79,7 @@ export default function DashboardPage() {
 
   return (
     <>
-      <div className="min-h-screen bg-secondary/50">
+      <div className="min-h-screen">
         <div className="container mx-auto px-4 md:px-6">
           <header className="mb-6">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">

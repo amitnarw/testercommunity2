@@ -1,6 +1,8 @@
 import axios from "axios";
 import API_ROUTES from "./apiRoutes";
 import { authClient } from "./auth-client";
+import { decryptData } from "./encryptDecryptPayload";
+import { UserProfleResponse } from "@/hooks/useUser";
 
 export const register = async ({
   email,
@@ -104,12 +106,29 @@ export const emailVerification = async ({ token }: { token: string }) => {
   }
 };
 
-export const getProfileSetupData = async () => {
-  //   try {
-  //     const response = await axios.get(API_ROUTES?.AUTH);
-  //   } catch (error) {
-  //     console.error("Error registering user:", error);
-  //   }
+export const getUserProfileData = async (): Promise<UserProfleResponse> => {
+  try {
+    const response = await axios.get(
+      API_ROUTES.USER + "/get-user-profile-data"
+    );
+    const result = await decryptData(response?.data?.data);
+    if (!result) throw new Error("No user profile data returned");
+
+    return result as UserProfleResponse;
+  } catch (error) {
+    console.error("Error getting user profile:", error);
+    throw error;
+  }
+};
+
+export const saveInitialProfileData = async () => {
+  try {
+    await axios.get(API_ROUTES.USER + "/initial-user-profile");
+    return true;
+  } catch (error) {
+    console.error("Error getting user profile:", error);
+    throw error;
+  }
 };
 
 export async function fetchUser(id: string) {

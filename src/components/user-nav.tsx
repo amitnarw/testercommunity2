@@ -17,7 +17,6 @@ import {
   LayoutDashboard,
   Users2,
   User,
-  Gem,
   LifeBuoy,
   LogOut,
   ChevronDown,
@@ -25,17 +24,14 @@ import {
   Briefcase,
   DollarSign,
   FileCheck,
-  Bug,
   Users,
   UserPlus,
   MessageSquare,
   Lightbulb,
-  Activity,
 } from "lucide-react";
-import { useEffect, useState } from "react";
 
 interface UserNavProps {
-  session: {
+  session?: {
     user: {
       id: string;
       createdAt: Date;
@@ -55,7 +51,7 @@ interface UserNavProps {
       ipAddress?: string | null | undefined;
       userAgent?: string | null | undefined;
     };
-  };
+  } | null;
   onLogout: () => void;
 }
 

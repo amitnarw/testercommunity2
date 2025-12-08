@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Navbar from "@/components/authenticated/navbar";
 import Footer from "@/components/authenticated/footer";
-import { usePathname, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { Sidebar } from "@/components/authenticated/sidebar";
 import { authClient } from "@/lib/auth-client";
 
@@ -15,7 +15,6 @@ export default function AuthenticatedLayout({
   const { data: session, isPending, error, refetch } = authClient.useSession();
 
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(true);
-  const pathname = usePathname();
   const router = useRouter();
 
   useEffect(() => {
@@ -24,7 +23,7 @@ export default function AuthenticatedLayout({
         router.replace("/auth/login");
       }
     }
-  }, [session, router]);
+  }, [session, router, isPending]);
 
   const handleLogout = () => {
     document.cookie = "isAuthenticated=false; path=/; max-age=0";
