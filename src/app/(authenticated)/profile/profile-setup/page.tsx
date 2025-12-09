@@ -159,16 +159,8 @@ function ProfileSetupPage() {
   // return <h1>{data}</h1>;
 
   return (
-    <div className="min-h-screen w-full bg-background flex items-center justify-center p-2 pt-6 sm:p-4">
+    <div className="min-h-screen w-full flex items-center justify-center p-2 pt-6 sm:p-4">
       <div className="absolute top-1 sm:top-4 right-4 flex items-center gap-2">
-        <Button
-          asChild
-          variant="secondary"
-          size="sm"
-          className="text-xs sm:text-sm p-2 sm:px-4 h-auto"
-        >
-          <Link href="/dashboard">Skip for now</Link>
-        </Button>
         <Button
           variant="ghost"
           size="icon"
@@ -360,6 +352,9 @@ function ProfileSetupPage() {
                 </Button>
 
                 <div className="flex items-center gap-4">
+                  <Button asChild variant="ghost">
+                    <Link href="/dashboard">Skip for now</Link>
+                  </Button>
                   {currentStep < steps.length - 1 ? (
                     <Button onClick={next} type="button">
                       Next <ArrowRight className="ml-2 h-4 w-4" />
