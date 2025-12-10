@@ -17,13 +17,13 @@ export default function AuthenticatedLayout({
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(true);
   const router = useRouter();
 
-  useEffect(() => {
-    if (!isPending) {
-      if (!session) {
-        router.replace("/auth/login");
-      }
-    }
-  }, [session, router, isPending]);
+  // useEffect(() => {
+  //   if (!isPending) {
+  //     if (!session) {
+  //       router.replace("/auth/login");
+  //     }
+  //   }
+  // }, [session, router, isPending]);
 
   const handleLogout = () => {
     document.cookie = "isAuthenticated=false; path=/; max-age=0";

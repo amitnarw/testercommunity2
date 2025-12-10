@@ -9,7 +9,7 @@ import { Eye, EyeOff, Moon, Sun } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { BackButton } from "@/components/back-button";
 import { BackgroundBeams } from "@/components/ui/background-beams";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import { z } from "zod";
 import Image from "next/image";
 import { LoadingButton } from "@/components/ui/loading-button";
@@ -56,15 +56,22 @@ const LoginForm = () => {
   } = useUserProfileData({
     enabled: isSuccess,
   });
-
-  if (userProfileIsSuccess && userProfileData && !userProfileIsPending) {
-    if (!userProfileData?.initial) {
+  console.log(
+    userProfileIsSuccess,
+    userProfileData,
+    !userProfileIsPending,
+    userProfileData?.initial
+  );
+  useEffect(() => {
+    if (
+      userProfileIsSuccess &&
+      userProfileData &&
+      !userProfileIsPending &&
+      userProfileData.initial
+    ) {
       router.push("/profile/profile-setup");
-      // useUserProfileInitial({
-      //   enabled: skipClicked,
-      // });
     }
-  }
+  }, [userProfileIsSuccess, userProfileData, userProfileIsPending, router]);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;

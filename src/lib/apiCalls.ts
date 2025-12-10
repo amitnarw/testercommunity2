@@ -3,6 +3,7 @@ import API_ROUTES from "./apiRoutes";
 import { authClient } from "./auth-client";
 import { decryptData } from "./encryptDecryptPayload";
 import { UserProfleResponse } from "@/hooks/useUser";
+import { ControlRoomResponse } from "./types";
 
 export const register = async ({
   email,
@@ -55,7 +56,7 @@ export const login = async ({
       password,
       rememberMe,
     });
-    // return true
+
     if (response?.error) {
       throw new Error(response?.error?.message);
     }
@@ -133,7 +134,7 @@ export const saveInitialProfileData = async () => {
 
 export async function fetchUser(id: string) {
   try {
-    const response = await axios.get(`/api/user/${id}`);
+    const response = await axios.get(API_ROUTES.USER + `/${id}`);
     return response.data;
   } catch (error) {
     console.error("Error fetching user:", error);
@@ -145,3 +146,15 @@ export async function fetchUser(id: string) {
 //   const response = await axios.post("/api/profile", profile);
 //   return response.data;
 // }
+
+export async function getControlRoomData(): Promise<ControlRoomResponse> {
+  try {
+    const response = await axios.get(
+      API_ROUTES.ADMIN + `/get-control-room-data`
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching user:", error);
+    throw error;
+  }
+}

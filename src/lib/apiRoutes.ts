@@ -5,6 +5,7 @@ const routes = {
   USER: "/api/user",
   PRODUCTS: "/api/products",
   ORDERS: "/api/orders",
+  ADMIN: "/api/admin",
 };
 
 const API_ROUTES = new Proxy(routes, {
