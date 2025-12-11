@@ -23,13 +23,13 @@ export default function PublicLayout({
     pathname === "/auth/verification" ||
     pathname === "/auth/register/check-email";
 
-  useEffect(() => {
-    if (!isPending) {
-      if (session && isAuthPage) {
-        router.replace("/dashboard");
-      }
-    }
-  }, [session, isAuthPage, router]);
+  // useEffect(() => {
+  //   if (!isPending) {
+  //     if (session && isAuthPage) {
+  //       router.replace("/dashboard");
+  //     }
+  //   }
+  // }, [session, isAuthPage, router]);
 
   if (!session && isAuthPage) {
     return <main className="flex-1 bg-background">{children}</main>;

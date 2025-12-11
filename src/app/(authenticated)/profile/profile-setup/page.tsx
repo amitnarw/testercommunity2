@@ -1,7 +1,6 @@
-
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   CheckCircle,
@@ -42,9 +41,11 @@ import {
 } from "@/components/ui/select";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
-import { useTheme } from "next-themes";
 import { Progress } from "@/components/ui/progress";
-import { useQuery } from "@tanstack/react-query";
+import { useUserProfileData, useUserProfileInitial } from "@/hooks/useUser";
+import { useControlRoomData } from "@/hooks/useAdmin";
+import SkeletonProfileSetup from "@/components/profile-setup/loading-skeleton";
+import { useRouter } from "next/navigation";
 
 const RegistrationSuccess = () => (
   <motion.div
@@ -108,14 +109,15 @@ const variants = {
   }),
 };
 
-
 function ProfileSetupPage() {
+  const router = useRouter();
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [profileData, setProfileData] = useState<Partial<UserProfileData>>({});
   const [currentStep, setCurrentStep] = useState(0);
   const [previousStep, setPreviousStep] = useState(0);
   const delta = currentStep - previousStep;
-  const { setTheme, theme } = useTheme();
+
+  const [skipClicked, setSkipClicked] = useState(false);
 
   const next = () => {
     if (currentStep < steps.length - 1) {
@@ -145,46 +147,70 @@ function ProfileSetupPage() {
 
   const progress = ((currentStep + 1) / steps.length) * 100;
 
-  const { data, isLoading, error } = useQuery({
-    queryKey: ["hello"],
-    queryFn: async () => {
-      const res = await fetch("https://api.github.com/zen");
-      return res.text();
-    },
+  const {
+    data: controlRoomData,
+    isPending: controlRoomIsPending,
+    isError: controlRoomIsError,
+    error: controlRoomError,
+  } = useControlRoomData({
+    enabled: true,
   });
 
-  if (isLoading) return <p>Loading...</p>;
-  if (error) return <p>Error loading data</p>;
+  const {
+    data: userProfileData,
+    isPending: userProfileIsPending,
+    isError: userProfileIsError,
+    error: userProfileError,
+  } = useUserProfileData({
+    enabled: true,
+  });
 
-  // return <h1>{data}</h1>;
+  useEffect(() => {
+    if (userProfileData) {
+      setProfileData(userProfileData);
+    }
+  }, [userProfileData]);
+
+  useEffect(() => {
+    if (skipClicked) {
+      router.push("/dashboard");
+    }
+  }, [skipClicked]);
+  useUserProfileInitial({ enabled: !!skipClicked });
+
+  if (controlRoomIsPending || userProfileIsPending)
+    // if (true)
+    return <SkeletonProfileSetup />;
+  if (controlRoomIsError || userProfileIsError)
+    return <p>{controlRoomError?.message || userProfileError?.message}</p>;
 
   return (
-    <div className="min-h-screen w-full flex items-center justify-center p-2 pt-6 sm:p-4">
-      <div className="absolute top-1 sm:top-4 right-4 flex items-center gap-2">
-        <Button
-          variant="ghost"
-          size="icon"
-          onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-        >
-          <Sun className="h-6 w-6 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-          <Moon className="absolute h-6 w-6 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-          <span className="sr-only">Toggle theme</span>
-        </Button>
-      </div>
-
-      <div className="w-full max-w-4xl h-auto min-h-[70vh] bg-card rounded-2xl shadow-2xl shadow-primary/10 border border-dashed flex flex-col overflow-hidden">
+    <div className="h-full w-full flex items-center justify-center p-2 py-4 sm:pt-6 sm:p-4">
+      <div className="w-full max-w-4xl h-auto min-h-[70vh] bg-card rounded-2xl shadow-2xl shadow-primary/10 border border-dashed flex flex-col">
         {isSubmitted ? (
           <RegistrationSuccess />
         ) : (
-          <div className="flex flex-col md:flex-row flex-1">
+          <div className="flex flex-col md:flex-row flex-1 relative">
+            {userProfileData?.initial && (
+              <div className="absolute -top-4 right-5 flex items-center gap-2">
+                <Button
+                  variant="secondary"
+                  size="sm"
+                  className="text-xs sm:text-sm p-2 sm:px-4 h-auto"
+                  onClick={() => setSkipClicked(true)}
+                >
+                  Skip for now
+                </Button>
+              </div>
+            )}
             {/* Sidebar */}
-            <aside className="hidden md:flex flex-col w-1/3 bg-secondary/50 p-8 justify-between border-r">
+            <aside className="hidden md:flex flex-col w-1/3 bg-secondary/50 p-8 justify-between border-r rounded-l-xl">
               <div>
                 <h2 className="text-xl font-bold">Complete Your Profile</h2>
                 <p className="text-muted-foreground mt-2 text-xs">
                   This survey is optional, but you'll get a{" "}
                   <span className="text-primary font-bold">
-                    200 point bonus
+                    {controlRoomData?.profileSurveyPoints ?? 200} point bonus
                   </span>{" "}
                   for completing it!
                 </p>
@@ -280,7 +306,7 @@ function ProfileSetupPage() {
                   <p className="text-sm font-semibold">
                     {steps[currentStep].title}
                   </p>
-                   <p className="text-xs text-muted-foreground mt-1">
+                  <p className="text-xs text-muted-foreground mt-1">
                     Optional Survey - Get{" "}
                     <span className="text-primary font-semibold">
                       200 points
@@ -386,10 +412,10 @@ const RoleStep = ({ profileData, setProfileData }: ProfileStepperProps) => (
         onValueChange={(value) =>
           setProfileData((prev) => ({
             ...prev,
-            profileType: value as UserProfileType,
+            profile_type: value as UserProfileType,
           }))
         }
-        defaultValue={profileData?.profileType}
+        defaultValue={profileData?.profile_type}
         className="grid grid-cols-2 gap-4"
       >
         {Object.values(UserProfileType).map((type) => (
@@ -399,7 +425,7 @@ const RoleStep = ({ profileData, setProfileData }: ProfileStepperProps) => (
               htmlFor={type}
               className="flex h-full flex-col items-center justify-center rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary cursor-pointer text-center"
             >
-              {type.replace("_", " ")}
+              {type.replace("_", " ")?.toLowerCase()}
             </Label>
           </div>
         ))}
@@ -409,9 +435,9 @@ const RoleStep = ({ profileData, setProfileData }: ProfileStepperProps) => (
       <Label>Your job role</Label>
       <Select
         onValueChange={(value) =>
-          setProfileData((prev) => ({ ...prev, jobRole: value as UserJobRole }))
+          setProfileData((prev) => ({ ...prev, job_role: value as UserJobRole }))
         }
-        defaultValue={profileData?.jobRole}
+        defaultValue={profileData?.job_role}
       >
         <SelectTrigger>
           <SelectValue placeholder="Select your primary role" />
@@ -419,7 +445,7 @@ const RoleStep = ({ profileData, setProfileData }: ProfileStepperProps) => (
         <SelectContent>
           {Object.values(UserJobRole).map((role) => (
             <SelectItem key={role} value={role}>
-              {role.replace(/_/g, " ")}
+              {role.replace(/_/g, " ")?.toLowerCase()}
             </SelectItem>
           ))}
         </SelectContent>
@@ -434,7 +460,7 @@ const RoleStep = ({ profileData, setProfileData }: ProfileStepperProps) => (
             experienceLevel: value as UserExperienceLevel,
           }))
         }
-        defaultValue={profileData?.experienceLevel}
+        defaultValue={profileData?.experience_level}
       >
         <SelectTrigger>
           <SelectValue placeholder="Select your experience level" />
@@ -442,7 +468,7 @@ const RoleStep = ({ profileData, setProfileData }: ProfileStepperProps) => (
         <SelectContent>
           {Object.values(UserExperienceLevel).map((level) => (
             <SelectItem key={level} value={level}>
-              {level.replace(/_/g, " ")}
+              {level.replace(/_/g, " ")?.toLowerCase()}
             </SelectItem>
           ))}
         </SelectContent>
@@ -457,9 +483,9 @@ const CompanyStep = ({ profileData, setProfileData }: ProfileStepperProps) => (
       <Label>Company Name</Label>
       <Input
         placeholder="Your Company Inc."
-        value={profileData?.companyName || ""}
+        value={profileData?.company_name}
         onChange={(e) =>
-          setProfileData((prev) => ({ ...prev, companyName: e.target.value }))
+          setProfileData((prev) => ({ ...prev, company_name: e.target.value }))
         }
       />
     </div>
@@ -467,11 +493,11 @@ const CompanyStep = ({ profileData, setProfileData }: ProfileStepperProps) => (
       <Label>Company Website</Label>
       <Input
         placeholder="https://example.com"
-        value={profileData?.companyWebsite || ""}
+        value={profileData?.company_website}
         onChange={(e) =>
           setProfileData((prev) => ({
             ...prev,
-            companyWebsite: e.target.value,
+            company_website: e.target.value,
           }))
         }
       />
@@ -482,10 +508,10 @@ const CompanyStep = ({ profileData, setProfileData }: ProfileStepperProps) => (
         onValueChange={(value) =>
           setProfileData((prev) => ({
             ...prev,
-            companySize: value as UserCompanySize,
+            company_size: value as UserCompanySize,
           }))
         }
-        defaultValue={profileData?.companySize}
+        defaultValue={profileData?.company_size}
       >
         <SelectTrigger>
           <SelectValue placeholder="Select company size" />
@@ -493,7 +519,7 @@ const CompanyStep = ({ profileData, setProfileData }: ProfileStepperProps) => (
         <SelectContent>
           {Object.values(UserCompanySize).map((size) => (
             <SelectItem key={size} value={size}>
-              {size.replace("SIZE_", "").replace(/_/g, "-")}
+              {size.replace("SIZE_", "").replace(/_/g, "-")?.toLowerCase()}
             </SelectItem>
           ))}
         </SelectContent>
@@ -505,10 +531,10 @@ const CompanyStep = ({ profileData, setProfileData }: ProfileStepperProps) => (
         onValueChange={(value) =>
           setProfileData((prev) => ({
             ...prev,
-            positionInCompany: value as UserCompanyPosition,
+            position_in_company: value as UserCompanyPosition,
           }))
         }
-        defaultValue={profileData?.positionInCompany}
+        defaultValue={profileData?.position_in_company}
       >
         <SelectTrigger>
           <SelectValue placeholder="Select your position" />
@@ -516,7 +542,7 @@ const CompanyStep = ({ profileData, setProfileData }: ProfileStepperProps) => (
         <SelectContent>
           {Object.values(UserCompanyPosition).map((pos) => (
             <SelectItem key={pos} value={pos}>
-              {pos.replace(/_/g, " ")}
+              {pos.replace(/_/g, " ")?.toLowerCase()}
             </SelectItem>
           ))}
         </SelectContent>
@@ -533,10 +559,10 @@ const ProjectsStep = ({ profileData, setProfileData }: ProfileStepperProps) => (
         onValueChange={(value) =>
           setProfileData((prev) => ({
             ...prev,
-            totalPublishedApps: value as UserTotalPublishedApps,
+            total_published_apps: value as UserTotalPublishedApps,
           }))
         }
-        defaultValue={profileData?.totalPublishedApps}
+        defaultValue={profileData?.total_published_apps}
       >
         <SelectTrigger>
           <SelectValue placeholder="Select number of apps" />
@@ -544,7 +570,7 @@ const ProjectsStep = ({ profileData, setProfileData }: ProfileStepperProps) => (
         <SelectContent>
           {Object.values(UserTotalPublishedApps).map((val) => (
             <SelectItem key={val} value={val}>
-              {val.replace("PUB_", "").replace(/_/g, "-")}
+              {val.replace("PUB_", "").replace(/_/g, "-")?.toLowerCase()}
             </SelectItem>
           ))}
         </SelectContent>
@@ -556,10 +582,10 @@ const ProjectsStep = ({ profileData, setProfileData }: ProfileStepperProps) => (
         onValueChange={(value) =>
           setProfileData((prev) => ({
             ...prev,
-            platformDevelopment: value as UserDevelopmentPlatform,
+            platform_development: value as UserDevelopmentPlatform,
           }))
         }
-        defaultValue={profileData?.platformDevelopment}
+        defaultValue={profileData?.platform_development}
       >
         <SelectTrigger>
           <SelectValue placeholder="Select platform" />
@@ -567,7 +593,7 @@ const ProjectsStep = ({ profileData, setProfileData }: ProfileStepperProps) => (
         <SelectContent>
           {Object.values(UserDevelopmentPlatform).map((val) => (
             <SelectItem key={val} value={val}>
-              {val.replace(/_/g, " ")}
+              {val.replace(/_/g, " ")?.toLowerCase()}
             </SelectItem>
           ))}
         </SelectContent>
@@ -579,10 +605,10 @@ const ProjectsStep = ({ profileData, setProfileData }: ProfileStepperProps) => (
         onValueChange={(value) =>
           setProfileData((prev) => ({
             ...prev,
-            publishFrequency: value as UserPublishFrequency,
+            publish_frequency: value as UserPublishFrequency,
           }))
         }
-        defaultValue={profileData?.publishFrequency}
+        defaultValue={profileData?.publish_frequency}
       >
         <SelectTrigger>
           <SelectValue placeholder="Select frequency" />
@@ -590,7 +616,7 @@ const ProjectsStep = ({ profileData, setProfileData }: ProfileStepperProps) => (
         <SelectContent>
           {Object.values(UserPublishFrequency).map((val) => (
             <SelectItem key={val} value={val}>
-              {val.replace(/_/g, " ")}
+              {val.replace(/_/g, " ")?.toLowerCase()}
             </SelectItem>
           ))}
         </SelectContent>
@@ -611,15 +637,15 @@ const ContactStep = ({ profileData, setProfileData }: ProfileStepperProps) => (
               className="flex items-center space-x-2 rounded-md border p-3 has-[:checked]:border-primary"
             >
               <Checkbox
-                checked={profileData?.serviceUsage?.includes(item)}
+                checked={profileData?.service_usage?.includes(item)}
                 onCheckedChange={(checked) => {
-                  const current = profileData?.serviceUsage || [];
+                  const current = profileData?.service_usage || [];
                   const updated = checked
                     ? [...current, item]
                     : current.filter((val) => val !== item);
                   setProfileData((prev) => ({
                     ...prev,
-                    serviceUsage: updated,
+                    service_usage: updated,
                   }));
                 }}
                 id={`service-${item}`}
@@ -628,7 +654,7 @@ const ContactStep = ({ profileData, setProfileData }: ProfileStepperProps) => (
                 htmlFor={`service-${item}`}
                 className="text-sm font-normal cursor-pointer w-full"
               >
-                {item.replace(/_/g, " ")}
+                {item.replace(/_/g, " ")?.toLowerCase()}
               </Label>
             </div>
           ))}
@@ -643,15 +669,15 @@ const ContactStep = ({ profileData, setProfileData }: ProfileStepperProps) => (
               className="flex items-center space-x-2 rounded-md border p-3 has-[:checked]:border-primary"
             >
               <Checkbox
-                checked={profileData?.communicationMethods?.includes(item)}
+                checked={profileData?.communication_methods?.includes(item)}
                 onCheckedChange={(checked) => {
-                  const current = profileData?.communicationMethods || [];
+                  const current = profileData?.communication_methods || [];
                   const updated = checked
                     ? [...current, item]
                     : current.filter((val) => val !== item);
                   setProfileData((prev) => ({
                     ...prev,
-                    communicationMethods: updated,
+                    communication_methods: updated,
                   }));
                 }}
                 id={`comm-${item}`}
@@ -660,7 +686,7 @@ const ContactStep = ({ profileData, setProfileData }: ProfileStepperProps) => (
                 htmlFor={`comm-${item}`}
                 className="text-sm font-normal cursor-pointer w-full"
               >
-                {item}
+                {item?.toLowerCase()}
               </Label>
             </div>
           ))}
