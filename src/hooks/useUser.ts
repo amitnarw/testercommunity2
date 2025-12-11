@@ -1,6 +1,14 @@
-import { getUserProfileData, saveInitialProfileData } from "@/lib/apiCalls";
+import {
+  getUserProfileData,
+  saveInitialProfileData,
+  saveProfileData,
+} from "@/lib/apiCalls";
 import { UserProfileData } from "@/lib/types";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import {
+  useMutation,
+  UseMutationOptions,
+  useQuery,
+} from "@tanstack/react-query";
 
 export type UserProfleResponse = {
   success: true | false;
@@ -26,4 +34,21 @@ export function useUserProfileInitial(options?: { enabled?: boolean }) {
   });
 
   return query;
+}
+
+export function useProfileDataSave(
+  options?: UseMutationOptions<any, any, any>
+) {
+  const mutation = useMutation({
+    mutationFn: (payload) => saveProfileData(payload),
+    onSuccess: (data) => {
+      console.log("Profile data saved successfully: " + data);
+    },
+    onError: (data) => {
+      console.log("Profile data saving failed: " + data);
+    },
+    ...options,
+  });
+
+  return mutation;
 }

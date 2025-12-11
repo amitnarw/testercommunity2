@@ -1,9 +1,9 @@
 import axios from "axios";
 import API_ROUTES from "./apiRoutes";
 import { authClient } from "./auth-client";
-import { decryptData } from "./encryptDecryptPayload";
 import { UserProfleResponse } from "@/hooks/useUser";
-import { ControlRoomResponse } from "./types";
+import { ControlRoomResponse, UserProfileData } from "./types";
+import api from "./axios";
 
 export const register = async ({
   email,
@@ -114,36 +114,98 @@ export const emailVerification = async ({ token }: { token: string }) => {
 
 export const getUserProfileData = async (): Promise<UserProfleResponse> => {
   try {
-    const response = await axios.get(
-      API_ROUTES.USER + "/get-user-profile-data"
-    );
-    const result = await decryptData(response?.data?.data);
+    const response = await api.get(API_ROUTES.USER + "/get-user-profile-data");
+    const result = response?.data?.data;
     if (!result) throw new Error("No user profile data returned");
 
     return result as UserProfleResponse;
   } catch (error) {
     console.error("Error getting user profile:", error);
-    throw error;
+    if (axios.isAxiosError(error)) {
+      const status = error.response?.status;
+      const responseData = error.response?.data;
+      console.error("Axios error:", status, responseData);
+
+      throw new Error(
+        responseData?.message || error.message || "Unknown Axios error"
+      );
+    } else if (error instanceof Error) {
+      throw new Error(error.message);
+    } else {
+      throw new Error(JSON.stringify(error));
+    }
   }
 };
 
 export const saveInitialProfileData = async () => {
   try {
-    await axios.get(API_ROUTES.USER + "/initial-user-profile");
+    await api.get(API_ROUTES.USER + "/initial-user-profile");
     return true;
   } catch (error) {
-    console.error("Error getting user profile:", error);
-    throw error;
+    console.error("Error saving intial value of user-detail:", error);
+    if (axios.isAxiosError(error)) {
+      const status = error.response?.status;
+      const responseData = error.response?.data;
+      console.error("Axios error:", status, responseData);
+
+      throw new Error(
+        responseData?.message || error.message || "Unknown Axios error"
+      );
+    } else if (error instanceof Error) {
+      throw new Error(error.message);
+    } else {
+      throw new Error(JSON.stringify(error));
+    }
+  }
+};
+
+export const saveProfileData = async (payload: UserProfileData) => {
+  try {
+    if (!payload) {
+      throw new Error("Payload can't be undefined");
+    }
+    const response = await api.post(
+      API_ROUTES.USER + "/save-profile-data",
+      payload
+    );
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error registering user:", error);
+    if (axios.isAxiosError(error)) {
+      const status = error.response?.status;
+      const responseData = error.response?.data;
+      console.error("Axios error:", status, responseData);
+
+      throw new Error(
+        responseData?.message || error.message || "Unknown Axios error"
+      );
+    } else if (error instanceof Error) {
+      throw new Error(error.message);
+    } else {
+      throw new Error(JSON.stringify(error));
+    }
   }
 };
 
 export async function fetchUser(id: string) {
   try {
-    const response = await axios.get(API_ROUTES.USER + `/${id}`);
+    const response = await api.get(API_ROUTES.USER + `/${id}`);
     return response.data;
   } catch (error) {
     console.error("Error fetching user:", error);
-    throw error;
+    if (axios.isAxiosError(error)) {
+      const status = error.response?.status;
+      const responseData = error.response?.data;
+      console.error("Axios error:", status, responseData);
+
+      throw new Error(
+        responseData?.message || error.message || "Unknown Axios error"
+      );
+    } else if (error instanceof Error) {
+      throw new Error(error.message);
+    } else {
+      throw new Error(JSON.stringify(error));
+    }
   }
 }
 
@@ -154,12 +216,22 @@ export async function fetchUser(id: string) {
 
 export async function getControlRoomData(): Promise<ControlRoomResponse> {
   try {
-    const response = await axios.get(
-      API_ROUTES.ADMIN + `/get-control-room-data`
-    );
+    const response = await api.get(API_ROUTES.ADMIN + `/get-control-room-data`);
     return response.data;
   } catch (error) {
     console.error("Error fetching user:", error);
-    throw error;
+    if (axios.isAxiosError(error)) {
+      const status = error.response?.status;
+      const responseData = error.response?.data;
+      console.error("Axios error:", status, responseData);
+
+      throw new Error(
+        responseData?.message || error.message || "Unknown Axios error"
+      );
+    } else if (error instanceof Error) {
+      throw new Error(error.message);
+    } else {
+      throw new Error(JSON.stringify(error));
+    }
   }
 }

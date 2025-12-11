@@ -10,9 +10,8 @@ import {
   Briefcase,
   Lightbulb,
   Phone,
-  Sun,
-  Moon,
   Save,
+  Smartphone,
 } from "lucide-react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
@@ -42,10 +41,27 @@ import {
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Progress } from "@/components/ui/progress";
-import { useUserProfileData, useUserProfileInitial } from "@/hooks/useUser";
+import {
+  useProfileDataSave,
+  useUserProfileData,
+  useUserProfileInitial,
+} from "@/hooks/useUser";
 import { useControlRoomData } from "@/hooks/useAdmin";
 import SkeletonProfileSetup from "@/components/profile-setup/loading-skeleton";
 import { useRouter } from "next/navigation";
+import { LoadingButton } from "@/components/ui/loading-button";
+import { toast } from "@/hooks/use-toast";
+import { BackButton } from "@/components/back-button";
+
+const isValidUrl = (url: string) => {
+  if (!url) return false;
+  try {
+    new URL(url);
+    return true;
+  } catch {
+    return false;
+  }
+};
 
 const RegistrationSuccess = () => (
   <motion.div
@@ -85,6 +101,12 @@ const steps = [
     icon: Lightbulb,
   },
   {
+    id: "device",
+    title: "Your Device",
+    description: "Information about your primary device.",
+    icon: Smartphone,
+  },
+  {
     id: "contact",
     title: "Preferences",
     description: "How you'd like to use inTesters.",
@@ -119,43 +141,6 @@ function ProfileSetupPage() {
 
   const [skipClicked, setSkipClicked] = useState(false);
 
-  const next = () => {
-    if (currentStep < steps.length - 1) {
-      setPreviousStep(currentStep);
-      setCurrentStep((step) => step + 1);
-    }
-  };
-
-  const prev = () => {
-    if (currentStep > 0) {
-      setPreviousStep(currentStep);
-      setCurrentStep((step) => step - 1);
-    }
-  };
-
-  const goToStep = (index: number) => {
-    if (index < currentStep) {
-      setPreviousStep(currentStep);
-      setCurrentStep(index);
-    }
-  };
-
-  const handleSubmit = () => {
-    console.log("Final profile data:", profileData);
-    setIsSubmitted(true);
-  };
-
-  const progress = ((currentStep + 1) / steps.length) * 100;
-
-  const {
-    data: controlRoomData,
-    isPending: controlRoomIsPending,
-    isError: controlRoomIsError,
-    error: controlRoomError,
-  } = useControlRoomData({
-    enabled: true,
-  });
-
   const {
     data: userProfileData,
     isPending: userProfileIsPending,
@@ -178,6 +163,83 @@ function ProfileSetupPage() {
   }, [skipClicked]);
   useUserProfileInitial({ enabled: !!skipClicked });
 
+  const next = () => {
+    if (currentStep < steps.length - 1) {
+      setPreviousStep(currentStep);
+      setCurrentStep((step) => step + 1);
+    }
+  };
+
+  const prev = () => {
+    if (currentStep > 0) {
+      setPreviousStep(currentStep);
+      setCurrentStep((step) => step - 1);
+    }
+  };
+
+  const goToStep = (index: number) => {
+    if (index < currentStep) {
+      setPreviousStep(currentStep);
+      setCurrentStep(index);
+    }
+  };
+
+  const progress = ((currentStep + 1) / steps.length) * 100;
+
+  const {
+    data: controlRoomData,
+    isPending: controlRoomIsPending,
+    isError: controlRoomIsError,
+    error: controlRoomError,
+  } = useControlRoomData({
+    enabled: true,
+  });
+
+  const {
+    mutate,
+    isPending: profileDataIsPending,
+    isSuccess: profileDataIsSuccess,
+    isError: profileDataIsError,
+  } = useProfileDataSave();
+
+  const handleSubmit = () => {
+    if (
+      profileData?.company_website &&
+      !isValidUrl(profileData?.company_website)
+    ) {
+      toast({
+        variant: "destructive",
+        title: "Invalid company website url",
+        description:
+          "Please ensure that you enter a valid and complete company website URL (e.g. https://example.com/)",
+      });
+      setPreviousStep(0);
+      setCurrentStep(1);
+    } else {
+      mutate(profileData, {
+        onSuccess: () => {
+          if (profileData?.initial) {
+            setIsSubmitted(true);
+          } else {
+            toast({
+              title: "Data saved",
+              description: "Your profile data is saved successfully.",
+            });
+          }
+        },
+        onError: (data) => {
+          const errorMessage =
+            data instanceof Error ? data.message : JSON.stringify(data);
+          toast({
+            variant: "destructive",
+            title: "Error",
+            description: errorMessage,
+          });
+        },
+      });
+    }
+  };
+
   if (controlRoomIsPending || userProfileIsPending)
     // if (true)
     return <SkeletonProfileSetup />;
@@ -185,7 +247,19 @@ function ProfileSetupPage() {
     return <p>{controlRoomError?.message || userProfileError?.message}</p>;
 
   return (
-    <div className="h-full w-full flex items-center justify-center p-2 py-4 sm:pt-6 sm:p-4">
+    <div
+      className={`h-full w-full flex flex-col items-center p-2 pt-4 md:p-0 pb-4 ${
+        profileData?.initial ? " justify-center" : " justify-start"
+      }`}
+    >
+      {!profileData?.initial && (
+        <div className="flex flex-row gap-5 items-center sticky top-0 z-[50] py-2 pb-4 px-2 w-full max-w-4xl">
+          <BackButton href="/dashboard" />
+          <h1 className="font-semibold tracking-tight text-xl sm:text-2xl bg-gradient-to-b from-primary to-primary/50 bg-clip-text text-transparent leading-0">
+            Profile Data
+          </h1>
+        </div>
+      )}
       <div className="w-full max-w-4xl h-auto min-h-[70vh] bg-card rounded-2xl shadow-2xl shadow-primary/10 border border-dashed flex flex-col">
         {isSubmitted ? (
           <RegistrationSuccess />
@@ -222,7 +296,7 @@ function ProfileSetupPage() {
                     onClick={() => goToStep(index)}
                     disabled={index >= currentStep}
                     className={cn(
-                      "flex items-center gap-4 p-3 rounded-lg transition-all duration-300 w-full text-left",
+                      "flex items-center gap-4 p-3 py-2 rounded-lg transition-all duration-300 w-full text-left",
                       currentStep === index
                         ? "bg-primary/10 text-primary"
                         : "text-muted-foreground",
@@ -242,9 +316,9 @@ function ProfileSetupPage() {
                       )}
                     >
                       {index < currentStep ? (
-                        <CheckCircle className="w-5 h-5" />
+                        <CheckCircle className="w-4 h-4" />
                       ) : (
-                        <step.icon className="w-5 h-5" />
+                        <step.icon className="w-4 h-4" />
                       )}
                     </div>
                     <div>
@@ -261,7 +335,7 @@ function ProfileSetupPage() {
             <main className="flex-1 flex flex-col p-3 pt-6 md:p-8">
               {/* Mobile Stepper */}
               <div className="md:hidden mb-6">
-                <nav className="grid grid-cols-4 gap-2">
+                <nav className="grid grid-cols-5 gap-2">
                   {steps.map((step, index) => (
                     <button
                       key={`mobile-${step.id}`}
@@ -351,6 +425,12 @@ function ProfileSetupPage() {
                       />
                     )}
                     {currentStep === 3 && (
+                      <DeviceStep
+                        profileData={profileData}
+                        setProfileData={setProfileData}
+                      />
+                    )}
+                    {currentStep === 4 && (
                       <ContactStep
                         profileData={profileData}
                         setProfileData={setProfileData}
@@ -383,9 +463,18 @@ function ProfileSetupPage() {
                       Next <ArrowRight className="ml-2 h-4 w-4" />
                     </Button>
                   ) : (
-                    <Button onClick={handleSubmit} type="button">
-                      <Save className="mr-2 h-4 w-4" /> Finish & Save
-                    </Button>
+                    <LoadingButton
+                      isLoading={profileDataIsPending}
+                      isSuccess={profileDataIsSuccess}
+                      isError={profileDataIsError}
+                      className="text-sm sm:text-base"
+                      onClick={handleSubmit}
+                    >
+                      <div className="flex flex-row items-center gap-2 sm:gap-4">
+                        <Save className="h-4 w-4" />
+                        <span>Finish & Save</span>
+                      </div>
+                    </LoadingButton>
                   )}
                 </div>
               </div>
@@ -432,7 +521,10 @@ const RoleStep = ({ profileData, setProfileData }: ProfileStepperProps) => (
       <Label>Your job role</Label>
       <Select
         onValueChange={(value) =>
-          setProfileData((prev) => ({ ...prev, job_role: value as UserJobRole }))
+          setProfileData((prev) => ({
+            ...prev,
+            job_role: value as UserJobRole,
+          }))
         }
         defaultValue={profileData?.job_role}
       >
@@ -622,40 +714,224 @@ const ProjectsStep = ({ profileData, setProfileData }: ProfileStepperProps) => (
   </StepWrapper>
 );
 
+const DeviceStep = ({ profileData, setProfileData }: ProfileStepperProps) => (
+  <div className="overflow-y-auto h-full">
+    <StepWrapper>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="flex flex-col gap-2">
+          <Label>Device Company</Label>
+          <Select
+            onValueChange={(value) =>
+              setProfileData((prev) => ({ ...prev, device_company: value }))
+            }
+            defaultValue={profileData?.device_company as string | undefined}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="e.g., Google" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="Google">Google</SelectItem>
+              <SelectItem value="Samsung">Samsung</SelectItem>
+              <SelectItem value="OnePlus">OnePlus</SelectItem>
+              <SelectItem value="Xiaomi">Xiaomi</SelectItem>
+              <SelectItem value="Motorola">Motorola</SelectItem>
+              <SelectItem value="Sony">Sony</SelectItem>
+              <SelectItem value="LG">LG</SelectItem>
+              <SelectItem value="Huawei">Huawei</SelectItem>
+              <SelectItem value="Nokia">Nokia</SelectItem>
+              <SelectItem value="Asus">Asus</SelectItem>
+              <SelectItem value="Oppo">Oppo</SelectItem>
+              <SelectItem value="Vivo">Vivo</SelectItem>
+              <SelectItem value="Realme">Realme</SelectItem>
+              <SelectItem value="Lenovo">Lenovo</SelectItem>
+              <SelectItem value="HTC">HTC</SelectItem>
+              <SelectItem value="ZTE">ZTE</SelectItem>
+              <SelectItem value="Alcatel">Alcatel</SelectItem>
+              <SelectItem value="TCL">TCL</SelectItem>
+              <SelectItem value="Nothing">Nothing</SelectItem>
+              <SelectItem value="Other">Other</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+        <div className="flex flex-col gap-2">
+          <Label>Device Model</Label>
+          <Input
+            placeholder="e.g., Pixel 8 Pro"
+            value={profileData?.device_model as string | undefined}
+            onChange={(e) =>
+              setProfileData((prev) => ({
+                ...prev,
+                device_model: e.target.value,
+              }))
+            }
+          />
+        </div>
+        <div className="flex flex-col gap-2">
+          <Label>RAM</Label>
+          <Select
+            onValueChange={(value) =>
+              setProfileData((prev) => ({ ...prev, ram: value }))
+            }
+            defaultValue={profileData?.ram as string | undefined}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="e.g., 8GB" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="2GB">2GB</SelectItem>
+              <SelectItem value="3GB">3GB</SelectItem>
+              <SelectItem value="4GB">4GB</SelectItem>
+              <SelectItem value="6GB">6GB</SelectItem>
+              <SelectItem value="8GB">8GB</SelectItem>
+              <SelectItem value="12GB">12GB</SelectItem>
+              <SelectItem value="16GB">16GB</SelectItem>
+              <SelectItem value="18GB">18GB</SelectItem>
+              <SelectItem value="24GB">24GB</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+        <div className="flex flex-col gap-2">
+          <Label>Operating System</Label>
+          <Select
+            onValueChange={(value) =>
+              setProfileData((prev) => ({ ...prev, os: value }))
+            }
+            defaultValue={profileData?.os as string | undefined}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="e.g., Android 14" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="Android 16">Android 16</SelectItem>
+              <SelectItem value="Android 15">Android 15</SelectItem>
+              <SelectItem value="Android 14">Android 14</SelectItem>
+              <SelectItem value="Android 13">Android 13</SelectItem>
+              <SelectItem value="Android 12">Android 12</SelectItem>
+              <SelectItem value="Android 11">Android 11</SelectItem>
+              <SelectItem value="Android 10 or older">
+                Android 10 or older
+              </SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+        <div className="flex flex-col gap-2">
+          <Label>Screen Resolution</Label>
+          <Select
+            onValueChange={(value) =>
+              setProfileData((prev) => ({ ...prev, screen_resolution: value }))
+            }
+            defaultValue={profileData?.screen_resolution as string | undefined}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="e.g., QHD+" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="HD+ (720p)">HD+ (720p)</SelectItem>
+              <SelectItem value="FHD+ (1080p)">FHD+ (1080p)</SelectItem>
+              <SelectItem value="QHD+ (2K)">QHD+ (2K)</SelectItem>
+              <SelectItem value="UHD (4K)">UHD (4K)</SelectItem>
+              <SelectItem value="UHD (8K)">UHD (8K)</SelectItem>
+              <SelectItem value="Other">Other</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+        <div className="flex flex-col gap-2">
+          <Label>Language</Label>
+          <Select
+            onValueChange={(value) =>
+              setProfileData((prev) => ({ ...prev, language: value }))
+            }
+            defaultValue={profileData?.language as string | undefined}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="e.g., English (US)" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="English (US)">English (US)</SelectItem>
+              <SelectItem value="English (UK)">English (UK)</SelectItem>
+              <SelectItem value="Spanish">Spanish</SelectItem>
+              <SelectItem value="Mandarin Chinese">Mandarin Chinese</SelectItem>
+              <SelectItem value="Hindi">Hindi</SelectItem>
+              <SelectItem value="Arabic">Arabic</SelectItem>
+              <SelectItem value="Portuguese">Portuguese</SelectItem>
+              <SelectItem value="Bengali">Bengali</SelectItem>
+              <SelectItem value="Russian">Russian</SelectItem>
+              <SelectItem value="Japanese">Japanese</SelectItem>
+              <SelectItem value="German">German</SelectItem>
+              <SelectItem value="French">French</SelectItem>
+              <SelectItem value="Other">Other</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+        <div className="flex flex-col gap-2 md:col-span-2">
+          <Label>Primary Network</Label>
+          <RadioGroup
+            onValueChange={(value) =>
+              setProfileData((prev) => ({ ...prev, network: value }))
+            }
+            defaultValue={profileData?.network as string | undefined}
+            className="grid grid-cols-2 gap-4"
+          >
+            <div>
+              <RadioGroupItem value="WiFi" id="wifi" className="peer sr-only" />
+              <Label
+                htmlFor="wifi"
+                className="flex h-full flex-col items-center justify-center rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary cursor-pointer text-center"
+              >
+                WiFi
+              </Label>
+            </div>
+            <div>
+              <RadioGroupItem
+                value="Cellular"
+                id="cellular"
+                className="peer sr-only"
+              />
+              <Label
+                htmlFor="cellular"
+                className="flex h-full flex-col items-center justify-center rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary cursor-pointer text-center"
+              >
+                Cellular
+              </Label>
+            </div>
+          </RadioGroup>
+        </div>
+      </div>
+    </StepWrapper>
+  </div>
+);
+
 const ContactStep = ({ profileData, setProfileData }: ProfileStepperProps) => (
   <div className="overflow-y-auto h-full">
     <StepWrapper>
       <div>
         <Label>Why are you using our service?</Label>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-2">
+        <RadioGroup
+          value={profileData?.service_usage || ""}
+          onValueChange={(value) =>
+            setProfileData((prev) => ({
+              ...prev,
+              service_usage: value as UserTestingServiceReason,
+            }))
+          }
+          className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-2"
+        >
           {Object.values(UserTestingServiceReason).map((item) => (
-            <div
-              key={item}
-              className="flex items-center space-x-2 rounded-md border p-3 has-[:checked]:border-primary"
-            >
-              <Checkbox
-                checked={profileData?.service_usage?.includes(item)}
-                onCheckedChange={(checked) => {
-                  const current = profileData?.service_usage || [];
-                  const updated = checked
-                    ? [...current, item]
-                    : current.filter((val) => val !== item);
-                  setProfileData((prev) => ({
-                    ...prev,
-                    service_usage: updated,
-                  }));
-                }}
+            <div className="flex items-center gap-3">
+              <RadioGroupItem
+                key={item}
+                value={item}
                 id={`service-${item}`}
-              />
+              ></RadioGroupItem>
               <Label
                 htmlFor={`service-${item}`}
-                className="text-sm font-normal cursor-pointer w-full"
+                className="text-sm font-normal cursor-pointer"
               >
-                {item.replace(/_/g, " ")?.toLowerCase()}
+                {item.replace(/_/g, " ").toLowerCase()}
               </Label>
             </div>
           ))}
-        </div>
+        </RadioGroup>
       </div>
       <div>
         <Label>Preferred Communication Methods</Label>
@@ -663,7 +939,7 @@ const ContactStep = ({ profileData, setProfileData }: ProfileStepperProps) => (
           {Object.values(UserCommunicationMethod).map((item) => (
             <div
               key={item}
-              className="flex items-center space-x-2 rounded-md border p-3 has-[:checked]:border-primary"
+              className="flex items-center space-x-2 rounded-md border has-[:checked]:border-primary"
             >
               <Checkbox
                 checked={profileData?.communication_methods?.includes(item)}
@@ -678,10 +954,12 @@ const ContactStep = ({ profileData, setProfileData }: ProfileStepperProps) => (
                   }));
                 }}
                 id={`comm-${item}`}
+                className="ml-3 rounded-[4px]"
+                // className="flex items-center space-x-2
               />
               <Label
                 htmlFor={`comm-${item}`}
-                className="text-sm font-normal cursor-pointer w-full"
+                className="text-sm font-normal cursor-pointer w-full p-3"
               >
                 {item?.toLowerCase()}
               </Label>
