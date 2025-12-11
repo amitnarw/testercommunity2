@@ -161,7 +161,7 @@ export type UserProfileData = {
   first_name: string;
   last_name: string;
   phone?: string;
-  authType: UserAuthType;
+  auth_type: UserAuthType;
 
   roleId: number;
   banned?: boolean;

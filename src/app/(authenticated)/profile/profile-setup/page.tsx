@@ -183,9 +183,9 @@ function ProfileSetupPage() {
     return <SkeletonProfileSetup />;
   if (controlRoomIsError || userProfileIsError)
     return <p>{controlRoomError?.message || userProfileError?.message}</p>;
-console.log(profileData, 'pppppp')
+
   return (
-    <div className="h-full w-full flex items-center justify-center p-2 pt-6 sm:p-4">
+    <div className="h-full w-full flex items-center justify-center p-2 py-4 sm:pt-6 sm:p-4">
       <div className="w-full max-w-4xl h-auto min-h-[70vh] bg-card rounded-2xl shadow-2xl shadow-primary/10 border border-dashed flex flex-col">
         {isSubmitted ? (
           <RegistrationSuccess />
@@ -422,7 +422,7 @@ const RoleStep = ({ profileData, setProfileData }: ProfileStepperProps) => (
               htmlFor={type}
               className="flex h-full flex-col items-center justify-center rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary cursor-pointer text-center"
             >
-              {type.replace("_", " ")}
+              {type.replace("_", " ")?.toLowerCase()}
             </Label>
           </div>
         ))}
@@ -442,7 +442,7 @@ const RoleStep = ({ profileData, setProfileData }: ProfileStepperProps) => (
         <SelectContent>
           {Object.values(UserJobRole).map((role) => (
             <SelectItem key={role} value={role}>
-              {role.replace(/_/g, " ")}
+              {role.replace(/_/g, " ")?.toLowerCase()}
             </SelectItem>
           ))}
         </SelectContent>
@@ -465,7 +465,7 @@ const RoleStep = ({ profileData, setProfileData }: ProfileStepperProps) => (
         <SelectContent>
           {Object.values(UserExperienceLevel).map((level) => (
             <SelectItem key={level} value={level}>
-              {level.replace(/_/g, " ")}
+              {level.replace(/_/g, " ")?.toLowerCase()}
             </SelectItem>
           ))}
         </SelectContent>
@@ -516,7 +516,7 @@ const CompanyStep = ({ profileData, setProfileData }: ProfileStepperProps) => (
         <SelectContent>
           {Object.values(UserCompanySize).map((size) => (
             <SelectItem key={size} value={size}>
-              {size.replace("SIZE_", "").replace(/_/g, "-")}
+              {size.replace("SIZE_", "").replace(/_/g, "-")?.toLowerCase()}
             </SelectItem>
           ))}
         </SelectContent>
@@ -539,7 +539,7 @@ const CompanyStep = ({ profileData, setProfileData }: ProfileStepperProps) => (
         <SelectContent>
           {Object.values(UserCompanyPosition).map((pos) => (
             <SelectItem key={pos} value={pos}>
-              {pos.replace(/_/g, " ")}
+              {pos.replace(/_/g, " ")?.toLowerCase()}
             </SelectItem>
           ))}
         </SelectContent>
@@ -567,7 +567,7 @@ const ProjectsStep = ({ profileData, setProfileData }: ProfileStepperProps) => (
         <SelectContent>
           {Object.values(UserTotalPublishedApps).map((val) => (
             <SelectItem key={val} value={val}>
-              {val.replace("PUB_", "").replace(/_/g, "-")}
+              {val.replace("PUB_", "").replace(/_/g, "-")?.toLowerCase()}
             </SelectItem>
           ))}
         </SelectContent>
@@ -590,7 +590,7 @@ const ProjectsStep = ({ profileData, setProfileData }: ProfileStepperProps) => (
         <SelectContent>
           {Object.values(UserDevelopmentPlatform).map((val) => (
             <SelectItem key={val} value={val}>
-              {val.replace(/_/g, " ")}
+              {val.replace(/_/g, " ")?.toLowerCase()}
             </SelectItem>
           ))}
         </SelectContent>
@@ -613,7 +613,7 @@ const ProjectsStep = ({ profileData, setProfileData }: ProfileStepperProps) => (
         <SelectContent>
           {Object.values(UserPublishFrequency).map((val) => (
             <SelectItem key={val} value={val}>
-              {val.replace(/_/g, " ")}
+              {val.replace(/_/g, " ")?.toLowerCase()}
             </SelectItem>
           ))}
         </SelectContent>
@@ -651,7 +651,7 @@ const ContactStep = ({ profileData, setProfileData }: ProfileStepperProps) => (
                 htmlFor={`service-${item}`}
                 className="text-sm font-normal cursor-pointer w-full"
               >
-                {item.replace(/_/g, " ")}
+                {item.replace(/_/g, " ")?.toLowerCase()}
               </Label>
             </div>
           ))}
@@ -683,7 +683,7 @@ const ContactStep = ({ profileData, setProfileData }: ProfileStepperProps) => (
                 htmlFor={`comm-${item}`}
                 className="text-sm font-normal cursor-pointer w-full"
               >
-                {item}
+                {item?.toLowerCase()}
               </Label>
             </div>
           ))}
