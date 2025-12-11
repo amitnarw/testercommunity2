@@ -642,35 +642,82 @@ const ProjectsStep = ({ profileData, setProfileData }: ProfileStepperProps) => (
 const DeviceStep = ({ profileData, setProfileData }: ProfileStepperProps) => (
   <StepWrapper>
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-      <div className="flex flex-col gap-2">
+       <div className="flex flex-col gap-2">
         <Label>Device Company</Label>
-        <Input placeholder="e.g., Google" value={profileData?.device_company} onChange={(e) => setProfileData(prev => ({ ...prev, device_company: e.target.value }))} />
+        <Select onValueChange={(value) => setProfileData(prev => ({ ...prev, device_company: value }))} defaultValue={profileData?.device_company as string | undefined}>
+            <SelectTrigger><SelectValue placeholder="e.g., Google" /></SelectTrigger>
+            <SelectContent>
+                <SelectItem value="Google">Google</SelectItem>
+                <SelectItem value="Samsung">Samsung</SelectItem>
+                <SelectItem value="OnePlus">OnePlus</SelectItem>
+                <SelectItem value="Xiaomi">Xiaomi</SelectItem>
+                <SelectItem value="Nothing">Nothing</SelectItem>
+                <SelectItem value="Other">Other</SelectItem>
+            </SelectContent>
+        </Select>
       </div>
       <div className="flex flex-col gap-2">
         <Label>Device Model</Label>
-        <Input placeholder="e.g., Pixel 8 Pro" value={profileData?.device_model} onChange={(e) => setProfileData(prev => ({ ...prev, device_model: e.target.value }))} />
+        <Input placeholder="e.g., Pixel 8 Pro" value={profileData?.device_model as string | undefined} onChange={(e) => setProfileData(prev => ({ ...prev, device_model: e.target.value }))} />
       </div>
       <div className="flex flex-col gap-2">
         <Label>RAM</Label>
-        <Input placeholder="e.g., 8GB" value={profileData?.ram} onChange={(e) => setProfileData(prev => ({ ...prev, ram: e.target.value }))} />
+        <Select onValueChange={(value) => setProfileData(prev => ({ ...prev, ram: value }))} defaultValue={profileData?.ram as string | undefined}>
+            <SelectTrigger><SelectValue placeholder="e.g., 8GB" /></SelectTrigger>
+            <SelectContent>
+                <SelectItem value="4GB">4GB</SelectItem>
+                <SelectItem value="6GB">6GB</SelectItem>
+                <SelectItem value="8GB">8GB</SelectItem>
+                <SelectItem value="12GB">12GB</SelectItem>
+                <SelectItem value="16GB+">16GB+</SelectItem>
+            </SelectContent>
+        </Select>
       </div>
       <div className="flex flex-col gap-2">
         <Label>Operating System</Label>
-        <Input placeholder="e.g., Android 14" value={profileData?.os} onChange={(e) => setProfileData(prev => ({ ...prev, os: e.target.value }))} />
+        <Select onValueChange={(value) => setProfileData(prev => ({ ...prev, os: value }))} defaultValue={profileData?.os as string | undefined}>
+            <SelectTrigger><SelectValue placeholder="e.g., Android 14" /></SelectTrigger>
+            <SelectContent>
+                <SelectItem value="Android 14">Android 14</SelectItem>
+                <SelectItem value="Android 13">Android 13</SelectItem>
+                <SelectItem value="Android 12">Android 12</SelectItem>
+                <SelectItem value="Android 11">Android 11</SelectItem>
+                <SelectItem value="Android 10 or older">Android 10 or older</SelectItem>
+            </SelectContent>
+        </Select>
       </div>
       <div className="flex flex-col gap-2">
         <Label>Screen Resolution</Label>
-        <Input placeholder="e.g., 1440x3120" value={profileData?.screen_resolution} onChange={(e) => setProfileData(prev => ({ ...prev, screen_resolution: e.target.value }))} />
+        <Select onValueChange={(value) => setProfileData(prev => ({ ...prev, screen_resolution: value }))} defaultValue={profileData?.screen_resolution as string | undefined}>
+            <SelectTrigger><SelectValue placeholder="e.g., 1440x3120" /></SelectTrigger>
+            <SelectContent>
+                <SelectItem value="FHD+ (1080p)">FHD+ (1080p)</SelectItem>
+                <SelectItem value="QHD+ (1440p)">QHD+ (1440p)</SelectItem>
+                <SelectItem value="HD+ (720p)">HD+ (720p)</SelectItem>
+                <SelectItem value="Other">Other</SelectItem>
+            </SelectContent>
+        </Select>
       </div>
       <div className="flex flex-col gap-2">
         <Label>Language</Label>
-        <Input placeholder="e.g., en-US" value={profileData?.language} onChange={(e) => setProfileData(prev => ({ ...prev, language: e.target.value }))} />
+         <Select onValueChange={(value) => setProfileData(prev => ({ ...prev, language: value }))} defaultValue={profileData?.language as string | undefined}>
+            <SelectTrigger><SelectValue placeholder="e.g., en-US" /></SelectTrigger>
+            <SelectContent>
+                <SelectItem value="English (US)">English (US)</SelectItem>
+                <SelectItem value="English (UK)">English (UK)</SelectItem>
+                <SelectItem value="Spanish">Spanish</SelectItem>
+                <SelectItem value="Hindi">Hindi</SelectItem>
+                <SelectItem value="German">German</SelectItem>
+                <SelectItem value="French">French</SelectItem>
+                <SelectItem value="Other">Other</SelectItem>
+            </SelectContent>
+        </Select>
       </div>
       <div className="flex flex-col gap-2 md:col-span-2">
         <Label>Primary Network</Label>
         <RadioGroup
           onValueChange={(value) => setProfileData(prev => ({ ...prev, network: value }))}
-          defaultValue={profileData?.network}
+          defaultValue={profileData?.network as string | undefined}
           className="grid grid-cols-2 gap-4"
         >
           <div>
