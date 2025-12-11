@@ -458,6 +458,9 @@ function ProfileSetupPage() {
                 </Button>
 
                 <div className="flex items-center gap-4">
+                  <Button asChild variant="ghost">
+                    <Link href="/dashboard">Skip for now</Link>
+                  </Button>
                   {currentStep < steps.length - 1 ? (
                     <Button onClick={next} type="button">
                       Next <ArrowRight className="ml-2 h-4 w-4" />
