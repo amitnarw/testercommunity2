@@ -392,9 +392,6 @@ function ProfileSetupPage() {
                 </Button>
 
                 <div className="flex items-center gap-4">
-                  <Button asChild variant="ghost">
-                    <Link href="/dashboard">Skip for now</Link>
-                  </Button>
                   {currentStep < steps.length - 1 ? (
                     <Button onClick={next} type="button">
                       Next <ArrowRight className="ml-2 h-4 w-4" />
@@ -651,6 +648,12 @@ const DeviceStep = ({ profileData, setProfileData }: ProfileStepperProps) => (
                 <SelectItem value="Samsung">Samsung</SelectItem>
                 <SelectItem value="OnePlus">OnePlus</SelectItem>
                 <SelectItem value="Xiaomi">Xiaomi</SelectItem>
+                <SelectItem value="Motorola">Motorola</SelectItem>
+                <SelectItem value="Sony">Sony</SelectItem>
+                <SelectItem value="LG">LG</SelectItem>
+                <SelectItem value="Huawei">Huawei</SelectItem>
+                <SelectItem value="Nokia">Nokia</SelectItem>
+                <SelectItem value="Asus">Asus</SelectItem>
                 <SelectItem value="Nothing">Nothing</SelectItem>
                 <SelectItem value="Other">Other</SelectItem>
             </SelectContent>
@@ -665,11 +668,15 @@ const DeviceStep = ({ profileData, setProfileData }: ProfileStepperProps) => (
         <Select onValueChange={(value) => setProfileData(prev => ({ ...prev, ram: value }))} defaultValue={profileData?.ram as string | undefined}>
             <SelectTrigger><SelectValue placeholder="e.g., 8GB" /></SelectTrigger>
             <SelectContent>
+                <SelectItem value="2GB">2GB</SelectItem>
+                <SelectItem value="3GB">3GB</SelectItem>
                 <SelectItem value="4GB">4GB</SelectItem>
                 <SelectItem value="6GB">6GB</SelectItem>
                 <SelectItem value="8GB">8GB</SelectItem>
                 <SelectItem value="12GB">12GB</SelectItem>
-                <SelectItem value="16GB+">16GB+</SelectItem>
+                <SelectItem value="16GB">16GB</SelectItem>
+                <SelectItem value="18GB">18GB</SelectItem>
+                <SelectItem value="24GB">24GB</SelectItem>
             </SelectContent>
         </Select>
       </div>
@@ -678,6 +685,8 @@ const DeviceStep = ({ profileData, setProfileData }: ProfileStepperProps) => (
         <Select onValueChange={(value) => setProfileData(prev => ({ ...prev, os: value }))} defaultValue={profileData?.os as string | undefined}>
             <SelectTrigger><SelectValue placeholder="e.g., Android 14" /></SelectTrigger>
             <SelectContent>
+                <SelectItem value="Android 16">Android 16</SelectItem>
+                <SelectItem value="Android 15">Android 15</SelectItem>
                 <SelectItem value="Android 14">Android 14</SelectItem>
                 <SelectItem value="Android 13">Android 13</SelectItem>
                 <SelectItem value="Android 12">Android 12</SelectItem>
@@ -689,11 +698,13 @@ const DeviceStep = ({ profileData, setProfileData }: ProfileStepperProps) => (
       <div className="flex flex-col gap-2">
         <Label>Screen Resolution</Label>
         <Select onValueChange={(value) => setProfileData(prev => ({ ...prev, screen_resolution: value }))} defaultValue={profileData?.screen_resolution as string | undefined}>
-            <SelectTrigger><SelectValue placeholder="e.g., 1440x3120" /></SelectTrigger>
+            <SelectTrigger><SelectValue placeholder="e.g., QHD+" /></SelectTrigger>
             <SelectContent>
-                <SelectItem value="FHD+ (1080p)">FHD+ (1080p)</SelectItem>
-                <SelectItem value="QHD+ (1440p)">QHD+ (1440p)</SelectItem>
                 <SelectItem value="HD+ (720p)">HD+ (720p)</SelectItem>
+                <SelectItem value="FHD+ (1080p)">FHD+ (1080p)</SelectItem>
+                <SelectItem value="QHD+ (2K)">QHD+ (2K)</SelectItem>
+                <SelectItem value="UHD (4K)">UHD (4K)</SelectItem>
+                <SelectItem value="UHD (8K)">UHD (8K)</SelectItem>
                 <SelectItem value="Other">Other</SelectItem>
             </SelectContent>
         </Select>
@@ -701,12 +712,18 @@ const DeviceStep = ({ profileData, setProfileData }: ProfileStepperProps) => (
       <div className="flex flex-col gap-2">
         <Label>Language</Label>
          <Select onValueChange={(value) => setProfileData(prev => ({ ...prev, language: value }))} defaultValue={profileData?.language as string | undefined}>
-            <SelectTrigger><SelectValue placeholder="e.g., en-US" /></SelectTrigger>
+            <SelectTrigger><SelectValue placeholder="e.g., English (US)" /></SelectTrigger>
             <SelectContent>
                 <SelectItem value="English (US)">English (US)</SelectItem>
                 <SelectItem value="English (UK)">English (UK)</SelectItem>
                 <SelectItem value="Spanish">Spanish</SelectItem>
+                <SelectItem value="Mandarin Chinese">Mandarin Chinese</SelectItem>
                 <SelectItem value="Hindi">Hindi</SelectItem>
+                <SelectItem value="Arabic">Arabic</SelectItem>
+                <SelectItem value="Portuguese">Portuguese</SelectItem>
+                <SelectItem value="Bengali">Bengali</SelectItem>
+                <SelectItem value="Russian">Russian</SelectItem>
+                <SelectItem value="Japanese">Japanese</SelectItem>
                 <SelectItem value="German">German</SelectItem>
                 <SelectItem value="French">French</SelectItem>
                 <SelectItem value="Other">Other</SelectItem>
