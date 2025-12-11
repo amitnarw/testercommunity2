@@ -1,3 +1,4 @@
+
 "use client";
 
 import React, { useEffect, useState } from "react";
@@ -13,6 +14,7 @@ import {
   Sun,
   Moon,
   Save,
+  Smartphone,
 } from "lucide-react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
@@ -83,6 +85,12 @@ const steps = [
     title: "Your Projects",
     description: "Details about your development work.",
     icon: Lightbulb,
+  },
+  {
+    id: "device",
+    title: "Your Device",
+    description: "Information about your primary device.",
+    icon: Smartphone,
   },
   {
     id: "contact",
@@ -261,7 +269,7 @@ function ProfileSetupPage() {
             <main className="flex-1 flex flex-col p-3 pt-6 md:p-8">
               {/* Mobile Stepper */}
               <div className="md:hidden mb-6">
-                <nav className="grid grid-cols-4 gap-2">
+                <nav className="grid grid-cols-5 gap-2">
                   {steps.map((step, index) => (
                     <button
                       key={`mobile-${step.id}`}
@@ -351,6 +359,12 @@ function ProfileSetupPage() {
                       />
                     )}
                     {currentStep === 3 && (
+                      <DeviceStep
+                        profileData={profileData}
+                        setProfileData={setProfileData}
+                      />
+                    )}
+                    {currentStep === 4 && (
                       <ContactStep
                         profileData={profileData}
                         setProfileData={setProfileData}
@@ -457,7 +471,7 @@ const RoleStep = ({ profileData, setProfileData }: ProfileStepperProps) => (
         onValueChange={(value) =>
           setProfileData((prev) => ({
             ...prev,
-            experienceLevel: value as UserExperienceLevel,
+            experience_level: value as UserExperienceLevel,
           }))
         }
         defaultValue={profileData?.experience_level}
@@ -621,6 +635,58 @@ const ProjectsStep = ({ profileData, setProfileData }: ProfileStepperProps) => (
           ))}
         </SelectContent>
       </Select>
+    </div>
+  </StepWrapper>
+);
+
+const DeviceStep = ({ profileData, setProfileData }: ProfileStepperProps) => (
+  <StepWrapper>
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="flex flex-col gap-2">
+        <Label>Device Company</Label>
+        <Input placeholder="e.g., Google" value={profileData?.device_company} onChange={(e) => setProfileData(prev => ({ ...prev, device_company: e.target.value }))} />
+      </div>
+      <div className="flex flex-col gap-2">
+        <Label>Device Model</Label>
+        <Input placeholder="e.g., Pixel 8 Pro" value={profileData?.device_model} onChange={(e) => setProfileData(prev => ({ ...prev, device_model: e.target.value }))} />
+      </div>
+      <div className="flex flex-col gap-2">
+        <Label>RAM</Label>
+        <Input placeholder="e.g., 8GB" value={profileData?.ram} onChange={(e) => setProfileData(prev => ({ ...prev, ram: e.target.value }))} />
+      </div>
+      <div className="flex flex-col gap-2">
+        <Label>Operating System</Label>
+        <Input placeholder="e.g., Android 14" value={profileData?.os} onChange={(e) => setProfileData(prev => ({ ...prev, os: e.target.value }))} />
+      </div>
+      <div className="flex flex-col gap-2">
+        <Label>Screen Resolution</Label>
+        <Input placeholder="e.g., 1440x3120" value={profileData?.screen_resolution} onChange={(e) => setProfileData(prev => ({ ...prev, screen_resolution: e.target.value }))} />
+      </div>
+      <div className="flex flex-col gap-2">
+        <Label>Language</Label>
+        <Input placeholder="e.g., en-US" value={profileData?.language} onChange={(e) => setProfileData(prev => ({ ...prev, language: e.target.value }))} />
+      </div>
+      <div className="flex flex-col gap-2 md:col-span-2">
+        <Label>Primary Network</Label>
+        <RadioGroup
+          onValueChange={(value) => setProfileData(prev => ({ ...prev, network: value }))}
+          defaultValue={profileData?.network}
+          className="grid grid-cols-2 gap-4"
+        >
+          <div>
+            <RadioGroupItem value="WiFi" id="wifi" className="peer sr-only" />
+            <Label htmlFor="wifi" className="flex h-full flex-col items-center justify-center rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary cursor-pointer text-center">
+              WiFi
+            </Label>
+          </div>
+          <div>
+            <RadioGroupItem value="Cellular" id="cellular" className="peer sr-only" />
+            <Label htmlFor="cellular" className="flex h-full flex-col items-center justify-center rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary cursor-pointer text-center">
+              Cellular
+            </Label>
+          </div>
+        </RadioGroup>
+      </div>
     </div>
   </StepWrapper>
 );
