@@ -654,6 +654,14 @@ const DeviceStep = ({ profileData, setProfileData }: ProfileStepperProps) => (
                 <SelectItem value="Huawei">Huawei</SelectItem>
                 <SelectItem value="Nokia">Nokia</SelectItem>
                 <SelectItem value="Asus">Asus</SelectItem>
+                <SelectItem value="Oppo">Oppo</SelectItem>
+                <SelectItem value="Vivo">Vivo</SelectItem>
+                <SelectItem value="Realme">Realme</SelectItem>
+                <SelectItem value="Lenovo">Lenovo</SelectItem>
+                <SelectItem value="HTC">HTC</SelectItem>
+                <SelectItem value="ZTE">ZTE</SelectItem>
+                <SelectItem value="Alcatel">Alcatel</SelectItem>
+                <SelectItem value="TCL">TCL</SelectItem>
                 <SelectItem value="Nothing">Nothing</SelectItem>
                 <SelectItem value="Other">Other</SelectItem>
             </SelectContent>
