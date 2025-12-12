@@ -32,7 +32,7 @@ export default function PublicLayout({
   // }, [session, isAuthPage, router]);
 
   if (isPending) {
-    return <p>Loading</p>;
+    return <p>Loading (public)</p>;
   }
 
   if (!session && isAuthPage) {
