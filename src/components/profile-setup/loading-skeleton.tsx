@@ -10,7 +10,8 @@ const SkeletonProfileSetup = () => {
             <Skeleton className="h-8 w-full" />
             <Skeleton className="h-2 w-full mt-4" />
             <Skeleton className="h-2 w-full mt-2" />
-            <div className="flex flex-col gap-4 mt-14">
+            <div className="flex flex-col gap-2 mt-10">
+              <Skeleton className="h-14 w-2/3" />
               <Skeleton className="h-14 w-2/3" />
               <Skeleton className="h-14 w-2/3" />
               <Skeleton className="h-14 w-2/3" />
@@ -18,13 +19,14 @@ const SkeletonProfileSetup = () => {
             </div>
           </div>
           <div className="w-2/3 h-full">
-            <Skeleton className="h-[55vh] w-full" />
+            <Skeleton className="h-[58vh] w-full" />
           </div>
         </div>
       </Skeleton>
       <Skeleton className="rounded-2xl p-2 w-[90vw] mx-auto mt-8 block sm:hidden">
         <div className="rounded-2xl bg-[#f8fafc] dark:bg-[#0f151e] p-4 flex flex-col gap-1 items-center">
           <div className="w-full flex flex-row items-center justify-around">
+            <Skeleton className="h-10 w-10 rounded-full" />
             <Skeleton className="h-10 w-10 rounded-full" />
             <Skeleton className="h-10 w-10 rounded-full" />
             <Skeleton className="h-10 w-10 rounded-full" />

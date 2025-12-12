@@ -180,7 +180,7 @@ export type UserProfileData = {
   platform_development?: UserDevelopmentPlatform;
   publish_frequency?: UserPublishFrequency;
 
-  service_usage?: UserTestingServiceReason[];
+  service_usage?: UserTestingServiceReason;
 
   communication_methods?: UserCommunicationMethod[];
   notification_preference?: UserNotificationPreference[];

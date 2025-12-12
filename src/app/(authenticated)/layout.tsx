@@ -25,9 +25,14 @@ export default function AuthenticatedLayout({
   //   }
   // }, [session, router, isPending]);
 
-  const handleLogout = () => {
-    document.cookie = "isAuthenticated=false; path=/; max-age=0";
-    router.push("/auth/login");
+  const handleLogout = async () => {
+    await authClient.signOut({
+      fetchOptions: {
+        onSuccess: () => {
+          router.push("/auth/login");
+        },
+      },
+    });
   };
 
   return (

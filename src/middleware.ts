@@ -3,9 +3,11 @@ import type { NextRequest } from "next/server";
 import { getCookieCache } from "better-auth/cookies";
 import { cookies } from "next/headers";
 import { jwtVerify } from "jose";
+import { authClient } from "./lib/auth-client";
 
 export async function middleware(request: NextRequest) {
   // const cached = await getCookieCache(request);
+  // const { data: session, isPending, error, refetch } = await authClient.useSession();
 
   // const secret = process.env.BETTER_AUTH_SECRET!;
   // let role: {

@@ -65,7 +65,7 @@ export default function MobileMenu({ isMenuOpen, setIsMenuOpen, onLogout }: {
         <div className="md:hidden">
             <Sheet open={isMenuOpen} onOpenChange={setIsMenuOpen}>
                 <SheetTrigger asChild>
-                    <Button size="icon" variant="ghost" className="p-2 h-auto w-auto">
+                    <Button size="icon" variant="ghost" className="p-2 h-8 w-8">
                         <Menu className="h-6 w-6" />
                         <span className="sr-only">Open menu</span>
                     </Button>

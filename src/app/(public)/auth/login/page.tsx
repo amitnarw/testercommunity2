@@ -56,12 +56,7 @@ const LoginForm = () => {
   } = useUserProfileData({
     enabled: isSuccess,
   });
-  console.log(
-    userProfileIsSuccess,
-    userProfileData,
-    !userProfileIsPending,
-    userProfileData?.initial
-  );
+
   useEffect(() => {
     if (
       userProfileIsSuccess &&
@@ -168,10 +163,10 @@ const LoginForm = () => {
           className="rounded-[5px]"
           defaultChecked
           checked={loginValues?.rememberMe}
-          onCheckedChange={() => {
+          onCheckedChange={(checked) => {
             setLoginValues((prev) => ({
               ...prev,
-              rememberMe: !loginValues?.rememberMe,
+              rememberMe: !!checked,
             }));
           }}
         />
@@ -179,15 +174,6 @@ const LoginForm = () => {
           Remember me
         </Label>
       </div>
-
-      {/* <div className="space-y-2">
-        <Button
-          className="w-full rounded-xl py-6 text-lg"
-          onClick={handleLogin}
-        >
-          Log In
-        </Button>
-      </div> */}
 
       <div className="mt-8 pt-5">
         <div className="flex justify-end">
