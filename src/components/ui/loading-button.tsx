@@ -1,199 +1,125 @@
 "use client";
-import { cn } from "@/lib/utils";
-import React, { useEffect, useState } from "react";
-import { motion, useAnimate } from "framer-motion";
-import { CircleX } from "lucide-react";
 
-type MotionButtonProps = Omit<
-  React.ButtonHTMLAttributes<HTMLButtonElement>,
-  | "onDrag"
-  | "onDragEnd"
-  | "onDragStart"
-  | "onAnimationStart"
-  | "onAnimationComplete"
-  | "onUpdate"
-  | "onFocus"
-  | "onBlur"
-> & {
+import { cn } from "@/lib/utils";
+import React, { useEffect } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import { Check, Loader2, X } from "lucide-react";
+
+type LoadingButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
   children: React.ReactNode;
-  className?: string;
   isLoading?: boolean;
   isSuccess?: boolean;
   isError?: boolean;
-  onClick?: (
-    event: React.MouseEvent<HTMLButtonElement, MouseEvent>
-  ) => Promise<any> | void;
+  loadingText?: string;
 };
 
-export const LoadingButton = React.forwardRef<
-  HTMLButtonElement,
-  MotionButtonProps
->(
+export const LoadingButton = React.forwardRef<HTMLButtonElement, LoadingButtonProps>(
   (
-    { className, children, isLoading, isSuccess, isError, onClick, ...props },
+    {
+      children,
+      className,
+      isLoading = false,
+      isSuccess = false,
+      isError = false,
+      loadingText = "Loading...",
+      disabled,
+      onClick,
+      ...props
+    },
     ref
   ) => {
-    const [scope, animate] = useAnimate();
-    const [checkError, setCheckError] = useState(true);
+    // Track internal success/error state to auto-reset after 2 seconds
+    const [internalState, setInternalState] = React.useState<"idle" | "success" | "error">("idle");
 
-    const runAnimation = async () => {
-      // 1. Animate text out
-      await animate(".text", { opacity: 0, y: 10 }, { duration: 0.2 });
-      animate(".check", { opacity: 0, scale: 0 });
-      animate(".error", { opacity: 0, scale: 0 });
+    const state = isSuccess ? "success" : isError ? "error" : isLoading ? "loading" : "idle";
+    const showSuccess = state === "success" || internalState === "success";
+    const showError = state === "error" || internalState === "error";
+    const showLoading = state === "loading";
 
-      // 2. Animate button collapse after text is gone
-      await animate(
-        scope.current,
-        { width: 10, height: 25, paddingLeft: "0px", paddingRight: "0px" },
-        { duration: 0.7, ease: "easeInOut" }
-      );
-
-      // 3. Show loader
-      animate(".loader", { opacity: 1, scale: 1, y: 0 }, { duration: 0.2 });
-    };
-
-    const runSuccessAnimation = async () => {
-      // 4. Animate loader out and check in using a sequence
-      await animate([
-        [".loader", { opacity: 0, scale: 0 }, { duration: 0.2 }],
-        [".check", { opacity: 1, scale: 1 }, { duration: 0.2 }],
-      ]);
-
-      // 5. Restore button to its original state
-      await animate(
-        scope.current,
-        { width: "auto", height: "auto" },
-        { duration: 0.7, ease: "easeInOut" }
-      );
-      animate(".loader", { opacity: 0 });
-      // animate(".text", { opacity: 1, y: 0 }, { duration: 0.2 });
-      // animate(".check", { opacity: 0, scale: 0 });
-    };
-
-    const runErrorAnimation = async () => {
-      // 4. Animate loader out and check in using a sequence
-      await animate([
-        [".loader", { opacity: 0, scale: 0 }, { duration: 0.2 }],
-        [".error", { opacity: 1, scale: 1 }, { duration: 0.2 }],
-      ]);
-
-      // 5. Restore button to its original state
-      await animate(
-        scope.current,
-        { width: "auto", height: "auto" },
-        { duration: 0.7, ease: "easeInOut" }
-      );
-      animate(".loader", { opacity: 0, scale: 0 }, { duration: 0.2 });
-      animate(".text", { opacity: 1, y: 0 }, { duration: 0.2 });
-      animate(".error", { opacity: 0, scale: 0 }, { duration: 0.2 });
-    };
-
-    useEffect(() => {
-      setCheckError(true);
-      if (isLoading && !isSuccess && !isError) {
-        runAnimation();
+    // Auto-reset success/error after 2s
+    React.useEffect(() => {
+      if (isSuccess || isError) {
+        const timer = setTimeout(() => {
+          setInternalState("idle");
+        }, 2000);
+        return () => clearTimeout(timer);
       }
-      if (!isLoading && isSuccess && !isError) {
-        runSuccessAnimation();
-      }
-      if (!isLoading && !isSuccess && isError) {
-        runErrorAnimation();
-        setTimeout(() => {
-          setCheckError(false);
-        }, 1000);
-      }
-    }, [isLoading, isSuccess, isError]);
+    }, [isSuccess, isError]);
 
     return (
-      <motion.button
+      <button
+        ref={ref}
+        disabled={showLoading || disabled || showSuccess}
         className={cn(
-          `relative flex items-center justify-center gap-2 overflow-hidden rounded-full ${
-            isSuccess
-              ? "bg-green-500 hover:ring-green-500"
-              : isError && checkError
-              ? "bg-red-500 hover:ring-red-500"
-              : "bg-primary hover:ring-primary"
-          } px-4 py-2 font-medium text-white ring-offset-2 transition duration-2000 hover:ring-2 dark:ring-offset-black`,
-          "disabled:cursor-not-allowed",
+          "relative inline-flex items-center justify-center gap-2 overflow-hidden rounded-lg px-6 py-3 font-medium text-white transition-all",
+          "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2",
+          "disabled:cursor-not-allowed disabled:opacity-60",
+          showSuccess && "bg-green-600 hover:bg-green-700 focus-visible:ring-green-500",
+          showError && "bg-red-600 hover:bg-red-700 focus-visible:ring-red-500",
+          !showSuccess && !showError && "bg-primary hover:bg-primary/90 focus-visible:ring-primary",
           className
         )}
-        {...props}
-        disabled={isSuccess}
         onClick={onClick}
+        {...props}
       >
-        <div ref={scope} className="relative flex items-center justify-center">
-          <motion.span className="text" initial={{ opacity: 1, y: 0 }}>
-            {children}
-          </motion.span>
-          <motion.div
-            className="loader absolute"
-            initial={{ opacity: 0, scale: 0 }}
-          >
-            <Loader />
-          </motion.div>
-          <motion.div
-            className="check absolute"
-            initial={{ opacity: 0, scale: 0 }}
-          >
-            <CheckIcon />
-          </motion.div>
-          <motion.div
-            className="error absolute"
-            initial={{ opacity: 0, scale: 0 }}
-          >
-            <ErrorIcon />
-          </motion.div>
-        </div>
-      </motion.button>
+        <AnimatePresence mode="popLayout">
+          {showLoading && (
+            <motion.div
+              key="loading"
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.8 }}
+              transition={{ duration: 0.2 }}
+              className="flex items-center gap-2"
+            >
+              <Loader2 className="h-5 w-5 animate-spin" />
+              <span>{loadingText}</span>
+            </motion.div>
+          )}
+
+          {showSuccess && (
+            <motion.div
+              key="success"
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.8 }}
+              transition={{ duration: 0.25 }}
+              className="flex items-center gap-2"
+            >
+              <Check className="h-5 w-5" />
+              <span>Success!</span>
+            </motion.div>
+          )}
+
+          {showError && (
+            <motion.div
+              key="error"
+              initial={{ opacity: 0, scale: 0.8, rotate: -10 }}
+              animate={{ opacity: 1, scale: 1, rotate: 0 }}
+              exit={{ opacity: 0, scale: 0.8 }}
+              transition={{ duration: 0.25 }}
+              className="flex items-center gap-2"
+            >
+              <X className="h-5 w-5" />
+              <span>Error</span>
+            </motion.div>
+          )}
+
+          {!showLoading && !showSuccess && !showError && (
+            <motion.span
+              key="idle"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.15 }}
+            >
+              {children}
+            </motion.span>
+          )}
+        </AnimatePresence>
+      </button>
     );
   }
 );
+
 LoadingButton.displayName = "LoadingButton";
-
-const Loader = () => {
-  return (
-    <motion.svg
-      animate={{ rotate: 360 }}
-      transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-      xmlns="http://www.w3.org/2000/svg"
-      width="30"
-      height="30"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      className="text-white"
-    >
-      <path d="M21 12a9 9 0 1 1-6.219-8.56"></path>
-    </motion.svg>
-  );
-};
-
-const CheckIcon = () => {
-  return (
-    <motion.svg
-      initial={{ pathLength: 0 }}
-      animate={{ pathLength: 1 }}
-      transition={{ duration: 0.3, delay: 0.1, ease: "easeOut" }}
-      xmlns="http://www.w3.org/2000/svg"
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      className="text-white"
-    >
-      <path d="M20 6 9 17l-5-5" />
-    </motion.svg>
-  );
-};
-
-const ErrorIcon = () => {
-  return <CircleX className="error" />;
-};

@@ -151,10 +151,10 @@ function ProfileSetupPage() {
   });
 
   useEffect(() => {
-    if (userProfileData) {
+    if (!userProfileIsPending && userProfileData) {
       setProfileData(userProfileData);
     }
-  }, [userProfileData]);
+  }, [userProfileIsPending, userProfileData]);
 
   useEffect(() => {
     if (skipClicked) {
@@ -241,7 +241,6 @@ function ProfileSetupPage() {
   };
 
   if (controlRoomIsPending || userProfileIsPending)
-    // if (true)
     return <SkeletonProfileSetup />;
   if (controlRoomIsError || userProfileIsError)
     return <p>{controlRoomError?.message || userProfileError?.message}</p>;
@@ -458,9 +457,6 @@ function ProfileSetupPage() {
                 </Button>
 
                 <div className="flex items-center gap-4">
-                  <Button asChild variant="ghost">
-                    <Link href="/dashboard">Skip for now</Link>
-                  </Button>
                   {currentStep < steps.length - 1 ? (
                     <Button onClick={next} type="button">
                       Next <ArrowRight className="ml-2 h-4 w-4" />
@@ -504,7 +500,7 @@ const RoleStep = ({ profileData, setProfileData }: ProfileStepperProps) => (
             profile_type: value as UserProfileType,
           }))
         }
-        defaultValue={profileData?.profile_type}
+        value={profileData?.profile_type}
         className="grid grid-cols-2 gap-4"
       >
         {Object.values(UserProfileType).map((type) => (
@@ -529,7 +525,7 @@ const RoleStep = ({ profileData, setProfileData }: ProfileStepperProps) => (
             job_role: value as UserJobRole,
           }))
         }
-        defaultValue={profileData?.job_role}
+        value={profileData?.job_role}
       >
         <SelectTrigger>
           <SelectValue placeholder="Select your primary role" />
@@ -549,10 +545,10 @@ const RoleStep = ({ profileData, setProfileData }: ProfileStepperProps) => (
         onValueChange={(value) =>
           setProfileData((prev) => ({
             ...prev,
-            experienceLevel: value as UserExperienceLevel,
+            experience_level: value as UserExperienceLevel,
           }))
         }
-        defaultValue={profileData?.experience_level}
+        value={profileData?.experience_level}
       >
         <SelectTrigger>
           <SelectValue placeholder="Select your experience level" />
@@ -920,7 +916,7 @@ const ContactStep = ({ profileData, setProfileData }: ProfileStepperProps) => (
           className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-2"
         >
           {Object.values(UserTestingServiceReason).map((item) => (
-            <div className="flex items-center gap-3">
+            <div key={item} className="flex items-center gap-3">
               <RadioGroupItem
                 key={item}
                 value={item}

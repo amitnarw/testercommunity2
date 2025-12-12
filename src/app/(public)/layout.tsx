@@ -31,12 +31,16 @@ export default function PublicLayout({
   //   }
   // }, [session, isAuthPage, router]);
 
+  if (isPending) {
+    return <p>Loading</p>;
+  }
+
   if (!session && isAuthPage) {
     return <main className="flex-1 bg-background">{children}</main>;
   }
-  if (session && isAuthPage) {
-    return null;
-  }
+  // if (session && isAuthPage) {
+  //   return null;
+  // }
 
   return (
     <div className="relative flex flex-col min-h-screen">
