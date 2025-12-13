@@ -10,7 +10,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Upload, Save, LogOut, Monitor, Smartphone, Tablet, ArrowRight, UserCog } from 'lucide-react';
+import { Upload, Save, LogOut, Monitor, Smartphone, Tablet, UserCog } from 'lucide-react';
 import type { UserProfileData } from '@/lib/types';
 import { useToast } from '@/hooks/use-toast';
 import { Separator } from '@/components/ui/separator';
@@ -184,54 +184,52 @@ export default function ProfilePage() {
                     </div>
                 </Card>
 
-                <Card className="rounded-2xl shadow-xl shadow-primary/5">
-                    <CardHeader>
-                        <CardTitle>Active Sessions</CardTitle>
+                <Card className="border-0 shadow-none bg-transparent">
+                    <CardHeader className="px-2">
+                        <CardTitle className="text-2xl">Active Sessions</CardTitle>
                         <CardDescription>
                             This is a list of devices that have logged into your account.
                             Revoke any sessions that you do not recognize.
                         </CardDescription>
                     </CardHeader>
-                    <CardContent className="space-y-4">
-                        {devices.map(device => (
-                            <div key={device.id} className="flex items-center justify-between p-4 rounded-lg bg-secondary/50">
-                                <div className="flex items-center gap-4">
-                                    <DeviceIcon type={device.type} />
-                                    <div>
-                                        <p className="font-semibold">{device.browser} on {device.os}</p>
-                                        <p className="text-sm text-muted-foreground">
-                                            {device.isCurrent ? <span className="text-green-500 font-semibold">This device</span> : `Last active ${device.lastActive}`}
-                                        </p>
+                    <CardContent className="space-y-6 px-2">
+                        <div className="space-y-4">
+                            {devices.map(device => (
+                                <div key={device.id} className="flex items-center justify-between p-4 rounded-lg bg-secondary/30">
+                                    <div className="flex items-center gap-4">
+                                        <DeviceIcon type={device.type} />
+                                        <div>
+                                            <p className="font-semibold">{device.browser} on {device.os}</p>
+                                            <p className="text-sm text-muted-foreground">
+                                                {device.isCurrent ? <span className="text-green-500 font-semibold">This device</span> : `Last active ${device.lastActive}`}
+                                            </p>
+                                        </div>
                                     </div>
+                                    {!device.isCurrent && (
+                                        <AlertDialog>
+                                            <AlertDialogTrigger asChild>
+                                                <Button variant="ghost" size="sm">
+                                                    <LogOut className="mr-2 h-4 w-4" /> Log out
+                                                </Button>
+                                            </AlertDialogTrigger>
+                                            <AlertDialogContent>
+                                                <AlertDialogHeader>
+                                                    <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                                                    <AlertDialogDescription>
+                                                        This will terminate the session on {device.browser} on {device.os}. You will need to log in again on that device.
+                                                    </AlertDialogDescription>
+                                                </AlertDialogHeader>
+                                                <AlertDialogFooter>
+                                                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                                    <AlertDialogAction onClick={() => handleLogoutDevice(device.id)}>Log Out</AlertDialogAction>
+                                                </AlertDialogFooter>
+                                            </AlertDialogContent>
+                                        </AlertDialog>
+                                    )}
                                 </div>
-                                {!device.isCurrent && (
-                                    <AlertDialog>
-                                        <AlertDialogTrigger asChild>
-                                            <Button variant="ghost" size="sm" className="hidden sm:inline-flex">
-                                                <LogOut className="mr-2 h-4 w-4" /> Log out
-                                            </Button>
-                                        </AlertDialogTrigger>
-                                        <AlertDialogContent>
-                                            <AlertDialogHeader>
-                                                <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-                                                <AlertDialogDescription>
-                                                    This will terminate the session on {device.browser} on {device.os}. You will need to log in again on that device.
-                                                </AlertDialogDescription>
-                                            </AlertDialogHeader>
-                                            <AlertDialogFooter>
-                                                <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                                <AlertDialogAction onClick={() => handleLogoutDevice(device.id)}>Log Out</AlertDialogAction>
-                                            </AlertDialogFooter>
-                                        </AlertDialogContent>
-                                    </AlertDialog>
-                                )}
-                            </div>
-                        ))}
-                    </CardContent>
-                    <CardContent className='px-6'>
-                    <Separator />
-                    </CardContent>
-                    <CardContent>
+                            ))}
+                        </div>
+                        <Separator />
                         <div className="flex justify-end">
                              <AlertDialog>
                                 <AlertDialogTrigger asChild>
@@ -259,7 +257,5 @@ export default function ProfilePage() {
         </div>
     );
 }
-
-    
 
     
