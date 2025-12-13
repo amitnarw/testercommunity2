@@ -27,7 +27,6 @@ import {
 } from "@/components/ui/alert-dialog";
 import { demoUser } from '@/lib/data';
 import Link from 'next/link';
-import { cn } from '@/lib/utils';
 
 const profileSchema = z.object({
   first_name: z.string().min(2, 'First name is required.'),
@@ -143,11 +142,6 @@ export default function ProfilePage() {
                                         {errors.last_name && <p className="text-xs text-destructive">{errors.last_name.message}</p>}
                                     </div>
                                 </div>
-                                <div className="space-y-2">
-                                    <Label htmlFor="email">Email</Label>
-                                    <Input id="email" type="email" {...register('email')} />
-                                    {errors.email && <p className="text-xs text-destructive">{errors.email.message}</p>}
-                                </div>
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                                      <div className="space-y-2">
                                         <Label htmlFor="phone">Phone Number</Label>
@@ -189,13 +183,12 @@ export default function ProfilePage() {
                     <CardHeader className="px-0">
                         <CardTitle className="text-2xl">Active Sessions</CardTitle>
                         <CardDescription>
-                            This is a list of devices that have logged into your account.
-                            Revoke any sessions that you do not recognize.
+                            You have {devices.length} active sessions. For your security, revoke any sessions that you do not recognize.
                         </CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-4 p-0">
                         {devices.map(device => (
-                            <div key={device.id} className="grid grid-cols-1 md:grid-cols-3 gap-4 items-center p-4 rounded-xl bg-gradient-to-r from-secondary/30 to-secondary/50 transition-all hover:shadow-lg hover:from-secondary/50">
+                             <div key={device.id} className="grid grid-cols-1 md:grid-cols-3 gap-4 items-center p-4 rounded-xl bg-gradient-to-r from-secondary/30 to-secondary/50 transition-all hover:shadow-lg hover:from-secondary/50">
                                 <div className="flex items-center gap-4">
                                     <DeviceIcon type={device.type} />
                                     <div>
