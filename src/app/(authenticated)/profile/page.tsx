@@ -1,7 +1,7 @@
 
 'use client';
 
-import { useState } from 'react';
+import { Fragment, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
@@ -189,27 +189,27 @@ export default function ProfilePage() {
                     </CardHeader>
                     <CardContent className="space-y-4 p-0">
                         {devices.map((device, index) => (
-                             <React.Fragment key={device.id}>
-                                <div className="flex items-center justify-between py-4">
+                             <Fragment key={device.id}>
+                                <div className="flex flex-col md:flex-row items-start md:items-center justify-between py-4">
                                     <div className="flex items-center gap-4">
                                         <DeviceIcon type={device.type} />
                                         <div>
                                             <p className="font-semibold">{device.os} - {device.browser}</p>
-                                            <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                                            <div className="flex flex-col md:flex-row md:items-center md:gap-4 text-sm text-muted-foreground">
                                                 <div className='flex items-center gap-1.5'>
                                                      <MapPin className="w-3.5 h-3.5"/>
                                                      <span>{device.location}</span>
                                                 </div>
-                                                 <span>•</span>
+                                                 <span className="hidden md:inline">•</span>
                                                  <span>{device.isCurrent ? <span className="font-semibold text-green-500">Active now</span> : `Last active ${device.lastActive}`}</span>
                                             </div>
                                         </div>
                                     </div>
-                                    <div className="flex justify-start md:justify-end">
+                                    <div className="w-full md:w-auto flex justify-start md:justify-end mt-4 md:mt-0">
                                         {!device.isCurrent && (
                                             <AlertDialog>
                                                 <AlertDialogTrigger asChild>
-                                                    <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-destructive hover:bg-destructive/10">
+                                                    <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-destructive hover:bg-destructive/10 w-full md:w-auto justify-start">
                                                         <LogOut className="mr-2 h-4 w-4" /> Revoke
                                                     </Button>
                                                 </AlertDialogTrigger>
@@ -230,7 +230,7 @@ export default function ProfilePage() {
                                     </div>
                                 </div>
                                 {index < devices.length - 1 && <Separator />}
-                            </React.Fragment>
+                            </Fragment>
                         ))}
                         <Separator className="my-6" />
                          <div className="flex justify-end">
@@ -260,3 +260,5 @@ export default function ProfilePage() {
         </div>
     );
 }
+
+    
