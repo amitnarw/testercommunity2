@@ -15,37 +15,38 @@ import type { UserProfileData } from '@/lib/types';
 import { useToast } from '@/hooks/use-toast';
 import { Separator } from '@/components/ui/separator';
 import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogDescription,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { demoUser } from '@/lib/data';
 import Link from 'next/link';
+import { BackButton } from '@/components/back-button';
 
 const profileSchema = z.object({
-  first_name: z.string().min(2, 'First name is required.'),
-  last_name: z.string().min(2, 'Last name is required.'),
-  email: z.string().email('Please enter a valid email.'),
-  phone: z.string().optional(),
-  country: z.string().optional(),
+    first_name: z.string().min(2, 'First name is required.'),
+    last_name: z.string().min(2, 'Last name is required.'),
+    email: z.string().email('Please enter a valid email.'),
+    phone: z.string().optional(),
+    country: z.string().optional(),
 });
 
 type ProfileFormData = z.infer<typeof profileSchema>;
 
 type Device = {
-  id: string;
-  type: 'desktop' | 'mobile' | 'tablet';
-  browser: string;
-  os: string;
-  lastActive: string;
-  isCurrent: boolean;
-  location: string;
+    id: string;
+    type: 'desktop' | 'mobile' | 'tablet';
+    browser: string;
+    os: string;
+    lastActive: string;
+    isCurrent: boolean;
+    location: string;
 };
 
 const initialDevices: Device[] = [
@@ -100,14 +101,20 @@ export default function ProfilePage() {
             description: "You have been logged out from all other devices.",
         });
     };
-    
+
     return (
-        <div className="container mx-auto px-4 md:px-6 py-12">
+        <div className="container mx-auto px-4 md:px-6 pb-12">
+            <div className="flex flex-row gap-5 items-center sticky top-0 z-[50] py-2 pb-4 px-2 w-1/2 sm:w-full max-w-4xl sm:mx-auto">
+                <BackButton href="/dashboard" />
+                <h1 className="font-semibold tracking-tight text-xl sm:text-2xl bg-gradient-to-b from-primary to-primary/50 bg-clip-text text-transparent leading-0">
+                    Profile
+                </h1>
+            </div>
             <div className="max-w-4xl mx-auto space-y-12">
-                <Card className="overflow-hidden rounded-2xl shadow-xl shadow-primary/5">
+                <Card className="overflow-hidden rounded-2xl shadow-xl shadow-primary/5 border border-dashed">
                     <div className="grid grid-cols-1 md:grid-cols-3">
                         <div className="md:col-span-1 bg-secondary/50 p-8 flex flex-col items-center justify-center text-center border-b md:border-b-0 md:border-r">
-                             <div className="relative group">
+                            <div className="relative">
                                 <Avatar className="h-32 w-32 border-4 border-background shadow-lg">
                                     <AvatarImage src={avatar} />
                                     <AvatarFallback>{demoUser.name?.charAt(0)}</AvatarFallback>
@@ -116,23 +123,23 @@ export default function ProfilePage() {
                                     type="button"
                                     variant="outline"
                                     size="icon"
-                                    className="absolute bottom-1 right-1 h-8 w-8 rounded-full bg-background/50 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                                    className="absolute bottom-1 right-1 h-8 w-8 rounded-full bg-background/50 backdrop-blur-sm transition-opacity duration-300"
                                 >
                                     <Upload className="h-4 w-4" />
                                 </Button>
                             </div>
-                            <h2 className="text-2xl font-bold mt-4">{demoUser.name}</h2>
-                            <p className="text-muted-foreground">{demoUser.email}</p>
+                            <h2 className="text-lg sm:text-xl font-bold mt-4">{demoUser.name}</h2>
+                            <p className="text-muted-foreground text-sm">{demoUser.email}</p>
                         </div>
 
                         <form onSubmit={handleSubmit(onSubmit)} className="md:col-span-2">
-                             <CardHeader>
-                                <CardTitle>Profile Settings</CardTitle>
+                            <CardHeader className='px-3 sm:px-6'>
+                                <CardTitle className='text-xl sm:text-2xl'>User data</CardTitle>
                                 <CardDescription>Manage your public profile and account details.</CardDescription>
                             </CardHeader>
-                            <CardContent className="space-y-6 px-8">
+                            <CardContent className="space-y-6 px-4 sm:px-6">
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                                     <div className="space-y-2">
+                                    <div className="space-y-2">
                                         <Label htmlFor="first_name">First Name</Label>
                                         <Input id="first_name" {...register('first_name')} />
                                         {errors.first_name && <p className="text-xs text-destructive">{errors.first_name.message}</p>}
@@ -144,7 +151,7 @@ export default function ProfilePage() {
                                     </div>
                                 </div>
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                                     <div className="space-y-2">
+                                    <div className="space-y-2">
                                         <Label htmlFor="phone">Phone Number</Label>
                                         <Input id="phone" type="tel" {...register('phone')} />
                                         {errors.phone && <p className="text-xs text-destructive">{errors.phone.message}</p>}
@@ -158,7 +165,7 @@ export default function ProfilePage() {
 
                                 <Separator />
 
-                                <div className="flex items-center justify-between rounded-lg bg-secondary/50 p-4">
+                                <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between rounded-lg bg-secondary/50 p-2 sm:p-4">
                                     <div>
                                         <h4 className="font-semibold">Advanced Profile Setup</h4>
                                         <p className="text-xs text-muted-foreground">Add more details about your role and projects to get better matches.</p>
@@ -179,70 +186,72 @@ export default function ProfilePage() {
                         </form>
                     </div>
                 </Card>
-                
-                <Card className="bg-transparent border-0 shadow-none">
-                    <CardHeader className="px-0">
-                        <CardTitle className="text-2xl">Active Sessions</CardTitle>
+
+                <Card className="border-0 shadow-xl shadow-primary/5 px-3 sm:px-6">
+                    <CardHeader className="px-2">
+                        <CardTitle className="text-xl sm:text-2xl bg-gradient-to-b from-primary to-primary/50 bg-clip-text text-transparent leading-0">Active Sessions</CardTitle>
                         <CardDescription>
-                            You have {devices.length} active sessions. For your security, revoke any sessions that you do not recognize.
+                            You have <span className='font-semibold'>{devices.length} active</span> sessions. For your security, revoke any sessions that you do not recognize.
                         </CardDescription>
                     </CardHeader>
-                    <CardContent className="space-y-4 p-0">
-                        {devices.map((device, index) => (
-                             <Fragment key={device.id}>
-                                <div className="flex flex-col md:flex-row items-start md:items-center justify-between py-4">
-                                    <div className="flex items-center gap-4">
-                                        <DeviceIcon type={device.type} />
-                                        <div>
-                                            <p className="font-semibold">{device.os} - {device.browser}</p>
-                                            <div className="flex flex-col md:flex-row md:items-center md:gap-4 text-sm text-muted-foreground">
-                                                <div className='flex items-center gap-1.5'>
-                                                     <MapPin className="w-3.5 h-3.5"/>
-                                                     <span>{device.location}</span>
+                    <CardContent className="space-y-4 p-0 pb-6">
+                        <div className='rounded-xl border border-dashed px-3 sm:px-6 py-2'>
+                            {devices.map((device, index) => (
+                                <Fragment key={device.id}>
+                                    <div className="flex flex-col md:flex-row items-start md:items-center justify-between py-6">
+                                        <div className="flex items-center gap-4">
+                                            <DeviceIcon type={device.type} />
+                                            <div>
+                                                <p className="font-semibold">{device.os} - {device.browser}</p>
+                                                <div className="flex flex-col md:flex-row md:items-center md:gap-4 text-sm text-muted-foreground">
+                                                    <div className='flex items-center gap-1.5'>
+                                                        <MapPin className="w-3.5 h-3.5" />
+                                                        <span className='text-xs sm:text-sm'>{device.location}</span>
+                                                    </div>
+                                                    <span className="hidden md:inline">•</span>
+                                                    <span className='text-xs sm:text-sm'>{device.isCurrent ? <span className="font-semibold text-green-500">Active now</span> : `Last active ${device.lastActive}`}</span>
                                                 </div>
-                                                 <span className="hidden md:inline">•</span>
-                                                 <span>{device.isCurrent ? <span className="font-semibold text-green-500">Active now</span> : `Last active ${device.lastActive}`}</span>
                                             </div>
                                         </div>
+                                        <div className="flex justify-start md:justify-end mt-4 md:mt-0">
+                                            {!device.isCurrent && (
+                                                <AlertDialog>
+                                                    <AlertDialogTrigger asChild>
+                                                        <Button variant="ghost" size="sm" className=" text-destructive bg-destructive/10 dark:bg-red-700/20 hover:text-red-500
+                                                    hover:bg-destructive/20 hover:scale-[1.1] w-full md:w-auto justify-start">
+                                                            <LogOut className="mr-2 h-4 w-4" /> Logout
+                                                        </Button>
+                                                    </AlertDialogTrigger>
+                                                    <AlertDialogContent>
+                                                        <AlertDialogHeader>
+                                                            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                                                            <AlertDialogDescription>
+                                                                This will terminate the session on {device.browser} on {device.os}. You will need to log in again on that device.
+                                                            </AlertDialogDescription>
+                                                        </AlertDialogHeader>
+                                                        <AlertDialogFooter>
+                                                            <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                                            <AlertDialogAction onClick={() => handleLogoutDevice(device.id)}>Log Out</AlertDialogAction>
+                                                        </AlertDialogFooter>
+                                                    </AlertDialogContent>
+                                                </AlertDialog>
+                                            )}
+                                        </div>
                                     </div>
-                                    <div className="w-full md:w-auto flex justify-start md:justify-end mt-4 md:mt-0">
-                                        {!device.isCurrent && (
-                                            <AlertDialog>
-                                                <AlertDialogTrigger asChild>
-                                                    <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-destructive hover:bg-destructive/10 w-full md:w-auto justify-start">
-                                                        <LogOut className="mr-2 h-4 w-4" /> Revoke
-                                                    </Button>
-                                                </AlertDialogTrigger>
-                                                <AlertDialogContent>
-                                                    <AlertDialogHeader>
-                                                        <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-                                                        <AlertDialogDescription>
-                                                            This will terminate the session on {device.browser} on {device.os}. You will need to log in again on that device.
-                                                        </AlertDialogDescription>
-                                                    </AlertDialogHeader>
-                                                    <AlertDialogFooter>
-                                                        <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                                        <AlertDialogAction onClick={() => handleLogoutDevice(device.id)}>Log Out</AlertDialogAction>
-                                                    </AlertDialogFooter>
-                                                </AlertDialogContent>
-                                            </AlertDialog>
-                                        )}
-                                    </div>
-                                </div>
-                                {index < devices.length - 1 && <Separator />}
-                            </Fragment>
-                        ))}
-                        <Separator className="my-6" />
-                         <div className="flex justify-end">
-                             <AlertDialog>
+                                    {index < devices.length - 1 && <Separator className='bg-transparent border border-dashed' />}
+                                </Fragment>
+                            ))}
+                        </div>
+                        <div className="flex justify-end">
+                            <AlertDialog>
                                 <AlertDialogTrigger asChild>
                                     <Button variant="destructive">
-                                        Log Out From All Other Devices
+                                        Logout From All Other Devices
                                     </Button>
                                 </AlertDialogTrigger>
                                 <AlertDialogContent>
                                     <AlertDialogHeader>
-                                        <AlertDialogTitle>Log Out From All Other Devices?</AlertDialogTitle>
+                                        <AlertDialogTitle>Logout From All Other Devices?</AlertDialogTitle>
                                         <AlertDialogDescription>
                                             This will terminate all other active sessions for your account. You will remain logged in on this device.
                                         </AlertDialogDescription>
@@ -261,4 +270,3 @@ export default function ProfilePage() {
     );
 }
 
-    
