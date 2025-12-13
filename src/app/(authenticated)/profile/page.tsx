@@ -78,6 +78,21 @@ export default function ProfilePage() {
         },
     });
 
+    const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files && e.target.files[0]) {
+            const file = e.target.files[0];
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setAvatar(reader.result as string);
+                toast({
+                    title: "Avatar Updated",
+                    description: "Your new profile picture has been set.",
+                })
+            };
+            reader.readAsDataURL(file);
+        }
+    };
+    
     const onSubmit = (data: ProfileFormData) => {
         console.log(data);
         toast({
@@ -104,7 +119,7 @@ export default function ProfilePage() {
 
     return (
         <div className="container mx-auto px-4 md:px-6 pb-12">
-            <div className="flex flex-row gap-5 items-center sticky top-0 z-[50] py-2 pb-4 px-2 w-1/2 sm:w-full max-w-4xl sm:mx-auto">
+            <div className="flex flex-row gap-5 items-center sticky top-0 z-[50] py-2 pb-4 px-2 w-full max-w-4xl sm:mx-auto">
                 <BackButton href="/dashboard" />
                 <h1 className="font-semibold tracking-tight text-xl sm:text-2xl bg-gradient-to-b from-primary to-primary/50 bg-clip-text text-transparent leading-0">
                     Profile
@@ -114,20 +129,16 @@ export default function ProfilePage() {
                 <Card className="overflow-hidden rounded-2xl shadow-xl shadow-primary/5 border border-dashed">
                     <div className="grid grid-cols-1 md:grid-cols-3">
                         <div className="md:col-span-1 bg-secondary/50 p-8 flex flex-col items-center justify-center text-center border-b md:border-b-0 md:border-r">
-                            <div className="relative">
-                                <Avatar className="h-32 w-32 border-4 border-background shadow-lg">
+                             <Label htmlFor="avatar-upload" className="relative cursor-pointer group">
+                                <Avatar className="h-32 w-32 border-4 border-background shadow-lg group-hover:opacity-80 transition-opacity">
                                     <AvatarImage src={avatar} />
                                     <AvatarFallback>{demoUser.name?.charAt(0)}</AvatarFallback>
                                 </Avatar>
-                                <Button
-                                    type="button"
-                                    variant="outline"
-                                    size="icon"
-                                    className="absolute bottom-1 right-1 h-8 w-8 rounded-full bg-background/50 backdrop-blur-sm transition-opacity duration-300"
-                                >
-                                    <Upload className="h-4 w-4" />
-                                </Button>
-                            </div>
+                                <div className="absolute inset-0 flex items-center justify-center bg-black/50 rounded-full opacity-0 group-hover:opacity-100 transition-opacity">
+                                     <Upload className="h-8 w-8 text-white" />
+                                </div>
+                            </Label>
+                            <Input id="avatar-upload" type="file" className="hidden" accept="image/*" onChange={handleAvatarChange} />
                             <h2 className="text-lg sm:text-xl font-bold mt-4">{demoUser.name}</h2>
                             <p className="text-muted-foreground text-sm">{demoUser.email}</p>
                         </div>
@@ -213,12 +224,11 @@ export default function ProfilePage() {
                                                 </div>
                                             </div>
                                         </div>
-                                        <div className="flex justify-start md:justify-end mt-4 md:mt-0">
+                                        <div className="flex justify-start md:justify-end mt-4 md:mt-0 w-full md:w-auto">
                                             {!device.isCurrent && (
                                                 <AlertDialog>
                                                     <AlertDialogTrigger asChild>
-                                                        <Button variant="ghost" size="sm" className=" text-destructive bg-destructive/10 dark:bg-red-700/20 hover:text-red-500
-                                                    hover:bg-destructive/20 hover:scale-[1.1] w-full md:w-auto justify-start">
+                                                        <Button variant="ghost" size="sm" className=" text-destructive bg-destructive/10 dark:bg-red-700/20 hover:text-red-500 hover:bg-destructive/20 hover:scale-[1.1] w-full md:w-auto justify-start md:justify-center">
                                                             <LogOut className="mr-2 h-4 w-4" /> Logout
                                                         </Button>
                                                     </AlertDialogTrigger>
