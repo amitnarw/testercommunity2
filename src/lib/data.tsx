@@ -1,5 +1,4 @@
 
-
 import type { BlogPost, Testimonial, RoadmapStep, UserProfileData, ProcessStep, CommunityApp, PointsPackage, FaqItem, Notification, Project, TesterDetails } from './types';
 
 export const chartData = [
@@ -211,11 +210,10 @@ export const professionalPathSteps: RoadmapStep[] = [
     },
 ];
 
-export const demoUser: UserProfileData = {
-    role: 'product_manager',
-    companySize: '11-50',
-    primaryGoal: 'hire_testers',
-    monthlyBudget: '500+',
+export const demoUser: any = {
+    name: 'Demo User',
+    email: 'demo@example.com',
+    bio: 'Just a demo user exploring the app!',
 };
 
 export const processSteps: ProcessStep[] = [
@@ -932,7 +930,7 @@ const generateFeedback = (projectName: string) => {
             comment: comments[type as keyof typeof comments] || `Generic feedback item #${i+1}`,
             date: `2024-08-${20- (i % 10)}`,
             screenshot: hasScreenshot ? `https://picsum.photos/seed/${projectName.length + i}/400/800` : null,
-            videoUrl: hasVideo ? 'https://www.youtube.com/watch?v=dQw4w9WgXcQ' : null,
+            videoUrl: hasVideo ? 'https://storage.googleapis.com/web-dev-assets/video-and-source-tags/chrome.mp4' : null,
         }
     });
 };
@@ -1299,6 +1297,7 @@ export const projects: Project[] = [
     
 
     
+
 
 
 
