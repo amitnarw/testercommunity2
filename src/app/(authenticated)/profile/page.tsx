@@ -27,6 +27,7 @@ import {
 } from "@/components/ui/alert-dialog";
 import { demoUser } from '@/lib/data';
 import Link from 'next/link';
+import { cn } from '@/lib/utils';
 
 const profileSchema = z.object({
   first_name: z.string().min(2, 'First name is required.'),
@@ -54,9 +55,9 @@ const initialDevices: Device[] = [
 ];
 
 const DeviceIcon = ({ type }: { type: Device['type'] }) => {
-    if (type === 'mobile') return <Smartphone className="w-6 h-6 text-muted-foreground" />;
-    if (type === 'tablet') return <Tablet className="w-6 h-6 text-muted-foreground" />;
-    return <Monitor className="w-6 h-6 text-muted-foreground" />;
+    if (type === 'mobile') return <Smartphone className="w-8 h-8 text-muted-foreground" />;
+    if (type === 'tablet') return <Tablet className="w-8 h-8 text-muted-foreground" />;
+    return <Monitor className="w-8 h-8 text-muted-foreground" />;
 };
 
 
@@ -183,33 +184,36 @@ export default function ProfilePage() {
                         </form>
                     </div>
                 </Card>
-
-                <Card className="border-0 shadow-none bg-transparent">
-                    <CardHeader className="px-2">
+                
+                <Card className="bg-transparent border-0 shadow-none">
+                    <CardHeader className="px-0">
                         <CardTitle className="text-2xl">Active Sessions</CardTitle>
                         <CardDescription>
                             This is a list of devices that have logged into your account.
                             Revoke any sessions that you do not recognize.
                         </CardDescription>
                     </CardHeader>
-                    <CardContent className="space-y-6 px-2">
-                        <div className="space-y-4">
-                            {devices.map(device => (
-                                <div key={device.id} className="flex items-center justify-between p-4 rounded-lg bg-secondary/30">
-                                    <div className="flex items-center gap-4">
-                                        <DeviceIcon type={device.type} />
-                                        <div>
-                                            <p className="font-semibold">{device.browser} on {device.os}</p>
-                                            <p className="text-sm text-muted-foreground">
-                                                {device.isCurrent ? <span className="text-green-500 font-semibold">This device</span> : `Last active ${device.lastActive}`}
-                                            </p>
-                                        </div>
+                    <CardContent className="space-y-4 p-0">
+                        {devices.map(device => (
+                            <div key={device.id} className="grid grid-cols-1 md:grid-cols-3 gap-4 items-center p-4 rounded-xl bg-gradient-to-r from-secondary/30 to-secondary/50 transition-all hover:shadow-lg hover:from-secondary/50">
+                                <div className="flex items-center gap-4">
+                                    <DeviceIcon type={device.type} />
+                                    <div>
+                                        <p className="font-semibold">{device.os}</p>
+                                        <p className="text-sm text-muted-foreground">{device.browser}</p>
                                     </div>
+                                </div>
+                                <div className="md:text-center">
+                                    <p className="text-sm text-muted-foreground">
+                                        {device.isCurrent ? <span className="font-semibold text-green-500">This device</span> : `Last active ${device.lastActive}`}
+                                    </p>
+                                </div>
+                                <div className="flex justify-start md:justify-end">
                                     {!device.isCurrent && (
                                         <AlertDialog>
                                             <AlertDialogTrigger asChild>
-                                                <Button variant="ghost" size="sm">
-                                                    <LogOut className="mr-2 h-4 w-4" /> Log out
+                                                <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-destructive hover:bg-destructive/10">
+                                                    <LogOut className="mr-2 h-4 w-4" /> Revoke
                                                 </Button>
                                             </AlertDialogTrigger>
                                             <AlertDialogContent>
@@ -227,10 +231,10 @@ export default function ProfilePage() {
                                         </AlertDialog>
                                     )}
                                 </div>
-                            ))}
-                        </div>
-                        <Separator />
-                        <div className="flex justify-end">
+                            </div>
+                        ))}
+                        <Separator className="my-6" />
+                         <div className="flex justify-end">
                              <AlertDialog>
                                 <AlertDialogTrigger asChild>
                                     <Button variant="destructive">
@@ -253,9 +257,8 @@ export default function ProfilePage() {
                         </div>
                     </CardContent>
                 </Card>
+
             </div>
         </div>
     );
 }
-
-    
