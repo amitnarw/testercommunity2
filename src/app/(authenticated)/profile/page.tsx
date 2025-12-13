@@ -8,10 +8,9 @@ import * as z from 'zod';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Upload, Save, LogOut, Monitor, Smartphone, Tablet } from 'lucide-react';
+import { Upload, Save, LogOut, Monitor, Smartphone, Tablet, ArrowRight, UserCog } from 'lucide-react';
 import type { UserProfileData } from '@/lib/types';
 import { useToast } from '@/hooks/use-toast';
 import { Separator } from '@/components/ui/separator';
@@ -27,10 +26,14 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { demoUser } from '@/lib/data';
+import Link from 'next/link';
 
 const profileSchema = z.object({
-  name: z.string().min(2, 'Name must be at least 2 characters.'),
-  bio: z.string().max(160, 'Bio cannot exceed 160 characters.').optional(),
+  first_name: z.string().min(2, 'First name is required.'),
+  last_name: z.string().min(2, 'Last name is required.'),
+  email: z.string().email('Please enter a valid email.'),
+  phone: z.string().optional(),
+  country: z.string().optional(),
 });
 
 type ProfileFormData = z.infer<typeof profileSchema>;
@@ -65,8 +68,11 @@ export default function ProfilePage() {
     const { register, handleSubmit, formState: { errors } } = useForm<ProfileFormData>({
         resolver: zodResolver(profileSchema),
         defaultValues: {
-            name: demoUser.name || 'Demo User',
-            bio: demoUser.bio || '',
+            first_name: demoUser.name?.split(' ')[0] || 'Demo',
+            last_name: demoUser.name?.split(' ')[1] || 'User',
+            email: demoUser.email || 'demo@example.com',
+            phone: '',
+            country: '',
         },
     });
 
@@ -106,6 +112,7 @@ export default function ProfilePage() {
                                     <AvatarFallback>{demoUser.name?.charAt(0)}</AvatarFallback>
                                 </Avatar>
                                 <Button
+                                    type="button"
                                     variant="outline"
                                     size="icon"
                                     className="absolute bottom-1 right-1 h-8 w-8 rounded-full bg-background/50 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-300"
@@ -123,16 +130,50 @@ export default function ProfilePage() {
                                 <CardDescription>Manage your public profile and account details.</CardDescription>
                             </CardHeader>
                             <CardContent className="space-y-6 px-8">
-                                <div className="space-y-2">
-                                    <Label htmlFor="name">Full Name</Label>
-                                    <Input id="name" {...register('name')} />
-                                    {errors.name && <p className="text-xs text-destructive">{errors.name.message}</p>}
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                                     <div className="space-y-2">
+                                        <Label htmlFor="first_name">First Name</Label>
+                                        <Input id="first_name" {...register('first_name')} />
+                                        {errors.first_name && <p className="text-xs text-destructive">{errors.first_name.message}</p>}
+                                    </div>
+                                    <div className="space-y-2">
+                                        <Label htmlFor="last_name">Last Name</Label>
+                                        <Input id="last_name" {...register('last_name')} />
+                                        {errors.last_name && <p className="text-xs text-destructive">{errors.last_name.message}</p>}
+                                    </div>
                                 </div>
                                 <div className="space-y-2">
-                                    <Label htmlFor="bio">Bio</Label>
-                                    <Textarea id="bio" placeholder="Tell us a little about yourself" className="min-h-[100px]" {...register('bio')} />
-                                    {errors.bio && <p className="text-xs text-destructive">{errors.bio.message}</p>}
+                                    <Label htmlFor="email">Email</Label>
+                                    <Input id="email" type="email" {...register('email')} />
+                                    {errors.email && <p className="text-xs text-destructive">{errors.email.message}</p>}
                                 </div>
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                                     <div className="space-y-2">
+                                        <Label htmlFor="phone">Phone Number</Label>
+                                        <Input id="phone" type="tel" {...register('phone')} />
+                                        {errors.phone && <p className="text-xs text-destructive">{errors.phone.message}</p>}
+                                    </div>
+                                    <div className="space-y-2">
+                                        <Label htmlFor="country">Country</Label>
+                                        <Input id="country" {...register('country')} />
+                                        {errors.country && <p className="text-xs text-destructive">{errors.country.message}</p>}
+                                    </div>
+                                </div>
+
+                                <Separator />
+
+                                <div className="flex items-center justify-between rounded-lg bg-secondary/50 p-4">
+                                    <div>
+                                        <h4 className="font-semibold">Advanced Profile Setup</h4>
+                                        <p className="text-xs text-muted-foreground">Add more details about your role and projects to get better matches.</p>
+                                    </div>
+                                    <Button size="sm" variant="outline" asChild>
+                                        <Link href="/profile/profile-setup">
+                                            <UserCog className="mr-2 h-4 w-4" /> Go to Setup
+                                        </Link>
+                                    </Button>
+                                </div>
+
                                 <div className="flex justify-end">
                                     <Button type="submit">
                                         <Save className="mr-2 h-4 w-4" /> Save Changes
@@ -218,5 +259,7 @@ export default function ProfilePage() {
         </div>
     );
 }
+
+    
 
     
