@@ -10,7 +10,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Upload, Save, LogOut, Monitor, Smartphone, Tablet, UserCog } from 'lucide-react';
+import { Upload, Save, LogOut, Monitor, Smartphone, Tablet, UserCog, MapPin } from 'lucide-react';
 import type { UserProfileData } from '@/lib/types';
 import { useToast } from '@/hooks/use-toast';
 import { Separator } from '@/components/ui/separator';
@@ -45,12 +45,13 @@ type Device = {
   os: string;
   lastActive: string;
   isCurrent: boolean;
+  location: string;
 };
 
 const initialDevices: Device[] = [
-    { id: '1', type: 'desktop', browser: 'Chrome', os: 'macOS', lastActive: 'now', isCurrent: true },
-    { id: '2', type: 'mobile', browser: 'Safari', os: 'iOS', lastActive: '2 hours ago', isCurrent: false },
-    { id: '3', type: 'tablet', browser: 'Chrome', os: 'Android', lastActive: '1 day ago', isCurrent: false },
+    { id: '1', type: 'desktop', browser: 'Chrome', os: 'macOS', lastActive: 'now', isCurrent: true, location: 'New York, USA' },
+    { id: '2', type: 'mobile', browser: 'Safari', os: 'iOS', lastActive: '2 hours ago', isCurrent: false, location: 'London, UK' },
+    { id: '3', type: 'tablet', browser: 'Chrome', os: 'Android', lastActive: '1 day ago', isCurrent: false, location: 'Paris, France' },
 ];
 
 const DeviceIcon = ({ type }: { type: Device['type'] }) => {
@@ -187,44 +188,49 @@ export default function ProfilePage() {
                         </CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-4 p-0">
-                        {devices.map(device => (
-                             <div key={device.id} className="grid grid-cols-1 md:grid-cols-3 gap-4 items-center p-4 rounded-xl bg-gradient-to-r from-secondary/30 to-secondary/50 transition-all hover:shadow-lg hover:from-secondary/50">
-                                <div className="flex items-center gap-4">
-                                    <DeviceIcon type={device.type} />
-                                    <div>
-                                        <p className="font-semibold">{device.os}</p>
-                                        <p className="text-sm text-muted-foreground">{device.browser}</p>
+                        {devices.map((device, index) => (
+                             <React.Fragment key={device.id}>
+                                <div className="flex items-center justify-between py-4">
+                                    <div className="flex items-center gap-4">
+                                        <DeviceIcon type={device.type} />
+                                        <div>
+                                            <p className="font-semibold">{device.os} - {device.browser}</p>
+                                            <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                                                <div className='flex items-center gap-1.5'>
+                                                     <MapPin className="w-3.5 h-3.5"/>
+                                                     <span>{device.location}</span>
+                                                </div>
+                                                 <span>•</span>
+                                                 <span>{device.isCurrent ? <span className="font-semibold text-green-500">Active now</span> : `Last active ${device.lastActive}`}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="flex justify-start md:justify-end">
+                                        {!device.isCurrent && (
+                                            <AlertDialog>
+                                                <AlertDialogTrigger asChild>
+                                                    <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-destructive hover:bg-destructive/10">
+                                                        <LogOut className="mr-2 h-4 w-4" /> Revoke
+                                                    </Button>
+                                                </AlertDialogTrigger>
+                                                <AlertDialogContent>
+                                                    <AlertDialogHeader>
+                                                        <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                                                        <AlertDialogDescription>
+                                                            This will terminate the session on {device.browser} on {device.os}. You will need to log in again on that device.
+                                                        </AlertDialogDescription>
+                                                    </AlertDialogHeader>
+                                                    <AlertDialogFooter>
+                                                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                                        <AlertDialogAction onClick={() => handleLogoutDevice(device.id)}>Log Out</AlertDialogAction>
+                                                    </AlertDialogFooter>
+                                                </AlertDialogContent>
+                                            </AlertDialog>
+                                        )}
                                     </div>
                                 </div>
-                                <div className="md:text-center">
-                                    <p className="text-sm text-muted-foreground">
-                                        {device.isCurrent ? <span className="font-semibold text-green-500">This device</span> : `Last active ${device.lastActive}`}
-                                    </p>
-                                </div>
-                                <div className="flex justify-start md:justify-end">
-                                    {!device.isCurrent && (
-                                        <AlertDialog>
-                                            <AlertDialogTrigger asChild>
-                                                <Button variant="ghost" size="sm" className="text-muted-foreground hover:text-destructive hover:bg-destructive/10">
-                                                    <LogOut className="mr-2 h-4 w-4" /> Revoke
-                                                </Button>
-                                            </AlertDialogTrigger>
-                                            <AlertDialogContent>
-                                                <AlertDialogHeader>
-                                                    <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-                                                    <AlertDialogDescription>
-                                                        This will terminate the session on {device.browser} on {device.os}. You will need to log in again on that device.
-                                                    </AlertDialogDescription>
-                                                </AlertDialogHeader>
-                                                <AlertDialogFooter>
-                                                    <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                                    <AlertDialogAction onClick={() => handleLogoutDevice(device.id)}>Log Out</AlertDialogAction>
-                                                </AlertDialogFooter>
-                                            </AlertDialogContent>
-                                        </AlertDialog>
-                                    )}
-                                </div>
-                            </div>
+                                {index < devices.length - 1 && <Separator />}
+                            </React.Fragment>
                         ))}
                         <Separator className="my-6" />
                          <div className="flex justify-end">
@@ -250,7 +256,6 @@ export default function ProfilePage() {
                         </div>
                     </CardContent>
                 </Card>
-
             </div>
         </div>
     );
