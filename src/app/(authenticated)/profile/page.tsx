@@ -92,7 +92,7 @@ export default function ProfilePage() {
             reader.readAsDataURL(file);
         }
     };
-    
+
     const onSubmit = (data: ProfileFormData) => {
         console.log(data);
         toast({
@@ -129,14 +129,22 @@ export default function ProfilePage() {
                 <Card className="overflow-hidden rounded-2xl shadow-xl shadow-primary/5 border border-dashed">
                     <div className="grid grid-cols-1 md:grid-cols-3">
                         <div className="md:col-span-1 bg-secondary/50 p-8 flex flex-col items-center justify-center text-center border-b md:border-b-0 md:border-r">
-                             <Label htmlFor="avatar-upload" className="relative cursor-pointer group">
+                            <Label htmlFor="avatar-upload" className="relative cursor-pointer group">
                                 <Avatar className="h-32 w-32 border-4 border-background shadow-lg group-hover:opacity-80 transition-opacity">
                                     <AvatarImage src={avatar} />
                                     <AvatarFallback>{demoUser.name?.charAt(0)}</AvatarFallback>
                                 </Avatar>
                                 <div className="absolute inset-0 flex items-center justify-center bg-black/50 rounded-full opacity-0 group-hover:opacity-100 transition-opacity">
-                                     <Upload className="h-8 w-8 text-white" />
+                                    <Upload className="h-8 w-8 text-white" />
                                 </div>
+                                <Button
+                                    type="button"
+                                    variant="outline"
+                                    size="icon"
+                                    className="absolute bottom-1 right-1 h-8 w-8 rounded-full bg-background/50 backdrop-blur-sm transition-opacity duration-300"
+                                >
+                                    <Upload className="h-4 w-4" />
+                                </Button>
                             </Label>
                             <Input id="avatar-upload" type="file" className="hidden" accept="image/*" onChange={handleAvatarChange} />
                             <h2 className="text-lg sm:text-xl font-bold mt-4">{demoUser.name}</h2>
