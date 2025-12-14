@@ -248,15 +248,15 @@ function ProfileSetupPage() {
 
   return (
     <div
-      className={`h-full w-full flex flex-col items-center p-2 pt-4 md:p-0 pb-4 ${
+      className={`h-full w-full flex flex-col items-start sm:items-center p-2 pt-4 md:p-0 pb-4 ${
         profileData?.initial ? " justify-center" : " justify-start"
       }`}
     >
       {!profileData?.initial && (
-        <div className="flex flex-row gap-5 items-center sticky top-0 z-[50] py-2 pb-4 px-2 w-full max-w-4xl">
-          <BackButton href="/dashboard" />
+        <div className="flex flex-row gap-5 items-center sticky top-0 z-[50] py-2 pb-4 px-2 w-1/2 sm:w-full max-w-4xl sm:mx-auto">
+          <BackButton href="/profile" />
           <h1 className="font-semibold tracking-tight text-xl sm:text-2xl bg-gradient-to-b from-primary to-primary/50 bg-clip-text text-transparent leading-0">
-            Profile Data
+            Setup
           </h1>
         </div>
       )}

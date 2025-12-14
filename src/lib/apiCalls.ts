@@ -2,7 +2,7 @@ import axios from "axios";
 import API_ROUTES from "./apiRoutes";
 import { authClient } from "./auth-client";
 import { UserProfleResponse } from "@/hooks/useUser";
-import { ControlRoomResponse, UserProfileData } from "./types";
+import { ControlRoomResponse, UserProfileDataAttributes } from "./types";
 import api from "./axios";
 
 export const register = async ({
@@ -112,6 +112,56 @@ export const emailVerification = async ({ token }: { token: string }) => {
   }
 };
 
+export const getUserData = async (): Promise<UserProfleResponse> => {
+  try {
+    const response = await api.get(API_ROUTES.USER + `/get-user-data`);
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error fetching user:", error);
+    if (axios.isAxiosError(error)) {
+      const status = error.response?.status;
+      const responseData = error.response?.data;
+      console.error("Axios error:", status, responseData);
+
+      throw new Error(
+        responseData?.message || error.message || "Unknown Axios error"
+      );
+    } else if (error instanceof Error) {
+      throw new Error(error.message);
+    } else {
+      throw new Error(JSON.stringify(error));
+    }
+  }
+};
+
+export const saveUserData = async (payload: UserDataAttributes) => {
+  try {
+    if (!payload) {
+      throw new Error("Payload is undefined");
+    }
+    const response = await api.post(
+      API_ROUTES.USER + "/save-user-data",
+      payload
+    );
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error registering user:", error);
+    if (axios.isAxiosError(error)) {
+      const status = error.response?.status;
+      const responseData = error.response?.data;
+      console.error("Axios error:", status, responseData);
+
+      throw new Error(
+        responseData?.message || error.message || "Unknown Axios error"
+      );
+    } else if (error instanceof Error) {
+      throw new Error(error.message);
+    } else {
+      throw new Error(JSON.stringify(error));
+    }
+  }
+};
+
 export const getUserProfileData = async (): Promise<UserProfleResponse> => {
   try {
     const response = await api.get(API_ROUTES.USER + "/get-user-profile-data");
@@ -159,10 +209,32 @@ export const saveInitialProfileData = async () => {
   }
 };
 
-export const saveProfileData = async (payload: UserProfileData) => {
+// export async function fetchUser(id: string) {
+//   try {
+//     const response = await api.get(API_ROUTES.USER + `/${id}`);
+//     return response.data;
+//   } catch (error) {
+//     console.error("Error fetching user:", error);
+//     if (axios.isAxiosError(error)) {
+//       const status = error.response?.status;
+//       const responseData = error.response?.data;
+//       console.error("Axios error:", status, responseData);
+
+//       throw new Error(
+//         responseData?.message || error.message || "Unknown Axios error"
+//       );
+//     } else if (error instanceof Error) {
+//       throw new Error(error.message);
+//     } else {
+//       throw new Error(JSON.stringify(error));
+//     }
+//   }
+// }
+
+export const saveProfileData = async (payload: UserProfileDataAttributes) => {
   try {
     if (!payload) {
-      throw new Error("Payload can't be undefined");
+      throw new Error("Payload is undefined");
     }
     const response = await api.post(
       API_ROUTES.USER + "/save-profile-data",
@@ -186,33 +258,6 @@ export const saveProfileData = async (payload: UserProfileData) => {
     }
   }
 };
-
-export async function fetchUser(id: string) {
-  try {
-    const response = await api.get(API_ROUTES.USER + `/${id}`);
-    return response.data;
-  } catch (error) {
-    console.error("Error fetching user:", error);
-    if (axios.isAxiosError(error)) {
-      const status = error.response?.status;
-      const responseData = error.response?.data;
-      console.error("Axios error:", status, responseData);
-
-      throw new Error(
-        responseData?.message || error.message || "Unknown Axios error"
-      );
-    } else if (error instanceof Error) {
-      throw new Error(error.message);
-    } else {
-      throw new Error(JSON.stringify(error));
-    }
-  }
-}
-
-// export async function updateProfile(profile) {
-//   const response = await axios.post("/api/profile", profile);
-//   return response.data;
-// }
 
 export async function getControlRoomData(): Promise<ControlRoomResponse> {
   try {

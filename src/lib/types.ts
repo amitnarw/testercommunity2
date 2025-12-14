@@ -155,7 +155,18 @@ export enum UserNotificationPreference {
   OTHER = "OTHER",
 }
 
-export type UserProfileData = {
+export type UserDataAttributes = {
+  id: number;
+  name: string;
+  email: string;
+  emailVerified: string;
+  image: string;
+
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type UserProfileDataAttributes = {
   id: number;
   userId: string;
   first_name: string;

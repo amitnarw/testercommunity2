@@ -1,9 +1,10 @@
 import {
+  getUserData,
   getUserProfileData,
   saveInitialProfileData,
   saveProfileData,
 } from "@/lib/apiCalls";
-import { UserProfileData } from "@/lib/types";
+import { UserDataAttributes, UserProfileDataAttributes } from "@/lib/types";
 import {
   useMutation,
   UseMutationOptions,
@@ -16,8 +17,33 @@ export type UserProfleResponse = {
   error?: string;
 };
 
+export function useUserData(options?: { enabled?: boolean }) {
+  const query = useQuery<UserProfleResponse, Error, UserDataAttributes>({
+    queryFn: () => getUserData(),
+    queryKey: ["getUserData"],
+    enabled: options?.enabled ?? true,
+  });
+
+  return query;
+}
+
+export function useUserDataSave(options?: UseMutationOptions<any, any, any>) {
+  const mutation = useMutation({
+    mutationFn: (payload) => saveUserData(payload),
+    onSuccess: (data) => {
+      console.log("User data saved successfully: " + data);
+    },
+    onError: (data) => {
+      console.log("User data saving failed: " + data);
+    },
+    ...options,
+  });
+
+  return mutation;
+}
+
 export function useUserProfileData(options?: { enabled?: boolean }) {
-  const query = useQuery<UserProfleResponse, Error, UserProfileData>({
+  const query = useQuery<UserProfleResponse, Error, UserProfileDataAttributes>({
     queryFn: () => getUserProfileData(),
     queryKey: ["getUserProfileData"],
     enabled: options?.enabled ?? true,
