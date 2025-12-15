@@ -38,22 +38,24 @@ export default function ReferralPage() {
 
     return (
         <div className="container mx-auto px-4 md:px-6 py-12">
-            <div className="flex flex-row gap-5 items-center sticky top-0 z-[50] py-2 pb-4 px-2 w-full max-w-5xl sm:mx-auto">
+            <div className="flex flex-row gap-5 items-center sticky top-0 z-[50] py-2 pb-4 px-2 w-1/2 sm:w-full max-w-5xl sm:mx-auto">
                 <BackButton href="/profile" />
                 <h1 className="font-semibold tracking-tight text-xl sm:text-2xl bg-gradient-to-b from-primary to-primary/50 bg-clip-text text-transparent leading-0">
                     Refer &amp; Earn
                 </h1>
             </div>
             <div className="max-w-5xl mx-auto space-y-12">
-                <section className="text-center">
+                <section className="text-center flex flex-row gap-2 items-center">
                     <div className="inline-block bg-primary/10 text-primary p-4 rounded-full mb-6 shadow-lg shadow-primary/10">
                         <Gift className="w-12 h-12" />
                     </div>
-                    <h2 className="text-3xl md:text-4xl font-bold">Invite Friends, Earn Rewards</h2>
-                    <p className="mt-2 max-w-2xl mx-auto text-muted-foreground">
-                        Share your love for inTesters and get rewarded. For every friend who signs up and completes their first test, you'll both earn bonus points.
-                    </p>
+                    <div>
+                        <h2 className="text-3xl md:text-4xl font-bold">Invite Friends, Earn Rewards</h2>
+                    </div>
                 </section>
+                <p className="max-w-2xl mx-auto text-muted-foreground">
+                    Share your love for inTesters and get rewarded. For every friend who signs up and completes their profile survey, you'll both earn bonus points.
+                </p>
 
                 <Card className="shadow-2xl shadow-primary/10 border-dashed border-2">
                     <CardContent className="p-8 flex flex-col md:flex-row items-center justify-between gap-6">
@@ -103,7 +105,7 @@ export default function ReferralPage() {
                                 <div className="text-2xl font-bold">{referralData.totalEarnings.toLocaleString()} Pts</div>
                             </CardContent>
                         </Card>
-                         <Card className="bg-secondary/50">
+                        <Card className="bg-secondary/50">
                             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                                 <CardTitle className="text-sm font-medium">Pending Rewards</CardTitle>
                                 <Clock className="h-4 w-4 text-muted-foreground" />
@@ -114,10 +116,10 @@ export default function ReferralPage() {
                         </Card>
                     </div>
                 </section>
-                
-                 <section>
+
+                <section>
                     <h3 className="text-2xl font-bold mb-6 text-center">Referral History</h3>
-                     <Card>
+                    <Card>
                         <CardContent className="p-0">
                             <Table>
                                 <TableHeader>
@@ -156,7 +158,7 @@ export default function ReferralPage() {
                 </section>
 
                 <section>
-                     <h3 className="text-2xl font-bold mb-6 text-center">How It Works</h3>
+                    <h3 className="text-2xl font-bold mb-6 text-center">How It Works</h3>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
                         <div className="flex flex-col items-center">
                             <div className="bg-primary/10 text-primary p-4 rounded-full mb-4">
@@ -165,19 +167,19 @@ export default function ReferralPage() {
                             <h4 className="font-semibold text-lg">1. Share Your Code</h4>
                             <p className="text-muted-foreground text-sm mt-1">Share your unique referral code with friends and colleagues.</p>
                         </div>
-                         <div className="flex flex-col items-center">
+                        <div className="flex flex-col items-center">
                             <div className="bg-primary/10 text-primary p-4 rounded-full mb-4">
                                 <Users className="w-8 h-8" />
                             </div>
                             <h4 className="font-semibold text-lg">2. They Sign Up</h4>
                             <p className="text-muted-foreground text-sm mt-1">Your friend signs up for inTesters using your referral code.</p>
                         </div>
-                         <div className="flex flex-col items-center">
+                        <div className="flex flex-col items-center">
                             <div className="bg-primary/10 text-primary p-4 rounded-full mb-4">
                                 <Gift className="w-8 h-8" />
                             </div>
                             <h4 className="font-semibold text-lg">3. You Both Get Rewarded</h4>
-                            <p className="text-muted-foreground text-sm mt-1">Once they complete their first test, you both receive bonus points.</p>
+                            <p className="text-muted-foreground text-sm mt-1">Once they complete their profile survey, you both receive bonus points.</p>
                         </div>
                     </div>
                 </section>
