@@ -1,15 +1,16 @@
 
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Copy, Gift, Share2, Users, CheckCircle, Clock, IndianRupee } from "lucide-react";
+import { Copy, Gift, Share2, Users, CheckCircle, Clock, IndianRupee, UserPlus } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { BackButton } from "@/components/back-button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
+import { motion, useScroll, useTransform } from 'framer-motion';
 
 const referralData = {
     referralCode: "PRO_DEV_77",
@@ -25,8 +26,39 @@ const referralData = {
     ]
 };
 
+const referralSteps = [
+    {
+        icon: Share2,
+        title: "1. Share Your Code",
+        description: "Grab your unique referral code and share it with friends, colleagues, or anyone in your network who could benefit from inTesters. The more you share, the more you can earn.",
+    },
+    {
+        icon: UserPlus,
+        title: "2. Friend Signs Up",
+        description: "Your friend uses your referral code when they sign up. This links their account to yours, ensuring you both get credit when the conditions are met.",
+    },
+    {
+        icon: CheckCircle,
+        title: "3. Friend Completes Profile",
+        description: "To ensure our community is full of active and engaged members, the reward is triggered once your friend completes their initial profile setup survey.",
+    },
+    {
+        icon: Gift,
+        title: "4. You Both Get Rewarded",
+        description: "Success! Once the profile survey is complete, bonus points are automatically added to both of your accounts. It's a win-win for everyone.",
+    },
+];
+
 export default function ReferralPage() {
     const { toast } = useToast();
+    const howItWorksRef = useRef<HTMLDivElement>(null);
+    const { scrollYProgress } = useScroll({
+        target: howItWorksRef,
+        offset: ["start center", "end end"]
+    });
+    const lineY = useTransform(scrollYProgress, [0, 1], ["0%", "100%"]);
+    const giftY = useTransform(scrollYProgress, [0, 1], ["0%", "300%"]);
+
 
     const handleCopy = () => {
         navigator.clipboard.writeText(referralData.referralCode);
@@ -111,6 +143,47 @@ export default function ReferralPage() {
                     </Card>
                 </section>
 
+                <section ref={howItWorksRef}>
+                    <h3 className="text-2xl font-bold mb-10 text-center">How It Works</h3>
+                    <div className="relative">
+                        {/* Connecting Line */}
+                        <div className="absolute left-1/2 md:left-[5rem] top-0 bottom-0 w-0.5 bg-border -translate-x-1/2">
+                            <motion.div className="w-full bg-primary" style={{ height: lineY }} />
+                        </div>
+                        
+                        {/* Animated Gift Icon */}
+                        <motion.div className="absolute left-1/2 md:left-[5rem] top-0 -translate-x-1/2 z-10 p-2 bg-background rounded-full border shadow-lg" style={{ y: giftY }}>
+                           <div className="p-2 rounded-full bg-primary/20 text-primary">
+                               <Gift className="w-5 h-5"/>
+                           </div>
+                        </motion.div>
+                        
+                        <div className="space-y-12">
+                            {referralSteps.map((step, index) => (
+                                <motion.div 
+                                    key={index}
+                                    className="flex flex-col md:flex-row items-start gap-8 relative"
+                                    initial={{ opacity: 0.5, y: 30 }}
+                                    whileInView={{ opacity: 1, y: 0 }}
+                                    viewport={{ once: true, amount: 0.5 }}
+                                    transition={{ duration: 0.5 }}
+                                >
+                                    <div className="hidden md:flex flex-col items-center self-start w-[10rem]">
+                                        <div className="w-12 h-12 flex items-center justify-center rounded-full bg-secondary border shadow-md">
+                                            <step.icon className="w-6 h-6 text-primary"/>
+                                        </div>
+                                    </div>
+                                    <div className="flex-1">
+                                        <h4 className="font-bold text-xl mb-2">{step.title}</h4>
+                                        <p className="text-muted-foreground">{step.description}</p>
+                                    </div>
+                                </motion.div>
+                            ))}
+                        </div>
+                    </div>
+                </section>
+
+
                 <section>
                     <h3 className="text-2xl font-bold mb-6 text-center">Referral History</h3>
                     <Card>
@@ -149,33 +222,6 @@ export default function ReferralPage() {
                             </Table>
                         </CardContent>
                     </Card>
-                </section>
-
-                <section>
-                    <h3 className="text-2xl font-bold mb-6 text-center">How It Works</h3>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
-                        <div className="flex flex-col items-center">
-                            <div className="bg-primary/10 text-primary p-4 rounded-full mb-4">
-                                <Share2 className="w-8 h-8" />
-                            </div>
-                            <h4 className="font-semibold text-lg">1. Share Your Code</h4>
-                            <p className="text-muted-foreground text-sm mt-1">Share your unique referral code with friends and colleagues.</p>
-                        </div>
-                        <div className="flex flex-col items-center">
-                            <div className="bg-primary/10 text-primary p-4 rounded-full mb-4">
-                                <Users className="w-8 h-8" />
-                            </div>
-                            <h4 className="font-semibold text-lg">2. They Sign Up</h4>
-                            <p className="text-muted-foreground text-sm mt-1">Your friend signs up for inTesters using your referral code.</p>
-                        </div>
-                        <div className="flex flex-col items-center">
-                            <div className="bg-primary/10 text-primary p-4 rounded-full mb-4">
-                                <Gift className="w-8 h-8" />
-                            </div>
-                            <h4 className="font-semibold text-lg">3. You Both Get Rewarded</h4>
-                            <p className="text-muted-foreground text-sm mt-1">Once they complete their profile survey, you both receive bonus points.</p>
-                        </div>
-                    </div>
                 </section>
             </div>
         </div>
