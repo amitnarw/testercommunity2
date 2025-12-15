@@ -37,48 +37,18 @@ export default function ReferralPage() {
     };
 
     return (
-        <div className="container mx-auto px-4 md:px-6 py-12">
-            <div className="flex flex-row gap-5 items-center sticky top-0 z-[50] py-2 pb-4 px-2 w-1/2 sm:w-full max-w-5xl sm:mx-auto">
+        <div className="container mx-auto px-4 md:px-6 pb-12">
+            <div className="flex flex-row gap-5 items-center sticky top-0 z-[50] py-2 pb-8 px-2 w-1/2 sm:w-full max-w-5xl sm:mx-auto">
                 <BackButton href="/profile" />
                 <h1 className="font-semibold tracking-tight text-xl sm:text-2xl bg-gradient-to-b from-primary to-primary/50 bg-clip-text text-transparent leading-0">
-                    Refer &amp; Earn
+                    Referral Dashboard
                 </h1>
             </div>
             <div className="max-w-5xl mx-auto space-y-12">
-                <section className="text-center flex flex-row gap-2 items-center">
-                    <div className="inline-block bg-primary/10 text-primary p-4 rounded-full mb-6 shadow-lg shadow-primary/10">
-                        <Gift className="w-12 h-12" />
-                    </div>
-                    <div>
-                        <h2 className="text-3xl md:text-4xl font-bold">Invite Friends, Earn Rewards</h2>
-                    </div>
-                </section>
-                <p className="max-w-2xl mx-auto text-muted-foreground">
-                    Share your love for inTesters and get rewarded. For every friend who signs up and completes their profile survey, you'll both earn bonus points.
-                </p>
-
-                <Card className="shadow-2xl shadow-primary/10 border-dashed border-2">
-                    <CardContent className="p-8 flex flex-col md:flex-row items-center justify-between gap-6">
-                        <div className="text-center md:text-left">
-                            <h3 className="text-lg font-semibold">Your Unique Referral Code</h3>
-                            <p className="text-4xl font-bold tracking-widest text-primary my-2">{referralData.referralCode}</p>
-                            <p className="text-xs text-muted-foreground">Share this code with your friends.</p>
-                        </div>
-                        <div className="flex items-center gap-2">
-                            <Button onClick={handleCopy} variant="outline" size="lg">
-                                <Copy className="mr-2 h-4 w-4" /> Copy Code
-                            </Button>
-                            <Button size="lg">
-                                <Share2 className="mr-2 h-4 w-4" /> Share
-                            </Button>
-                        </div>
-                    </CardContent>
-                </Card>
 
                 <section>
-                    <h3 className="text-2xl font-bold mb-6 text-center">Your Referral Dashboard</h3>
                     <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-                        <Card className="bg-secondary/50">
+                        <Card className="bg-card">
                             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                                 <CardTitle className="text-sm font-medium">Total Referrals</CardTitle>
                                 <Users className="h-4 w-4 text-muted-foreground" />
@@ -87,7 +57,7 @@ export default function ReferralPage() {
                                 <div className="text-2xl font-bold">{referralData.totalReferrals}</div>
                             </CardContent>
                         </Card>
-                        <Card className="bg-secondary/50">
+                        <Card className="bg-card">
                             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                                 <CardTitle className="text-sm font-medium">Successful Signups</CardTitle>
                                 <CheckCircle className="h-4 w-4 text-muted-foreground" />
@@ -96,16 +66,19 @@ export default function ReferralPage() {
                                 <div className="text-2xl font-bold">{referralData.successfulSignups}</div>
                             </CardContent>
                         </Card>
-                        <Card className="bg-secondary/50">
+                        <Card className="shadow-sm rounded-xl border-0 bg-gradient-to-br from-primary to-primary/40 relative overflow-hidden flex flex-row sm:flex-col justify-between sm:justify-center relative">
+                            <IndianRupee className="h-4 w-4 text-white/10 sm:text-white/20 absolute right-3 top-4 scale-[3]" />
                             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                                <CardTitle className="text-sm font-medium">Total Earnings</CardTitle>
-                                <IndianRupee className="h-4 w-4 text-muted-foreground" />
+                                <CardTitle className="text-sm font-medium text-white/80">Total Earnings</CardTitle>
+
                             </CardHeader>
                             <CardContent>
-                                <div className="text-2xl font-bold">{referralData.totalEarnings.toLocaleString()} Pts</div>
+                                <div className="text-2xl font-bold text-white">
+                                    {referralData.totalEarnings.toLocaleString()} Pts
+                                </div>
                             </CardContent>
                         </Card>
-                        <Card className="bg-secondary/50">
+                        <Card className="bg-card">
                             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                                 <CardTitle className="text-sm font-medium">Pending Rewards</CardTitle>
                                 <Clock className="h-4 w-4 text-muted-foreground" />
@@ -115,6 +88,27 @@ export default function ReferralPage() {
                             </CardContent>
                         </Card>
                     </div>
+                </section>
+
+                <section className='flex flex-col gap-2'>
+                    <p className="text-sm sm:text-md text-muted-foreground text-center">Share your love for inTesters and get rewarded. For every friend who signs up and completes their profile survey, you'll both earn bonus points.</p>
+                    <Card className="shadow-2xl shadow-primary/10 border-dashed border-2">
+                        <CardContent className="p-8 flex flex-col md:flex-row items-center justify-between gap-6">
+                            <div className="text-center md:text-left">
+                                <h3 className="text-lg font-semibold">Your Unique Referral Code</h3>
+                                <p className="text-4xl font-bold tracking-widest text-primary my-2">{referralData.referralCode}</p>
+                                <p className="text-xs text-muted-foreground">Share this code with your friends.</p>
+                            </div>
+                            <div className="flex items-center gap-2">
+                                <Button onClick={handleCopy} variant="outline" size="lg">
+                                    <Copy className="mr-2 h-4 w-4" /> Copy Code
+                                </Button>
+                                <Button size="lg">
+                                    <Share2 className="mr-2 h-4 w-4" /> Share
+                                </Button>
+                            </div>
+                        </CardContent>
+                    </Card>
                 </section>
 
                 <section>
