@@ -29,25 +29,57 @@ const referralData = {
 const referralSteps = [
     {
         icon: Share2,
-        title: "1. Share Your Code",
+        title: "Share Your Code",
         description: "Grab your unique referral code and share it with friends, colleagues, or anyone in your network who could benefit from inTesters. The more you share, the more you can earn.",
     },
     {
         icon: UserPlus,
-        title: "2. Friend Signs Up",
+        title: "Friend Signs Up",
         description: "Your friend uses your referral code when they sign up. This links their account to yours, ensuring you both get credit when the conditions are met.",
     },
     {
         icon: CheckCircle,
-        title: "3. Friend Completes Profile",
+        title: "Friend Completes Profile",
         description: "To ensure our community is full of active and engaged members, the reward is triggered once your friend completes their initial profile setup survey.",
     },
     {
         icon: Gift,
-        title: "4. You Both Get Rewarded",
+        title: "You Both Get Rewarded",
         description: "Success! Once the profile survey is complete, bonus points are automatically added to both of your accounts. It's a win-win for everyone.",
     },
 ];
+
+const Step = ({ icon: Icon, title, description, index }: { icon: React.ElementType, title: string, description: string, index: number }) => {
+    const ref = useRef<HTMLDivElement>(null);
+    const { scrollYProgress } = useScroll({
+        target: ref,
+        offset: ["start end", "center center"]
+    });
+
+    const opacity = useTransform(scrollYProgress, [0, 1], [0.3, 1]);
+    const scale = useTransform(scrollYProgress, [0, 1], [0.8, 1]);
+    const x = useTransform(scrollYProgress, [0, 1], [index % 2 === 0 ? -100 : 100, 0]);
+
+    return (
+        <motion.div
+            ref={ref}
+            style={{ opacity, scale, x }}
+            className="grid grid-cols-1 md:grid-cols-5 items-center gap-8 my-16"
+        >
+            <div className={cn("md:col-span-2 flex justify-center", index % 2 === 0 ? "md:order-2" : "md:order-1")}>
+                 <div className="relative w-40 h-40 flex items-center justify-center">
+                    <div className="absolute inset-0 bg-primary/10 rounded-full blur-2xl"></div>
+                    <Icon className="w-20 h-20 text-primary z-10" />
+                </div>
+            </div>
+            <div className={cn("md:col-span-3", index % 2 === 0 ? "md:order-1" : "md:order-2")}>
+                <h4 className="font-bold text-2xl mb-2">{title}</h4>
+                <p className="text-muted-foreground">{description}</p>
+            </div>
+        </motion.div>
+    );
+};
+
 
 export default function ReferralPage() {
     const { toast } = useToast();
@@ -175,28 +207,20 @@ export default function ReferralPage() {
                     </Card>
                 </section>
 
-                <section>
-                    <h3 className="text-2xl font-bold mb-10 text-center">How It Works</h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <section className="py-12">
+                    <h3 className="text-3xl font-bold mb-16 text-center">How It Works</h3>
+                    <div className="space-y-12">
                         {referralSteps.map((step, index) => (
-                            <motion.div
+                           <Step 
                                 key={index}
-                                className="text-center"
-                                initial={{ opacity: 0, y: 30 }}
-                                whileInView={{ opacity: 1, y: 0 }}
-                                viewport={{ once: true, amount: 0.5 }}
-                                transition={{ duration: 0.5, delay: index * 0.1 }}
-                            >
-                                <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary/10 mb-4">
-                                    <step.icon className="w-8 h-8 text-primary" />
-                                </div>
-                                <h4 className="font-bold text-lg mb-2">{step.title}</h4>
-                                <p className="text-sm text-muted-foreground">{step.description}</p>
-                            </motion.div>
+                                icon={step.icon}
+                                title={step.title}
+                                description={step.description}
+                                index={index}
+                           />
                         ))}
                     </div>
                 </section>
-
             </div>
         </div>
     );
