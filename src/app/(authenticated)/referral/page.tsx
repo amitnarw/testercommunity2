@@ -51,14 +51,6 @@ const referralSteps = [
 
 export default function ReferralPage() {
     const { toast } = useToast();
-    const howItWorksRef = useRef<HTMLDivElement>(null);
-    const { scrollYProgress } = useScroll({
-        target: howItWorksRef,
-        offset: ["start center", "end end"]
-    });
-    const lineY = useTransform(scrollYProgress, [0, 1], ["0%", "100%"]);
-    const giftY = useTransform(scrollYProgress, [0, 1], ["0%", "300%"]);
-
 
     const handleCopy = () => {
         navigator.clipboard.writeText(referralData.referralCode);
@@ -143,47 +135,6 @@ export default function ReferralPage() {
                     </Card>
                 </section>
 
-                <section ref={howItWorksRef}>
-                    <h3 className="text-2xl font-bold mb-10 text-center">How It Works</h3>
-                    <div className="relative">
-                        {/* Connecting Line */}
-                        <div className="absolute left-1/2 md:left-[5rem] top-0 bottom-0 w-0.5 bg-border -translate-x-1/2">
-                            <motion.div className="w-full bg-primary" style={{ height: lineY }} />
-                        </div>
-                        
-                        {/* Animated Gift Icon */}
-                        <motion.div className="absolute left-1/2 md:left-[5rem] top-0 -translate-x-1/2 z-10 p-2 bg-background rounded-full border shadow-lg" style={{ y: giftY }}>
-                           <div className="p-2 rounded-full bg-primary/20 text-primary">
-                               <Gift className="w-5 h-5"/>
-                           </div>
-                        </motion.div>
-                        
-                        <div className="space-y-12">
-                            {referralSteps.map((step, index) => (
-                                <motion.div 
-                                    key={index}
-                                    className="flex flex-col md:flex-row items-start gap-8 relative"
-                                    initial={{ opacity: 0.5, y: 30 }}
-                                    whileInView={{ opacity: 1, y: 0 }}
-                                    viewport={{ once: true, amount: 0.5 }}
-                                    transition={{ duration: 0.5 }}
-                                >
-                                    <div className="hidden md:flex flex-col items-center self-start w-[10rem]">
-                                        <div className="w-12 h-12 flex items-center justify-center rounded-full bg-secondary border shadow-md">
-                                            <step.icon className="w-6 h-6 text-primary"/>
-                                        </div>
-                                    </div>
-                                    <div className="flex-1">
-                                        <h4 className="font-bold text-xl mb-2">{step.title}</h4>
-                                        <p className="text-muted-foreground">{step.description}</p>
-                                    </div>
-                                </motion.div>
-                            ))}
-                        </div>
-                    </div>
-                </section>
-
-
                 <section>
                     <h3 className="text-2xl font-bold mb-6 text-center">Referral History</h3>
                     <Card>
@@ -223,6 +174,29 @@ export default function ReferralPage() {
                         </CardContent>
                     </Card>
                 </section>
+
+                <section>
+                    <h3 className="text-2xl font-bold mb-10 text-center">How It Works</h3>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                        {referralSteps.map((step, index) => (
+                            <motion.div
+                                key={index}
+                                className="text-center"
+                                initial={{ opacity: 0, y: 30 }}
+                                whileInView={{ opacity: 1, y: 0 }}
+                                viewport={{ once: true, amount: 0.5 }}
+                                transition={{ duration: 0.5, delay: index * 0.1 }}
+                            >
+                                <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-primary/10 mb-4">
+                                    <step.icon className="w-8 h-8 text-primary" />
+                                </div>
+                                <h4 className="font-bold text-lg mb-2">{step.title}</h4>
+                                <p className="text-sm text-muted-foreground">{step.description}</p>
+                            </motion.div>
+                        ))}
+                    </div>
+                </section>
+
             </div>
         </div>
     );
