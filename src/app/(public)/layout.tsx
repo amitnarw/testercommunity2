@@ -14,7 +14,7 @@ export default function PublicLayout({
   const { data: session, isPending, error, refetch } = authClient.useSession();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const pathname = usePathname();
-  const router = useRouter();
+  // const router = useRouter();
 
   const isAuthPage =
     pathname === "/auth/login" ||

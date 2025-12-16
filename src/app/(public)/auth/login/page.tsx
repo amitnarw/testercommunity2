@@ -45,7 +45,6 @@ const LoginForm = () => {
     password?: string[] | undefined;
   }>();
   const [showPassword, setShowPassword] = useState(false);
-  const [skipClicked, setSkipClicked] = useState(false);
 
   const { mutate, isPending, isSuccess, isError, error } = useLoginUser();
 
@@ -65,6 +64,13 @@ const LoginForm = () => {
       userProfileData.initial
     ) {
       router.push("/profile/profile-setup");
+    } else if (
+      userProfileIsSuccess &&
+      userProfileData &&
+      !userProfileIsPending &&
+      !userProfileData.initial
+    ) {
+      router.push("/dashboard");
     }
   }, [userProfileIsSuccess, userProfileData, userProfileIsPending, router]);
 

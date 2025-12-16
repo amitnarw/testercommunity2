@@ -1,6 +1,6 @@
 import {
   emailVerification,
-  fetchUser,
+  // fetchUser,
   login,
   register,
   // updateProfile
@@ -12,9 +12,9 @@ import {
   UseMutationOptions,
 } from "@tanstack/react-query";
 
-export function useUser(id: string) {
-  return useQuery({ queryKey: ["user", id], queryFn: () => fetchUser(id) });
-}
+// export function useUser(id: string) {
+//   return useQuery({ queryKey: ["user", id], queryFn: () => fetchUser(id) });
+// }
 
 // export function useUpdateUser() {
 //   return useMutation({ mutationFn: updateProfile });
