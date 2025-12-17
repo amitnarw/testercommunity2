@@ -12,7 +12,7 @@ export default function AuthenticatedLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const { data: session, isPending, error, refetch } = authClient.useSession();
+  // const { data: session, isPending, error, refetch } = authClient.useSession();
 
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(true);
   const router = useRouter();
