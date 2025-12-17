@@ -31,9 +31,9 @@ export default function PublicLayout({
   //   }
   // }, [session, isAuthPage, router]);
 
-  if (isPending) {
-    return <p>Loading (public)</p>;
-  }
+  // if (isPending) {
+  //   return <p>Loading (public)</p>;
+  // }
 
   if (!session && isAuthPage) {
     return <main className="flex-1 bg-background">{children}</main>;
@@ -44,16 +44,18 @@ export default function PublicLayout({
 
   return (
     <div className="relative flex flex-col min-h-screen">
-      <Header
-        session={session}
-        isDashboardPage={false}
-        isMobileMenuOpen={isMobileMenuOpen}
-        setMobileMenuOpen={setIsMobileMenuOpen}
-        isSidebarCollapsed={true}
-        setSidebarCollapsed={() => {}}
-      />
+      {!isPending && (
+        <Header
+          session={session}
+          isDashboardPage={false}
+          isMobileMenuOpen={isMobileMenuOpen}
+          setMobileMenuOpen={setIsMobileMenuOpen}
+          isSidebarCollapsed={true}
+          setSidebarCollapsed={() => {}}
+        />
+      )}
       <main className="flex-1 bg-background z-10">{children}</main>
-      <Footer />
+      {!isPending && <Footer />}
     </div>
   );
 }
