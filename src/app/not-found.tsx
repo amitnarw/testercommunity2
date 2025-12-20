@@ -13,30 +13,6 @@ export default function NotFoundPage() {
   const { setTheme, theme } = useTheme();
   const { data: session } = authClient.useSession();
 
-  const letterVariant = {
-    float: {
-      y: ["0rem", "-1.5rem", "0rem"],
-      transition: {
-        duration: 5,
-        ease: "easeInOut",
-        repeat: Infinity,
-        repeatType: "mirror" as const,
-      },
-    },
-  };
-  
-  const zeroVariant = {
-    float: {
-      y: ["0rem", "1.5rem", "0rem"],
-      transition: {
-        duration: 5,
-        ease: "easeInOut",
-        repeat: Infinity,
-        repeatType: "mirror" as const,
-      },
-    },
-  }
-
   return (
     <div className="relative flex flex-col items-center justify-center min-h-screen bg-background text-center p-4 overflow-hidden">
         <BackgroundBeams />
@@ -54,9 +30,42 @@ export default function NotFoundPage() {
 
       <div className="relative z-10 flex flex-col items-center justify-center">
         <div className="flex items-center justify-center text-[45vw] md:text-[20vw] font-black leading-none bg-gradient-to-br from-primary via-accent to-primary/50 bg-clip-text text-transparent">
-          <motion.div variants={letterVariant} animate="float">4</motion.div>
-          <motion.div variants={zeroVariant} animate="float">0</motion.div>
-          <motion.div variants={letterVariant} animate="float">4</motion.div>
+          <motion.div
+            animate={{
+              y: ["0rem", "-1.5rem", "0rem"],
+            }}
+            transition={{
+              duration: 5,
+              ease: "easeInOut",
+              repeat: Infinity,
+            }}
+          >
+            4
+          </motion.div>
+          <motion.div
+            animate={{
+              y: ["0rem", "1.5rem", "0rem"],
+            }}
+            transition={{
+              duration: 5,
+              ease: "easeInOut",
+              repeat: Infinity,
+            }}
+          >
+            0
+          </motion.div>
+          <motion.div
+            animate={{
+              y: ["0rem", "-1.5rem", "0rem"],
+            }}
+            transition={{
+              duration: 5,
+              ease: "easeInOut",
+              repeat: Infinity,
+            }}
+          >
+            4
+          </motion.div>
         </div>
 
         <h2 className="mt-8 text-2xl md:text-4xl font-semibold">Page Lost in Cyberspace</h2>
