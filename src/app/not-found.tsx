@@ -13,26 +13,39 @@ export default function NotFoundPage() {
   const { setTheme, theme } = useTheme();
   const { data: session } = authClient.useSession();
 
-  const floatVariant = {
+  const floatVariant1 = {
     animate: {
       y: ["0rem", "-1.5rem", "0rem"],
       transition: {
-        duration: 5,
+        duration: 4,
         ease: "easeInOut",
         repeat: Infinity,
       },
     },
   };
   
-  const floatSlightlyDifferentVariant = {
+  const floatVariant2 = {
       animate: {
-        y: ["0rem", "1.5rem", "0rem"],
+        y: ["0rem", "1.2rem", "0rem"],
         transition: {
-          duration: 7,
+          duration: 5,
           ease: "easeInOut",
           repeat: Infinity,
+          delay: 0.5,
         },
       },
+  };
+
+  const floatVariant3 = {
+    animate: {
+      y: ["0rem", "-1.0rem", "0rem"],
+      transition: {
+        duration: 4.5,
+        ease: "easeInOut",
+        repeat: Infinity,
+        delay: 0.2,
+      },
+    },
   };
 
 
@@ -52,36 +65,20 @@ export default function NotFoundPage() {
       </div>
 
       <div className="relative z-10 flex flex-col items-center justify-center">
-        <motion.div 
-            variants={floatSlightlyDifferentVariant}
-            animate="animate"
-            className="flex items-center justify-center text-[45vw] md:text-[20vw] font-black leading-none bg-gradient-to-br from-primary via-accent to-primary/50 bg-clip-text text-transparent"
-        >
-            <span>4</span>
-            <span>0</span>
-            <span>4</span>
-        </motion.div>
+        <div className="flex items-center justify-center text-[45vw] md:text-[20vw] font-black leading-none bg-gradient-to-br from-primary via-accent to-primary/50 bg-clip-text text-transparent">
+            <motion.span variants={floatVariant1} animate="animate">4</motion.span>
+            <motion.span variants={floatVariant2} animate="animate">0</motion.span>
+            <motion.span variants={floatVariant3} animate="animate">4</motion.span>
+        </div>
 
-        <motion.h2 
-            variants={floatVariant}
-            animate="animate"
-            className="mt-8 text-2xl md:text-4xl font-semibold"
-        >
+        <h2 className="mt-8 text-2xl md:text-4xl font-semibold">
             Page Lost in Cyberspace
-        </motion.h2>
-        <motion.p 
-            variants={floatSlightlyDifferentVariant}
-            animate="animate"
-            className="mt-2 text-muted-foreground max-w-sm"
-        >
+        </h2>
+        <p className="mt-2 text-muted-foreground max-w-sm">
           It seems the page you were looking for has gone on an adventure. Let's get you back on track.
-        </motion.p>
+        </p>
 
-        <motion.div 
-            variants={floatVariant}
-            animate="animate"
-            className="mt-12 flex gap-4"
-        >
+        <div className="mt-12 flex gap-4">
           <Button asChild className="rounded-full px-6 py-5 text-base">
             <Link href="/">Go Home</Link>
           </Button>
@@ -90,7 +87,7 @@ export default function NotFoundPage() {
               <Link href="/dashboard">Dashboard</Link>
             </Button>
           )}
-        </motion.div>
+        </div>
       </div>
     </div>
   );
