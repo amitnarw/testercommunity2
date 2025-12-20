@@ -13,76 +13,84 @@ export default function NotFoundPage() {
   const { setTheme, theme } = useTheme();
   const { data: session } = authClient.useSession();
 
+  const floatVariant = {
+    animate: {
+      y: ["0rem", "-1.5rem", "0rem"],
+      transition: {
+        duration: 5,
+        ease: "easeInOut",
+        repeat: Infinity,
+      },
+    },
+  };
+  
+  const floatSlightlyDifferentVariant = {
+      animate: {
+        y: ["0rem", "1.5rem", "0rem"],
+        transition: {
+          duration: 7,
+          ease: "easeInOut",
+          repeat: Infinity,
+        },
+      },
+  };
+
+
   return (
     <div className="relative flex flex-col items-center justify-center min-h-screen bg-background text-center p-4 overflow-hidden">
-        <BackgroundBeams />
-        <div className="absolute top-4 right-4 z-20">
-            <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-            >
-                <Sun className="h-6 w-6 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-                <Moon className="absolute h-6 w-6 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-                <span className="sr-only">Toggle theme</span>
-            </Button>
-        </div>
+      <BackgroundBeams />
+      <div className="absolute top-4 right-4 z-20">
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+        >
+          <Sun className="h-6 w-6 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+          <Moon className="absolute h-6 w-6 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+          <span className="sr-only">Toggle theme</span>
+        </Button>
+      </div>
 
       <div className="relative z-10 flex flex-col items-center justify-center">
-        <div className="flex items-center justify-center text-[45vw] md:text-[20vw] font-black leading-none bg-gradient-to-br from-primary via-accent to-primary/50 bg-clip-text text-transparent">
-          <motion.div
-            animate={{
-              y: ["0rem", "-1.5rem", "0rem"],
-            }}
-            transition={{
-              duration: 5,
-              ease: "easeInOut",
-              repeat: Infinity,
-            }}
-          >
-            4
-          </motion.div>
-          <motion.div
-            animate={{
-              y: ["0rem", "1.5rem", "0rem"],
-            }}
-            transition={{
-              duration: 5,
-              ease: "easeInOut",
-              repeat: Infinity,
-            }}
-          >
-            0
-          </motion.div>
-          <motion.div
-            animate={{
-              y: ["0rem", "-1.5rem", "0rem"],
-            }}
-            transition={{
-              duration: 5,
-              ease: "easeInOut",
-              repeat: Infinity,
-            }}
-          >
-            4
-          </motion.div>
-        </div>
+        <motion.div 
+            variants={floatSlightlyDifferentVariant}
+            animate="animate"
+            className="flex items-center justify-center text-[45vw] md:text-[20vw] font-black leading-none bg-gradient-to-br from-primary via-accent to-primary/50 bg-clip-text text-transparent"
+        >
+            <span>4</span>
+            <span>0</span>
+            <span>4</span>
+        </motion.div>
 
-        <h2 className="mt-8 text-2xl md:text-4xl font-semibold">Page Lost in Cyberspace</h2>
-        <p className="mt-2 text-muted-foreground max-w-sm">
+        <motion.h2 
+            variants={floatVariant}
+            animate="animate"
+            className="mt-8 text-2xl md:text-4xl font-semibold"
+        >
+            Page Lost in Cyberspace
+        </motion.h2>
+        <motion.p 
+            variants={floatSlightlyDifferentVariant}
+            animate="animate"
+            className="mt-2 text-muted-foreground max-w-sm"
+        >
           It seems the page you were looking for has gone on an adventure. Let's get you back on track.
-        </p>
+        </motion.p>
 
-        <div className="mt-12 flex gap-4">
+        <motion.div 
+            variants={floatVariant}
+            animate="animate"
+            className="mt-12 flex gap-4"
+        >
           <Button asChild className="rounded-full px-6 py-5 text-base">
             <Link href="/">Go Home</Link>
           </Button>
           {session?.session?.id && (
             <Button asChild variant="outline" className="rounded-full px-6 py-5 text-base">
-                <Link href="/dashboard">Dashboard</Link>
+              <Link href="/dashboard">Dashboard</Link>
             </Button>
           )}
-        </div>
+        </motion.div>
       </div>
     </div>
   );
