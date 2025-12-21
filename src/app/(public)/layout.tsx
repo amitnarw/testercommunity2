@@ -14,33 +14,29 @@ export default function PublicLayout({
   const { data: session, isPending, error, refetch } = authClient.useSession();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const pathname = usePathname();
-  // const router = useRouter();
+  const router = useRouter();
 
   const isAuthPage =
-    pathname === "/auth/login" ||
-    pathname === "/auth/register" ||
-    pathname === "/auth/register/profile-setup" ||
-    pathname === "/auth/verification" ||
-    pathname === "/auth/register/check-email";
+    pathname.startsWith("/auth") ||
+    pathname.startsWith("/tester/login") ||
+    pathname.startsWith("/tester/register");
 
-  // useEffect(() => {
-  //   if (!isPending) {
-  //     if (session && isAuthPage) {
-  //       router.replace("/dashboard");
-  //     }
-  //   }
-  // }, [session, isAuthPage, router]);
 
-  // if (isPending) {
-  //   return <p>Loading (public)</p>;
-  // }
+  useEffect(() => {
+    if (!isPending) {
+      if (session && isAuthPage) {
+        if((session as any)?.role === 'tester') {
+          router.replace("/tester/dashboard");
+        } else {
+          router.replace("/dashboard");
+        }
+      }
+    }
+  }, [session, isAuthPage, router, isPending]);
 
-  if (!session && isAuthPage) {
+  if (isAuthPage) {
     return <main className="flex-1 bg-background">{children}</main>;
   }
-  // if (session && isAuthPage) {
-  //   return null;
-  // }
 
   return (
     <div className="relative flex flex-col min-h-screen">

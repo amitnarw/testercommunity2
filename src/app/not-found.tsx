@@ -3,11 +3,12 @@ import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { InteractiveGridPattern } from '@/components/ui/interactive-grid-pattern';
 import { cn } from '@/lib/utils';
+import { BackgroundBeams } from '@/components/ui/background-beams';
 
 export default function NotFoundPage() {
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-background text-center p-4 overflow-hidden relative">
-      <InteractiveGridPattern
+      {/* <InteractiveGridPattern
         className={cn(
             "[mask-image:radial-gradient(700px_circle_at_center,rgba(255,255,255,0.6),transparent)]",
             "transform -skew-y-12"
@@ -16,7 +17,8 @@ export default function NotFoundPage() {
         height={30}
         squares={[30, 30]}
         squaresClassName="hover:fill-gray-100"
-      />
+      /> */}
+      <BackgroundBeams />
       <div className="max-w-md w-full relative z-10">
         <div className="relative z-10 bg-background/50 backdrop-blur-sm p-8 rounded-xl border">
           <h1 className="bg-gradient-to-br from-primary to-accent bg-clip-text text-transparent text-9xl font-semibold">404</h1>
