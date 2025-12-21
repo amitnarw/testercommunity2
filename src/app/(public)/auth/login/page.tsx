@@ -45,24 +45,31 @@ const LoginForm = () => {
     password?: string[] | undefined;
   }>();
   const [showPassword, setShowPassword] = useState(false);
+  const [checkUserProfileData, setCheckUserProfileData] = useState(false);
 
-  const { mutate, isPending, isSuccess, isError, error } = useLoginUser();
+  const { mutate, isPending, isSuccess, isError, error } = useLoginUser({
+    onSuccess: () => {
+      setCheckUserProfileData(true);
+    },
+  });
 
   const {
     data: userProfileData,
     isPending: userProfileIsPending,
     isSuccess: userProfileIsSuccess,
   } = useUserProfileData({
-    enabled: isSuccess,
+    enabled: checkUserProfileData,
   });
 
   useEffect(() => {
+    console.log(1111);
     if (
       userProfileIsSuccess &&
       userProfileData &&
       !userProfileIsPending &&
       userProfileData.initial
     ) {
+      console.log(2222);
       router.push("/profile/profile-setup");
     } else if (
       userProfileIsSuccess &&
@@ -70,6 +77,7 @@ const LoginForm = () => {
       !userProfileIsPending &&
       !userProfileData.initial
     ) {
+      console.log(3333);
       router.push("/dashboard");
     }
   }, [userProfileIsSuccess, userProfileData, userProfileIsPending, router]);

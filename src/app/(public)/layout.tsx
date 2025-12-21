@@ -22,17 +22,17 @@ export default function PublicLayout({
     pathname.startsWith("/tester/register");
 
 
-  useEffect(() => {
-    if (!isPending) {
-      if (session && isAuthPage) {
-        if((session as any)?.role === 'tester') {
-          router.replace("/tester/dashboard");
-        } else {
-          router.replace("/dashboard");
-        }
-      }
-    }
-  }, [session, isAuthPage, router, isPending]);
+  // useEffect(() => {
+  //   if (!isPending) {
+  //     if (session && isAuthPage) {
+  //       if((session as any)?.role === 'tester') {
+  //         router.replace("/tester/dashboard");
+  //       } else {
+  //         router.replace("/dashboard");
+  //       }
+  //     }
+  //   }
+  // }, [session, isAuthPage, router, isPending]);
 
   if (isAuthPage) {
     return <main className="flex-1 bg-background">{children}</main>;
