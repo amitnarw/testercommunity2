@@ -9,19 +9,6 @@ import { Moon, Sun } from 'lucide-react';
 import { authClient } from '@/lib/auth-client';
 import { BackgroundBeams } from '@/components/ui/background-beams';
 
-const floatingVariants = {
-    initial: (delay: number) => ({
-        y: [-15, 15],
-        transition: {
-            delay,
-            duration: 3 + delay, // gives each a slightly different speed
-            repeat: Infinity,
-            repeatType: "reverse",
-            ease: "easeInOut"
-        }
-    })
-};
-
 export default function NotFoundPage() {
   const { setTheme, theme } = useTheme();
   const { data: session } = authClient.useSession();
@@ -42,44 +29,70 @@ export default function NotFoundPage() {
       </div>
 
       <div className="relative z-10 flex flex-col items-center justify-center">
-        <div className="flex items-center justify-center text-[45vw] md:text-[20vw] font-black leading-none bg-gradient-to-br from-primary via-accent to-primary/50 bg-clip-text text-transparent perspective-1000">
+        <div className="flex items-center justify-center text-[45vw] md:text-[20vw] font-black text-primary">
           <motion.span
             className="inline-block"
-            custom={0}
-            animate="initial"
-            variants={floatingVariants}
+            animate={{
+              y: [0, -20, 0],
+              rotateX: [0, 15, 0],
+              rotateY: [0, -10, 0],
+              z: [0, 30, 0]
+            }}
+            transition={{
+              duration: 6,
+              ease: "easeInOut",
+              repeat: Infinity,
+              repeatType: "reverse"
+            }}
           >
             4
           </motion.span>
 
           <motion.span
             className="inline-block"
-            custom={0.5}
-            animate="initial"
-            variants={floatingVariants}
+            animate={{
+              y: [0, 15, 0],
+              rotateX: [0, -12, 0],
+              rotateY: [0, 8, 0],
+              z: [0, -25, 0]
+            }}
+            transition={{
+              duration: 5,
+              ease: "easeInOut",
+              repeat: Infinity,
+              repeatType: "reverse",
+              delay: 0.3
+            }}
           >
             0
           </motion.span>
 
           <motion.span
             className="inline-block"
-            custom={0.2}
-            animate="initial"
-            variants={floatingVariants}
+            animate={{
+              y: [0, -18, 0],
+              rotateX: [0, 10, 0],
+              rotateY: [0, -12, 0],
+              z: [0, 20, 0]
+            }}
+            transition={{
+              duration: 7,
+              ease: "easeInOut",
+              repeat: Infinity,
+              repeatType: "reverse",
+              delay: 0.6
+            }}
           >
             4
           </motion.span>
         </div>
 
-        <h2 className="mt-8 text-2xl md:text-4xl font-semibold">
-          Page Lost in Cyberspace
-        </h2>
         <p className="mt-2 text-muted-foreground max-w-sm">
           It seems the page you were looking for has gone on an adventure. Let's get you back on track.
         </p>
 
         <div className="mt-12 flex gap-4">
-          <Button asChild className="rounded-full px-6 py-5 text-base">
+          <Button asChild className="rounded-full px-6 py-5 text-base bg-gradient-to-br from-primary to-primary/20">
             <Link href="/">Go Home</Link>
           </Button>
           {session?.session?.id && (
