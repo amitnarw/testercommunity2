@@ -31,7 +31,7 @@ export default function NotFoundPage() {
       <div className="relative z-10 flex flex-col items-center justify-center">
         <div className="flex items-center justify-center text-[45vw] md:text-[20vw] font-black leading-none bg-gradient-to-br from-primary via-accent to-primary/50 bg-clip-text text-transparent">
             <motion.span
-              animate={{ y: ["0rem", "1.5rem", "0rem"] }}
+              animate={{ y: [0, -15, 0] }}
               transition={{
                 duration: 4,
                 ease: "easeInOut",
@@ -41,23 +41,23 @@ export default function NotFoundPage() {
               4
             </motion.span>
             <motion.span
-              animate={{ y: ["0rem", "-1.2rem", "0rem"] }}
+              animate={{ y: [0, 10, 0] }}
               transition={{
                 duration: 3,
                 ease: "easeInOut",
                 repeat: Infinity,
-                delay: 0.5,
+                delay: 0.5
               }}
             >
               0
             </motion.span>
             <motion.span
-               animate={{ y: ["0rem", "1.0rem", "0rem"] }}
+              animate={{ y: [0, -12, 0] }}
                transition={{
                  duration: 3.5,
                  ease: "easeInOut",
                  repeat: Infinity,
-                 delay: 0.2,
+                 delay: 0.2
                }}
             >
               4
