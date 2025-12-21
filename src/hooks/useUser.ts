@@ -47,6 +47,8 @@ export function useUserProfileData(options?: { enabled?: boolean }) {
     queryFn: () => getUserProfileData(),
     queryKey: ["getUserProfileData"],
     enabled: options?.enabled ?? true,
+    retry: false,
+    staleTime: 0,
   });
 
   return query;

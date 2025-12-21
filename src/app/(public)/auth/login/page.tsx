@@ -48,7 +48,8 @@ const LoginForm = () => {
   const [checkUserProfileData, setCheckUserProfileData] = useState(false);
 
   const { mutate, isPending, isSuccess, isError, error } = useLoginUser({
-    onSuccess: () => {
+    onSuccess: async () => {
+      await new Promise((r) => setTimeout(r, 50));
       setCheckUserProfileData(true);
     },
   });
@@ -62,25 +63,37 @@ const LoginForm = () => {
   });
 
   useEffect(() => {
-    console.log(1111);
-    if (
-      userProfileIsSuccess &&
-      userProfileData &&
-      !userProfileIsPending &&
-      userProfileData.initial
-    ) {
-      console.log(2222);
-      router.push("/profile/profile-setup");
-    } else if (
-      userProfileIsSuccess &&
-      userProfileData &&
-      !userProfileIsPending &&
-      !userProfileData.initial
-    ) {
-      console.log(3333);
-      router.push("/dashboard");
+    if (!userProfileIsSuccess || userProfileIsPending || !userProfileData) {
+      return;
     }
-  }, [userProfileIsSuccess, userProfileData, userProfileIsPending, router]);
+
+    if (userProfileData.initial) {
+      router.replace("/profile/profile-setup");
+    } else {
+      router.replace("/dashboard");
+    }
+  }, [userProfileIsSuccess, userProfileIsPending, userProfileData, router]);
+
+  // useEffect(() => {
+  //   console.log(1111);
+  //   if (
+  //     userProfileIsSuccess &&
+  //     userProfileData &&
+  //     !userProfileIsPending &&
+  //     userProfileData.initial
+  //   ) {
+  //     console.log(2222);
+  //     router.push("/profile/profile-setup");
+  //   } else if (
+  //     userProfileIsSuccess &&
+  //     userProfileData &&
+  //     !userProfileIsPending &&
+  //     !userProfileData.initial
+  //   ) {
+  //     console.log(3333);
+  //     router.push("/dashboard");
+  //   }
+  // }, [userProfileIsSuccess, userProfileData, userProfileIsPending, router]);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
