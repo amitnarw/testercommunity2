@@ -17,7 +17,7 @@ export default function PublicLayout({
   const router = useRouter();
 
   const isAuthPage =
-    pathname.startsWith("/auth/") ||
+    pathname.startsWith("/auth") ||
     pathname.startsWith("/tester/login") ||
     pathname.startsWith("/tester/register");
 
