@@ -9,6 +9,19 @@ import { Moon, Sun } from 'lucide-react';
 import { authClient } from '@/lib/auth-client';
 import { BackgroundBeams } from '@/components/ui/background-beams';
 
+const floatingVariants = {
+    initial: (delay: number) => ({
+        y: [-15, 15],
+        transition: {
+            delay,
+            duration: 3 + delay, // gives each a slightly different speed
+            repeat: Infinity,
+            repeatType: "reverse",
+            ease: "easeInOut"
+        }
+    })
+};
+
 export default function NotFoundPage() {
   const { setTheme, theme } = useTheme();
   const { data: session } = authClient.useSession();
@@ -29,43 +42,37 @@ export default function NotFoundPage() {
       </div>
 
       <div className="relative z-10 flex flex-col items-center justify-center">
-        <div className="flex items-center justify-center text-[45vw] md:text-[20vw] font-black leading-none bg-gradient-to-br from-primary via-accent to-primary/50 bg-clip-text text-transparent">
-            <motion.span
-              animate={{ y: [0, -15, 0] }}
-              transition={{
-                duration: 4,
-                ease: "easeInOut",
-                repeat: Infinity,
-              }}
-            >
-              4
-            </motion.span>
-            <motion.span
-              animate={{ y: [0, 10, 0] }}
-              transition={{
-                duration: 3,
-                ease: "easeInOut",
-                repeat: Infinity,
-                delay: 0.5
-              }}
-            >
-              0
-            </motion.span>
-            <motion.span
-              animate={{ y: [0, -12, 0] }}
-               transition={{
-                 duration: 3.5,
-                 ease: "easeInOut",
-                 repeat: Infinity,
-                 delay: 0.2
-               }}
-            >
-              4
-            </motion.span>
+        <div className="flex items-center justify-center text-[45vw] md:text-[20vw] font-black leading-none bg-gradient-to-br from-primary via-accent to-primary/50 bg-clip-text text-transparent perspective-1000">
+          <motion.span
+            className="inline-block"
+            custom={0}
+            animate="initial"
+            variants={floatingVariants}
+          >
+            4
+          </motion.span>
+
+          <motion.span
+            className="inline-block"
+            custom={0.5}
+            animate="initial"
+            variants={floatingVariants}
+          >
+            0
+          </motion.span>
+
+          <motion.span
+            className="inline-block"
+            custom={0.2}
+            animate="initial"
+            variants={floatingVariants}
+          >
+            4
+          </motion.span>
         </div>
 
         <h2 className="mt-8 text-2xl md:text-4xl font-semibold">
-            Page Lost in Cyberspace
+          Page Lost in Cyberspace
         </h2>
         <p className="mt-2 text-muted-foreground max-w-sm">
           It seems the page you were looking for has gone on an adventure. Let's get you back on track.
