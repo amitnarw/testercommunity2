@@ -13,17 +13,6 @@ export default function NotFoundPage() {
   const { setTheme, theme } = useTheme();
   const { data: session } = authClient.useSession();
 
-  const floatVariant = (duration: number, delay: number, yRange: string[]) => ({
-    y: yRange,
-    transition: {
-      duration,
-      delay,
-      ease: "easeInOut",
-      repeat: Infinity,
-      repeatType: "mirror" as const,
-    },
-  });
-
   return (
     <div className="relative flex flex-col items-center justify-center min-h-screen bg-background text-center p-4 overflow-hidden">
       <BackgroundBeams />
@@ -41,9 +30,38 @@ export default function NotFoundPage() {
 
       <div className="relative z-10 flex flex-col items-center justify-center">
         <div className="flex items-center justify-center text-[45vw] md:text-[20vw] font-black leading-none bg-gradient-to-br from-primary via-accent to-primary/50 bg-clip-text text-transparent">
-            <motion.span animate={floatVariant(4, 0, ["-1.5rem", "1.5rem"])}>4</motion.span>
-            <motion.span animate={floatVariant(5, 0.5, ["1.2rem", "-1.2rem"])}>0</motion.span>
-            <motion.span animate={floatVariant(4.5, 0.2, ["-1.0rem", "1.0rem"])}>4</motion.span>
+            <motion.span
+              animate={{ y: ["0rem", "1.5rem", "0rem"] }}
+              transition={{
+                duration: 4,
+                ease: "easeInOut",
+                repeat: Infinity,
+              }}
+            >
+              4
+            </motion.span>
+            <motion.span
+              animate={{ y: ["0rem", "-1.2rem", "0rem"] }}
+              transition={{
+                duration: 3,
+                ease: "easeInOut",
+                repeat: Infinity,
+                delay: 0.5,
+              }}
+            >
+              0
+            </motion.span>
+            <motion.span
+               animate={{ y: ["0rem", "1.0rem", "0rem"] }}
+               transition={{
+                 duration: 3.5,
+                 ease: "easeInOut",
+                 repeat: Infinity,
+                 delay: 0.2,
+               }}
+            >
+              4
+            </motion.span>
         </div>
 
         <h2 className="mt-8 text-2xl md:text-4xl font-semibold">
