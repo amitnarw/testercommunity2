@@ -1,14 +1,9 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import { getCookieCache } from "better-auth/cookies";
 import { cookies } from "next/headers";
 import { jwtVerify } from "jose";
-import { authClient } from "./lib/auth-client";
 
 export async function middleware(request: NextRequest) {
-  // const cached = await getCookieCache(request);
-  // const { data: session, isPending, error, refetch } = await authClient.useSession();
-
   const secret = process.env.BETTER_AUTH_SECRET!;
   let role: {
     name: string;
@@ -59,16 +54,6 @@ export async function middleware(request: NextRequest) {
   const professionalTesterAuthRoutes = ["/tester/login", "/tester/register"];
   const professionalRoutes = ["/tester/dashboard"];
 
-  console.log(
-    better_auth,
-    role?.name,
-    authRoutes.some((route) => pathname.startsWith(route)),
-    isAdmin,
-    pathname,
-    isProfessional,
-    "-------------------------"
-  );
-
   // If user is authenticated and tries to access login/register, redirect to dashboard
   if (
     better_auth &&
@@ -117,14 +102,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: [
-    /*
-     * Match all request paths except for the ones starting with:
-     * - api (API routes)
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
-     */
-    "/((?!api|_next/static|_next/image|favicon.ico).*)",
-  ],
+  matcher: ["/((?!api|_next/static|_next/image|favicon.ico).*)"],
 };

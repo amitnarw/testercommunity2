@@ -42,11 +42,11 @@ export function useUserDataSave(options?: UseMutationOptions<any, any, any>) {
   return mutation;
 }
 
-export function useUserProfileData(options?: { enabled?: boolean }) {
+export function useUserProfileData() {
   const query = useQuery<UserProfleResponse, Error, UserProfileDataAttributes>({
     queryFn: () => getUserProfileData(),
     queryKey: ["getUserProfileData"],
-    enabled: options?.enabled ?? true,
+    enabled: false,
     retry: false,
     staleTime: 0,
   });

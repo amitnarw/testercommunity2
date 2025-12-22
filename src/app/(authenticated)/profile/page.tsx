@@ -297,7 +297,7 @@ export default function ProfilePage() {
                             </div>
                         </div>
                         <Button asChild>
-                            <Link href="/referral">View Details <ChevronRight className="ml-2 h-4 w-4" /></Link>
+                            <Link href="/profile/referral">View Details <ChevronRight className="ml-2 h-4 w-4" /></Link>
                         </Button>
                     </div>
                 </Card>

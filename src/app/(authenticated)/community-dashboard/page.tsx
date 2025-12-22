@@ -141,7 +141,7 @@ export default function CommunityDashboardPage() {
 
 
     return (
-        <div className="bg-secondary/50 min-h-screen">
+        <div className="min-h-screen">
             <div className="container mx-auto px-4 md:px-6">
                 <header className="mb-12">
                     <div className="mb-6">

@@ -12,18 +12,8 @@ export default function AuthenticatedLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  // const { data: session, isPending, error, refetch } = authClient.useSession();
-
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(true);
   const router = useRouter();
-
-  // useEffect(() => {
-  //   if (!isPending) {
-  //     if (!session) {
-  //       router.replace("/auth/login");
-  //     }
-  //   }
-  // }, [session, router, isPending]);
 
   const handleLogout = async () => {
     await authClient.signOut({
