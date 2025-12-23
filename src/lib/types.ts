@@ -253,20 +253,6 @@ export type FaqItem = {
   answer: string;
 };
 
-export type Notification = {
-  id: number;
-  title: string;
-  description: string;
-  date: string;
-  type:
-    | "new_test"
-    | "feedback_received"
-    | "test_completed"
-    | "bug_report"
-    | "points_awarded";
-  read: boolean;
-};
-
 export type ProjectFeedback = {
   id: number;
   tester: string;
@@ -364,4 +350,86 @@ export interface ControlRoomResponse {
   profileSurveyPoints?: number | null | undefined;
   pointsWithdrawalLimit?: number | null | undefined;
   pointsWithdrawalThreshold?: number | null | undefined;
+}
+
+export interface DashboardDataResponse {
+  wallet: number;
+  inReviewApps: {
+    id: number;
+    createdAt: Date;
+    updatedAt: Date;
+    appId: number;
+    appOwnerId: string;
+    currentTester: number;
+    totalTester: number;
+    currentDay: number;
+    totalDay: number;
+    instructionsForTester: string | null;
+    points: number | null;
+    averageTimeTesting: string | null;
+    status:
+      | "IN_REVIEW"
+      | "DRAFT"
+      | "REJECTED"
+      | "IN_TESTING"
+      | "COMPLETED"
+      | "ON_HOLD"
+      | "REQUESTED"
+      | "AVAILABLE";
+  }[];
+  statusCounts: {
+    _count: {
+      _all: number;
+    };
+  }[];
+}
+
+export interface HubDataResponse {
+  wallet: number;
+  availableApps: {
+    id: number;
+    createdAt: Date;
+    updatedAt: Date;
+    appId: number;
+    appOwnerId: string;
+    currentTester: string;
+    totalTester: number;
+    currentDay: number;
+    totalDay: number;
+    instructionsForTester: string | null;
+    points: number | null;
+    averageTimeTesting: string | null;
+    status:
+      | "IN_REVIEW"
+      | "DRAFT"
+      | "REJECTED"
+      | "IN_TESTING"
+      | "COMPLETED"
+      | "ON_HOLD"
+      | "REQUESTED"
+      | "AVAILABLE";
+  }[];
+  statusCounts: {
+    _count: {
+      _all: number;
+    };
+  }[];
+}
+
+export interface NotificationReponse {
+  id: number;
+  userId: string | null;
+  title: string;
+  description: string;
+  type:
+  | "NEW_TEST"
+  | "FEEDBACK_RECEIVED"
+  | "TEST_COMPLETED"
+  | "BUG_REPORT"
+  | "POINTS_AWARDED"
+  | "OTHER";
+  url: string | null;
+  isActive: boolean;
+  createdAt: Date;
+  updatedAt: Date;
 }

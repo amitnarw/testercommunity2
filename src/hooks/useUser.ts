@@ -1,24 +1,33 @@
 import {
+  getDasboardData,
+  getHubData,
   getUserData,
+  getUserNotifications,
   getUserProfileData,
   saveInitialProfileData,
   saveProfileData,
 } from "@/lib/apiCalls";
-import { UserDataAttributes, UserProfileDataAttributes } from "@/lib/types";
+import {
+  DashboardDataResponse,
+  HubDataResponse,
+  NotificationReponse,
+  UserDataAttributes,
+  UserProfileDataAttributes,
+} from "@/lib/types";
 import {
   useMutation,
   UseMutationOptions,
   useQuery,
 } from "@tanstack/react-query";
 
-export type UserProfleResponse = {
+export type CommonResponse = {
   success: true | false;
   data?: string;
   error?: string;
 };
 
 export function useUserData(options?: { enabled?: boolean }) {
-  const query = useQuery<UserProfleResponse, Error, UserDataAttributes>({
+  const query = useQuery<CommonResponse, Error, UserDataAttributes>({
     queryFn: () => getUserData(),
     queryKey: ["getUserData"],
     enabled: options?.enabled ?? true,
@@ -43,7 +52,7 @@ export function useUserDataSave(options?: UseMutationOptions<any, any, any>) {
 }
 
 export function useUserProfileData() {
-  const query = useQuery<UserProfleResponse, Error, UserProfileDataAttributes>({
+  const query = useQuery<CommonResponse, Error, UserProfileDataAttributes>({
     queryFn: () => getUserProfileData(),
     queryKey: ["getUserProfileData"],
     enabled: false,
@@ -79,4 +88,37 @@ export function useProfileDataSave(
   });
 
   return mutation;
+}
+
+// Dashboard
+export function useDashboardData() {
+  const query = useQuery<DashboardDataResponse, Error>({
+    queryFn: () => getDasboardData(),
+    queryKey: ["useDashboardData"],
+  });
+
+  return query;
+}
+
+// Hub
+export function useHubData() {
+  const query = useQuery<HubDataResponse, Error>({
+    queryFn: () => getHubData(),
+    queryKey: ["useHubData"],
+  });
+
+  return query;
+}
+
+// Notification
+export function useGetUserNotifications() {
+  const query = useQuery<
+    { result: NotificationReponse[]; totalNotifications: number },
+    Error
+  >({
+    queryFn: () => getUserNotifications(),
+    queryKey: ["useGetUserNotifications"],
+  });
+
+  return query;
 }
