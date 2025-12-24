@@ -175,11 +175,13 @@ export function NotificationsPageContent({
             </CardContent>
           </Card>
 
-          <AppPagination
-            currentPage={currentPage}
-            totalPages={totalPages}
-            onPageChange={handlePageChange}
-          />
+          {notificationData?.totalNotifications ? (
+            <AppPagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={handlePageChange}
+            />
+          ) : null}
         </div>
       )}
     </div>

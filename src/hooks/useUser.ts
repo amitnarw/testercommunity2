@@ -6,6 +6,7 @@ import {
   getUserProfileData,
   saveInitialProfileData,
   saveProfileData,
+  saveUserData,
 } from "@/lib/apiCalls";
 import {
   DashboardDataResponse,
@@ -27,7 +28,7 @@ export type CommonResponse = {
 };
 
 export function useUserData(options?: { enabled?: boolean }) {
-  const query = useQuery<CommonResponse, Error, UserDataAttributes>({
+  const query = useQuery<UserDataAttributes, Error>({
     queryFn: () => getUserData(),
     queryKey: ["getUserData"],
     enabled: options?.enabled ?? true,
@@ -52,7 +53,7 @@ export function useUserDataSave(options?: UseMutationOptions<any, any, any>) {
 }
 
 export function useUserProfileData() {
-  const query = useQuery<CommonResponse, Error, UserProfileDataAttributes>({
+  const query = useQuery<UserProfileDataAttributes, Error>({
     queryFn: () => getUserProfileData(),
     queryKey: ["getUserProfileData"],
     enabled: false,

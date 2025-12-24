@@ -168,13 +168,10 @@ export const saveUserData = async (payload: UserDataAttributes) => {
   }
 };
 
-export const getUserProfileData = async (): Promise<UserDataAttributes> => {
+export const getUserProfileData = async (): Promise<UserProfileDataAttributes> => {
   try {
     const response = await api.get(API_ROUTES.USER + "/get-user-profile-data");
-    const result = response?.data?.data;
-    if (!result) throw new Error("No user profile data returned");
-
-    return result as UserDataAttributes;
+    return response?.data?.data;
   } catch (error) {
     console.error("Error getting user profile:", error);
     if (axios.isAxiosError(error)) {
