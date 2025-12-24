@@ -1,4 +1,3 @@
-
 "use client";
 
 import React, { useEffect, useState } from "react";
@@ -17,7 +16,6 @@ import {
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import {
-  UserProfileData,
   UserProfileType,
   UserJobRole,
   UserExperienceLevel,
@@ -28,6 +26,7 @@ import {
   UserPublishFrequency,
   UserTestingServiceReason,
   UserCommunicationMethod,
+  UserProfileDataAttributes,
 } from "@/lib/types";
 import { cn } from "@/lib/utils";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
@@ -135,7 +134,9 @@ const variants = {
 function ProfileSetupPage() {
   const router = useRouter();
   const [isSubmitted, setIsSubmitted] = useState(false);
-  const [profileData, setProfileData] = useState<Partial<UserProfileData>>({});
+  const [profileData, setProfileData] = useState<
+    Partial<UserProfileDataAttributes>
+  >({});
   const [currentStep, setCurrentStep] = useState(0);
   const [previousStep, setPreviousStep] = useState(0);
   const delta = currentStep - previousStep;
@@ -147,9 +148,12 @@ function ProfileSetupPage() {
     isPending: userProfileIsPending,
     isError: userProfileIsError,
     error: userProfileError,
-  } = useUserProfileData({
-    enabled: true,
-  });
+    refetch: userProfileRefetch,
+  } = useUserProfileData();
+
+  useEffect(() => {
+    userProfileRefetch();
+  }, [userProfileRefetch]);
 
   useEffect(() => {
     if (!userProfileIsPending && userProfileData) {
@@ -972,9 +976,9 @@ const ContactStep = ({ profileData, setProfileData }: ProfileStepperProps) => (
 );
 
 interface ProfileStepperProps {
-  profileData: Partial<UserProfileData>;
+  profileData: Partial<UserProfileDataAttributes>;
   setProfileData: React.Dispatch<
-    React.SetStateAction<Partial<UserProfileData>>
+    React.SetStateAction<Partial<UserProfileDataAttributes>>
   >;
 }
 

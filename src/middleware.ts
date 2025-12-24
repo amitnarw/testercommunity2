@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import { getCookieCache } from "better-auth/cookies";
 import { cookies } from "next/headers";
 import { jwtVerify } from "jose";
 
@@ -24,11 +23,17 @@ export async function middleware(request: NextRequest) {
   }
 
   const { pathname } = request.nextUrl;
-  
-  const isAuthenticated = !!better_auth_cookie;
-  const isAuthPage = pathname.startsWith('/auth/');
-  const isAdminAuthPage = pathname === '/admin/login';
-  const isTesterAuthPage = pathname === '/tester/login' || pathname === '/tester/register';
+
+  const authRoutes = ["/auth/login", "/auth/register"];
+  const authenticatedRoutes = [
+    "/dashboard",
+    "/community-dashboard",
+    "/notifications",
+    "/profile",
+  ];
+  const adminRoutes = ["/admin"];
+  const professionalTesterAuthRoutes = ["/tester/login", "/tester/register"];
+  const professionalRoutes = ["/tester/dashboard"];
 
   // If user is authenticated, redirect them away from login/register pages
   if (isAuthenticated) {
@@ -47,14 +52,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: [
-    /*
-     * Match all request paths except for the ones starting with:
-     * - api (API routes)
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
-     */
-    "/((?!api|_next/static|_next/image|favicon.ico).*)",
-  ],
+  matcher: ["/((?!api|_next/static|_next/image|favicon.ico).*)"],
 };

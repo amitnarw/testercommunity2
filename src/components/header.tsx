@@ -19,6 +19,7 @@ import { UserNav } from "./user-nav";
 import MobileMenu from "./mobile-menu";
 import { AnimatedLink } from "./ui/animated-link";
 import { authClient } from "@/lib/auth-client";
+import { useQueryClient } from "@tanstack/react-query";
 
 const visitorNavItems = [
   { name: "Home", href: "/" },
@@ -93,6 +94,8 @@ export function Header({
   const { theme, setTheme } = useTheme();
   const [isMounted, setIsMounted] = useState(false);
 
+  const queryClient = useQueryClient();
+
   useEffect(() => {
     setIsMounted(true);
   }, []);
@@ -107,6 +110,11 @@ export function Header({
         },
       },
     });
+
+    queryClient.removeQueries({ queryKey: ["getUserProfileData"] });
+    queryClient.clear();
+
+    router.replace("/auth/login");
   };
 
   return (

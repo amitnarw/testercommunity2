@@ -222,15 +222,15 @@ export default function LoginPage() {
         <div className="max-w-md w-full space-y-6">
           <div className="text-center">
             <h2 className="font-bold tracking-tight text-2xl sm:text-3xl bg-gradient-to-br from-primary to-accent bg-clip-text text-transparent">
-              Log in to your account
+              Professional Tester Login
             </h2>
             <p className="text-muted-foreground mt-2">
-              Or{" "}
+              Not a pro tester yet?{" "}
               <Link
-                href="/auth/register"
+                href="/auth/tester/register"
                 className="text-primary hover:underline"
               >
-                create a new account
+                Register here.
               </Link>
             </p>
           </div>
@@ -242,10 +242,11 @@ export default function LoginPage() {
         <div className="relative z-10 flex flex-col items-center">
           <SiteLogo className="h-20 w-auto mb-4" />
           <h1 className="text-3xl font-bold tracking-tight text-foreground">
-            Welcome back
+            Welcome Back, Professional
           </h1>
           <p className="mt-2 max-w-md mx-auto text-muted-foreground">
-            Log in to continue your journey of building flawless apps.
+            Access your professional dashboard and continue testing high-impact
+            applications.
           </p>
         </div>
       </div>

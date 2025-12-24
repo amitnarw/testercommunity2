@@ -1,9 +1,9 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
 
 export default function PublicLayout({
@@ -11,28 +11,14 @@ export default function PublicLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const { data: session, isPending, error, refetch } = authClient.useSession();
+  const { data: session, isPending } = authClient.useSession();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const pathname = usePathname();
-  const router = useRouter();
 
   const isAuthPage =
     pathname.startsWith("/auth") ||
     pathname.startsWith("/tester/login") ||
     pathname.startsWith("/tester/register");
-
-
-  // useEffect(() => {
-  //   if (!isPending) {
-  //     if (session && isAuthPage) {
-  //       if((session as any)?.role === 'tester') {
-  //         router.replace("/tester/dashboard");
-  //       } else {
-  //         router.replace("/dashboard");
-  //       }
-  //     }
-  //   }
-  // }, [session, isAuthPage, router, isPending]);
 
   if (isAuthPage) {
     return <main className="flex-1 bg-background">{children}</main>;

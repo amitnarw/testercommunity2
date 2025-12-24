@@ -11,7 +11,6 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Upload, Save, LogOut, Monitor, Smartphone, Tablet, UserCog, MapPin, Gift, ChevronRight } from 'lucide-react';
-import type { UserProfileData } from '@/lib/types';
 import { useToast } from '@/hooks/use-toast';
 import { Separator } from '@/components/ui/separator';
 import {
@@ -297,7 +296,7 @@ export default function ProfilePage() {
                             </div>
                         </div>
                         <Button asChild>
-                            <Link href="/referral">View Details <ChevronRight className="ml-2 h-4 w-4" /></Link>
+                            <Link href="/profile/referral">View Details <ChevronRight className="ml-2 h-4 w-4" /></Link>
                         </Button>
                     </div>
                 </Card>

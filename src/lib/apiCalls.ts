@@ -1,8 +1,14 @@
 import axios from "axios";
 import API_ROUTES from "./apiRoutes";
 import { authClient } from "./auth-client";
-import { UserProfleResponse } from "@/hooks/useUser";
-import { ControlRoomResponse, UserProfileDataAttributes } from "./types";
+import {
+  ControlRoomResponse,
+  DashboardDataResponse,
+  HubDataResponse,
+  NotificationReponse,
+  UserDataAttributes,
+  UserProfileDataAttributes,
+} from "./types";
 import api from "./axios";
 
 export const register = async ({
@@ -112,7 +118,7 @@ export const emailVerification = async ({ token }: { token: string }) => {
   }
 };
 
-export const getUserData = async (): Promise<UserProfleResponse> => {
+export const getUserData = async (): Promise<UserDataAttributes> => {
   try {
     const response = await api.get(API_ROUTES.USER + `/get-user-data`);
     return response?.data?.data;
@@ -162,13 +168,10 @@ export const saveUserData = async (payload: UserDataAttributes) => {
   }
 };
 
-export const getUserProfileData = async (): Promise<UserProfleResponse> => {
+export const getUserProfileData = async (): Promise<UserProfileDataAttributes> => {
   try {
     const response = await api.get(API_ROUTES.USER + "/get-user-profile-data");
-    const result = response?.data?.data;
-    if (!result) throw new Error("No user profile data returned");
-
-    return result as UserProfleResponse;
+    return response?.data?.data;
   } catch (error) {
     console.error("Error getting user profile:", error);
     if (axios.isAxiosError(error)) {
@@ -264,7 +267,81 @@ export async function getControlRoomData(): Promise<ControlRoomResponse> {
     const response = await api.get(API_ROUTES.ADMIN + `/get-control-room-data`);
     return response.data;
   } catch (error) {
-    console.error("Error fetching user:", error);
+    console.error("Error fetching control room:", error);
+    if (axios.isAxiosError(error)) {
+      const status = error.response?.status;
+      const responseData = error.response?.data;
+      console.error("Axios error:", status, responseData);
+
+      throw new Error(
+        responseData?.message || error.message || "Unknown Axios error"
+      );
+    } else if (error instanceof Error) {
+      throw new Error(error.message);
+    } else {
+      throw new Error(JSON.stringify(error));
+    }
+  }
+}
+
+// Dashboard
+export async function getDasboardData(): Promise<DashboardDataResponse> {
+  try {
+    const response = await api.get(
+      API_ROUTES.DASHBOARD + `/get-dashboard-stats`
+    );
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error fetching dashboard data:", error);
+    if (axios.isAxiosError(error)) {
+      const status = error.response?.status;
+      const responseData = error.response?.data;
+      console.error("Axios error:", status, responseData);
+
+      throw new Error(
+        responseData?.message || error.message || "Unknown Axios error"
+      );
+    } else if (error instanceof Error) {
+      throw new Error(error.message);
+    } else {
+      throw new Error(JSON.stringify(error));
+    }
+  }
+}
+
+// Hub
+export async function getHubData(): Promise<HubDataResponse> {
+  try {
+    const response = await api.get(API_ROUTES.HUB + `/get-hub-stats`);
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error fetching hub data:", error);
+    if (axios.isAxiosError(error)) {
+      const status = error.response?.status;
+      const responseData = error.response?.data;
+      console.error("Axios error:", status, responseData);
+
+      throw new Error(
+        responseData?.message || error.message || "Unknown Axios error"
+      );
+    } else if (error instanceof Error) {
+      throw new Error(error.message);
+    } else {
+      throw new Error(JSON.stringify(error));
+    }
+  }
+}
+
+// Hub
+export async function getUserNotifications(): Promise<{
+  result: NotificationReponse[];
+  totalNotifications: number;
+}> {
+  try {
+    const response = await api.get(API_ROUTES.USER + `/get-notifications`);
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error fetching user notifications data:", error);
     if (axios.isAxiosError(error)) {
       const status = error.response?.status;
       const responseData = error.response?.data;

@@ -1,7 +1,7 @@
 'use client';
 
 import { notifications as allNotifications } from '@/lib/data';
-import { NotificationsPageContent } from '@/components/notifications-page';
+import { NotificationsPageContent } from '@/components/notitications/notifications-page';
 
 export default function ProTesterNotificationsPage() {
     // Filter for professional tester notifications
