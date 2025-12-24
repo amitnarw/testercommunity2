@@ -1,3 +1,4 @@
+
 "use client";
 
 import { SiteLogo } from "@/components/icons";
@@ -17,7 +18,9 @@ import { useLoginUser } from "@/hooks/useAuth";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
-import { useUserProfileData, useUserProfileInitial } from "@/hooks/useUser";
+import { useUserProfileData } from "@/hooks/useUser";
+import { NotVerifiedDialog } from "@/components/unauthenticated/not-verified-dialog";
+import { toast } from "@/hooks/use-toast";
 
 const GoogleIcon = (props: React.HTMLAttributes<HTMLImageElement>) => (
   <Image src="/google.svg" alt="Google" width={24} height={24} {...props} />
@@ -45,12 +48,18 @@ const LoginForm = () => {
     password?: string[] | undefined;
   }>();
   const [showPassword, setShowPassword] = useState(false);
+  const [showNotVerifiedDialog, setShowNotVerifiedDialog] = useState(false);
 
   const { mutate, isPending, isSuccess, isError, error } = useLoginUser({
     onSuccess: async () => {
       await new Promise((r) => setTimeout(r, 50));
       userProfileDataRefetch();
     },
+    onError: (err: any) => {
+      if (err.message === "EMAIL_NOT_VERIFIED") {
+        setShowNotVerifiedDialog(true);
+      }
+    }
   });
 
   const {
@@ -92,7 +101,6 @@ const LoginForm = () => {
     const result = signinSchema.safeParse(loginValues);
 
     if (!result.success) {
-      console.log(result.error.flatten().fieldErrors);
       setErrors(result.error.flatten().fieldErrors);
       return;
     }
@@ -105,7 +113,23 @@ const LoginForm = () => {
     });
   };
 
+  const handleResendVerification = () => {
+    // In a real app, you'd trigger an API call here.
+    console.log("Resending verification email to:", loginValues.email);
+    setShowNotVerifiedDialog(false);
+    toast({
+      title: "Verification Email Sent",
+      description: "A new verification link has been sent to your email address."
+    });
+  }
+
   return (
+    <>
+    <NotVerifiedDialog 
+      open={showNotVerifiedDialog}
+      onOpenChange={setShowNotVerifiedDialog}
+      onResend={handleResendVerification}
+    />
     <div className="space-y-6">
       <Button
         variant="outline"
@@ -183,7 +207,7 @@ const LoginForm = () => {
           <LoadingButton
             isLoading={isPending}
             isSuccess={isSuccess}
-            isError={isError}
+            isError={isError && error?.message !== 'EMAIL_NOT_VERIFIED'}
             className="text-sm sm:text-base"
             onClick={handleLogin}
           >
@@ -192,12 +216,13 @@ const LoginForm = () => {
         </div>
       </div>
 
-      {isError && !isPending && (
+      {isError && !isPending && error?.message !== 'EMAIL_NOT_VERIFIED' && (
         <div className="absolute bottom-4 sm:bottom-6 bg-red-500 dark:bg-red-500/40 p-4 rounded-xl border-l-4 border-red-300 dark:border-red-500">
           <p className="italic text-sm text-white">{error?.message}</p>
         </div>
       )}
     </div>
+    </>
   );
 };
 
