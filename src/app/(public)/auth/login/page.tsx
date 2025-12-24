@@ -56,7 +56,7 @@ const LoginForm = () => {
       userProfileDataRefetch();
     },
     onError: (err: any) => {
-      if (err.message === "EMAIL_NOT_VERIFIED") {
+      if (err.code === "EMAIL_NOT_VERIFIED") {
         setShowNotVerifiedDialog(true);
       }
     }
@@ -207,7 +207,7 @@ const LoginForm = () => {
           <LoadingButton
             isLoading={isPending}
             isSuccess={isSuccess}
-            isError={isError && error?.message !== 'EMAIL_NOT_VERIFIED'}
+            isError={isError}
             className="text-sm sm:text-base"
             onClick={handleLogin}
           >
@@ -216,7 +216,7 @@ const LoginForm = () => {
         </div>
       </div>
 
-      {isError && !isPending && error?.message !== 'EMAIL_NOT_VERIFIED' && (
+      {isError && !isPending && (
         <div className="absolute bottom-4 sm:bottom-6 bg-red-500 dark:bg-red-500/40 p-4 rounded-xl border-l-4 border-red-300 dark:border-red-500">
           <p className="italic text-sm text-white">{error?.message}</p>
         </div>

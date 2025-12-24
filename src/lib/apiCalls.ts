@@ -11,6 +11,17 @@ import {
 } from "./types";
 import api from "./axios";
 
+export class AuthError extends Error {
+  code: string;
+
+  constructor(code: string, message: string) {
+    super(message);
+    this.code = code;
+    this.name = "AuthError";
+  }
+}
+
+
 export const register = async ({
   email,
   password,
@@ -69,7 +80,10 @@ export const login = async ({
     });
 
     if (response?.error) {
-      throw new Error(response?.error?.message);
+      throw new AuthError(
+        response.error.code ?? "LOGIN_FAILED",
+        response.error.message ?? "Login failed"
+      );
     }
     return { success: true, data: response };
   } catch (error) {
