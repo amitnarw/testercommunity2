@@ -1,4 +1,3 @@
-
 "use client";
 
 import { SiteLogo } from "@/components/icons";
@@ -14,7 +13,7 @@ import { ChangeEvent, useEffect, useState } from "react";
 import { z } from "zod";
 import Image from "next/image";
 import { LoadingButton } from "@/components/ui/loading-button";
-import { useLoginUser } from "@/hooks/useAuth";
+import { useLoginUser, useResendEmailVerification } from "@/hooks/useAuth";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
@@ -59,7 +58,7 @@ const LoginForm = () => {
       if (err.code === "EMAIL_NOT_VERIFIED") {
         setShowNotVerifiedDialog(true);
       }
-    }
+    },
   });
 
   const {
@@ -113,115 +112,140 @@ const LoginForm = () => {
     });
   };
 
-  const handleResendVerification = () => {
-    // In a real app, you'd trigger an API call here.
-    console.log("Resending verification email to:", loginValues.email);
-    setShowNotVerifiedDialog(false);
-    toast({
-      title: "Verification Email Sent",
-      description: "A new verification link has been sent to your email address."
-    });
-  }
+  const {
+    mutate: resendMutate,
+    isPending: resendIsPending,
+    isSuccess: resendIsSuccess,
+    isError: resendIsError,
+    error: resendError,
+  } = useResendEmailVerification({
+    onSuccess: async () => {
+      await new Promise((r) => setTimeout(r, 500));
+      setShowNotVerifiedDialog(false);
+      toast({
+        title: "Verification Email Sent",
+        description:
+          "A new verification link has been sent to your email address.",
+      });
+    },
+  });
+
+  const handleResendVerification = async () => {
+    const result = signinSchema.safeParse(loginValues);
+
+    if (!result.success) {
+      setErrors(result.error.flatten().fieldErrors);
+      return;
+    }
+
+    const data = result.data;
+    resendMutate({ email: data?.email });
+  };
 
   return (
     <>
-    <NotVerifiedDialog 
-      open={showNotVerifiedDialog}
-      onOpenChange={setShowNotVerifiedDialog}
-      onResend={handleResendVerification}
-    />
-    <div className="space-y-6">
-      <Button
-        variant="outline"
-        className="w-full rounded-xl py-2 sm:py-6 text-sm sm:text-base"
-      >
-        <GoogleIcon className="mr-3" />
-        Log in with Google
-      </Button>
-      <div className="flex items-center gap-4">
-        <Separator className="flex-1 bg-border/50" />
-        <span className="text-xs text-muted-foreground">OR</span>
-        <Separator className="flex-1 bg-border/50" />
-      </div>
-      <div className="space-y-2">
-        <label htmlFor="email" className="text-sm">
-          Email
-        </label>
-        <Input
-          id="email"
-          type="email"
-          name="email"
-          placeholder="you@example.com"
-          value={loginValues?.email ?? ""}
-          onChange={handleChange}
-        />
-        {errors?.email && (
-          <p className="text-red-500 text-sm">{errors?.email}</p>
-        )}
-      </div>
-      <div className="space-y-2">
-        <label htmlFor="password" className="text-sm">
-          Password
-        </label>
-        <div className="relative">
+      <NotVerifiedDialog
+        open={showNotVerifiedDialog}
+        onOpenChange={setShowNotVerifiedDialog}
+        onResend={handleResendVerification}
+        resendIsPending={resendIsPending}
+        resendIsSuccess={resendIsSuccess}
+        resendIsError={resendIsError}
+      />
+      <div className="space-y-6">
+        <Button
+          variant="outline"
+          className="w-full rounded-xl py-2 sm:py-6 text-sm sm:text-base"
+        >
+          <GoogleIcon className="mr-3" />
+          Log in with Google
+        </Button>
+        <div className="flex items-center gap-4">
+          <Separator className="flex-1 bg-border/50" />
+          <span className="text-xs text-muted-foreground">OR</span>
+          <Separator className="flex-1 bg-border/50" />
+        </div>
+        <div className="space-y-2">
+          <label htmlFor="email" className="text-sm">
+            Email
+          </label>
           <Input
-            id="password"
-            type={showPassword ? "text" : "password"}
-            name="password"
-            placeholder="••••••••"
-            value={loginValues?.password ?? ""}
+            id="email"
+            type="email"
+            name="email"
+            placeholder="you@example.com"
+            value={loginValues?.email ?? ""}
             onChange={handleChange}
           />
-          <button
-            className="text-muted-foreground absolute right-3 top-1/2 -translate-y-1/2"
-            onClick={() => setShowPassword(!showPassword)}
-          >
-            {showPassword ? <Eye size={20} /> : <EyeOff size={20} />}
-          </button>
+          {errors?.email && (
+            <p className="text-red-500 text-sm">{errors?.email}</p>
+          )}
+        </div>
+        <div className="space-y-2">
+          <label htmlFor="password" className="text-sm">
+            Password
+          </label>
+          <div className="relative">
+            <Input
+              id="password"
+              type={showPassword ? "text" : "password"}
+              name="password"
+              placeholder="••••••••"
+              value={loginValues?.password ?? ""}
+              onChange={handleChange}
+            />
+            <button
+              className="text-muted-foreground absolute right-3 top-1/2 -translate-y-1/2"
+              onClick={() => setShowPassword(!showPassword)}
+            >
+              {showPassword ? <Eye size={20} /> : <EyeOff size={20} />}
+            </button>
+          </div>
+
+          {errors?.password && (
+            <p className="text-red-500 text-sm">{errors?.password}</p>
+          )}
+        </div>
+        <div className="flex items-center gap-3">
+          <Checkbox
+            id="rememberMe"
+            className="rounded-[5px]"
+            defaultChecked
+            checked={loginValues?.rememberMe}
+            onCheckedChange={(checked) => {
+              setLoginValues((prev) => ({
+                ...prev,
+                rememberMe: !!checked,
+              }));
+            }}
+          />
+          <Label htmlFor="rememberMe" className="text-muted-foreground">
+            Remember me
+          </Label>
         </div>
 
-        {errors?.password && (
-          <p className="text-red-500 text-sm">{errors?.password}</p>
+        <div className="mt-8 pt-5">
+          <div className="flex justify-end">
+            <LoadingButton
+              isLoading={isPending}
+              isSuccess={isSuccess}
+              isError={isError}
+              className="text-sm sm:text-base"
+              onClick={handleLogin}
+            >
+              Log In
+            </LoadingButton>
+          </div>
+        </div>
+
+        {(isError || resendIsError) && !isPending && (
+          <div className="absolute bottom-4 sm:bottom-6 bg-red-500 dark:bg-red-500/40 p-4 rounded-xl border-l-4 border-red-300 dark:border-red-500">
+            <p className="italic text-sm text-white">
+              {error?.message || resendError?.message}
+            </p>
+          </div>
         )}
       </div>
-      <div className="flex items-center gap-3">
-        <Checkbox
-          id="rememberMe"
-          className="rounded-[5px]"
-          defaultChecked
-          checked={loginValues?.rememberMe}
-          onCheckedChange={(checked) => {
-            setLoginValues((prev) => ({
-              ...prev,
-              rememberMe: !!checked,
-            }));
-          }}
-        />
-        <Label htmlFor="rememberMe" className="text-muted-foreground">
-          Remember me
-        </Label>
-      </div>
-
-      <div className="mt-8 pt-5">
-        <div className="flex justify-end">
-          <LoadingButton
-            isLoading={isPending}
-            isSuccess={isSuccess}
-            isError={isError}
-            className="text-sm sm:text-base"
-            onClick={handleLogin}
-          >
-            Log In
-          </LoadingButton>
-        </div>
-      </div>
-
-      {isError && !isPending && (
-        <div className="absolute bottom-4 sm:bottom-6 bg-red-500 dark:bg-red-500/40 p-4 rounded-xl border-l-4 border-red-300 dark:border-red-500">
-          <p className="italic text-sm text-white">{error?.message}</p>
-        </div>
-      )}
-    </div>
     </>
   );
 };

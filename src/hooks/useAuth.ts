@@ -3,6 +3,7 @@ import {
   // fetchUser,
   login,
   register,
+  resendEmailVerification,
   // updateProfile
 } from "@/lib/apiCalls";
 import {
@@ -100,6 +101,24 @@ export function useLoginUser(options?: UseMutationOptions<any, any, any>) {
       password: string;
       rememberMe: boolean;
     }) => login(payload),
+    onSuccess: (data) => {
+      console.log("Login success: " + data);
+    },
+    onError: (data) => {
+      console.log("Login failed: " + data);
+    },
+    ...options,
+  });
+
+  return mutation;
+}
+
+export function useResendEmailVerification(
+  options?: UseMutationOptions<any, any, any>
+) {
+  const mutation = useMutation({
+    mutationFn: (payload: { email: string }) =>
+      resendEmailVerification(payload),
     onSuccess: (data) => {
       console.log("Login success: " + data);
     },

@@ -21,7 +21,6 @@ export class AuthError extends Error {
   }
 }
 
-
 export const register = async ({
   email,
   password,
@@ -108,6 +107,25 @@ export const logout = async () => {
   }
 };
 
+export const resendEmailVerification = async ({
+  email,
+}: {
+  email: string;
+}) => {
+  try {
+    if (!email) {
+      return new Error("Email is required to send verification");
+    }
+    const response = await authClient.sendVerificationEmail({
+      email,
+    });
+    return response;
+  } catch (error) {
+    console.error("Error registering user:", error);
+    throw error;
+  }
+};
+
 export const emailVerification = async ({ token }: { token: string }) => {
   try {
     if (!token) {
@@ -182,27 +200,30 @@ export const saveUserData = async (payload: UserDataAttributes) => {
   }
 };
 
-export const getUserProfileData = async (): Promise<UserProfileDataAttributes> => {
-  try {
-    const response = await api.get(API_ROUTES.USER + "/get-user-profile-data");
-    return response?.data?.data;
-  } catch (error) {
-    console.error("Error getting user profile:", error);
-    if (axios.isAxiosError(error)) {
-      const status = error.response?.status;
-      const responseData = error.response?.data;
-      console.error("Axios error:", status, responseData);
-
-      throw new Error(
-        responseData?.message || error.message || "Unknown Axios error"
+export const getUserProfileData =
+  async (): Promise<UserProfileDataAttributes> => {
+    try {
+      const response = await api.get(
+        API_ROUTES.USER + "/get-user-profile-data"
       );
-    } else if (error instanceof Error) {
-      throw new Error(error.message);
-    } else {
-      throw new Error(JSON.stringify(error));
+      return response?.data?.data;
+    } catch (error) {
+      console.error("Error getting user profile:", error);
+      if (axios.isAxiosError(error)) {
+        const status = error.response?.status;
+        const responseData = error.response?.data;
+        console.error("Axios error:", status, responseData);
+
+        throw new Error(
+          responseData?.message || error.message || "Unknown Axios error"
+        );
+      } else if (error instanceof Error) {
+        throw new Error(error.message);
+      } else {
+        throw new Error(JSON.stringify(error));
+      }
     }
-  }
-};
+  };
 
 export const saveInitialProfileData = async () => {
   try {

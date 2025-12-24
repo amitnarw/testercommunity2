@@ -37,10 +37,17 @@ export const LoadingButton = React.forwardRef<
     const [checkError, setCheckError] = useState(true);
 
     const runAnimation = async () => {
+      const loader = scope.current?.querySelector(".loader");
+      const check = scope.current?.querySelector(".check");
+      const text = scope.current?.querySelector(".text");
+      const error = scope.current?.querySelector(".error");
+
+      if (!loader || !check || !text || !error) return;
+
       // 1. Animate text out
-      await animate(".text", { opacity: 0, y: 10 }, { duration: 0.2 });
-      animate(".check", { opacity: 0, scale: 0 });
-      animate(".error", { opacity: 0, scale: 0 });
+      await animate(text, { opacity: 0, y: 10 }, { duration: 0.2 });
+      animate(check, { opacity: 0, scale: 0 });
+      animate(error, { opacity: 0, scale: 0 });
 
       // 2. Animate button collapse after text is gone
       await animate(
@@ -50,14 +57,19 @@ export const LoadingButton = React.forwardRef<
       );
 
       // 3. Show loader
-      animate(".loader", { opacity: 1, scale: 1, y: 0 }, { duration: 0.2 });
+      animate(loader, { opacity: 1, scale: 1, y: 0 }, { duration: 0.2 });
     };
 
     const runSuccessAnimation = async () => {
+      const loader = scope.current?.querySelector(".loader");
+      const check = scope.current?.querySelector(".check");
+
+      if (!loader || !check) return;
+
       // 4. Animate loader out and check in using a sequence
       await animate([
-        [".loader", { opacity: 0, scale: 0 }, { duration: 0.2 }],
-        [".check", { opacity: 1, scale: 1 }, { duration: 0.2 }],
+        [loader, { opacity: 0, scale: 0 }, { duration: 0.2 }],
+        [check, { opacity: 1, scale: 1 }, { duration: 0.2 }],
       ]);
 
       // 5. Restore button to its original state
@@ -66,16 +78,22 @@ export const LoadingButton = React.forwardRef<
         { width: "auto", height: "auto" },
         { duration: 0.7, ease: "easeInOut" }
       );
-      animate(".loader", { opacity: 0 });
+      animate(loader, { opacity: 0 });
       // animate(".text", { opacity: 1, y: 0 }, { duration: 0.2 });
       // animate(".check", { opacity: 0, scale: 0 });
     };
 
     const runErrorAnimation = async () => {
+      const loader = scope.current?.querySelector(".loader");
+      const text = scope.current?.querySelector(".text");
+      const error = scope.current?.querySelector(".error");
+
+      if (!loader || !text || !error) return;
+
       // 4. Animate loader out and check in using a sequence
       await animate([
-        [".loader", { opacity: 0, scale: 0 }, { duration: 0.2 }],
-        [".error", { opacity: 1, scale: 1 }, { duration: 0.2 }],
+        [loader, { opacity: 0, scale: 0 }, { duration: 0.2 }],
+        [error, { opacity: 1, scale: 1 }, { duration: 0.2 }],
       ]);
 
       // 5. Restore button to its original state
@@ -84,9 +102,9 @@ export const LoadingButton = React.forwardRef<
         { width: "auto", height: "auto" },
         { duration: 0.7, ease: "easeInOut" }
       );
-      animate(".loader", { opacity: 0, scale: 0 }, { duration: 0.2 });
-      animate(".text", { opacity: 1, y: 0 }, { duration: 0.2 });
-      animate(".error", { opacity: 0, scale: 0 }, { duration: 0.2 });
+      animate(loader, { opacity: 0, scale: 0 }, { duration: 0.2 });
+      animate(text, { opacity: 1, y: 0 }, { duration: 0.2 });
+      animate(error, { opacity: 0, scale: 0 }, { duration: 0.2 });
     };
 
     useEffect(() => {
