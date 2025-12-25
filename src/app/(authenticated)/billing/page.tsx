@@ -63,7 +63,7 @@ const PointsPackageCard = ({ plan, isPopular }: { plan: PointsPackage, isPopular
 
 export default function BillingPage() {
     return (
-        <div className="container mx-auto px-4 md:px-6 py-12">
+        <div className="container mx-auto px-4 md:px-6">
             <motion.div 
                 initial="hidden" 
                 animate="visible" 
@@ -71,10 +71,9 @@ export default function BillingPage() {
                 className="space-y-20"
             >
                 <motion.div variants={itemVariants}>
-                    <BackButton href="/dashboard" />
-                    <div className="text-center max-w-3xl mx-auto mt-8">
-                        <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-br from-primary to-accent bg-clip-text text-transparent">Purchase Packages</h1>
-                        <p className="mt-4 text-lg text-muted-foreground">
+                    <div>
+                        <h1 className="text-2xl sm:text-4xl font-bold bg-gradient-to-br from-primary to-accent bg-clip-text text-transparent pb-1">Purchase Packages</h1>
+                        <p className="text-muted-foreground">
                             Add professional testing packages to your account. Each package allows you to submit one app for a full, managed testing cycle.
                         </p>
                     </div>

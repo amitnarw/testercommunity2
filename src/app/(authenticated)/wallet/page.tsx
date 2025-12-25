@@ -14,13 +14,13 @@ import Link from 'next/link';
 import { transactionHistory } from '@/lib/data';
 
 const containerVariants = {
-  hidden: { opacity: 0 },
-  visible: { opacity: 1, transition: { staggerChildren: 0.08 } },
+    hidden: { opacity: 0 },
+    visible: { opacity: 1, transition: { staggerChildren: 0.08 } },
 };
 
 const itemVariants = {
-  hidden: { y: 20, opacity: 0 },
-  visible: { y: 0, opacity: 1, transition: { ease: 'easeOut', duration: 0.4 } },
+    hidden: { y: 20, opacity: 0 },
+    visible: { y: 0, opacity: 1, transition: { ease: 'easeOut', duration: 0.4 } },
 };
 
 
@@ -46,82 +46,86 @@ export default function WalletPage() {
     };
 
     return (
-        <div className="bg-secondary/50 text-foreground min-h-screen">
-            <div className="container mx-auto px-4 md:px-6 py-12">
-                <motion.div initial="hidden" animate="visible" variants={containerVariants}>
+        <div className="container mx-auto px-4 md:px-6">
+            <motion.div initial="hidden" animate="visible" variants={containerVariants}>
+                <motion.div variants={itemVariants}>
+                    <div>
+                        <h1 className="text-2xl sm:text-4xl font-bold bg-gradient-to-br from-primary to-accent bg-clip-text text-transparent pb-1">My Wallet</h1>
+                        <p className="text-muted-foreground">
+                            A central place to track your packages, points, and all transaction history.
+                        </p>
+                    </div>
+                </motion.div>
+
+                <motion.div variants={containerVariants} className="mt-16 grid grid-cols-1 lg:grid-cols-2 gap-8">
                     <motion.div variants={itemVariants}>
-                        <BackButton href="/dashboard" />
-                        <div className="text-center max-w-3xl mx-auto mt-8">
-                            <h1 className="text-4xl md:text-5xl font-bold">My Wallet</h1>
-                            <p className="mt-4 text-lg text-muted-foreground">
-                                A central place to track your packages, points, and all transaction history.
-                            </p>
-                        </div>
+                         <Card className="bg-gradient-to-br from-primary to-primary/80 text-primary-foreground rounded-3xl shadow-2xl shadow-primary/20 h-full">
+                            <CardHeader>
+                                <CardTitle className="text-white/80 text-sm font-medium">Available Packages</CardTitle>
+                            </CardHeader>
+                            <CardContent>
+                                <p className="text-2xl sm:text-4xl font-bold text-white">3</p>
+                                <p className="text-white/80">for Professional Path submissions</p>
+                            </CardContent>
+                            <CardFooter>
+                                <Button variant="secondary" className="bg-white/20 hover:bg-white/30 text-white" asChild>
+                                    <Link href="/billing">Purchase More</Link>
+                                </Button>
+                            </CardFooter>
+                        </Card>
                     </motion.div>
+                     <motion.div variants={itemVariants}>
+                        <Card className="bg-card rounded-3xl h-full">
+                            <CardHeader>
+                                <CardTitle className="text-muted-foreground text-sm font-medium">Community Points</CardTitle>
+                            </CardHeader>
+                            <CardContent>
+                                <p className="text-2xl sm:text-4xl font-bold">1,250</p>
+                                <p className="text-muted-foreground">earned from community testing</p>
+                            </CardContent>
+                            <CardFooter>
+                                <Button variant="outline" asChild>
+                                    <Link href="/community-dashboard">Earn More Points</Link>
+                                </Button>
+                            </CardFooter>
+                        </Card>
+                    </motion.div>
+                </motion.div>
 
-                    <motion.div variants={containerVariants} className="mt-16 grid grid-cols-1 lg:grid-cols-5 gap-8">
-                        <motion.div variants={itemVariants} className="lg:col-span-3 space-y-8">
-                           <Card className="bg-gradient-to-br from-primary to-primary/80 text-primary-foreground rounded-3xl shadow-2xl shadow-primary/20">
-                                <CardHeader>
-                                    <CardTitle className="text-white/80 text-sm font-medium">Available Packages</CardTitle>
-                                </CardHeader>
-                                <CardContent>
-                                    <p className="text-7xl font-bold text-white">3</p>
-                                    <p className="text-white/80">for Professional Path submissions</p>
-                                </CardContent>
-                                <CardFooter>
-                                    <Button variant="secondary" className="bg-white/20 hover:bg-white/30 text-white" asChild>
-                                        <Link href="/billing">Purchase More</Link>
-                                    </Button>
-                                </CardFooter>
-                           </Card>
-                            <Card className="bg-card rounded-3xl">
-                                <CardHeader>
-                                    <CardTitle className="text-muted-foreground text-sm font-medium">Community Points</CardTitle>
-                                </CardHeader>
-                                <CardContent>
-                                    <p className="text-7xl font-bold">1,250</p>
-                                    <p className="text-muted-foreground">earned from community testing</p>
-                                </CardContent>
-                                <CardFooter>
-                                    <Button variant="outline" asChild>
-                                        <Link href="/community-dashboard">Earn More Points</Link>
-                                    </Button>
-                                </CardFooter>
-                            </Card>
-                        </motion.div>
-
-                        <motion.div variants={itemVariants} className="lg:col-span-2">
-                             <Card className="h-full rounded-3xl bg-card">
-                                <CardHeader>
-                                    <CardTitle>Recent Activity</CardTitle>
-                                    <CardDescription>Your latest wallet activities.</CardDescription>
-                                </CardHeader>
-                                <CardContent className="space-y-4">
-                                     {transactionHistory.slice(0, 5).map((item) => (
-                                        <div key={item.id} className="flex items-center">
-                                            <div className="p-3 bg-secondary rounded-full mr-4">
-                                                {item.changeType === 'positive' ? <ArrowUp className="w-5 h-5 text-green-500" /> : <ArrowDown className="w-5 h-5 text-red-500" />}
-                                            </div>
-                                            <div className="flex-grow">
-                                                <p className="font-semibold text-sm">{item.description}</p>
-                                                <p className="text-xs text-muted-foreground">{item.date}</p>
-                                            </div>
-                                            <div className="text-right">
-                                                <p className={`font-bold text-sm ${item.changeType === 'positive' ? 'text-green-500' : 'text-red-500'}`}>
-                                                    {item.change}
-                                                </p>
-                                            </div>
+                <motion.div variants={containerVariants} className="mt-8 grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <motion.div variants={itemVariants}>
+                        <Card className="h-full rounded-3xl bg-card">
+                            <CardHeader>
+                                <CardTitle>Recent Activity</CardTitle>
+                                <CardDescription>Your latest wallet activities.</CardDescription>
+                            </CardHeader>
+                            <CardContent className="space-y-4">
+                                {transactionHistory.slice(0, 5).map((item) => (
+                                    <div key={item.id} className="flex items-center">
+                                        <div className="p-3 bg-secondary rounded-full mr-4">
+                                            {item.changeType === 'positive' ? <ArrowUp className="w-5 h-5 text-green-500" /> : <ArrowDown className="w-5 h-5 text-red-500" />}
                                         </div>
-                                     ))}
-                                </CardContent>
-                            </Card>
-                        </motion.div>
+                                        <div className="flex-grow">
+                                            <p className="font-semibold text-sm">{item.description}</p>
+                                            <p className="text-xs text-muted-foreground">{item.date}</p>
+                                        </div>
+                                        <div className="text-right">
+                                            <p className={`font-bold text-sm ${item.changeType === 'positive' ? 'text-green-500' : 'text-red-500'}`}>
+                                                {item.change}
+                                            </p>
+                                        </div>
+                                    </div>
+                                ))}
+                            </CardContent>
+                        </Card>
                     </motion.div>
 
-                     <motion.div variants={itemVariants} className="mt-16">
-                        <h2 className="text-2xl font-bold mb-6">Transaction History</h2>
-                        <Card className="rounded-2xl">
+                    <motion.div variants={itemVariants}>
+                         <Card className="rounded-2xl h-full">
+                            <CardHeader>
+                                <CardTitle>Transaction History</CardTitle>
+                                <CardDescription>A record of all your wallet transactions.</CardDescription>
+                            </CardHeader>
                             <CardContent className="p-0">
                                 <Table>
                                     <TableHeader>
@@ -130,7 +134,6 @@ export default function WalletPage() {
                                             <TableHead className="hidden sm:table-cell">Description</TableHead>
                                             <TableHead>Date</TableHead>
                                             <TableHead>Amount</TableHead>
-                                            <TableHead className="text-right">Status</TableHead>
                                         </TableRow>
                                     </TableHeader>
                                     <TableBody>
@@ -145,21 +148,21 @@ export default function WalletPage() {
                                                 <TableCell className="hidden sm:table-cell">{item.description}</TableCell>
                                                 <TableCell>{item.date}</TableCell>
                                                 <TableCell>
-                                                     <span className={`font-medium ${item.changeType === 'positive' ? 'text-green-500' : 'text-red-500'}`}>{item.amount}</span>
-                                                </TableCell>
-                                                <TableCell className="text-right">
-                                                    <Badge variant={item.status === 'Completed' ? 'secondary' : 'outline'} className={item.status === 'Completed' ? 'bg-green-500/10 text-green-600 dark:bg-green-500/10 dark:text-green-400' : ''}>{item.status}</Badge>
+                                                    <span className={`font-medium ${item.changeType === 'positive' ? 'text-green-500' : 'text-red-500'}`}>{item.amount}</span>
                                                 </TableCell>
                                             </TableRow>
                                         ))}
                                     </TableBody>
                                 </Table>
                             </CardContent>
+                             <CardFooter>
+                                <AppPagination currentPage={currentPage} totalPages={totalPages} onPageChange={handlePageChange} />
+                             </CardFooter>
                         </Card>
-                        <AppPagination currentPage={currentPage} totalPages={totalPages} onPageChange={handlePageChange} />
                     </motion.div>
                 </motion.div>
-            </div>
+
+            </motion.div>
         </div>
     );
 }
