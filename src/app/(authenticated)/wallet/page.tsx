@@ -46,7 +46,7 @@ export default function WalletPage() {
     };
 
     return (
-        <div className="container mx-auto px-4 md:px-6">
+        <div className="container mx-auto px-4 md:px-6 mb-8">
             <motion.div initial="hidden" animate="visible" variants={containerVariants}>
                 <motion.div variants={itemVariants}>
                     <div>
@@ -59,35 +59,29 @@ export default function WalletPage() {
 
                 <motion.div variants={containerVariants} className="mt-16 grid grid-cols-1 lg:grid-cols-2 gap-8">
                     <motion.div variants={itemVariants}>
-                         <Card className="bg-gradient-to-br from-primary to-primary/80 text-primary-foreground rounded-3xl shadow-2xl shadow-primary/20 h-full">
-                            <CardHeader>
+                        <Card className="bg-gradient-to-br from-primary to-primary/80 text-primary-foreground rounded-3xl shadow-2xl shadow-primary/20 h-full">
+                            <CardHeader className="flex flex-row items-center justify-between p-3 sm:p-6 sm:py-3">
                                 <CardTitle className="text-white/80 text-sm font-medium">Available Packages</CardTitle>
+                                <Button variant="secondary" className="bg-white/20 hover:bg-white/30 text-white text-xs sm:text-sm !h-auto p-2 sm:px-4" asChild>
+                                    <Link href="/billing">Purchase More</Link>
+                                </Button>
                             </CardHeader>
                             <CardContent>
                                 <p className="text-2xl sm:text-4xl font-bold text-white">3</p>
-                                <p className="text-white/80">for Professional Path submissions</p>
                             </CardContent>
-                            <CardFooter>
-                                <Button variant="secondary" className="bg-white/20 hover:bg-white/30 text-white" asChild>
-                                    <Link href="/billing">Purchase More</Link>
-                                </Button>
-                            </CardFooter>
                         </Card>
                     </motion.div>
-                     <motion.div variants={itemVariants}>
+                    <motion.div variants={itemVariants}>
                         <Card className="bg-card rounded-3xl h-full">
-                            <CardHeader>
+                            <CardHeader className="flex flex-row items-center justify-between p-3 sm:p-6 sm:py-3">
                                 <CardTitle className="text-muted-foreground text-sm font-medium">Community Points</CardTitle>
+                                <Button variant="outline" asChild className='text-xs sm:text-sm !h-auto p-2 sm:px-4'>
+                                    <Link href="/community-dashboard">Earn More Points</Link>
+                                </Button>
                             </CardHeader>
                             <CardContent>
                                 <p className="text-2xl sm:text-4xl font-bold">1,250</p>
-                                <p className="text-muted-foreground">earned from community testing</p>
                             </CardContent>
-                            <CardFooter>
-                                <Button variant="outline" asChild>
-                                    <Link href="/community-dashboard">Earn More Points</Link>
-                                </Button>
-                            </CardFooter>
                         </Card>
                     </motion.div>
                 </motion.div>
@@ -121,7 +115,7 @@ export default function WalletPage() {
                     </motion.div>
 
                     <motion.div variants={itemVariants}>
-                         <Card className="rounded-2xl h-full">
+                        <Card className="rounded-2xl h-full">
                             <CardHeader>
                                 <CardTitle>Transaction History</CardTitle>
                                 <CardDescription>A record of all your wallet transactions.</CardDescription>
@@ -155,9 +149,9 @@ export default function WalletPage() {
                                     </TableBody>
                                 </Table>
                             </CardContent>
-                             <CardFooter>
+                            <CardFooter>
                                 <AppPagination currentPage={currentPage} totalPages={totalPages} onPageChange={handlePageChange} />
-                             </CardFooter>
+                            </CardFooter>
                         </Card>
                     </motion.div>
                 </motion.div>

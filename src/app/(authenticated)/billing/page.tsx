@@ -10,6 +10,7 @@ import { pointsPackages, professionalPathFeatures } from "@/lib/data";
 import { BackButton } from "@/components/back-button";
 import { motion } from "framer-motion";
 import { Badge } from "@/components/ui/badge";
+import Link from 'next/link';
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -63,7 +64,7 @@ const PointsPackageCard = ({ plan, isPopular }: { plan: PointsPackage, isPopular
 
 export default function BillingPage() {
     return (
-        <div className="container mx-auto px-4 md:px-6">
+        <div className="container mx-auto px-4 md:px-6 mb-8">
             <motion.div 
                 initial="hidden" 
                 animate="visible" 
@@ -78,19 +79,34 @@ export default function BillingPage() {
                         </p>
                     </div>
                 </motion.div>
-
-                <motion.div variants={itemVariants} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 text-sm">
-                    <Card className="p-4 rounded-lg flex items-center justify-center gap-3">
-                        <span className="font-semibold text-muted-foreground">Current Balance:</span>
-                        <span className="font-bold text-lg text-primary">3 Packages</span>
-                    </Card>
-                     <Card className="p-4 rounded-lg flex items-center justify-center gap-3">
-                        <span className="font-semibold text-muted-foreground">Community Points:</span>
-                        <span className="font-bold text-lg text-primary">1,250 Points</span>
-                    </Card>
-                    <Button variant="outline" className="h-full rounded-lg">
-                        View Transaction History
-                    </Button>
+                
+                <motion.div variants={containerVariants} className="mt-16 grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <motion.div variants={itemVariants}>
+                        <Card className="bg-gradient-to-br from-primary to-primary/80 text-primary-foreground rounded-3xl shadow-2xl shadow-primary/20 h-full">
+                            <CardHeader className="flex flex-row items-center justify-between p-3 sm:p-6 sm:py-3">
+                                <CardTitle className="text-white/80 text-sm font-medium">Available Packages</CardTitle>
+                                <Button variant="secondary" className="bg-white/20 hover:bg-white/30 text-white text-xs sm:text-sm !h-auto p-2 sm:px-4" asChild>
+                                    <Link href="/billing">Purchase More</Link>
+                                </Button>
+                            </CardHeader>
+                            <CardContent>
+                                <p className="text-2xl sm:text-4xl font-bold text-white">3</p>
+                            </CardContent>
+                        </Card>
+                    </motion.div>
+                    <motion.div variants={itemVariants}>
+                        <Card className="bg-card rounded-3xl h-full">
+                            <CardHeader className="flex flex-row items-center justify-between p-3 sm:p-6 sm:py-3">
+                                <CardTitle className="text-muted-foreground text-sm font-medium">Community Points</CardTitle>
+                                <Button variant="outline" asChild className='text-xs sm:text-sm !h-auto p-2 sm:px-4'>
+                                    <Link href="/community-dashboard">Earn More Points</Link>
+                                </Button>
+                            </CardHeader>
+                            <CardContent>
+                                <p className="text-2xl sm:text-4xl font-bold">1,250</p>
+                            </CardContent>
+                        </Card>
+                    </motion.div>
                 </motion.div>
 
                 <motion.section variants={containerVariants} className="max-w-6xl mx-auto">
@@ -119,4 +135,3 @@ export default function BillingPage() {
         </div>
     );
 }
-
