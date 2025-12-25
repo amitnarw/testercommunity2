@@ -11,6 +11,7 @@ import { BackButton } from "@/components/back-button";
 import { motion } from "framer-motion";
 import { AppPagination } from '@/components/app-pagination';
 import Link from 'next/link';
+import { transactionHistory } from '@/lib/data';
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -22,15 +23,6 @@ const itemVariants = {
   visible: { y: 0, opacity: 1, transition: { ease: 'easeOut', duration: 0.4 } },
 };
 
-const transactionHistory = [
-    { id: 'TXN-001', date: '2024-08-22', type: 'Package Purchase', description: 'Bought Accelerator Package', amount: '₹1,799', change: '+5 Packages', status: 'Completed', changeType: 'positive' },
-    { id: 'TXN-002', date: '2024-08-20', type: 'Points Earned', description: 'Completed test for "QuantumLeap CRM"', amount: '+150 Points', change: '+150 Points', status: 'Completed', changeType: 'positive' },
-    { id: 'TXN-003', date: '2024-08-18', type: 'Package Used', description: 'Submitted "Project Phoenix"', amount: '-1 Package', change: '-1 Package', status: 'Completed', changeType: 'negative' },
-    { id: 'TXN-004', date: '2024-08-15', type: 'Points Spent', description: 'Submitted "Starlight Editor" to community', amount: '-1200 Points', change: '-1200 Points', status: 'Completed', changeType: 'negative' },
-    { id: 'TXN-005', date: '2024-08-12', type: 'Points Earned', description: 'Completed test for "Helios Platform"', amount: '+100 Points', change: '+100 Points', status: 'Completed', changeType: 'positive' },
-    { id: 'TXN-006', date: '2024-08-10', type: 'Package Purchase', description: 'Bought Booster Package', amount: '₹699', change: '+1 Package', status: 'Completed', changeType: 'positive' },
-    { id: 'TXN-007', date: '2024-08-05', type: 'Points Earned', description: 'High-quality bug report on "Nexus Browser"', amount: '+50 Points', change: '+50 Points', status: 'Completed', changeType: 'positive' },
-];
 
 const ITEMS_PER_PAGE = 5;
 
@@ -54,7 +46,7 @@ export default function WalletPage() {
     };
 
     return (
-        <div className="bg-background text-foreground min-h-screen">
+        <div className="bg-secondary/50 text-foreground min-h-screen">
             <div className="container mx-auto px-4 md:px-6 py-12">
                 <motion.div initial="hidden" animate="visible" variants={containerVariants}>
                     <motion.div variants={itemVariants}>
@@ -83,7 +75,7 @@ export default function WalletPage() {
                                     </Button>
                                 </CardFooter>
                            </Card>
-                            <Card className="bg-secondary/50 rounded-3xl">
+                            <Card className="bg-card rounded-3xl">
                                 <CardHeader>
                                     <CardTitle className="text-muted-foreground text-sm font-medium">Community Points</CardTitle>
                                 </CardHeader>
@@ -100,7 +92,7 @@ export default function WalletPage() {
                         </motion.div>
 
                         <motion.div variants={itemVariants} className="lg:col-span-2">
-                             <Card className="h-full rounded-3xl">
+                             <Card className="h-full rounded-3xl bg-card">
                                 <CardHeader>
                                     <CardTitle>Recent Activity</CardTitle>
                                     <CardDescription>Your latest wallet activities.</CardDescription>
@@ -156,7 +148,7 @@ export default function WalletPage() {
                                                      <span className={`font-medium ${item.changeType === 'positive' ? 'text-green-500' : 'text-red-500'}`}>{item.amount}</span>
                                                 </TableCell>
                                                 <TableCell className="text-right">
-                                                    <Badge variant={item.status === 'Completed' ? 'secondary' : 'outline'}>{item.status}</Badge>
+                                                    <Badge variant={item.status === 'Completed' ? 'secondary' : 'outline'} className={item.status === 'Completed' ? 'bg-green-500/10 text-green-600 dark:bg-green-500/10 dark:text-green-400' : ''}>{item.status}</Badge>
                                                 </TableCell>
                                             </TableRow>
                                         ))}
