@@ -6,6 +6,7 @@ import {
   DashboardDataResponse,
   HubDataResponse,
   NotificationReponse,
+  PricingResponse,
   UserDataAttributes,
   UserProfileDataAttributes,
 } from "./types";
@@ -107,11 +108,7 @@ export const logout = async () => {
   }
 };
 
-export const resendEmailVerification = async ({
-  email,
-}: {
-  email: string;
-}) => {
+export const resendEmailVerification = async ({ email }: { email: string }) => {
   try {
     if (!email) {
       return new Error("Email is required to send verification");
@@ -377,6 +374,29 @@ export async function getUserNotifications(): Promise<{
     return response?.data?.data;
   } catch (error) {
     console.error("Error fetching user notifications data:", error);
+    if (axios.isAxiosError(error)) {
+      const status = error.response?.status;
+      const responseData = error.response?.data;
+      console.error("Axios error:", status, responseData);
+
+      throw new Error(
+        responseData?.message || error.message || "Unknown Axios error"
+      );
+    } else if (error instanceof Error) {
+      throw new Error(error.message);
+    } else {
+      throw new Error(JSON.stringify(error));
+    }
+  }
+}
+
+// Misc
+export async function getAllPricingPlans(): Promise<PricingResponse[]> {
+  try {
+    const response = await api.get(API_ROUTES.USER + `/get-all-pricing-plans`);
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error fetching plans data:", error);
     if (axios.isAxiosError(error)) {
       const status = error.response?.status;
       const responseData = error.response?.data;

@@ -1,4 +1,5 @@
 import {
+  getAllPricingPlans,
   getDasboardData,
   getHubData,
   getUserData,
@@ -12,6 +13,7 @@ import {
   DashboardDataResponse,
   HubDataResponse,
   NotificationReponse,
+  PricingResponse,
   UserDataAttributes,
   UserProfileDataAttributes,
 } from "@/lib/types";
@@ -119,6 +121,16 @@ export function useGetUserNotifications() {
   >({
     queryFn: () => getUserNotifications(),
     queryKey: ["useGetUserNotifications"],
+  });
+
+  return query;
+}
+
+// Misc
+export function usePricingData() {
+  const query = useQuery<PricingResponse[], Error>({
+    queryFn: () => getAllPricingPlans(),
+    queryKey: ["usePricingData"],
   });
 
   return query;

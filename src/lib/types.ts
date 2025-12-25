@@ -422,14 +422,25 @@ export interface NotificationReponse {
   title: string;
   description: string;
   type:
-  | "NEW_TEST"
-  | "FEEDBACK_RECEIVED"
-  | "TEST_COMPLETED"
-  | "BUG_REPORT"
-  | "POINTS_AWARDED"
-  | "OTHER";
+    | "NEW_TEST"
+    | "FEEDBACK_RECEIVED"
+    | "TEST_COMPLETED"
+    | "BUG_REPORT"
+    | "POINTS_AWARDED"
+    | "OTHER";
   url: string | null;
   isActive: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface PricingResponse {
+  id: string;
+  name: string;
+  price: number;
+  package: number;
+  features: string[];
+  isActive: true;
   createdAt: Date;
   updatedAt: Date;
 }
