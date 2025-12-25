@@ -6,7 +6,7 @@ import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle }
 import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { ArrowDown, ArrowUp, DollarSign, FileClock, Package, Star } from "lucide-react";
+import { ArrowDown, ArrowUp, DollarSign, FileClock, Package, Star, IndianRupee } from "lucide-react";
 import { BackButton } from "@/components/back-button";
 import { motion } from "framer-motion";
 import { AppPagination } from '@/components/app-pagination';
