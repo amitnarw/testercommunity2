@@ -1,3 +1,4 @@
+
 "use client";
 
 import {
@@ -28,6 +29,7 @@ import {
   UserPlus,
   MessageSquare,
   Lightbulb,
+  Wallet,
 } from "lucide-react";
 
 interface UserNavProps {
@@ -176,7 +178,13 @@ export function UserNav({ session, onLogout }: UserNavProps) {
               <span>Profile</span>
             </DropdownMenuItem>
           </Link>
-          <Link href="/pricing">
+          <Link href="/dashboard/wallet">
+            <DropdownMenuItem className="h-10">
+              <Wallet className="mr-2" />
+              <span>My Wallet</span>
+            </DropdownMenuItem>
+          </Link>
+          <Link href="/dashboard/billing">
             <DropdownMenuItem className="h-10">
               <Package className="mr-2" />
               <span>Buy Packages</span>
