@@ -2,13 +2,15 @@
 'use client';
 
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowRight, CheckCircle } from "lucide-react";
+import { Check, IndianRupee, Minus } from "lucide-react";
 import { cn } from "@/lib/utils";
-import type { PointsPackage } from "@/lib/types";
-import { pointsPackages, professionalPathFeatures } from "@/lib/data";
+import { professionalPathFeatures, pointsPackages } from "@/lib/data";
 import { BackButton } from "@/components/back-button";
 import { motion } from "framer-motion";
+import { useState } from "react";
+import { Badge } from "@/components/ui/badge";
+import Link from "next/link";
+import { useDashboardData } from "@/hooks/useUser";
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -25,46 +27,13 @@ const itemVariants = {
   visible: { y: 0, opacity: 1, transition: { ease: "easeOut", duration: 0.5 } },
 };
 
-const PointsPackageCard = ({ plan, isPopular }: { plan: PointsPackage, isPopular: boolean }) => {
-    return (
-        <motion.div variants={itemVariants} className="h-full">
-            <Card className={cn(
-                "flex flex-col rounded-3xl h-full transition-all duration-300 group relative overflow-hidden",
-                isPopular 
-                    ? "border-2 border-primary shadow-2xl shadow-primary/20 bg-card" 
-                    : "border-border/50 hover:shadow-xl hover:shadow-primary/10 hover:border-primary/50 bg-secondary/50"
-            )}>
-                 {isPopular && (
-                    <div className="absolute top-0 right-0 h-20 w-20">
-                        <div className="absolute transform rotate-45 bg-primary text-center text-white font-semibold py-1 right-[-34px] top-[32px] w-[170px]">
-                        Popular
-                        </div>
-                    </div>
-                )}
-                <CardHeader className="pt-10 text-center">
-                    <CardTitle className="text-2xl">{plan.name}</CardTitle>
-                    <CardDescription className="pt-1">{plan.description}</CardDescription>
-                </CardHeader>
-                <CardContent className="flex-grow flex flex-col items-center justify-center space-y-6">
-                    <div className="flex items-baseline gap-2">
-                        <span className="text-5xl font-bold">₹{plan.price.toLocaleString('en-IN')}</span>
-                        <span className="text-muted-foreground">/ one-time</span>
-                    </div>
-                    <div className="text-center bg-primary/10 text-primary font-bold py-2 px-4 rounded-full">
-                        {plan.points} {plan.points > 1 ? 'Packages' : 'Package'} Included
-                    </div>
-                </CardContent>
-                <CardFooter className="p-6">
-                    <Button className="w-full text-lg py-6 font-bold group-hover:bg-primary/90">
-                        Purchase Now <ArrowRight className="ml-2 transition-transform duration-300 group-hover:translate-x-1" />
-                    </Button>
-                </CardFooter>
-            </Card>
-        </motion.div>
-    );
-};
-
 export default function BillingPage() {
+    const [billingCycle, setBillingCycle] = useState('monthly');
+
+    const {
+        data: dashboardData,
+    } = useDashboardData();
+
     return (
         <div className="bg-background text-foreground min-h-screen">
             <div className="container mx-auto px-4 md:px-6 py-12">
@@ -72,56 +41,92 @@ export default function BillingPage() {
                     initial="hidden" 
                     animate="visible" 
                     variants={containerVariants} 
-                    className="space-y-20"
+                    className="space-y-16"
                 >
                     <motion.div variants={itemVariants}>
                         <BackButton href="/dashboard" />
                         <div className="text-center max-w-3xl mx-auto mt-8">
-                            <h1 className="text-4xl md:text-5xl font-bold">Purchase Packages</h1>
+                            <h1 className="text-4xl md:text-5xl font-bold">Purchase Professional Packages</h1>
                             <p className="mt-4 text-lg text-muted-foreground">
-                                Add professional testing packages to your account. Each package allows you to submit one app for a full, managed testing cycle.
+                                Add test packages to your account for our managed, professional testing path. Your current balance is <span className="font-bold text-primary">{Number(dashboardData?.wallet) || 0} packages</span>.
                             </p>
                         </div>
                     </motion.div>
-
-                    <motion.div variants={itemVariants} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 text-sm">
-                        <div className="bg-secondary/50 p-4 rounded-lg flex items-center justify-center gap-3">
-                            <span className="font-semibold text-muted-foreground">Current Balance:</span>
-                            <span className="font-bold text-lg text-primary">3 Packages</span>
+                    
+                    <motion.div variants={itemVariants} className="max-w-6xl mx-auto">
+                        <div className="overflow-x-auto">
+                            <table className="w-full border-collapse text-sm text-center">
+                                <thead>
+                                    <tr className="border-b">
+                                        <th className="p-4 py-6 font-bold text-left text-base min-w-[200px]">Features</th>
+                                        {pointsPackages.map((plan) => (
+                                            <th key={plan.name} className="p-4 py-6 min-w-[200px] relative">
+                                                {plan.name === 'Accelerator' && <Badge className="absolute -top-3 left-1/2 -translate-x-1/2">Most Popular</Badge>}
+                                                <p className="text-lg font-bold">{plan.name}</p>
+                                                <p className="text-xs text-muted-foreground">{plan.description}</p>
+                                            </th>
+                                        ))}
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr className="border-b">
+                                        <td className="p-4 text-left font-semibold">Packages Included</td>
+                                        {pointsPackages.map((plan) => (
+                                            <td key={plan.name} className="p-4 font-bold text-2xl text-primary">{plan.points}</td>
+                                        ))}
+                                    </tr>
+                                    <tr className="border-b bg-secondary/30">
+                                        <td className="p-4 text-left font-semibold">Total Price</td>
+                                        {pointsPackages.map((plan) => (
+                                            <td key={plan.name} className="p-4">
+                                                <div className="text-3xl font-bold flex items-center justify-center">
+                                                    <IndianRupee className="w-6 h-6 mr-1" />
+                                                    {plan.price.toLocaleString('en-IN')}
+                                                </div>
+                                                <div className="text-xs text-muted-foreground">one-time payment</div>
+                                            </td>
+                                        ))}
+                                    </tr>
+                                     <tr className="border-b">
+                                        <td className="p-4 text-left font-semibold">Price per Package</td>
+                                        {pointsPackages.map((plan) => (
+                                            <td key={plan.name} className="p-4">
+                                                <div className="text-lg font-semibold flex items-center justify-center">
+                                                    <IndianRupee className="w-4 h-4 mr-1 text-muted-foreground" />
+                                                     {(plan.price / plan.points).toFixed(0)}
+                                                </div>
+                                            </td>
+                                        ))}
+                                    </tr>
+                                    {professionalPathFeatures.map((feature, index) => (
+                                        <tr key={index} className="border-b">
+                                            <td className="p-4 text-left">{feature}</td>
+                                            {pointsPackages.map((plan) => (
+                                                <td key={plan.name} className="p-4">
+                                                    <Check className="mx-auto w-5 h-5 text-green-500" />
+                                                </td>
+                                            ))}
+                                        </tr>
+                                    ))}
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <td></td>
+                                        {pointsPackages.map((plan) => (
+                                            <td key={plan.name} className="p-6">
+                                                <Button asChild size="lg" className={cn(plan.name !== 'Accelerator' && 'bg-secondary text-secondary-foreground hover:bg-secondary/80')}>
+                                                    <Link href="#">Purchase</Link>
+                                                </Button>
+                                            </td>
+                                        ))}
+                                    </tr>
+                                </tfoot>
+                            </table>
                         </div>
-                         <div className="bg-secondary/50 p-4 rounded-lg flex items-center justify-center gap-3">
-                            <span className="font-semibold text-muted-foreground">Community Points:</span>
-                            <span className="font-bold text-lg text-primary">1,250 Points</span>
-                        </div>
-                        <Button variant="outline" className="h-full">
-                            View Transaction History
-                        </Button>
                     </motion.div>
-
-                    <motion.section variants={containerVariants} className="max-w-6xl mx-auto">
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 items-stretch">
-                            {pointsPackages.map(plan => (
-                                <PointsPackageCard key={plan.name} plan={plan} isPopular={plan.name === 'Accelerator'}/>
-                            ))}
-                        </div>
-                    </motion.section>
-
-                    <motion.section variants={itemVariants} className="max-w-4xl mx-auto">
-                        <div className="text-center mb-12">
-                            <h2 className="text-3xl font-bold">What's Included in Every Package?</h2>
-                            <p className="text-muted-foreground mt-2">Every professional testing package comes with our full suite of features to ensure a successful launch.</p>
-                        </div>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                            {professionalPathFeatures.map((feature, index) => (
-                                <motion.div key={index} variants={itemVariants} className="flex items-center gap-3 p-4 rounded-lg bg-secondary/50">
-                                    <CheckCircle className="w-5 h-5 text-primary flex-shrink-0" />
-                                    <span className="text-sm">{feature}</span>
-                                </motion.div>
-                            ))}
-                        </div>
-                    </motion.section>
                 </motion.div>
             </div>
         </div>
     );
 }
+
