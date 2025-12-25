@@ -7,7 +7,6 @@ import { ArrowRight, CheckCircle, Package } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { PointsPackage } from "@/lib/types";
 import { pointsPackages, professionalPathFeatures } from "@/lib/data";
-import { BackButton } from "@/components/back-button";
 import { motion } from "framer-motion";
 import { Badge } from "@/components/ui/badge";
 import Link from 'next/link';
@@ -69,46 +68,24 @@ export default function BillingPage() {
                 initial="hidden" 
                 animate="visible" 
                 variants={containerVariants} 
-                className="space-y-20"
+                className="space-y-16"
             >
-                <motion.div variants={itemVariants}>
+                <motion.div variants={itemVariants} className="space-y-4">
                     <div>
                         <h1 className="text-2xl sm:text-4xl font-bold bg-gradient-to-br from-primary to-accent bg-clip-text text-transparent pb-1">Purchase Packages</h1>
                         <p className="text-muted-foreground">
                             Add professional testing packages to your account. Each package allows you to submit one app for a full, managed testing cycle.
                         </p>
                     </div>
+                     <div className="inline-block">
+                        <div className="flex items-center gap-3 bg-secondary/50 border rounded-lg px-4 py-2">
+                            <Package className="w-5 h-5 text-primary" />
+                            <span className="font-semibold">Available Packages:</span>
+                            <span className="text-lg font-bold text-primary">3</span>
+                        </div>
+                    </div>
                 </motion.div>
                 
-                <motion.div variants={containerVariants} className="mt-16 grid grid-cols-1 lg:grid-cols-2 gap-8">
-                    <motion.div variants={itemVariants}>
-                        <Card className="bg-gradient-to-br from-primary to-primary/80 text-primary-foreground rounded-3xl shadow-2xl shadow-primary/20 h-full">
-                            <CardHeader className="flex flex-row items-center justify-between p-3 sm:p-6 sm:py-3">
-                                <CardTitle className="text-white/80 text-sm font-medium">Available Packages</CardTitle>
-                                <Button variant="secondary" className="bg-white/20 hover:bg-white/30 text-white text-xs sm:text-sm !h-auto p-2 sm:px-4" asChild>
-                                    <Link href="/billing">Purchase More</Link>
-                                </Button>
-                            </CardHeader>
-                            <CardContent>
-                                <p className="text-2xl sm:text-4xl font-bold text-white">3</p>
-                            </CardContent>
-                        </Card>
-                    </motion.div>
-                    <motion.div variants={itemVariants}>
-                        <Card className="bg-card rounded-3xl h-full">
-                            <CardHeader className="flex flex-row items-center justify-between p-3 sm:p-6 sm:py-3">
-                                <CardTitle className="text-muted-foreground text-sm font-medium">Community Points</CardTitle>
-                                <Button variant="outline" asChild className='text-xs sm:text-sm !h-auto p-2 sm:px-4'>
-                                    <Link href="/community-dashboard">Earn More Points</Link>
-                                </Button>
-                            </CardHeader>
-                            <CardContent>
-                                <p className="text-2xl sm:text-4xl font-bold">1,250</p>
-                            </CardContent>
-                        </Card>
-                    </motion.div>
-                </motion.div>
-
                 <motion.section variants={containerVariants} className="max-w-6xl mx-auto">
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 items-stretch">
                         {pointsPackages.map(plan => (
@@ -117,7 +94,7 @@ export default function BillingPage() {
                     </div>
                 </motion.section>
 
-                <motion.section variants={itemVariants} className="max-w-4xl mx-auto">
+                <motion.section variants={itemVariants} className="max-w-4xl mx-auto pt-8">
                     <div className="text-center mb-12">
                         <h2 className="text-3xl font-bold">What's Included in Every Package?</h2>
                         <p className="text-muted-foreground mt-2">Every professional testing package comes with our full suite of features to ensure a successful launch.</p>
