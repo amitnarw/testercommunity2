@@ -178,13 +178,13 @@ export function UserNav({ session, onLogout }: UserNavProps) {
               <span>Profile</span>
             </DropdownMenuItem>
           </Link>
-          <Link href="/dashboard/wallet">
+          <Link href="/wallet">
             <DropdownMenuItem className="h-10">
               <Wallet className="mr-2" />
               <span>My Wallet</span>
             </DropdownMenuItem>
           </Link>
-          <Link href="/dashboard/billing">
+          <Link href="/billing">
             <DropdownMenuItem className="h-10">
               <Package className="mr-2" />
               <span>Buy Packages</span>

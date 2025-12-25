@@ -1,3 +1,4 @@
+
 "use client";
 
 import {
@@ -183,7 +184,7 @@ export default function DashboardPage() {
               </Link>
             </Button>
             <Button variant="outline" asChild className="w-full h-full">
-              <Link href="/pricing">
+              <Link href="/billing">
                 <Gem className="mr-2 h-4 w-4" /> Buy More Packages
               </Link>
             </Button>
