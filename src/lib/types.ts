@@ -444,3 +444,26 @@ export interface PricingResponse {
   createdAt: Date;
   updatedAt: Date;
 }
+
+export interface SessionResponse {
+  id: string;
+  userId: string;
+  token: null;
+  expiresAt: string;
+  ipAddress: string;
+  userAgent: string;
+  createdAt: Date;
+  updatedAt: Date;
+  isCurrent: boolean;
+  city: string;
+  region: string;
+  country: string;
+  browser: string;
+  browserVersion: string;
+  os: string;
+  osVersion: string;
+  deviceBrand: string;
+  deviceModel: string;
+  deviceType: "desktop" | "mobile" | "tablet";
+  lastLogin: string;
+}

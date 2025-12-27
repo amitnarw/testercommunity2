@@ -33,6 +33,7 @@ import {
 } from "@/lib/data";
 import { usePricingData } from "@/hooks/useUser";
 import { PricingResponse } from "@/lib/types";
+import SkeletonPricingSetup from "@/components/unauthenticated/pricing-skeleton";
 
 const PointsPackageCard = ({
   plan,
@@ -99,41 +100,47 @@ export default function PricingPage() {
           </p>
         </section>
 
-        <section className="mt-20 max-w-4xl mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold">
-              What's Included in Every Package?
-            </h2>
-            <p className="text-muted-foreground mt-2">
-              Every professional testing package comes with our full suite of
-              features to ensure a successful launch.
-            </p>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {pricingData?.[0]?.features?.map((feature, index) => (
-              <div
-                key={index}
-                className="flex items-center gap-3 p-4 rounded-lg bg-secondary/50"
-              >
-                <CheckCircle className="w-5 h-5 text-primary flex-shrink-0" />
-                <span>{feature}</span>
+        {pricingIsPending ? (
+          <SkeletonPricingSetup />
+        ) : (
+          <>
+            <section className="mt-20 max-w-4xl mx-auto">
+              <div className="text-center mb-12">
+                <h2 className="text-3xl font-bold">
+                  What's Included in Every Package?
+                </h2>
+                <p className="text-muted-foreground mt-2">
+                  Every professional testing package comes with our full suite
+                  of features to ensure a successful launch.
+                </p>
               </div>
-            ))}
-          </div>
-        </section>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                {pricingData?.[0]?.features?.map((feature, index) => (
+                  <div
+                    key={index}
+                    className="flex items-center gap-3 p-4 rounded-lg bg-secondary/50"
+                  >
+                    <CheckCircle className="w-5 h-5 text-primary flex-shrink-0" />
+                    <span>{feature}</span>
+                  </div>
+                ))}
+              </div>
+            </section>
 
-        <section className="mt-20 max-w-6xl mx-auto">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 items-stretch">
-            {pricingData?.map((plan) => (
-              <div key={plan.name}>
-                <PointsPackageCard
-                  plan={plan}
-                  isPopular={plan.name === "Accelerator"}
-                />
+            <section className="mt-20 max-w-6xl mx-auto">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 items-stretch">
+                {pricingData?.map((plan) => (
+                  <div key={plan.name}>
+                    <PointsPackageCard
+                      plan={plan}
+                      isPopular={plan.name === "Accelerator"}
+                    />
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
-        </section>
+            </section>
+          </>
+        )}
 
         <section className="mt-20 max-w-5xl mx-auto">
           <Card className="flex flex-col md:flex-row items-center gap-6 rounded-2xl h-full bg-secondary/50 border-dashed border-2 p-8 justify-between text-center md:text-left">
