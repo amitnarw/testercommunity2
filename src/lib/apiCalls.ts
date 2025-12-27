@@ -397,7 +397,7 @@ export async function getAllPricingPlans(): Promise<PricingResponse[]> {
     const response = await api.get(API_ROUTES.USER + `/get-all-pricing-plans`);
     return response?.data?.data;
   } catch (error) {
-    console.error("Error fetching plans data:", error);
+    console.error("Error fetching all plans data:", error);
     if (axios.isAxiosError(error)) {
       const status = error.response?.status;
       const responseData = error.response?.data;
@@ -419,7 +419,57 @@ export async function getAllSessions(): Promise<SessionResponse[]> {
     const response = await api.get(API_ROUTES.USER + `/get-all-sessions`);
     return response?.data?.data;
   } catch (error) {
-    console.error("Error fetching plans data:", error);
+    console.error("Error fetching all sessions:", error);
+    if (axios.isAxiosError(error)) {
+      const status = error.response?.status;
+      const responseData = error.response?.data;
+      console.error("Axios error:", status, responseData);
+
+      throw new Error(
+        responseData?.message || error.message || "Unknown Axios error"
+      );
+    } else if (error instanceof Error) {
+      throw new Error(error.message);
+    } else {
+      throw new Error(JSON.stringify(error));
+    }
+  }
+}
+
+export async function doSessionLogoutSingle(payload: { session_id: string }) {
+  try {
+    if (!payload) {
+      throw new Error("Payload is undefined");
+    }
+    const response = await api.post(
+      API_ROUTES.USER + `/logout-single-session`,
+      payload
+    );
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error while logging out single session:", error);
+    if (axios.isAxiosError(error)) {
+      const status = error.response?.status;
+      const responseData = error.response?.data;
+      console.error("Axios error:", status, responseData);
+
+      throw new Error(
+        responseData?.message || error.message || "Unknown Axios error"
+      );
+    } else if (error instanceof Error) {
+      throw new Error(error.message);
+    } else {
+      throw new Error(JSON.stringify(error));
+    }
+  }
+}
+
+export async function doSessionLogoutAll() {
+  try {
+    const response = await api.post(API_ROUTES.USER + `/logout-all-sessions`);
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error while logging out all sessions:", error);
     if (axios.isAxiosError(error)) {
       const status = error.response?.status;
       const responseData = error.response?.data;

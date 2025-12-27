@@ -3,7 +3,10 @@ import React, { Fragment } from "react";
 
 const SkeletonSessions = () => {
   return Array.from({ length: 3 })?.map((_, index) => (
-    <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 px-0 sm:px-5 py-3">
+    <div
+      key={index}
+      className="flex flex-col sm:flex-row items-start sm:items-center gap-4 px-0 sm:px-5 py-3"
+    >
       <Fragment key={index}>
         <div className="w-full flex flex-row gap-4">
           <Skeleton className="h-12 w-[65px] rounded-full" />

@@ -42,10 +42,17 @@ import {
 } from "@/components/ui/alert-dialog";
 import Link from "next/link";
 import { BackButton } from "@/components/back-button";
-import { useSessionsData, useUserProfileData } from "@/hooks/useUser";
+import {
+  useSessionLogoutAll,
+  useSessionLogoutSingle,
+  useSessionsData,
+  useUserProfileData,
+} from "@/hooks/useUser";
 import { authClient } from "@/lib/auth-client";
 import { SessionResponse } from "@/lib/types";
 import SkeletonSessions from "@/components/authenticated/profile/session-skeleton";
+import { LoadingButton } from "@/components/ui/loading-button";
+import { useRouter } from "next/navigation";
 
 const profileSchema = z.object({
   first_name: z.string().min(2, "First name is required."),
@@ -79,9 +86,10 @@ const getLocation = (city: string, region: string, country: string) => {
 
 export default function ProfilePage() {
   const { data: session, isPending } = authClient.useSession();
+  const router = useRouter();
 
   const { toast } = useToast();
-  const [avatar, setAvatar] = useState();
+  const [avatar, setAvatar] = useState("");
 
   const {
     data: userProfileData,
@@ -155,20 +163,44 @@ export default function ProfilePage() {
     });
   };
 
+  const {
+    mutate: sessionLSMutate,
+    isPending: sessionLSIsPending,
+    isSuccess: sessionLSIsSuccess,
+    isError: sessionLSIsError,
+    error: sessionLSError,
+  } = useSessionLogoutSingle({
+    onSuccess: () => {
+      toast({
+        title: "Device Logged Out",
+        description: "The selected session has been terminated.",
+      });
+      sessionRefetch();
+    },
+  });
+
+  const {
+    mutate: sessionLAMutate,
+    isPending: sessionLAIsPending,
+    isSuccess: sessionLAIsSuccess,
+    isError: sessionLAIsError,
+    error: sessionLAError,
+  } = useSessionLogoutAll({
+    onSuccess: () => {
+      toast({
+        title: "All Other Sessions Logged Out",
+        description: "You have been logged out from all other devices.",
+      });
+      router.push("/auth/login");
+    },
+  });
+
   const handleLogoutDevice = (id: string) => {
-    setDevices(devices.filter((d) => d.id !== id));
-    toast({
-      title: "Device Logged Out",
-      description: "The selected session has been terminated.",
-    });
+    sessionLSMutate({ session_id: id });
   };
 
   const handleLogoutAll = () => {
-    setDevices(devices.filter((d) => d.isCurrent));
-    toast({
-      title: "All Other Sessions Logged Out",
-      description: "You have been logged out from all other devices.",
-    });
+    sessionLAMutate(undefined);
   };
 
   return (
@@ -325,46 +357,65 @@ export default function ProfilePage() {
                 sessionData?.map((device, index) => (
                   <Fragment key={device.id}>
                     <div className="flex flex-col md:flex-row items-start md:items-center justify-between py-6">
-                      <div className="flex items-center gap-4">
-                        <DeviceIcon type={device?.deviceType} />
-                        <div>
-                          <p className="font-semibold">
-                            {device.os} - {device.browser}
-                          </p>
-                          <div className="flex flex-col md:flex-row md:items-center md:gap-4 text-sm text-muted-foreground">
-                            <div className="flex items-center gap-1.5 hidden md:block">
-                              <MapPin className="w-3.5 h-3.5" />
-                              <span className="text-xs sm:text-sm">
-                                {getLocation(
-                                  device?.city,
-                                  device?.region,
-                                  device?.country
-                                )}
-                              </span>
-                            </div>
-                            <span className="hidden md:inline">•</span>
-                            <span className="text-xs sm:text-sm">
+                      <div className="flex flex-col items-start gap-4">
+                        <div className="flex flex-row gap-4 items-center">
+                          <DeviceIcon type={device?.deviceType} />
+                          <div>
+                            <p className="font-semibold">
+                              {device.os} - {device.browser}
+                            </p>
+                            <div className="flex flex-col md:flex-row md:items-center md:gap-4 text-sm text-muted-foreground">
+                              <div className="flex-row items-center gap-1.5 hidden md:flex">
+                                <MapPin className="w-3.5 h-3.5" />
+                                <span className="text-xs sm:text-sm">
+                                  {getLocation(
+                                    device?.city,
+                                    device?.region,
+                                    device?.country
+                                  )}
+                                </span>
+                              </div>
+                              <span className="hidden md:inline">•</span>
                               {device.isCurrent ? (
-                                <span className="font-semibold text-green-500">
+                                <span className="text-sm font-semibold text-green-500">
                                   Active now
                                 </span>
                               ) : (
-                                `Last login ${device?.lastLogin}`
+                                <div className="flex flex-row gap-2 hidden sm:block">
+                                  <span className="text-xs sm:text-sm text-muted-foreground">
+                                    Last login:
+                                  </span>
+                                  <span className="text-xs sm:text-sm">
+                                    {device?.lastLogin}
+                                  </span>
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        </div>
+                        <div className="flex flex-col items-start block md:hidden text-xs sm:text-sm">
+                          {!device.isCurrent ? (
+                            <div className="flex flex-row gap-2">
+                              <span className="text-xs sm:text-sm text-muted-foreground">
+                                Last login:
+                              </span>
+                              <span className="text-xs sm:text-sm">
+                                {device?.lastLogin}
+                              </span>
+                            </div>
+                          ) : null}
+                          <div className="flex flex-row gap-2">
+                            <span className="text-muted-foreground">
+                              Location:{" "}
+                            </span>
+                            <span>
+                              {getLocation(
+                                device?.city,
+                                device?.region,
+                                device?.country
                               )}
                             </span>
                           </div>
-                        </div>
-                        <div className="flex items-center gap-1.5 block md:block text-xs sm:text-sm">
-                          <span className="text-muted-foreground">
-                            Location:{" "}
-                          </span>
-                          <span>
-                            {getLocation(
-                              device?.city,
-                              device?.region,
-                              device?.country
-                            )}
-                          </span>
                         </div>
                       </div>
                       <div className="flex justify-start md:justify-end mt-4 md:mt-0 w-full md:w-auto">
@@ -374,7 +425,7 @@ export default function ProfilePage() {
                               <Button
                                 variant="ghost"
                                 size="sm"
-                                className=" text-destructive bg-destructive/10 dark:bg-red-700/20 hover:text-red-500 hover:bg-destructive/20 hover:scale-[1.1] w-full md:w-auto justify-start md:justify-center"
+                                className=" text-destructive bg-destructive/10 dark:bg-red-700/20 hover:text-red-500 hover:bg-destructive/20 hover:scale-[1.1] w-full md:w-auto justify-center"
                               >
                                 <LogOut className="mr-2 h-4 w-4" /> Logout
                               </Button>
@@ -392,11 +443,15 @@ export default function ProfilePage() {
                               </AlertDialogHeader>
                               <AlertDialogFooter>
                                 <AlertDialogCancel>Cancel</AlertDialogCancel>
-                                <AlertDialogAction
+                                <LoadingButton
+                                  className="rounded-xl"
+                                  isLoading={sessionLSIsPending}
+                                  isSuccess={sessionLSIsSuccess}
+                                  isError={sessionLSIsError}
                                   onClick={() => handleLogoutDevice(device.id)}
                                 >
                                   Log Out
-                                </AlertDialogAction>
+                                </LoadingButton>
                               </AlertDialogFooter>
                             </AlertDialogContent>
                           </AlertDialog>
@@ -429,9 +484,15 @@ export default function ProfilePage() {
                   </AlertDialogHeader>
                   <AlertDialogFooter>
                     <AlertDialogCancel>Cancel</AlertDialogCancel>
-                    <AlertDialogAction onClick={handleLogoutAll}>
+                    <LoadingButton
+                      className="rounded-xl"
+                      isLoading={sessionLAIsPending}
+                      isSuccess={sessionLAIsSuccess}
+                      isError={sessionLAIsError}
+                      onClick={handleLogoutAll}
+                    >
                       Confirm
-                    </AlertDialogAction>
+                    </LoadingButton>
                   </AlertDialogFooter>
                 </AlertDialogContent>
               </AlertDialog>

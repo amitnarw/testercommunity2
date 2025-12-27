@@ -1,4 +1,6 @@
 import {
+  doSessionLogoutAll,
+  doSessionLogoutSingle,
   getAllPricingPlans,
   getAllSessions,
   getDasboardData,
@@ -145,4 +147,26 @@ export function useSessionsData() {
   });
 
   return query;
+}
+
+export function useSessionLogoutSingle(
+  options?: UseMutationOptions<any, any, any>
+) {
+  const mutation = useMutation({
+    mutationFn: (payload) => doSessionLogoutSingle(payload),
+    ...options,
+  });
+
+  return mutation;
+}
+
+export function useSessionLogoutAll(
+  options?: UseMutationOptions<any, any, any>
+) {
+  const mutation = useMutation({
+    mutationFn: () => doSessionLogoutAll(),
+    ...options,
+  });
+
+  return mutation;
 }
