@@ -8,6 +8,7 @@ import Navbar from '@/components/authenticated/navbar';
 import Footer from '@/components/authenticated/footer';
 import { Sidebar } from '@/components/authenticated/sidebar';
 import { SiteLogo } from '@/components/icons';
+import { motion, AnimatePresence } from 'framer-motion';
 
 
 export default function AdminLayout({
@@ -66,9 +67,18 @@ export default function AdminLayout({
         />
         <div className={`flex flex-col flex-1 transition-all duration-300 md:pl-20`}>
             <Navbar onLogout={handleLogout} />
-            <main className="flex-1 bg-secondary/50">
-                {children}
-            </main>
+            <AnimatePresence mode="wait">
+              <motion.main
+                  key={pathname}
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.3, ease: "easeInOut" }}
+                  className="flex-1 bg-secondary/50"
+              >
+                  {children}
+              </motion.main>
+            </AnimatePresence>
             <Footer />
         </div>
     </div>
