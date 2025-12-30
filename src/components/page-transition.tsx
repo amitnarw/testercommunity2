@@ -21,20 +21,19 @@ export default function PageTransition({children}: {children: React.ReactNode}) 
 
     const nbOfColumns = 5
     return (
-        <AnimatePresence mode="wait">
-            <div key={pathname} className='page stairs'>
-                <motion.div {...anim(opacity)} className='transition-background'/>
-                <div className='transition-container'>
-                    {
-                        [...Array(nbOfColumns)].map( (_, i) => {
-                            return (
-                                <motion.div key={i} {...anim(expand, nbOfColumns - i)}/>
-                            ) 
-                        })
-                    }
-                </div>
-                {children}
+        <div key={pathname} className='page stairs'>
+            <motion.div {...anim(opacity)} className='transition-background'/>
+            <div className='transition-container'>
+                {
+                    [...Array(nbOfColumns)].map( (_, i) => {
+                        return (
+                            <motion.div key={i} {...anim(expand, nbOfColumns - i)}/>
+                        ) 
+                    })
+                }
             </div>
-        </AnimatePresence>
+            {children}
+        </div>
+
     )
 }

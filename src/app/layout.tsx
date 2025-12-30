@@ -2,6 +2,8 @@ import "./globals.css";
 import { Toaster } from "@/components/ui/toaster";
 import { ThemeProvider } from "@/components/theme-provider";
 import QueryProvider from "@/lib/query-provider";
+import { TransitionProvider } from "@/context/transition-context";
+import TransitionOverlay from "@/components/transition-overlay";
 
 export default function RootLayout({
   children,
@@ -30,7 +32,12 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <QueryProvider>{children}</QueryProvider>
+          <QueryProvider>
+            <TransitionProvider>
+                <TransitionOverlay />
+                {children}
+            </TransitionProvider>
+          </QueryProvider>
           <Toaster />
         </ThemeProvider>
       </body>

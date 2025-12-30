@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import { TransitionLink } from "@/components/transition-link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import {
@@ -72,7 +72,7 @@ const NavLink = ({
     <TooltipProvider>
       <Tooltip delayDuration={0}>
         <TooltipTrigger asChild>
-          <Link
+          <TransitionLink
             href={href}
             className={cn(
               "flex items-center justify-start w-full h-12 rounded-xl text-white/70 dark:text-black/70 transition-all duration-300 px-3.5",
@@ -87,7 +87,7 @@ const NavLink = ({
                 {children}
               </span>
             )}
-          </Link>
+          </TransitionLink>
         </TooltipTrigger>
         {isCollapsed && (
           <TooltipContent
@@ -133,9 +133,9 @@ export function Sidebar({
         )}
       >
         <div className="flex flex-col items-center justify-between gap-4 bg-[#121212] dark:bg-white text-white py-5 rounded-2xl shadow-2xl border border-white/10 relative w-full">
-          <Link href="/dashboard">
+          <TransitionLink href="/dashboard">
             <InTestersLogoShortHeader className="h-10 w-10" />
-          </Link>
+          </TransitionLink>
 
           <div className="mb-8 mt-2">
             <button
@@ -169,7 +169,7 @@ export function Sidebar({
             <TooltipProvider>
               <Tooltip delayDuration={0}>
                 <TooltipTrigger asChild>
-                  <a
+                  <TransitionLink
                     href="/"
                     className={cn(
                       "flex items-center justify-start w-full h-12 rounded-xl text-white/70 dark:text-black/70 transition-all duration-300 px-3.5",
@@ -182,7 +182,7 @@ export function Sidebar({
                         Home
                       </span>
                     )}
-                  </a>
+                  </TransitionLink>
                 </TooltipTrigger>
                 {isCollapsed && (
                   <TooltipContent
