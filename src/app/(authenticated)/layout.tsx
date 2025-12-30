@@ -9,6 +9,29 @@ import { Sidebar } from "@/components/authenticated/sidebar";
 import { authClient } from "@/lib/auth-client";
 import { motion, AnimatePresence } from "framer-motion";
 
+const variants = {
+  initial: {
+    x: "100%",
+    opacity: 0,
+  },
+  animate: {
+    x: 0,
+    opacity: 1,
+    transition: {
+      duration: 0.3,
+      ease: "easeInOut",
+    },
+  },
+  exit: {
+    x: "-100%",
+    opacity: 0,
+    transition: {
+      duration: 0.3,
+      ease: "easeInOut",
+    },
+  },
+};
+
 export default function AuthenticatedLayout({
   children,
 }: Readonly<{
@@ -41,10 +64,10 @@ export default function AuthenticatedLayout({
           <AnimatePresence mode="wait">
             <motion.main
               key={pathname}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              transition={{ duration: 0.3, ease: "easeInOut" }}
+              variants={variants}
+              initial="initial"
+              animate="animate"
+              exit="exit"
               className="flex-1 bg-secondary/50"
             >
               {children}
