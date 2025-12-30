@@ -434,6 +434,15 @@ export interface NotificationReponse {
   updatedAt: Date;
 }
 
+export interface UserWallerResponse {
+  id: number;
+  userId: string;
+  totalPoints: number;
+  totalPackages: number;
+  lastUpdated: Date;
+  createdAt: Date;
+}
+
 export interface PricingResponse {
   id: string;
   name: string;

@@ -10,6 +10,7 @@ import {
   SessionResponse,
   UserDataAttributes,
   UserProfileDataAttributes,
+  UserWallerResponse,
 } from "./types";
 import api from "./axios";
 
@@ -375,6 +376,29 @@ export async function getUserNotifications(): Promise<{
     return response?.data?.data;
   } catch (error) {
     console.error("Error fetching user notifications data:", error);
+    if (axios.isAxiosError(error)) {
+      const status = error.response?.status;
+      const responseData = error.response?.data;
+      console.error("Axios error:", status, responseData);
+
+      throw new Error(
+        responseData?.message || error.message || "Unknown Axios error"
+      );
+    } else if (error instanceof Error) {
+      throw new Error(error.message);
+    } else {
+      throw new Error(JSON.stringify(error));
+    }
+  }
+}
+
+// Wallet
+export async function getUserWallet(): Promise<UserWallerResponse> {
+  try {
+    const response = await api.get(API_ROUTES.USER + `/get-user-wallet`);
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error fetching user wallet data:", error);
     if (axios.isAxiosError(error)) {
       const status = error.response?.status;
       const responseData = error.response?.data;

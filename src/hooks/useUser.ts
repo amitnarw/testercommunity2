@@ -8,6 +8,7 @@ import {
   getUserData,
   getUserNotifications,
   getUserProfileData,
+  getUserWallet,
   saveInitialProfileData,
   saveProfileData,
   saveUserData,
@@ -20,6 +21,7 @@ import {
   SessionResponse,
   UserDataAttributes,
   UserProfileDataAttributes,
+  UserWallerResponse,
 } from "@/lib/types";
 import {
   useMutation,
@@ -125,6 +127,16 @@ export function useGetUserNotifications() {
   >({
     queryFn: () => getUserNotifications(),
     queryKey: ["useGetUserNotifications"],
+  });
+
+  return query;
+}
+
+// Wallet
+export function useGetUserWallet() {
+  const query = useQuery<UserWallerResponse, Error>({
+    queryFn: () => getUserWallet(),
+    queryKey: ["useGetUserWallet"],
   });
 
   return query;
