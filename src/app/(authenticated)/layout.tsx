@@ -41,9 +41,9 @@ export default function AuthenticatedLayout({
           <AnimatePresence mode="wait">
             <motion.main
               key={pathname}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
               transition={{ duration: 0.3, ease: "easeInOut" }}
               className="flex-1 bg-secondary/50"
             >
