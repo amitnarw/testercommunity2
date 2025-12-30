@@ -7,29 +7,7 @@ import { Footer } from "@/components/footer";
 import { usePathname } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
 import { motion, AnimatePresence } from "framer-motion";
-
-const variants = {
-  initial: {
-    x: "100%",
-    opacity: 0,
-  },
-  animate: {
-    x: 0,
-    opacity: 1,
-    transition: {
-      duration: 0.3,
-      ease: "easeInOut",
-    },
-  },
-  exit: {
-    x: "-100%",
-    opacity: 0,
-    transition: {
-      duration: 0.3,
-      ease: "easeInOut",
-    },
-  },
-};
+import PageTransition from "@/components/page-transition";
 
 export default function PublicLayout({
   children,
@@ -46,47 +24,29 @@ export default function PublicLayout({
     pathname.startsWith("/tester/register");
 
   if (isAuthPage) {
-    return (
-       <AnimatePresence mode="wait">
-        <motion.main
-          key={pathname}
-          variants={variants}
-          initial="initial"
-          animate="animate"
-          exit="exit"
-          className="flex-1 bg-background"
-        >
-          {children}
-        </motion.main>
-      </AnimatePresence>
-    );
+    return <PageTransition>{children}</PageTransition>;
   }
 
   return (
-    <div className="relative flex flex-col min-h-screen">
-      {!isPending && (
-        <Header
-          session={session}
-          isDashboardPage={false}
-          isMobileMenuOpen={isMobileMenuOpen}
-          setMobileMenuOpen={setIsMobileMenuOpen}
-          isSidebarCollapsed={true}
-          setSidebarCollapsed={() => {}}
-        />
-      )}
-      <AnimatePresence mode="wait">
-        <motion.main
-          key={pathname}
-          variants={variants}
-          initial="initial"
-          animate="animate"
-          exit="exit"
+    <PageTransition>
+      <div className="relative flex flex-col min-h-screen">
+        {!isPending && (
+          <Header
+            session={session}
+            isDashboardPage={false}
+            isMobileMenuOpen={isMobileMenuOpen}
+            setMobileMenuOpen={setIsMobileMenuOpen}
+            isSidebarCollapsed={true}
+            setSidebarCollapsed={() => {}}
+          />
+        )}
+        <main
           className="flex-1 bg-background z-10"
         >
           {children}
-        </motion.main>
-      </AnimatePresence>
-      {!isPending && <Footer />}
-    </div>
+        </main>
+        {!isPending && <Footer />}
+      </div>
+    </PageTransition>
   );
 }

@@ -8,29 +8,7 @@ import { useRouter, usePathname } from "next/navigation";
 import { Sidebar } from "@/components/authenticated/sidebar";
 import { authClient } from "@/lib/auth-client";
 import { motion, AnimatePresence } from "framer-motion";
-
-const variants = {
-  initial: {
-    x: "100%",
-    opacity: 0,
-  },
-  animate: {
-    x: 0,
-    opacity: 1,
-    transition: {
-      duration: 0.3,
-      ease: "easeInOut",
-    },
-  },
-  exit: {
-    x: "-100%",
-    opacity: 0,
-    transition: {
-      duration: 0.3,
-      ease: "easeInOut",
-    },
-  },
-};
+import PageTransition from "@/components/page-transition";
 
 export default function AuthenticatedLayout({
   children,
@@ -52,30 +30,25 @@ export default function AuthenticatedLayout({
   };
 
   return (
-    <div className="relative flex flex-col min-h-screen">
-      <div className="flex flex-1">
-        <Sidebar
-          onLogout={handleLogout}
-          isCollapsed={isSidebarCollapsed}
-          setIsCollapsed={setIsSidebarCollapsed}
-        />
-        <div className="flex flex-col flex-1 md:pl-20">
-          <Navbar onLogout={handleLogout} />
-          <AnimatePresence mode="wait">
-            <motion.main
-              key={pathname}
-              variants={variants}
-              initial="initial"
-              animate="animate"
-              exit="exit"
+    <PageTransition>
+      <div className="relative flex flex-col min-h-screen">
+        <div className="flex flex-1">
+          <Sidebar
+            onLogout={handleLogout}
+            isCollapsed={isSidebarCollapsed}
+            setIsCollapsed={setIsSidebarCollapsed}
+          />
+          <div className="flex flex-col flex-1 md:pl-20">
+            <Navbar onLogout={handleLogout} />
+            <main
               className="flex-1 bg-secondary/50"
             >
               {children}
-            </motion.main>
-          </AnimatePresence>
-          <Footer />
+            </main>
+            <Footer />
+          </div>
         </div>
       </div>
-    </div>
+    </PageTransition>
   );
 }
