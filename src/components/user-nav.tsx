@@ -190,7 +190,7 @@ export function UserNav({ session, onLogout }: UserNavProps) {
               <span>Buy Packages</span>
             </DropdownMenuItem>
           </Link>
-          <Link href="/help">
+          <Link href="/support">
             <DropdownMenuItem className="h-10">
               <LifeBuoy className="mr-2" />
               <span>Support</span>

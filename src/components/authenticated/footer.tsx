@@ -10,7 +10,7 @@ export default function Footer() {
           <p>&copy; {new Date().getFullYear()} inTesters, Inc. All rights reserved.</p>
           <div className="flex items-center gap-4 mt-2 md:mt-0">
             <Link href="/terms" className="hover:text-primary transition-colors">Terms of Service</Link>
-            <Link href="/help" className="hover:text-primary transition-colors">Support</Link>
+            <Link href="/support" className="hover:text-primary transition-colors">Support</Link>
           </div>
         </div>
       </div>
