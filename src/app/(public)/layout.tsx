@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useState } from "react";
@@ -5,6 +6,7 @@ import { Header } from "@/components/header";
 import { Footer } from "@/components/footer";
 import { usePathname } from "next/navigation";
 import { authClient } from "@/lib/auth-client";
+import { motion, AnimatePresence } from "framer-motion";
 
 export default function PublicLayout({
   children,
@@ -21,7 +23,20 @@ export default function PublicLayout({
     pathname.startsWith("/tester/register");
 
   if (isAuthPage) {
-    return <main className="flex-1 bg-background">{children}</main>;
+    return (
+       <AnimatePresence mode="wait">
+        <motion.main
+          key={pathname}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -20 }}
+          transition={{ duration: 0.3, ease: "easeInOut" }}
+          className="flex-1 bg-background"
+        >
+          {children}
+        </motion.main>
+      </AnimatePresence>
+    );
   }
 
   return (
@@ -36,7 +51,18 @@ export default function PublicLayout({
           setSidebarCollapsed={() => {}}
         />
       )}
-      <main className="flex-1 bg-background z-10">{children}</main>
+      <AnimatePresence mode="wait">
+        <motion.main
+          key={pathname}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: -20 }}
+          transition={{ duration: 0.3, ease: "easeInOut" }}
+          className="flex-1 bg-background z-10"
+        >
+          {children}
+        </motion.main>
+      </AnimatePresence>
       {!isPending && <Footer />}
     </div>
   );

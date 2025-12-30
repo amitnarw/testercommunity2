@@ -1,4 +1,5 @@
 
+
 "use client";
 
 import { useState, useEffect } from "react";
@@ -51,7 +52,20 @@ export default function ProfessionalLayout({
     pathname === "/tester/login" || pathname === "/tester/register";
 
   if (isAuthPage) {
-    return <main className="flex-1 bg-background">{children}</main>;
+    return (
+        <AnimatePresence mode="wait">
+            <motion.main
+                key={pathname}
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                transition={{ duration: 0.3, ease: "easeInOut" }}
+                className="flex-1 bg-background"
+            >
+                {children}
+            </motion.main>
+        </AnimatePresence>
+    );
   }
 
   if (!session?.user?.id) {
