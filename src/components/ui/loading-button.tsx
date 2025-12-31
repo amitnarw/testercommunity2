@@ -20,6 +20,7 @@ type MotionButtonProps = Omit<
   isLoading?: boolean;
   isSuccess?: boolean;
   isError?: boolean;
+  reset?: () => void;
   onClick?: (
     event: React.MouseEvent<HTMLButtonElement, MouseEvent>
   ) => Promise<any> | void;
@@ -30,7 +31,16 @@ export const LoadingButton = React.forwardRef<
   MotionButtonProps
 >(
   (
-    { className, children, isLoading, isSuccess, isError, onClick, ...props },
+    {
+      className,
+      children,
+      isLoading,
+      isSuccess,
+      isError,
+      reset,
+      onClick,
+      ...props
+    },
     ref
   ) => {
     const [scope, animate] = useAnimate();
@@ -46,6 +56,9 @@ export const LoadingButton = React.forwardRef<
 
       // 1. Animate text out
       await animate(text, { opacity: 0, y: 10 }, { duration: 0.2 });
+
+      if (!scope.current) return;
+
       animate(check, { opacity: 0, scale: 0 });
       animate(error, { opacity: 0, scale: 0 });
 
@@ -61,8 +74,8 @@ export const LoadingButton = React.forwardRef<
     };
 
     const runSuccessAnimation = async () => {
-      const loader = scope.current?.querySelector(".loader");
-      const check = scope.current?.querySelector(".check");
+      const loader = await scope.current?.querySelector(".loader");
+      const check = await scope.current?.querySelector(".check");
 
       if (!loader || !check) return;
 
@@ -71,6 +84,8 @@ export const LoadingButton = React.forwardRef<
         [loader, { opacity: 0, scale: 0 }, { duration: 0.2 }],
         [check, { opacity: 1, scale: 1 }, { duration: 0.2 }],
       ]);
+
+      if (!scope.current) return;
 
       // 5. Restore button to its original state
       await animate(
@@ -107,6 +122,30 @@ export const LoadingButton = React.forwardRef<
       animate(error, { opacity: 0, scale: 0 }, { duration: 0.2 });
     };
 
+    const runReset = async () => {
+      const loader = scope.current?.querySelector(".loader");
+      const check = scope.current?.querySelector(".check");
+      const error = scope.current?.querySelector(".error");
+      const text = scope.current?.querySelector(".text");
+
+      if (!loader || !check || !error || !text) return;
+
+      // 4. Animate loader out and check in using a sequence
+      await animate([
+        [loader, { opacity: 0, scale: 0 }, { duration: 0.2 }],
+        [check, { opacity: 0, scale: 0 }, { duration: 0.2 }],
+        [error, { opacity: 0, scale: 0 }, { duration: 0.2 }],
+        [text, { opacity: 1, y: 0 }, { duration: 0.2 }],
+      ]);
+    };
+
+    useEffect(() => {
+      if (reset) {
+        reset();
+        runReset();
+      }
+    }, [reset]);
+
     useEffect(() => {
       setCheckError(true);
       if (isLoading && !isSuccess && !isError) {
@@ -125,6 +164,7 @@ export const LoadingButton = React.forwardRef<
 
     return (
       <motion.button
+        type="button"
         className={cn(
           `relative flex items-center justify-center gap-2 overflow-hidden rounded-full ${
             isSuccess

@@ -20,6 +20,8 @@ import {
   MessageSquare,
   Lightbulb,
   Activity,
+  Wallet,
+  User,
 } from "lucide-react";
 import {
   Tooltip,
@@ -163,6 +165,12 @@ export function Sidebar({
                 {link.name}
               </NavLink>
             ))}
+            <NavLink href="/wallet" icon={Wallet} isCollapsed={isCollapsed}>
+              Wallet
+            </NavLink>
+            <NavLink href="/profile" icon={User} isCollapsed={isCollapsed}>
+              Profile
+            </NavLink>
           </nav>
 
           <div className="flex flex-col items-center w-full px-2">

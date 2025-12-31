@@ -53,6 +53,16 @@ import { SessionResponse } from "@/lib/types";
 import SkeletonSessions from "@/components/authenticated/profile/session-skeleton";
 import { LoadingButton } from "@/components/ui/loading-button";
 import { useRouter } from "next/navigation";
+import {
+  Dialog,
+  DialogClose,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 
 const profileSchema = z.object({
   first_name: z.string().min(2, "First name is required."),
@@ -91,6 +101,9 @@ export default function ProfilePage() {
   const { toast } = useToast();
   const [avatar, setAvatar] = useState("");
 
+  const [isOpen, setIsOpen] = useState(false);
+  const [isOpenAll, setIsOpenAll] = useState(false);
+
   const {
     data: userProfileData,
     isPending: userProfileIsPending,
@@ -121,7 +134,6 @@ export default function ProfilePage() {
 
   useEffect(() => {
     if (!userProfileIsPending && !isPending && userProfileData && session) {
-      console.log(session?.user, userProfileData, "sdsd");
       reset({
         first_name: userProfileData.first_name,
         last_name: userProfileData.last_name,
@@ -169,6 +181,7 @@ export default function ProfilePage() {
     isSuccess: sessionLSIsSuccess,
     isError: sessionLSIsError,
     error: sessionLSError,
+    reset: resetSessionLS,
   } = useSessionLogoutSingle({
     onSuccess: () => {
       toast({
@@ -176,6 +189,8 @@ export default function ProfilePage() {
         description: "The selected session has been terminated.",
       });
       sessionRefetch();
+      resetSessionLS();
+      setIsOpen(false);
     },
   });
 
@@ -185,12 +200,14 @@ export default function ProfilePage() {
     isSuccess: sessionLAIsSuccess,
     isError: sessionLAIsError,
     error: sessionLAError,
+    reset: resetSessionLA,
   } = useSessionLogoutAll({
     onSuccess: () => {
       toast({
         title: "All Other Sessions Logged Out",
         description: "You have been logged out from all other devices.",
       });
+      setIsOpenAll(false);
       router.push("/auth/login");
     },
   });
@@ -205,7 +222,7 @@ export default function ProfilePage() {
 
   return (
     <div className="container mx-auto px-4 md:px-6 pb-12">
-      <div className="flex flex-row gap-5 items-center sticky top-0 z-[50] py-2 pb-4 px-2 sm:mx-auto max-w-4xl w-1/2 sm:w-full">
+      <div className="flex flex-row gap-5 items-center sticky top-0 z-[50] py-2 pb-4 px-2 lg:mx-auto max-w-4xl w-1/2 lg:w-full">
         <BackButton href="/dashboard" />
         <h1 className="font-semibold tracking-tight text-xl sm:text-2xl bg-gradient-to-b from-primary to-primary/50 bg-clip-text text-transparent leading-0">
           Profile
@@ -381,7 +398,7 @@ export default function ProfilePage() {
                                   Active now
                                 </span>
                               ) : (
-                                <div className="flex flex-row gap-2 hidden sm:block">
+                                <div className="flex-row gap-2 hidden sm:flex">
                                   <span className="text-xs sm:text-sm text-muted-foreground">
                                     Last login:
                                   </span>
@@ -393,7 +410,7 @@ export default function ProfilePage() {
                             </div>
                           </div>
                         </div>
-                        <div className="flex flex-col items-start block md:hidden text-xs sm:text-sm">
+                        <div className="flex flex-col items-start md:hidden text-xs sm:text-sm">
                           {!device.isCurrent ? (
                             <div className="flex flex-row gap-2">
                               <span className="text-xs sm:text-sm text-muted-foreground">
@@ -420,41 +437,46 @@ export default function ProfilePage() {
                       </div>
                       <div className="flex justify-start md:justify-end mt-4 md:mt-0 w-full md:w-auto">
                         {!device.isCurrent && (
-                          <AlertDialog>
-                            <AlertDialogTrigger asChild>
+                          <Dialog open={isOpen} onOpenChange={setIsOpen}>
+                            <DialogTrigger asChild>
                               <Button
                                 variant="ghost"
                                 size="sm"
-                                className=" text-destructive bg-destructive/10 dark:bg-red-700/20 hover:text-red-500 hover:bg-destructive/20 hover:scale-[1.1] w-full md:w-auto justify-center"
+                                className="text-destructive bg-destructive/10 dark:bg-red-700/20 hover:text-red-500 hover:bg-destructive/20 hover:scale-[1.1] w-full md:w-auto justify-center"
+                                onClick={() => setIsOpen(true)}
                               >
                                 <LogOut className="mr-2 h-4 w-4" /> Logout
                               </Button>
-                            </AlertDialogTrigger>
-                            <AlertDialogContent>
-                              <AlertDialogHeader>
-                                <AlertDialogTitle>
-                                  Are you sure?
-                                </AlertDialogTitle>
-                                <AlertDialogDescription>
+                            </DialogTrigger>
+
+                            <DialogContent className="sm:max-w-[425px]">
+                              <DialogHeader>
+                                <DialogTitle>Are you sure?</DialogTitle>
+                                <DialogDescription>
                                   This will terminate the session on{" "}
                                   {device.browser} on {device.os}. You will need
                                   to log in again on that device.
-                                </AlertDialogDescription>
-                              </AlertDialogHeader>
-                              <AlertDialogFooter>
-                                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                </DialogDescription>
+                              </DialogHeader>
+
+                              <DialogFooter className="flex justify-between">
+                                <DialogClose asChild>
+                                  <Button variant="outline">Cancel</Button>
+                                </DialogClose>
+
                                 <LoadingButton
                                   className="rounded-xl"
                                   isLoading={sessionLSIsPending}
                                   isSuccess={sessionLSIsSuccess}
                                   isError={sessionLSIsError}
+                                  reset={resetSessionLS}
                                   onClick={() => handleLogoutDevice(device.id)}
                                 >
                                   Log Out
                                 </LoadingButton>
-                              </AlertDialogFooter>
-                            </AlertDialogContent>
-                          </AlertDialog>
+                              </DialogFooter>
+                            </DialogContent>
+                          </Dialog>
                         )}
                       </div>
                     </div>
@@ -466,7 +488,46 @@ export default function ProfilePage() {
               )}
             </div>
             <div className="flex justify-end">
-              <AlertDialog>
+              <Dialog open={isOpenAll} onOpenChange={setIsOpenAll}>
+                <DialogTrigger asChild>
+                  <Button
+                    variant="destructive"
+                    className="w-full sm:w-auto"
+                    onClick={() => setIsOpenAll(true)}
+                  >
+                    Logout From All Other Devices
+                  </Button>
+                </DialogTrigger>
+
+                <DialogContent className="sm:max-w-[425px]">
+                  <DialogHeader>
+                    <DialogTitle>Logout From All Other Devices?</DialogTitle>
+                    <DialogDescription>
+                      This will terminate all other active sessions for your
+                      account. You will remain logged in on this device.
+                    </DialogDescription>
+                  </DialogHeader>
+
+                  <DialogFooter className="flex justify-between">
+                    <DialogClose asChild>
+                      <Button variant="outline">Cancel</Button>
+                    </DialogClose>
+
+                    <LoadingButton
+                      type="button"
+                      className="rounded-xl"
+                      isLoading={sessionLAIsPending}
+                      isSuccess={sessionLAIsSuccess}
+                      isError={sessionLAIsError}
+                      reset={resetSessionLA}
+                      onClick={handleLogoutAll}
+                    >
+                      Log Out
+                    </LoadingButton>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
+              {/* <AlertDialog>
                 <AlertDialogTrigger asChild>
                   <Button variant="destructive" className="w-full sm:w-auto">
                     Logout From All Other Devices
@@ -495,7 +556,7 @@ export default function ProfilePage() {
                     </LoadingButton>
                   </AlertDialogFooter>
                 </AlertDialogContent>
-              </AlertDialog>
+              </AlertDialog> */}
             </div>
           </CardContent>
         </Card>
