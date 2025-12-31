@@ -15,7 +15,7 @@ import type { PricingResponse } from "@/lib/types";
 import { motion } from "framer-motion";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
-import { BackButton } from "@/components/back-button";
+import { PageHeader } from "@/components/page-header";
 import { useGetUserWallet, usePricingData } from "@/hooks/useUser";
 import SkeletonBilling from "@/components/authenticated/billing-skeleton";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -101,12 +101,11 @@ export default function BillingPage() {
 
   return (
     <div className="container mx-auto px-4 md:px-6 mb-8 max-w-6xl">
-      <div className="flex flex-row gap-5 items-center sticky top-0 z-[50] py-2 pb-4 px-2 w-1/2 sm:w-full max-w-6xl sm:mx-auto">
-        <BackButton href="/wallet" />
-        <h1 className="font-semibold tracking-tight text-xl sm:text-2xl bg-gradient-to-b from-primary to-primary/50 bg-clip-text text-transparent leading-0">
-          Billing
-        </h1>
-      </div>
+      <PageHeader
+        title="Billing"
+        backHref="/wallet"
+        className="w-1/2 sm:w-full max-w-6xl sm:mx-auto"
+      />
       <motion.div
         initial="hidden"
         animate="visible"

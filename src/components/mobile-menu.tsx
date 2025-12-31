@@ -25,9 +25,9 @@ import {
   SheetClose,
   SheetTrigger,
 } from "./ui/sheet";
-import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
+import { TransitionLink } from "./transition-link";
 
 const mainNavItems = [
   { name: "Home", href: "/" },
@@ -111,16 +111,16 @@ export default function MobileMenu({
             <div className="flex justify-between items-center gap-2">
               <div className="flex flex-row gap-5 items-center">
                 <button onClick={() => setIsMenuOpen(false)}>
-                  <Link href={notificationHref}>
+                  <TransitionLink href={notificationHref}>
                     <Bell className="h-5 w-5" />
                     <span className="sr-only">Notifications</span>
-                  </Link>
+                  </TransitionLink>
                 </button>
                 <button onClick={() => setIsMenuOpen(false)}>
-                  <Link href={walletHref}>
+                  <TransitionLink href={walletHref}>
                     <Wallet className="h-5 w-5" />
                     <span className="sr-only">Wallet</span>
-                  </Link>
+                  </TransitionLink>
                 </button>
               </div>
               <SheetClose asChild>
@@ -134,7 +134,7 @@ export default function MobileMenu({
           <div className="flex flex-col h-full">
             <nav className="flex flex-col items-center text-center justify-center gap-6 h-full">
               {displayItems.map((item) => (
-                <Link
+                <TransitionLink
                   key={item.name}
                   href={item.href}
                   onClick={() => setIsMenuOpen(false)}
@@ -144,7 +144,7 @@ export default function MobileMenu({
                   )}
                 >
                   {item.name}
-                </Link>
+                </TransitionLink>
               ))}
             </nav>
             {isAuthenticated ? (
@@ -155,7 +155,7 @@ export default function MobileMenu({
                   onClick={() => setIsMenuOpen(false)}
                   className="w-full border"
                 >
-                  <Link href="/profile">Profile</Link>
+                  <TransitionLink href="/profile">Profile</TransitionLink>
                 </Button>
                 <Button
                   variant="ghost"
@@ -171,7 +171,7 @@ export default function MobileMenu({
             ) : (
               <div className="flex flex-col gap-2">
                 <Button asChild size="lg" onClick={() => setIsMenuOpen(false)}>
-                  <Link href="/auth/login">Log In</Link>
+                  <TransitionLink href="/auth/login">Log In</TransitionLink>
                 </Button>
                 <Button
                   asChild
@@ -179,7 +179,7 @@ export default function MobileMenu({
                   variant="outline"
                   onClick={() => setIsMenuOpen(false)}
                 >
-                  <Link href="/auth/register">Sign Up</Link>
+                  <TransitionLink href="/auth/register">Sign Up</TransitionLink>
                 </Button>
               </div>
             )}

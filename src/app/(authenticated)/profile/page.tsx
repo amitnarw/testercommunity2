@@ -29,19 +29,7 @@ import {
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Separator } from "@/components/ui/separator";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
-import Link from "next/link";
-import { BackButton } from "@/components/back-button";
+import { PageHeader } from "@/components/page-header";
 import {
   useSessionLogoutAll,
   useSessionLogoutSingle,
@@ -52,7 +40,6 @@ import { authClient } from "@/lib/auth-client";
 import { SessionResponse } from "@/lib/types";
 import SkeletonSessions from "@/components/authenticated/profile/session-skeleton";
 import { LoadingButton } from "@/components/ui/loading-button";
-import { useRouter } from "next/navigation";
 import {
   Dialog,
   DialogClose,
@@ -63,6 +50,8 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { TransitionLink } from "@/components/transition-link";
+import { useTransitionRouter } from "@/context/transition-context";
 
 const profileSchema = z.object({
   first_name: z.string().min(2, "First name is required."),
@@ -96,7 +85,7 @@ const getLocation = (city: string, region: string, country: string) => {
 
 export default function ProfilePage() {
   const { data: session, isPending } = authClient.useSession();
-  const router = useRouter();
+  const router = useTransitionRouter();
 
   const { toast } = useToast();
   const [avatar, setAvatar] = useState("");
@@ -222,12 +211,11 @@ export default function ProfilePage() {
 
   return (
     <div className="container mx-auto px-4 md:px-6 pb-12">
-      <div className="flex flex-row gap-5 items-center sticky top-0 z-[50] py-2 pb-4 px-2 lg:mx-auto max-w-4xl w-1/2 lg:w-full">
-        <BackButton href="/dashboard" />
-        <h1 className="font-semibold tracking-tight text-xl sm:text-2xl bg-gradient-to-b from-primary to-primary/50 bg-clip-text text-transparent leading-0">
-          Profile
-        </h1>
-      </div>
+      <PageHeader
+        title="Profile"
+        backHref="/dashboard"
+        className="lg:mx-auto max-w-4xl w-1/2 lg:w-full"
+      />
       <div className="max-w-4xl mx-auto space-y-12">
         <Card className="overflow-hidden rounded-2xl shadow-xl shadow-primary/5 border border-dashed">
           <div className="grid grid-cols-1 md:grid-cols-3">
@@ -334,9 +322,9 @@ export default function ProfilePage() {
                     asChild
                     className="w-full sm:w-auto"
                   >
-                    <Link href="/profile/profile-setup">
+                    <TransitionLink href="/profile/profile-setup">
                       <UserCog className="mr-2 h-4 w-4" /> Go to Setup
-                    </Link>
+                    </TransitionLink>
                   </Button>
                 </div>
 
@@ -575,9 +563,9 @@ export default function ProfilePage() {
               </div>
             </div>
             <Button asChild className="w-full sm:w-auto">
-              <Link href="/profile/referral">
+              <TransitionLink href="/profile/referral">
                 View Details <ChevronRight className="ml-2 h-4 w-4" />
-              </Link>
+              </TransitionLink>
             </Button>
           </div>
         </Card>

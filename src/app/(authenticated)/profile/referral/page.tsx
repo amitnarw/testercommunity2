@@ -20,7 +20,7 @@ import {
   UserPlus,
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { BackButton } from "@/components/back-button";
+import { PageHeader } from "@/components/page-header";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   Table,
@@ -176,12 +176,11 @@ export default function ReferralPage() {
 
   return (
     <div className="container mx-auto px-4 md:px-6 pb-12">
-      <div className="flex flex-row gap-5 items-center sticky top-0 z-[50] py-2 pb-8 px-2 w-1/2 sm:w-full max-w-5xl sm:mx-auto">
-        <BackButton href="/profile" />
-        <h1 className="font-semibold tracking-tight text-xl sm:text-2xl bg-gradient-to-b from-primary to-primary/50 bg-clip-text text-transparent leading-0">
-          Refer & Earn
-        </h1>
-      </div>
+      <PageHeader
+        title="Refer & Earn"
+        backHref="/profile"
+        className="pb-8 w-1/2 sm:w-full max-w-5xl sm:mx-auto"
+      />
       <div className="max-w-5xl mx-auto space-y-12">
         <section>
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
@@ -211,7 +210,7 @@ export default function ReferralPage() {
                 </div>
               </CardContent>
             </Card>
-            <Card className="shadow-sm rounded-xl border-0 bg-gradient-to-br from-primary to-primary/40 relative overflow-hidden flex flex-row sm:flex-col justify-between sm:justify-center relative">
+            <Card className="shadow-sm rounded-xl border-0 bg-gradient-to-br from-primary to-primary/40 relative overflow-hidden flex flex-row sm:flex-col justify-between sm:justify-center">
               <IndianRupee className="h-4 w-4 text-white/10 sm:text-white/20 absolute right-3 top-4 scale-[3]" />
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium text-white/80">

@@ -1,4 +1,3 @@
-
 "use client";
 
 import {
@@ -12,7 +11,6 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import Link from "next/link";
 import { usePathname } from "next/navigation";
 import {
   LayoutDashboard,
@@ -31,6 +29,7 @@ import {
   Lightbulb,
   Wallet,
 } from "lucide-react";
+import { TransitionLink } from "./transition-link";
 
 interface UserNavProps {
   session?: {
@@ -70,48 +69,48 @@ export function UserNav({ session, onLogout }: UserNavProps) {
           <DropdownMenuLabel className="px-2 py-1.5 text-xs font-semibold text-muted-foreground">
             Admin Menu
           </DropdownMenuLabel>
-          <Link href="/admin/profile">
+          <TransitionLink href="/admin/profile">
             <DropdownMenuItem className="h-10">
               <User className="mr-2" />
               <span>Profile</span>
             </DropdownMenuItem>
-          </Link>
-          <Link href="/admin/dashboard">
+          </TransitionLink>
+          <TransitionLink href="/admin/dashboard">
             <DropdownMenuItem className="h-10">
               <LayoutDashboard className="mr-2" />
               <span>Dashboard</span>
             </DropdownMenuItem>
-          </Link>
-          <Link href="/admin/users">
+          </TransitionLink>
+          <TransitionLink href="/admin/users">
             <DropdownMenuItem className="h-10">
               <Users className="mr-2" />
               <span>Users</span>
             </DropdownMenuItem>
-          </Link>
-          <Link href="/admin/submissions">
+          </TransitionLink>
+          <TransitionLink href="/admin/submissions">
             <DropdownMenuItem className="h-10">
               <FileCheck className="mr-2" />
               <span>Submissions</span>
             </DropdownMenuItem>
-          </Link>
-          <Link href="/admin/applications">
+          </TransitionLink>
+          <TransitionLink href="/admin/applications">
             <DropdownMenuItem className="h-10">
               <UserPlus className="mr-2" />
               <span>Applications</span>
             </DropdownMenuItem>
-          </Link>
-          <Link href="/admin/feedback">
+          </TransitionLink>
+          <TransitionLink href="/admin/feedback">
             <DropdownMenuItem className="h-10">
               <MessageSquare className="mr-2" />
               <span>Feedback</span>
             </DropdownMenuItem>
-          </Link>
-          <Link href="/admin/suggestions">
+          </TransitionLink>
+          <TransitionLink href="/admin/suggestions">
             <DropdownMenuItem className="h-10">
               <Lightbulb className="mr-2" />
               <span>Suggestions</span>
             </DropdownMenuItem>
-          </Link>
+          </TransitionLink>
         </DropdownMenuGroup>
       );
     }
@@ -121,30 +120,30 @@ export function UserNav({ session, onLogout }: UserNavProps) {
           <DropdownMenuLabel className="px-2 py-1.5 text-xs font-semibold text-muted-foreground">
             Menu
           </DropdownMenuLabel>
-          <Link href="/tester/profile">
+          <TransitionLink href="/tester/profile">
             <DropdownMenuItem className="h-10">
               <User className="mr-2" />
               <span>Profile</span>
             </DropdownMenuItem>
-          </Link>
-          <Link href="/tester/dashboard">
+          </TransitionLink>
+          <TransitionLink href="/tester/dashboard">
             <DropdownMenuItem className="h-10">
               <LayoutDashboard className="mr-2" />
               <span>Dashboard</span>
             </DropdownMenuItem>
-          </Link>
-          <Link href="/tester/projects">
+          </TransitionLink>
+          <TransitionLink href="/tester/projects">
             <DropdownMenuItem className="h-10">
               <Briefcase className="mr-2" />
               <span>Projects</span>
             </DropdownMenuItem>
-          </Link>
-          <Link href="/tester/earnings">
+          </TransitionLink>
+          <TransitionLink href="/tester/earnings">
             <DropdownMenuItem className="h-10">
               <DollarSign className="mr-2" />
               <span>Earnings</span>
             </DropdownMenuItem>
-          </Link>
+          </TransitionLink>
         </DropdownMenuGroup>
       );
     }
@@ -154,48 +153,48 @@ export function UserNav({ session, onLogout }: UserNavProps) {
           <DropdownMenuLabel className="px-2 py-1.5 text-xs font-semibold text-muted-foreground">
             Dashboards
           </DropdownMenuLabel>
-          <Link href="/dashboard">
+          <TransitionLink href="/dashboard">
             <DropdownMenuItem className="h-10">
               <LayoutDashboard className="mr-2" />
               <span>Developer Dashboard</span>
             </DropdownMenuItem>
-          </Link>
-          <Link href="/community-dashboard">
+          </TransitionLink>
+          <TransitionLink href="/community-dashboard">
             <DropdownMenuItem className="h-10">
               <Users2 className="mr-2" />
               <span>Community Hub</span>
             </DropdownMenuItem>
-          </Link>
+          </TransitionLink>
         </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuGroup>
           <DropdownMenuLabel className="px-2 py-1.5 text-xs font-semibold text-muted-foreground">
             Account
           </DropdownMenuLabel>
-          <Link href="/profile">
+          <TransitionLink href="/profile">
             <DropdownMenuItem className="h-10">
               <User className="mr-2" />
               <span>Profile</span>
             </DropdownMenuItem>
-          </Link>
-          <Link href="/wallet">
+          </TransitionLink>
+          <TransitionLink href="/wallet">
             <DropdownMenuItem className="h-10">
               <Wallet className="mr-2" />
               <span>My Wallet</span>
             </DropdownMenuItem>
-          </Link>
-          <Link href="/billing">
+          </TransitionLink>
+          <TransitionLink href="/billing">
             <DropdownMenuItem className="h-10">
               <Package className="mr-2" />
               <span>Buy Packages</span>
             </DropdownMenuItem>
-          </Link>
-          <Link href="/support">
+          </TransitionLink>
+          <TransitionLink href="/support">
             <DropdownMenuItem className="h-10">
               <LifeBuoy className="mr-2" />
               <span>Support</span>
             </DropdownMenuItem>
-          </Link>
+          </TransitionLink>
         </DropdownMenuGroup>
       </>
     );
