@@ -16,10 +16,14 @@ import {
   Filter,
   Download,
 } from "lucide-react";
-import Link from "next/link";
 import { transactionHistory } from "@/lib/data";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { TransitionLink } from "@/components/transition-link";
+import { authClient } from "@/lib/auth-client";
+import { useGetUserWallet } from "@/hooks/useUser";
+import { UserWallerResponse } from "@/lib/types";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -45,16 +49,43 @@ const itemVariants = {
   },
 };
 
-const WalletCard = () => (
-  <div className="relative h-64 w-full rounded-[2rem] overflow-hidden group shadow-2xl shadow-primary/20">
-    {/* Main Background - Darkened Primary for Premium feel that matches brand */}
-    <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 border border-primary/20" />
+const WalletCard = ({
+  session,
+  sessionIsPending,
+  walletData,
+  walletIsPending,
+}: {
+  session: {
+    user: {
+      id: string;
+      createdAt: Date;
+      updatedAt: Date;
+      email: string;
+      emailVerified: boolean;
+      name: string;
+      image?: string | null | undefined;
+    };
+    session: {
+      id: string;
+      createdAt: Date;
+      updatedAt: Date;
+      userId: string;
+      expiresAt: Date;
+      token: string;
+      ipAddress?: string | null | undefined;
+      userAgent?: string | null | undefined;
+    };
+  } | null;
+  sessionIsPending: boolean;
+  walletData: UserWallerResponse | undefined;
+  walletIsPending: boolean;
+}) => (
+  <div className="relative h-40 sm:h-64 w-full rounded-[2rem] overflow-hidden group shadow-2xl shadow-primary/20">
+    <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900" />
 
-    {/* Abstract decorative shapes using Brand Primary Color */}
-    <div className="absolute -top-24 -right-24 w-64 h-64 bg-primary/40 rounded-full blur-[80px] group-hover:bg-primary/50 transition-colors duration-500" />
-    <div className="absolute -bottom-24 -left-24 w-64 h-64 bg-primary/20 rounded-full blur-[80px]" />
+    <div className="absolute -top-24 -right-24 w-64 h-40 sm:h-64 bg-primary/40 rounded-full blur-[80px] group-hover:bg-primary/50 transition-colors duration-500" />
+    <div className="absolute -bottom-24 -left-24 w-64 h-40 sm:h-64 bg-primary/20 rounded-full blur-[80px]" />
 
-    {/* Card Noise Texture */}
     <div
       className="absolute inset-0 opacity-[0.03]"
       style={{
@@ -69,12 +100,31 @@ const WalletCard = () => (
           <p className="text-white/60 text-xs sm:text-sm font-medium tracking-wider">
             TOTAL BALANCE
           </p>
-          <h2 className="text-3xl sm:text-4xl font-bold tracking-tight">
-            1,250{" "}
-            <span className="text-sm sm:text-lg text-white/50 font-normal">
-              pts
-            </span>
-          </h2>
+          <div className="flex flex-row gap-4 items-center">
+            {sessionIsPending ? (
+              <div>
+                <Skeleton className="w-24 h-8" />
+                <hr className="w-[1px] h-8 bg-white rotate-[20deg]" />
+                <Skeleton className="w-24 h-8" />
+              </div>
+            ) : (
+              <>
+                <h2 className="text-3xl sm:text-4xl font-bold tracking-tight">
+                  {walletData?.totalPackages || 0}{" "}
+                  <span className="text-sm sm:text-lg text-white/50 font-normal">
+                    pkgs
+                  </span>
+                </h2>
+                <hr className="w-[1px] h-8 bg-white rotate-[20deg]" />
+                <h2 className="text-3xl sm:text-4xl font-bold tracking-tight">
+                  {walletData?.totalPoints || 0}{" "}
+                  <span className="text-sm sm:text-lg text-white/50 font-normal">
+                    pts
+                  </span>
+                </h2>
+              </>
+            )}
+          </div>
         </div>
         <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full border border-white/20 flex items-center justify-center bg-white/5 backdrop-blur-md">
           <Wallet className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
@@ -103,7 +153,7 @@ const WalletCard = () => (
             CARD HOLDER
           </p>
           <p className="font-semibold tracking-wide text-sm sm:text-base">
-            AMIT NARW
+            {session?.user?.name}
           </p>
         </div>
       </div>
@@ -114,16 +164,16 @@ const WalletCard = () => (
 const ActionButton = ({
   icon: Icon,
   label,
-  onClick,
+  href,
   primary = false,
 }: {
   icon: any;
   label: string;
-  onClick?: () => void;
+  href: string;
   primary?: boolean;
 }) => (
-  <button
-    onClick={onClick}
+  <TransitionLink
+    href={href}
     className={`flex flex-col items-center gap-2 sm:gap-3 group transition-all duration-300 w-full ${
       primary ? "hover:-translate-y-1" : ""
     }`}
@@ -147,7 +197,7 @@ const ActionButton = ({
     <span className="text-xs sm:text-sm font-medium text-muted-foreground group-hover:text-foreground transition-colors">
       {label}
     </span>
-  </button>
+  </TransitionLink>
 );
 
 const StatCard = ({
@@ -245,7 +295,15 @@ const TransactionItem = ({
 };
 
 export default function WalletPage() {
+  const { data: session, isPending } = authClient.useSession();
   const [filter, setFilter] = useState("All");
+
+  const {
+    data: walletData,
+    isPending: walletIsPending,
+    isError: walletIsError,
+    error: walletError,
+  } = useGetUserWallet();
 
   return (
     <div className="min-h-screen w-full relative">
@@ -278,11 +336,6 @@ export default function WalletPage() {
                 <Download className="w-4 h-4" />
                 <span className="hidden sm:inline">Export</span>
               </Button>
-              <Button className="rounded-full h-10 md:h-12 px-4 md:px-6 gap-2 bg-primary text-primary-foreground hover:bg-primary/90 text-sm md:text-base">
-                <Plus className="w-4 h-4" />
-                <span className="hidden sm:inline">Add Funds</span>
-                <span className="sm:hidden">Add</span>
-              </Button>
             </div>
           </motion.div>
 
@@ -292,54 +345,72 @@ export default function WalletPage() {
               variants={itemVariants}
               className="lg:col-span-5 space-y-6 md:space-y-8"
             >
-              <WalletCard />
+              <WalletCard
+                session={session}
+                sessionIsPending={isPending}
+                walletData={walletData}
+                walletIsPending={walletIsPending}
+              />
 
               <div className="flex justify-between gap-4">
-                <ActionButton icon={Plus} label="Top Up" primary />
-                <ActionButton icon={Send} label="Transfer" />
-                <ActionButton icon={MoreHorizontal} label="More" />
+                <ActionButton
+                  icon={Plus}
+                  label="Top Up"
+                  primary
+                  href="/billing"
+                />
+                <ActionButton
+                  icon={Send}
+                  label="Transfer"
+                  href="/wallet/transfer"
+                />
+                <ActionButton
+                  icon={MoreHorizontal}
+                  label="More"
+                  href="/wallet/more"
+                />
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <StatCard
-                  title="Packages"
+                  title="Total Packages Spent"
                   value="3"
-                  sub="Standard Tier"
+                  sub="Last 30 days"
                   icon={Package}
-                  colorClass="bg-blue-500" // Kept standard blue for nice semantic contrast
+                  colorClass="bg-blue-500"
                 />
                 <StatCard
-                  title="Total Spent"
+                  title="Total Points Spent"
                   value="1,450"
                   sub="Last 30 days"
                   icon={Clock}
-                  colorClass="bg-orange-500" // Kept standard orange for variety
+                  colorClass="bg-orange-500"
                 />
               </div>
 
               {/* Promo / Upgrade Card - Aligned with Primary Brand */}
-              <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-primary to-blue-700 p-6 text-primary-foreground shadow-xl">
-                <div className="relative z-10 space-y-4">
-                  <div className="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center backdrop-blur-md">
-                    <TrendingUp className="w-6 h-6 text-white" />
-                  </div>
-                  <div>
-                    <h3 className="font-bold text-lg">Upgrade to Pro</h3>
-                    <p className="text-primary-foreground/80 text-sm mt-1">
-                      Get 20% more points on every purchase and priority
-                      support.
+              <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-primary to-blue-700 p-6 text-primary-foreground shadow-xl group">
+                <TransitionLink href="/billing">
+                  <div className="relative z-10 space-y-4">
+                    <div className="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center backdrop-blur-md">
+                      <TrendingUp className="w-6 h-6 text-white" />
+                    </div>
+                    <div>
+                      <h3 className="font-bold text-lg">
+                        Upgrade to get more packages.
+                      </h3>
+                      <p className="text-primary-foreground/80 text-sm mt-1">
+                        Unlock more packages by upgrading to a higher plan.
+                      </p>
+                    </div>
+                    <p className="text-white p-0 h-auto font-semibold group-hover:text-white/80 duration-300">
+                      View Plans &rarr;
                     </p>
                   </div>
-                  <Button
-                    variant="link"
-                    className="text-white p-0 h-auto font-semibold hover:text-white/80"
-                  >
-                    View Plans &rarr;
-                  </Button>
-                </div>
-                {/* Decorative Circles */}
-                <div className="absolute top-[-20%] right-[-20%] w-40 h-40 bg-white/10 rounded-full blur-2xl" />
-                <div className="absolute bottom-[-10%] left-[-10%] w-32 h-32 bg-black/10 rounded-full blur-xl" />
+                  {/* Decorative Circles */}
+                  <div className="absolute top-[-20%] right-[-20%] w-40 h-40 bg-white/10 rounded-full blur-2xl" />
+                  <div className="absolute bottom-[-10%] left-[-10%] w-32 h-32 bg-black/10 rounded-full blur-xl" />
+                </TransitionLink>
               </div>
             </motion.div>
 
