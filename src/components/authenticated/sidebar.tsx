@@ -177,34 +177,6 @@ export function Sidebar({
             <TooltipProvider>
               <Tooltip delayDuration={0}>
                 <TooltipTrigger asChild>
-                  <TransitionLink
-                    href="/"
-                    className={cn(
-                      "flex items-center justify-start w-full h-12 rounded-xl text-white/70 dark:text-black/70 transition-all duration-300 px-3.5",
-                      "hover:bg-white/20 hover:text-white"
-                    )}
-                  >
-                    <House className="h-5 w-5 flex-shrink-0" />
-                    {!isCollapsed && (
-                      <span className="ml-4 font-light whitespace-nowrap">
-                        Home
-                      </span>
-                    )}
-                  </TransitionLink>
-                </TooltipTrigger>
-                {isCollapsed && (
-                  <TooltipContent
-                    side="right"
-                    className="bg-black text-white border-white/20 ml-2"
-                  >
-                    Home
-                  </TooltipContent>
-                )}
-              </Tooltip>
-            </TooltipProvider>
-            <TooltipProvider>
-              <Tooltip delayDuration={0}>
-                <TooltipTrigger asChild>
                   <button
                     onClick={onLogout}
                     className={cn(

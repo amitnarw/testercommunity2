@@ -93,7 +93,7 @@ const PricingCard = ({
             <Star className="w-24 h-24 fill-current text-white" />
           </div>
           <div className="absolute -top-4 left-0 right-0 flex justify-center z-10">
-            <Badge className="bg-black dark:bg-white text-white dark:text-black hover:bg-black/60 px-6 py-1.5 text-xs font-bold uppercase tracking-widest shadow-lg border-0">
+            <Badge className="bg-black dark:bg-white text-white dark:text-black hover:bg-black/60 px-4 py-1.5 text-xs font-bold uppercase tracking-widest shadow-lg border-0">
               Most Popular
             </Badge>
           </div>
@@ -194,6 +194,13 @@ const CreditBalanceCard = ({
   isLoading: boolean;
   credits: number;
 }) => {
+  const scrollToHistory = () => {
+    const element = document.getElementById("billing-history");
+    if (element) {
+      element.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
   return (
     <motion.div
       variants={itemVariants}
@@ -223,6 +230,7 @@ const CreditBalanceCard = ({
       <Button
         variant="secondary"
         className="hover:opacity-90 rounded-3xl px-6 bg-white text-primary hover:bg-white/90 w-full sm:w-4/12 h-auto sm:h-32 text-sm sm:text-lg shadow-xl"
+        onClick={scrollToHistory}
       >
         <span>View Usage History</span>
       </Button>
@@ -251,6 +259,7 @@ const TransactionHistory = () => {
 
   return (
     <motion.div
+      id="billing-history"
       variants={itemVariants}
       className="rounded-3xl bg-card text-card-foreground shadow-sm overflow-hidden flex flex-col h-full"
     >
@@ -422,20 +431,19 @@ export default function BillingPage() {
   const { data: walletData, isPending: walletIsPending } = useGetUserWallet();
 
   return (
-    <div className="min-h-screen w-full relative text-foreground transition-colors duration-300">
+    <div className="min-h-screen w-full relative text-foreground transition-colors duration-300 max-w-7xl mx-auto">
       <PageHeader
-        title="Billing & Plans"
+        title="Billing"
         backHref="/wallet"
-        className="lg:mx-auto max-w-7xl w-1/2 lg:w-full px-4 md:px-6"
+        className="w-1/2 px-4 md:px-6"
       />
-      <div className="relative z-10 container mx-auto px-4 md:px-6 py-8 max-w-7xl space-y-16">
+      <div className="relative z-10 container mx-auto px-4 md:px-6 py-8 space-y-16">
         <motion.div
           initial="hidden"
           animate="visible"
           variants={containerVariants}
           className="space-y-16 lg:space-y-24"
         >
-          {/* Section 1: Wallet Overview */}
           <section className="mx-auto w-full">
             <CreditBalanceCard
               isLoading={walletIsPending}
@@ -443,7 +451,6 @@ export default function BillingPage() {
             />
           </section>
 
-          {/* Section 2: Pricing */}
           <section className="relative">
             <div className="text-center mb-12 max-w-2xl mx-auto">
               <h2 className="text-3xl md:text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-b from-foreground to-foreground/70 mb-4">
@@ -456,7 +463,7 @@ export default function BillingPage() {
             </div>
 
             {pricingIsPending ? (
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                 {[1, 2, 3].map((i) => (
                   <Skeleton
                     key={i}
@@ -465,7 +472,7 @@ export default function BillingPage() {
                 ))}
               </div>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto items-start">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 items-start">
                 {pricingData?.map((plan) => (
                   <PricingCard
                     key={plan.name}

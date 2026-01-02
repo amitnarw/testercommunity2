@@ -90,7 +90,7 @@ export default function ProfilePage() {
   const { toast } = useToast();
   const [avatar, setAvatar] = useState("");
 
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState({ show: false, index: -1 });
   const [isOpenAll, setIsOpenAll] = useState(false);
 
   const {
@@ -179,7 +179,7 @@ export default function ProfilePage() {
       });
       sessionRefetch();
       resetSessionLS();
-      setIsOpen(false);
+      setIsOpen({ show: false, index: -1 });
     },
   });
 
@@ -210,13 +210,13 @@ export default function ProfilePage() {
   };
 
   return (
-    <div className="container mx-auto px-4 md:px-6 pb-12">
+    <div className="mx-auto pb-12 max-w-4xl px-4 md:px-6">
       <PageHeader
         title="Profile"
         backHref="/dashboard"
-        className="lg:mx-auto max-w-4xl w-1/2 lg:w-full"
+        className="w-1/2 lg:w-full"
       />
-      <div className="max-w-4xl mx-auto space-y-12">
+      <div className="mx-auto space-y-12">
         <Card className="overflow-hidden rounded-2xl shadow-xl shadow-primary/5 border border-dashed">
           <div className="grid grid-cols-1 md:grid-cols-3">
             <div className="md:col-span-1 bg-secondary/50 p-8 flex flex-col items-center justify-center text-center border-b md:border-b-0 md:border-r">
@@ -259,7 +259,9 @@ export default function ProfilePage() {
 
             <form onSubmit={handleSubmit(onSubmit)} className="md:col-span-2">
               <CardHeader className="px-3 sm:px-6">
-                <CardTitle className="text-xl sm:text-2xl">User data</CardTitle>
+                <CardTitle className="text-xl sm:text-2xl flex items-center justify-between">
+                  User data
+                </CardTitle>
                 <CardDescription>
                   Manage your public profile and account details.
                 </CardDescription>
@@ -425,13 +427,20 @@ export default function ProfilePage() {
                       </div>
                       <div className="flex justify-start md:justify-end mt-4 md:mt-0 w-full md:w-auto">
                         {!device.isCurrent && (
-                          <Dialog open={isOpen} onOpenChange={setIsOpen}>
+                          <Dialog
+                            open={isOpen.show && isOpen.index === index}
+                            onOpenChange={(open) => {
+                              if (!open) setIsOpen({ show: false, index: -1 });
+                            }}
+                          >
                             <DialogTrigger asChild>
                               <Button
                                 variant="ghost"
                                 size="sm"
                                 className="text-destructive bg-destructive/10 dark:bg-red-700/20 hover:text-red-500 hover:bg-destructive/20 hover:scale-[1.1] w-full md:w-auto justify-center"
-                                onClick={() => setIsOpen(true)}
+                                onClick={() =>
+                                  setIsOpen({ show: true, index: index })
+                                }
                               >
                                 <LogOut className="mr-2 h-4 w-4" /> Logout
                               </Button>

@@ -28,6 +28,7 @@ import {
   MessageSquare,
   Lightbulb,
   Wallet,
+  Settings,
 } from "lucide-react";
 import { TransitionLink } from "./transition-link";
 
@@ -252,6 +253,14 @@ export function UserNav({ session, onLogout }: UserNavProps) {
         <DropdownMenuSeparator />
         {getNavLinks()}
         <DropdownMenuSeparator />
+        <TransitionLink href="/settings">
+          <DropdownMenuItem className="h-10">
+            <Settings className="mr-2" />
+            <span>Settings</span>
+          </DropdownMenuItem>
+        </TransitionLink>
+        <DropdownMenuSeparator />
+
         <DropdownMenuItem
           onClick={onLogout}
           className="h-10 text-red-500 focus:bg-red-500/10 focus:text-red-600"

@@ -24,14 +24,14 @@ export function BackButton({ href, className }: BackButtonProps) {
   const commonProps = {
     variant: "outline" as const,
     className: cn(
-      "rounded-full px-4 h-8 sm:h-10 group sm:pl-12 border-0 shadow-lg shadow-[hsl(var(--primary))]/10 hover:bg-white hover:dark:bg-secondary hover:text-[hsl(var(--primary))]",
+      "rounded-full px-4 h-8 md:h-10 group md:pl-12 border-0 shadow-lg shadow-[hsl(var(--primary))]/10 hover:bg-white hover:dark:bg-secondary hover:text-[hsl(var(--primary))]",
       className
     ),
   };
 
   const content = (
     <div className="flex items-center justify-center absolute -left-2 rounded-full duration-300 group-hover:bg-[hsl(var(--primary))] p-5 group-hover:scale-[1.3]">
-      <ChevronLeft className="absolute group-hover:text-white scale-[1.1] left-4 sm:left-5" />
+      <ChevronLeft className="absolute group-hover:text-white scale-[1.1] left-4 md:left-5" />
     </div>
   );
 
@@ -40,7 +40,7 @@ export function BackButton({ href, className }: BackButtonProps) {
       <Button {...commonProps} asChild>
         <Link href={href}>
           {content}
-          <span className="hidden sm:inline">Back</span>
+          <span className="hidden md:inline">Back</span>
         </Link>
       </Button>
     );

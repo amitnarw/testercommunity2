@@ -16,6 +16,7 @@ import {
   Lightbulb,
   Activity,
   Wallet,
+  Settings,
 } from "lucide-react";
 import { Button } from "./ui/button";
 import {
@@ -28,12 +29,13 @@ import {
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { TransitionLink } from "./transition-link";
+import { authClient } from "@/lib/auth-client";
 
 const mainNavItems = [
   { name: "Home", href: "/" },
   { name: "Dashboard", href: "/dashboard" },
   { name: "Community", href: "/community-dashboard" },
-  { name: "Pricing", href: "/pricing" },
+  { name: "Pricing", href: "/billing" },
   { name: "Blog", href: "/blog" },
 ];
 
@@ -63,6 +65,7 @@ export default function MobileMenu({
   setIsMenuOpen: (value: boolean) => void;
   onLogout: () => void;
 }) {
+  const { data: session } = authClient?.useSession();
   const pathname = usePathname();
 
   let navItems = mainNavItems;
@@ -79,7 +82,9 @@ export default function MobileMenu({
     walletHref = "/tester/wallet";
   }
 
-  const isAuthenticated =
+  const isAuthenticated = session?.user?.id;
+
+  const isAuthRoute =
     !pathname.startsWith("/auth/login") &&
     !pathname.startsWith("/auth/register") &&
     !pathname.startsWith("/tester/login") &&
@@ -147,8 +152,19 @@ export default function MobileMenu({
                 </TransitionLink>
               ))}
             </nav>
-            {isAuthenticated ? (
+            {isAuthRoute ? (
               <div className="flex justify-center items-center gap-2">
+                <Button
+                  variant="ghost"
+                  asChild
+                  onClick={() => setIsMenuOpen(false)}
+                  className="border"
+                >
+                  <TransitionLink href="/settings">
+                    <Settings className="h-5 w-5" />
+                    <span className="sr-only">Settings</span>
+                  </TransitionLink>
+                </Button>
                 <Button
                   variant="ghost"
                   asChild

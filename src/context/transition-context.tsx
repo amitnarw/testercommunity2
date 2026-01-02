@@ -30,20 +30,31 @@ export function TransitionProvider({
   }, [pathname]);
 
   const getPageName = (href: string) => {
-      if (href === '/' || href === '') return 'Home';
-      // Remove query params
-      const path = href.split('?')[0];
-      // Get last segment or relevant segment
-      const segments = path.split('/').filter(Boolean);
-      if (segments.length === 0) return 'Home';
-      
-      const lastSegment = segments[segments.length - 1];
-      // Capitalize and replace dashes
-      return lastSegment.charAt(0).toUpperCase() + lastSegment.slice(1).replace(/-/g, ' ');
-  }
+    if (href === "/" || href === "") return "Home";
+    // Remove query params
+    const path = href.split("?")[0];
+    // Get last segment or relevant segment
+    const segments = path.split("/").filter(Boolean);
+    if (segments.length === 0) return "Home";
+
+    const lastSegment = segments[segments.length - 1];
+    // Capitalize and replace dashes
+    return (
+      lastSegment.charAt(0).toUpperCase() +
+      lastSegment.slice(1).replace(/-/g, " ")
+    );
+  };
 
   const triggerTransition = (href: string) => {
     if (pathname === href) return;
+
+    // Check user preference
+    const enabled = localStorage.getItem("enable-page-transitions") !== "false"; // Default to true if null
+
+    if (!enabled) {
+      router.push(href);
+      return;
+    }
 
     setTargetLabel(getPageName(href));
     setIsTransitioning(true);
@@ -55,7 +66,9 @@ export function TransitionProvider({
   };
 
   return (
-    <TransitionContext.Provider value={{ triggerTransition, isTransitioning, targetLabel }}>
+    <TransitionContext.Provider
+      value={{ triggerTransition, isTransitioning, targetLabel }}
+    >
       {children}
     </TransitionContext.Provider>
   );
