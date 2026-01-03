@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState } from "react";
@@ -40,11 +39,7 @@ export default function PublicLayout({
             setSidebarCollapsed={() => {}}
           />
         )}
-        <main
-          className="flex-1 bg-background z-10"
-        >
-          {children}
-        </main>
+        <main className="flex-1 bg-background z-10 pt-14">{children}</main>
         {!isPending && <Footer />}
       </div>
     </PageTransition>

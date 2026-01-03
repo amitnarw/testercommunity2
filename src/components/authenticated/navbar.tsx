@@ -42,6 +42,7 @@ export default function Navbar({ onLogout }: { onLogout: () => void }) {
               isMenuOpen={isMenuOpen}
               setIsMenuOpen={setIsMenuOpen}
               onLogout={onLogout}
+              isAuthenticated={!!session}
             />
           </div>
         </div>
@@ -79,6 +80,7 @@ export default function Navbar({ onLogout }: { onLogout: () => void }) {
               isMenuOpen={isMenuOpen}
               setIsMenuOpen={setIsMenuOpen}
               onLogout={onLogout}
+              isAuthenticated={!!session}
             />
           </div>
         </div>
