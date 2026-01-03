@@ -1,58 +1,52 @@
 
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { Header } from '@/components/header';
-import { Footer } from '@/components/footer';
-import { usePathname } from 'next/navigation';
+import { useState } from "react";
+import { Header } from "@/components/header";
+import { Footer } from "@/components/footer";
+import { usePathname } from "next/navigation";
+import { authClient } from "@/lib/auth-client";
+import { motion, AnimatePresence } from "framer-motion";
+import PageTransition from "@/components/page-transition";
 
 export default function PublicLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const { data: session, isPending } = authClient.useSession();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [isAuthChecked, setIsAuthChecked] = useState(false);
   const pathname = usePathname();
 
-   useEffect(() => {
-    // In a real app, this would be a call to an auth service
-    const authStatus = document.cookie.includes('isAuthenticated=true');
-    setIsAuthenticated(authStatus);
-    setIsAuthChecked(true);
-  }, []);
-
-  const handleLogout = () => {
-    document.cookie = 'isAuthenticated=false; path=/; max-age=0';
-    setIsAuthenticated(false);
-  };
-
-  const isAuthPage = pathname === '/login' || pathname === '/register' || pathname === '/register/profile-setup';
-
-  if (!isAuthChecked) {
-      return null; // Or a loading spinner
-  }
+  const isAuthPage =
+    pathname.startsWith("/auth") ||
+    pathname.startsWith("/tester/login") ||
+    pathname.startsWith("/tester/register");
 
   if (isAuthPage) {
-    return <main className="flex-1 bg-background">{children}</main>;
+    return <PageTransition>{children}</PageTransition>;
   }
 
   return (
-    <div className="relative flex flex-col min-h-screen">
-        <Header 
-            isAuthenticated={isAuthenticated}
+    <PageTransition>
+      <div className="relative flex flex-col min-h-screen">
+        {!isPending && (
+          <Header
+            session={session}
             isDashboardPage={false}
-            isMobileMenuOpen={isMobileMenuOpen} 
+            isMobileMenuOpen={isMobileMenuOpen}
             setMobileMenuOpen={setIsMobileMenuOpen}
             isSidebarCollapsed={true}
             setSidebarCollapsed={() => {}}
-            onLogout={handleLogout}
-        />
-        <main className="flex-1 bg-background z-10">
-            {children}
+          />
+        )}
+        <main
+          className="flex-1 bg-background z-10"
+        >
+          {children}
         </main>
-        <Footer />
-    </div>
+        {!isPending && <Footer />}
+      </div>
+    </PageTransition>
   );
 }

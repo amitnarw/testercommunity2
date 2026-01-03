@@ -1,5 +1,4 @@
 
-
 import type { BlogPost, Testimonial, RoadmapStep, UserProfileData, ProcessStep, CommunityApp, PointsPackage, FaqItem, Notification, Project, TesterDetails } from './types';
 
 export const chartData = [
@@ -211,11 +210,10 @@ export const professionalPathSteps: RoadmapStep[] = [
     },
 ];
 
-export const demoUser: UserProfileData = {
-    role: 'product_manager',
-    companySize: '11-50',
-    primaryGoal: 'hire_testers',
-    monthlyBudget: '500+',
+export const demoUser: any = {
+    name: 'Demo User',
+    email: 'demo@example.com',
+    bio: 'Just a demo user exploring the app!',
 };
 
 export const processSteps: ProcessStep[] = [
@@ -477,21 +475,22 @@ export const communityApps: CommunityApp[] = [
     },
     {
         id: 13,
-        name: 'Microsoft Outlook',
-        icon: 'https://play-lh.googleusercontent.com/Zk9elS0eGXDr0L4W6-Ey7YwHbRNjkyezHC8iCc8rWp64lNIjlByS8TDF9qDSZbiEWY4=s96-rw',
-        dataAiHint: 'blue letter O',
+        name: 'Microsoft OneDrive',
+        icon: 'https://play-lh.googleusercontent.com/6AWr-qrhGT0ohjw0koq3bM8GHEFg1gTurald4FjCDg2RulTp4y_VVsYWUtw7Fo6lsQo=s96-rw',
+        dataAiHint: 'blue cloud',
         category: 'Productivity',
         shortDescription: 'Do more on the go with Microsoft OneDrive. Get to and share your documents, photos, and other files from your Android device.',
-        points: 125,
-        androidVersion: '11+',
-        estimatedTime: '15-20 min',
-        playStoreUrl: 'https://play.google.com/store/apps/details?id=com.microsoft.office.outlook',
+        points: 90,
+        androidVersion: '10+',
+        estimatedTime: '10-15 min',
+        playStoreUrl: 'https://play.google.com/store/apps/details?id=com.microsoft.skydrive',
         screenshots: [
-            { url: 'https://play-lh.googleusercontent.com/yN0lBHFPoxRoYQS872mYCIQjx0-OA_JCNBWFr1484s0bpRbJip_3hGKGLgyqvbsn8uk=w1052-h592-rw', alt: 'Outlook Screenshot 1', dataAiHint: 'email inbox' },
-            { url: 'https://play-lh.googleusercontent.com/Kxy-pmgAqC1CqO_Qpke7zdZ4ca1UR9cUFp_ovRZNcGtzJ1QWJJrNEcKQc_Xbbatbfw63=w1052-h592-rw', alt: 'Outlook Screenshot 2', dataAiHint: 'calendar view' }
+            { url: 'https://play-lh.googleusercontent.com/z_Fhk7tBiw-Uj0kdr3xC0PcpGrf8QNo3theULld7m_S5TiPGs82vU_gLYkiPyOjkew=w1052-h592-rw', alt: 'OneDrive Screenshot 1', dataAiHint: 'file browser' },
+            { url: 'https://play-lh.googleusercontent.com/6kpAhVXfEBoGHf3AF27S2lm99kUoA8p0X4Gjvphw4evsPE4aGO8iddyQjT0OwUQDE7xG=w1052-h592-rw', alt: 'OneDrive Screenshot 2', dataAiHint: 'photo view' }
         ],
-        testingInstructions: 'Test the search functionality. Search for an email by sender and then by subject. Verify that the results are accurate and load quickly.',
-        status: 'available',
+        testingInstructions: 'Upload a photo to your OneDrive. Then, try to share the link to that photo with another app (e.g., messaging app). Report any issues with the sharing process.',
+        status: 'ongoing',
+        progress: 50,
         totalDays: 14,
     },
     {
@@ -787,6 +786,17 @@ export const communityApps: CommunityApp[] = [
     },
 ];
 
+export const transactionHistory = [
+    { id: 'TXN-001', date: '2024-08-22', type: 'Package Purchase', description: 'Bought Accelerator Package', amount: '₹1,799', change: '+5 Packages', status: 'Completed', changeType: 'positive' },
+    { id: 'TXN-002', date: '2024-08-20', type: 'Points Earned', description: 'Completed test for "QuantumLeap CRM"', amount: '+150 Points', change: '+150 Points', status: 'Completed', changeType: 'positive' },
+    { id: 'TXN-003', date: '2024-08-18', type: 'Package Used', description: 'Submitted "Project Phoenix"', amount: '-1 Package', change: '-1 Package', status: 'Completed', changeType: 'negative' },
+    { id: 'TXN-004', date: '2024-08-15', type: 'Points Spent', description: 'Submitted "Starlight Editor" to community', amount: '-1200 Points', change: '-1200 Points', status: 'Completed', changeType: 'negative' },
+    { id: 'TXN-005', date: '2024-08-12', type: 'Points Earned', description: 'Completed test for "Helios Platform"', amount: '+100 Points', change: '+100 Points', status: 'Completed', changeType: 'positive' },
+    { id: 'TXN-006', date: '2024-08-10', type: 'Package Purchase', description: 'Bought Booster Package', amount: '₹699', change: '+1 Package', status: 'Completed', changeType: 'positive' },
+    { id: 'TXN-007', date: '2024-08-05', type: 'Points Earned', description: 'High-quality bug report on "Nexus Browser"', amount: '+50 Points', change: '+50 Points', status: 'Completed', changeType: 'positive' },
+];
+
+
 export const professionalPathFeatures: string[] = [
     "14-Day Testing Cycle",
     "20+ Vetted Testers",
@@ -932,7 +942,7 @@ const generateFeedback = (projectName: string) => {
             comment: comments[type as keyof typeof comments] || `Generic feedback item #${i+1}`,
             date: `2024-08-${20- (i % 10)}`,
             screenshot: hasScreenshot ? `https://picsum.photos/seed/${projectName.length + i}/400/800` : null,
-            videoUrl: hasVideo ? 'https://www.youtube.com/watch?v=dQw4w9WgXcQ' : null,
+            videoUrl: hasVideo ? 'https://storage.googleapis.com/web-dev-assets/video-and-source-tags/chrome.mp4' : null,
         }
     });
 };
@@ -1299,6 +1309,8 @@ export const projects: Project[] = [
     
 
     
+
+
 
 
 

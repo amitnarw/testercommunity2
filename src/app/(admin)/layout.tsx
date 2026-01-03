@@ -8,7 +8,8 @@ import Navbar from '@/components/authenticated/navbar';
 import Footer from '@/components/authenticated/footer';
 import { Sidebar } from '@/components/authenticated/sidebar';
 import { SiteLogo } from '@/components/icons';
-
+import { motion, AnimatePresence } from 'framer-motion';
+import PageTransition from '@/components/page-transition';
 
 export default function AdminLayout({
   children,
@@ -50,7 +51,15 @@ export default function AdminLayout({
   }
 
   if (isLoginPage) {
-    return <main className="flex-1 bg-background">{children}</main>;
+    return (
+        <PageTransition>
+            <main
+                className="flex-1 bg-background"
+            >
+                {children}
+            </main>
+        </PageTransition>
+    );
   }
   
   if (!isAuthenticated) {
@@ -58,19 +67,23 @@ export default function AdminLayout({
   }
   
   return (
-    <div className="relative flex min-h-screen">
-      <Sidebar
-          onLogout={handleLogout}
-          isCollapsed={isSidebarCollapsed}
-          setIsCollapsed={setIsSidebarCollapsed}
-        />
-        <div className={`flex flex-col flex-1 transition-all duration-300 md:pl-20`}>
-            <Navbar onLogout={handleLogout} />
-            <main className="flex-1 bg-secondary/50">
-                {children}
-            </main>
-            <Footer />
-        </div>
-    </div>
+    <PageTransition>
+      <div className="relative flex min-h-screen">
+        <Sidebar
+            onLogout={handleLogout}
+            isCollapsed={isSidebarCollapsed}
+            setIsCollapsed={setIsSidebarCollapsed}
+          />
+          <div className={`flex flex-col flex-1 transition-all duration-300 md:pl-20`}>
+              <Navbar onLogout={handleLogout} />
+              <main
+                  className="flex-1 bg-secondary/50"
+              >
+                  {children}
+              </main>
+              <Footer />
+          </div>
+      </div>
+    </PageTransition>
   );
 }
