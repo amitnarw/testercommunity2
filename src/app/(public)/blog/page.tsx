@@ -10,7 +10,10 @@ export const metadata: Metadata = {
 
 export default function BlogPage() {
   return (
-    <div className="min-h-screen bg-background relative overflow-hidden">
+    <div
+      data-loc="BlogPage"
+      className="min-h-screen bg-background relative overflow-hidden"
+    >
       {/* Decorative Background Elements */}
       <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[500px] bg-primary/5 blur-[120px] rounded-full pointer-events-none" />

@@ -52,7 +52,10 @@ export default function SettingsPage() {
   }
 
   return (
-    <div className="mx-auto pb-12 max-w-4xl px-4 md:px-6">
+    <div
+      data-loc="SettingsPage"
+      className="mx-auto pb-12 max-w-4xl px-4 md:px-6"
+    >
       <PageHeader title="Settings" backHref="/profile" className="w-1/2" />
 
       <div className="space-y-8 mt-6">

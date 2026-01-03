@@ -306,7 +306,7 @@ export default function WalletPage() {
   } = useGetUserWallet();
 
   return (
-    <div className="min-h-screen w-full relative">
+    <div data-loc="WalletPage" className="min-h-screen w-full relative">
       <main className="container mx-auto px-4 md:px-8 py-6 md:py-10 max-w-7xl">
         <motion.div
           initial="hidden"

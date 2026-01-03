@@ -86,7 +86,10 @@ export function NotificationsPageContent({
   } = useGetUserNotifications();
 
   return (
-    <div className="container mx-auto px-4 md:px-6 flex flex-col flex-1 h-full">
+    <div
+      data-loc="NotificationsPage"
+      className="container mx-auto px-4 md:px-6 flex flex-col flex-1 h-full"
+    >
       <header>
         <h1 className="text-2xl sm:text-4xl font-bold bg-gradient-to-b from-primary to-primary/40 bg-clip-text text-transparent leading-[unset]">
           {title}

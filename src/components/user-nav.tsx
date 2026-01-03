@@ -206,7 +206,7 @@ export function UserNav({ session, onLogout }: UserNavProps) {
   }
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger asChild>
+      <DropdownMenuTrigger asChild data-loc="UserNav">
         <Button variant="ghost" className="relative h-auto rounded-full p-1.5">
           <div className="flex items-center gap-2">
             <Avatar className="h-10 w-10">

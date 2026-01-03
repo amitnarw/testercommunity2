@@ -10,6 +10,7 @@ interface PageHeaderProps {
 export function PageHeader({ title, backHref, className }: PageHeaderProps) {
   return (
     <div
+      data-loc="PageHeader"
       className={cn(
         "flex flex-row gap-5 items-center sticky top-0 z-[50] py-2 md:py-3 px-2",
         className

@@ -92,7 +92,7 @@ export default function MobileMenu({
   const displayItems = isAuthenticated ? navItems : publicNavItems;
 
   return (
-    <div className="md:hidden">
+    <div data-loc="MobileMenu" className="md:hidden">
       <Sheet open={isMenuOpen} onOpenChange={setIsMenuOpen}>
         <SheetTrigger asChild>
           <Button size="icon" variant="ghost" className="p-2 h-8 w-8">

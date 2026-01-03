@@ -219,7 +219,7 @@ export default function CommunityDashboardPage() {
   } = useHubData();
 
   return (
-    <div className="min-h-screen mb-8">
+    <div data-loc="CommunityDashboardPage" className="min-h-screen mb-8">
       <div className="container mx-auto px-4 md:px-6">
         <header className="mb-12">
           <div className="mb-6">

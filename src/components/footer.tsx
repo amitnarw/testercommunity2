@@ -1,30 +1,29 @@
+"use client";
 
-'use client';
-
-import { useRef } from 'react';
-import Link from 'next/link';
-import { SiteLogo } from './icons';
-import { Button } from './ui/button';
-import { Github, Twitter, Linkedin } from 'lucide-react';
-import Image from 'next/image';
-import { useScroll, useTransform, motion } from 'framer-motion';
+import { useRef } from "react";
+import Link from "next/link";
+import { SiteLogo } from "./icons";
+import { Button } from "./ui/button";
+import { Github, Twitter, Linkedin } from "lucide-react";
+import Image from "next/image";
+import { useScroll, useTransform, motion } from "framer-motion";
 
 const navItems = [
-  { name: 'Home', href: '/' },
-  { name: 'How It Works', href: '/how-it-works' },
-  { name: 'Pricing', href: '/pricing' },
-  { name: 'Blog', href: '/blog' },
+  { name: "Home", href: "/" },
+  { name: "How It Works", href: "/how-it-works" },
+  { name: "Pricing", href: "/pricing" },
+  { name: "Blog", href: "/blog" },
 ];
 
 const resourceItems = [
-  { name: 'Blog', href: '/blog' },
-  { name: 'FAQ', href: '/faq' },
-  { name: 'Support', href: '/help' },
+  { name: "Blog", href: "/blog" },
+  { name: "FAQ", href: "/faq" },
+  { name: "Support", href: "/help" },
 ];
 
 const legalItems = [
-  { name: 'Privacy Policy', href: '#' },
-  { name: 'Terms of Service', href: '/terms' },
+  { name: "Privacy Policy", href: "#" },
+  { name: "Terms of Service", href: "/terms" },
 ];
 
 export function Footer() {
@@ -38,6 +37,7 @@ export function Footer() {
 
   return (
     <footer
+      data-loc="Footer"
       ref={footerRef}
       className="bg-secondary/50 sticky bottom-0 overflow-hidden"
     >
@@ -82,10 +82,17 @@ export function Footer() {
               <ul className="space-y-4">
                 {navItems.map((item) => (
                   <li key={item.name}>
-                     <Link href={item.href} className="group text-muted-foreground hover:text-primary transition-colors relative block overflow-hidden text-sm sm:text-[16px]">
-                        <span className="block transition-transform duration-300 ease-in-out group-hover:-translate-y-full">{item.name}</span>
-                        <span className="absolute inset-0 block translate-y-full transition-transform duration-300 ease-in-out group-hover:translate-y-0 text-primary">{item.name}</span>
-                     </Link>
+                    <Link
+                      href={item.href}
+                      className="group text-muted-foreground hover:text-primary transition-colors relative block overflow-hidden text-sm sm:text-[16px]"
+                    >
+                      <span className="block transition-transform duration-300 ease-in-out group-hover:-translate-y-full">
+                        {item.name}
+                      </span>
+                      <span className="absolute inset-0 block translate-y-full transition-transform duration-300 ease-in-out group-hover:translate-y-0 text-primary">
+                        {item.name}
+                      </span>
+                    </Link>
                   </li>
                 ))}
               </ul>
@@ -95,10 +102,17 @@ export function Footer() {
               <ul className="space-y-4">
                 {resourceItems.map((item) => (
                   <li key={item.name}>
-                     <Link href={item.href} className="group text-muted-foreground hover:text-primary transition-colors relative block overflow-hidden text-sm sm:text-[16px]">
-                        <span className="block transition-transform duration-300 ease-in-out group-hover:-translate-y-full">{item.name}</span>
-                        <span className="absolute inset-0 block translate-y-full transition-transform duration-300 ease-in-out group-hover:translate-y-0 text-primary">{item.name}</span>
-                     </Link>
+                    <Link
+                      href={item.href}
+                      className="group text-muted-foreground hover:text-primary transition-colors relative block overflow-hidden text-sm sm:text-[16px]"
+                    >
+                      <span className="block transition-transform duration-300 ease-in-out group-hover:-translate-y-full">
+                        {item.name}
+                      </span>
+                      <span className="absolute inset-0 block translate-y-full transition-transform duration-300 ease-in-out group-hover:translate-y-0 text-primary">
+                        {item.name}
+                      </span>
+                    </Link>
                   </li>
                 ))}
               </ul>
@@ -108,10 +122,17 @@ export function Footer() {
               <ul className="space-y-4">
                 {legalItems.map((item) => (
                   <li key={item.name}>
-                     <Link href={item.href} className="group text-muted-foreground hover:text-primary transition-colors relative block overflow-hidden text-sm sm:text-[16px]">
-                        <span className="block transition-transform duration-300 ease-in-out group-hover:-translate-y-full">{item.name}</span>
-                        <span className="absolute inset-0 block translate-y-full transition-transform duration-300 ease-in-out group-hover:translate-y-0 text-primary">{item.name}</span>
-                     </Link>
+                    <Link
+                      href={item.href}
+                      className="group text-muted-foreground hover:text-primary transition-colors relative block overflow-hidden text-sm sm:text-[16px]"
+                    >
+                      <span className="block transition-transform duration-300 ease-in-out group-hover:-translate-y-full">
+                        {item.name}
+                      </span>
+                      <span className="absolute inset-0 block translate-y-full transition-transform duration-300 ease-in-out group-hover:translate-y-0 text-primary">
+                        {item.name}
+                      </span>
+                    </Link>
                   </li>
                 ))}
               </ul>
@@ -119,7 +140,10 @@ export function Footer() {
           </div>
         </div>
         <div className="mt-4 pt-8 flex flex-col md:flex-row justify-between items-center text-sm text-muted-foreground/50">
-          <p>&copy; {new Date().getFullYear()} inTesters, Inc. All rights reserved.</p>
+          <p>
+            &copy; {new Date().getFullYear()} inTesters, Inc. All rights
+            reserved.
+          </p>
           <p>A Testing Community at its best.</p>
         </div>
       </div>

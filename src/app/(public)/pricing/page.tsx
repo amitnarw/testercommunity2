@@ -85,7 +85,7 @@ export default function PricingPage() {
   } = usePricingData();
 
   return (
-    <div className="bg-background text-foreground">
+    <div data-loc="PricingPage" className="bg-background text-foreground">
       <div className="container mx-auto px-4 md:px-6 py-20">
         <section className="text-center max-w-3xl mx-auto">
           <h1 className="text-4xl md:text-6xl font-bold">

@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
-import { ArrowUp } from 'lucide-react';
-import { cn } from '@/lib/utils';
-import { Button } from './ui/button';
+import { useEffect, useState } from "react";
+import { ArrowUp } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { Button } from "./ui/button";
 
 export function ScrollToTopButton() {
   const [isVisible, setIsVisible] = useState(false);
@@ -16,7 +16,9 @@ export function ScrollToTopButton() {
 
   const handleScroll = () => {
     const scrollTop = window.scrollY || document.documentElement.scrollTop;
-    const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+    const scrollHeight =
+      document.documentElement.scrollHeight -
+      document.documentElement.clientHeight;
     const progress = (scrollTop / scrollHeight) * 100;
 
     setIsVisible(scrollTop > 300);
@@ -24,22 +26,23 @@ export function ScrollToTopButton() {
   };
 
   useEffect(() => {
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   const scrollToTop = () => {
     window.scrollTo({
       top: 0,
-      behavior: 'smooth',
+      behavior: "smooth",
     });
   };
 
   return (
     <div
+      data-loc="ScrollToTopButton"
       className={cn(
-        'fixed bottom-8 right-8 z-50 transition-opacity duration-300',
-        isVisible ? 'opacity-100' : 'opacity-0'
+        "fixed bottom-8 right-8 z-50 transition-opacity duration-300",
+        isVisible ? "opacity-100" : "opacity-0"
       )}
     >
       <div className="relative w-16 h-16">
