@@ -1,15 +1,13 @@
+"use client";
 
-
-'use client';
-
-import { usePathname, useRouter } from 'next/navigation';
-import { useState, useEffect } from 'react';
-import Navbar from '@/components/authenticated/navbar';
-import Footer from '@/components/authenticated/footer';
-import { Sidebar } from '@/components/authenticated/sidebar';
-import { SiteLogo } from '@/components/icons';
-import { motion, AnimatePresence } from 'framer-motion';
-import PageTransition from '@/components/page-transition';
+import { usePathname, useRouter } from "next/navigation";
+import { useState, useEffect } from "react";
+import Navbar from "@/components/authenticated/navbar";
+import Footer from "@/components/authenticated/footer";
+import { Sidebar } from "@/components/authenticated/sidebar";
+import { SiteLogo } from "@/components/icons";
+import { motion, AnimatePresence } from "framer-motion";
+import PageTransition from "@/components/page-transition";
 
 export default function AdminLayout({
   children,
@@ -24,23 +22,23 @@ export default function AdminLayout({
 
   useEffect(() => {
     // In a real app, this would be a call to an auth service
-    const authStatus = document.cookie.includes('isAdminAuthenticated=true');
+    const authStatus = document.cookie.includes("isAdminAuthenticated=true");
     setIsAuthenticated(authStatus);
     setIsAuthChecked(true);
 
-    if (!authStatus && pathname !== '/admin/login') {
-      router.replace('/admin/login');
+    if (!authStatus && pathname !== "/admin/login") {
+      router.replace("/admin/login");
     }
   }, [pathname, router]);
 
   const handleLogout = () => {
-    document.cookie = 'isAdminAuthenticated=false; path=/; max-age=0';
-    document.cookie = 'userRole=; path=/; max-age=0';
+    document.cookie = "isAdminAuthenticated=false; path=/; max-age=0";
+    document.cookie = "userRole=; path=/; max-age=0";
     setIsAuthenticated(false);
-    router.push('/admin/login');
+    router.push("/admin/login");
   };
 
-  const isLoginPage = pathname === '/admin/login';
+  const isLoginPage = pathname === "/admin/login";
 
   if (!isAuthChecked) {
     return (
@@ -52,37 +50,31 @@ export default function AdminLayout({
 
   if (isLoginPage) {
     return (
-        <PageTransition>
-            <main
-                className="flex-1 bg-background"
-            >
-                {children}
-            </main>
-        </PageTransition>
+      <PageTransition>
+        <main className="flex-1 bg-background">{children}</main>
+      </PageTransition>
     );
   }
-  
+
   if (!isAuthenticated) {
-      return null;
+    return null;
   }
-  
+
   return (
     <PageTransition>
       <div className="relative flex min-h-screen">
         <Sidebar
-            onLogout={handleLogout}
-            isCollapsed={isSidebarCollapsed}
-            setIsCollapsed={setIsSidebarCollapsed}
-          />
-          <div className={`flex flex-col flex-1 transition-all duration-300 md:pl-20`}>
-              <Navbar onLogout={handleLogout} />
-              <main
-                  className="flex-1 bg-secondary/50"
-              >
-                  {children}
-              </main>
-              <Footer />
-          </div>
+          onLogout={handleLogout}
+          isCollapsed={isSidebarCollapsed}
+          setIsCollapsed={setIsSidebarCollapsed}
+        />
+        <div
+          className={`flex flex-col flex-1 transition-all duration-300 md:pl-20`}
+        >
+          <Navbar onLogout={handleLogout} />
+          <main className="flex-1 bg-secondary/50">{children}</main>
+          <Footer />
+        </div>
       </div>
     </PageTransition>
   );

@@ -1,4 +1,3 @@
-
 "use client";
 
 import { useState, useEffect } from "react";
@@ -40,11 +39,7 @@ export default function AuthenticatedLayout({
           />
           <div className="flex flex-col flex-1 md:pl-20">
             <Navbar onLogout={handleLogout} />
-            <main
-              className="flex-1 bg-secondary/50"
-            >
-              {children}
-            </main>
+            <main className="flex-1 bg-secondary/50">{children}</main>
             <Footer />
           </div>
         </div>
