@@ -63,7 +63,10 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="min-h-screen w-full lg:grid lg:grid-cols-2">
+    <div
+      data-loc="RegisterPage"
+      className="min-h-screen w-full lg:grid lg:grid-cols-2"
+    >
       <div className="relative w-full min-h-screen flex flex-col items-center justify-center px-2 sm:px-6 bg-background">
         <div className="absolute top-2 sm:top-4 right-4 flex items-center gap-4">
           <BackButton href="/" />

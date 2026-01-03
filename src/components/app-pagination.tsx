@@ -55,7 +55,7 @@ export function AppPagination({
   }
 
   return (
-    <Pagination className="mt-8">
+    <Pagination data-loc="AppPagination" className="mt-8">
       <PaginationContent>
         <PaginationItem>
           <Button

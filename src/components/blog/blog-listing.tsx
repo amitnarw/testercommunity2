@@ -35,7 +35,7 @@ export function BlogListing({ posts }: BlogListingProps) {
         );
 
   return (
-    <div className="space-y-20">
+    <div data-loc="BlogListing" className="space-y-20">
       {/* Category Filter */}
       <div className="flex justify-center">
         <div className="inline-flex flex-wrap justify-center gap-2 p-1.5 bg-muted/30 backdrop-blur-xl rounded-full border border-white/10">

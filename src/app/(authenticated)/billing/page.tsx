@@ -431,7 +431,10 @@ export default function BillingPage() {
   const { data: walletData, isPending: walletIsPending } = useGetUserWallet();
 
   return (
-    <div className="min-h-screen w-full relative text-foreground transition-colors duration-300 max-w-7xl mx-auto">
+    <div
+      data-loc="BillingPage"
+      className="min-h-screen w-full relative text-foreground transition-colors duration-300 max-w-7xl mx-auto"
+    >
       <PageHeader
         title="Billing"
         backHref="/wallet"

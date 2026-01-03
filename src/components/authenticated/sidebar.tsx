@@ -125,7 +125,10 @@ export function Sidebar({
   }
 
   return (
-    <div className="fixed z-[55] h-full hidden md:flex items-center justify-center pl-4 bg-[#f8fafc] dark:bg-[#0f151e]">
+    <div
+      data-loc="Sidebar"
+      className="fixed z-[55] h-full hidden md:flex items-center justify-center pl-4 bg-[#f8fafc] dark:bg-[#0f151e]"
+    >
       <aside
         className={cn(
           "left-4 h-[95vh]",
