@@ -29,7 +29,6 @@ import {
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { TransitionLink } from "./transition-link";
-import { authClient } from "@/lib/auth-client";
 
 const mainNavItems = [
   { name: "Home", href: "/" },
@@ -60,12 +59,13 @@ export default function MobileMenu({
   isMenuOpen,
   setIsMenuOpen,
   onLogout,
+  isAuthenticated,
 }: {
   isMenuOpen: boolean;
   setIsMenuOpen: (value: boolean) => void;
   onLogout: () => void;
+  isAuthenticated: boolean;
 }) {
-  const { data: session } = authClient?.useSession();
   const pathname = usePathname();
 
   let navItems = mainNavItems;
@@ -81,14 +81,6 @@ export default function MobileMenu({
     notificationHref = "/tester/notifications";
     walletHref = "/tester/wallet";
   }
-
-  const isAuthenticated = session?.user?.id;
-
-  const isAuthRoute =
-    !pathname.startsWith("/auth/login") &&
-    !pathname.startsWith("/auth/register") &&
-    !pathname.startsWith("/tester/login") &&
-    !pathname.startsWith("/tester/register");
 
   const publicNavItems = [
     { name: "Home", href: "/" },
@@ -115,18 +107,22 @@ export default function MobileMenu({
           <SheetHeader>
             <div className="flex justify-between items-center gap-2">
               <div className="flex flex-row gap-5 items-center">
-                <button onClick={() => setIsMenuOpen(false)}>
-                  <TransitionLink href={notificationHref}>
-                    <Bell className="h-5 w-5" />
-                    <span className="sr-only">Notifications</span>
-                  </TransitionLink>
-                </button>
-                <button onClick={() => setIsMenuOpen(false)}>
-                  <TransitionLink href={walletHref}>
-                    <Wallet className="h-5 w-5" />
-                    <span className="sr-only">Wallet</span>
-                  </TransitionLink>
-                </button>
+                {isAuthenticated && (
+                  <>
+                    <button onClick={() => setIsMenuOpen(false)}>
+                      <TransitionLink href={notificationHref}>
+                        <Bell className="h-5 w-5" />
+                        <span className="sr-only">Notifications</span>
+                      </TransitionLink>
+                    </button>
+                    <button onClick={() => setIsMenuOpen(false)}>
+                      <TransitionLink href={walletHref}>
+                        <Wallet className="h-5 w-5" />
+                        <span className="sr-only">Wallet</span>
+                      </TransitionLink>
+                    </button>
+                  </>
+                )}
               </div>
               <SheetClose asChild>
                 <Button size="icon" variant="ghost">
@@ -137,14 +133,14 @@ export default function MobileMenu({
             </div>
           </SheetHeader>
           <div className="flex flex-col h-full">
-            <nav className="flex flex-col items-center text-center justify-center gap-6 h-full">
+            <nav className="flex flex-col items-center text-center justify-center gap-4 h-full">
               {displayItems.map((item) => (
                 <TransitionLink
                   key={item.name}
                   href={item.href}
                   onClick={() => setIsMenuOpen(false)}
                   className={cn(
-                    "text-2xl font-medium transition-colors hover:text-primary",
+                    "text-2xl font-medium transition-colors hover:text-primary w-full",
                     pathname === item.href ? "text-primary" : "text-foreground"
                   )}
                 >
@@ -152,7 +148,7 @@ export default function MobileMenu({
                 </TransitionLink>
               ))}
             </nav>
-            {isAuthRoute ? (
+            {isAuthenticated ? (
               <div className="flex justify-center items-center gap-2">
                 <Button
                   variant="ghost"

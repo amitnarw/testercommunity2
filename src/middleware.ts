@@ -25,6 +25,10 @@ export async function middleware(request: NextRequest) {
 
   const cookieStore = await cookies();
   const better_auth = cookieStore.get("better-auth.role_cache");
+  const session_token = cookieStore.get("better-auth.session_token");
+
+  // Track if user has a valid session (either from role_cache or session_token)
+  let hasValidSession = false;
 
   if (better_auth) {
     try {
@@ -33,9 +37,21 @@ export async function middleware(request: NextRequest) {
         new TextEncoder().encode(secret)
       );
       role = (payload as any).role;
+      hasValidSession = !!role;
     } catch (err) {
+      // Role cache JWT expired or invalid - but session token might still be valid
       role = null;
     }
+  }
+
+  // If role_cache failed but session_token exists, the user might still be authenticated
+  // The session token itself is valid for 7 days, so we should trust it
+  if (!hasValidSession && session_token?.value) {
+    // Session token exists - user is likely still authenticated
+    // The role_cache just expired. Allow access but role will be unknown.
+    // The actual session validation will happen when they make API calls,
+    // and the role_cache will be refreshed.
+    hasValidSession = true;
   }
 
   const isAdmin = role?.name === "admin";
@@ -56,22 +72,21 @@ export async function middleware(request: NextRequest) {
   const professionalTesterAuthRoutes = ["/tester/login", "/tester/register"];
   const professionalRoutes = ["/tester/dashboard"];
 
-  // If user is authenticated and tries to access login/register, redirect to dashboard
+  // If user has a valid session and tries to access login/register, redirect to dashboard
   if (
-    better_auth &&
-    role?.name &&
+    hasValidSession &&
     authRoutes.some((route) => pathname.startsWith(route))
   ) {
     return NextResponse.redirect(new URL("/dashboard", request.url));
   }
 
-  if (isAdmin && better_auth && pathname.startsWith("/admin/login")) {
+  if (isAdmin && hasValidSession && pathname.startsWith("/admin/login")) {
     return NextResponse.redirect(new URL("/admin/dashboard", request.url));
   }
 
   if (
     isProfessional &&
-    better_auth &&
+    hasValidSession &&
     professionalTesterAuthRoutes.some((route) => pathname.startsWith(route))
   ) {
     return NextResponse.redirect(new URL("/tester/dashboard", request.url));
@@ -79,14 +94,14 @@ export async function middleware(request: NextRequest) {
 
   // If user is not authenticated and tries to access a protected route, redirect to login
   if (
-    (!better_auth || !role?.name) &&
+    !hasValidSession &&
     authenticatedRoutes.some((route) => pathname.startsWith(route))
   ) {
     return NextResponse.redirect(new URL("/auth/login", request.url));
   }
 
   if (
-    (!isAdmin || !better_auth) &&
+    (!isAdmin || !hasValidSession) &&
     adminRoutes.some((route) => pathname.startsWith(route)) &&
     pathname !== "/admin/login"
   ) {
@@ -94,7 +109,7 @@ export async function middleware(request: NextRequest) {
   }
 
   if (
-    (!isProfessional || !better_auth) &&
+    (!isProfessional || !hasValidSession) &&
     professionalRoutes.some((route) => pathname.startsWith(route))
   ) {
     return NextResponse.redirect(new URL("/tester/login", request.url));
