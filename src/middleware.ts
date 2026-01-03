@@ -1,64 +1,69 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import { cookies } from "next/headers";
 import { jwtVerify } from "jose";
 
-export async function middleware(request: NextRequest) {
-  const secret = process.env.BETTER_AUTH_SECRET!;
-  let role: {
-    name: string;
-    permissions: [
-      {
-        id: number;
-        roleId: number;
-        moduleId: number;
-        canReadList: boolean;
-        canReadSingle: boolean;
-        canCreate: boolean;
-        canUpdate: boolean;
-        canDelete: boolean;
-        createdAt: string;
-        updatedAt: string;
-      }
-    ];
-  } | null = null;
+interface RoleInfo {
+  name: string;
+  permissions: Array<{
+    id: number;
+    roleId: number;
+    moduleId: number;
+    canReadList: boolean;
+    canReadSingle: boolean;
+    canCreate: boolean;
+    canUpdate: boolean;
+    canDelete: boolean;
+    createdAt: string;
+    updatedAt: string;
+  }>;
+}
 
-  const cookieStore = await cookies();
-  const better_auth = cookieStore.get("better-auth.role_cache");
-  const session_token = cookieStore.get("better-auth.session_token");
+interface SessionValidationResult {
+  isAuthenticated: boolean;
+  role: RoleInfo | null;
+}
 
-  // Track if user has a valid session (either from role_cache or session_token)
-  let hasValidSession = false;
+async function validateSession(request: NextRequest): Promise<SessionValidationResult> {
+  const secret = process.env.BETTER_AUTH_SECRET;
+  
+  // Try to get role from the role_cache cookie (JWT)
+  const roleCache = request.cookies.get("better-auth.role_cache")?.value;
+  const sessionToken = request.cookies.get("better-auth.session_token")?.value;
+  
+  // If no session token exists, user is definitely not authenticated
+  if (!sessionToken) {
+    return { isAuthenticated: false, role: null };
+  }
 
-  if (better_auth) {
+  // Try to decode the role cache JWT
+  let role: RoleInfo | null = null;
+  if (roleCache && secret) {
     try {
       const { payload } = await jwtVerify(
-        better_auth?.value,
+        roleCache,
         new TextEncoder().encode(secret)
       );
-      role = (payload as any).role;
-      hasValidSession = !!role;
+      role = (payload as any).role || null;
     } catch (err) {
-      // Role cache JWT expired or invalid - but session token might still be valid
+      // JWT expired or invalid - role is unknown but user might still be authenticated
       role = null;
     }
   }
 
-  // If role_cache failed but session_token exists, the user might still be authenticated
-  // The session token itself is valid for 7 days, so we should trust it
-  if (!hasValidSession && session_token?.value) {
-    // Session token exists - user is likely still authenticated
-    // The role_cache just expired. Allow access but role will be unknown.
-    // The actual session validation will happen when they make API calls,
-    // and the role_cache will be refreshed.
-    hasValidSession = true;
-  }
+  // If we have a session token and either:
+  // 1. Role is known (from valid JWT)
+  // 2. Role is unknown (JWT expired) but session token exists
+  // Consider user as authenticated. The actual session validation happens server-side.
+  return {
+    isAuthenticated: true,
+    role,
+  };
+}
 
-  const isAdmin = role?.name === "admin";
-  const isProfessional = role?.name === "tester";
-
+export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
+  // Define route categories
   const authRoutes = ["/auth/login", "/auth/register"];
   const authenticatedRoutes = [
     "/dashboard",
@@ -72,21 +77,40 @@ export async function middleware(request: NextRequest) {
   const professionalTesterAuthRoutes = ["/tester/login", "/tester/register"];
   const professionalRoutes = ["/tester/dashboard"];
 
-  // If user has a valid session and tries to access login/register, redirect to dashboard
+  // Check if the current path requires authentication check
+  const needsAuthCheck = 
+    authRoutes.some((route) => pathname.startsWith(route)) ||
+    authenticatedRoutes.some((route) => pathname.startsWith(route)) ||
+    adminRoutes.some((route) => pathname.startsWith(route)) ||
+    professionalTesterAuthRoutes.some((route) => pathname.startsWith(route)) ||
+    professionalRoutes.some((route) => pathname.startsWith(route));
+
+  // Skip validation for routes that don't need it
+  if (!needsAuthCheck) {
+    return NextResponse.next();
+  }
+
+  // Validate session
+  const { isAuthenticated, role } = await validateSession(request);
+
+  const isAdmin = role?.name === "admin";
+  const isProfessional = role?.name === "tester";
+
+  // If user is authenticated and tries to access login/register, redirect to dashboard
   if (
-    hasValidSession &&
+    isAuthenticated &&
     authRoutes.some((route) => pathname.startsWith(route))
   ) {
     return NextResponse.redirect(new URL("/dashboard", request.url));
   }
 
-  if (isAdmin && hasValidSession && pathname.startsWith("/admin/login")) {
+  if (isAdmin && isAuthenticated && pathname.startsWith("/admin/login")) {
     return NextResponse.redirect(new URL("/admin/dashboard", request.url));
   }
 
   if (
     isProfessional &&
-    hasValidSession &&
+    isAuthenticated &&
     professionalTesterAuthRoutes.some((route) => pathname.startsWith(route))
   ) {
     return NextResponse.redirect(new URL("/tester/dashboard", request.url));
@@ -94,14 +118,14 @@ export async function middleware(request: NextRequest) {
 
   // If user is not authenticated and tries to access a protected route, redirect to login
   if (
-    !hasValidSession &&
+    !isAuthenticated &&
     authenticatedRoutes.some((route) => pathname.startsWith(route))
   ) {
     return NextResponse.redirect(new URL("/auth/login", request.url));
   }
 
   if (
-    (!isAdmin || !hasValidSession) &&
+    (!isAdmin || !isAuthenticated) &&
     adminRoutes.some((route) => pathname.startsWith(route)) &&
     pathname !== "/admin/login"
   ) {
@@ -109,7 +133,7 @@ export async function middleware(request: NextRequest) {
   }
 
   if (
-    (!isProfessional || !hasValidSession) &&
+    (!isProfessional || !isAuthenticated) &&
     professionalRoutes.some((route) => pathname.startsWith(route))
   ) {
     return NextResponse.redirect(new URL("/tester/login", request.url));
@@ -121,3 +145,4 @@ export async function middleware(request: NextRequest) {
 export const config = {
   matcher: ["/((?!api|_next/static|_next/image|favicon.ico).*)"],
 };
+
