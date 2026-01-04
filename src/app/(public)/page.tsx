@@ -21,6 +21,7 @@ import { TwoPathsSection } from "@/components/two-paths-section";
 import { MagneticButton } from "@/components/magnetic-button";
 import { HoverBorderGradient } from "@/components/ui/hover-border-gradient";
 import AnimatedRoundedButton from "@/components/ui/animated-rounded-button";
+import { CTASection } from "@/components/cta-section";
 
 const features = [
   {
@@ -167,7 +168,7 @@ export default function Home() {
         {/* Testimonials Section */}
         <section
           data-loc="HomePage-TestimonialsSection"
-          className="py-20 md:py-28"
+          className="pb-20 md:pb-28"
         >
           <div className="container mx-auto px-4 md:px-6">
             <div className="text-center">
@@ -221,37 +222,7 @@ export default function Home() {
           </section>
 
           {/* CTA Section */}
-          <section data-loc="HomePage-CTASection" className="py-20 md:py-28">
-            <div className="container mx-auto px-4 md:px-6 text-center">
-              <h2 className="text-4xl md:text-5xl font-bold font-heading">
-                Ready to{" "}
-                <span className="bg-gradient-to-br from-primary to-accent bg-clip-text text-transparent">
-                  Elevate
-                </span>{" "}
-                Your Testing?
-              </h2>
-              <p className="mt-4 max-w-2xl mx-auto text-muted-foreground">
-                Join the community and experience the future of app testing
-                today. It's free to get started.
-              </p>
-              <div className="mt-8 flex justify-center">
-                <Link href="/auth/register">
-                  <AnimatedRoundedButton
-                    normalTextColor="hsl(var(--primary))"
-                    hoverTextColor="white"
-                    border={true}
-                    paddingY="4"
-                    paddingX="8"
-                  >
-                    <div className="flex items-center gap-2">
-                      <span>Sign Up Now</span>
-                      <ChevronsRight />
-                    </div>
-                  </AnimatedRoundedButton>
-                </Link>
-              </div>
-            </div>
-          </section>
+          <CTASection />
         </div>
       </main>
       <ScrollToTopButton />

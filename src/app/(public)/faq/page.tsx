@@ -55,38 +55,26 @@ export default function FaqPage() {
         </Accordion>
 
         <h2 className="text-2xl font-bold mb-6 mt-12">Community Path</h2>
-        <Accordion type="single" collapsible className="w-full">
+        <Accordion type="single" collapsible className="w-full space-y-2">
           {communityFaqs.map((faq, i) => (
-            <AccordionItem
-              key={`community-${i}`}
-              value={`item-${i}`}
-              className="border-b"
-            >
-              <AccordionTrigger className="text-left font-semibold hover:no-underline text-base py-6">
-                {faq.question}
-              </AccordionTrigger>
-              <AccordionContent className="text-muted-foreground pb-6">
-                {faq.answer}
-              </AccordionContent>
-            </AccordionItem>
+            <FaqItem
+              key={i}
+              index={i}
+              question={faq.question}
+              answer={faq.answer}
+            />
           ))}
         </Accordion>
 
         <h2 className="text-2xl font-bold mb-6 mt-12">Professional Path</h2>
-        <Accordion type="single" collapsible className="w-full">
+        <Accordion type="single" collapsible className="w-full space-y-2">
           {proFaqs.map((faq, i) => (
-            <AccordionItem
-              key={`pro-${i}`}
-              value={`item-${i}`}
-              className="border-b"
-            >
-              <AccordionTrigger className="text-left font-semibold hover:no-underline text-base py-6">
-                {faq.question}
-              </AccordionTrigger>
-              <AccordionContent className="text-muted-foreground pb-6">
-                {faq.answer}
-              </AccordionContent>
-            </AccordionItem>
+            <FaqItem
+              key={i}
+              index={i}
+              question={faq.question}
+              answer={faq.answer}
+            />
           ))}
         </Accordion>
       </div>

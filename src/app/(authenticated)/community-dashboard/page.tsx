@@ -10,8 +10,6 @@ import {
   Star,
   LayoutPanelLeft,
   Activity,
-  ChevronLeft,
-  ChevronRight,
   XCircle,
 } from "lucide-react";
 import {
@@ -36,6 +34,8 @@ import { Badge } from "@/components/ui/badge";
 import type { CommunityApp } from "@/lib/types";
 import SubTabUI from "@/components/sub-tab-ui";
 import { useHubData } from "@/hooks/useUser";
+import { AnimatedLink } from "@/components/ui/animated-link";
+import { useTransitionRouter } from "@/context/transition-context";
 
 const APPS_PER_PAGE = 6;
 
@@ -170,6 +170,8 @@ export default function CommunityDashboardPage() {
   const [selectedTab, setSelectedTab] = useState("available");
   const [ongoingSubTab, setOngoingSubTab] = useState("ongoing");
 
+  const router = useTransitionRouter();
+
   const ongoingApps = communityApps.filter((app) => app.status === "ongoing");
   const requestedApps = communityApps.filter(
     (app) => app.status === "requested"
@@ -217,6 +219,10 @@ export default function CommunityDashboardPage() {
     isError: hubIsError,
     error: hubError,
   } = useHubData();
+
+  const openPage = (page: string) => {
+    router.push(page);
+  };
 
   return (
     <div data-loc="CommunityDashboardPage" className="min-h-screen mb-8">
@@ -286,27 +292,23 @@ export default function CommunityDashboardPage() {
 
             <BentoCard className="flex !flex-row sm:!flex-col gap-2 col-span-2 lg:col-span-1 !p-2.5 sm:!p-4">
               <Button
-                asChild
                 className="w-full justify-start h-full bg-gradient-to-b from-primary to-primary/40 text-primary-foreground p-2 sm:p-auto"
+                onClick={() => openPage("/community-dashboard/submit")}
               >
-                <Link href="/community-dashboard/submit">
-                  <PlusCircle className="absolute sm:static left-0 top-0 scale-[2] text-white/20 sm:left-auto sm:top-auto sm:scale-[1] sm:text-white mr-2 h-4 w-4" />
-                  <p className="text-center sm:text-start w-full">
-                    Submit New App
-                  </p>
-                </Link>
+                <PlusCircle className="absolute sm:static left-0 top-0 scale-[2] text-white/20 sm:left-auto sm:top-auto sm:scale-[1] sm:text-white mr-2 h-4 w-4" />
+                <p className="text-center sm:text-start w-full">
+                  Submit New App
+                </p>
               </Button>
               <Button
-                asChild
                 variant="outline"
                 className="w-full justify-start h-full p-2 sm:p-auto"
+                onClick={() => openPage("/community-dashboard/my-submissions")}
               >
-                <Link href="/community-dashboard/my-submissions">
-                  <LayoutPanelLeft className="absolute sm:static left-0 top-0 scale-[2] text-black/10 dark:text-white/15 sm:left-auto sm:top-auto sm:scale-[1] sm:text-black dark:sm:text-white mr-2 h-4 w-4" />
-                  <p className="text-center sm:text-start w-full">
-                    My Submissions
-                  </p>
-                </Link>
+                <LayoutPanelLeft className="absolute sm:static left-0 top-0 scale-[2] text-black/10 dark:text-white/15 sm:left-auto sm:top-auto sm:scale-[1] sm:text-black dark:sm:text-white mr-2 h-4 w-4" />
+                <p className="text-center sm:text-start w-full">
+                  My Submissions
+                </p>
               </Button>
             </BentoCard>
           </div>

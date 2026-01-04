@@ -9,15 +9,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import {
-  CheckCircle,
-  Star,
-  HelpCircle,
-  Phone,
-  Package,
-  IndianRupee,
-  ArrowRight,
-} from "lucide-react";
+import { CheckCircle, HelpCircle, Phone, ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import {
@@ -26,14 +18,11 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import {
-  pointsPackages,
-  pricingFaqs,
-  professionalPathFeatures,
-} from "@/lib/data";
+import { pricingFaqs } from "@/lib/data";
 import { usePricingData } from "@/hooks/useUser";
 import { PricingResponse } from "@/lib/types";
 import SkeletonPricingSetup from "@/components/unauthenticated/pricing-skeleton";
+import FaqItem from "@/components/faq-item";
 
 const PointsPackageCard = ({
   plan,
@@ -53,7 +42,6 @@ const PointsPackageCard = ({
     >
       <CardHeader className="pt-10 text-center">
         <CardTitle className="text-2xl">{plan.name}</CardTitle>
-        {/* <CardDescription className="pt-1">{plan.description}</CardDescription> */}
       </CardHeader>
       <CardContent className="flex-grow flex flex-col items-center justify-center space-y-6">
         <div className="flex items-baseline gap-2">
@@ -176,20 +164,14 @@ export default function PricingPage() {
               Got questions? We've got answers.
             </p>
           </div>
-          <Accordion type="single" collapsible className="w-full">
+          <Accordion type="single" collapsible className="w-full space-y-2">
             {pricingFaqs.map((faq, i) => (
-              <AccordionItem
+              <FaqItem
                 key={`faq-${i}`}
-                value={`item-${i}`}
-                className="border-b"
-              >
-                <AccordionTrigger className="text-left font-semibold hover:no-underline text-base py-6">
-                  {faq.question}
-                </AccordionTrigger>
-                <AccordionContent className="text-muted-foreground pb-6">
-                  {faq.answer}
-                </AccordionContent>
-              </AccordionItem>
+                index={i}
+                question={faq.question}
+                answer={faq.answer}
+              />
             ))}
           </Accordion>
         </section>

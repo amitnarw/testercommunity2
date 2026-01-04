@@ -20,7 +20,7 @@ const FaqItem = ({
       value={`item-${index}`}
       className="rounded-2xl px-4 sm:px-6 data-[state=open]:border-primary/50 transition-all duration-300 border border-border/50 shadow-sm bg-gray-100/40 hover:bg-gray-100 dark:bg-gray-800/30 hover:dark:bg-gray-800/60"
     >
-      <AccordionTrigger className="text-md sm:text-lg font-medium py-4 sm:py-6 hover:no-underline hover:text-primary transition-colors">
+      <AccordionTrigger className="text-md sm:text-lg font-medium py-4 sm:py-6 hover:no-underline hover:text-primary transition-colors text-start">
         {question}
       </AccordionTrigger>
       <AccordionContent className="text-sm sm:text-base text-muted-foreground pb-6 leading-relaxed">
