@@ -416,6 +416,14 @@ export interface HubDataResponse {
   }[];
 }
 
+export interface AppCategoriesResponse {
+  id: number;
+  name: string;
+  isActive: true;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
 export interface NotificationReponse {
   id: number;
   userId: string | null;

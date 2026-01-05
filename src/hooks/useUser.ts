@@ -3,6 +3,7 @@ import {
   doSessionLogoutSingle,
   getAllPricingPlans,
   getAllSessions,
+  getAppCategories,
   getDasboardData,
   getHubData,
   getUserData,
@@ -14,6 +15,7 @@ import {
   saveUserData,
 } from "@/lib/apiCalls";
 import {
+  AppCategoriesResponse,
   DashboardDataResponse,
   HubDataResponse,
   NotificationReponse,
@@ -114,6 +116,15 @@ export function useHubData() {
   const query = useQuery<HubDataResponse, Error>({
     queryFn: () => getHubData(),
     queryKey: ["useHubData"],
+  });
+
+  return query;
+}
+
+export function useAppCategories() {
+  const query = useQuery<AppCategoriesResponse[], Error>({
+    queryFn: () => getAppCategories(),
+    queryKey: ["useAppCategories"],
   });
 
   return query;

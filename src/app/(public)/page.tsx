@@ -220,10 +220,9 @@ export default function Home() {
               </div>
             </div>
           </section>
-
-          {/* CTA Section */}
-          <CTASection />
         </div>
+        {/* CTA Section */}
+        <CTASection />
       </main>
       <ScrollToTopButton />
     </div>

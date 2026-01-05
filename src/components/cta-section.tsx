@@ -8,11 +8,7 @@ import { Button } from "@/components/ui/button";
 
 export function CTASection() {
   return (
-    <section className="py-24 md:py-32 relative overflow-hidden">
-      {/* Background Gradients */}
-      <div className="absolute inset-0 bg-primary/5 dark:bg-primary/10 -skew-y-2 transform origin-bottom-right scale-110" />
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-primary/5 rounded-full blur-[120px] pointer-events-none" />
-
+    <section className="py-8 md:py-14 relative overflow-hidden bg-primary/5 dark:bg-primary/10 w-full">
       <div className="container relative z-10 mx-auto px-4 md:px-6 text-center">
         <motion.div
           initial={{ opacity: 0, y: 20 }}

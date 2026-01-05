@@ -195,6 +195,7 @@ export default function RegisterPage() {
                       isSuccess={isSuccess}
                       isError={isError}
                       className="text-sm sm:text-base"
+                      type="submit"
                     >
                       Create Account
                     </LoadingButton>

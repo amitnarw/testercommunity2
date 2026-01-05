@@ -37,7 +37,6 @@ import {
   FormDescription,
 } from "@/components/ui/form";
 import { cn } from "@/lib/utils";
-import AnimatedRoundedButton from "@/components/ui/animated-rounded-button";
 import {
   AlertDialog,
   AlertDialogContent,
@@ -48,8 +47,9 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { PageHeader } from "@/components/page-header";
-import { useGetUserWallet } from "@/hooks/useUser";
+import { useAppCategories, useGetUserWallet } from "@/hooks/useUser";
 import SkeletonSubmitAppBottom from "@/components/community-dashboard/submit-app-bottom-skeleton";
+import { LoadingButton } from "@/components/ui/loading-button";
 
 const submissionSchema = z.object({
   appLink: z.string().url("Please enter a valid Google Play testing URL."),
@@ -198,14 +198,18 @@ export default function SubmitAppPage() {
     error: walletError,
   } = useGetUserWallet();
 
+  const {
+    data: appCategoriesData,
+    isPending: appCategoriesIsPending,
+    isError: appCategoriesIsError,
+    error: appCategoriesError,
+  } = useAppCategories();
+
   const isBalanceInsufficient = cost > (walletData?.totalPoints || 0);
 
   if (!isMounted) {
     return null;
   }
-
-  const hoverTextColor = theme === "dark" ? "black" : "white";
-  const hoverBgColor = theme === "dark" ? "white" : "black";
 
   return (
     <>
@@ -433,15 +437,14 @@ export default function SubmitAppPage() {
                                   </SelectTrigger>
                                 </FormControl>
                                 <SelectContent>
-                                  <SelectItem value="Games">Games</SelectItem>
-                                  <SelectItem value="Productivity">
-                                    Productivity
-                                  </SelectItem>
-                                  <SelectItem value="Social">Social</SelectItem>
-                                  <SelectItem value="Utilities">
-                                    Utilities
-                                  </SelectItem>
-                                  <SelectItem value="Other">Other</SelectItem>
+                                  {appCategoriesData?.map((category) => (
+                                    <SelectItem
+                                      key={category?.id}
+                                      value={category?.id?.toString()}
+                                    >
+                                      {category?.name}
+                                    </SelectItem>
+                                  ))}
                                 </SelectContent>
                               </Select>
                               <FormMessage />
@@ -650,7 +653,7 @@ export default function SubmitAppPage() {
                                 "cursor-not-allowed opacity-50"
                             )}
                           >
-                            <AnimatedRoundedButton
+                            {/* <AnimatedRoundedButton
                               backgroundColor="hsl(var(--primary))"
                               animatedBackgroundColor={hoverBgColor}
                               hoverTextColor={hoverTextColor}
@@ -665,7 +668,15 @@ export default function SubmitAppPage() {
                                 </span>
                                 <span className="sm:hidden">Submit</span>
                               </div>
-                            </AnimatedRoundedButton>
+                            </AnimatedRoundedButton> */}
+                            {/* <LoadingButton
+                              className="rounded-xl"
+                              isLoading={sessionLSIsPending}
+                              isSuccess={sessionLSIsSuccess}
+                              isError={sessionLSIsError}
+                            >
+                              Submit for Review
+                            </LoadingButton> */}
                           </div>
                         </div>
                       </CardContent>

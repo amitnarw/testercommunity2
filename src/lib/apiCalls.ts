@@ -2,6 +2,7 @@ import axios from "axios";
 import API_ROUTES from "./apiRoutes";
 import { authClient } from "./auth-client";
 import {
+  AppCategoriesResponse,
   ControlRoomResponse,
   DashboardDataResponse,
   HubDataResponse,
@@ -366,7 +367,29 @@ export async function getHubData(): Promise<HubDataResponse> {
   }
 }
 
-// Hub
+export async function getAppCategories(): Promise<AppCategoriesResponse[]> {
+  try {
+    const response = await api.get(API_ROUTES.HUB + `/get-app-categories`);
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error fetching app categories:", error);
+    if (axios.isAxiosError(error)) {
+      const status = error.response?.status;
+      const responseData = error.response?.data;
+      console.error("Axios error:", status, responseData);
+
+      throw new Error(
+        responseData?.message || error.message || "Unknown Axios error"
+      );
+    } else if (error instanceof Error) {
+      throw new Error(error.message);
+    } else {
+      throw new Error(JSON.stringify(error));
+    }
+  }
+}
+
+// Notifications
 export async function getUserNotifications(): Promise<{
   result: NotificationReponse[];
   totalNotifications: number;
