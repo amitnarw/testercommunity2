@@ -269,7 +269,7 @@ export default function CommunityDashboardPage() {
                   My Points
                 </CardTitle>
                 <p className="text-3xl sm:text-5xl font-bold text-center my-auto">
-                  {hubData?.wallet}
+                  {hubData?.wallet || 0}
                 </p>
               </BentoCard>
 

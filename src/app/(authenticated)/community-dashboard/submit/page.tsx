@@ -5,7 +5,6 @@ import { useForm, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { motion } from "framer-motion";
-import { useTheme } from "next-themes";
 import { useInView } from "react-intersection-observer";
 import Link from "next/link";
 
@@ -74,8 +73,8 @@ const submissionSchema = z.object({
   androidVersion: z
     .string()
     .min(1, "Please specify the minimum Android version."),
-  numberOfTesters: z.coerce.number().min(1).max(14),
-  testDuration: z.coerce.number().min(1).max(16),
+  numberOfTesters: z.coerce.number().min(1).max(20),
+  testDuration: z.coerce.number().min(1).max(20),
 });
 
 type SubmissionFormData = z.infer<typeof submissionSchema>;
@@ -140,7 +139,6 @@ const Section = ({
 export default function SubmitAppPage() {
   const [activeStep, setActiveStep] = useState(formSteps[0].id);
   const [isErrorModalOpen, setIsErrorModalOpen] = useState(false);
-  const { theme } = useTheme();
   const [cost, setCost] = useState(0);
 
   const form = useForm<SubmissionFormData>({

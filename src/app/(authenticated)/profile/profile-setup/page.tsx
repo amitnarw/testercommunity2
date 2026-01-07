@@ -14,6 +14,7 @@ import {
   Smartphone,
 } from "lucide-react";
 import Link from "next/link";
+import { countries } from "@/lib/countries";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   UserProfileType,
@@ -205,7 +206,28 @@ function ProfileSetupPage() {
     isPending: profileDataIsPending,
     isSuccess: profileDataIsSuccess,
     isError: profileDataIsError,
-  } = useProfileDataSave();
+    reset: profileDataReset,
+  } = useProfileDataSave({
+    onSuccess: () => {
+      if (profileData?.initial) {
+        setIsSubmitted(true);
+      } else {
+        toast({
+          title: "Data saved",
+          description: "Your profile data is saved successfully.",
+        });
+      }
+    },
+    onError: (data) => {
+      const errorMessage =
+        data instanceof Error ? data.message : JSON.stringify(data);
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: errorMessage,
+      });
+    },
+  });
 
   const handleSubmit = () => {
     if (
@@ -221,27 +243,7 @@ function ProfileSetupPage() {
       setPreviousStep(0);
       setCurrentStep(1);
     } else {
-      mutate(profileData, {
-        onSuccess: () => {
-          if (profileData?.initial) {
-            setIsSubmitted(true);
-          } else {
-            toast({
-              title: "Data saved",
-              description: "Your profile data is saved successfully.",
-            });
-          }
-        },
-        onError: (data) => {
-          const errorMessage =
-            data instanceof Error ? data.message : JSON.stringify(data);
-          toast({
-            variant: "destructive",
-            title: "Error",
-            description: errorMessage,
-          });
-        },
-      });
+      mutate(profileData);
     }
   };
 
@@ -467,10 +469,10 @@ function ProfileSetupPage() {
                     </Button>
                   ) : (
                     <LoadingButton
+                      className="text-sm sm:text-base"
                       isLoading={profileDataIsPending}
                       isSuccess={profileDataIsSuccess}
                       isError={profileDataIsError}
-                      className="text-sm sm:text-base"
                       onClick={handleSubmit}
                     >
                       <div className="flex flex-row items-center gap-2 sm:gap-4">
@@ -907,6 +909,73 @@ const DeviceStep = ({ profileData, setProfileData }: ProfileStepperProps) => (
 const ContactStep = ({ profileData, setProfileData }: ProfileStepperProps) => (
   <div className="overflow-y-auto h-full">
     <StepWrapper>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="flex flex-col gap-2">
+          <Label>Country</Label>
+          <Select
+            value={profileData?.country || ""}
+            onValueChange={(value) => {
+              const country = countries.find((c) => c.name === value);
+              setProfileData((prev) => ({
+                ...prev,
+                country: value,
+                phone: country ? country.dial_code : prev.phone,
+              }));
+            }}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Select Country" />
+            </SelectTrigger>
+            <SelectContent>
+              {countries.map((country) => (
+                <SelectItem key={country.code} value={country.name}>
+                  {country.name} ({country.dial_code})
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+        </div>
+        <div className="flex flex-col gap-2">
+          <Label>Phone Number</Label>
+          <Input
+            type="tel"
+            placeholder="Phone Number"
+            value={profileData?.phone || ""}
+            disabled={!profileData?.country}
+            onChange={(e) => {
+              const value = e.target.value;
+              const country = countries.find(
+                (c) => c.name === profileData?.country
+              );
+
+              if (country) {
+                // If the user tries to delete the dial code, prevent it or reset
+                if (!value.startsWith(country.dial_code)) {
+                  if (value.length < country.dial_code.length) {
+                    setProfileData((prev) => ({
+                      ...prev,
+                      phone: country.dial_code,
+                    }));
+                  }
+                  return;
+                }
+
+                const numberPart = value.slice(country.dial_code.length);
+
+                // Allow only digits and check length
+                if (
+                  numberPart.length <= country.length &&
+                  /^\d*$/.test(numberPart)
+                ) {
+                  setProfileData((prev) => ({ ...prev, phone: value }));
+                }
+              } else {
+                setProfileData((prev) => ({ ...prev, phone: value }));
+              }
+            }}
+          />
+        </div>
+      </div>
       <div>
         <Label>Why are you using our service?</Label>
         <RadioGroup
