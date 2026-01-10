@@ -166,31 +166,65 @@ export function ProfileBentoGrid() {
 
           {/* Bottom: Settings & Support Split */}
           <div className="grid grid-cols-2 gap-4 h-[240px]">
-            <Card href="/settings" delay={0.2} className="h-full">
-              <div className="flex flex-col h-full justify-between items-center text-center">
-                <div className="p-4 rounded-full bg-secondary text-secondary-foreground group-hover:scale-110 transition-transform duration-300">
-                  <Settings className="w-6 h-6" />
+            {/* Settings Card - Ambient Aurora (Cyan) */}
+            <Card
+              href="/settings"
+              delay={0.2}
+              className="h-full group/settings !p-6 flex flex-col justify-between bg-white dark:bg-zinc-950  transition-all duration-500 overflow-hidden relative shadow-sm border-none"
+            >
+              {/* Ambient Glow */}
+              <div className="absolute top-[-20%] right-[-20%] w-32 h-32 bg-cyan-500/10 dark:bg-cyan-500/20 rounded-full blur-[50px] group-hover/settings:bg-cyan-400/20 dark:group-hover/settings:bg-cyan-400/30 group-hover/settings:scale-150 transition-all duration-700 ease-in-out" />
+              <div className="absolute bottom-[-20%] left-[-10%] w-24 h-24 bg-blue-600/5 dark:bg-blue-600/10 rounded-full blur-[40px] group-hover/settings:bg-blue-500/10 dark:group-hover/settings:bg-blue-500/20 transition-all duration-700" />
+
+              {/* Top: Icon */}
+              <div className="relative z-10">
+                <div className="w-12 h-12 rounded-2xl bg-zinc-100/50 dark:bg-zinc-900/40 border border-zinc-200/50 dark:border-white/10 backdrop-blur-md flex items-center justify-center group-hover/settings:scale-105 group-hover/settings:border-cyan-500/30 group-hover/settings:bg-cyan-500/5 dark:group-hover/settings:bg-cyan-500/10 transition-all duration-300">
+                  <Settings className="w-6 h-6 text-cyan-600 dark:text-cyan-200 group-hover/settings:text-cyan-500 dark:group-hover/settings:text-cyan-100 transition-colors duration-300" />
                 </div>
-                <div>
-                  <h4 className="font-semibold">Settings</h4>
-                  <p className="text-xs text-muted-foreground mt-1">
-                    Preferences
-                  </p>
-                </div>
+              </div>
+
+              {/* Bottom: Typography */}
+              <div className="relative z-10 space-y-1">
+                <h4 className="text-lg font-bold text-zinc-900 dark:text-white tracking-tight flex items-center gap-2">
+                  Settings
+                  <span className="opacity-0 -translate-x-2 group-hover/settings:opacity-100 group-hover/settings:translate-x-0 transition-all duration-300">
+                    <ChevronRight className="w-4 h-4 text-cyan-500 dark:text-cyan-400" />
+                  </span>
+                </h4>
+                <p className="text-xs text-zinc-500 dark:text-zinc-400 font-medium group-hover/settings:text-zinc-700 dark:group-hover/settings:text-zinc-300 transition-colors">
+                  Preferences & Controls
+                </p>
               </div>
             </Card>
 
-            <Card href="/support" delay={0.3} className="h-full">
-              <div className="flex flex-col h-full justify-between items-center text-center">
-                <div className="p-4 rounded-full bg-secondary text-secondary-foreground group-hover:scale-110 transition-transform duration-300">
-                  <Headphones className="w-6 h-6" />
+            {/* Support Card - Ambient Aurora (Violet) */}
+            <Card
+              href="/support"
+              delay={0.3}
+              className="h-full group/support !p-6 flex flex-col justify-between bg-white dark:bg-zinc-950 border-none transition-all duration-500 overflow-hidden relative shadow-sm hover:shadow-violet-500/5"
+            >
+              {/* Ambient Glow */}
+              <div className="absolute top-[-20%] right-[-20%] w-32 h-32 bg-violet-600/10 dark:bg-violet-600/20 rounded-full blur-[50px] group-hover/support:bg-violet-500/20 dark:group-hover/support:bg-violet-500/30 group-hover/support:scale-150 transition-all duration-700 ease-in-out" />
+              <div className="absolute bottom-[-20%] left-[-10%] w-24 h-24 bg-fuchsia-600/5 dark:bg-fuchsia-600/10 rounded-full blur-[40px] group-hover/support:bg-fuchsia-500/10 dark:group-hover/support:bg-fuchsia-500/20 transition-all duration-700" />
+
+              {/* Top: Icon */}
+              <div className="relative z-10">
+                <div className="w-12 h-12 rounded-2xl bg-zinc-100/50 dark:bg-zinc-900/40 border border-zinc-200/50 dark:border-white/10 backdrop-blur-md flex items-center justify-center group-hover/support:scale-105 group-hover/support:border-violet-500/30 group-hover/support:bg-violet-500/5 dark:group-hover/support:bg-violet-500/10 transition-all duration-300">
+                  <Headphones className="w-6 h-6 text-violet-600 dark:text-violet-200 group-hover/support:text-violet-500 dark:group-hover/support:text-violet-100 transition-colors duration-300" />
                 </div>
-                <div>
-                  <h4 className="font-semibold">Support</h4>
-                  <p className="text-xs text-muted-foreground mt-1">
-                    24/7 Help
-                  </p>
-                </div>
+              </div>
+
+              {/* Bottom: Typography */}
+              <div className="relative z-10 space-y-1">
+                <h4 className="text-lg font-bold text-zinc-900 dark:text-white tracking-tight flex items-center gap-2">
+                  Support
+                  <span className="opacity-0 -translate-x-2 group-hover/support:opacity-100 group-hover/support:translate-x-0 transition-all duration-300">
+                    <ChevronRight className="w-4 h-4 text-violet-500 dark:text-violet-400" />
+                  </span>
+                </h4>
+                <p className="text-xs text-zinc-500 dark:text-zinc-400 font-medium group-hover/support:text-zinc-700 dark:group-hover/support:text-zinc-300 transition-colors">
+                  24/7 Expert Chat
+                </p>
               </div>
             </Card>
           </div>

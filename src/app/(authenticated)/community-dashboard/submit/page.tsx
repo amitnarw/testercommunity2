@@ -50,6 +50,24 @@ import { useAppCategories, useGetUserWallet } from "@/hooks/useUser";
 import SkeletonSubmitAppBottom from "@/components/community-dashboard/submit-app-bottom-skeleton";
 import { LoadingButton } from "@/components/ui/loading-button";
 
+const androidVersions = [
+  "Android 5.0 (Lollipop)",
+  "Android 5.1 (Lollipop)",
+  "Android 6.0 (Marshmallow)",
+  "Android 7.0 (Nougat)",
+  "Android 7.1 (Nougat)",
+  "Android 8.0 (Oreo)",
+  "Android 8.1 (Oreo)",
+  "Android 9 (Pie)",
+  "Android 10 (Quince Tart)",
+  "Android 11 (Red Velvet Cake)",
+  "Android 12 (Snow Cone)",
+  "Android 12L (Snow Cone v2)",
+  "Android 13 (Tiramisu)",
+  "Android 14 (Upside Down Cake)",
+  "Android 15 (Vanilla Ice Cream)",
+];
+
 const submissionSchema = z.object({
   appLink: z.string().url("Please enter a valid Google Play testing URL."),
   appName: z.string().min(3, "App name must be at least 3 characters."),
@@ -67,9 +85,7 @@ const submissionSchema = z.object({
       50,
       "Please provide a detailed description of at least 50 characters."
     ),
-  testingInstructions: z
-    .string()
-    .min(50, "Please provide instructions of at least 50 characters."),
+  testingInstructions: z.string().optional(),
   androidVersion: z
     .string()
     .min(1, "Please specify the minimum Android version."),
@@ -473,7 +489,10 @@ export default function SubmitAppPage() {
                           render={({ field }) => (
                             <FormItem>
                               <Label htmlFor="testingInstructions">
-                                Instructions for Testers
+                                Instructions for Testers{" "}
+                                <span className="text-muted-foreground ml-1">
+                                  (Optional)
+                                </span>
                               </Label>
                               <FormControl>
                                 <Textarea
@@ -507,14 +526,23 @@ export default function SubmitAppPage() {
                               <Label htmlFor="androidVersion">
                                 Min. Android Version
                               </Label>
-                              <FormControl>
-                                <Input
-                                  id="androidVersion"
-                                  placeholder="e.g., 10+"
-                                  {...field}
-                                  className="py-0"
-                                />
-                              </FormControl>
+                              <Select
+                                onValueChange={field.onChange}
+                                defaultValue={field.value}
+                              >
+                                <FormControl>
+                                  <SelectTrigger className="py-0">
+                                    <SelectValue placeholder="Select Android version" />
+                                  </SelectTrigger>
+                                </FormControl>
+                                <SelectContent>
+                                  {androidVersions.map((version) => (
+                                    <SelectItem key={version} value={version}>
+                                      {version}
+                                    </SelectItem>
+                                  ))}
+                                </SelectContent>
+                              </Select>
                               <FormMessage />
                             </FormItem>
                           )}
