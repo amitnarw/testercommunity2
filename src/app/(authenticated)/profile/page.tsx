@@ -52,6 +52,7 @@ import {
 } from "@/components/ui/dialog";
 import { TransitionLink } from "@/components/transition-link";
 import { useTransitionRouter } from "@/context/transition-context";
+import { ProfileBentoGrid } from "@/components/profile-bento-grid";
 
 const profileSchema = z.object({
   first_name: z.string().min(2, "First name is required."),
@@ -581,6 +582,7 @@ export default function ProfilePage() {
             </Button>
           </div>
         </Card>
+        <ProfileBentoGrid />
       </div>
     </div>
   );
