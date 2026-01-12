@@ -12,7 +12,7 @@ import {
   FormMessage,
   FormLabel,
 } from "@/components/ui/form";
-import { ArrowRight, Eye, EyeOff, Moon, Sun } from "lucide-react";
+import { Eye, EyeOff, Moon, Sun } from "lucide-react";
 import { SiteLogo } from "@/components/icons";
 import { useTheme } from "next-themes";
 import { BackButton } from "@/components/back-button";

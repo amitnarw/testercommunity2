@@ -3,9 +3,8 @@
 import {
   Card,
   CardContent,
-  CardHeader,
-  CardTitle,
   CardFooter,
+  CardHeader,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import {
@@ -16,217 +15,444 @@ import {
   Search,
   Star,
   XCircle,
+  Smartphone,
 } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
-import { projects as allProjects } from "@/lib/data";
-import type { Project } from "@/lib/types";
+import type { HubSubmittedAppResponse } from "@/lib/types";
 import { Badge } from "@/components/ui/badge";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { BackButton } from "@/components/back-button";
 import { AppPagination } from "@/components/app-pagination";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import SubTabUI from "@/components/sub-tab-ui";
 import Confetti from "react-dom-confetti";
 import { useTransitionRouter } from "@/context/transition-context";
 import { PageHeader } from "@/components/page-header";
+import { useHubSubmittedApp, useHubSubmittedAppsCount } from "@/hooks/useUser";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const PROJECTS_PER_PAGE = 6;
 
-const getStatusConfig = (status: Project["status"]) => {
+const getStatusConfig = (status: HubSubmittedAppResponse["status"]) => {
   switch (status) {
-    case "In Review":
+    case "IN_REVIEW":
       return {
-        icon: <Search className="w-3 h-3" />,
+        icon: <Search className="w-3.5 h-3.5" />,
+        label: "In Review",
+        color: "text-blue-500",
+        bgColor: "bg-blue-500/10",
+        borderColor: "border-blue-500/20",
         description: "Our team is reviewing your submission.",
       };
-    case "In Testing":
+    case "IN_TESTING":
       return {
-        icon: <Clock className="w-3 h-3" />,
+        icon: <Clock className="w-3.5 h-3.5" />,
+        label: "In Testing",
+        color: "text-amber-500",
+        bgColor: "bg-amber-500/10",
+        borderColor: "border-amber-500/20",
         description: "Community members are actively testing your app.",
       };
-    case "Completed":
+    case "COMPLETED":
       return {
-        icon: <CheckCircle className="w-3 h-3" />,
+        icon: <CheckCircle className="w-3.5 h-3.5" />,
+        label: "Completed",
+        color: "text-emerald-500",
+        bgColor: "bg-emerald-500/10",
+        borderColor: "border-emerald-500/20",
         description: "Test cycle complete! Check your feedback.",
       };
-    case "Rejected":
+    case "REJECTED":
       return {
-        icon: <XCircle className="w-3 h-3" />,
+        icon: <XCircle className="w-3.5 h-3.5" />,
+        label: "Rejected",
+        color: "text-red-500",
+        bgColor: "bg-red-500/10",
+        borderColor: "border-red-500/20",
         description: "Submission rejected. Check review notes.",
       };
     default:
       return {
-        icon: <FileClock className="w-3 h-3" />,
+        icon: <FileClock className="w-3.5 h-3.5" />,
+        label: "Draft",
+        color: "text-muted-foreground",
+        bgColor: "bg-muted",
+        borderColor: "border-muted",
         description: "Your app is published and awaiting testers.",
       };
   }
 };
 
-const ProjectCard = ({ project }: { project: Project }) => {
-  const statusConfig = getStatusConfig(project.status as Project["status"]);
-  const isReviewOrDraft =
-    project.status === "In Review" ||
-    project.status === "Draft" ||
-    project.status === "Rejected";
+const ProjectCardSkeleton = () => {
+  return (
+    <div className="rounded-[1.5rem] border border-border/40 bg-card/50 p-6 h-full flex flex-col gap-4">
+      <div className="flex items-start gap-4">
+        <Skeleton className="w-16 h-16 rounded-2xl" />
+        <div className="flex-1 space-y-2">
+          <Skeleton className="h-5 w-3/4" />
+          <Skeleton className="h-4 w-1/2" />
+        </div>
+      </div>
+      <div className="space-y-2 flex-grow">
+        <Skeleton className="h-4 w-full" />
+        <Skeleton className="h-4 w-5/6" />
+      </div>
+      <div className="pt-4 border-t border-dashed border-border/50 flex justify-between">
+        <Skeleton className="h-4 w-20" />
+        <Skeleton className="h-4 w-20" />
+      </div>
+    </div>
+  );
+};
+
+const ProjectCard = ({ project }: { project: HubSubmittedAppResponse }) => {
+  const statusConfig = getStatusConfig(
+    project.status as HubSubmittedAppResponse["status"]
+  );
 
   return (
-    <Card
-      key={project.id}
-      className="group relative overflow-hidden rounded-2xl bg-background hover:shadow-lg transition-shadow duration-300 flex flex-col h-full border-0"
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      exit={{ opacity: 0, scale: 0.95 }}
+      whileHover={{ y: -5 }}
+      transition={{ duration: 0.2 }}
+      className="group h-full"
     >
       <Link
         href={`/community-dashboard/my-submissions/${project.id}`}
-        className="flex flex-col h-full"
+        className="block h-full"
       >
-        <CardHeader className="flex flex-row items-start gap-4 p-5">
-          <Image
-            src={project.icon}
-            alt={project.name}
-            width={48}
-            height={48}
-            className="rounded-lg border bg-secondary"
-            data-ai-hint={project.dataAiHint}
+        <Card className="h-full border-0 bg-background/40 hover:bg-background/60 backdrop-blur-md shadow-sm hover:shadow-xl hover:shadow-primary/5 transition-all duration-300 rounded-[1.5rem] overflow-hidden relative ring-1 ring-border/50 hover:ring-primary/20 flex flex-col">
+          {/* Status color glowing accent */}
+          <div
+            className={cn(
+              "absolute inset-x-0 top-0 h-1 opacity-60 transition-all duration-300 group-hover:opacity-100",
+              statusConfig.color.replace("text-", "bg-")
+            )}
           />
-          <div className="flex-grow overflow-hidden">
-            <CardTitle className="text-base">{project.name}</CardTitle>
-            <p className="text-xs text-muted-foreground">
-              {project.packageName}
-            </p>
-          </div>
-          <Badge
-            variant="outline"
-            className="ml-auto flex-shrink-0 absolute sm:static top-1 right-2 text-[10px] sm:text-xs"
-          >
-            {project.category}
-          </Badge>
-        </CardHeader>
-        <CardContent className="p-5 pt-0 flex-grow relative">
-          <p className="text-sm text-muted-foreground line-clamp-2 h-10">
-            {project.description}
-          </p>
-        </CardContent>
-        <CardFooter className="p-3 bg-secondary/50 m-2 rounded-lg mt-auto flex-col items-start gap-3">
-          <div className="flex items-center gap-2">
-            <div
-              className={cn(
-                "p-1.5 rounded-full bg-background",
-                project.status === "In Testing"
-                  ? "text-destructive"
-                  : project.status === "Completed"
-                  ? "text-green-600"
-                  : project.status === "Rejected"
-                  ? "text-red-500"
-                  : "text-muted-foreground"
-              )}
-            >
-              {statusConfig.icon}
+
+          <CardHeader className="p-6 pb-2 relative z-10">
+            <div className="flex items-start justify-between gap-4">
+              <div className="relative">
+                <div className="relative w-16 h-16 rounded-2xl overflow-hidden border border-border/50 shadow-sm group-hover:shadow-md transition-shadow">
+                  <Image
+                    src={project?.androidApp?.appLogoUrl}
+                    alt={project?.androidApp?.appName}
+                    fill
+                    className="object-cover"
+                  />
+                </div>
+                {/* Status Dot for quick glance */}
+                <div
+                  className={cn(
+                    "absolute -bottom-1 -right-1 w-5 h-5 rounded-full border-[3px] border-background flex items-center justify-center",
+                    statusConfig.bgColor
+                  )}
+                >
+                  <div
+                    className={cn(
+                      "w-2 h-2 rounded-full animate-pulse",
+                      statusConfig.color.replace("text-", "bg-")
+                    )}
+                  />
+                </div>
+              </div>
+
+              <div className="flex flex-col items-end gap-2">
+                <Badge
+                  variant="outline"
+                  className={cn(
+                    "rounded-full px-3 py-0.5 text-[10px] font-medium uppercase tracking-wider border",
+                    statusConfig.bgColor,
+                    statusConfig.color,
+                    statusConfig.borderColor
+                  )}
+                >
+                  {statusConfig.label}
+                </Badge>
+                <div className="text-[10px] text-muted-foreground flex items-center gap-1 bg-secondary/50 px-2 py-1 rounded-md">
+                  <Smartphone className="w-3 h-3" />
+                  Android {project?.minimumAndroidVersion}+
+                </div>
+              </div>
             </div>
-            <div>
-              <p className="text-xs text-muted-foreground">
-                {isReviewOrDraft
-                  ? statusConfig.description
-                  : `${project.testersCompleted} of ${project.testersStarted} testers completed.`}
+
+            <div className="mt-4">
+              <h3 className="font-bold text-lg leading-tight text-foreground group-hover:text-primary transition-colors line-clamp-1">
+                {project?.androidApp?.appName}
+              </h3>
+              <p className="text-xs font-mono text-muted-foreground mt-1 truncate opacity-70">
+                {project?.androidApp?.packageName}
               </p>
             </div>
-          </div>
-          <div className="flex justify-between w-full text-xs text-muted-foreground pt-2 border-t">
-            <div className="flex items-center gap-1">
-              <Star className="w-3 h-3 text-amber-500" />
-              <span className="font-semibold text-foreground">
-                {project.pointsCost.toLocaleString()} Pts
-              </span>
+          </CardHeader>
+
+          <CardContent className="p-6 py-4 flex-grow relative z-10">
+            <p className="text-sm text-muted-foreground/80 line-clamp-2 leading-relaxed">
+              {project?.androidApp?.description}
+            </p>
+          </CardContent>
+
+          <CardFooter className="p-0 mt-auto relative z-10">
+            <div className="w-full bg-secondary/30 backdrop-blur-sm border-t border-border/40 p-4">
+              <div className="flex items-center justify-between text-xs">
+                <div className="flex items-center gap-1.5 text-foreground/80 font-medium">
+                  <div className="p-1.5 rounded-full bg-amber-500/10 text-amber-500">
+                    <Star className="w-3.5 h-3.5 fill-amber-500/20" />
+                  </div>
+                  <span>{project?.points?.toLocaleString() ?? 0} Pts</span>
+                </div>
+
+                <div className="h-4 w-px bg-border/60" />
+
+                <div className="flex items-center gap-1.5 text-muted-foreground">
+                  <Clock className="w-3.5 h-3.5" />
+                  <span>{project?.totalDay ?? 7} Days</span>
+                </div>
+
+                <div className="h-4 w-px bg-border/60" />
+
+                <div className="flex items-center gap-1.5 text-muted-foreground">
+                  <div className="flex -space-x-2">
+                    {[...Array(Math.min(3, project?.totalTester || 0))].map(
+                      (_, i) => (
+                        <div
+                          key={i}
+                          className="w-5 h-5 rounded-full bg-muted border-2 border-background flex items-center justify-center text-[8px] overflow-hidden"
+                        >
+                          <div className="w-full h-full bg-gradient-to-tr from-primary/20 to-primary/5" />
+                        </div>
+                      )
+                    )}
+                  </div>
+                  <span className={cn("text-xs", statusConfig.color)}>
+                    {project?.currentTester}/{project?.totalTester}
+                  </span>
+                </div>
+              </div>
             </div>
-            <div className="flex items-center gap-1">
-              <Clock className="w-3 h-3" />
-              <span>{project.totalDays} Days</span>
-            </div>
-            <div className="flex items-center gap-1">
-              <span>Android {project.androidVersion}</span>
-            </div>
-          </div>
-        </CardFooter>
+          </CardFooter>
+        </Card>
       </Link>
-    </Card>
+    </motion.div>
   );
 };
 
 const EmptyState = () => (
-  <div className="col-span-full text-center py-20 bg-background rounded-2xl">
-    <FileClock className="mx-auto h-12 w-12 text-muted-foreground" />
-    <h3 className="mt-4 text-lg font-semibold">No Submissions Here</h3>
-    <p className="mt-2 text-sm text-muted-foreground">
-      This tab is empty. Check other tabs or submit a new app!
-    </p>
-    <Button asChild className="mt-6">
-      <Link href="/community-dashboard/submit">Submit Your First App</Link>
-    </Button>
+  <div className="col-span-full flex flex-col items-center justify-center py-24 relative overflow-hidden rounded-[2.5rem] bg-gradient-to-b from-muted/30 via-transparent to-transparent border border-white/5 dark:border-white/5">
+    {/* Ambient Background Glow */}
+    <div className="absolute inset-0 overflow-hidden pointer-events-none">
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-primary/5 rounded-full blur-[120px] opacity-50" />
+      <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent opacity-50" />
+    </div>
+
+    {/* floating 3D Animation Container */}
+    <div className="relative mb-8 z-10 group">
+      {/* Decorative orbital rings */}
+      <div className="absolute inset-0 border border-primary/20 rounded-full scale-[1.8] opacity-20 animate-[spin_10s_linear_infinite]" />
+      <div className="absolute inset-0 border border-dashed border-primary/20 rounded-full scale-[1.5] opacity-20 animate-[spin_15s_linear_infinite_reverse]" />
+
+      <motion.div
+        initial={{ y: 0 }}
+        animate={{ y: [-8, 8, -8] }}
+        transition={{
+          repeat: Infinity,
+          duration: 6,
+          ease: "easeInOut",
+        }}
+        className="relative"
+      >
+        {/* Main Card Element */}
+        <div className="w-20 h-20 bg-gradient-to-br from-background via-muted to-muted/50 rounded-3xl shadow-2xl flex items-center justify-center border border-white/40 dark:border-white/10 relative z-10 backdrop-blur-md">
+          <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-primary/10 to-transparent opacity-50" />
+          <FileClock className="w-10 h-10 text-primary drop-shadow-[0_0_15px_rgba(var(--primary-rgb),0.5)]" />
+        </div>
+
+        {/* Floating Abstract Elements */}
+        <motion.div
+          animate={{ y: [-5, 5, -5], x: [5, -5, 5] }}
+          transition={{ repeat: Infinity, duration: 4, delay: 0.5 }}
+          className="absolute -right-4 -top-4 bg-background/80 backdrop-blur-xl p-2 rounded-xl shadow-xl border border-white/20"
+        >
+          <div className="w-2 h-2 bg-green-500 rounded-full shadow-[0_0_10px_rgba(34,197,94,0.5)]" />
+        </motion.div>
+
+        <motion.div
+          animate={{ y: [5, -5, 5], x: [-5, 5, -5] }}
+          transition={{ repeat: Infinity, duration: 5, delay: 1 }}
+          className="absolute -left-3 -bottom-3 bg-background/80 backdrop-blur-xl p-2 rounded-xl shadow-xl border border-white/20"
+        >
+          <div className="w-2 h-2 bg-blue-500 rounded-full shadow-[0_0_10px_rgba(59,130,246,0.5)]" />
+        </motion.div>
+
+        {/* Glossy overlay effect */}
+        <div className="absolute -inset-1 rounded-[2rem] bg-gradient-to-tr from-white/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+      </motion.div>
+    </div>
+
+    {/* Content */}
+    <div className="relative z-10 text-center max-w-sm px-6">
+      <h3 className="text-xl font-bold text-foreground mb-3 tracking-tight">
+        Your Showcase is Empty
+      </h3>
+      <p className="text-muted-foreground text-sm mb-8 leading-relaxed">
+        Ready to launch? Submit your app to start gathering valuable feedback.
+      </p>
+
+      <Button
+        asChild
+        className="h-11 px-8 rounded-full bg-primary text-primary-foreground font-semibold shadow-lg shadow-primary/25 hover:shadow-primary/40 hover:scale-105 transition-all duration-300"
+      >
+        <Link
+          href="/community-dashboard/submit"
+          className="flex items-center gap-2"
+        >
+          <span>Submit App</span>
+          <PlusCircle className="w-4 h-4" />
+        </Link>
+      </Button>
+    </div>
   </div>
 );
 
-const PaginatedProjectList = ({ projects }: { projects: Project[] }) => {
+const PaginatedProjectList = ({
+  projects,
+  isLoading,
+}: {
+  projects: HubSubmittedAppResponse[] | undefined;
+  isLoading: boolean;
+}) => {
   const [currentPage, setCurrentPage] = useState(1);
-  const totalPages = Math.ceil(projects.length / PROJECTS_PER_PAGE);
+  const totalPages = Math.ceil((projects?.length || 0) / PROJECTS_PER_PAGE);
   const startIndex = (currentPage - 1) * PROJECTS_PER_PAGE;
   const endIndex = startIndex + PROJECTS_PER_PAGE;
-  const currentProjects = projects.slice(startIndex, endIndex);
+  const currentProjects = projects?.slice(startIndex, endIndex);
 
   const handlePageChange = (page: number) => {
     if (page < 1 || page > totalPages) return;
     setCurrentPage(page);
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
+  if (isLoading) {
+    return (
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 animate-in fade-in zoom-in duration-500">
+        {Array.from({ length: 6 }).map((_, i) => (
+          <div key={i} className="h-[320px]">
+            <ProjectCardSkeleton />
+          </div>
+        ))}
+      </div>
+    );
+  }
+
   return (
-    <>
-      {currentProjects.length > 0 ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {currentProjects.map((project) => (
-            <ProjectCard key={project.id} project={project} />
-          ))}
-        </div>
-      ) : (
-        <EmptyState />
-      )}
-      <AppPagination
-        currentPage={currentPage}
-        totalPages={totalPages}
-        onPageChange={handlePageChange}
-      />
-    </>
+    <AnimatePresence mode="wait">
+      <motion.div
+        key={currentPage}
+        initial={{ opacity: 0, x: 20 }}
+        animate={{ opacity: 1, x: 0 }}
+        exit={{ opacity: 0, x: -20 }}
+        transition={{ duration: 0.3 }}
+        className="min-h-[400px]"
+      >
+        {currentProjects && currentProjects?.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 auto-rows-fr">
+            {currentProjects?.map((project, index) => (
+              <ProjectCard key={project.id} project={project} />
+            ))}
+          </div>
+        ) : (
+          <EmptyState />
+        )}
+        {currentProjects && currentProjects.length > 0 && (
+          <div className="mt-8">
+            <AppPagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={handlePageChange}
+            />
+          </div>
+        )}
+      </motion.div>
+    </AnimatePresence>
   );
+};
+
+const STATUS_MAPPING: Record<string, string> = {
+  "in-review": "IN_REVIEW",
+  draft: "DRAFT",
+  rejected: "REJECTED",
+  testing: "IN_TESTING",
+  completed: "COMPLETED",
+  "on-hold": "ON_HOLD",
+  requested: "REQUESTED",
+  available: "AVAILABLE",
 };
 
 export default function MySubmissionsPage() {
   const router = useTransitionRouter();
 
-  const inReviewApps = allProjects.filter((p) => p.status === "In Review");
-  const inTestingApps = allProjects.filter((p) => p.status === "In Testing");
-  const completedApps = allProjects.filter((p) => p.status === "Completed");
-  const rejectedApps = allProjects.filter((p) => p.status === "Rejected");
-
   const [mainTab, setMainTab] = useState("pending");
   const [pendingSubTab, setPendingSubTab] = useState("in-review");
+
+  const openPage = (page: string) => {
+    router.push(page);
+  };
+
+  const activeTab = mainTab === "pending" ? pendingSubTab : mainTab;
+  const backendType = STATUS_MAPPING[activeTab] || "IN_REVIEW";
+
+  const {
+    data: submittedAppsData,
+    isPending: submittedAppsIsPending,
+    isError: submittedAppsIsError,
+    error: submittedAppsError,
+  } = useHubSubmittedApp({
+    type: backendType,
+  });
+
+  const {
+    data: submittedAppsCountData,
+    isPending: submittedAppsCountIsPending,
+  } = useHubSubmittedAppsCount();
 
   const mainTabs = [
     {
       label: "Pending",
       value: "pending",
-      count: inReviewApps.length + rejectedApps.length,
+      count:
+        (submittedAppsCountData?.IN_REVIEW || 0) +
+        (submittedAppsCountData?.DRAFT || 0) +
+        (submittedAppsCountData?.REJECTED || 0),
     },
-    { label: "Testing", value: "testing", count: inTestingApps.length },
-    { label: "Completed", value: "completed", count: completedApps.length },
+    {
+      label: "Testing",
+      value: "testing",
+      count: submittedAppsCountData?.IN_TESTING || 0,
+    },
+    {
+      label: "Completed",
+      value: "completed",
+      count: submittedAppsCountData?.COMPLETED || 0,
+    },
   ];
 
   const pendingTabs = [
-    { label: "In Review", value: "in-review", count: inReviewApps.length },
-    { label: "Rejected", value: "rejected", count: rejectedApps.length },
+    {
+      label: "In Review",
+      value: "in-review",
+      count: submittedAppsCountData?.IN_REVIEW || 0,
+    },
+    {
+      label: "Rejected",
+      value: "rejected",
+      count: submittedAppsCountData?.REJECTED || 0,
+    },
   ];
-
-  const openPage = (page: string) => {
-    router.push(page);
-  };
 
   return (
     <>
@@ -242,83 +468,113 @@ export default function MySubmissionsPage() {
           stagger: 3,
           width: "10px",
           height: "10px",
-          colors: ["#a864fd", "#29cdff", "#78ff44", "#ff718d", "#fdff6a"],
         }}
       />
-      <div className="min-h-screen mb-8">
+      <div className="min-h-screen mb-12">
         <div className="container mx-auto px-4 md:px-6">
-          <main>
+          <main className="space-y-8">
             <PageHeader
-              title="Submissions"
+              title="My Submissions"
               backHref="/community-dashboard"
-              className="w-1/2 px-0"
+              className="w-full sm:w-auto px-0 border-0 pb-0"
             />
-            <header className="mb-2 sm:mb-8 pt-1">
-              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-8">
-                <div className="flex flex-row items-center justify-end gap-4 w-full">
-                  <Button
-                    className="bg-gradient-to-b from-primary to-primary/40 text-primary-foreground px-3 h-8 sm:p-auto sm:h-10"
-                    onClick={() => openPage("/community-dashboard/submit")}
-                  >
-                    <PlusCircle className="h-4 w-4 absolute sm:static top-0 sm:top-auto left-0 sm:left-auto scale-[2] sm:scale-100 text-white/20 sm:text-white" />
-                    <span>Submit New App</span>
-                  </Button>
-                </div>
+            <div className="flex flex-row items-center justify-end gap-4 w-full">
+              <Button
+                className="bg-gradient-to-b from-primary to-primary/40 text-primary-foreground px-3 h-8 sm:p-auto sm:h-10"
+                onClick={() => openPage("/community-dashboard/submit")}
+              >
+                <PlusCircle className="h-4 w-4 absolute sm:static top-0 sm:top-auto left-0 sm:left-auto scale-[2] sm:scale-100 text-white/20 sm:text-white" />
+                <span>Submit New App</span>
+              </Button>
+            </div>
+
+            <Tabs
+              value={mainTab}
+              onValueChange={setMainTab}
+              className="w-full space-y-8"
+            >
+              <div className="sticky top-0 z-30 backdrop-blur-xl py-2 -mx-4 px-4 md:mx-0 md:px-0">
+                <TabsList className="relative grid w-full grid-cols-3 bg-muted p-1 h-auto rounded-lg">
+                  {mainTabs.map((tab) => {
+                    const isSelected = mainTab === tab.value;
+                    return (
+                      <TabsTrigger
+                        key={tab.value}
+                        value={tab.value}
+                        className={cn(
+                          "relative px-4 text-sm font-medium rounded-lg transition-all duration-300",
+                          isSelected
+                            ? "text-foreground shadow-sm"
+                            : "text-muted-foreground hover:text-foreground hover:bg-background/40"
+                        )}
+                      >
+                        {isSelected && (
+                          <motion.div
+                            layoutId="activeTab"
+                            className="absolute inset-0 bg-background rounded-lg shadow-sm"
+                            transition={{
+                              type: "spring",
+                              bounce: 0.2,
+                              duration: 0.6,
+                            }}
+                          />
+                        )}
+                        <span className="relative z-10 flex items-center justify-center gap-2">
+                          {tab.label}
+                          {submittedAppsCountIsPending ? (
+                            <Skeleton className="w-4 h-4 rounded-full" />
+                          ) : (
+                            <span
+                              className={cn(
+                                "text-[10px] px-1.5 py-0.5 rounded-full",
+                                isSelected
+                                  ? "bg-primary/10 text-primary"
+                                  : "bg-muted text-muted-foreground group-hover:bg-muted/80"
+                              )}
+                            >
+                              {tab.count}
+                            </span>
+                          )}
+                        </span>
+                      </TabsTrigger>
+                    );
+                  })}
+                </TabsList>
               </div>
-            </header>
 
-            <Tabs value={mainTab} onValueChange={setMainTab} className="w-full">
-              <TabsList className="relative grid w-full grid-cols-3 bg-muted p-1 h-auto rounded-lg">
-                {mainTabs.map((tab) => {
-                  const isSelected = mainTab === tab.value;
-                  return (
-                    <TabsTrigger
-                      key={tab.value}
-                      value={tab.value}
-                      className={`relative px-3 py-2 text-xs sm:text-sm font-medium rounded-lg transition-colors duration-200 ${
-                        isSelected
-                          ? "text-foreground"
-                          : "hover:bg-background/50"
-                      }`}
-                    >
-                      {isSelected && (
-                        <motion.span
-                          layoutId="bubble"
-                          className="absolute inset-0 z-10 bg-background rounded-lg"
-                          transition={{
-                            type: "spring",
-                            bounce: 0.2,
-                            duration: 0.6,
-                          }}
-                        />
-                      )}
-                      <span className="relative z-20">
-                        {tab.label} ({tab.count})
-                      </span>
-                    </TabsTrigger>
-                  );
-                })}
-              </TabsList>
-              <TabsContent value="pending" className="mt-6">
-                <SubTabUI
-                  pendingTabs={pendingTabs}
-                  setPendingSubTab={setPendingSubTab}
-                  pendingSubTab={pendingSubTab}
-                />
+              <div className="min-h-[500px]">
+                <TabsContent
+                  value="pending"
+                  className="space-y-6 focus-visible:ring-0"
+                >
+                  <div className="bg-muted/30 p-1.5 rounded-xl inline-flex gap-1 border border-border/50">
+                    <SubTabUI
+                      pendingTabs={pendingTabs}
+                      setPendingSubTab={setPendingSubTab}
+                      pendingSubTab={pendingSubTab}
+                    />
+                  </div>
 
-                {pendingSubTab === "in-review" && (
-                  <PaginatedProjectList projects={inReviewApps} />
-                )}
-                {pendingSubTab === "rejected" && (
-                  <PaginatedProjectList projects={rejectedApps} />
-                )}
-              </TabsContent>
-              <TabsContent value="testing" className="mt-6">
-                <PaginatedProjectList projects={inTestingApps} />
-              </TabsContent>
-              <TabsContent value="completed" className="mt-6">
-                <PaginatedProjectList projects={completedApps} />
-              </TabsContent>
+                  <PaginatedProjectList
+                    projects={submittedAppsData}
+                    isLoading={submittedAppsIsPending}
+                  />
+                </TabsContent>
+
+                <TabsContent value="testing" className="focus-visible:ring-0">
+                  <PaginatedProjectList
+                    projects={submittedAppsData}
+                    isLoading={submittedAppsIsPending}
+                  />
+                </TabsContent>
+
+                <TabsContent value="completed" className="focus-visible:ring-0">
+                  <PaginatedProjectList
+                    projects={submittedAppsData}
+                    isLoading={submittedAppsIsPending}
+                  />
+                </TabsContent>
+              </div>
             </Tabs>
           </main>
         </div>

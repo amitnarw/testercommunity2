@@ -1,4 +1,5 @@
 import {
+  addHubApp,
   doSessionLogoutAll,
   doSessionLogoutSingle,
   getAllPricingPlans,
@@ -6,6 +7,8 @@ import {
   getAppCategories,
   getDasboardData,
   getHubData,
+  getHubSubmittedApp,
+  getSubmittedAppsCount,
   getUserData,
   getUserNotifications,
   getUserProfileData,
@@ -16,11 +19,14 @@ import {
 } from "@/lib/apiCalls";
 import {
   AppCategoriesResponse,
+  AppData,
   DashboardDataResponse,
   HubDataResponse,
+  HubSubmittedAppResponse,
   NotificationReponse,
   PricingResponse,
   SessionResponse,
+  SubmittedAppsCount,
   UserDataAttributes,
   UserProfileDataAttributes,
   UserWallerResponse,
@@ -125,6 +131,40 @@ export function useAppCategories() {
   const query = useQuery<AppCategoriesResponse[], Error>({
     queryFn: () => getAppCategories(),
     queryKey: ["useAppCategories"],
+  });
+
+  return query;
+}
+
+export function useAddHubApp(options?: UseMutationOptions<any, any, any>) {
+  const mutation = useMutation({
+    mutationFn: (payload) => addHubApp(payload),
+    onSuccess: (data) => {
+      console.log("Hub app added successfully: " + data);
+    },
+    onError: (data) => {
+      console.log("Hub app adding failed: " + data);
+    },
+    ...options,
+  });
+
+  return mutation;
+}
+
+export function useHubSubmittedApp({ type }: { type: string }) {
+  const query = useQuery<HubSubmittedAppResponse[], Error>({
+    queryFn: () => getHubSubmittedApp(type),
+    queryKey: ["useHubSubmittedApp", type],
+    enabled: !!type,
+  });
+
+  return query;
+}
+
+export function useHubSubmittedAppsCount() {
+  const query = useQuery<SubmittedAppsCount, Error>({
+    queryFn: () => getSubmittedAppsCount(),
+    queryKey: ["useHubSubmittedAppsCount"],
   });
 
   return query;
