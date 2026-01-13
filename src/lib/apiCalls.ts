@@ -423,7 +423,7 @@ export async function getHubSubmittedApp(
     );
     return response?.data?.data;
   } catch (error) {
-    console.error("Error fetching app categories:", error);
+    console.error("Error fetching submitted hub apps:", error);
     if (axios.isAxiosError(error)) {
       const status = error.response?.status;
       const responseData = error.response?.data;
@@ -448,6 +448,52 @@ export async function getSubmittedAppsCount(): Promise<SubmittedAppsCount> {
     return response?.data?.data;
   } catch (error) {
     console.error("Error fetching app categories:", error);
+    if (axios.isAxiosError(error)) {
+      const status = error.response?.status;
+      const responseData = error.response?.data;
+      console.error("Axios error:", status, responseData);
+
+      throw new Error(
+        responseData?.message || error.message || "Unknown Axios error"
+      );
+    } else if (error instanceof Error) {
+      throw new Error(error.message);
+    } else {
+      throw new Error(JSON.stringify(error));
+    }
+  }
+}
+
+export async function getHubApps(
+  type: string
+): Promise<HubSubmittedAppResponse[]> {
+  try {
+    const response = await api.get(API_ROUTES.HUB + `/get-hub-apps/${type}`);
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error fetching hub apps:", error);
+    if (axios.isAxiosError(error)) {
+      const status = error.response?.status;
+      const responseData = error.response?.data;
+      console.error("Axios error:", status, responseData);
+
+      throw new Error(
+        responseData?.message || error.message || "Unknown Axios error"
+      );
+    } else if (error instanceof Error) {
+      throw new Error(error.message);
+    } else {
+      throw new Error(JSON.stringify(error));
+    }
+  }
+}
+
+export async function getHubAppsCount(): Promise<SubmittedAppsCount> {
+  try {
+    const response = await api.get(API_ROUTES.HUB + "/get-apps-count");
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error fetching hub apps count:", error);
     if (axios.isAxiosError(error)) {
       const status = error.response?.status;
       const responseData = error.response?.data;

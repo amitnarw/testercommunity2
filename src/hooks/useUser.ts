@@ -6,6 +6,8 @@ import {
   getAllSessions,
   getAppCategories,
   getDasboardData,
+  getHubApps,
+  getHubAppsCount,
   getHubData,
   getHubSubmittedApp,
   getSubmittedAppsCount,
@@ -165,6 +167,25 @@ export function useHubSubmittedAppsCount() {
   const query = useQuery<SubmittedAppsCount, Error>({
     queryFn: () => getSubmittedAppsCount(),
     queryKey: ["useHubSubmittedAppsCount"],
+  });
+
+  return query;
+}
+
+export function useHubApps({ type }: { type: string }) {
+  const query = useQuery<HubSubmittedAppResponse[], Error>({
+    queryFn: () => getHubApps(type),
+    queryKey: ["useHubApps", type],
+    enabled: !!type,
+  });
+
+  return query;
+}
+
+export function useHubAppsCount() {
+  const query = useQuery<SubmittedAppsCount, Error>({
+    queryFn: () => getHubAppsCount(),
+    queryKey: ["useHubAppsCount"],
   });
 
   return query;

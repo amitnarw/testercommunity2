@@ -487,3 +487,72 @@ export interface SessionResponse {
   deviceType: "desktop" | "mobile" | "tablet";
   lastLogin: string;
 }
+
+export type DeviceCoverage = {
+  device: string;
+  testers: number;
+};
+
+export type OSCoverage = {
+  version: string;
+  testers: number;
+};
+
+export type Geography = {
+  country: string;
+  testers: number;
+  flag: string;
+};
+
+export type FeedbackBreakdown = {
+  total: number;
+  critical: number;
+  high: number;
+  low: number;
+};
+
+export type PerformanceMetrics = {
+  avgStartupTime: string;
+  frozenFrames: string;
+};
+
+export type ChartData = {
+  date: string;
+  bugs: number;
+};
+
+export type Project = {
+  id: number;
+  name: string;
+  packageName: string;
+  icon: string;
+  dataAiHint?: string;
+  category: string;
+  status: "In Testing" | "In Review" | "Completed" | "Draft" | "Rejected";
+  testersStarted: number;
+  testersCompleted: number;
+  totalDays: number;
+  avgTestersPerDay: number;
+  startedFrom: string;
+  description: string;
+  testingInstructions: string;
+  androidVersion: string;
+  pointsCost: number;
+  crashFreeRate: number;
+  overallRating: number;
+  feedbackBreakdown: FeedbackBreakdown;
+  performanceMetrics: PerformanceMetrics;
+  deviceCoverage: DeviceCoverage[];
+  osCoverage: OSCoverage[];
+  topGeographies: Geography[];
+  feedback: ProjectFeedback[];
+  chartData: ChartData[];
+  reviewNotes?: string;
+  testers: TesterDetails[];
+  rejectionReason?: {
+    title: string;
+    description: string;
+    imageUrl: string;
+    dataAiHint: string;
+  };
+};

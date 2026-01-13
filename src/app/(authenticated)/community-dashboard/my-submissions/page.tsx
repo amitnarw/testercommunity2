@@ -23,7 +23,8 @@ import type { HubSubmittedAppResponse } from "@/lib/types";
 import { Badge } from "@/components/ui/badge";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsContent } from "@/components/ui/tabs";
+import { CustomTabsList } from "@/components/custom-tabs-list";
 import { AppPagination } from "@/components/app-pagination";
 import { motion, AnimatePresence } from "framer-motion";
 import SubTabUI from "@/components/sub-tab-ui";
@@ -114,9 +115,6 @@ const ProjectCard = ({ project }: { project: HubSubmittedAppResponse }) => {
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, scale: 0.95 }}
       whileHover={{ y: -5 }}
       transition={{ duration: 0.2 }}
       className="group h-full"
@@ -143,20 +141,6 @@ const ProjectCard = ({ project }: { project: HubSubmittedAppResponse }) => {
                     alt={project?.androidApp?.appName}
                     fill
                     className="object-cover"
-                  />
-                </div>
-                {/* Status Dot for quick glance */}
-                <div
-                  className={cn(
-                    "absolute -bottom-1 -right-1 w-5 h-5 rounded-full border-[3px] border-background flex items-center justify-center",
-                    statusConfig.bgColor
-                  )}
-                >
-                  <div
-                    className={cn(
-                      "w-2 h-2 rounded-full animate-pulse",
-                      statusConfig.color.replace("text-", "bg-")
-                    )}
                   />
                 </div>
               </div>
@@ -353,9 +337,9 @@ const PaginatedProjectList = ({
     <AnimatePresence mode="wait">
       <motion.div
         key={currentPage}
-        initial={{ opacity: 0, x: 20 }}
-        animate={{ opacity: 1, x: 0 }}
-        exit={{ opacity: 0, x: -20 }}
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        exit={{ opacity: 0, y: -20 }}
         transition={{ duration: 0.3 }}
         className="min-h-[400px]"
       >
@@ -406,14 +390,10 @@ export default function MySubmissionsPage() {
   const activeTab = mainTab === "pending" ? pendingSubTab : mainTab;
   const backendType = STATUS_MAPPING[activeTab] || "IN_REVIEW";
 
-  const {
-    data: submittedAppsData,
-    isPending: submittedAppsIsPending,
-    isError: submittedAppsIsError,
-    error: submittedAppsError,
-  } = useHubSubmittedApp({
-    type: backendType,
-  });
+  const { data: submittedAppsData, isPending: submittedAppsIsPending } =
+    useHubSubmittedApp({
+      type: backendType,
+    });
 
   const {
     data: submittedAppsCountData,
@@ -476,7 +456,7 @@ export default function MySubmissionsPage() {
             <PageHeader
               title="My Submissions"
               backHref="/community-dashboard"
-              className="w-full sm:w-auto px-0 border-0 pb-0"
+              className="w-1/2 px-0"
             />
             <div className="flex flex-row items-center justify-end gap-4 w-full">
               <Button
@@ -493,67 +473,22 @@ export default function MySubmissionsPage() {
               onValueChange={setMainTab}
               className="w-full space-y-8"
             >
-              <div className="sticky top-0 z-30 backdrop-blur-xl py-2 -mx-4 px-4 md:mx-0 md:px-0">
-                <TabsList className="relative grid w-full grid-cols-3 bg-muted p-1 h-auto rounded-lg">
-                  {mainTabs.map((tab) => {
-                    const isSelected = mainTab === tab.value;
-                    return (
-                      <TabsTrigger
-                        key={tab.value}
-                        value={tab.value}
-                        className={cn(
-                          "relative px-4 text-sm font-medium rounded-lg transition-all duration-300",
-                          isSelected
-                            ? "text-foreground shadow-sm"
-                            : "text-muted-foreground hover:text-foreground hover:bg-background/40"
-                        )}
-                      >
-                        {isSelected && (
-                          <motion.div
-                            layoutId="activeTab"
-                            className="absolute inset-0 bg-background rounded-lg shadow-sm"
-                            transition={{
-                              type: "spring",
-                              bounce: 0.2,
-                              duration: 0.6,
-                            }}
-                          />
-                        )}
-                        <span className="relative z-10 flex items-center justify-center gap-2">
-                          {tab.label}
-                          {submittedAppsCountIsPending ? (
-                            <Skeleton className="w-4 h-4 rounded-full" />
-                          ) : (
-                            <span
-                              className={cn(
-                                "text-[10px] px-1.5 py-0.5 rounded-full",
-                                isSelected
-                                  ? "bg-primary/10 text-primary"
-                                  : "bg-muted text-muted-foreground group-hover:bg-muted/80"
-                              )}
-                            >
-                              {tab.count}
-                            </span>
-                          )}
-                        </span>
-                      </TabsTrigger>
-                    );
-                  })}
-                </TabsList>
-              </div>
+              <CustomTabsList
+                tabs={mainTabs}
+                activeTab={mainTab}
+                isLoading={submittedAppsCountIsPending}
+              />
 
               <div className="min-h-[500px]">
                 <TabsContent
                   value="pending"
                   className="space-y-6 focus-visible:ring-0"
                 >
-                  <div className="bg-muted/30 p-1.5 rounded-xl inline-flex gap-1 border border-border/50">
-                    <SubTabUI
-                      pendingTabs={pendingTabs}
-                      setPendingSubTab={setPendingSubTab}
-                      pendingSubTab={pendingSubTab}
-                    />
-                  </div>
+                  <SubTabUI
+                    pendingTabs={pendingTabs}
+                    setPendingSubTab={setPendingSubTab}
+                    pendingSubTab={pendingSubTab}
+                  />
 
                   <PaginatedProjectList
                     projects={submittedAppsData}

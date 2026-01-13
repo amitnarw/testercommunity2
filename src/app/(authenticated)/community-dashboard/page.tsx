@@ -11,6 +11,12 @@ import {
   LayoutPanelLeft,
   Activity,
   XCircle,
+  Gamepad2,
+  Trophy,
+  History,
+  AlertCircle,
+  Rocket,
+  Search,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -20,8 +26,9 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { communityApps, projects as allProjects } from "@/lib/data";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { projects as allProjects } from "@/lib/data";
+import { Tabs, TabsContent } from "@/components/ui/tabs";
+import { CustomTabsList } from "@/components/custom-tabs-list";
 import { CommunityAvailableAppCard } from "@/components/community-available-app-card";
 import { CommunityOngoingAppCard } from "@/components/community-ongoing-app-card";
 import { CommunityCompletedAppCard } from "@/components/community-completed-app-card";
@@ -31,11 +38,11 @@ import { motion } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
 import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
-import type { CommunityApp } from "@/lib/types";
+import type { CommunityApp, HubSubmittedAppResponse } from "@/lib/types";
 import SubTabUI from "@/components/sub-tab-ui";
-import { useHubData } from "@/hooks/useUser";
-import { AnimatedLink } from "@/components/ui/animated-link";
+import { useHubApps, useHubAppsCount, useHubData } from "@/hooks/useUser";
 import { useTransitionRouter } from "@/context/transition-context";
+import { AppCardSkeleton } from "@/components/app-card-skeleton";
 
 const APPS_PER_PAGE = 6;
 
@@ -56,12 +63,32 @@ const BentoCard = ({
 const PaginatedAppList = ({
   apps,
   emptyMessage,
+  emptyTitle = "No Apps Found",
+  emptyIcon: Icon = Search,
   card: CardComponent,
+  isLoading,
 }: {
   apps: CommunityApp[];
   emptyMessage: string;
+  emptyTitle?: string;
+  emptyIcon?: React.ElementType;
   card: React.FC<{ app: CommunityApp }>;
+  isLoading?: boolean;
 }) => {
+  if (isLoading) {
+    return (
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.5 }}
+        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+      >
+        {Array.from({ length: 6 }).map((_, i) => (
+          <AppCardSkeleton key={i} />
+        ))}
+      </motion.div>
+    );
+  }
   const [currentPage, setCurrentPage] = useState(1);
   const totalPages = Math.ceil(apps.length / APPS_PER_PAGE);
   const startIndex = (currentPage - 1) * APPS_PER_PAGE;
@@ -75,17 +102,37 @@ const PaginatedAppList = ({
 
   return (
     <>
-      {currentApps.length > 0 ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {currentApps.map((app) => (
-            <CardComponent key={app.id} app={app} />
-          ))}
-        </div>
-      ) : (
-        <div className="text-center py-12 text-muted-foreground col-span-full">
-          {emptyMessage}
-        </div>
-      )}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3 }}
+      >
+        {currentApps.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {currentApps.map((app) => (
+              <CardComponent key={app.id} app={app} />
+            ))}
+          </div>
+        ) : (
+          <div className="flex flex-col items-center justify-center py-20 text-center bg-card/50 rounded-3xl border border-dashed border-muted-foreground/20 relative overflow-hidden group">
+            <div className="absolute inset-0 bg-gradient-to-b from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+            <motion.div
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
+              className="p-6 bg-primary/10 rounded-full mb-6 relative z-10 ring-8 ring-primary/5"
+            >
+              <Icon className="w-10 h-10 text-primary" />
+            </motion.div>
+            <h3 className="text-xl font-bold mb-2 relative z-10">
+              {emptyTitle}
+            </h3>
+            <p className="text-muted-foreground max-w-sm relative z-10 px-4">
+              {emptyMessage}
+            </p>
+          </div>
+        )}
+      </motion.div>
       <AppPagination
         currentPage={currentPage}
         totalPages={totalPages}
@@ -172,35 +219,122 @@ export default function CommunityDashboardPage() {
 
   const router = useTransitionRouter();
 
-  const ongoingApps = communityApps.filter((app) => app.status === "ongoing");
-  const requestedApps = communityApps.filter(
-    (app) => app.status === "requested"
-  );
-  const rejectedRequestApps = communityApps.filter(
-    (app) => app.status === "request_rejected"
-  );
-  const completedApps = communityApps.filter(
-    (app) => app.status === "completed"
-  );
-  const availableApps = communityApps.filter(
-    (app) => app.status === "available"
-  );
+  const getBackendType = () => {
+    if (selectedTab === "available") return "AVAILABLE";
+    if (selectedTab === "completed") return "COMPLETED";
+    if (selectedTab === "ongoing") {
+      switch (ongoingSubTab) {
+        case "ongoing":
+          return "IN_TESTING";
+        case "requested":
+          return "REQUESTED";
+        case "rejected":
+          return "REJECTED";
+        default:
+          return "IN_TESTING";
+      }
+    }
+    return "AVAILABLE";
+  };
+  const backendType = getBackendType();
+
+  const { data: submittedAppsData, isPending: submittedAppsIsPending } =
+    useHubApps({
+      type: backendType,
+    });
+
+  const { data: hubDataCount, isPending: hubDataCountIsPending } =
+    useHubAppsCount();
+
+  const mapBackendAppToCommunityApp = (
+    app: HubSubmittedAppResponse
+  ): CommunityApp => {
+    return {
+      id: app?.id,
+      name: app?.androidApp?.appName,
+      icon: app?.androidApp?.appLogoUrl,
+      category: app?.androidApp?.appCategory?.name,
+      shortDescription: app?.androidApp?.description || "",
+      points: app?.points || 0,
+      androidVersion: app?.minimumAndroidVersion?.toString(),
+      estimatedTime: app?.averageTimeTesting || "0 min",
+      screenshots: [
+        app?.androidApp?.appScreenshotUrl1,
+        app?.androidApp?.appScreenshotUrl2,
+      ]
+        .filter(Boolean)
+        .map((url) => ({ url, alt: "Screenshot" })),
+      testingInstructions: app.instructionsForTester || "",
+      status: mapBackendStatusToFrontend(app.status),
+      progress: 0,
+      totalDays: app.totalDay,
+      rejectionReason: "", // Not provided in HubSubmittedAppResponse directly found in data types
+      completedDate: app.updatedAt.toString(),
+    };
+  };
+
+  const mapBackendStatusToFrontend = (
+    status: string
+  ): CommunityApp["status"] => {
+    switch (status) {
+      case "AVAILABLE":
+        return "available";
+      case "IN_TESTING":
+        return "ongoing";
+      case "COMPLETED":
+        return "completed";
+      case "REQUESTED":
+        return "requested";
+      case "REJECTED":
+        return "request_rejected";
+      default:
+        return "available";
+    }
+  };
+
+  const mappedApps = submittedAppsData?.map(mapBackendAppToCommunityApp) || [];
+
+  const ongoingCount =
+    (hubDataCount?.["IN_TESTING"] || 0) +
+    (hubDataCount?.["REQUESTED"] || 0) +
+    (hubDataCount?.["REJECTED"] || 0);
+
+  const completedCount = hubDataCount?.["COMPLETED"] || 0;
 
   const tabs = [
-    { label: "Available", value: "available", count: availableApps.length },
+    {
+      label: "Available",
+      value: "available",
+      count: hubDataCount?.["AVAILABLE"] || 0,
+    },
     {
       label: "Ongoing",
       value: "ongoing",
-      count:
-        ongoingApps.length + requestedApps.length + rejectedRequestApps.length,
+      count: ongoingCount,
     },
-    { label: "Completed", value: "completed", count: completedApps.length },
+    {
+      label: "Completed",
+      value: "completed",
+      count: completedCount,
+    },
   ];
 
   const ongoingTabs = [
-    { label: "Ongoing", value: "ongoing", count: ongoingApps.length },
-    { label: "Requested", value: "requested", count: requestedApps.length },
-    { label: "Rejected", value: "rejected", count: rejectedRequestApps.length },
+    {
+      label: "Ongoing",
+      value: "ongoing",
+      count: hubDataCount?.["IN_TESTING"] || 0,
+    },
+    {
+      label: "Requested",
+      value: "requested",
+      count: hubDataCount?.["REQUESTED"] || 0,
+    },
+    {
+      label: "Rejected",
+      value: "rejected",
+      count: hubDataCount?.["REJECTED"] || 0,
+    },
   ];
 
   const appsSubmitted = allProjects.length;
@@ -213,12 +347,7 @@ export default function CommunityDashboardPage() {
     0
   );
 
-  const {
-    data: hubData,
-    isPending: hubIsPending,
-    isError: hubIsError,
-    error: hubError,
-  } = useHubData();
+  const { data: hubData, isPending: hubIsPending } = useHubData();
 
   const openPage = (page: string) => {
     router.push(page);
@@ -280,11 +409,11 @@ export default function CommunityDashboardPage() {
                 <div className="grid grid-rows-2 grid-cols-1 sm:grid-cols-2 sm:grid-rows-1 gap-2 w-full mt-2 h-full">
                   <div className="text-center bg-secondary px-4 rounded-lg flex flex-row sm:flex-col items-center justify-between sm:justify-center">
                     <p className="text-xs text-muted-foreground">Ongoing</p>
-                    <p className="text-2xl font-bold">{ongoingApps.length}</p>
+                    <p className="text-2xl font-bold">{ongoingCount}</p>
                   </div>
                   <div className="text-center bg-secondary px-4 rounded-lg flex flex-row sm:flex-col items-center justify-between sm:justify-center">
                     <p className="text-xs text-muted-foreground">Completed</p>
-                    <p className="text-2xl font-bold">{completedApps.length}</p>
+                    <p className="text-2xl font-bold">{completedCount}</p>
                   </div>
                 </div>
               </BentoCard>
@@ -374,41 +503,19 @@ export default function CommunityDashboardPage() {
                 </DropdownMenu>
               </div>
             </div>
-            <TabsList className="relative grid w-full grid-cols-3 bg-muted p-1 rounded-lg h-auto mb-3">
-              {tabs.map((tab) => {
-                const isSelected = selectedTab === tab.value;
-
-                return (
-                  <TabsTrigger
-                    key={tab.value}
-                    value={tab.value}
-                    className={`relative px-3 py-2 text-xs sm:text-sm font-medium rounded-lg transition-colors duration-200 ${
-                      isSelected ? "text-foreground" : "hover:bg-background/50"
-                    }`}
-                  >
-                    {isSelected && (
-                      <motion.span
-                        layoutId="bubble"
-                        className="absolute inset-0 z-10 bg-background rounded-full"
-                        transition={{
-                          type: "spring",
-                          bounce: 0.2,
-                          duration: 0.6,
-                        }}
-                      />
-                    )}
-                    <span className="relative z-20">
-                      {tab.label} ({tab.count})
-                    </span>
-                  </TabsTrigger>
-                );
-              })}
-            </TabsList>
+            <CustomTabsList
+              tabs={tabs}
+              activeTab={selectedTab}
+              className="sticky top-0 z-30 backdrop-blur-xl py-2 -mx-4 px-4 md:mx-0 md:px-0 mb-6"
+            />
             <TabsContent value="available">
               <PaginatedAppList
-                apps={availableApps}
+                apps={mappedApps}
+                emptyTitle="No Available Apps"
                 emptyMessage="No available apps for testing right now. Check back soon!"
+                emptyIcon={Gamepad2}
                 card={CommunityAvailableAppCard}
+                isLoading={submittedAppsIsPending}
               />
             </TabsContent>
             <TabsContent value="ongoing" className="mt-6">
@@ -420,31 +527,43 @@ export default function CommunityDashboardPage() {
 
               {ongoingSubTab === "ongoing" && (
                 <PaginatedAppList
-                  apps={ongoingApps}
+                  apps={mappedApps}
+                  emptyTitle="No Ongoing Tests"
                   emptyMessage="You have no ongoing tests."
+                  emptyIcon={Rocket}
                   card={CommunityOngoingAppCard}
+                  isLoading={submittedAppsIsPending}
                 />
               )}
               {ongoingSubTab === "requested" && (
                 <PaginatedAppList
-                  apps={requestedApps}
+                  apps={mappedApps}
+                  emptyTitle="No Pending Requests"
                   emptyMessage="You have no pending test requests."
+                  emptyIcon={History}
                   card={RequestedAppCard}
+                  isLoading={submittedAppsIsPending}
                 />
               )}
               {ongoingSubTab === "rejected" && (
                 <PaginatedAppList
-                  apps={rejectedRequestApps}
+                  apps={mappedApps}
+                  emptyTitle="No Rejected Requests"
                   emptyMessage="You have no rejected test requests."
+                  emptyIcon={AlertCircle}
                   card={RejectedRequestCard}
+                  isLoading={submittedAppsIsPending}
                 />
               )}
             </TabsContent>
             <TabsContent value="completed">
               <PaginatedAppList
-                apps={completedApps}
+                apps={mappedApps}
+                emptyTitle="No Completed Tests"
                 emptyMessage="You have not completed any tests yet."
+                emptyIcon={Trophy}
                 card={CommunityCompletedAppCard}
+                isLoading={submittedAppsIsPending}
               />
             </TabsContent>
           </Tabs>
