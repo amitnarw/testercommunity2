@@ -47,7 +47,7 @@ export function CommunityAppCard({
           <div className="flex items-center gap-1.5">
             <Star className="w-4 h-4 text-amber-400" />
             <span className="font-semibold text-primary">
-              {app.points} Points
+              {app.rewardPoints} Points
             </span>
           </div>
           <div className="flex items-center gap-1.5">

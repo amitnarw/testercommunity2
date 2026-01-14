@@ -53,7 +53,7 @@ export function CommunityAvailableAppCard({
           <div className="flex justify-between w-full text-sm">
             <div className="flex items-center gap-1.5 text-primary font-bold">
               <Star className="w-4 h-4 text-amber-400 fill-amber-400" />
-              <span>{app?.points} Points</span>
+              <span>{app?.rewardPoints} Points</span>
             </div>
             <div className="flex items-center gap-1.5 text-muted-foreground">
               <Clock className="w-4 h-4" />

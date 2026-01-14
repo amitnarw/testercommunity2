@@ -56,7 +56,7 @@ export function CommunityCompletedAppCard({
               <span>Points Claimed</span>
               <div className="flex items-center gap-1.5 text-green-500 font-bold">
                 <Star className="w-4 h-4 fill-green-500" />
-                <span>{app.points}</span>
+                <span>{app.rewardPoints}</span>
               </div>
             </div>
             {app?.updatedAt && (

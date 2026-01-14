@@ -3,9 +3,10 @@ import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Smartphone, Star } from "lucide-react";
 import { Badge } from "./ui/badge";
+import { HubSubmittedAppResponse } from "@/lib/types";
 
 interface AvailableAppRowProps extends React.HTMLAttributes<HTMLDivElement> {
-  app: CommunityApp;
+  app: HubSubmittedAppResponse;
 }
 
 export function AvailableAppRow({ app, ...props }: AvailableAppRowProps) {
@@ -16,33 +17,35 @@ export function AvailableAppRow({ app, ...props }: AvailableAppRowProps) {
     >
       <div className="flex items-center gap-4">
         <Image
-          src={app.icon}
-          alt={app.name}
+          src={app?.androidApp?.appLogoUrl}
+          alt={app?.androidApp?.appName}
           width={48}
           height={48}
           className="rounded-lg border"
-          data-ai-hint={app.dataAiHint}
+          data-ai-hint={app?.androidApp?.appName}
         />
         <div>
-          <h3 className="font-semibold">{app.name}</h3>
+          <h3 className="font-semibold">{app?.androidApp?.appName}</h3>
           <p className="text-sm text-muted-foreground">
-            {app.shortDescription}
+            {app?.androidApp?.description}
           </p>
         </div>
       </div>
       <div className="hidden md:flex items-center gap-6 text-sm">
         <Badge variant="outline" className="rounded-full">
-          {app.category}
+          {app?.androidApp?.appCategory?.name}
         </Badge>
         <div className="flex items-center gap-1.5">
           <Smartphone className="w-4 h-4 text-muted-foreground" />
           <span className="text-muted-foreground">
-            Android {app.androidVersion}
+            Android {app?.minimumAndroidVersion}
           </span>
         </div>
         <div className="flex items-center gap-1.5">
           <Star className="w-4 h-4 text-amber-400" />
-          <span className="font-bold text-primary">{app.points} Points</span>
+          <span className="font-bold text-primary">
+            {app?.rewardPoints} Points
+          </span>
         </div>
       </div>
       <Button

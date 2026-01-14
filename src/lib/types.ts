@@ -152,7 +152,17 @@ export enum UserNotificationPreference {
   TEST_ASSIGNED = "TEST_ASSIGNED",
   COMMENT_ADDED = "COMMENT_ADDED",
   PROMOTIONS = "PROMOTIONS",
+  APP_SUBMISSION = "APP_SUBMISSION",
   OTHER = "OTHER",
+}
+
+export enum TesterStatus {
+  PENDING = "PENDING",
+  IN_PROGRESS = "IN_PROGRESS",
+  COMPLETED = "COMPLETED",
+  DROPPED = "DROPPED",
+  REMOVED = "REMOVED",
+  REJECTED = "REJECTED",
 }
 
 export type UserDataAttributes = {
@@ -287,7 +297,8 @@ export interface DashboardDataResponse {
     currentDay: number;
     totalDay: number;
     instructionsForTester: string | null;
-    points: number | null;
+    rewardPoints: number | null;
+    costPoints: number | null;
     averageTimeTesting: string | null;
     status:
       | "IN_REVIEW"
@@ -316,7 +327,8 @@ export interface AppData {
   currentDay: number;
   totalDay: number;
   instructionsForTester: string | null;
-  points: number | null;
+  rewardPoints: number | null;
+  costPoints: number | null;
   averageTimeTesting: string | null;
   minimumAndroidVersion: number;
   status:
@@ -375,7 +387,8 @@ export interface HubSubmittedAppResponse {
   currentDay: number;
   totalDay: number;
   instructionsForTester: string | null;
-  points: number | null;
+  rewardPoints: number | null;
+  costPoints: number | null;
   averageTimeTesting: string | null;
   minimumAndroidVersion: number;
   status: AppData["status"];
@@ -428,7 +441,9 @@ export interface NotificationReponse {
     | "FEEDBACK_RECEIVED"
     | "TEST_COMPLETED"
     | "BUG_REPORT"
+    | "BUG_REPORT"
     | "POINTS_AWARDED"
+    | "APP_SUBMISSION"
     | "OTHER";
   url: string | null;
   isActive: boolean;
@@ -520,6 +535,7 @@ export type Project = {
   dataAiHint?: string;
   category: string;
   status: "In Testing" | "In Review" | "Completed" | "Draft" | "Rejected";
+  testerStatus?: TesterStatus;
   testersStarted: number;
   testersCompleted: number;
   totalDays: number;
@@ -554,7 +570,7 @@ export type CommunityApp = {
   icon: string;
   shortDescription: string;
   category: string;
-  points: number;
+  rewardPoints: number;
   androidVersion: string;
   estimatedTime: string;
   dataAiHint?: string;
