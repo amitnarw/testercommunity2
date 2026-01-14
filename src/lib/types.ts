@@ -223,31 +223,6 @@ export type ProcessStep = {
   dataAiHint: string;
 };
 
-export type CommunityApp = {
-  id: number;
-  name: string;
-  icon: string;
-  dataAiHint?: string;
-  category: string;
-  shortDescription: string;
-  points: number;
-  androidVersion: string;
-  estimatedTime: string;
-  playStoreUrl?: string;
-  screenshots: { url: string; alt: string; dataAiHint?: string }[];
-  testingInstructions: string;
-  status:
-    | "available"
-    | "ongoing"
-    | "completed"
-    | "requested"
-    | "request_rejected";
-  progress?: number;
-  completedDate?: string;
-  totalDays: number;
-  rejectionReason?: string;
-};
-
 export type FaqItem = {
   question: string;
   answer: string;
@@ -287,6 +262,7 @@ export type SubmittedFeedback = {
   screenshot: string | null;
   tester: string;
   severity: "Critical" | "High" | "Medium" | "Low" | "N/A";
+  videoUrl?: string | null;
 };
 
 export interface ControlRoomResponse {
@@ -384,6 +360,15 @@ export interface HubSubmittedAppResponse {
   id: number;
   appId: number;
   appOwnerId: string;
+  appOwner: {
+    id: string;
+    createdAt: Date;
+    updatedAt: Date;
+    name: string;
+    email: string;
+    emailVerified: boolean;
+    image: string | null;
+  };
   appType: AppData["appType"];
   currentTester: number;
   totalTester: number;
@@ -394,6 +379,12 @@ export interface HubSubmittedAppResponse {
   averageTimeTesting: string | null;
   minimumAndroidVersion: number;
   status: AppData["status"];
+  statusDetails: {
+    title: string;
+    description: string;
+    image: string;
+    video: string;
+  } | null;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -555,4 +546,16 @@ export type Project = {
     imageUrl: string;
     dataAiHint: string;
   };
+};
+
+export type CommunityApp = {
+  id: number | string;
+  name: string;
+  icon: string;
+  shortDescription: string;
+  category: string;
+  points: number;
+  androidVersion: string;
+  estimatedTime: string;
+  dataAiHint?: string;
 };

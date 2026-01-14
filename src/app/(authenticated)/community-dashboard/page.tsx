@@ -36,9 +36,9 @@ import Link from "next/link";
 import { AppPagination } from "@/components/app-pagination";
 import { motion } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
-import Image from "next/image";
+import { SafeImage } from "@/components/safe-image";
 import { Badge } from "@/components/ui/badge";
-import type { CommunityApp, HubSubmittedAppResponse } from "@/lib/types";
+import type { HubSubmittedAppResponse } from "@/lib/types";
 import SubTabUI from "@/components/sub-tab-ui";
 import { useHubApps, useHubAppsCount, useHubData } from "@/hooks/useUser";
 import { useTransitionRouter } from "@/context/transition-context";
@@ -68,11 +68,11 @@ const PaginatedAppList = ({
   card: CardComponent,
   isLoading,
 }: {
-  apps: CommunityApp[];
+  apps: HubSubmittedAppResponse[];
   emptyMessage: string;
   emptyTitle?: string;
   emptyIcon?: React.ElementType;
-  card: React.FC<{ app: CommunityApp }>;
+  card: React.FC<{ app: HubSubmittedAppResponse }>;
   isLoading?: boolean;
 }) => {
   if (isLoading) {
@@ -142,21 +142,18 @@ const PaginatedAppList = ({
   );
 };
 
-const RequestedAppCard = ({ app }: { app: CommunityApp }) => (
-  <Link
-    href={`/community-dashboard/test/${app.id}`}
-    className="group block h-full"
-  >
+const RequestedAppCard = ({ app }: { app: HubSubmittedAppResponse }) => (
+  <Link href={`/community-dashboard/${app.id}`} className="group block h-full">
     <Card className="flex flex-col h-full overflow-hidden rounded-2xl transition-all duration-300 bg-secondary dark:bg-secondary/30 border-0 group-hover:-translate-y-1">
       <CardContent className="p-4 flex-grow flex flex-col">
         <div className="flex items-start gap-4 mb-4">
-          <Image
-            src={app.icon}
-            alt={app.name}
+          <SafeImage
+            src={app?.androidApp?.appLogoUrl}
+            alt={app?.androidApp?.appName}
             width={64}
             height={64}
             className="rounded-lg border"
-            data-ai-hint={app.dataAiHint}
+            data-ai-hint={app?.androidApp?.appName}
           />
           <div className="flex-grow text-right">
             <Badge variant="secondary">Requested</Badge>
@@ -164,10 +161,10 @@ const RequestedAppCard = ({ app }: { app: CommunityApp }) => (
         </div>
         <div className="flex-grow">
           <h3 className="text-lg font-bold transition-colors group-hover:text-primary">
-            {app.name}
+            {app?.androidApp?.appName}
           </h3>
           <p className="text-sm text-muted-foreground mt-1 h-10 line-clamp-2">
-            {app.shortDescription}
+            {app?.androidApp?.description}
           </p>
         </div>
       </CardContent>
@@ -175,21 +172,18 @@ const RequestedAppCard = ({ app }: { app: CommunityApp }) => (
   </Link>
 );
 
-const RejectedRequestCard = ({ app }: { app: CommunityApp }) => (
-  <Link
-    href={`/community-dashboard/test/${app.id}`}
-    className="group block h-full"
-  >
+const RejectedRequestCard = ({ app }: { app: HubSubmittedAppResponse }) => (
+  <Link href={`/community-dashboard/${app.id}`} className="group block h-full">
     <Card className="flex flex-col h-full overflow-hidden rounded-2xl transition-all duration-300 bg-destructive/10 border border-dashed border-destructive/20 group-hover:-translate-y-1">
       <CardContent className="p-4 flex-grow flex flex-col">
         <div className="flex items-start gap-4 mb-4">
-          <Image
-            src={app.icon}
-            alt={app.name}
+          <SafeImage
+            src={app?.androidApp?.appLogoUrl}
+            alt={app?.androidApp?.appName}
             width={64}
             height={64}
             className="rounded-lg border"
-            data-ai-hint={app.dataAiHint}
+            data-ai-hint={app?.androidApp?.appName}
           />
           <div className="flex-grow text-right">
             <Badge variant="destructive" className="flex items-center gap-1.5">
@@ -200,10 +194,10 @@ const RejectedRequestCard = ({ app }: { app: CommunityApp }) => (
         </div>
         <div className="flex-grow">
           <h3 className="text-lg font-bold transition-colors group-hover:text-destructive">
-            {app.name}
+            {app?.androidApp?.appName}
           </h3>
           <p className="text-sm text-destructive/80 mt-1">
-            {app.rejectionReason}
+            {app?.statusDetails?.description}
           </p>
         </div>
       </CardContent>
@@ -238,61 +232,12 @@ export default function CommunityDashboardPage() {
   };
   const backendType = getBackendType();
 
-  const { data: submittedAppsData, isPending: submittedAppsIsPending } =
-    useHubApps({
-      type: backendType,
-    });
+  const { data: hubAppsData, isPending: hubAppsIsPending } = useHubApps({
+    type: backendType,
+  });
 
   const { data: hubDataCount, isPending: hubDataCountIsPending } =
     useHubAppsCount();
-
-  const mapBackendAppToCommunityApp = (
-    app: HubSubmittedAppResponse
-  ): CommunityApp => {
-    return {
-      id: app?.id,
-      name: app?.androidApp?.appName,
-      icon: app?.androidApp?.appLogoUrl,
-      category: app?.androidApp?.appCategory?.name,
-      shortDescription: app?.androidApp?.description || "",
-      points: app?.points || 0,
-      androidVersion: app?.minimumAndroidVersion?.toString(),
-      estimatedTime: app?.averageTimeTesting || "0 min",
-      screenshots: [
-        app?.androidApp?.appScreenshotUrl1,
-        app?.androidApp?.appScreenshotUrl2,
-      ]
-        .filter(Boolean)
-        .map((url) => ({ url, alt: "Screenshot" })),
-      testingInstructions: app.instructionsForTester || "",
-      status: mapBackendStatusToFrontend(app.status),
-      progress: 0,
-      totalDays: app.totalDay,
-      rejectionReason: "", // Not provided in HubSubmittedAppResponse directly found in data types
-      completedDate: app.updatedAt.toString(),
-    };
-  };
-
-  const mapBackendStatusToFrontend = (
-    status: string
-  ): CommunityApp["status"] => {
-    switch (status) {
-      case "AVAILABLE":
-        return "available";
-      case "IN_TESTING":
-        return "ongoing";
-      case "COMPLETED":
-        return "completed";
-      case "REQUESTED":
-        return "requested";
-      case "REJECTED":
-        return "request_rejected";
-      default:
-        return "available";
-    }
-  };
-
-  const mappedApps = submittedAppsData?.map(mapBackendAppToCommunityApp) || [];
 
   const ongoingCount =
     (hubDataCount?.["IN_TESTING"] || 0) +
@@ -510,12 +455,12 @@ export default function CommunityDashboardPage() {
             />
             <TabsContent value="available">
               <PaginatedAppList
-                apps={mappedApps}
+                apps={hubAppsData || []}
                 emptyTitle="No Available Apps"
                 emptyMessage="No available apps for testing right now. Check back soon!"
                 emptyIcon={Gamepad2}
                 card={CommunityAvailableAppCard}
-                isLoading={submittedAppsIsPending}
+                isLoading={hubAppsIsPending}
               />
             </TabsContent>
             <TabsContent value="ongoing" className="mt-6">
@@ -527,43 +472,43 @@ export default function CommunityDashboardPage() {
 
               {ongoingSubTab === "ongoing" && (
                 <PaginatedAppList
-                  apps={mappedApps}
+                  apps={hubAppsData || []}
                   emptyTitle="No Ongoing Tests"
                   emptyMessage="You have no ongoing tests."
                   emptyIcon={Rocket}
                   card={CommunityOngoingAppCard}
-                  isLoading={submittedAppsIsPending}
+                  isLoading={hubAppsIsPending}
                 />
               )}
               {ongoingSubTab === "requested" && (
                 <PaginatedAppList
-                  apps={mappedApps}
+                  apps={hubAppsData || []}
                   emptyTitle="No Pending Requests"
                   emptyMessage="You have no pending test requests."
                   emptyIcon={History}
                   card={RequestedAppCard}
-                  isLoading={submittedAppsIsPending}
+                  isLoading={hubAppsIsPending}
                 />
               )}
               {ongoingSubTab === "rejected" && (
                 <PaginatedAppList
-                  apps={mappedApps}
+                  apps={hubAppsData || []}
                   emptyTitle="No Rejected Requests"
                   emptyMessage="You have no rejected test requests."
                   emptyIcon={AlertCircle}
                   card={RejectedRequestCard}
-                  isLoading={submittedAppsIsPending}
+                  isLoading={hubAppsIsPending}
                 />
               )}
             </TabsContent>
             <TabsContent value="completed">
               <PaginatedAppList
-                apps={mappedApps}
+                apps={hubAppsData || []}
                 emptyTitle="No Completed Tests"
                 emptyMessage="You have not completed any tests yet."
                 emptyIcon={Trophy}
                 card={CommunityCompletedAppCard}
-                isLoading={submittedAppsIsPending}
+                isLoading={hubAppsIsPending}
               />
             </TabsContent>
           </Tabs>

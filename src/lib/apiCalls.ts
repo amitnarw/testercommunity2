@@ -510,6 +510,30 @@ export async function getHubAppsCount(): Promise<SubmittedAppsCount> {
   }
 }
 
+export async function getSingleHubAppDetails(
+  id: string
+): Promise<HubSubmittedAppResponse> {
+  try {
+    const response = await api.get(API_ROUTES.HUB + `/get-app-details/${id}`);
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error fetching single hub app details:", error);
+    if (axios.isAxiosError(error)) {
+      const status = error.response?.status;
+      const responseData = error.response?.data;
+      console.error("Axios error:", status, responseData);
+
+      throw new Error(
+        responseData?.message || error.message || "Unknown Axios error"
+      );
+    } else if (error instanceof Error) {
+      throw new Error(error.message);
+    } else {
+      throw new Error(JSON.stringify(error));
+    }
+  }
+}
+
 // Notifications
 export async function getUserNotifications(): Promise<{
   result: NotificationReponse[];

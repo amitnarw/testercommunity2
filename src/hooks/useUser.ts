@@ -10,6 +10,7 @@ import {
   getHubAppsCount,
   getHubData,
   getHubSubmittedApp,
+  getSingleHubAppDetails,
   getSubmittedAppsCount,
   getUserData,
   getUserNotifications,
@@ -186,6 +187,16 @@ export function useHubAppsCount() {
   const query = useQuery<SubmittedAppsCount, Error>({
     queryFn: () => getHubAppsCount(),
     queryKey: ["useHubAppsCount"],
+  });
+
+  return query;
+}
+
+export function useSingleHubAppDetails({ id }: { id: string }) {
+  const query = useQuery<HubSubmittedAppResponse, Error>({
+    queryFn: () => getSingleHubAppDetails(id),
+    queryKey: ["useSingleHubAppDetails", id],
+    enabled: !!id,
   });
 
   return query;

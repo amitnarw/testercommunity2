@@ -21,7 +21,7 @@ import Link from "next/link";
 import { useState } from "react";
 import type { HubSubmittedAppResponse } from "@/lib/types";
 import { Badge } from "@/components/ui/badge";
-import Image from "next/image";
+import { SafeImage } from "@/components/safe-image";
 import { cn } from "@/lib/utils";
 import { Tabs, TabsContent } from "@/components/ui/tabs";
 import { CustomTabsList } from "@/components/custom-tabs-list";
@@ -136,7 +136,7 @@ const ProjectCard = ({ project }: { project: HubSubmittedAppResponse }) => {
             <div className="flex items-start justify-between gap-4">
               <div className="relative">
                 <div className="relative w-16 h-16 rounded-2xl overflow-hidden border border-border/50 shadow-sm group-hover:shadow-md transition-shadow">
-                  <Image
+                  <SafeImage
                     src={project?.androidApp?.appLogoUrl}
                     alt={project?.androidApp?.appName}
                     fill
