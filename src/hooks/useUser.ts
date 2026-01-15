@@ -1,5 +1,6 @@
 import {
   addHubApp,
+  addHubAppTestingRequest,
   doSessionLogoutAll,
   doSessionLogoutSingle,
   getAllPricingPlans,
@@ -200,6 +201,24 @@ export function useSingleHubAppDetails({ id }: { id: string }) {
   });
 
   return query;
+}
+
+export function useAddHubAppTestingRequest(
+  options?: UseMutationOptions<any, any, any>
+) {
+  const mutation = useMutation({
+    mutationFn: (payload: { hub_id: string }) =>
+      addHubAppTestingRequest(payload),
+    onSuccess: (data) => {
+      console.log("Hub app testing request added successfully: " + data);
+    },
+    onError: (data) => {
+      console.log("Hub app testing request adding failed: " + data);
+    },
+    ...options,
+  });
+
+  return mutation;
 }
 
 // Notification

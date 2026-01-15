@@ -1,11 +1,13 @@
 "use client";
 
-import { useState } from "react";
-import { notFound, useParams } from "next/navigation";
+import { useState, useEffect } from "react";
+import { notFound, useParams, useRouter } from "next/navigation";
 import { SafeImage } from "@/components/safe-image";
 import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
+import { motion } from "framer-motion";
+import Confetti from "react-dom-confetti";
 import {
   Expand,
   Trophy,
@@ -17,17 +19,85 @@ import {
   ThumbsUp,
   X,
   AlertTriangle,
+  ArrowLeft,
+  Edit2,
+  RotateCcw,
+  Check,
 } from "lucide-react";
 import { BackButton } from "@/components/back-button";
 import { AppInfoSidebar } from "@/components/appInfoSidebar";
-import { useSingleHubAppDetails } from "@/hooks/useUser";
+import {
+  useAddHubAppTestingRequest,
+  useSingleHubAppDetails,
+} from "@/hooks/useUser";
 import { ExpandableText } from "@/components/expandable-text";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
+
+const confettiConfig = {
+  angle: 90,
+  spread: 360,
+  startVelocity: 40,
+  elementCount: 70,
+  dragFriction: 0.12,
+  duration: 3000,
+  stagger: 3,
+  width: "10px",
+  height: "10px",
+  perspective: "500px",
+  colors: ["#a864fd", "#29cdff", "#78ff44", "#ff718d", "#fdff6a"],
+};
 
 function AppTestingPageClient({ id }: { id: string }) {
+  const router = useRouter();
   const [fullscreenImage, setFullscreenImage] = useState<string | null>(null);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [showErrorModal, setShowErrorModal] = useState(false);
+  const [fireConfetti, setFireConfetti] = useState(false);
 
   const { data: appDetails, isPending: appDetailsIsPending } =
     useSingleHubAppDetails({ id });
+
+  const { mutate, isPending, isSuccess, isError, error, reset } =
+    useAddHubAppTestingRequest();
+
+  useEffect(() => {
+    if (isSuccess) {
+      setShowSuccessModal(true);
+      // specific small delay to make it pop with the modal
+      setTimeout(() => setFireConfetti(true), 300);
+    }
+  }, [isSuccess]);
+
+  useEffect(() => {
+    if (isError) {
+      setShowErrorModal(true);
+    }
+  }, [isError]);
+
+  const handleSubmit = () => {
+    mutate({ hub_id: id });
+  };
+
+  const handleSuccessConfirm = () => {
+    setShowSuccessModal(false);
+    setFireConfetti(false);
+    router.push("/community-dashboard");
+  };
+
+  const handleErrorRetry = () => {
+    setShowErrorModal(false);
+    mutate({ hub_id: id });
+  };
+
+  const handleErrorEdit = () => {
+    setShowErrorModal(false);
+    reset();
+  };
+
+  const handleErrorGoBack = () => {
+    setShowErrorModal(false);
+    router.push("/community-dashboard");
+  };
 
   if (appDetailsIsPending) {
     return (
@@ -214,7 +284,15 @@ function AppTestingPageClient({ id }: { id: string }) {
 
             {/* Sidebar for mobile, shown in flow */}
             <div className="block lg:hidden">
-              <AppInfoSidebar app={appDetails} />
+              <AppInfoSidebar
+                app={appDetails}
+                handleRequestToJoin={handleSubmit}
+                isPending={isPending}
+                isSuccess={isSuccess}
+                isError={isError}
+                error={error}
+                reset={reset}
+              />
             </div>
 
             <section className="!mt-20">
@@ -329,7 +407,15 @@ function AppTestingPageClient({ id }: { id: string }) {
             </section>
           </div>
           <aside className="lg:col-span-1 hidden lg:block">
-            <AppInfoSidebar app={appDetails} />
+            <AppInfoSidebar
+              app={appDetails}
+              handleRequestToJoin={handleSubmit}
+              isPending={isPending}
+              isSuccess={isSuccess}
+              isError={isError}
+              error={error}
+              reset={reset}
+            />
           </aside>
         </main>
       </div>
@@ -358,6 +444,109 @@ function AppTestingPageClient({ id }: { id: string }) {
           </div>
         </div>
       )}
+
+      {/* Premium Success Modal */}
+      <Dialog open={showSuccessModal} onOpenChange={setShowSuccessModal}>
+        <DialogContent className="sm:max-w-[425px] p-0 border-none bg-transparent shadow-none overflow-hidden outline-none [&>button]:hidden">
+          <div className="relative rounded-3xl bg-white dark:bg-[#1A1A1A] p-6 sm:p-8 flex flex-col items-center shadow-2xl overflow-hidden border border-white/20 dark:border-white/5">
+            {/* Confetti Explosion (Centered behind icon) */}
+            <div className="absolute top-1/3 left-1/2 transform -translate-x-1/2 -translate-y-1/2 z-0 pointer-events-none">
+              <Confetti active={fireConfetti} config={confettiConfig} />
+            </div>
+
+            <motion.div
+              initial={{ scale: 0, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ type: "spring", stiffness: 300, damping: 20 }}
+              className="relative z-10 w-20 h-20 rounded-full bg-gradient-to-tr from-green-400 to-emerald-600 flex items-center justify-center shadow-lg shadow-green-500/25 mb-6"
+            >
+              <Check className="w-10 h-10 text-white stroke-[3px]" />
+            </motion.div>
+
+            <motion.div
+              initial={{ y: 10, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ delay: 0.2 }}
+              className="text-center space-y-2 z-10"
+            >
+              <h2 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-gray-900 to-gray-600 dark:from-white dark:to-gray-400">
+                Application Sent!
+              </h2>
+              <p className="text-muted-foreground text-sm font-medium leading-relaxed max-w-[280px] mx-auto">
+                Good luck! You will be notified once the developer accepts your
+                request.
+              </p>
+            </motion.div>
+
+            <motion.div
+              initial={{ y: 20, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              transition={{ delay: 0.4 }}
+              className="mt-8 w-full z-10"
+            >
+              <Button
+                onClick={handleSuccessConfirm}
+                className="w-full bg-gradient-to-r from-green-600 to-emerald-600 hover:from-green-500 hover:to-emerald-500 text-white rounded-xl h-12 text-md font-semibold shadow-lg shadow-green-500/20 active:scale-95 transition-all duration-200"
+              >
+                Go to Dashboard
+              </Button>
+            </motion.div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Premium Error Modal */}
+      <Dialog open={showErrorModal} onOpenChange={setShowErrorModal}>
+        <DialogContent className="sm:max-w-[425px] p-0 border-none bg-transparent shadow-none overflow-hidden outline-none [&>button]:hidden">
+          <div className="relative rounded-3xl bg-white dark:bg-[#1A1A1A] p-6 sm:p-8 flex flex-col items-center shadow-2xl border border-white/20 dark:border-white/5">
+            <motion.div
+              initial={{ y: -10, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              className="w-16 h-16 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center mb-6"
+            >
+              <AlertTriangle className="w-8 h-8 text-red-600 dark:text-red-500" />
+            </motion.div>
+
+            <div className="text-center space-y-2 mb-8">
+              <h2 className="text-xl font-bold text-foreground">
+                Oops! Something went wrong
+              </h2>
+              <p className="text-destructive text-sm font-medium px-4">
+                {error?.message ||
+                  "We couldn't submit your request. Please try again."}
+              </p>
+            </div>
+
+            <div className="w-full space-y-3">
+              <Button
+                onClick={handleErrorRetry}
+                className="w-full bg-red-600 hover:bg-red-700 text-white rounded-xl h-11 font-semibold shadow-md shadow-red-500/20"
+              >
+                <RotateCcw className="w-4 h-4 mr-2" />
+                Try Again
+              </Button>
+              <div className="grid grid-cols-2 gap-3">
+                <Button
+                  variant="outline"
+                  onClick={handleErrorEdit}
+                  className="w-full border-2 rounded-xl h-11 font-medium hover:bg-secondary/50 dark:hover:bg-secondary/20"
+                >
+                  <Edit2 className="w-4 h-4 mr-2" />
+                  Edit
+                </Button>
+                <Button
+                  variant="ghost"
+                  onClick={handleErrorGoBack}
+                  className="w-full rounded-xl h-11 font-medium hover:bg-secondary/50 dark:hover:bg-secondary/20"
+                >
+                  <ArrowLeft className="w-4 h-4 mr-2" />
+                  Go Back
+                </Button>
+              </div>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

@@ -9,11 +9,8 @@ import {
   SquareArrowOutUpRight,
   Send,
   XCircle,
-  Sparkles,
   CalendarDays,
 } from "lucide-react";
-import { motion } from "framer-motion";
-import AnimatedRoundedButton from "@/components/ui/animated-rounded-button";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import {
   Card,
@@ -24,6 +21,7 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { HubSubmittedAppResponse } from "@/lib/types";
+import { LoadingButton } from "./ui/loading-button";
 
 const SidebarButton = ({
   app,
@@ -32,6 +30,11 @@ const SidebarButton = ({
   url,
   hoverTextColor,
   hoverBgColor,
+  isPending,
+  isSuccess,
+  isError,
+  error,
+  reset,
 }: any) => {
   if (buttonType === "external") {
     return (
@@ -62,20 +65,20 @@ const SidebarButton = ({
       );
     default: // 'available'
       return (
-        <div onClick={handleRequestToJoin} className="w-full m-auto">
-          <AnimatedRoundedButton
-            backgroundColor="hsl(var(--primary))"
-            animatedBackgroundColor={hoverBgColor}
-            hoverTextColor={hoverTextColor}
-            borderRadius="9999px"
-            paddingY="4"
-            paddingX="0"
-            className="py-2 sm:py-4 text-sm sm:text-base"
+        <div className="w-full m-auto">
+          <LoadingButton
+            onClick={handleRequestToJoin}
+            isLoading={isPending}
+            isSuccess={isSuccess}
+            isError={isError}
+            reset={reset}
+            className="w-full m-auto py-5"
           >
-            <div className="flex items-center text-center gap-2">
-              <span className="w-full">Request to Join Testing</span>
-            </div>
-          </AnimatedRoundedButton>
+            Request to Join Testing
+          </LoadingButton>
+          <p className="text-red-500 text-sm text-center mt-2">
+            {error?.message}
+          </p>
         </div>
       );
   }
@@ -84,11 +87,21 @@ const SidebarButton = ({
 export const AppInfoSidebar = ({
   app,
   handleRequestToJoin,
+  isPending,
+  isSuccess,
+  isError,
+  error,
+  reset,
   buttonType,
   url,
 }: {
   app: HubSubmittedAppResponse;
   handleRequestToJoin?: () => void;
+  isPending?: boolean;
+  isSuccess?: boolean;
+  isError?: boolean;
+  error?: Error;
+  reset?: () => void;
   buttonType?: string;
   url?: string;
 }) => {
@@ -104,6 +117,11 @@ export const AppInfoSidebar = ({
       <SidebarButton
         app={app}
         handleRequestToJoin={handleRequestToJoin}
+        isPending={isPending}
+        isSuccess={isSuccess}
+        isError={isError}
+        error={error}
+        reset={reset}
         buttonType={buttonType}
         url={url}
         hoverTextColor={hoverTextColor}

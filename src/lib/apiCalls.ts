@@ -534,6 +534,31 @@ export async function getSingleHubAppDetails(
   }
 }
 
+export async function addHubAppTestingRequest(payload: { hub_id: string }) {
+  try {
+    const response = await api.post(
+      API_ROUTES.HUB + `/add-hub-testing-request`,
+      payload
+    );
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error adding hub app testing request:", error);
+    if (axios.isAxiosError(error)) {
+      const status = error.response?.status;
+      const responseData = error.response?.data;
+      console.error("Axios error:", status, responseData);
+
+      throw new Error(
+        responseData?.message || error.message || "Unknown Axios error"
+      );
+    } else if (error instanceof Error) {
+      throw new Error(error.message);
+    } else {
+      throw new Error(JSON.stringify(error));
+    }
+  }
+}
+
 // Notifications
 export async function getUserNotifications(): Promise<{
   result: NotificationReponse[];
