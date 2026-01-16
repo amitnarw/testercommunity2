@@ -155,11 +155,17 @@ export function useAddHubApp(options?: UseMutationOptions<any, any, any>) {
   return mutation;
 }
 
-export function useHubSubmittedApp({ type }: { type: string }) {
+export function useHubSubmittedApp({
+  type,
+  options,
+}: {
+  type: string;
+  options?: { enabled?: boolean };
+}) {
   const query = useQuery<HubSubmittedAppResponse[], Error>({
     queryFn: () => getHubSubmittedApp(type),
     queryKey: ["useHubSubmittedApp", type],
-    enabled: !!type,
+    enabled: options?.enabled ?? !!type,
   });
 
   return query;

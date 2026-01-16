@@ -75,10 +75,10 @@ export function CustomTabsList({
                 ) : (
                   <span
                     className={cn(
-                      "text-[10px] px-1.5 py-0.5 rounded-full",
+                      "text-[10px] w-6 h-6 flex items-center justify-center rounded-full",
                       isSelected
                         ? "bg-primary/10 text-primary"
-                        : "bg-muted text-muted-foreground group-hover:bg-muted/80"
+                        : "bg-primary/5 text-muted-foreground group-hover:bg-muted/80"
                     )}
                   >
                     {tab.count ?? 0}

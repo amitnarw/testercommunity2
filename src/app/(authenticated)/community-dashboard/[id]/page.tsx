@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { notFound, useParams, useRouter } from "next/navigation";
 import { SafeImage } from "@/components/safe-image";
+import { cn } from "@/lib/utils";
 import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
@@ -209,9 +210,9 @@ function AppTestingPageClient({ id }: { id: string }) {
                     {appDetails?.statusDetails?.image && (
                       <div
                         className="relative rounded-lg overflow-hidden group cursor-pointer"
-                        onClick={() =>
-                          setFullscreenImage(appDetails?.statusDetails?.image!)
-                        }
+                        onClick={() => {
+                          setFullscreenImage(appDetails?.statusDetails?.image!);
+                        }}
                       >
                         <SafeImage
                           src={appDetails?.statusDetails?.image}
@@ -237,11 +238,11 @@ function AppTestingPageClient({ id }: { id: string }) {
                   {appDetails?.androidApp?.appScreenshotUrl1 && (
                     <div
                       className="overflow-hidden rounded-xl flex-shrink-0 w-40 sm:w-60 relative group cursor-pointer"
-                      onClick={() =>
+                      onClick={() => {
                         setFullscreenImage(
                           appDetails?.androidApp?.appScreenshotUrl1
-                        )
-                      }
+                        );
+                      }}
                     >
                       <SafeImage
                         src={appDetails?.androidApp?.appScreenshotUrl1}
@@ -259,11 +260,11 @@ function AppTestingPageClient({ id }: { id: string }) {
                   {appDetails?.androidApp?.appScreenshotUrl2 && (
                     <div
                       className="overflow-hidden rounded-xl flex-shrink-0 w-40 sm:w-60 relative group cursor-pointer"
-                      onClick={() =>
+                      onClick={() => {
                         setFullscreenImage(
                           appDetails?.androidApp?.appScreenshotUrl2
-                        )
-                      }
+                        );
+                      }}
                     >
                       <SafeImage
                         src={appDetails?.androidApp?.appScreenshotUrl2}
@@ -433,13 +434,15 @@ function AppTestingPageClient({ id }: { id: string }) {
             <X className="w-8 h-8" />
             <span className="sr-only">Close</span>
           </Button>
-          <div className="relative w-full h-full max-w-4xl max-h-[90vh]">
+          <div className="relative w-full h-full max-w-4xl max-h-[90vh] flex items-center justify-center">
             <SafeImage
               src={fullscreenImage}
               alt="Fullscreen view"
               layout="fill"
               objectFit="contain"
+              priority
               className="animate-in zoom-in-95"
+              loadingClassName="w-[300px] h-[600px] max-h-[80vh] rounded-[2.5rem] border-[6px] border-white/5 dark:border-white/10 shadow-2xl bg-muted/20"
             />
           </div>
         </div>

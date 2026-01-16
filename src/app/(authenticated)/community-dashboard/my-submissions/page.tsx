@@ -395,6 +395,22 @@ export default function MySubmissionsPage() {
       type: backendType,
     });
 
+  const { data: availableAppsData, isPending: availableAppsIsPending } =
+    useHubSubmittedApp({
+      type: "AVAILABLE",
+      options: { enabled: mainTab === "testing" },
+    });
+
+  const displayData =
+    mainTab === "testing"
+      ? [...(submittedAppsData || []), ...(availableAppsData || [])]
+      : submittedAppsData;
+
+  const displayIsPending =
+    mainTab === "testing"
+      ? submittedAppsIsPending || availableAppsIsPending
+      : submittedAppsIsPending;
+
   const {
     data: submittedAppsCountData,
     isPending: submittedAppsCountIsPending,
@@ -412,7 +428,9 @@ export default function MySubmissionsPage() {
     {
       label: "Testing",
       value: "testing",
-      count: submittedAppsCountData?.IN_TESTING || 0,
+      count:
+        (submittedAppsCountData?.IN_TESTING || 0) +
+        (submittedAppsCountData?.AVAILABLE || 0),
     },
     {
       label: "Completed",
@@ -491,22 +509,22 @@ export default function MySubmissionsPage() {
                   />
 
                   <PaginatedProjectList
-                    projects={submittedAppsData}
-                    isLoading={submittedAppsIsPending}
+                    projects={displayData}
+                    isLoading={displayIsPending}
                   />
                 </TabsContent>
 
                 <TabsContent value="testing" className="focus-visible:ring-0">
                   <PaginatedProjectList
-                    projects={submittedAppsData}
-                    isLoading={submittedAppsIsPending}
+                    projects={displayData}
+                    isLoading={displayIsPending}
                   />
                 </TabsContent>
 
                 <TabsContent value="completed" className="focus-visible:ring-0">
                   <PaginatedProjectList
-                    projects={submittedAppsData}
-                    isLoading={submittedAppsIsPending}
+                    projects={displayData}
+                    isLoading={displayIsPending}
                   />
                 </TabsContent>
               </div>

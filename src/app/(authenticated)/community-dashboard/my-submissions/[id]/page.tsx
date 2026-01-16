@@ -38,6 +38,7 @@ import AppInfoHeader from "@/components/app-info-header";
 import Confetti from "react-dom-confetti";
 import { useInView } from "react-intersection-observer";
 import { motion } from "framer-motion";
+import { useSingleHubAppDetails } from "@/hooks/useUser";
 
 const FEEDBACK_PER_PAGE = 5;
 
@@ -84,7 +85,7 @@ const getFeedbackIcon = (type: string) => {
 const getSeverityBadge = (severity: string) => {
   if (severity === "N/A") return null;
   switch (severity) {
-    case "Critical":
+    case "CRITICAL":
       return (
         <Badge
           variant="destructive"
@@ -93,7 +94,7 @@ const getSeverityBadge = (severity: string) => {
           {severity}
         </Badge>
       );
-    case "High":
+    case "HIGH":
       return (
         <Badge
           variant="destructive"
@@ -102,7 +103,7 @@ const getSeverityBadge = (severity: string) => {
           {severity}
         </Badge>
       );
-    case "Medium":
+    case "MEDIUM":
       return (
         <Badge
           variant="secondary"
@@ -111,7 +112,7 @@ const getSeverityBadge = (severity: string) => {
           {severity}
         </Badge>
       );
-    case "Low":
+    case "LOW":
       return (
         <Badge
           variant="secondary"
@@ -236,11 +237,14 @@ const TestCompleteSection = ({
 };
 
 function SubmissionDetailsPage({ params }: { params: { id: string } }) {
-  const project = allProjects.find((p) => p.id.toString() === params.id);
+  // const project = allProjects.find((p) => p.id.toString() === params.id);
   const [feedbackPage, setFeedbackPage] = useState(1);
   const [viewMode, setViewMode] = useState<"list" | "grid">("list");
   const [fullscreenImage, setFullscreenImage] = useState<string | null>(null);
   const [isConfettiActive, setConfettiActive] = useState(false);
+
+  const { data: appDetails, isPending: appDetailsIsPending } =
+    useSingleHubAppDetails({ id: params.id });
 
   const { ref: confettiTriggerRef, inView: confettiInView } = useInView({
     threshold: 0.5,
@@ -248,20 +252,20 @@ function SubmissionDetailsPage({ params }: { params: { id: string } }) {
   });
 
   useEffect(() => {
-    if (confettiInView && project?.status === "Completed") {
+    if (confettiInView && appDetails?.status === "COMPLETED") {
       setTimeout(() => setConfettiActive(true), 300);
     }
-  }, [confettiInView, project?.status]);
+  }, [confettiInView, appDetails?.status]);
 
-  if (!project) {
+  if (!appDetails) {
     return <div>Project not found</div>;
   }
 
-  const statusConfig = getStatusConfig(project.status);
+  const statusConfig = getStatusConfig(appDetails.status);
   const isUnderReviewOrRejected =
-    project.status === "In Review" || project.status === "Rejected";
+    appDetails.status === "IN_REVIEW" || appDetails.status === "REJECTED";
 
-  const filteredFeedback = isUnderReviewOrRejected ? [] : project.feedback;
+  const filteredFeedback = isUnderReviewOrRejected ? [] : appDetails?.feedback;
 
   const totalFeedbackPages = Math.ceil(
     filteredFeedback.length / FEEDBACK_PER_PAGE
@@ -281,14 +285,14 @@ function SubmissionDetailsPage({ params }: { params: { id: string } }) {
   const feedbackBreakdown = {
     bugs: isUnderReviewOrRejected
       ? 0
-      : project.feedback.filter((fb) => fb.type === "Bug").length,
+      : appDetails?.feedback.filter((fb) => fb.type === "BUG").length,
     suggestions: isUnderReviewOrRejected
       ? 0
-      : project.feedback.filter((fb) => fb.type === "Suggestion").length,
+      : appDetails?.feedback.filter((fb) => fb.type === "SUGGESTION").length,
     praise: isUnderReviewOrRejected
       ? 0
-      : project.feedback.filter((fb) => fb.type === "Praise").length,
-    totalTesters: isUnderReviewOrRejected ? 0 : project.testersCompleted,
+      : appDetails?.feedback.filter((fb) => fb.type === "PRAISE").length,
+    totalTesters: isUnderReviewOrRejected ? 0 : appDetails?.currentTester,
   };
 
   return (
@@ -320,52 +324,53 @@ function SubmissionDetailsPage({ params }: { params: { id: string } }) {
           </div>
 
           <AppInfoHeader
-            logo={project.icon}
-            name={project.name}
-            dataAiHint={project.dataAiHint}
-            category={project.category}
-            description={project.description}
-            status={project.status}
+            logo={appDetails?.androidApp?.appLogoUrl}
+            name={appDetails?.androidApp?.appName}
+            dataAiHint={appDetails?.androidApp?.appName}
+            category={appDetails?.androidApp?.appCategory?.name}
+            description={appDetails?.androidApp?.description || ""}
+            status={appDetails?.status}
             statusConfig={statusConfig}
           />
 
-          {project.status === "Rejected" && project.rejectionReason && (
-            <section className="bg-destructive/10 border-2 border-dashed border-destructive/10 rounded-2xl p-6 relative overflow-hidden">
-              <div className="flex items-center gap-3 mb-4">
-                <div className="bg-destructive/5 p-3 sm:bg-destructive/10 p-3 rounded-full text-destructive absolute sm:static top-2 right-0 sm:top-auto sm:right-auto scale-[3] sm:scale-100">
-                  <AlertTriangle className="w-8 h-8 text-destructive/20 sm:text-destructive" />
-                </div>
-                <h2 className="text-xl sm:text-2xl font-bold text-destructive dark:text-red-500">
-                  {project.rejectionReason.title}
-                </h2>
-              </div>
-              <div className="flex flex-row gap-6 items-start">
-                <p className="text-destructive/80 dark:text-red-500/80 leading-relaxed">
-                  {project.rejectionReason.description}
-                </p>
-                {project.rejectionReason.imageUrl && (
-                  <div
-                    className="relative rounded-lg overflow-hidden group cursor-pointer"
-                    onClick={() =>
-                      setFullscreenImage(project?.rejectionReason?.imageUrl!)
-                    }
-                  >
-                    <SafeImage
-                      src={project.rejectionReason.imageUrl}
-                      alt={project.rejectionReason.title}
-                      width={600}
-                      height={400}
-                      className="object-cover w-full h-auto transition-transform duration-300 group-hover:scale-105"
-                      data-ai-hint={project.rejectionReason.dataAiHint}
-                    />
-                    <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
-                      <Expand className="w-10 h-10 text-white" />
-                    </div>
+          {appDetails?.status === "REJECTED" &&
+            appDetails?.statusDetails?.description && (
+              <section className="bg-destructive/10 border-2 border-dashed border-destructive/10 rounded-2xl p-6 relative overflow-hidden">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="bg-destructive/5 p-3 sm:bg-destructive/10 p-3 rounded-full text-destructive absolute sm:static top-2 right-0 sm:top-auto sm:right-auto scale-[3] sm:scale-100">
+                    <AlertTriangle className="w-8 h-8 text-destructive/20 sm:text-destructive" />
                   </div>
-                )}
-              </div>
-            </section>
-          )}
+                  <h2 className="text-xl sm:text-2xl font-bold text-destructive dark:text-red-500">
+                    {appDetails?.statusDetails?.title}
+                  </h2>
+                </div>
+                <div className="flex flex-row gap-6 items-start">
+                  <p className="text-destructive/80 dark:text-red-500/80 leading-relaxed">
+                    {appDetails?.statusDetails?.description}
+                  </p>
+                  {appDetails?.statusDetails?.image && (
+                    <div
+                      className="relative rounded-lg overflow-hidden group cursor-pointer"
+                      onClick={() =>
+                        setFullscreenImage(appDetails?.statusDetails?.image!)
+                      }
+                    >
+                      <SafeImage
+                        src={appDetails?.statusDetails?.image}
+                        alt={appDetails?.statusDetails?.title}
+                        width={600}
+                        height={400}
+                        className="object-cover w-full h-auto transition-transform duration-300 group-hover:scale-105"
+                        data-ai-hint={appDetails?.statusDetails?.title}
+                      />
+                      <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
+                        <Expand className="w-10 h-10 text-white" />
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </section>
+            )}
 
           <div
             className={`relative flex flex-col gap-10 ${
@@ -386,7 +391,7 @@ function SubmissionDetailsPage({ params }: { params: { id: string } }) {
                                 </p>
                             </div>
                         )} */}
-            {project.status !== "Completed" ? (
+            {appDetails?.status !== "COMPLETED" ? (
               <div
                 className={cn(
                   "grid grid-cols-1 lg:grid-cols-3 gap-2 sm:gap-4 text-center",
@@ -397,15 +402,19 @@ function SubmissionDetailsPage({ params }: { params: { id: string } }) {
                   <div className="bg-gradient-to-tl from-primary/20 to-primary text-primary-foreground p-5 h-full w-full flex flex-col justify-center gap-1">
                     <p className="text-xs">Testers</p>
                     <p className="text-4xl sm:text-5xl font-bold">
-                      {feedbackBreakdown?.totalTesters}
-                      <span className="text-2xl text-white/50">/14</span>
+                      {appDetails?.currentTester}
+                      <span className="text-2xl text-white/50">
+                        /{appDetails?.totalTester}
+                      </span>
                     </p>
                   </div>
                   <div className="bg-gradient-to-tr from-primary/20 to-primary text-primary-foreground p-5 h-full w-full flex flex-col justify-center gap-1">
                     <p className="text-xs">Days</p>
                     <p className="text-4xl sm:text-5xl font-bold">
-                      {isUnderReviewOrRejected ? 0 : project.totalDays}
-                      <span className="text-2xl text-white/50">/16</span>
+                      {isUnderReviewOrRejected ? 0 : appDetails?.currentDay}
+                      <span className="text-2xl text-white/50">
+                        /{appDetails?.totalDay}
+                      </span>
                     </p>
                   </div>
                 </div>
@@ -451,32 +460,34 @@ function SubmissionDetailsPage({ params }: { params: { id: string } }) {
                 <div className="flex flex-row gap-2 items-center jutify-center">
                   <div className="bg-card p-3 pt-4 rounded-2xl flex flex-col justify-center h-full w-full">
                     <p className="text-xs sm:text-sm mb-3">Points Cost</p>
-                    <p className="text-2xl sm:text-4xl font-bold bg-secondary rounded-lg h-full w-full flex flex items-center justify-center">
-                      {isUnderReviewOrRejected
-                        ? 0
-                        : project.pointsCost.toLocaleString()}
+                    <p className="text-2xl sm:text-4xl font-bold bg-secondary rounded-lg h-full w-full flex items-center justify-center">
+                      {isUnderReviewOrRejected ? 0 : appDetails?.rewardPoints}
                     </p>
                   </div>
                   <div className="bg-card p-3 pt-4 rounded-2xl flex flex-col justify-center h-full w-full">
                     <p className="text-xs sm:text-sm mb-3">Android Version</p>
-                    <p className="text-2xl sm:text-4xl py-2 sm:py-0 font-bold bg-secondary rounded-lg h-full w-full flex flex items-center justify-center">
-                      {isUnderReviewOrRejected ? "N/A" : project.androidVersion}
+                    <p className="text-2xl sm:text-4xl py-2 sm:py-0 font-bold bg-secondary rounded-lg h-full w-full flex items-center justify-center">
+                      {isUnderReviewOrRejected
+                        ? "N/A"
+                        : appDetails?.minimumAndroidVersion}
                     </p>
                   </div>
                 </div>
               </div>
             ) : (
               <TestCompleteSection
-                app={project}
+                app={appDetails}
                 isUnderReviewOrRejected={isUnderReviewOrRejected}
               />
             )}
 
-            <DeveloperInstructions
-              title="Instructions for Testers"
-              instruction={`"${project.testingInstructions}"`}
-              mt={8}
-            />
+            {appDetails?.instructionsForTester && (
+              <DeveloperInstructions
+                title="Instructions for Testers"
+                instruction={`"${appDetails?.instructionsForTester}"`}
+                mt={8}
+              />
+            )}
 
             <div
               className={cn(
@@ -518,15 +529,15 @@ function SubmissionDetailsPage({ params }: { params: { id: string } }) {
                         <Card
                           key={fb.id}
                           className={`bg-gradient-to-tl ${
-                            fb.type === "Bug"
+                            fb.type === "BUG"
                               ? "from-red-500/20"
-                              : fb.type === "Suggestion"
+                              : fb.type === "SUGGESTION"
                               ? "from-yellow-500/20"
                               : "from-green-500/20"
                           } ${
-                            fb.type === "Bug"
+                            fb.type === "BUG"
                               ? "to-red-500/5"
-                              : fb.type === "Suggestion"
+                              : fb.type === "SUGGESTION"
                               ? "to-yellow-500/5"
                               : "to-green-500/5"
                           } p-0 pt-2 shadow-none border-0 relative overflow-hidden`}
@@ -538,23 +549,23 @@ function SubmissionDetailsPage({ params }: { params: { id: string } }) {
                             <div className="flex flex-row items-center justify-between w-full">
                               <div className="flex items-center gap-3">
                                 <p className="font-semibold">{fb.type}</p>
-                                {getSeverityBadge(fb.severity)}
+                                {fb?.priority && getSeverityBadge(fb?.priority)}
                               </div>
                             </div>
                             <p className="text-sm text-muted-foreground mt-1">
-                              {fb.comment}
+                              {fb?.message}
                             </p>
                           </div>
                           <div className="flex items-center justify-between text-xs text-muted-foreground w-full mt-3 bg-black/5 dark:bg-white/10 px-5 h-12">
-                            {fb?.screenshot ? (
+                            {fb?.media?.length > 0 ? (
                               <div
                                 className="cursor-pointer h-10 w-7 relative"
                                 onClick={() =>
-                                  setFullscreenImage(fb?.screenshot || "")
+                                  setFullscreenImage(fb?.media[0].src || "")
                                 }
                               >
                                 <SafeImage
-                                  src={fb.screenshot}
+                                  src={fb?.media[0].src}
                                   alt="Feedback screenshot"
                                   fill
                                   className="absolute rounded border object-cover"
@@ -566,11 +577,11 @@ function SubmissionDetailsPage({ params }: { params: { id: string } }) {
                             <div className="flex flex-col sm:flex-row gap-0 sm:gap-5 items-end">
                               <div>
                                 <span className="font-semibold text-foreground">
-                                  {fb.tester}
+                                  {fb?.tester?.name}
                                 </span>
                               </div>
                               <span className="text-[10px]">
-                                {format(new Date(fb.date), "dd MMM yyyy")}
+                                {format(new Date(fb?.createdAt), "dd MMM yyyy")}
                               </span>
                             </div>
                           </div>
@@ -583,15 +594,15 @@ function SubmissionDetailsPage({ params }: { params: { id: string } }) {
                         <Card
                           key={fb.id}
                           className={`bg-gradient-to-bl ${
-                            fb.type === "Bug"
+                            fb.type === "BUG"
                               ? "from-red-500/20"
-                              : fb.type === "Suggestion"
+                              : fb.type === "SUGGESTION"
                               ? "from-yellow-500/20"
                               : "from-green-500/20"
                           } ${
-                            fb.type === "Bug"
+                            fb.type === "BUG"
                               ? "to-red-500/10"
-                              : fb.type === "Suggestion"
+                              : fb.type === "SUGGESTION"
                               ? "to-yellow-500/10"
                               : "to-green-500/10"
                           } shadow-none border-0 h-full flex flex-col relative gap-1 sm:gap-2 overflow-hidden`}
@@ -600,7 +611,7 @@ function SubmissionDetailsPage({ params }: { params: { id: string } }) {
                             <div className="flex items-center gap-3">
                               <div
                                 className={`p-3 rounded-full absolute opacity-10 scale-[3] -right-1 -top-1 ${
-                                  fb.type === "Praise"
+                                  fb.type === "PRAISE"
                                     ? "-rotate-90"
                                     : "-rotate-45"
                                 }`}
@@ -611,23 +622,23 @@ function SubmissionDetailsPage({ params }: { params: { id: string } }) {
                                 {fb.type}
                               </CardTitle>
                             </div>
-                            {getSeverityBadge(fb.severity)}
+                            {fb?.priority && getSeverityBadge(fb?.priority)}
                           </CardHeader>
                           <CardContent className="p-2 px-3 py-0 sm:px-4 flex-grow">
                             <p className="text-xs sm:text-sm text-muted-foreground">
-                              {fb.comment}
+                              {fb?.message}
                             </p>
                           </CardContent>
                           <CardFooter className="p-2 px-3 sm:px-4 flex items-center justify-between text-xs text-muted-foreground mt-2 h-10 bg-black/5 dark:bg-white/10">
-                            {fb?.screenshot ? (
+                            {fb?.media?.length > 0 ? (
                               <div
                                 className="cursor-pointer h-8 w-6 relative"
                                 onClick={() =>
-                                  setFullscreenImage(fb?.screenshot || "")
+                                  setFullscreenImage(fb?.media[0].src || "")
                                 }
                               >
                                 <SafeImage
-                                  src={fb.screenshot}
+                                  src={fb?.media[0].src}
                                   alt="Feedback screenshot"
                                   fill
                                   className="absolute rounded-sm border object-cover"
@@ -639,11 +650,11 @@ function SubmissionDetailsPage({ params }: { params: { id: string } }) {
                             <div className="flex flex-col sm:flex-row gap-0 sm:gap-5 items-end">
                               <div>
                                 <span className="font-semibold text-foreground text-[10px] sm:text-[12px]">
-                                  {fb.tester}
+                                  {fb?.tester?.name}
                                 </span>
                               </div>
                               <span className="text-[8px] sm:text-[10px]">
-                                {format(new Date(fb.date), "dd MMM yyyy")}
+                                {format(new Date(fb?.createdAt), "dd MMM yyyy")}
                               </span>
                             </div>
                           </CardFooter>
@@ -658,9 +669,62 @@ function SubmissionDetailsPage({ params }: { params: { id: string } }) {
                   />
                 </>
               ) : (
-                <div className="text-center py-12 text-muted-foreground bg-secondary/50 rounded-lg">
-                  <p>No feedback has been submitted for this app yet.</p>
-                </div>
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.95 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.5 }}
+                  className="flex flex-col items-center justify-center py-16 px-4 text-center border-2 border-dashed border-muted-foreground/20 rounded-3xl bg-muted/50 dark:bg-muted/10 relative overflow-hidden"
+                >
+                  <div className="absolute top-0 right-0 p-12 bg-primary/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none" />
+                  <div className="absolute bottom-0 left-0 p-12 bg-primary/5 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2 pointer-events-none" />
+
+                  <div className="relative mb-6 group">
+                    <div className="absolute inset-0 bg-primary/20 rounded-full blur-xl group-hover:bg-primary/30 transition-all duration-500"></div>
+                    <div className="relative bg-card/80 backdrop-blur-sm p-6 rounded-2xl shadow-sm border border-border/50 ring-1 ring-black/5 dark:ring-white/5">
+                      <ClipboardList className="w-10 h-10 text-primary" />
+                    </div>
+                    <motion.div
+                      animate={{ y: [0, -5, 0] }}
+                      transition={{
+                        repeat: Infinity,
+                        duration: 4,
+                        ease: "easeInOut",
+                      }}
+                      className="absolute -right-3 -top-3 bg-card rounded-lg p-2 shadow-sm border border-border/50 text-red-500"
+                    >
+                      <Bug className="w-4 h-4" />
+                    </motion.div>
+                    <motion.div
+                      animate={{ y: [0, 5, 0] }}
+                      transition={{
+                        repeat: Infinity,
+                        duration: 5,
+                        ease: "easeInOut",
+                        delay: 1,
+                      }}
+                      className="absolute -left-3 -bottom-3 bg-card rounded-lg p-2 shadow-sm border border-border/50 text-green-500"
+                    >
+                      <PartyPopper className="w-4 h-4" />
+                    </motion.div>
+                  </div>
+
+                  <h3 className="text-xl font-bold bg-gradient-to-br from-foreground to-muted-foreground bg-clip-text text-transparent mb-2">
+                    Awaiting Feedback
+                  </h3>
+                  <p className="text-muted-foreground max-w-md mx-auto mb-8 leading-relaxed">
+                    Your app is currently being tested by our community.
+                    Detailed feedback, bug reports, and suggestions will appear
+                    here soon.
+                  </p>
+
+                  <div className="flex items-center gap-3 text-sm font-medium text-primary bg-primary/10 border border-primary/20 px-4 py-2 rounded-full shadow-sm">
+                    <span className="relative flex h-2.5 w-2.5">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+                      <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-primary"></span>
+                    </span>
+                    Monitoring for submissions...
+                  </div>
+                </motion.div>
               )}
             </div>
           </div>

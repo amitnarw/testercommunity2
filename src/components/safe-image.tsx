@@ -9,6 +9,7 @@ interface SafeImageProps extends Omit<ImageProps, "src"> {
   src?: string | null;
   fallbackClassName?: string;
   fallbackIcon?: React.ReactNode;
+  loadingClassName?: string;
 }
 
 export function SafeImage({
@@ -17,6 +18,7 @@ export function SafeImage({
   className,
   fallbackClassName,
   fallbackIcon,
+  loadingClassName,
   onLoad,
   ...props
 }: SafeImageProps) {
@@ -58,17 +60,42 @@ export function SafeImage({
     );
   }
 
+  const isFill = (props as any).fill || (props as any).layout === "fill";
+
   return (
-    <Image
-      src={src!}
-      alt={alt}
-      className={cn(className, isLoading ? "animate-pulse bg-muted" : "")}
-      onError={() => setError(true)}
-      onLoad={(e) => {
-        setIsLoading(false);
-        onLoad?.(e);
-      }}
-      {...props}
-    />
+    <div
+      className={cn(
+        "relative flex items-center justify-center overflow-hidden",
+        isFill && "w-full h-full",
+        className
+      )}
+    >
+      {isLoading && !error && isValidSrc(src) && (
+        <div
+          className={cn(
+            "bg-muted/20 overflow-hidden relative flex items-center justify-center",
+            loadingClassName || "w-full h-full"
+          )}
+        >
+          <div className="absolute inset-0 animate-shimmer" />
+        </div>
+      )}
+      <Image
+        src={src!}
+        alt={alt}
+        className={cn(
+          "transition-opacity duration-300",
+          isLoading ? "opacity-0" : "opacity-100",
+          isFill && "absolute inset-0 w-full h-full",
+          className
+        )}
+        onError={() => setError(true)}
+        onLoad={(e) => {
+          setIsLoading(false);
+          onLoad?.(e);
+        }}
+        {...props}
+      />
+    </div>
   );
 }

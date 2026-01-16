@@ -398,6 +398,39 @@ export interface HubSubmittedAppResponse {
     image: string;
     video: string;
   } | null;
+  feedback: {
+    id: number;
+    message: string;
+    type: "BUG" | "SUGGESTION" | "PRAISE" | "OTHER";
+    priority: "LOW" | "MEDIUM" | "HIGH" | "CRITICAL" | null;
+    testerId: string;
+    dashboardAndHubId: number;
+    createdAt: Date;
+    updatedAt: Date;
+    media: {
+      type: "IMAGE" | "VIDEO";
+      mime: string;
+      category:
+        | "APP_LOGO"
+        | "SCREENSHOT"
+        | "FEEDBACK_MEDIA"
+        | "FEATURED_IMAGE"
+        | "AUTHOR_IMAGE"
+        | "OTHER";
+      src: string;
+      appId: number | null;
+      blogId: number | null;
+      feedbackId: number | null;
+      notificationId: number | null;
+      supportRequestId: number | null;
+      supportMessageId: number | null;
+      createdAt: Date;
+      updatedAt: Date;
+    }[];
+    tester: {
+      name: string;
+    };
+  }[];
   createdAt: Date;
   updatedAt: Date;
 }
