@@ -21,35 +21,39 @@ jobs:
         with:
           node-version: 20
 
-      # 3️⃣ Install dependencies on GitHub Actions runner
+      # 3️⃣ Install dependencies (GitHub runner)
       - name: Install dependencies
-        run: npm ci
+        run: |
+          cd frontend
+          npm ci
 
-      # 4️⃣ Build Next.js app
+      # 4️⃣ Build Next.js
       - name: Build Next.js
-        run: npm run build
+        run: |
+          cd frontend
+          npm run build
 
-      # 5️⃣ Debug: check .next folder exists
+      # 5️⃣ Debug: confirm build output exists
       - name: Check build output
-        run: ls -la .next
+        run: ls -la frontend/.next
 
-      # 6️⃣ Copy all necessary files to the server
-      - name: Copy built files to server
+      # 6️⃣ Copy build & essential files to server
+      - name: Copy files to VPS
         uses: appleboy/scp-action@v0.1.6
         with:
           host: ${{ secrets.SERVER_IP }}
           username: ${{ secrets.SERVER_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           source: |
-            .next
-            public
-            package.json
-            package-lock.json
-            next.config.js
+            frontend/.next
+            frontend/public
+            frontend/package.json
+            frontend/package-lock.json
+            frontend/next.config.js
           target: /var/www/frontend
 
-      # 7️⃣ Install production dependencies on server and restart PM2
-      - name: Install dependencies & restart PM2
+      # 7️⃣ Install production dependencies on VPS & restart PM2
+      - name: Install prod dependencies & restart PM2
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.SERVER_IP }}
