@@ -67,7 +67,7 @@ export function UserNav({ session, onLogout }: UserNavProps) {
     if (isAdmin) {
       return (
         <DropdownMenuGroup>
-          <DropdownMenuLabel className="px-2 py-1.5 text-xs font-semibold text-muted-foreground">
+          <DropdownMenuLabel className="text-xs font-semibold text-muted-foreground">
             Admin Menu
           </DropdownMenuLabel>
           <TransitionLink href="/admin/profile">
@@ -118,7 +118,7 @@ export function UserNav({ session, onLogout }: UserNavProps) {
     if (isPro) {
       return (
         <DropdownMenuGroup>
-          <DropdownMenuLabel className="px-2 py-1.5 text-xs font-semibold text-muted-foreground">
+          <DropdownMenuLabel className="text-xs font-semibold text-muted-foreground">
             Menu
           </DropdownMenuLabel>
           <TransitionLink href="/tester/profile">
@@ -151,7 +151,7 @@ export function UserNav({ session, onLogout }: UserNavProps) {
     return (
       <>
         <DropdownMenuGroup>
-          <DropdownMenuLabel className="px-2 py-1.5 text-xs font-semibold text-muted-foreground">
+          <DropdownMenuLabel className="text-xs font-semibold text-muted-foreground">
             Dashboards
           </DropdownMenuLabel>
           <TransitionLink href="/dashboard">
@@ -207,7 +207,7 @@ export function UserNav({ session, onLogout }: UserNavProps) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild data-loc="UserNav">
-        <Button variant="ghost" className="relative h-auto rounded-full p-1.5">
+        <Button variant="ghost" className="relative h-auto rounded-full p-1">
           <div className="flex items-center gap-2">
             <Avatar className="h-10 w-10">
               <AvatarImage

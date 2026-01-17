@@ -140,13 +140,6 @@ export const LoadingButton = React.forwardRef<
     };
 
     useEffect(() => {
-      if (reset) {
-        reset();
-        runReset();
-      }
-    }, [reset]);
-
-    useEffect(() => {
       setCheckError(true);
       if (isLoading && !isSuccess && !isError) {
         runAnimation();
@@ -161,6 +154,13 @@ export const LoadingButton = React.forwardRef<
         }, 1000);
       }
     }, [isLoading, isSuccess, isError]);
+
+    useEffect(() => {
+      if (reset) {
+        reset();
+        runReset();
+      }
+    }, [reset]);
 
     return (
       <motion.button

@@ -1,10 +1,18 @@
 import {
+  addHubApp,
+  addHubAppTestingRequest,
   doSessionLogoutAll,
   doSessionLogoutSingle,
   getAllPricingPlans,
   getAllSessions,
+  getAppCategories,
   getDasboardData,
+  getHubApps,
+  getHubAppsCount,
   getHubData,
+  getHubSubmittedApp,
+  getSingleHubAppDetails,
+  getSubmittedAppsCount,
   getUserData,
   getUserNotifications,
   getUserProfileData,
@@ -14,11 +22,15 @@ import {
   saveUserData,
 } from "@/lib/apiCalls";
 import {
+  AppCategoriesResponse,
+  AppData,
   DashboardDataResponse,
   HubDataResponse,
+  HubSubmittedAppResponse,
   NotificationReponse,
   PricingResponse,
   SessionResponse,
+  SubmittedAppsCount,
   UserDataAttributes,
   UserProfileDataAttributes,
   UserWallerResponse,
@@ -117,6 +129,102 @@ export function useHubData() {
   });
 
   return query;
+}
+
+export function useAppCategories() {
+  const query = useQuery<AppCategoriesResponse[], Error>({
+    queryFn: () => getAppCategories(),
+    queryKey: ["useAppCategories"],
+  });
+
+  return query;
+}
+
+export function useAddHubApp(options?: UseMutationOptions<any, any, any>) {
+  const mutation = useMutation({
+    mutationFn: (payload) => addHubApp(payload),
+    onSuccess: (data) => {
+      console.log("Hub app added successfully: " + data);
+    },
+    onError: (data) => {
+      console.log("Hub app adding failed: " + data);
+    },
+    ...options,
+  });
+
+  return mutation;
+}
+
+export function useHubSubmittedApp({
+  type,
+  options,
+}: {
+  type: string;
+  options?: { enabled?: boolean };
+}) {
+  const query = useQuery<HubSubmittedAppResponse[], Error>({
+    queryFn: () => getHubSubmittedApp(type),
+    queryKey: ["useHubSubmittedApp", type],
+    enabled: options?.enabled ?? !!type,
+  });
+
+  return query;
+}
+
+export function useHubSubmittedAppsCount() {
+  const query = useQuery<SubmittedAppsCount, Error>({
+    queryFn: () => getSubmittedAppsCount(),
+    queryKey: ["useHubSubmittedAppsCount"],
+  });
+
+  return query;
+}
+
+export function useHubApps({ type }: { type: string }) {
+  const query = useQuery<HubSubmittedAppResponse[], Error>({
+    queryFn: () => getHubApps(type),
+    queryKey: ["useHubApps", type],
+    enabled: !!type,
+  });
+
+  return query;
+}
+
+export function useHubAppsCount() {
+  const query = useQuery<SubmittedAppsCount, Error>({
+    queryFn: () => getHubAppsCount(),
+    queryKey: ["useHubAppsCount"],
+  });
+
+  return query;
+}
+
+export function useSingleHubAppDetails({ id }: { id: string }) {
+  const query = useQuery<HubSubmittedAppResponse, Error>({
+    queryFn: () => getSingleHubAppDetails(id),
+    queryKey: ["useSingleHubAppDetails", id],
+    enabled: !!id,
+  });
+
+  return query;
+}
+
+export function useAddHubAppTestingRequest(
+  options?: UseMutationOptions<any, any, any>
+) {
+  const mutation = useMutation({
+    mutationFn: (payload: { hub_id: string }) =>
+      addHubAppTestingRequest(payload),
+    onSuccess: (data) => {
+      console.log("Hub app testing request added successfully: " + data);
+    },
+    onError: (data) => {
+      console.log("Hub app testing request adding failed: " + data);
+    },
+    ...options,
+  });
+
+  return mutation;
 }
 
 // Notification

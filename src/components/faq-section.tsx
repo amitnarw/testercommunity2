@@ -1,11 +1,7 @@
 "use client";
 
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
+import { Accordion } from "@/components/ui/accordion";
+import FaqItem from "./faq-item";
 
 const faqs = [
   {
@@ -40,14 +36,12 @@ export function FaqSection() {
       className="w-full space-y-2"
     >
       {faqs.map((faq, i) => (
-        <AccordionItem key={i} value={`item-${i}`} className="">
-          <AccordionTrigger className="text-left font-semibold hover:no-underline text-base p-6 bg-gray-100/40 rounded-2xl hover:bg-gray-100 dark:bg-gray-800/30 rounded-2xl hover:dark:bg-gray-800/60 duration-300">
-            <span>{faq.question}</span>
-          </AccordionTrigger>
-          <AccordionContent className="text-muted-foreground pb-6">
-            {faq.answer}
-          </AccordionContent>
-        </AccordionItem>
+        <FaqItem
+          key={i}
+          index={i}
+          question={faq.question}
+          answer={faq.answer}
+        />
       ))}
     </Accordion>
   );

@@ -2,12 +2,16 @@ import axios from "axios";
 import API_ROUTES from "./apiRoutes";
 import { authClient } from "./auth-client";
 import {
+  AppCategoriesResponse,
+  AppData,
   ControlRoomResponse,
   DashboardDataResponse,
   HubDataResponse,
+  HubSubmittedAppResponse,
   NotificationReponse,
   PricingResponse,
   SessionResponse,
+  SubmittedAppsCount,
   UserDataAttributes,
   UserProfileDataAttributes,
   UserWallerResponse,
@@ -366,7 +370,196 @@ export async function getHubData(): Promise<HubDataResponse> {
   }
 }
 
-// Hub
+export async function getAppCategories(): Promise<AppCategoriesResponse[]> {
+  try {
+    const response = await api.get(API_ROUTES.HUB + `/get-app-categories`);
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error fetching app categories:", error);
+    if (axios.isAxiosError(error)) {
+      const status = error.response?.status;
+      const responseData = error.response?.data;
+      console.error("Axios error:", status, responseData);
+
+      throw new Error(
+        responseData?.message || error.message || "Unknown Axios error"
+      );
+    } else if (error instanceof Error) {
+      throw new Error(error.message);
+    } else {
+      throw new Error(JSON.stringify(error));
+    }
+  }
+}
+
+export async function addHubApp(payload: AppData) {
+  try {
+    const response = await api.post(API_ROUTES.HUB + `/add-hub-app`, payload);
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error fetching app categories:", error);
+    if (axios.isAxiosError(error)) {
+      const status = error.response?.status;
+      const responseData = error.response?.data;
+      console.error("Axios error:", status, responseData);
+
+      throw new Error(
+        responseData?.message || error.message || "Unknown Axios error"
+      );
+    } else if (error instanceof Error) {
+      throw new Error(error.message);
+    } else {
+      throw new Error(JSON.stringify(error));
+    }
+  }
+}
+
+export async function getHubSubmittedApp(
+  type: string
+): Promise<HubSubmittedAppResponse[]> {
+  try {
+    const response = await api.get(
+      API_ROUTES.HUB + `/submitted/get-hub-apps/${type}`
+    );
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error fetching submitted hub apps:", error);
+    if (axios.isAxiosError(error)) {
+      const status = error.response?.status;
+      const responseData = error.response?.data;
+      console.error("Axios error:", status, responseData);
+
+      throw new Error(
+        responseData?.message || error.message || "Unknown Axios error"
+      );
+    } else if (error instanceof Error) {
+      throw new Error(error.message);
+    } else {
+      throw new Error(JSON.stringify(error));
+    }
+  }
+}
+
+export async function getSubmittedAppsCount(): Promise<SubmittedAppsCount> {
+  try {
+    const response = await api.get(
+      API_ROUTES.HUB + "/submitted/get-apps-count"
+    );
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error fetching app categories:", error);
+    if (axios.isAxiosError(error)) {
+      const status = error.response?.status;
+      const responseData = error.response?.data;
+      console.error("Axios error:", status, responseData);
+
+      throw new Error(
+        responseData?.message || error.message || "Unknown Axios error"
+      );
+    } else if (error instanceof Error) {
+      throw new Error(error.message);
+    } else {
+      throw new Error(JSON.stringify(error));
+    }
+  }
+}
+
+export async function getHubApps(
+  type: string
+): Promise<HubSubmittedAppResponse[]> {
+  try {
+    const response = await api.get(API_ROUTES.HUB + `/get-hub-apps/${type}`);
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error fetching hub apps:", error);
+    if (axios.isAxiosError(error)) {
+      const status = error.response?.status;
+      const responseData = error.response?.data;
+      console.error("Axios error:", status, responseData);
+
+      throw new Error(
+        responseData?.message || error.message || "Unknown Axios error"
+      );
+    } else if (error instanceof Error) {
+      throw new Error(error.message);
+    } else {
+      throw new Error(JSON.stringify(error));
+    }
+  }
+}
+
+export async function getHubAppsCount(): Promise<SubmittedAppsCount> {
+  try {
+    const response = await api.get(API_ROUTES.HUB + "/get-apps-count");
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error fetching hub apps count:", error);
+    if (axios.isAxiosError(error)) {
+      const status = error.response?.status;
+      const responseData = error.response?.data;
+      console.error("Axios error:", status, responseData);
+
+      throw new Error(
+        responseData?.message || error.message || "Unknown Axios error"
+      );
+    } else if (error instanceof Error) {
+      throw new Error(error.message);
+    } else {
+      throw new Error(JSON.stringify(error));
+    }
+  }
+}
+
+export async function getSingleHubAppDetails(
+  id: string
+): Promise<HubSubmittedAppResponse> {
+  try {
+    const response = await api.get(API_ROUTES.HUB + `/get-app-details/${id}`);
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error fetching single hub app details:", error);
+    if (axios.isAxiosError(error)) {
+      const status = error.response?.status;
+      const responseData = error.response?.data;
+      console.error("Axios error:", status, responseData);
+
+      throw new Error(
+        responseData?.message || error.message || "Unknown Axios error"
+      );
+    } else if (error instanceof Error) {
+      throw new Error(error.message);
+    } else {
+      throw new Error(JSON.stringify(error));
+    }
+  }
+}
+
+export async function addHubAppTestingRequest(payload: { hub_id: string }) {
+  try {
+    const response = await api.post(
+      API_ROUTES.HUB + `/add-hub-testing-request`,
+      payload
+    );
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error adding hub app testing request:", error);
+    if (axios.isAxiosError(error)) {
+      const status = error.response?.status;
+      const responseData = error.response?.data;
+      console.error("Axios error:", status, responseData);
+
+      throw new Error(
+        responseData?.message || error.message || "Unknown Axios error"
+      );
+    } else if (error instanceof Error) {
+      throw new Error(error.message);
+    } else {
+      throw new Error(JSON.stringify(error));
+    }
+  }
+}
+
+// Notifications
 export async function getUserNotifications(): Promise<{
   result: NotificationReponse[];
   totalNotifications: number;

@@ -10,9 +10,13 @@ import {
   Star,
   LayoutPanelLeft,
   Activity,
-  ChevronLeft,
-  ChevronRight,
   XCircle,
+  Gamepad2,
+  Trophy,
+  History,
+  AlertCircle,
+  Rocket,
+  Search,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -22,8 +26,9 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { communityApps, projects as allProjects } from "@/lib/data";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { projects as allProjects } from "@/lib/data";
+import { Tabs, TabsContent } from "@/components/ui/tabs";
+import { CustomTabsList } from "@/components/custom-tabs-list";
 import { CommunityAvailableAppCard } from "@/components/community-available-app-card";
 import { CommunityOngoingAppCard } from "@/components/community-ongoing-app-card";
 import { CommunityCompletedAppCard } from "@/components/community-completed-app-card";
@@ -31,11 +36,13 @@ import Link from "next/link";
 import { AppPagination } from "@/components/app-pagination";
 import { motion } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
-import Image from "next/image";
+import { SafeImage } from "@/components/safe-image";
 import { Badge } from "@/components/ui/badge";
-import type { CommunityApp } from "@/lib/types";
+import type { HubSubmittedAppResponse } from "@/lib/types";
 import SubTabUI from "@/components/sub-tab-ui";
-import { useHubData } from "@/hooks/useUser";
+import { useHubApps, useHubAppsCount, useHubData } from "@/hooks/useUser";
+import { useTransitionRouter } from "@/context/transition-context";
+import { AppCardSkeleton } from "@/components/app-card-skeleton";
 
 const APPS_PER_PAGE = 6;
 
@@ -56,12 +63,32 @@ const BentoCard = ({
 const PaginatedAppList = ({
   apps,
   emptyMessage,
+  emptyTitle = "No Apps Found",
+  emptyIcon: Icon = Search,
   card: CardComponent,
+  isLoading,
 }: {
-  apps: CommunityApp[];
+  apps: HubSubmittedAppResponse[];
   emptyMessage: string;
-  card: React.FC<{ app: CommunityApp }>;
+  emptyTitle?: string;
+  emptyIcon?: React.ElementType;
+  card: React.FC<{ app: HubSubmittedAppResponse }>;
+  isLoading?: boolean;
 }) => {
+  if (isLoading) {
+    return (
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.5 }}
+        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+      >
+        {Array.from({ length: 6 }).map((_, i) => (
+          <AppCardSkeleton key={i} />
+        ))}
+      </motion.div>
+    );
+  }
   const [currentPage, setCurrentPage] = useState(1);
   const totalPages = Math.ceil(apps.length / APPS_PER_PAGE);
   const startIndex = (currentPage - 1) * APPS_PER_PAGE;
@@ -75,17 +102,37 @@ const PaginatedAppList = ({
 
   return (
     <>
-      {currentApps.length > 0 ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {currentApps.map((app) => (
-            <CardComponent key={app.id} app={app} />
-          ))}
-        </div>
-      ) : (
-        <div className="text-center py-12 text-muted-foreground col-span-full">
-          {emptyMessage}
-        </div>
-      )}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3 }}
+      >
+        {currentApps.length > 0 ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {currentApps.map((app) => (
+              <CardComponent key={app.id} app={app} />
+            ))}
+          </div>
+        ) : (
+          <div className="flex flex-col items-center justify-center py-20 text-center bg-card/50 rounded-3xl border border-dashed border-muted-foreground/20 relative overflow-hidden group">
+            <div className="absolute inset-0 bg-gradient-to-b from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+            <motion.div
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
+              className="p-6 bg-primary/10 rounded-full mb-6 relative z-10 ring-8 ring-primary/5"
+            >
+              <Icon className="w-10 h-10 text-primary" />
+            </motion.div>
+            <h3 className="text-xl font-bold mb-2 relative z-10">
+              {emptyTitle}
+            </h3>
+            <p className="text-muted-foreground max-w-sm relative z-10 px-4">
+              {emptyMessage}
+            </p>
+          </div>
+        )}
+      </motion.div>
       <AppPagination
         currentPage={currentPage}
         totalPages={totalPages}
@@ -95,21 +142,18 @@ const PaginatedAppList = ({
   );
 };
 
-const RequestedAppCard = ({ app }: { app: CommunityApp }) => (
-  <Link
-    href={`/community-dashboard/test/${app.id}`}
-    className="group block h-full"
-  >
+const RequestedAppCard = ({ app }: { app: HubSubmittedAppResponse }) => (
+  <Link href={`/community-dashboard/${app.id}`} className="group block h-full">
     <Card className="flex flex-col h-full overflow-hidden rounded-2xl transition-all duration-300 bg-secondary dark:bg-secondary/30 border-0 group-hover:-translate-y-1">
       <CardContent className="p-4 flex-grow flex flex-col">
         <div className="flex items-start gap-4 mb-4">
-          <Image
-            src={app.icon}
-            alt={app.name}
+          <SafeImage
+            src={app?.androidApp?.appLogoUrl}
+            alt={app?.androidApp?.appName}
             width={64}
             height={64}
             className="rounded-lg border"
-            data-ai-hint={app.dataAiHint}
+            data-ai-hint={app?.androidApp?.appName}
           />
           <div className="flex-grow text-right">
             <Badge variant="secondary">Requested</Badge>
@@ -117,10 +161,10 @@ const RequestedAppCard = ({ app }: { app: CommunityApp }) => (
         </div>
         <div className="flex-grow">
           <h3 className="text-lg font-bold transition-colors group-hover:text-primary">
-            {app.name}
+            {app?.androidApp?.appName}
           </h3>
           <p className="text-sm text-muted-foreground mt-1 h-10 line-clamp-2">
-            {app.shortDescription}
+            {app?.androidApp?.description}
           </p>
         </div>
       </CardContent>
@@ -128,21 +172,18 @@ const RequestedAppCard = ({ app }: { app: CommunityApp }) => (
   </Link>
 );
 
-const RejectedRequestCard = ({ app }: { app: CommunityApp }) => (
-  <Link
-    href={`/community-dashboard/test/${app.id}`}
-    className="group block h-full"
-  >
+const RejectedRequestCard = ({ app }: { app: HubSubmittedAppResponse }) => (
+  <Link href={`/community-dashboard/${app.id}`} className="group block h-full">
     <Card className="flex flex-col h-full overflow-hidden rounded-2xl transition-all duration-300 bg-destructive/10 border border-dashed border-destructive/20 group-hover:-translate-y-1">
       <CardContent className="p-4 flex-grow flex flex-col">
         <div className="flex items-start gap-4 mb-4">
-          <Image
-            src={app.icon}
-            alt={app.name}
+          <SafeImage
+            src={app?.androidApp?.appLogoUrl}
+            alt={app?.androidApp?.appName}
             width={64}
             height={64}
             className="rounded-lg border"
-            data-ai-hint={app.dataAiHint}
+            data-ai-hint={app?.androidApp?.appName}
           />
           <div className="flex-grow text-right">
             <Badge variant="destructive" className="flex items-center gap-1.5">
@@ -153,10 +194,10 @@ const RejectedRequestCard = ({ app }: { app: CommunityApp }) => (
         </div>
         <div className="flex-grow">
           <h3 className="text-lg font-bold transition-colors group-hover:text-destructive">
-            {app.name}
+            {app?.androidApp?.appName}
           </h3>
           <p className="text-sm text-destructive/80 mt-1">
-            {app.rejectionReason}
+            {app?.statusDetails?.description}
           </p>
         </div>
       </CardContent>
@@ -170,35 +211,75 @@ export default function CommunityDashboardPage() {
   const [selectedTab, setSelectedTab] = useState("available");
   const [ongoingSubTab, setOngoingSubTab] = useState("ongoing");
 
-  const ongoingApps = communityApps.filter((app) => app.status === "ongoing");
-  const requestedApps = communityApps.filter(
-    (app) => app.status === "requested"
-  );
-  const rejectedRequestApps = communityApps.filter(
-    (app) => app.status === "request_rejected"
-  );
-  const completedApps = communityApps.filter(
-    (app) => app.status === "completed"
-  );
-  const availableApps = communityApps.filter(
-    (app) => app.status === "available"
-  );
+  const router = useTransitionRouter();
+
+  const getBackendType = () => {
+    if (selectedTab === "available") return "AVAILABLE";
+    if (selectedTab === "completed") return "COMPLETED";
+    if (selectedTab === "ongoing") {
+      switch (ongoingSubTab) {
+        case "ongoing":
+          return "IN_TESTING";
+        case "requested":
+          return "REQUESTED";
+        case "rejected":
+          return "REJECTED";
+        default:
+          return "IN_TESTING";
+      }
+    }
+    return "AVAILABLE";
+  };
+  const backendType = getBackendType();
+
+  const { data: hubAppsData, isPending: hubAppsIsPending } = useHubApps({
+    type: backendType,
+  });
+
+  const { data: hubDataCount, isPending: hubDataCountIsPending } =
+    useHubAppsCount();
+
+  const ongoingCount =
+    (hubDataCount?.["IN_TESTING"] || 0) +
+    (hubDataCount?.["REQUESTED"] || 0) +
+    (hubDataCount?.["REJECTED"] || 0);
+
+  const completedCount = hubDataCount?.["COMPLETED"] || 0;
 
   const tabs = [
-    { label: "Available", value: "available", count: availableApps.length },
+    {
+      label: "Available",
+      value: "available",
+      count: hubDataCount?.["AVAILABLE"] || 0,
+    },
     {
       label: "Ongoing",
       value: "ongoing",
-      count:
-        ongoingApps.length + requestedApps.length + rejectedRequestApps.length,
+      count: ongoingCount,
     },
-    { label: "Completed", value: "completed", count: completedApps.length },
+    {
+      label: "Completed",
+      value: "completed",
+      count: completedCount,
+    },
   ];
 
   const ongoingTabs = [
-    { label: "Ongoing", value: "ongoing", count: ongoingApps.length },
-    { label: "Requested", value: "requested", count: requestedApps.length },
-    { label: "Rejected", value: "rejected", count: rejectedRequestApps.length },
+    {
+      label: "Ongoing",
+      value: "ongoing",
+      count: hubDataCount?.["IN_TESTING"] || 0,
+    },
+    {
+      label: "Requested",
+      value: "requested",
+      count: hubDataCount?.["REQUESTED"] || 0,
+    },
+    {
+      label: "Rejected",
+      value: "rejected",
+      count: hubDataCount?.["REJECTED"] || 0,
+    },
   ];
 
   const appsSubmitted = allProjects.length;
@@ -211,12 +292,11 @@ export default function CommunityDashboardPage() {
     0
   );
 
-  const {
-    data: hubData,
-    isPending: hubIsPending,
-    isError: hubIsError,
-    error: hubError,
-  } = useHubData();
+  const { data: hubData, isPending: hubIsPending } = useHubData();
+
+  const openPage = (page: string) => {
+    router.push(page);
+  };
 
   return (
     <div data-loc="CommunityDashboardPage" className="min-h-screen mb-8">
@@ -263,7 +343,7 @@ export default function CommunityDashboardPage() {
                   My Points
                 </CardTitle>
                 <p className="text-3xl sm:text-5xl font-bold text-center my-auto">
-                  {hubData?.wallet}
+                  {hubData?.wallet || 0}
                 </p>
               </BentoCard>
 
@@ -274,11 +354,11 @@ export default function CommunityDashboardPage() {
                 <div className="grid grid-rows-2 grid-cols-1 sm:grid-cols-2 sm:grid-rows-1 gap-2 w-full mt-2 h-full">
                   <div className="text-center bg-secondary px-4 rounded-lg flex flex-row sm:flex-col items-center justify-between sm:justify-center">
                     <p className="text-xs text-muted-foreground">Ongoing</p>
-                    <p className="text-2xl font-bold">{ongoingApps.length}</p>
+                    <p className="text-2xl font-bold">{ongoingCount}</p>
                   </div>
                   <div className="text-center bg-secondary px-4 rounded-lg flex flex-row sm:flex-col items-center justify-between sm:justify-center">
                     <p className="text-xs text-muted-foreground">Completed</p>
-                    <p className="text-2xl font-bold">{completedApps.length}</p>
+                    <p className="text-2xl font-bold">{completedCount}</p>
                   </div>
                 </div>
               </BentoCard>
@@ -286,27 +366,23 @@ export default function CommunityDashboardPage() {
 
             <BentoCard className="flex !flex-row sm:!flex-col gap-2 col-span-2 lg:col-span-1 !p-2.5 sm:!p-4">
               <Button
-                asChild
                 className="w-full justify-start h-full bg-gradient-to-b from-primary to-primary/40 text-primary-foreground p-2 sm:p-auto"
+                onClick={() => openPage("/community-dashboard/submit")}
               >
-                <Link href="/community-dashboard/submit">
-                  <PlusCircle className="absolute sm:static left-0 top-0 scale-[2] text-white/20 sm:left-auto sm:top-auto sm:scale-[1] sm:text-white mr-2 h-4 w-4" />
-                  <p className="text-center sm:text-start w-full">
-                    Submit New App
-                  </p>
-                </Link>
+                <PlusCircle className="absolute sm:static left-0 top-0 scale-[2] text-white/20 sm:left-auto sm:top-auto sm:scale-[1] sm:text-white mr-2 h-4 w-4" />
+                <p className="text-center sm:text-start w-full">
+                  Submit New App
+                </p>
               </Button>
               <Button
-                asChild
                 variant="outline"
                 className="w-full justify-start h-full p-2 sm:p-auto"
+                onClick={() => openPage("/community-dashboard/my-submissions")}
               >
-                <Link href="/community-dashboard/my-submissions">
-                  <LayoutPanelLeft className="absolute sm:static left-0 top-0 scale-[2] text-black/10 dark:text-white/15 sm:left-auto sm:top-auto sm:scale-[1] sm:text-black dark:sm:text-white mr-2 h-4 w-4" />
-                  <p className="text-center sm:text-start w-full">
-                    My Submissions
-                  </p>
-                </Link>
+                <LayoutPanelLeft className="absolute sm:static left-0 top-0 scale-[2] text-black/10 dark:text-white/15 sm:left-auto sm:top-auto sm:scale-[1] sm:text-black dark:sm:text-white mr-2 h-4 w-4" />
+                <p className="text-center sm:text-start w-full">
+                  My Submissions
+                </p>
               </Button>
             </BentoCard>
           </div>
@@ -372,41 +448,19 @@ export default function CommunityDashboardPage() {
                 </DropdownMenu>
               </div>
             </div>
-            <TabsList className="relative grid w-full grid-cols-3 bg-muted p-1 rounded-lg h-auto mb-3">
-              {tabs.map((tab) => {
-                const isSelected = selectedTab === tab.value;
-
-                return (
-                  <TabsTrigger
-                    key={tab.value}
-                    value={tab.value}
-                    className={`relative px-3 py-2 text-xs sm:text-sm font-medium rounded-lg transition-colors duration-200 ${
-                      isSelected ? "text-foreground" : "hover:bg-background/50"
-                    }`}
-                  >
-                    {isSelected && (
-                      <motion.span
-                        layoutId="bubble"
-                        className="absolute inset-0 z-10 bg-background rounded-full"
-                        transition={{
-                          type: "spring",
-                          bounce: 0.2,
-                          duration: 0.6,
-                        }}
-                      />
-                    )}
-                    <span className="relative z-20">
-                      {tab.label} ({tab.count})
-                    </span>
-                  </TabsTrigger>
-                );
-              })}
-            </TabsList>
+            <CustomTabsList
+              tabs={tabs}
+              activeTab={selectedTab}
+              className="sticky top-0 z-30 backdrop-blur-xl py-2 -mx-4 px-4 md:mx-0 md:px-0 mb-6"
+            />
             <TabsContent value="available">
               <PaginatedAppList
-                apps={availableApps}
+                apps={hubAppsData || []}
+                emptyTitle="No Available Apps"
                 emptyMessage="No available apps for testing right now. Check back soon!"
+                emptyIcon={Gamepad2}
                 card={CommunityAvailableAppCard}
+                isLoading={hubAppsIsPending}
               />
             </TabsContent>
             <TabsContent value="ongoing" className="mt-6">
@@ -418,31 +472,43 @@ export default function CommunityDashboardPage() {
 
               {ongoingSubTab === "ongoing" && (
                 <PaginatedAppList
-                  apps={ongoingApps}
+                  apps={hubAppsData || []}
+                  emptyTitle="No Ongoing Tests"
                   emptyMessage="You have no ongoing tests."
+                  emptyIcon={Rocket}
                   card={CommunityOngoingAppCard}
+                  isLoading={hubAppsIsPending}
                 />
               )}
               {ongoingSubTab === "requested" && (
                 <PaginatedAppList
-                  apps={requestedApps}
+                  apps={hubAppsData || []}
+                  emptyTitle="No Pending Requests"
                   emptyMessage="You have no pending test requests."
+                  emptyIcon={History}
                   card={RequestedAppCard}
+                  isLoading={hubAppsIsPending}
                 />
               )}
               {ongoingSubTab === "rejected" && (
                 <PaginatedAppList
-                  apps={rejectedRequestApps}
+                  apps={hubAppsData || []}
+                  emptyTitle="No Rejected Requests"
                   emptyMessage="You have no rejected test requests."
+                  emptyIcon={AlertCircle}
                   card={RejectedRequestCard}
+                  isLoading={hubAppsIsPending}
                 />
               )}
             </TabsContent>
             <TabsContent value="completed">
               <PaginatedAppList
-                apps={completedApps}
+                apps={hubAppsData || []}
+                emptyTitle="No Completed Tests"
                 emptyMessage="You have not completed any tests yet."
+                emptyIcon={Trophy}
                 card={CommunityCompletedAppCard}
+                isLoading={hubAppsIsPending}
               />
             </TabsContent>
           </Tabs>

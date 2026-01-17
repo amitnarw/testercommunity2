@@ -126,7 +126,7 @@ export function Header({
   return (
     <motion.header
       data-loc="Header"
-      className="fixed top-0 left-0 right-0 z-50 flex justify-center pt-2 sm:pt-4"
+      className="fixed top-0 left-0 right-0 z-50 flex justify-center pt-2"
       initial={{ y: -100, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
@@ -142,8 +142,8 @@ export function Header({
         <motion.div
           layout
           className={cn(
-            "relative flex items-center justify-between px-6 py-3 bg-white/70 dark:bg-black/70 backdrop-blur-xl border border-black/5 dark:border-white/10 shadow-lg shadow-black/5 dark:shadow-white/5 transition-all duration-300",
-            isScrolled ? "rounded-full gap-12" : "rounded-2xl w-full"
+            "relative flex items-center justify-between px-6 py-2 bg-white/70 dark:bg-black/70 backdrop-blur-md border border-black/5 dark:border-white/10 shadow-lg shadow-black/5 dark:shadow-white/5 transition-all rounded-full duration-300",
+            isScrolled ? "gap-12" : "w-full"
           )}
         >
           <div className="flex items-center gap-4">

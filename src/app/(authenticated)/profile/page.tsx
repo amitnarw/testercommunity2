@@ -52,6 +52,7 @@ import {
 } from "@/components/ui/dialog";
 import { TransitionLink } from "@/components/transition-link";
 import { useTransitionRouter } from "@/context/transition-context";
+import { ProfileBentoGrid } from "@/components/profile-bento-grid";
 
 const profileSchema = z.object({
   first_name: z.string().min(2, "First name is required."),
@@ -561,26 +562,7 @@ export default function ProfilePage() {
           </CardContent>
         </Card>
 
-        <Card className="border-0 shadow-xl shadow-primary/5 p-6 rounded-2xl relative overflow-hidden">
-          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
-            <div className="flex items-center gap-6">
-              <div className="bg-gradient-to-br from-primary/30 to-primary/0 sm:bg-primary/10 text-primary/50 sm:text-primary p-4 rounded-full absolute -top-4 -left-4 sm:static scale-125 sm:scale-100">
-                <Gift className="w-8 h-8" />
-              </div>
-              <div className="z-10">
-                <h3 className="text-xl font-bold">Refer &amp; Earn</h3>
-                <p className="text-muted-foreground text-sm mt-1">
-                  Invite friends and earn points when they sign up!
-                </p>
-              </div>
-            </div>
-            <Button asChild className="w-full sm:w-auto">
-              <TransitionLink href="/profile/referral">
-                View Details <ChevronRight className="ml-2 h-4 w-4" />
-              </TransitionLink>
-            </Button>
-          </div>
-        </Card>
+        <ProfileBentoGrid />
       </div>
     </div>
   );

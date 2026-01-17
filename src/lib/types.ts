@@ -152,7 +152,17 @@ export enum UserNotificationPreference {
   TEST_ASSIGNED = "TEST_ASSIGNED",
   COMMENT_ADDED = "COMMENT_ADDED",
   PROMOTIONS = "PROMOTIONS",
+  APP_SUBMISSION = "APP_SUBMISSION",
   OTHER = "OTHER",
+}
+
+export enum TesterStatus {
+  PENDING = "PENDING",
+  IN_PROGRESS = "IN_PROGRESS",
+  COMPLETED = "COMPLETED",
+  DROPPED = "DROPPED",
+  REMOVED = "REMOVED",
+  REJECTED = "REJECTED",
 }
 
 export type UserDataAttributes = {
@@ -223,31 +233,6 @@ export type ProcessStep = {
   dataAiHint: string;
 };
 
-export type CommunityApp = {
-  id: number;
-  name: string;
-  icon: string;
-  dataAiHint?: string;
-  category: string;
-  shortDescription: string;
-  points: number;
-  androidVersion: string;
-  estimatedTime: string;
-  playStoreUrl?: string;
-  screenshots: { url: string; alt: string; dataAiHint?: string }[];
-  testingInstructions: string;
-  status:
-    | "available"
-    | "ongoing"
-    | "completed"
-    | "requested"
-    | "request_rejected";
-  progress?: number;
-  completedDate?: string;
-  totalDays: number;
-  rejectionReason?: string;
-};
-
 export type FaqItem = {
   question: string;
   answer: string;
@@ -280,60 +265,6 @@ export type TesterDetails = {
   rating: number;
 };
 
-export type Project = {
-  id: number;
-  name: string;
-  packageName: string;
-  icon: string;
-  dataAiHint?: string;
-  category: string;
-  status: "In Testing" | "Completed" | "In Review" | "Draft" | "Rejected";
-  testersStarted: number;
-  testersCompleted: number;
-  totalDays: number;
-  avgTestersPerDay: number;
-  startedFrom: string;
-  description: string;
-  testingInstructions: string;
-  androidVersion: string;
-  pointsCost: number;
-  crashFreeRate: number;
-  overallRating: number;
-  feedbackBreakdown: {
-    total: number;
-    critical: number;
-    high: number;
-    low: number;
-  };
-  performanceMetrics: {
-    avgStartupTime: string;
-    frozenFrames: string;
-  };
-  deviceCoverage: {
-    device: string;
-    testers: number;
-  }[];
-  osCoverage: {
-    version: string;
-    testers: number;
-  }[];
-  topGeographies: {
-    country: string;
-    testers: number;
-    flag: string;
-  }[];
-  feedback: ProjectFeedback[];
-  chartData: { date: string; bugs: number }[];
-  reviewNotes?: string;
-  rejectionReason?: {
-    title: string;
-    description: string;
-    imageUrl?: string;
-    dataAiHint?: string;
-  };
-  testers: TesterDetails[];
-};
-
 export type SubmittedFeedback = {
   id: number;
   type: "Bug" | "Suggestion" | "Praise";
@@ -341,6 +272,7 @@ export type SubmittedFeedback = {
   screenshot: string | null;
   tester: string;
   severity: "Critical" | "High" | "Medium" | "Low" | "N/A";
+  videoUrl?: string | null;
 };
 
 export interface ControlRoomResponse {
@@ -365,7 +297,8 @@ export interface DashboardDataResponse {
     currentDay: number;
     totalDay: number;
     instructionsForTester: string | null;
-    points: number | null;
+    rewardPoints: number | null;
+    costPoints: number | null;
     averageTimeTesting: string | null;
     status:
       | "IN_REVIEW"
@@ -384,36 +317,151 @@ export interface DashboardDataResponse {
   }[];
 }
 
-export interface HubDataResponse {
-  wallet: number;
-  availableApps: {
-    id: number;
+export interface AppData {
+  id: number;
+  appId: number;
+  appOwnerId: string;
+  appType: "PAID" | "FREE";
+  currentTester: string;
+  totalTester: number;
+  currentDay: number;
+  totalDay: number;
+  instructionsForTester: string | null;
+  rewardPoints: number | null;
+  costPoints: number | null;
+  averageTimeTesting: string | null;
+  minimumAndroidVersion: number;
+  status:
+    | "IN_REVIEW"
+    | "DRAFT"
+    | "REJECTED"
+    | "IN_TESTING"
+    | "COMPLETED"
+    | "ON_HOLD"
+    | "REQUESTED"
+    | "AVAILABLE";
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface AppCategory {
+  id: number;
+  createdAt: Date;
+  updatedAt: Date;
+  name: string;
+  isActive: boolean;
+}
+
+export interface AndroidApp {
+  id: number;
+  createdAt: Date;
+  updatedAt: Date;
+  isActive: boolean;
+  appName: string;
+  appLogoUrl: string;
+  appScreenshotUrl1: string;
+  appScreenshotUrl2: string;
+  packageName: string;
+  description: string | null;
+  appCategoryId: number;
+  appCategory: AppCategory;
+}
+
+export interface HubSubmittedAppResponse {
+  androidApp: AndroidApp;
+  id: number;
+  appId: number;
+  appOwnerId: string;
+  appOwner: {
+    id: string;
     createdAt: Date;
     updatedAt: Date;
-    appId: number;
-    appOwnerId: string;
-    currentTester: string;
-    totalTester: number;
-    currentDay: number;
-    totalDay: number;
-    instructionsForTester: string | null;
-    points: number | null;
-    averageTimeTesting: string | null;
-    status:
-      | "IN_REVIEW"
-      | "DRAFT"
-      | "REJECTED"
-      | "IN_TESTING"
-      | "COMPLETED"
-      | "ON_HOLD"
-      | "REQUESTED"
-      | "AVAILABLE";
+    name: string;
+    email: string;
+    emailVerified: boolean;
+    image: string | null;
+  };
+  appType: AppData["appType"];
+  currentTester: number;
+  totalTester: number;
+  currentDay: number;
+  totalDay: number;
+  instructionsForTester: string | null;
+  rewardPoints: number | null;
+  costPoints: number | null;
+  averageTimeTesting: string | null;
+  minimumAndroidVersion: number;
+  status: AppData["status"];
+  statusDetails: {
+    title: string;
+    description: string;
+    image: string;
+    video: string;
+  } | null;
+  feedback: {
+    id: number;
+    message: string;
+    type: "BUG" | "SUGGESTION" | "PRAISE" | "OTHER";
+    priority: "LOW" | "MEDIUM" | "HIGH" | "CRITICAL" | null;
+    testerId: string;
+    dashboardAndHubId: number;
+    createdAt: Date;
+    updatedAt: Date;
+    media: {
+      type: "IMAGE" | "VIDEO";
+      mime: string;
+      category:
+        | "APP_LOGO"
+        | "SCREENSHOT"
+        | "FEEDBACK_MEDIA"
+        | "FEATURED_IMAGE"
+        | "AUTHOR_IMAGE"
+        | "OTHER";
+      src: string;
+      appId: number | null;
+      blogId: number | null;
+      feedbackId: number | null;
+      notificationId: number | null;
+      supportRequestId: number | null;
+      supportMessageId: number | null;
+      createdAt: Date;
+      updatedAt: Date;
+    }[];
+    tester: {
+      name: string;
+    };
   }[];
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+export interface HubDataResponse {
+  wallet: number;
+  availableApps: AppData[];
   statusCounts: {
     _count: {
       _all: number;
     };
   }[];
+}
+
+export type SubmittedAppsCount = {
+  IN_REVIEW: number;
+  DRAFT: number;
+  REJECTED: number;
+  IN_TESTING: number;
+  COMPLETED: number;
+  ON_HOLD: number;
+  REQUESTED: number;
+  AVAILABLE: number;
+};
+
+export interface AppCategoriesResponse {
+  id: number;
+  name: string;
+  isActive: true;
+  createdAt: Date;
+  updatedAt: Date;
 }
 
 export interface NotificationReponse {
@@ -426,7 +474,9 @@ export interface NotificationReponse {
     | "FEEDBACK_RECEIVED"
     | "TEST_COMPLETED"
     | "BUG_REPORT"
+    | "BUG_REPORT"
     | "POINTS_AWARDED"
+    | "APP_SUBMISSION"
     | "OTHER";
   url: string | null;
   isActive: boolean;
@@ -476,3 +526,85 @@ export interface SessionResponse {
   deviceType: "desktop" | "mobile" | "tablet";
   lastLogin: string;
 }
+
+export type DeviceCoverage = {
+  device: string;
+  testers: number;
+};
+
+export type OSCoverage = {
+  version: string;
+  testers: number;
+};
+
+export type Geography = {
+  country: string;
+  testers: number;
+  flag: string;
+};
+
+export type FeedbackBreakdown = {
+  total: number;
+  critical: number;
+  high: number;
+  low: number;
+};
+
+export type PerformanceMetrics = {
+  avgStartupTime: string;
+  frozenFrames: string;
+};
+
+export type ChartData = {
+  date: string;
+  bugs: number;
+};
+
+export type Project = {
+  id: number;
+  name: string;
+  packageName: string;
+  icon: string;
+  dataAiHint?: string;
+  category: string;
+  status: "In Testing" | "In Review" | "Completed" | "Draft" | "Rejected";
+  testerStatus?: TesterStatus;
+  testersStarted: number;
+  testersCompleted: number;
+  totalDays: number;
+  avgTestersPerDay: number;
+  startedFrom: string;
+  description: string;
+  testingInstructions: string;
+  androidVersion: string;
+  pointsCost: number;
+  crashFreeRate: number;
+  overallRating: number;
+  feedbackBreakdown: FeedbackBreakdown;
+  performanceMetrics: PerformanceMetrics;
+  deviceCoverage: DeviceCoverage[];
+  osCoverage: OSCoverage[];
+  topGeographies: Geography[];
+  feedback: ProjectFeedback[];
+  chartData: ChartData[];
+  reviewNotes?: string;
+  testers: TesterDetails[];
+  rejectionReason?: {
+    title: string;
+    description: string;
+    imageUrl: string;
+    dataAiHint: string;
+  };
+};
+
+export type CommunityApp = {
+  id: number | string;
+  name: string;
+  icon: string;
+  shortDescription: string;
+  category: string;
+  rewardPoints: number;
+  androidVersion: string;
+  estimatedTime: string;
+  dataAiHint?: string;
+};

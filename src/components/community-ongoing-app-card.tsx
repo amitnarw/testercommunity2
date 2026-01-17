@@ -1,27 +1,26 @@
 import Link from "next/link";
-import Image from "next/image";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-} from "@/components/ui/card";
+import { SafeImage } from "@/components/safe-image";
+import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import type { CommunityApp } from "@/lib/types";
 import { Progress } from "./ui/progress";
 import { Smartphone } from "lucide-react";
+import { HubSubmittedAppResponse } from "@/lib/types";
 
 interface CommunityOngoingAppCardProps {
-  app: CommunityApp;
+  app: HubSubmittedAppResponse;
 }
 
 export function CommunityOngoingAppCard({ app }: CommunityOngoingAppCardProps) {
-  const totalDays = 14;
-  const daysCompleted = Math.floor((totalDays * (app.progress || 0)) / 100);
+  const totalDays = app.totalDay || 14;
+  const daysCompleted = app.currentDay || 0;
+  const progressPercentage = Math.min(
+    Math.max(totalDays > 0 ? (daysCompleted / totalDays) * 100 : 0, 0),
+    100
+  );
 
   return (
     <Link
-      href={`/community-dashboard/test/${app.id}/ongoing`}
+      href={`/community-dashboard/${app.id}/ongoing`}
       className="group block"
     >
       <Card
@@ -30,28 +29,30 @@ export function CommunityOngoingAppCard({ app }: CommunityOngoingAppCardProps) {
       >
         <CardContent className="p-4 flex-grow flex flex-col">
           <div className="flex items-start gap-4 mb-4">
-            <Image
-              src={app.icon}
-              alt={app.name}
+            <SafeImage
+              src={app?.androidApp?.appLogoUrl}
+              alt={app?.androidApp?.appName}
               width={64}
               height={64}
               className="rounded-lg border"
-              data-ai-hint={app.dataAiHint}
+              data-ai-hint={app?.androidApp?.appName}
             />
             <div className="flex-grow text-right">
-              <Badge variant="secondary">{app.category}</Badge>
+              <Badge variant="secondary">
+                {app?.androidApp?.appCategory?.name}
+              </Badge>
               <div className="flex items-center justify-end gap-1.5 text-xs text-muted-foreground mt-2">
                 <Smartphone className="w-3 h-3" />
-                <span>Android {app.androidVersion}</span>
+                <span>Android {app?.minimumAndroidVersion}</span>
               </div>
             </div>
           </div>
           <div className="flex-grow">
             <h3 className="text-lg font-bold group-hover:text-primary transition-colors">
-              {app.name}
+              {app?.androidApp?.appName}
             </h3>
             <p className="text-sm text-muted-foreground mt-1 h-10 line-clamp-2">
-              {app.shortDescription}
+              {app?.androidApp?.description}
             </p>
           </div>
         </CardContent>
@@ -63,7 +64,7 @@ export function CommunityOngoingAppCard({ app }: CommunityOngoingAppCardProps) {
                 {daysCompleted} / {totalDays} days
               </span>
             </div>
-            <Progress value={app.progress} className="h-2" />
+            <Progress value={progressPercentage} className="h-2" />
           </div>
           <div className="text-primary font-semibold text-sm w-full text-center py-2 bg-primary/10 rounded-lg group-hover:bg-primary group-hover:text-primary-foreground transition-colors mt-2">
             Continue Testing

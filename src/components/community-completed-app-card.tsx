@@ -1,17 +1,12 @@
 import Link from "next/link";
-import Image from "next/image";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-} from "@/components/ui/card";
+import { SafeImage } from "@/components/safe-image";
+import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Smartphone, Star } from "lucide-react";
-import type { CommunityApp } from "@/lib/types";
+import { HubSubmittedAppResponse } from "@/lib/types";
 
 interface CommunityCompletedAppCardProps {
-  app: CommunityApp;
+  app: HubSubmittedAppResponse;
 }
 
 export function CommunityCompletedAppCard({
@@ -19,7 +14,7 @@ export function CommunityCompletedAppCard({
 }: CommunityCompletedAppCardProps) {
   return (
     <Link
-      href={`/community-dashboard/test/${app.id}/completed`}
+      href={`/community-dashboard/${app.id}/completed`}
       className="group block"
     >
       <Card
@@ -28,26 +23,30 @@ export function CommunityCompletedAppCard({
       >
         <CardContent className="p-4 flex-grow flex flex-col">
           <div className="flex items-start gap-4 mb-4">
-            <Image
-              src={app.icon}
-              alt={app.name}
+            <SafeImage
+              src={app?.androidApp?.appLogoUrl}
+              alt={app?.androidApp?.appName}
               width={64}
               height={64}
               className="rounded-lg border"
-              data-ai-hint={app.dataAiHint}
+              data-ai-hint={app?.androidApp?.appName}
             />
             <div className="flex-grow text-right">
-              <Badge variant="secondary">{app.category}</Badge>
+              <Badge variant="secondary">
+                {app?.androidApp?.appCategory?.name}
+              </Badge>
               <div className="flex items-center justify-end gap-1.5 text-xs text-muted-foreground mt-2">
                 <Smartphone className="w-3 h-3" />
-                <span>Android {app.androidVersion}</span>
+                <span>Android {app?.minimumAndroidVersion}</span>
               </div>
             </div>
           </div>
           <div className="flex-grow">
-            <h3 className="text-lg font-bold transition-colors">{app.name}</h3>
+            <h3 className="text-lg font-bold transition-colors">
+              {app?.androidApp?.appName}
+            </h3>
             <p className="text-sm text-muted-foreground mt-1 h-10 line-clamp-2">
-              {app.shortDescription}
+              {app?.androidApp?.description}
             </p>
           </div>
         </CardContent>
@@ -57,13 +56,13 @@ export function CommunityCompletedAppCard({
               <span>Points Claimed</span>
               <div className="flex items-center gap-1.5 text-green-500 font-bold">
                 <Star className="w-4 h-4 fill-green-500" />
-                <span>{app.points}</span>
+                <span>{app.rewardPoints}</span>
               </div>
             </div>
-            {app.completedDate && (
+            {app?.updatedAt && (
               <div className="flex justify-between items-center text-xs text-muted-foreground mt-1">
                 <span>Completed</span>
-                <span>{new Date(app.completedDate).toLocaleDateString()}</span>
+                <span>{new Date(app.updatedAt).toLocaleDateString()}</span>
               </div>
             )}
           </div>
