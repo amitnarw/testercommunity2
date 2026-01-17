@@ -44,7 +44,7 @@ const Card = ({
       whileHover={{ y: -5 }}
       className={cn(
         "group relative flex flex-col overflow-hidden rounded-[2rem] border border-border/40 bg-card p-8 shadow-2xl transition-all duration-500 hover:shadow-primary/20",
-        className
+        className,
       )}
     >
       <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
@@ -68,7 +68,7 @@ const Card = ({
             whileHover={{ y: -5 }}
             className={cn(
               "group relative h-full flex flex-col justify-between overflow-hidden rounded-[2rem] border border-border/40 bg-card p-6 md:p-8 shadow-none transition-all duration-500 hover:shadow-2xl hover:shadow-primary/10 hover:border-primary/20",
-              className
+              className,
             )}
           >
             <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
@@ -134,7 +134,7 @@ export function ProfileBentoGrid() {
         <div className="md:col-span-1 flex flex-col gap-4">
           {/* Top: Upgrade Plan */}
           <Card
-            href="/packages"
+            href="/billing"
             delay={0.1}
             className="flex-1 min-h-[240px] bg-gradient-to-br from-primary via-blue-600 to-indigo-700 border-none"
           >
@@ -161,7 +161,7 @@ export function ProfileBentoGrid() {
                 </div>
               </div>
             </div>
-            <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20" />
+            <div className="absolute inset-0 opacity-20" />
           </Card>
 
           {/* Bottom: Settings & Support Split */}
