@@ -24,7 +24,7 @@ jobs:
         with:
           node-version: 20
 
-      # 3️⃣ Install dependencies (CI)
+      # 3️⃣ Install dependencies (CI only)
       - name: 📦 Install dependencies
         run: npm ci
 
@@ -32,29 +32,34 @@ jobs:
       - name: 🏗️ Build Next.js
         run: npm run build
 
-      # 5️⃣ Verify build output (safety check)
-      - name: 🔍 Verify build output
+      # 5️⃣ Fail fast if build output missing
+      - name: 🚨 Verify build output
         run: |
-          echo "Checking .next directory"
-          ls -la .next
+          test -d .next || (echo ".next missing" && exit 1)
+          test -d public || (echo "public missing" && exit 1)
+          test -f package.json || (echo "package.json missing" && exit 1)
+          test -f next.config.ts || (echo "next.config.ts missing" && exit 1)
 
-      # 6️⃣ Copy files to server (CORRECT for Model A)
-      - name: 📤 Copy build to server
-        uses: appleboy/scp-action@v0.1.6
-        with:
-          host: ${{ secrets.SERVER_IP }}
-          username: ${{ secrets.SERVER_USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          strip_components: 0
-          source: |
-            .next
-            public
-            package.json
-            package-lock.json
-            next.config.js
-          target: /var/www/frontend
+      # 6️⃣ Setup SSH for rsync
+      - name: 🔑 Setup SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H ${{ secrets.SERVER_IP }} >> ~/.ssh/known_hosts
 
-      # 7️⃣ Install prod deps & restart PM2 (Model A)
+      # 7️⃣ Sync build to server (NO tar, NO scp-action)
+      - name: 📤 Sync build to server (rsync)
+        run: |
+          rsync -avz --delete \
+            .next \
+            public \
+            package.json \
+            package-lock.json \
+            next.config.ts \
+            ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }}:/var/www/frontend
+
+      # 8️⃣ Install prod deps & restart PM2 (Model A)
       - name: ♻️ Restart app
         uses: appleboy/ssh-action@v1.0.3
         with:
