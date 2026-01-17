@@ -2,14 +2,45 @@ name: Deploy Frontend
 
 on:
   push:
-    branches: [main]
+    branches: [main] # deploy only on main branch
 
 jobs:
-  deploy:
+  build-and-deploy:
     runs-on: ubuntu-latest
+
     steps:
+      # 1️⃣ Checkout code
       - uses: actions/checkout@v4
-      - name: SSH Deploy
+
+      # 2️⃣ Setup Node.js
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+
+      # 3️⃣ Install dependencies on GitHub Actions runner (for build)
+      - name: Install dependencies
+        run: npm ci
+
+      # 4️⃣ Build Next.js app
+      - name: Build Next.js
+        run: npm run build
+
+      # 5️⃣ Copy only the build output to the server
+      - name: Copy built files to server
+        uses: appleboy/scp-action@v0.1.6
+        with:
+          host: ${{ secrets.SERVER_IP }}
+          username: ${{ secrets.SERVER_USER }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          source: |
+            .next
+            package.json
+            package-lock.json
+          target: /var/www/frontend
+
+      # 6️⃣ Install production dependencies on server and restart PM2
+      - name: Install dependencies & restart PM2
         uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.SERVER_IP }}
@@ -17,7 +48,6 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             cd /var/www/frontend
-            git pull origin main
-            npm install
-            npm run build
-            pm2 reload frontend
+            npm install --production
+            pm2 delete frontend || true
+            pm2 start npm --name frontend -- start
