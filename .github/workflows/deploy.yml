@@ -24,7 +24,7 @@ jobs:
         with:
           node-version: 20
 
-      # 3️⃣ Install dependencies
+      # 3️⃣ Install dependencies (CI)
       - name: 📦 Install dependencies
         run: npm ci
 
@@ -32,14 +32,13 @@ jobs:
       - name: 🏗️ Build Next.js
         run: npm run build
 
-      # 5️⃣ Debug build output (important)
+      # 5️⃣ Verify build output (safety check)
       - name: 🔍 Verify build output
         run: |
-          ls -la
+          echo "Checking .next directory"
           ls -la .next
-          ls -la .next/static || true
 
-      # 6️⃣ Copy files to server (FIXED)
+      # 6️⃣ Copy files to server (CORRECT for Model A)
       - name: 📤 Copy build to server
         uses: appleboy/scp-action@v0.1.6
         with:
@@ -48,14 +47,14 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           strip_components: 0
           source: |
-            .next/**
-            public/**
+            .next
+            public
             package.json
             package-lock.json
             next.config.js
           target: /var/www/frontend
 
-      # 7️⃣ Install prod deps & restart PM2
+      # 7️⃣ Install prod deps & restart PM2 (Model A)
       - name: ♻️ Restart app
         uses: appleboy/ssh-action@v1.0.3
         with:
