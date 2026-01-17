@@ -7,6 +7,9 @@ on:
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest
+    env:
+      BETTER_AUTH_SECRET: ${{ secrets.BETTER_AUTH_SECRET }}
+      NEXT_PUBLIC_ENCRYPTION_SECRET: ${{ secrets.NEXT_PUBLIC_ENCRYPTION_SECRET }}
 
     steps:
       # 1️⃣ Checkout code
