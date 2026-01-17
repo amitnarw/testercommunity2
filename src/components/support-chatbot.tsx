@@ -8,7 +8,7 @@ import { Input } from "./ui/input";
 import { ScrollArea } from "./ui/scroll-area";
 import { cn } from "@/lib/utils";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
-import { answerInquiry } from "@/ai/flows/customer-support-flow";
+// import { answerInquiry } from "@/ai/flows/customer-support-flow";
 
 interface Message {
   id: number;
@@ -74,7 +74,7 @@ const ChatWindow = ({
             key={message.id}
             className={cn(
               "flex items-end gap-2",
-              message.sender === "user" ? "justify-end" : "justify-start"
+              message.sender === "user" ? "justify-end" : "justify-start",
             )}
           >
             {message.sender === "bot" && (
@@ -90,7 +90,7 @@ const ChatWindow = ({
                 "p-3 rounded-2xl max-w-[80%] text-sm",
                 message.sender === "user"
                   ? "bg-primary text-primary-foreground rounded-br-none"
-                  : "bg-secondary text-secondary-foreground rounded-bl-none"
+                  : "bg-secondary text-secondary-foreground rounded-bl-none",
               )}
             >
               {message.text}
@@ -219,39 +219,39 @@ export function SupportChatbot() {
     }
   }, [messages, isOpen, isLoading]);
 
-  const handleSendMessage = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!inputValue.trim() || isLoading) return;
+  // const handleSendMessage = async (e: React.FormEvent) => {
+  //   e.preventDefault();
+  //   if (!inputValue.trim() || isLoading) return;
 
-    const userMessage: Message = {
-      id: Date.now(),
-      text: inputValue,
-      sender: "user",
-    };
-    setMessages((prev) => [...prev, userMessage]);
-    setInputValue("");
-    setIsLoading(true);
+  //   const userMessage: Message = {
+  //     id: Date.now(),
+  //     text: inputValue,
+  //     sender: "user",
+  //   };
+  //   setMessages((prev) => [...prev, userMessage]);
+  //   setInputValue("");
+  //   setIsLoading(true);
 
-    try {
-      const botResponseText = await answerInquiry(inputValue);
-      const botMessage: Message = {
-        id: Date.now() + 1,
-        text: botResponseText,
-        sender: "bot",
-      };
-      setMessages((prev) => [...prev, botMessage]);
-    } catch (error) {
-      console.error("Error getting bot response:", error);
-      const errorMessage: Message = {
-        id: Date.now() + 1,
-        text: "I'm having a little trouble connecting right now. Please try again in a moment.",
-        sender: "bot",
-      };
-      setMessages((prev) => [...prev, errorMessage]);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  //   try {
+  //     const botResponseText = await answerInquiry(inputValue);
+  //     const botMessage: Message = {
+  //       id: Date.now() + 1,
+  //       text: botResponseText,
+  //       sender: "bot",
+  //     };
+  //     setMessages((prev) => [...prev, botMessage]);
+  //   } catch (error) {
+  //     console.error("Error getting bot response:", error);
+  //     const errorMessage: Message = {
+  //       id: Date.now() + 1,
+  //       text: "I'm having a little trouble connecting right now. Please try again in a moment.",
+  //       sender: "bot",
+  //     };
+  //     setMessages((prev) => [...prev, errorMessage]);
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
 
   return (
     <AnimatePresence>
@@ -263,7 +263,7 @@ export function SupportChatbot() {
           isLoading={isLoading}
           inputValue={inputValue}
           setInputValue={setInputValue}
-          handleSendMessage={handleSendMessage}
+          // handleSendMessage={handleSendMessage}
           scrollAreaRef={scrollAreaRef}
         />
       ) : (
