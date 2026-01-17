@@ -2,7 +2,7 @@ name: Deploy Frontend
 
 on:
   push:
-    branches: [main] # deploy only on main branch
+    branches: [main]
 
 jobs:
   build-and-deploy:
@@ -21,7 +21,7 @@ jobs:
         with:
           node-version: 20
 
-      # 3️⃣ Install dependencies on GitHub Actions runner (for build)
+      # 3️⃣ Install dependencies on GitHub Actions runner
       - name: Install dependencies
         run: npm ci
 
@@ -29,7 +29,11 @@ jobs:
       - name: Build Next.js
         run: npm run build
 
-      # 5️⃣ Copy only the build output to the server
+      # 5️⃣ Debug: check .next folder exists
+      - name: Check build output
+        run: ls -la .next
+
+      # 6️⃣ Copy all necessary files to the server
       - name: Copy built files to server
         uses: appleboy/scp-action@v0.1.6
         with:
@@ -38,11 +42,13 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           source: |
             .next
+            public
             package.json
             package-lock.json
+            next.config.js
           target: /var/www/frontend
 
-      # 6️⃣ Install production dependencies on server and restart PM2
+      # 7️⃣ Install production dependencies on server and restart PM2
       - name: Install dependencies & restart PM2
         uses: appleboy/ssh-action@v1.0.3
         with:
