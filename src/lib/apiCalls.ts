@@ -102,7 +102,7 @@ export const googleLogin = async () => {
   try {
     const response = await authClient.signIn.social({
       provider: "google",
-      callbackURL: "http://localhost:9002/dashboard",
+      callbackURL: `${window.location.origin}/auth/login`,
     });
 
     if (response?.error) {

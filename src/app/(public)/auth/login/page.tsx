@@ -24,6 +24,7 @@ import { Label } from "@/components/ui/label";
 import { useUserProfileData } from "@/hooks/useUser";
 import { NotVerifiedDialog } from "@/components/unauthenticated/not-verified-dialog";
 import { toast } from "@/hooks/use-toast";
+import { authClient } from "@/lib/auth-client";
 
 const GoogleIcon = (props: React.HTMLAttributes<HTMLImageElement>) => (
   <Image src="/google.svg" alt="Google" width={24} height={24} {...props} />
