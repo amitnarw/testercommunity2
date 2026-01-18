@@ -42,10 +42,19 @@ const getStatusConfig = (status: HubSubmittedAppResponse["status"]) => {
       return {
         icon: <Search className="w-3.5 h-3.5" />,
         label: "In Review",
-        color: "text-blue-500",
-        bgColor: "bg-blue-500/10",
-        borderColor: "border-blue-500/20",
+        color: "text-muted-foreground",
+        bgColor: "bg-muted",
+        borderColor: "border-muted",
         description: "Our team is reviewing your submission.",
+      };
+    case "AVAILABLE":
+      return {
+        icon: <Clock className="w-3.5 h-3.5" />,
+        label: "Available",
+        color: "text-primary",
+        bgColor: "bg-primary/10",
+        borderColor: "border-primary/20",
+        description: "Your app is available for testing.",
       };
     case "IN_TESTING":
       return {
@@ -110,7 +119,7 @@ const ProjectCardSkeleton = () => {
 
 const ProjectCard = ({ project }: { project: HubSubmittedAppResponse }) => {
   const statusConfig = getStatusConfig(
-    project.status as HubSubmittedAppResponse["status"]
+    project.status as HubSubmittedAppResponse["status"],
   );
 
   return (
@@ -128,7 +137,7 @@ const ProjectCard = ({ project }: { project: HubSubmittedAppResponse }) => {
           <div
             className={cn(
               "absolute inset-x-0 top-0 h-1 opacity-60 transition-all duration-300 group-hover:opacity-100",
-              statusConfig.color.replace("text-", "bg-")
+              statusConfig.color.replace("text-", "bg-"),
             )}
           />
 
@@ -152,7 +161,7 @@ const ProjectCard = ({ project }: { project: HubSubmittedAppResponse }) => {
                     "rounded-full px-3 py-0.5 text-[10px] font-medium uppercase tracking-wider border",
                     statusConfig.bgColor,
                     statusConfig.color,
-                    statusConfig.borderColor
+                    statusConfig.borderColor,
                   )}
                 >
                   {statusConfig.label}
@@ -187,14 +196,14 @@ const ProjectCard = ({ project }: { project: HubSubmittedAppResponse }) => {
                   <div className="p-1.5 rounded-full bg-amber-500/10 text-amber-500">
                     <Star className="w-3.5 h-3.5 fill-amber-500/20" />
                   </div>
-                  <span>{project?.points?.toLocaleString() ?? 0} Pts</span>
+                  <span>{project?.costPoints ?? 0} Pts</span>
                 </div>
 
                 <div className="h-4 w-px bg-border/60" />
 
                 <div className="flex items-center gap-1.5 text-muted-foreground">
                   <Clock className="w-3.5 h-3.5" />
-                  <span>{project?.totalDay ?? 7} Days</span>
+                  <span>{project?.totalDay ?? 0} Days</span>
                 </div>
 
                 <div className="h-4 w-px bg-border/60" />
@@ -209,7 +218,7 @@ const ProjectCard = ({ project }: { project: HubSubmittedAppResponse }) => {
                         >
                           <div className="w-full h-full bg-gradient-to-tr from-primary/20 to-primary/5" />
                         </div>
-                      )
+                      ),
                     )}
                   </div>
                   <span className={cn("text-xs", statusConfig.color)}>
@@ -470,9 +479,9 @@ export default function MySubmissionsPage() {
       />
       <div className="min-h-screen mb-12">
         <div className="container mx-auto px-4 md:px-6">
-          <main className="space-y-8">
+          <main className="space-y-4">
             <PageHeader
-              title="My Submissions"
+              title="MySubmissions"
               backHref="/community-dashboard"
               className="w-1/2 px-0"
             />

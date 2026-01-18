@@ -42,7 +42,7 @@ export const register = async ({
   try {
     if (!email || !password || !firstName || !lastName) {
       throw new Error(
-        "Please add email address, password, first and last name to register."
+        "Please add email address, password, first and last name to register.",
       );
     }
     const response = await authClient?.signUp.email({
@@ -64,7 +64,7 @@ export const register = async ({
   } catch (error) {
     console.error("Error registering user:", error);
     throw new Error(
-      error instanceof Error ? error?.message : JSON.stringify(error)
+      error instanceof Error ? error?.message : JSON.stringify(error),
     );
   }
 };
@@ -88,7 +88,27 @@ export const login = async ({
     if (response?.error) {
       throw new AuthError(
         response.error.code ?? "LOGIN_FAILED",
-        response.error.message ?? "Login failed"
+        response.error.message ?? "Login failed",
+      );
+    }
+    return { success: true, data: response };
+  } catch (error) {
+    console.error("Error logging in user: ", error);
+    throw error;
+  }
+};
+
+export const googleLogin = async () => {
+  try {
+    const response = await authClient.signIn.social({
+      provider: "google",
+      callbackURL: "http://localhost:9002/dashboard",
+    });
+
+    if (response?.error) {
+      throw new AuthError(
+        response.error.code ?? "LOGIN_FAILED",
+        response.error.message ?? "Login failed",
       );
     }
     return { success: true, data: response };
@@ -148,7 +168,7 @@ export const emailVerification = async ({ token }: { token: string }) => {
   } catch (error) {
     console.error("Error registering user:", error);
     throw new Error(
-      error instanceof Error ? error?.message : JSON.stringify(error)
+      error instanceof Error ? error?.message : JSON.stringify(error),
     );
   }
 };
@@ -165,7 +185,7 @@ export const getUserData = async (): Promise<UserDataAttributes> => {
       console.error("Axios error:", status, responseData);
 
       throw new Error(
-        responseData?.message || error.message || "Unknown Axios error"
+        responseData?.message || error.message || "Unknown Axios error",
       );
     } else if (error instanceof Error) {
       throw new Error(error.message);
@@ -182,7 +202,7 @@ export const saveUserData = async (payload: UserDataAttributes) => {
     }
     const response = await api.post(
       API_ROUTES.USER + "/save-user-data",
-      payload
+      payload,
     );
     return response?.data?.data;
   } catch (error) {
@@ -193,7 +213,7 @@ export const saveUserData = async (payload: UserDataAttributes) => {
       console.error("Axios error:", status, responseData);
 
       throw new Error(
-        responseData?.message || error.message || "Unknown Axios error"
+        responseData?.message || error.message || "Unknown Axios error",
       );
     } else if (error instanceof Error) {
       throw new Error(error.message);
@@ -207,7 +227,7 @@ export const getUserProfileData =
   async (): Promise<UserProfileDataAttributes> => {
     try {
       const response = await api.get(
-        API_ROUTES.USER + "/get-user-profile-data"
+        API_ROUTES.USER + "/get-user-profile-data",
       );
       return response?.data?.data;
     } catch (error) {
@@ -218,7 +238,7 @@ export const getUserProfileData =
         console.error("Axios error:", status, responseData);
 
         throw new Error(
-          responseData?.message || error.message || "Unknown Axios error"
+          responseData?.message || error.message || "Unknown Axios error",
         );
       } else if (error instanceof Error) {
         throw new Error(error.message);
@@ -240,7 +260,7 @@ export const saveInitialProfileData = async () => {
       console.error("Axios error:", status, responseData);
 
       throw new Error(
-        responseData?.message || error.message || "Unknown Axios error"
+        responseData?.message || error.message || "Unknown Axios error",
       );
     } else if (error instanceof Error) {
       throw new Error(error.message);
@@ -279,7 +299,7 @@ export const saveProfileData = async (payload: UserProfileDataAttributes) => {
     }
     const response = await api.post(
       API_ROUTES.USER + "/save-profile-data",
-      payload
+      payload,
     );
     return response?.data?.data;
   } catch (error) {
@@ -290,7 +310,7 @@ export const saveProfileData = async (payload: UserProfileDataAttributes) => {
       console.error("Axios error:", status, responseData);
 
       throw new Error(
-        responseData?.message || error.message || "Unknown Axios error"
+        responseData?.message || error.message || "Unknown Axios error",
       );
     } else if (error instanceof Error) {
       throw new Error(error.message);
@@ -312,7 +332,7 @@ export async function getControlRoomData(): Promise<ControlRoomResponse> {
       console.error("Axios error:", status, responseData);
 
       throw new Error(
-        responseData?.message || error.message || "Unknown Axios error"
+        responseData?.message || error.message || "Unknown Axios error",
       );
     } else if (error instanceof Error) {
       throw new Error(error.message);
@@ -326,7 +346,7 @@ export async function getControlRoomData(): Promise<ControlRoomResponse> {
 export async function getDasboardData(): Promise<DashboardDataResponse> {
   try {
     const response = await api.get(
-      API_ROUTES.DASHBOARD + `/get-dashboard-stats`
+      API_ROUTES.DASHBOARD + `/get-dashboard-stats`,
     );
     return response?.data?.data;
   } catch (error) {
@@ -337,7 +357,7 @@ export async function getDasboardData(): Promise<DashboardDataResponse> {
       console.error("Axios error:", status, responseData);
 
       throw new Error(
-        responseData?.message || error.message || "Unknown Axios error"
+        responseData?.message || error.message || "Unknown Axios error",
       );
     } else if (error instanceof Error) {
       throw new Error(error.message);
@@ -360,7 +380,7 @@ export async function getHubData(): Promise<HubDataResponse> {
       console.error("Axios error:", status, responseData);
 
       throw new Error(
-        responseData?.message || error.message || "Unknown Axios error"
+        responseData?.message || error.message || "Unknown Axios error",
       );
     } else if (error instanceof Error) {
       throw new Error(error.message);
@@ -382,7 +402,7 @@ export async function getAppCategories(): Promise<AppCategoriesResponse[]> {
       console.error("Axios error:", status, responseData);
 
       throw new Error(
-        responseData?.message || error.message || "Unknown Axios error"
+        responseData?.message || error.message || "Unknown Axios error",
       );
     } else if (error instanceof Error) {
       throw new Error(error.message);
@@ -404,7 +424,7 @@ export async function addHubApp(payload: AppData) {
       console.error("Axios error:", status, responseData);
 
       throw new Error(
-        responseData?.message || error.message || "Unknown Axios error"
+        responseData?.message || error.message || "Unknown Axios error",
       );
     } else if (error instanceof Error) {
       throw new Error(error.message);
@@ -415,11 +435,11 @@ export async function addHubApp(payload: AppData) {
 }
 
 export async function getHubSubmittedApp(
-  type: string
+  type: string,
 ): Promise<HubSubmittedAppResponse[]> {
   try {
     const response = await api.get(
-      API_ROUTES.HUB + `/submitted/get-hub-apps/${type}`
+      API_ROUTES.HUB + `/submitted/get-hub-apps/${type}`,
     );
     return response?.data?.data;
   } catch (error) {
@@ -430,7 +450,7 @@ export async function getHubSubmittedApp(
       console.error("Axios error:", status, responseData);
 
       throw new Error(
-        responseData?.message || error.message || "Unknown Axios error"
+        responseData?.message || error.message || "Unknown Axios error",
       );
     } else if (error instanceof Error) {
       throw new Error(error.message);
@@ -443,7 +463,7 @@ export async function getHubSubmittedApp(
 export async function getSubmittedAppsCount(): Promise<SubmittedAppsCount> {
   try {
     const response = await api.get(
-      API_ROUTES.HUB + "/submitted/get-apps-count"
+      API_ROUTES.HUB + "/submitted/get-apps-count",
     );
     return response?.data?.data;
   } catch (error) {
@@ -454,7 +474,7 @@ export async function getSubmittedAppsCount(): Promise<SubmittedAppsCount> {
       console.error("Axios error:", status, responseData);
 
       throw new Error(
-        responseData?.message || error.message || "Unknown Axios error"
+        responseData?.message || error.message || "Unknown Axios error",
       );
     } else if (error instanceof Error) {
       throw new Error(error.message);
@@ -465,7 +485,7 @@ export async function getSubmittedAppsCount(): Promise<SubmittedAppsCount> {
 }
 
 export async function getHubApps(
-  type: string
+  type: string,
 ): Promise<HubSubmittedAppResponse[]> {
   try {
     const response = await api.get(API_ROUTES.HUB + `/get-hub-apps/${type}`);
@@ -478,7 +498,7 @@ export async function getHubApps(
       console.error("Axios error:", status, responseData);
 
       throw new Error(
-        responseData?.message || error.message || "Unknown Axios error"
+        responseData?.message || error.message || "Unknown Axios error",
       );
     } else if (error instanceof Error) {
       throw new Error(error.message);
@@ -500,7 +520,7 @@ export async function getHubAppsCount(): Promise<SubmittedAppsCount> {
       console.error("Axios error:", status, responseData);
 
       throw new Error(
-        responseData?.message || error.message || "Unknown Axios error"
+        responseData?.message || error.message || "Unknown Axios error",
       );
     } else if (error instanceof Error) {
       throw new Error(error.message);
@@ -511,7 +531,7 @@ export async function getHubAppsCount(): Promise<SubmittedAppsCount> {
 }
 
 export async function getSingleHubAppDetails(
-  id: string
+  id: string,
 ): Promise<HubSubmittedAppResponse> {
   try {
     const response = await api.get(API_ROUTES.HUB + `/get-app-details/${id}`);
@@ -524,7 +544,7 @@ export async function getSingleHubAppDetails(
       console.error("Axios error:", status, responseData);
 
       throw new Error(
-        responseData?.message || error.message || "Unknown Axios error"
+        responseData?.message || error.message || "Unknown Axios error",
       );
     } else if (error instanceof Error) {
       throw new Error(error.message);
@@ -538,7 +558,7 @@ export async function addHubAppTestingRequest(payload: { hub_id: string }) {
   try {
     const response = await api.post(
       API_ROUTES.HUB + `/add-hub-testing-request`,
-      payload
+      payload,
     );
     return response?.data?.data;
   } catch (error) {
@@ -549,7 +569,7 @@ export async function addHubAppTestingRequest(payload: { hub_id: string }) {
       console.error("Axios error:", status, responseData);
 
       throw new Error(
-        responseData?.message || error.message || "Unknown Axios error"
+        responseData?.message || error.message || "Unknown Axios error",
       );
     } else if (error instanceof Error) {
       throw new Error(error.message);
@@ -575,7 +595,7 @@ export async function getUserNotifications(): Promise<{
       console.error("Axios error:", status, responseData);
 
       throw new Error(
-        responseData?.message || error.message || "Unknown Axios error"
+        responseData?.message || error.message || "Unknown Axios error",
       );
     } else if (error instanceof Error) {
       throw new Error(error.message);
@@ -598,7 +618,7 @@ export async function getUserWallet(): Promise<UserWallerResponse> {
       console.error("Axios error:", status, responseData);
 
       throw new Error(
-        responseData?.message || error.message || "Unknown Axios error"
+        responseData?.message || error.message || "Unknown Axios error",
       );
     } else if (error instanceof Error) {
       throw new Error(error.message);
@@ -621,7 +641,7 @@ export async function getAllPricingPlans(): Promise<PricingResponse[]> {
       console.error("Axios error:", status, responseData);
 
       throw new Error(
-        responseData?.message || error.message || "Unknown Axios error"
+        responseData?.message || error.message || "Unknown Axios error",
       );
     } else if (error instanceof Error) {
       throw new Error(error.message);
@@ -643,7 +663,7 @@ export async function getAllSessions(): Promise<SessionResponse[]> {
       console.error("Axios error:", status, responseData);
 
       throw new Error(
-        responseData?.message || error.message || "Unknown Axios error"
+        responseData?.message || error.message || "Unknown Axios error",
       );
     } else if (error instanceof Error) {
       throw new Error(error.message);
@@ -660,7 +680,7 @@ export async function doSessionLogoutSingle(payload: { session_id: string }) {
     }
     const response = await api.post(
       API_ROUTES.USER + `/logout-single-session`,
-      payload
+      payload,
     );
     return response?.data?.data;
   } catch (error) {
@@ -671,7 +691,7 @@ export async function doSessionLogoutSingle(payload: { session_id: string }) {
       console.error("Axios error:", status, responseData);
 
       throw new Error(
-        responseData?.message || error.message || "Unknown Axios error"
+        responseData?.message || error.message || "Unknown Axios error",
       );
     } else if (error instanceof Error) {
       throw new Error(error.message);
@@ -693,7 +713,7 @@ export async function doSessionLogoutAll() {
       console.error("Axios error:", status, responseData);
 
       throw new Error(
-        responseData?.message || error.message || "Unknown Axios error"
+        responseData?.message || error.message || "Unknown Axios error",
       );
     } else if (error instanceof Error) {
       throw new Error(error.message);

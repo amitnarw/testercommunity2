@@ -1,7 +1,6 @@
 "use client";
 
 import { SafeImage } from "@/components/safe-image";
-import { projects as allProjects } from "@/lib/data"; // Using project data as it's richer
 import {
   Card,
   CardContent,
@@ -28,7 +27,7 @@ import {
   AlertTriangle,
   Expand,
 } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, use } from "react";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { BackButton } from "@/components/back-button";
@@ -39,6 +38,8 @@ import Confetti from "react-dom-confetti";
 import { useInView } from "react-intersection-observer";
 import { motion } from "framer-motion";
 import { useSingleHubAppDetails } from "@/hooks/useUser";
+import { HubSubmittedAppResponse } from "@/lib/types";
+import { TesterRequestsSection } from "@/components/tester-requests-section";
 
 const FEEDBACK_PER_PAGE = 5;
 
@@ -130,7 +131,7 @@ const TestCompleteSection = ({
   app,
   isUnderReviewOrRejected,
 }: {
-  app: any;
+  app: HubSubmittedAppResponse;
   isUnderReviewOrRejected: boolean;
 }) => {
   const { ref } = useInView({
@@ -183,12 +184,12 @@ const TestCompleteSection = ({
       >
         <div className="bg-gradient-to-tl from-primary/20 to-primary text-primary-foreground p-2 sm:p-5 h-full w-full flex flex-col items-center justify-center gap-1">
           <p className="text-xs">Total Testers</p>
-          <p className="text-4xl sm:text-5xl font-bold">{app.testersStarted}</p>
+          <p className="text-4xl sm:text-5xl font-bold">{app?.currentTester}</p>
         </div>
         <div className="bg-gradient-to-tr from-primary/20 to-primary text-primary-foreground p-2 sm:p-5 h-full w-full flex flex-col items-center justify-center gap-1">
           <p className="text-xs">Total Days</p>
           <p className="text-4xl sm:text-5xl font-bold">
-            {isUnderReviewOrRejected ? 0 : app.totalDays}
+            {isUnderReviewOrRejected ? 0 : app?.totalDay}
           </p>
         </div>
       </motion.div>
@@ -226,8 +227,8 @@ const TestCompleteSection = ({
           </div>
           <div className="bg-secondary p-1.5 pt-3 rounded-lg flex flex-col gap-2 items-center justify-center">
             <p className="text-xs">Points Cost</p>
-            <p className="text-3xl font-bold bg-card rounded-lg w-full h-full flex flex items-center justify-center">
-              {isUnderReviewOrRejected ? 0 : app?.pointsCost.toLocaleString()}
+            <p className="text-3xl font-bold bg-card rounded-lg w-full h-full flex items-center justify-center">
+              {isUnderReviewOrRejected ? 0 : app?.costPoints}
             </p>
           </div>
         </div>
@@ -236,15 +237,19 @@ const TestCompleteSection = ({
   );
 };
 
-function SubmissionDetailsPage({ params }: { params: { id: string } }) {
-  // const project = allProjects.find((p) => p.id.toString() === params.id);
+function SubmissionDetailsPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = use(params);
   const [feedbackPage, setFeedbackPage] = useState(1);
   const [viewMode, setViewMode] = useState<"list" | "grid">("list");
   const [fullscreenImage, setFullscreenImage] = useState<string | null>(null);
   const [isConfettiActive, setConfettiActive] = useState(false);
 
   const { data: appDetails, isPending: appDetailsIsPending } =
-    useSingleHubAppDetails({ id: params.id });
+    useSingleHubAppDetails({ id });
 
   const { ref: confettiTriggerRef, inView: confettiInView } = useInView({
     threshold: 0.5,
@@ -268,13 +273,13 @@ function SubmissionDetailsPage({ params }: { params: { id: string } }) {
   const filteredFeedback = isUnderReviewOrRejected ? [] : appDetails?.feedback;
 
   const totalFeedbackPages = Math.ceil(
-    filteredFeedback.length / FEEDBACK_PER_PAGE
+    filteredFeedback.length / FEEDBACK_PER_PAGE,
   );
   const feedbackStartIndex = (feedbackPage - 1) * FEEDBACK_PER_PAGE;
   const feedbackEndIndex = feedbackStartIndex + FEEDBACK_PER_PAGE;
   const currentFeedback = filteredFeedback.slice(
     feedbackStartIndex,
-    feedbackEndIndex
+    feedbackEndIndex,
   );
 
   const handleFeedbackPageChange = (page: number) => {
@@ -293,6 +298,24 @@ function SubmissionDetailsPage({ params }: { params: { id: string } }) {
       ? 0
       : appDetails?.feedback.filter((fb) => fb.type === "PRAISE").length,
     totalTesters: isUnderReviewOrRejected ? 0 : appDetails?.currentTester,
+  };
+
+  const handleAcceptTester = (relationId: number) => {
+    // TODO: Implement API call
+    console.log("Accepted tester relation:", relationId);
+  };
+
+  const handleRejectTester = (
+    relationId: number,
+    reason: {
+      title: string;
+      description: string;
+      image?: File | null;
+      video?: File | null;
+    },
+  ) => {
+    // TODO: Implement API call
+    console.log("Rejected tester relation:", relationId, reason);
   };
 
   return (
@@ -337,7 +360,7 @@ function SubmissionDetailsPage({ params }: { params: { id: string } }) {
             appDetails?.statusDetails?.description && (
               <section className="bg-destructive/10 border-2 border-dashed border-destructive/10 rounded-2xl p-6 relative overflow-hidden">
                 <div className="flex items-center gap-3 mb-4">
-                  <div className="bg-destructive/5 p-3 sm:bg-destructive/10 p-3 rounded-full text-destructive absolute sm:static top-2 right-0 sm:top-auto sm:right-auto scale-[3] sm:scale-100">
+                  <div className="bg-destructive/5 p-3 sm:bg-destructive/10 rounded-full text-destructive absolute sm:static top-2 right-0 sm:top-auto sm:right-auto scale-[3] sm:scale-100">
                     <AlertTriangle className="w-8 h-8 text-destructive/20 sm:text-destructive" />
                   </div>
                   <h2 className="text-xl sm:text-2xl font-bold text-destructive dark:text-red-500">
@@ -377,25 +400,11 @@ function SubmissionDetailsPage({ params }: { params: { id: string } }) {
               isUnderReviewOrRejected ? "blur-md pointer-events-none" : ""
             }`}
           >
-            {/* {isUnderReviewOrRejected && (
-                            <div className="absolute inset-0 bg-background/70 backdrop-blur-[10px] z-20 rounded-2xl flex flex-col items-center justify-center">
-                                <div className="bg-secondary/80 p-4 rounded-full mb-4">
-                                    {project.status === 'In Review' ? <Search className="w-12 h-12 text-primary" /> : <XCircle className="w-12 h-12 text-destructive" />}
-                                </div>
-                                <h2 className="text-2xl font-bold">{project.status}</h2>
-                                <p className="text-black/80 dark:text-white/80 max-w-sm text-center">
-                                    {project.status === 'In Review' 
-                                        ? "Our team is currently reviewing this submission. Testing data and feedback will appear here once the app is published."
-                                        : "This submission was rejected. Please check the rejection reason above for details from our review team."
-                                    }
-                                </p>
-                            </div>
-                        )} */}
             {appDetails?.status !== "COMPLETED" ? (
               <div
                 className={cn(
                   "grid grid-cols-1 lg:grid-cols-3 gap-2 sm:gap-4 text-center",
-                  isUnderReviewOrRejected && "pointer-events-none"
+                  isUnderReviewOrRejected && "pointer-events-none",
                 )}
               >
                 <div className="flex flex-row gap-1 items-center justify-center rounded-2xl overflow-hidden">
@@ -461,7 +470,7 @@ function SubmissionDetailsPage({ params }: { params: { id: string } }) {
                   <div className="bg-card p-3 pt-4 rounded-2xl flex flex-col justify-center h-full w-full">
                     <p className="text-xs sm:text-sm mb-3">Points Cost</p>
                     <p className="text-2xl sm:text-4xl font-bold bg-secondary rounded-lg h-full w-full flex items-center justify-center">
-                      {isUnderReviewOrRejected ? 0 : appDetails?.rewardPoints}
+                      {isUnderReviewOrRejected ? 0 : appDetails?.costPoints}
                     </p>
                   </div>
                   <div className="bg-card p-3 pt-4 rounded-2xl flex flex-col justify-center h-full w-full">
@@ -489,10 +498,18 @@ function SubmissionDetailsPage({ params }: { params: { id: string } }) {
               />
             )}
 
+            {appDetails?.status === "AVAILABLE" && (
+              <TesterRequestsSection
+                requests={appDetails?.testerRelations || []}
+                onAccept={handleAcceptTester}
+                onReject={handleRejectTester}
+              />
+            )}
+
             <div
               className={cn(
                 "bg-card/50 rounded-2xl p-2 sm:p-6 sm:pt-4",
-                isUnderReviewOrRejected && "pointer-events-none"
+                isUnderReviewOrRejected && "pointer-events-none",
               )}
             >
               <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
@@ -532,14 +549,14 @@ function SubmissionDetailsPage({ params }: { params: { id: string } }) {
                             fb.type === "BUG"
                               ? "from-red-500/20"
                               : fb.type === "SUGGESTION"
-                              ? "from-yellow-500/20"
-                              : "from-green-500/20"
+                                ? "from-yellow-500/20"
+                                : "from-green-500/20"
                           } ${
                             fb.type === "BUG"
                               ? "to-red-500/5"
                               : fb.type === "SUGGESTION"
-                              ? "to-yellow-500/5"
-                              : "to-green-500/5"
+                                ? "to-yellow-500/5"
+                                : "to-green-500/5"
                           } p-0 pt-2 shadow-none border-0 relative overflow-hidden`}
                         >
                           <div className="flex items-start flex-col gap-0 pr-2 pl-5">
@@ -597,14 +614,14 @@ function SubmissionDetailsPage({ params }: { params: { id: string } }) {
                             fb.type === "BUG"
                               ? "from-red-500/20"
                               : fb.type === "SUGGESTION"
-                              ? "from-yellow-500/20"
-                              : "from-green-500/20"
+                                ? "from-yellow-500/20"
+                                : "from-green-500/20"
                           } ${
                             fb.type === "BUG"
                               ? "to-red-500/10"
                               : fb.type === "SUGGESTION"
-                              ? "to-yellow-500/10"
-                              : "to-green-500/10"
+                                ? "to-yellow-500/10"
+                                : "to-green-500/10"
                           } shadow-none border-0 h-full flex flex-col relative gap-1 sm:gap-2 overflow-hidden`}
                         >
                           <CardHeader className="p-2 px-3 pb-0 sm:px-4 flex-row items-center justify-between">

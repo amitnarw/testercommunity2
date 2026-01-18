@@ -1,5 +1,6 @@
 import { SafeImage } from "@/components/safe-image";
 import { Badge } from "./ui/badge";
+import { ExpandableText } from "./expandable-text";
 
 const AppInfoHeader = ({
   logo,
@@ -52,17 +53,19 @@ const AppInfoHeader = ({
             </div>
 
             <div className="hidden sm:block mt-4 mr-5">
-              <p className="text-muted-foreground line-clamp-2">
-                {description}
-              </p>
+              <ExpandableText
+                text={description}
+                className="text-muted-foreground text-md sm:text-lg leading-relaxed"
+              />
             </div>
           </div>
         </div>
 
         <div className="block sm:hidden col-span-4 w-full">
-          <p className="text-muted-foreground w-full !line-clamp-2">
-            {description}
-          </p>
+          <ExpandableText
+            text={description}
+            className="text-muted-foreground text-md sm:text-lg leading-relaxed"
+          />
         </div>
 
         {status && statusConfig && (
@@ -73,18 +76,18 @@ const AppInfoHeader = ({
                 status === "REJECTED"
                   ? "bg-gradient-to-br from-red-500/60 to-red-500/20 dark:from-red-500/30 dark:to-red-500/5"
                   : status === "COMPLETED"
-                  ? "bg-gradient-to-br from-green-500/60 to-green-500/20 dark:from-green-500/30 dark:to-green-500/5"
-                  : status === "IN_TESTING" || status === "AVAILABLE"
-                  ? "bg-gradient-to-br from-primary to-primary/20 dark:from-primary dark:to-primary/5"
-                  : "bg-gradient-to-br from-yellow-500/60 to-yellow-500/20 dark:from-yellow-500/30 dark:to-yellow-500/5"
+                    ? "bg-gradient-to-br from-green-500/60 to-green-500/20 dark:from-green-500/30 dark:to-green-500/5"
+                    : status === "IN_TESTING" || status === "AVAILABLE"
+                      ? "bg-gradient-to-br from-primary to-primary/20 dark:from-primary dark:to-primary/5"
+                      : "bg-gradient-to-br from-yellow-500/60 to-yellow-500/20 dark:from-yellow-500/30 dark:to-yellow-500/5"
               } ${
                 status === "REJECTED"
                   ? "text-red-800 dark:text-red-500"
                   : status === "COMPLETED"
-                  ? "text-green-800 dark:text-green-500"
-                  : status === "IN_TESTING" || status === "AVAILABLE"
-                  ? "text-primary-foreground dark:text-primary-foreground"
-                  : "text-yellow-800 dark:text-yellow-500"
+                    ? "text-green-800 dark:text-green-500"
+                    : status === "IN_TESTING" || status === "AVAILABLE"
+                      ? "text-primary-foreground dark:text-primary-foreground"
+                      : "text-yellow-800 dark:text-yellow-500"
               }`}
             >
               <span>{statusConfig.icon}</span>
@@ -92,12 +95,12 @@ const AppInfoHeader = ({
                 {status === "IN_TESTING"
                   ? "In Testing"
                   : status === "REJECTED"
-                  ? "Rejected"
-                  : status === "COMPLETED"
-                  ? "Completed"
-                  : status === "AVAILABLE"
-                  ? "Available"
-                  : "In Review"}
+                    ? "Rejected"
+                    : status === "COMPLETED"
+                      ? "Completed"
+                      : status === "AVAILABLE"
+                        ? "Available"
+                        : "In Review"}
               </span>
             </p>
           </div>

@@ -431,6 +431,43 @@ export interface HubSubmittedAppResponse {
       name: string;
     };
   }[];
+  testerRelations: {
+    id: number;
+    testerId: string;
+    tester: {
+      name: string;
+      email: string;
+      image: string | null;
+      createdAt: Date;
+      userDetail: {
+        country: string | null;
+        profile_type: UserProfileType | null;
+        job_role: UserJobRole | null;
+        experience_level: UserExperienceLevel | null;
+        device_company: string | null;
+        device_model: string | null;
+        ram: string | null;
+        os: string | null;
+        screen_resolution: string | null;
+        language: string | null;
+        network: string | null;
+      } | null;
+    };
+    isActive: boolean;
+    status:
+      | "PENDING"
+      | "IN_PROGRESS"
+      | "COMPLETED"
+      | "DROPPED"
+      | "REMOVED"
+      | "REJECTED";
+    statusDetails: {
+      title: string;
+      description: string;
+      image: string;
+      video: string;
+    } | null;
+  }[];
   createdAt: Date;
   updatedAt: Date;
 }

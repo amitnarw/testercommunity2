@@ -183,12 +183,12 @@ function AppTestingPageClient({ id }: { id: string }) {
         <main className="max-w-7xl mx-auto grid lg:grid-cols-3 gap-12 mt-8">
           <div className="lg:col-span-2 space-y-12 overflow-hidden">
             <section>
-              <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-br from-primary to-accent bg-clip-text text-transparent">
+              <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-br from-primary to-accent bg-clip-text text-transparent pb-2">
                 {appDetails?.androidApp?.appName}
               </h1>
               <ExpandableText
                 text={appDetails?.androidApp?.description}
-                className="text-muted-foreground text-md sm:text-lg mt-2 leading-relaxed"
+                className="text-muted-foreground text-md sm:text-lg leading-relaxed"
               />
             </section>
 
@@ -240,7 +240,7 @@ function AppTestingPageClient({ id }: { id: string }) {
                       className="overflow-hidden rounded-xl flex-shrink-0 w-40 sm:w-60 relative group cursor-pointer"
                       onClick={() => {
                         setFullscreenImage(
-                          appDetails?.androidApp?.appScreenshotUrl1
+                          appDetails?.androidApp?.appScreenshotUrl1,
                         );
                       }}
                     >
@@ -262,7 +262,7 @@ function AppTestingPageClient({ id }: { id: string }) {
                       className="overflow-hidden rounded-xl flex-shrink-0 w-40 sm:w-60 relative group cursor-pointer"
                       onClick={() => {
                         setFullscreenImage(
-                          appDetails?.androidApp?.appScreenshotUrl2
+                          appDetails?.androidApp?.appScreenshotUrl2,
                         );
                       }}
                     >

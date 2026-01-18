@@ -241,13 +241,13 @@ function ProjectDetailsClient({ project }: { project: Project }) {
     project.status === "In Review" || project.status === "Rejected";
 
   const totalTestersPages = Math.ceil(
-    project.testers.length / TESTERS_PER_PAGE
+    project.testers.length / TESTERS_PER_PAGE,
   );
   const testersStartIndex = (testersPage - 1) * TESTERS_PER_PAGE;
   const testersEndIndex = testersStartIndex + TESTERS_PER_PAGE;
   const currentTesters = project.testers.slice(
     testersStartIndex,
-    testersEndIndex
+    testersEndIndex,
   );
 
   const screenshots = project.feedback
@@ -672,7 +672,7 @@ function ProjectDetailsClient({ project }: { project: Project }) {
                 )}
               </div>
               <div className="mt-4 rounded-xl shadow-sm bg-card overflow-hidden hidden md:block">
-                <div className="overflow-x-auto">
+                <div className="overflow-x-auto grid grid-cols-1">
                   <Table>
                     <TableHeader>
                       <TableRow className="!border-b-[8px] border-[#f8fafc] dark:border-[#0f151e]">

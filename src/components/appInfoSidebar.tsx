@@ -35,7 +35,19 @@ const SidebarButton = ({
   isError,
   error,
   reset,
-}: any) => {
+}: {
+  app: HubSubmittedAppResponse;
+  handleRequestToJoin?: () => void;
+  isPending?: boolean;
+  isSuccess?: boolean;
+  isError?: boolean;
+  error?: Error;
+  reset?: () => void;
+  buttonType?: string;
+  url?: string;
+  hoverTextColor?: string;
+  hoverBgColor?: string;
+}) => {
   if (buttonType === "external") {
     return (
       <a
@@ -48,40 +60,50 @@ const SidebarButton = ({
     );
   }
 
-  switch (app.status) {
-    case "requested":
-      return (
-        <div className="w-full text-center py-3 bg-secondary text-muted-foreground rounded-full text-sm font-semibold flex items-center justify-center gap-2">
-          <Send className="w-4 h-4" />
-          Request Sent
-        </div>
-      );
-    case "request_rejected":
-      return (
-        <div className="w-full text-center py-3 bg-red-500/15 text-destructive dark:text-red-500 rounded-full text-sm font-semibold flex items-center justify-center gap-2">
-          <XCircle className="w-4 h-4" />
-          Request Rejected
-        </div>
-      );
-    default: // 'available'
-      return (
-        <div className="w-full m-auto">
-          <LoadingButton
-            onClick={handleRequestToJoin}
-            isLoading={isPending}
-            isSuccess={isSuccess}
-            isError={isError}
-            reset={reset}
-            className="w-full m-auto py-5"
-          >
-            Request to Join Testing
-          </LoadingButton>
-          <p className="text-red-500 text-sm text-center mt-2">
-            {error?.message}
-          </p>
-        </div>
-      );
+  if (
+    app?.status === "AVAILABLE" &&
+    app?.testerRelations?.[0]?.status === "PENDING"
+  ) {
+    return (
+      <div className="w-full text-center py-3 bg-secondary text-muted-foreground rounded-full text-sm font-semibold flex items-center justify-center gap-2">
+        <Send className="w-4 h-4" />
+        Request Sent
+      </div>
+    );
   }
+
+  if (app?.status === "REQUESTED") {
+    return (
+      <div className="w-full text-center py-3 bg-secondary text-muted-foreground rounded-full text-sm font-semibold flex items-center justify-center gap-2">
+        <Send className="w-4 h-4" />
+        Request Sent
+      </div>
+    );
+  }
+  if (app?.status === "REJECTED") {
+    return (
+      <div className="w-full text-center py-3 bg-red-500/15 text-destructive dark:text-red-500 rounded-full text-sm font-semibold flex items-center justify-center gap-2">
+        <XCircle className="w-4 h-4" />
+        Request Rejected
+      </div>
+    );
+  }
+
+  return (
+    <div className="w-full m-auto">
+      <LoadingButton
+        onClick={handleRequestToJoin}
+        isLoading={isPending}
+        isSuccess={isSuccess}
+        isError={isError}
+        reset={reset}
+        className="w-full m-auto py-5"
+      >
+        Request to Join Testing
+      </LoadingButton>
+      <p className="text-red-500 text-sm text-center mt-2">{error?.message}</p>
+    </div>
+  );
 };
 
 export const AppInfoSidebar = ({
@@ -163,7 +185,7 @@ export const AppInfoSidebar = ({
               REWARD
             </p>
             <div className="text-3xl font-bold text-foreground flex items-center gap-2 justify-start mt-1">
-              {app?.costPoints} Points
+              {app?.rewardPoints} Points
               <Star className="w-7 h-7 text-primary/0 fill-primary/20 scale-[4] sm:scale-[6] absolute bottom-8 right-2 sm:right-6 rotate-90" />
             </div>
           </div>
@@ -199,7 +221,7 @@ export const AppInfoSidebar = ({
                   Joined{" "}
                   {new Date(app?.appOwner?.createdAt).toLocaleDateString(
                     "en-US",
-                    { month: "short", year: "numeric" }
+                    { month: "short", year: "numeric" },
                   )}
                 </span>
               </div>
