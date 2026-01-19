@@ -285,11 +285,11 @@ export default function CommunityDashboardPage() {
   const appsSubmitted = allProjects.length;
   const testersEngaged = allProjects.reduce(
     (sum, p) => sum + p.testersStarted,
-    0
+    0,
   );
   const testsCompleted = allProjects.reduce(
     (sum, p) => sum + p.testersCompleted,
-    0
+    0,
   );
 
   const { data: hubData, isPending: hubIsPending } = useHubData();
@@ -303,10 +303,10 @@ export default function CommunityDashboardPage() {
       <div className="container mx-auto px-4 md:px-6">
         <header className="mb-12">
           <div className="mb-6">
-            <h1 className="text-2xl sm:text-4xl font-bold bg-gradient-to-b from-primary to-primary/40 bg-clip-text text-transparent leading-[unset]">
+            <h1 className="text-2xl sm:text-4xl font-bold bg-gradient-to-b from-primary to-primary/40 bg-clip-text text-transparent leading-[unset] pb-2">
               Community Hub
             </h1>
-            <p className="text-sm sm:text-md text-muted-foreground max-w-xl">
+            <p className="text-sm sm:text-base text-muted-foreground max-w-xl">
               Test apps, earn points, and help fellow developers build better
               products.
             </p>
@@ -442,7 +442,7 @@ export default function CommunityDashboardPage() {
                         >
                           {cat}
                         </DropdownMenuItem>
-                      )
+                      ),
                     )}
                   </DropdownMenuContent>
                 </DropdownMenu>

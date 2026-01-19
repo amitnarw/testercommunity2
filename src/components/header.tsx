@@ -143,7 +143,7 @@ export function Header({
           layout
           className={cn(
             "relative flex items-center justify-between px-6 py-2 bg-white/70 dark:bg-black/70 backdrop-blur-md border border-black/5 dark:border-white/10 shadow-lg shadow-black/5 dark:shadow-white/5 transition-all rounded-full duration-300",
-            isScrolled ? "gap-12" : "w-full"
+            isScrolled ? "gap-12" : "w-full",
           )}
         >
           <div className="flex items-center gap-4">
@@ -154,7 +154,7 @@ export function Header({
                   "font-bold text-lg tracking-tight hidden sm:block transition-all duration-300",
                   isScrolled
                     ? "w-0 opacity-0 overflow-hidden"
-                    : "w-auto opacity-100"
+                    : "w-auto opacity-100",
                 )}
               >
                 TesterCommunity
@@ -169,7 +169,7 @@ export function Header({
                 href={item.href}
                 className={cn(
                   "px-4 py-2 rounded-full text-sm font-medium transition-colors hover:bg-black/5 dark:hover:bg-white/10",
-                  isScrolled ? "text-sm" : "text-base"
+                  isScrolled ? "text-sm" : "text-base",
                 )}
               >
                 {item.name}

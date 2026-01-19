@@ -7,6 +7,7 @@ import {
   getAllSessions,
   getAppCategories,
   getDasboardData,
+  getEarnPoints,
   getHubApps,
   getHubAppsCount,
   getHubData,
@@ -95,7 +96,7 @@ export function useUserProfileInitial(options?: { enabled?: boolean }) {
 }
 
 export function useProfileDataSave(
-  options?: UseMutationOptions<any, any, any>
+  options?: UseMutationOptions<any, any, any>,
 ) {
   const mutation = useMutation({
     mutationFn: (payload) => saveProfileData(payload),
@@ -210,7 +211,7 @@ export function useSingleHubAppDetails({ id }: { id: string }) {
 }
 
 export function useAddHubAppTestingRequest(
-  options?: UseMutationOptions<any, any, any>
+  options?: UseMutationOptions<any, any, any>,
 ) {
   const mutation = useMutation({
     mutationFn: (payload: { hub_id: string }) =>
@@ -270,7 +271,7 @@ export function useSessionsData() {
 }
 
 export function useSessionLogoutSingle(
-  options?: UseMutationOptions<any, any, any>
+  options?: UseMutationOptions<any, any, any>,
 ) {
   const mutation = useMutation({
     mutationFn: (payload) => doSessionLogoutSingle(payload),
@@ -281,7 +282,7 @@ export function useSessionLogoutSingle(
 }
 
 export function useSessionLogoutAll(
-  options?: UseMutationOptions<any, any, any>
+  options?: UseMutationOptions<any, any, any>,
 ) {
   const mutation = useMutation({
     mutationFn: () => doSessionLogoutAll(),
@@ -289,4 +290,19 @@ export function useSessionLogoutAll(
   });
 
   return mutation;
+}
+
+export function useEarnPoints() {
+  const query = useQuery<
+    {
+      surveyPoints: number;
+      surveyDone: boolean;
+    },
+    Error
+  >({
+    queryFn: () => getEarnPoints(),
+    queryKey: ["useEarnPoints"],
+  });
+
+  return query;
 }

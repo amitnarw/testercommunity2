@@ -50,7 +50,7 @@ export function SafeImage({
         className={cn(
           "flex items-center justify-center bg-muted/50 text-muted-foreground transition-colors",
           className,
-          fallbackClassName
+          fallbackClassName,
         )}
         role="img"
         aria-label={alt}
@@ -67,14 +67,14 @@ export function SafeImage({
       className={cn(
         "relative flex items-center justify-center overflow-hidden",
         isFill && "w-full h-full",
-        className
+        className,
       )}
     >
       {isLoading && !error && isValidSrc(src) && (
         <div
           className={cn(
             "bg-muted/20 overflow-hidden relative flex items-center justify-center",
-            loadingClassName || "w-full h-full"
+            loadingClassName || "w-full h-full",
           )}
         >
           <div className="absolute inset-0 animate-shimmer" />
@@ -87,7 +87,7 @@ export function SafeImage({
           "transition-opacity duration-300",
           isLoading ? "opacity-0" : "opacity-100",
           isFill && "absolute inset-0 w-full h-full",
-          className
+          className,
         )}
         onError={() => setError(true)}
         onLoad={(e) => {
