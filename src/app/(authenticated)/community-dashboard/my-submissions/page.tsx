@@ -18,7 +18,8 @@ import {
   Smartphone,
 } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, Suspense, type SetStateAction } from "react";
+import { useSearchParams, usePathname, useRouter } from "next/navigation";
 import type { HubSubmittedAppResponse } from "@/lib/types";
 import { Badge } from "@/components/ui/badge";
 import { SafeImage } from "@/components/safe-image";
@@ -386,11 +387,34 @@ const STATUS_MAPPING: Record<string, string> = {
   available: "AVAILABLE",
 };
 
-export default function MySubmissionsPage() {
+function MySubmissionsContent() {
   const router = useTransitionRouter();
 
-  const [mainTab, setMainTab] = useState("pending");
-  const [pendingSubTab, setPendingSubTab] = useState("in-review");
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
+  // We use the standard router for efficient query param updates without triggering page transitions
+  const navigationRouter = useRouter();
+
+  // Initialize state from URL queries to persist selection across navigation
+  const mainTab = searchParams.get("tab") || "pending";
+  const pendingSubTab = searchParams.get("subTab") || "in-review";
+
+  const setMainTab = (val: string) => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.set("tab", val);
+    navigationRouter.replace(`${pathname}?${params.toString()}`, {
+      scroll: false,
+    });
+  };
+
+  const setPendingSubTab = (val: SetStateAction<string>) => {
+    const value = val instanceof Function ? val(pendingSubTab) : val;
+    const params = new URLSearchParams(searchParams.toString());
+    params.set("subTab", value);
+    navigationRouter.replace(`${pathname}?${params.toString()}`, {
+      scroll: false,
+    });
+  };
 
   const openPage = (page: string) => {
     router.push(page);
@@ -542,5 +566,50 @@ export default function MySubmissionsPage() {
         </div>
       </div>
     </>
+  );
+}
+
+export default function MySubmissionsPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen mb-12">
+          <div className="container mx-auto px-4 md:px-6">
+            <div className="space-y-4 pt-4">
+              <div className="flex flex-row items-center justify-between w-full">
+                <div className="h-8 w-48 bg-muted/20 animate-pulse rounded-md" />
+                <div className="h-10 w-40 bg-muted/20 animate-pulse rounded-md" />
+              </div>
+              <div className="h-12 w-full bg-muted/20 animate-pulse rounded-md mt-8" />
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
+                {Array.from({ length: 6 }).map((_, i) => (
+                  <div key={i} className="h-[320px]">
+                    <div className="rounded-[1.5rem] border border-border/40 bg-card/50 p-6 h-full flex flex-col gap-4">
+                      <div className="flex items-start gap-4">
+                        <Skeleton className="w-16 h-16 rounded-2xl" />
+                        <div className="flex-1 space-y-2">
+                          <Skeleton className="h-5 w-3/4" />
+                          <Skeleton className="h-4 w-1/2" />
+                        </div>
+                      </div>
+                      <div className="space-y-2 flex-grow">
+                        <Skeleton className="h-4 w-full" />
+                        <Skeleton className="h-4 w-5/6" />
+                      </div>
+                      <div className="pt-4 border-t border-dashed border-border/50 flex justify-between">
+                        <Skeleton className="h-4 w-20" />
+                        <Skeleton className="h-4 w-20" />
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      }
+    >
+      <MySubmissionsContent />
+    </Suspense>
   );
 }

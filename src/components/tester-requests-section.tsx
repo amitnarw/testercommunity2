@@ -169,8 +169,12 @@ export function TesterRequestsSection({
                         className="font-normal text-xs gap-1"
                       >
                         <Smartphone className="w-3 h-3 opacity-70" />
-                        {`${req?.tester?.userDetail?.device_company} ${req?.tester?.userDetail?.device_model}` ||
-                          "N/A"}
+                        {req?.tester?.userDetail?.device_company ||
+                        req?.tester?.userDetail?.device_model
+                          ? req?.tester?.userDetail?.device_company +
+                            " " +
+                            req?.tester?.userDetail?.device_model
+                          : "N/A"}
                       </Badge>
                     </div>
                   </TableCell>
@@ -271,8 +275,12 @@ export function TesterRequestsSection({
                 <div className="flex items-center gap-2">
                   <Smartphone className="w-3.5 h-3.5 opacity-70" />
                   <span>
-                    {`${req?.tester?.userDetail?.device_company} ${req?.tester?.userDetail?.device_model}` ||
-                      "N/A"}
+                    {req?.tester?.userDetail?.device_company ||
+                    req?.tester?.userDetail?.device_model
+                      ? req?.tester?.userDetail?.device_company +
+                        " " +
+                        req?.tester?.userDetail?.device_model
+                      : "N/A"}
                   </span>
                 </div>
               </div>
@@ -475,8 +483,12 @@ export function TesterRequestsSection({
                       Model
                     </span>
                     <span className="truncate ml-2">
-                      {`${selectedRequest?.tester?.userDetail?.device_company} ${selectedRequest?.tester?.userDetail?.device_model}` ||
-                        "N/A"}
+                      {selectedRequest?.tester?.userDetail?.device_company ||
+                      selectedRequest?.tester?.userDetail?.device_model
+                        ? selectedRequest?.tester?.userDetail?.device_company +
+                          " " +
+                          selectedRequest?.tester?.userDetail?.device_model
+                        : "N/A"}
                     </span>
                   </div>
                   <div className="flex justify-between py-1 border-b border-border/50">
@@ -484,7 +496,9 @@ export function TesterRequestsSection({
                       Android Ver.
                     </span>
                     <span className="truncate ml-2">
-                      {`${selectedRequest?.tester?.userDetail?.os}` || "N/A"}
+                      {selectedRequest?.tester?.userDetail?.os
+                        ? selectedRequest?.tester?.userDetail?.os
+                        : "N/A"}
                     </span>
                   </div>
                 </div>

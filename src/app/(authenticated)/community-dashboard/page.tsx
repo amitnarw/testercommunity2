@@ -17,6 +17,9 @@ import {
   AlertCircle,
   Rocket,
   Search,
+  Clock,
+  Timer,
+  Smartphone,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -144,64 +147,105 @@ const PaginatedAppList = ({
 
 const RequestedAppCard = ({ app }: { app: HubSubmittedAppResponse }) => (
   <Link href={`/community-dashboard/${app.id}`} className="group block h-full">
-    <Card className="flex flex-col h-full overflow-hidden rounded-2xl transition-all duration-300 bg-secondary dark:bg-secondary/30 border-0 group-hover:-translate-y-1">
-      <CardContent className="p-4 flex-grow flex flex-col">
-        <div className="flex items-start gap-4 mb-4">
-          <SafeImage
-            src={app?.androidApp?.appLogoUrl}
-            alt={app?.androidApp?.appName}
-            width={64}
-            height={64}
-            className="rounded-lg border"
-            data-ai-hint={app?.androidApp?.appName}
-          />
-          <div className="flex-grow text-right">
-            <Badge variant="secondary">Requested</Badge>
+    <div className="relative h-full flex flex-col overflow-hidden rounded-3xl bg-card border border-border/50 hover:border-orange-500/50 transition-all duration-500 hover:shadow-[0_10px_40px_-15px_rgba(249,115,22,0.2)] dark:hover:shadow-[0_10px_40px_-20px_rgba(249,115,22,0.1)] hover:-translate-y-1">
+      {/* Decorative Gradient Blob */}
+      <div className="absolute top-0 right-0 w-32 h-32 bg-orange-500/5 rounded-full blur-3xl -mr-10 -mt-10 transition-all duration-500 group-hover:bg-orange-500/10" />
+
+      <div className="p-5 flex-grow flex flex-col relative z-10">
+        {/* Header */}
+        <div className="flex justify-between items-start mb-5">
+          <div className="relative">
+            <div className="absolute inset-0 bg-orange-500/20 blur-xl rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+            <SafeImage
+              src={app?.androidApp?.appLogoUrl}
+              alt={app?.androidApp?.appName}
+              width={72}
+              height={72}
+              className="relative z-10 rounded-2xl border border-border/40 shadow-sm object-cover bg-background"
+              data-ai-hint={app?.androidApp?.appName}
+            />
           </div>
+          <Badge
+            variant="outline"
+            className="rounded-full px-3 py-0.5 bg-orange-500/10 text-orange-600 dark:text-orange-400 border-orange-200 dark:border-orange-800"
+          >
+            Requested
+          </Badge>
         </div>
-        <div className="flex-grow">
-          <h3 className="text-lg font-bold transition-colors group-hover:text-primary">
+
+        {/* Content */}
+        <div className="mb-4">
+          <h3 className="text-xl font-bold text-card-foreground group-hover:text-orange-600 dark:group-hover:text-orange-400 transition-colors duration-300 line-clamp-1 mb-2">
             {app?.androidApp?.appName}
           </h3>
-          <p className="text-sm text-muted-foreground mt-1 h-10 line-clamp-2">
+          <p className="text-sm text-muted-foreground/80 line-clamp-2 leading-relaxed">
             {app?.androidApp?.description}
           </p>
         </div>
-      </CardContent>
-    </Card>
+
+        {/* Meta Tags */}
+        <div className="flex flex-wrap gap-2 mt-auto">
+          <div className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground bg-secondary/40 px-2.5 py-1.5 rounded-md border border-transparent group-hover:border-orange-500/10 transition-colors">
+            <Smartphone className="w-3.5 h-3.5" />
+            <span>Android {app?.minimumAndroidVersion}+</span>
+          </div>
+          <div className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground bg-secondary/40 px-2.5 py-1.5 rounded-md border border-transparent group-hover:border-orange-500/10 transition-colors">
+            <History className="w-3.5 h-3.5" />
+            <span>Pending Review</span>
+          </div>
+        </div>
+      </div>
+    </div>
   </Link>
 );
 
 const RejectedRequestCard = ({ app }: { app: HubSubmittedAppResponse }) => (
   <Link href={`/community-dashboard/${app.id}`} className="group block h-full">
-    <Card className="flex flex-col h-full overflow-hidden rounded-2xl transition-all duration-300 bg-destructive/10 border border-dashed border-destructive/20 group-hover:-translate-y-1">
-      <CardContent className="p-4 flex-grow flex flex-col">
-        <div className="flex items-start gap-4 mb-4">
-          <SafeImage
-            src={app?.androidApp?.appLogoUrl}
-            alt={app?.androidApp?.appName}
-            width={64}
-            height={64}
-            className="rounded-lg border"
-            data-ai-hint={app?.androidApp?.appName}
-          />
-          <div className="flex-grow text-right">
-            <Badge variant="destructive" className="flex items-center gap-1.5">
-              <XCircle className="w-3 h-3" />
-              Rejected
-            </Badge>
+    <div className="relative h-full flex flex-col overflow-hidden rounded-3xl bg-card border border-destructive/20 hover:border-destructive/50 transition-all duration-500 hover:shadow-[0_10px_40px_-15px_rgba(239,68,68,0.2)] dark:hover:shadow-[0_10px_40px_-20px_rgba(239,68,68,0.1)] hover:-translate-y-1">
+      {/* Decorative Gradient Blob */}
+      <div className="absolute top-0 right-0 w-32 h-32 bg-destructive/5 rounded-full blur-3xl -mr-10 -mt-10 transition-all duration-500 group-hover:bg-destructive/10" />
+
+      <div className="p-5 flex-grow flex flex-col relative z-10">
+        {/* Header */}
+        <div className="flex justify-between items-start mb-5">
+          <div className="relative">
+            <div className="absolute inset-0 bg-destructive/20 blur-xl rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+            <SafeImage
+              src={app?.androidApp?.appLogoUrl}
+              alt={app?.androidApp?.appName}
+              width={72}
+              height={72}
+              className="relative z-10 rounded-2xl border border-destructive/20 shadow-sm object-cover bg-background"
+              data-ai-hint={app?.androidApp?.appName}
+            />
           </div>
+          <Badge
+            variant="destructive"
+            className="rounded-full px-3 py-0.5 bg-destructive/10 text-destructive border-destructive/20"
+          >
+            <XCircle className="w-3 h-3 mr-1" />
+            Rejected
+          </Badge>
         </div>
-        <div className="flex-grow">
-          <h3 className="text-lg font-bold transition-colors group-hover:text-destructive">
+
+        {/* Content */}
+        <div className="mb-4">
+          <h3 className="text-xl font-bold text-card-foreground group-hover:text-destructive transition-colors duration-300 line-clamp-1 mb-2">
             {app?.androidApp?.appName}
           </h3>
-          <p className="text-sm text-destructive/80 mt-1">
-            {app?.statusDetails?.description}
-          </p>
+          <div className="p-3 rounded-xl bg-destructive/5 border border-destructive/10">
+            <p className="text-xs font-medium text-destructive mb-1 flex items-center gap-1">
+              <AlertCircle className="w-3 h-3" />
+              Reason for Rejection
+            </p>
+            <p className="text-sm text-destructive/80 line-clamp-3 leading-relaxed">
+              {app?.statusDetails?.description ||
+                "No specific reason provided."}
+            </p>
+          </div>
         </div>
-      </CardContent>
-    </Card>
+      </div>
+    </div>
   </Link>
 );
 
