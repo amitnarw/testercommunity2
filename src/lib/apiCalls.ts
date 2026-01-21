@@ -579,8 +579,15 @@ export async function addHubAppTestingRequest(payload: { hub_id: string }) {
   }
 }
 
-export async function acceptHubAppTestingRequest(payload: { hub_id: string }) {
+export async function acceptHubAppTestingRequest(payload: {
+  hub_id: string;
+  tester_id: string;
+}) {
   try {
+    console.log(payload, "0000000000000000");
+    if (!payload.hub_id || !payload.tester_id) {
+      throw new Error("Invalid payload");
+    }
     const response = await api.post(
       API_ROUTES.HUB + `/accept-hub-testing-request`,
       payload,
@@ -604,7 +611,14 @@ export async function acceptHubAppTestingRequest(payload: { hub_id: string }) {
   }
 }
 
-export async function rejectHubAppTestingRequest(payload: { hub_id: string }) {
+export async function rejectHubAppTestingRequest(payload: {
+  hub_id: string;
+  tester_id: string;
+  title: string;
+  description: string;
+  image?: string;
+  video?: string;
+}) {
   try {
     const response = await api.post(
       API_ROUTES.HUB + `/reject-hub-testing-request`,
@@ -662,6 +676,75 @@ export async function getUserWallet(): Promise<UserWallerResponse> {
     return response?.data?.data;
   } catch (error) {
     console.error("Error fetching user wallet data:", error);
+    if (axios.isAxiosError(error)) {
+      const status = error.response?.status;
+      const responseData = error.response?.data;
+      console.error("Axios error:", status, responseData);
+
+      throw new Error(
+        responseData?.message || error.message || "Unknown Axios error",
+      );
+    } else if (error instanceof Error) {
+      throw new Error(error.message);
+    } else {
+      throw new Error(JSON.stringify(error));
+    }
+  }
+}
+
+// R2
+export async function createUploadUrl(payload: {
+  filename: string;
+  contentType: string;
+  size: number;
+  type: string;
+}) {
+  try {
+    const response = await api.post(
+      API_ROUTES.R2 + `/create-upload-url`,
+      payload,
+    );
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error creating upload URL:", error);
+    if (axios.isAxiosError(error)) {
+      const status = error.response?.status;
+      const responseData = error.response?.data;
+      console.error("Axios error:", status, responseData);
+
+      throw new Error(
+        responseData?.message || error.message || "Unknown Axios error",
+      );
+    } else if (error instanceof Error) {
+      throw new Error(error.message);
+    } else {
+      throw new Error(JSON.stringify(error));
+    }
+  }
+}
+
+export async function uploadFileToR2(
+  file: File,
+  uploadUrl: string,
+  onProgress?: (percent: number) => void,
+) {
+  try {
+    await axios.put(uploadUrl, file, {
+      headers: {
+        "Content-Type": file.type,
+      },
+      // Track progress
+      onUploadProgress: (progressEvent) => {
+        if (onProgress && progressEvent.total) {
+          const percentCompleted = Math.round(
+            (progressEvent.loaded * 100) / progressEvent.total,
+          );
+          onProgress(percentCompleted);
+        }
+      },
+    });
+  } catch (error) {
+    console.error("Error uploading file to R2:", error);
     if (axios.isAxiosError(error)) {
       const status = error.response?.status;
       const responseData = error.response?.data;

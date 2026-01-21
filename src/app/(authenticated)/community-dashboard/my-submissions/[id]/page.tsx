@@ -248,8 +248,11 @@ function SubmissionDetailsPage({
   const [fullscreenImage, setFullscreenImage] = useState<string | null>(null);
   const [isConfettiActive, setConfettiActive] = useState(false);
 
-  const { data: appDetails, isPending: appDetailsIsPending } =
-    useSingleHubAppDetails({ id });
+  const {
+    data: appDetails,
+    isPending: appDetailsIsPending,
+    refetch: appDetailsRefetch,
+  } = useSingleHubAppDetails({ id });
 
   const { ref: confettiTriggerRef, inView: confettiInView } = useInView({
     threshold: 0.5,
@@ -298,24 +301,6 @@ function SubmissionDetailsPage({
       ? 0
       : appDetails?.feedback.filter((fb) => fb.type === "PRAISE").length,
     totalTesters: isUnderReviewOrRejected ? 0 : appDetails?.currentTester,
-  };
-
-  const handleAcceptTester = (relationId: number) => {
-    // TODO: Implement API call
-    console.log("Accepted tester relation:", relationId);
-  };
-
-  const handleRejectTester = (
-    relationId: number,
-    reason: {
-      title: string;
-      description: string;
-      image?: File | null;
-      video?: File | null;
-    },
-  ) => {
-    // TODO: Implement API call
-    console.log("Rejected tester relation:", relationId, reason);
   };
 
   return (
@@ -540,9 +525,9 @@ function SubmissionDetailsPage({
 
             {appDetails?.status === "AVAILABLE" && (
               <TesterRequestsSection
+                hubId={id}
                 requests={appDetails?.testerRelations || []}
-                onAccept={handleAcceptTester}
-                onReject={handleRejectTester}
+                refetch={appDetailsRefetch}
               />
             )}
 

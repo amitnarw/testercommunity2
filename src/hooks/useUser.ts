@@ -1,6 +1,8 @@
 import {
   addHubApp,
   addHubAppTestingRequest,
+  acceptHubAppTestingRequest,
+  rejectHubAppTestingRequest,
   doSessionLogoutAll,
   doSessionLogoutSingle,
   getAllPricingPlans,
@@ -305,4 +307,46 @@ export function useEarnPoints() {
   });
 
   return query;
+}
+
+export function useAcceptHubAppTestingRequest(
+  options?: UseMutationOptions<any, any, any>,
+) {
+  const mutation = useMutation({
+    mutationFn: (payload: { hub_id: string; tester_id: string }) =>
+      acceptHubAppTestingRequest(payload),
+    onSuccess: (data) => {
+      console.log("Hub app testing request accepted successfully: " + data);
+    },
+    onError: (data) => {
+      console.log("Hub app testing request accepting failed: " + data);
+    },
+    ...options,
+  });
+
+  return mutation;
+}
+
+export function useRejectHubAppTestingRequest(
+  options?: UseMutationOptions<any, any, any>,
+) {
+  const mutation = useMutation({
+    mutationFn: (payload: {
+      hub_id: string;
+      tester_id: string;
+      title: string;
+      description: string;
+      image?: string;
+      video?: string;
+    }) => rejectHubAppTestingRequest(payload),
+    onSuccess: (data) => {
+      console.log("Hub app testing request rejected successfully: " + data);
+    },
+    onError: (data) => {
+      console.log("Hub app testing request rejecting failed: " + data);
+    },
+    ...options,
+  });
+
+  return mutation;
 }

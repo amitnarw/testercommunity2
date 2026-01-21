@@ -3,6 +3,10 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
+  useAcceptHubAppTestingRequest,
+  useRejectHubAppTestingRequest,
+} from "@/hooks/useUser";
+import {
   Check,
   X,
   User,
@@ -12,6 +16,7 @@ import {
   Eye,
   Smartphone,
   Star,
+  Loader2,
 } from "lucide-react";
 
 import {
@@ -36,31 +41,41 @@ import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { HubSubmittedAppResponse } from "@/lib/types";
+import { useR2 } from "@/hooks/useR2";
 
-interface TesterRequestsSectionProps {
+import { ActionFeedbackDialog } from "@/components/action-feedback-dialog";
+
+export interface TesterRequestsSectionProps {
+  hubId: string;
   requests: HubSubmittedAppResponse["testerRelations"];
-  onAccept: (id: number) => void;
-  onReject: (
-    id: number,
-    reason: {
-      title: string;
-      description: string;
-      image?: File | null;
-      video?: File | null;
-    },
-  ) => void;
+  refetch: () => void;
 }
 
 export function TesterRequestsSection({
+  hubId,
   requests,
-  onAccept,
-  onReject,
+  refetch,
 }: TesterRequestsSectionProps) {
   const [selectedRequest, setSelectedRequest] = useState<
     (typeof requests)[0] | null
   >(null);
   const [isRejectModalOpen, setIsRejectModalOpen] = useState(false);
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
+  const [processingId, setProcessingId] = useState<string | null>(null);
+
+  // Feedback State
+  const [feedback, setFeedback] = useState<{
+    open: boolean;
+    status: "success" | "error";
+    title: string;
+    description: string;
+    actionLabel?: string;
+  }>({
+    open: false,
+    status: "success",
+    title: "",
+    description: "",
+  });
 
   // Rejection Form State
   const [rejectTitle, setRejectTitle] = useState("");
@@ -68,7 +83,13 @@ export function TesterRequestsSection({
   const [rejectImage, setRejectImage] = useState<File | null>(null);
   const [rejectVideo, setRejectVideo] = useState<File | null>(null);
 
+  const [uploadPercent, setUploadPercent] = useState(0);
+
   const pendingRequests = requests.filter((r) => r.status === "PENDING");
+
+  const { createUploadUrl, isPendingCUU, uploadFileToR2 } = useR2();
+  const acceptMutation = useAcceptHubAppTestingRequest();
+  const rejectMutation = useRejectHubAppTestingRequest();
 
   const handleRejectClick = (request: (typeof requests)[0]) => {
     setSelectedRequest(request);
@@ -84,15 +105,107 @@ export function TesterRequestsSection({
     setIsDetailsModalOpen(true);
   };
 
-  const submitRejection = () => {
-    if (selectedRequest) {
-      onReject(selectedRequest.id, {
-        title: rejectTitle,
-        description: rejectDescription,
-        image: rejectImage,
-        video: rejectVideo,
+  const handleAccept = async (testerId: string) => {
+    setProcessingId(testerId);
+    try {
+      await acceptMutation.mutateAsync({
+        hub_id: hubId,
+        tester_id: testerId,
       });
-      setIsRejectModalOpen(false);
+      setFeedback({
+        open: true,
+        status: "success",
+        title: "Tester Accepted",
+        description:
+          "The tester has been successfully approved and added to your project.",
+        actionLabel: "Done",
+      });
+      refetch();
+    } catch (error) {
+      console.error("Error accepting request:", error);
+      setFeedback({
+        open: true,
+        status: "error",
+        title: "Action Failed",
+        description: "Could not accept the tester request. Please try again.",
+        actionLabel: "Close",
+      });
+    } finally {
+      setProcessingId(null);
+    }
+  };
+
+  const submitRejection = async () => {
+    if (selectedRequest) {
+      try {
+        let imageUrl: undefined | string = undefined;
+        let videoUrl: undefined | string = undefined;
+
+        if (rejectImage) {
+          setUploadPercent(0);
+          const uploadConfig = await createUploadUrl.mutateAsync({
+            filename: rejectImage.name,
+            contentType: rejectImage.type,
+            size: rejectImage.size,
+            type: "image",
+          });
+
+          await uploadFileToR2.mutateAsync({
+            file: rejectImage,
+            uploadUrl: uploadConfig.uploadUrl,
+            onProgress: (percent) => setUploadPercent(percent),
+          });
+
+          imageUrl = uploadConfig.url;
+        }
+
+        if (rejectVideo) {
+          setUploadPercent(0);
+          const uploadConfig = await createUploadUrl.mutateAsync({
+            filename: rejectVideo.name,
+            contentType: rejectVideo.type,
+            size: rejectVideo.size,
+            type: "video",
+          });
+
+          await uploadFileToR2.mutateAsync({
+            file: rejectVideo,
+            uploadUrl: uploadConfig.uploadUrl,
+            onProgress: (percent) => setUploadPercent(percent),
+          });
+
+          videoUrl = uploadConfig.url;
+        }
+
+        await rejectMutation.mutateAsync({
+          hub_id: hubId,
+          tester_id: selectedRequest.testerId,
+          title: rejectTitle,
+          description: rejectDescription,
+          image: imageUrl,
+          video: videoUrl,
+        });
+
+        setIsRejectModalOpen(false);
+        setFeedback({
+          open: true,
+          status: "success",
+          title: "Request Rejected",
+          description:
+            "The tester request has been rejected and the user notified.",
+          actionLabel: "Done",
+        });
+        refetch();
+      } catch (error) {
+        console.error("Error submitting rejection:", error);
+        setFeedback({
+          open: true,
+          status: "error",
+          title: "Action Failed",
+          description: "Could not reject the request. Please try again.",
+          actionLabel: "Close",
+        });
+      }
     }
   };
 
@@ -202,10 +315,15 @@ export function TesterRequestsSection({
                         size="sm"
                         variant="outline"
                         className="h-8 w-8 p-0 text-green-600 border-green-200 dark:border-green-900 hover:bg-green-50 hover:text-green-700 hover:border-green-300 dark:hover:bg-green-900/20"
-                        onClick={() => onAccept(req.id)}
+                        onClick={() => handleAccept(req.testerId)}
                         title="Accept"
+                        disabled={processingId === req.testerId}
                       >
-                        <Check className="w-4 h-4" />
+                        {processingId === req.testerId ? (
+                          <Loader2 className="w-4 h-4 animate-spin" />
+                        ) : (
+                          <Check className="w-4 h-4" />
+                        )}
                       </Button>
                       <Button
                         size="sm"
@@ -298,10 +416,15 @@ export function TesterRequestsSection({
                   size="sm"
                   variant="outline"
                   className="h-9 w-10 px-0 text-green-600 border-green-200 dark:border-green-900 hover:bg-green-50 hover:text-green-700 hover:border-green-300 dark:hover:bg-green-900/20"
-                  onClick={() => onAccept(req.id)}
+                  onClick={() => handleAccept(req.testerId)}
                   title="Accept"
+                  disabled={processingId === req.testerId}
                 >
-                  <Check className="w-4 h-4" />
+                  {processingId === req.testerId ? (
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                  ) : (
+                    <Check className="w-4 h-4" />
+                  )}
                 </Button>
                 <Button
                   size="sm"
@@ -410,9 +533,26 @@ export function TesterRequestsSection({
               variant="destructive"
               onClick={submitRejection}
               className="w-full sm:w-auto"
-              disabled={!rejectTitle || !rejectDescription}
+              disabled={
+                !rejectTitle ||
+                !rejectDescription ||
+                isPendingCUU ||
+                uploadFileToR2.isPending ||
+                rejectMutation.isPending
+              }
             >
-              Reject Request
+              {isPendingCUU ||
+              uploadFileToR2.isPending ||
+              rejectMutation.isPending ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin mr-2" />
+                  {isPendingCUU || uploadFileToR2.isPending
+                    ? `Uploading... ${uploadPercent}%`
+                    : "Rejecting..."}
+                </>
+              ) : (
+                "Reject Request"
+              )}
             </Button>
           </DialogFooter>
         </DialogContent>
@@ -519,16 +659,35 @@ export function TesterRequestsSection({
               <Button
                 className="w-full sm:w-auto"
                 onClick={() => {
-                  if (selectedRequest) onAccept(selectedRequest.id);
+                  if (selectedRequest) handleAccept(selectedRequest.testerId);
                   setIsDetailsModalOpen(false);
                 }}
+                disabled={processingId === selectedRequest?.testerId}
               >
-                Accept Request
+                {selectedRequest &&
+                processingId === selectedRequest.testerId ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin mr-2" />
+                    Accepting...
+                  </>
+                ) : (
+                  "Accept Request"
+                )}
               </Button>
             </div>
           </div>
         </DialogContent>
       </Dialog>
+      {/* Feedback Dialog */}
+      <ActionFeedbackDialog
+        open={feedback.open}
+        onOpenChange={(open) => setFeedback((prev) => ({ ...prev, open }))}
+        status={feedback.status}
+        title={feedback.title}
+        description={feedback.description}
+        actionLabel={feedback.actionLabel}
+        onAction={() => setFeedback((prev) => ({ ...prev, open: false }))}
+      />
     </section>
   );
 }

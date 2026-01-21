@@ -19,11 +19,17 @@ import {
   Trash2,
   X,
   PartyPopper,
+  MessageSquareQuote,
+  Sparkles,
+  Rocket,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import type { SubmittedFeedback as SubmittedFeedbackType } from "@/lib/types";
+import type {
+  HubSubmittedAppResponse,
+  SubmittedFeedback as SubmittedFeedbackType,
+} from "@/lib/types";
 import {
   Dialog,
   DialogContent,
@@ -63,24 +69,40 @@ const FeedbackFormModal = ({
   onSave,
   children,
 }: {
-  feedback?: SubmittedFeedbackType | null;
-  onSave: (data: Partial<SubmittedFeedbackType>) => void;
+  feedback?: HubSubmittedAppResponse["feedback"][number] | null;
+  onSave: (data: Partial<HubSubmittedAppResponse["feedback"][number]>) => void;
   children: React.ReactNode;
 }) => {
-  const [comment, setComment] = useState(feedback?.comment || "");
-  const [type, setType] = useState<SubmittedFeedbackType["type"] | undefined>(
-    feedback?.type
-  );
-  const [screenshot, setScreenshot] = useState<string | null>(
-    feedback?.screenshot || null
-  );
+  const [message, setMessage] = useState(feedback?.message || "");
+  const [type, setType] = useState<
+    HubSubmittedAppResponse["feedback"][number]["type"] | undefined
+  >(feedback?.type);
+  const [media, setMedia] = useState<
+    HubSubmittedAppResponse["feedback"][number]["media"]
+  >(feedback?.media || []);
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
     const file = acceptedFiles[0];
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
-        setScreenshot(reader.result as string);
+        // Create a proper media object that matches the expected type
+        const newMediaItem: HubSubmittedAppResponse["feedback"][number]["media"][number] =
+          {
+            type: file.type.startsWith("video/") ? "VIDEO" : "IMAGE",
+            mime: file.type,
+            category: "FEEDBACK_MEDIA",
+            src: reader.result as string,
+            appId: null,
+            blogId: null,
+            feedbackId: null,
+            notificationId: null,
+            supportRequestId: null,
+            supportMessageId: null,
+            createdAt: new Date(),
+            updatedAt: new Date(),
+          };
+        setMedia([newMediaItem]);
       };
       reader.readAsDataURL(file);
     }
@@ -94,8 +116,8 @@ const FeedbackFormModal = ({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!type || !comment) return;
-    onSave({ id: feedback?.id, type, comment, screenshot });
+    if (!type || !message) return;
+    onSave({ id: feedback?.id, type, message, media });
   };
 
   return (
@@ -117,7 +139,9 @@ const FeedbackFormModal = ({
               <Label className="text-base">Feedback Type</Label>
               <Select
                 onValueChange={(value) =>
-                  setType(value as SubmittedFeedbackType["type"])
+                  setType(
+                    value as HubSubmittedAppResponse["feedback"][number]["type"],
+                  )
                 }
                 defaultValue={type}
               >
@@ -134,8 +158,8 @@ const FeedbackFormModal = ({
             <div className="space-y-3">
               <Label className="text-base">Comment</Label>
               <Textarea
-                value={comment}
-                onChange={(e) => setComment(e.target.value)}
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
                 placeholder="e.g., The app crashed when..."
                 className="min-h-[120px] text-base bg-gray-100 dark:bg-black border-0"
               />
@@ -143,30 +167,32 @@ const FeedbackFormModal = ({
 
             <div className="space-y-3">
               <Label className="text-base">Upload Screenshot (Optional)</Label>
-              {screenshot ? (
-                <div className="relative">
-                  <SafeImage
-                    src={screenshot}
-                    alt="Screenshot preview"
-                    width={550}
-                    height={300}
-                    className="rounded-lg object-contain border bg-secondary"
-                  />
-                  <Button
-                    variant="destructive"
-                    size="icon"
-                    className="absolute top-2 right-2 h-7 w-7"
-                    onClick={() => setScreenshot(null)}
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
-                </div>
+              {media?.length > 0 ? (
+                media?.map((item, index) => (
+                  <div className="relative">
+                    <SafeImage
+                      src={item?.src}
+                      alt="Screenshot preview"
+                      width={550}
+                      height={300}
+                      className="rounded-lg object-contain border bg-secondary"
+                    />
+                    <Button
+                      variant="destructive"
+                      size="icon"
+                      className="absolute top-2 right-2 h-7 w-7"
+                      onClick={() => setMedia([])}
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </Button>
+                  </div>
+                ))
               ) : (
                 <div
                   {...getRootProps()}
                   className={cn(
                     `border-2 border-dashed rounded-lg p-6 flex flex-col items-center justify-center text-center transition-colors cursor-pointer hover:border-primary hover:bg-secondary/50`,
-                    isDragActive && "border-primary bg-primary/10"
+                    isDragActive && "border-primary bg-primary/10",
                   )}
                 >
                   <input {...getInputProps()} />
@@ -188,10 +214,14 @@ const FeedbackFormModal = ({
   );
 };
 
-const FeedbackIcon = ({ type }: { type: SubmittedFeedbackType["type"] }) => {
-  if (type === "Bug")
+const FeedbackIcon = ({
+  type,
+}: {
+  type: HubSubmittedAppResponse["feedback"][0]["type"];
+}) => {
+  if (type === "BUG")
     return <Bug className="w-5 h-5 text-red-500 flex-shrink-0" />;
-  if (type === "Suggestion")
+  if (type === "SUGGESTION")
     return <Lightbulb className="w-5 h-5 text-amber-500 flex-shrink-0" />;
   return <PartyPopper className="w-5 h-5 text-green-500 flex-shrink-0" />;
 };
@@ -203,7 +233,7 @@ const FeedbackListItem = ({
   onImageClick,
   isCompleted,
 }: {
-  fb: SubmittedFeedbackType;
+  fb: HubSubmittedAppResponse["feedback"][0];
   onSave: (data: any) => void;
   onDelete: (id: number) => void;
   onImageClick: (url: string) => void;
@@ -211,17 +241,17 @@ const FeedbackListItem = ({
 }) => (
   <Card
     className={`bg-gradient-to-tl ${
-      fb.type === "Bug"
+      fb.type === "BUG"
         ? "from-red-500/20"
-        : fb.type === "Suggestion"
-        ? "from-yellow-500/20"
-        : "from-green-500/20"
+        : fb.type === "SUGGESTION"
+          ? "from-yellow-500/20"
+          : "from-green-500/20"
     } ${
-      fb.type === "Bug"
+      fb.type === "BUG"
         ? "to-red-500/5"
-        : fb.type === "Suggestion"
-        ? "to-yellow-500/5"
-        : "to-green-500/5"
+        : fb.type === "SUGGESTION"
+          ? "to-yellow-500/5"
+          : "to-green-500/5"
     } p-4 pt-2 pr-2 shadow-none border-0 relative overflow-hidden pl-5`}
   >
     <div className="flex items-start flex-col gap-0">
@@ -265,21 +295,22 @@ const FeedbackListItem = ({
           </AlertDialog>
         </div>
       </div>
-      <p className="text-sm text-muted-foreground mt-1">{fb.comment}</p>
-      {fb.screenshot && (
-        <div
-          className="mt-3 cursor-pointer h-14"
-          onClick={() => onImageClick(fb.screenshot!)}
-        >
-          <SafeImage
-            src={fb.screenshot}
-            alt="Feedback screenshot"
-            width={40}
-            height={100}
-            className="rounded-sm border object-cover"
-          />
-        </div>
-      )}
+      <p className="text-sm text-muted-foreground mt-1">{fb?.message}</p>
+      {fb?.media?.length > 0 &&
+        fb?.media?.map((item, index) => (
+          <div
+            className="mt-3 cursor-pointer h-14"
+            onClick={() => onImageClick(item?.src)}
+          >
+            <SafeImage
+              src={item?.src}
+              alt="Feedback screenshot"
+              width={40}
+              height={100}
+              className="rounded-sm border object-cover"
+            />
+          </div>
+        ))}
     </div>
   </Card>
 );
@@ -291,7 +322,7 @@ const FeedbackGridItem = ({
   onImageClick,
   isCompleted,
 }: {
-  fb: SubmittedFeedbackType;
+  fb: HubSubmittedAppResponse["feedback"][number];
   onSave: (data: any) => void;
   onDelete: (id: number) => void;
   onImageClick: (url: string) => void;
@@ -299,17 +330,17 @@ const FeedbackGridItem = ({
 }) => (
   <Card
     className={`bg-gradient-to-bl ${
-      fb.type === "Bug"
+      fb.type === "BUG"
         ? "from-red-500/20"
-        : fb.type === "Suggestion"
-        ? "from-yellow-500/20"
-        : "from-green-500/20"
+        : fb.type === "SUGGESTION"
+          ? "from-yellow-500/20"
+          : "from-green-500/20"
     } ${
-      fb.type === "Bug"
+      fb.type === "BUG"
         ? "to-red-500/10"
-        : fb.type === "Suggestion"
-        ? "to-yellow-500/10"
-        : "to-green-500/10"
+        : fb.type === "SUGGESTION"
+          ? "to-yellow-500/10"
+          : "to-green-500/10"
     } p-4 pr-2 shadow-none border-0 h-full flex flex-col relative overflow-hidden`}
   >
     <CardHeader className="p-0 flex-row items-center justify-between">
@@ -321,21 +352,28 @@ const FeedbackGridItem = ({
       </div>
     </CardHeader>
     <CardContent className="p-0 pt-2 flex-grow">
-      <p className="text-sm text-muted-foreground line-clamp-3">{fb.comment}</p>
+      <p className="text-sm text-muted-foreground line-clamp-3">
+        {fb?.message}
+      </p>
     </CardContent>
     <CardFooter className="p-0 flex items-center justify-between">
-      {fb.screenshot ? (
-        <div
-          className="mt-3 cursor-pointer h-10"
-          onClick={() => onImageClick(fb.screenshot!)}
-        >
-          <SafeImage
-            src={fb.screenshot}
-            alt="Feedback screenshot"
-            width={30}
-            height={100}
-            className="rounded-sm border object-cover"
-          />
+      {fb?.media?.length > 0 ? (
+        <div className="grid grid-cols-4 gap-1">
+          {fb?.media?.map((media, index) => (
+            <div
+              key={index}
+              className="mt-3 cursor-pointer h-10"
+              onClick={() => onImageClick(media?.src)}
+            >
+              <SafeImage
+                src={media?.src}
+                alt="Feedback screenshot"
+                width={30}
+                height={100}
+                className="rounded-sm border object-cover"
+              />
+            </div>
+          ))}
         </div>
       ) : (
         <div />
@@ -380,61 +418,19 @@ const FeedbackGridItem = ({
 
 export function SubmittedFeedback({
   isCompleted = false,
+  feedback,
 }: {
   isCompleted?: boolean;
+  feedback: HubSubmittedAppResponse["feedback"];
 }) {
   const [viewMode, setViewMode] = useState<"grid" | "list">("list");
   const [currentPage, setCurrentPage] = useState(1);
   const [fullscreenImage, setFullscreenImage] = useState<string | null>(null);
 
-  const [submittedFeedback, setSubmittedFeedback] = useState<
-    SubmittedFeedbackType[]
-  >([
-    {
-      id: 1,
-      type: "Bug",
-      comment: "App crashes on launch sometimes.",
-      screenshot: null,
-    },
-    {
-      id: 2,
-      type: "Suggestion",
-      comment: "A dark mode would be great for night use.",
-      screenshot: null,
-    },
-    {
-      id: 3,
-      type: "Praise",
-      comment: "The new UI is super clean and intuitive. Great job!",
-      screenshot:
-        "https://images.unsplash.com/photo-1601042879364-f3947d3f9c16?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    },
-    {
-      id: 4,
-      type: "Bug",
-      comment: "The settings icon is misaligned on tablets.",
-      screenshot:
-        "https://images.unsplash.com/photo-1756303018960-e5279e145963?q=80&w=719&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-    },
-    {
-      id: 5,
-      type: "Suggestion",
-      comment: "Could we get an option to export data to CSV?",
-      screenshot: null,
-    },
-    {
-      id: 6,
-      type: "Praise",
-      comment:
-        "The performance improvement in the latest update is very noticeable!",
-      screenshot: null,
-    },
-  ]);
-
-  const totalPages = Math.ceil(submittedFeedback.length / FEEDBACK_PER_PAGE);
+  const totalPages = Math.ceil(feedback?.length / FEEDBACK_PER_PAGE);
   const startIndex = (currentPage - 1) * FEEDBACK_PER_PAGE;
   const endIndex = startIndex + FEEDBACK_PER_PAGE;
-  const currentFeedback = submittedFeedback.slice(startIndex, endIndex);
+  const currentFeedback = feedback?.slice(startIndex, endIndex);
 
   const handlePageChange = (page: number) => {
     if (page < 1 || page > totalPages) return;
@@ -444,26 +440,12 @@ export function SubmittedFeedback({
   const handleSaveFeedback = (data: Partial<SubmittedFeedbackType>) => {
     if (data.id) {
       // Edit existing
-      setSubmittedFeedback((prev) =>
-        prev.map((fb) =>
-          fb.id === data.id ? ({ ...fb, ...data } as SubmittedFeedbackType) : fb
-        )
-      );
     } else {
       // Add new
-      const newFeedback: SubmittedFeedbackType = {
-        id: Date.now(),
-        type: data.type!,
-        comment: data.comment!,
-        screenshot: data.screenshot || null,
-      };
-      setSubmittedFeedback((prev) => [...prev, newFeedback]);
     }
   };
 
-  const handleDeleteFeedback = (id: number) => {
-    setSubmittedFeedback((prev) => prev.filter((fb) => fb.id !== id));
-  };
+  const handleDeleteFeedback = (id: number) => {};
 
   const description = isCompleted
     ? "Here is a summary of the feedback you submitted."
@@ -547,16 +529,63 @@ export function SubmittedFeedback({
               />
             </>
           ) : (
-            <div className="text-center py-12 text-muted-foreground bg-secondary/50 rounded-lg">
-              <p className="mb-2">
-                You haven't submitted any feedback for this app yet.
-              </p>
-              <FeedbackFormModal onSave={handleSaveFeedback}>
-                <Button variant="outline">
-                  <PlusCircle className="mr-2 h-4 w-4" /> Submit Your First
-                  Feedback
-                </Button>
-              </FeedbackFormModal>
+            <div className="relative overflow-hidden rounded-3xl border border-muted/20 bg-gradient-to-b from-muted/5 to-transparent p-8 md:p-12 text-center">
+              {/* Abstract Background Shapes */}
+              <div className="absolute -top-24 -right-24 h-64 w-64 rounded-full bg-primary/5 blur-3xl animate-pulse" />
+              <div className="absolute -bottom-24 -left-24 h-64 w-64 rounded-full bg-accent/5 blur-3xl animate-pulse delay-1000" />
+
+              <div className="relative z-10 flex flex-col items-center gap-6">
+                {/* Floating Icon Cluster */}
+                <div className="flex gap-4 items-center mb-2">
+                  <div className="p-3 rounded-2xl bg-red-500/10 text-red-500 border border-red-500/20 transform -rotate-12 hover:rotate-0 transition-transform duration-300">
+                    <Bug className="w-5 h-5" />
+                  </div>
+                  <div className="p-5 rounded-3xl bg-primary/10 text-primary border border-primary/20 shadow-lg shadow-primary/10 transform scale-110 z-10">
+                    <MessageSquareQuote className="w-8 h-8" />
+                  </div>
+                  <div className="p-3 rounded-2xl bg-amber-500/10 text-amber-500 border border-amber-500/20 transform rotate-12 hover:rotate-0 transition-transform duration-300">
+                    <Lightbulb className="w-5 h-5" />
+                  </div>
+                </div>
+
+                <div className="space-y-2 max-w-lg mx-auto">
+                  <h3 className="text-2xl md:text-3xl font-bold tracking-tight bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent">
+                    Make Your <span className="text-primary">Impact</span>
+                  </h3>
+
+                  <p className="text-muted-foreground text-md sm:text-lg leading-relaxed">
+                    This space is waiting for your unique perspective. Help
+                    developers polish this gem by sharing bugs, ideas, or
+                    praise.
+                  </p>
+                </div>
+
+                <div className="pt-2">
+                  <FeedbackFormModal onSave={handleSaveFeedback}>
+                    <Button
+                      size="lg"
+                      className="rounded-full px-8 py-6 text-lg shadow-xl shadow-primary/20 hover:shadow-primary/30 transition-all hover:scale-105 active:scale-95 group"
+                    >
+                      <Sparkles className="mr-2 h-5 w-5 group-hover:animate-spin" />{" "}
+                      Start Contributing
+                    </Button>
+                  </FeedbackFormModal>
+                </div>
+
+                <div className="flex items-center gap-6 text-xs text-muted-foreground/60 font-medium">
+                  <span className="flex items-center gap-1.5">
+                    <Bug className="w-3 h-3" /> Report Bugs
+                  </span>
+                  <span className="w-1 h-1 rounded-full bg-muted-foreground/30" />
+                  <span className="flex items-center gap-1.5">
+                    <Lightbulb className="w-3 h-3" /> Suggest Ideas
+                  </span>
+                  <span className="w-1 h-1 rounded-full bg-muted-foreground/30" />
+                  <span className="flex items-center gap-1.5">
+                    <Rocket className="w-3 h-3" /> Help Grow
+                  </span>
+                </div>
+              </div>
             </div>
           )}
         </div>
