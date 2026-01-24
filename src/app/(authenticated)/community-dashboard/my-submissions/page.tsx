@@ -32,7 +32,7 @@ import SubTabUI from "@/components/sub-tab-ui";
 import Confetti from "react-dom-confetti";
 import { useTransitionRouter } from "@/context/transition-context";
 import { PageHeader } from "@/components/page-header";
-import { useHubSubmittedApp, useHubSubmittedAppsCount } from "@/hooks/useUser";
+import { useHubSubmittedApp, useHubSubmittedAppsCount } from "@/hooks/useHub";
 import { Skeleton } from "@/components/ui/skeleton";
 
 const PROJECTS_PER_PAGE = 6;

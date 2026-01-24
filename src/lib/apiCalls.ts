@@ -646,7 +646,7 @@ export async function addHubAppFeedback(payload: {
   hub_id: string;
   message: string;
   type: string;
-  priority: string;
+  priority?: string | null;
   image?: string;
   video?: string;
 }) {

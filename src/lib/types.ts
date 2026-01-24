@@ -428,7 +428,7 @@ export interface HubSubmittedAppResponse {
       supportMessageId: number | null;
       createdAt: Date;
       updatedAt: Date;
-    }[];
+    };
     tester: {
       name: string;
     };

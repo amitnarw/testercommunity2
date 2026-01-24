@@ -7,7 +7,7 @@ import { CommunityCompletedAppCard } from "@/components/community-completed-app-
 import { AppPagination } from "@/components/app-pagination";
 import { motion } from "framer-motion";
 import type { HubSubmittedAppResponse } from "@/lib/types";
-import { useHubApps } from "@/hooks/useUser";
+import { useHubApps } from "@/hooks/useHub";
 import { useTransitionRouter } from "@/context/transition-context";
 import { AppCardSkeleton } from "@/components/app-card-skeleton";
 import { Input } from "@/components/ui/input";

@@ -45,7 +45,7 @@ import { SafeImage } from "@/components/safe-image";
 import { Badge } from "@/components/ui/badge";
 import type { HubSubmittedAppResponse } from "@/lib/types";
 import SubTabUI from "@/components/sub-tab-ui";
-import { useHubApps, useHubAppsCount, useHubData } from "@/hooks/useUser";
+import { useHubApps, useHubAppsCount, useHubData } from "@/hooks/useHub";
 import { useTransitionRouter } from "@/context/transition-context";
 import { AppCardSkeleton } from "@/components/app-card-skeleton";
 import { format } from "date-fns";

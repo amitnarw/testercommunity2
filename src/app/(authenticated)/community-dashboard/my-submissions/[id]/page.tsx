@@ -37,7 +37,7 @@ import AppInfoHeader from "@/components/app-info-header";
 import Confetti from "react-dom-confetti";
 import { useInView } from "react-intersection-observer";
 import { motion } from "framer-motion";
-import { useSingleHubAppDetails } from "@/hooks/useUser";
+import { useSingleHubAppDetails } from "@/hooks/useHub";
 import { HubSubmittedAppResponse } from "@/lib/types";
 import { TesterRequestsSection } from "@/components/tester-requests-section";
 

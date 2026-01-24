@@ -31,7 +31,7 @@ import { AppInfoSidebar } from "@/components/appInfoSidebar";
 import {
   useAddHubAppTestingRequest,
   useSingleHubAppDetails,
-} from "@/hooks/useUser";
+} from "@/hooks/useHub";
 import { ExpandableText } from "@/components/expandable-text";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 

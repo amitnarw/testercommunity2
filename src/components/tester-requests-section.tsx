@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
   useAcceptHubAppTestingRequest,
   useRejectHubAppTestingRequest,
-} from "@/hooks/useUser";
+} from "@/hooks/useHub";
 import {
   Check,
   X,

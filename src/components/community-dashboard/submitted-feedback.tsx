@@ -64,6 +64,9 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { AppPagination } from "../app-pagination";
+import { useR2 } from "@/hooks/useR2";
+import { Badge } from "@/components/ui/badge";
+import { addHubAppFeedback } from "@/lib/apiCalls";
 
 const FEEDBACK_PER_PAGE = 3;
 
@@ -73,7 +76,16 @@ const FeedbackFormModal = ({
   children,
 }: {
   feedback?: HubSubmittedAppResponse["feedback"][number] | null;
-  onSave: (data: Partial<HubSubmittedAppResponse["feedback"][number]>) => void;
+  onSave: (data: {
+    id?: number;
+    message: string;
+    type: "BUG" | "SUGGESTION" | "PRAISE" | "OTHER";
+    priority: "LOW" | "MEDIUM" | "HIGH" | "CRITICAL" | null;
+    media?: {
+      type: "IMAGE" | "VIDEO";
+      src: string;
+    };
+  }) => void;
   children: React.ReactNode;
 }) => {
   const [open, setOpen] = useState(false);
@@ -84,50 +96,62 @@ const FeedbackFormModal = ({
   const [priority, setPriority] = useState<
     HubSubmittedAppResponse["feedback"][number]["priority"]
   >(feedback?.priority || "LOW");
-  const [media, setMedia] = useState<
-    HubSubmittedAppResponse["feedback"][number]["media"]
-  >(feedback?.media || []);
-  const [isProcessing, setIsProcessing] = useState(false);
+
+  // Use a single media item state instead of array
+  const [mediaItem, setMediaItem] = useState<{
+    type: "IMAGE" | "VIDEO";
+    src: string;
+    mime?: string;
+  } | null>(
+    feedback?.media
+      ? {
+          type: feedback.media.type,
+          src: feedback.media.src,
+          mime: feedback.media.mime,
+        }
+      : null,
+  );
+
+  const [uploadPercent, setUploadPercent] = useState(0);
+  const [pendingFile, setPendingFile] = useState<File | null>(null);
+
+  const { createUploadUrl, isPendingCUU, uploadFileToR2 } = useR2();
 
   useEffect(() => {
     if (open) {
       setMessage(feedback?.message || "");
       setType(feedback?.type || "BUG");
       setPriority(feedback?.priority || "LOW");
-      setMedia(feedback?.media || []);
+
+      if (feedback?.media) {
+        setMediaItem({
+          type: feedback.media.type,
+          src: feedback.media.src,
+          mime: feedback.media.mime,
+        });
+      } else {
+        setMediaItem(null);
+      }
+
+      setPendingFile(null);
+      setUploadPercent(0);
     }
   }, [open, feedback]);
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
-    setIsProcessing(true);
     const file = acceptedFiles[0];
     if (file) {
+      setPendingFile(file);
       const reader = new FileReader();
       reader.onloadend = () => {
         const isVideo = file.type.startsWith("video/");
-        const newMediaItem: HubSubmittedAppResponse["feedback"][number]["media"][number] =
-          {
-            type: isVideo ? "VIDEO" : "IMAGE",
-            mime: file.type,
-            category: "FEEDBACK_MEDIA",
-            src: reader.result as string,
-            appId: null,
-            blogId: null,
-            feedbackId: null,
-            notificationId: null,
-            supportRequestId: null,
-            supportMessageId: null,
-            createdAt: new Date(),
-            updatedAt: new Date(),
-          };
-
-        // Replace existing media with new one (only 1 allowed)
-        setMedia([newMediaItem]);
-        setIsProcessing(false);
+        setMediaItem({
+          type: isVideo ? "VIDEO" : "IMAGE",
+          src: reader.result as string, // Preview URL
+          mime: file.type,
+        });
       };
       reader.readAsDataURL(file);
-    } else {
-      setIsProcessing(false);
     }
   }, []);
 
@@ -137,18 +161,64 @@ const FeedbackFormModal = ({
       "image/*": [".jpeg", ".png", ".jpg", ".webp"],
       "video/*": [".mp4", ".webm", ".mov"],
     },
-    maxFiles: 1, // One at a time, but can add multiple
+    maxFiles: 1,
   });
 
-  const removeMedia = (indexToRemove: number) => {
-    setMedia((prev) => prev.filter((_, index) => index !== indexToRemove));
+  const removeMedia = () => {
+    setMediaItem(null);
+    setPendingFile(null);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!type || !message) return;
-    onSave({ id: feedback?.id, type, message, media, priority });
-    setOpen(false);
+
+    try {
+      let finalMediaItem = mediaItem;
+
+      // If there is a pending file, upload it
+      if (pendingFile) {
+        setUploadPercent(0);
+        const fileType = pendingFile.type.startsWith("video/")
+          ? "video"
+          : "image";
+
+        const uploadConfig = await createUploadUrl.mutateAsync({
+          filename: pendingFile.name,
+          contentType: pendingFile.type,
+          size: pendingFile.size,
+          type: fileType,
+        });
+
+        await uploadFileToR2.mutateAsync({
+          file: pendingFile,
+          uploadUrl: uploadConfig.uploadUrl,
+          onProgress: (percent) => setUploadPercent(percent),
+        });
+
+        const r2Url = process.env.NEXT_PUBLIC_R2_MEDIA_BASE_URL || "";
+        const uploadedUrl = r2Url + "/" + uploadConfig.key;
+
+        finalMediaItem = {
+          type: fileType === "video" ? "VIDEO" : "IMAGE",
+          src: uploadedUrl,
+          mime: pendingFile.type,
+        };
+      }
+
+      onSave({
+        id: feedback?.id,
+        type,
+        message,
+        media: finalMediaItem
+          ? { type: finalMediaItem.type, src: finalMediaItem.src }
+          : undefined,
+        priority,
+      });
+      setOpen(false);
+    } catch (error) {
+      console.error("Error uploading file:", error);
+    }
   };
 
   const getTypeStyles = (t: string) => {
@@ -174,7 +244,7 @@ const FeedbackFormModal = ({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent className="w-[95vw] sm:max-w-[600px] p-0 bg-[#fafafa] dark:bg-[#0f0f0f] shadow-2xl rounded-2xl sm:rounded-3xl border-0 overflow-hidden">
+      <DialogContent className="w-[95vw] sm:max-w-[600px] p-0 bg-[#fafafa] dark:bg-[#0f0f0f] shadow-2xl rounded-2xl sm:rounded-3xl border-0 overflow-hidden gap-0">
         <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-primary/5 to-transparent pointer-events-none" />
         <DialogHeader className="relative z-10 w-full bg-white dark:bg-[#141414] border-b border-border/40">
           <div className="flex flex-row items-center justify-between p-4 sm:p-5">
@@ -191,7 +261,7 @@ const FeedbackFormModal = ({
                   {feedback ? "Edit Feedback" : "Share Experience"}
                 </DialogTitle>
                 <DialogDescription className="text-xs text-muted-foreground mt-0.5">
-                  Help us improve by sharing your thoughts.
+                  Help us improve by sharing feedback.
                 </DialogDescription>
               </div>
             </div>
@@ -209,9 +279,9 @@ const FeedbackFormModal = ({
 
         <form
           onSubmit={handleSubmit}
-          className="flex flex-col h-full max-h-[80vh] overflow-y-auto"
+          className="flex flex-col h-full max-h-[80vh] overflow-y-auto pt-2"
         >
-          <div className="px-3 sm:px-6 py-2 space-y-6">
+          <div className="px-3 sm:px-6 py-2 space-y-6 pb-5">
             {/* Type Selector */}
             <div className="space-y-4">
               <Label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider pl-1">
@@ -392,23 +462,20 @@ const FeedbackFormModal = ({
                 </span>
               </div>
 
-              <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
-                {media?.map((item, index) => (
-                  <div
-                    key={index}
-                    className="relative aspect-square group rounded-lg overflow-hidden border bg-muted/20"
-                  >
-                    {item.type === "VIDEO" ? (
+              <div className="grid grid-cols-1 gap-2">
+                {mediaItem && (
+                  <div className="relative aspect-square group rounded-lg overflow-hidden border bg-muted/20 w-32">
+                    {mediaItem.type === "VIDEO" ? (
                       <div className="w-full h-full flex items-center justify-center bg-black/5">
                         <Video className="w-8 h-8 text-muted-foreground/50" />
                         <video
-                          src={item.src}
+                          src={mediaItem.src}
                           className="absolute inset-0 w-full h-full object-cover opacity-50"
                         />
                       </div>
                     ) : (
                       <SafeImage
-                        src={item.src}
+                        src={mediaItem.src}
                         alt="Preview"
                         layout="fill"
                         objectFit="cover"
@@ -417,39 +484,33 @@ const FeedbackFormModal = ({
                     )}
                     <button
                       type="button"
-                      onClick={() => removeMedia(index)}
+                      onClick={removeMedia}
                       className="absolute top-1 right-1 p-1 bg-red-500 text-white rounded-full transition-transform hover:bg-red-600 shadow-md z-10"
                     >
                       <X className="w-3 h-3 sm:w-4 sm:h-4" />
                     </button>
                   </div>
-                ))}
+                )}
 
-                {media.length < 1 && (
+                {!mediaItem && (
                   <div
                     {...getRootProps()}
                     className={cn(
-                      "aspect-square rounded-lg border-2 border-dashed border-muted-foreground/20 flex flex-col items-center justify-center cursor-pointer hover:border-primary/50 hover:bg-primary/5 transition-all text-muted-foreground hover:text-primary gap-1",
+                      "aspect-square rounded-lg border-2 border-dashed border-muted-foreground/20 flex flex-col items-center justify-center cursor-pointer hover:border-primary/50 hover:bg-primary/5 transition-all text-muted-foreground hover:text-primary gap-1 w-32",
                       isDragActive &&
                         "border-primary bg-primary/10 text-primary",
                     )}
                   >
                     <input {...getInputProps()} />
-                    {isProcessing ? (
-                      <Loader2 className="w-6 h-6 animate-spin" />
-                    ) : (
-                      <>
-                        <Upload className="w-6 h-6 mb-1 opacity-50" />
-                        <span className="text-[10px] font-medium uppercase">
-                          Upload
-                        </span>
-                      </>
-                    )}
+                    <Upload className="w-6 h-6 mb-1 opacity-50" />
+                    <span className="text-[10px] font-medium uppercase">
+                      Upload
+                    </span>
                   </div>
                 )}
               </div>
               <p className="text-xs text-muted-foreground">
-                Supports 1 Image (PNG, JPG) or Video (MP4, WebM)
+                1 image or video (PNG, JPG, MP4, WebM)
               </p>
             </div>
           </div>
@@ -467,9 +528,22 @@ const FeedbackFormModal = ({
               <Button
                 type="submit"
                 className="flex-[2] rounded-xl h-11 sm:h-12 text-sm sm:text-base font-semibold shadow-lg shadow-primary/25 hover:shadow-primary/40 transition-all active:scale-[0.98]"
-                disabled={!message || !type}
+                disabled={
+                  !message || !type || isPendingCUU || uploadFileToR2.isPending
+                }
               >
-                {feedback ? "Update Feedback" : "Submit Feedback"}
+                {isPendingCUU || uploadFileToR2.isPending ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin mr-2" />
+                    {isPendingCUU
+                      ? "Preparing..."
+                      : `Uploading... ${uploadPercent}%`}
+                  </>
+                ) : feedback ? (
+                  "Update Feedback"
+                ) : (
+                  "Submit Feedback"
+                )}
               </Button>
             </div>
           </DialogFooter>
@@ -499,7 +573,16 @@ const FeedbackListItem = ({
   isCompleted,
 }: {
   fb: HubSubmittedAppResponse["feedback"][0];
-  onSave: (data: any) => void;
+  onSave: (data: {
+    id?: number;
+    message: string;
+    type: "BUG" | "SUGGESTION" | "PRAISE" | "OTHER";
+    priority: "LOW" | "MEDIUM" | "HIGH" | "CRITICAL" | null;
+    media?: {
+      type: "IMAGE" | "VIDEO";
+      src: string;
+    };
+  }) => void;
   onDelete: (id: number) => void;
   onImageClick: (url: string) => void;
   isCompleted: boolean;
@@ -561,21 +644,20 @@ const FeedbackListItem = ({
         </div>
       </div>
       <p className="text-sm text-muted-foreground mt-1">{fb?.message}</p>
-      {fb?.media?.length > 0 &&
-        fb?.media?.map((item, index) => (
-          <div
-            className="mt-3 cursor-pointer h-14"
-            onClick={() => onImageClick(item?.src)}
-          >
-            <SafeImage
-              src={item?.src}
-              alt="Feedback screenshot"
-              width={40}
-              height={100}
-              className="rounded-sm border object-cover"
-            />
-          </div>
-        ))}
+      {fb?.media && (
+        <div
+          className="mt-3 cursor-pointer h-14 w-14 relative"
+          onClick={() => fb.media?.src && onImageClick(fb.media.src)}
+        >
+          <SafeImage
+            src={fb.media?.src || ""}
+            alt="Feedback screenshot"
+            layout="fill"
+            objectFit="cover"
+            className="rounded-sm border object-cover"
+          />
+        </div>
+      )}
     </div>
   </Card>
 );
@@ -588,7 +670,16 @@ const FeedbackGridItem = ({
   isCompleted,
 }: {
   fb: HubSubmittedAppResponse["feedback"][number];
-  onSave: (data: any) => void;
+  onSave: (data: {
+    id?: number;
+    message: string;
+    type: "BUG" | "SUGGESTION" | "PRAISE" | "OTHER";
+    priority: "LOW" | "MEDIUM" | "HIGH" | "CRITICAL" | null;
+    media?: {
+      type: "IMAGE" | "VIDEO";
+      src: string;
+    };
+  }) => void;
   onDelete: (id: number) => void;
   onImageClick: (url: string) => void;
   isCompleted: boolean;
@@ -622,23 +713,20 @@ const FeedbackGridItem = ({
       </p>
     </CardContent>
     <CardFooter className="p-0 flex items-center justify-between">
-      {fb?.media?.length > 0 ? (
+      {fb?.media ? (
         <div className="grid grid-cols-4 gap-1">
-          {fb?.media?.map((media, index) => (
-            <div
-              key={index}
-              className="mt-3 cursor-pointer h-10"
-              onClick={() => onImageClick(media?.src)}
-            >
-              <SafeImage
-                src={media?.src}
-                alt="Feedback screenshot"
-                width={30}
-                height={100}
-                className="rounded-sm border object-cover"
-              />
-            </div>
-          ))}
+          <div
+            className="mt-3 cursor-pointer h-10 w-10 relative"
+            onClick={() => fb.media?.src && onImageClick(fb.media.src)}
+          >
+            <SafeImage
+              src={fb.media?.src || ""}
+              alt="Feedback screenshot"
+              layout="fill"
+              objectFit="cover"
+              className="rounded-sm border object-cover"
+            />
+          </div>
         </div>
       ) : (
         <div />
@@ -646,7 +734,7 @@ const FeedbackGridItem = ({
       <div className={`flex items-center gap-1 ${isCompleted && "hidden"}`}>
         <FeedbackFormModal feedback={fb} onSave={onSave}>
           <button className="hover:bg-white/50 p-1 sm:p-2 rounded-md duration-300">
-            <Edit className="w-3 h-3 sm:w-4 h-4" />
+            <Edit className="w-3 h-3 sm:w-4 sm:h-4" />
           </button>
         </FeedbackFormModal>
         <AlertDialog>
@@ -684,9 +772,13 @@ const FeedbackGridItem = ({
 export function SubmittedFeedback({
   isCompleted = false,
   feedback,
+  hubId,
+  refetch,
 }: {
   isCompleted?: boolean;
   feedback: HubSubmittedAppResponse["feedback"];
+  hubId?: string;
+  refetch?: () => void;
 }) {
   const [viewMode, setViewMode] = useState<"grid" | "list">("list");
   const [currentPage, setCurrentPage] = useState(1);
@@ -702,13 +794,42 @@ export function SubmittedFeedback({
     setCurrentPage(page);
   };
 
-  const handleSaveFeedback = (
-    data: Partial<HubSubmittedAppResponse["feedback"][number]>,
-  ) => {
-    if (data.id) {
-      // Edit existing
-    } else {
-      // Add new
+  const handleSaveFeedback = async (data: {
+    id?: number;
+    message: string;
+    type: "BUG" | "SUGGESTION" | "PRAISE" | "OTHER";
+    priority: "LOW" | "MEDIUM" | "HIGH" | "CRITICAL" | null;
+    media?: {
+      type: "IMAGE" | "VIDEO";
+      src: string;
+    };
+  }) => {
+    try {
+      if (data.id) {
+        // Edit existing logic
+      } else {
+        // Extract media
+        let image: string | undefined = undefined;
+        let video: string | undefined = undefined;
+
+        if (data.media) {
+          if (data.media.type === "IMAGE") image = data.media.src;
+          if (data.media.type === "VIDEO") video = data.media.src;
+        }
+
+        await addHubAppFeedback({
+          hub_id: hubId || feedback?.[0]?.dashboardAndHubId?.toString() || "",
+          message: data?.message || "",
+          type: data?.type || "BUG",
+          priority: data?.priority || null,
+          image: image,
+          video: video,
+        });
+
+        if (refetch) refetch();
+      }
+    } catch (error) {
+      console.error("Error submitting feedback:", error);
     }
   };
 
@@ -720,142 +841,152 @@ export function SubmittedFeedback({
 
   return (
     <>
-      <section>
-        <div className="bg-card/50 rounded-2xl p-4 sm:p-6 sm:pt-4 grid grid-cols-1">
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
-            <div>
-              <h2 className="text-xl sm:text-2xl font-bold">
-                Submitted Feedback
-              </h2>
-              <p className="text-sm sm:text-base text-muted-foreground">
-                {description}
-              </p>
-            </div>
-            <div className="flex items-center gap-2 justify-between w-full sm:w-auto">
-              {isCompleted && <div />}
-              <div className="flex items-center gap-1">
-                <Button
-                  variant={viewMode === "list" ? "secondary" : "ghost"}
-                  size="icon"
-                  onClick={() => setViewMode("list")}
-                >
-                  <List className="w-4 h-4" />
+      <section className="space-y-6 bg-card/50 rounded-2xl p-3 sm:p-6 pt-2 sm:pt-8 w-full shadow-2xl shadow-black/10">
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 relative">
+          <div className="space-y-1">
+            <h2 className="text-xl sm:text-2xl font-bold">
+              Submitted Feedback
+            </h2>
+            <p className="text-sm sm:text-base text-muted-foreground">
+              {description}
+            </p>
+          </div>
+          <div className="absolute top-0 right-0">
+            <Badge
+              variant="secondary"
+              className="w-7 h-7 sm:w-auto sm:h-auto text-xs sm:text-sm rounded-full bg-primary/10 text-primary hover:bg-primary/20 transition-colors gap-1"
+            >
+              <span>{feedback.length}</span>
+              <span className="hidden sm:block">Submitted</span>
+            </Badge>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-2 justify-end w-full">
+          {isCompleted && <div />}
+          <div className="flex items-center gap-1">
+            <Button
+              variant={viewMode === "list" ? "secondary" : "ghost"}
+              size="icon"
+              onClick={() => setViewMode("list")}
+            >
+              <List className="w-4 h-4" />
+            </Button>
+            <Button
+              variant={viewMode === "grid" ? "secondary" : "ghost"}
+              size="icon"
+              onClick={() => setViewMode("grid")}
+            >
+              <LayoutGrid className="w-4 h-4" />
+            </Button>
+
+            {!isCompleted && (
+              <FeedbackFormModal onSave={handleSaveFeedback}>
+                <Button size="sm" className="relative overflow-hidden h-9">
+                  <PlusCircle className="mr-2 h-4 w-4" />
+                  Submit New
                 </Button>
-                <Button
-                  variant={viewMode === "grid" ? "secondary" : "ghost"}
-                  size="icon"
-                  onClick={() => setViewMode("grid")}
-                >
-                  <LayoutGrid className="w-4 h-4" />
-                </Button>
+              </FeedbackFormModal>
+            )}
+          </div>
+        </div>
+
+        {currentFeedback.length > 0 ? (
+          <>
+            {viewMode === "list" ? (
+              <div className="space-y-3">
+                {currentFeedback.map((fb) => (
+                  <FeedbackListItem
+                    key={fb.id}
+                    fb={fb}
+                    onSave={handleSaveFeedback}
+                    onDelete={handleDeleteFeedback}
+                    onImageClick={setFullscreenImage}
+                    isCompleted={isCompleted}
+                  />
+                ))}
               </div>
-              {!isCompleted && (
+            ) : (
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-2 sm:gap-4">
+                {currentFeedback.map((fb) => (
+                  <FeedbackGridItem
+                    key={fb.id}
+                    fb={fb}
+                    onSave={handleSaveFeedback}
+                    onDelete={handleDeleteFeedback}
+                    onImageClick={setFullscreenImage}
+                    isCompleted={isCompleted}
+                  />
+                ))}
+              </div>
+            )}
+            <AppPagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={handlePageChange}
+            />
+          </>
+        ) : (
+          <div className="relative overflow-hidden rounded-3xl border border-muted/20 bg-gradient-to-b from-muted/50 to-transparent p-2 py-5 md:p-12 text-center">
+            <div className="relative z-10 flex flex-col items-center gap-6">
+              {/* Floating Icon Cluster */}
+              <div className="flex gap-4 items-center mb-2">
+                <div className="p-3 rounded-2xl bg-red-500/10 text-red-500 border border-red-500/20 transform -rotate-12 hover:rotate-0 transition-transform duration-300">
+                  <Bug className="w-5 h-5" />
+                </div>
+                <div className="p-5 rounded-3xl bg-primary/10 text-primary border border-primary/20 shadow-lg shadow-primary/10 transform scale-110 z-10">
+                  <MessageSquareQuote className="w-8 h-8" />
+                </div>
+                <div className="p-3 rounded-2xl bg-amber-500/10 text-amber-500 border border-amber-500/20 transform rotate-12 hover:rotate-0 transition-transform duration-300">
+                  <Lightbulb className="w-5 h-5" />
+                </div>
+              </div>
+
+              <div className="space-y-2 max-w-lg mx-auto">
+                <h3 className="text-2xl md:text-3xl font-bold tracking-tight bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent">
+                  Make Your <span className="text-primary">Impact</span>
+                </h3>
+
+                <p className="text-muted-foreground text-sm sm:text-lg leading-relaxed">
+                  This space is waiting for your unique perspective. Help
+                  developers polish this gem by sharing bugs, ideas, or praise.
+                </p>
+              </div>
+
+              <div className="pt-2">
                 <FeedbackFormModal onSave={handleSaveFeedback}>
-                  <Button className="relative overflow-hidden">
-                    <PlusCircle className="absolute sm:static mr-2 h-4 w-4 scale-[2.5] top-1 left-1 text-white/20 sm:text-white sm:scale-100" />{" "}
-                    Submit New
+                  <Button
+                    size="lg"
+                    className="rounded-full px-8 py-6 text-sm sm:text-lg shadow-xl shadow-primary/20 hover:shadow-primary/30 transition-all hover:scale-105 active:scale-95 group"
+                  >
+                    <Sparkles className="mr-2 h-5 w-5 group-hover:animate-spin" />{" "}
+                    Start Contributing
                   </Button>
                 </FeedbackFormModal>
-              )}
-            </div>
-          </div>
+              </div>
 
-          {currentFeedback.length > 0 ? (
-            <>
-              {viewMode === "list" ? (
-                <div className="space-y-3">
-                  {currentFeedback.map((fb) => (
-                    <FeedbackListItem
-                      key={fb.id}
-                      fb={fb}
-                      onSave={handleSaveFeedback}
-                      onDelete={handleDeleteFeedback}
-                      onImageClick={setFullscreenImage}
-                      isCompleted={isCompleted}
-                    />
-                  ))}
-                </div>
-              ) : (
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-2 sm:gap-4">
-                  {currentFeedback.map((fb) => (
-                    <FeedbackGridItem
-                      key={fb.id}
-                      fb={fb}
-                      onSave={handleSaveFeedback}
-                      onDelete={handleDeleteFeedback}
-                      onImageClick={setFullscreenImage}
-                      isCompleted={isCompleted}
-                    />
-                  ))}
-                </div>
-              )}
-              <AppPagination
-                currentPage={currentPage}
-                totalPages={totalPages}
-                onPageChange={handlePageChange}
-              />
-            </>
-          ) : (
-            <div className="relative overflow-hidden rounded-3xl border border-muted/20 bg-gradient-to-b from-muted/5 to-transparent p-8 md:p-12 text-center">
-              {/* Abstract Background Shapes */}
-              <div className="absolute -top-24 -right-24 h-64 w-64 rounded-full bg-primary/5 blur-3xl animate-pulse" />
-              <div className="absolute -bottom-24 -left-24 h-64 w-64 rounded-full bg-accent/5 blur-3xl animate-pulse delay-1000" />
-
-              <div className="relative z-10 flex flex-col items-center gap-6">
-                {/* Floating Icon Cluster */}
-                <div className="flex gap-4 items-center mb-2">
-                  <div className="p-3 rounded-2xl bg-red-500/10 text-red-500 border border-red-500/20 transform -rotate-12 hover:rotate-0 transition-transform duration-300">
-                    <Bug className="w-5 h-5" />
-                  </div>
-                  <div className="p-5 rounded-3xl bg-primary/10 text-primary border border-primary/20 shadow-lg shadow-primary/10 transform scale-110 z-10">
-                    <MessageSquareQuote className="w-8 h-8" />
-                  </div>
-                  <div className="p-3 rounded-2xl bg-amber-500/10 text-amber-500 border border-amber-500/20 transform rotate-12 hover:rotate-0 transition-transform duration-300">
-                    <Lightbulb className="w-5 h-5" />
-                  </div>
-                </div>
-
-                <div className="space-y-2 max-w-lg mx-auto">
-                  <h3 className="text-2xl md:text-3xl font-bold tracking-tight bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent">
-                    Make Your <span className="text-primary">Impact</span>
-                  </h3>
-
-                  <p className="text-muted-foreground text-md sm:text-lg leading-relaxed">
-                    This space is waiting for your unique perspective. Help
-                    developers polish this gem by sharing bugs, ideas, or
-                    praise.
-                  </p>
-                </div>
-
-                <div className="pt-2">
-                  <FeedbackFormModal onSave={handleSaveFeedback}>
-                    <Button
-                      size="lg"
-                      className="rounded-full px-8 py-6 text-lg shadow-xl shadow-primary/20 hover:shadow-primary/30 transition-all hover:scale-105 active:scale-95 group"
-                    >
-                      <Sparkles className="mr-2 h-5 w-5 group-hover:animate-spin" />{" "}
-                      Start Contributing
-                    </Button>
-                  </FeedbackFormModal>
-                </div>
-
-                <div className="flex items-center gap-6 text-xs text-muted-foreground/60 font-medium">
-                  <span className="flex items-center gap-1.5">
-                    <Bug className="w-3 h-3" /> Report Bugs
-                  </span>
-                  <span className="w-1 h-1 rounded-full bg-muted-foreground/30" />
-                  <span className="flex items-center gap-1.5">
-                    <Lightbulb className="w-3 h-3" /> Suggest Ideas
-                  </span>
-                  <span className="w-1 h-1 rounded-full bg-muted-foreground/30" />
-                  <span className="flex items-center gap-1.5">
-                    <Rocket className="w-3 h-3" /> Help Grow
-                  </span>
-                </div>
+              <div className="flex items-center gap-2 sm:gap-6 text-xs text-muted-foreground/60 font-medium justify-between w-full sm:w-auto">
+                <span className="flex items-center gap-1.5">
+                  <Bug className="w-3 h-3" />{" "}
+                  <span className="hidden sm:block">Report Bugs</span>
+                  <span className="block sm:hidden">Report</span>
+                </span>
+                <span className="hidden sm:block w-1 h-1 rounded-full bg-muted-foreground/30" />
+                <span className="flex items-center gap-1.5">
+                  <Lightbulb className="w-3 h-3" />{" "}
+                  <span className="hidden sm:block">Suggest Ideas</span>
+                  <span className="block sm:hidden">Suggest</span>
+                </span>
+                <span className="hidden sm:block w-1 h-1 rounded-full bg-muted-foreground/30" />
+                <span className="flex items-center gap-1.5">
+                  <Rocket className="w-3 h-3" />{" "}
+                  <span className="hidden sm:block">Help Grow</span>
+                  <span className="block sm:hidden">Help</span>
+                </span>
               </div>
             </div>
-          )}
-        </div>
+          </div>
+        )}
       </section>
       {fullscreenImage && (
         <div

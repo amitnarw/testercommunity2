@@ -8,7 +8,7 @@ import { AppInfoSidebar } from "@/components/appInfoSidebar";
 import { SubmittedFeedback } from "@/components/community-dashboard/submitted-feedback";
 import DeveloperInstructions from "@/components/developerInstructions";
 import { use } from "react";
-import { useSingleHubAppDetails } from "@/hooks/useUser";
+import { useSingleHubAppDetails } from "@/hooks/useHub";
 import { ExpandableText } from "@/components/expandable-text";
 
 const DailyProgress = ({
@@ -155,7 +155,11 @@ export default function AppTestingOngoingPage({
                     "blur-sm pointer-events-none select-none",
                 )}
               >
-                <SubmittedFeedback feedback={appDetails?.feedback || []} />
+                <SubmittedFeedback
+                  feedback={appDetails?.feedback || []}
+                  hubId={id}
+                  refetch={appDetailsRefetch}
+                />
               </div>
               {isTestingNotStarted && (
                 <div className="absolute inset-0 flex items-center justify-center">

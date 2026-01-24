@@ -52,11 +52,8 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { PageHeader } from "@/components/page-header";
-import {
-  useAddHubApp,
-  useAppCategories,
-  useGetUserWallet,
-} from "@/hooks/useUser";
+import { useGetUserWallet } from "@/hooks/useUser";
+import { useAddHubApp, useAppCategories } from "@/hooks/useHub";
 import SkeletonSubmitAppBottom from "@/components/community-dashboard/submit-app-bottom-skeleton";
 import { LoadingButton } from "@/components/ui/loading-button";
 
