@@ -18,7 +18,7 @@ import {
   Smartphone,
 } from "lucide-react";
 import Link from "next/link";
-import { useState, Suspense, type SetStateAction } from "react";
+import { useState, Suspense, type SetStateAction, useEffect } from "react";
 import { useSearchParams, usePathname, useRouter } from "next/navigation";
 import type { HubSubmittedAppResponse } from "@/lib/types";
 import { Badge } from "@/components/ui/badge";
@@ -395,11 +395,28 @@ function MySubmissionsContent() {
   // We use the standard router for efficient query param updates without triggering page transitions
   const navigationRouter = useRouter();
 
-  // Initialize state from URL queries to persist selection across navigation
-  const mainTab = searchParams.get("tab") || "pending";
-  const pendingSubTab = searchParams.get("subTab") || "in-review";
+  // Initialize state from URL queries to persist selection across navigation, but use local state for instant updates
+  const [mainTab, setMainTabState] = useState(
+    searchParams.get("tab") || "pending",
+  );
+  const [pendingSubTab, setPendingSubTabState] = useState(
+    searchParams.get("subTab") || "in-review",
+  );
+
+  // Sync with URL changes (e.g. back button)
+  useEffect(() => {
+    const tab = searchParams.get("tab") || "pending";
+    if (tab !== mainTab) setMainTabState(tab);
+
+    const subTab = searchParams.get("subTab") || "in-review";
+    if (subTab !== pendingSubTab) setPendingSubTabState(subTab);
+  }, [searchParams]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const setMainTab = (val: string) => {
+    // Instant UI update
+    setMainTabState(val);
+
+    // Background URL update
     const params = new URLSearchParams(searchParams.toString());
     params.set("tab", val);
     navigationRouter.replace(`${pathname}?${params.toString()}`, {
@@ -409,6 +426,11 @@ function MySubmissionsContent() {
 
   const setPendingSubTab = (val: SetStateAction<string>) => {
     const value = val instanceof Function ? val(pendingSubTab) : val;
+
+    // Instant UI update
+    setPendingSubTabState(value);
+
+    // Background URL update
     const params = new URLSearchParams(searchParams.toString());
     params.set("subTab", value);
     navigationRouter.replace(`${pathname}?${params.toString()}`, {

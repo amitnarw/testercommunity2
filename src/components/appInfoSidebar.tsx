@@ -10,6 +10,7 @@ import {
   Send,
   XCircle,
   CalendarDays,
+  Users,
 } from "lucide-react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import {
@@ -48,6 +49,47 @@ const SidebarButton = ({
   hoverTextColor?: string;
   hoverBgColor?: string;
 }) => {
+  // Show "Testers are joining" when on ongoing page (external button) and app is still AVAILABLE
+  if (buttonType === "external" && app?.status === "AVAILABLE") {
+    return (
+      <div className="w-full rounded-2xl bg-gradient-to-br from-amber-500/10 to-orange-500/10 border border-amber-500/20 p-4 space-y-3">
+        <div className="flex items-center gap-2 text-amber-600 dark:text-amber-500">
+          <Users className="w-5 h-5" />
+          <span className="font-semibold">Testers are joining</span>
+        </div>
+        <p className="text-sm text-muted-foreground">
+          Testing will start once all testers have joined.
+        </p>
+        <div className="space-y-1.5">
+          <div className="flex justify-between text-xs font-medium text-muted-foreground">
+            <span>Progress</span>
+            <span>
+              {app?.currentTester || 0} / {app?.totalTester || 0}
+            </span>
+          </div>
+          <div className="h-2 w-full bg-secondary rounded-full overflow-hidden">
+            <div
+              className="h-full bg-gradient-to-r from-amber-500 to-orange-500 transition-all duration-500 ease-out"
+              style={{
+                width: `${Math.min(
+                  ((app?.currentTester || 0) / (app?.totalTester || 1)) * 100,
+                  100,
+                )}%`,
+              }}
+            />
+          </div>
+        </div>
+        <div className="flex items-center justify-center gap-1.5 text-xs text-muted-foreground pt-1">
+          <span className="relative flex h-2 w-2">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-500 opacity-75"></span>
+            <span className="relative inline-flex rounded-full h-2 w-2 bg-amber-500"></span>
+          </span>
+          <span>Waiting for testers...</span>
+        </div>
+      </div>
+    );
+  }
+
   if (buttonType === "external") {
     return (
       <a
@@ -80,7 +122,7 @@ const SidebarButton = ({
       </div>
     );
   }
-  if (app?.status === "REJECTED") {
+  if (app?.testerRelations?.[0]?.status === "REJECTED") {
     return (
       <div className="w-full text-center py-3 bg-red-500/15 text-destructive dark:text-red-500 rounded-full text-sm font-semibold flex items-center justify-center gap-2">
         <XCircle className="w-4 h-4" />
@@ -158,7 +200,7 @@ export const AppInfoSidebar = ({
               alt={app?.androidApp?.appName}
               width={100}
               height={100}
-              className="rounded-xl border bg-background shadow-sm"
+              className="rounded-xl bg-background shadow-sm"
               data-ai-hint={app?.androidApp?.appName}
             />
             <div className="flex flex-col items-start justify-between gap-2">

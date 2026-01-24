@@ -584,7 +584,6 @@ export async function acceptHubAppTestingRequest(payload: {
   tester_id: string;
 }) {
   try {
-    console.log(payload, "0000000000000000");
     if (!payload.hub_id || !payload.tester_id) {
       throw new Error("Invalid payload");
     }
@@ -627,6 +626,38 @@ export async function rejectHubAppTestingRequest(payload: {
     return response?.data?.data;
   } catch (error) {
     console.error("Error rejecting hub app testing request:", error);
+    if (axios.isAxiosError(error)) {
+      const status = error.response?.status;
+      const responseData = error.response?.data;
+      console.error("Axios error:", status, responseData);
+
+      throw new Error(
+        responseData?.message || error.message || "Unknown Axios error",
+      );
+    } else if (error instanceof Error) {
+      throw new Error(error.message);
+    } else {
+      throw new Error(JSON.stringify(error));
+    }
+  }
+}
+
+export async function addHubAppFeedback(payload: {
+  hub_id: string;
+  message: string;
+  type: string;
+  priority: string;
+  image?: string;
+  video?: string;
+}) {
+  try {
+    const response = await api.post(
+      API_ROUTES.HUB + `/add-hub-feedback`,
+      payload,
+    );
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error adding hub app feedback:", error);
     if (axios.isAxiosError(error)) {
       const status = error.response?.status;
       const responseData = error.response?.data;

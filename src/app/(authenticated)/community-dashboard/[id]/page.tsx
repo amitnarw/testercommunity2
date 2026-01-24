@@ -24,6 +24,7 @@ import {
   Edit2,
   RotateCcw,
   Check,
+  XCircle,
 } from "lucide-react";
 import { BackButton } from "@/components/back-button";
 import { AppInfoSidebar } from "@/components/appInfoSidebar";
@@ -192,44 +193,84 @@ function AppTestingPageClient({ id }: { id: string }) {
               />
             </section>
 
-            {appDetails?.status === "REJECTED" &&
-              appDetails?.statusDetails?.description && (
-                <section className="bg-destructive/10 border-2 border-dashed border-destructive/10 rounded-2xl p-6 relative overflow-hidden">
-                  <div className="flex items-center gap-3 mb-4">
-                    <div className="bg-destructive/5 sm:bg-destructive/10 p-3 rounded-full text-destructive absolute sm:static top-2 right-0 sm:top-auto sm:right-auto scale-[3] sm:scale-100">
-                      <AlertTriangle className="w-8 h-8 text-destructive/20 sm:text-destructive" />
-                    </div>
-                    <h2 className="text-xl sm:text-2xl font-bold text-destructive dark:text-red-500">
-                      Request Rejected
-                    </h2>
-                  </div>
-                  <div className="flex flex-row gap-6 items-start">
-                    <p className="text-destructive/80 dark:text-red-500/80 leading-relaxed">
-                      {appDetails?.statusDetails?.description}
-                    </p>
-                    {appDetails?.statusDetails?.image && (
-                      <div
-                        className="relative rounded-lg overflow-hidden group cursor-pointer"
-                        onClick={() => {
-                          setFullscreenImage(appDetails?.statusDetails?.image!);
-                        }}
-                      >
-                        <SafeImage
-                          src={appDetails?.statusDetails?.image}
-                          alt="Request Rejected"
-                          width={600}
-                          height={400}
-                          className="object-cover w-full h-auto transition-transform duration-300 group-hover:scale-105"
-                          data-ai-hint={appDetails?.statusDetails?.image}
-                        />
-                        <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
-                          <Expand className="w-10 h-10 text-white" />
-                        </div>
+            {appDetails?.testerRelations?.[0]?.status === "REJECTED" && (
+              <motion.section
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="rounded-[32px] border border-destructive/10 bg-background/50 backdrop-blur-xl shadow-2xl shadow-destructive/5 relative overflow-hidden group mb-8"
+              >
+                <div className="absolute inset-0 bg-gradient-to-br from-red-500/60 to-red-500/20 dark:from-red-500/30 dark:to-red-500/5 opacity-30 dark:opacity-70" />
+
+                <div className="flex flex-col lg:flex-row relative z-10">
+                  {/* Content Side */}
+                  <div className="flex-1 p-4 sm:p-6 flex flex-col justify-center gap-6 mb-8 sm:mb-0">
+                    <div className="flex items-center gap-4">
+                      <div className="h-14 w-14 rounded-2xl bg-destructive/10 text-destructive flex items-center justify-center shadow-inner ring-1 ring-destructive/20 relative overflow-hidden">
+                        <div className="absolute inset-0 bg-gradient-to-br from-destructive/20 to-transparent opacity-50" />
+                        <XCircle className="w-7 h-7 relative z-10" />
                       </div>
-                    )}
+                      <div>
+                        <div className="flex items-center gap-2 mb-1">
+                          <span className="flex h-2 w-2 rounded-full bg-destructive"></span>
+                          <p className="text-xs font-bold text-destructive uppercase tracking-widest">
+                            Action Required
+                          </p>
+                        </div>
+                        <h2 className="text-xl sm:text-2xl font-bold text-foreground tracking-tight">
+                          {appDetails?.testerRelations?.[0]?.statusDetails
+                            ?.title || "Request Rejected"}
+                        </h2>
+                      </div>
+                    </div>
+
+                    <div className="space-y-6 relative">
+                      <div className="bg-white/50 dark:bg-white/10 rounded-2xl p-3 sm:p-5 border border-destructive/10 relative overflow-hidden">
+                        <div className="flex items-center gap-2 mb-3 text-yellow-500 font-medium text-sm uppercase tracking-wider">
+                          <AlertTriangle className="w-4 h-4" />
+                          Publisher Feedback
+                        </div>
+                        <p className="text-base text-foreground/80 leading-relaxed font-medium">
+                          {
+                            appDetails?.testerRelations?.[0]?.statusDetails
+                              ?.description
+                          }
+                        </p>
+                      </div>
+                    </div>
                   </div>
-                </section>
-              )}
+
+                  {/* Media Side */}
+                  {appDetails?.testerRelations?.[0]?.statusDetails?.image && (
+                    <div
+                      className="w-full lg:w-[400px] relative min-h-[300px] lg:min-h-full group/image cursor-pointer overflow-hidden border-t lg:border-t-0 lg:border-l border-destructive/10"
+                      onClick={() =>
+                        setFullscreenImage(
+                          appDetails?.testerRelations?.[0]?.statusDetails
+                            ?.image!,
+                        )
+                      }
+                    >
+                      <SafeImage
+                        src={
+                          appDetails?.testerRelations?.[0]?.statusDetails?.image
+                        }
+                        alt="Rejection details"
+                        fill
+                        className="object-cover transition-transform duration-700 group-hover/image:scale-105"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-60 lg:opacity-0 group-hover/image:opacity-100 transition-all duration-500 lg:bg-black/40 flex flex-col items-center justify-center gap-3 backdrop-blur-[2px]">
+                        <div className="h-12 w-12 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center border border-white/20 transform scale-0 group-hover/image:scale-100 transition-transform duration-300 delay-100">
+                          <Expand className="w-6 h-6 text-white" />
+                        </div>
+                        <span className="text-white text-sm font-medium opacity-0 group-hover/image:opacity-100 transition-opacity duration-300 delay-200">
+                          View Evidence
+                        </span>
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </motion.section>
+            )}
 
             <section>
               <h2 className="text-2xl font-bold mb-4">Screenshots</h2>

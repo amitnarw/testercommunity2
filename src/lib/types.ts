@@ -308,7 +308,8 @@ export interface DashboardDataResponse {
       | "COMPLETED"
       | "ON_HOLD"
       | "REQUESTED"
-      | "AVAILABLE";
+      | "AVAILABLE"
+      | "ACCEPTED";
   }[];
   statusCounts: {
     _count: {
@@ -339,7 +340,8 @@ export interface AppData {
     | "COMPLETED"
     | "ON_HOLD"
     | "REQUESTED"
-    | "AVAILABLE";
+    | "AVAILABLE"
+    | "ACCEPTED";
   createdAt: Date;
   updatedAt: Date;
 }
@@ -491,6 +493,7 @@ export type SubmittedAppsCount = {
   ON_HOLD: number;
   REQUESTED: number;
   AVAILABLE: number;
+  ACCEPTED: number; // Tester approved but testing not started (waiting for min testers)
 };
 
 export interface AppCategoriesResponse {

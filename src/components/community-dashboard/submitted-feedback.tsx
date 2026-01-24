@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import {
   Card,
   CardContent,
@@ -22,6 +22,9 @@ import {
   MessageSquareQuote,
   Sparkles,
   Rocket,
+  Video,
+  Check,
+  Loader2,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Label } from "@/components/ui/label";
@@ -73,23 +76,38 @@ const FeedbackFormModal = ({
   onSave: (data: Partial<HubSubmittedAppResponse["feedback"][number]>) => void;
   children: React.ReactNode;
 }) => {
+  const [open, setOpen] = useState(false);
   const [message, setMessage] = useState(feedback?.message || "");
   const [type, setType] = useState<
-    HubSubmittedAppResponse["feedback"][number]["type"] | undefined
-  >(feedback?.type);
+    HubSubmittedAppResponse["feedback"][number]["type"]
+  >(feedback?.type || "BUG");
+  const [priority, setPriority] = useState<
+    HubSubmittedAppResponse["feedback"][number]["priority"]
+  >(feedback?.priority || "LOW");
   const [media, setMedia] = useState<
     HubSubmittedAppResponse["feedback"][number]["media"]
   >(feedback?.media || []);
+  const [isProcessing, setIsProcessing] = useState(false);
+
+  useEffect(() => {
+    if (open) {
+      setMessage(feedback?.message || "");
+      setType(feedback?.type || "BUG");
+      setPriority(feedback?.priority || "LOW");
+      setMedia(feedback?.media || []);
+    }
+  }, [open, feedback]);
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
+    setIsProcessing(true);
     const file = acceptedFiles[0];
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
-        // Create a proper media object that matches the expected type
+        const isVideo = file.type.startsWith("video/");
         const newMediaItem: HubSubmittedAppResponse["feedback"][number]["media"][number] =
           {
-            type: file.type.startsWith("video/") ? "VIDEO" : "IMAGE",
+            type: isVideo ? "VIDEO" : "IMAGE",
             mime: file.type,
             category: "FEEDBACK_MEDIA",
             src: reader.result as string,
@@ -102,111 +120,358 @@ const FeedbackFormModal = ({
             createdAt: new Date(),
             updatedAt: new Date(),
           };
+
+        // Replace existing media with new one (only 1 allowed)
         setMedia([newMediaItem]);
+        setIsProcessing(false);
       };
       reader.readAsDataURL(file);
+    } else {
+      setIsProcessing(false);
     }
   }, []);
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
-    accept: { "image/*": [".jpeg", ".png", ".jpg"] },
-    maxFiles: 1,
+    accept: {
+      "image/*": [".jpeg", ".png", ".jpg", ".webp"],
+      "video/*": [".mp4", ".webm", ".mov"],
+    },
+    maxFiles: 1, // One at a time, but can add multiple
   });
+
+  const removeMedia = (indexToRemove: number) => {
+    setMedia((prev) => prev.filter((_, index) => index !== indexToRemove));
+  };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!type || !message) return;
-    onSave({ id: feedback?.id, type, message, media });
+    onSave({ id: feedback?.id, type, message, media, priority });
+    setOpen(false);
+  };
+
+  const getTypeStyles = (t: string) => {
+    const isSelected = type === t;
+    switch (t) {
+      case "BUG":
+        return isSelected
+          ? "bg-red-50 dark:bg-red-900/10 border-red-500 ring-1 ring-red-500 text-red-700 dark:text-red-400"
+          : "bg-white dark:bg-[#1a1a1a] hover:bg-red-50 dark:hover:bg-red-900/10 hover:border-red-200 dark:hover:border-red-800 text-muted-foreground";
+      case "SUGGESTION":
+        return isSelected
+          ? "bg-amber-50 dark:bg-amber-900/10 border-amber-500 ring-1 ring-amber-500 text-amber-700 dark:text-amber-400"
+          : "bg-white dark:bg-[#1a1a1a] hover:bg-amber-50 dark:hover:bg-amber-900/10 hover:border-amber-200 dark:hover:border-amber-800 text-muted-foreground";
+      case "PRAISE":
+        return isSelected
+          ? "bg-emerald-50 dark:bg-emerald-900/10 border-emerald-500 ring-1 ring-emerald-500 text-emerald-700 dark:text-emerald-400"
+          : "bg-white dark:bg-[#1a1a1a] hover:bg-emerald-50 dark:hover:bg-emerald-900/10 hover:border-emerald-200 dark:hover:border-emerald-800 text-muted-foreground";
+      default:
+        return "";
+    }
   };
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent className="sm:max-w-[600px] p-0 bg-white dark:bg-[#121212] border-0 h-full sm:h-auto gap-0">
-        <DialogHeader className="p-6 pb-4 border-b">
-          <DialogTitle>
-            {feedback ? "Edit Feedback" : "Submit New Feedback"}
-          </DialogTitle>
-          <DialogDescription>
-            Your feedback helps developers build better apps. Provide clear and
-            constructive comments.
-          </DialogDescription>
+      <DialogContent className="w-[95vw] sm:max-w-[600px] p-0 bg-[#fafafa] dark:bg-[#0f0f0f] shadow-2xl rounded-2xl sm:rounded-3xl border-0 overflow-hidden">
+        <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-primary/5 to-transparent pointer-events-none" />
+        <DialogHeader className="relative z-10 w-full bg-white dark:bg-[#141414] border-b border-border/40">
+          <div className="flex flex-row items-center justify-between p-4 sm:p-5">
+            <div className="flex items-center gap-3">
+              <div className="absolute sm:static top-0 left-0 scale-[2] sm:scale-100 w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary opacity-20 sm:opacity-100 shadow-sm ring-2 ring-primary/20">
+                {feedback ? (
+                  <Edit className="w-5 h-5" />
+                ) : (
+                  <Sparkles className="w-5 h-5" />
+                )}
+              </div>
+              <div className="text-left z-10">
+                <DialogTitle className="text-lg sm:text-lg font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-foreground to-foreground/70">
+                  {feedback ? "Edit Feedback" : "Share Experience"}
+                </DialogTitle>
+                <DialogDescription className="text-xs text-muted-foreground mt-0.5">
+                  Help us improve by sharing your thoughts.
+                </DialogDescription>
+              </div>
+            </div>
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              className="h-8 w-8 rounded-full hover:bg-muted text-muted-foreground"
+              onClick={() => setOpen(false)}
+            >
+              <X className="w-4 h-4" />
+            </Button>
+          </div>
         </DialogHeader>
-        <form onSubmit={handleSubmit}>
-          <div className="py-4 space-y-6 max-h-[60vh] overflow-y-auto px-6">
-            <div className="space-y-3">
-              <Label className="text-base">Feedback Type</Label>
-              <Select
-                onValueChange={(value) =>
-                  setType(
-                    value as HubSubmittedAppResponse["feedback"][number]["type"],
-                  )
-                }
-                defaultValue={type}
-              >
-                <SelectTrigger className="bg-gray-100 dark:bg-black border-0">
-                  <SelectValue placeholder="Select feedback type" />
-                </SelectTrigger>
-                <SelectContent className="z-[60] bg-white dark:bg-[#121212] shadow-2xl dark:shadow-black border-[1px] border-gray-200 dark:border-[#232323] w-[98%] m-auto !py-0">
-                  <SelectItem value="Bug">Bug Report</SelectItem>
-                  <SelectItem value="Suggestion">Suggestion</SelectItem>
-                  <SelectItem value="Praise">Praise</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
-            <div className="space-y-3">
-              <Label className="text-base">Comment</Label>
-              <Textarea
-                value={message}
-                onChange={(e) => setMessage(e.target.value)}
-                placeholder="e.g., The app crashed when..."
-                className="min-h-[120px] text-base bg-gray-100 dark:bg-black border-0"
-              />
-            </div>
 
-            <div className="space-y-3">
-              <Label className="text-base">Upload Screenshot (Optional)</Label>
-              {media?.length > 0 ? (
-                media?.map((item, index) => (
-                  <div className="relative">
-                    <SafeImage
-                      src={item?.src}
-                      alt="Screenshot preview"
-                      width={550}
-                      height={300}
-                      className="rounded-lg object-contain border bg-secondary"
-                    />
-                    <Button
-                      variant="destructive"
-                      size="icon"
-                      className="absolute top-2 right-2 h-7 w-7"
-                      onClick={() => setMedia([])}
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
-                  </div>
-                ))
-              ) : (
-                <div
-                  {...getRootProps()}
+        <form
+          onSubmit={handleSubmit}
+          className="flex flex-col h-full max-h-[80vh] overflow-y-auto"
+        >
+          <div className="px-3 sm:px-6 py-2 space-y-6">
+            {/* Type Selector */}
+            <div className="space-y-4">
+              <Label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider pl-1">
+                What kind of feedback?
+              </Label>
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4">
+                <button
+                  type="button"
+                  onClick={() => setType("BUG")}
                   className={cn(
-                    `border-2 border-dashed rounded-lg p-6 flex flex-col items-center justify-center text-center transition-colors cursor-pointer hover:border-primary hover:bg-secondary/50`,
-                    isDragActive && "border-primary bg-primary/10",
+                    "group relative flex flex-row sm:flex-col items-center p-3 sm:p-4 rounded-xl sm:rounded-2xl border transition-all duration-300 outline-none focus-visible:ring-2 focus-visible:ring-offset-2",
+                    getTypeStyles("BUG"),
                   )}
                 >
-                  <input {...getInputProps()} />
-                  <Upload className="w-8 h-8 text-muted-foreground mb-2" />
-                  <p className="font-semibold">Click or drag file to upload</p>
-                  <p className="text-sm text-muted-foreground">
-                    PNG, JPG up to 5MB
-                  </p>
+                  <div
+                    className={cn(
+                      "p-2 sm:p-2.5 rounded-lg sm:rounded-xl mr-3 sm:mr-0 sm:mb-3 transition-colors",
+                      type === "BUG"
+                        ? "bg-white/20 text-current"
+                        : "bg-red-100 dark:bg-red-900/20 text-red-600 dark:text-red-400 group-hover:bg-red-200 dark:group-hover:bg-red-900/40",
+                    )}
+                  >
+                    <Bug className="w-5 h-5 sm:w-6 sm:h-6" />
+                  </div>
+                  <div className="flex flex-col sm:items-center text-left sm:text-center">
+                    <span className="font-semibold text-sm sm:text-base">
+                      Bug
+                    </span>
+                    <span className="hidden sm:block text-[10px] sm:text-xs opacity-70 mt-0.5">
+                      Report an issue
+                    </span>
+                  </div>
+                  {type === "BUG" && (
+                    <div className="absolute top-2 right-2 sm:top-2 sm:right-2">
+                      <Check className="w-4 h-4 text-current" />
+                    </div>
+                  )}
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setType("SUGGESTION")}
+                  className={cn(
+                    "group relative flex flex-row sm:flex-col items-center p-3 sm:p-4 rounded-xl sm:rounded-2xl border transition-all duration-300 outline-none focus-visible:ring-2 focus-visible:ring-offset-2",
+                    getTypeStyles("SUGGESTION"),
+                  )}
+                >
+                  <div
+                    className={cn(
+                      "p-2 sm:p-2.5 rounded-lg sm:rounded-xl mr-3 sm:mr-0 sm:mb-3 transition-colors",
+                      type === "SUGGESTION"
+                        ? "bg-white/20 text-current"
+                        : "bg-amber-100 dark:bg-amber-900/20 text-amber-600 dark:text-amber-400 group-hover:bg-amber-200 dark:group-hover:bg-amber-900/40",
+                    )}
+                  >
+                    <Lightbulb className="w-5 h-5 sm:w-6 sm:h-6" />
+                  </div>
+                  <div className="flex flex-col sm:items-center text-left sm:text-center">
+                    <span className="font-semibold text-sm sm:text-base">
+                      Idea
+                    </span>
+                    <span className="hidden sm:block text-[10px] sm:text-xs opacity-70 mt-0.5">
+                      Suggest feature
+                    </span>
+                  </div>
+                  {type === "SUGGESTION" && (
+                    <div className="absolute top-2 right-2 sm:top-2 sm:right-2">
+                      <Check className="w-4 h-4 text-current" />
+                    </div>
+                  )}
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setType("PRAISE")}
+                  className={cn(
+                    "group relative flex flex-row sm:flex-col items-center p-3 sm:p-4 rounded-xl sm:rounded-2xl border transition-all duration-300 outline-none focus-visible:ring-2 focus-visible:ring-offset-2",
+                    getTypeStyles("PRAISE"),
+                  )}
+                >
+                  <div
+                    className={cn(
+                      "p-2 sm:p-2.5 rounded-lg sm:rounded-xl mr-3 sm:mr-0 sm:mb-3 transition-colors",
+                      type === "PRAISE"
+                        ? "bg-white/20 text-current"
+                        : "bg-emerald-100 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 group-hover:bg-emerald-200 dark:group-hover:bg-emerald-900/40",
+                    )}
+                  >
+                    <PartyPopper className="w-5 h-5 sm:w-6 sm:h-6" />
+                  </div>
+                  <div className="flex flex-col sm:items-center text-left sm:text-center">
+                    <span className="font-semibold text-sm sm:text-base">
+                      Praise
+                    </span>
+                    <span className="hidden sm:block text-[10px] sm:text-xs opacity-70 mt-0.5">
+                      What you liked
+                    </span>
+                  </div>
+                  {type === "PRAISE" && (
+                    <div className="absolute top-2 right-2 sm:top-2 sm:right-2">
+                      <Check className="w-4 h-4 text-current" />
+                    </div>
+                  )}
+                </button>
+              </div>
+            </div>
+
+            {/* Priority Selector (Only for Bugs) */}
+            {type === "BUG" && (
+              <div className="space-y-4 animate-in fade-in slide-in-from-top-4 duration-300">
+                <Label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider pl-1">
+                  How Critical is it?
+                </Label>
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 bg-muted/40 p-1.5 rounded-xl border border-border/50">
+                  {(["LOW", "MEDIUM", "HIGH", "CRITICAL"] as const).map((p) => (
+                    <button
+                      key={p}
+                      type="button"
+                      onClick={() => setPriority(p)}
+                      className={cn(
+                        "flex items-center justify-center py-2.5 rounded-lg text-xs font-bold transition-all duration-200",
+                        priority === p
+                          ? "shadow-sm scale-[1.02]"
+                          : "text-muted-foreground hover:text-foreground hover:bg-white/50 dark:hover:bg-white/5",
+                        priority === p &&
+                          p === "CRITICAL" &&
+                          "bg-destructive text-destructive-foreground",
+                        priority === p &&
+                          p === "HIGH" &&
+                          "bg-orange-500 text-white",
+                        priority === p &&
+                          p === "MEDIUM" &&
+                          "bg-amber-400 text-amber-950",
+                        priority === p &&
+                          p === "LOW" &&
+                          "bg-blue-500 text-white",
+                      )}
+                    >
+                      {p}
+                    </button>
+                  ))}
                 </div>
-              )}
+              </div>
+            )}
+
+            {/* Comment Area */}
+            <div className="space-y-3">
+              <Label className="text-xs font-semibold text-muted-foreground uppercase tracking-wider pl-1">
+                Tell us more
+              </Label>
+              <div className="relative group">
+                <Textarea
+                  value={message}
+                  onChange={(e) => setMessage(e.target.value)}
+                  placeholder={
+                    type === "BUG"
+                      ? "Describe what happened, what you expected, and steps to reproduce..."
+                      : type === "SUGGESTION"
+                        ? "What feature or improvement would you like to see?"
+                        : "What did you enjoy most about the app?"
+                  }
+                  className="min-h-[160px] resize-none text-sm sm:text-base bg-white dark:bg-black/20 border-border/60 focus:border-primary/50 focus:ring-4 focus:ring-primary/5 rounded-2xl p-2 sm:p-5 shadow-sm transition-all placeholder:text-muted-foreground/50"
+                />
+                <div className="absolute bottom-4 right-4 text-xs text-muted-foreground pointer-events-none">
+                  {message.length} chars
+                </div>
+              </div>
+            </div>
+
+            {/* Media Upload */}
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <Label className="text-sm font-medium text-muted-foreground uppercase tracking-wider">
+                  Attachment
+                </Label>
+                <span className="text-xs text-muted-foreground">
+                  (Max 1 file)
+                </span>
+              </div>
+
+              <div className="grid grid-cols-3 sm:grid-cols-4 gap-2">
+                {media?.map((item, index) => (
+                  <div
+                    key={index}
+                    className="relative aspect-square group rounded-lg overflow-hidden border bg-muted/20"
+                  >
+                    {item.type === "VIDEO" ? (
+                      <div className="w-full h-full flex items-center justify-center bg-black/5">
+                        <Video className="w-8 h-8 text-muted-foreground/50" />
+                        <video
+                          src={item.src}
+                          className="absolute inset-0 w-full h-full object-cover opacity-50"
+                        />
+                      </div>
+                    ) : (
+                      <SafeImage
+                        src={item.src}
+                        alt="Preview"
+                        layout="fill"
+                        objectFit="cover"
+                        className="transition-transform group-hover:scale-105"
+                      />
+                    )}
+                    <button
+                      type="button"
+                      onClick={() => removeMedia(index)}
+                      className="absolute top-1 right-1 p-1 bg-red-500 text-white rounded-full transition-transform hover:bg-red-600 shadow-md z-10"
+                    >
+                      <X className="w-3 h-3 sm:w-4 sm:h-4" />
+                    </button>
+                  </div>
+                ))}
+
+                {media.length < 1 && (
+                  <div
+                    {...getRootProps()}
+                    className={cn(
+                      "aspect-square rounded-lg border-2 border-dashed border-muted-foreground/20 flex flex-col items-center justify-center cursor-pointer hover:border-primary/50 hover:bg-primary/5 transition-all text-muted-foreground hover:text-primary gap-1",
+                      isDragActive &&
+                        "border-primary bg-primary/10 text-primary",
+                    )}
+                  >
+                    <input {...getInputProps()} />
+                    {isProcessing ? (
+                      <Loader2 className="w-6 h-6 animate-spin" />
+                    ) : (
+                      <>
+                        <Upload className="w-6 h-6 mb-1 opacity-50" />
+                        <span className="text-[10px] font-medium uppercase">
+                          Upload
+                        </span>
+                      </>
+                    )}
+                  </div>
+                )}
+              </div>
+              <p className="text-xs text-muted-foreground">
+                Supports 1 Image (PNG, JPG) or Video (MP4, WebM)
+              </p>
             </div>
           </div>
-          <DialogFooter className="border-t p-6">
-            <Button type="submit">Save Feedback</Button>
+
+          <DialogFooter className="p-4 sm:p-6 bg-white dark:bg-[#141414] border-t border-border/40 mt-auto">
+            <div className="flex w-full gap-3">
+              <Button
+                type="button"
+                variant="ghost"
+                className="flex-1 rounded-xl h-11 sm:h-12 hover:bg-muted/50"
+                onClick={() => setOpen(false)}
+              >
+                Cancel
+              </Button>
+              <Button
+                type="submit"
+                className="flex-[2] rounded-xl h-11 sm:h-12 text-sm sm:text-base font-semibold shadow-lg shadow-primary/25 hover:shadow-primary/40 transition-all active:scale-[0.98]"
+                disabled={!message || !type}
+              >
+                {feedback ? "Update Feedback" : "Submit Feedback"}
+              </Button>
+            </div>
           </DialogFooter>
         </form>
       </DialogContent>
@@ -437,7 +702,9 @@ export function SubmittedFeedback({
     setCurrentPage(page);
   };
 
-  const handleSaveFeedback = (data: Partial<SubmittedFeedbackType>) => {
+  const handleSaveFeedback = (
+    data: Partial<HubSubmittedAppResponse["feedback"][number]>,
+  ) => {
     if (data.id) {
       // Edit existing
     } else {
@@ -454,7 +721,7 @@ export function SubmittedFeedback({
   return (
     <>
       <section>
-        <div className="bg-card/50 rounded-2xl p-4 sm:p-6 sm:pt-4">
+        <div className="bg-card/50 rounded-2xl p-4 sm:p-6 sm:pt-4 grid grid-cols-1">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
             <div>
               <h2 className="text-xl sm:text-2xl font-bold">

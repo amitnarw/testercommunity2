@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   useAcceptHubAppTestingRequest,
@@ -82,6 +82,12 @@ export function TesterRequestsSection({
   const [rejectDescription, setRejectDescription] = useState("");
   const [rejectImage, setRejectImage] = useState<File | null>(null);
   const [rejectVideo, setRejectVideo] = useState<File | null>(null);
+  const [rejectImagePreview, setRejectImagePreview] = useState<string | null>(
+    null,
+  );
+  const [rejectVideoPreview, setRejectVideoPreview] = useState<string | null>(
+    null,
+  );
 
   const [uploadPercent, setUploadPercent] = useState(0);
 
@@ -91,12 +97,21 @@ export function TesterRequestsSection({
   const acceptMutation = useAcceptHubAppTestingRequest();
   const rejectMutation = useRejectHubAppTestingRequest();
 
+  useEffect(() => {
+    return () => {
+      if (rejectImagePreview) URL.revokeObjectURL(rejectImagePreview);
+      if (rejectVideoPreview) URL.revokeObjectURL(rejectVideoPreview);
+    };
+  }, [rejectImagePreview, rejectVideoPreview]);
+
   const handleRejectClick = (request: (typeof requests)[0]) => {
     setSelectedRequest(request);
     setRejectTitle("");
     setRejectDescription("");
     setRejectImage(null);
     setRejectVideo(null);
+    setRejectImagePreview(null);
+    setRejectVideoPreview(null);
     setIsRejectModalOpen(true);
   };
 
@@ -140,6 +155,7 @@ export function TesterRequestsSection({
       try {
         let imageUrl: undefined | string = undefined;
         let videoUrl: undefined | string = undefined;
+        const r2Url = process.env.NEXT_PUBLIC_R2_MEDIA_BASE_URL || "";
 
         if (rejectImage) {
           setUploadPercent(0);
@@ -156,7 +172,7 @@ export function TesterRequestsSection({
             onProgress: (percent) => setUploadPercent(percent),
           });
 
-          imageUrl = uploadConfig.url;
+          imageUrl = uploadConfig.key;
         }
 
         if (rejectVideo) {
@@ -174,7 +190,7 @@ export function TesterRequestsSection({
             onProgress: (percent) => setUploadPercent(percent),
           });
 
-          videoUrl = uploadConfig.url;
+          videoUrl = uploadConfig.key;
         }
 
         await rejectMutation.mutateAsync({
@@ -182,8 +198,8 @@ export function TesterRequestsSection({
           tester_id: selectedRequest.testerId,
           title: rejectTitle,
           description: rejectDescription,
-          image: imageUrl,
-          video: videoUrl,
+          image: imageUrl ? r2Url + "/" + imageUrl : undefined,
+          video: videoUrl ? r2Url + "/" + videoUrl : undefined,
         });
 
         setIsRejectModalOpen(false);
@@ -485,18 +501,44 @@ export function TesterRequestsSection({
                 <label className="text-xs font-medium text-muted-foreground uppercase">
                   Attachment (Image)
                 </label>
-                <div className="border-2 border-dashed rounded-xl p-4 flex flex-col items-center justify-center gap-2 cursor-pointer hover:bg-secondary/50 transition-colors text-muted-foreground hover:text-foreground relative">
-                  <ImageIcon className="w-6 h-6" />
-                  <span className="text-xs text-center truncate w-full">
-                    {rejectImage ? rejectImage.name : "Upload Image"}
-                  </span>
+                <div className="border-2 border-dashed rounded-xl p-4 flex flex-col items-center justify-center gap-2 cursor-pointer hover:bg-secondary/50 transition-colors text-muted-foreground hover:text-foreground relative overflow-hidden min-h-[120px]">
+                  {rejectImage && rejectImagePreview ? (
+                    <>
+                      <div className="absolute inset-0">
+                        <img
+                          src={rejectImagePreview}
+                          alt="Preview"
+                          className="h-full w-full object-cover opacity-60"
+                        />
+                        <div className="absolute inset-0 bg-black/40" />
+                      </div>
+                      <div className="z-10 bg-black/50 p-1.5 rounded-lg text-white text-xs truncate max-w-[90%] flex items-center gap-2">
+                        <ImageIcon className="w-3.5 h-3.5 shrink-0" />
+                        <span className="truncate">{rejectImage.name}</span>
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <ImageIcon className="w-6 h-6" />
+                      <span className="text-xs text-center truncate w-full">
+                        Upload Image
+                      </span>
+                    </>
+                  )}
                   <input
                     type="file"
                     accept="image/*"
                     className="absolute inset-0 opacity-0 cursor-pointer"
-                    onChange={(e) =>
-                      setRejectImage(e.target.files?.[0] || null)
-                    }
+                    onChange={(e) => {
+                      const file = e.target.files?.[0] || null;
+                      setRejectImage(file);
+                      if (file) {
+                        const url = URL.createObjectURL(file);
+                        setRejectImagePreview(url);
+                      } else {
+                        setRejectImagePreview(null);
+                      }
+                    }}
                   />
                 </div>
               </div>
@@ -504,18 +546,43 @@ export function TesterRequestsSection({
                 <label className="text-xs font-medium text-muted-foreground uppercase">
                   Attachment (Video)
                 </label>
-                <div className="border-2 border-dashed rounded-xl p-4 flex flex-col items-center justify-center gap-2 cursor-pointer hover:bg-secondary/50 transition-colors text-muted-foreground hover:text-foreground relative">
-                  <Video className="w-6 h-6" />
-                  <span className="text-xs text-center truncate w-full">
-                    {rejectVideo ? rejectVideo.name : "Upload Video"}
-                  </span>
+                <div className="border-2 border-dashed rounded-xl p-4 flex flex-col items-center justify-center gap-2 cursor-pointer hover:bg-secondary/50 transition-colors text-muted-foreground hover:text-foreground relative overflow-hidden min-h-[120px]">
+                  {rejectVideo && rejectVideoPreview ? (
+                    <>
+                      <div className="absolute inset-0">
+                        <video
+                          src={rejectVideoPreview}
+                          className="h-full w-full object-cover opacity-60"
+                        />
+                        <div className="absolute inset-0 bg-black/40" />
+                      </div>
+                      <div className="z-10 bg-black/50 p-1.5 rounded-lg text-white text-xs truncate max-w-[90%] flex items-center gap-2">
+                        <Video className="w-3.5 h-3.5 shrink-0" />
+                        <span className="truncate">{rejectVideo.name}</span>
+                      </div>
+                    </>
+                  ) : (
+                    <>
+                      <Video className="w-6 h-6" />
+                      <span className="text-xs text-center truncate w-full">
+                        Upload Video
+                      </span>
+                    </>
+                  )}
                   <input
                     type="file"
                     accept="video/*"
                     className="absolute inset-0 opacity-0 cursor-pointer"
-                    onChange={(e) =>
-                      setRejectVideo(e.target.files?.[0] || null)
-                    }
+                    onChange={(e) => {
+                      const file = e.target.files?.[0] || null;
+                      setRejectVideo(file);
+                      if (file) {
+                        const url = URL.createObjectURL(file);
+                        setRejectVideoPreview(url);
+                      } else {
+                        setRejectVideoPreview(null);
+                      }
+                    }}
                   />
                 </div>
               </div>
