@@ -599,15 +599,15 @@ function SubmissionDetailsPage({
                             </p>
                           </div>
                           <div className="flex items-center justify-between text-xs text-muted-foreground w-full mt-3 bg-black/5 dark:bg-white/10 px-5 h-12">
-                            {fb?.media?.length > 0 ? (
+                            {fb?.media ? (
                               <div
                                 className="cursor-pointer h-10 w-7 relative"
                                 onClick={() =>
-                                  setFullscreenImage(fb?.media[0].src || "")
+                                  setFullscreenImage(fb?.media?.src || "")
                                 }
                               >
                                 <SafeImage
-                                  src={fb?.media[0].src}
+                                  src={fb?.media?.src}
                                   alt="Feedback screenshot"
                                   fill
                                   className="absolute rounded border object-cover"
@@ -672,15 +672,15 @@ function SubmissionDetailsPage({
                             </p>
                           </CardContent>
                           <CardFooter className="p-2 px-3 sm:px-4 flex items-center justify-between text-xs text-muted-foreground mt-2 h-10 bg-black/5 dark:bg-white/10">
-                            {fb?.media?.length > 0 ? (
+                            {fb?.media ? (
                               <div
                                 className="cursor-pointer h-8 w-6 relative"
                                 onClick={() =>
-                                  setFullscreenImage(fb?.media[0].src || "")
+                                  setFullscreenImage(fb?.media?.src || "")
                                 }
                               >
                                 <SafeImage
-                                  src={fb?.media[0].src}
+                                  src={fb?.media?.src}
                                   alt="Feedback screenshot"
                                   fill
                                   className="absolute rounded-sm border object-cover"

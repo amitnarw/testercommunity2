@@ -11,6 +11,8 @@ import {
   getSingleHubAppDetails,
   getSubmittedAppsCount,
   addHubAppFeedback,
+  deleteHubAppFeedback,
+  submitDailyVerification,
 } from "@/lib/apiCalls";
 import {
   AppCategoriesResponse,
@@ -189,6 +191,44 @@ export function useAddHubAppFeedback(
     },
     onError: (data) => {
       console.log("Hub app feedback adding failed: " + data);
+    },
+    ...options,
+  });
+
+  return mutation;
+}
+
+export function useDeleteHubAppFeedback(
+  options?: UseMutationOptions<any, any, any>,
+) {
+  const mutation = useMutation({
+    mutationFn: (id: number) => deleteHubAppFeedback(id),
+    onSuccess: (data) => {
+      console.log("Hub app feedback deleted successfully: " + data);
+    },
+    onError: (data) => {
+      console.log("Hub app feedback deleting failed: " + data);
+    },
+    ...options,
+  });
+
+  return mutation;
+}
+
+export function useSubmitDailyVerification(
+  options?: UseMutationOptions<any, any, any>,
+) {
+  const mutation = useMutation({
+    mutationFn: (payload: {
+      hubId: number | string;
+      proofImage: string;
+      metaData?: any;
+    }) => submitDailyVerification(payload),
+    onSuccess: (data) => {
+      console.log("Daily verification submitted: " + data);
+    },
+    onError: (data) => {
+      console.log("Daily verification failed: " + data);
     },
     ...options,
   });

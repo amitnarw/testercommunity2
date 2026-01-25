@@ -2,8 +2,11 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 import { Sparkles } from "lucide-react";
 import { useEarnPoints } from "@/hooks/useUser";
+import { authClient } from "@/lib/auth-client";
 
 export function EarnPointsButton() {
+  const { data: session } = authClient.useSession();
+  const sessionData = session as any;
   const {
     data: earnPointsData,
     isPending: earnPointsIsPending,
@@ -15,7 +18,11 @@ export function EarnPointsButton() {
     return null;
   }
 
-  if (earnPointsIsPending) {
+  if (
+    earnPointsIsPending ||
+    !sessionData ||
+    sessionData?.role?.name?.toLowerCase() !== "user"
+  ) {
     return null;
   }
 

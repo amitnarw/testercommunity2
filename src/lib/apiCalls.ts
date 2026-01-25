@@ -4,7 +4,6 @@ import { authClient } from "./auth-client";
 import {
   AppCategoriesResponse,
   AppData,
-  ControlRoomResponse,
   DashboardDataResponse,
   HubDataResponse,
   HubSubmittedAppResponse,
@@ -319,28 +318,6 @@ export const saveProfileData = async (payload: UserProfileDataAttributes) => {
     }
   }
 };
-
-export async function getControlRoomData(): Promise<ControlRoomResponse> {
-  try {
-    const response = await api.get(API_ROUTES.ADMIN + `/get-control-room-data`);
-    return response.data;
-  } catch (error) {
-    console.error("Error fetching control room:", error);
-    if (axios.isAxiosError(error)) {
-      const status = error.response?.status;
-      const responseData = error.response?.data;
-      console.error("Axios error:", status, responseData);
-
-      throw new Error(
-        responseData?.message || error.message || "Unknown Axios error",
-      );
-    } else if (error instanceof Error) {
-      throw new Error(error.message);
-    } else {
-      throw new Error(JSON.stringify(error));
-    }
-  }
-}
 
 // Dashboard
 export async function getDasboardData(): Promise<DashboardDataResponse> {
@@ -674,6 +651,62 @@ export async function addHubAppFeedback(payload: {
   }
 }
 
+export async function updateHubAppFeedback(payload: {
+  id: number;
+  message: string;
+  type: string;
+  priority?: string | null;
+  image?: string | null;
+  video?: string | null;
+}) {
+  try {
+    const response = await api.post(
+      API_ROUTES.HUB + `/update-hub-feedback`,
+      payload,
+    );
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error updating hub app feedback:", error);
+    if (axios.isAxiosError(error)) {
+      const status = error.response?.status;
+      const responseData = error.response?.data;
+      console.error("Axios error:", status, responseData);
+
+      throw new Error(
+        responseData?.message || error.message || "Unknown Axios error",
+      );
+    } else if (error instanceof Error) {
+      throw new Error(error.message);
+    } else {
+      throw new Error(JSON.stringify(error));
+    }
+  }
+}
+
+export async function deleteHubAppFeedback(id: number) {
+  try {
+    const response = await api.delete(
+      API_ROUTES.HUB + `/delete-feedback/${id}`,
+    );
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error deleting hub app feedback:", error);
+    if (axios.isAxiosError(error)) {
+      const status = error.response?.status;
+      const responseData = error.response?.data;
+      console.error("Axios error:", status, responseData);
+
+      throw new Error(
+        responseData?.message || error.message || "Unknown Axios error",
+      );
+    } else if (error instanceof Error) {
+      throw new Error(error.message);
+    } else {
+      throw new Error(JSON.stringify(error));
+    }
+  }
+}
+
 // Notifications
 export async function getUserNotifications(): Promise<{
   result: NotificationReponse[];
@@ -896,6 +929,35 @@ export async function getEarnPoints(): Promise<{
     return response?.data?.data;
   } catch (error) {
     console.error("Error fetching all sessions:", error);
+    if (axios.isAxiosError(error)) {
+      const status = error.response?.status;
+      const responseData = error.response?.data;
+      console.error("Axios error:", status, responseData);
+
+      throw new Error(
+        responseData?.message || error.message || "Unknown Axios error",
+      );
+    } else if (error instanceof Error) {
+      throw new Error(error.message);
+    } else {
+      throw new Error(JSON.stringify(error));
+    }
+  }
+}
+
+export async function submitDailyVerification(payload: {
+  hubId: number | string;
+  proofImage: string;
+  metaData?: any;
+}) {
+  try {
+    const response = await api.post(
+      API_ROUTES.HUB + `/submit-daily-verification`,
+      payload,
+    );
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error submitting daily verification:", error);
     if (axios.isAxiosError(error)) {
       const status = error.response?.status;
       const responseData = error.response?.data;

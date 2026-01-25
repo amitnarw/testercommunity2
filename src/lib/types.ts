@@ -469,6 +469,17 @@ export interface HubSubmittedAppResponse {
       image: string;
       video: string;
     } | null;
+    daysCompleted: number;
+    lastActivityAt?: string | Date;
+    dailyVerifications?: {
+      id: number;
+      dayNumber: number;
+      proofImageUrl: string;
+      status: "PENDING" | "VERIFIED" | "REJECTED";
+      verifiedAt: string;
+      metaData?: any;
+      rejectionReason?: string;
+    }[];
   }[];
   createdAt: Date;
   updatedAt: Date;

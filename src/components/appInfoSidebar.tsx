@@ -13,6 +13,7 @@ import {
   Users,
 } from "lucide-react";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   Card,
   CardContent,
@@ -36,6 +37,8 @@ const SidebarButton = ({
   isError,
   error,
   reset,
+  hideButton,
+  visitUrl,
 }: {
   app: HubSubmittedAppResponse;
   handleRequestToJoin?: () => void;
@@ -48,7 +51,25 @@ const SidebarButton = ({
   url?: string;
   hoverTextColor?: string;
   hoverBgColor?: string;
+  hideButton?: boolean;
+  visitUrl?: string;
 }) => {
+  if (visitUrl) {
+    return (
+      <a
+        href={visitUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="flex flex-row gap-2 w-full bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl items-center justify-center py-3 font-semibold transition-colors"
+      >
+        <SquareArrowOutUpRight className="w-5 h-5" />
+        View on Google Play
+      </a>
+    );
+  }
+
+  if (hideButton) return null;
+
   // Show "Testers are joining" when on ongoing page (external button) and app is still AVAILABLE
   if (buttonType === "external" && app?.status === "AVAILABLE") {
     return (
@@ -158,6 +179,8 @@ export const AppInfoSidebar = ({
   reset,
   buttonType,
   url,
+  hideButton,
+  visitUrl,
 }: {
   app: HubSubmittedAppResponse;
   handleRequestToJoin?: () => void;
@@ -168,6 +191,8 @@ export const AppInfoSidebar = ({
   reset?: () => void;
   buttonType?: string;
   url?: string;
+  hideButton?: boolean;
+  visitUrl?: string;
 }) => {
   const { theme } = useTheme();
 
@@ -188,6 +213,8 @@ export const AppInfoSidebar = ({
         reset={reset}
         buttonType={buttonType}
         url={url}
+        hideButton={hideButton}
+        visitUrl={visitUrl}
         hoverTextColor={hoverTextColor}
         hoverBgColor={hoverBgColor}
       />
@@ -257,7 +284,20 @@ export const AppInfoSidebar = ({
               <h3 className="font-semibold text-sm truncate">
                 {app?.appOwner?.name}
               </h3>
-              <div className="flex items-center gap-1.5 text-xs text-muted-foreground mt-0.5">
+              <p className="text-xs text-muted-foreground truncate">
+                {app?.appOwner?.email}
+              </p>
+              {app?.appOwner?.emailVerified && (
+                <div className="flex items-center gap-1 mt-1">
+                  <Badge
+                    variant="secondary"
+                    className="text-[10px] h-4 px-1 bg-green-500/10 text-green-600 dark:text-green-400 hover:bg-green-500/20 border-green-500/20"
+                  >
+                    Verified
+                  </Badge>
+                </div>
+              )}
+              <div className="flex items-center gap-1.5 text-xs text-muted-foreground mt-2">
                 <CalendarDays className="w-3.5 h-3.5" />
                 <span className="truncate">
                   Joined{" "}
@@ -267,6 +307,53 @@ export const AppInfoSidebar = ({
                   )}
                 </span>
               </div>
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+    </div>
+  );
+};
+
+export const AppInfoSidebarSkeleton = () => {
+  return (
+    <div className="sticky top-24 space-y-6">
+      {/* Button Skeleton */}
+      <Skeleton className="w-full h-14 rounded-full" />
+
+      {/* App Card Skeleton */}
+      <Card className="border-0 rounded-2xl shadow-xl shadow-gray-100 dark:shadow-gray-900 overflow-hidden">
+        <CardContent className="p-6 pb-0">
+          <div className="flex items-center gap-4 mb-4">
+            <Skeleton className="w-[100px] h-[100px] rounded-xl" />
+            <div className="flex flex-col gap-2 w-full">
+              <Skeleton className="h-6 w-24 rounded-full" />
+              <Skeleton className="h-4 w-32" />
+              <Skeleton className="h-4 w-28" />
+            </div>
+          </div>
+        </CardContent>
+        <CardFooter className="p-2 bg-gradient-to-b from-primary/0 to-primary/60 rounded-b-2xl relative">
+          <div className="w-full p-4 rounded-xl">
+            <Skeleton className="h-5 w-20 mb-2" />
+            <div className="flex items-center gap-2">
+              <Skeleton className="h-8 w-32" />
+            </div>
+          </div>
+        </CardFooter>
+      </Card>
+
+      {/* Creator Profile Skeleton */}
+      <Card className="border-0 rounded-2xl shadow-xl shadow-gray-100 dark:shadow-gray-900 overflow-hidden bg-gradient-to-br from-primary/10 to-primary/30 dark:from-secondary dark:to-secondary/30">
+        <CardHeader className="pb-2">
+          <Skeleton className="h-5 w-32 bg-background/50" />
+        </CardHeader>
+        <CardContent className="pb-6">
+          <div className="flex items-center gap-4">
+            <Skeleton className="h-12 w-12 rounded-full border-2 border-background" />
+            <div className="flex flex-col gap-2">
+              <Skeleton className="h-4 w-32 bg-background/50" />
+              <Skeleton className="h-3 w-24 bg-background/50" />
             </div>
           </div>
         </CardContent>

@@ -8,6 +8,7 @@ import {
   CardTitle,
   CardFooter,
 } from "@/components/ui/card";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import {
   LayoutGrid,
@@ -56,17 +57,11 @@ import {
 import { PlusCircle } from "lucide-react";
 import { useDropzone } from "react-dropzone";
 import { SafeImage } from "@/components/safe-image";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { AppPagination } from "../app-pagination";
 import { useR2 } from "@/hooks/useR2";
 import { Badge } from "@/components/ui/badge";
-import { addHubAppFeedback } from "@/lib/apiCalls";
+import { addHubAppFeedback, updateHubAppFeedback } from "@/lib/apiCalls";
+import { useDeleteHubAppFeedback } from "@/hooks/useHub";
 
 const FEEDBACK_PER_PAGE = 3;
 
@@ -774,11 +769,13 @@ export function SubmittedFeedback({
   feedback,
   hubId,
   refetch,
+  isLoading = false,
 }: {
   isCompleted?: boolean;
   feedback: HubSubmittedAppResponse["feedback"];
   hubId?: string;
   refetch?: () => void;
+  isLoading?: boolean;
 }) {
   const [viewMode, setViewMode] = useState<"grid" | "list">("list");
   const [currentPage, setCurrentPage] = useState(1);
@@ -806,7 +803,25 @@ export function SubmittedFeedback({
   }) => {
     try {
       if (data.id) {
-        // Edit existing logic
+        // Extract media
+        let image: string | null = null;
+        let video: string | null = null;
+
+        if (data.media) {
+          if (data.media.type === "IMAGE") image = data.media.src;
+          if (data.media.type === "VIDEO") video = data.media.src;
+        }
+
+        await updateHubAppFeedback({
+          id: data.id,
+          message: data?.message || "",
+          type: data?.type || "BUG",
+          priority: data?.priority || null,
+          image: image,
+          video: video,
+        });
+
+        if (refetch) refetch();
       } else {
         // Extract media
         let image: string | undefined = undefined;
@@ -833,7 +848,17 @@ export function SubmittedFeedback({
     }
   };
 
-  const handleDeleteFeedback = (id: number) => {};
+  const { mutateAsync: deleteFeedback } = useDeleteHubAppFeedback();
+
+  const handleDeleteFeedback = async (id: number) => {
+    try {
+      console.log("Deleting feedback with id:", id);
+      await deleteFeedback(id);
+      if (refetch) refetch();
+    } catch (error) {
+      console.error("Error deleting feedback:", error);
+    }
+  };
 
   const description = isCompleted
     ? "Here is a summary of the feedback you submitted."
@@ -891,7 +916,27 @@ export function SubmittedFeedback({
           </div>
         </div>
 
-        {currentFeedback.length > 0 ? (
+        {isLoading ? (
+          viewMode === "list" ? (
+            <div className="space-y-3">
+              {[1, 2, 3].map((i) => (
+                <Skeleton
+                  key={i}
+                  className="w-full h-32 rounded-xl bg-muted/50"
+                />
+              ))}
+            </div>
+          ) : (
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-2 sm:gap-4">
+              {[1, 2, 3].map((i) => (
+                <Skeleton
+                  key={i}
+                  className="w-full h-48 rounded-xl bg-muted/50"
+                />
+              ))}
+            </div>
+          )
+        ) : currentFeedback.length > 0 ? (
           <>
             {viewMode === "list" ? (
               <div className="space-y-3">

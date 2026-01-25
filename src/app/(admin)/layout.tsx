@@ -1,13 +1,12 @@
 "use client";
 
 import { usePathname, useRouter } from "next/navigation";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import Navbar from "@/components/authenticated/navbar";
 import Footer from "@/components/authenticated/footer";
 import { Sidebar } from "@/components/authenticated/sidebar";
-import { SiteLogo } from "@/components/icons";
-import { motion, AnimatePresence } from "framer-motion";
 import PageTransition from "@/components/page-transition";
+import { authClient } from "@/lib/auth-client";
 
 export default function AdminLayout({
   children,
@@ -16,37 +15,46 @@ export default function AdminLayout({
 }>) {
   const pathname = usePathname();
   const router = useRouter();
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [isAuthChecked, setIsAuthChecked] = useState(false);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(true);
+  const { data: session, isPending } = authClient.useSession();
+  const isLoginPage = pathname?.startsWith("/admin/auth/login");
 
   useEffect(() => {
-    // In a real app, this would be a call to an auth service
-    const authStatus = document.cookie.includes("isAdminAuthenticated=true");
-    setIsAuthenticated(authStatus);
-    setIsAuthChecked(true);
+    if (isPending) return;
 
-    if (!authStatus && pathname !== "/admin/login") {
-      router.replace("/admin/login");
+    if (session) {
+      if (isLoginPage) {
+        // Robust role detection from session user
+        const user = session.user as any;
+        const roleField = user?.role;
+        const roleName =
+          typeof roleField === "string" ? roleField : roleField?.name;
+        const lowerRole = roleName?.toLowerCase() || "";
+        const isAdminRole = ["admin", "super admin", "moderator"].includes(
+          lowerRole,
+        );
+
+        if (isAdminRole) {
+          router.replace("/admin/dashboard");
+        }
+      }
+      return;
     }
-  }, [pathname, router]);
 
-  const handleLogout = () => {
-    document.cookie = "isAdminAuthenticated=false; path=/; max-age=0";
-    document.cookie = "userRole=; path=/; max-age=0";
-    setIsAuthenticated(false);
-    router.push("/admin/login");
+    if (!isLoginPage) {
+      router.replace("/admin/auth/login");
+    }
+  }, [session, isPending, isLoginPage, router]);
+
+  const handleLogout = async () => {
+    await authClient.signOut({
+      fetchOptions: {
+        onSuccess: () => {
+          router.push("/admin/auth/login");
+        },
+      },
+    });
   };
-
-  const isLoginPage = pathname === "/admin/login";
-
-  if (!isAuthChecked) {
-    return (
-      <div className="flex items-center justify-center min-h-screen bg-background">
-        <SiteLogo className="h-20 w-auto animate-pulse" />
-      </div>
-    );
-  }
 
   if (isLoginPage) {
     return (
@@ -54,10 +62,6 @@ export default function AdminLayout({
         <main className="flex-1 bg-background">{children}</main>
       </PageTransition>
     );
-  }
-
-  if (!isAuthenticated) {
-    return null;
   }
 
   return (
