@@ -3,26 +3,21 @@
 import { useEffect, useRef, useState } from "react";
 import {
   motion,
-  useAnimation,
   useInView,
   useScroll,
   useTransform,
+  type HTMLMotionProps,
 } from "framer-motion";
-import { Badge } from "@/components/ui/badge";
 import {
   Globe,
   Users,
   Bug,
   Code,
-  ArrowRight,
   TrendingUp,
-  CheckCircle,
   ShieldCheck,
-  Palette,
   IndianRupee,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import Image from "next/image";
 
 const AnimatedCounter = ({
   to,
@@ -34,18 +29,16 @@ const AnimatedCounter = ({
   prefix?: string;
 }) => {
   const [count, setCount] = useState(0);
-  const ref = useRef(null);
+  const ref = useRef<HTMLSpanElement>(null);
   const isInView = useInView(ref, { once: true, margin: "-100px" });
 
   useEffect(() => {
     if (isInView) {
-      const controls = {
-        stop: () => {},
-      };
-
       let frame = 0;
       const totalFrames = 100;
       const from = 0;
+      let rafId: number;
+
       const animate = () => {
         frame++;
         const progress = Math.min(frame / totalFrames, 1);
@@ -53,13 +46,15 @@ const AnimatedCounter = ({
         setCount(current);
 
         if (frame < totalFrames) {
-          controls.stop = requestAnimationFrame(animate);
+          rafId = requestAnimationFrame(animate);
         }
       };
 
-      controls.stop = requestAnimationFrame(animate);
+      rafId = requestAnimationFrame(animate);
 
-      return () => cancelAnimationFrame(controls.stop as unknown as number);
+      return () => {
+        if (rafId) cancelAnimationFrame(rafId);
+      };
     }
   }, [isInView, to]);
 
@@ -72,18 +67,19 @@ const AnimatedCounter = ({
   );
 };
 
+interface StatCardProps extends HTMLMotionProps<"div"> {
+  icon?: React.ReactNode;
+  title: string;
+  children: React.ReactNode;
+}
+
 const StatCard = ({
   icon,
   title,
   children,
   className,
   ...props
-}: {
-  icon?: React.ReactNode;
-  title: string;
-  children: React.ReactNode;
-  className?: string;
-} & React.HTMLAttributes<HTMLDivElement>) => {
+}: StatCardProps) => {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: true, amount: 0.1 });
 
@@ -96,13 +92,19 @@ const StatCard = ({
       className={cn(
         "rounded-2xl p-3 sm:p-4 shadow-lg relative overflow-hidden",
         "flex flex-col text-foreground bg-card",
-        className
+        className,
       )}
       {...props}
     >
       <div className="flex items-center gap-2 mb-2 z-10">
-        {icon && <div className="flex-shrink-0">{icon}</div>}
-        <h3 className="font-bold text-sm">{title}</h3>
+        {icon && (
+          <div className="flex-shrink-0 absolute sm:static scale-[1.5] sm:scale-100 top-0 right-0 rotate-12 sm:rotate-0 opacity-10 sm:opacity-100 bg-inherit p-4 sm:p-0 rounded-full">
+            {icon}
+          </div>
+        )}
+        <h3 className="font-bold text-[10px] sm:text-sm leading-tight line-clamp-1">
+          {title}
+        </h3>
       </div>
       <div className="flex-grow flex flex-col justify-center z-10">
         {children}
@@ -117,7 +119,7 @@ export function GlobalImpactSection() {
     target: sectionRef,
     offset: ["start end", "end start"],
   });
-  const rotate = useTransform(scrollYProgress, [0, 1], [0, 90]);
+  const rotate = useTransform(scrollYProgress, [0, 1], [0, 360]);
 
   return (
     <section
@@ -139,7 +141,7 @@ export function GlobalImpactSection() {
           <h2 className="text-3xl md:text-5xl font-bold mt-4">
             From Local{" "}
             <span className="bg-gradient-to-br from-primary to-accent bg-clip-text text-transparent">
-              ₹499
+              ₹699
             </span>{" "}
             to Global Ripples
           </h2>
@@ -150,7 +152,7 @@ export function GlobalImpactSection() {
           </p>
         </div>
 
-        <div className="mt-16 grid grid-cols-2 lg:grid-cols-4 gap-4 w-full max-w-6xl">
+        <div className="mt-16 grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-4 w-full max-w-6xl">
           <StatCard
             title="Thriving Community"
             icon={<Users className="w-4 h-4" />}
@@ -158,18 +160,18 @@ export function GlobalImpactSection() {
           >
             <div className="relative z-10 h-full flex flex-col justify-center">
               <p className="text-2xl sm:text-3xl font-bold">
-                <AnimatedCounter to={20000} suffix="+" />
+                <AnimatedCounter to={100} suffix="+" />
               </p>
               <p className="text-primary-foreground/80 mt-1 text-xs">
-                Vetted testers across 100+ countries.
+                Vetted testers across 12+ countries.
               </p>
             </div>
           </StatCard>
           <StatCard title="Bugs Squashed" icon={<Bug className="w-4 h-4" />}>
             <p className="text-2xl sm:text-3xl font-bold">
-              <AnimatedCounter to={500000} suffix="+" />
+              <AnimatedCounter to={554} suffix="+" />
             </p>
-            <p className="text-muted-foreground mt-1 text-xs">
+            <p className="text-muted-foreground mt-1 text-[10px]">
               Critical & minor bugs found.
             </p>
           </StatCard>
@@ -179,9 +181,9 @@ export function GlobalImpactSection() {
             className="bg-gradient-to-br from-primary to-primary/50 text-primary-foreground"
           >
             <p className="text-2xl sm:text-3xl font-bold">
-              <AnimatedCounter to={10000} suffix="+" />
+              <AnimatedCounter to={24} suffix="+" />
             </p>
-            <p className="text-primary-foreground/80 mt-1 text-xs">
+            <p className="text-primary-foreground/80 mt-1 text-[10px]">
               Apps & features launched.
             </p>
           </StatCard>
@@ -190,17 +192,17 @@ export function GlobalImpactSection() {
             icon={<ShieldCheck className="w-4 h-4" />}
           >
             <p className="text-2xl sm:text-3xl font-bold">
-              <AnimatedCounter to={1200} suffix="+" />
+              <AnimatedCounter to={19} suffix="+" />
             </p>
-            <p className="text-muted-foreground mt-1 text-xs">
+            <p className="text-muted-foreground mt-1 text-[10px]">
               Critical vulnerabilities found.
             </p>
           </StatCard>
           <StatCard title="Developer Tools" icon={<Code className="w-4 h-4" />}>
             <p className="text-2xl sm:text-3xl font-bold">
-              <AnimatedCounter to={100} suffix="M+" />
+              <AnimatedCounter to={50} suffix="K+" />
             </p>
-            <p className="text-muted-foreground mt-1 text-xs">
+            <p className="text-muted-foreground mt-1 text-[10px]">
               Lines of code analyzed.
             </p>
           </StatCard>
@@ -210,7 +212,7 @@ export function GlobalImpactSection() {
             className="col-span-2 lg:col-span-2 bg-gradient-to-br from-primary to-primary/50 text-primary-foreground"
           >
             <p className="text-2xl sm:text-3xl font-bold">
-              <AnimatedCounter to={5000000} prefix="₹" />
+              <AnimatedCounter to={52090} prefix="₹" />
             </p>
             <p className="text-primary-foreground/80 mt-1 text-xs">
               Paid to our testing community.

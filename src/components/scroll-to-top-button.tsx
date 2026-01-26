@@ -14,19 +14,30 @@ export function ScrollToTopButton() {
   const circumference = 2 * Math.PI * radius;
   const offset = circumference - (scrollProgress / 100) * circumference;
 
-  const handleScroll = () => {
-    const scrollTop = window.scrollY || document.documentElement.scrollTop;
-    const scrollHeight =
-      document.documentElement.scrollHeight -
-      document.documentElement.clientHeight;
-    const progress = (scrollTop / scrollHeight) * 100;
-
-    setIsVisible(scrollTop > 300);
-    setScrollProgress(progress);
-  };
-
   useEffect(() => {
+    let requestRunning = false;
+    const handleScroll = () => {
+      if (!requestRunning) {
+        requestRunning = true;
+        window.requestAnimationFrame(() => {
+          const scrollTop =
+            window.scrollY || document.documentElement.scrollTop;
+          const scrollHeight =
+            document.documentElement.scrollHeight -
+            document.documentElement.clientHeight;
+          const progress =
+            scrollHeight > 0 ? (scrollTop / scrollHeight) * 100 : 0;
+
+          setIsVisible(scrollTop > 300);
+          setScrollProgress(progress);
+          requestRunning = false;
+        });
+      }
+    };
+
     window.addEventListener("scroll", handleScroll, { passive: true });
+    // Initial check
+    handleScroll();
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
@@ -42,7 +53,7 @@ export function ScrollToTopButton() {
       data-loc="ScrollToTopButton"
       className={cn(
         "fixed bottom-8 right-8 z-50 transition-opacity duration-300",
-        isVisible ? "opacity-100" : "opacity-0"
+        isVisible ? "opacity-100" : "opacity-0",
       )}
     >
       <div className="relative w-16 h-16">
@@ -69,7 +80,7 @@ export function ScrollToTopButton() {
             strokeDasharray={circumference}
             strokeDashoffset={offset}
             strokeLinecap="round"
-            className="text-primary transition-all duration-200"
+            className="text-primary"
           />
         </svg>
 

@@ -1,5 +1,7 @@
 "use client";
 
+import { useState, useEffect } from "react";
+
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -59,6 +61,16 @@ interface UserNavProps {
 
 export function UserNav({ session, onLogout }: UserNavProps) {
   const pathname = usePathname();
+  const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    if (open) {
+      const handleScroll = () => setOpen(false);
+      window.addEventListener("scroll", handleScroll, { capture: true });
+      return () =>
+        window.removeEventListener("scroll", handleScroll, { capture: true });
+    }
+  }, [open]);
 
   const isAdmin = pathname.startsWith("/admin");
   const isPro = pathname.startsWith("/tester");
@@ -206,11 +218,11 @@ export function UserNav({ session, onLogout }: UserNavProps) {
   }
 
   return (
-    <DropdownMenu>
+    <DropdownMenu open={open} onOpenChange={setOpen} modal={false}>
       <DropdownMenuTrigger asChild data-loc="UserNav">
         <Button variant="ghost" className="relative h-auto rounded-full p-1">
           <div className="flex items-center gap-2">
-            <Avatar className="h-10 w-10">
+            <Avatar className="h-8 w-8">
               <AvatarImage
                 src={session?.user?.image || ""}
                 data-ai-hint="user avatar"

@@ -1,68 +1,79 @@
 "use client";
 
 import Link from "next/link";
-import { ArrowRight, Sparkles, Rocket } from "lucide-react";
+import { Sparkles, Rocket } from "lucide-react";
 import AnimatedRoundedButton from "@/components/ui/animated-rounded-button";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 
 export function CTASection() {
   return (
-    <section className="py-8 md:py-14 relative overflow-hidden bg-primary/5 dark:bg-primary/10 w-full">
+    <section className="py-16 md:py-24 relative overflow-hidden bg-primary w-full text-primary-foreground select-none">
+      {/* Background Effects */}
+      <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.12] mix-blend-overlay pointer-events-none data-[loc='cta-noise']" />
+
+      {/* Dark & Glowy Spots */}
+      <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
+        <div className="absolute top-[-20%] left-[-10%] w-[50%] h-[50%] bg-black/20 blur-[120px] rounded-full mix-blend-multiply" />
+        <div className="absolute bottom-[-20%] right-[-10%] w-[50%] h-[50%] bg-black/20 blur-[120px] rounded-full mix-blend-multiply" />
+        <div className="absolute top-[20%] right-[20%] w-[300px] h-[300px] bg-white/20 blur-[100px] rounded-full mix-blend-overlay" />
+        <div className="absolute bottom-[20%] left-[20%] w-[200px] h-[200px] bg-white/10 blur-[80px] rounded-full mix-blend-overlay" />
+      </div>
+
       <div className="container relative z-10 mx-auto px-4 md:px-6 text-center">
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="max-w-4xl mx-auto space-y-8"
+          transition={{ duration: 0.8, ease: "easeOut" }}
+          className="max-w-4xl mx-auto space-y-6 md:space-y-8"
         >
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 text-primary mb-4 border border-primary/20 backdrop-blur-sm">
-            <Sparkles className="w-4 h-4" />
-            <span className="text-sm font-semibold tracking-wide uppercase">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 md:px-5 md:py-2 rounded-full bg-white/10 text-white font-medium mb-1 border border-white/20 backdrop-blur-md shadow-lg shadow-black/5 hover:bg-white/20 transition-colors cursor-default">
+            <Sparkles className="w-3.5 h-3.5 text-yellow-300 fill-yellow-300" />
+            <span className="text-xs md:text-sm tracking-wide uppercase font-bold">
               Join 1000+ Developers
             </span>
           </div>
 
-          <h2 className="text-4xl md:text-6xl font-bold tracking-tight font-heading">
-            Ready to{" "}
-            <span className="text-primary relative inline-block">
-              Propel
+          <h2 className="text-3xl md:text-5xl lg:text-6xl font-bold tracking-tight font-heading leading-tight drop-shadow-sm">
+            Ready to <span className="opacity-90">Propel</span>{" "}
+            <br className="hidden md:block" />
+            <span className="relative inline-block">
+              Your App to Success?
               <svg
-                className="absolute w-full h-3 -bottom-1 left-0 text-primary/30"
+                className="absolute w-full h-3 -bottom-1 left-0 text-white/30"
                 viewBox="0 0 100 10"
                 preserveAspectRatio="none"
               >
                 <path
-                  d="M0 5 Q 50 10 100 5"
+                  d="M0 5 Q 50 12 100 5"
                   stroke="currentColor"
                   strokeWidth="3"
                   fill="none"
                 />
               </svg>
-            </span>{" "}
-            Your App to Success?
+            </span>
           </h2>
 
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-            Join the community of innovators who are building better apps,
-            faster. Get verified feedback, clear Google Play requirements, and
-            launch with confidence.
+          <p className="text-base md:text-xl text-blue-50/90 max-w-xl mx-auto leading-relaxed font-light">
+            Join the community of innovators building better apps, faster. Get
+            verified feedback and clear Google Play requirements.
           </p>
 
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-8">
-            <Link href="/auth/register">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-6 md:mt-8">
+            <Link href="/auth/register" className="w-full sm:w-auto">
               <AnimatedRoundedButton
-                backgroundColor="hsl(var(--primary))"
-                normalTextColor="white"
+                backgroundColor="white"
+                normalTextColor="hsl(var(--primary))"
                 hoverTextColor="white"
-                className="min-w-[200px] shadow-xl shadow-primary/20"
-                paddingX="8"
-                paddingY="4"
+                className="w-full sm:min-w-[160px] shadow-2xl shadow-black/20 after:content-[''] after:absolute after:inset-0 after:rounded-full after:ring-4 after:ring-white/20 after:opacity-0 hover:after:opacity-100 after:transition-opacity"
+                paddingX="6"
+                paddingY="3"
+                borderRadius="9999px"
               >
-                <div className="flex items-center gap-2 font-bold text-lg">
+                <div className="flex items-center justify-center gap-2.5 font-bold text-base">
                   <span>Get Started Free</span>
-                  <Rocket className="w-5 h-5" />
+                  <Rocket className="w-4 h-4" />
                 </div>
               </AnimatedRoundedButton>
             </Link>
@@ -70,19 +81,27 @@ export function CTASection() {
             <Button
               variant="outline"
               size="lg"
-              className="rounded-full h-14 px-8 border-2 text-lg hover:bg-secondary/50 min-w-[200px]"
+              className="w-full sm:w-auto rounded-full h-12 px-6 border border-white/30 text-base bg-transparent hover:bg-white/10 text-white hover:text-white sm:min-w-[160px] transition-all hover:border-white/60 backdrop-blur-sm"
               asChild
             >
               <Link href="/community-dashboard">Explore Community</Link>
             </Button>
           </div>
 
-          <div className="pt-8 flex items-center justify-center gap-8 text-muted-foreground opacity-60 grayscale hover:grayscale-0 transition-all duration-500">
-            <span className="text-sm font-semibold">Compatible with</span>
-            {/* Simple text representation for logos to keep it clean, or could be replaced with icons */}
-            <span className="font-bold">Google Play</span>
-            <span className="font-bold">Android</span>
-            <span className="font-bold">Firebase</span>
+          <div className="pt-8 md:pt-10 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 opacity-60 mix-blend-overlay hover:opacity-100 transition-opacity duration-500">
+            <span className="text-xs font-bold uppercase tracking-widest w-full sm:w-auto">
+              Compatible with
+            </span>
+            <div className="hidden sm:block h-3 w-px bg-white/40" />
+            <span className="font-bold text-sm md:text-base tracking-tight">
+              Google Play
+            </span>
+            <span className="font-bold text-sm md:text-base tracking-tight">
+              Android
+            </span>
+            <span className="font-bold text-sm md:text-base tracking-tight">
+              Firebase
+            </span>
           </div>
         </motion.div>
       </div>
