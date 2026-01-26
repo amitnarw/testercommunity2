@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useSearchParams, usePathname, useRouter } from "next/navigation";
 import { CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -376,7 +376,7 @@ const ApprovedAppCard = ({ app }: { app: HubSubmittedAppResponse }) => {
   );
 };
 
-export default function CommunityDashboardPage() {
+function CommunityDashboardContent() {
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const router = useRouter();
@@ -797,5 +797,19 @@ export default function CommunityDashboardPage() {
         </main>
       </div>
     </div>
+  );
+}
+
+export default function CommunityDashboardPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen flex items-center justify-center">
+          Loading...
+        </div>
+      }
+    >
+      <CommunityDashboardContent />
+    </Suspense>
   );
 }
