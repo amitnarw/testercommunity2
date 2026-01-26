@@ -2,10 +2,12 @@
 
 import { useState, useEffect, Suspense } from "react";
 import { useSearchParams, usePathname, useRouter } from "next/navigation";
+import { cn } from "@/lib/utils";
 import { Card, CardHeader } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Search } from "lucide-react";
-import { Tabs, TabsContent } from "@/components/ui/tabs";
+import { Tabs } from "@/components/ui/tabs";
+import { Button } from "@/components/ui/button";
 import { AppPagination } from "@/components/app-pagination";
 import { useSubmittedApps, useSubmittedAppsCount } from "@/hooks/useAdmin";
 import { HubSubmittedAppResponse } from "@/lib/types";
@@ -82,17 +84,6 @@ function AdminSubmissionsContent() {
     currentPage * ITEMS_PER_PAGE,
   );
 
-  const displayTabs = [
-    { label: "All", value: "All", count: countsData?.All || 0 },
-    { label: "Pending", value: "IN_REVIEW", count: countsData?.IN_REVIEW || 0 },
-    {
-      label: "Available",
-      value: "AVAILABLE",
-      count: countsData?.AVAILABLE || 0,
-    },
-    { label: "Rejected", value: "REJECTED", count: countsData?.REJECTED || 0 },
-  ];
-
   return (
     <div className="flex-1 space-y-8 container mx-auto px-4 md:px-6">
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between space-y-2">
@@ -121,27 +112,103 @@ function AdminSubmissionsContent() {
           </div>
         </CardHeader>
 
-        <div className="px-2 sm:px-6 pb-6">
-          <Tabs
-            value={activeTab}
-            onValueChange={handleTabChange}
-            className="w-full space-y-8"
-          >
-            <CustomTabsList
-              tabs={displayTabs}
-              activeTab={activeTab}
-              isLoading={false} // We don't have aggregated counts for now
-              className="py-0"
-              listClassName="w-full md:w-auto grid-cols-4"
-            />
+        <div className="px-2 sm:px-6 pb-6 space-y-4">
+          <div className="flex flex-col gap-4">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+              <Button
+                variant={activeTab === "All" ? "default" : "outline"}
+                onClick={() => handleTabChange("All")}
+                className="w-full sm:w-auto rounded-lg h-9"
+              >
+                All
+                <span
+                  className={`ml-2 bg-primary/20 text-primary rounded-full px-2 py-0.5 text-xs ${activeTab === "All" ? "text-white bg-white/20" : ""}`}
+                >
+                  {/* @ts-ignore */}
+                  {countsData?.All || 0}
+                </span>
+              </Button>
 
-            <TabsContent value={activeTab} className="mt-0">
-              <SubmissionsTable
-                submissions={paginatedSubmissions}
-                isLoading={isLoading}
-              />
-            </TabsContent>
-          </Tabs>
+              <Tabs
+                value={
+                  activeTab === "AVAILABLE" || activeTab === "IN_TESTING"
+                    ? "RUNNING"
+                    : activeTab
+                }
+                onValueChange={(val) =>
+                  handleTabChange(val === "RUNNING" ? "AVAILABLE" : val)
+                }
+                className="w-full sm:w-auto"
+              >
+                <CustomTabsList
+                  tabs={[
+                    {
+                      label: "Pending",
+                      value: "IN_REVIEW",
+                      count: countsData?.IN_REVIEW || 0,
+                    },
+                    {
+                      label: "Running",
+                      value: "RUNNING",
+                      count:
+                        (countsData?.AVAILABLE || 0) +
+                        (countsData?.IN_TESTING || 0),
+                    },
+                    {
+                      label: "Rejected",
+                      value: "REJECTED",
+                      count: countsData?.REJECTED || 0,
+                    },
+                  ]}
+                  activeTab={
+                    activeTab === "AVAILABLE" || activeTab === "IN_TESTING"
+                      ? "RUNNING"
+                      : activeTab
+                  }
+                  isLoading={false}
+                  className="py-0 static"
+                  listClassName="w-full sm:w-auto"
+                />
+              </Tabs>
+            </div>
+
+            {(activeTab === "AVAILABLE" || activeTab === "IN_TESTING") && (
+              <div className="flex justify-start">
+                <div className="flex items-center gap-2 bg-muted rounded-lg p-1">
+                  {[
+                    {
+                      label: "Available",
+                      value: "AVAILABLE",
+                      count: countsData?.AVAILABLE || 0,
+                    },
+                    {
+                      label: "In Testing",
+                      value: "IN_TESTING",
+                      count: countsData?.IN_TESTING || 0,
+                    },
+                  ].map((tab) => (
+                    <button
+                      key={tab.value}
+                      onClick={() => handleTabChange(tab.value)}
+                      className={cn(
+                        "rounded-lg px-4 py-1.5 text-xs sm:text-sm h-auto transition-colors",
+                        activeTab === tab.value
+                          ? "bg-black text-white dark:bg-white dark:text-black shadow-sm"
+                          : "text-muted-foreground hover:text-foreground hover:bg-background/50",
+                      )}
+                    >
+                      {tab.label} ({tab.count})
+                    </button>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+
+          <SubmissionsTable
+            submissions={paginatedSubmissions}
+            isLoading={isLoading}
+          />
         </div>
       </Card>
 

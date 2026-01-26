@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useSearchParams, usePathname, useRouter } from "next/navigation";
 import { CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import {
@@ -11,7 +12,6 @@ import {
   Activity,
   XCircle,
   Gamepad2,
-  Trophy,
   History,
   AlertCircle,
   Search,
@@ -27,28 +27,24 @@ import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { projects as allProjects } from "@/lib/data";
+// import { projects as allProjects } from "@/lib/data";
 import { Tabs, TabsContent } from "@/components/ui/tabs";
 import { CustomTabsList } from "@/components/custom-tabs-list";
 import { CommunityAvailableAppCard } from "@/components/community-available-app-card";
 import { CommunityOngoingAppCard } from "@/components/community-ongoing-app-card";
-import { CommunityCompletedAppCard } from "@/components/community-completed-app-card";
 import Link from "next/link";
 import { AppPagination } from "@/components/app-pagination";
 import { motion } from "framer-motion";
-import { Card, CardContent } from "@/components/ui/card";
 import { SafeImage } from "@/components/safe-image";
 import { Badge } from "@/components/ui/badge";
 import type { HubSubmittedAppResponse } from "@/lib/types";
 import SubTabUI from "@/components/sub-tab-ui";
 import { useHubApps, useHubAppsCount, useHubData } from "@/hooks/useHub";
-import { useTransitionRouter } from "@/context/transition-context";
 import { AppCardSkeleton } from "@/components/app-card-skeleton";
 import { format } from "date-fns";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const APPS_PER_PAGE = 6;
 
@@ -381,13 +377,65 @@ const ApprovedAppCard = ({ app }: { app: HubSubmittedAppResponse }) => {
 };
 
 export default function CommunityDashboardPage() {
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
+  const router = useRouter();
+
   const [filter, setFilter] = useState("All");
   const [sort, setSort] = useState("Most Recent");
-  const [selectedTab, setSelectedTab] = useState("available");
-  const [requestsSubTab, setRequestsSubTab] = useState("pending");
-  const [runningSubTab, setRunningSubTab] = useState("in-progress");
 
-  const router = useTransitionRouter();
+  const [selectedTab, setSelectedTab] = useState(
+    searchParams.get("tab") || "available",
+  );
+  const [requestsSubTab, setRequestsSubTab] = useState(
+    (searchParams.get("tab") === "requests"
+      ? searchParams.get("subtab")
+      : "pending") || "pending",
+  );
+  const [runningSubTab, setRunningSubTab] = useState(
+    (searchParams.get("tab") === "running"
+      ? searchParams.get("subtab")
+      : "in-progress") || "in-progress",
+  );
+
+  useEffect(() => {
+    const tab = searchParams.get("tab");
+    const subtab = searchParams.get("subtab");
+    if (tab) setSelectedTab(tab);
+    if (subtab) {
+      if (tab === "requests") setRequestsSubTab(subtab);
+      if (tab === "running") setRunningSubTab(subtab);
+    }
+  }, [searchParams]);
+
+  const updateUrl = (newTab: string, newSubTab?: string) => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.set("tab", newTab);
+    if (newSubTab) {
+      params.set("subtab", newSubTab);
+    } else {
+      params.delete("subtab");
+    }
+    router.push(`${pathname}?${params.toString()}`, { scroll: false });
+  };
+
+  const handleMainTabChange = (val: string) => {
+    setSelectedTab(val);
+    let nextSubTab = undefined;
+    if (val === "requests") nextSubTab = requestsSubTab;
+    else if (val === "running") nextSubTab = runningSubTab;
+    updateUrl(val, nextSubTab);
+  };
+
+  const handleRequestsSubTabChange = (val: string) => {
+    setRequestsSubTab(val);
+    updateUrl("requests", val);
+  };
+
+  const handleRunningSubTabChange = (val: string) => {
+    setRunningSubTab(val);
+    updateUrl("running", val);
+  };
 
   const getBackendType = () => {
     if (selectedTab === "available") return "AVAILABLE";
@@ -482,22 +530,16 @@ export default function CommunityDashboardPage() {
     },
   ];
 
-  const appsSubmitted = allProjects.length;
-  const testersEngaged = allProjects.reduce(
-    (sum, p) => sum + p.testersStarted,
-    0,
-  );
-  const testsCompleted = allProjects.reduce(
-    (sum, p) => sum + p.testersCompleted,
-    0,
-  );
-
   const { data: hubData, isPending: hubIsPending } = useHubData();
+
+  const appsSubmitted = hubData?.appsSubmitted || 0;
+  const testersEngaged = hubData?.testersEngaged || 0;
+  const testsCompleted = hubData?.testsCompleted || 0;
 
   const openPage = (page: string) => {
     router.push(page);
   };
-  console.log(hubAppsData, "-----");
+
   return (
     <div data-loc="CommunityDashboardPage" className="min-h-screen mb-8">
       <div className="container mx-auto px-4 md:px-6">
@@ -518,19 +560,31 @@ export default function CommunityDashboardPage() {
               </CardTitle>
               <div className="grid grid-cols-3 gap-2 w-full mt-2">
                 <div className="text-center bg-secondary p-2 rounded-lg">
-                  <p className="text-2xl font-bold">{appsSubmitted}</p>
+                  {hubIsPending ? (
+                    <Skeleton className="h-8 w-16 mx-auto mb-1" />
+                  ) : (
+                    <p className="text-2xl font-bold">{appsSubmitted}</p>
+                  )}
                   <p className="text-xs text-muted-foreground">
                     Apps Submitted
                   </p>
                 </div>
                 <div className="text-center bg-secondary p-2 rounded-lg">
-                  <p className="text-2xl font-bold">{testersEngaged}</p>
+                  {hubIsPending ? (
+                    <Skeleton className="h-8 w-16 mx-auto mb-1" />
+                  ) : (
+                    <p className="text-2xl font-bold">{testersEngaged}</p>
+                  )}
                   <p className="text-xs text-muted-foreground">
                     Testers Engaged
                   </p>
                 </div>
                 <div className="text-center bg-secondary p-2 rounded-lg">
-                  <p className="text-2xl font-bold">{testsCompleted}</p>
+                  {hubIsPending ? (
+                    <Skeleton className="h-8 w-16 mx-auto mb-1" />
+                  ) : (
+                    <p className="text-2xl font-bold">{testsCompleted}</p>
+                  )}
                   <p className="text-xs text-muted-foreground">Tests Done</p>
                 </div>
               </div>
@@ -542,9 +596,13 @@ export default function CommunityDashboardPage() {
                   <Star className="absolute top-5 left-5 scale-[6] text-white/20 rotate-45 w-4 h-4" />{" "}
                   My Points
                 </CardTitle>
-                <p className="text-3xl sm:text-5xl font-bold text-center my-auto">
-                  {hubData?.wallet || 0}
-                </p>
+                {hubIsPending ? (
+                  <Skeleton className="h-12 w-32 mx-auto my-auto" />
+                ) : (
+                  <p className="text-3xl sm:text-5xl font-bold text-center my-auto">
+                    {hubData?.wallet || 0}
+                  </p>
+                )}
               </BentoCard>
 
               <BentoCard className="w-7/12 sm:w-1/2 !p-2.5 sm:!p-4">
@@ -554,11 +612,19 @@ export default function CommunityDashboardPage() {
                 <div className="grid grid-rows-2 grid-cols-1 sm:grid-cols-2 sm:grid-rows-1 gap-2 w-full mt-2 h-full">
                   <div className="text-center bg-secondary px-4 rounded-lg flex flex-row sm:flex-col items-center justify-between sm:justify-center">
                     <p className="text-xs text-muted-foreground">Running</p>
-                    <p className="text-2xl font-bold">{runningCount}</p>
+                    {hubDataCountIsPending ? (
+                      <Skeleton className="h-8 w-12 sm:mx-auto" />
+                    ) : (
+                      <p className="text-2xl font-bold">{runningCount}</p>
+                    )}
                   </div>
                   <div className="text-center bg-secondary px-4 rounded-lg flex flex-row sm:flex-col items-center justify-between sm:justify-center">
                     <p className="text-xs text-muted-foreground">Requests</p>
-                    <p className="text-2xl font-bold">{requestsCount}</p>
+                    {hubDataCountIsPending ? (
+                      <Skeleton className="h-8 w-12 sm:mx-auto" />
+                    ) : (
+                      <p className="text-2xl font-bold">{requestsCount}</p>
+                    )}
                   </div>
                 </div>
               </BentoCard>
@@ -591,7 +657,7 @@ export default function CommunityDashboardPage() {
         <main>
           <Tabs
             value={selectedTab}
-            onValueChange={setSelectedTab}
+            onValueChange={handleMainTabChange}
             className="w-full"
           >
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
@@ -668,7 +734,7 @@ export default function CommunityDashboardPage() {
               </div>
               <SubTabUI
                 pendingTabs={requestTabs}
-                setPendingSubTab={setRequestsSubTab}
+                setPendingSubTab={handleRequestsSubTabChange}
                 pendingSubTab={requestsSubTab}
               />
 
@@ -702,7 +768,7 @@ export default function CommunityDashboardPage() {
               </div>
               <SubTabUI
                 pendingTabs={runningSubTabs}
-                setPendingSubTab={setRunningSubTab}
+                setPendingSubTab={handleRunningSubTabChange}
                 pendingSubTab={runningSubTab}
               />
 

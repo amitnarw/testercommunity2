@@ -24,7 +24,7 @@ export function SubmissionsTable({
   isLoading,
 }: SubmissionsTableProps) {
   return (
-    <div className="rounded-md border">
+    <div className="rounded-md border grid grid-cols-1">
       <Table>
         <TableHeader>
           <TableRow>

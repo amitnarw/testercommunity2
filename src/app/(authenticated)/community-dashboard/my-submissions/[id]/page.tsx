@@ -395,7 +395,7 @@ function SubmissionDetailsPage({
                 {/* Media Side */}
                 {appDetails?.statusDetails?.image && (
                   <div
-                    className="w-full lg:w-[480px] relative min-h-[300px] lg:min-h-full group/image cursor-pointer overflow-hidden border-t lg:border-t-0 lg:border-l border-destructive/10"
+                    className="flex w-full lg:w-[480px] relative h-[300px] lg:h-auto lg:min-h-full group/image cursor-pointer overflow-hidden border-t lg:border-t-0 lg:border-l border-destructive/10"
                     onClick={() =>
                       setFullscreenImage(appDetails?.statusDetails?.image!)
                     }

@@ -419,6 +419,13 @@ function MySubmissionsContent() {
     // Background URL update
     const params = new URLSearchParams(searchParams.toString());
     params.set("tab", val);
+
+    if (val !== "pending") {
+      params.delete("subTab");
+    } else if (pendingSubTab) {
+      params.set("subTab", pendingSubTab);
+    }
+
     navigationRouter.replace(`${pathname}?${params.toString()}`, {
       scroll: false,
     });

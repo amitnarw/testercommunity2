@@ -102,7 +102,10 @@ export async function getSubmittedAppsCount() {
 
 export async function acceptApp(id: number) {
   try {
-    const response = await api.post(API_ROUTES.ADMIN + `/accept-app`, { id });
+    const response = await api.post(API_ROUTES.ADMIN + `/accept-app`, {
+      id,
+      appId: id,
+    });
     return response?.data?.data;
   } catch (error) {
     console.error("Error accepting app:", error);
@@ -130,7 +133,10 @@ export async function rejectApp(payload: {
   video?: string;
 }) {
   try {
-    const response = await api.post(API_ROUTES.ADMIN + `/reject-app`, payload);
+    const response = await api.post(API_ROUTES.ADMIN + `/reject-app`, {
+      ...payload,
+      appId: payload.id,
+    });
     return response?.data?.data;
   } catch (error) {
     console.error("Error rejecting app:", error);

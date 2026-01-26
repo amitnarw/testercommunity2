@@ -487,6 +487,9 @@ export interface HubSubmittedAppResponse {
 
 export interface HubDataResponse {
   wallet: number;
+  appsSubmitted: number;
+  testersEngaged: number;
+  testsCompleted: number;
   availableApps: AppData[];
   statusCounts: {
     _count: {

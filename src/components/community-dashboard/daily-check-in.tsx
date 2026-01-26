@@ -180,8 +180,8 @@ export function DailyTestingAction({
     <div className="w-full">
       <Card
         className={cn(
-          "overflow-hidden border shadow-sm transition-all duration-300",
-          isExpanded ? "ring-2 ring-primary/5 shadow-md" : "",
+          "overflow-hidden border transition-all duration-300",
+          isExpanded ? "shadow-xl shadow-primary/5" : "",
         )}
       >
         {/* Header Strip */}

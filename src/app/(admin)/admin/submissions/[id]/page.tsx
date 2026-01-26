@@ -1,15 +1,7 @@
 "use client";
 
-import { useState, useCallback, useEffect, use } from "react";
-import Image from "next/image";
-import { useDropzone } from "react-dropzone";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { useState, use } from "react";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -18,8 +10,6 @@ import {
   Users,
   Check,
   X,
-  ArrowLeft,
-  Trash2,
   Expand,
   AlertTriangle,
   Clock,
@@ -28,30 +18,15 @@ import {
   FileText,
   Video,
   Image as ImageIcon,
-  Loader2,
 } from "lucide-react";
-import Link from "next/link";
-import { notFound, useRouter } from "next/navigation";
-import { Textarea } from "@/components/ui/textarea";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { toast } from "@/hooks/use-toast";
-import { cn } from "@/lib/utils";
+import { useRouter } from "next/navigation";
 import { BackButton } from "@/components/back-button";
 import { useSingleHubAppDetails } from "@/hooks/useHub";
-import { useAcceptApp, useRejectApp } from "@/hooks/useAdmin";
 import { SafeImage } from "@/components/safe-image";
 import { ExpandableText } from "@/components/expandable-text";
 import { AppInfoSidebar } from "@/components/appInfoSidebar";
-import { useR2 } from "@/hooks/useR2";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
+import { AdminRejectDialog } from "@/components/admin/admin-reject-dialog";
+import { AdminAcceptDialog } from "@/components/admin/admin-accept-dialog";
 
 export default function AdminSubmissionDetailPage({
   params,
@@ -62,66 +37,15 @@ export default function AdminSubmissionDetailPage({
   const router = useRouter();
   const [fullscreenImage, setFullscreenImage] = useState<string | null>(null);
 
-  // Reject Modal State
+  // Details Dialog State
   const [showRejectDialog, setShowRejectDialog] = useState(false);
-  const [rejectTitle, setRejectTitle] = useState("");
-  const [rejectDescription, setRejectDescription] = useState("");
-  const [rejectImage, setRejectImage] = useState<File | null>(null);
-  const [rejectVideo, setRejectVideo] = useState<File | null>(null);
-  const [rejectImagePreview, setRejectImagePreview] = useState<string | null>(
-    null,
-  );
-  const [rejectVideoPreview, setRejectVideoPreview] = useState<string | null>(
-    null,
-  );
-  const [uploadPercent, setUploadPercent] = useState(0);
-
-  const { createUploadUrl, isPendingCUU, uploadFileToR2 } = useR2();
+  const [showAcceptDialog, setShowAcceptDialog] = useState(false);
 
   const { data: project, isLoading, error } = useSingleHubAppDetails({ id });
 
-  const { mutate: acceptApp, isPending: isAccepting } = useAcceptApp({
-    onSuccess: () => {
-      toast({
-        title: "Submission Approved",
-        description: "The app has been approved successfully.",
-      });
-      router.push("/admin/submissions");
-    },
-    onError: (err: any) => {
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: err?.message || "Failed to approve app.",
-      });
-    },
-  });
-
-  const { mutate: rejectApp, isPending: isRejecting } = useRejectApp({
-    onSuccess: () => {
-      toast({
-        title: "Submission Rejected",
-        description: "The app has been rejected successfully.",
-      });
-      setShowRejectDialog(false);
-      router.push("/admin/submissions");
-    },
-    onError: (err: any) => {
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: err?.message || "Failed to reject app.",
-      });
-    },
-  });
-
-  // Cleanup previews on unmount
-  useEffect(() => {
-    return () => {
-      if (rejectImagePreview) URL.revokeObjectURL(rejectImagePreview);
-      if (rejectVideoPreview) URL.revokeObjectURL(rejectVideoPreview);
-    };
-  }, [rejectImagePreview, rejectVideoPreview]);
+  const handleSuccess = () => {
+    router.push("/admin/submissions");
+  };
 
   if (isLoading) {
     return (
@@ -142,78 +66,6 @@ export default function AdminSubmissionDetailPage({
       </div>
     );
   }
-
-  const handleApprove = () => {
-    acceptApp(project.id);
-  };
-
-  const handleRejectSubmit = async () => {
-    if (!rejectDescription) {
-      toast({
-        variant: "destructive",
-        title: "Description Required",
-        description: "Please provide a reason/description for rejection.",
-      });
-      return;
-    }
-
-    try {
-      let imageUrl: undefined | string = undefined;
-      let videoUrl: undefined | string = undefined;
-      const r2Url = process.env.NEXT_PUBLIC_R2_MEDIA_BASE_URL || "";
-
-      if (rejectImage) {
-        setUploadPercent(0);
-        const uploadConfig = await createUploadUrl.mutateAsync({
-          filename: rejectImage.name,
-          contentType: rejectImage.type,
-          size: rejectImage.size,
-          type: "image",
-        });
-
-        await uploadFileToR2.mutateAsync({
-          file: rejectImage,
-          uploadUrl: uploadConfig.uploadUrl,
-          onProgress: (percent) => setUploadPercent(percent),
-        });
-
-        imageUrl = uploadConfig.key;
-      }
-
-      if (rejectVideo) {
-        setUploadPercent(0);
-        const uploadConfig = await createUploadUrl.mutateAsync({
-          filename: rejectVideo.name,
-          contentType: rejectVideo.type,
-          size: rejectVideo.size,
-          type: "video",
-        });
-
-        await uploadFileToR2.mutateAsync({
-          file: rejectVideo,
-          uploadUrl: uploadConfig.uploadUrl,
-          onProgress: (percent) => setUploadPercent(percent),
-        });
-
-        videoUrl = uploadConfig.key;
-      }
-
-      rejectApp({
-        id: project.id,
-        title: rejectTitle || "Submission Rejected",
-        description: rejectDescription,
-        image: imageUrl ? r2Url + "/" + imageUrl : undefined,
-        video: videoUrl ? r2Url + "/" + videoUrl : undefined,
-      });
-    } catch (error) {
-      console.error("Error submitting rejection:", error);
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "Failed to upload files or reject app.",
-      });
-    }
-  };
 
   const visitUrl = `https://play.google.com/store/apps/details?id=${project.androidApp.packageName}`;
 
@@ -402,11 +254,11 @@ export default function AdminSubmissionDetailPage({
               <section className="shadow-xl shadow-gray-200 dark:shadow-gray-900 bg-card">
                 <Card className="border-0 bg-transparent overflow-hidden relative">
                   <div className="absolute top-0 left-0 w-1 h-full bg-gradient-to-b from-amber-400 to-orange-500" />
-                  <CardContent className="p-8">
+                  <CardContent className="p-6 sm:p-8">
                     <div className="flex flex-col items-start justify-between gap-6">
                       <div className="space-y-2 relative">
                         <h2 className="text-2xl font-bold flex items-center gap-2">
-                          <ShieldAlert className="absolute sm:static scale-[2] sm:scale-100  w-6 h-6 text-amber-500 opacity-50 sm:opacity-100" />
+                          <ShieldAlert className="absolute sm:static -top-2 -right-2 scale-[2] sm:scale-100 w-6 h-6 text-amber-500 opacity-50 sm:opacity-100" />
                           Review Action Required
                         </h2>
                         <p className="text-sm sm:text-base text-muted-foreground max-w-lg">
@@ -419,14 +271,12 @@ export default function AdminSubmissionDetailPage({
                         <Button
                           variant="destructive"
                           onClick={() => setShowRejectDialog(true)}
-                          disabled={isAccepting || isRejecting}
                           className="flex-1 md:flex-none h-12 px-6 text-sm sm:text-md font-semibold rounded-xl bg-gradient-to-br from-red-500 to-red-500/50 hover:from-red-500 hover:to-red-600 text-white shadow-lg hover:shadow-red-500/40"
                         >
                           <X className="w-4 h-4 mr-0 sm:mr-2" /> Reject
                         </Button>
                         <Button
-                          onClick={handleApprove}
-                          disabled={isAccepting || isRejecting}
+                          onClick={() => setShowAcceptDialog(true)}
                           className="flex-1 md:flex-none h-12 px-8 text-sm sm:text-md font-semibold rounded-xl bg-gradient-to-br from-green-500 to-green-500/50 hover:from-green-500 hover:to-emerald-500 text-white shadow-lg hover:shadow-green-500/40"
                         >
                           <Check className="w-4 h-4 mr-0 sm:mr-2" /> Approve
@@ -438,198 +288,162 @@ export default function AdminSubmissionDetailPage({
               </section>
             )}
 
-            {/* Rejection Modal (Updated to match TesterRequestsSection) */}
-            <Dialog open={showRejectDialog} onOpenChange={setShowRejectDialog}>
-              <DialogContent className="w-[95vw] h-full max-h-[90vh] sm:w-[500px] rounded-3xl overflow-hidden p-0 gap-0 border-none shadow-2xl bg-white dark:bg-[#1A1A1A]">
-                <div className="bg-destructive/5 p-6 border-b border-destructive/10">
-                  <DialogHeader>
-                    <DialogTitle className="text-red-600 flex items-center gap-2">
-                      <ShieldAlert className="w-5 h-5" />
-                      Reject Request
-                    </DialogTitle>
-                    <DialogDescription className="text-red-600/70">
-                      Provide a reason for rejecting this tester. This will be
-                      shared with them.
-                    </DialogDescription>
-                  </DialogHeader>
-                </div>
-                <div className="p-4 sm:p-6 space-y-5 overflow-y-auto">
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium">Title</label>
-                    <Input
-                      placeholder="e.g. Policy Violation, Crash Issue"
-                      value={rejectTitle}
-                      onChange={(e) => setRejectTitle(e.target.value)}
-                      className="bg-secondary/30 border-primary/10 focus:border-primary/30"
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <label className="text-sm font-medium">
-                      Detailed Description{" "}
-                      <span className="text-red-500">*</span>
-                    </label>
-                    <Textarea
-                      placeholder="Explain the specific reasons for rejection..."
-                      className="min-h-[100px] bg-secondary/30 border-primary/10 focus:border-primary/30 resize-none"
-                      value={rejectDescription}
-                      onChange={(e) => setRejectDescription(e.target.value)}
-                    />
-                  </div>
+            {/* Rejection Details Section */}
+            {project.status === "REJECTED" && (
+              <section className="shadow-xl shadow-gray-200 dark:shadow-gray-900 bg-card">
+                <Card className="border-0 bg-transparent overflow-hidden relative">
+                  <div className="absolute top-0 left-0 w-1 h-full bg-gradient-to-b from-red-500 to-red-700" />
+                  <CardContent className="p-6 sm:p-8">
+                    <div className="flex flex-col gap-6">
+                      <div className="space-y-4">
+                        <h2 className="text-2xl font-bold flex items-center gap-2 text-destructive">
+                          <AlertTriangle className="w-6 h-6 absolute sm:static scale-[2] sm:scale-100 top-5 right-5 opacity-50 sm:opacity-100" />
+                          Submission Rejected
+                        </h2>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <label className="text-xs font-medium text-muted-foreground uppercase">
-                        Attachment (Image)
-                      </label>
-                      <div className="border-2 border-dashed rounded-xl p-4 flex flex-col items-center justify-center gap-2 cursor-pointer hover:bg-secondary/50 transition-colors text-muted-foreground hover:text-foreground relative overflow-hidden min-h-[120px]">
-                        {rejectImage && rejectImagePreview ? (
-                          <>
-                            <div className="absolute inset-0">
-                              <img
-                                src={rejectImagePreview}
-                                alt="Preview"
-                                className="h-full w-full object-cover opacity-60"
-                              />
-                              <div className="absolute inset-0 bg-black/40" />
-                            </div>
-                            <div className="z-10 bg-black/50 p-1.5 rounded-lg text-white text-xs truncate max-w-[90%] flex items-center gap-2">
-                              <ImageIcon className="w-3.5 h-3.5 shrink-0" />
-                              <span className="truncate">
-                                {rejectImage.name}
-                              </span>
-                            </div>
-                            <Button
-                              variant="destructive"
-                              size="icon"
-                              className="absolute top-2 right-2 h-7 w-7 z-20 shadow-sm"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                setRejectImage(null);
-                                setRejectImagePreview(null);
-                              }}
-                            >
-                              <Trash2 className="w-3 h-3" />
-                            </Button>
-                          </>
+                        <div className="space-y-2 bg-destructive/5 p-4 rounded-xl border border-destructive/10">
+                          {project.statusDetails?.title && (
+                            <h3 className="font-bold text-lg text-destructive/90">
+                              {project.statusDetails.title}
+                            </h3>
+                          )}
+                          <p className="text-muted-foreground whitespace-pre-wrap leading-relaxed">
+                            {project.statusDetails?.description ||
+                              "No specific reason provided."}
+                          </p>
+                        </div>
+                      </div>
+
+                      {(project.statusDetails?.image ||
+                        project.statusDetails?.video) && (
+                        <div className="space-y-3 pt-2">
+                          <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-wider flex items-center gap-2">
+                            <ShieldAlert className="w-3 h-3" /> Admin Evidence
+                          </h3>
+                          <div className="flex flex-wrap gap-4">
+                            {project.statusDetails?.image && (
+                              <div className="space-y-2 group">
+                                <div
+                                  className="relative h-48 w-full sm:w-72 rounded-xl overflow-hidden border bg-black/5 cursor-pointer shadow-sm group-hover:shadow-md transition-all"
+                                  onClick={() =>
+                                    setFullscreenImage(
+                                      project.statusDetails!.image,
+                                    )
+                                  }
+                                >
+                                  <SafeImage
+                                    src={project.statusDetails.image}
+                                    alt="Rejection Image"
+                                    fill
+                                    className="object-cover"
+                                  />
+                                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors flex items-center justify-center">
+                                    <Expand className="w-8 h-8 text-white opacity-0 group-hover:opacity-100 transition-opacity transform scale-90 group-hover:scale-100 duration-200" />
+                                  </div>
+                                </div>
+                                <span className="text-xs text-muted-foreground flex items-center gap-1.5 px-1">
+                                  <ImageIcon className="w-3.5 h-3.5" /> Image
+                                  Attachment
+                                </span>
+                              </div>
+                            )}
+
+                            {project.statusDetails?.video && (
+                              <div className="space-y-2">
+                                <div className="h-48 w-full sm:w-72 rounded-xl overflow-hidden border bg-black relative shadow-sm">
+                                  <video
+                                    src={project.statusDetails.video}
+                                    controls
+                                    className="w-full h-full object-contain"
+                                  />
+                                </div>
+                                <span className="text-xs text-muted-foreground flex items-center gap-1.5 px-1">
+                                  <Video className="w-3.5 h-3.5" /> Video
+                                  Attachment
+                                </span>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </CardContent>
+                </Card>
+              </section>
+            )}
+
+            {/* Approved/Active Status Section */}
+            {(project.status === "ACCEPTED" ||
+              project.status === "AVAILABLE" ||
+              project.status === "IN_TESTING" ||
+              project.status === "COMPLETED") && (
+              <section className="shadow-xl shadow-gray-200 dark:shadow-gray-900 bg-card">
+                <Card className="border-0 bg-transparent overflow-hidden relative">
+                  <div
+                    className={`absolute top-0 left-0 w-1 h-full bg-gradient-to-b ${project.status === "COMPLETED" ? "from-blue-500 to-indigo-600" : "from-green-500 to-emerald-600"}`}
+                  />
+                  <CardContent className="p-6 sm:p-8">
+                    <div className="flex items-start gap-5">
+                      <div
+                        className={`p-4 rounded-full absolute sm:static scale-[2] sm:scale-100 top-0 right-0 ${project.status === "COMPLETED" ? "bg-blue-500/10 opacity-50 sm:opacity-100 text-blue-600 dark:text-blue-400" : "bg-green-500/10 opacity-50 sm:opacity-100 text-green-600 dark:text-green-400"}`}
+                      >
+                        {project.status === "COMPLETED" ? (
+                          <Check className="w-6 h-6" />
                         ) : (
-                          <>
-                            <ImageIcon className="w-6 h-6" />
-                            <span className="text-xs text-center truncate w-full">
-                              Upload Image
-                            </span>
-                          </>
+                          <ShieldAlert className="w-6 h-6" />
                         )}
-                        <input
-                          type="file"
-                          accept="image/*"
-                          className="absolute inset-0 opacity-0 cursor-pointer"
-                          onChange={(e) => {
-                            const file = e.target.files?.[0] || null;
-                            setRejectImage(file);
-                            if (file) {
-                              const url = URL.createObjectURL(file);
-                              setRejectImagePreview(url);
-                            } else {
-                              setRejectImagePreview(null);
-                            }
-                          }}
-                        />
+                      </div>
+                      <div className="space-y-2">
+                        <h2
+                          className={`text-2xl font-bold ${project.status === "COMPLETED" ? "text-blue-700 dark:text-blue-400" : "text-green-700 dark:text-green-400"}`}
+                        >
+                          {project.status === "COMPLETED"
+                            ? "Testing Completed"
+                            : "App Approved & Active"}
+                        </h2>
+                        <p className="text-muted-foreground text-base leading-relaxed max-w-2xl">
+                          {project.status === "ACCEPTED" &&
+                            "This application has been approved by the administration. It is currently in the queue waiting for the required initial setup before becoming available to testers."}
+                          {project.status === "AVAILABLE" &&
+                            "This application is fully approved and is currently listed on the Community Dashboard. Testers can now view and join this testing project."}
+                          {project.status === "IN_TESTING" &&
+                            "This application is currently in the active testing phase. Testers are actively engaged, and feedback is being collected."}
+                          {project.status === "COMPLETED" &&
+                            "The testing phase for this application has been successfully completed. All required testers have participated, and the duration has been fulfilled."}
+                        </p>
+
+                        {project.status !== "COMPLETED" && (
+                          <div className="pt-2">
+                            <Badge
+                              variant="outline"
+                              className="px-3 py-1 text-sm border-green-200 bg-green-50 text-green-700 dark:bg-green-900/20 dark:border-green-800 dark:text-green-400"
+                            >
+                              Current Status: {project.status.replace("_", " ")}
+                            </Badge>
+                          </div>
+                        )}
                       </div>
                     </div>
-                    <div className="space-y-2">
-                      <label className="text-xs font-medium text-muted-foreground uppercase">
-                        Attachment (Video)
-                      </label>
-                      <div className="border-2 border-dashed rounded-xl p-4 flex flex-col items-center justify-center gap-2 cursor-pointer hover:bg-secondary/50 transition-colors text-muted-foreground hover:text-foreground relative overflow-hidden min-h-[120px]">
-                        {rejectVideo && rejectVideoPreview ? (
-                          <>
-                            <div className="absolute inset-0">
-                              <video
-                                src={rejectVideoPreview}
-                                className="h-full w-full object-cover opacity-60"
-                              />
-                              <div className="absolute inset-0 bg-black/40" />
-                            </div>
-                            <div className="z-10 bg-black/50 p-1.5 rounded-lg text-white text-xs truncate max-w-[90%] flex items-center gap-2">
-                              <Video className="w-3.5 h-3.5 shrink-0" />
-                              <span className="truncate">
-                                {rejectVideo.name}
-                              </span>
-                            </div>
-                            <Button
-                              variant="destructive"
-                              size="icon"
-                              className="absolute top-2 right-2 h-7 w-7 z-20 shadow-sm"
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                setRejectVideo(null);
-                                setRejectVideoPreview(null);
-                              }}
-                            >
-                              <Trash2 className="w-3 h-3" />
-                            </Button>
-                          </>
-                        ) : (
-                          <>
-                            <Video className="w-6 h-6" />
-                            <span className="text-xs text-center truncate w-full">
-                              Upload Video
-                            </span>
-                          </>
-                        )}
-                        <input
-                          type="file"
-                          accept="video/*"
-                          className="absolute inset-0 opacity-0 cursor-pointer"
-                          onChange={(e) => {
-                            const file = e.target.files?.[0] || null;
-                            setRejectVideo(file);
-                            if (file) {
-                              const url = URL.createObjectURL(file);
-                              setRejectVideoPreview(url);
-                            } else {
-                              setRejectVideoPreview(null);
-                            }
-                          }}
-                        />
-                      </div>
-                    </div>
-                  </div>
-                </div>
+                  </CardContent>
+                </Card>
+              </section>
+            )}
 
-                <DialogFooter className="p-4 sm:p-6 pt-2 bg-transparent gap-3">
-                  <Button
-                    variant="ghost"
-                    onClick={() => setShowRejectDialog(false)}
-                    className="h-11 rounded-lg"
-                  >
-                    Cancel
-                  </Button>
-                  <Button
-                    variant="destructive"
-                    onClick={handleRejectSubmit}
-                    className="h-11 rounded-lg px-6 bg-gradient-to-br from-red-500 to-red-500/50 hover:from-red-500 hover:to-red-600 shadow-lg hover:shadow-red-500/40"
-                    disabled={
-                      isRejecting ||
-                      !rejectDescription ||
-                      isPendingCUU ||
-                      uploadFileToR2.isPending
-                    }
-                  >
-                    {isRejecting || isPendingCUU || uploadFileToR2.isPending ? (
-                      <>
-                        <Loader2 className="w-4 h-4 animate-spin mr-2" />
-                        {isPendingCUU || uploadFileToR2.isPending
-                          ? `Uploading... ${uploadPercent}%`
-                          : "Rejecting..."}
-                      </>
-                    ) : (
-                      "Confirm Rejection"
-                    )}
-                  </Button>
-                </DialogFooter>
-              </DialogContent>
-            </Dialog>
+            {/* Rejection Modal */}
+            <AdminRejectDialog
+              appId={project.id}
+              open={showRejectDialog}
+              onOpenChange={setShowRejectDialog}
+              onSuccess={handleSuccess}
+            />
+
+            {/* Accept Modal */}
+            <AdminAcceptDialog
+              appId={project.id}
+              open={showAcceptDialog}
+              onOpenChange={setShowAcceptDialog}
+              onSuccess={handleSuccess}
+            />
 
             {/* Previous Instructions Block (for reference) */}
             {project.instructionsForTester && (

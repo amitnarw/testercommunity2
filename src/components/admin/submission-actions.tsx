@@ -2,22 +2,12 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Eye, Check, X, AlertTriangle } from "lucide-react";
+import { Eye, Check, X } from "lucide-react";
 import Link from "next/link";
 import { HubSubmittedAppResponse } from "@/lib/types";
-import { useAcceptApp, useRejectApp } from "@/hooks/useAdmin";
-import { toast } from "@/hooks/use-toast";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
+import { AdminRejectDialog } from "./admin-reject-dialog";
+import { AdminAcceptDialog } from "./admin-accept-dialog";
+import { useQueryClient } from "@tanstack/react-query";
 
 interface SubmissionActionsProps {
   submission: HubSubmittedAppResponse;
@@ -25,52 +15,13 @@ interface SubmissionActionsProps {
 
 export function SubmissionActions({ submission }: SubmissionActionsProps) {
   const [showRejectDialog, setShowRejectDialog] = useState(false);
-  const [rejectReason, setRejectReason] = useState("");
+  const [showAcceptDialog, setShowAcceptDialog] = useState(false);
+  const queryClient = useQueryClient();
 
-  const { mutate: acceptApp, isPending: isAccepting } = useAcceptApp({
-    onSuccess: () => {
-      toast({
-        title: "App Approved",
-        description: "The application has been successfully approved.",
-      });
-    },
-    onError: (error: any) => {
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: error.message || "Failed to approve application.",
-      });
-    },
-  });
-
-  const { mutate: rejectApp, isPending: isRejecting } = useRejectApp({
-    onSuccess: () => {
-      toast({
-        title: "App Rejected",
-        description: "The application has been rejected.",
-      });
-      setShowRejectDialog(false);
-      setRejectReason("");
-    },
-    onError: (error: any) => {
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: error.message || "Failed to reject application.",
-      });
-    },
-  });
-
-  const handleReject = () => {
-    if (!rejectReason.trim()) {
-      toast({
-        variant: "destructive",
-        title: "Reason Required",
-        description: "Please provide a reason for rejection.",
-      });
-      return;
-    }
-    rejectApp({ id: submission.id, reason: rejectReason });
+  // Refresh list on success
+  const onSuccess = () => {
+    queryClient.invalidateQueries({ queryKey: ["useSubmittedApps"] });
+    queryClient.invalidateQueries({ queryKey: ["useSubmittedAppsCount"] });
   };
 
   if (submission.status !== "IN_REVIEW") {
@@ -104,64 +55,37 @@ export function SubmissionActions({ submission }: SubmissionActionsProps) {
         size="icon"
         variant="outline"
         className="h-8 w-8 text-green-600 hover:text-green-700 hover:bg-green-100 dark:hover:bg-green-900/30"
-        onClick={() => acceptApp(submission.id)}
-        disabled={isAccepting || isRejecting}
+        onClick={() => setShowAcceptDialog(true)}
         title="Accept"
       >
         <Check className="h-4 w-4" />
         <span className="sr-only">Accept</span>
       </Button>
 
-      <Dialog open={showRejectDialog} onOpenChange={setShowRejectDialog}>
-        <DialogTrigger asChild>
-          <Button
-            size="icon"
-            variant="outline"
-            className="h-8 w-8 text-red-600 hover:text-red-700 hover:bg-red-100 dark:hover:bg-red-900/30"
-            disabled={isAccepting || isRejecting}
-            title="Reject"
-          >
-            <X className="h-4 w-4" />
-            <span className="sr-only">Reject</span>
-          </Button>
-        </DialogTrigger>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Reject Application</DialogTitle>
-            <DialogDescription>
-              Please provide a reason for rejecting this application. This will
-              be sent to the developer.
-            </DialogDescription>
-          </DialogHeader>
-          <div className="space-y-4 py-4">
-            <div className="space-y-2">
-              <Label htmlFor="reason">Rejection Reason</Label>
-              <Textarea
-                id="reason"
-                placeholder="E.g., App crashes, Policy violation..."
-                value={rejectReason}
-                onChange={(e) => setRejectReason(e.target.value)}
-              />
-            </div>
-          </div>
-          <DialogFooter>
-            <Button
-              variant="outline"
-              onClick={() => setShowRejectDialog(false)}
-              disabled={isRejecting}
-            >
-              Cancel
-            </Button>
-            <Button
-              variant="destructive"
-              onClick={handleReject}
-              disabled={isRejecting}
-            >
-              {isRejecting ? "Rejecting..." : "Reject App"}
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      <Button
+        size="icon"
+        variant="outline"
+        className="h-8 w-8 text-red-600 hover:text-red-700 hover:bg-red-100 dark:hover:bg-red-900/30"
+        onClick={() => setShowRejectDialog(true)}
+        title="Reject"
+      >
+        <X className="h-4 w-4" />
+        <span className="sr-only">Reject</span>
+      </Button>
+
+      <AdminRejectDialog
+        appId={submission.id}
+        open={showRejectDialog}
+        onOpenChange={setShowRejectDialog}
+        onSuccess={onSuccess}
+      />
+
+      <AdminAcceptDialog
+        appId={submission.id}
+        open={showAcceptDialog}
+        onOpenChange={setShowAcceptDialog}
+        onSuccess={onSuccess}
+      />
     </div>
   );
 }

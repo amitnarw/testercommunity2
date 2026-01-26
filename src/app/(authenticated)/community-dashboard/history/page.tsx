@@ -1,9 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { ArrowLeft, Trophy, Search, Calendar, Star } from "lucide-react";
+import { Trophy, Search, Calendar, Star } from "lucide-react";
 import { CommunityCompletedAppCard } from "@/components/community-completed-app-card";
+import { BackButton } from "@/components/back-button";
 import { AppPagination } from "@/components/app-pagination";
 import { motion } from "framer-motion";
 import type { HubSubmittedAppResponse } from "@/lib/types";
@@ -89,9 +89,9 @@ const PaginatedCompletedList = ({
               initial={{ scale: 0.8, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
-              className="p-6 bg-green-500/10 rounded-full mb-6 relative z-10 ring-8 ring-green-500/5"
+              className="p-6 bg-primary/10 rounded-full mb-6 relative z-10 ring-8 ring-primary/5"
             >
-              <Trophy className="w-10 h-10 text-green-500" />
+              <Trophy className="w-10 h-10 text-primary" />
             </motion.div>
             <h3 className="text-xl font-bold mb-2 relative z-10">
               {searchQuery ? "No Results Found" : "No Completed Tests Yet"}
@@ -127,20 +127,14 @@ export default function HistoryPage() {
     <div data-loc="HistoryPage" className="min-h-screen mb-8">
       <div className="container mx-auto px-4 md:px-6">
         {/* Header with back button */}
-        <header className="mb-8">
-          <Button
-            variant="ghost"
-            onClick={() => router.push("/community-dashboard")}
-            className="mb-4 -ml-2 text-muted-foreground hover:text-foreground"
-          >
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            Back to Community Hub
-          </Button>
+        <header className="mb-8 relative">
+          <div className="sticky top-0 z-[50] pt-2 sm:pt-3 pb-4 pl-0 w-1/2">
+            <BackButton href="/community-dashboard" />
+          </div>
 
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mt-4">
             <div>
-              <h1 className="text-2xl sm:text-4xl font-bold bg-gradient-to-b from-green-600 to-green-400 bg-clip-text text-transparent leading-[unset] pb-2 flex items-center gap-3">
-                <Trophy className="w-8 h-8 text-green-500" />
+              <h1 className="text-2xl sm:text-4xl font-bold bg-gradient-to-b from-primary to-primary/40 bg-clip-text text-transparent leading-[unset] pb-2">
                 Test History
               </h1>
               <p className="text-sm sm:text-base text-muted-foreground max-w-xl">
@@ -158,12 +152,12 @@ export default function HistoryPage() {
                 </div>
                 <p className="text-2xl font-bold">{hubAppsData?.length || 0}</p>
               </div>
-              <div className="bg-gradient-to-br from-green-500/10 to-green-500/5 rounded-2xl p-4 border border-green-500/20 min-w-[120px]">
-                <div className="flex items-center gap-2 text-green-600 dark:text-green-400 text-xs mb-1">
+              <div className="bg-gradient-to-br from-primary/10 to-primary/5 rounded-2xl p-4 border border-primary/20 min-w-[120px]">
+                <div className="flex items-center gap-2 text-primary dark:text-primary-foreground/80 text-xs mb-1">
                   <Star className="w-3.5 h-3.5" />
                   <span>Total Earned</span>
                 </div>
-                <p className="text-2xl font-bold text-green-600 dark:text-green-400">
+                <p className="text-2xl font-bold text-primary dark:text-primary-foreground">
                   {totalPoints} pts
                 </p>
               </div>
