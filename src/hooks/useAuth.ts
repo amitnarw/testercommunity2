@@ -1,5 +1,6 @@
 import {
   emailVerification,
+  googleLogin,
   // fetchUser,
   login,
   register,
@@ -113,8 +114,25 @@ export function useLoginUser(options?: UseMutationOptions<any, any, any>) {
   return mutation;
 }
 
+export function useGoogleLoginUser(
+  options?: UseMutationOptions<any, any, void>,
+) {
+  const mutation = useMutation<any, any, void>({
+    mutationFn: () => googleLogin(),
+    onSuccess: (data) => {
+      console.log("Login success: " + data);
+    },
+    onError: (data) => {
+      console.log("Login failed: " + data);
+    },
+    ...options,
+  });
+
+  return mutation;
+}
+
 export function useResendEmailVerification(
-  options?: UseMutationOptions<any, any, any>
+  options?: UseMutationOptions<any, any, any>,
 ) {
   const mutation = useMutation({
     mutationFn: (payload: { email: string }) =>

@@ -308,7 +308,8 @@ export interface DashboardDataResponse {
       | "COMPLETED"
       | "ON_HOLD"
       | "REQUESTED"
-      | "AVAILABLE";
+      | "AVAILABLE"
+      | "ACCEPTED";
   }[];
   statusCounts: {
     _count: {
@@ -339,7 +340,8 @@ export interface AppData {
     | "COMPLETED"
     | "ON_HOLD"
     | "REQUESTED"
-    | "AVAILABLE";
+    | "AVAILABLE"
+    | "ACCEPTED";
   createdAt: Date;
   updatedAt: Date;
 }
@@ -426,10 +428,58 @@ export interface HubSubmittedAppResponse {
       supportMessageId: number | null;
       createdAt: Date;
       updatedAt: Date;
-    }[];
+    };
     tester: {
       name: string;
     };
+  }[];
+  testerRelations: {
+    id: number;
+    testerId: string;
+    tester: {
+      name: string;
+      email: string;
+      image: string | null;
+      createdAt: Date;
+      userDetail: {
+        country: string | null;
+        profile_type: UserProfileType | null;
+        job_role: UserJobRole | null;
+        experience_level: UserExperienceLevel | null;
+        device_company: string | null;
+        device_model: string | null;
+        ram: string | null;
+        os: string | null;
+        screen_resolution: string | null;
+        language: string | null;
+        network: string | null;
+      } | null;
+    };
+    isActive: boolean;
+    status:
+      | "PENDING"
+      | "IN_PROGRESS"
+      | "COMPLETED"
+      | "DROPPED"
+      | "REMOVED"
+      | "REJECTED";
+    statusDetails: {
+      title: string;
+      description: string;
+      image: string;
+      video: string;
+    } | null;
+    daysCompleted: number;
+    lastActivityAt?: string | Date;
+    dailyVerifications?: {
+      id: number;
+      dayNumber: number;
+      proofImageUrl: string;
+      status: "PENDING" | "VERIFIED" | "REJECTED";
+      verifiedAt: string;
+      metaData?: any;
+      rejectionReason?: string;
+    }[];
   }[];
   createdAt: Date;
   updatedAt: Date;
@@ -437,6 +487,9 @@ export interface HubSubmittedAppResponse {
 
 export interface HubDataResponse {
   wallet: number;
+  appsSubmitted: number;
+  testersEngaged: number;
+  testsCompleted: number;
   availableApps: AppData[];
   statusCounts: {
     _count: {
@@ -454,6 +507,7 @@ export type SubmittedAppsCount = {
   ON_HOLD: number;
   REQUESTED: number;
   AVAILABLE: number;
+  ACCEPTED: number; // Tester approved but testing not started (waiting for min testers)
 };
 
 export interface AppCategoriesResponse {

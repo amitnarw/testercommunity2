@@ -13,7 +13,11 @@ import { ChangeEvent, useEffect, useState } from "react";
 import { z } from "zod";
 import Image from "next/image";
 import { LoadingButton } from "@/components/ui/loading-button";
-import { useLoginUser, useResendEmailVerification } from "@/hooks/useAuth";
+import {
+  useGoogleLoginUser,
+  useLoginUser,
+  useResendEmailVerification,
+} from "@/hooks/useAuth";
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
@@ -58,6 +62,19 @@ const LoginForm = () => {
       if (err.code === "EMAIL_NOT_VERIFIED") {
         setShowNotVerifiedDialog(true);
       }
+    },
+  });
+
+  const {
+    mutate: googleLoginMutate,
+    isPending: googleLoginIsPending,
+    isSuccess: googleLoginIsSuccess,
+    isError: googleLoginIsError,
+    error: googleLoginError,
+  } = useGoogleLoginUser({
+    onSuccess: async () => {
+      await new Promise((r) => setTimeout(r, 50));
+      userProfileDataRefetch();
     },
   });
 
@@ -112,6 +129,10 @@ const LoginForm = () => {
     });
   };
 
+  const handleGoogleLogin = () => {
+    googleLoginMutate();
+  };
+
   const {
     mutate: resendMutate,
     isPending: resendIsPending,
@@ -156,6 +177,7 @@ const LoginForm = () => {
         <Button
           variant="outline"
           className="w-full rounded-xl py-2 sm:py-6 text-sm sm:text-base"
+          onClick={handleGoogleLogin}
         >
           <GoogleIcon className="mr-3" />
           Log in with Google

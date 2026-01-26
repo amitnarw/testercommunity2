@@ -8,6 +8,7 @@ const routes = {
   ADMIN: "/api/admin",
   DASHBOARD: "/api/dashboard",
   HUB: "/api/hub",
+  R2: "/api/r2",
 };
 
 const API_ROUTES = new Proxy(routes, {
@@ -23,6 +24,5 @@ const API_ROUTES = new Proxy(routes, {
     }
   },
 });
-
 
 export default API_ROUTES;

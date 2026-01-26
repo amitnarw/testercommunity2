@@ -52,11 +52,8 @@ import {
 } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 import { PageHeader } from "@/components/page-header";
-import {
-  useAddHubApp,
-  useAppCategories,
-  useGetUserWallet,
-} from "@/hooks/useUser";
+import { useGetUserWallet } from "@/hooks/useUser";
+import { useAddHubApp, useAppCategories } from "@/hooks/useHub";
 import SkeletonSubmitAppBottom from "@/components/community-dashboard/submit-app-bottom-skeleton";
 import { LoadingButton } from "@/components/ui/loading-button";
 
@@ -94,7 +91,7 @@ const submissionSchema = z.object({
     .string()
     .min(
       50,
-      "Please provide a detailed description of at least 50 characters."
+      "Please provide a detailed description of at least 50 characters.",
     ),
   instruction_for_tester: z.string().optional(),
   minimum_android_version: z.coerce
@@ -179,6 +176,14 @@ export default function SubmitAppPage() {
     resolver: zodResolver(submissionSchema),
     mode: "onBlur",
     defaultValues: {
+      app_name: "",
+      app_url: "",
+      app_logo_url: "",
+      app_screenshot_url_1: "",
+      app_screenshot_url_2: "",
+      category_id: "",
+      app_description: "",
+      instruction_for_tester: "",
       total_tester: 10,
       total_days: 14,
     },
@@ -319,7 +324,7 @@ export default function SubmitAppPage() {
                   }}
                   className={cn(
                     "flex-1 flex items-center justify-center gap-2 text-center p-3 text-sm font-medium transition-all text-muted-foreground relative",
-                    activeStep === step.id && "text-primary"
+                    activeStep === step.id && "text-primary",
                   )}
                 >
                   {step.title}
@@ -350,7 +355,7 @@ export default function SubmitAppPage() {
                             "flex items-center gap-3 p-3 rounded-lg transition-all",
                             activeStep === step.id
                               ? "bg-primary/10 text-primary"
-                              : "text-muted-foreground hover:bg-secondary/50"
+                              : "text-muted-foreground hover:bg-secondary/50",
                           )}
                         >
                           <div
@@ -358,7 +363,7 @@ export default function SubmitAppPage() {
                               "p-2 rounded-full flex items-center justify-center border-2 transition-all",
                               activeStep === step.id
                                 ? "bg-primary text-primary-foreground border-primary"
-                                : "bg-secondary border-border group-hover:border-primary/50"
+                                : "bg-secondary border-border group-hover:border-primary/50",
                             )}
                           >
                             {step.icon}
@@ -369,7 +374,7 @@ export default function SubmitAppPage() {
                                 "font-bold transition-all",
                                 activeStep === step.id
                                   ? "text-primary"
-                                  : "text-foreground"
+                                  : "text-foreground",
                               )}
                             >
                               {step.title}
@@ -509,7 +514,7 @@ export default function SubmitAppPage() {
                           name="category_id"
                           render={({ field }) => (
                             <FormItem>
-                              <Label>Category_id</Label>
+                              <Label>Category</Label>
                               <Select
                                 onValueChange={field.onChange}
                                 defaultValue={field.value}
@@ -618,7 +623,7 @@ export default function SubmitAppPage() {
                                       >
                                         {version.name}
                                       </SelectItem>
-                                    )
+                                    ),
                                   )}
                                 </SelectContent>
                               </Select>
@@ -715,7 +720,7 @@ export default function SubmitAppPage() {
                                 "relative w-full overflow-hidden rounded-3xl p-8 shadow-2xl transition-all duration-500",
                                 isBalanceInsufficient
                                   ? "bg-gradient-to-br from-red-600 to-rose-900 shadow-red-900/20"
-                                  : "bg-gradient-to-br from-[#1e293b] via-[#334155] to-[#0f172a] shadow-blue-900/20 dark:from-slate-900 dark:via-slate-800 dark:to-black"
+                                  : "bg-gradient-to-br from-[#1e293b] via-[#334155] to-[#0f172a] shadow-blue-900/20 dark:from-slate-900 dark:via-slate-800 dark:to-black",
                               )}
                             >
                               {/* Background Pattern/Noise */}
@@ -786,7 +791,7 @@ export default function SubmitAppPage() {
                                           "text-xs font-bold px-2 py-1 rounded bg-white/10 backdrop-blur border border-white/5",
                                           isBalanceInsufficient
                                             ? "text-red-200"
-                                            : "text-emerald-300"
+                                            : "text-emerald-300",
                                         )}
                                       >
                                         {isBalanceInsufficient
@@ -803,7 +808,7 @@ export default function SubmitAppPage() {
                                         "absolute top-0 left-0 h-full transition-all duration-700 ease-out rounded-full",
                                         isBalanceInsufficient
                                           ? "bg-white/40 w-full"
-                                          : "bg-emerald-400 w-[var(--prog)] shadow-[0_0_10px_2px_rgba(52,211,153,0.5)]"
+                                          : "bg-emerald-400 w-[var(--prog)] shadow-[0_0_10px_2px_rgba(52,211,153,0.5)]",
                                       )}
                                       style={
                                         {
@@ -811,7 +816,7 @@ export default function SubmitAppPage() {
                                             (cost /
                                               (walletData?.totalPoints || 1)) *
                                               100,
-                                            100
+                                            100,
                                           )}%`,
                                         } as React.CSSProperties
                                       }
@@ -832,7 +837,7 @@ export default function SubmitAppPage() {
                             className={cn(
                               "cursor-pointer",
                               isBalanceInsufficient &&
-                                "cursor-not-allowed opacity-50"
+                                "cursor-not-allowed opacity-50",
                             )}
                           >
                             <LoadingButton

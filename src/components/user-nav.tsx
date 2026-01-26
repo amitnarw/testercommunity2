@@ -204,6 +204,7 @@ export function UserNav({ session, onLogout }: UserNavProps) {
   if (!session) {
     null;
   }
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild data-loc="UserNav">
@@ -211,7 +212,7 @@ export function UserNav({ session, onLogout }: UserNavProps) {
           <div className="flex items-center gap-2">
             <Avatar className="h-10 w-10">
               <AvatarImage
-                src={session?.user?.image ?? ""}
+                src={session?.user?.image || ""}
                 data-ai-hint="user avatar"
                 alt="User Avatar"
               />

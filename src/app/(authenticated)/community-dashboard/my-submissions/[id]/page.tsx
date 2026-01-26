@@ -1,7 +1,6 @@
 "use client";
 
 import { SafeImage } from "@/components/safe-image";
-import { projects as allProjects } from "@/lib/data"; // Using project data as it's richer
 import {
   Card,
   CardContent,
@@ -28,7 +27,7 @@ import {
   AlertTriangle,
   Expand,
 } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, use } from "react";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { BackButton } from "@/components/back-button";
@@ -38,7 +37,9 @@ import AppInfoHeader from "@/components/app-info-header";
 import Confetti from "react-dom-confetti";
 import { useInView } from "react-intersection-observer";
 import { motion } from "framer-motion";
-import { useSingleHubAppDetails } from "@/hooks/useUser";
+import { useSingleHubAppDetails } from "@/hooks/useHub";
+import { HubSubmittedAppResponse } from "@/lib/types";
+import { TesterRequestsSection } from "@/components/tester-requests-section";
 
 const FEEDBACK_PER_PAGE = 5;
 
@@ -130,7 +131,7 @@ const TestCompleteSection = ({
   app,
   isUnderReviewOrRejected,
 }: {
-  app: any;
+  app: HubSubmittedAppResponse;
   isUnderReviewOrRejected: boolean;
 }) => {
   const { ref } = useInView({
@@ -183,12 +184,12 @@ const TestCompleteSection = ({
       >
         <div className="bg-gradient-to-tl from-primary/20 to-primary text-primary-foreground p-2 sm:p-5 h-full w-full flex flex-col items-center justify-center gap-1">
           <p className="text-xs">Total Testers</p>
-          <p className="text-4xl sm:text-5xl font-bold">{app.testersStarted}</p>
+          <p className="text-4xl sm:text-5xl font-bold">{app?.currentTester}</p>
         </div>
         <div className="bg-gradient-to-tr from-primary/20 to-primary text-primary-foreground p-2 sm:p-5 h-full w-full flex flex-col items-center justify-center gap-1">
           <p className="text-xs">Total Days</p>
           <p className="text-4xl sm:text-5xl font-bold">
-            {isUnderReviewOrRejected ? 0 : app.totalDays}
+            {isUnderReviewOrRejected ? 0 : app?.totalDay}
           </p>
         </div>
       </motion.div>
@@ -226,8 +227,8 @@ const TestCompleteSection = ({
           </div>
           <div className="bg-secondary p-1.5 pt-3 rounded-lg flex flex-col gap-2 items-center justify-center">
             <p className="text-xs">Points Cost</p>
-            <p className="text-3xl font-bold bg-card rounded-lg w-full h-full flex flex items-center justify-center">
-              {isUnderReviewOrRejected ? 0 : app?.pointsCost.toLocaleString()}
+            <p className="text-3xl font-bold bg-card rounded-lg w-full h-full flex items-center justify-center">
+              {isUnderReviewOrRejected ? 0 : app?.costPoints}
             </p>
           </div>
         </div>
@@ -236,15 +237,22 @@ const TestCompleteSection = ({
   );
 };
 
-function SubmissionDetailsPage({ params }: { params: { id: string } }) {
-  // const project = allProjects.find((p) => p.id.toString() === params.id);
+function SubmissionDetailsPage({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = use(params);
   const [feedbackPage, setFeedbackPage] = useState(1);
   const [viewMode, setViewMode] = useState<"list" | "grid">("list");
   const [fullscreenImage, setFullscreenImage] = useState<string | null>(null);
   const [isConfettiActive, setConfettiActive] = useState(false);
 
-  const { data: appDetails, isPending: appDetailsIsPending } =
-    useSingleHubAppDetails({ id: params.id });
+  const {
+    data: appDetails,
+    isPending: appDetailsIsPending,
+    refetch: appDetailsRefetch,
+  } = useSingleHubAppDetails({ id });
 
   const { ref: confettiTriggerRef, inView: confettiInView } = useInView({
     threshold: 0.5,
@@ -268,13 +276,13 @@ function SubmissionDetailsPage({ params }: { params: { id: string } }) {
   const filteredFeedback = isUnderReviewOrRejected ? [] : appDetails?.feedback;
 
   const totalFeedbackPages = Math.ceil(
-    filteredFeedback.length / FEEDBACK_PER_PAGE
+    filteredFeedback.length / FEEDBACK_PER_PAGE,
   );
   const feedbackStartIndex = (feedbackPage - 1) * FEEDBACK_PER_PAGE;
   const feedbackEndIndex = feedbackStartIndex + FEEDBACK_PER_PAGE;
   const currentFeedback = filteredFeedback.slice(
     feedbackStartIndex,
-    feedbackEndIndex
+    feedbackEndIndex,
   );
 
   const handleFeedbackPageChange = (page: number) => {
@@ -333,69 +341,95 @@ function SubmissionDetailsPage({ params }: { params: { id: string } }) {
             statusConfig={statusConfig}
           />
 
-          {appDetails?.status === "REJECTED" &&
-            appDetails?.statusDetails?.description && (
-              <section className="bg-destructive/10 border-2 border-dashed border-destructive/10 rounded-2xl p-6 relative overflow-hidden">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="bg-destructive/5 p-3 sm:bg-destructive/10 p-3 rounded-full text-destructive absolute sm:static top-2 right-0 sm:top-auto sm:right-auto scale-[3] sm:scale-100">
-                    <AlertTriangle className="w-8 h-8 text-destructive/20 sm:text-destructive" />
-                  </div>
-                  <h2 className="text-xl sm:text-2xl font-bold text-destructive dark:text-red-500">
-                    {appDetails?.statusDetails?.title}
-                  </h2>
-                </div>
-                <div className="flex flex-row gap-6 items-start">
-                  <p className="text-destructive/80 dark:text-red-500/80 leading-relaxed">
-                    {appDetails?.statusDetails?.description}
-                  </p>
-                  {appDetails?.statusDetails?.image && (
-                    <div
-                      className="relative rounded-lg overflow-hidden group cursor-pointer"
-                      onClick={() =>
-                        setFullscreenImage(appDetails?.statusDetails?.image!)
-                      }
-                    >
-                      <SafeImage
-                        src={appDetails?.statusDetails?.image}
-                        alt={appDetails?.statusDetails?.title}
-                        width={600}
-                        height={400}
-                        className="object-cover w-full h-auto transition-transform duration-300 group-hover:scale-105"
-                        data-ai-hint={appDetails?.statusDetails?.title}
-                      />
-                      <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
-                        <Expand className="w-10 h-10 text-white" />
-                      </div>
+          {appDetails?.status === "REJECTED" && (
+            <motion.section
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="rounded-[32px] border border-destructive/10 bg-background/50 backdrop-blur-xl shadow-2xl shadow-destructive/5 relative overflow-hidden group"
+            >
+              <div className="absolute inset-0 bg-gradient-to-br from-red-500/60 to-red-500/20 dark:from-red-500/30 dark:to-red-500/5 opacity-30 dark:opacity-70" />
+
+              <div className="flex flex-col lg:flex-row relative z-10">
+                {/* Content Side */}
+                <div className="flex-1 p-4 sm:p-10 sm:pr-14 flex flex-col justify-center">
+                  <div className="flex items-center gap-4 mb-8">
+                    <div className="h-14 w-14 rounded-2xl bg-destructive/10 text-destructive flex items-center justify-center shadow-inner ring-1 ring-destructive/20 relative overflow-hidden">
+                      <div className="absolute inset-0 bg-gradient-to-br from-destructive/20 to-transparent opacity-50" />
+                      <XCircle className="w-7 h-7 relative z-10" />
                     </div>
-                  )}
+                    <div>
+                      <div className="flex items-center gap-2 mb-1">
+                        <span className="flex h-2 w-2 rounded-full bg-destructive"></span>
+                        <p className="text-xs font-bold text-destructive uppercase tracking-widest">
+                          Action Required
+                        </p>
+                      </div>
+                      <h2 className="text-2xl sm:text-3xl font-bold text-foreground tracking-tight">
+                        {appDetails?.statusDetails?.title}
+                      </h2>
+                    </div>
+                  </div>
+
+                  <div className="space-y-6 mb-10 relative">
+                    <div className="bg-white/50 dark:bg-white/10 rounded-2xl p-3 sm:p-6 border border-destructive/10 relative overflow-hidden">
+                      <div className="flex items-center gap-2 mb-3 text-yellow-500 font-medium text-sm uppercase tracking-wider">
+                        <AlertTriangle className="w-4 h-4" />
+                        Publisher Feedback
+                      </div>
+                      <p className="text-base text-foreground/80 leading-relaxed font-medium">
+                        {appDetails?.statusDetails?.description}
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex flex-wrap gap-4">
+                    <Button
+                      variant="outline"
+                      className="border-destructive/20 hover:bg-destructive/5 text-destructive rounded-xl h-12 px-8 text-base bg-background/50"
+                    >
+                      Contact Support
+                    </Button>
+                  </div>
                 </div>
-              </section>
-            )}
+
+                {/* Media Side */}
+                {appDetails?.statusDetails?.image && (
+                  <div
+                    className="flex w-full lg:w-[480px] relative h-[300px] lg:h-auto lg:min-h-full group/image cursor-pointer overflow-hidden border-t lg:border-t-0 lg:border-l border-destructive/10"
+                    onClick={() =>
+                      setFullscreenImage(appDetails?.statusDetails?.image!)
+                    }
+                  >
+                    <SafeImage
+                      src={appDetails?.statusDetails?.image}
+                      alt="Rejection details"
+                      fill
+                      className="object-cover transition-transform duration-700 group-hover/image:scale-105"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-60 lg:opacity-0 group-hover/image:opacity-100 transition-all duration-500 lg:bg-black/40 flex flex-col items-center justify-center gap-3 backdrop-blur-[2px]">
+                      <div className="h-12 w-12 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center border border-white/20 transform scale-0 group-hover/image:scale-100 transition-transform duration-300 delay-100">
+                        <Expand className="w-6 h-6 text-white" />
+                      </div>
+                      <span className="text-white text-sm font-medium opacity-0 group-hover/image:opacity-100 transition-opacity duration-300 delay-200">
+                        View Evidence
+                      </span>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </motion.section>
+          )}
 
           <div
             className={`relative flex flex-col gap-10 ${
               isUnderReviewOrRejected ? "blur-md pointer-events-none" : ""
             }`}
           >
-            {/* {isUnderReviewOrRejected && (
-                            <div className="absolute inset-0 bg-background/70 backdrop-blur-[10px] z-20 rounded-2xl flex flex-col items-center justify-center">
-                                <div className="bg-secondary/80 p-4 rounded-full mb-4">
-                                    {project.status === 'In Review' ? <Search className="w-12 h-12 text-primary" /> : <XCircle className="w-12 h-12 text-destructive" />}
-                                </div>
-                                <h2 className="text-2xl font-bold">{project.status}</h2>
-                                <p className="text-black/80 dark:text-white/80 max-w-sm text-center">
-                                    {project.status === 'In Review' 
-                                        ? "Our team is currently reviewing this submission. Testing data and feedback will appear here once the app is published."
-                                        : "This submission was rejected. Please check the rejection reason above for details from our review team."
-                                    }
-                                </p>
-                            </div>
-                        )} */}
             {appDetails?.status !== "COMPLETED" ? (
               <div
                 className={cn(
                   "grid grid-cols-1 lg:grid-cols-3 gap-2 sm:gap-4 text-center",
-                  isUnderReviewOrRejected && "pointer-events-none"
+                  isUnderReviewOrRejected && "pointer-events-none",
                 )}
               >
                 <div className="flex flex-row gap-1 items-center justify-center rounded-2xl overflow-hidden">
@@ -461,7 +495,7 @@ function SubmissionDetailsPage({ params }: { params: { id: string } }) {
                   <div className="bg-card p-3 pt-4 rounded-2xl flex flex-col justify-center h-full w-full">
                     <p className="text-xs sm:text-sm mb-3">Points Cost</p>
                     <p className="text-2xl sm:text-4xl font-bold bg-secondary rounded-lg h-full w-full flex items-center justify-center">
-                      {isUnderReviewOrRejected ? 0 : appDetails?.rewardPoints}
+                      {isUnderReviewOrRejected ? 0 : appDetails?.costPoints}
                     </p>
                   </div>
                   <div className="bg-card p-3 pt-4 rounded-2xl flex flex-col justify-center h-full w-full">
@@ -489,10 +523,18 @@ function SubmissionDetailsPage({ params }: { params: { id: string } }) {
               />
             )}
 
+            {appDetails?.status === "AVAILABLE" && (
+              <TesterRequestsSection
+                hubId={id}
+                requests={appDetails?.testerRelations || []}
+                refetch={appDetailsRefetch}
+              />
+            )}
+
             <div
               className={cn(
                 "bg-card/50 rounded-2xl p-2 sm:p-6 sm:pt-4",
-                isUnderReviewOrRejected && "pointer-events-none"
+                isUnderReviewOrRejected && "pointer-events-none",
               )}
             >
               <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
@@ -532,14 +574,14 @@ function SubmissionDetailsPage({ params }: { params: { id: string } }) {
                             fb.type === "BUG"
                               ? "from-red-500/20"
                               : fb.type === "SUGGESTION"
-                              ? "from-yellow-500/20"
-                              : "from-green-500/20"
+                                ? "from-yellow-500/20"
+                                : "from-green-500/20"
                           } ${
                             fb.type === "BUG"
                               ? "to-red-500/5"
                               : fb.type === "SUGGESTION"
-                              ? "to-yellow-500/5"
-                              : "to-green-500/5"
+                                ? "to-yellow-500/5"
+                                : "to-green-500/5"
                           } p-0 pt-2 shadow-none border-0 relative overflow-hidden`}
                         >
                           <div className="flex items-start flex-col gap-0 pr-2 pl-5">
@@ -557,15 +599,15 @@ function SubmissionDetailsPage({ params }: { params: { id: string } }) {
                             </p>
                           </div>
                           <div className="flex items-center justify-between text-xs text-muted-foreground w-full mt-3 bg-black/5 dark:bg-white/10 px-5 h-12">
-                            {fb?.media?.length > 0 ? (
+                            {fb?.media ? (
                               <div
                                 className="cursor-pointer h-10 w-7 relative"
                                 onClick={() =>
-                                  setFullscreenImage(fb?.media[0].src || "")
+                                  setFullscreenImage(fb?.media?.src || "")
                                 }
                               >
                                 <SafeImage
-                                  src={fb?.media[0].src}
+                                  src={fb?.media?.src}
                                   alt="Feedback screenshot"
                                   fill
                                   className="absolute rounded border object-cover"
@@ -597,14 +639,14 @@ function SubmissionDetailsPage({ params }: { params: { id: string } }) {
                             fb.type === "BUG"
                               ? "from-red-500/20"
                               : fb.type === "SUGGESTION"
-                              ? "from-yellow-500/20"
-                              : "from-green-500/20"
+                                ? "from-yellow-500/20"
+                                : "from-green-500/20"
                           } ${
                             fb.type === "BUG"
                               ? "to-red-500/10"
                               : fb.type === "SUGGESTION"
-                              ? "to-yellow-500/10"
-                              : "to-green-500/10"
+                                ? "to-yellow-500/10"
+                                : "to-green-500/10"
                           } shadow-none border-0 h-full flex flex-col relative gap-1 sm:gap-2 overflow-hidden`}
                         >
                           <CardHeader className="p-2 px-3 pb-0 sm:px-4 flex-row items-center justify-between">
@@ -630,15 +672,15 @@ function SubmissionDetailsPage({ params }: { params: { id: string } }) {
                             </p>
                           </CardContent>
                           <CardFooter className="p-2 px-3 sm:px-4 flex items-center justify-between text-xs text-muted-foreground mt-2 h-10 bg-black/5 dark:bg-white/10">
-                            {fb?.media?.length > 0 ? (
+                            {fb?.media ? (
                               <div
                                 className="cursor-pointer h-8 w-6 relative"
                                 onClick={() =>
-                                  setFullscreenImage(fb?.media[0].src || "")
+                                  setFullscreenImage(fb?.media?.src || "")
                                 }
                               >
                                 <SafeImage
-                                  src={fb?.media[0].src}
+                                  src={fb?.media?.src}
                                   alt="Feedback screenshot"
                                   fill
                                   className="absolute rounded-sm border object-cover"

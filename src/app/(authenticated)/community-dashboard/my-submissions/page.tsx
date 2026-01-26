@@ -18,7 +18,8 @@ import {
   Smartphone,
 } from "lucide-react";
 import Link from "next/link";
-import { useState } from "react";
+import { useState, Suspense, type SetStateAction, useEffect } from "react";
+import { useSearchParams, usePathname, useRouter } from "next/navigation";
 import type { HubSubmittedAppResponse } from "@/lib/types";
 import { Badge } from "@/components/ui/badge";
 import { SafeImage } from "@/components/safe-image";
@@ -31,7 +32,7 @@ import SubTabUI from "@/components/sub-tab-ui";
 import Confetti from "react-dom-confetti";
 import { useTransitionRouter } from "@/context/transition-context";
 import { PageHeader } from "@/components/page-header";
-import { useHubSubmittedApp, useHubSubmittedAppsCount } from "@/hooks/useUser";
+import { useHubSubmittedApp, useHubSubmittedAppsCount } from "@/hooks/useHub";
 import { Skeleton } from "@/components/ui/skeleton";
 
 const PROJECTS_PER_PAGE = 6;
@@ -42,10 +43,19 @@ const getStatusConfig = (status: HubSubmittedAppResponse["status"]) => {
       return {
         icon: <Search className="w-3.5 h-3.5" />,
         label: "In Review",
-        color: "text-blue-500",
-        bgColor: "bg-blue-500/10",
-        borderColor: "border-blue-500/20",
+        color: "text-muted-foreground",
+        bgColor: "bg-muted",
+        borderColor: "border-muted",
         description: "Our team is reviewing your submission.",
+      };
+    case "AVAILABLE":
+      return {
+        icon: <Clock className="w-3.5 h-3.5" />,
+        label: "Available",
+        color: "text-primary",
+        bgColor: "bg-primary/10",
+        borderColor: "border-primary/20",
+        description: "Your app is available for testing.",
       };
     case "IN_TESTING":
       return {
@@ -110,7 +120,7 @@ const ProjectCardSkeleton = () => {
 
 const ProjectCard = ({ project }: { project: HubSubmittedAppResponse }) => {
   const statusConfig = getStatusConfig(
-    project.status as HubSubmittedAppResponse["status"]
+    project.status as HubSubmittedAppResponse["status"],
   );
 
   return (
@@ -128,7 +138,7 @@ const ProjectCard = ({ project }: { project: HubSubmittedAppResponse }) => {
           <div
             className={cn(
               "absolute inset-x-0 top-0 h-1 opacity-60 transition-all duration-300 group-hover:opacity-100",
-              statusConfig.color.replace("text-", "bg-")
+              statusConfig.color.replace("text-", "bg-"),
             )}
           />
 
@@ -152,7 +162,7 @@ const ProjectCard = ({ project }: { project: HubSubmittedAppResponse }) => {
                     "rounded-full px-3 py-0.5 text-[10px] font-medium uppercase tracking-wider border",
                     statusConfig.bgColor,
                     statusConfig.color,
-                    statusConfig.borderColor
+                    statusConfig.borderColor,
                   )}
                 >
                   {statusConfig.label}
@@ -187,14 +197,14 @@ const ProjectCard = ({ project }: { project: HubSubmittedAppResponse }) => {
                   <div className="p-1.5 rounded-full bg-amber-500/10 text-amber-500">
                     <Star className="w-3.5 h-3.5 fill-amber-500/20" />
                   </div>
-                  <span>{project?.points?.toLocaleString() ?? 0} Pts</span>
+                  <span>{project?.costPoints ?? 0} Pts</span>
                 </div>
 
                 <div className="h-4 w-px bg-border/60" />
 
                 <div className="flex items-center gap-1.5 text-muted-foreground">
                   <Clock className="w-3.5 h-3.5" />
-                  <span>{project?.totalDay ?? 7} Days</span>
+                  <span>{project?.totalDay ?? 0} Days</span>
                 </div>
 
                 <div className="h-4 w-px bg-border/60" />
@@ -209,7 +219,7 @@ const ProjectCard = ({ project }: { project: HubSubmittedAppResponse }) => {
                         >
                           <div className="w-full h-full bg-gradient-to-tr from-primary/20 to-primary/5" />
                         </div>
-                      )
+                      ),
                     )}
                   </div>
                   <span className={cn("text-xs", statusConfig.color)}>
@@ -377,11 +387,63 @@ const STATUS_MAPPING: Record<string, string> = {
   available: "AVAILABLE",
 };
 
-export default function MySubmissionsPage() {
+function MySubmissionsContent() {
   const router = useTransitionRouter();
 
-  const [mainTab, setMainTab] = useState("pending");
-  const [pendingSubTab, setPendingSubTab] = useState("in-review");
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
+  // We use the standard router for efficient query param updates without triggering page transitions
+  const navigationRouter = useRouter();
+
+  // Initialize state from URL queries to persist selection across navigation, but use local state for instant updates
+  const [mainTab, setMainTabState] = useState(
+    searchParams.get("tab") || "pending",
+  );
+  const [pendingSubTab, setPendingSubTabState] = useState(
+    searchParams.get("subTab") || "in-review",
+  );
+
+  // Sync with URL changes (e.g. back button)
+  useEffect(() => {
+    const tab = searchParams.get("tab") || "pending";
+    if (tab !== mainTab) setMainTabState(tab);
+
+    const subTab = searchParams.get("subTab") || "in-review";
+    if (subTab !== pendingSubTab) setPendingSubTabState(subTab);
+  }, [searchParams]); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const setMainTab = (val: string) => {
+    // Instant UI update
+    setMainTabState(val);
+
+    // Background URL update
+    const params = new URLSearchParams(searchParams.toString());
+    params.set("tab", val);
+
+    if (val !== "pending") {
+      params.delete("subTab");
+    } else if (pendingSubTab) {
+      params.set("subTab", pendingSubTab);
+    }
+
+    navigationRouter.replace(`${pathname}?${params.toString()}`, {
+      scroll: false,
+    });
+  };
+
+  const setPendingSubTab = (val: SetStateAction<string>) => {
+    const value = val instanceof Function ? val(pendingSubTab) : val;
+
+    // Instant UI update
+    setPendingSubTabState(value);
+
+    // Background URL update
+    const params = new URLSearchParams(searchParams.toString());
+    params.set("subTab", value);
+    navigationRouter.replace(`${pathname}?${params.toString()}`, {
+      scroll: false,
+    });
+  };
 
   const openPage = (page: string) => {
     router.push(page);
@@ -470,9 +532,9 @@ export default function MySubmissionsPage() {
       />
       <div className="min-h-screen mb-12">
         <div className="container mx-auto px-4 md:px-6">
-          <main className="space-y-8">
+          <main className="space-y-4">
             <PageHeader
-              title="My Submissions"
+              title="MySubmissions"
               backHref="/community-dashboard"
               className="w-1/2 px-0"
             />
@@ -533,5 +595,50 @@ export default function MySubmissionsPage() {
         </div>
       </div>
     </>
+  );
+}
+
+export default function MySubmissionsPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen mb-12">
+          <div className="container mx-auto px-4 md:px-6">
+            <div className="space-y-4 pt-4">
+              <div className="flex flex-row items-center justify-between w-full">
+                <div className="h-8 w-48 bg-muted/20 animate-pulse rounded-md" />
+                <div className="h-10 w-40 bg-muted/20 animate-pulse rounded-md" />
+              </div>
+              <div className="h-12 w-full bg-muted/20 animate-pulse rounded-md mt-8" />
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
+                {Array.from({ length: 6 }).map((_, i) => (
+                  <div key={i} className="h-[320px]">
+                    <div className="rounded-[1.5rem] border border-border/40 bg-card/50 p-6 h-full flex flex-col gap-4">
+                      <div className="flex items-start gap-4">
+                        <Skeleton className="w-16 h-16 rounded-2xl" />
+                        <div className="flex-1 space-y-2">
+                          <Skeleton className="h-5 w-3/4" />
+                          <Skeleton className="h-4 w-1/2" />
+                        </div>
+                      </div>
+                      <div className="space-y-2 flex-grow">
+                        <Skeleton className="h-4 w-full" />
+                        <Skeleton className="h-4 w-5/6" />
+                      </div>
+                      <div className="pt-4 border-t border-dashed border-border/50 flex justify-between">
+                        <Skeleton className="h-4 w-20" />
+                        <Skeleton className="h-4 w-20" />
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      }
+    >
+      <MySubmissionsContent />
+    </Suspense>
   );
 }

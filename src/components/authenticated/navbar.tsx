@@ -7,6 +7,7 @@ import { Sun, Moon } from "lucide-react";
 import { UserNav } from "../user-nav";
 import MobileMenu from "../mobile-menu";
 import { authClient } from "@/lib/auth-client";
+import { EarnPointsButton } from "../earn-points-button";
 import { Skeleton } from "../ui/skeleton";
 
 export default function Navbar({ onLogout }: { onLogout: () => void }) {
@@ -25,6 +26,7 @@ export default function Navbar({ onLogout }: { onLogout: () => void }) {
       <header className="sticky top-0 z-40 bg-[#f8fafc] dark:bg-[#0f151e] md:pl-20 py-2">
         <div className="container mx-auto px-4 md:px-6">
           <div className="flex items-center justify-end gap-2">
+            <EarnPointsButton />
             <Button
               variant="ghost"
               size="icon"
@@ -56,6 +58,7 @@ export default function Navbar({ onLogout }: { onLogout: () => void }) {
         <div className="flex items-center justify-end gap-2">
           <div className="flex flex-row gap-2">
             <div className="flex items-center gap-2">
+              <EarnPointsButton />
               <Button
                 variant="ghost"
                 size="icon"

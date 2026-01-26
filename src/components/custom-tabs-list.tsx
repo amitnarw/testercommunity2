@@ -32,13 +32,13 @@ export function CustomTabsList({
     <div
       className={cn(
         "sticky top-0 z-30 backdrop-blur-xl py-2 -mx-4 px-4 md:mx-0 md:px-0",
-        className
+        className,
       )}
     >
       <TabsList
         className={cn(
-          "relative grid w-full bg-muted p-1 h-auto rounded-lg",
-          listClassName
+          "relative grid w-full bg-muted p-0.5 sm:p-1 h-auto rounded-lg",
+          listClassName,
         )}
         style={{
           gridTemplateColumns: `repeat(${tabs.length}, minmax(0, 1fr))`,
@@ -54,7 +54,7 @@ export function CustomTabsList({
                 "relative px-4 text-sm font-medium rounded-lg transition-all duration-300",
                 isSelected
                   ? "text-foreground shadow-sm"
-                  : "text-muted-foreground hover:text-foreground hover:bg-background/40"
+                  : "text-muted-foreground hover:text-foreground hover:bg-background/40",
               )}
             >
               {isSelected && (
@@ -68,17 +68,17 @@ export function CustomTabsList({
                   }}
                 />
               )}
-              <span className="relative z-10 flex items-center justify-center gap-2">
+              <span className="relative z-10 flex items-center justify-center gap-2 text-xs sm:text-sm">
                 {tab.label}
                 {isLoading ? (
                   <Skeleton className="w-4 h-4 rounded-full" />
                 ) : (
                   <span
                     className={cn(
-                      "text-[10px] w-6 h-6 flex items-center justify-center rounded-full",
+                      "text-[10px] w-4 h-4 sm:w-6 sm:h-6 flex items-center justify-center rounded-full",
                       isSelected
                         ? "bg-primary/10 text-primary"
-                        : "bg-primary/5 text-muted-foreground group-hover:bg-muted/80"
+                        : "bg-primary/5 text-muted-foreground group-hover:bg-muted/80",
                     )}
                   >
                     {tab.count ?? 0}
