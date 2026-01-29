@@ -29,7 +29,12 @@ async function validateSession(
   const secret = process.env.BETTER_AUTH_SECRET;
 
   // Try to get role from the role_cache cookie (JWT)
-  const roleCache = request.cookies.get("better-auth.role_cache")?.value;
+  const roleCache = request.cookies
+    .getAll()
+    .find(
+      (c) =>
+        c.name === "better-auth.role_cache" || c.name.endsWith(".role_cache"),
+    )?.value;
 
   // More flexible session token check (handles Secure/Host prefixes)
   const sessionToken = request.cookies
