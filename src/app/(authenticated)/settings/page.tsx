@@ -26,25 +26,54 @@ import {
 } from "lucide-react";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Button } from "@/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Slider } from "@/components/ui/slider";
+
+import { useTransitionContext } from "@/context/transition-context";
 
 export default function SettingsPage() {
   const { theme, setTheme } = useTheme();
+  const {
+    transitionType,
+    setTransitionType,
+    transitionColor,
+    setTransitionColor,
+  } = useTransitionContext();
   const [enableTransitions, setEnableTransitions] = useState(true);
+  const [transitionDuration, setTransitionDuration] = useState(400);
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     setMounted(true);
     const storedTransitionPrefs = localStorage.getItem(
-      "enable-page-transitions"
+      "enable-page-transitions",
     );
     if (storedTransitionPrefs !== null) {
       setEnableTransitions(storedTransitionPrefs === "true");
     }
+
+    const storedDuration = localStorage.getItem("transition-duration");
+    if (storedDuration) setTransitionDuration(parseInt(storedDuration));
   }, []);
 
   const handleTransitionToggle = (enabled: boolean) => {
     setEnableTransitions(enabled);
     localStorage.setItem("enable-page-transitions", String(enabled));
+  };
+
+  const handleTypeChange = (val: string) => {
+    setTransitionType(val);
+  };
+
+  const handleDurationChange = (val: number[]) => {
+    setTransitionDuration(val[0]);
+    localStorage.setItem("transition-duration", val[0].toString());
   };
 
   if (!mounted) {
@@ -149,6 +178,80 @@ export default function SettingsPage() {
                 onCheckedChange={handleTransitionToggle}
               />
             </div>
+
+            {enableTransitions && (
+              <div className="grid gap-6 pt-4 border-t border-border animate-in fade-in slide-in-from-top-4 duration-300">
+                <div className="grid gap-2">
+                  <Label>Animation Style</Label>
+                  <Select
+                    value={transitionType || "stairs"}
+                    onValueChange={handleTypeChange}
+                  >
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Select animation type" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="stairs">Stairs (Classic)</SelectItem>
+                      <SelectItem value="curve">Fluid Curve</SelectItem>
+                      <SelectItem value="curtain">Curtain Reveal</SelectItem>
+                      <SelectItem value="counter">Loading Counter</SelectItem>
+                      <SelectItem value="slide">Left to Right Slide</SelectItem>
+                      <SelectItem value="zoom">Zoom Wipe</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <p className="text-xs text-muted-foreground">
+                    Choose the visual effect used when moving between pages.
+                  </p>
+                </div>
+
+                <div className="grid gap-2">
+                  <Label>Animation Color</Label>
+                  <div className="flex items-center gap-3 pt-2">
+                    {[
+                      { value: "primary", label: "Brand", bg: "bg-primary" },
+                      { value: "black", label: "Dark", bg: "bg-black" },
+                      { value: "white", label: "Light", bg: "bg-white" },
+                    ].map((color) => (
+                      <button
+                        key={color.value}
+                        onClick={() => setTransitionColor(color.value)}
+                        className={`w-8 h-8 rounded-full ${color.bg} transition-all ${
+                          transitionColor === color.value
+                            ? "ring-2 ring-ring ring-offset-2 ring-offset-background scale-110"
+                            : "hover:scale-110 opacity-80 hover:opacity-100 shadow-xl border"
+                        }`}
+                        title={color.label}
+                        aria-label={`Select ${color.label} color`}
+                      />
+                    ))}
+                  </div>
+                  <p className="text-xs text-muted-foreground">
+                    Choose the background color for page transitions.
+                  </p>
+                </div>
+
+                <div className="grid gap-4">
+                  <div className="flex items-center justify-between">
+                    <Label>Animation Duration</Label>
+                    <span className="text-sm font-medium text-muted-foreground bg-muted px-2 py-1 rounded">
+                      {(transitionDuration / 1000).toFixed(1)}s
+                    </span>
+                  </div>
+                  <Slider
+                    value={[transitionDuration]}
+                    onValueChange={handleDurationChange}
+                    min={200}
+                    max={2000}
+                    step={100}
+                    className="w-full"
+                  />
+                  <p className="text-xs text-muted-foreground">
+                    Controls how fast the transition animation plays (0.2s to
+                    2.0s).
+                  </p>
+                </div>
+              </div>
+            )}
           </CardContent>
         </Card>
 

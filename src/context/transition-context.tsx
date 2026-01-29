@@ -7,10 +7,14 @@ interface TransitionContextType {
   triggerTransition: (href: string) => void;
   isTransitioning: boolean;
   targetLabel: string;
+  transitionType: string;
+  setTransitionType: (type: string) => void;
+  transitionColor: string;
+  setTransitionColor: (color: string) => void;
 }
 
 const TransitionContext = createContext<TransitionContextType | undefined>(
-  undefined
+  undefined,
 );
 
 export function TransitionProvider({
@@ -50,6 +54,8 @@ export function TransitionProvider({
 
     // Check user preference
     const enabled = localStorage.getItem("enable-page-transitions") !== "false"; // Default to true if null
+    const durationStr = localStorage.getItem("transition-duration");
+    const durationMs = durationStr ? parseInt(durationStr) : 400; // Default 400ms
 
     if (!enabled) {
       router.push(href);
@@ -58,16 +64,59 @@ export function TransitionProvider({
 
     setTargetLabel(getPageName(href));
     setIsTransitioning(true);
-    // Wait for the exit animation (e.g., 400ms to match the animation duration)
-    // Faster: 400ms buffer (300ms animation + 100ms overlap)
+
+    // Buffer time to ensure animation starts/completes cleanly
+    // If the duration is very short, ensuring at least a frame.
     setTimeout(() => {
       router.push(href);
-    }, 400);
+    }, durationMs);
+  };
+
+  const [transitionType, setTransitionTypeState] = useState("stairs");
+  const [transitionColor, setTransitionColorState] = useState("primary");
+
+  useEffect(() => {
+    const storedType = localStorage.getItem("transition-type");
+    const validTypes = [
+      "stairs",
+      "curve",
+      "curtain",
+      "counter",
+      "slide",
+      "zoom",
+    ];
+    if (storedType && validTypes.includes(storedType)) {
+      setTransitionTypeState(storedType);
+    } else {
+      setTransitionTypeState("stairs");
+      localStorage.setItem("transition-type", "stairs");
+    }
+
+    const storedColor = localStorage.getItem("transition-color");
+    if (storedColor) setTransitionColorState(storedColor);
+  }, []);
+
+  const setTransitionType = (type: string) => {
+    setTransitionTypeState(type);
+    localStorage.setItem("transition-type", type);
+  };
+
+  const setTransitionColor = (color: string) => {
+    setTransitionColorState(color);
+    localStorage.setItem("transition-color", color);
   };
 
   return (
     <TransitionContext.Provider
-      value={{ triggerTransition, isTransitioning, targetLabel }}
+      value={{
+        triggerTransition,
+        isTransitioning,
+        targetLabel,
+        transitionType,
+        setTransitionType,
+        transitionColor,
+        setTransitionColor,
+      }}
     >
       {children}
     </TransitionContext.Provider>
@@ -78,7 +127,7 @@ export function useTransitionContext() {
   const context = useContext(TransitionContext);
   if (context === undefined) {
     throw new Error(
-      "useTransitionContext must be used within a TransitionProvider"
+      "useTransitionContext must be used within a TransitionProvider",
     );
   }
   return context;
