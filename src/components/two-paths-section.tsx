@@ -80,7 +80,7 @@ export function TwoPathsSection() {
   return (
     <section
       data-loc="TwoPathsSection"
-      className="relative py-16 md:py-32 overflow-hidden"
+      className="relative py-10 md:py-32 overflow-hidden"
     >
       {/* Background Decor */}
       <div className="absolute inset-0 bg-dot-pattern opacity-[0.2] pointer-events-none" />
@@ -96,7 +96,8 @@ export function TwoPathsSection() {
         >
           <motion.div variants={itemVariants}>
             <h2 className="text-3xl md:text-4xl font-bold tracking-tight mb-4 md:mb-6 bg-clip-text text-transparent bg-gradient-to-b from-foreground to-foreground/70 pb-2">
-              Two Paths to Get Your App Tested
+              Two Paths to Get{" "}
+              <span className="text-primary italic">Your App</span> Tested
             </h2>
           </motion.div>
           <motion.div variants={itemVariants}>
@@ -142,13 +143,149 @@ export function TwoPathsSection() {
           variants={containerVariants}
           className="grid md:grid-cols-2 gap-8 lg:gap-12 max-w-5xl mx-auto items-stretch"
         >
-          {/* Path 1: Community (Standard Style) */}
-          <div
-            className={cn(
-              "h-full",
-              activeTab === "professional" ? "hidden md:block" : "block",
-            )}
-          >
+          {/* Mobile Animated Cards - Only visible on mobile */}
+          <div className="block md:hidden">
+            <AnimatePresence mode="wait">
+              {activeTab === "community" ? (
+                <motion.div
+                  key="community-mobile"
+                  initial={{ opacity: 0, x: -50 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: 50 }}
+                  transition={{ duration: 0.3, ease: "easeInOut" }}
+                >
+                  <motion.div
+                    whileHover={{ y: -8, scale: 1.02 }}
+                    className={cardClasses(false)}
+                  >
+                    <div className="mb-8 relative z-10">
+                      <div className="flex items-center gap-3 mb-4">
+                        <div className="p-2.5 bg-primary/10 rounded-xl">
+                          <Users className="w-6 h-6 text-primary" />
+                        </div>
+                        <h3 className="text-xl font-medium text-foreground">
+                          The Community Path
+                        </h3>
+                      </div>
+
+                      <div className="mt-4 flex items-baseline">
+                        <span className="text-4xl font-bold tracking-tight">
+                          Free
+                        </span>
+                        <span className="ml-2 text-sm font-medium text-muted-foreground">
+                          / forever
+                        </span>
+                      </div>
+                      <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
+                        Test apps, earn points, and get your app tested by the
+                        community.
+                      </p>
+                    </div>
+
+                    <div className="flex-1 space-y-4 mb-8 relative z-10">
+                      {[
+                        'Reciprocal "give-to-get" model',
+                        "Earn points for testing other apps",
+                        "Access a diverse pool of real users",
+                      ].map((feature, i) => (
+                        <FeatureItem key={i} text={feature} isPopular={false} />
+                      ))}
+                    </div>
+
+                    <div className="mt-auto relative z-10">
+                      <Link
+                        href="/community-dashboard"
+                        className="w-full block"
+                      >
+                        <Button
+                          className="w-full py-6 rounded-full font-semibold text-base transition-all duration-300 group-hover:bg-primary group-hover:text-primary-foreground"
+                          variant="outline"
+                        >
+                          Explore Community Hub
+                        </Button>
+                      </Link>
+                    </div>
+                  </motion.div>
+                </motion.div>
+              ) : (
+                <motion.div
+                  key="professional-mobile"
+                  initial={{ opacity: 0, x: 50 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  exit={{ opacity: 0, x: -50 }}
+                  transition={{ duration: 0.3, ease: "easeInOut" }}
+                >
+                  <motion.div
+                    whileHover={{ y: -8, scale: 1.05 }}
+                    className={cardClasses(true)}
+                  >
+                    <>
+                      <div className="absolute bottom-0 left-0 -ml-20 -mb-20 w-60 h-60 bg-black/10 rounded-full blur-3xl pointer-events-none" />
+                      <div className="absolute top-6 right-6 opacity-20 rotate-12">
+                        <Star className="w-24 h-24 fill-current text-white" />
+                      </div>
+                      <div className="absolute -top-4 left-0 right-0 flex justify-center z-10">
+                        <Badge className="bg-black dark:bg-white text-white dark:text-black hover:bg-black/60 px-4 py-1.5 text-xs font-bold uppercase tracking-widest shadow-lg border-0">
+                          Recommended
+                        </Badge>
+                      </div>
+                    </>
+
+                    <div className="mb-8 relative z-10">
+                      <div className="flex items-center gap-3 mb-4">
+                        <div className="p-2.5 bg-white/20 rounded-xl">
+                          <Briefcase className="w-6 h-6 text-white" />
+                        </div>
+                        <h3 className="text-xl font-medium text-white">
+                          The Professional Path
+                        </h3>
+                      </div>
+
+                      <div className="mt-4 flex items-baseline">
+                        <span className="text-4xl font-bold tracking-tight">
+                          Paid
+                        </span>
+                        <span className="ml-2 text-sm font-medium text-primary-foreground/80">
+                          / per project
+                        </span>
+                      </div>
+                      <p className="mt-4 text-sm leading-relaxed text-primary-foreground/90">
+                        Hire our professional testers for guaranteed,
+                        high-quality results.
+                      </p>
+                    </div>
+
+                    <div className="flex-1 space-y-4 mb-8 relative z-10">
+                      {[
+                        "Guaranteed testing by vetted pros",
+                        "Fast-track your launch",
+                        "Managed process, hassle-free",
+                      ].map((feature, i) => (
+                        <FeatureItem key={i} text={feature} isPopular={true} />
+                      ))}
+                    </div>
+
+                    <div className="mt-auto relative z-10">
+                      <Link href="/pricing" className="w-full block">
+                        <HoverBorderGradient
+                          containerClassName="w-full"
+                          className="bg-white text-primary flex items-center justify-center space-x-2 w-full py-4 font-bold"
+                        >
+                          <Zap className="w-4 h-4 mr-2 fill-current" />
+                          <span className="font-semibold">
+                            View Point Packages
+                          </span>
+                        </HoverBorderGradient>
+                      </Link>
+                    </div>
+                  </motion.div>
+                </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+
+          {/* Path 1: Community (Standard Style) - Desktop Only */}
+          <div className="h-full hidden md:block">
             <motion.div
               variants={itemVariants}
               whileHover={{ y: -8, scale: 1.02 }}
@@ -201,13 +338,8 @@ export function TwoPathsSection() {
             </motion.div>
           </div>
 
-          {/* Path 2: Professional (Popular Style) */}
-          <div
-            className={cn(
-              "h-full",
-              activeTab === "community" ? "hidden md:block" : "block",
-            )}
-          >
+          {/* Path 2: Professional (Popular Style) - Desktop Only */}
+          <div className="h-full hidden md:block">
             <motion.div
               variants={itemVariants}
               whileHover={{ y: -8, scale: 1.05 }}

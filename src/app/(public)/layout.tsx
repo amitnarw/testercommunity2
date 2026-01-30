@@ -22,6 +22,13 @@ export default function PublicLayout({
     pathname.startsWith("/tester/login") ||
     pathname.startsWith("/tester/register");
 
+  const isSamplePage = pathname.startsWith("/samples");
+
+  // Sample pages get their own minimal layout without navbar/footer
+  if (isSamplePage) {
+    return <PageTransition>{children}</PageTransition>;
+  }
+
   if (isAuthPage) {
     return <PageTransition>{children}</PageTransition>;
   }

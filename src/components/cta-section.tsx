@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 
 export function CTASection() {
   return (
-    <section className="py-16 md:py-24 relative overflow-hidden bg-primary w-full text-primary-foreground select-none">
+    <section className="w-full relative overflow-hidden bg-primary text-primary-foreground select-none flex flex-col items-center justify-center py-16 md:py-32">
       {/* Background Effects */}
       <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.12] mix-blend-overlay pointer-events-none data-[loc='cta-noise']" />
 
@@ -64,9 +64,10 @@ export function CTASection() {
             <Link href="/auth/register" className="w-full sm:w-auto">
               <AnimatedRoundedButton
                 backgroundColor="white"
+                animatedBackgroundColor="black"
                 normalTextColor="hsl(var(--primary))"
                 hoverTextColor="white"
-                className="w-full sm:min-w-[160px] shadow-2xl shadow-black/20 after:content-[''] after:absolute after:inset-0 after:rounded-full after:ring-4 after:ring-white/20 after:opacity-0 hover:after:opacity-100 after:transition-opacity"
+                className="w-full"
                 paddingX="6"
                 paddingY="3"
                 borderRadius="9999px"

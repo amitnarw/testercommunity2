@@ -16,6 +16,8 @@ import {
   TrendingUp,
   ShieldCheck,
   Coins,
+  Rocket,
+  Layout,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -125,7 +127,7 @@ export function GlobalImpactSection() {
     <section
       data-loc="GlobalImpactSection"
       ref={sectionRef}
-      className="py-20 md:py-32 bg-secondary/50 relative overflow-hidden"
+      className="py-12 md:py-32 bg-secondary/50 relative overflow-hidden"
     >
       <div className="absolute inset-0 bg-dot-pattern-dark opacity-30 z-0"></div>
 
@@ -176,26 +178,26 @@ export function GlobalImpactSection() {
             </p>
           </StatCard>
           <StatCard
-            title="Projects Accelerated"
-            icon={<TrendingUp className="w-4 h-4" />}
+            title="Pro Apps Tested"
+            icon={<Rocket className="w-4 h-4" />}
             className="bg-gradient-to-br from-primary to-primary/50 text-primary-foreground"
           >
             <p className="text-2xl sm:text-3xl font-bold">
-              <AnimatedCounter to={24} suffix="+" />
+              <AnimatedCounter to={55} suffix="+" />
             </p>
             <p className="text-primary-foreground/80 mt-1 text-[10px]">
-              Apps & features launched.
+              Paid apps fully tested.
             </p>
           </StatCard>
           <StatCard
-            title="Security First"
-            icon={<ShieldCheck className="w-4 h-4" />}
+            title="Community Apps"
+            icon={<Layout className="w-4 h-4" />}
           >
             <p className="text-2xl sm:text-3xl font-bold">
-              <AnimatedCounter to={19} suffix="+" />
+              <AnimatedCounter to={106} suffix="+" />
             </p>
             <p className="text-muted-foreground mt-1 text-[10px]">
-              Critical vulnerabilities found.
+              Free apps submitted by users.
             </p>
           </StatCard>
           <StatCard
