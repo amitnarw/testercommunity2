@@ -12,10 +12,10 @@ import {
   Globe,
   Users,
   Bug,
-  Code,
+  Smartphone,
   TrendingUp,
   ShieldCheck,
-  IndianRupee,
+  Coins,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -30,7 +30,7 @@ const AnimatedCounter = ({
 }) => {
   const [count, setCount] = useState(0);
   const ref = useRef<HTMLSpanElement>(null);
-  const isInView = useInView(ref, { once: true, margin: "-100px" });
+  const isInView = useInView(ref, { once: true, margin: "0px" });
 
   useEffect(() => {
     if (isInView) {
@@ -198,24 +198,27 @@ export function GlobalImpactSection() {
               Critical vulnerabilities found.
             </p>
           </StatCard>
-          <StatCard title="Developer Tools" icon={<Code className="w-4 h-4" />}>
+          <StatCard
+            title="Unique Devices"
+            icon={<Smartphone className="w-4 h-4" />}
+          >
             <p className="text-2xl sm:text-3xl font-bold">
-              <AnimatedCounter to={50} suffix="K+" />
+              <AnimatedCounter to={350} suffix="+" />
             </p>
             <p className="text-muted-foreground mt-1 text-[10px]">
-              Lines of code analyzed.
+              Diverse Android models.
             </p>
           </StatCard>
           <StatCard
-            title="Tester Payouts"
-            icon={<IndianRupee className="w-4 h-4" />}
+            title="Community Points"
+            icon={<Coins className="w-4 h-4" />}
             className="col-span-2 lg:col-span-2 bg-gradient-to-br from-primary to-primary/50 text-primary-foreground"
           >
             <p className="text-2xl sm:text-3xl font-bold">
-              <AnimatedCounter to={52090} prefix="₹" />
+              <AnimatedCounter to={25000} suffix="+" />
             </p>
             <p className="text-primary-foreground/80 mt-1 text-xs">
-              Paid to our testing community.
+              Points earned by community.
             </p>
           </StatCard>
         </div>

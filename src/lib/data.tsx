@@ -155,6 +155,10 @@ export const testimonials: Testimonial[] = [
     dataAiHint: "woman portrait",
     comment:
       "inTesters has revolutionized our QA process. The real-time feedback and detailed reports are game-changers. The platform isn't just functional, it's a joy to use!",
+    image:
+      "https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=600&auto=format=fit=crop",
+    tags: ["Enterprise", "SaaS", "High Volume"],
+    appLink: "https://technova.io",
   },
   {
     name: "Mike Valerio",
@@ -164,6 +168,8 @@ export const testimonials: Testimonial[] = [
     dataAiHint: "man smiling",
     comment:
       "Finding the right testers used to be a nightmare. The gamified marketplace made it fun and easy to connect with experienced, reliable people. My app is better for it.",
+    tags: ["Indie Game", "Mobile", "Community Love"],
+    rating: 5,
   },
   {
     name: "Chen Lin",
@@ -173,6 +179,10 @@ export const testimonials: Testimonial[] = [
     dataAiHint: "person glasses",
     comment:
       "The dashboards are incredible. Being able to visualize our testing data with such clarity and beauty has helped us identify critical issues faster than ever before.",
+    image:
+      "https://images.unsplash.com/photo-1551033406-611cf9a28f67?q=80&w=600&auto=format=fit=crop",
+    tags: ["Productivity", "Analytics"],
+    appLink: "https://innovate.inc",
   },
   {
     name: "David Kim",
@@ -182,15 +192,52 @@ export const testimonials: Testimonial[] = [
     dataAiHint: "man portrait",
     comment:
       "As a tester, the gamified reputation system is fantastic. It motivates me to do my best work and get recognized for it. I've gotten more high-quality projects through inTesters than any other platform.",
+    tags: ["Top Tester", "Gamer", "Beta Access"],
   },
   {
     name: "Maria Garcia",
     role: "Mobile App Developer",
     avatar:
-      "https://images.unsplash.com/photo-14947901083_77-be9c29b29330?q=80&w=400&auto=format=fit=crop",
+      "https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=400&auto=format=fit=crop",
     dataAiHint: "woman developer",
     comment:
       "The community aspect is what sets inTesters apart. It's not just a service; it's a network of professionals passionate about quality. The collaboration tools are excellent.",
+    image:
+      "https://images.unsplash.com/photo-1522071820081-009f0129c71c?q=80&w=600&auto=format=fit=crop",
+    tags: ["Networking", "Collaboration"],
+    appLink: "https://myapp.com",
+  },
+  {
+    name: "James Wilson",
+    role: "Solo Entrepreneur",
+    avatar:
+      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=400&auto=format=fit=crop",
+    dataAiHint: "man glasses",
+    comment:
+      "I launched my first app with confidence thanks to the rigorous testing from this community. The bugs found were obscure but critical!",
+    tags: ["Solo Dev", "Bootstrap", "Success"],
+  },
+  {
+    name: "Emily Chen",
+    role: "UX Researcher",
+    avatar:
+      "https://images.unsplash.com/photo-1438761681033-6461ffad8d80?q=80&w=400&auto=format=fit=crop",
+    dataAiHint: "woman smiling",
+    comment:
+      "The qualitative feedback I received was gold. Testers didn't just find crashes; they pointed out confusing flows I hadn't noticed.",
+    image:
+      "https://images.unsplash.com/photo-1552664730-d307ca884978?q=80&w=600&auto=format=fit=crop",
+    tags: ["UX Design", "Feedback"],
+    appLink: "https://design.co",
+  },
+  {
+    name: "Robert Fox",
+    role: "CTO, StartUp X",
+    avatar:
+      "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=400&auto=format=fit=crop",
+    dataAiHint: "man suit",
+    comment:
+      "We needed 20 testers locally in Brazil for a specific payment feature. inTesters delivered within 24 hours. Exceptionally fast and reliable.",
   },
 ];
 
@@ -1474,11 +1521,11 @@ export const notifications: Notification[] = Array.from(
   { length: 25 },
   (_, i) => {
     const types: Notification["type"][] = [
-      "new_test",
-      "feedback_received",
-      "test_completed",
-      "bug_report",
-      "points_awarded",
+      "NEW_TEST",
+      "FEEDBACK_RECEIVED",
+      "TEST_COMPLETED",
+      "BUG_REPORT",
+      "POINTS_AWARDED",
     ];
     const type = types[i % types.length];
     const date = new Date();
@@ -1488,26 +1535,26 @@ export const notifications: Notification[] = Array.from(
     let description = "";
 
     switch (type) {
-      case "new_test":
+      case "NEW_TEST":
         title = "New Testing Opportunity!";
         description =
           'A new app, "Notion", is available for testing in the Productivity category.';
         break;
-      case "feedback_received":
+      case "FEEDBACK_RECEIVED":
         title = "You have new feedback!";
         description =
           'A tester has submitted new feedback for your project "Canva".';
         break;
-      case "test_completed":
+      case "TEST_COMPLETED":
         title = "Test Cycle Completed";
         description =
           'Congratulations! Your app "Figma" has completed its 14-day test cycle.';
         break;
-      case "bug_report":
+      case "BUG_REPORT":
         title = "New Bug Reported";
         description = 'A critical bug has been reported for "Slack".';
         break;
-      case "points_awarded":
+      case "POINTS_AWARDED":
         title = `You've earned ${i % 2 === 0 ? 100 : 75} points!`;
         description = `Thanks for your feedback on "${
           i % 2 === 0 ? "Todoist" : "Brawl Stars"
@@ -1519,11 +1566,16 @@ export const notifications: Notification[] = Array.from(
       id: i + 1,
       title,
       description,
-      date: date.toISOString(),
+      // date: date.toISOString(), // Removed date as it's not in Notification type anymore
       type,
-      read: i > 4, // Mark the first 5 as unread
+      // read: i > 4, // Removed read
+      userId: `user-${i}`,
+      url: `/dashboard/test-${i}`,
+      isActive: true,
+      createdAt: date,
+      updatedAt: date,
     };
-  }
+  },
 );
 
 const generateFeedback = (projectName: string) => {
@@ -1618,7 +1670,7 @@ const generateChartData = (baseBugs: number) => {
       0,
       baseBugs -
         i * Math.floor(Math.random() * 3 + 1) +
-        Math.floor(Math.random() * 5 - 2)
+        Math.floor(Math.random() * 5 - 2),
     ),
   }));
 };
@@ -1919,8 +1971,8 @@ export const projects: Project[] = [
     const testersCompleted = isCompleted
       ? 15 + (override.id % 5)
       : isOngoing
-      ? 5 + (override.id % 5)
-      : 0;
+        ? 5 + (override.id % 5)
+        : 0;
     const testersStarted =
       testersCompleted +
       (isOngoing ? 5 : 0) +

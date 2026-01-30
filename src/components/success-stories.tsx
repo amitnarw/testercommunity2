@@ -1,8 +1,10 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import Link from "next/link";
 import Image from "next/image";
-import { MessageSquareQuote } from "lucide-react";
+import { MessageSquareQuote, ChevronRight } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { testimonials } from "@/lib/data";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
@@ -16,7 +18,17 @@ export function SuccessStories() {
       setActiveIndex((prev) => (prev + 1) % testimonials.length);
     }, duration);
     return () => clearInterval(interval);
-  }, []);
+  }, [activeIndex]);
+
+  const handlePrev = () => {
+    setActiveIndex(
+      (prev) => (prev - 1 + testimonials.length) % testimonials.length,
+    );
+  };
+
+  const handleNext = () => {
+    setActiveIndex((prev) => (prev + 1) % testimonials.length);
+  };
 
   const getTestimonial = (offset: number) => {
     return testimonials[(activeIndex + offset) % testimonials.length];
@@ -29,7 +41,7 @@ export function SuccessStories() {
     getTestimonial(3),
   ];
 
-  // Different animation variants for each card
+  // Animation variants remain the same
   const variantsUp = {
     enter: { y: "100%" },
     center: { y: 0 },
@@ -56,16 +68,39 @@ export function SuccessStories() {
 
   const transition = { duration: 0.8, ease: "easeInOut" };
 
-  // Helper component for the progress bar
-  const ProgressBar = () => (
-    <div className="absolute top-4 right-4 md:top-6 md:right-6 w-16 md:w-24 h-1 bg-gray-100 dark:bg-zinc-800 rounded-full overflow-hidden z-20">
-      <motion.div
-        key={activeIndex}
-        initial={{ width: "0%" }}
-        animate={{ width: "100%" }}
-        transition={{ duration: duration / 1000, ease: "linear" }}
-        className="h-full bg-primary"
-      />
+  // New Segmented "Stories" Progress Bar
+  const StoriesPagination = () => (
+    <div className="flex items-center justify-center gap-4 mt-2 md:mt-5 w-full max-w-sm mx-auto px-4">
+      {/* Prev Button */}
+      <Button
+        variant="secondary"
+        size="icon"
+        onClick={handlePrev}
+        className="rounded-full shrink-0 hover:bg-primary/10 hover:text-primary transition-colors"
+      >
+        <ChevronRight className="w-5 h-5 rotate-180" />
+      </Button>
+
+      {/* Single Progress Bar */}
+      <div className="flex-1 h-1.5 md:h-2 rounded-full bg-gray-200 dark:bg-zinc-800 overflow-hidden relative">
+        <motion.div
+          key={activeIndex}
+          className="absolute inset-y-0 left-0 bg-gradient-to-r from-primary to-violet-500 shadow-[0_0_10px_rgba(var(--primary),0.5)]"
+          initial={{ width: 0 }}
+          animate={{ width: "100%" }}
+          transition={{ duration: duration / 1000, ease: "linear" }}
+        />
+      </div>
+
+      {/* Next Button */}
+      <Button
+        variant="secondary"
+        size="icon"
+        onClick={handleNext}
+        className="rounded-full shrink-0 hover:bg-primary/10 hover:text-primary transition-colors"
+      >
+        <ChevronRight className="w-5 h-5" />
+      </Button>
     </div>
   );
 
@@ -97,7 +132,7 @@ export function SuccessStories() {
                   animate="center"
                   exit="exit"
                   transition={transition}
-                  className="col-start-1 row-start-1 flex flex-col justify-between p-4 md:p-6 bg-white dark:bg-zinc-900 shadow-sm hover:shadow-md transition-shadow rounded-xl md:rounded-2xl"
+                  className="col-start-1 row-start-1 flex flex-col justify-between p-6 md:p-8 bg-white dark:bg-zinc-900 shadow-sm hover:shadow-md transition-shadow rounded-xl md:rounded-2xl min-h-[460px] md:min-h-[500px]"
                 >
                   <div>
                     <MessageSquareQuote className="text-red-500 w-6 h-6 md:w-8 md:h-8 mb-3 md:mb-4" />
@@ -126,7 +161,6 @@ export function SuccessStories() {
                       </div>
                     </div>
                   </div>
-                  <ProgressBar />
                 </motion.div>
               </AnimatePresence>
             </div>
@@ -144,7 +178,7 @@ export function SuccessStories() {
                   animate="center"
                   exit="exit"
                   transition={transition}
-                  className="col-start-1 row-start-1 p-4 md:p-6 flex flex-col justify-between bg-white dark:bg-zinc-900 shadow-sm hover:shadow-md transition-shadow rounded-xl md:rounded-2xl"
+                  className="col-start-1 row-start-1 p-6 md:p-8 flex flex-col justify-between bg-white dark:bg-zinc-900 shadow-sm hover:shadow-md transition-shadow rounded-xl md:rounded-2xl min-h-[220px] md:min-h-[240px]"
                 >
                   <div>
                     <MessageSquareQuote className="text-red-500 w-5 h-5 md:w-6 md:h-6 mb-3" />
@@ -173,7 +207,6 @@ export function SuccessStories() {
                       </div>
                     </div>
                   </div>
-                  <ProgressBar />
                 </motion.div>
               </AnimatePresence>
             </div>
@@ -190,7 +223,7 @@ export function SuccessStories() {
                     animate="center"
                     exit="exit"
                     transition={transition}
-                    className="col-start-1 row-start-1 p-4 md:p-6 flex flex-col justify-between bg-white dark:bg-zinc-900 shadow-sm hover:shadow-md transition-shadow rounded-xl md:rounded-2xl"
+                    className="col-start-1 row-start-1 p-6 flex flex-col justify-between bg-white dark:bg-zinc-900 shadow-sm hover:shadow-md transition-shadow rounded-xl md:rounded-2xl min-h-[200px] md:min-h-[220px]"
                   >
                     <div>
                       <MessageSquareQuote className="text-red-500 w-5 h-5 md:w-6 md:h-6 mb-3" />
@@ -215,7 +248,6 @@ export function SuccessStories() {
                         </span>
                       </div>
                     </div>
-                    <ProgressBar />
                   </motion.div>
                 </AnimatePresence>
               </div>
@@ -230,7 +262,7 @@ export function SuccessStories() {
                     animate="center"
                     exit="exit"
                     transition={transition}
-                    className="col-start-1 row-start-1 p-4 md:p-6 flex flex-col justify-between bg-zinc-900 dark:bg-black text-white shadow-sm hover:shadow-md transition-shadow rounded-xl md:rounded-2xl"
+                    className="col-start-1 row-start-1 p-6 flex flex-col justify-between bg-zinc-900 dark:bg-black text-white shadow-sm hover:shadow-md transition-shadow rounded-xl md:rounded-2xl min-h-[200px] md:min-h-[220px]"
                   >
                     <div>
                       <MessageSquareQuote className="text-red-500 w-5 h-5 md:w-6 md:h-6 mb-3" />
@@ -255,12 +287,27 @@ export function SuccessStories() {
                         </span>
                       </div>
                     </div>
-                    <ProgressBar />
                   </motion.div>
                 </AnimatePresence>
               </div>
             </div>
           </div>
+        </div>
+
+        <StoriesPagination />
+
+        {/* View All Reviews Button */}
+        <div className="mt-5 md:mt-8 text-center">
+          <Button
+            asChild
+            size="lg"
+            className="rounded-full px-8 group font-medium text-base"
+          >
+            <Link href="/reviews">
+              View All Success Stories
+              <ChevronRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+            </Link>
+          </Button>
         </div>
       </div>
     </section>
