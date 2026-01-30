@@ -34,8 +34,8 @@ export default function RootLayout({
         >
           <QueryProvider>
             <TransitionProvider>
-                <TransitionOverlay />
-                {children}
+              <TransitionOverlay />
+              {children}
             </TransitionProvider>
           </QueryProvider>
           <Toaster />

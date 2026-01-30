@@ -52,11 +52,11 @@ export function ScrollToTopButton() {
     <div
       data-loc="ScrollToTopButton"
       className={cn(
-        "fixed bottom-8 right-8 z-50 transition-opacity duration-300",
+        "fixed bottom-4 right-4 md:bottom-8 md:right-8 z-50 transition-opacity duration-300",
         isVisible ? "opacity-100" : "opacity-0",
       )}
     >
-      <div className="relative w-16 h-16">
+      <div className="relative w-12 h-12 md:w-16 md:h-16">
         {/* Progress border */}
         <svg
           className="absolute inset-0 w-full h-full transform -rotate-90 pointer-events-none z-10"
@@ -89,9 +89,9 @@ export function ScrollToTopButton() {
           onClick={scrollToTop}
           variant="ghost"
           size="icon"
-          className="w-16 h-16 rounded-full bg-background/50 backdrop-blur-sm shadow-lg"
+          className="w-12 h-12 md:w-16 md:h-16 rounded-full bg-background/50 backdrop-blur-sm shadow-lg"
         >
-          <ArrowUp className="w-6 h-6" />
+          <ArrowUp className="w-5 h-5 md:w-6 md:h-6" />
           <span className="sr-only">Scroll to top</span>
         </Button>
       </div>

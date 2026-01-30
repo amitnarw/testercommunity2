@@ -23,6 +23,10 @@ export type Testimonial = {
   avatar: string;
   dataAiHint?: string;
   comment: string;
+  image?: string;
+  appLink?: string;
+  tags?: string[];
+  rating?: number; // Adding rating just in case we want to show stars explicitly per review later, though we hardcoded 5 stars previously.
 };
 
 export type RoadmapDetail = {
@@ -219,6 +223,8 @@ export type UserProfileDataAttributes = {
   createdAt: string;
   updatedAt: string;
 };
+
+export type UserProfileData = UserProfileDataAttributes;
 
 export type PointsPackage = {
   name: string;
@@ -518,7 +524,7 @@ export interface AppCategoriesResponse {
   updatedAt: Date;
 }
 
-export interface NotificationReponse {
+export interface NotificationResponse {
   id: number;
   userId: string | null;
   title: string;
@@ -537,6 +543,8 @@ export interface NotificationReponse {
   createdAt: Date;
   updatedAt: Date;
 }
+
+export type Notification = NotificationResponse;
 
 export interface UserWallerResponse {
   id: number;
@@ -657,8 +665,21 @@ export type CommunityApp = {
   icon: string;
   shortDescription: string;
   category: string;
-  rewardPoints: number;
+  points?: number; // Changed or added to match data
+  rewardPoints?: number;
   androidVersion: string;
   estimatedTime: string;
   dataAiHint?: string;
+  playStoreUrl?: string;
+  screenshots?: {
+    url: string;
+    alt: string;
+    dataAiHint?: string;
+  }[];
+  testingInstructions?: string;
+  status?: string;
+  progress?: number;
+  totalDays?: number;
+  completedDate?: string;
+  rejectionReason?: string;
 };
