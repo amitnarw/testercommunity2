@@ -56,7 +56,7 @@ export function ScrollingRibbon() {
   return (
     <section
       data-loc="ScrollingRibbon"
-      className="w-full overflow-hidden py-4 transform -skew-y-2"
+      className="w-full overflow-hidden my-20 transform -skew-y-2"
     >
       <div className="flex flex-col gap-2">
         <div className="flex whitespace-nowrap text-lg md:text-3xl font-bold uppercase tracking-wider text-primary-foreground select-none bg-primary">

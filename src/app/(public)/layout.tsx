@@ -36,18 +36,19 @@ export default function PublicLayout({
   return (
     <PageTransition>
       <div className="relative flex flex-col min-h-screen">
-        {!isPending && (
-          <Header
-            session={session}
-            isDashboardPage={false}
-            isMobileMenuOpen={isMobileMenuOpen}
-            setMobileMenuOpen={setIsMobileMenuOpen}
-            isSidebarCollapsed={true}
-            setSidebarCollapsed={() => {}}
-          />
-        )}
+        {/* {!isPending && ( */}
+        <Header
+          session={session}
+          isDashboardPage={false}
+          isMobileMenuOpen={isMobileMenuOpen}
+          setMobileMenuOpen={setIsMobileMenuOpen}
+          isSidebarCollapsed={true}
+          setSidebarCollapsed={() => {}}
+        />
+        {/* )} */}
         <main className="flex-1 bg-background z-10 pt-14">{children}</main>
-        {!isPending && <Footer />}
+        {/* {!isPending && <Footer />} */}
+        <Footer />
       </div>
     </PageTransition>
   );

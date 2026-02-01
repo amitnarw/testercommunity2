@@ -37,9 +37,11 @@ import AppInfoHeader from "@/components/app-info-header";
 import Confetti from "react-dom-confetti";
 import { useInView } from "react-intersection-observer";
 import { motion } from "framer-motion";
-import { useSingleHubAppDetails } from "@/hooks/useHub";
+import { useSingleHubAppDetails, useCompleteHostedApp } from "@/hooks/useHub";
 import { HubSubmittedAppResponse } from "@/lib/types";
 import { TesterRequestsSection } from "@/components/tester-requests-section";
+import { CompleteTestingBanner } from "@/components/community-dashboard/complete-testing-banner";
+import { SubmissionDetailsSkeleton } from "@/components/skeletons/submission-details-skeleton";
 
 const FEEDBACK_PER_PAGE = 5;
 
@@ -252,7 +254,10 @@ function SubmissionDetailsPage({
     data: appDetails,
     isPending: appDetailsIsPending,
     refetch: appDetailsRefetch,
-  } = useSingleHubAppDetails({ id });
+  } = useSingleHubAppDetails({ id, view: "owner" });
+
+  const { mutateAsync: completeTest, isPending: isCompleting } =
+    useCompleteHostedApp();
 
   const { ref: confettiTriggerRef, inView: confettiInView } = useInView({
     threshold: 0.5,
@@ -265,11 +270,50 @@ function SubmissionDetailsPage({
     }
   }, [confettiInView, appDetails?.status]);
 
+  if (appDetailsIsPending) {
+    return <SubmissionDetailsSkeleton />;
+  }
+
   if (!appDetails) {
     return <div>Project not found</div>;
   }
 
   const statusConfig = getStatusConfig(appDetails.status);
+
+  // Calculate completed testers count (testers with status COMPLETED)
+  const completedTestersCount =
+    appDetails?.testerRelations?.filter(
+      (relation) => relation.status === "COMPLETED",
+    ).length || 0;
+
+  // Current day and total days for the test
+  const currentDay = appDetails?.currentDay || 0;
+  const totalDays = appDetails?.totalDay || 14;
+  const requiredTesters = 12; // Google Play requirement
+
+  // Show complete testing banner conditions:
+  // 1. Status is IN_TESTING or AVAILABLE (ongoing test)
+  // 2. Current day >= total days (last day or past)
+  // 3. Either: minimum testers met (12+) OR past last day
+  const isOngoingStatus =
+    appDetails?.status === "IN_TESTING" || appDetails?.status === "AVAILABLE";
+  const isLastDayOrPast = currentDay >= totalDays;
+  const hasMinimumTesters = completedTestersCount >= requiredTesters;
+  const showCompleteTestingBanner =
+    isOngoingStatus &&
+    isLastDayOrPast &&
+    (hasMinimumTesters || currentDay > totalDays);
+
+  const handleCompleteTest = async () => {
+    try {
+      console.log("Completing test for hub:", id);
+      await completeTest({ appId: id });
+      // After completion, refetch the app details
+      await appDetailsRefetch();
+    } catch (error) {
+      console.error("Failed to complete test:", error);
+    }
+  };
   const isUnderReviewOrRejected =
     appDetails.status === "IN_REVIEW" || appDetails.status === "REJECTED";
 
@@ -418,6 +462,18 @@ function SubmissionDetailsPage({
                 )}
               </div>
             </motion.section>
+          )}
+
+          {showCompleteTestingBanner && (
+            <CompleteTestingBanner
+              appName={appDetails?.androidApp?.appName || ""}
+              currentDay={currentDay}
+              totalDays={totalDays}
+              completedTesters={completedTestersCount}
+              totalTesters={appDetails?.totalTester || 0}
+              requiredTesters={requiredTesters}
+              onComplete={handleCompleteTest}
+            />
           )}
 
           <div

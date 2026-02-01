@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
@@ -15,6 +15,8 @@ import {
   Minimize2,
   ChevronRight,
   FileCheck,
+  AlertTriangle,
+  RefreshCw,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
@@ -23,6 +25,20 @@ import { useR2 } from "@/hooks/useR2";
 import { useSubmitDailyVerification } from "@/hooks/useHub";
 import { SafeImage } from "@/components/safe-image";
 import { useDropzone } from "react-dropzone";
+import {
+  AlertDialog,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogAction,
+} from "@/components/ui/alert-dialog";
+import {
+  verifyImage,
+  type VerificationError,
+  type ImageMetadata,
+} from "@/lib/image-verification";
 
 interface DailyTestingActionProps {
   appId: string;
@@ -32,6 +48,15 @@ interface DailyTestingActionProps {
   hasTestedToday?: boolean;
   onCheckIn?: () => void;
 }
+
+// Verification steps for the animation
+const VERIFICATION_STEPS = [
+  { id: "size", label: "Checking image size", icon: ImageIcon },
+  { id: "metadata", label: "Analyzing EXIF metadata", icon: FileCheck },
+  { id: "editing", label: "Detecting image manipulation", icon: ShieldCheck },
+  { id: "timestamp", label: "Verifying capture timestamp", icon: RefreshCw },
+  { id: "integrity", label: "Running integrity checks", icon: ShieldCheck },
+];
 
 export function DailyTestingAction({
   appId,
@@ -43,17 +68,35 @@ export function DailyTestingAction({
 }: DailyTestingActionProps) {
   const { toast } = useToast();
   const { createUploadUrl, uploadFileToR2 } = useR2();
+  const submitVerification = useSubmitDailyVerification();
 
   // Compact state vs Expanded state
   const [isExpanded, setIsExpanded] = useState(!hasTestedToday);
 
-  // Steps: 0: IDLE, 1: UPLOAD_WAIT, 2: SCANNING, 3: COMPLETED
-  const [step, setStep] = useState(hasTestedToday ? 3 : 0);
+  // Steps: 0: IDLE, 1: UPLOAD_WAIT, 2: VERIFYING, 3: UPLOADING, 4: COMPLETING, 5: COMPLETED
+  const [step, setStep] = useState(hasTestedToday ? 5 : 0);
   const [uploadPercent, setUploadPercent] = useState(0);
   const [proofImage, setProofImage] = useState<string | null>(null);
+  const [localPreviewUrl, setLocalPreviewUrl] = useState<string | null>(null);
 
-  // Scanning logs
-  const [scanLog, setScanLog] = useState("Initializing analysis...");
+  // Verification state
+  const [verificationStepIndex, setVerificationStepIndex] = useState(0);
+  const [verificationErrors, setVerificationErrors] = useState<
+    VerificationError[]
+  >([]);
+  const [showErrorDialog, setShowErrorDialog] = useState(false);
+  const [imageMetadata, setImageMetadata] = useState<ImageMetadata | undefined>(
+    undefined,
+  );
+
+  // Cleanup preview URL on unmount
+  useEffect(() => {
+    return () => {
+      if (localPreviewUrl) {
+        URL.revokeObjectURL(localPreviewUrl);
+      }
+    };
+  }, [localPreviewUrl]);
 
   const handleOpenApp = () => {
     window.open(
@@ -63,110 +106,139 @@ export function DailyTestingAction({
     setStep(1); // Move to upload wait
   };
 
-  const onDrop = async (acceptedFiles: File[]) => {
-    const file = acceptedFiles[0];
-    if (!file) return;
-
-    // Start upload UI immediately
-    setUploadPercent(1);
-
-    try {
-      const fileType = "image";
-      const uploadConfig = await createUploadUrl.mutateAsync({
-        filename: `proof-${appId}-${Date.now()}-${file.name}`,
-        contentType: file.type,
-        size: file.size,
-        type: fileType,
-      });
-
-      await uploadFileToR2.mutateAsync({
-        file,
-        uploadUrl: uploadConfig.uploadUrl,
-        onProgress: (percent) => setUploadPercent(percent),
-      });
-
-      const r2Url = process.env.NEXT_PUBLIC_R2_MEDIA_BASE_URL || "";
-      const uploadedUrl = r2Url + "/" + uploadConfig.key;
-
-      setProofImage(uploadedUrl);
-      setStep(2); // Start Scanning
-      setUploadPercent(0); // Reset for next time (though unmounting)
-    } catch (error) {
-      console.error("Upload failed", error);
-      toast({
-        title: "Upload Failed",
-        description: "Please try again.",
-        variant: "destructive",
-      });
-      setUploadPercent(0); // Reset on error
+  const resetAndRetry = useCallback(() => {
+    setShowErrorDialog(false);
+    setVerificationErrors([]);
+    if (localPreviewUrl) {
+      URL.revokeObjectURL(localPreviewUrl);
     }
-  };
+    setLocalPreviewUrl(null);
+    setProofImage(null);
+    setVerificationStepIndex(0);
+    setUploadPercent(0);
+    setImageMetadata(undefined);
+    setStep(1); // Back to upload
+  }, [localPreviewUrl]);
 
-  const submitVerification = useSubmitDailyVerification();
+  const onDrop = useCallback(
+    async (acceptedFiles: File[]) => {
+      const file = acceptedFiles[0];
+      if (!file) return;
 
-  // Simulate High-Tech Scanning with Rich Data + Real API Call
-  useEffect(() => {
-    if (step === 2 && proofImage) {
-      const logs = [
-        "Analyzing image integrity...",
-        "Checking EXIF timestamp match...",
-        "Verifying device signature...",
-        "Running anti-cheat heuristics...",
-        "Detecting pixel manipulation...",
-        "Cross-referencing telemetry...",
-        "Validating Google Play session...",
-        "Finalizing proof authenticity...",
-      ];
+      // Create local preview immediately
+      const previewUrl = URL.createObjectURL(file);
+      setLocalPreviewUrl(previewUrl);
+      setVerificationStepIndex(0);
 
-      let logIndex = 0;
-      const logInterval = setInterval(() => {
-        if (logIndex < logs.length) {
-          setScanLog(logs[logIndex]);
-          logIndex++;
-        }
-      }, 700);
+      // Start verification animation (Step 2)
+      setStep(2);
 
-      // Run Mutation + Minimum Delay in parallel
-      const minDelay = new Promise((resolve) => setTimeout(resolve, 6500));
-      const apiCall = submitVerification.mutateAsync({
-        hubId: appId,
-        proofImage: proofImage,
-        metaData: {
-          timestamp: Date.now(),
-          userAgent: navigator.userAgent,
-          screen: `${window.screen.width}x${window.screen.height}`,
-        },
-      });
-
-      Promise.all([minDelay, apiCall])
-        .then(() => {
-          setStep(3);
-          toast({
-            title: "Verification Complete",
-            description: "Proof accepted. Streak updated.",
-            variant: "default",
-          });
-          if (onCheckIn) onCheckIn();
-        })
-        .catch((error) => {
-          console.error("Verification failed:", error);
-          setStep(1); // Go back to upload
-          toast({
-            title: "Verification Rejected",
-            description: error.message || "Network error. Please try again.",
-            variant: "destructive",
-          });
-        })
-        .finally(() => {
-          clearInterval(logInterval);
+      try {
+        // Run verification animation steps
+        const animationPromise = new Promise<void>((resolve) => {
+          let currentStep = 0;
+          const interval = setInterval(() => {
+            currentStep++;
+            setVerificationStepIndex(currentStep);
+            if (currentStep >= VERIFICATION_STEPS.length) {
+              clearInterval(interval);
+              resolve();
+            }
+          }, 600);
         });
 
-      return () => {
-        clearInterval(logInterval);
-      };
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [step, proofImage]);
+        // Run actual verification in parallel
+        const verificationPromise = verifyImage(file);
+
+        // Wait for both
+        const [, result] = await Promise.all([
+          animationPromise,
+          verificationPromise,
+        ]);
+
+        // Store metadata for later
+        setImageMetadata(result.metadata);
+
+        if (!result.isValid) {
+          // Verification failed - show error dialog
+          setVerificationErrors(result.errors);
+          setShowErrorDialog(true);
+          return;
+        }
+
+        // Verification passed - proceed to upload (Step 3)
+        setStep(3);
+
+        const fileType = "image";
+        const uploadConfig = await createUploadUrl.mutateAsync({
+          filename: `proof-${appId}-${Date.now()}-${file.name}`,
+          contentType: file.type,
+          size: file.size,
+          type: fileType,
+        });
+
+        await uploadFileToR2.mutateAsync({
+          file,
+          uploadUrl: uploadConfig.uploadUrl,
+          onProgress: (percent) => setUploadPercent(percent),
+        });
+
+        const r2Url = process.env.NEXT_PUBLIC_R2_MEDIA_BASE_URL || "";
+        const uploadedUrl = r2Url + "/" + uploadConfig.key;
+
+        setProofImage(uploadedUrl);
+        setUploadPercent(0);
+
+        // Submit verification (Step 4)
+        setStep(4);
+
+        // Run Mutation + Minimum Delay in parallel
+        const minDelay = new Promise((resolve) => setTimeout(resolve, 2000));
+        await Promise.all([
+          minDelay,
+          submitVerification.mutateAsync({
+            hubId: appId,
+            proofImage: uploadedUrl,
+            metaData: {
+              timestamp: Date.now(),
+              userAgent: navigator.userAgent,
+              screen: `${window.screen.width}x${window.screen.height}`,
+              imageMetadata: result.metadata,
+            },
+          }),
+        ]);
+
+        // Complete (Step 5)
+        setStep(5);
+        toast({
+          title: "Verification Complete",
+          description: "Proof accepted. Streak updated.",
+          variant: "default",
+        });
+        if (onCheckIn) onCheckIn();
+      } catch (error) {
+        console.error("Process failed:", error);
+        toast({
+          title: "Verification Failed",
+          description:
+            error instanceof Error
+              ? error.message
+              : "An error occurred. Please try again.",
+          variant: "destructive",
+        });
+        resetAndRetry();
+      }
+    },
+    [
+      appId,
+      createUploadUrl,
+      uploadFileToR2,
+      submitVerification,
+      toast,
+      onCheckIn,
+      resetAndRetry,
+    ],
+  );
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
@@ -176,8 +248,57 @@ export function DailyTestingAction({
 
   const progressPercentage = Math.min((currentDay / totalDays) * 100, 100);
 
+  // Get current preview image (local or uploaded)
+  const displayImage = proofImage || localPreviewUrl;
+
   return (
     <div className="w-full">
+      {/* Error Dialog */}
+      <AlertDialog open={showErrorDialog} onOpenChange={setShowErrorDialog}>
+        <AlertDialogContent className="max-w-[95vw]">
+          <AlertDialogHeader>
+            <div className="flex items-center gap-3 mb-2">
+              <div className="h-12 w-12 rounded-full bg-red-100 dark:bg-red-900/30 flex items-center justify-center">
+                <AlertTriangle className="h-6 w-6 text-red-600 dark:text-red-400" />
+              </div>
+              <div>
+                <AlertDialogTitle className="text-xl">
+                  Verification Failed
+                </AlertDialogTitle>
+              </div>
+            </div>
+            <AlertDialogDescription asChild>
+              <div className="space-y-4">
+                <p className="text-sm text-muted-foreground">
+                  We couldn&apos;t verify your screenshot. This may happen if
+                  the image was modified or is not a fresh screenshot.
+                </p>
+                <div className="p-4 rounded-lg bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-900/50">
+                  <p className="text-sm text-amber-800 dark:text-amber-200 font-medium">
+                    Tips for a successful upload:
+                  </p>
+                  <ul className="mt-2 text-xs text-amber-700 dark:text-amber-300 space-y-1 list-disc list-inside">
+                    <li>Take a fresh screenshot directly from your device</li>
+                    <li>Do not edit or modify the image in any way</li>
+                    <li>Upload the screenshot immediately after taking it</li>
+                    <li>Make sure the app is visible in the screenshot</li>
+                  </ul>
+                </div>
+              </div>
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter className="mt-4">
+            <AlertDialogAction
+              onClick={resetAndRetry}
+              className="w-full bg-primary hover:bg-primary/90"
+            >
+              <RefreshCw className="h-4 w-4 mr-2" />
+              Upload New Screenshot
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
       <Card
         className={cn(
           "overflow-hidden border transition-all duration-300",
@@ -196,12 +317,12 @@ export function DailyTestingAction({
             <div
               className={cn(
                 "h-12 w-12 shrink-0 rounded-2xl flex items-center justify-center transition-all duration-500",
-                hasTestedToday || step === 3
+                hasTestedToday || step === 5
                   ? "bg-emerald-100 text-emerald-600 dark:bg-emerald-900/30 dark:text-emerald-400"
                   : "bg-blue-50 text-blue-600 dark:bg-blue-900/20 dark:text-blue-400",
               )}
             >
-              {hasTestedToday || step === 3 ? (
+              {hasTestedToday || step === 5 ? (
                 <Check className="w-6 h-6" strokeWidth={3} />
               ) : (
                 <ShieldCheck className="w-6 h-6" />
@@ -209,7 +330,7 @@ export function DailyTestingAction({
             </div>
             <div>
               <h3 className="font-bold text-base text-slate-900 dark:text-slate-100 leading-none mb-1.5">
-                {hasTestedToday || step === 3
+                {hasTestedToday || step === 5
                   ? "Daily Task Completed"
                   : "Daily Verification"}
               </h3>
@@ -222,7 +343,7 @@ export function DailyTestingAction({
                   <div
                     className={cn(
                       "h-full rounded-full transition-all duration-500",
-                      hasTestedToday || step === 3
+                      hasTestedToday || step === 5
                         ? "bg-emerald-500"
                         : "bg-blue-500",
                     )}
@@ -234,7 +355,7 @@ export function DailyTestingAction({
           </div>
 
           <div className="flex items-center justify-between sm:justify-end gap-3 w-full sm:w-auto">
-            {!hasTestedToday && step !== 3 && (
+            {!hasTestedToday && step !== 5 && (
               <div className="px-2.5 py-1 bg-amber-50 text-amber-600 dark:bg-amber-900/20 dark:text-amber-400 text-[11px] font-bold uppercase tracking-wider rounded-md border border-amber-200 dark:border-amber-900/50 flex items-center gap-1.5 shadow-sm">
                 <span className="relative flex h-2 w-2">
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-400 opacity-75"></span>
@@ -302,25 +423,26 @@ export function DailyTestingAction({
                       </motion.div>
                     )}
 
-                    {/* Step 1 & 2: Preview & Scan */}
-                    {(step === 1 || step === 2) && (
+                    {/* Step 1, 2, 3, 4: Image Preview & Processing */}
+                    {(step === 1 || step === 2 || step === 3 || step === 4) && (
                       <motion.div
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         className="w-full max-w-sm mx-auto space-y-6 relative z-10"
                       >
                         <div className="relative aspect-[4/3] w-full rounded-2xl overflow-hidden bg-white dark:bg-black border shadow-lg ring-4 ring-white dark:ring-zinc-800 group">
-                          {proofImage ? (
+                          {displayImage ? (
                             <>
                               <SafeImage
-                                src={proofImage}
+                                src={displayImage}
                                 alt="Proof"
                                 fill
                                 className={cn(
                                   "object-cover transition-all duration-700",
-                                  step === 2 && "scale-105 opacity-90",
+                                  step >= 2 && "scale-105 opacity-90",
                                 )}
                               />
+                              {/* Verification animation overlay */}
                               {step === 2 && (
                                 <div className="absolute inset-0 z-20">
                                   <div className="absolute top-0 w-full h-1 bg-blue-500 shadow-[0_0_20px_2px_rgba(59,130,246,0.5)] animate-scan-beam" />
@@ -328,7 +450,34 @@ export function DailyTestingAction({
                                   <div className="absolute bottom-4 left-4 right-4 bg-white/90 dark:bg-black/80 backdrop-blur-md rounded-lg p-3 border border-blue-200 dark:border-blue-900 flex items-center gap-3 shadow-lg">
                                     <Loader2 className="w-5 h-5 text-blue-600 animate-spin shrink-0" />
                                     <span className="text-xs font-mono text-blue-700 dark:text-blue-300 font-medium truncate">
-                                      {scanLog}
+                                      {VERIFICATION_STEPS[verificationStepIndex]
+                                        ?.label || "Finalizing..."}
+                                    </span>
+                                  </div>
+                                </div>
+                              )}
+                              {/* Upload progress overlay */}
+                              {step === 3 && (
+                                <div className="absolute inset-0 z-20 flex items-center justify-center bg-black/40 backdrop-blur-sm">
+                                  <div className="bg-white dark:bg-zinc-900 rounded-xl p-4 shadow-xl w-48 space-y-3">
+                                    <div className="flex justify-between text-xs font-bold text-slate-600 dark:text-slate-400">
+                                      <span>Uploading...</span>
+                                      <span>{Math.round(uploadPercent)}%</span>
+                                    </div>
+                                    <Progress
+                                      value={uploadPercent}
+                                      className="h-2"
+                                    />
+                                  </div>
+                                </div>
+                              )}
+                              {/* Completing overlay */}
+                              {step === 4 && (
+                                <div className="absolute inset-0 z-20 flex items-center justify-center bg-black/40 backdrop-blur-sm">
+                                  <div className="bg-white dark:bg-zinc-900 rounded-xl p-4 shadow-xl flex items-center gap-3">
+                                    <Loader2 className="w-5 h-5 text-emerald-600 animate-spin" />
+                                    <span className="text-sm font-medium text-slate-700 dark:text-slate-200">
+                                      Submitting verification...
                                     </span>
                                   </div>
                                 </div>
@@ -344,8 +493,8 @@ export function DailyTestingAction({
                       </motion.div>
                     )}
 
-                    {/* Step 3: Success */}
-                    {step === 3 && (
+                    {/* Step 5: Success */}
+                    {step === 5 && (
                       <motion.div
                         initial={{ scale: 0.8, opacity: 0 }}
                         animate={{ scale: 1, opacity: 1 }}
@@ -408,32 +557,17 @@ export function DailyTestingAction({
                         >
                           <input {...getInputProps()} />
                           <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 z-10 pointer-events-none">
-                            {uploadPercent > 0 ? (
-                              <div className="w-full max-w-[160px] space-y-3 animate-in fade-in zoom-in">
-                                <div className="flex justify-between text-xs font-bold text-slate-500">
-                                  <span>Uploading...</span>
-                                  <span>{Math.round(uploadPercent)}%</span>
-                                </div>
-                                <Progress
-                                  value={uploadPercent}
-                                  className="h-2"
-                                />
-                              </div>
-                            ) : (
-                              <>
-                                <div className="h-16 w-16 bg-white dark:bg-zinc-800 rounded-full shadow-sm flex items-center justify-center ring-1 ring-slate-100 dark:ring-zinc-700 group-hover:scale-110 transition-transform duration-300">
-                                  <Upload className="w-7 h-7 text-slate-400 group-hover:text-blue-500 transition-colors" />
-                                </div>
-                                <div className="text-center space-y-1">
-                                  <p className="font-semibold text-slate-900 dark:text-white">
-                                    Upload Screenshot
-                                  </p>
-                                  <p className="text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wide font-medium">
-                                    Drag & Drop or Click
-                                  </p>
-                                </div>
-                              </>
-                            )}
+                            <div className="h-16 w-16 bg-white dark:bg-zinc-800 rounded-full shadow-sm flex items-center justify-center ring-1 ring-slate-100 dark:ring-zinc-700 group-hover:scale-110 transition-transform duration-300">
+                              <Upload className="w-7 h-7 text-slate-400 group-hover:text-blue-500 transition-colors" />
+                            </div>
+                            <div className="text-center space-y-1">
+                              <p className="font-semibold text-slate-900 dark:text-white">
+                                Upload Screenshot
+                              </p>
+                              <p className="text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wide font-medium">
+                                Drag & Drop or Click
+                              </p>
+                            </div>
                           </div>
                         </div>
                         <Button
@@ -447,22 +581,60 @@ export function DailyTestingAction({
                     )}
 
                     {step === 2 && (
-                      <div className="flex flex-col items-center justify-center h-full text-center space-y-8 animate-in fade-in duration-500">
-                        <div className="w-full max-w-[240px] space-y-3">
-                          <div className="flex justify-between text-xs font-bold uppercase tracking-wider text-slate-500">
-                            <span>System Analysis</span>
-                            <span className="text-blue-600 animate-pulse">
-                              Running...
-                            </span>
-                          </div>
-                          <div className="h-2.5 w-full bg-slate-100 dark:bg-zinc-800 rounded-full overflow-hidden p-[2px]">
-                            <motion.div
-                              initial={{ width: "0%" }}
-                              animate={{ width: "100%" }}
-                              transition={{ duration: 6.5, ease: "linear" }}
-                              className="h-full bg-gradient-to-r from-blue-500 to-indigo-600 rounded-full shadow-[0_0_10px_rgba(59,130,246,0.4)]"
-                            />
-                          </div>
+                      <div className="flex flex-col items-center justify-center h-full text-center space-y-6 animate-in fade-in duration-500">
+                        {/* Verification Steps */}
+                        <div className="w-full max-w-[280px] space-y-3">
+                          {VERIFICATION_STEPS.map((vstep, index) => {
+                            const Icon = vstep.icon;
+                            const isCompleted = index < verificationStepIndex;
+                            const isCurrent = index === verificationStepIndex;
+                            return (
+                              <div
+                                key={vstep.id}
+                                className={cn(
+                                  "flex items-center gap-3 p-2 rounded-lg transition-all duration-300",
+                                  isCompleted &&
+                                    "bg-emerald-50 dark:bg-emerald-950/20",
+                                  isCurrent && "bg-blue-50 dark:bg-blue-950/20",
+                                )}
+                              >
+                                <div
+                                  className={cn(
+                                    "h-8 w-8 rounded-full flex items-center justify-center shrink-0 transition-all",
+                                    isCompleted &&
+                                      "bg-emerald-100 dark:bg-emerald-900/50",
+                                    isCurrent &&
+                                      "bg-blue-100 dark:bg-blue-900/50",
+                                    !isCompleted &&
+                                      !isCurrent &&
+                                      "bg-slate-100 dark:bg-zinc-800",
+                                  )}
+                                >
+                                  {isCompleted ? (
+                                    <Check className="h-4 w-4 text-emerald-600 dark:text-emerald-400" />
+                                  ) : isCurrent ? (
+                                    <Loader2 className="h-4 w-4 text-blue-600 dark:text-blue-400 animate-spin" />
+                                  ) : (
+                                    <Icon className="h-4 w-4 text-slate-400" />
+                                  )}
+                                </div>
+                                <span
+                                  className={cn(
+                                    "text-sm font-medium transition-colors text-start",
+                                    isCompleted &&
+                                      "text-emerald-700 dark:text-emerald-300",
+                                    isCurrent &&
+                                      "text-blue-700 dark:text-blue-300",
+                                    !isCompleted &&
+                                      !isCurrent &&
+                                      "text-slate-400",
+                                  )}
+                                >
+                                  {vstep.label}
+                                </span>
+                              </div>
+                            );
+                          })}
                         </div>
 
                         <div className="bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-900/50 p-4 rounded-xl max-w-xs text-left space-y-2">
@@ -486,6 +658,48 @@ export function DailyTestingAction({
                     )}
 
                     {step === 3 && (
+                      <div className="flex flex-col items-center justify-center h-full text-center space-y-6 animate-in fade-in duration-500">
+                        <div className="space-y-3">
+                          <div className="h-16 w-16 mx-auto bg-emerald-100 dark:bg-emerald-900/30 rounded-full flex items-center justify-center">
+                            <Check className="h-8 w-8 text-emerald-600 dark:text-emerald-400" />
+                          </div>
+                          <div>
+                            <h4 className="text-lg font-bold text-slate-900 dark:text-white">
+                              Verification Passed!
+                            </h4>
+                            <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
+                              Uploading your screenshot...
+                            </p>
+                          </div>
+                        </div>
+                        <div className="w-full max-w-[200px] space-y-2">
+                          <Progress value={uploadPercent} className="h-2" />
+                          <p className="text-xs text-slate-500">
+                            {Math.round(uploadPercent)}% complete
+                          </p>
+                        </div>
+                      </div>
+                    )}
+
+                    {step === 4 && (
+                      <div className="flex flex-col items-center justify-center h-full text-center space-y-6 animate-in fade-in duration-500">
+                        <div className="space-y-3">
+                          <div className="h-16 w-16 mx-auto bg-emerald-100 dark:bg-emerald-900/30 rounded-full flex items-center justify-center">
+                            <Loader2 className="h-8 w-8 text-emerald-600 dark:text-emerald-400 animate-spin" />
+                          </div>
+                          <div>
+                            <h4 className="text-lg font-bold text-slate-900 dark:text-white">
+                              Finalizing
+                            </h4>
+                            <p className="text-sm text-slate-500 dark:text-slate-400 mt-1">
+                              Recording your daily verification...
+                            </p>
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    {step === 5 && (
                       <div className="flex flex-col items-center justify-center h-full text-center space-y-6">
                         <div className="p-6 rounded-2xl bg-green-50 dark:bg-emerald-950/20 border border-green-100 dark:border-emerald-900/50 w-full animate-in fade-in zoom-in duration-300">
                           <div className="flex items-center justify-center gap-3 mb-2">

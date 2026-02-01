@@ -16,6 +16,7 @@ import {
   VerificationHistoryModal,
   VerificationData,
 } from "@/components/community-dashboard/verification-history-modal";
+import { LastDayReminder } from "@/components/community-dashboard/last-day-reminder";
 import { useState } from "react";
 
 const DailyProgress = ({
@@ -117,6 +118,20 @@ export default function OngoingProjectView({
     isSameDay || userDaysCompleted >= (appDetails?.totalDay || 14)
   );
 
+  // Last day detection: user is on the final day of testing
+  const totalDays = appDetails?.totalDay || 14;
+  const isLastDay = userDaysCompleted === totalDays - 1 && !hasTestedToday;
+
+  // Testing completed: user has completed all days including verification on the last day
+  const isTestingFullyCompleted = userDaysCompleted >= totalDays;
+
+  // On last day, after verification, user can only view
+  const isLastDayVerificationCompleted = isLastDay && hasTestedToday;
+
+  // Combined check: either fully completed all days or just completed last day verification
+  const isReadOnlyMode =
+    isTestingFullyCompleted || isLastDayVerificationCompleted;
+
   const displayDay = hasTestedToday
     ? Math.max(1, userDaysCompleted)
     : Math.min(userDaysCompleted + 1, appDetails?.totalDay || 14);
@@ -138,20 +153,8 @@ export default function OngoingProjectView({
         metaData: verification.metaData,
       });
       setIsModalOpen(true);
-    } else {
-      if (day <= (appDetails?.currentDay || 0)) {
-        setSelectedVerification({
-          id: 999,
-          dayNumber: day,
-          proofImageUrl:
-            "https://images.unsplash.com/photo-1544256718-3bcf237f3974?q=80&w=1000&auto=format&fit=crop",
-          status: "VERIFIED",
-          verifiedAt: new Date().toISOString(),
-          metaData: { ipAddress: "127.0.0.1", automated: true },
-        });
-        setIsModalOpen(true);
-      }
     }
+    // If no verification record exists for this day, don't open the modal
   };
 
   return (
@@ -210,6 +213,14 @@ export default function OngoingProjectView({
                       className="text-muted-foreground text-md sm:text-lg leading-relaxed"
                     />
                   </section>
+
+                  {/* Last Day Reminder Banner */}
+                  {!isTestingNotStarted && (isLastDay || isReadOnlyMode) && (
+                    <LastDayReminder
+                      appName={appDetails?.androidApp?.appName}
+                      isTestingCompleted={isReadOnlyMode}
+                    />
+                  )}
                 </div>
 
                 {!isTestingNotStarted && !hasTestedToday && (
@@ -273,6 +284,7 @@ export default function OngoingProjectView({
                       hubId={hubId}
                       refetch={refetch}
                       isLoading={isLoading}
+                      isCompleted={isReadOnlyMode}
                     />
                   </div>
                   {isTestingNotStarted && (

@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 
 export function CTASection() {
   return (
-    <section className="w-full relative overflow-hidden bg-primary text-primary-foreground select-none flex flex-col items-center justify-center py-16 md:py-32">
+    <section className="w-full relative overflow-hidden bg-primary text-primary-foreground select-none flex flex-col items-center justify-center h-screen pt-20">
       {/* Background Effects */}
       <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.12] mix-blend-overlay pointer-events-none data-[loc='cta-noise']" />
 
