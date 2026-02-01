@@ -45,7 +45,7 @@ export function TwoPathsSection() {
       "relative flex flex-col p-6 sm:p-8 rounded-3xl h-full transition-all duration-300",
       isPopular
         ? "bg-primary text-primary-foreground shadow-2xl shadow-primary/30"
-        : "bg-card text-card-foreground hover:shadow-xl",
+        : "border text-card-foreground hover:shadow-xl",
     );
 
   const FeatureItem = ({
@@ -80,7 +80,7 @@ export function TwoPathsSection() {
   return (
     <section
       data-loc="TwoPathsSection"
-      className="relative py-10 md:py-32 overflow-hidden"
+      className="relative py-10 md:py-32 overflow-hidden flex flex-col justify-center"
     >
       {/* Background Decor */}
       <div className="absolute inset-0 bg-dot-pattern opacity-[0.2] pointer-events-none" />
@@ -346,7 +346,6 @@ export function TwoPathsSection() {
               className={cardClasses(true)}
             >
               <>
-                <div className="absolute bottom-0 left-0 -ml-20 -mb-20 w-60 h-60 bg-black/10 rounded-full blur-3xl pointer-events-none" />
                 <div className="absolute top-6 right-6 opacity-20 rotate-12">
                   <Star className="w-24 h-24 fill-current text-white" />
                 </div>

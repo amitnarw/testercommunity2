@@ -143,7 +143,7 @@ export function Header({
           layout
           className={cn(
             "relative flex items-center justify-between px-6 py-2 bg-white/70 dark:bg-black/70 backdrop-blur-md border border-black/5 dark:border-white/10 shadow-lg shadow-black/5 dark:shadow-white/5 transition-all rounded-full duration-300",
-            isScrolled ? "gap-12" : "w-full",
+            isScrolled ? "gap-20" : "w-full",
           )}
         >
           <div className="flex items-center gap-4">

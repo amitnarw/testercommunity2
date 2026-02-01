@@ -13,6 +13,7 @@ import {
   addHubAppFeedback,
   deleteHubAppFeedback,
   submitDailyVerification,
+  completeHostedApp,
 } from "@/lib/apiCalls";
 import {
   AppCategoriesResponse,
@@ -104,10 +105,16 @@ export function useHubAppsCount() {
   return query;
 }
 
-export function useSingleHubAppDetails({ id }: { id: string }) {
+export function useSingleHubAppDetails({
+  id,
+  view,
+}: {
+  id: string;
+  view?: string;
+}) {
   const query = useQuery<HubSubmittedAppResponse, Error>({
-    queryFn: () => getSingleHubAppDetails(id),
-    queryKey: ["useSingleHubAppDetails", id],
+    queryFn: () => getSingleHubAppDetails(id, view),
+    queryKey: ["useSingleHubAppDetails", id, view],
     enabled: !!id,
   });
 
@@ -229,6 +236,24 @@ export function useSubmitDailyVerification(
     },
     onError: (data) => {
       console.log("Daily verification failed: " + data);
+    },
+    ...options,
+  });
+
+  return mutation;
+}
+
+export function useCompleteHostedApp(
+  options?: UseMutationOptions<any, any, any>,
+) {
+  const mutation = useMutation({
+    mutationFn: (payload: { appId: number | string }) =>
+      completeHostedApp(payload),
+    onSuccess: (data) => {
+      console.log("App completed successfully: " + data);
+    },
+    onError: (data) => {
+      console.log("App completion failed: " + data);
     },
     ...options,
   });

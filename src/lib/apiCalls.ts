@@ -7,7 +7,7 @@ import {
   DashboardDataResponse,
   HubDataResponse,
   HubSubmittedAppResponse,
-  NotificationReponse,
+  NotificationResponse,
   PricingResponse,
   SessionResponse,
   SubmittedAppsCount,
@@ -509,9 +509,13 @@ export async function getHubAppsCount(): Promise<SubmittedAppsCount> {
 
 export async function getSingleHubAppDetails(
   id: string,
+  view?: string,
 ): Promise<HubSubmittedAppResponse> {
   try {
-    const response = await api.get(API_ROUTES.HUB + `/get-app-details/${id}`);
+    const url = view
+      ? API_ROUTES.HUB + `/get-app-details/${id}?view=${view}`
+      : API_ROUTES.HUB + `/get-app-details/${id}`;
+    const response = await api.get(url);
     return response?.data?.data;
   } catch (error) {
     console.error("Error fetching single hub app details:", error);
@@ -707,9 +711,34 @@ export async function deleteHubAppFeedback(id: number) {
   }
 }
 
+export async function completeHostedApp(payload: { appId: number | string }) {
+  try {
+    const response = await api.post(
+      API_ROUTES.HUB + `/complete-hosted-app`,
+      payload,
+    );
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error completing hosted app:", error);
+    if (axios.isAxiosError(error)) {
+      const status = error.response?.status;
+      const responseData = error.response?.data;
+      console.error("Axios error:", status, responseData);
+
+      throw new Error(
+        responseData?.message || error.message || "Unknown Axios error",
+      );
+    } else if (error instanceof Error) {
+      throw new Error(error.message);
+    } else {
+      throw new Error(JSON.stringify(error));
+    }
+  }
+}
+
 // Notifications
 export async function getUserNotifications(): Promise<{
-  result: NotificationReponse[];
+  result: NotificationResponse[];
   totalNotifications: number;
 }> {
   try {

@@ -1,18 +1,15 @@
 "use client";
 
 import { useState, useEffect } from "react";
-
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuGroup,
   DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
 import { usePathname } from "next/navigation";
 import {
   LayoutDashboard,
@@ -31,6 +28,7 @@ import {
   Lightbulb,
   Wallet,
   Settings,
+  Shield,
 } from "lucide-react";
 import { TransitionLink } from "./transition-link";
 
@@ -75,212 +73,228 @@ export function UserNav({ session, onLogout }: UserNavProps) {
   const isAdmin = pathname.startsWith("/admin");
   const isPro = pathname.startsWith("/tester");
 
-  const getNavLinks = () => {
+  const getRoleBadge = () => {
+    if (isAdmin)
+      return (
+        <Badge
+          variant="default"
+          className="h-5 px-2 text-[10px] bg-red-500/10 text-red-600 border-red-500/10 shadow-none backdrop-blur-sm hover:bg-red-500/20"
+        >
+          Admin
+        </Badge>
+      );
+    if (isPro)
+      return (
+        <Badge
+          variant="default"
+          className="h-5 px-2 text-[10px] bg-blue-500/10 text-blue-600 border-blue-500/10 shadow-none backdrop-blur-sm hover:bg-blue-500/20"
+        >
+          Tester
+        </Badge>
+      );
+    return (
+      <Badge
+        variant="secondary"
+        className="h-5 px-2 text-[10px] bg-primary/5 text-primary border-primary/10 shadow-none backdrop-blur-sm hover:bg-primary/10"
+      >
+        Member
+      </Badge>
+    );
+  };
+
+  const BentoItem = ({
+    href,
+    icon: Icon,
+    label,
+    className = "",
+  }: {
+    href: string;
+    icon: any;
+    label: string;
+    className?: string;
+  }) => (
+    <TransitionLink href={href} className={`block ${className}`}>
+      <DropdownMenuItem className="flex flex-col items-center justify-center gap-2 p-3 h-20 rounded-2xl cursor-pointer bg-muted/40 hover:bg-muted/80 hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 border border-transparent hover:border-border/50 group focus:bg-muted/80 outline-none">
+        <div className="p-2 rounded-full bg-background shadow-sm group-hover:shadow-md transition-shadow ring-1 ring-border/10">
+          <Icon className="h-5 w-5 text-muted-foreground group-hover:text-primary transition-colors" />
+        </div>
+        <span className="text-xs font-semibold text-muted-foreground group-hover:text-foreground transition-colors">
+          {label}
+        </span>
+      </DropdownMenuItem>
+    </TransitionLink>
+  );
+
+  const ListItem = ({
+    href,
+    icon: Icon,
+    label,
+  }: {
+    href: string;
+    icon: any;
+    label: string;
+  }) => (
+    <TransitionLink href={href} className="w-full">
+      <DropdownMenuItem className="flex items-center gap-3 p-2.5 rounded-xl cursor-pointer hover:bg-muted/50 transition-all text-sm font-medium text-muted-foreground hover:text-foreground group focus:bg-muted/50 outline-none">
+        <Icon className="h-4 w-4 group-hover:text-primary transition-colors" />
+        <span>{label}</span>
+      </DropdownMenuItem>
+    </TransitionLink>
+  );
+
+  const renderContent = () => {
     if (isAdmin) {
       return (
-        <DropdownMenuGroup>
-          <DropdownMenuLabel className="text-xs font-semibold text-muted-foreground">
-            Admin Menu
-          </DropdownMenuLabel>
-          <TransitionLink href="/admin/profile">
-            <DropdownMenuItem className="h-10">
-              <User className="mr-2" />
-              <span>Profile</span>
-            </DropdownMenuItem>
-          </TransitionLink>
-          <TransitionLink href="/admin/dashboard">
-            <DropdownMenuItem className="h-10">
-              <LayoutDashboard className="mr-2" />
-              <span>Dashboard</span>
-            </DropdownMenuItem>
-          </TransitionLink>
-          <TransitionLink href="/admin/users">
-            <DropdownMenuItem className="h-10">
-              <Users className="mr-2" />
-              <span>Users</span>
-            </DropdownMenuItem>
-          </TransitionLink>
-          <TransitionLink href="/admin/submissions">
-            <DropdownMenuItem className="h-10">
-              <FileCheck className="mr-2" />
-              <span>Submissions</span>
-            </DropdownMenuItem>
-          </TransitionLink>
-          <TransitionLink href="/admin/applications">
-            <DropdownMenuItem className="h-10">
-              <UserPlus className="mr-2" />
-              <span>Applications</span>
-            </DropdownMenuItem>
-          </TransitionLink>
-          <TransitionLink href="/admin/feedback">
-            <DropdownMenuItem className="h-10">
-              <MessageSquare className="mr-2" />
-              <span>Feedback</span>
-            </DropdownMenuItem>
-          </TransitionLink>
-          <TransitionLink href="/admin/suggestions">
-            <DropdownMenuItem className="h-10">
-              <Lightbulb className="mr-2" />
-              <span>Suggestions</span>
-            </DropdownMenuItem>
-          </TransitionLink>
-        </DropdownMenuGroup>
+        <>
+          <div className="grid grid-cols-2 gap-2 mb-2">
+            <BentoItem
+              href="/admin/dashboard"
+              icon={LayoutDashboard}
+              label="Dashboard"
+            />
+            <BentoItem href="/admin/users" icon={Users} label="Users" />
+            <BentoItem
+              href="/admin/submissions"
+              icon={FileCheck}
+              label="Submissions"
+            />
+            <BentoItem
+              href="/admin/feedback"
+              icon={MessageSquare}
+              label="Feedback"
+            />
+          </div>
+          <div className="space-y-1">
+            <ListItem
+              href="/admin/applications"
+              icon={UserPlus}
+              label="Applications"
+            />
+            <ListItem
+              href="/admin/suggestions"
+              icon={Lightbulb}
+              label="Suggestions"
+            />
+            <ListItem href="/admin/profile" icon={User} label="My Profile" />
+          </div>
+        </>
       );
     }
     if (isPro) {
       return (
-        <DropdownMenuGroup>
-          <DropdownMenuLabel className="text-xs font-semibold text-muted-foreground">
-            Menu
-          </DropdownMenuLabel>
-          <TransitionLink href="/tester/profile">
-            <DropdownMenuItem className="h-10">
-              <User className="mr-2" />
-              <span>Profile</span>
-            </DropdownMenuItem>
-          </TransitionLink>
-          <TransitionLink href="/tester/dashboard">
-            <DropdownMenuItem className="h-10">
-              <LayoutDashboard className="mr-2" />
-              <span>Dashboard</span>
-            </DropdownMenuItem>
-          </TransitionLink>
-          <TransitionLink href="/tester/projects">
-            <DropdownMenuItem className="h-10">
-              <Briefcase className="mr-2" />
-              <span>Projects</span>
-            </DropdownMenuItem>
-          </TransitionLink>
-          <TransitionLink href="/tester/earnings">
-            <DropdownMenuItem className="h-10">
-              <DollarSign className="mr-2" />
-              <span>Earnings</span>
-            </DropdownMenuItem>
-          </TransitionLink>
-        </DropdownMenuGroup>
+        <>
+          <div className="grid grid-cols-2 gap-2 mb-2">
+            <BentoItem
+              href="/tester/dashboard"
+              icon={LayoutDashboard}
+              label="Dashboard"
+            />
+            <BentoItem
+              href="/tester/projects"
+              icon={Briefcase}
+              label="Projects"
+            />
+            <BentoItem
+              href="/tester/earnings"
+              icon={DollarSign}
+              label="Earnings"
+            />
+            <BentoItem href="/tester/profile" icon={User} label="Profile" />
+          </div>
+        </>
       );
     }
     return (
       <>
-        <DropdownMenuGroup>
-          <DropdownMenuLabel className="text-xs font-semibold text-muted-foreground">
-            Dashboards
-          </DropdownMenuLabel>
-          <TransitionLink href="/dashboard">
-            <DropdownMenuItem className="h-10">
-              <LayoutDashboard className="mr-2" />
-              <span>Developer Dashboard</span>
-            </DropdownMenuItem>
-          </TransitionLink>
-          <TransitionLink href="/community-dashboard">
-            <DropdownMenuItem className="h-10">
-              <Users2 className="mr-2" />
-              <span>Community Hub</span>
-            </DropdownMenuItem>
-          </TransitionLink>
-        </DropdownMenuGroup>
-        <DropdownMenuSeparator />
-        <DropdownMenuGroup>
-          <DropdownMenuLabel className="px-2 py-1.5 text-xs font-semibold text-muted-foreground">
-            Account
-          </DropdownMenuLabel>
-          <TransitionLink href="/profile">
-            <DropdownMenuItem className="h-10">
-              <User className="mr-2" />
-              <span>Profile</span>
-            </DropdownMenuItem>
-          </TransitionLink>
-          <TransitionLink href="/wallet">
-            <DropdownMenuItem className="h-10">
-              <Wallet className="mr-2" />
-              <span>My Wallet</span>
-            </DropdownMenuItem>
-          </TransitionLink>
-          <TransitionLink href="/billing">
-            <DropdownMenuItem className="h-10">
-              <Package className="mr-2" />
-              <span>Buy Packages</span>
-            </DropdownMenuItem>
-          </TransitionLink>
-          <TransitionLink href="/support">
-            <DropdownMenuItem className="h-10">
-              <LifeBuoy className="mr-2" />
-              <span>Support</span>
-            </DropdownMenuItem>
-          </TransitionLink>
-        </DropdownMenuGroup>
+        <div className="grid grid-cols-2 gap-2 mb-2">
+          <BentoItem
+            href="/dashboard"
+            icon={LayoutDashboard}
+            label="Developer"
+          />
+          <BentoItem
+            href="/community-dashboard"
+            icon={Users2}
+            label="Community"
+          />
+          <BentoItem href="/wallet" icon={Wallet} label="Wallet" />
+          <BentoItem href="/profile" icon={User} label="Profile" />
+        </div>
+        <div className="space-y-1">
+          <ListItem href="/billing" icon={Package} label="Plans & Billing" />
+          <ListItem href="/support" icon={LifeBuoy} label="Help & Support" />
+        </div>
       </>
     );
   };
 
-  if (!session) {
-    null;
-  }
+  if (!session) return null;
 
   return (
     <DropdownMenu open={open} onOpenChange={setOpen} modal={false}>
       <DropdownMenuTrigger asChild data-loc="UserNav">
-        <Button variant="ghost" className="relative h-auto rounded-full p-1">
-          <div className="flex items-center gap-2">
-            <Avatar className="h-8 w-8">
+        <Button
+          variant="ghost"
+          className="relative h-10 w-10 rounded-full hover:bg-black/5 dark:hover:bg-white/10 transition-all duration-300 ring-0 focus-visible:ring-0 outline-none p-0 group"
+        >
+          <div className="relative">
+            <Avatar className="h-9 w-9 border border-black/5 dark:border-white/10 shadow-sm transition-transform group-hover:scale-105">
               <AvatarImage
                 src={session?.user?.image || ""}
-                data-ai-hint="user avatar"
-                alt="User Avatar"
+                alt="User"
+                className="object-cover"
               />
-              <AvatarFallback>
+              <AvatarFallback className="text-xs font-bold bg-primary/10 text-primary">
                 {session?.user?.name.charAt(0).toUpperCase()}
               </AvatarFallback>
             </Avatar>
-            <ChevronDown className="h-4 w-4 text-muted-foreground" />
           </div>
         </Button>
       </DropdownMenuTrigger>
+
       <DropdownMenuContent
-        className="w-64 rounded-xl shadow-xl border-border/10 p-2"
+        className="w-[340px] p-3 rounded-[24px] bg-white/70 dark:bg-black/70 backdrop-blur-md border border-black/5 dark:border-white/10 shadow-lg shadow-black/5 dark:shadow-white/5 z-50 origin-top-right mt-2"
         align="end"
+        sideOffset={8}
         forceMount
       >
-        <DropdownMenuLabel className="font-normal p-2">
+        {/* Header */}
+        <div className="flex items-center justify-between px-2 mb-4">
           <div className="flex items-center gap-3">
-            <Avatar className="h-10 w-10">
-              <AvatarImage
-                src={session?.user?.image ?? ""}
-                data-ai-hint="user avatar"
-                alt="User Avatar"
-              />
-              <AvatarFallback>
-                {session?.user?.name.charAt(0).toUpperCase()}
-              </AvatarFallback>
-            </Avatar>
-            <div>
-              <p className="text-sm font-bold leading-none text-foreground">
-                {session?.user?.name}
-              </p>
-              <p className="text-xs leading-none text-muted-foreground mt-1">
-                {session?.user?.email}
-              </p>
+            <div className="p-2 rounded-full bg-primary/5 ring-1 ring-primary/10">
+              <Shield className="h-4 w-4 text-primary" />
+            </div>
+            <div className="flex flex-col">
+              <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/70">
+                Current Role
+              </span>
+              {getRoleBadge()}
             </div>
           </div>
-        </DropdownMenuLabel>
-        <DropdownMenuSeparator />
-        {getNavLinks()}
-        <DropdownMenuSeparator />
-        <TransitionLink href="/settings">
-          <DropdownMenuItem className="h-10">
-            <Settings className="mr-2" />
-            <span>Settings</span>
-          </DropdownMenuItem>
-        </TransitionLink>
-        <DropdownMenuSeparator />
+          <TransitionLink href="/settings">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="h-8 w-8 rounded-full hover:bg-muted/50 text-muted-foreground"
+            >
+              <Settings className="h-4 w-4" />
+            </Button>
+          </TransitionLink>
+        </div>
 
-        <DropdownMenuItem
-          onClick={onLogout}
-          className="h-10 text-red-500 focus:bg-red-500/10 focus:text-red-600"
-        >
-          <LogOut className="mr-2" />
-          <span>Log out</span>
-        </DropdownMenuItem>
+        {/* Dynamic Content */}
+        <div className="mb-2">{renderContent()}</div>
+
+        {/* Footer actions */}
+        <div className="pt-2 px-1 border-t border-dashed border-border/50">
+          <DropdownMenuItem
+            onClick={onLogout}
+            className="flex items-center justify-center gap-2 p-3 rounded-xl cursor-pointer bg-red-500/5 hover:bg-red-500/10 text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300 transition-all duration-200 font-semibold group outline-none"
+          >
+            <LogOut className="h-4 w-4 group-hover:-translate-x-1 transition-transform" />
+            <span>Sign out</span>
+          </DropdownMenuItem>
+        </div>
       </DropdownMenuContent>
     </DropdownMenu>
   );

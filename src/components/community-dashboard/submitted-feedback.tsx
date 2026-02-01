@@ -989,46 +989,60 @@ export function SubmittedFeedback({
 
               <div className="space-y-2 max-w-lg mx-auto">
                 <h3 className="text-2xl md:text-3xl font-bold tracking-tight bg-gradient-to-r from-foreground to-foreground/70 bg-clip-text text-transparent">
-                  Make Your <span className="text-primary">Impact</span>
+                  {isCompleted ? (
+                    <>
+                      No Feedback{" "}
+                      <span className="text-emerald-500">Submitted</span>
+                    </>
+                  ) : (
+                    <>
+                      Make Your <span className="text-primary">Impact</span>
+                    </>
+                  )}
                 </h3>
 
                 <p className="text-muted-foreground text-sm sm:text-lg leading-relaxed">
-                  This space is waiting for your unique perspective. Help
-                  developers polish this gem by sharing bugs, ideas, or praise.
+                  {isCompleted
+                    ? "Your testing period has ended. You didn't submit any feedback during the testing period."
+                    : "This space is waiting for your unique perspective. Help developers polish this gem by sharing bugs, ideas, or praise."}
                 </p>
               </div>
 
-              <div className="pt-2">
-                <FeedbackFormModal onSave={handleSaveFeedback}>
-                  <Button
-                    size="lg"
-                    className="rounded-full px-8 py-6 text-sm sm:text-lg shadow-xl shadow-primary/20 hover:shadow-primary/30 transition-all hover:scale-105 active:scale-95 group"
-                  >
-                    <Sparkles className="mr-2 h-5 w-5 group-hover:animate-spin" />{" "}
-                    Start Contributing
-                  </Button>
-                </FeedbackFormModal>
-              </div>
+              {!isCompleted && (
+                <div className="pt-2">
+                  <FeedbackFormModal onSave={handleSaveFeedback}>
+                    <Button
+                      size="lg"
+                      className="rounded-full px-8 py-6 text-sm sm:text-lg shadow-xl shadow-primary/20 hover:shadow-primary/30 transition-all hover:scale-105 active:scale-95 group"
+                    >
+                      <Sparkles className="mr-2 h-5 w-5 group-hover:animate-spin" />{" "}
+                      Start Contributing
+                    </Button>
+                  </FeedbackFormModal>
+                </div>
+              )}
 
-              <div className="flex items-center gap-2 sm:gap-6 text-xs text-muted-foreground/60 font-medium justify-between w-full sm:w-auto">
-                <span className="flex items-center gap-1.5">
-                  <Bug className="w-3 h-3" />{" "}
-                  <span className="hidden sm:block">Report Bugs</span>
-                  <span className="block sm:hidden">Report</span>
-                </span>
-                <span className="hidden sm:block w-1 h-1 rounded-full bg-muted-foreground/30" />
-                <span className="flex items-center gap-1.5">
-                  <Lightbulb className="w-3 h-3" />{" "}
-                  <span className="hidden sm:block">Suggest Ideas</span>
-                  <span className="block sm:hidden">Suggest</span>
-                </span>
-                <span className="hidden sm:block w-1 h-1 rounded-full bg-muted-foreground/30" />
-                <span className="flex items-center gap-1.5">
-                  <Rocket className="w-3 h-3" />{" "}
-                  <span className="hidden sm:block">Help Grow</span>
-                  <span className="block sm:hidden">Help</span>
-                </span>
-              </div>
+              {!isCompleted && (
+                <div className="flex items-center gap-2 sm:gap-6 text-xs text-muted-foreground/60 font-medium justify-between w-full sm:w-auto">
+                  <span className="flex items-center gap-1.5">
+                    <Bug className="w-3 h-3" />{" "}
+                    <span className="hidden sm:block">Report Bugs</span>
+                    <span className="block sm:hidden">Report</span>
+                  </span>
+                  <span className="hidden sm:block w-1 h-1 rounded-full bg-muted-foreground/30" />
+                  <span className="flex items-center gap-1.5">
+                    <Lightbulb className="w-3 h-3" />{" "}
+                    <span className="hidden sm:block">Suggest Ideas</span>
+                    <span className="block sm:hidden">Suggest</span>
+                  </span>
+                  <span className="hidden sm:block w-1 h-1 rounded-full bg-muted-foreground/30" />
+                  <span className="flex items-center gap-1.5">
+                    <Rocket className="w-3 h-3" />{" "}
+                    <span className="hidden sm:block">Help Grow</span>
+                    <span className="block sm:hidden">Help</span>
+                  </span>
+                </div>
+              )}
             </div>
           </div>
         )}

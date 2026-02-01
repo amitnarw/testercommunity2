@@ -53,7 +53,7 @@ function VerificationContent() {
     if (isError) {
       setStatus("error");
       setErrorMessage(
-        error instanceof Error ? error?.message : JSON.stringify(error)
+        error instanceof Error ? error?.message : JSON.stringify(error),
       );
     }
   }, [isPending, isSuccess, isError, error]);

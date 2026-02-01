@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logo Evolution V3 - Final Refinements</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@700;800&display=swap" rel="stylesheet">
+    <style>
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            background-color: #0f172a; /* Dark background to make logos pop */
+            color: white;
+        }
+        .logo-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 2.5rem;
+            border-radius: 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.5rem;
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            backdrop-filter: blur(10px);
+        }
+        .logo-card:hover {
+            transform: translateY(-8px);
+            background: rgba(255, 255, 255, 0.06);
+            border-color: #3b82f6;
+            box-shadow: 0 20px 40px -10px rgba(59, 130, 246, 0.3);
+        }
+        .logo-svg {
+            width: 140px;
+            height: 140px;
+        }
+        .label-badge {
+            font-size: 0.7rem;
+            font-weight: 800;
+            background: #3b82f6;
+            color: white;
+            padding: 0.2rem 0.8rem;
+            border-radius: 9999px;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+        .variant-title {
+            font-size: 1rem;
+            font-weight: 700;
+            color: #cbd5e1;
+        }
+    </style>
+</head>
+<body class="py-24 px-6">
+
+    <div class="max-w-7xl mx-auto text-center mb-24">
+        <h1 class="text-6xl font-extrabold tracking-tight mb-6 bg-clip-text text-transparent bg-gradient-to-r from-blue-400 to-indigo-500">
+            Logo Evolution V3
+        </h1>
+        <p class="text-xl text-slate-400 max-w-2xl mx-auto font-medium">
+            22 Refined variants of your top choices: **8A.01 (Verified)** and **8A.08 (Stack)**.
+        </p>
+    </div>
+
+    <!-- SERIES 1: 8A.01 REFINEMENTS -->
+    <div class="max-w-7xl mx-auto mb-32">
+        <div class="flex items-center gap-4 mb-12 border-l-4 border-blue-500 pl-6">
+            <div>
+                <h2 class="text-3xl font-bold">Series 01: The Verified Root</h2>
+                <p class="text-slate-500 mt-1">Exploring depth, texture, and light on the 8A.01 concept.</p>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
+            
+            <!-- 01.1: Glass Overlay -->
+            <div class="logo-card">
+                <svg viewBox="0 0 100 100" class="logo-svg" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="10" y="10" width="80" height="80" rx="20" fill="#1e40af" />
+                    <rect x="10" y="10" width="80" height="40" rx="20" fill="white" fill-opacity="0.05" />
+                    <path d="M25 50 L 45 70 L 75 30" stroke="white" stroke-width="12" stroke-linecap="round" stroke-linejoin="round" fill="none" opacity="0.15"/>
+                    <text x="50" y="58" font-family="'Plus Jakarta Sans', sans-serif" font-weight="800" font-size="44" text-anchor="middle" fill="white">iT</text>
+                </svg>
+                <div class="text-center">
+                    <span class="label-badge">01.A</span>
+                    <h3 class="variant-title mt-2">Surface Gloss</h3>
+                </div>
+            </div>
+
+            <!-- 01.2: Modern Glow -->
+            <div class="logo-card">
+                <svg viewBox="0 0 100 100" class="logo-svg" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <filter id="glow8a1" x="-20%" y="-20%" width="140%" height="140%">
+                            <feGaussianBlur stdDeviation="3" result="blur" />
+                            <feComposite in="SourceGraphic" in2="blur" operator="over" />
+                        </filter>
+                    </defs>
+                    <rect x="10" y="10" width="80" height="80" rx="20" fill="#1e40af" />
+                    <path d="M25 50 L 45 70 L 75 30" stroke="#3b82f6" stroke-width="12" stroke-linecap="round" stroke-linejoin="round" fill="none" opacity="0.4" filter="url(#glow8a1)"/>
+                    <text x="50" y="58" font-family="'Plus Jakarta Sans', sans-serif" font-weight="800" font-size="44" text-anchor="middle" fill="white">iT</text>
+                </svg>
+                <div class="text-center">
+                    <span class="label-badge">01.B</span>
+                    <h3 class="variant-title mt-2">Neon Aura</h3>
+                </div>
+            </div>
+
+            <!-- 01.3: Deep Bevel -->
+            <div class="logo-card">
+                <svg viewBox="0 0 100 100" class="logo-svg" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="10" y="10" width="80" height="80" rx="24" fill="#1e3a8a" />
+                    <rect x="14" y="14" width="72" height="72" rx="20" fill="#1e40af" />
+                    <path d="M30 50 L 45 65 L 70 35" stroke="white" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" fill="none" opacity="0.1"/>
+                    <text x="50" y="58" font-family="'Plus Jakarta Sans', sans-serif" font-weight="800" font-size="44" text-anchor="middle" fill="white" style="filter: drop-shadow(0 4px 4px rgba(0,0,0,0.2))">iT</text>
+                </svg>
+                <div class="text-center">
+                    <span class="label-badge">01.C</span>
+                    <h3 class="variant-title mt-2">Inner Depth</h3>
+                </div>
+            </div>
+
+            <!-- 01.4: Gradient Sky -->
+            <div class="logo-card">
+                <svg viewBox="0 0 100 100" class="logo-svg" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <linearGradient id="sky01" x1="0%" y1="0%" x2="0%" y2="100%">
+                            <stop offset="0%" stop-color="#2563eb" />
+                            <stop offset="100%" stop-color="#1e3a8a" />
+                        </linearGradient>
+                    </defs>
+                    <rect x="10" y="10" width="80" height="80" rx="20" fill="url(#sky01)" />
+                    <path d="M25 50 L 45 70 L 75 30" stroke="white" stroke-width="12" stroke-linecap="round" stroke-linejoin="round" fill="none" opacity="0.2"/>
+                    <text x="50" y="58" font-family="'Plus Jakarta Sans', sans-serif" font-weight="800" font-size="44" text-anchor="middle" fill="white">iT</text>
+                </svg>
+                <div class="text-center">
+                    <span class="label-badge">01.D</span>
+                    <h3 class="variant-title mt-2">Vertical Fade</h3>
+                </div>
+            </div>
+
+            <!-- 01.5: Soft Shadows -->
+            <div class="logo-card">
+                <svg viewBox="0 0 100 100" class="logo-svg" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="10" y="10" width="80" height="80" rx="20" fill="#1e40af" />
+                    <circle cx="50" cy="50" r="30" fill="white" opacity="0.05" />
+                    <path d="M25 50 L 45 70 L 75 30" stroke="white" stroke-width="12" stroke-linecap="round" stroke-linejoin="round" fill="none" opacity="0.2"/>
+                    <text x="50" y="58" font-family="'Plus Jakarta Sans', sans-serif" font-weight="800" font-size="44" text-anchor="middle" fill="white">iT</text>
+                </svg>
+                <div class="text-center">
+                    <span class="label-badge">01.E</span>
+                    <h3 class="variant-title mt-2">Radial Halo</h3>
+                </div>
+            </div>
+
+            <!-- 01.6: Tech Outline -->
+            <div class="logo-card">
+                <svg viewBox="0 0 100 100" class="logo-svg" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="10" y="10" width="80" height="80" rx="20" fill="#1e40af" stroke="rgba(255,255,255,0.2)" stroke-width="4" />
+                    <path d="M25 50 L 45 70 L 75 30" stroke="white" stroke-width="12" stroke-linecap="round" stroke-linejoin="round" fill="none" opacity="0.1"/>
+                    <text x="50" y="58" font-family="'Plus Jakarta Sans', sans-serif" font-weight="800" font-size="44" text-anchor="middle" fill="white">iT</text>
+                </svg>
+                <div class="text-center">
+                    <span class="label-badge">01.F</span>
+                    <h3 class="variant-title mt-2">Silver Frame</h3>
+                </div>
+            </div>
+
+            <!-- 01.7: Minimal Dot -->
+            <div class="logo-card">
+                <svg viewBox="0 0 100 100" class="logo-svg" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="10" y="10" width="80" height="80" rx="20" fill="#1e40af" />
+                    <circle cx="75" cy="25" r="4" fill="white" opacity="0.5" />
+                    <path d="M25 50 L 45 70 L 75 30" stroke="white" stroke-width="12" stroke-linecap="round" stroke-linejoin="round" fill="none" opacity="0.2"/>
+                    <text x="50" y="58" font-family="'Plus Jakarta Sans', sans-serif" font-weight="800" font-size="44" text-anchor="middle" fill="white">iT</text>
+                </svg>
+                <div class="text-center">
+                    <span class="label-badge">01.G</span>
+                    <h3 class="variant-title mt-2">Active Node</h3>
+                </div>
+            </div>
+
+             <!-- 01.8: Bold Slice -->
+             <div class="logo-card">
+                <svg viewBox="0 0 100 100" class="logo-svg" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="10" y="10" width="80" height="80" rx="20" fill="#1e40af" />
+                    <path d="M10 10 L 90 90" stroke="white" stroke-width="0.5" opacity="0.1" />
+                    <path d="M25 50 L 45 70 L 75 30" stroke="white" stroke-width="12" stroke-linecap="round" stroke-linejoin="round" fill="none" opacity="0.2"/>
+                    <text x="50" y="58" font-family="'Plus Jakarta Sans', sans-serif" font-weight="800" font-size="44" text-anchor="middle" fill="white">iT</text>
+                </svg>
+                <div class="text-center">
+                    <span class="label-badge">01.H</span>
+                    <h3 class="variant-title mt-2">Vector Path</h3>
+                </div>
+            </div>
+
+            <!-- 01.9: Pattern Fill -->
+            <div class="logo-card">
+                <svg viewBox="0 0 100 100" class="logo-svg" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <pattern id="dots01" x="0" y="0" width="10" height="10" patternUnits="userSpaceOnUse">
+                            <circle cx="2" cy="2" r="1" fill="white" opacity="0.1" />
+                        </pattern>
+                    </defs>
+                    <rect x="10" y="10" width="80" height="80" rx="20" fill="#1e40af" />
+                    <rect x="10" y="10" width="80" height="80" rx="20" fill="url(#dots01)" />
+                    <path d="M25 50 L 45 70 L 75 30" stroke="white" stroke-width="12" stroke-linecap="round" stroke-linejoin="round" fill="none" opacity="0.2"/>
+                    <text x="50" y="58" font-family="'Plus Jakarta Sans', sans-serif" font-weight="800" font-size="44" text-anchor="middle" fill="white">iT</text>
+                </svg>
+                <div class="text-center">
+                    <span class="label-badge">01.I</span>
+                    <h3 class="variant-title mt-2">Matrix Mesh</h3>
+                </div>
+            </div>
+
+            <!-- 01.10: Royal Blue -->
+            <div class="logo-card">
+                <svg viewBox="0 0 100 100" class="logo-svg" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="10" y="10" width="80" height="80" rx="20" fill="#1d4ed8" />
+                    <path d="M25 50 L 45 70 L 75 30" stroke="white" stroke-width="14" stroke-linecap="round" stroke-linejoin="round" fill="none" opacity="0.25"/>
+                    <text x="50" y="58" font-family="'Plus Jakarta Sans', sans-serif" font-weight="800" font-size="48" text-anchor="middle" fill="white">iT</text>
+                </svg>
+                <div class="text-center">
+                    <span class="label-badge">01.J</span>
+                    <h3 class="variant-title mt-2">Max Contrast</h3>
+                </div>
+            </div>
+
+             <!-- 01.11: Shadow Step -->
+             <div class="logo-card">
+                <svg viewBox="0 0 100 100" class="logo-svg" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="10" y="10" width="80" height="82" rx="20" fill="rgba(0,0,0,0.3)" />
+                    <rect x="10" y="10" width="80" height="80" rx="20" fill="#1e40af" />
+                    <path d="M25 50 L 45 70 L 75 30" stroke="white" stroke-width="12" stroke-linecap="round" stroke-linejoin="round" fill="none" opacity="0.2"/>
+                    <text x="50" y="58" font-family="'Plus Jakarta Sans', sans-serif" font-weight="800" font-size="44" text-anchor="middle" fill="white">iT</text>
+                </svg>
+                <div class="text-center">
+                    <span class="label-badge">01.K</span>
+                    <h3 class="variant-title mt-2">Lifted Slab</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- SERIES 2: 8A.08 PRIMARY REFINEMENTS -->
+    <div class="max-w-7xl mx-auto">
+        <div class="flex items-center gap-4 mb-12 border-l-4 border-yellow-400 pl-6">
+            <div>
+                <h2 class="text-3xl font-bold">Series 08: The Primary Stack</h2>
+                <p class="text-slate-500 mt-1">Refined 8A.08 with a Primary Blue background and accent pops.</p>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-10">
+            
+            <!-- 08.1: Original Primary -->
+            <div class="logo-card">
+                <svg viewBox="0 0 100 100" class="logo-svg" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="10" y="10" width="80" height="80" rx="20" fill="#3b82f6" />
+                    <rect x="40" y="20" width="40" height="40" rx="8" fill="white" fill-opacity="0.2" transform="rotate(10 60 40)" />
+                    <text x="45" y="60" font-family="'Plus Jakarta Sans', sans-serif" font-weight="800" font-size="48" text-anchor="middle" fill="white">iT</text>
+                    <path d="M65 55 L 72 62 L 85 45" stroke="#fde047" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+                </svg>
+                <div class="text-center">
+                    <span class="label-badge !bg-yellow-400 !text-black">08.A</span>
+                    <h3 class="variant-title mt-2">Primary Core</h3>
+                </div>
+            </div>
+
+            <!-- 08.2: Glass Stack -->
+            <div class="logo-card">
+                <svg viewBox="0 0 100 100" class="logo-svg" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="10" y="10" width="80" height="80" rx="20" fill="#3b82f6" />
+                    <rect x="42" y="18" width="42" height="42" rx="12" fill="white" fill-opacity="0.1" stroke="white" stroke-opacity="0.2" stroke-width="1" transform="rotate(15 63 39)" />
+                    <text x="42" y="62" font-family="'Plus Jakarta Sans', sans-serif" font-weight="800" font-size="44" text-anchor="middle" fill="white">iT</text>
+                    <path d="M68 50 L 73 55 L 83 40" stroke="#fbbf24" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+                </svg>
+                <div class="text-center">
+                    <span class="label-badge !bg-yellow-400 !text-black">08.B</span>
+                    <h3 class="variant-title mt-2">Crystal Layer</h3>
+                </div>
+            </div>
+
+            <!-- 08.3: Floating Accent -->
+            <div class="logo-card">
+                <svg viewBox="0 0 100 100" class="logo-svg" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="10" y="10" width="80" height="80" rx="20" fill="#3b82f6" />
+                    <circle cx="75" cy="25" r="14" fill="#3b82f6" stroke="rgba(255,255,255,0.3)" stroke-width="1" />
+                    <text x="45" y="60" font-family="'Plus Jakarta Sans', sans-serif" font-weight="800" font-size="48" text-anchor="middle" fill="white">iT</text>
+                    <path d="M70 25 L 73 28 L 80 21" stroke="#fde047" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+                </svg>
+                <div class="text-center">
+                    <span class="label-badge !bg-yellow-400 !text-black">08.C</span>
+                    <h3 class="variant-title mt-2">Status Orb</h3>
+                </div>
+            </div>
+
+            <!-- 08.4: Gradient Depth -->
+            <div class="logo-card">
+                <svg viewBox="0 0 100 100" class="logo-svg" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <linearGradient id="grad08d" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="#60a5fa" />
+                            <stop offset="100%" stop-color="#2563eb" />
+                        </linearGradient>
+                    </defs>
+                    <rect x="10" y="10" width="80" height="80" rx="20" fill="url(#grad08d)" />
+                    <rect x="40" y="20" width="40" height="40" rx="8" fill="black" fill-opacity="0.1" transform="rotate(10 60 40)" />
+                    <text x="45" y="60" font-family="'Plus Jakarta Sans', sans-serif" font-weight="800" font-size="48" text-anchor="middle" fill="white">iT</text>
+                    <path d="M65 55 L 72 62 L 85 45" stroke="#fef08a" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+                </svg>
+                <div class="text-center">
+                    <span class="label-badge !bg-yellow-400 !text-black">08.D</span>
+                    <h3 class="variant-title mt-2">Fluid Blue</h3>
+                </div>
+            </div>
+
+            <!-- 08.5: Double Stroke -->
+            <div class="logo-card">
+                <svg viewBox="0 0 100 100" class="logo-svg" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="10" y="10" width="80" height="80" rx="20" fill="#3b82f6" />
+                    <rect x="10" y="10" width="80" height="80" rx="20" fill="none" stroke="white" stroke-opacity="0.1" stroke-width="4" />
+                    <text x="45" y="60" font-family="'Plus Jakarta Sans', sans-serif" font-weight="800" font-size="48" text-anchor="middle" fill="white">iT</text>
+                    <path d="M65 55 L 72 62 L 85 45" stroke="#fde047" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+                </svg>
+                <div class="text-center">
+                    <span class="label-badge !bg-yellow-400 !text-black">08.E</span>
+                    <h3 class="variant-title mt-2">Heavy Check</h3>
+                </div>
+            </div>
+
+            <!-- 08.6: Minimal Split -->
+            <div class="logo-card">
+                <svg viewBox="0 0 100 100" class="logo-svg" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="10" y="10" width="80" height="80" rx="20" fill="#3b82f6" />
+                    <path d="M50 10 L 50 90" stroke="white" stroke-opacity="0.05" stroke-width="1" />
+                    <text x="45" y="60" font-family="'Plus Jakarta Sans', sans-serif" font-weight="800" font-size="48" text-anchor="middle" fill="white">iT</text>
+                    <circle cx="78" cy="55" r="7" fill="#fde047" />
+                    <path d="M75 55 L 77 57 L 81 53" stroke="#1e3a8a" stroke-width="2" stroke-linecap="round" fill="none" />
+                </svg>
+                <div class="text-center">
+                    <span class="label-badge !bg-yellow-400 !text-black">08.F</span>
+                    <h3 class="variant-title mt-2">Verified Dot</h3>
+                </div>
+            </div>
+
+            <!-- 08.7: Shift Stack -->
+            <div class="logo-card">
+                <svg viewBox="0 0 100 100" class="logo-svg" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="10" y="10" width="80" height="80" rx="20" fill="#3b82f6" />
+                    <rect x="15" y="15" width="20" height="20" rx="4" fill="white" fill-opacity="0.1" />
+                    <text x="50" y="62" font-family="'Plus Jakarta Sans', sans-serif" font-weight="800" font-size="48" text-anchor="middle" fill="white">iT</text>
+                    <path d="M65 30 L 72 37 L 85 20" stroke="#fde047" stroke-width="6" stroke-linecap="round" fill="none" />
+                </svg>
+                <div class="text-center">
+                    <span class="label-badge !bg-yellow-400 !text-black">08.G</span>
+                    <h3 class="variant-title mt-2">Corner Check</h3>
+                </div>
+            </div>
+
+            <!-- 08.8: Cyber Slab -->
+            <div class="logo-card">
+                <svg viewBox="0 0 100 100" class="logo-svg" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="10" y="10" width="80" height="80" rx="8" fill="#3b82f6" />
+                    <text x="45" y="60" font-family="'Plus Jakarta Sans', sans-serif" font-weight="800" font-size="48" text-anchor="middle" fill="#020617">iT</text>
+                    <path d="M60 50 L 70 60 L 90 30" stroke="#fde047" stroke-width="8" stroke-linecap="round" fill="none" />
+                </svg>
+                <div class="text-center">
+                    <span class="label-badge !bg-yellow-400 !text-black">08.H</span>
+                    <h3 class="variant-title mt-2">Industrial</h3>
+                </div>
+            </div>
+
+            <!-- 08.9: Soft Bevel Outer -->
+            <div class="logo-card">
+                <svg viewBox="0 0 100 100" class="logo-svg" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="10" y="10" width="80" height="80" rx="20" fill="#2563eb" />
+                    <rect x="12" y="12" width="76" height="76" rx="18" fill="#3b82f6" />
+                    <text x="45" y="60" font-family="'Plus Jakarta Sans', sans-serif" font-weight="800" font-size="48" text-anchor="middle" fill="white">iT</text>
+                    <path d="M65 55 L 72 62 L 85 45" stroke="#fde047" stroke-width="4" stroke-linecap="round" fill="none" style="filter: drop-shadow(0 2px 2px rgba(0,0,0,0.3))" />
+                </svg>
+                <div class="text-center">
+                    <span class="label-badge !bg-yellow-400 !text-black">08.I</span>
+                    <h3 class="variant-title mt-2">Embossed Edge</h3>
+                </div>
+            </div>
+
+            <!-- 08.10: Data Grid -->
+            <div class="logo-card">
+                <svg viewBox="0 0 100 100" class="logo-svg" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="10" y="10" width="80" height="80" rx="20" fill="#3b82f6" />
+                    <path d="M30 15 V 85 M 50 15 V 85 M 70 15 V 85" stroke="white" stroke-opacity="0.1" stroke-width="1" />
+                    <text x="45" y="60" font-family="'Plus Jakarta Sans', sans-serif" font-weight="800" font-size="48" text-anchor="middle" fill="white">iT</text>
+                    <path d="M65 55 L 72 62 L 85 45" stroke="#fde047" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+                </svg>
+                <div class="text-center">
+                    <span class="label-badge !bg-yellow-400 !text-black">08.J</span>
+                    <h3 class="variant-title mt-2">Grid Tech</h3>
+                </div>
+            </div>
+
+             <!-- 08.11: Royal Primary -->
+             <div class="logo-card">
+                <svg viewBox="0 0 100 100" class="logo-svg" xmlns="http://www.w3.org/2000/svg">
+                    <rect x="10" y="10" width="80" height="80" rx="24" fill="#3b82f6" />
+                    <path d="M20 20 L 80 80" stroke="white" stroke-width="0.5" opacity="0.1" />
+                    <text x="45" y="60" font-family="'Plus Jakarta Sans', sans-serif" font-weight="800" font-size="48" text-anchor="middle" fill="white">iT</text>
+                    <path d="M65 25 L 80 40 L 95 10" stroke="#fde047" stroke-width="10" stroke-linecap="round" stroke-linejoin="round" fill="none" opacity="0.4" transform="scale(0.8) translate(10, 30)"/>
+                </svg>
+                <div class="text-center">
+                    <span class="label-badge !bg-yellow-400 !text-black">08.K</span>
+                    <h3 class="variant-title mt-2">Elite Primary</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
