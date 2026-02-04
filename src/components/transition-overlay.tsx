@@ -313,7 +313,7 @@ export default function TransitionOverlay() {
               transition={{ duration: 0.3, delay: 0.2 }}
             >
               <p
-                className={`${colors.text} text-4xl font-bold tracking-widest uppercase drop-shadow-lg`}
+                className={`${colors.text} text-2xl md:text-4xl font-bold tracking-widest uppercase drop-shadow-lg text-center px-4`}
               >
                 {targetLabel || ""}
               </p>

@@ -2,11 +2,11 @@
 
 import { useRef } from "react";
 import Link from "next/link";
-import { SiteLogo } from "./icons";
 import { Button } from "./ui/button";
 import { Github, Twitter, Linkedin } from "lucide-react";
 import Image from "next/image";
 import { useScroll, useTransform, motion } from "framer-motion";
+import { Logo } from "./logo";
 
 const platformItems = [
   { name: "Home", href: "/" },
@@ -51,7 +51,7 @@ export function Footer() {
               className="inline-flex items-center gap-2 group mb-6"
             >
               <div className="p-1.5 lg:p-2 bg-primary/10 rounded-xl group-hover:bg-primary/20 transition-colors">
-                <SiteLogo className="w-6 h-6 lg:w-8 lg:h-8 text-primary" />
+                <Logo />
               </div>
               <span className="font-bold text-xl lg:text-2xl tracking-tight">
                 inTesters
@@ -100,7 +100,7 @@ export function Footer() {
             className="inline-flex items-center gap-2 group mb-10 lg:hidden"
           >
             <div className="p-1.5 bg-primary/10 rounded-xl group-hover:bg-primary/20 transition-colors">
-              <SiteLogo className="w-6 h-6 text-primary" />
+              <Logo />
             </div>
             <span className="font-bold text-xl tracking-tight">inTesters</span>
           </Link>

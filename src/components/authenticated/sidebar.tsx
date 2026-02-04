@@ -29,7 +29,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "../ui/tooltip";
-import { InTestersLogoShortHeader } from "../icons";
+import { Logo } from "@/components/logo";
 
 const mainNavLinks = [
   { name: "Developer Dashboard", href: "/dashboard", icon: LayoutDashboard },
@@ -80,7 +80,7 @@ const NavLink = ({
               "flex items-center justify-start w-full h-12 rounded-xl text-white/70 dark:text-black/70 transition-all duration-300 px-3.5",
               "hover:bg-white/20 hover:text-white",
               isActive &&
-                "bg-gradient-to-br from-primary to-primary/30 text-white"
+                "bg-gradient-to-br from-primary to-primary/30 text-white",
             )}
           >
             <Icon className="h-5 w-5 flex-shrink-0" />
@@ -134,12 +134,12 @@ export function Sidebar({
           "left-4 h-[95vh]",
           "flex",
           "transition-all duration-300",
-          isCollapsed ? "w-16" : "w-72"
+          isCollapsed ? "w-16" : "w-72",
         )}
       >
         <div className="flex flex-col items-center justify-between gap-4 bg-[#121212] dark:bg-white text-white py-5 rounded-2xl shadow-2xl border border-white/10 relative w-full">
           <TransitionLink href="/dashboard">
-            <InTestersLogoShortHeader className="h-10 w-10" />
+            <Logo size="md" />
           </TransitionLink>
 
           <div className="mb-8 mt-2">
@@ -184,7 +184,7 @@ export function Sidebar({
                     onClick={onLogout}
                     className={cn(
                       "flex items-center justify-start w-full h-12 rounded-xl text-white/70 dark:text-black/70 transition-all duration-300 px-3.5",
-                      "hover:bg-white/20 hover:text-white"
+                      "hover:bg-white/20 hover:text-white",
                     )}
                   >
                     <LogOut className="h-5 w-5 flex-shrink-0" />

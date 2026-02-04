@@ -1,6 +1,6 @@
 "use client";
 
-import { SiteLogo } from "@/components/icons";
+import { Logo } from "@/components/logo";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
@@ -162,7 +162,7 @@ export default function ProfessionalLoginPage() {
         <InteractiveGridPattern
           className={cn(
             "[mask-image:radial-gradient(700px_circle_at_center,rgba(255,255,255,0.6),transparent)]",
-            "transform -skew-y-12"
+            "transform -skew-y-12",
           )}
           width={30}
           height={30}
@@ -170,7 +170,7 @@ export default function ProfessionalLoginPage() {
           squaresClassName="hover:fill-gray-100"
         />
         <div className="relative z-10 flex flex-col items-center">
-          <SiteLogo className="h-20 w-auto mb-4" />
+          <Logo className="w-20 h-20 mb-4" />
           <h1 className="text-3xl font-bold tracking-tight text-foreground">
             Welcome Back, Professional
           </h1>

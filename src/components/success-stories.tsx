@@ -132,12 +132,12 @@ export function SuccessStories() {
                   animate="center"
                   exit="exit"
                   transition={transition}
-                  className="col-start-1 row-start-1 flex flex-col justify-between p-3 md:p-6 bg-white dark:bg-zinc-900 shadow-sm hover:shadow-md transition-shadow rounded-xl md:rounded-2xl min-h-[180px] md:min-h-[380px]"
+                  className="col-start-1 row-start-1 flex flex-col justify-between p-3 md:p-6 bg-white dark:bg-zinc-900 shadow-sm hover:shadow-md transition-shadow rounded-xl md:rounded-2xl min-h-[250px] md:min-h-[380px]"
                 >
                   <div>
                     <MessageSquareQuote className="text-red-500 w-4 h-4 md:w-8 md:h-8 mb-1 md:mb-4" />
 
-                    <p className="text-[10px] md:text-xl leading-relaxed text-muted-foreground mb-1 md:mb-6 font-medium line-clamp-3 md:line-clamp-none">
+                    <p className="text-sm md:text-xl leading-relaxed text-muted-foreground mb-1 md:mb-6 font-medium line-clamp-3 md:line-clamp-none">
                       "{stories[0].comment}"
                     </p>
                   </div>
