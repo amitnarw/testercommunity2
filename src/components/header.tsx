@@ -4,8 +4,6 @@ import { motion, useScroll, useMotionValueEvent } from "framer-motion";
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { InTestersLogoShortHeader } from "./icons";
-import { Button } from "./ui/button";
 import { ArrowRight, Sun, Moon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useState, useEffect } from "react";
@@ -15,6 +13,8 @@ import MobileMenu from "./mobile-menu";
 import { AnimatedLink } from "./ui/animated-link";
 import { authClient } from "@/lib/auth-client";
 import { useQueryClient } from "@tanstack/react-query";
+import { Logo } from "./logo";
+import { Button } from "./ui/button";
 
 const visitorNavItems = [
   { name: "Home", href: "/" },
@@ -148,17 +148,7 @@ export function Header({
         >
           <div className="flex items-center gap-4">
             <Link href="/" className="flex items-center gap-2">
-              <InTestersLogoShortHeader className="h-9 w-9" />
-              <span
-                className={cn(
-                  "font-bold text-lg tracking-tight hidden sm:block transition-all duration-300",
-                  isScrolled
-                    ? "w-0 opacity-0 overflow-hidden"
-                    : "w-auto opacity-100",
-                )}
-              >
-                TesterCommunity
-              </span>
+              <Logo />
             </Link>
           </div>
 

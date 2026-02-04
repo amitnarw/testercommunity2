@@ -2,7 +2,7 @@
 
 import React from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { SiteLogo } from "@/components/icons";
+import { Logo } from "@/components/logo";
 import { Button } from "@/components/ui/button";
 import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
@@ -214,7 +214,7 @@ export default function AdminLoginPage() {
           {/* Header Section - Compact */}
           <div className="text-center">
             <div className="inline-flex items-center justify-center p-3.5 bg-muted/50 rounded-2xl mb-3 border border-border/30">
-              <SiteLogo className="h-8 w-auto" />
+              <Logo size="sm" />
             </div>
             <h1 className="text-2xl font-black tracking-tight text-foreground">
               Admin Portal

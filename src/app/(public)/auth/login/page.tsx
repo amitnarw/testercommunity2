@@ -1,6 +1,6 @@
 "use client";
 
-import { SiteLogo } from "@/components/icons";
+import { Logo } from "@/components/logo";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
@@ -314,7 +314,7 @@ export default function LoginPage() {
       <div className="hidden lg:flex flex-col items-center justify-center p-6 text-center relative overflow-hidden bg-background">
         <BackgroundBeams />
         <div className="relative z-10 flex flex-col items-center">
-          <SiteLogo className="h-20 w-auto mb-4" />
+          <Logo className="w-20 h-20 mb-4" />
           <h1 className="text-3xl font-bold tracking-tight text-foreground">
             Welcome back
           </h1>
