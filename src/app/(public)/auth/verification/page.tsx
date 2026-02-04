@@ -14,7 +14,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { SiteLogo } from "@/components/icons";
+import { Logo } from "@/components/logo";
 import Link from "next/link";
 import LoadingIcon from "@/components/loadingIcon";
 import { BackgroundBeams } from "@/components/ui/background-beams";
@@ -154,7 +154,7 @@ export default function VerificationPage() {
       </div>
       <div className="absolute top-6 left-6 z-20">
         <Link href="/">
-          <SiteLogo />
+          <Logo />
         </Link>
       </div>
       <Suspense fallback={<LoadingIcon />}>
