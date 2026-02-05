@@ -99,7 +99,7 @@ export default function DashboardPage() {
     isError: dashboardIsError,
     error: dashboardError,
   } = useDashboardData();
-
+  console.log(dashboardData, "----");
   return (
     <div data-loc="DashboardPage" className="min-h-screen mb-8">
       <div className="container mx-auto px-4 md:px-6">
@@ -180,7 +180,7 @@ export default function DashboardPage() {
               className="w-full h-full bg-gradient-to-br from-primary to-primary/40"
             >
               <Link href="/dashboard/add-app">
-                <PlusCircle className="mr-2 h-4 w-4" /> Use a Package
+                <PlusCircle className="mr-2 h-4 w-4" /> Submit Your App
               </Link>
             </Button>
             <Button variant="outline" asChild className="w-full h-full">

@@ -85,8 +85,8 @@ export default function AddAppGuidePage() {
 
   return (
     <>
-      <div className="min-h-screen bg-[#f8fafc] dark:bg-[#0f151e]">
-        <div className="container mx-auto px-4 md:px-6">
+      <div className="min-h-screen bg-brand-background">
+        <div className="container mx-auto px-4 md:px-6 pb-12">
           <div className="sticky top-0 z-[50] pt-2 sm:pt-3 pb-10 max-w-[50%] sm:max-w-4xl mx-0 sm:mx-auto">
             <BackButton href="/dashboard" />
           </div>

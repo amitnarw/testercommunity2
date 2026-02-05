@@ -64,6 +64,7 @@ export default {
           "4": "hsl(var(--chart-4))",
           "5": "hsl(var(--chart-5))",
         },
+        "brand-background": "var(--brand-background)",
       },
       borderRadius: {
         lg: "var(--radius)",
