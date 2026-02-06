@@ -29,6 +29,7 @@
     --chart-3: 217 70% 80%;
     --chart-4: 217 60% 90%;
     --chart-5: 217 95% 50%;
+    --brand-background: #f8fafc;
   }
 
   .dark {
@@ -56,6 +57,7 @@
     --chart-3: 217 70% 80%;
     --chart-4: 217 60% 90%;
     --chart-5: 217 95% 50%;
+    --brand-background: #0f151e;
   }
 }
 

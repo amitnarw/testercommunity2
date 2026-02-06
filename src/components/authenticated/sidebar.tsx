@@ -127,7 +127,7 @@ export function Sidebar({
   return (
     <div
       data-loc="Sidebar"
-      className="fixed z-[55] h-full hidden md:flex items-center justify-center pl-4 bg-[#f8fafc] dark:bg-[#0f151e]"
+      className="fixed z-[55] h-full hidden md:flex items-center justify-center pl-4 bg-brand-background"
     >
       <aside
         className={cn(

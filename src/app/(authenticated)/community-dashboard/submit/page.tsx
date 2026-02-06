@@ -301,14 +301,14 @@ export default function SubmitAppPage() {
 
   return (
     <>
-      <div className="bg-[#f8fafc] dark:bg-[#0f151e] min-h-screen">
+      <div className="bg-brand-background min-h-screen">
         <PageHeader
           title="Submit"
           backHref="/community-dashboard"
           className="w-1/2 px-5 sm:px-10"
         />
 
-        <div className="container mx-auto px-2 py-5">
+        <div className="mx-auto px-2 py-5">
           <div className="lg:grid lg:grid-cols-12 lg:gap-16 bg-background rounded-3xl px-3 sm:px-5">
             {/* Mobile Step Navigator */}
             <nav className="lg:hidden sticky top-12 sm:top-14 z-30 flex items-center justify-around border-b bg-background/80 backdrop-blur-lg">

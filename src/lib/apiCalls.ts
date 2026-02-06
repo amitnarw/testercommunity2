@@ -344,6 +344,108 @@ export async function getDasboardData(): Promise<DashboardDataResponse> {
   }
 }
 
+export async function addDashboardAppSubmit(
+  payload: AppData,
+): Promise<DashboardDataResponse> {
+  try {
+    const response = await api.post(
+      API_ROUTES.DASHBOARD + `/add-dashboard-app-submit`,
+      payload,
+    );
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error fetching dashboard data:", error);
+    if (axios.isAxiosError(error)) {
+      const status = error.response?.status;
+      const responseData = error.response?.data;
+      console.error("Axios error:", status, responseData);
+
+      throw new Error(
+        responseData?.message || error.message || "Unknown Axios error",
+      );
+    } else if (error instanceof Error) {
+      throw new Error(error.message);
+    } else {
+      throw new Error(JSON.stringify(error));
+    }
+  }
+}
+
+export async function addDashboardAppDraft(
+  payload: AppData,
+): Promise<AppData | null> {
+  try {
+    const response = await api.post(
+      API_ROUTES.DASHBOARD + `/add-dashboard-app-draft`,
+      payload,
+    );
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error saving dashboard app draft:", error);
+    if (axios.isAxiosError(error)) {
+      const status = error.response?.status;
+      const responseData = error.response?.data;
+      console.error("Axios error:", status, responseData);
+
+      throw new Error(
+        responseData?.message || error.message || "Unknown Axios error",
+      );
+    } else if (error instanceof Error) {
+      throw new Error(error.message);
+    } else {
+      throw new Error(JSON.stringify(error));
+    }
+  }
+}
+
+export async function getDashboardAppsCount(): Promise<SubmittedAppsCount> {
+  try {
+    const response = await api.get(API_ROUTES.DASHBOARD + `/get-apps-count`);
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error fetching dashboard apps count:", error);
+    if (axios.isAxiosError(error)) {
+      const status = error.response?.status;
+      const responseData = error.response?.data;
+      console.error("Axios error:", status, responseData);
+
+      throw new Error(
+        responseData?.message || error.message || "Unknown Axios error",
+      );
+    } else if (error instanceof Error) {
+      throw new Error(error.message);
+    } else {
+      throw new Error(JSON.stringify(error));
+    }
+  }
+}
+
+export async function getDashboardApps(
+  type: string,
+): Promise<HubSubmittedAppResponse[]> {
+  try {
+    const response = await api.get(
+      API_ROUTES.DASHBOARD + `/get-dashboard-apps/${type}`,
+    );
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error fetching dashboard apps:", error);
+    if (axios.isAxiosError(error)) {
+      const status = error.response?.status;
+      const responseData = error.response?.data;
+      console.error("Axios error:", status, responseData);
+
+      throw new Error(
+        responseData?.message || error.message || "Unknown Axios error",
+      );
+    } else if (error instanceof Error) {
+      throw new Error(error.message);
+    } else {
+      throw new Error(JSON.stringify(error));
+    }
+  }
+}
+
 // Hub
 export async function getHubData(): Promise<HubDataResponse> {
   try {
