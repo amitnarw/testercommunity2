@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -19,16 +20,138 @@ import {
   BadgeCheck,
   Zap,
   Sparkles,
+  Tag,
 } from "lucide-react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { LoadingButton } from "@/components/ui/loading-button";
 import { PageHeader } from "@/components/page-header";
 import { useDashboardData } from "@/hooks/useUser";
 import { cn } from "@/lib/utils";
+import { useAppCategories } from "@/hooks/useHub";
+import {
+  useAddDashboardAppSubmit,
+  useSaveDashboardAppDraft,
+} from "@/hooks/useDashboard";
+import { useQueryClient } from "@tanstack/react-query";
+import { toast } from "@/hooks/use-toast";
 
 export default function AddAppFormPage() {
+  const queryClient = useQueryClient();
   const { data: dashboardData } = useDashboardData();
   const userPackages = Number(dashboardData?.wallet) || 0;
   const hasEnoughPackages = userPackages >= 1;
+
+  // Form state
+  const [appName, setAppName] = useState("");
+  const [testingUrl, setTestingUrl] = useState("");
+  const [logoUrl, setLogoUrl] = useState("");
+  const [category, setCategory] = useState("");
+  const [instructions, setInstructions] = useState("");
+
+  const {
+    data: appCategoriesData,
+    isPending: appCategoriesIsPending,
+    isError: appCategoriesIsError,
+    error: appCategoriesError,
+  } = useAppCategories();
+
+  // Save draft mutation - only triggered when user clicks Draft button
+  const { mutate: saveDraft, isPending: isSavingDraft } =
+    useSaveDashboardAppDraft({
+      onSuccess: () => {
+        toast({
+          title: "Success!",
+          description: "Draft saved successfully!",
+        });
+      },
+      onError: (error: Error) => {
+        toast({
+          title: "Error",
+          description: error.message || "Failed to save draft",
+          variant: "destructive",
+        });
+      },
+    });
+
+  // Submit mutation
+  const {
+    mutate: submitApp,
+    isPending: isSubmitting,
+    isSuccess: isSubmitSuccess,
+    isError: isSubmitError,
+  } = useAddDashboardAppSubmit({
+    onSuccess: () => {
+      toast({
+        title: "Success!",
+        description: "App submitted for testing successfully!",
+      });
+      // Invalidate dashboard data to refresh wallet balance
+      queryClient.invalidateQueries({ queryKey: ["useDashboardData"] });
+      // Reset form
+      setAppName("");
+      setTestingUrl("");
+      setLogoUrl("");
+      setCategory("");
+      setInstructions("");
+    },
+    onError: (error: Error) => {
+      toast({
+        title: "Error",
+        description: error.message || "Failed to submit app for testing",
+        variant: "destructive",
+      });
+    },
+  });
+
+  // Form validation
+  const isFormValid =
+    appName.trim() && testingUrl.trim() && logoUrl.trim() && category;
+
+  // Handle form submission
+  const handleSubmit = () => {
+    if (!isFormValid) {
+      toast({
+        title: "Validation Error",
+        description: "Please fill in all required fields",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    if (!hasEnoughPackages) {
+      toast({
+        title: "Insufficient Packages",
+        description: "Please purchase more packages to submit an app.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    submitApp({
+      appName,
+      testingUrl,
+      logoUrl,
+      categoryId: parseInt(category),
+      instructions: instructions.trim() || null,
+    } as any); // Using 'as any' since the exact payload structure depends on your backend
+  };
+
+  // Handle save as draft - calls the API when user clicks Draft button
+  const handleSaveDraft = () => {
+    saveDraft({
+      appName,
+      testingUrl,
+      logoUrl,
+      categoryId: parseInt(category) || 0,
+      instructions: instructions.trim() || null,
+    } as any); // Using 'as any' since the exact payload structure depends on your backend
+  };
 
   return (
     <div className="min-h-screen bg-brand-background max-w-6xl mx-auto px-4 md:px-6 pb-16">
@@ -124,6 +247,8 @@ export default function AddAppFormPage() {
                       <Input
                         id="name"
                         placeholder="E.g., Project Phoenix"
+                        value={appName}
+                        onChange={(e) => setAppName(e.target.value)}
                         className="py-3 h-13 text-base rounded-xl bg-secondary/20 border-border/60 focus-visible:ring-2 focus-visible:ring-primary/30 focus-visible:border-primary focus-visible:bg-card transition-all duration-300 hover:border-primary/40 hover:bg-secondary/30"
                       />
                       <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-primary/0 via-primary/5 to-primary/0 opacity-0 group-focus-within/input:opacity-100 transition-opacity pointer-events-none" />
@@ -147,6 +272,8 @@ export default function AddAppFormPage() {
                       <Input
                         id="url"
                         placeholder="https://play.google.com/apps/testing/..."
+                        value={testingUrl}
+                        onChange={(e) => setTestingUrl(e.target.value)}
                         className="pl-14 py-3 h-13 text-base rounded-xl bg-secondary/20 border-border/60 focus-visible:ring-2 focus-visible:ring-primary/30 focus-visible:border-primary focus-visible:bg-card transition-all duration-300 hover:border-primary/40 hover:bg-secondary/30"
                       />
                     </div>
@@ -166,11 +293,59 @@ export default function AddAppFormPage() {
                       <Input
                         id="logo"
                         placeholder="https://example.com/logo.png"
+                        value={logoUrl}
+                        onChange={(e) => setLogoUrl(e.target.value)}
                         className="py-3 h-13 text-base rounded-xl bg-secondary/20 border-border/60 focus-visible:ring-2 focus-visible:ring-primary/30 focus-visible:border-primary focus-visible:bg-card transition-all duration-300 hover:border-primary/40 hover:bg-secondary/30"
                       />
                     </div>
                     <p className="text-xs text-muted-foreground pl-1">
                       Direct URL to your app&apos;s logo image
+                    </p>
+                  </div>
+
+                  <div className="space-y-3">
+                    <Label
+                      htmlFor="category"
+                      className="text-sm font-semibold text-foreground flex items-center gap-2"
+                    >
+                      App Category <span className="text-destructive">*</span>
+                    </Label>
+                    <div className="relative group/input">
+                      <div className="absolute left-4 top-1/2 -translate-y-1/2 w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center z-10">
+                        <Tag className="w-4 h-4 text-primary" />
+                      </div>
+                      <Select value={category} onValueChange={setCategory}>
+                        <SelectTrigger
+                          id="category"
+                          className="pl-14 py-3 h-13 text-base rounded-xl bg-secondary/20 border-border/60 focus:ring-2 focus:ring-primary/30 focus:border-primary focus:bg-card transition-all duration-300 hover:border-primary/40 hover:bg-secondary/30"
+                        >
+                          <SelectValue placeholder="Select a category" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {appCategoriesIsPending ? (
+                            <SelectItem value="loading" disabled>
+                              Loading categories...
+                            </SelectItem>
+                          ) : appCategoriesIsError ? (
+                            <SelectItem value="error" disabled>
+                              Error loading categories
+                            </SelectItem>
+                          ) : (
+                            appCategoriesData?.map((cat) => (
+                              <SelectItem
+                                key={cat?.id}
+                                value={cat?.id?.toString()}
+                              >
+                                {cat?.name}
+                              </SelectItem>
+                            ))
+                          )}
+                        </SelectContent>
+                      </Select>
+                      <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-primary/0 via-primary/5 to-primary/0 opacity-0 group-focus-within/input:opacity-100 transition-opacity pointer-events-none" />
+                    </div>
+                    <p className="text-xs text-muted-foreground pl-1">
+                      Choose the category that best describes your app
                     </p>
                   </div>
                 </div>
@@ -212,6 +387,8 @@ export default function AddAppFormPage() {
                       <Textarea
                         id="instructions"
                         placeholder="e.g., Use demo@test.com / password123 to log in. Please test the checkout flow and profile settings."
+                        value={instructions}
+                        onChange={(e) => setInstructions(e.target.value)}
                         className="min-h-[140px] py-4 text-base rounded-xl bg-secondary/20 border-border/60 focus-visible:ring-2 focus-visible:ring-primary/30 focus-visible:border-primary focus-visible:bg-card transition-all duration-300 hover:border-primary/40 hover:bg-secondary/30 resize-none"
                       />
                     </div>
@@ -251,7 +428,7 @@ export default function AddAppFormPage() {
             {/* Cost Summary Card */}
             <Card className="rounded-2xl bg-gradient-to-br from-card via-card to-secondary/20 backdrop-blur-md border-border/40 shadow-2xl shadow-black/10 overflow-hidden sticky top-6">
               {/* Decorative top gradient */}
-              <div className="h-24 bg-gradient-to-br from-primary/10 via-primary/5 to-transparent relative overflow-hidden">
+              <div className="h-24 bg-gradient-to-br from-primary/10 via-primary/0 to-transparent relative overflow-hidden">
                 <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-primary/20 via-transparent to-transparent" />
                 <div
                   className="absolute top-4 right-4 w-16 h-16 rounded-full bg-primary/20 blur-xl animate-pulse"
@@ -263,14 +440,13 @@ export default function AddAppFormPage() {
                 />
               </div>
 
-              <div className="p-6 sm:p-8 -mt-12 relative">
+              <div className="p-6 sm:p-8 -mt-20 relative">
                 {/* Cost Summary */}
                 <div className="space-y-5">
                   <div className="flex items-center justify-between">
-                    <h3 className="text-sm font-bold text-foreground uppercase tracking-wider">
+                    <h3 className="text-md font-bold text-foreground uppercase tracking-wider">
                       Submission Summary
                     </h3>
-                    <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
                   </div>
 
                   <div className="p-5 rounded-2xl bg-gradient-to-br from-secondary/60 via-secondary/40 to-secondary/20 border border-border/50 backdrop-blur-sm">
@@ -361,20 +537,28 @@ export default function AddAppFormPage() {
                 <div className="flex flex-row gap-2 sm:gap-3 mt-6 sm:mt-8">
                   <Button
                     variant="outline"
+                    onClick={handleSaveDraft}
+                    disabled={isSavingDraft}
                     className="h-10 sm:h-12 px-3 sm:px-4 rounded-xl border-border/60 shrink-0 hover:bg-secondary/50 hover:border-border transition-all duration-300"
                   >
-                    <Save className="w-4 h-4" />
+                    <Save
+                      className={cn(
+                        "w-4 h-4",
+                        isSavingDraft && "animate-pulse",
+                      )}
+                    />
                     <span className="hidden sm:inline font-medium ml-2">
-                      Draft
+                      {isSavingDraft ? "Saving..." : "Draft"}
                     </span>
                   </Button>
                   <LoadingButton
-                    isLoading={false}
-                    isSuccess={false}
-                    isError={false}
-                    disabled={!hasEnoughPackages}
+                    isLoading={isSubmitting}
+                    isSuccess={isSubmitSuccess}
+                    isError={isSubmitError}
+                    disabled={!hasEnoughPackages || isSubmitting}
+                    onClick={handleSubmit}
                     className="flex-1 h-10 sm:h-12 text-xs sm:text-base font-bold rounded-xl bg-gradient-to-r from-primary via-primary to-primary/90 hover:from-primary/90 hover:via-primary/85 hover:to-primary/80 shadow-xl shadow-primary/25 transition-all duration-300 hover:shadow-primary/40 hover:scale-[1.02] active:scale-[0.98]"
-                    type="submit"
+                    type="button"
                   >
                     <div className="flex flex-row gap-1 sm:gap-2 items-center justify-center">
                       <span className="hidden sm:inline">

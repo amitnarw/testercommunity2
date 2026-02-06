@@ -1,26 +1,21 @@
 "use client";
 
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { PlusCircle, Package, ChevronLeft, ChevronRight } from "lucide-react";
+import { PlusCircle, Package, Activity } from "lucide-react";
 import { ProjectList } from "@/components/project-list";
 import Link from "next/link";
-import { Gem, Activity } from "lucide-react";
+import { Gem } from "lucide-react";
 import { useState } from "react";
-import { projects as allProjects } from "@/lib/data";
-import type { Project } from "@/lib/types";
+import type { Project, HubSubmittedAppResponse } from "@/lib/types";
 import { Tabs, TabsContent } from "@/components/ui/tabs";
 import { CustomTabsList } from "@/components/custom-tabs-list";
 import { AppPagination } from "@/components/app-pagination";
-import { motion } from "framer-motion";
 import SubTabUI from "@/components/sub-tab-ui";
-import { useDashboardData, useUserProfileData } from "@/hooks/useUser";
+import { useDashboardData } from "@/hooks/useUser";
+import { useDashboardAppsCount, useDashboardApps } from "@/hooks/useDashboard";
+import { AppCardSkeleton } from "@/components/app-card-skeleton";
+import { format } from "date-fns";
 
 const PROJECTS_PER_PAGE = 6;
 
@@ -38,7 +33,23 @@ const BentoCard = ({
   </div>
 );
 
-const PaginatedProjectList = ({ projects }: { projects: Project[] }) => {
+const PaginatedProjectList = ({
+  projects,
+  isLoading,
+}: {
+  projects: Project[];
+  isLoading?: boolean;
+}) => {
+  if (isLoading) {
+    return (
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {Array.from({ length: 6 }).map((_, i) => (
+          <AppCardSkeleton key={i} />
+        ))}
+      </div>
+    );
+  }
+
   const [currentPage, setCurrentPage] = useState(1);
   const totalPages = Math.ceil(projects.length / PROJECTS_PER_PAGE);
   const startIndex = (currentPage - 1) * PROJECTS_PER_PAGE;
@@ -66,40 +77,111 @@ export default function DashboardPage() {
   const [mainTab, setMainTab] = useState("pending");
   const [pendingSubTab, setPendingSubTab] = useState("in-review");
 
-  const draftApps = allProjects.filter((p) => p.status === "Draft");
-  const inReviewApps = allProjects.filter((p) => p.status === "In Review");
-  const rejectedApps = allProjects.filter((p) => p.status === "Rejected");
-  const ongoingApps = allProjects.filter((p) => p.status === "In Testing");
-  const completedApps = allProjects.filter((p) => p.status === "Completed");
+  // Fetch dashboard stats
+  const { data: dashboardData } = useDashboardData();
+
+  // Fetch app counts for tabs
+  const { data: appsCountData } = useDashboardAppsCount();
+
+  // Determine backend type based on tabs
+  const getBackendType = () => {
+    if (mainTab === "pending") {
+      switch (pendingSubTab) {
+        case "in-review":
+          return "IN_REVIEW";
+        case "drafts":
+          return "DRAFT";
+        case "rejected":
+          return "REJECTED";
+        default:
+          return "IN_REVIEW";
+      }
+    }
+    if (mainTab === "ongoing") return "IN_TESTING";
+    if (mainTab === "completed") return "COMPLETED";
+    return "IN_REVIEW";
+  };
+
+  const currentAppType = getBackendType();
+
+  // Fetch apps list
+  const { data: appsData, isPending: appsIsPending } = useDashboardApps({
+    type: currentAppType,
+  });
+
+  // Calculate counts from API data
+  const draftCount = appsCountData?.DRAFT || 0;
+  const inReviewCount = appsCountData?.IN_REVIEW || 0;
+  const rejectedCount = appsCountData?.REJECTED || 0;
+  const ongoingCount = appsCountData?.IN_TESTING || 0;
+  const completedCount = appsCountData?.COMPLETED || 0;
+  const pendingCount = draftCount + inReviewCount + rejectedCount;
+
+  // Map HubSubmittedAppResponse to Project type
+  const mapToProjects = (
+    apps: HubSubmittedAppResponse[] | undefined,
+  ): Project[] => {
+    if (!apps) return [];
+
+    return apps.map((app) => {
+      // Map status enum to display string
+      let status: Project["status"] = "In Review";
+      if (app.status === "DRAFT") status = "Draft";
+      else if (app.status === "REJECTED") status = "Rejected";
+      else if (app.status === "IN_TESTING") status = "In Testing";
+      else if (app.status === "COMPLETED") status = "Completed";
+      else if (app.status === "IN_REVIEW") status = "In Review";
+
+      return {
+        id: app.id,
+        name: app.androidApp?.appName || "Unknown App",
+        packageName: app.androidApp?.packageName || "",
+        icon: app.androidApp?.appLogoUrl || "",
+        category: "App", // Default category as it's cleaner than fetching nested if not needed
+        status: status,
+        testersStarted: app.currentTester || 0,
+        testersCompleted: 0, // Not available in response yet
+        totalDays: app.totalDay || 14, // Default or from API
+        avgTestersPerDay:
+          app.currentDay > 0 ? app.currentTester / app.currentDay : 0,
+        startedFrom: app.createdAt
+          ? format(new Date(app.createdAt), "MMM d, yyyy")
+          : "N/A",
+        description: app.androidApp?.description || "",
+        testingInstructions: app.instructionsForTester || "",
+        androidVersion: `Android ${app.minimumAndroidVersion}+`,
+        pointsCost: app.costPoints || 0,
+        crashFreeRate: 100, // Placeholder
+        overallRating: 0, // Placeholder
+        feedbackBreakdown: { bugs: 0, suggestions: 0, praise: 0 },
+        performanceMetrics: { cpuUsage: 0, memoryUsage: 0, startupTime: 0 },
+        deviceCoverage: [],
+        osCoverage: [],
+        topGeographies: [],
+        feedback: [],
+        dataAiHint: app.androidApp?.appName,
+      } as Project;
+    });
+  };
+
+  const mappedProjects = mapToProjects(appsData);
 
   const mainTabs = [
     {
       label: "Pending",
       value: "pending",
-      count: draftApps.length + inReviewApps.length + rejectedApps.length,
+      count: pendingCount,
     },
-    { label: "Ongoing", value: "ongoing", count: ongoingApps.length },
-    { label: "Completed", value: "completed", count: completedApps.length },
+    { label: "Ongoing", value: "ongoing", count: ongoingCount },
+    { label: "Completed", value: "completed", count: completedCount },
   ];
 
   const pendingTabs = [
-    { label: "In Review", value: "in-review", count: inReviewApps.length },
-    { label: "Drafts", value: "drafts", count: draftApps.length },
-    { label: "Rejected", value: "rejected", count: rejectedApps.length },
+    { label: "In Review", value: "in-review", count: inReviewCount },
+    { label: "Drafts", value: "drafts", count: draftCount },
+    { label: "Rejected", value: "rejected", count: rejectedCount },
   ];
 
-  // Dummy data for packages
-  // const totalPackages = 3;
-  // const usedPackages = 1;
-  // const availablePackages = totalPackages - usedPackages;
-
-  const {
-    data: dashboardData,
-    isPending: dashboardIsPending,
-    isError: dashboardIsError,
-    error: dashboardError,
-  } = useDashboardData();
-  console.log(dashboardData, "----");
   return (
     <div data-loc="DashboardPage" className="min-h-screen mb-8">
       <div className="container mx-auto px-4 md:px-6">
@@ -129,7 +211,9 @@ export default function DashboardPage() {
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="p-0">
-                  <div className="text-2xl font-bold">{allProjects.length}</div>
+                  <div className="text-2xl font-bold">
+                    {pendingCount + ongoingCount + completedCount}
+                  </div>
                 </CardContent>
               </Card>
               <Card className="rounded-xl border-0 bg-secondary px-3 py-2">
@@ -139,7 +223,7 @@ export default function DashboardPage() {
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="p-0">
-                  <div className="text-2xl font-bold">{ongoingApps.length}</div>
+                  <div className="text-2xl font-bold">{ongoingCount}</div>
                 </CardContent>
               </Card>
               <Card className="rounded-xl border-0 bg-secondary px-3 py-2">
@@ -149,9 +233,7 @@ export default function DashboardPage() {
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="p-0">
-                  <div className="text-2xl font-bold">
-                    {completedApps.length}
-                  </div>
+                  <div className="text-2xl font-bold">{completedCount}</div>
                 </CardContent>
               </Card>
             </BentoCard>
@@ -204,22 +286,22 @@ export default function DashboardPage() {
                 setPendingSubTab={setPendingSubTab}
                 pendingSubTab={pendingSubTab}
               />
-
-              {pendingSubTab === "in-review" && (
-                <PaginatedProjectList projects={inReviewApps} />
-              )}
-              {pendingSubTab === "drafts" && (
-                <PaginatedProjectList projects={draftApps} />
-              )}
-              {pendingSubTab === "rejected" && (
-                <PaginatedProjectList projects={rejectedApps} />
-              )}
+              <PaginatedProjectList
+                projects={mappedProjects}
+                isLoading={appsIsPending}
+              />
             </TabsContent>
             <TabsContent value="ongoing" className="mt-6">
-              <PaginatedProjectList projects={ongoingApps} />
+              <PaginatedProjectList
+                projects={mappedProjects}
+                isLoading={appsIsPending}
+              />
             </TabsContent>
             <TabsContent value="completed" className="mt-6">
-              <PaginatedProjectList projects={completedApps} />
+              <PaginatedProjectList
+                projects={mappedProjects}
+                isLoading={appsIsPending}
+              />
             </TabsContent>
           </Tabs>
         </main>
