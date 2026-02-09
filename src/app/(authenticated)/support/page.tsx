@@ -14,7 +14,9 @@ import {
   Globe,
   HelpCircle,
   MessageCircle,
-  Mail,
+  Command,
+  ChevronRight,
+  MousePointer2,
 } from "lucide-react";
 import Link from "next/link";
 import { getPopularArticles, searchArticles } from "@/lib/blog-data";
@@ -28,45 +30,41 @@ const categories = [
     id: "google-play-guidelines",
     icon: Shield,
     title: "Google Play Guidelines",
-    description: "Policy deep-dives for the 20-tester & 14-day requirements. Essential for 2024 compliance.",
-    color: "from-blue-600 to-indigo-600",
-    textColor: "text-blue-400",
-    glow: "rgba(37, 99, 235, 0.15)",
+    description: "Deep dive into 20-tester & 14-day requirements. Stay compliant with current policies.",
+    textColor: "text-blue-600 dark:text-blue-400",
+    bgColor: "bg-blue-500/10",
+    borderColor: "border-blue-500/20",
     href: "/support/google-play-guidelines",
-    size: "md:col-span-2 md:row-span-2",
   },
   {
     id: "free-community-testing",
     icon: Globe,
     title: "Community Testing",
-    description: "Master the Karma system to get testers worldwide for free.",
-    color: "from-emerald-500 to-teal-600",
-    textColor: "text-emerald-400",
-    glow: "rgba(16, 185, 129, 0.15)",
+    description: "Master the Karma system. Build your tester pool through mutual cooperation.",
+    textColor: "text-emerald-600 dark:text-emerald-400",
+    bgColor: "bg-emerald-500/10",
+    borderColor: "border-emerald-500/20",
     href: "/support/free-community-testing",
-    size: "md:col-span-2 md:row-span-1",
   },
   {
     id: "paid-professional-testing",
     icon: Star,
-    title: "Professional",
-    description: "Vetted QA cycles with guaranteed results.",
-    color: "from-amber-500 to-orange-600",
-    textColor: "text-amber-400",
-    glow: "rgba(245, 158, 11, 0.15)",
+    title: "Professional Testing",
+    description: "Vetted QA cycles with guaranteed results for high-stakes releases.",
+    textColor: "text-amber-600 dark:text-amber-400",
+    bgColor: "bg-amber-500/10",
+    borderColor: "border-amber-500/20",
     href: "/support/paid-professional-testing",
-    size: "md:col-span-1 md:row-span-1",
   },
   {
     id: "wallet-account",
     icon: Wallet,
-    title: "Wallet",
-    description: "Secure your points and manage transaction history.",
-    color: "from-purple-500 to-pink-600",
-    textColor: "text-purple-400",
-    glow: "rgba(168, 85, 247, 0.15)",
+    title: "Wallet & Account",
+    description: "Manage credits, transactions, and secure your developer credentials.",
+    textColor: "text-purple-600 dark:text-purple-400",
+    bgColor: "bg-purple-500/10",
+    borderColor: "border-purple-500/20",
     href: "/support/wallet-account",
-    size: "md:col-span-1 md:row-span-1",
   },
 ];
 
@@ -74,257 +72,266 @@ const containerVariants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
-    transition: {
-      staggerChildren: 0.05,
-    },
+    transition: { staggerChildren: 0.1 },
   },
 };
 
 const itemVariants = {
-  hidden: { y: 20, opacity: 0 },
+  hidden: { y: 30, opacity: 0 },
   visible: {
     y: 0,
     opacity: 1,
-    transition: {
-      duration: 0.5,
-      ease: [0.23, 1, 0.32, 1],
-    },
+    transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] },
   },
 };
 
 export default function SupportPage() {
   const [searchQuery, setSearchQuery] = useState("");
-  const popularArticles = getPopularArticles(4);
+  const popularArticles = getPopularArticles(5);
 
   const searchResults = useMemo(() => {
     if (searchQuery.length < 2) return [];
-    return searchArticles(searchQuery).slice(0, 5);
+    return searchArticles(searchQuery).slice(0, 6);
   }, [searchQuery]);
 
   return (
-    <div className="min-h-screen w-full bg-[#050505] text-white selection:bg-blue-500/30 overflow-x-hidden">
-      {/* Subtle Background Mesh */}
-      <div className="fixed inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(17,24,39,1)_0%,rgba(5,5,5,1)_100%)] pointer-events-none" />
-      <div className="fixed inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.03] pointer-events-none" />
+    <div className="min-h-screen w-full bg-background text-foreground transition-colors duration-500">
+      {/* Dynamic Background Elements */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute -top-[10%] -left-[10%] w-[40%] h-[40%] rounded-full bg-primary/5 blur-[120px] dark:bg-primary/10 animate-pulse" />
+        <div className="absolute -bottom-[10%] -right-[10%] w-[40%] h-[40%] rounded-full bg-blue-500/5 blur-[120px] dark:bg-blue-500/10" />
+      </div>
 
-      <main className="container mx-auto px-4 md:px-8 py-12 md:py-20 max-w-7xl relative z-10 w-full">
-        {/* Header Section */}
+      <main className="relative z-10 container mx-auto px-4 md:px-6 py-12 md:py-24 max-w-7xl">
         <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="flex flex-col md:flex-row justify-between items-start md:items-end gap-8 mb-16"
+          initial="hidden"
+          animate="visible"
+          variants={containerVariants}
+          className="space-y-24 md:space-y-32"
         >
-          <div className="space-y-4">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-blue-400 text-xs font-bold uppercase tracking-widest">
-              <HelpCircle className="w-3.5 h-3.5" />
-              Technical Support
+          {/* Section 1: Hero & Search */}
+          <motion.section variants={itemVariants} className="max-w-4xl mx-auto text-center space-y-12">
+            <div className="space-y-6">
+              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/5 border border-primary/10 text-primary text-[10px] font-black uppercase tracking-[0.3em]">
+                <HelpCircle className="w-3.5 h-3.5" />
+                Knowledge Base 2.0
+              </div>
+              <h1 className="text-5xl md:text-8xl font-black tracking-tight leading-[0.85] text-foreground uppercase">
+                How can we <br />
+                <span className="text-muted-foreground opacity-50">Optimize</span> you?
+              </h1>
             </div>
-            <h1 className="text-4xl md:text-7xl font-black tracking-tight leading-[0.9]">
-              How can we <br />
-              <span className="text-zinc-600 italic">help you build?</span>
-            </h1>
-          </div>
 
-          <div className="relative w-full max-w-md group">
-            <div className="relative bg-zinc-900/40 border border-white/5 rounded-2xl p-1 backdrop-blur-3xl transition-all hover:border-white/10 group-focus-within:border-blue-500/50">
-              <div className="flex items-center px-4">
-                <Search className="w-5 h-5 text-zinc-500" />
+            {/* Central Search Terminal */}
+            <div className="relative group max-w-2xl mx-auto">
+              <div className="absolute inset-0 bg-primary/20 blur-2xl opacity-0 group-focus-within:opacity-100 transition-opacity duration-500 rounded-full" />
+              <div className="relative flex items-center bg-card/80 dark:bg-zinc-900/40 border-2 border-border group-focus-within:border-primary transition-all duration-300 rounded-[2rem] p-2 backdrop-blur-xl">
+                <Search className="w-6 h-6 ml-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
                 <Input
-                  placeholder="Search articles..."
-                  className="bg-transparent border-none focus-visible:ring-0 text-base h-12 shadow-none placeholder:text-zinc-600"
+                  className="bg-transparent border-none focus-visible:ring-0 text-lg h-14 placeholder:text-muted-foreground/50 font-medium"
+                  placeholder="Ask a technical question..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                 />
+                <div className="mr-4 hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-muted/50 border border-border text-[10px] font-bold text-muted-foreground uppercase opacity-50">
+                  <Command className="w-3 h-3" />
+                  K
+                </div>
               </div>
+
+              {/* Live Search Dropdown */}
+              <AnimatePresence>
+                {searchQuery.length >= 2 && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 15, scale: 0.98 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: 10, scale: 0.98 }}
+                    className="absolute top-full left-0 right-0 mt-4 bg-card border-2 border-border rounded-[2.5rem] shadow-2xl overflow-hidden z-50 backdrop-blur-2xl"
+                  >
+                    <div className="p-4 border-b border-border bg-muted/30 flex justify-between items-center">
+                      <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">System Matches</span>
+                      <span className="text-[10px] font-bold text-primary">{searchResults.length} Results</span>
+                    </div>
+                    <div className="p-4 space-y-2">
+                      {searchResults.map((article) => (
+                        <Link
+                          key={article.id}
+                          href={`/support/${article.category.toLowerCase().replace(/ & /g, "-").replace(/ /g, "-")}/${article.slug}`}
+                          className="flex items-center gap-4 p-4 rounded-2xl hover:bg-muted/50 transition-all group/item"
+                        >
+                          <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary group-hover/item:scale-110 transition-transform">
+                            <FileText className="w-5 h-5" />
+                          </div>
+                          <div className="flex-1 text-left">
+                            <h4 className="font-bold text-sm text-foreground group-hover/item:text-primary transition-colors">{article.title}</h4>
+                            <p className="text-[10px] text-muted-foreground font-bold uppercase tracking-wider">{article.category}</p>
+                          </div>
+                          <ArrowRight className="w-4 h-4 text-muted-foreground group-hover/item:translate-x-1 group-hover/item:text-foreground transition-all" />
+                        </Link>
+                      ))}
+                      {searchResults.length === 0 && (
+                        <div className="py-12 text-center text-muted-foreground space-y-2">
+                          <HelpCircle className="w-12 h-12 mx-auto opacity-10" />
+                          <p className="text-sm font-medium">No archived solutions found.</p>
+                        </div>
+                      )}
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+          </motion.section>
+
+          {/* Section 2: Core Tracks (Categories) */}
+          <motion.section variants={itemVariants} className="space-y-8">
+            <div className="flex flex-col md:flex-row md:items-end justify-between border-b border-border pb-8 gap-4">
+              <div className="space-y-1">
+                <h2 className="text-xs font-black uppercase tracking-[0.4em] text-primary">Core Modules</h2>
+                <p className="text-3xl font-black tracking-tight text-foreground uppercase">Selection Interface</p>
+              </div>
+              <p className="text-sm text-muted-foreground max-w-xs font-medium">
+                Choose a specialized track to access targeted technical documentation.
+              </p>
             </div>
 
-            <AnimatePresence>
-              {searchQuery.length >= 2 && (
-                <motion.div
-                  initial={{ opacity: 0, y: 10, scale: 0.98 }}
-                  animate={{ opacity: 1, y: 0, scale: 1 }}
-                  exit={{ opacity: 0, y: 10, scale: 0.98 }}
-                  className="absolute top-full left-0 right-0 mt-4 bg-zinc-900/95 border border-white/10 rounded-2xl backdrop-blur-2xl shadow-2xl overflow-hidden z-50"
-                >
-                  <div className="text-[10px] font-bold text-zinc-500 uppercase tracking-widest px-4 py-3 border-b border-white/5">
-                    Search Results ({searchResults.length})
-                  </div>
-                  <div className="p-2 space-y-1">
-                    {searchResults.map((article) => (
-                      <Link
-                        key={article.id}
-                        href={`/support/${article.category.toLowerCase().replace(/ & /g, "-").replace(/ /g, "-")}/${article.slug}`}
-                        className="flex items-center gap-4 p-3 rounded-xl hover:bg-white/5 transition-colors group/item"
-                      >
-                        <div className="w-9 h-9 rounded-lg bg-blue-500/10 flex items-center justify-center group-hover/item:bg-blue-500/20 transition-colors">
-                          <FileText className="w-4 h-4 text-blue-400" />
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <div className="font-bold text-zinc-200 group-hover/item:text-white truncate text-sm">
-                            {article.title}
-                          </div>
-                          <div className="text-[10px] text-zinc-500 font-bold uppercase tracking-wider">
-                            {article.category}
-                          </div>
-                        </div>
-                        <ArrowRight className="w-3.5 h-3.5 text-zinc-600 group-hover/item:text-white transition-all transform group-hover/item:translate-x-1" />
-                      </Link>
-                    ))}
-                    {searchResults.length === 0 && (
-                      <div className="p-8 text-center text-zinc-500 text-sm">
-                        No matches found.
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {categories.map((cat) => (
+                <Link key={cat.id} href={cat.href} className="group">
+                  <div className="h-full relative p-8 rounded-[2.5rem] bg-card border-2 border-border hover:border-primary transition-all duration-500 shadow-sm hover:shadow-2xl hover:-translate-y-2 overflow-hidden">
+                    {/* Background Icon Decoration */}
+                    <div className="absolute -right-8 -bottom-8 opacity-[0.03] group-hover:opacity-[0.07] transition-opacity duration-500">
+                      <cat.icon className="w-48 h-48" />
+                    </div>
+
+                    <div className="relative z-10 flex flex-col h-full justify-between gap-12">
+                      <div className={cn("w-14 h-14 rounded-2xl flex items-center justify-center shadow-inner", cat.bgColor, cat.textColor)}>
+                        <cat.icon className="w-7 h-7" />
                       </div>
-                    )}
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
-        </motion.div>
-
-        {/* Bento Grid */}
-        <motion.div
-          variants={containerVariants}
-          initial="hidden"
-          animate="visible"
-          className="grid grid-cols-1 md:grid-cols-4 gap-4 auto-rows-[220px]"
-        >
-          {/* Main Categories */}
-          {categories.map((cat) => (
-            <motion.div
-              key={cat.id}
-              variants={itemVariants}
-              className={cn(
-                "group relative rounded-[2.5rem] overflow-hidden border border-white/[0.03] bg-zinc-900/20 backdrop-blur-sm transition-all duration-500 hover:bg-zinc-900/40 hover:border-white/10",
-                cat.size
-              )}
-            >
-              <Link href={cat.href} className="absolute inset-0 p-8 flex flex-col justify-between z-10">
-                <div className="flex items-start justify-between">
-                  <div className={cn("w-12 h-12 rounded-xl bg-white/5 flex items-center justify-center transition-all group-hover:scale-110", cat.textColor)}>
-                    <cat.icon className="w-6 h-6" />
-                  </div>
-                  <div className="w-9 h-9 rounded-full bg-white/5 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all transform translate-x-2 group-hover:translate-x-0">
-                    <ArrowRight className="w-4 h-4 text-white" />
-                  </div>
-                </div>
-                <div>
-                  <h3 className="text-2xl font-bold mb-2 group-hover:text-blue-400 transition-colors uppercase tracking-tight">{cat.title}</h3>
-                  <p className="text-zinc-500 text-sm leading-relaxed max-w-[90%]">
-                    {cat.description}
-                  </p>
-                </div>
-              </Link>
-              {/* Subtle Gradient Glow */}
-              <div
-                className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-1000 pointer-events-none"
-                style={{ background: `radial-gradient(circle at center, ${cat.glow} 0%, transparent 70%)` }}
-              />
-            </motion.div>
-          ))}
-
-          {/* Trending Articles Card (Vertical) */}
-          <motion.div
-            variants={itemVariants}
-            className="md:col-span-1 md:row-span-2 rounded-[2.5rem] border border-white/[0.03] bg-zinc-900/10 p-8 flex flex-col"
-          >
-            <div className="flex items-center gap-2 mb-8 text-orange-500 font-bold uppercase tracking-[0.2em] text-[10px]">
-              <TrendingUp className="w-4 h-4" />
-              Trending Resources
-            </div>
-            <div className="flex-1 space-y-8">
-              {popularArticles.map((article) => (
-                <Link
-                  key={article.id}
-                  href={`/support/${article.category.toLowerCase().replace(/ & /g, "-").replace(/ /g, "-")}/${article.slug}`}
-                  className="group/article block space-y-2.5"
-                >
-                  <h4 className="font-bold text-zinc-300 group-hover/article:text-blue-400 transition-colors line-clamp-2 leading-snug text-sm">
-                    {article.title}
-                  </h4>
-                  <div className="flex items-center gap-3 text-[10px] text-zinc-600 font-bold uppercase tracking-widest">
-                    <span>{article.readTime}</span>
-                    <span>•</span>
-                    <span className="text-zinc-500">{article.views} PV</span>
+                      <div className="space-y-4">
+                        <h3 className="text-2xl font-black tracking-tight text-foreground uppercase group-hover:text-primary transition-colors leading-none">
+                          {cat.title}
+                        </h3>
+                        <p className="text-sm text-muted-foreground font-medium leading-relaxed">
+                          {cat.description}
+                        </p>
+                        <div className="pt-4 flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-primary opacity-0 group-hover:opacity-100 transition-all transform translate-x-2 group-hover:translate-x-0">
+                          Initialize track
+                          <ArrowRight className="w-3.5 h-3.5" />
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </Link>
               ))}
             </div>
-            <Button variant="ghost" className="mt-8 w-full justify-between hover:bg-white/5 text-zinc-500 hover:text-white rounded-xl text-xs font-bold uppercase tracking-widest px-4">
-              Browse All
-              <ArrowRight className="w-3.5 h-3.5 ml-2" />
-            </Button>
-          </motion.div>
+          </motion.section>
 
-          {/* Quick Stats Card */}
-          <motion.div
-            variants={itemVariants}
-            className="md:col-span-1 md:row-span-1 rounded-[2.5rem] border border-white/[0.03] bg-zinc-900/10 p-8 flex flex-col justify-center items-center text-center space-y-2"
-          >
-            <div className="text-5xl font-black text-white tracking-tighter">99.8%</div>
-            <div className="text-[10px] font-bold text-zinc-500 uppercase tracking-[0.2em]">Compliance Rate</div>
-            <p className="text-[10px] text-zinc-700 italic">Across 5k+ Play Store reviews</p>
-          </motion.div>
+          {/* Section 3: Intelligence & Ticker */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+            {/* Live Intelligence */}
+            <motion.section variants={itemVariants} className="lg:col-span-2 space-y-8">
+              <div className="p-10 rounded-[3rem] bg-muted/20 border-2 border-border overflow-hidden relative">
+                <div className="absolute top-0 right-0 p-10">
+                  <Zap className="w-12 h-12 text-primary opacity-20" />
+                </div>
+                <div className="space-y-8">
+                  <div className="space-y-2">
+                    <h3 className="text-[10px] font-black uppercase tracking-[0.4em] text-muted-foreground">Live Intelligence</h3>
+                    <p className="text-4xl font-black text-foreground uppercase tracking-tight leading-none">Global Performance</p>
+                  </div>
 
-          {/* Service Availability */}
-          <motion.div
-            variants={itemVariants}
-            className="md:col-span-1 md:row-span-1 rounded-[2.5rem] border border-white/[0.03] bg-zinc-900/10 p-8 flex flex-col justify-between"
-          >
-            <div className="flex items-center justify-between">
-              <div className="w-8 h-8 rounded-lg bg-emerald-500/10 flex items-center justify-center">
-                <Zap className="w-4 h-4 text-emerald-500" />
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-8">
+                    <div className="space-y-2">
+                      <div className="text-4xl font-black text-primary leading-none tracking-tighter">99.8%</div>
+                      <div className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Success Rate</div>
+                    </div>
+                    <div className="space-y-2">
+                      <div className="text-4xl font-black text-foreground leading-none tracking-tighter">18m</div>
+                      <div className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Avg Response</div>
+                    </div>
+                    <div className="space-y-2">
+                      <div className="flex items-center gap-2">
+                        <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
+                        <div className="text-4xl font-black text-foreground leading-none tracking-tighter italic uppercase">Live</div>
+                      </div>
+                      <div className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Systems Online</div>
+                    </div>
+                  </div>
+                </div>
               </div>
-              <span className="flex items-center gap-2 text-[10px] font-bold text-emerald-500 uppercase tracking-widest">
-                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                Live Status
-              </span>
-            </div>
-            <div className="space-y-1">
-              <div className="text-xs font-bold text-zinc-400 uppercase tracking-widest">Response Time</div>
-              <div className="text-xl font-bold text-white tracking-tight">&lt; 18 Minutes</div>
-            </div>
-          </motion.div>
 
-          {/* CTA / Contact Support Card */}
-          <motion.div
-            variants={itemVariants}
-            className="md:col-span-2 md:row-span-1 rounded-[2.5rem] border border-white/[0.03] bg-gradient-to-br from-blue-600/10 via-zinc-900/10 to-purple-600/10 p-10 flex flex-col md:flex-row items-center justify-between gap-8"
-          >
-            <div className="space-y-3 text-center md:text-left">
-              <h3 className="text-3xl font-black tracking-tight leading-none">Questions?</h3>
-              <p className="text-zinc-500 text-sm max-w-[320px] leading-relaxed">
-                Connect with our QA engineering lead for specialized technical consultations.
-              </p>
-            </div>
-            <div className="flex items-center gap-4 shrink-0">
-              <Button className="bg-white text-black hover:bg-zinc-200 rounded-xl h-12 px-8 font-bold text-xs uppercase tracking-widest transition-transform active:scale-95 shadow-lg shadow-white/5">
-                <MessageCircle className="w-4 h-4 mr-2" />
-                Contact Alex
+              {/* Contact Lead Card */}
+              <div className="p-10 rounded-[3rem] bg-foreground text-background dark:bg-primary dark:text-primary-foreground flex flex-col md:flex-row items-center justify-between gap-8 transition-transform hover:scale-[1.01] duration-500">
+                <div className="space-y-4 text-center md:text-left">
+                  <h3 className="text-3xl font-black uppercase leading-none tracking-tight">Technical Block?</h3>
+                  <p className="max-w-[320px] font-bold opacity-80 leading-relaxed text-sm uppercase">
+                    Direct access to our lead engineering team for critical infrastructure support.
+                  </p>
+                </div>
+                <Button className="bg-background text-foreground dark:bg-white dark:text-black hover:scale-105 transition-transform rounded-2xl h-16 px-10 font-black uppercase tracking-widest text-xs">
+                  Connect Now
+                </Button>
+              </div>
+            </motion.section>
+
+            {/* Trending Articles List */}
+            <motion.section variants={itemVariants} className="space-y-8">
+              <div className="flex items-center gap-3 border-b border-border pb-4">
+                <TrendingUp className="w-5 h-5 text-orange-500" />
+                <h3 className="text-xs font-black uppercase tracking-[0.4em] text-foreground">Trending</h3>
+              </div>
+              <div className="space-y-4">
+                {popularArticles.map((article, i) => (
+                  <Link
+                    key={article.id}
+                    href={`/support/${article.category.toLowerCase().replace(/ & /g, "-").replace(/ /g, "-")}/${article.slug}`}
+                    className="flex items-start gap-4 p-4 rounded-3xl hover:bg-muted/50 transition-all group"
+                  >
+                    <span className="text-lg font-black text-muted-foreground/30 group-hover:text-primary transition-colors">0{i + 1}</span>
+                    <div className="space-y-2">
+                      <h4 className="font-bold text-sm leading-tight group-hover:text-foreground transition-colors line-clamp-2">
+                        {article.title}
+                      </h4>
+                      <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-muted-foreground opacity-50">
+                        {article.views} PV
+                      </div>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+              <Button variant="ghost" className="w-full h-14 rounded-3xl font-black uppercase tracking-widest text-[10px] text-muted-foreground hover:bg-muted py-0">
+                View Archive
+                <ChevronRight className="w-4 h-4 ml-1" />
               </Button>
-            </div>
-          </motion.div>
+            </motion.section>
+          </div>
         </motion.div>
       </main>
 
       <SupportChatbot />
 
-      {/* Structured Footer */}
-      <footer className="w-full py-20 border-t border-white/[0.03] mt-20 relative z-10 flex flex-col items-center">
-        <div className="flex items-center gap-4 mb-8">
-          <div className="w-8 h-8 rounded-lg bg-blue-500/10 flex items-center justify-center">
-            <Shield className="w-4 h-4 text-blue-500" />
+      {/* Modern High-End Footer */}
+      <footer className="mt-32 border-t border-border bg-muted/10 backdrop-blur-3xl py-24 relative overflow-hidden">
+        <div className="container mx-auto px-6 max-w-7xl relative z-10 flex flex-col items-center space-y-12">
+          <div className="flex flex-col items-center space-y-4">
+            <div className="w-16 h-16 rounded-3xl bg-primary/10 flex items-center justify-center border border-primary/20">
+              <HelpCircle className="w-8 h-8 text-primary" />
+            </div>
+            <span className="text-sm font-black uppercase tracking-[0.5em] text-foreground">inTesters Support Hub</span>
           </div>
-          <span className="text-sm font-bold uppercase tracking-[0.3em] text-zinc-500">Secure Support</span>
+
+          <div className="flex flex-wrap justify-center gap-x-12 gap-y-6 text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground">
+            <Link href="#" className="hover:text-primary transition-colors">Infrastructure</Link>
+            <Link href="#" className="hover:text-primary transition-colors">API Docs</Link>
+            <Link href="#" className="hover:text-primary transition-colors">Tester SOP</Link>
+            <Link href="#" className="hover:text-primary transition-colors">Network Status</Link>
+          </div>
+
+          <div className="pt-12 flex flex-col items-center space-y-4 opacity-30">
+            <p className="text-[10px] font-black tracking-[0.2em] uppercase">Built for developers by developers.</p>
+            <p className="text-[9px] font-bold tracking-widest uppercase italic">© {new Date().getFullYear()} inTesters Engineering Group. All rights reserved.</p>
+          </div>
         </div>
-        <div className="flex gap-10 mb-10 text-[10px] text-zinc-600 font-bold uppercase tracking-widest">
-          <Link href="#" className="hover:text-white transition-colors">Documentation</Link>
-          <Link href="#" className="hover:text-white transition-colors">API Reference</Link>
-          <Link href="#" className="hover:text-white transition-colors">Platform Status</Link>
-        </div>
-        <p className="text-zinc-700 text-[10px] tracking-widest uppercase font-bold">
-          © {new Date().getFullYear()} inTesters Engineering.
-        </p>
       </footer>
     </div>
   );
