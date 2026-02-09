@@ -2,26 +2,29 @@
 
 import { motion } from "framer-motion";
 import {
-  ArrowLeft,
   Clock,
   TrendingUp,
   Calendar,
-  User,
-  Share2,
-  Bookmark,
   ChevronRight,
+  ChevronLeft,
+  FileText,
+  Shield,
+  Star,
+  Wallet,
+  Globe,
 } from "lucide-react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { getArticleBySlug, getArticlesByCategory } from "@/lib/blog-data";
 import { Button } from "@/components/ui/button";
 import ReactMarkdown from "react-markdown";
+import { cn } from "@/lib/utils";
 
 const categorySlugMap: Record<string, string> = {
-  "getting-started": "Getting Started",
-  "account-security": "Account & Security",
-  "community-hub": "Community Hub",
-  "billing-plans": "Billing & Plans",
+  "google-play-guidelines": "Google Play Guidelines",
+  "free-community-testing": "Free Community Testing",
+  "paid-professional-testing": "Paid Professional Testing",
+  "wallet-account": "Wallet & Account",
 };
 
 export default function ArticlePage() {
@@ -32,11 +35,13 @@ export default function ArticlePage() {
 
   if (!article) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold mb-4">Article Not Found</h1>
+      <div className="min-h-screen flex items-center justify-center bg-[#050505] text-white">
+        <div className="text-center space-y-6">
+          <h1 className="text-2xl font-bold tracking-tight">Article Not Found</h1>
           <Link href="/support">
-            <Button>Back to Support</Button>
+            <Button variant="outline" className="border-white/10 hover:bg-white/5 rounded-xl h-12 px-8 font-bold uppercase tracking-widest text-[10px]">
+              Back to Support
+            </Button>
           </Link>
         </div>
       </div>
@@ -48,230 +53,122 @@ export default function ArticlePage() {
     .slice(0, 3);
 
   return (
-    <div className="min-h-screen w-full relative overflow-hidden">
-      {/* Animated Background */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-0 left-1/4 w-96 h-96 bg-primary/5 rounded-full blur-[120px] animate-pulse" />
-        <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-primary/5 rounded-full blur-[120px] animate-pulse delay-1000" />
-      </div>
+    <div className="min-h-screen w-full bg-[#050505] text-white selection:bg-blue-500/30 overflow-x-hidden">
+      <div className="fixed inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(17,24,39,1)_0%,rgba(5,5,5,1)_100%)] pointer-events-none" />
 
-      <main className="container mx-auto px-4 md:px-8 py-8 md:py-12 max-w-4xl relative z-10">
+      <main className="container mx-auto px-4 md:px-8 py-12 md:py-20 max-w-4xl relative z-10 w-full">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="space-y-8"
+          transition={{ duration: 0.5, ease: [0.23, 1, 0.32, 1] }}
+          className="space-y-16"
         >
-          {/* Breadcrumb Navigation */}
-          <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <Link
-              href="/support"
-              className="hover:text-foreground transition-colors"
-            >
-              Support
-            </Link>
-            <ChevronRight className="w-4 h-4" />
-            <Link
-              href={`/support/${categorySlug}`}
-              className="hover:text-foreground transition-colors"
-            >
-              {categorySlugMap[categorySlug]}
-            </Link>
-            <ChevronRight className="w-4 h-4" />
-            <span className="text-foreground">{article.title}</span>
-          </div>
+          {/* Header Navigation */}
+          <div className="space-y-8">
+            <div className="flex items-center gap-3 text-[10px] font-bold text-zinc-600 uppercase tracking-[0.2em]">
+              <Link href="/support" className="hover:text-blue-400 transition-colors">Support Center</Link>
+              <ChevronRight className="w-3 h-3" />
+              <Link href={`/support/${categorySlug}`} className="hover:text-blue-400 transition-colors">
+                {categorySlugMap[categorySlug]}
+              </Link>
+              <ChevronRight className="w-3 h-3" />
+              <span className="text-zinc-400 truncate max-w-[150px] md:max-w-none">{article.title}</span>
+            </div>
 
-          {/* Back Button */}
-          <Link href={`/support/${categorySlug}`}>
-            <Button variant="ghost" className="group">
-              <ArrowLeft className="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform" />
-              Back to {categorySlugMap[categorySlug]}
-            </Button>
-          </Link>
+            <Link href={`/support/${categorySlug}`}>
+              <Button variant="ghost" className="group text-zinc-500 hover:text-white hover:bg-white/5 rounded-xl text-[10px] font-bold uppercase tracking-widest px-0 hover:px-4 transition-all">
+                <ChevronLeft className="w-3.5 h-3.5 mr-2 group-hover:-translate-x-1 transition-transform" />
+                Return to Category
+              </Button>
+            </Link>
+          </div>
 
           {/* Article Header */}
-          <div className="space-y-6">
-            {/* Category Badge */}
-            <div>
-              <span className="inline-flex items-center px-3 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-sm font-medium text-primary">
-                {article.category}
-              </span>
-            </div>
-
-            {/* Title */}
-            <h1 className="text-4xl md:text-5xl font-bold leading-tight">
-              {article.title}
-            </h1>
-
-            {/* Description */}
-            <p className="text-xl text-muted-foreground">
-              {article.description}
-            </p>
-
-            {/* Meta Information */}
-            <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground pb-6 border-b border-border/50">
-              <div className="flex items-center gap-2">
-                <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center">
-                  <User className="w-5 h-5 text-primary" />
-                </div>
-                <div>
-                  <div className="font-medium text-foreground">
-                    {article.author.name}
-                  </div>
-                  <div className="text-xs">{article.author.role}</div>
-                </div>
+          <div className="space-y-8 pb-12 border-b border-white/[0.03]">
+            <div className="space-y-6">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 border border-blue-500/20 text-[10px] font-bold uppercase tracking-widest text-blue-400">
+                Track: {article.category}
               </div>
-              <div className="flex items-center gap-1.5">
-                <Calendar className="w-4 h-4" />
-                <span>
-                  {new Date(article.publishedAt).toLocaleDateString("en-US", {
-                    month: "long",
-                    day: "numeric",
-                    year: "numeric",
-                  })}
-                </span>
-              </div>
-              <div className="flex items-center gap-1.5">
-                <Clock className="w-4 h-4" />
-                <span>{article.readTime}</span>
-              </div>
-              <div className="flex items-center gap-1.5">
-                <TrendingUp className="w-4 h-4" />
-                <span>{article.views} views</span>
-              </div>
-            </div>
-
-            {/* Action Buttons */}
-            <div className="flex items-center gap-3">
-              <Button variant="outline" size="sm" className="gap-2">
-                <Share2 className="w-4 h-4" />
-                Share
-              </Button>
-              <Button variant="outline" size="sm" className="gap-2">
-                <Bookmark className="w-4 h-4" />
-                Save
-              </Button>
-            </div>
-          </div>
-
-          {/* Article Content */}
-          <div className="prose prose-lg dark:prose-invert max-w-none">
-            <div className="p-8 md:p-10 rounded-3xl bg-card/30 backdrop-blur-xl border border-border/50">
-              <ReactMarkdown
-                components={{
-                  h1: ({ children }) => (
-                    <h1 className="text-3xl font-bold mt-8 mb-4 first:mt-0">
-                      {children}
-                    </h1>
-                  ),
-                  h2: ({ children }) => (
-                    <h2 className="text-2xl font-bold mt-8 mb-4">{children}</h2>
-                  ),
-                  h3: ({ children }) => (
-                    <h3 className="text-xl font-semibold mt-6 mb-3">
-                      {children}
-                    </h3>
-                  ),
-                  p: ({ children }) => (
-                    <p className="mb-4 leading-relaxed text-muted-foreground">
-                      {children}
-                    </p>
-                  ),
-                  ul: ({ children }) => (
-                    <ul className="list-disc list-inside mb-4 space-y-2">
-                      {children}
-                    </ul>
-                  ),
-                  ol: ({ children }) => (
-                    <ol className="list-decimal list-inside mb-4 space-y-2">
-                      {children}
-                    </ol>
-                  ),
-                  li: ({ children }) => (
-                    <li className="text-muted-foreground">{children}</li>
-                  ),
-                  strong: ({ children }) => (
-                    <strong className="font-semibold text-foreground">
-                      {children}
-                    </strong>
-                  ),
-                  code: ({ children }) => (
-                    <code className="px-1.5 py-0.5 rounded bg-secondary text-sm font-mono">
-                      {children}
-                    </code>
-                  ),
-                  table: ({ children }) => (
-                    <div className="overflow-x-auto my-6">
-                      <table className="w-full border-collapse">
-                        {children}
-                      </table>
-                    </div>
-                  ),
-                  th: ({ children }) => (
-                    <th className="border border-border/50 px-4 py-2 bg-secondary font-semibold text-left">
-                      {children}
-                    </th>
-                  ),
-                  td: ({ children }) => (
-                    <td className="border border-border/50 px-4 py-2">
-                      {children}
-                    </td>
-                  ),
-                }}
-              >
-                {article.content}
-              </ReactMarkdown>
-            </div>
-          </div>
-
-          {/* Related Articles */}
-          {relatedArticles.length > 0 && (
-            <div className="pt-8 border-t border-border/50">
-              <h2 className="text-2xl font-bold mb-6">Related Articles</h2>
-              <div className="grid gap-4">
-                {relatedArticles.map((related) => (
-                  <Link
-                    key={related.id}
-                    href={`/support/${categorySlug}/${related.slug}`}
-                  >
-                    <div className="group p-6 rounded-2xl bg-card/30 backdrop-blur-xl border border-border/50 hover:bg-card/50 hover:border-primary/30 transition-all duration-300 cursor-pointer">
-                      <div className="flex items-start gap-4">
-                        <div className="flex-1">
-                          <h3 className="font-semibold text-lg mb-2 group-hover:text-primary transition-colors">
-                            {related.title}
-                          </h3>
-                          <div className="flex items-center gap-3 text-sm text-muted-foreground">
-                            <span className="flex items-center gap-1">
-                              <Clock className="w-3 h-3" />
-                              {related.readTime}
-                            </span>
-                            <span className="flex items-center gap-1">
-                              <TrendingUp className="w-3 h-3" />
-                              {related.views} views
-                            </span>
-                          </div>
-                        </div>
-                        <ArrowLeft className="w-5 h-5 rotate-180 text-muted-foreground group-hover:text-primary group-hover:translate-x-1 transition-all flex-shrink-0" />
-                      </div>
-                    </div>
-                  </Link>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* Help Section */}
-          <div className="p-8 rounded-3xl bg-gradient-to-br from-primary/10 via-primary/5 to-transparent border border-primary/20">
-            <div className="text-center">
-              <h3 className="text-xl font-bold mb-2">
-                Was this article helpful?
-              </h3>
-              <p className="text-muted-foreground mb-6">
-                Let us know if you need more information or have questions.
+              <h1 className="text-4xl md:text-7xl font-black tracking-tight leading-[0.9] uppercase">
+                {article.title}
+              </h1>
+              <p className="text-xl text-zinc-500 leading-relaxed font-medium max-w-3xl">
+                {article.description}
               </p>
-              <div className="flex items-center justify-center gap-3">
-                <Button>Yes, it helped!</Button>
-                <Button variant="outline">Contact Support</Button>
+            </div>
+
+            <div className="flex flex-wrap items-center gap-8 py-6 border-y border-white/[0.03] text-[10px] font-bold text-zinc-500 uppercase tracking-[0.2em]">
+              <div className="flex items-center gap-3">
+                <FileText className="w-4 h-4 text-zinc-700" />
+                <span>Technical Script</span>
+              </div>
+              <div className="flex items-center gap-3">
+                <Clock className="w-4 h-4 text-zinc-700" />
+                <span>{article.readTime} EST.</span>
+              </div>
+              <div className="flex items-center gap-3">
+                <Calendar className="w-4 h-4 text-zinc-700" />
+                <span>INDEXED: {new Date(article.publishedAt).toLocaleDateString("en-US", { month: "short", year: "numeric" })}</span>
+              </div>
+              <div className="flex items-center gap-3">
+                <TrendingUp className="w-4 h-4 text-zinc-700" />
+                <span>{article.views} PV</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Content Area */}
+          <div className="relative">
+            <article className="prose prose-invert prose-zinc max-w-none 
+              prose-headings:uppercase prose-headings:tracking-tighter prose-headings:font-black
+              prose-h2:text-4xl prose-h2:border-b prose-h2:border-white/[0.03] prose-h2:pb-4 prose-h2:mt-16
+              prose-p:text-zinc-400 prose-p:text-lg prose-p:leading-relaxed prose-p:font-medium
+              prose-strong:text-white prose-strong:font-bold
+              prose-li:text-zinc-400 prose-li:text-lg
+              prose-code:text-blue-400 prose-code:bg-blue-500/10 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded-md prose-code:before:content-none prose-code:after:content-none
+              prose-blockquote:border-l-blue-500 prose-blockquote:bg-zinc-900/40 prose-blockquote:p-6 prose-blockquote:rounded-r-2xl prose-blockquote:italic prose-blockquote:text-zinc-300
+            ">
+              <ReactMarkdown>{article.content}</ReactMarkdown>
+            </article>
+          </div>
+
+          {/* Related Resources */}
+          <div className="pt-24 space-y-10">
+            <h3 className="text-xs font-bold uppercase tracking-[0.4em] text-zinc-600 text-center">Accelerated tracks</h3>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {relatedArticles.map((ra) => (
+                <Link
+                  key={ra.id}
+                  href={`/support/${categorySlug}/${ra.slug}`}
+                  className="group p-6 rounded-[2rem] bg-zinc-900/10 border border-white/[0.03] hover:bg-zinc-900/30 hover:border-white/10 transition-all duration-300"
+                >
+                  <div className="h-full flex flex-col justify-between space-y-4">
+                    <h4 className="font-bold text-zinc-300 group-hover:text-blue-400 transition-colors line-clamp-2 leading-tight uppercase tracking-tight">
+                      {ra.title}
+                    </h4>
+                    <div className="flex items-center justify-between">
+                      <span className="text-[10px] font-bold text-zinc-600 uppercase tracking-widest">{ra.readTime}</span>
+                      <ChevronRight className="w-4 h-4 text-zinc-700 group-hover:text-white group-hover:translate-x-1 transition-all" />
+                    </div>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </div>
+
+          {/* Bottom Feedback / CTA */}
+          <div className="pt-16 pb-12">
+            <div className="p-10 rounded-[3rem] bg-zinc-900/20 border border-white/[0.03] flex flex-col items-center text-center space-y-6">
+              <div className="w-12 h-12 rounded-2xl bg-white/5 flex items-center justify-center text-zinc-500">
+                <FileText className="w-6 h-6" />
+              </div>
+              <div className="space-y-2">
+                <h3 className="text-xl font-bold uppercase tracking-widest">Was this helpful?</h3>
+                <p className="text-zinc-600 text-sm font-medium">Your feedback optimizes our documentation engine.</p>
+              </div>
+              <div className="flex gap-3">
+                <Button variant="outline" className="border-white/5 hover:bg-white/5 rounded-xl h-10 px-6 text-[10px] font-bold uppercase tracking-widest">Yes, confirmed</Button>
+                <Button variant="outline" className="border-white/5 hover:bg-white/5 rounded-xl h-10 px-6 text-[10px] font-bold uppercase tracking-widest">No, clarify</Button>
               </div>
             </div>
           </div>

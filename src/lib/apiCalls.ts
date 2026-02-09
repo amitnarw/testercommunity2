@@ -14,6 +14,11 @@ import {
   UserDataAttributes,
   UserProfileDataAttributes,
   UserWallerResponse,
+  PaymentConfigResponse,
+  BillingHistoryItem,
+  CreateOrderResponse,
+  PaymentVerificationPayload,
+  PaymentVerificationResponse,
 } from "./types";
 import api from "./axios";
 
@@ -1104,3 +1109,124 @@ export async function submitDailyVerification(payload: {
     }
   }
 }
+
+
+// Billing
+export async function getPaymentConfig(): Promise<PaymentConfigResponse> {
+  try {
+    const response = await api.get(API_ROUTES.BILLING + `/config`);
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error fetching payment config:", error);
+    if (axios.isAxiosError(error)) {
+      const status = error.response?.status;
+      const responseData = error.response?.data;
+      console.error("Axios error:", status, responseData);
+
+      throw new Error(
+        responseData?.message || error.message || "Unknown Axios error",
+      );
+    } else if (error instanceof Error) {
+      throw new Error(error.message);
+    } else {
+      throw new Error(JSON.stringify(error));
+    }
+  }
+}
+
+export async function getBillingHistory(): Promise<BillingHistoryItem[]> {
+  try {
+    const response = await api.get(API_ROUTES.BILLING + `/history`);
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error fetching billing history:", error);
+    if (axios.isAxiosError(error)) {
+      const status = error.response?.status;
+      const responseData = error.response?.data;
+      console.error("Axios error:", status, responseData);
+
+      throw new Error(
+        responseData?.message || error.message || "Unknown Axios error",
+      );
+    } else if (error instanceof Error) {
+      throw new Error(error.message);
+    } else {
+      throw new Error(JSON.stringify(error));
+    }
+  }
+}
+
+export async function createOrder(
+  planId: string,
+): Promise<CreateOrderResponse> {
+  try {
+    const response = await api.post(API_ROUTES.BILLING + `/create-order`, {
+      payload: { planId },
+    });
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error creating order:", error);
+    if (axios.isAxiosError(error)) {
+      const status = error.response?.status;
+      const responseData = error.response?.data;
+      console.error("Axios error:", status, responseData);
+
+      throw new Error(
+        responseData?.message || error.message || "Unknown Axios error",
+      );
+    } else if (error instanceof Error) {
+      throw new Error(error.message);
+    } else {
+      throw new Error(JSON.stringify(error));
+    }
+  }
+}
+
+export async function verifyPayment(
+  payload: PaymentVerificationPayload,
+): Promise<PaymentVerificationResponse> {
+  try {
+    const response = await api.post(API_ROUTES.BILLING + `/verify-payment`, {
+      payload,
+    });
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error verifying payment:", error);
+    if (axios.isAxiosError(error)) {
+      const status = error.response?.status;
+      const responseData = error.response?.data;
+      console.error("Axios error:", status, responseData);
+
+      throw new Error(
+        responseData?.message || error.message || "Unknown Axios error",
+      );
+    } else if (error instanceof Error) {
+      throw new Error(error.message);
+    } else {
+      throw new Error(JSON.stringify(error));
+    }
+  }
+}
+
+export async function getPendingOrders(): Promise<CreateOrderResponse[]> {
+  try {
+    const response = await api.get(API_ROUTES.BILLING + `/pending-orders`);
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error fetching pending orders:", error);
+    if (axios.isAxiosError(error)) {
+      const status = error.response?.status;
+      const responseData = error.response?.data;
+      console.error("Axios error:", status, responseData);
+
+      throw new Error(
+        responseData?.message || error.message || "Unknown Axios error",
+      );
+    } else if (error instanceof Error) {
+      throw new Error(error.message);
+    } else {
+      throw new Error(JSON.stringify(error));
+    }
+  }
+}
+

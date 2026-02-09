@@ -7,40 +7,45 @@ import {
   Clock,
   TrendingUp,
   Calendar,
-  User,
+  ChevronRight,
+  Shield,
+  Star,
+  Wallet,
+  Globe,
 } from "lucide-react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { getArticlesByCategory } from "@/lib/blog-data";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 const categoryMap: Record<
   string,
-  { title: string; description: string; color: string; gradient: string }
+  { title: string; description: string; color: string; icon: any }
 > = {
-  "getting-started": {
-    title: "Getting Started",
-    description: "Learn the basics and set up your account",
+  "google-play-guidelines": {
+    title: "Google Play Guidelines",
+    description: "Navigate the technical requirements with precision and ensure your personal account stays compliant.",
     color: "text-blue-500",
-    gradient: "from-blue-500 to-cyan-500",
+    icon: Shield,
   },
-  "account-security": {
-    title: "Account & Security",
-    description: "Manage your account settings and privacy",
+  "free-community-testing": {
+    title: "Free Community Testing",
+    description: "Earn credits by helping fellow developers and build your 20-tester pool through mutual cooperation.",
     color: "text-emerald-500",
-    gradient: "from-emerald-500 to-teal-500",
+    icon: Globe,
   },
-  "community-hub": {
-    title: "Community Hub",
-    description: "Connect with testers and manage projects",
+  "paid-professional-testing": {
+    title: "Paid Professional Testing",
+    description: "Deploy guaranteed QA cycles with professional testers to meet Google's 14-day requirement quickly.",
+    color: "text-amber-500",
+    icon: Star,
+  },
+  "wallet-account": {
+    title: "Wallet & Account",
+    description: "Manage your karma points, professional slots, and account security settings in one dashboard.",
     color: "text-purple-500",
-    gradient: "from-purple-500 to-pink-500",
-  },
-  "billing-plans": {
-    title: "Billing & Plans",
-    description: "Pricing, payments, and subscriptions",
-    color: "text-orange-500",
-    gradient: "from-orange-500 to-red-500",
+    icon: Wallet,
   },
 };
 
@@ -49,7 +54,7 @@ const containerVariants = {
   visible: {
     opacity: 1,
     transition: {
-      staggerChildren: 0.1,
+      staggerChildren: 0.05,
     },
   },
 };
@@ -60,9 +65,8 @@ const itemVariants = {
     y: 0,
     opacity: 1,
     transition: {
-      type: "spring",
-      stiffness: 100,
-      damping: 20,
+      duration: 0.5,
+      ease: [0.23, 1, 0.32, 1],
     },
   },
 };
@@ -75,11 +79,13 @@ export default function CategoryPage() {
 
   if (!categoryInfo) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold mb-4">Category Not Found</h1>
+      <div className="min-h-screen flex items-center justify-center bg-[#050505] text-white">
+        <div className="text-center space-y-6">
+          <h1 className="text-2xl font-bold tracking-tight">Category Not Found</h1>
           <Link href="/support">
-            <Button>Back to Support</Button>
+            <Button variant="outline" className="border-white/10 hover:bg-white/5 rounded-xl h-12 px-8 font-bold uppercase tracking-widest text-[10px]">
+              Back to Support
+            </Button>
           </Link>
         </div>
       </div>
@@ -87,114 +93,89 @@ export default function CategoryPage() {
   }
 
   return (
-    <div className="min-h-screen w-full relative overflow-hidden">
-      {/* Animated Background */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-0 left-1/4 w-96 h-96 bg-primary/5 rounded-full blur-[120px] animate-pulse" />
-        <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-primary/5 rounded-full blur-[120px] animate-pulse delay-1000" />
-      </div>
+    <div className="min-h-screen w-full bg-[#050505] text-white selection:bg-blue-500/30 overflow-x-hidden">
+      <div className="fixed inset-0 bg-[radial-gradient(circle_at_50%_50%,rgba(17,24,39,1)_0%,rgba(5,5,5,1)_100%)] pointer-events-none" />
 
-      <main className="container mx-auto px-4 md:px-8 py-8 md:py-12 max-w-6xl relative z-10">
+      <main className="container mx-auto px-4 md:px-8 py-12 md:py-20 max-w-5xl relative z-10 w-full">
         <motion.div
           initial="hidden"
           animate="visible"
           variants={containerVariants}
-          className="space-y-8"
+          className="space-y-16"
         >
-          {/* Back Button */}
-          <motion.div variants={itemVariants}>
+          {/* Header */}
+          <motion.div variants={itemVariants} className="space-y-8">
             <Link href="/support">
-              <Button variant="ghost" className="group">
-                <ArrowLeft className="w-4 h-4 mr-2 group-hover:-translate-x-1 transition-transform" />
-                Back to Support Center
+              <Button variant="ghost" className="group text-zinc-500 hover:text-white hover:bg-white/5 rounded-xl text-[10px] font-bold uppercase tracking-widest px-0 hover:px-4 transition-all">
+                <ArrowLeft className="w-3.5 h-3.5 mr-2 group-hover:-translate-x-1 transition-transform" />
+                Back to Center
               </Button>
             </Link>
-          </motion.div>
 
-          {/* Category Header */}
-          <motion.div variants={itemVariants} className="text-center">
-            <div
-              className={`inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br ${categoryInfo.gradient} mb-6`}
-            >
-              <FileText className="w-8 h-8 text-white" />
-            </div>
-            <h1 className="text-4xl md:text-5xl font-bold mb-4">
-              {categoryInfo.title}
-            </h1>
-            <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
-              {categoryInfo.description}
-            </p>
-            <div className="mt-4 inline-flex items-center gap-2 px-4 py-2 rounded-full bg-secondary/50">
-              <TrendingUp className="w-4 h-4 text-muted-foreground" />
-              <span className="text-sm text-muted-foreground">
-                {articles.length} articles
-              </span>
+            <div className="flex flex-col gap-6 items-start pb-12 border-b border-white/[0.03]">
+              <div className={cn("w-16 h-16 rounded-[1.5rem] bg-white/5 flex items-center justify-center border border-white/5 shadow-2xl", categoryInfo.color)}>
+                <categoryInfo.icon className="w-8 h-8" />
+              </div>
+              <div className="space-y-3">
+                <h1 className="text-4xl md:text-6xl font-black tracking-tight leading-none uppercase">
+                  {categoryInfo.title}
+                </h1>
+                <p className="text-lg text-zinc-500 max-w-2xl font-medium">
+                  {categoryInfo.description}
+                </p>
+              </div>
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-zinc-900/50 border border-white/5 text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-500">
+                <FileText className="w-3 h-3" />
+                {articles.length} Technical Resources
+              </div>
             </div>
           </motion.div>
 
-          {/* Articles Grid */}
-          <motion.div variants={itemVariants} className="grid gap-6">
+          {/* Articles List */}
+          <motion.div variants={itemVariants} className="grid grid-cols-1 gap-4">
             {articles.map((article, index) => (
               <motion.div
                 key={article.id}
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: index * 0.1 }}
+                transition={{ delay: index * 0.05 }}
               >
-                <Link href={`/support/${categorySlug}/${article.slug}`}>
-                  <div className="group p-6 md:p-8 rounded-3xl bg-card/30 backdrop-blur-xl border border-border/50 hover:bg-card/50 hover:border-primary/30 transition-all duration-300 cursor-pointer hover:shadow-xl">
-                    <div className="flex flex-col md:flex-row gap-6">
-                      {/* Icon */}
-                      <div className="flex-shrink-0">
-                        <div className="w-16 h-16 rounded-2xl bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
-                          <FileText className="w-8 h-8 text-primary" />
+                <Link href={`/support/${categorySlug}/${article.slug}`} className="block group">
+                  <div className="p-8 rounded-[2rem] bg-zinc-900/10 border border-white/[0.03] hover:bg-zinc-900/30 hover:border-white/10 transition-all duration-300 relative overflow-hidden">
+                    <div className="relative z-10 flex flex-col md:flex-row gap-8 items-start md:items-center">
+                      <div className="flex-1 space-y-4">
+                        <div className="space-y-1">
+                          <h2 className="text-2xl font-bold group-hover:text-blue-400 transition-colors tracking-tight">
+                            {article.title}
+                          </h2>
+                          <p className="text-zinc-500 text-sm line-clamp-2 leading-relaxed max-w-3xl">
+                            {article.description}
+                          </p>
                         </div>
-                      </div>
 
-                      {/* Content */}
-                      <div className="flex-1 min-w-0">
-                        <h2 className="text-2xl font-bold mb-3 group-hover:text-primary transition-colors">
-                          {article.title}
-                        </h2>
-                        <p className="text-muted-foreground mb-4 line-clamp-2">
-                          {article.description}
-                        </p>
-
-                        {/* Meta Information */}
-                        <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
-                          <div className="flex items-center gap-1.5">
-                            <User className="w-4 h-4" />
-                            <span>{article.author.name}</span>
-                          </div>
-                          <div className="flex items-center gap-1.5">
-                            <Clock className="w-4 h-4" />
+                        <div className="flex flex-wrap items-center gap-6 text-[10px] font-bold text-zinc-600 uppercase tracking-widest">
+                          <div className="flex items-center gap-2">
+                            <Clock className="w-3.5 h-3.5" />
                             <span>{article.readTime}</span>
                           </div>
-                          <div className="flex items-center gap-1.5">
-                            <TrendingUp className="w-4 h-4" />
-                            <span>{article.views} views</span>
+                          <div className="flex items-center gap-2">
+                            <TrendingUp className="w-3.5 h-3.5" />
+                            <span>{article.views} PV</span>
                           </div>
-                          <div className="flex items-center gap-1.5">
-                            <Calendar className="w-4 h-4" />
+                          <div className="flex items-center gap-2">
+                            <Calendar className="w-3.5 h-3.5" />
                             <span>
-                              {new Date(article.publishedAt).toLocaleDateString(
-                                "en-US",
-                                {
-                                  month: "short",
-                                  day: "numeric",
-                                  year: "numeric",
-                                }
-                              )}
+                              {new Date(article.publishedAt).toLocaleDateString("en-US", {
+                                month: "short",
+                                year: "numeric",
+                              })}
                             </span>
                           </div>
                         </div>
                       </div>
 
-                      {/* Read More Arrow */}
-                      <div className="flex items-center">
-                        <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-all">
-                          <ArrowLeft className="w-5 h-5 rotate-180 group-hover:translate-x-1 transition-transform" />
-                        </div>
+                      <div className="w-12 h-12 rounded-full bg-white/5 flex items-center justify-center group-hover:bg-blue-600 group-hover:text-white transition-all transform group-hover:translate-x-1">
+                        <ChevronRight className="w-5 h-5" />
                       </div>
                     </div>
                   </div>
@@ -207,15 +188,17 @@ export default function CategoryPage() {
           {articles.length === 0 && (
             <motion.div
               variants={itemVariants}
-              className="text-center py-16 bg-card/30 backdrop-blur-xl rounded-3xl border border-border/50"
+              className="text-center py-24 rounded-[3rem] bg-zinc-900/10 border border-white/5"
             >
-              <FileText className="w-16 h-16 text-muted-foreground mx-auto mb-4 opacity-50" />
-              <h3 className="text-xl font-semibold mb-2">No Articles Yet</h3>
-              <p className="text-muted-foreground mb-6">
-                We're working on adding content to this category.
+              <FileText className="w-16 h-16 text-zinc-800 mx-auto mb-6" />
+              <h3 className="text-xl font-bold mb-2 uppercase tracking-widest text-zinc-500">Resource Offline</h3>
+              <p className="text-zinc-600 mb-10 max-w-sm mx-auto text-sm">
+                We are currently indexing new technical documentation for this track. Check back in 24 hours.
               </p>
               <Link href="/support">
-                <Button>Browse Other Categories</Button>
+                <Button variant="outline" className="border-white/10 hover:bg-white/5 rounded-xl h-12 px-8 font-bold uppercase tracking-widest text-[10px]">
+                  Browse Other Tracks
+                </Button>
               </Link>
             </motion.div>
           )}
