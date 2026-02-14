@@ -3,11 +3,12 @@
 import { useState, useEffect, Suspense } from "react";
 import { useSearchParams, usePathname, useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { Card, CardHeader } from "@/components/ui/card";
+import { Card, CardHeader, CardDescription } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Search } from "lucide-react";
+import { Search, Users2 } from "lucide-react";
 import { Tabs } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
 import { AppPagination } from "@/components/app-pagination";
 import { useSubmittedApps, useSubmittedAppsCount } from "@/hooks/useAdmin";
 import { HubSubmittedAppResponse } from "@/lib/types";
@@ -16,13 +17,12 @@ import { SubmissionsTable } from "@/components/admin/submissions-table";
 
 const ITEMS_PER_PAGE = 8;
 
-function AdminSubmissionsContent() {
+function AdminSubmissionsFreeContent() {
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const router = useRouter();
 
   // Initialize state from URL queries to persist selection across navigation
-  // Default to 'All' if no tab param is present
   const [activeTab, setActiveTab] = useState(searchParams.get("tab") || "All");
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
@@ -32,19 +32,26 @@ function AdminSubmissionsContent() {
     const tab = searchParams.get("tab") || "All";
     if (tab !== activeTab) {
       setActiveTab(tab);
-      setCurrentPage(1); // Reset page on tab change via history
+      setCurrentPage(1);
     }
   }, [searchParams]);
 
   const handleTabChange = (val: string) => {
-    // Instant UI update
     setActiveTab(val);
     setCurrentPage(1);
+    updateUrl({ tab: val });
+  };
 
-    // Background URL update
-    const params = new URLSearchParams(searchParams.toString());
-    params.set("tab", val);
-    router.replace(`${pathname}?${params.toString()}`, {
+  const updateUrl = (params: Record<string, string>) => {
+    const newParams = new URLSearchParams(searchParams.toString());
+    Object.entries(params).forEach(([key, value]) => {
+      if (value && value !== "All") {
+        newParams.set(key, value);
+      } else {
+        newParams.delete(key);
+      }
+    });
+    router.replace(`${pathname}?${newParams.toString()}`, {
       scroll: false,
     });
   };
@@ -63,19 +70,22 @@ function AdminSubmissionsContent() {
 
   const submissions = submissionsData || [];
 
-  // Fetch counts
-  const { data: countsData } = useSubmittedAppsCount();
+  // Fetch counts for FREE only
+  const { data: countsData } = useSubmittedAppsCount("FREE");
 
-  // Filter by search query if present
-  const filteredSubmissions = submissions.filter(
-    (sub: HubSubmittedAppResponse) => {
-      if (!searchQuery) return true;
-      const query = searchQuery.toLowerCase();
-      const appName = sub.androidApp?.appName?.toLowerCase() || "";
-      const ownerName = sub.appOwner?.name?.toLowerCase() || "";
-      return appName.includes(query) || ownerName.includes(query);
-    },
-  );
+  // Filter by FREE app type and search query
+  const filteredSubmissions = submissions.filter((sub: HubSubmittedAppResponse) => {
+    // Only FREE apps
+    if (sub.appType !== "FREE") {
+      return false;
+    }
+    // Search filter
+    if (!searchQuery) return true;
+    const query = searchQuery.toLowerCase();
+    const appName = sub.androidApp?.appName?.toLowerCase() || "";
+    const ownerName = sub.appOwner?.name?.toLowerCase() || "";
+    return appName.includes(query) || ownerName.includes(query);
+  });
 
   const totalPages = Math.ceil(filteredSubmissions.length / ITEMS_PER_PAGE);
 
@@ -85,25 +95,47 @@ function AdminSubmissionsContent() {
   );
 
   return (
-    <div className="flex-1 space-y-8 container mx-auto px-4 md:px-6">
+    <div className="flex-1 space-y-6 container mx-auto px-4 md:px-6 py-6">
+      {/* Header */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between space-y-2">
         <div>
           <h2 className="text-2xl sm:text-3xl font-bold bg-gradient-to-b from-primary to-primary/40 bg-clip-text text-transparent leading-[unset]">
-            Submissions
+            Community Submissions
           </h2>
           <p className="text-sm sm:text-md text-muted-foreground">
-            Review, approve, or reject developer app submissions.
+            Review, approve, or reject community (free) app submissions.
           </p>
         </div>
       </div>
 
+      {/* Stats Card */}
+      <div className="grid gap-4 grid-cols-1 sm:grid-cols-2">
+        <Card className="border-blue-500/20 bg-blue-500/5">
+          <CardHeader className="p-4">
+            <div className="flex items-center gap-3">
+              <div className="p-2 rounded-lg bg-blue-500/10">
+                <Users2 className="h-5 w-5 text-blue-500" />
+              </div>
+              <div>
+                <div className="flex items-center gap-2">
+                  <CardDescription className="text-xs">Community Apps</CardDescription>
+                  <Badge className="bg-blue-500/20 text-blue-600 dark:text-blue-400 text-[10px]">FREE</Badge>
+                </div>
+                <p className="text-2xl font-bold">{filteredSubmissions.length}</p>
+              </div>
+            </div>
+          </CardHeader>
+        </Card>
+      </div>
+
+      {/* Main Content Card */}
       <Card>
         <CardHeader className="p-2 sm:p-6">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
             <div className="relative w-full md:w-auto">
               <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
               <Input
-                placeholder="Search submissions..."
+                placeholder="Search by app name or developer..."
                 className="pl-8 w-full md:w-[300px]"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
@@ -113,6 +145,7 @@ function AdminSubmissionsContent() {
         </CardHeader>
 
         <div className="px-2 sm:px-6 pb-6 space-y-4">
+          {/* Status Tabs */}
           <div className="flex flex-col gap-4">
             <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
               <Button
@@ -172,6 +205,7 @@ function AdminSubmissionsContent() {
               </Tabs>
             </div>
 
+            {/* Sub-tabs for Running status */}
             {(activeTab === "AVAILABLE" || activeTab === "IN_TESTING") && (
               <div className="flex justify-start">
                 <div className="flex items-center gap-2 bg-muted rounded-lg p-1">
@@ -208,6 +242,7 @@ function AdminSubmissionsContent() {
           <SubmissionsTable
             submissions={paginatedSubmissions}
             isLoading={isLoading}
+            showAppType={false}
           />
         </div>
       </Card>
@@ -223,10 +258,10 @@ function AdminSubmissionsContent() {
   );
 }
 
-export default function AdminSubmissionsPage() {
+export default function AdminSubmissionsFreePage() {
   return (
     <Suspense fallback={<div className="p-8 text-center">Loading...</div>}>
-      <AdminSubmissionsContent />
+      <AdminSubmissionsFreeContent />
     </Suspense>
   );
 }

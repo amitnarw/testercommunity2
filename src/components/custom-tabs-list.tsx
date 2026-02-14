@@ -37,12 +37,9 @@ export function CustomTabsList({
     >
       <TabsList
         className={cn(
-          "relative grid w-full bg-muted p-0.5 sm:p-1 h-auto rounded-lg",
+          "relative flex w-full bg-muted p-0.5 sm:p-1 h-auto rounded-lg overflow-x-auto no-scrollbar",
           listClassName,
         )}
-        style={{
-          gridTemplateColumns: `repeat(${tabs.length}, minmax(0, 1fr))`,
-        }}
       >
         {tabs.map((tab) => {
           const isSelected = activeTab === tab.value;

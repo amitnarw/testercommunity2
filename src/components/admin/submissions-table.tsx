@@ -13,15 +13,69 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { HubSubmittedAppResponse } from "@/lib/types";
 import { format } from "date-fns";
 import { SubmissionActions } from "./submission-actions";
+import { cn } from "@/lib/utils";
 
 interface SubmissionsTableProps {
   submissions: HubSubmittedAppResponse[];
   isLoading: boolean;
+  showAppType?: boolean;
+}
+
+// App Type Badge Component with clear visual distinction
+function AppTypeBadge({ appType }: { appType: string }) {
+  const isPaid = appType === "PAID";
+  
+  return (
+    <Badge
+      variant={isPaid ? "default" : "secondary"}
+      className={cn(
+        "font-medium",
+        isPaid 
+          ? "bg-amber-500/20 text-amber-600 dark:text-amber-400 hover:bg-amber-500/30 border border-amber-500/30" 
+          : "bg-blue-500/20 text-blue-600 dark:text-blue-400 hover:bg-blue-500/30 border border-blue-500/30"
+      )}
+    >
+      {isPaid ? "PRO" : "FREE"}
+    </Badge>
+  );
+}
+
+// Status Badge Component with clear visual distinction
+function StatusBadge({ status }: { status: string }) {
+  const getStatusStyles = () => {
+    switch (status) {
+      case "ACCEPTED":
+      case "AVAILABLE":
+      case "IN_TESTING":
+      case "COMPLETED":
+        return "bg-green-500/20 text-green-700 dark:bg-green-500/10 dark:text-green-400 border-green-500/30";
+      case "REJECTED":
+        return "bg-red-500/20 text-red-700 dark:bg-red-500/10 dark:text-red-400 border-red-500/30";
+      case "IN_REVIEW":
+        return "bg-amber-500/20 text-amber-700 dark:bg-amber-500/10 dark:text-amber-400 border-amber-500/30";
+      case "DRAFT":
+        return "bg-gray-500/20 text-gray-700 dark:bg-gray-500/10 dark:text-gray-400 border-gray-500/30";
+      case "ON_HOLD":
+        return "bg-purple-500/20 text-purple-700 dark:bg-purple-500/10 dark:text-purple-400 border-purple-500/30";
+      default:
+        return "bg-secondary text-secondary-foreground";
+    }
+  };
+
+  return (
+    <Badge
+      variant="outline"
+      className={cn("font-medium border", getStatusStyles())}
+    >
+      {status.replace(/_/g, " ")}
+    </Badge>
+  );
 }
 
 export function SubmissionsTable({
   submissions,
   isLoading,
+  showAppType = true,
 }: SubmissionsTableProps) {
   return (
     <div className="rounded-md border grid grid-cols-1">
@@ -33,7 +87,7 @@ export function SubmissionsTable({
             <TableHead className="hidden md:table-cell">
               Submission Date
             </TableHead>
-            <TableHead>Type</TableHead>
+            {showAppType && <TableHead>Type</TableHead>}
             <TableHead>Status</TableHead>
             <TableHead>
               <span className="sr-only">Actions</span>
@@ -56,9 +110,11 @@ export function SubmissionsTable({
                 <TableCell className="hidden md:table-cell">
                   <Skeleton className="h-4 w-24" />
                 </TableCell>
-                <TableCell>
-                  <Skeleton className="h-5 w-16" />
-                </TableCell>
+                {showAppType && (
+                  <TableCell>
+                    <Skeleton className="h-5 w-16" />
+                  </TableCell>
+                )}
                 <TableCell>
                   <Skeleton className="h-5 w-20" />
                 </TableCell>
@@ -70,7 +126,7 @@ export function SubmissionsTable({
           ) : submissions.length === 0 ? (
             <TableRow>
               <TableCell
-                colSpan={6}
+                colSpan={showAppType ? 6 : 5}
                 className="text-center py-8 text-muted-foreground"
               >
                 No submissions found.
@@ -78,61 +134,51 @@ export function SubmissionsTable({
             </TableRow>
           ) : (
             submissions.map((submission) => (
-              <TableRow key={submission.id}>
+              <TableRow key={submission.id} className="group">
                 <TableCell className="font-medium">
-                  <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-3">
                     {submission.androidApp?.appLogoUrl ? (
                       <img
                         src={submission.androidApp.appLogoUrl}
                         alt=""
-                        className="w-8 h-8 rounded-md object-cover"
+                        className="w-9 h-9 rounded-lg object-cover ring-1 ring-border"
                       />
                     ) : (
-                      <div className="w-8 h-8 rounded-md bg-secondary flex items-center justify-center">
-                        <span className="text-xs">?</span>
+                      <div className="w-9 h-9 rounded-lg bg-secondary flex items-center justify-center ring-1 ring-border">
+                        <span className="text-xs text-muted-foreground">?</span>
                       </div>
                     )}
-                    <span className="truncate max-w-[150px] sm:max-w-none">
-                      {submission.androidApp?.appName ||
-                        `App #${submission.appId}`}
-                    </span>
+                    <div className="flex flex-col">
+                      <span className="truncate max-w-[150px] sm:max-w-none font-medium">
+                        {submission.androidApp?.appName ||
+                          `App #${submission.appId}`}
+                      </span>
+                      {/* Show app type badge inline on mobile */}
+                      <div className="sm:hidden mt-1">
+                        <AppTypeBadge appType={submission.appType} />
+                      </div>
+                    </div>
                   </div>
                 </TableCell>
                 <TableCell className="hidden sm:table-cell">
-                  {submission.appOwner?.name || submission.appOwnerId}
+                  <span className="text-muted-foreground">
+                    {submission.appOwner?.name || submission.appOwnerId}
+                  </span>
                 </TableCell>
                 <TableCell className="hidden md:table-cell">
-                  {submission.createdAt
-                    ? format(new Date(submission.createdAt), "yyyy-MM-dd")
-                    : "N/A"}
+                  <span className="text-muted-foreground">
+                    {submission.createdAt
+                      ? format(new Date(submission.createdAt), "yyyy-MM-dd")
+                      : "N/A"}
+                  </span>
                 </TableCell>
+                {showAppType && (
+                  <TableCell>
+                    <AppTypeBadge appType={submission.appType} />
+                  </TableCell>
+                )}
                 <TableCell>
-                  <Badge
-                    variant={
-                      submission.appType === "PAID" ? "default" : "secondary"
-                    }
-                  >
-                    {submission.appType}
-                  </Badge>
-                </TableCell>
-                <TableCell>
-                  <Badge
-                    variant={
-                      submission.status === "REJECTED"
-                        ? "destructive"
-                        : "secondary"
-                    }
-                    className={
-                      submission.status === "ACCEPTED" ||
-                      submission.status === "AVAILABLE" ||
-                      submission.status === "IN_TESTING" ||
-                      submission.status === "COMPLETED"
-                        ? "bg-green-500/20 text-green-700 dark:bg-green-500/10 dark:text-green-400"
-                        : ""
-                    }
-                  >
-                    {submission.status}
-                  </Badge>
+                  <StatusBadge status={submission.status} />
                 </TableCell>
                 <TableCell className="text-right">
                   <SubmissionActions submission={submission} />

@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import PublicClientLayout from "./layout.client";
 
 // Home page specific metadata
 export const metadata: Metadata = {
@@ -32,12 +31,3 @@ export const metadata: Metadata = {
     images: ["/dark-mac.png"],
   },
 };
-
-// Server component that renders the client layout
-export default function PublicLayout({
-  children,
-}: {
-  children: React.ReactNode;
-}) {
-  return <PublicClientLayout>{children}</PublicClientLayout>;
-}

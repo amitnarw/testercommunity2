@@ -1,11 +1,6 @@
 "use client";
 
-import {
-  Card,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardDescription, CardTitle } from "@/components/ui/card";
 import {
   ArrowRight,
   BookOpen,
@@ -14,9 +9,7 @@ import {
   LifeBuoy,
   Mail,
   Search,
-  Zap,
 } from "lucide-react";
-import Link from "next/link";
 import { SupportChatbot } from "@/components/support-chatbot";
 import { Button } from "@/components/ui/button";
 import { TransitionLink } from "@/components/transition-link";

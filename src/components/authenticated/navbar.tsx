@@ -23,8 +23,8 @@ export default function Navbar({ onLogout }: { onLogout: () => void }) {
 
   if (!mounted) {
     return (
-      <header className="sticky top-0 z-40 bg-brand-background md:pl-20 py-2">
-        <div className="container mx-auto px-4 md:px-6">
+      <header className="sticky top-0 z-40 bg-brand-background md:pl-20 py-2 overflow-x-hidden">
+        <div className="container mx-auto px-4 md:px-6 max-w-full">
           <div className="flex items-center justify-end gap-2">
             <EarnPointsButton />
             <Button
@@ -53,8 +53,8 @@ export default function Navbar({ onLogout }: { onLogout: () => void }) {
   }
 
   return (
-    <header className="sticky top-0 z-40 bg-brand-background md:pl-20 py-2">
-      <div className="container mx-auto px-4 md:px-6">
+    <header className="sticky top-0 z-40 bg-brand-background md:pl-20 py-2 overflow-x-hidden">
+      <div className="container mx-auto px-4 md:px-6 max-w-full">
         <div className="flex items-center justify-end gap-2">
           <div className="flex flex-row gap-2">
             <div className="flex items-center gap-2">

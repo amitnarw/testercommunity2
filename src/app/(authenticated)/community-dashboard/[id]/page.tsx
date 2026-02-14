@@ -389,7 +389,7 @@ function AppTestingPageClient({ id }: { id: string }) {
                     Important
                   </span>
                 </h2>
-                <div className="prose prose-base dark:prose-invert leading-relaxed text-white dark:text-black bg-[#121212] dark:bg-white p-3 sm:p-6 rounded-lg border-primary border-l-4 shadow-xl shadow-gray-300 dark:shadow-gray-700 text-sm sm:text-base">
+                <div className="prose prose-base dark:prose-invert leading-relaxed text-white dark:text-black bg-sidebar p-3 sm:p-6 rounded-lg border-primary border-l-4 shadow-xl shadow-gray-300 dark:shadow-gray-700 text-sm sm:text-base">
                   <span className="bg-gradient-to-b from-primary to-primary/50 text-white font-bold rounded-md px-4 py-0.5 text-lg inline sm:hidden">
                     Important
                   </span>

@@ -3,7 +3,7 @@
 import { useLayoutEffect, useRef, useState, useEffect } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { communityPathSteps, professionalPathSteps } from "@/lib/data.tsx";
+import { communityPathSteps, professionalPathSteps } from "@/lib/data";
 import { RoadmapStepCard } from "@/components/roadmap-step-card";
 import { ArrowRight, ArrowDown, Rocket, Users, Briefcase } from "lucide-react";
 import Link from "next/link";
@@ -157,22 +157,21 @@ export default function HowItWorksPage() {
         className="h-screen w-full flex flex-col items-center justify-center text-center p-4 relative overflow-hidden bg-background"
       >
         <div className="absolute top-1/2 left-1/2">
-          <Confetti
-            active={isConfettiActive}
-            config={{
-              angle: 90,
-              spread: 360,
-              startVelocity: 40,
-              elementCount: 100,
-              dragFriction: 0.12,
-              duration: 3000,
-              stagger: 3,
-              width: "10px",
-              height: "10px",
-              perspective: "500px",
-              colors: ["#a864fd", "#29cdff", "#78ff44", "#ff718d", "#fdff6a"],
-            }}
-          />
+           <Confetti
+              active={isConfettiActive}
+              config={{
+                angle: 90,
+                spread: 360,
+                startVelocity: 40,
+                elementCount: 100,
+                dragFriction: 0.12,
+                duration: 3000,
+                stagger: 3,
+                width: "10px",
+                height: "10px",
+                colors: ["#a864fd", "#29cdff", "#78ff44", "#ff718d", "#fdff6a"],
+              }}
+            />
         </div>
         <Rocket className="w-16 h-16 text-primary mb-4" />
         <h2 className="text-4xl md:text-6xl font-bold font-heading">

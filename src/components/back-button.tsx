@@ -49,6 +49,8 @@ export function BackButton({ href, className }: BackButtonProps) {
   return (
     <Button {...commonProps} onClick={handleClick}>
       {content}
+      <span className="hidden md:inline">Back</span>
     </Button>
   );
 }
+

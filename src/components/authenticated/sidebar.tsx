@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { TransitionLink } from "@/components/transition-link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
@@ -13,11 +14,9 @@ import {
   Briefcase,
   DollarSign,
   LifeBuoy,
-  FileCheck,
   House,
   Users,
   UserPlus,
-  MessageSquare,
   Lightbulb,
   Activity,
   Wallet,
@@ -49,9 +48,17 @@ const proNavLinks = [
 const adminNavLinks = [
   { name: "Admin Dashboard", href: "/admin/dashboard", icon: LayoutDashboard },
   { name: "Users", href: "/admin/users", icon: Users },
-  { name: "Submissions", href: "/admin/submissions", icon: FileCheck },
+  {
+    name: "Professional Submissions",
+    href: "/admin/submissions-paid",
+    icon: DollarSign,
+  },
+  {
+    name: "Community Submissions",
+    href: "/admin/submissions-free",
+    icon: Users2,
+  },
   { name: "Applications", href: "/admin/applications", icon: UserPlus },
-  { name: "Feedback", href: "/admin/feedback", icon: MessageSquare },
   { name: "Suggestions", href: "/admin/suggestions", icon: Lightbulb },
   { name: "Notifications", href: "/admin/notifications", icon: Bell },
 ];
@@ -137,9 +144,18 @@ export function Sidebar({
           isCollapsed ? "w-16" : "w-72",
         )}
       >
-        <div className="flex flex-col items-center justify-between gap-4 bg-[#121212] dark:bg-white text-white py-5 rounded-2xl shadow-2xl border border-white/10 relative w-full">
+        <div className="flex flex-col items-center justify-between gap-4 bg-sidebar text-white py-5 rounded-2xl shadow-2xl border border-white/10 relative w-full">
           <TransitionLink href="/dashboard">
-            <Logo size="md" />
+            {/* Logo inverted for sidebar: sidebar is dark in light mode, light in dark mode */}
+            <div className="relative w-10 h-10 shrink-0">
+              <Image
+                src="/inTesters-logo.svg"
+                alt="InTesters Logo"
+                fill
+                className="object-contain invert dark:invert-0"
+                priority
+              />
+            </div>
           </TransitionLink>
 
           <div className="mb-8 mt-2">
