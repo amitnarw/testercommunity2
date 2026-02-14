@@ -9,14 +9,15 @@ import {
   getUserNotifications,
   getUserProfileData,
   getUserWallet,
+  getUserTransactions,
   saveInitialProfileData,
   saveProfileData,
   saveUserData,
+  UserTransactionsResponse,
 } from "@/lib/apiCalls";
 import {
-  AppData,
   DashboardDataResponse,
-  NotificationReponse,
+  NotificationResponse,
   PricingResponse,
   SessionResponse,
   UserDataAttributes,
@@ -112,7 +113,7 @@ export function useDashboardData() {
 // Notification
 export function useGetUserNotifications() {
   const query = useQuery<
-    { result: NotificationReponse[]; totalNotifications: number },
+    { result: NotificationResponse[]; totalNotifications: number },
     Error
   >({
     queryFn: () => getUserNotifications(),
@@ -183,6 +184,20 @@ export function useEarnPoints() {
   >({
     queryFn: () => getEarnPoints(),
     queryKey: ["useEarnPoints"],
+  });
+
+  return query;
+}
+
+// User Transactions
+export function useGetUserTransactions(params?: {
+  type?: string;
+  limit?: number;
+  offset?: number;
+}) {
+  const query = useQuery<UserTransactionsResponse, Error>({
+    queryFn: () => getUserTransactions(params),
+    queryKey: ["useGetUserTransactions", params],
   });
 
   return query;

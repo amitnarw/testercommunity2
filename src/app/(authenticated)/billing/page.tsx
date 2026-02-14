@@ -8,8 +8,6 @@ import {
   FileText,
   Box,
   ShieldCheck,
-  CreditCard,
-  HelpCircle,
   Star,
   FileClock,
 } from "lucide-react";
@@ -18,18 +16,9 @@ import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
 import { PageHeader } from "@/components/page-header";
 import { HoverBorderGradient } from "@/components/ui/hover-border-gradient";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 import {
   useBillingHistory,
@@ -41,9 +30,6 @@ import { useGetUserWallet, usePricingData } from "@/hooks/useUser";
 import type { PricingResponse } from "@/lib/types";
 import {
   Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
 } from "@/components/ui/accordion";
 import FaqItem from "@/components/faq-item";
 import Script from "next/script";
@@ -185,25 +171,20 @@ const PricingCard = ({
       <div className="mt-auto relative z-10">
         {isPopular ? (
           <div className="flex justify-center w-full">
-            <button
+            <HoverBorderGradient
+              containerClassName="w-full"
+              className="bg-white text-primary flex items-center justify-center space-x-2 w-full py-4 font-bold cursor-pointer"
               onClick={() => onSubscribe(plan.id)}
-              disabled={isProcessing}
-              className="w-full"
             >
-              <HoverBorderGradient
-                containerClassName="w-full"
-                className="bg-white text-primary flex items-center justify-center space-x-2 w-full py-4 font-bold"
-              >
-                {isProcessing ? (
-                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                ) : (
-                  <Zap className="w-4 h-4 mr-2 fill-current" />
-                )}
-                <span className="font-semibold">
-                  {isProcessing ? "Processing..." : "Get Started"}
-                </span>
-              </HoverBorderGradient>
-            </button>
+              {isProcessing ? (
+                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+              ) : (
+                <Zap className="w-4 h-4 mr-2 fill-current" />
+              )}
+              <span className="font-semibold">
+                {isProcessing ? "Processing..." : "Get Started"}
+              </span>
+            </HoverBorderGradient>
           </div>
         ) : (
           <Button
