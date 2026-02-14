@@ -1,307 +1,338 @@
 "use client";
 
-import { motion } from "framer-motion";
+import React, { useState, useMemo } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import {
-  LifeBuoy,
-  MessageCircle,
-  BookOpen,
-  Zap,
-  Shield,
-  Users,
-  Mail,
-  ChevronRight,
-  Sparkles,
-  TrendingUp,
+  Search,
   FileText,
-  Clock,
+  TrendingUp,
+  ArrowRight,
+  Shield,
+  Zap,
+  Star,
+  Wallet,
+  Globe,
+  HelpCircle,
+  MessageCircle,
+  Command,
+  ChevronRight,
+  MousePointer2,
 } from "lucide-react";
 import Link from "next/link";
+import { getPopularArticles, searchArticles } from "@/lib/blog-data";
+import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 import { SupportChatbot } from "@/components/support-chatbot";
-import { getPopularArticles } from "@/lib/blog-data";
+
+const categories = [
+  {
+    id: "google-play-guidelines",
+    icon: Shield,
+    title: "Google Play Guidelines",
+    description: "Deep dive into 20-tester & 14-day requirements. Stay compliant with current policies.",
+    textColor: "text-blue-600 dark:text-blue-400",
+    bgColor: "bg-blue-500/10",
+    borderColor: "border-blue-500/20",
+    href: "/support/google-play-guidelines",
+  },
+  {
+    id: "free-community-testing",
+    icon: Globe,
+    title: "Community Testing",
+    description: "Master the Karma system. Build your tester pool through mutual cooperation.",
+    textColor: "text-emerald-600 dark:text-emerald-400",
+    bgColor: "bg-emerald-500/10",
+    borderColor: "border-emerald-500/20",
+    href: "/support/free-community-testing",
+  },
+  {
+    id: "paid-professional-testing",
+    icon: Star,
+    title: "Professional Testing",
+    description: "Vetted QA cycles with guaranteed results for high-stakes releases.",
+    textColor: "text-amber-600 dark:text-amber-400",
+    bgColor: "bg-amber-500/10",
+    borderColor: "border-amber-500/20",
+    href: "/support/paid-professional-testing",
+  },
+  {
+    id: "wallet-account",
+    icon: Wallet,
+    title: "Wallet & Account",
+    description: "Manage credits, transactions, and secure your developer credentials.",
+    textColor: "text-purple-600 dark:text-purple-400",
+    bgColor: "bg-purple-500/10",
+    borderColor: "border-purple-500/20",
+    href: "/support/wallet-account",
+  },
+];
 
 const containerVariants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
-    transition: {
-      staggerChildren: 0.1,
-      delayChildren: 0.1,
-    },
+    transition: { staggerChildren: 0.1 },
   },
 };
 
 const itemVariants = {
-  hidden: { y: 20, opacity: 0 },
+  hidden: { y: 30, opacity: 0 },
   visible: {
     y: 0,
     opacity: 1,
-    transition: {
-      type: "spring",
-      stiffness: 100,
-      damping: 20,
-    },
+    transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] },
   },
 };
 
-const categories = [
-  {
-    icon: Zap,
-    title: "Getting Started",
-    description: "Learn the basics and set up your account",
-    color: "from-blue-500 to-cyan-500",
-    bgColor: "bg-blue-500/10",
-    borderColor: "border-blue-500/20",
-    iconColor: "text-blue-500",
-    articles: 12,
-    href: "/support/getting-started",
-  },
-  {
-    icon: Shield,
-    title: "Account & Security",
-    description: "Manage your account settings and privacy",
-    color: "from-emerald-500 to-teal-500",
-    bgColor: "bg-emerald-500/10",
-    borderColor: "border-emerald-500/20",
-    iconColor: "text-emerald-500",
-    articles: 8,
-    href: "/support/account-security",
-  },
-  {
-    icon: Users,
-    title: "Community Hub",
-    description: "Connect with testers and manage projects",
-    color: "from-purple-500 to-pink-500",
-    bgColor: "bg-purple-500/10",
-    borderColor: "border-purple-500/20",
-    iconColor: "text-purple-500",
-    articles: 15,
-    href: "/support/community-hub",
-  },
-  {
-    icon: BookOpen,
-    title: "Billing & Plans",
-    description: "Pricing, payments, and subscriptions",
-    color: "from-orange-500 to-red-500",
-    bgColor: "bg-orange-500/10",
-    borderColor: "border-orange-500/20",
-    iconColor: "text-orange-500",
-    articles: 10,
-    href: "/support/billing-plans",
-  },
-];
-
 export default function SupportPage() {
-  const popularArticles = getPopularArticles(4);
+  const [searchQuery, setSearchQuery] = useState("");
+  const popularArticles = getPopularArticles(5);
+
+  const searchResults = useMemo(() => {
+    if (searchQuery.length < 2) return [];
+    return searchArticles(searchQuery).slice(0, 6);
+  }, [searchQuery]);
+
   return (
-    <>
-      <div className="min-h-screen w-full relative overflow-hidden">
-        <main className="container mx-auto px-4 md:px-8 py-8 md:py-16 max-w-7xl relative z-10">
-          <motion.div
-            initial="hidden"
-            animate="visible"
-            variants={containerVariants}
-            className="space-y-12 md:space-y-16"
-          >
-            {/* Hero Section */}
-            <motion.div
-              variants={itemVariants}
-              className="text-center max-w-4xl mx-auto"
-            >
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 mb-6">
-                <Sparkles className="w-4 h-4 text-primary" />
-                <span className="text-sm font-medium text-primary">
-                  We're here to help
-                </span>
-              </div>
-              <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold bg-gradient-to-b from-foreground to-foreground/60 bg-clip-text text-transparent mb-6">
-                Support Center
-              </h1>
-              <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto">
-                Find answers, get help, and connect with our community. We're
-                committed to your success.
-              </p>
-            </motion.div>
-
-            {/* Categories Grid */}
-            <motion.div variants={itemVariants}>
-              <h2 className="text-2xl md:text-3xl font-bold mb-8 text-center">
-                Browse by Category
-              </h2>
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                {categories.map((category, index) => (
-                  <motion.div
-                    key={category.title}
-                    initial={{ opacity: 0, y: 20 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: index * 0.1 }}
-                    className="group relative"
-                  >
-                    <Link href={category.href}>
-                      <div className="absolute inset-0 bg-gradient-to-br opacity-0 group-hover:opacity-100 transition-opacity duration-500 rounded-3xl blur-xl -z-10 from-primary/20 to-primary/5" />
-                      <div
-                        className={`relative h-full p-6 rounded-3xl border ${category.borderColor} ${category.bgColor} backdrop-blur-sm hover:bg-opacity-80 transition-all duration-300 cursor-pointer group-hover:scale-105 group-hover:shadow-xl`}
-                      >
-                        <div
-                          className={`w-12 h-12 rounded-2xl bg-gradient-to-br ${category.color} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300`}
-                        >
-                          <category.icon className="w-6 h-6 text-white" />
-                        </div>
-                        <h3 className="font-bold text-lg mb-2 group-hover:text-primary transition-colors">
-                          {category.title}
-                        </h3>
-                        <p className="text-sm text-muted-foreground mb-4">
-                          {category.description}
-                        </p>
-                        <div className="flex items-center justify-between">
-                          <span className="text-xs text-muted-foreground">
-                            {category.articles} articles
-                          </span>
-                          <ChevronRight className="w-4 h-4 text-muted-foreground group-hover:text-primary group-hover:translate-x-1 transition-all" />
-                        </div>
-                      </div>
-                    </Link>
-                  </motion.div>
-                ))}
-              </div>
-            </motion.div>
-
-            {/* Popular Articles */}
-            <motion.div variants={itemVariants}>
-              <div className="flex items-center justify-between mb-8">
-                <div>
-                  <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-orange-500/10 border border-orange-500/20 mb-3">
-                    <TrendingUp className="w-3.5 h-3.5 text-orange-500" />
-                    <span className="text-xs font-medium text-orange-500">
-                      Popular
-                    </span>
-                  </div>
-                  <h2 className="text-2xl md:text-3xl font-bold">
-                    Trending Articles
-                  </h2>
-                </div>
-              </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {popularArticles.map((article, index) => (
-                  <motion.div
-                    key={article.title}
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: index * 0.1 }}
-                  >
-                    <Link
-                      href={`/support/${article.category
-                        .toLowerCase()
-                        .replace(/ & /g, "-")
-                        .replace(/ /g, "-")}/${article.slug}`}
-                    >
-                      <div className="group p-6 rounded-2xl bg-card/30 backdrop-blur-xl border border-border/50 hover:bg-card/50 hover:border-primary/30 transition-all duration-300 cursor-pointer hover:shadow-lg">
-                        <div className="flex items-start gap-4">
-                          <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center flex-shrink-0 group-hover:bg-primary/20 transition-colors">
-                            <FileText className="w-5 h-5 text-primary" />
-                          </div>
-                          <div className="flex-1 min-w-0">
-                            <h3 className="font-semibold text-base mb-2 group-hover:text-primary transition-colors line-clamp-2">
-                              {article.title}
-                            </h3>
-                            <div className="flex items-center gap-3 text-xs text-muted-foreground flex-wrap">
-                              <span className="px-2 py-1 rounded-md bg-secondary">
-                                {article.category}
-                              </span>
-                              <span className="flex items-center gap-1">
-                                <Clock className="w-3 h-3" />
-                                {article.readTime}
-                              </span>
-                              <span>{article.views} views</span>
-                            </div>
-                          </div>
-                          <ChevronRight className="w-5 h-5 text-muted-foreground group-hover:text-primary group-hover:translate-x-1 transition-all flex-shrink-0" />
-                        </div>
-                      </div>
-                    </Link>
-                  </motion.div>
-                ))}
-              </div>
-            </motion.div>
-
-            {/* Contact Section */}
-            <motion.div variants={itemVariants}>
-              <div className="relative overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-primary via-primary to-blue-700 p-1 shadow-2xl shadow-primary/20">
-                <div className="absolute inset-0 bg-gradient-to-br from-primary/20 via-transparent to-primary/20 animate-pulse" />
-                <div className="relative bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 rounded-[2.3rem] p-8 md:p-12">
-                  {/* Decorative Elements */}
-                  <div className="absolute -top-24 -right-24 w-64 h-64 bg-primary/20 rounded-full blur-[100px]" />
-                  <div className="absolute -bottom-24 -left-24 w-64 h-64 bg-blue-500/20 rounded-full blur-[100px]" />
-
-                  <div className="relative z-10 text-center max-w-3xl mx-auto">
-                    <div className="w-16 h-16 rounded-2xl bg-white/10 backdrop-blur-md flex items-center justify-center mx-auto mb-6">
-                      <LifeBuoy className="w-8 h-8 text-white" />
-                    </div>
-                    <h3 className="text-3xl md:text-4xl font-bold text-white mb-4">
-                      Still need help?
-                    </h3>
-                    <p className="text-white/70 text-lg mb-8 max-w-2xl mx-auto">
-                      Can't find what you're looking for? Our support team is
-                      ready to assist you with any questions or concerns.
-                    </p>
-
-                    <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-                      <Button
-                        data-chatbot-trigger
-                        size="lg"
-                        className="bg-white text-slate-900 hover:bg-white/90 rounded-xl px-8 h-12 font-semibold shadow-xl shadow-white/20 hover:shadow-2xl hover:shadow-white/30 transition-all hover:scale-105"
-                      >
-                        <MessageCircle className="mr-2 w-5 h-5" />
-                        Chat with Alex
-                      </Button>
-                      <Button
-                        asChild
-                        size="lg"
-                        variant="outline"
-                        className="bg-white/10 border-white/20 text-white hover:bg-white/20 rounded-xl px-8 h-12 font-semibold backdrop-blur-md"
-                      >
-                        <Link href="mailto:support@inTesters.com">
-                          <Mail className="mr-2 w-5 h-5" />
-                          Email Support
-                        </Link>
-                      </Button>
-                    </div>
-
-                    {/* Support Stats */}
-                    <div className="grid grid-cols-3 gap-6 mt-12 pt-8 border-t border-white/10">
-                      <div className="text-center">
-                        <div className="text-2xl md:text-3xl font-bold text-white mb-1">
-                          &lt;2h
-                        </div>
-                        <div className="text-sm text-white/60">
-                          Avg Response
-                        </div>
-                      </div>
-                      <div className="text-center">
-                        <div className="text-2xl md:text-3xl font-bold text-white mb-1">
-                          98%
-                        </div>
-                        <div className="text-sm text-white/60">
-                          Satisfaction
-                        </div>
-                      </div>
-                      <div className="text-center">
-                        <div className="text-2xl md:text-3xl font-bold text-white mb-1">
-                          24/7
-                        </div>
-                        <div className="text-sm text-white/60">
-                          Availability
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </motion.div>
-          </motion.div>
-        </main>
+    <div className="min-h-screen w-full bg-background text-foreground transition-colors duration-500">
+      {/* Dynamic Background Elements */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute -top-[10%] -left-[10%] w-[40%] h-[40%] rounded-full bg-primary/5 blur-[120px] dark:bg-primary/10 animate-pulse" />
+        <div className="absolute -bottom-[10%] -right-[10%] w-[40%] h-[40%] rounded-full bg-blue-500/5 blur-[120px] dark:bg-blue-500/10" />
       </div>
+
+      <main className="relative z-10 container mx-auto px-4 md:px-6 py-12 md:py-24 max-w-7xl">
+        <motion.div
+          initial="hidden"
+          animate="visible"
+          variants={containerVariants}
+          className="space-y-24 md:space-y-32"
+        >
+          {/* Section 1: Hero & Search */}
+          <motion.section variants={itemVariants} className="max-w-4xl mx-auto text-center space-y-12">
+            <div className="space-y-6">
+              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/5 border border-primary/10 text-primary text-[10px] font-black uppercase tracking-[0.3em]">
+                <HelpCircle className="w-3.5 h-3.5" />
+                Knowledge Base 2.0
+              </div>
+              <h1 className="text-5xl md:text-8xl font-black tracking-tight leading-[0.85] text-foreground uppercase">
+                How can we <br />
+                <span className="text-muted-foreground opacity-50">Optimize</span> you?
+              </h1>
+            </div>
+
+            {/* Central Search Terminal */}
+            <div className="relative group max-w-2xl mx-auto">
+              <div className="absolute inset-0 bg-primary/20 blur-2xl opacity-0 group-focus-within:opacity-100 transition-opacity duration-500 rounded-full" />
+              <div className="relative flex items-center bg-card/80 dark:bg-zinc-900/40 border-2 border-border group-focus-within:border-primary transition-all duration-300 rounded-[2rem] p-2 backdrop-blur-xl">
+                <Search className="w-6 h-6 ml-4 text-muted-foreground group-focus-within:text-primary transition-colors" />
+                <Input
+                  className="bg-transparent border-none focus-visible:ring-0 text-lg h-14 placeholder:text-muted-foreground/50 font-medium"
+                  placeholder="Ask a technical question..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
+                <div className="mr-4 hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-muted/50 border border-border text-[10px] font-bold text-muted-foreground uppercase opacity-50">
+                  <Command className="w-3 h-3" />
+                  K
+                </div>
+              </div>
+
+              {/* Live Search Dropdown */}
+              <AnimatePresence>
+                {searchQuery.length >= 2 && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 15, scale: 0.98 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: 10, scale: 0.98 }}
+                    className="absolute top-full left-0 right-0 mt-4 bg-card border-2 border-border rounded-[2.5rem] shadow-2xl overflow-hidden z-50 backdrop-blur-2xl"
+                  >
+                    <div className="p-4 border-b border-border bg-muted/30 flex justify-between items-center">
+                      <span className="text-[10px] font-black uppercase tracking-widest text-muted-foreground">System Matches</span>
+                      <span className="text-[10px] font-bold text-primary">{searchResults.length} Results</span>
+                    </div>
+                    <div className="p-4 space-y-2">
+                      {searchResults.map((article) => (
+                        <Link
+                          key={article.id}
+                          href={`/support/${article.category.toLowerCase().replace(/ & /g, "-").replace(/ /g, "-")}/${article.slug}`}
+                          className="flex items-center gap-4 p-4 rounded-2xl hover:bg-muted/50 transition-all group/item"
+                        >
+                          <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary group-hover/item:scale-110 transition-transform">
+                            <FileText className="w-5 h-5" />
+                          </div>
+                          <div className="flex-1 text-left">
+                            <h4 className="font-bold text-sm text-foreground group-hover/item:text-primary transition-colors">{article.title}</h4>
+                            <p className="text-[10px] text-muted-foreground font-bold uppercase tracking-wider">{article.category}</p>
+                          </div>
+                          <ArrowRight className="w-4 h-4 text-muted-foreground group-hover/item:translate-x-1 group-hover/item:text-foreground transition-all" />
+                        </Link>
+                      ))}
+                      {searchResults.length === 0 && (
+                        <div className="py-12 text-center text-muted-foreground space-y-2">
+                          <HelpCircle className="w-12 h-12 mx-auto opacity-10" />
+                          <p className="text-sm font-medium">No archived solutions found.</p>
+                        </div>
+                      )}
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+          </motion.section>
+
+          {/* Section 2: Core Tracks (Categories) */}
+          <motion.section variants={itemVariants} className="space-y-8">
+            <div className="flex flex-col md:flex-row md:items-end justify-between border-b border-border pb-8 gap-4">
+              <div className="space-y-1">
+                <h2 className="text-xs font-black uppercase tracking-[0.4em] text-primary">Core Modules</h2>
+                <p className="text-3xl font-black tracking-tight text-foreground uppercase">Selection Interface</p>
+              </div>
+              <p className="text-sm text-muted-foreground max-w-xs font-medium">
+                Choose a specialized track to access targeted technical documentation.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {categories.map((cat) => (
+                <Link key={cat.id} href={cat.href} className="group">
+                  <div className="h-full relative p-8 rounded-[2.5rem] bg-card border-2 border-border hover:border-primary transition-all duration-500 shadow-sm hover:shadow-2xl hover:-translate-y-2 overflow-hidden">
+                    {/* Background Icon Decoration */}
+                    <div className="absolute -right-8 -bottom-8 opacity-[0.03] group-hover:opacity-[0.07] transition-opacity duration-500">
+                      <cat.icon className="w-48 h-48" />
+                    </div>
+
+                    <div className="relative z-10 flex flex-col h-full justify-between gap-12">
+                      <div className={cn("w-14 h-14 rounded-2xl flex items-center justify-center shadow-inner", cat.bgColor, cat.textColor)}>
+                        <cat.icon className="w-7 h-7" />
+                      </div>
+                      <div className="space-y-4">
+                        <h3 className="text-2xl font-black tracking-tight text-foreground uppercase group-hover:text-primary transition-colors leading-none">
+                          {cat.title}
+                        </h3>
+                        <p className="text-sm text-muted-foreground font-medium leading-relaxed">
+                          {cat.description}
+                        </p>
+                        <div className="pt-4 flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-primary opacity-0 group-hover:opacity-100 transition-all transform translate-x-2 group-hover:translate-x-0">
+                          Initialize track
+                          <ArrowRight className="w-3.5 h-3.5" />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </motion.section>
+
+          {/* Section 3: Intelligence & Ticker */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+            {/* Live Intelligence */}
+            <motion.section variants={itemVariants} className="lg:col-span-2 space-y-8">
+              <div className="p-10 rounded-[3rem] bg-muted/20 border-2 border-border overflow-hidden relative">
+                <div className="absolute top-0 right-0 p-10">
+                  <Zap className="w-12 h-12 text-primary opacity-20" />
+                </div>
+                <div className="space-y-8">
+                  <div className="space-y-2">
+                    <h3 className="text-[10px] font-black uppercase tracking-[0.4em] text-muted-foreground">Live Intelligence</h3>
+                    <p className="text-4xl font-black text-foreground uppercase tracking-tight leading-none">Global Performance</p>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-8">
+                    <div className="space-y-2">
+                      <div className="text-4xl font-black text-primary leading-none tracking-tighter">99.8%</div>
+                      <div className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Success Rate</div>
+                    </div>
+                    <div className="space-y-2">
+                      <div className="text-4xl font-black text-foreground leading-none tracking-tighter">18m</div>
+                      <div className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Avg Response</div>
+                    </div>
+                    <div className="space-y-2">
+                      <div className="flex items-center gap-2">
+                        <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse" />
+                        <div className="text-4xl font-black text-foreground leading-none tracking-tighter italic uppercase">Live</div>
+                      </div>
+                      <div className="text-[10px] font-bold text-muted-foreground uppercase tracking-widest">Systems Online</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Contact Lead Card */}
+              <div className="p-10 rounded-[3rem] bg-foreground text-background dark:bg-primary dark:text-primary-foreground flex flex-col md:flex-row items-center justify-between gap-8 transition-transform hover:scale-[1.01] duration-500">
+                <div className="space-y-4 text-center md:text-left">
+                  <h3 className="text-3xl font-black uppercase leading-none tracking-tight">Technical Block?</h3>
+                  <p className="max-w-[320px] font-bold opacity-80 leading-relaxed text-sm uppercase">
+                    Direct access to our lead engineering team for critical infrastructure support.
+                  </p>
+                </div>
+                <Button className="bg-background text-foreground dark:bg-white dark:text-black hover:scale-105 transition-transform rounded-2xl h-16 px-10 font-black uppercase tracking-widest text-xs">
+                  Connect Now
+                </Button>
+              </div>
+            </motion.section>
+
+            {/* Trending Articles List */}
+            <motion.section variants={itemVariants} className="space-y-8">
+              <div className="flex items-center gap-3 border-b border-border pb-4">
+                <TrendingUp className="w-5 h-5 text-orange-500" />
+                <h3 className="text-xs font-black uppercase tracking-[0.4em] text-foreground">Trending</h3>
+              </div>
+              <div className="space-y-4">
+                {popularArticles.map((article, i) => (
+                  <Link
+                    key={article.id}
+                    href={`/support/${article.category.toLowerCase().replace(/ & /g, "-").replace(/ /g, "-")}/${article.slug}`}
+                    className="flex items-start gap-4 p-4 rounded-3xl hover:bg-muted/50 transition-all group"
+                  >
+                    <span className="text-lg font-black text-muted-foreground/30 group-hover:text-primary transition-colors">0{i + 1}</span>
+                    <div className="space-y-2">
+                      <h4 className="font-bold text-sm leading-tight group-hover:text-foreground transition-colors line-clamp-2">
+                        {article.title}
+                      </h4>
+                      <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-muted-foreground opacity-50">
+                        {article.views} PV
+                      </div>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+              <Button variant="ghost" className="w-full h-14 rounded-3xl font-black uppercase tracking-widest text-[10px] text-muted-foreground hover:bg-muted py-0">
+                View Archive
+                <ChevronRight className="w-4 h-4 ml-1" />
+              </Button>
+            </motion.section>
+          </div>
+        </motion.div>
+      </main>
+
       <SupportChatbot />
-    </>
+
+      {/* Modern High-End Footer */}
+      <footer className="mt-32 border-t border-border bg-muted/10 backdrop-blur-3xl py-24 relative overflow-hidden">
+        <div className="container mx-auto px-6 max-w-7xl relative z-10 flex flex-col items-center space-y-12">
+          <div className="flex flex-col items-center space-y-4">
+            <div className="w-16 h-16 rounded-3xl bg-primary/10 flex items-center justify-center border border-primary/20">
+              <HelpCircle className="w-8 h-8 text-primary" />
+            </div>
+            <span className="text-sm font-black uppercase tracking-[0.5em] text-foreground">inTesters Support Hub</span>
+          </div>
+
+          <div className="flex flex-wrap justify-center gap-x-12 gap-y-6 text-[10px] font-black uppercase tracking-[0.3em] text-muted-foreground">
+            <Link href="#" className="hover:text-primary transition-colors">Infrastructure</Link>
+            <Link href="#" className="hover:text-primary transition-colors">API Docs</Link>
+            <Link href="#" className="hover:text-primary transition-colors">Tester SOP</Link>
+            <Link href="#" className="hover:text-primary transition-colors">Network Status</Link>
+          </div>
+
+          <div className="pt-12 flex flex-col items-center space-y-4 opacity-30">
+            <p className="text-[10px] font-black tracking-[0.2em] uppercase">Built for developers by developers.</p>
+            <p className="text-[9px] font-bold tracking-widest uppercase italic">© {new Date().getFullYear()} inTesters Engineering Group. All rights reserved.</p>
+          </div>
+        </div>
+      </footer>
+    </div>
   );
 }

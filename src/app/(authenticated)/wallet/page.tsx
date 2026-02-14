@@ -16,14 +16,14 @@ import {
   Filter,
   Download,
 } from "lucide-react";
-import { transactionHistory } from "@/lib/data";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { TransitionLink } from "@/components/transition-link";
 import { authClient } from "@/lib/auth-client";
-import { useGetUserWallet } from "@/hooks/useUser";
+import { useGetUserWallet, useGetUserTransactions } from "@/hooks/useUser";
 import { UserWallerResponse } from "@/lib/types";
 import { Skeleton } from "@/components/ui/skeleton";
+import { UserTransaction } from "@/lib/apiCalls";
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -230,7 +230,7 @@ const StatCard = ({
 const TransactionItem = ({
   item,
 }: {
-  item: (typeof transactionHistory)[0];
+  item: UserTransaction;
 }) => {
   const isPositive = item.changeType === "positive";
   return (
@@ -304,6 +304,16 @@ export default function WalletPage() {
     isError: walletIsError,
     error: walletError,
   } = useGetUserWallet();
+
+  // Get transactions from API
+  const {
+    data: transactionsData,
+    isPending: transactionsIsPending,
+    isError: transactionsIsError,
+  } = useGetUserTransactions();
+
+  // Get transactions array from API response
+  const transactions = transactionsData?.transactions || [];
 
   return (
     <div data-loc="WalletPage" className="min-h-screen w-full relative">
@@ -461,22 +471,32 @@ export default function WalletPage() {
                 </div>
 
                 <div className="space-y-2 mt-2 md:mt-4">
-                  {transactionHistory
-                    .filter(
-                      (item) => filter === "All" || item.type.includes(filter)
-                    )
-                    .map((transaction, index) => (
-                      <motion.div
-                        key={transaction.id}
-                        initial={{ opacity: 0, x: -10 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: index * 0.05 }}
-                      >
-                        <TransactionItem item={transaction} />
-                      </motion.div>
-                    ))}
+                  {transactionsIsPending ? (
+                    <div className="text-center py-20 text-muted-foreground">
+                      Loading transactions...
+                    </div>
+                  ) : transactionsIsError ? (
+                    <div className="text-center py-20 text-muted-foreground">
+                      Error loading transactions.
+                    </div>
+                  ) : (
+                    transactions
+                      .filter(
+                        (item: UserTransaction) => filter === "All" || item.type.includes(filter),
+                      )
+                      .map((transaction: UserTransaction, index: number) => (
+                        <motion.div
+                          key={transaction.id}
+                          initial={{ opacity: 0, x: -10 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ delay: index * 0.05 }}
+                        >
+                          <TransactionItem item={transaction} />
+                        </motion.div>
+                      ))
+                  )}
 
-                  {transactionHistory.length === 0 && (
+                  {!transactionsIsPending && transactions.length === 0 && (
                     <div className="text-center py-20 text-muted-foreground">
                       No transactions found.
                     </div>

@@ -147,7 +147,7 @@ const FeedbackFormModal = ({
   return (
     <Dialog>
       <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent className="sm:max-w-[600px] p-0 bg-white dark:bg-[#121212] border-0 h-full sm:h-auto gap-0">
+      <DialogContent className="sm:max-w-[600px] p-0 bg-sidebar border-0 h-full sm:h-auto gap-0">
         <DialogHeader className="p-6 pb-4 border-b">
           <DialogTitle>
             {feedback ? "Edit Feedback" : "Submit New Feedback"}
@@ -170,7 +170,7 @@ const FeedbackFormModal = ({
                 <SelectTrigger className="bg-gray-100 dark:bg-black border-0">
                   <SelectValue placeholder="Select feedback type" />
                 </SelectTrigger>
-                <SelectContent className="z-[60] bg-white dark:bg-[#121212] shadow-2xl dark:shadow-black border-[1px] border-gray-200 dark:border-[#232323] w-[98%] m-auto !py-0">
+                <SelectContent className="z-[60] bg-sidebar shadow-2xl dark:shadow-black border-[1px] border-gray-200 dark:border-[#232323] w-[98%] m-auto !py-0">
                   <SelectItem value="Bug">Bug Report</SelectItem>
                   <SelectItem value="Suggestion">Suggestion</SelectItem>
                   <SelectItem value="Praise">Praise</SelectItem>
@@ -189,7 +189,7 @@ const FeedbackFormModal = ({
                   <SelectTrigger className="bg-gray-100 dark:bg-black border-0">
                     <SelectValue placeholder="Select severity level" />
                   </SelectTrigger>
-                  <SelectContent className="z-[60] bg-white dark:bg-[#121212] shadow-2xl dark:shadow-black border-[1px] border-gray-200 dark:border-[#232323] w-[98%] m-auto !py-0">
+                  <SelectContent className="z-[60] bg-sidebar shadow-2xl dark:shadow-black border-[1px] border-gray-200 dark:border-[#232323] w-[98%] m-auto !py-0">
                     <SelectItem value="Critical">Critical</SelectItem>
                     <SelectItem value="High">High</SelectItem>
                     <SelectItem value="Medium">Medium</SelectItem>
@@ -315,7 +315,7 @@ const FeedbackListItem = ({
                   <Trash2 className="w-4 h-4" />
                 </button>
               </AlertDialogTrigger>
-              <AlertDialogContent className="w-[90vw] rounded-2xl bg-white dark:bg-[#121212] border-0">
+              <AlertDialogContent className="w-[90vw] rounded-2xl bg-sidebar border-0">
                 <AlertDialogHeader>
                   <AlertDialogTitle>Are you sure?</AlertDialogTitle>
                   <AlertDialogDescription>
@@ -324,7 +324,7 @@ const FeedbackListItem = ({
                   </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
-                  <AlertDialogCancel className="bg-white dark:bg-[#121212]">
+                  <AlertDialogCancel className="bg-sidebar">
                     Cancel
                   </AlertDialogCancel>
                   <AlertDialogAction
@@ -435,7 +435,7 @@ const FeedbackGridItem = ({
                   <Trash2 className="w-3 h-3" />
                 </button>
               </AlertDialogTrigger>
-              <AlertDialogContent className="w-[90vw] rounded-2xl bg-white dark:bg-[#121212] border-0">
+              <AlertDialogContent className="w-[90vw] rounded-2xl bg-sidebar border-0">
                 <AlertDialogHeader>
                   <AlertDialogTitle>Are you sure?</AlertDialogTitle>
                   <AlertDialogDescription>

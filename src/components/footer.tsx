@@ -40,7 +40,7 @@ export function Footer() {
     <footer
       data-loc="Footer"
       ref={footerRef}
-      className="bg-secondary/30 backdrop-blur-3xl sticky bottom-0 h-screen w-full overflow-hidden flex flex-col justify-center border-t border-primary/5"
+      className="bg-secondary/30 backdrop-blur-3xl sticky bottom-0 h-screen w-full overflow-hidden flex flex-col justify-center border-t border-primary/5 z-0"
     >
       <div className="w-full max-w-[1800px] mx-auto p-6 md:p-12 lg:p-16 flex flex-col lg:grid lg:grid-cols-2 gap-10 lg:gap-24 relative z-20">
         {/* Left Column */}

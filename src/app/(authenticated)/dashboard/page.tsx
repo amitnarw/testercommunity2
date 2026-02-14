@@ -160,7 +160,9 @@ export default function DashboardPage() {
         topGeographies: [],
         feedback: [],
         dataAiHint: app.androidApp?.appName,
-      } as Project;
+        chartData: [],
+        testers: [],
+      } as unknown as Project;
     });
   };
 

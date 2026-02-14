@@ -615,7 +615,7 @@ const FeedbackListItem = ({
                 <Trash2 className="w-4 h-4" />
               </button>
             </AlertDialogTrigger>
-            <AlertDialogContent className="w-[90vw] rounded-2xl bg-white dark:bg-[#121212] border-0">
+            <AlertDialogContent className="w-[90vw] rounded-2xl bg-sidebar border-0">
               <AlertDialogHeader>
                 <AlertDialogTitle>Are you sure?</AlertDialogTitle>
                 <AlertDialogDescription>
@@ -624,7 +624,7 @@ const FeedbackListItem = ({
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>
-                <AlertDialogCancel className="bg-white dark:bg-[#121212]">
+                <AlertDialogCancel className="bg-sidebar">
                   Cancel
                 </AlertDialogCancel>
                 <AlertDialogAction
@@ -738,7 +738,7 @@ const FeedbackGridItem = ({
               <Trash2 className="w-4 h-4" />
             </button>
           </AlertDialogTrigger>
-          <AlertDialogContent className="w-[90vw] rounded-2xl bg-white dark:bg-[#121212] border-0">
+            <AlertDialogContent className="w-[90vw] rounded-2xl bg-sidebar border-0">
             <AlertDialogHeader>
               <AlertDialogTitle>Are you sure?</AlertDialogTitle>
               <AlertDialogDescription>
@@ -747,7 +747,7 @@ const FeedbackGridItem = ({
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
-              <AlertDialogCancel className="bg-white dark:bg-[#121212]">
+              <AlertDialogCancel className="bg-sidebar">
                 Cancel
               </AlertDialogCancel>
               <AlertDialogAction

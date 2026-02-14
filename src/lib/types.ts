@@ -307,15 +307,15 @@ export interface DashboardDataResponse {
     costPoints: number | null;
     averageTimeTesting: string | null;
     status:
-      | "IN_REVIEW"
-      | "DRAFT"
-      | "REJECTED"
-      | "IN_TESTING"
-      | "COMPLETED"
-      | "ON_HOLD"
-      | "REQUESTED"
-      | "AVAILABLE"
-      | "ACCEPTED";
+    | "IN_REVIEW"
+    | "DRAFT"
+    | "REJECTED"
+    | "IN_TESTING"
+    | "COMPLETED"
+    | "ON_HOLD"
+    | "REQUESTED"
+    | "AVAILABLE"
+    | "ACCEPTED";
   }[];
   statusCounts: {
     _count: {
@@ -339,15 +339,15 @@ export interface AppData {
   averageTimeTesting: string | null;
   minimumAndroidVersion: number;
   status:
-    | "IN_REVIEW"
-    | "DRAFT"
-    | "REJECTED"
-    | "IN_TESTING"
-    | "COMPLETED"
-    | "ON_HOLD"
-    | "REQUESTED"
-    | "AVAILABLE"
-    | "ACCEPTED";
+  | "IN_REVIEW"
+  | "DRAFT"
+  | "REJECTED"
+  | "IN_TESTING"
+  | "COMPLETED"
+  | "ON_HOLD"
+  | "REQUESTED"
+  | "AVAILABLE"
+  | "ACCEPTED";
   createdAt: Date;
   updatedAt: Date;
 }
@@ -419,12 +419,12 @@ export interface HubSubmittedAppResponse {
       type: "IMAGE" | "VIDEO";
       mime: string;
       category:
-        | "APP_LOGO"
-        | "SCREENSHOT"
-        | "FEEDBACK_MEDIA"
-        | "FEATURED_IMAGE"
-        | "AUTHOR_IMAGE"
-        | "OTHER";
+      | "APP_LOGO"
+      | "SCREENSHOT"
+      | "FEEDBACK_MEDIA"
+      | "FEATURED_IMAGE"
+      | "AUTHOR_IMAGE"
+      | "OTHER";
       src: string;
       appId: number | null;
       blogId: number | null;
@@ -463,12 +463,12 @@ export interface HubSubmittedAppResponse {
     };
     isActive: boolean;
     status:
-      | "PENDING"
-      | "IN_PROGRESS"
-      | "COMPLETED"
-      | "DROPPED"
-      | "REMOVED"
-      | "REJECTED";
+    | "PENDING"
+    | "IN_PROGRESS"
+    | "COMPLETED"
+    | "DROPPED"
+    | "REMOVED"
+    | "REJECTED";
     statusDetails: {
       title: string;
       description: string;
@@ -530,14 +530,14 @@ export interface NotificationResponse {
   title: string;
   description: string;
   type:
-    | "NEW_TEST"
-    | "FEEDBACK_RECEIVED"
-    | "TEST_COMPLETED"
-    | "BUG_REPORT"
-    | "BUG_REPORT"
-    | "POINTS_AWARDED"
-    | "APP_SUBMISSION"
-    | "OTHER";
+  | "NEW_TEST"
+  | "FEEDBACK_RECEIVED"
+  | "TEST_COMPLETED"
+  | "BUG_REPORT"
+  | "BUG_REPORT"
+  | "POINTS_AWARDED"
+  | "APP_SUBMISSION"
+  | "OTHER";
   url: string | null;
   isActive: boolean;
   createdAt: Date;
@@ -683,3 +683,53 @@ export type CommunityApp = {
   completedDate?: string;
   rejectionReason?: string;
 };
+
+// Billing APIs Types
+export interface BillingHistoryItem {
+  id: string;
+  orderId: number;
+  razorpayOrderId: string;
+  date: string;
+  amount: number;
+  currency: string;
+  status: string;
+  plan: string;
+  packages: number;
+  paymentMethod: string | null;
+}
+
+export interface PaymentConfigResponse {
+  isConfigured: boolean;
+  keyId?: string;
+  currency?: string;
+  name?: string;
+  description?: string;
+  theme?: {
+    color: string;
+  };
+}
+
+export interface CreateOrderResponse {
+  orderId: number;
+  razorpayOrderId: string;
+  razorpayKeyId: string;
+  amount: number;
+  currency: string;
+  planName: string;
+  packages: number;
+}
+
+export interface PaymentVerificationPayload {
+  razorpay_order_id: string;
+  razorpay_payment_id: string;
+  razorpay_signature: string;
+}
+
+export interface PaymentVerificationResponse {
+  success: boolean;
+  orderId: number;
+  paymentId: number;
+  packagesAwarded: number;
+  totalPackages: number;
+}
+

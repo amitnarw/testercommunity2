@@ -14,6 +14,11 @@ import {
   UserDataAttributes,
   UserProfileDataAttributes,
   UserWallerResponse,
+  PaymentConfigResponse,
+  BillingHistoryItem,
+  CreateOrderResponse,
+  PaymentVerificationPayload,
+  PaymentVerificationResponse,
 } from "./types";
 import api from "./axios";
 
@@ -887,6 +892,65 @@ export async function getUserWallet(): Promise<UserWallerResponse> {
   }
 }
 
+// User Transactions
+export interface UserTransaction {
+  id: string;
+  date: string;
+  type: string;
+  description: string;
+  amount: string;
+  change: string;
+  status: string;
+  changeType: "positive" | "negative";
+  transactionType: string;
+  action: string | null;
+  points: number | null;
+  package: number | null;
+}
+
+export interface UserTransactionsResponse {
+  transactions: UserTransaction[];
+  pagination: {
+    total: number;
+    limit: number;
+    offset: number;
+  };
+}
+
+export async function getUserTransactions(params?: {
+  type?: string;
+  limit?: number;
+  offset?: number;
+}): Promise<UserTransactionsResponse> {
+  try {
+    const queryParams = new URLSearchParams();
+    if (params?.type) queryParams.append("type", params.type);
+    if (params?.limit) queryParams.append("limit", params.limit.toString());
+    if (params?.offset) queryParams.append("offset", params.offset.toString());
+
+    const queryString = queryParams.toString();
+    const url = API_ROUTES.USER + `/get-user-transactions${queryString ? `?${queryString}` : ""}`;
+    
+    const response = await api.get(url);
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error fetching user transactions:", error);
+    if (axios.isAxiosError(error)) {
+      const status = error.response?.status;
+      const responseData = error.response?.data;
+      console.error("Axios error:", status, responseData);
+
+      throw new Error(
+        responseData?.message || error.message || "Unknown Axios error",
+      );
+    } else if (error instanceof Error) {
+      throw new Error(error.message);
+    } else {
+      throw new Error(JSON.stringify(error));
+    }
+  }
+}
+
 // R2
 export async function createUploadUrl(payload: {
   filename: string;
@@ -1104,3 +1168,124 @@ export async function submitDailyVerification(payload: {
     }
   }
 }
+
+
+// Billing
+export async function getPaymentConfig(): Promise<PaymentConfigResponse> {
+  try {
+    const response = await api.get(API_ROUTES.BILLING + `/config`);
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error fetching payment config:", error);
+    if (axios.isAxiosError(error)) {
+      const status = error.response?.status;
+      const responseData = error.response?.data;
+      console.error("Axios error:", status, responseData);
+
+      throw new Error(
+        responseData?.message || error.message || "Unknown Axios error",
+      );
+    } else if (error instanceof Error) {
+      throw new Error(error.message);
+    } else {
+      throw new Error(JSON.stringify(error));
+    }
+  }
+}
+
+export async function getBillingHistory(): Promise<BillingHistoryItem[]> {
+  try {
+    const response = await api.get(API_ROUTES.BILLING + `/history`);
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error fetching billing history:", error);
+    if (axios.isAxiosError(error)) {
+      const status = error.response?.status;
+      const responseData = error.response?.data;
+      console.error("Axios error:", status, responseData);
+
+      throw new Error(
+        responseData?.message || error.message || "Unknown Axios error",
+      );
+    } else if (error instanceof Error) {
+      throw new Error(error.message);
+    } else {
+      throw new Error(JSON.stringify(error));
+    }
+  }
+}
+
+export async function createOrder(
+  planId: string,
+): Promise<CreateOrderResponse> {
+  try {
+    const response = await api.post(API_ROUTES.BILLING + `/create-order`, {
+      payload: { planId },
+    });
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error creating order:", error);
+    if (axios.isAxiosError(error)) {
+      const status = error.response?.status;
+      const responseData = error.response?.data;
+      console.error("Axios error:", status, responseData);
+
+      throw new Error(
+        responseData?.message || error.message || "Unknown Axios error",
+      );
+    } else if (error instanceof Error) {
+      throw new Error(error.message);
+    } else {
+      throw new Error(JSON.stringify(error));
+    }
+  }
+}
+
+export async function verifyPayment(
+  payload: PaymentVerificationPayload,
+): Promise<PaymentVerificationResponse> {
+  try {
+    const response = await api.post(API_ROUTES.BILLING + `/verify-payment`, {
+      payload,
+    });
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error verifying payment:", error);
+    if (axios.isAxiosError(error)) {
+      const status = error.response?.status;
+      const responseData = error.response?.data;
+      console.error("Axios error:", status, responseData);
+
+      throw new Error(
+        responseData?.message || error.message || "Unknown Axios error",
+      );
+    } else if (error instanceof Error) {
+      throw new Error(error.message);
+    } else {
+      throw new Error(JSON.stringify(error));
+    }
+  }
+}
+
+export async function getPendingOrders(): Promise<CreateOrderResponse[]> {
+  try {
+    const response = await api.get(API_ROUTES.BILLING + `/pending-orders`);
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error fetching pending orders:", error);
+    if (axios.isAxiosError(error)) {
+      const status = error.response?.status;
+      const responseData = error.response?.data;
+      console.error("Axios error:", status, responseData);
+
+      throw new Error(
+        responseData?.message || error.message || "Unknown Axios error",
+      );
+    } else if (error instanceof Error) {
+      throw new Error(error.message);
+    } else {
+      throw new Error(JSON.stringify(error));
+    }
+  }
+}
+

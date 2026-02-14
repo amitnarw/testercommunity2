@@ -78,6 +78,16 @@ async function validateSession(
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
+  // Redirect /admin to /admin/dashboard
+  if (pathname === "/admin") {
+    return NextResponse.redirect(new URL("/admin/dashboard", request.url));
+  }
+
+  // Redirect /tester to /tester/dashboard
+  if (pathname === "/tester") {
+    return NextResponse.redirect(new URL("/tester/dashboard", request.url));
+  }
+
   // Define route categories
   const authRoutes = ["/auth/login", "/auth/register"];
   const authenticatedRoutes = [
