@@ -31,7 +31,7 @@ export function CustomTabsList({
   return (
     <div
       className={cn(
-        "sticky top-0 z-30 backdrop-blur-xl py-2 -mx-4 px-4 md:mx-0 md:px-0",
+        "sticky top-0 z-30 backdrop-blur-xl py-2 -mx-4 sm:mx-0 px-2 sm:px-0",
         className,
       )}
     >
@@ -48,7 +48,7 @@ export function CustomTabsList({
               key={tab.value}
               value={tab.value}
               className={cn(
-                "relative px-4 text-sm font-medium rounded-lg transition-all duration-300",
+                "relative px-2 sm:px-4 text-sm font-medium rounded-lg transition-all duration-300",
                 isSelected
                   ? "text-foreground shadow-sm"
                   : "text-muted-foreground hover:text-foreground hover:bg-background/40",

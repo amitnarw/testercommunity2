@@ -99,16 +99,16 @@ export async function middleware(request: NextRequest) {
     "/billing",
   ];
   const adminRoutes = ["/admin"];
-  const professionalTesterAuthRoutes = ["/tester/login", "/tester/register"];
-  const professionalRoutes = ["/tester/dashboard"];
+  const testerAuthRoutes = ["/tester/login", "/tester/register"];
+  const testerRoutes = ["/tester/dashboard"];
 
   // Check if the current path requires authentication check
   const needsAuthCheck =
     authRoutes.some((route) => pathname.startsWith(route)) ||
     authenticatedRoutes.some((route) => pathname.startsWith(route)) ||
     adminRoutes.some((route) => pathname.startsWith(route)) ||
-    professionalTesterAuthRoutes.some((route) => pathname.startsWith(route)) ||
-    professionalRoutes.some((route) => pathname.startsWith(route));
+    testerAuthRoutes.some((route) => pathname.startsWith(route)) ||
+    testerRoutes.some((route) => pathname.startsWith(route));
 
   // Skip validation for routes that don't need it
   if (!needsAuthCheck) {
@@ -121,8 +121,15 @@ export async function middleware(request: NextRequest) {
   // Robust role detection (handles string or object)
   const roleName = typeof role === "string" ? role : role?.name;
   const lowerRole = roleName?.toLowerCase() || "";
-  const isAdmin = ["admin", "super_admin", "moderator"].includes(lowerRole);
-  const isProfessional = lowerRole === "tester";
+  const isSuperAdmin = lowerRole === "super_admin";
+  const isAdmin = ["admin", "moderator", "support"].includes(lowerRole);
+  const isTester = lowerRole === "tester";
+  const isUser = lowerRole === "user";
+
+  // Super admin has full access to all routes - skip all restrictions
+  if (isSuperAdmin) {
+    return NextResponse.next();
+  }
 
   // If user is authenticated and tries to access login/register, redirect to dashboard
   if (
@@ -138,9 +145,9 @@ export async function middleware(request: NextRequest) {
   }
 
   if (
-    isProfessional &&
+    isTester &&
     isAuthenticated &&
-    professionalTesterAuthRoutes.some((route) => pathname.startsWith(route))
+    testerAuthRoutes.some((route) => pathname.startsWith(route))
   ) {
     return NextResponse.redirect(new URL("/tester/dashboard", request.url));
   }
@@ -153,29 +160,7 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL("/auth/login", request.url));
   }
 
-  // Admin and Professional route protection
-
-  // 1. Authenticated Admin accessing User Dashboard -> Redirect to Admin Dashboard
-  if (
-    isAuthenticated &&
-    isAdmin &&
-    authenticatedRoutes.some((route) => pathname.startsWith(route))
-  ) {
-    return NextResponse.redirect(new URL("/admin/dashboard", request.url));
-  }
-
-  // 2. Authenticated Normal User accessing Admin Dashboard -> Redirect to User Dashboard
-  // We only do this if we are SURE about the role (lowerRole is present and not admin)
-  if (
-    isAuthenticated &&
-    !isAdmin &&
-    lowerRole && // Ensure we have checked a valid role
-    adminRoutes.some((route) => pathname.startsWith(route)) &&
-    !pathname.startsWith("/admin/auth/login")
-  ) {
-    return NextResponse.redirect(new URL("/dashboard", request.url));
-  }
-
+  // Admin route protection
   if (
     !isAuthenticated &&
     adminRoutes.some((route) => pathname.startsWith(route)) &&
@@ -184,12 +169,45 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL("/admin/auth/login", request.url));
   }
 
+  // Tester route protection
   if (
     !isAuthenticated &&
-    professionalRoutes.some((route) => pathname.startsWith(route)) &&
-    !professionalTesterAuthRoutes.some((route) => pathname.startsWith(route))
+    testerRoutes.some((route) => pathname.startsWith(route)) &&
+    !testerAuthRoutes.some((route) => pathname.startsWith(route))
   ) {
     return NextResponse.redirect(new URL("/tester/login", request.url));
+  }
+
+  // Role-based access restrictions (only for non-super-admin roles)
+  
+  // 1. User role restrictions
+  if (isUser) {
+    // User can only access authenticated routes
+    if (adminRoutes.some((route) => pathname.startsWith(route)) && !pathname.startsWith("/admin/auth/login")) {
+      return NextResponse.redirect(new URL("/dashboard", request.url));
+    }
+    if (testerRoutes.some((route) => pathname.startsWith(route)) && !testerAuthRoutes.some((route) => pathname.startsWith(route))) {
+      return NextResponse.redirect(new URL("/dashboard", request.url));
+    }
+  }
+
+  // 2. Admin role restrictions (admin, moderator, support)
+  if (isAdmin) {
+    // Admin can only access admin routes and authenticated routes
+    if (testerRoutes.some((route) => pathname.startsWith(route)) && !testerAuthRoutes.some((route) => pathname.startsWith(route))) {
+      return NextResponse.redirect(new URL("/admin/dashboard", request.url));
+    }
+  }
+
+  // 3. Tester role restrictions
+  if (isTester) {
+    // Tester can only access tester routes and tester auth routes
+    if (authenticatedRoutes.some((route) => pathname.startsWith(route))) {
+      return NextResponse.redirect(new URL("/tester/dashboard", request.url));
+    }
+    if (adminRoutes.some((route) => pathname.startsWith(route)) && !pathname.startsWith("/admin/auth/login")) {
+      return NextResponse.redirect(new URL("/tester/dashboard", request.url));
+    }
   }
 
   return NextResponse.next();

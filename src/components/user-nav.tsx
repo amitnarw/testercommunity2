@@ -17,7 +17,6 @@ import {
   User,
   LifeBuoy,
   LogOut,
-  ChevronDown,
   Package,
   Briefcase,
   DollarSign,
@@ -28,7 +27,6 @@ import {
   Lightbulb,
   Wallet,
   Settings,
-  Shield,
 } from "lucide-react";
 import { TransitionLink } from "./transition-link";
 
@@ -74,20 +72,58 @@ export function UserNav({ session, onLogout }: UserNavProps) {
   const isPro = pathname.startsWith("/tester");
 
   const getRoleBadge = () => {
-    if (isAdmin)
+    // Handle case where role might be an object with name property
+    const userRole = (() => {
+      const role = (session as any)?.role || (session as any)?.user?.role;
+      if (typeof role === "string") {
+        return role.toLowerCase();
+      } else if (typeof role === "object" && role?.name) {
+        return role.name.toLowerCase();
+      }
+      return "member"; // Default role if no role information is available
+    })();
+
+    if (userRole === "super_admin")
       return (
         <Badge
           variant="default"
-          className="h-5 px-2 text-[10px] bg-red-500/10 text-red-600 border-red-500/10 shadow-none backdrop-blur-sm hover:bg-red-500/20"
+          className="py-0.5 px-2 text-[10px] bg-purple-500/10 text-purple-600 border-purple-500/10 shadow-none backdrop-blur-sm hover:bg-purple-500/20"
+        >
+          Super Admin
+        </Badge>
+      );
+    if (userRole === "admin")
+      return (
+        <Badge
+          variant="default"
+          className="py-0.5 px-2 text-[10px] bg-red-500/10 text-red-600 border-red-500/10 shadow-none backdrop-blur-sm hover:bg-red-500/20"
         >
           Admin
         </Badge>
       );
-    if (isPro)
+    if (userRole === "moderator")
       return (
         <Badge
           variant="default"
-          className="h-5 px-2 text-[10px] bg-blue-500/10 text-blue-600 border-blue-500/10 shadow-none backdrop-blur-sm hover:bg-blue-500/20"
+          className="py-0.5 px-2 text-[10px] bg-orange-500/10 text-orange-600 border-orange-500/10 shadow-none backdrop-blur-sm hover:bg-orange-500/20"
+        >
+          Moderator
+        </Badge>
+      );
+    if (userRole === "support")
+      return (
+        <Badge
+          variant="default"
+          className="py-0.5 px-2 text-[10px] bg-yellow-500/10 text-yellow-600 border-yellow-500/10 shadow-none backdrop-blur-sm hover:bg-yellow-500/20"
+        >
+          Support
+        </Badge>
+      );
+    if (userRole === "tester")
+      return (
+        <Badge
+          variant="default"
+          className="py-0.5 px-2 text-[10px] bg-blue-500/10 text-blue-600 border-blue-500/10 shadow-none backdrop-blur-sm hover:bg-blue-500/20"
         >
           Tester
         </Badge>
@@ -95,7 +131,7 @@ export function UserNav({ session, onLogout }: UserNavProps) {
     return (
       <Badge
         variant="secondary"
-        className="h-5 px-2 text-[10px] bg-primary/5 text-primary border-primary/10 shadow-none backdrop-blur-sm hover:bg-primary/10"
+        className="py-0.5 px-2 text-[10px] bg-primary/5 text-primary border-primary/10 shadow-none backdrop-blur-sm hover:bg-primary/10"
       >
         Member
       </Badge>
@@ -261,17 +297,26 @@ export function UserNav({ session, onLogout }: UserNavProps) {
         {/* Header */}
         <div className="flex items-center justify-between px-2 mb-4">
           <div className="flex items-center gap-3">
-            <div className="p-2 rounded-full bg-primary/5 ring-1 ring-primary/10">
-              <Shield className="h-4 w-4 text-primary" />
+            <div className="rounded-full bg-primary/5 ring-1 ring-primary/10">
+              <Avatar className="h-9 w-9 transition-transform group-hover:scale-105">
+                <AvatarImage
+                  src={session?.user?.image || ""}
+                  alt="User"
+                  className="object-cover"
+                />
+                <AvatarFallback className="text-xs font-bold bg-primary/10 text-primary">
+                  {session?.user?.name.charAt(0).toUpperCase()}
+                </AvatarFallback>
+              </Avatar>
             </div>
-            <div className="flex flex-col">
+            <div className="flex flex-col items-start">
               <span className="text-[10px] font-bold uppercase tracking-widest text-muted-foreground/70">
-                Current Role
+                {session?.user?.name}
               </span>
               {getRoleBadge()}
             </div>
           </div>
-          <TransitionLink href="/settings">
+          <TransitionLink href="/settings" onClick={() => setOpen(false)}>
             <Button
               variant="ghost"
               size="icon"

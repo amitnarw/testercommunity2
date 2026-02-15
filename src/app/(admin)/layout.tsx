@@ -31,7 +31,7 @@ export default function AdminLayout({
         const roleName =
           typeof roleField === "string" ? roleField : roleField?.name;
         const lowerRole = roleName?.toLowerCase() || "";
-        const isAdminRole = ["admin", "super admin", "moderator"].includes(
+        const isAdminRole = ["admin", "super_admin", "super admin", "moderator"].includes(
           lowerRole,
         );
 

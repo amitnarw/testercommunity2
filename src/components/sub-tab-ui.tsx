@@ -18,7 +18,7 @@ export default function SubTabUI({
           <button
             key={tab.value}
             onClick={() => setPendingSubTab(tab.value)}
-            className={`rounded-lg px-4 py-1.5 text-xs sm:text-sm h-auto ${pendingSubTab === tab.value ? "bg-black text-white dark:bg-white dark:text-black" : "text-black/70 dark:text-white/70"}`}
+            className={`rounded-lg px-4 py-1.5 text-xs sm:text-sm h-auto ${pendingSubTab === tab.value ? "bg-sidebar text-white dark:bg-white dark:text-black" : "text-black/70 dark:text-white/70"}`}
           >
             {tab.label} ({tab.count})
           </button>

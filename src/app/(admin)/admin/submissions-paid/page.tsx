@@ -3,12 +3,11 @@
 import { useState, useEffect, Suspense } from "react";
 import { useSearchParams, usePathname, useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { Card, CardHeader, CardDescription } from "@/components/ui/card";
+import { Card, CardHeader } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Search, DollarSign } from "lucide-react";
+import { Search } from "lucide-react";
 import { Tabs } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { AppPagination } from "@/components/app-pagination";
 import { useSubmittedApps, useSubmittedAppsCount } from "@/hooks/useAdmin";
 import { HubSubmittedAppResponse } from "@/lib/types";
@@ -74,18 +73,20 @@ function AdminSubmissionsPaidContent() {
   const { data: countsData } = useSubmittedAppsCount("PAID");
 
   // Filter by PAID app type and search query
-  const filteredSubmissions = submissions.filter((sub: HubSubmittedAppResponse) => {
-    // Only PAID apps
-    if (sub.appType !== "PAID") {
-      return false;
-    }
-    // Search filter
-    if (!searchQuery) return true;
-    const query = searchQuery.toLowerCase();
-    const appName = sub.androidApp?.appName?.toLowerCase() || "";
-    const ownerName = sub.appOwner?.name?.toLowerCase() || "";
-    return appName.includes(query) || ownerName.includes(query);
-  });
+  const filteredSubmissions = submissions.filter(
+    (sub: HubSubmittedAppResponse) => {
+      // Only PAID apps
+      if (sub.appType !== "PAID") {
+        return false;
+      }
+      // Search filter
+      if (!searchQuery) return true;
+      const query = searchQuery.toLowerCase();
+      const appName = sub.androidApp?.appName?.toLowerCase() || "";
+      const ownerName = sub.appOwner?.name?.toLowerCase() || "";
+      return appName.includes(query) || ownerName.includes(query);
+    },
+  );
 
   const totalPages = Math.ceil(filteredSubmissions.length / ITEMS_PER_PAGE);
 
@@ -100,32 +101,12 @@ function AdminSubmissionsPaidContent() {
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between space-y-2">
         <div>
           <h2 className="text-2xl sm:text-3xl font-bold bg-gradient-to-b from-primary to-primary/40 bg-clip-text text-transparent leading-[unset]">
-            Professional Submissions
+            Paid Submissions
           </h2>
           <p className="text-sm sm:text-md text-muted-foreground">
-            Review, approve, or reject professional (paid) app submissions.
+            Review, approve, or reject paid app submissions.
           </p>
         </div>
-      </div>
-
-      {/* Stats Card */}
-      <div className="grid gap-4 grid-cols-1 sm:grid-cols-2">
-        <Card className="border-amber-500/20 bg-amber-500/5">
-          <CardHeader className="p-4">
-            <div className="flex items-center gap-3">
-              <div className="p-2 rounded-lg bg-amber-500/10">
-                <DollarSign className="h-5 w-5 text-amber-500" />
-              </div>
-              <div>
-                <div className="flex items-center gap-2">
-                  <CardDescription className="text-xs">Professional Apps</CardDescription>
-                  <Badge className="bg-amber-500/20 text-amber-600 dark:text-amber-400 text-[10px]">PAID</Badge>
-                </div>
-                <p className="text-2xl font-bold">{filteredSubmissions.length}</p>
-              </div>
-            </div>
-          </CardHeader>
-        </Card>
       </div>
 
       {/* Main Content Card */}
