@@ -24,10 +24,15 @@ export function SubmissionActions({ submission }: SubmissionActionsProps) {
     queryClient.invalidateQueries({ queryKey: ["useSubmittedAppsCount"] });
   };
 
+  // Determine the correct path based on app type
+  const submissionPath = submission.appType === "PAID" 
+    ? `/admin/submissions-paid/${submission.id}` 
+    : `/admin/submissions-free/${submission.id}`;
+
   if (submission.status !== "IN_REVIEW") {
     return (
       <div className="flex items-center gap-2 justify-end">
-        <Link href={`/admin/submissions/${submission.id}`}>
+        <Link href={submissionPath}>
           <Button size="icon" variant="outline" className="h-8 w-8">
             <Eye className="h-4 w-4" />
             <span className="sr-only">View</span>
@@ -39,7 +44,7 @@ export function SubmissionActions({ submission }: SubmissionActionsProps) {
 
   return (
     <div className="flex items-center gap-2 justify-end">
-      <Link href={`/admin/submissions/${submission.id}`}>
+      <Link href={submissionPath}>
         <Button
           size="icon"
           variant="outline"

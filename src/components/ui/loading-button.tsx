@@ -39,6 +39,7 @@ export const LoadingButton = React.forwardRef<
       isError,
       reset,
       onClick,
+      type = "button",
       ...props
     },
     ref
@@ -164,7 +165,7 @@ export const LoadingButton = React.forwardRef<
 
     return (
       <motion.button
-        type="button"
+        type={type}
         className={cn(
           `relative flex items-center justify-center gap-2 overflow-hidden rounded-full ${
             isSuccess

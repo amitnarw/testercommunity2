@@ -74,18 +74,20 @@ function AdminSubmissionsFreeContent() {
   const { data: countsData } = useSubmittedAppsCount("FREE");
 
   // Filter by FREE app type and search query
-  const filteredSubmissions = submissions.filter((sub: HubSubmittedAppResponse) => {
-    // Only FREE apps
-    if (sub.appType !== "FREE") {
-      return false;
-    }
-    // Search filter
-    if (!searchQuery) return true;
-    const query = searchQuery.toLowerCase();
-    const appName = sub.androidApp?.appName?.toLowerCase() || "";
-    const ownerName = sub.appOwner?.name?.toLowerCase() || "";
-    return appName.includes(query) || ownerName.includes(query);
-  });
+  const filteredSubmissions = submissions.filter(
+    (sub: HubSubmittedAppResponse) => {
+      // Only FREE apps
+      if (sub.appType !== "FREE") {
+        return false;
+      }
+      // Search filter
+      if (!searchQuery) return true;
+      const query = searchQuery.toLowerCase();
+      const appName = sub.androidApp?.appName?.toLowerCase() || "";
+      const ownerName = sub.appOwner?.name?.toLowerCase() || "";
+      return appName.includes(query) || ownerName.includes(query);
+    },
+  );
 
   const totalPages = Math.ceil(filteredSubmissions.length / ITEMS_PER_PAGE);
 
@@ -100,32 +102,12 @@ function AdminSubmissionsFreeContent() {
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between space-y-2">
         <div>
           <h2 className="text-2xl sm:text-3xl font-bold bg-gradient-to-b from-primary to-primary/40 bg-clip-text text-transparent leading-[unset]">
-            Community Submissions
+            Free Submissions
           </h2>
           <p className="text-sm sm:text-md text-muted-foreground">
             Review, approve, or reject community (free) app submissions.
           </p>
         </div>
-      </div>
-
-      {/* Stats Card */}
-      <div className="grid gap-4 grid-cols-1 sm:grid-cols-2">
-        <Card className="border-blue-500/20 bg-blue-500/5">
-          <CardHeader className="p-4">
-            <div className="flex items-center gap-3">
-              <div className="p-2 rounded-lg bg-blue-500/10">
-                <Users2 className="h-5 w-5 text-blue-500" />
-              </div>
-              <div>
-                <div className="flex items-center gap-2">
-                  <CardDescription className="text-xs">Community Apps</CardDescription>
-                  <Badge className="bg-blue-500/20 text-blue-600 dark:text-blue-400 text-[10px]">FREE</Badge>
-                </div>
-                <p className="text-2xl font-bold">{filteredSubmissions.length}</p>
-              </div>
-            </div>
-          </CardHeader>
-        </Card>
       </div>
 
       {/* Main Content Card */}

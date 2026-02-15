@@ -24,7 +24,7 @@ export default function ProfessionalLayout({
   useEffect(() => {
     if (
       !session?.user?.id ||
-      ((session as any)?.role !== "tester" &&
+      ((session as any)?.role !== "tester" && (session as any)?.role !== "super_admin" &&
         pathname !== "/tester/login" &&
         pathname !== "/tester/register")
     ) {
