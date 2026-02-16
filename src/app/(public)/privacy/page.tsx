@@ -18,12 +18,12 @@ export default function PrivacyPage() {
               1. Introduction
             </h2>
             <p>
-              inTesters ("we," "our," or "us") is committed to protecting your
-              privacy. This Privacy Policy explains how we collect, use,
-              disclose, and safeguard your information when you visit our
-              website and use our services. Please read this privacy policy
-              carefully. If you do not agree with the terms of this privacy
-              policy, please do not access the site.
+              GAMDIX PRIVATE LIMITED ("we," "our," or "us") is committed to
+              protecting your privacy. This Privacy Policy explains how we
+              collect, use, disclose, and safeguard your information when you
+              visit our website and use our services. Please read this privacy
+              policy carefully. If you do not agree with the terms of this
+              privacy policy, please do not access the site.
             </p>
           </section>
 

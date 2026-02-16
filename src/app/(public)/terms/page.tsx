@@ -19,11 +19,11 @@ export default function TermsPage() {
             <p className="text-muted-foreground leading-relaxed">
               These Terms of Service ("Terms") constitute a legally binding
               agreement made between you, whether personally or on behalf of an
-              entity ("you") and inTesters ("Company," "we," "us," or "our"),
-              concerning your access to and use of the inTesters website as well
-              as any other media form, media channel, mobile website, or mobile
-              application related, linked, or otherwise connected thereto
-              (collectively, the "Service").
+              entity ("you") and GAMDIX PRIVATE LIMITED ("Company," "we," "us,"
+              or "our"), concerning your access to and use of the inTesters
+              website as well as any other media form, media channel, mobile
+              website, or mobile application related, linked, or otherwise
+              connected thereto (collectively, the "Service").
             </p>
             <p className="text-muted-foreground leading-relaxed mt-4">
               By accessing or using the Service, you agree that you have read,
