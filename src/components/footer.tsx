@@ -13,12 +13,14 @@ const platformItems = [
   { name: "How It Works", href: "/how-it-works" },
   { name: "Pricing", href: "/pricing" },
   { name: "Reviews", href: "/reviews" },
+  { name: "About Us", href: "/about" },
 ];
 
 const resourceItems = [
   { name: "Blog", href: "/blog" },
   { name: "FAQ", href: "/faq" },
   { name: "Support", href: "/help" },
+  { name: "Contact Us", href: "/contact-us" },
   { name: "Guides", href: "/guides" },
 ];
 
@@ -74,7 +76,7 @@ export function Footer() {
 
             <div className="flex flex-col gap-4">
               <p className="text-base text-muted-foreground">
-                &copy; {new Date().getFullYear()} inTesters Inc.
+                &copy; {new Date().getFullYear()} GAMDIX PRIVATE LIMITED
               </p>
               <Link
                 href="#"
@@ -185,7 +187,7 @@ export function Footer() {
 
           {/* Integrated Copyright/Status without border */}
           <div className="flex items-center justify-between text-xs text-muted-foreground">
-            <p>&copy; {new Date().getFullYear()} inTesters Inc.</p>
+            <p>&copy; {new Date().getFullYear()} GAMDIX PRIVATE LIMITED</p>
             <div className="flex items-center gap-2">
               <div className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
               <span>Systems normal</span>
