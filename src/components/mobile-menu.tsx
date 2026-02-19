@@ -138,15 +138,15 @@ export default function MobileMenu({
   // Group admin items by section
   const groupedAdminItems = isAdmin
     ? {
-        overview: displayItems.filter(
-          (item: any) => item.section === "overview",
-        ),
-        paid: displayItems.filter((item: any) => item.section === "paid"),
-        free: displayItems.filter((item: any) => item.section === "free"),
-        platform: displayItems.filter(
-          (item: any) => item.section === "platform",
-        ),
-      }
+      overview: displayItems.filter(
+        (item: any) => item.section === "overview",
+      ),
+      paid: displayItems.filter((item: any) => item.section === "paid"),
+      free: displayItems.filter((item: any) => item.section === "free"),
+      platform: displayItems.filter(
+        (item: any) => item.section === "platform",
+      ),
+    }
     : null;
 
   return (
@@ -160,7 +160,7 @@ export default function MobileMenu({
         </SheetTrigger>
         <SheetContent
           side="top"
-          className="flex flex-col h-screen bg-background/95 backdrop-blur-lg overflow-y-auto"
+          className="flex flex-col h-dvh bg-background/95 backdrop-blur-lg overflow-y-auto"
         >
           <SheetHeader>
             <div className="flex justify-between items-center gap-2">

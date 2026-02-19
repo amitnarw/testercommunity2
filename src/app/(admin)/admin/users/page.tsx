@@ -99,9 +99,9 @@ const SkeletonRow = () => (
 );
 
 // User Table Component
-const UserTable = ({ users, onEdit, onStatusChange, isLoading }: { 
-    users: any[]; 
-    onEdit: (user: any) => void; 
+const UserTable = ({ users, onEdit, onStatusChange, isLoading }: {
+    users: any[];
+    onEdit: (user: any) => void;
     onStatusChange: (user: any) => void;
     isLoading: boolean;
 }) => {
@@ -194,7 +194,7 @@ const UserTable = ({ users, onEdit, onStatusChange, isLoading }: {
 
 export default function AdminUsersPage() {
     const queryClient = useQueryClient();
-    
+
     const [userRole, setUserRole] = useState('');
     const [selectedUser, setSelectedUser] = useState<any>(null);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -278,15 +278,15 @@ export default function AdminUsersPage() {
                 </div>
             </div>
 
-            <Tabs value={activeTab} className="w-full" onValueChange={(value) => {
+            <Tabs value={activeTab} className="w-full grid grid-cols-1" onValueChange={(value) => {
                 setActiveTab(value);
                 setCurrentPage(1);
             }}>
                 <div className="flex flex-col md:flex-row items-center justify-between gap-4">
                     <div className="relative w-full md:w-auto">
                         <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-                        <Input 
-                            placeholder="Search users..." 
+                        <Input
+                            placeholder="Search users..."
                             className="pl-8 w-full md:w-[300px]"
                             value={searchQuery}
                             onChange={(e) => {
@@ -309,9 +309,9 @@ export default function AdminUsersPage() {
                     <div className="overflow-x-auto">
                         <Card>
                             <CardContent className="p-0">
-                                <UserTable 
-                                    users={paginatedUsers} 
-                                    onEdit={handleEdit} 
+                                <UserTable
+                                    users={paginatedUsers}
+                                    onEdit={handleEdit}
                                     onStatusChange={handleStatusChange}
                                     isLoading={isLoading}
                                 />
@@ -349,7 +349,7 @@ export default function AdminUsersPage() {
                     </div>
                     <DialogFooter>
                         <Button variant="ghost" onClick={() => setIsEditModalOpen(false)}>Cancel</Button>
-                        <Button 
+                        <Button
                             onClick={() => setIsEditModalOpen(false)}
                             disabled={updateRoleMutation.isPending}
                         >

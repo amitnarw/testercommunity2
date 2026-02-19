@@ -263,14 +263,14 @@ function CardDesign3({
   return (
     <Card
       className={cn(
-        "bg-white dark:bg-[#0f0f0f] border-none shadow-2xl rounded-[2.5rem] overflow-hidden relative h-[220px] flex items-center p-3 transition-all duration-300 group",
+        "bg-white dark:bg-[#0f0f0f] border-none shadow-2xl rounded-[2.5rem] overflow-hidden relative flex items-center px-0 sm:p-3 transition-all duration-300 group",
         className,
       )}
     >
-      <div className="flex flex-col md:flex-row items-center w-full gap-8">
+      <div className="flex flex-col md:flex-row items-center w-full h-full gap-4">
         {/* Left Side Primary Card */}
-        <div className="bg-gradient-to-br from-primary to-primary/80 w-[190px] h-[190px] rounded-[2rem] p-6 relative flex flex-col justify-between shrink-0 shadow-lg dark:shadow-[0_20px_40px_-15px_rgba(var(--primary),0.3)] overflow-hidden">
-          <div className="flex justify-between items-center">
+        <div className="bg-gradient-to-br from-primary to-primary/80 w-full sm:w-[190px] h-1/3 sm:h-full rounded-3xl p-6 relative flex flex-col justify-between shrink-0 shadow-lg dark:shadow-[0_20px_40px_-15px_rgba(var(--primary),0.3)] overflow-hidden">
+          <div className="hidden sm:flex justify-between items-center">
             <span className="text-white/80 text-[10px] font-bold tracking-wider uppercase">
               METRIC
             </span>
@@ -296,7 +296,7 @@ function CardDesign3({
         </div>
 
         {/* Right Side Text Content */}
-        <div className="flex-1 space-y-5 pr-8">
+        <div className="flex-1 space-y-5 px-4 pr-0 sm:pr-8">
           <div>
             <div className="flex items-center gap-2 mb-1">
               <span className="h-1.5 w-1.5 rounded-full bg-primary" />
@@ -418,31 +418,31 @@ export default function AdminDashboardPage() {
   // Transform status data for pie chart
   const statusDistribution = stats?.submissionsByStatus
     ? Object.entries(stats.submissionsByStatus).map(([name, value]) => ({
-        name: name.replace(/_/g, " "),
-        value: Number(value),
-        color: statusColors[name] || "#6b7280",
-      }))
+      name: name.replace(/_/g, " "),
+      value: Number(value),
+      color: statusColors[name] || "#6b7280",
+    }))
     : [];
 
   // Transform app type data
   const serviceComparison = stats?.submissionsByAppType
     ? [
-        {
-          name: "Submissions",
-          pro: stats.submissionsByAppType.PAID || 0,
-          community: stats.submissionsByAppType.FREE || 0,
-        },
-        {
-          name: "Feedback",
-          pro: Math.floor((stats.totalFeedback || 0) * 0.3),
-          community: Math.floor((stats.totalFeedback || 0) * 0.7),
-        },
-        {
-          name: "Testers",
-          pro: Math.floor((stats.totalTesters || 0) * 0.4),
-          community: Math.floor((stats.totalTesters || 0) * 0.6),
-        },
-      ]
+      {
+        name: "Submissions",
+        pro: stats.submissionsByAppType.PAID || 0,
+        community: stats.submissionsByAppType.FREE || 0,
+      },
+      {
+        name: "Feedback",
+        pro: Math.floor((stats.totalFeedback || 0) * 0.3),
+        community: Math.floor((stats.totalFeedback || 0) * 0.7),
+      },
+      {
+        name: "Testers",
+        pro: Math.floor((stats.totalTesters || 0) * 0.4),
+        community: Math.floor((stats.totalTesters || 0) * 0.6),
+      },
+    ]
     : [];
 
   // Recent submissions for pending approvals
@@ -463,41 +463,49 @@ export default function AdminDashboardPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
-          <h2 className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-slate-900 to-slate-700 dark:from-white dark:to-slate-400 bg-clip-text text-transparent leading-[unset]">
+          <h2 className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-slate-900 to-slate-700 dark:from-white dark:to-slate-400 bg-clip-text text-transparent leading-[unset] pb-1">
             Admin Dashboard
           </h2>
-          <p className="text-muted-foreground mt-2">
+          <p className="text-muted-foreground">
             Welcome back! Here's your platform overview.
           </p>
         </div>
       </div>
 
       {/* Quick Actions */}
-      <div className="grid gap-4 grid-cols-2 md:grid-cols-4">
+      <div className="grid gap-3 sm:gap-4 grid-cols-2 lg:grid-cols-4">
         {dynamicQuickActions.map((action) => (
           <Link key={action.href} href={action.href}>
-            <Card className="hover:shadow-md transition-shadow cursor-pointer h-full">
-              <CardContent className="p-4">
-                <div className="flex items-start gap-3">
-                  <div className={cn("p-2 rounded-lg", action.bgColor)}>
+            <Card className="hover:shadow-md transition-shadow cursor-pointer h-full border-none bg-white/50 dark:bg-white/5 backdrop-blur-sm relative overflow-hidden group">
+              {/* Background Watermark Icon - Mobile Only */}
+              <div className="absolute -right-2 -bottom-2 opacity-5 sm:hidden pointer-events-none transition-transform duration-500 group-hover:scale-110">
+                <action.icon className={cn("h-16 w-16 rotate-12", action.color)} />
+              </div>
+
+              <CardContent className="p-2.5 sm:p-4 h-full flex items-center relative z-10">
+                <div className="flex items-center gap-2 sm:gap-3 w-full">
+                  {/* Foreground Icon - Desktop Only */}
+                  <div className={cn("hidden sm:flex p-2 rounded-xl shrink-0", action.bgColor)}>
                     <action.icon className={cn("h-5 w-5", action.color)} />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2">
-                      <p className="font-medium text-sm">{action.title}</p>
+                    <div className="flex items-start justify-between gap-1">
+                      <p className="font-bold text-[11px] sm:text-sm text-foreground leading-tight mb-0.5">
+                        {action.title}
+                      </p>
                       {action.count !== undefined && (
                         <span
                           className={cn(
-                            "text-xs font-bold px-2 py-1 rounded-full",
+                            "text-[9px] sm:text-[10px] font-bold px-1.5 py-0.5 rounded-full shrink-0",
                             action.countBadgeColor ||
-                              "bg-primary/10 text-primary",
+                            "bg-primary/10 text-primary",
                           )}
                         >
                           {action.count}
                         </span>
                       )}
                     </div>
-                    <p className="text-xs text-muted-foreground truncate">
+                    <p className="text-[10px] sm:text-[11px] text-muted-foreground truncate">
                       {action.description}
                     </p>
                   </div>
@@ -514,7 +522,7 @@ export default function AdminDashboardPage() {
         <CardDesign2 stats={stats} isLoading={isLoading} />
         <CardDesign3
           stats={stats}
-          className="lg:col-span-2"
+          className="md:col-span-2"
           isLoading={isLoading}
         />
       </div>
