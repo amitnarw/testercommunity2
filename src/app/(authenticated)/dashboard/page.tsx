@@ -190,7 +190,7 @@ export default function DashboardPage() {
         <header className="mb-6">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div>
-              <h1 className="text-2xl sm:text-4xl font-bold bg-gradient-to-b from-primary to-primary/40 bg-clip-text text-transparent leading-0 pb-2">
+              <h1 className="text-2xl sm:text-4xl font-bold bg-gradient-to-b from-primary to-primary/40 bg-clip-text text-transparent leading-0 pb-1">
                 Developer Dashboard
               </h1>
               <p className="text-sm sm:text-base text-muted-foreground">

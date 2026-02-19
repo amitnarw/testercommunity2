@@ -296,10 +296,10 @@ export default function LoginPage() {
         </div>
         <div className="max-w-md w-full space-y-6">
           <div className="text-center">
-            <h2 className="font-bold tracking-tight text-2xl sm:text-3xl bg-gradient-to-br from-primary to-accent bg-clip-text text-transparent">
+            <h2 className="font-bold tracking-tight text-2xl sm:text-3xl bg-gradient-to-br from-primary to-accent bg-clip-text text-transparent pb-1">
               Log in to your account
             </h2>
-            <p className="text-muted-foreground mt-2">
+            <p className="text-muted-foreground">
               Or{" "}
               <Link
                 href="/auth/register"
