@@ -65,7 +65,7 @@ export default {
           "5": "hsl(var(--chart-5))",
         },
         "brand-background": "hsl(var(--brand-background))",
-        "sidebar": "hsl(var(--sidebar))",
+        sidebar: "hsl(var(--sidebar))",
       },
       borderRadius: {
         lg: "var(--radius)",
@@ -137,5 +137,5 @@ export default {
       },
     },
   },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [require("tailwindcss-animate"), require("@tailwindcss/typography")],
 } satisfies Config;

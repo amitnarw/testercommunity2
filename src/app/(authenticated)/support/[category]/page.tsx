@@ -13,44 +13,54 @@ import {
   Wallet,
   Globe,
   Zap,
+  ChevronLeft,
 } from "lucide-react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import { getArticlesByCategory } from "@/lib/blog-data";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
+import { BackButton } from "@/components/back-button";
 
 const categoryMap: Record<
   string,
   { title: string; description: string; color: string; icon: any; glow: string }
 > = {
   "google-play-guidelines": {
-    title: "Google Play Guidelines",
-    description: "Navigate the technical requirements with precision and ensure your personal account stays compliant.",
-    color: "text-blue-600 dark:text-blue-400",
+    title: "Play Guidelines",
+    description: "Deep dive into 20-tester & 14-day requirements.",
+    color: "text-blue-500",
     icon: Shield,
-    glow: "bg-blue-500/5",
+    glow: "bg-blue-500/10",
   },
   "free-community-testing": {
-    title: "Free Community Testing",
-    description: "Earn credits by helping fellow developers and build your 20-tester pool through mutual cooperation.",
-    color: "text-emerald-600 dark:text-emerald-400",
+    title: "Community Testing",
+    description: "Master the Karma system and tester pool.",
+    color: "text-green-500",
     icon: Globe,
-    glow: "bg-emerald-500/5",
+    glow: "bg-green-500/10",
   },
   "paid-professional-testing": {
-    title: "Paid Professional Testing",
-    description: "Deploy guaranteed QA cycles with professional testers to meet Google's 14-day requirement quickly.",
-    color: "text-amber-600 dark:text-amber-400",
+    title: "Pro Testing",
+    description: "Vetted QA cycles with guaranteed results.",
+    color: "text-amber-500",
     icon: Star,
-    glow: "bg-amber-500/5",
+    glow: "bg-amber-500/10",
   },
   "wallet-account": {
     title: "Wallet & Account",
-    description: "Manage your karma points, professional slots, and account security settings in one dashboard.",
-    color: "text-purple-600 dark:text-purple-400",
+    description: "Manage credits and secure credentials.",
+    color: "text-violet-500",
     icon: Wallet,
-    glow: "bg-purple-500/5",
+    glow: "bg-violet-500/10",
   },
 };
 
@@ -75,16 +85,29 @@ export default function CategoryPage() {
   const params = useParams();
   const categorySlug = params.category as string;
   const categoryInfo = categoryMap[categorySlug];
-  const articles = getArticlesByCategory(categoryInfo?.title || "");
+  // Note: the `getArticlesByCategory` expects the actual category name string.
+  // The blog articles use tags like "Google Play Guidelines" so we pass that, or we can use a helper.
+  // In `lib/blog-data.ts`, categories might be slightly different.
+  const articleCategoryMap: Record<string, string> = {
+    "google-play-guidelines": "Google Play Guidelines",
+    "free-community-testing": "Free Community Testing",
+    "paid-professional-testing": "Paid Professional Testing",
+    "wallet-account": "Wallet & Account",
+  };
+  const articles = getArticlesByCategory(
+    articleCategoryMap[categorySlug] || "",
+  );
 
   if (!categoryInfo) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background text-foreground">
         <div className="text-center space-y-6">
-          <h1 className="text-2xl font-black uppercase tracking-tighter">System Error: Track Offline</h1>
+          <h1 className="text-2xl font-bold tracking-tight">
+            Category Not Found
+          </h1>
           <Link href="/support">
-            <Button variant="outline" className="border-2 border-border hover:border-primary rounded-2xl h-14 px-10 font-black uppercase tracking-widest text-xs">
-              Return to Center
+            <Button variant="outline" className="rounded-full px-8">
+              Return to Support
             </Button>
           </Link>
         </div>
@@ -93,51 +116,71 @@ export default function CategoryPage() {
   }
 
   return (
-    <div className="min-h-screen w-full bg-background text-foreground selection:bg-primary/30 overflow-x-hidden transition-colors duration-500">
-      <div className="fixed inset-0 bg-[radial-gradient(circle_at_50%_0%,hsl(var(--muted)/0.5)_0%,hsl(var(--background))_100%)] dark:bg-[radial-gradient(circle_at_50%_0%,rgba(17,24,39,1)_0%,rgba(5,5,5,1)_100%)] pointer-events-none" />
-
-      <main className="container mx-auto px-4 md:px-8 py-12 md:py-20 max-w-5xl relative z-10 w-full">
+    <div className="min-h-screen relative overflow-hidden text-foreground transition-colors duration-500">
+      <main className="container mx-auto px-4 md:px-6 py-10 relative z-10 max-w-5xl">
         <motion.div
           initial="hidden"
           animate="visible"
           variants={containerVariants}
-          className="space-y-20"
+          className="space-y-12"
         >
           {/* Header Section */}
-          <motion.div variants={itemVariants} className="space-y-12">
-            <Link href="/support">
-              <Button variant="ghost" className="group text-muted-foreground hover:text-primary hover:bg-muted dark:hover:bg-white/5 rounded-2xl text-[10px] font-black uppercase tracking-[0.3em] px-0 hover:px-6 transition-all h-10">
-                <ArrowLeft className="w-3.5 h-3.5 mr-3 group-hover:-translate-x-1 transition-transform" />
-                Return to Modules
-              </Button>
-            </Link>
+          <motion.div variants={itemVariants} className="space-y-8">
+            <Breadcrumb>
+              <BreadcrumbList>
+                <BreadcrumbItem>
+                  <BreadcrumbLink asChild>
+                    <Link href="/support">Support Hub</Link>
+                  </BreadcrumbLink>
+                </BreadcrumbItem>
+                <BreadcrumbSeparator />
+                <BreadcrumbItem>
+                  <BreadcrumbPage className="text-foreground">
+                    {categoryInfo.title}
+                  </BreadcrumbPage>
+                </BreadcrumbItem>
+              </BreadcrumbList>
+            </Breadcrumb>
 
-            <div className="flex flex-col gap-8 items-start pb-16 border-b-2 border-border">
-              <div className={cn("w-20 h-20 rounded-[2rem] bg-card flex items-center justify-center border-2 border-border shadow-2xl relative overflow-hidden group/icon", categoryInfo.color)}>
-                <div className={cn("absolute inset-0 opacity-20", categoryInfo.glow)} />
-                <categoryInfo.icon className="w-10 h-10 relative z-10 group-hover/icon:scale-110 transition-transform" />
+            <div className="flex items-center justify-between">
+              <div className="sticky top-0 z-[50] pt-2 sm:pt-3 pb-4 pl-0 xl:pl-8 w-1/2">
+                <BackButton href="/support" />
+              </div>
+            </div>
+
+            <div className="flex flex-col gap-6 items-start pb-10 border-b border-border/50">
+              <div
+                className={cn(
+                  "w-16 h-16 rounded-2xl flex items-center justify-center mb-2",
+                  categoryInfo.glow,
+                  categoryInfo.color,
+                )}
+              >
+                <categoryInfo.icon className="w-8 h-8" />
               </div>
               <div className="space-y-4">
-                <div className="flex items-center gap-3">
-                  <span className="text-[10px] font-black uppercase tracking-[0.4em] text-primary">Technical Track</span>
-                  <div className="h-[1px] w-12 bg-primary/30" />
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-sm font-medium">
+                  {categoryInfo.title}
                 </div>
-                <h1 className="text-5xl md:text-8xl font-black tracking-tight leading-[0.85] text-foreground uppercase">
+                <h1 className="text-4xl md:text-6xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-b from-foreground to-foreground/70 pb-2">
                   {categoryInfo.title}
                 </h1>
-                <p className="text-xl text-muted-foreground max-w-2xl font-medium leading-relaxed">
+                <p className="text-lg sm:text-xl text-muted-foreground max-w-2xl font-medium leading-relaxed">
                   {categoryInfo.description}
                 </p>
               </div>
-              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-2xl bg-muted/50 border border-border text-[10px] font-black uppercase tracking-[0.2em] text-muted-foreground">
-                <Zap className="w-3 h-3 text-primary" />
-                {articles.length} Indexed Resources
+              <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-muted/50 border border-border/50 text-sm font-medium text-muted-foreground">
+                <Zap className="w-4 h-4 text-primary" />
+                {articles.length} Resources Available
               </div>
             </div>
           </motion.div>
 
           {/* Articles Interface */}
-          <motion.div variants={itemVariants} className="grid grid-cols-1 gap-6">
+          <motion.div
+            variants={itemVariants}
+            className="grid grid-cols-1 gap-6"
+          >
             {articles.map((article, index) => (
               <motion.div
                 key={article.id}
@@ -145,42 +188,51 @@ export default function CategoryPage() {
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: index * 0.05, ease: [0.22, 1, 0.36, 1] }}
               >
-                <Link href={`/support/${categorySlug}/${article.slug}`} className="block group">
-                  <div className="p-10 rounded-[3rem] bg-card border-2 border-border hover:border-primary transition-all duration-500 relative overflow-hidden shadow-sm hover:shadow-2xl hover:-translate-y-1">
-                    <div className="relative z-10 flex flex-col md:flex-row gap-12 items-start md:items-center">
-                      <div className="flex-1 space-y-6">
+                <Link
+                  href={`/support/${categorySlug}/${article.slug}`}
+                  className="block group"
+                >
+                  <div className="p-6 md:p-8 rounded-3xl bg-card border border-border/50 hover:border-primary/50 transition-all duration-300 relative overflow-hidden shadow-sm hover:shadow-lg hover:-translate-y-1">
+                    <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 blur-[40px] rounded-full group-hover:bg-primary/10 transition-colors duration-500" />
+
+                    <div className="relative z-10 flex flex-col md:flex-row gap-8 items-start md:items-center">
+                      <div className="flex-1 space-y-4">
                         <div className="space-y-2">
-                          <h2 className="text-3xl font-black text-foreground group-hover:text-primary transition-colors tracking-tight uppercase leading-none">
+                          <h2 className="text-2xl font-bold text-foreground group-hover:text-primary transition-colors tracking-tight">
                             {article.title}
                           </h2>
-                          <p className="text-muted-foreground text-base line-clamp-2 leading-relaxed max-w-3xl font-medium">
+                          <p className="text-muted-foreground text-base line-clamp-2 leading-relaxed">
                             {article.description}
                           </p>
                         </div>
 
-                        <div className="flex flex-wrap items-center gap-8 text-[10px] font-black text-muted-foreground uppercase tracking-[0.2em]">
-                          <div className="flex items-center gap-3">
-                            <Clock className="w-4 h-4 opacity-50" />
+                        <div className="flex flex-wrap items-center gap-6 text-sm font-medium text-muted-foreground">
+                          <div className="flex items-center gap-2">
+                            <Clock className="w-4 h-4" />
                             <span>{article.readTime}</span>
                           </div>
-                          <div className="flex items-center gap-3">
-                            <TrendingUp className="w-4 h-4 opacity-50" />
-                            <span>{article.views} PV</span>
+                          <div className="flex items-center gap-2">
+                            <TrendingUp className="w-4 h-4" />
+                            <span>{article.views} Views</span>
                           </div>
-                          <div className="flex items-center gap-3">
-                            <Calendar className="w-4 h-4 opacity-50" />
+                          <div className="flex items-center gap-2">
+                            <Calendar className="w-4 h-4" />
                             <span>
-                              {new Date(article.publishedAt).toLocaleDateString("en-US", {
-                                month: "short",
-                                year: "numeric",
-                              })}
+                              {new Date(article.publishedAt).toLocaleDateString(
+                                "en-US",
+                                {
+                                  month: "short",
+                                  day: "numeric",
+                                  year: "numeric",
+                                },
+                              )}
                             </span>
                           </div>
                         </div>
                       </div>
 
-                      <div className="w-16 h-16 rounded-3xl bg-muted dark:bg-white/5 flex items-center justify-center group-hover:bg-primary transition-all transform group-hover:translate-x-2">
-                        <ChevronRight className="w-7 h-7 text-muted-foreground group-hover:text-primary-foreground" />
+                      <div className="w-12 h-12 rounded-2xl bg-muted flex items-center justify-center group-hover:bg-primary transition-colors">
+                        <ChevronRight className="w-6 h-6 text-muted-foreground group-hover:text-primary-foreground" />
                       </div>
                     </div>
                   </div>
@@ -189,20 +241,23 @@ export default function CategoryPage() {
             ))}
           </motion.div>
 
-          {/* Empty State Terminal */}
+          {/* Empty State */}
           {articles.length === 0 && (
             <motion.div
               variants={itemVariants}
-              className="text-center py-32 rounded-[4rem] bg-muted/10 border-2 border-dashed border-border"
+              className="text-center py-24 rounded-3xl bg-muted/20 border border-dashed border-border/50"
             >
-              <FileText className="w-20 h-20 text-muted-foreground/20 mx-auto mb-8" />
-              <h3 className="text-2xl font-black uppercase tracking-widest text-muted-foreground">Log: 0 Resources found</h3>
-              <p className="text-muted-foreground mb-12 max-w-sm mx-auto text-sm font-medium uppercase tracking-tight">
-                Our documentation engine is currently re-indexing this track. System refresh expected in 24h.
+              <FileText className="w-16 h-16 text-muted-foreground/30 mx-auto mb-6" />
+              <h3 className="text-xl font-bold text-foreground mb-2">
+                No Resources Found
+              </h3>
+              <p className="text-muted-foreground mb-8 max-w-sm mx-auto">
+                We're currently updating our resources for this category. Please
+                check back later.
               </p>
               <Link href="/support">
-                <Button variant="outline" className="border-2 border-border hover:border-primary rounded-2xl h-14 px-10 font-black uppercase tracking-widest text-xs">
-                  Reload Modules
+                <Button variant="outline" className="rounded-full px-8">
+                  Return to Support
                 </Button>
               </Link>
             </motion.div>

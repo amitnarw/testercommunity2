@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils";
 
 export default function ContactPage() {
   return (
-    <div className="min-h-screen relative flex flex-col items-center justify-center overflow-hidden bg-background py-20 px-4">
+    <div className="min-h-screen relative flex flex-col items-center pt-32 pb-20 md:py-20 md:justify-center overflow-hidden bg-background px-4">
       <div className="absolute inset-0 z-0">
         <InteractiveGridPattern
           width={40}
@@ -22,11 +22,11 @@ export default function ContactPage() {
       </div>
 
       <div className="relative z-10 w-full max-w-5xl">
-        <div className="text-center mb-16 space-y-4">
+        <div className="text-center mb-10 md:mb-16 space-y-4 mt-8 md:mt-0">
           <motion.h1
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
-            className="text-5xl md:text-7xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-br from-foreground to-foreground/50"
+            className="text-4xl sm:text-5xl md:text-7xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-br from-foreground to-foreground/50"
           >
             Get in Touch
           </motion.h1>
@@ -34,24 +34,24 @@ export default function ContactPage() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.2 }}
-            className="text-xl text-muted-foreground max-w-2xl mx-auto"
+            className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto px-2"
           >
             Have questions? We'd love to hear from you. Reach out to our team at
             GAMDIX PRIVATE LIMITED.
           </motion.p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-stretch">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8 items-stretch">
           {/* Contact Info Card */}
           <motion.div
             initial={{ opacity: 0, x: -50 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.3 }}
           >
-            <Card className="h-full p-8 md:p-10 flex flex-col gap-8 bg-card/50 backdrop-blur-xl border-primary/10 shadow-2xl">
+            <Card className="h-full p-0 sm:p-8 md:p-10 flex flex-col gap-6 md:gap-8 bg-card/50 backdrop-blur-xl border-primary/10 shadow-none sm:shadow-2xl">
               <div>
                 <h2 className="text-2xl font-bold mb-6 flex items-center gap-2">
-                  <Building2 className="w-6 h-6 text-primary" />
+                  <Building2 className="w-6 h-6 text-primary absolute sm:static right-0 opacity-20 sm:opacity-100 scale-[4] sm:scale-100 sm:rotate-0 -rotate-[30deg]" />
                   Company Details
                 </h2>
                 <div className="space-y-6">
@@ -62,7 +62,7 @@ export default function ContactPage() {
                     <p className="text-lg font-bold">GAMDIX PRIVATE LIMITED</p>
                   </div>
 
-                  <div className="group flex gap-4 items-start p-4 rounded-xl bg-primary/5 border border-primary/10 transition-colors hover:bg-primary/10">
+                  <div className="group flex flex-col sm:flex-row gap-2 sm:gap-4 items-start p-4 rounded-xl bg-primary/5 border border-primary/10 transition-colors hover:bg-primary/10">
                     <MapPin className="w-6 h-6 text-primary shrink-0 mt-1" />
                     <div>
                       <p className="text-sm font-semibold text-primary uppercase tracking-wider mb-1">
@@ -80,7 +80,7 @@ export default function ContactPage() {
                 </div>
               </div>
 
-              <div className="mt-auto">
+              <div className="mt-8 md:mt-auto">
                 <div className="p-4 rounded-xl bg-gradient-to-br from-primary/20 to-primary/5 border border-primary/20">
                   <div className="flex items-center gap-3 mb-2">
                     <Mail className="w-5 h-5 text-primary" />
@@ -102,7 +102,7 @@ export default function ContactPage() {
             initial={{ opacity: 0, x: 50 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.5 }}
-            className="h-full min-h-[400px] rounded-xl overflow-hidden relative border border-border shadow-2xl bg-neutral-900"
+            className="h-full min-h-[300px] md:min-h-[400px] rounded-xl overflow-hidden relative border border-border shadow-2xl bg-neutral-900"
           >
             {/* Abstract Map visual representation */}
             <div className="absolute inset-0 opacity-40">
