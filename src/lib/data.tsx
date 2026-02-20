@@ -144,6 +144,64 @@ export const blogPosts: BlogPost[] = [
     dataAiHint: "speedometer dashboard",
     tags: ["Performance", "Backend", "DevOps"],
   },
+  {
+    id: 7,
+    slug: "google-play-12-testers-14-days-requirement-2024",
+    title:
+      "The 2024 Update: Navigating Google Play's 12 Testers for 14 Days Requirement",
+    excerpt:
+      "Google has quietly updated their testing requirements for new individual developers. Here is everything you need to know about testing with 12 testers instead of 20.",
+    content: `<p>If you are an independent app developer preparing to launch on the Google Play Store, you are likely aware of the stringent testing requirements introduced for personal developer accounts created after November 2023. Initially, this policy mandated exactly 20 testers opting into a closed test for 14 continuous days.</p><p>However, in late 2024, developer forums and Google's official documentation reflected a significant, much-welcomed update: <strong>The requirement has been reduced from 20 testers to 12 testers.</strong></p><h3>What Exactly Has Changed?</h3><p>Google's primary goal—improving the overall quality of apps on the Play Store—remains unchanged. The adjustment to 12 testers acknowledges that gathering a dedicated cohort of 20 people was often an insurmountable hurdle for solo developers without a massive social network.</p>`,
+    author: {
+      name: "Alex Narwal",
+      avatarUrl:
+        "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?q=80&w=400&auto=format=fit=crop",
+      dataAiHint: "man professional",
+    },
+    date: "2024-11-20",
+    imageUrl:
+      "https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?q=80&w=600&auto=format=fit=crop",
+    dataAiHint: "money graph success",
+    tags: ["Google Play", "Testing", "Requirements"],
+  },
+  {
+    id: 8,
+    slug: "advanced-app-marketing-aso-strategies-2024",
+    title: "Advanced App Marketing & ASO Strategies for Google Play in 2024",
+    excerpt:
+      "App Store Optimization (ASO) is constantly evolving. Learn the most effective strategies for ranking your app higher in Google Play search results.",
+    content: `<p>Launching your app on the Google Play Store is just the beginning. With millions of apps vying for attention, organic discovery is rare to happen by accident. You need a dedicated App Store Optimization (ASO) and marketing strategy.</p><p>In 2024, Google's algorithms have become significantly smarter, relying heavily on user behavior, retention rates, and semantic keyword understanding rather than just keyword stuffing.</p><h3>1. Mastering Application Metadata</h3><p>Google's crawler indexes almost all text in your Play Store listing. How you structure this is critical to your app marketing efforts.</p>`,
+    author: {
+      name: "Sarah Chen",
+      avatarUrl:
+        "https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?q=80&w=400&auto=format=fit=crop",
+      dataAiHint: "woman professional",
+    },
+    date: "2024-11-25",
+    imageUrl:
+      "https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=600&auto=format=fit=crop",
+    dataAiHint: "seo metrics website",
+    tags: ["App Marketing", "ASO", "SEO"],
+  },
+  {
+    id: 9,
+    slug: "seo-backlink-building-internal-linking-app-developers",
+    title: "SEO Backlink Building and Internal Linking for App Developers",
+    excerpt:
+      "Learn why off-page SEO and backlink building are essential for driving high-converting web traffic to your Google Play Store app landing pages.",
+    content: `<p>A common mistake indie developers make is relying solely on the Google Play Store for discovery. If your entire marketing strategy exists within the Play Console, you are missing out on millions of potential users searching for solutions on traditional web browsers.</p><p>To capture this audience, every successful app needs a corresponding website or landing page. And that website needs an SEO strategy. In 2024, the foundation of web SEO remains <strong>high-quality backlinks</strong> and <strong>strategic internal linking</strong>.</p>`,
+    author: {
+      name: "Jordan Smith",
+      avatarUrl:
+        "https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=400&auto=format=fit=crop",
+      dataAiHint: "person glasses",
+    },
+    date: "2024-11-28",
+    imageUrl:
+      "https://images.unsplash.com/photo-1620712943543-bcc4688e7485?q=80&w=600&auto=format=fit=crop",
+    dataAiHint: "network connections",
+    tags: ["SEO", "Backlinks", "Marketing"],
+  },
 ];
 
 export const testimonials: Testimonial[] = [
@@ -1994,11 +2052,11 @@ export const projects: Project[] = [
         | "Rejected",
       testersStarted: testersStarted,
       testersCompleted: testersCompleted,
-      totalDays: baseApp.totalDays,
-      avgTestersPerDay: testersStarted / baseApp.totalDays,
+      totalDays: baseApp.totalDays || 14,
+      avgTestersPerDay: testersStarted / (baseApp.totalDays || 14),
       startedFrom: "15 Aug 2024",
       description: baseApp.shortDescription,
-      testingInstructions: baseApp.testingInstructions,
+      testingInstructions: baseApp.testingInstructions || "",
       androidVersion: baseApp.androidVersion,
       pointsCost: testersStarted * 80,
       crashFreeRate: 99.5 - (override.id % 10) / 10,

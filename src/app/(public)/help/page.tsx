@@ -52,36 +52,30 @@ export default function HelpPage() {
         <div className="container mx-auto px-4 md:px-6 py-20 relative z-10">
           {/* Header Section */}
           <div className="text-center max-w-3xl mx-auto mb-20 space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-700">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-sm font-medium mb-4">
-              <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
-              </span>
-              24/7 Support Available
-            </div>
-            <h1 className="text-5xl md:text-7xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-b from-foreground to-foreground/70">
+            <h1 className="text-4xl md:text-7xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-b from-foreground to-foreground/70 pb-2">
               How can we help?
             </h1>
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
+            <p className="text-lg sm:text-xl text-muted-foreground max-w-2xl mx-auto">
               Find answers, chat with our AI assistant, or get in touch with our
               support team. We&apos;re here for you.
             </p>
 
             {/* Search Bar */}
             <div className="relative max-w-2xl mx-auto mt-10 group">
-              <div className="absolute inset-0 bg-gradient-to-r from-primary/20 to-blue-600/20 blur-xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-              <div className="relative flex items-center bg-card/80 backdrop-blur-xl border border-border/50 shadow-2xl rounded-full p-2 transition-transform duration-300 group-hover:scale-[1.01]">
-                <Search className="ml-4 w-6 h-6 text-muted-foreground" />
+              <div className="absolute inset-0 bg-gradient-to-r from-primary/20 to-blue-600/20 blur-xl rounded-full opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity duration-500" />
+              <div className="relative flex items-center bg-card/80 backdrop-blur-xl border border-border/50 rounded-full p-1 px-2 transition-transform duration-300 group-hover:scale-[1.01] group-focus-within:scale-[1.01]">
+                <Search className="ml-4 w-6 h-6 text-muted-foreground hidden sm:block" />
                 <input
                   type="text"
                   placeholder="Ask a question or search keywords..."
-                  className="w-full bg-transparent border-none focus:outline-none focus:ring-0 px-4 py-3 text-lg placeholder:text-muted-foreground/50"
+                  className="w-full bg-transparent border-none focus:outline-none focus:ring-0 px-4 py-3 text-md sm:text-lg placeholder:text-muted-foreground/50"
                 />
                 <Button
                   size="lg"
-                  className="rounded-full px-8 shadow-lg shadow-primary/25"
+                  className="rounded-full px-4 sm:px-8 shadow-lg shadow-primary/25"
                 >
-                  Search
+                  <span className="hidden sm:block">Search</span>
+                  <Search className="w-10 h-10 block sm:hidden" />
                 </Button>
               </div>
             </div>

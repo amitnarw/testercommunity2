@@ -439,7 +439,7 @@ const BrowserFrame = ({
         <div className="flex-1 flex justify-center">
           <div className="bg-background/80 rounded-md px-4 py-1 flex items-center gap-1.5 text-muted-foreground text-xs max-w-[200px]">
             <div className="w-3 h-3 rounded-full bg-primary/30" />
-            <span className="truncate">testercommunity.com</span>
+            <span className="truncate">intesters.com</span>
           </div>
         </div>
         {/* Spacer */}
@@ -586,7 +586,7 @@ export function SamplesSection() {
         </div>
 
         {/* Desktop: Browser Window Mockups */}
-        <div className="hidden md:grid md:grid-cols-2 gap-8 lg:gap-12 max-w-5xl mx-auto">
+        <div className="hidden md:grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
           {samples.map((sample, index) => (
             <motion.div
               key={sample.id}
@@ -594,12 +594,15 @@ export function SamplesSection() {
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.15 }}
               viewport={{ once: true }}
-              className="group"
+              className="group p-5 rounded-2xl bg-gradient-to-t from-primary/80 to-primary/0"
               onMouseEnter={() => setActivePreview(sample.id)}
               onMouseLeave={() => setActivePreview(null)}
             >
               {/* Browser Mockup */}
               <div className="mb-6 transition-transform duration-300 group-hover:-translate-y-2">
+                <p className="font-bold text-primary text-center mb-5">
+                  {sample.label}
+                </p>
                 <BrowserFrame isActive={activePreview === sample.id}>
                   {sample.id === "free" ? (
                     <FreeCommunityPreview />
@@ -609,28 +612,24 @@ export function SamplesSection() {
                 </BrowserFrame>
               </div>
 
-              {/* Simplified Info - Just label and button */}
-              <div className="text-center space-y-3">
-                <p className="text-sm font-medium text-muted-foreground">
-                  {sample.label}
-                </p>
-                <Link
-                  href={sample.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
+              <Link
+                href={sample.href}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <Button
+                  variant="outline"
+                  className="w-full shadow-primary/20 bg-transparent text-white border-none"
                 >
-                  <Button className="rounded-full shadow-lg shadow-primary/20">
-                    View Sample
-                    <ArrowRight className="w-4 h-4 ml-2" />
-                  </Button>
-                </Link>
-              </div>
+                  VIEW SAMPLE
+                </Button>
+              </Link>
             </motion.div>
           ))}
         </div>
 
         {/* Mobile: Phone Mockups Side by Side */}
-        <div className="grid grid-cols-2 gap-6 md:hidden max-w-xs mx-auto">
+        <div className="grid grid-cols-2 gap-2 md:hidden w-full">
           {samples.map((sample, index) => (
             <motion.div
               key={sample.id}
@@ -638,10 +637,13 @@ export function SamplesSection() {
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ delay: index * 0.1 }}
               viewport={{ once: true }}
-              className="flex flex-col"
+              className="group p-2 rounded-2xl bg-gradient-to-t from-primary/80 to-primary/0 flex flex-col"
             >
               {/* Phone Mockup */}
-              <div className="mb-4">
+              <div className="mb-2">
+                <p className="text-[11px] font-bold text-primary text-center mb-2">
+                  {sample.label}
+                </p>
                 <PhoneFrame
                   isActive={mobileActive === sample.id}
                   onClick={() => handleMobileClick(sample.id)}
@@ -654,21 +656,17 @@ export function SamplesSection() {
                 </PhoneFrame>
               </div>
 
-              {/* Simplified Info - Just label and button */}
-              <div className="text-center space-y-2">
-                <p className="text-[11px] font-medium text-muted-foreground">
-                  {sample.label}
-                </p>
+              <div>
                 <Link
                   href={sample.href}
                   target="_blank"
                   rel="noopener noreferrer"
                 >
                   <Button
-                    size="sm"
-                    className="rounded-full text-[10px] h-7 px-3 shadow-lg shadow-primary/20"
+                    variant="outline"
+                    className="text-[10px] py-1 w-full shadow-primary/20 bg-transparent text-white border-none"
                   >
-                    View Sample
+                    VIEW SAMPLE
                   </Button>
                 </Link>
               </div>

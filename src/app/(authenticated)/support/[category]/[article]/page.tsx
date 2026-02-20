@@ -14,6 +14,7 @@ import {
   Globe,
   Share2,
   Bookmark,
+  Zap,
 } from "lucide-react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
@@ -21,6 +22,15 @@ import { getArticleBySlug, getArticlesByCategory } from "@/lib/blog-data";
 import { Button } from "@/components/ui/button";
 import ReactMarkdown from "react-markdown";
 import { cn } from "@/lib/utils";
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
+import { BackButton } from "@/components/back-button";
 
 const categorySlugMap: Record<string, string> = {
   "google-play-guidelines": "Google Play Guidelines",
@@ -39,10 +49,12 @@ export default function ArticlePage() {
     return (
       <div className="min-h-screen flex items-center justify-center bg-background text-foreground">
         <div className="text-center space-y-6">
-          <h1 className="text-2xl font-black uppercase tracking-tighter">System Error: 404</h1>
+          <h1 className="text-2xl font-bold tracking-tight">
+            Article Not Found
+          </h1>
           <Link href="/support">
-            <Button variant="outline" className="border-2 border-border hover:border-primary rounded-2xl h-14 px-10 font-black uppercase tracking-widest text-xs">
-              Return to Center
+            <Button variant="outline" className="rounded-full px-8">
+              Return to Support
             </Button>
           </Link>
         </div>
@@ -55,40 +67,57 @@ export default function ArticlePage() {
     .slice(0, 3);
 
   return (
-    <div className="min-h-screen w-full bg-background text-foreground selection:bg-primary/30 overflow-x-hidden transition-colors duration-500">
-      <div className="fixed inset-0 bg-[radial-gradient(circle_at_50%_0%,hsl(var(--muted)/0.5)_0%,hsl(var(--background))_100%)] dark:bg-[radial-gradient(circle_at_50%_0%,rgba(17,24,39,1)_0%,rgba(5,5,5,1)_100%)] pointer-events-none" />
-
-      <main className="container mx-auto px-4 md:px-8 py-12 md:py-24 max-w-4xl relative z-10 w-full">
+    <div className="min-h-screen relative overflow-hidden text-foreground transition-colors duration-500">
+      <main className="container mx-auto px-4 md:px-6 py-10 relative z-10 max-w-4xl">
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
-          className="space-y-16"
+          transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+          className="space-y-12"
         >
           {/* Header Navigation Interface */}
-          <div className="space-y-10">
-            <div className="flex flex-wrap items-center gap-4 text-[10px] font-black text-muted-foreground uppercase tracking-[0.3em]">
-              <Link href="/support" className="hover:text-primary transition-colors">Support Hub</Link>
-              <ChevronRight className="w-3.5 h-3.5 opacity-30" />
-              <Link href={`/support/${categorySlug}`} className="hover:text-primary transition-colors">
-                {categorySlugMap[categorySlug]}
-              </Link>
-              <ChevronRight className="w-3.5 h-3.5 opacity-30" />
-              <span className="text-primary truncate max-w-[150px] md:max-w-none">{article.title}</span>
-            </div>
+          <div className="space-y-8">
+            <Breadcrumb>
+              <BreadcrumbList>
+                <BreadcrumbItem>
+                  <BreadcrumbLink asChild>
+                    <Link href="/support">Support Hub</Link>
+                  </BreadcrumbLink>
+                </BreadcrumbItem>
+                <BreadcrumbSeparator />
+                <BreadcrumbItem>
+                  <BreadcrumbLink asChild>
+                    <Link href={`/support/${categorySlug}`}>
+                      {categorySlugMap[categorySlug]}
+                    </Link>
+                  </BreadcrumbLink>
+                </BreadcrumbItem>
+                <BreadcrumbSeparator />
+                <BreadcrumbItem>
+                  <BreadcrumbPage className="max-w-[150px] md:max-w-none truncate text-foreground">
+                    {article.title}
+                  </BreadcrumbPage>
+                </BreadcrumbItem>
+              </BreadcrumbList>
+            </Breadcrumb>
 
             <div className="flex justify-between items-center">
-              <Link href={`/support/${categorySlug}`}>
-                <Button variant="ghost" className="group text-muted-foreground hover:text-primary hover:bg-muted dark:hover:bg-white/5 rounded-2xl text-[10px] font-black uppercase tracking-[0.3em] px-0 hover:px-6 transition-all h-10">
-                  <ChevronLeft className="w-3.5 h-3.5 mr-3 group-hover:-translate-x-1 transition-transform" />
-                  Exit Article
-                </Button>
-              </Link>
+              <div className="sticky top-0 z-[50] pt-2 sm:pt-3 pb-4 pl-0 xl:pl-8 w-1/2">
+                <BackButton href={`/support/${categorySlug}`} />
+              </div>
               <div className="flex gap-2">
-                <Button variant="outline" size="icon" className="w-10 h-10 rounded-xl border-border hover:border-primary transition-all">
+                <Button
+                  variant="outline"
+                  size="icon"
+                  className="w-10 h-10 rounded-full border-border/50 hover:border-primary/50 hover:bg-primary/5 transition-all"
+                >
                   <Share2 className="w-4 h-4" />
                 </Button>
-                <Button variant="outline" size="icon" className="w-10 h-10 rounded-xl border-border hover:border-primary transition-all">
+                <Button
+                  variant="outline"
+                  size="icon"
+                  className="w-10 h-10 rounded-full border-border/50 hover:border-primary/50 hover:bg-primary/5 transition-all"
+                >
                   <Bookmark className="w-4 h-4" />
                 </Button>
               </div>
@@ -96,102 +125,118 @@ export default function ArticlePage() {
           </div>
 
           {/* Article Identity Section */}
-          <div className="space-y-10 pb-16 border-b-2 border-border">
-            <div className="space-y-8">
-              <div className="inline-flex items-center gap-3 px-4 py-2 rounded-2xl bg-primary/5 border border-primary/20 text-[10px] font-black uppercase tracking-[0.3em] text-primary">
-                Technical Archiving: {article.category}
+          <div className="space-y-8 pb-12 border-b border-border/50">
+            <div className="space-y-6">
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/5 border border-primary/10 text-xs font-medium text-primary">
+                {article.category}
               </div>
-              <h1 className="text-5xl md:text-[5.5rem] font-black tracking-tight leading-[0.85] uppercase text-foreground">
+              <h1 className="text-4xl md:text-5xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-b from-foreground to-foreground/80 pb-2">
                 {article.title}
               </h1>
-              <p className="text-2xl text-muted-foreground leading-relaxed font-bold max-w-3xl italic opacity-80">
-                "{article.description}"
+              <p className="text-xl text-muted-foreground leading-relaxed max-w-3xl">
+                {article.description}
               </p>
             </div>
 
-            <div className="flex flex-wrap items-center gap-x-12 gap-y-6 pt-10 border-t border-border text-[10px] font-black text-muted-foreground uppercase tracking-[0.3em]">
-              <div className="flex items-center gap-4">
-                <div className="w-8 h-8 rounded-lg bg-muted flex items-center justify-center">
-                  <FileText className="w-4 h-4 text-primary" />
-                </div>
-                <span>Script v2.04</span>
+            <div className="flex flex-wrap items-center gap-x-8 gap-y-4 pt-6 text-sm font-medium text-muted-foreground">
+              <div className="flex items-center gap-2">
+                <FileText className="w-4 h-4" />
+                <span>Article</span>
               </div>
-              <div className="flex items-center gap-4">
-                <div className="w-8 h-8 rounded-lg bg-muted flex items-center justify-center">
-                  <Clock className="w-4 h-4 text-primary" />
-                </div>
+              <div className="flex items-center gap-2">
+                <Clock className="w-4 h-4" />
                 <span>{article.readTime}</span>
               </div>
-              <div className="flex items-center gap-4">
-                <div className="w-8 h-8 rounded-lg bg-muted flex items-center justify-center">
-                  <Calendar className="w-4 h-4 text-primary" />
-                </div>
-                <span>Indexed: {new Date(article.publishedAt).toLocaleDateString("en-US", { month: "short", year: "numeric" })}</span>
+              <div className="flex items-center gap-2">
+                <Calendar className="w-4 h-4" />
+                <span>
+                  Updated on{" "}
+                  {new Date(article.publishedAt).toLocaleDateString("en-US", {
+                    month: "long",
+                    day: "numeric",
+                    year: "numeric",
+                  })}
+                </span>
               </div>
             </div>
           </div>
 
           {/* Structured Content Interface */}
           <div className="relative">
-            <article className="prose prose-zinc dark:prose-invert max-w-none 
-              prose-headings:uppercase prose-headings:tracking-tighter prose-headings:font-black
-              prose-h2:text-5xl prose-h2:border-b-2 prose-h2:border-border prose-h2:pb-6 prose-h2:mt-24 prose-h2:mb-12 prose-h2:text-foreground
-              prose-h3:text-2xl prose-h3:mt-16 prose-h3:mb-8 prose-h3:text-primary
-              prose-p:text-muted-foreground prose-p:text-xl prose-p:leading-relaxed prose-p:font-medium prose-p:mb-8
-              prose-strong:text-foreground prose-strong:font-black prose-strong:bg-muted/30 prose-strong:px-1 prose-strong:rounded
-              prose-li:text-muted-foreground prose-li:text-xl prose-li:font-medium prose-li:marker:text-primary prose-li:marker:font-black
-              prose-code:text-primary prose-code:bg-primary/5 prose-code:px-2 prose-code:py-1 prose-code:rounded-lg prose-code:before:content-none prose-code:after:content-none prose-code:font-black prose-code:text-base
-              prose-blockquote:border-l-4 prose-blockquote:border-primary prose-blockquote:bg-muted/20 prose-blockquote:p-10 prose-blockquote:rounded-[2.5rem] prose-blockquote:italic prose-blockquote:text-foreground prose-blockquote:text-2xl
-              prose-hr:border-border prose-hr:border-2 prose-hr:my-20
-            ">
+            <article
+              className="prose prose-zinc dark:prose-invert max-w-none 
+              prose-headings:tracking-tight prose-headings:font-bold prose-headings:text-foreground
+              prose-h2:text-3xl prose-h2:mt-12 prose-h2:mb-6
+              prose-h3:text-2xl prose-h3:mt-8 prose-h3:mb-4
+              prose-p:text-muted-foreground prose-p:text-lg prose-p:leading-relaxed prose-p:mb-6
+              prose-strong:text-foreground prose-strong:font-semibold
+              prose-li:text-muted-foreground prose-li:text-lg
+              prose-code:text-primary prose-code:bg-primary/5 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded-md prose-code:before:content-none prose-code:after:content-none prose-code:font-medium
+              prose-blockquote:border-l-4 prose-blockquote:border-primary/50 prose-blockquote:bg-muted/30 prose-blockquote:p-6 prose-blockquote:rounded-r-2xl prose-blockquote:text-foreground prose-blockquote:italic
+              prose-img:rounded-2xl
+              prose-hr:border-border/50 prose-hr:my-12
+            "
+            >
               <ReactMarkdown>{article.content}</ReactMarkdown>
             </article>
           </div>
 
           {/* Related Modules */}
-          <div className="pt-32 space-y-12">
-            <div className="flex items-center gap-4">
-              <div className="h-[2px] flex-1 bg-border" />
-              <h3 className="text-[10px] font-black uppercase tracking-[0.5em] text-muted-foreground px-8">Accelerated Tracks</h3>
-              <div className="h-[2px] flex-1 bg-border" />
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-              {relatedArticles.map((ra) => (
-                <Link
-                  key={ra.id}
-                  href={`/support/${categorySlug}/${ra.slug}`}
-                  className="group p-8 rounded-[2.5rem] bg-card border-2 border-border hover:border-primary transition-all duration-500 shadow-sm hover:shadow-xl hover:-translate-y-1"
-                >
-                  <div className="h-full flex flex-col justify-between space-y-6">
-                    <h4 className="font-black text-lg text-foreground group-hover:text-primary transition-colors line-clamp-2 leading-tight uppercase tracking-tight">
-                      {ra.title}
-                    </h4>
-                    <div className="flex items-center justify-between pt-4 border-t border-border/50">
-                      <span className="text-[9px] font-black text-muted-foreground uppercase tracking-widest">{ra.readTime}</span>
-                      <ChevronRight className="w-4 h-4 text-primary transform group-hover:translate-x-1 transition-transform" />
+          {relatedArticles.length > 0 && (
+            <div className="pt-16 space-y-8 border-t border-border/50">
+              <h3 className="text-2xl font-bold tracking-tight text-foreground">
+                Related Articles
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                {relatedArticles.map((ra) => (
+                  <Link
+                    key={ra.id}
+                    href={`/support/${categorySlug}/${ra.slug}`}
+                    className="group p-6 rounded-3xl bg-card border border-border/50 hover:border-primary/50 transition-all duration-300 shadow-sm hover:shadow-md hover:-translate-y-1"
+                  >
+                    <div className="h-full flex flex-col justify-between space-y-4">
+                      <h4 className="font-bold text-lg text-foreground group-hover:text-primary transition-colors line-clamp-2 leading-tight">
+                        {ra.title}
+                      </h4>
+                      <div className="flex items-center justify-between pt-4 border-t border-border/50">
+                        <span className="text-xs font-medium text-muted-foreground">
+                          {ra.readTime}
+                        </span>
+                        <ChevronRight className="w-4 h-4 text-muted-foreground group-hover:text-primary transform group-hover:translate-x-1 transition-transform" />
+                      </div>
                     </div>
-                  </div>
-                </Link>
-              ))}
+                  </Link>
+                ))}
+              </div>
             </div>
-          </div>
+          )}
 
           {/* System Feedback Terminal */}
-          <div className="pt-24 pb-12">
-            <div className="p-12 rounded-[4rem] bg-muted/20 border-2 border-border flex flex-col items-center text-center space-y-8">
-              <div className="w-16 h-16 rounded-3xl bg-card flex items-center justify-center text-primary shadow-xl border border-border">
+          <div className="pt-16 pb-12">
+            <div className="p-8 md:p-12 rounded-3xl bg-card border border-border/50 flex flex-col items-center text-center space-y-6 shadow-sm">
+              <div className="w-16 h-16 rounded-full bg-primary/10 flex items-center justify-center text-primary mb-2">
                 <Zap className="w-8 h-8" />
               </div>
-              <div className="space-y-4">
-                <h3 className="text-3xl font-black uppercase tracking-tight text-foreground leading-none">Status: Optimized?</h3>
-                <p className="text-muted-foreground text-sm font-bold uppercase tracking-wide max-w-xs">Your system feedback refines our global documentation efficiency.</p>
+              <div className="space-y-2">
+                <h3 className="text-2xl font-bold tracking-tight text-foreground">
+                  Was this article helpful?
+                </h3>
+                <p className="text-muted-foreground">
+                  Your feedback helps us improve our knowledge base.
+                </p>
               </div>
-              <div className="flex gap-4">
-                <Button variant="outline" className="border-2 border-border hover:border-emerald-500/50 hover:bg-emerald-500/5 dark:hover:bg-emerald-500/10 rounded-2xl h-14 px-10 text-[10px] font-black uppercase tracking-[0.2em] transition-all">
-                  Confirmed
+              <div className="flex gap-4 pt-4">
+                <Button
+                  variant="outline"
+                  className="rounded-full px-8 hover:bg-emerald-500/10 hover:text-emerald-500 hover:border-emerald-500/50 transition-colors"
+                >
+                  Yes
                 </Button>
-                <Button variant="outline" className="border-2 border-border hover:border-rose-500/50 hover:bg-rose-500/5 dark:hover:bg-rose-500/10 rounded-2xl h-14 px-10 text-[10px] font-black uppercase tracking-[0.2em] transition-all">
-                  Incomplete
+                <Button
+                  variant="outline"
+                  className="rounded-full px-8 hover:bg-rose-500/10 hover:text-rose-500 hover:border-rose-500/50 transition-colors"
+                >
+                  No
                 </Button>
               </div>
             </div>
