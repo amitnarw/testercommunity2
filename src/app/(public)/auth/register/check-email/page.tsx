@@ -15,6 +15,7 @@ import {
 import { Logo } from "@/components/logo";
 import Link from "next/link";
 import { BackgroundBeams } from "@/components/ui/background-beams";
+import { ROUTES } from "@/lib/routes";
 
 function CheckEmailContent() {
   return (
@@ -50,7 +51,7 @@ function CheckEmailContent() {
           </CardHeader>
           <CardContent className="flex justify-center p-8 pt-0">
             <Button asChild className="mt-2">
-              <Link href="/auth/login">Back to Login</Link>
+              <Link href={ROUTES.AUTH.LOGIN}>Back to Login</Link>
             </Button>
           </CardContent>
         </Card>

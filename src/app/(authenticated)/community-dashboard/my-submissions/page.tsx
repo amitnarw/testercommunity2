@@ -35,6 +35,12 @@ import { PageHeader } from "@/components/page-header";
 import { useHubSubmittedApp, useHubSubmittedAppsCount } from "@/hooks/useHub";
 import { Skeleton } from "@/components/ui/skeleton";
 
+// Helper to filter out paid apps from displaying in the community hub
+const filterFreeApps = (apps: HubSubmittedAppResponse[] | undefined) => {
+  if (!apps) return [];
+  return apps.filter((app) => app.appType !== "PAID");
+};
+
 const PROJECTS_PER_PAGE = 6;
 
 const getStatusConfig = (status: HubSubmittedAppResponse["status"]) => {
@@ -463,10 +469,12 @@ function MySubmissionsContent() {
       options: { enabled: mainTab === "testing" },
     });
 
-  const displayData =
+  const displayDataRaw =
     mainTab === "testing"
       ? [...(submittedAppsData || []), ...(availableAppsData || [])]
       : submittedAppsData;
+
+  const displayData = filterFreeApps(displayDataRaw);
 
   const displayIsPending =
     mainTab === "testing"
@@ -565,9 +573,9 @@ function MySubmissionsContent() {
                   className="space-y-6 focus-visible:ring-0"
                 >
                   <SubTabUI
-                    pendingTabs={pendingTabs}
-                    setPendingSubTab={setPendingSubTab}
-                    pendingSubTab={pendingSubTab}
+                    tabs={pendingTabs}
+                    onTabChange={setPendingSubTab}
+                    activeTab={pendingSubTab}
                   />
 
                   <PaginatedProjectList

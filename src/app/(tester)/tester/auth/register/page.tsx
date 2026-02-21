@@ -40,6 +40,7 @@ import { useTheme } from "next-themes";
 import { BackButton } from "@/components/back-button";
 import { Separator } from "@/components/ui/separator";
 import { InteractiveGridPattern } from "@/components/ui/interactive-grid-pattern";
+import { ROUTES } from "@/lib/routes";
 
 const GoogleIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg
@@ -232,7 +233,7 @@ export default function ProfessionalRegisterPage() {
                 <p className="text-muted-foreground mt-2">
                   Already have an account?{" "}
                   <Link
-                    href="/tester/login"
+                    href={ROUTES.TESTER.AUTH.LOGIN}
                     className="text-primary hover:underline"
                   >
                     Log in

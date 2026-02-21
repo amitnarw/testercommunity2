@@ -1,8 +1,10 @@
 import {
   emailVerification,
   googleLogin,
+  googleTesterLogin,
   // fetchUser,
   login,
+  testerLogin,
   register,
   resendEmailVerification,
   // updateProfile
@@ -142,6 +144,42 @@ export function useResendEmailVerification(
     },
     onError: (data) => {
       console.log("Login failed: " + data);
+    },
+    ...options,
+  });
+
+  return mutation;
+}
+
+export function useTesterLogin(options?: UseMutationOptions<any, any, any>) {
+  const mutation = useMutation({
+    mutationFn: (payload: {
+      email: string;
+      password: string;
+      rememberMe: boolean;
+    }) => testerLogin(payload),
+    onSuccess: (data) => {
+      console.log("Tester login success: " + data);
+    },
+    onError: (data) => {
+      console.log("Tester login failed: " + data);
+    },
+    ...options,
+  });
+
+  return mutation;
+}
+
+export function useGoogleTesterLogin(
+  options?: UseMutationOptions<any, any, void>,
+) {
+  const mutation = useMutation<any, any, void>({
+    mutationFn: () => googleTesterLogin(),
+    onSuccess: (data) => {
+      console.log("Tester Google login success: " + data);
+    },
+    onError: (data) => {
+      console.log("Tester Google login failed: " + data);
     },
     ...options,
   });

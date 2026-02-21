@@ -15,6 +15,7 @@ import { authClient } from "@/lib/auth-client";
 import { useQueryClient } from "@tanstack/react-query";
 import { Logo } from "./logo";
 import { Button } from "./ui/button";
+import { ROUTES } from "@/lib/routes";
 
 const visitorNavItems = [
   { name: "Home", href: "/" },
@@ -101,7 +102,7 @@ export function Header({
     await authClient.signOut({
       fetchOptions: {
         onSuccess: () => {
-          router.push("/auth/login");
+          router.push(ROUTES.AUTH.LOGIN);
         },
       },
     });
@@ -109,7 +110,7 @@ export function Header({
     queryClient.removeQueries({ queryKey: ["getUserProfileData"] });
     queryClient.clear();
 
-    router.replace("/auth/login");
+    router.replace(ROUTES.AUTH.LOGIN);
   };
 
   const { scrollY } = useScroll();
@@ -187,14 +188,14 @@ export function Header({
                     asChild
                     className="rounded-full"
                   >
-                    <Link href="/auth/login">Log In</Link>
+                    <Link href={ROUTES.AUTH.LOGIN}>Log In</Link>
                   </Button>
                   <Button
                     size="sm"
                     asChild
                     className="rounded-full shadow-md hover:shadow-lg transition-shadow"
                   >
-                    <Link href="/auth/register">
+                    <Link href={ROUTES.AUTH.REGISTER}>
                       Sign Up <ArrowRight className="ml-1.5 h-3.5 w-3.5" />
                     </Link>
                   </Button>

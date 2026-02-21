@@ -307,15 +307,15 @@ export interface DashboardDataResponse {
     costPoints: number | null;
     averageTimeTesting: string | null;
     status:
-    | "IN_REVIEW"
-    | "DRAFT"
-    | "REJECTED"
-    | "IN_TESTING"
-    | "COMPLETED"
-    | "ON_HOLD"
-    | "REQUESTED"
-    | "AVAILABLE"
-    | "ACCEPTED";
+      | "IN_REVIEW"
+      | "DRAFT"
+      | "REJECTED"
+      | "IN_TESTING"
+      | "COMPLETED"
+      | "ON_HOLD"
+      | "REQUESTED"
+      | "AVAILABLE"
+      | "ACCEPTED";
   }[];
   statusCounts: {
     _count: {
@@ -339,15 +339,15 @@ export interface AppData {
   averageTimeTesting: string | null;
   minimumAndroidVersion: number;
   status:
-  | "IN_REVIEW"
-  | "DRAFT"
-  | "REJECTED"
-  | "IN_TESTING"
-  | "COMPLETED"
-  | "ON_HOLD"
-  | "REQUESTED"
-  | "AVAILABLE"
-  | "ACCEPTED";
+    | "IN_REVIEW"
+    | "DRAFT"
+    | "REJECTED"
+    | "IN_TESTING"
+    | "COMPLETED"
+    | "ON_HOLD"
+    | "REQUESTED"
+    | "AVAILABLE"
+    | "ACCEPTED";
   createdAt: Date;
   updatedAt: Date;
 }
@@ -419,12 +419,12 @@ export interface HubSubmittedAppResponse {
       type: "IMAGE" | "VIDEO";
       mime: string;
       category:
-      | "APP_LOGO"
-      | "SCREENSHOT"
-      | "FEEDBACK_MEDIA"
-      | "FEATURED_IMAGE"
-      | "AUTHOR_IMAGE"
-      | "OTHER";
+        | "APP_LOGO"
+        | "SCREENSHOT"
+        | "FEEDBACK_MEDIA"
+        | "FEATURED_IMAGE"
+        | "AUTHOR_IMAGE"
+        | "OTHER";
       src: string;
       appId: number | null;
       blogId: number | null;
@@ -463,12 +463,12 @@ export interface HubSubmittedAppResponse {
     };
     isActive: boolean;
     status:
-    | "PENDING"
-    | "IN_PROGRESS"
-    | "COMPLETED"
-    | "DROPPED"
-    | "REMOVED"
-    | "REJECTED";
+      | "PENDING"
+      | "IN_PROGRESS"
+      | "COMPLETED"
+      | "DROPPED"
+      | "REMOVED"
+      | "REJECTED";
     statusDetails: {
       title: string;
       description: string;
@@ -530,14 +530,14 @@ export interface NotificationResponse {
   title: string;
   description: string;
   type:
-  | "NEW_TEST"
-  | "FEEDBACK_RECEIVED"
-  | "TEST_COMPLETED"
-  | "BUG_REPORT"
-  | "BUG_REPORT"
-  | "POINTS_AWARDED"
-  | "APP_SUBMISSION"
-  | "OTHER";
+    | "NEW_TEST"
+    | "FEEDBACK_RECEIVED"
+    | "TEST_COMPLETED"
+    | "BUG_REPORT"
+    | "BUG_REPORT"
+    | "POINTS_AWARDED"
+    | "APP_SUBMISSION"
+    | "OTHER";
   url: string | null;
   isActive: boolean;
   createdAt: Date;
@@ -629,7 +629,14 @@ export type Project = {
   icon: string;
   dataAiHint?: string;
   category: string;
-  status: "In Testing" | "In Review" | "Completed" | "Draft" | "Rejected";
+  status:
+    | "In Testing"
+    | "In Review"
+    | "Completed"
+    | "Draft"
+    | "Rejected"
+    | "Approved"
+    | "Available";
   testerStatus?: TesterStatus;
   testersStarted: number;
   testersCompleted: number;
@@ -659,6 +666,52 @@ export type Project = {
   };
 };
 
+export type TesterProjectResponse = {
+  id: number;
+  appId: number;
+  appName: string;
+  appLogo: string;
+  packageName: string;
+  category: string;
+  description: string | null;
+  appScreenshot1: string;
+  appScreenshot2: string;
+  appStatus:
+    | "IN_REVIEW"
+    | "DRAFT"
+    | "REJECTED"
+    | "IN_TESTING"
+    | "COMPLETED"
+    | "ON_HOLD"
+    | "REQUESTED"
+    | "AVAILABLE";
+  testerStatus: TesterStatus | null;
+  totalDay: number;
+  currentDay: number;
+  totalTester: number;
+  currentTester: number;
+  rewardPoints: number | null;
+  costPoints: number | null;
+  instructionsForTester: string | null;
+  minimumAndroidVersion: number;
+  daysCompleted: number;
+  joinedAt: string | null;
+  completedAt: string | null;
+  lastActivityAt: string | null;
+  dailyVerifications: {
+    id: number;
+    dayNumber: number;
+    proofImageUrl: string;
+    status: "PENDING" | "VERIFIED" | "REJECTED";
+    verifiedAt: string | null;
+    rejectionReason: string | null;
+    metaData: any;
+  }[];
+  feedbackCount: number;
+  totalTesters: number;
+  createdAt: string;
+  updatedAt: string;
+};
 export type CommunityApp = {
   id: number | string;
   name: string;
@@ -732,4 +785,3 @@ export interface PaymentVerificationResponse {
   packagesAwarded: number;
   totalPackages: number;
 }
-

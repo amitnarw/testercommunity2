@@ -8,6 +8,7 @@ import { AdminSidebar } from "@/components/admin/admin-sidebar";
 
 import PageTransition from "@/components/page-transition";
 import { authClient } from "@/lib/auth-client";
+import { ROUTES } from "@/lib/routes";
 
 export default function AdminLayout({
   children,
@@ -18,7 +19,7 @@ export default function AdminLayout({
   const router = useRouter();
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(true);
   const { data: session, isPending } = authClient.useSession();
-  const isLoginPage = pathname?.startsWith("/admin/auth/login");
+  const isLoginPage = pathname?.startsWith(ROUTES.ADMIN.AUTH.LOGIN);
 
   useEffect(() => {
     if (isPending) return;
@@ -31,19 +32,22 @@ export default function AdminLayout({
         const roleName =
           typeof roleField === "string" ? roleField : roleField?.name;
         const lowerRole = roleName?.toLowerCase() || "";
-        const isAdminRole = ["admin", "super_admin", "super admin", "moderator"].includes(
-          lowerRole,
-        );
+        const isAdminRole = [
+          "admin",
+          "super_admin",
+          "super admin",
+          "moderator",
+        ].includes(lowerRole);
 
         if (isAdminRole) {
-          router.replace("/admin/dashboard");
+          router.replace(ROUTES.ADMIN.DASHBOARD);
         }
       }
       return;
     }
 
     if (!isLoginPage) {
-      router.replace("/admin/auth/login");
+      router.replace(ROUTES.ADMIN.AUTH.LOGIN);
     }
   }, [session, isPending, isLoginPage, router]);
 
@@ -51,7 +55,7 @@ export default function AdminLayout({
     await authClient.signOut({
       fetchOptions: {
         onSuccess: () => {
-          router.push("/admin/auth/login");
+          router.push(ROUTES.ADMIN.AUTH.LOGIN);
         },
       },
     });

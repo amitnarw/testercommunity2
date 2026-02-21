@@ -23,6 +23,7 @@ import { BackgroundBeams } from "@/components/ui/background-beams";
 import { LoadingButton } from "@/components/ui/loading-button";
 import { useState } from "react";
 import Link from "next/link";
+import { ROUTES } from "@/lib/routes";
 
 const signupSchema = z.object({
   firstName: z.string().min(2, "First name is required."),
@@ -57,7 +58,7 @@ export default function RegisterPage() {
   const processForm: SubmitHandler<any> = (data) => {
     mutate(data, {
       onSuccess: () => {
-        router.push("/auth/register/check-email");
+        router.push(ROUTES.AUTH.REGISTER_CHECK_EMAIL);
       },
     });
   };
@@ -96,7 +97,7 @@ export default function RegisterPage() {
                   <p className="text-muted-foreground mt-2">
                     Or{" "}
                     <Link
-                      href="/auth/login"
+                      href={ROUTES.AUTH.LOGIN}
                       className="text-primary hover:underline"
                     >
                       login to your account

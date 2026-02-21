@@ -45,6 +45,12 @@ import { AppCardSkeleton } from "@/components/app-card-skeleton";
 import { format } from "date-fns";
 import { Skeleton } from "@/components/ui/skeleton";
 
+// Helper to filter out paid apps from displaying in the community hub
+const filterFreeApps = (apps: HubSubmittedAppResponse[] | undefined) => {
+  if (!apps) return [];
+  return apps.filter((app) => app.appType !== "PAID");
+};
+
 const APPS_PER_PAGE = 6;
 
 const BentoCard = ({
@@ -462,9 +468,11 @@ function CommunityDashboardContent() {
   };
   const backendType = getBackendType();
 
-  const { data: hubAppsData, isPending: hubAppsIsPending } = useHubApps({
+  const { data: hubAppsDataRaw, isPending: hubAppsIsPending } = useHubApps({
     type: backendType,
   });
+
+  const hubAppsData = filterFreeApps(hubAppsDataRaw);
 
   const { data: hubDataCount, isPending: hubDataCountIsPending } =
     useHubAppsCount();
@@ -732,9 +740,9 @@ function CommunityDashboardContent() {
                 </p>
               </div>
               <SubTabUI
-                pendingTabs={requestTabs}
-                setPendingSubTab={handleRequestsSubTabChange}
-                pendingSubTab={requestsSubTab}
+                tabs={requestTabs}
+                onTabChange={handleRequestsSubTabChange}
+                activeTab={requestsSubTab}
               />
 
               {requestsSubTab === "pending" && (
@@ -766,9 +774,9 @@ function CommunityDashboardContent() {
                 </p>
               </div>
               <SubTabUI
-                pendingTabs={runningSubTabs}
-                setPendingSubTab={handleRunningSubTabChange}
-                pendingSubTab={runningSubTab}
+                tabs={runningSubTabs}
+                onTabChange={handleRunningSubTabChange}
+                activeTab={runningSubTab}
               />
 
               {runningSubTab === "in-progress" && (

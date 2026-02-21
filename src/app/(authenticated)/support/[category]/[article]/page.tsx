@@ -102,7 +102,7 @@ export default function ArticlePage() {
             </Breadcrumb>
 
             <div className="flex justify-between items-center">
-              <div className="sticky top-0 z-[50] pt-2 sm:pt-3 pb-4 pl-0 xl:pl-8 w-1/2">
+              <div className="sticky top-0 z-[50] pt-2 pb-4 pl-0 xl:pl-8 w-1/2">
                 <BackButton href={`/support/${categorySlug}`} />
               </div>
               <div className="flex gap-2">

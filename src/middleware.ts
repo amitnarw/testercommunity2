@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { jwtVerify } from "jose";
+import { ROUTES } from "@/lib/routes";
 
 interface RoleInfo {
   name: string;
@@ -28,7 +29,6 @@ async function validateSession(
 ): Promise<SessionValidationResult> {
   const secret = process.env.BETTER_AUTH_SECRET;
 
-  // Try to get role from the role_cache cookie (JWT)
   const roleCache = request.cookies
     .getAll()
     .find(
@@ -36,7 +36,6 @@ async function validateSession(
         c.name === "better-auth.role_cache" || c.name.endsWith(".role_cache"),
     )?.value;
 
-  // More flexible session token check (handles Secure/Host prefixes)
   const sessionToken = request.cookies
     .getAll()
     .find(
@@ -45,12 +44,10 @@ async function validateSession(
         c.name.endsWith(".session_token"),
     )?.value;
 
-  // If no session token exists, user is definitely not authenticated
   if (!sessionToken) {
     return { isAuthenticated: false, role: null };
   }
 
-  // Try to decode the role cache JWT
   let role: RoleInfo | null = null;
   if (roleCache && secret) {
     try {
@@ -60,15 +57,10 @@ async function validateSession(
       );
       role = (payload as any).role || null;
     } catch (err) {
-      // JWT expired or invalid - role is unknown but user might still be authenticated
       role = null;
     }
   }
 
-  // If we have a session token and either:
-  // 1. Role is known (from valid JWT)
-  // 2. Role is unknown (JWT expired) but session token exists
-  // Consider user as authenticated. The actual session validation happens server-side.
   return {
     isAuthenticated: true,
     role,
@@ -78,31 +70,31 @@ async function validateSession(
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // Redirect /admin to /admin/dashboard
-  if (pathname === "/admin") {
-    return NextResponse.redirect(new URL("/admin/dashboard", request.url));
+  if (pathname === ROUTES.ADMIN.ROOT) {
+    return NextResponse.redirect(new URL(ROUTES.ADMIN.DASHBOARD, request.url));
   }
 
-  // Redirect /tester to /tester/dashboard
-  if (pathname === "/tester") {
-    return NextResponse.redirect(new URL("/tester/dashboard", request.url));
+  if (pathname === ROUTES.TESTER.ROOT) {
+    return NextResponse.redirect(new URL(ROUTES.TESTER.DASHBOARD, request.url));
   }
 
-  // Define route categories
-  const authRoutes = ["/auth/login", "/auth/register"];
+  const authRoutes = [ROUTES.AUTH.LOGIN, ROUTES.AUTH.REGISTER];
   const authenticatedRoutes = [
-    "/dashboard",
-    "/community-dashboard",
-    "/notifications",
-    "/profile",
-    "/wallet",
-    "/billing",
+    ROUTES.AUTHENTICATED.DASHBOARD,
+    ROUTES.AUTHENTICATED.COMMUNITY_DASHBOARD,
+    ROUTES.AUTHENTICATED.NOTIFICATIONS,
+    ROUTES.AUTHENTICATED.PROFILE,
+    ROUTES.AUTHENTICATED.WALLET,
+    ROUTES.AUTHENTICATED.BILLING,
   ];
-  const adminRoutes = ["/admin"];
-  const testerAuthRoutes = ["/tester/login", "/tester/register"];
-  const testerRoutes = ["/tester/dashboard"];
+  const adminRoutes = [ROUTES.ADMIN.ROOT];
+  const adminAuthRoutes = [ROUTES.ADMIN.AUTH.LOGIN];
+  const testerAuthRoutes = [
+    ROUTES.TESTER.AUTH.LOGIN,
+    ROUTES.TESTER.AUTH.REGISTER,
+  ];
+  const testerRoutes = [ROUTES.TESTER.ROOT];
 
-  // Check if the current path requires authentication check
   const needsAuthCheck =
     authRoutes.some((route) => pathname.startsWith(route)) ||
     authenticatedRoutes.some((route) => pathname.startsWith(route)) ||
@@ -110,15 +102,12 @@ export async function middleware(request: NextRequest) {
     testerAuthRoutes.some((route) => pathname.startsWith(route)) ||
     testerRoutes.some((route) => pathname.startsWith(route));
 
-  // Skip validation for routes that don't need it
   if (!needsAuthCheck) {
     return NextResponse.next();
   }
 
-  // Validate session
   const { isAuthenticated, role } = await validateSession(request);
 
-  // Robust role detection (handles string or object)
   const roleName = typeof role === "string" ? role : role?.name;
   const lowerRole = roleName?.toLowerCase() || "";
   const isSuperAdmin = lowerRole === "super_admin";
@@ -126,87 +115,111 @@ export async function middleware(request: NextRequest) {
   const isTester = lowerRole === "tester";
   const isUser = lowerRole === "user";
 
-  // Super admin has full access to all routes - skip all restrictions
   if (isSuperAdmin) {
     return NextResponse.next();
   }
 
-  // If user is authenticated and tries to access login/register, redirect to dashboard
+  // Redirect authenticated users away from public auth pages
   if (
     isAuthenticated &&
     authRoutes.some((route) => pathname.startsWith(route))
   ) {
-    return NextResponse.redirect(new URL("/dashboard", request.url));
+    return NextResponse.redirect(
+      new URL(ROUTES.AUTHENTICATED.DASHBOARD, request.url),
+    );
   }
 
-  // Handle admin login page redirection for authenticated users
-  if (isAuthenticated && pathname.startsWith("/admin/auth/login")) {
-    return NextResponse.redirect(new URL("/admin/dashboard", request.url));
+  // Redirect authenticated admins away from admin login page
+  if (
+    isAuthenticated &&
+    adminAuthRoutes.some((route) => pathname.startsWith(route))
+  ) {
+    return NextResponse.redirect(new URL(ROUTES.ADMIN.DASHBOARD, request.url));
   }
 
+  // Redirect authenticated testers away from tester auth pages
   if (
     isTester &&
     isAuthenticated &&
     testerAuthRoutes.some((route) => pathname.startsWith(route))
   ) {
-    return NextResponse.redirect(new URL("/tester/dashboard", request.url));
+    return NextResponse.redirect(new URL(ROUTES.TESTER.DASHBOARD, request.url));
   }
 
-  // If user is not authenticated and tries to access a protected route, redirect to login
+  // Redirect unauthenticated users to public login
   if (
     !isAuthenticated &&
     authenticatedRoutes.some((route) => pathname.startsWith(route))
   ) {
-    return NextResponse.redirect(new URL("/auth/login", request.url));
+    return NextResponse.redirect(new URL(ROUTES.AUTH.LOGIN, request.url));
   }
 
-  // Admin route protection
+  // Redirect unauthenticated users to admin login
   if (
     !isAuthenticated &&
     adminRoutes.some((route) => pathname.startsWith(route)) &&
-    !pathname.startsWith("/admin/auth/login")
+    !adminAuthRoutes.some((route) => pathname.startsWith(route))
   ) {
-    return NextResponse.redirect(new URL("/admin/auth/login", request.url));
+    return NextResponse.redirect(new URL(ROUTES.ADMIN.AUTH.LOGIN, request.url));
   }
 
-  // Tester route protection
+  // Redirect unauthenticated users to tester login
   if (
     !isAuthenticated &&
     testerRoutes.some((route) => pathname.startsWith(route)) &&
     !testerAuthRoutes.some((route) => pathname.startsWith(route))
   ) {
-    return NextResponse.redirect(new URL("/tester/login", request.url));
+    return NextResponse.redirect(
+      new URL(ROUTES.TESTER.AUTH.LOGIN, request.url),
+    );
   }
 
-  // Role-based access restrictions (only for non-super-admin roles)
-  
-  // 1. User role restrictions
+  // Role-based access control: prevent users from accessing admin/tester areas
   if (isUser) {
-    // User can only access authenticated routes
-    if (adminRoutes.some((route) => pathname.startsWith(route)) && !pathname.startsWith("/admin/auth/login")) {
-      return NextResponse.redirect(new URL("/dashboard", request.url));
+    if (
+      adminRoutes.some((route) => pathname.startsWith(route)) &&
+      !adminAuthRoutes.some((route) => pathname.startsWith(route))
+    ) {
+      return NextResponse.redirect(
+        new URL(ROUTES.AUTHENTICATED.DASHBOARD, request.url),
+      );
     }
-    if (testerRoutes.some((route) => pathname.startsWith(route)) && !testerAuthRoutes.some((route) => pathname.startsWith(route))) {
-      return NextResponse.redirect(new URL("/dashboard", request.url));
+    if (
+      testerRoutes.some((route) => pathname.startsWith(route)) &&
+      !testerAuthRoutes.some((route) => pathname.startsWith(route))
+    ) {
+      return NextResponse.redirect(
+        new URL(ROUTES.AUTHENTICATED.DASHBOARD, request.url),
+      );
     }
   }
 
-  // 2. Admin role restrictions (admin, moderator, support)
+  // Role-based access control: prevent admins from accessing tester areas
   if (isAdmin) {
-    // Admin can only access admin routes and authenticated routes
-    if (testerRoutes.some((route) => pathname.startsWith(route)) && !testerAuthRoutes.some((route) => pathname.startsWith(route))) {
-      return NextResponse.redirect(new URL("/admin/dashboard", request.url));
+    if (
+      testerRoutes.some((route) => pathname.startsWith(route)) &&
+      !testerAuthRoutes.some((route) => pathname.startsWith(route))
+    ) {
+      return NextResponse.redirect(
+        new URL(ROUTES.ADMIN.DASHBOARD, request.url),
+      );
     }
   }
 
-  // 3. Tester role restrictions
+  // Role-based access control: prevent testers from accessing user/admin areas
   if (isTester) {
-    // Tester can only access tester routes and tester auth routes
     if (authenticatedRoutes.some((route) => pathname.startsWith(route))) {
-      return NextResponse.redirect(new URL("/tester/dashboard", request.url));
+      return NextResponse.redirect(
+        new URL(ROUTES.TESTER.DASHBOARD, request.url),
+      );
     }
-    if (adminRoutes.some((route) => pathname.startsWith(route)) && !pathname.startsWith("/admin/auth/login")) {
-      return NextResponse.redirect(new URL("/tester/dashboard", request.url));
+    if (
+      adminRoutes.some((route) => pathname.startsWith(route)) &&
+      !adminAuthRoutes.some((route) => pathname.startsWith(route))
+    ) {
+      return NextResponse.redirect(
+        new URL(ROUTES.TESTER.DASHBOARD, request.url),
+      );
     }
   }
 

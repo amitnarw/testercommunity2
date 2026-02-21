@@ -73,33 +73,33 @@ const AppInfoHeader = ({
             <p className="text-black dark:text-white font-bold">STATUS</p>
             <p
               className={`flex flex-row items-center gap-4 justify-center w-full text-lg sm:text-2xl font-bold rounded-xl p-3 ${
-                status === "REJECTED"
+                status === "Rejected"
                   ? "bg-gradient-to-br from-red-500/60 to-red-500/20 dark:from-red-500/30 dark:to-red-500/5"
-                  : status === "COMPLETED"
+                  : status === "Completed"
                     ? "bg-gradient-to-br from-green-500/60 to-green-500/20 dark:from-green-500/30 dark:to-green-500/5"
-                    : status === "IN_TESTING" || status === "AVAILABLE"
+                    : status === "In Testing" || status === "Approved"
                       ? "bg-gradient-to-br from-primary to-primary/20 dark:from-primary dark:to-primary/5"
                       : "bg-gradient-to-br from-yellow-500/60 to-yellow-500/20 dark:from-yellow-500/30 dark:to-yellow-500/5"
               } ${
-                status === "REJECTED"
+                status === "Rejected"
                   ? "text-red-800 dark:text-red-500"
-                  : status === "COMPLETED"
+                  : status === "Completed"
                     ? "text-green-800 dark:text-green-500"
-                    : status === "IN_TESTING" || status === "AVAILABLE"
+                    : status === "In Testing" || status === "Approved"
                       ? "text-primary-foreground dark:text-primary-foreground"
                       : "text-yellow-800 dark:text-yellow-500"
               }`}
             >
               <span>{statusConfig.icon}</span>
               <span>
-                {status === "IN_TESTING"
+                {status === "In Testing"
                   ? "In Testing"
-                  : status === "REJECTED"
+                  : status === "Rejected"
                     ? "Rejected"
-                    : status === "COMPLETED"
+                    : status === "Completed"
                       ? "Completed"
-                      : status === "AVAILABLE"
-                        ? "Available"
+                      : status === "Approved"
+                        ? "Approved"
                         : "In Review"}
               </span>
             </p>

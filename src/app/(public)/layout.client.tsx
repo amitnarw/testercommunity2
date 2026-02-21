@@ -5,6 +5,7 @@ import { Footer } from "@/components/footer";
 import { authClient } from "@/lib/auth-client";
 import PageTransition from "@/components/page-transition";
 import { usePathname } from "next/navigation";
+import { ROUTES } from "@/lib/routes";
 
 export default function PublicClientLayout({
   children,
@@ -16,8 +17,8 @@ export default function PublicClientLayout({
 
   const isAuthPage =
     pathname.startsWith("/auth") ||
-    pathname.startsWith("/tester/login") ||
-    pathname.startsWith("/tester/register");
+    pathname.startsWith(ROUTES.TESTER.AUTH.LOGIN) ||
+    pathname.startsWith(ROUTES.TESTER.AUTH.REGISTER);
 
   const isSamplePage = pathname.startsWith("/samples");
 
