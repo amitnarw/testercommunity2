@@ -28,6 +28,7 @@ import {
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { TransitionLink } from "./transition-link";
+import { ROUTES } from "@/lib/routes";
 
 const mainNavItems = [
   { name: "Home", href: "/" },
@@ -138,15 +139,15 @@ export default function MobileMenu({
   // Group admin items by section
   const groupedAdminItems = isAdmin
     ? {
-      overview: displayItems.filter(
-        (item: any) => item.section === "overview",
-      ),
-      paid: displayItems.filter((item: any) => item.section === "paid"),
-      free: displayItems.filter((item: any) => item.section === "free"),
-      platform: displayItems.filter(
-        (item: any) => item.section === "platform",
-      ),
-    }
+        overview: displayItems.filter(
+          (item: any) => item.section === "overview",
+        ),
+        paid: displayItems.filter((item: any) => item.section === "paid"),
+        free: displayItems.filter((item: any) => item.section === "free"),
+        platform: displayItems.filter(
+          (item: any) => item.section === "platform",
+        ),
+      }
     : null;
 
   return (
@@ -365,7 +366,9 @@ export default function MobileMenu({
             ) : (
               <div className="flex flex-col gap-2 flex-shrink-0">
                 <Button asChild size="lg" onClick={() => setIsMenuOpen(false)}>
-                  <TransitionLink href="/auth/login">Log In</TransitionLink>
+                  <TransitionLink href={ROUTES.AUTH.LOGIN}>
+                    Log In
+                  </TransitionLink>
                 </Button>
                 <Button
                   asChild
@@ -373,7 +376,9 @@ export default function MobileMenu({
                   variant="outline"
                   onClick={() => setIsMenuOpen(false)}
                 >
-                  <TransitionLink href="/auth/register">Sign Up</TransitionLink>
+                  <TransitionLink href={ROUTES.AUTH.REGISTER}>
+                    Sign Up
+                  </TransitionLink>
                 </Button>
               </div>
             )}

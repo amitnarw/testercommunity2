@@ -3,16 +3,15 @@
 import { useState, useEffect, Suspense } from "react";
 import { useSearchParams, usePathname, useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { Card, CardHeader, CardDescription } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Search, Users2 } from "lucide-react";
-import { Tabs } from "@/components/ui/tabs";
+import { Search } from "lucide-react";
+import { Tabs, TabsList, TabsContent, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { AppPagination } from "@/components/app-pagination";
 import { useSubmittedApps, useSubmittedAppsCount } from "@/hooks/useAdmin";
 import { HubSubmittedAppResponse } from "@/lib/types";
-import { CustomTabsList } from "@/components/custom-tabs-list";
 import { SubmissionsTable } from "@/components/admin/submissions-table";
 
 const ITEMS_PER_PAGE = 8;
@@ -110,132 +109,105 @@ function AdminSubmissionsFreeContent() {
         </div>
       </div>
 
-      {/* Main Content Card */}
-      <Card>
-        <CardHeader className="p-2 sm:p-6">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-            <div className="relative w-full md:w-auto">
-              <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-              <Input
-                placeholder="Search by app name or developer..."
-                className="pl-8 w-full md:w-[300px]"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
-            </div>
+      <Tabs
+        value={
+          activeTab === "AVAILABLE" || activeTab === "IN_TESTING"
+            ? "RUNNING"
+            : activeTab
+        }
+        onValueChange={(val) =>
+          handleTabChange(val === "RUNNING" ? "AVAILABLE" : val)
+        }
+        className="w-full grid grid-cols-1"
+      >
+        <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+          <div className="relative w-full md:w-auto">
+            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+            <Input
+              placeholder="Search by app name or developer..."
+              className="pl-8 w-full md:w-[300px]"
+              value={searchQuery}
+              onChange={(e) => {
+                setSearchQuery(e.target.value);
+                setCurrentPage(1);
+              }}
+            />
           </div>
-        </CardHeader>
-
-        <div className="px-2 sm:px-6 pb-6 space-y-4">
-          {/* Status Tabs */}
-          <div className="flex flex-col gap-4">
-            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
-              <Button
-                variant={activeTab === "All" ? "default" : "outline"}
-                onClick={() => handleTabChange("All")}
-                className="w-full sm:w-auto rounded-lg h-9"
-              >
-                All
-                <span
-                  className={`ml-2 bg-primary/20 text-primary rounded-full px-2 py-0.5 text-xs ${activeTab === "All" ? "text-white bg-white/20" : ""}`}
-                >
-                  {/* @ts-ignore */}
-                  {countsData?.All || 0}
-                </span>
-              </Button>
-
-              <Tabs
-                value={
-                  activeTab === "AVAILABLE" || activeTab === "IN_TESTING"
-                    ? "RUNNING"
-                    : activeTab
-                }
-                onValueChange={(val) =>
-                  handleTabChange(val === "RUNNING" ? "AVAILABLE" : val)
-                }
-                className="w-full sm:w-auto"
-              >
-                <CustomTabsList
-                  tabs={[
-                    {
-                      label: "Pending",
-                      value: "IN_REVIEW",
-                      count: countsData?.IN_REVIEW || 0,
-                    },
-                    {
-                      label: "Running",
-                      value: "RUNNING",
-                      count:
-                        (countsData?.AVAILABLE || 0) +
-                        (countsData?.IN_TESTING || 0),
-                    },
-                    {
-                      label: "Rejected",
-                      value: "REJECTED",
-                      count: countsData?.REJECTED || 0,
-                    },
-                  ]}
-                  activeTab={
-                    activeTab === "AVAILABLE" || activeTab === "IN_TESTING"
-                      ? "RUNNING"
-                      : activeTab
-                  }
-                  isLoading={false}
-                  className="py-0 static"
-                  listClassName="w-full sm:w-auto"
-                />
-              </Tabs>
-            </div>
-
-            {/* Sub-tabs for Running status */}
-            {(activeTab === "AVAILABLE" || activeTab === "IN_TESTING") && (
-              <div className="flex justify-start">
-                <div className="flex items-center gap-2 bg-muted rounded-lg p-1">
-                  {[
-                    {
-                      label: "Available",
-                      value: "AVAILABLE",
-                      count: countsData?.AVAILABLE || 0,
-                    },
-                    {
-                      label: "In Testing",
-                      value: "IN_TESTING",
-                      count: countsData?.IN_TESTING || 0,
-                    },
-                  ].map((tab) => (
-                    <button
-                      key={tab.value}
-                      onClick={() => handleTabChange(tab.value)}
-                      className={cn(
-                        "rounded-lg px-4 py-1.5 text-xs sm:text-sm h-auto transition-colors",
-                        activeTab === tab.value
-                          ? "bg-black text-white dark:bg-white dark:text-black shadow-sm"
-                          : "text-muted-foreground hover:text-foreground hover:bg-background/50",
-                      )}
-                    >
-                      {tab.label} ({tab.count})
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
-          </div>
-
-          <SubmissionsTable
-            submissions={paginatedSubmissions}
-            isLoading={isLoading}
-            showAppType={false}
-          />
+          <TabsList className="w-full md:w-auto flex gap-1">
+            <TabsTrigger value="All">All ({countsData?.All || 0})</TabsTrigger>
+            <TabsTrigger value="IN_REVIEW">
+              Pending ({countsData?.IN_REVIEW || 0})
+            </TabsTrigger>
+            <TabsTrigger value="RUNNING">
+              Running (
+              {(countsData?.AVAILABLE || 0) + (countsData?.IN_TESTING || 0)})
+            </TabsTrigger>
+            <TabsTrigger value="REJECTED">
+              Rejected ({countsData?.REJECTED || 0})
+            </TabsTrigger>
+          </TabsList>
         </div>
-      </Card>
 
-      {!isLoading && paginatedSubmissions.length > 0 && (
-        <AppPagination
-          currentPage={currentPage}
-          totalPages={totalPages}
-          onPageChange={handlePageChange}
-        />
-      )}
+        <TabsContent
+          value={
+            activeTab === "AVAILABLE" || activeTab === "IN_TESTING"
+              ? "RUNNING"
+              : activeTab
+          }
+          className="mt-4 grid grid-cols-1"
+        >
+          {/* Sub-tabs for Running status */}
+          {(activeTab === "AVAILABLE" || activeTab === "IN_TESTING") && (
+            <div className="flex justify-start mb-4">
+              <div className="flex items-center gap-2 bg-muted rounded-lg p-1">
+                {[
+                  {
+                    label: "Available",
+                    value: "AVAILABLE",
+                    count: countsData?.AVAILABLE || 0,
+                  },
+                  {
+                    label: "In Testing",
+                    value: "IN_TESTING",
+                    count: countsData?.IN_TESTING || 0,
+                  },
+                ].map((tab) => (
+                  <button
+                    key={tab.value}
+                    onClick={() => handleTabChange(tab.value)}
+                    className={cn(
+                      "rounded-lg px-4 py-1.5 text-xs sm:text-sm h-auto transition-colors",
+                      activeTab === tab.value
+                        ? "bg-black text-white dark:bg-white dark:text-black shadow-sm"
+                        : "text-muted-foreground hover:text-foreground hover:bg-background/50",
+                    )}
+                  >
+                    {tab.label} ({tab.count})
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+          <div className="overflow-x-auto">
+            <Card>
+              <CardContent className="p-0">
+                <SubmissionsTable
+                  submissions={paginatedSubmissions}
+                  isLoading={isLoading}
+                  showAppType={false}
+                />
+              </CardContent>
+            </Card>
+          </div>
+          {!isLoading && paginatedSubmissions.length > 0 && (
+            <AppPagination
+              currentPage={currentPage}
+              totalPages={totalPages}
+              onPageChange={handlePageChange}
+            />
+          )}
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }

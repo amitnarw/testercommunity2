@@ -378,8 +378,8 @@ export default function AdminDashboardPage() {
   // Dynamic quick actions with counts
   const dynamicQuickActions = [
     {
-      title: "Pro Reviews",
-      description: "Pro submissions awaiting review",
+      title: "Paid Apps",
+      description: "Paid submissions awaiting review",
       icon: Clock,
       href: "/admin/submissions-paid",
       color: "text-amber-500",
@@ -388,7 +388,7 @@ export default function AdminDashboardPage() {
       countBadgeColor: "bg-amber-500/20 text-amber-600",
     },
     {
-      title: "Community Reviews",
+      title: "Free Apps (Community)",
       description: "Community submissions awaiting review",
       icon: Clock,
       href: "/admin/submissions-free",
@@ -418,31 +418,31 @@ export default function AdminDashboardPage() {
   // Transform status data for pie chart
   const statusDistribution = stats?.submissionsByStatus
     ? Object.entries(stats.submissionsByStatus).map(([name, value]) => ({
-      name: name.replace(/_/g, " "),
-      value: Number(value),
-      color: statusColors[name] || "#6b7280",
-    }))
+        name: name.replace(/_/g, " "),
+        value: Number(value),
+        color: statusColors[name] || "#6b7280",
+      }))
     : [];
 
   // Transform app type data
   const serviceComparison = stats?.submissionsByAppType
     ? [
-      {
-        name: "Submissions",
-        pro: stats.submissionsByAppType.PAID || 0,
-        community: stats.submissionsByAppType.FREE || 0,
-      },
-      {
-        name: "Feedback",
-        pro: Math.floor((stats.totalFeedback || 0) * 0.3),
-        community: Math.floor((stats.totalFeedback || 0) * 0.7),
-      },
-      {
-        name: "Testers",
-        pro: Math.floor((stats.totalTesters || 0) * 0.4),
-        community: Math.floor((stats.totalTesters || 0) * 0.6),
-      },
-    ]
+        {
+          name: "Submissions",
+          pro: stats.submissionsByAppType.PAID || 0,
+          community: stats.submissionsByAppType.FREE || 0,
+        },
+        {
+          name: "Feedback",
+          pro: Math.floor((stats.totalFeedback || 0) * 0.3),
+          community: Math.floor((stats.totalFeedback || 0) * 0.7),
+        },
+        {
+          name: "Testers",
+          pro: Math.floor((stats.totalTesters || 0) * 0.4),
+          community: Math.floor((stats.totalTesters || 0) * 0.6),
+        },
+      ]
     : [];
 
   // Recent submissions for pending approvals
@@ -479,13 +479,20 @@ export default function AdminDashboardPage() {
             <Card className="hover:shadow-md transition-shadow cursor-pointer h-full border-none bg-white/50 dark:bg-white/5 backdrop-blur-sm relative overflow-hidden group">
               {/* Background Watermark Icon - Mobile Only */}
               <div className="absolute -right-2 -bottom-2 opacity-5 sm:hidden pointer-events-none transition-transform duration-500 group-hover:scale-110">
-                <action.icon className={cn("h-16 w-16 rotate-12", action.color)} />
+                <action.icon
+                  className={cn("h-16 w-16 rotate-12", action.color)}
+                />
               </div>
 
               <CardContent className="p-2.5 sm:p-4 h-full flex items-center relative z-10">
                 <div className="flex items-center gap-2 sm:gap-3 w-full">
                   {/* Foreground Icon - Desktop Only */}
-                  <div className={cn("hidden sm:flex p-2 rounded-xl shrink-0", action.bgColor)}>
+                  <div
+                    className={cn(
+                      "hidden sm:flex p-2 rounded-xl shrink-0",
+                      action.bgColor,
+                    )}
+                  >
                     <action.icon className={cn("h-5 w-5", action.color)} />
                   </div>
                   <div className="flex-1 min-w-0">
@@ -498,7 +505,7 @@ export default function AdminDashboardPage() {
                           className={cn(
                             "text-[9px] sm:text-[10px] font-bold px-1.5 py-0.5 rounded-full shrink-0",
                             action.countBadgeColor ||
-                            "bg-primary/10 text-primary",
+                              "bg-primary/10 text-primary",
                           )}
                         >
                           {action.count}

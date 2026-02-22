@@ -2,11 +2,24 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { PlusCircle, Package, Activity } from "lucide-react";
+import {
+  PlusCircle,
+  Package,
+  Activity,
+  Clock,
+  CheckCircle2,
+  AlertCircle,
+  FileEdit,
+  Search,
+  Gamepad2,
+  PlaySquare,
+} from "lucide-react";
 import { ProjectList } from "@/components/project-list";
 import Link from "next/link";
 import { Gem } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useSearchParams, usePathname, useRouter } from "next/navigation";
+import { motion } from "framer-motion";
 import type { Project, HubSubmittedAppResponse } from "@/lib/types";
 import { Tabs, TabsContent } from "@/components/ui/tabs";
 import { CustomTabsList } from "@/components/custom-tabs-list";
@@ -36,17 +49,28 @@ const BentoCard = ({
 const PaginatedProjectList = ({
   projects,
   isLoading,
+  emptyTitle = "No Projects Found",
+  emptyMessage = "There are no projects in this category.",
+  emptyIcon: Icon = Search,
 }: {
   projects: Project[];
   isLoading?: boolean;
+  emptyTitle?: string;
+  emptyMessage?: string;
+  emptyIcon?: React.ElementType;
 }) => {
   if (isLoading) {
     return (
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.5 }}
+        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+      >
         {Array.from({ length: 6 }).map((_, i) => (
           <AppCardSkeleton key={i} />
         ))}
-      </div>
+      </motion.div>
     );
   }
 
@@ -63,19 +87,87 @@ const PaginatedProjectList = ({
 
   return (
     <>
-      <ProjectList projects={currentProjects} />
-      <AppPagination
-        currentPage={currentPage}
-        totalPages={totalPages}
-        onPageChange={handlePageChange}
-      />
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3 }}
+      >
+        {currentProjects.length > 0 ? (
+          <ProjectList projects={currentProjects} />
+        ) : (
+          <div className="flex flex-col items-center justify-center py-20 text-center bg-card/50 rounded-3xl border border-dashed border-muted-foreground/20 relative overflow-hidden group">
+            <div className="absolute inset-0 bg-gradient-to-b from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+            <motion.div
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
+              className="p-6 bg-primary/10 rounded-full mb-6 relative z-10 ring-8 ring-primary/5"
+            >
+              <Icon className="w-10 h-10 text-primary" />
+            </motion.div>
+            <h3 className="text-xl font-bold mb-2 relative z-10">
+              {emptyTitle}
+            </h3>
+            <p className="text-muted-foreground max-w-sm relative z-10 px-4">
+              {emptyMessage}
+            </p>
+          </div>
+        )}
+      </motion.div>
+      {currentProjects.length > 0 && (
+        <AppPagination
+          currentPage={currentPage}
+          totalPages={totalPages}
+          onPageChange={handlePageChange}
+        />
+      )}
     </>
   );
 };
 
 export default function DashboardPage() {
-  const [mainTab, setMainTab] = useState("pending");
-  const [pendingSubTab, setPendingSubTab] = useState("in-review");
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
+  const router = useRouter();
+
+  const [mainTab, setMainTab] = useState(searchParams.get("tab") || "pending");
+  const [pendingSubTab, setPendingSubTab] = useState(
+    (searchParams.get("tab") === "pending"
+      ? searchParams.get("subtab")
+      : "in-review") || "in-review",
+  );
+
+  useEffect(() => {
+    const tab = searchParams.get("tab");
+    const subtab = searchParams.get("subtab");
+    if (tab) setMainTab(tab);
+    if (subtab) {
+      if (tab === "pending") setPendingSubTab(subtab);
+    }
+  }, [searchParams]);
+
+  const updateUrl = (newTab: string, newSubTab?: string) => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.set("tab", newTab);
+    if (newSubTab) {
+      params.set("subtab", newSubTab);
+    } else {
+      params.delete("subtab");
+    }
+    router.push(`${pathname}?${params.toString()}`, { scroll: false });
+  };
+
+  const handleMainTabChange = (val: string) => {
+    setMainTab(val);
+    let nextSubTab = undefined;
+    if (val === "pending") nextSubTab = pendingSubTab;
+    updateUrl(val, nextSubTab);
+  };
+
+  const handlePendingSubTabChange = (val: string) => {
+    setPendingSubTab(val);
+    updateUrl("pending", val);
+  };
 
   // Fetch dashboard stats
   const { data: dashboardData } = useDashboardData();
@@ -97,7 +189,9 @@ export default function DashboardPage() {
           return "IN_REVIEW";
       }
     }
-    if (mainTab === "ongoing") return "IN_TESTING";
+    if (mainTab === "ongoing") {
+      return "IN_TESTING,AVAILABLE,ACCEPTED";
+    }
     if (mainTab === "completed") return "COMPLETED";
     return "IN_REVIEW";
   };
@@ -112,10 +206,15 @@ export default function DashboardPage() {
   // Calculate counts from API data
   const draftCount = appsCountData?.DRAFT || 0;
   const inReviewCount = appsCountData?.IN_REVIEW || 0;
+  // AVAILABLE means Approved and waiting for test starts (Free apps)
+  // ACCEPTED means Approved but admin hasn't assigned testers yet (Paid apps)
+  const approvedCount =
+    (appsCountData?.AVAILABLE || 0) + (appsCountData?.ACCEPTED || 0);
   const rejectedCount = appsCountData?.REJECTED || 0;
-  const ongoingCount = appsCountData?.IN_TESTING || 0;
+  const inTestingCount = appsCountData?.IN_TESTING || 0;
   const completedCount = appsCountData?.COMPLETED || 0;
   const pendingCount = draftCount + inReviewCount + rejectedCount;
+  const ongoingCount = inTestingCount + approvedCount;
 
   // Map HubSubmittedAppResponse to Project type
   const mapToProjects = (
@@ -131,6 +230,8 @@ export default function DashboardPage() {
       else if (app.status === "IN_TESTING") status = "In Testing";
       else if (app.status === "COMPLETED") status = "Completed";
       else if (app.status === "IN_REVIEW") status = "In Review";
+      else if (app.status === "AVAILABLE" || app.status === "ACCEPTED")
+        status = "Available";
 
       return {
         id: app.id,
@@ -276,7 +377,11 @@ export default function DashboardPage() {
         </div>
 
         <main className="mt-12">
-          <Tabs value={mainTab} onValueChange={setMainTab} className="w-full">
+          <Tabs
+            value={mainTab}
+            onValueChange={handleMainTabChange}
+            className="w-full"
+          >
             <CustomTabsList
               tabs={mainTabs}
               activeTab={mainTab}
@@ -284,25 +389,52 @@ export default function DashboardPage() {
             />
             <TabsContent value="pending" className="mt-6">
               <SubTabUI
-                pendingTabs={pendingTabs}
-                setPendingSubTab={setPendingSubTab}
-                pendingSubTab={pendingSubTab}
+                tabs={pendingTabs}
+                onTabChange={handlePendingSubTabChange}
+                activeTab={pendingSubTab}
               />
               <PaginatedProjectList
                 projects={mappedProjects}
                 isLoading={appsIsPending}
+                emptyTitle={
+                  pendingSubTab === "in-review"
+                    ? "No Apps In Review"
+                    : pendingSubTab === "drafts"
+                      ? "No Drafts"
+                      : "No Rejected Apps"
+                }
+                emptyMessage={
+                  pendingSubTab === "in-review"
+                    ? "You don't have any apps currently under review."
+                    : pendingSubTab === "drafts"
+                      ? "You don't have any drafted apps."
+                      : "Good news! None of your apps have been rejected."
+                }
+                emptyIcon={
+                  pendingSubTab === "in-review"
+                    ? Clock
+                    : pendingSubTab === "drafts"
+                      ? FileEdit
+                      : AlertCircle
+                }
               />
             </TabsContent>
             <TabsContent value="ongoing" className="mt-6">
               <PaginatedProjectList
                 projects={mappedProjects}
                 isLoading={appsIsPending}
+                emptyTitle="No Ongoing Apps"
+                emptyMessage="You don't have any apps currently in testing or approved."
+                emptyIcon={PlaySquare}
               />
             </TabsContent>
             <TabsContent value="completed" className="mt-6">
               <PaginatedProjectList
                 projects={mappedProjects}
                 isLoading={appsIsPending}
+                emptyTitle="No Completed Apps"
+                emptyMessage="You haven't completed any testing campaigns yet."
+                emptyIcon={Gamepad2}
               />
             </TabsContent>
           </Tabs>

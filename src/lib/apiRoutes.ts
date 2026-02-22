@@ -10,6 +10,7 @@ const routes = {
   HUB: "/api/hub",
   R2: "/api/r2",
   BILLING: "/api/billing",
+  TESTER: "/api/tester",
 };
 
 const API_ROUTES = new Proxy(routes, {

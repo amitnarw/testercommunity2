@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { ChevronLeft } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -15,9 +14,13 @@ export function BackButton({ href, className }: BackButtonProps) {
   const router = useTransitionRouter();
 
   const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-    if (!href) {
-      e.preventDefault();
+    e.preventDefault();
+    if (window.history.length > 1) {
       router.back();
+    } else if (href) {
+      router.push(href);
+    } else {
+      router.push("/");
     }
   };
 
@@ -25,7 +28,7 @@ export function BackButton({ href, className }: BackButtonProps) {
     variant: "outline" as const,
     className: cn(
       "rounded-full px-4 h-8 md:h-10 group md:pl-12 border-0 shadow-lg shadow-[hsl(var(--primary))]/10 hover:bg-white hover:dark:bg-secondary hover:text-[hsl(var(--primary))]",
-      className
+      className,
     ),
   };
 
@@ -35,17 +38,6 @@ export function BackButton({ href, className }: BackButtonProps) {
     </div>
   );
 
-  if (href) {
-    return (
-      <Button {...commonProps} asChild>
-        <Link href={href}>
-          {content}
-          <span className="hidden md:inline">Back</span>
-        </Link>
-      </Button>
-    );
-  }
-
   return (
     <Button {...commonProps} onClick={handleClick}>
       {content}
@@ -53,4 +45,3 @@ export function BackButton({ href, className }: BackButtonProps) {
     </Button>
   );
 }
-

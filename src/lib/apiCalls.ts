@@ -1,6 +1,7 @@
 import axios from "axios";
 import API_ROUTES from "./apiRoutes";
 import { authClient } from "./auth-client";
+import { ROUTES } from "./routes";
 import {
   AppCategoriesResponse,
   AppData,
@@ -19,6 +20,7 @@ import {
   CreateOrderResponse,
   PaymentVerificationPayload,
   PaymentVerificationResponse,
+  TesterProjectResponse,
 } from "./types";
 import api from "./axios";
 
@@ -106,7 +108,7 @@ export const googleLogin = async () => {
   try {
     const response = await authClient.signIn.social({
       provider: "google",
-      callbackURL: `${window.location.origin}/auth/login`,
+      callbackURL: `${window.location.origin}${ROUTES.AUTH.LOGIN}`,
     });
 
     if (response?.error) {
@@ -118,6 +120,55 @@ export const googleLogin = async () => {
     return { success: true, data: response };
   } catch (error) {
     console.error("Error logging in user: ", error);
+    throw error;
+  }
+};
+
+export const testerLogin = async ({
+  email,
+  password,
+  rememberMe,
+}: {
+  email: string;
+  password: string;
+  rememberMe: boolean;
+}) => {
+  try {
+    const response = await authClient?.signIn.email({
+      email,
+      password,
+      rememberMe,
+    });
+
+    if (response?.error) {
+      throw new AuthError(
+        response.error.code ?? "LOGIN_FAILED",
+        response.error.message ?? "Login failed",
+      );
+    }
+    return { success: true, data: response };
+  } catch (error) {
+    console.error("Error logging in tester: ", error);
+    throw error;
+  }
+};
+
+export const googleTesterLogin = async () => {
+  try {
+    const response = await authClient.signIn.social({
+      provider: "google",
+      callbackURL: `${window.location.origin}${ROUTES.TESTER.AUTH.LOGIN}`,
+    });
+
+    if (response?.error) {
+      throw new AuthError(
+        response.error.code ?? "LOGIN_FAILED",
+        response.error.message ?? "Login failed",
+      );
+    }
+    return { success: true, data: response };
+  } catch (error) {
+    console.error("Error logging in tester via Google: ", error);
     throw error;
   }
 };
@@ -592,6 +643,30 @@ export async function getHubApps(
   }
 }
 
+export async function getTesterProjects(
+  status?: string,
+): Promise<TesterProjectResponse[]> {
+  try {
+    const params = status ? `?status=${status}` : "";
+    const response = await api.get(
+      API_ROUTES.TESTER + `/get-projects${params}`,
+    );
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error fetching tester projects:", error);
+    if (axios.isAxiosError(error)) {
+      const responseData = error.response?.data;
+      throw new Error(
+        responseData?.message || error.message || "Unknown Axios error",
+      );
+    } else if (error instanceof Error) {
+      throw new Error(error.message);
+    } else {
+      throw new Error(JSON.stringify(error));
+    }
+  }
+}
+
 export async function getHubAppsCount(): Promise<SubmittedAppsCount> {
   try {
     const response = await api.get(API_ROUTES.HUB + "/get-apps-count");
@@ -929,8 +1004,10 @@ export async function getUserTransactions(params?: {
     if (params?.offset) queryParams.append("offset", params.offset.toString());
 
     const queryString = queryParams.toString();
-    const url = API_ROUTES.USER + `/get-user-transactions${queryString ? `?${queryString}` : ""}`;
-    
+    const url =
+      API_ROUTES.USER +
+      `/get-user-transactions${queryString ? `?${queryString}` : ""}`;
+
     const response = await api.get(url);
     return response?.data?.data;
   } catch (error) {
@@ -1169,7 +1246,6 @@ export async function submitDailyVerification(payload: {
   }
 }
 
-
 // Billing
 export async function getPaymentConfig(): Promise<PaymentConfigResponse> {
   try {
@@ -1289,3 +1365,30 @@ export async function getPendingOrders(): Promise<CreateOrderResponse[]> {
   }
 }
 
+export async function assignTestersToApp(payload: {
+  id: string; // DashboardAndHub ID
+  testerIds: string[];
+}) {
+  try {
+    const response = await api.post(
+      API_ROUTES.ADMIN + "/tester-applications/assign",
+      { payload },
+    );
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error assigning testers to app:", error);
+    if (axios.isAxiosError(error)) {
+      const status = error.response?.status;
+      const responseData = error.response?.data;
+      console.error("Axios error:", status, responseData);
+
+      throw new Error(
+        responseData?.message || error.message || "Unknown Axios error",
+      );
+    } else if (error instanceof Error) {
+      throw new Error(error.message);
+    } else {
+      throw new Error(JSON.stringify(error));
+    }
+  }
+}

@@ -27,6 +27,7 @@ import { ExpandableText } from "@/components/expandable-text";
 import { AppInfoSidebar } from "@/components/appInfoSidebar";
 import { AdminRejectDialog } from "@/components/admin/admin-reject-dialog";
 import { AdminAcceptDialog } from "@/components/admin/admin-accept-dialog";
+import DeveloperInstructions from "@/components/developerInstructions";
 
 export default function AdminSubmissionDetailPage({
   params,
@@ -72,7 +73,7 @@ export default function AdminSubmissionDetailPage({
   return (
     <div className="bg-[#f8fafc] dark:bg-[#0f151e] text-foreground min-h-screen pb-10">
       <div className="container mx-auto px-4 md:px-6">
-        <div className="sticky top-0 z-[50] pt-2 sm:pt-3 pb-4 pl-0 xl:pl-8 w-1/2">
+        <div className="sticky top-0 z-[50] pt-2 pb-4 pl-0 xl:pl-8 w-1/2">
           <BackButton href="/admin/submissions-free" />
         </div>
 
@@ -109,57 +110,6 @@ export default function AdminSubmissionDetailPage({
                 text={project.androidApp?.description}
                 className="text-muted-foreground text-md sm:text-lg leading-relaxed"
               />
-            </section>
-
-            {/* Screenshots Section */}
-            <section>
-              <h2 className="text-2xl font-bold mb-4">Screenshots</h2>
-              <div className="w-full">
-                <div className="flex flex-row gap-2 overflow-x-auto pb-4 -mb-4">
-                  {project.androidApp?.appScreenshotUrl1 && (
-                    <div
-                      className="overflow-hidden rounded-xl flex-shrink-0 w-40 sm:w-60 relative group cursor-pointer"
-                      onClick={() => {
-                        setFullscreenImage(
-                          project.androidApp!.appScreenshotUrl1,
-                        );
-                      }}
-                    >
-                      <SafeImage
-                        src={project.androidApp.appScreenshotUrl1}
-                        alt="App Screenshot 1"
-                        width={400}
-                        height={800}
-                        className="object-cover h-full w-full group-hover:scale-105 transition-transform duration-300 bg-muted/20"
-                      />
-                      <div className="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                        <Expand className="w-8 h-8 text-white" />
-                      </div>
-                    </div>
-                  )}
-                  {project.androidApp?.appScreenshotUrl2 && (
-                    <div
-                      className="overflow-hidden rounded-xl flex-shrink-0 w-40 sm:w-60 relative group cursor-pointer"
-                      onClick={() => {
-                        setFullscreenImage(
-                          project.androidApp!.appScreenshotUrl2,
-                        );
-                      }}
-                    >
-                      <SafeImage
-                        src={project.androidApp.appScreenshotUrl2}
-                        alt="App Screenshot 2"
-                        width={400}
-                        height={800}
-                        className="object-cover h-full w-full group-hover:scale-105 transition-transform duration-300 bg-muted/20"
-                      />
-                      <div className="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                        <Expand className="w-8 h-8 text-white" />
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </div>
             </section>
 
             {/* Submission Meta Details (Redesigned) */}
@@ -447,18 +397,10 @@ export default function AdminSubmissionDetailPage({
 
             {/* Previous Instructions Block (for reference) */}
             {project.instructionsForTester && (
-              <section>
-                <h2 className="mb-4 flex flex-row items-center justify-between gap-2 sm:justify-start">
-                  <span className="text-2xl font-bold whitespace-nowrap">
-                    Developer's Instructions
-                  </span>
-                </h2>
-                <div className="prose prose-base dark:prose-invert leading-relaxed text-white dark:text-black bg-[#121212] dark:bg-white p-3 sm:p-6 rounded-lg border-primary border-l-4 shadow-xl shadow-gray-300 dark:shadow-gray-700 text-sm sm:text-base">
-                  <p className="mt-2 sm:mt-0">
-                    {project.instructionsForTester}
-                  </p>
-                </div>
-              </section>
+              <DeveloperInstructions
+                instruction={project.instructionsForTester}
+                mt={0}
+              />
             )}
           </div>
           <div className="block lg:hidden mt-8">

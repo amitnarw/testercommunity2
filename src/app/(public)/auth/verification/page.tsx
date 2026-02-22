@@ -19,6 +19,7 @@ import Link from "next/link";
 import LoadingIcon from "@/components/loadingIcon";
 import { BackgroundBeams } from "@/components/ui/background-beams";
 import { useEmailVerification } from "@/hooks/useAuth";
+import { ROUTES } from "@/lib/routes";
 
 type VerificationStatus = "verifying" | "success" | "error";
 
@@ -35,7 +36,7 @@ function VerificationContent() {
     const token = searchParams.get("token");
 
     if (!token) {
-      router.replace("/auth/login");
+      router.replace(ROUTES.AUTH.LOGIN);
       return;
     }
 
@@ -73,7 +74,7 @@ function VerificationContent() {
         "Your email has been successfully verified. You can now log in to your account.",
       cta: (
         <Button asChild className="mt-8">
-          <Link href="/auth/login">
+          <Link href={ROUTES.AUTH.LOGIN}>
             Proceed to Login <ArrowRight className="ml-2 h-4 w-4" />
           </Link>
         </Button>
@@ -88,7 +89,7 @@ function VerificationContent() {
       cta: (
         <div className="flex gap-4 mt-8">
           <Button asChild variant="outline">
-            <Link href="/auth/register">Re-register</Link>
+            <Link href={ROUTES.AUTH.REGISTER}>Re-register</Link>
           </Button>
           <Button asChild>
             <Link href="/help">Contact Support</Link>

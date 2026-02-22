@@ -53,6 +53,7 @@ import {
 import { TransitionLink } from "@/components/transition-link";
 import { useTransitionRouter } from "@/context/transition-context";
 import { ProfileBentoGrid } from "@/components/profile-bento-grid";
+import { ROUTES } from "@/lib/routes";
 
 const profileSchema = z.object({
   first_name: z.string().min(2, "First name is required."),
@@ -198,7 +199,7 @@ export default function ProfilePage() {
         description: "You have been logged out from all other devices.",
       });
       setIsOpenAll(false);
-      router.push("/auth/login");
+      router.push(ROUTES.AUTH.LOGIN);
     },
   });
 
@@ -382,7 +383,7 @@ export default function ProfilePage() {
                                   {getLocation(
                                     device?.city,
                                     device?.region,
-                                    device?.country
+                                    device?.country,
                                   )}
                                 </span>
                               </div>
@@ -423,7 +424,7 @@ export default function ProfilePage() {
                               {getLocation(
                                 device?.city,
                                 device?.region,
-                                device?.country
+                                device?.country,
                               )}
                             </span>
                           </div>

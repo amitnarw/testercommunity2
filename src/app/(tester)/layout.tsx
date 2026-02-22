@@ -1,5 +1,3 @@
-
-
 "use client";
 
 import { useState, useEffect } from "react";
@@ -10,6 +8,7 @@ import { Sidebar } from "@/components/authenticated/sidebar";
 import { authClient } from "@/lib/auth-client";
 import { motion, AnimatePresence } from "framer-motion";
 import PageTransition from "@/components/page-transition";
+import { ROUTES } from "@/lib/routes";
 
 export default function ProfessionalLayout({
   children,
@@ -22,45 +21,45 @@ export default function ProfessionalLayout({
   const pathname = usePathname();
 
   useEffect(() => {
+    if (isPending) return;
+
+    const roleName = (session as any)?.role?.name;
+    const isAuthPage =
+      pathname === ROUTES.TESTER.AUTH.LOGIN ||
+      pathname === ROUTES.TESTER.AUTH.REGISTER;
+
     if (
       !session?.user?.id ||
-      ((session as any)?.role !== "tester" && (session as any)?.role !== "super_admin" &&
-        pathname !== "/tester/login" &&
-        pathname !== "/tester/register")
+      (!isAuthPage && roleName !== "tester" && roleName !== "super_admin")
     ) {
-      router.replace("/tester/login");
+      router.replace(ROUTES.TESTER.AUTH.LOGIN);
+      return;
     }
-    if (
-      session?.user?.id &&
-      (session as any)?.role === "tester" &&
-      (pathname === "/tester/login" || pathname === "/tester/register")
-    ) {
-      router.replace("/tester/dashboard");
+
+    if (session?.user?.id && roleName === "tester" && isAuthPage) {
+      router.replace(ROUTES.TESTER.DASHBOARD);
     }
-  }, [pathname, router, session]);
+  }, [pathname, router, session, isPending]);
 
   const handleLogout = async () => {
     await authClient.signOut({
       fetchOptions: {
         onSuccess: () => {
-          router.push("/auth/login");
+          router.push(ROUTES.AUTH.LOGIN);
         },
       },
     });
   };
 
   const isAuthPage =
-    pathname === "/tester/login" || pathname === "/tester/register";
+    pathname === ROUTES.TESTER.AUTH.LOGIN ||
+    pathname === ROUTES.TESTER.AUTH.REGISTER;
 
   if (isAuthPage) {
     return (
-        <PageTransition>
-          <main
-              className="flex-1 bg-background"
-          >
-              {children}
-          </main>
-        </PageTransition>
+      <PageTransition>
+        <main className="flex-1 bg-background">{children}</main>
+      </PageTransition>
     );
   }
 
@@ -80,11 +79,7 @@ export default function ProfessionalLayout({
           className={`flex flex-col flex-1 transition-all duration-300 md:pl-20`}
         >
           <Navbar onLogout={handleLogout} />
-            <main
-                className="flex-1 bg-secondary/50"
-            >
-                {children}
-            </main>
+          <main className="flex-1 bg-secondary/50">{children}</main>
           <Footer />
         </div>
       </div>

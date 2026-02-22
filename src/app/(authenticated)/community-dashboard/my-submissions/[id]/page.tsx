@@ -371,7 +371,7 @@ function SubmissionDetailsPage({
       </div>
       <div className="container mx-auto px-4 md:px-6">
         <main className="max-w-7xl mx-auto space-y-8">
-          <div className="sticky top-0 z-[50] pt-2 sm:pt-3 pb-4 pl-0 w-1/2">
+          <div className="sticky top-0 z-[50] pt-2 pb-4 pl-0 w-1/2">
             <BackButton href="/community-dashboard/my-submissions" />
           </div>
 

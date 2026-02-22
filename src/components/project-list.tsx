@@ -18,7 +18,11 @@ const getStatusConfig = (status: string) => {
   switch (status) {
     case "In Testing":
       return {
-        badgeVariant: "destructive",
+        badgeVariant: "destructive", // Or keeping whatever it was
+      };
+    case "Available":
+      return {
+        badgeVariant: "default", // Primary color to show it's ready/available
       };
     case "Completed":
       return {
@@ -27,6 +31,10 @@ const getStatusConfig = (status: string) => {
     case "Rejected":
       return {
         badgeVariant: "destructive",
+      };
+    case "Approved":
+      return {
+        badgeVariant: "default",
       };
     case "Draft":
       return {

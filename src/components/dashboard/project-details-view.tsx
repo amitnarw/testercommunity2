@@ -85,6 +85,12 @@ const getStatusConfig = (status: string) => {
         icon: <Search className="w-5 h-5" />,
         color: "text-muted-foreground",
       };
+    case "Approved":
+      return {
+        badgeVariant: "default" as const,
+        icon: <Clock className="w-5 h-5" />,
+        color: "text-primary",
+      };
     default:
       return {
         badgeVariant: "secondary" as const,
@@ -242,7 +248,9 @@ export default function ProjectDetailsView({
 
   const statusConfig = getStatusConfig(project.status);
   const isUnderReviewOrRejected =
-    project.status === "In Review" || project.status === "Rejected";
+    project.status === "In Review" ||
+    project.status === "Rejected" ||
+    project.status === "Draft";
 
   const totalTestersPages = Math.ceil(
     project.testers.length / TESTERS_PER_PAGE,
@@ -337,7 +345,7 @@ export default function ProjectDetailsView({
 
       <div className="container px-4 md:px-6">
         {showBackButton && (
-          <div className="sticky top-0 z-[50] pt-2 sm:pt-3 pb-4 pl-0 xl:pl-8 w-1/2">
+          <div className="sticky top-0 z-[50] pt-2 pb-4 pl-0 xl:pl-8 w-1/2">
             <BackButton href="/dashboard" />
           </div>
         )}

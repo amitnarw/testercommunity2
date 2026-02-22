@@ -8,6 +8,7 @@ import { Sidebar } from "@/components/authenticated/sidebar";
 import { authClient } from "@/lib/auth-client";
 import { motion, AnimatePresence } from "framer-motion";
 import PageTransition from "@/components/page-transition";
+import { ROUTES } from "@/lib/routes";
 
 export default function AuthenticatedLayout({
   children,
@@ -22,7 +23,7 @@ export default function AuthenticatedLayout({
     await authClient.signOut({
       fetchOptions: {
         onSuccess: () => {
-          router.push("/auth/login");
+          router.push(ROUTES.AUTH.LOGIN);
         },
       },
     });
