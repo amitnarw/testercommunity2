@@ -253,37 +253,6 @@ export default function AdminSubmissionDetailPage({
               </section>
             )}
 
-            {/* Manage Testers Section (For Approved Apps) */}
-            {(project.status === "ACCEPTED" ||
-              project.status === "AVAILABLE" ||
-              project.status === "IN_TESTING") && (
-              <section className="shadow-xl shadow-primary/5 bg-card rounded-xl">
-                <Card className="border-0 bg-transparent overflow-hidden relative">
-                  <div className="absolute top-0 left-0 w-1 h-full bg-gradient-to-b from-primary to-primary/50" />
-                  <CardContent className="p-6 sm:p-8">
-                    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
-                      <div className="space-y-2 relative">
-                        <h2 className="text-2xl font-bold flex items-center gap-2">
-                          <Users className="w-6 h-6 text-primary" />
-                          Manage Testers
-                        </h2>
-                        <p className="text-sm sm:text-base text-muted-foreground max-w-lg">
-                          Assign professional testers to this application to
-                          begin the testing process.
-                        </p>
-                      </div>
-                      <Button
-                        onClick={() => setShowManageTestersDialog(true)}
-                        className="w-full sm:w-auto h-12 px-8 text-sm sm:text-md font-semibold rounded-xl bg-primary text-primary-foreground shadow-lg hover:shadow-primary/40"
-                      >
-                        <Users className="w-4 h-4 mr-2" /> Select Testers
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
-              </section>
-            )}
-
             {/* Rejection Details Section */}
             {project.status === "REJECTED" && (
               <section className="shadow-xl shadow-gray-200 dark:shadow-gray-900 bg-card">
@@ -425,6 +394,37 @@ export default function AdminSubmissionDetailPage({
               </section>
             )}
 
+            {/* Manage Testers Section (For Approved Apps) */}
+            {(project.status === "ACCEPTED" ||
+              project.status === "AVAILABLE" ||
+              project.status === "IN_TESTING") && (
+              <section className="shadow-xl shadow-primary/5 bg-card rounded-xl">
+                <Card className="border-0 bg-transparent overflow-hidden relative">
+                  <div className="absolute top-0 left-0 w-1 h-full bg-gradient-to-b from-primary to-primary/50" />
+                  <CardContent className="p-6 sm:p-8">
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
+                      <div className="space-y-2 relative">
+                        <h2 className="text-2xl font-bold flex items-center gap-2">
+                          <Users className="w-6 h-6 text-primary" />
+                          Manage Testers
+                        </h2>
+                        <p className="text-sm sm:text-base text-muted-foreground max-w-lg">
+                          Assign professional testers to this application to
+                          begin the testing process.
+                        </p>
+                      </div>
+                      <Button
+                        onClick={() => setShowManageTestersDialog(true)}
+                        className="w-full sm:w-auto h-12 px-8 text-sm sm:text-md font-semibold rounded-xl bg-primary text-primary-foreground shadow-lg hover:shadow-primary/40"
+                      >
+                        <Users className="w-4 h-4 mr-2" /> Select Testers
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+              </section>
+            )}
+
             {/* Rejection Modal */}
             <AdminRejectDialog
               appId={project.id}
@@ -452,6 +452,9 @@ export default function AdminSubmissionDetailPage({
               onSuccess={() => refetch()}
               totalRequired={project.totalTester}
               currentAssigned={project.currentTester}
+              assignedTesterIds={
+                project.testerRelations?.map((rel) => rel.testerId) || []
+              }
             />
 
             {/* Assigned Testers Table */}

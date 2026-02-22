@@ -667,6 +667,27 @@ export async function getTesterProjects(
   }
 }
 
+export async function updateTesterAvailability(availability: string) {
+  try {
+    const response = await api.put(API_ROUTES.TESTER + `/availability`, {
+      availability,
+    });
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error updating tester availability:", error);
+    if (axios.isAxiosError(error)) {
+      const responseData = error.response?.data;
+      throw new Error(
+        responseData?.message || error.message || "Unknown Axios error",
+      );
+    } else if (error instanceof Error) {
+      throw new Error(error.message);
+    } else {
+      throw new Error(JSON.stringify(error));
+    }
+  }
+}
+
 export async function getHubAppsCount(): Promise<SubmittedAppsCount> {
   try {
     const response = await api.get(API_ROUTES.HUB + "/get-apps-count");
@@ -1372,7 +1393,7 @@ export async function assignTestersToApp(payload: {
   try {
     const response = await api.post(
       API_ROUTES.ADMIN + "/tester-applications/assign",
-      { payload },
+      payload,
     );
     return response?.data?.data;
   } catch (error) {
