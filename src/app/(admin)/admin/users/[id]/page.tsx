@@ -138,6 +138,7 @@ export default function AdminUserDetailsPage() {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [roleSelection, setRoleSelection] = useState<string>("");
   const [statusSelection, setStatusSelection] = useState<string>("");
+  const [userRole, setUserRole] = useState("");
 
   useEffect(() => {
     if (user) {
@@ -145,6 +146,15 @@ export default function AdminUserDetailsPage() {
       setStatusSelection(user.status);
     }
   }, [user]);
+
+  useEffect(() => {
+    const role =
+      document.cookie
+        .split("; ")
+        .find((row) => row.startsWith("userRole="))
+        ?.split("=")[1] || "";
+    setUserRole(decodeURIComponent(role));
+  }, []);
 
   const updateRoleMutation = useUpdateUserRole({
     onSuccess: () => {
@@ -211,13 +221,7 @@ export default function AdminUserDetailsPage() {
   };
 
   const isTester = user.role === "tester";
-  const isSuperAdmin =
-    typeof document !== "undefined"
-      ? document.cookie
-          .split("; ")
-          .find((row) => row.startsWith("userRole="))
-          ?.split("=")[1] === "Super+Admin"
-      : false;
+  const isSuperAdmin = userRole === "Super Admin" || userRole === "Super+Admin";
 
   const formatRoleName = (roleName: string): string => {
     const roleDisplayNames: Record<string, string> = {
@@ -236,7 +240,7 @@ export default function AdminUserDetailsPage() {
 
   return (
     <>
-      <div className="container mx-auto px-4 md:px-6">
+      <div className="container mx-auto px-4 md:px-6 mb-8">
         <div className="sticky top-0 z-[50] pt-2 sm:pt-3 pb-4 w-1/2">
           <BackButton href="/admin/users" />
         </div>
@@ -627,7 +631,7 @@ export default function AdminUserDetailsPage() {
                 <SelectTrigger>
                   <SelectValue placeholder="Select a role" />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent position="popper">
                   <SelectItem value="user">User</SelectItem>
                   <SelectItem value="tester">Tester</SelectItem>
                   <SelectItem value="support">Support</SelectItem>
@@ -650,7 +654,7 @@ export default function AdminUserDetailsPage() {
                 <SelectTrigger>
                   <SelectValue placeholder="Select a status" />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent position="popper">
                   <SelectItem value="Active">Active</SelectItem>
                   <SelectItem value="Inactive">Inactive</SelectItem>
                   <SelectItem value="Banned">Banned</SelectItem>

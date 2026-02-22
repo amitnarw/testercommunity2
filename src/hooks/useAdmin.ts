@@ -38,6 +38,7 @@ import {
   getTesterApplicationCounts,
   getTesterApplicationById,
   updateTesterApplicationStatus,
+  updateProjectStatus,
 } from "@/lib/apiCallsAdmin";
 import {
   useMutation,
@@ -110,6 +111,18 @@ export function useRejectApp(options?: UseMutationOptions<any, any, any>) {
   return mutation;
 }
 
+export function useUpdateProjectStatus(
+  options?: UseMutationOptions<any, any, any>,
+) {
+  const mutation = useMutation({
+    mutationFn: (payload: { id: number; status: string }) =>
+      updateProjectStatus(payload),
+    ...options,
+  });
+
+  return mutation;
+}
+
 // ==================== DASHBOARD STATS ====================
 
 export function useDashboardStats(options?: { enabled?: boolean }) {
@@ -157,9 +170,12 @@ export function useFeedbackCounts(options?: { enabled?: boolean }) {
   return query;
 }
 
-export function useUpdateFeedbackStatus(options?: UseMutationOptions<any, any, any>) {
+export function useUpdateFeedbackStatus(
+  options?: UseMutationOptions<any, any, any>,
+) {
   const mutation = useMutation({
-    mutationFn: (payload: { id: number; priority?: string }) => updateFeedbackStatus(payload),
+    mutationFn: (payload: { id: number; priority?: string }) =>
+      updateFeedbackStatus(payload),
     ...options,
   });
 
@@ -210,9 +226,12 @@ export function useUserCounts(options?: { enabled?: boolean }) {
   return query;
 }
 
-export function useUpdateUserStatus(options?: UseMutationOptions<any, any, any>) {
+export function useUpdateUserStatus(
+  options?: UseMutationOptions<any, any, any>,
+) {
   const mutation = useMutation({
-    mutationFn: (payload: { id: string; status: string; banReason?: string }) => updateUserStatus(payload),
+    mutationFn: (payload: { id: string; status: string; banReason?: string }) =>
+      updateUserStatus(payload),
     ...options,
   });
 
@@ -221,7 +240,8 @@ export function useUpdateUserStatus(options?: UseMutationOptions<any, any, any>)
 
 export function useUpdateUserRole(options?: UseMutationOptions<any, any, any>) {
   const mutation = useMutation({
-    mutationFn: (payload: { id: string; role: string }) => updateUserRole(payload),
+    mutationFn: (payload: { id: string; role: string }) =>
+      updateUserRole(payload),
     ...options,
   });
 
@@ -263,7 +283,9 @@ export function useSuggestionCounts(options?: { enabled?: boolean }) {
   return query;
 }
 
-export function useCreateSuggestion(options?: UseMutationOptions<any, any, any>) {
+export function useCreateSuggestion(
+  options?: UseMutationOptions<any, any, any>,
+) {
   const mutation = useMutation({
     mutationFn: (payload: {
       title?: string;
@@ -278,16 +300,21 @@ export function useCreateSuggestion(options?: UseMutationOptions<any, any, any>)
   return mutation;
 }
 
-export function useUpdateSuggestionStatus(options?: UseMutationOptions<any, any, any>) {
+export function useUpdateSuggestionStatus(
+  options?: UseMutationOptions<any, any, any>,
+) {
   const mutation = useMutation({
-    mutationFn: (payload: { id: number; status: string; reason?: string }) => updateSuggestionStatus(payload),
+    mutationFn: (payload: { id: number; status: string; reason?: string }) =>
+      updateSuggestionStatus(payload),
     ...options,
   });
 
   return mutation;
 }
 
-export function useDeleteSuggestion(options?: UseMutationOptions<any, any, any>) {
+export function useDeleteSuggestion(
+  options?: UseMutationOptions<any, any, any>,
+) {
   const mutation = useMutation({
     mutationFn: (id: number) => deleteSuggestion(id),
     ...options,
@@ -321,7 +348,9 @@ export function useNotificationCounts(options?: { enabled?: boolean }) {
   return query;
 }
 
-export function useCreateNotification(options?: UseMutationOptions<any, any, any>) {
+export function useCreateNotification(
+  options?: UseMutationOptions<any, any, any>,
+) {
   const mutation = useMutation({
     mutationFn: (payload: {
       title: string;
@@ -337,7 +366,9 @@ export function useCreateNotification(options?: UseMutationOptions<any, any, any
   return mutation;
 }
 
-export function useUpdateNotification(options?: UseMutationOptions<any, any, any>) {
+export function useUpdateNotification(
+  options?: UseMutationOptions<any, any, any>,
+) {
   const mutation = useMutation({
     mutationFn: (payload: {
       id: number;
@@ -353,7 +384,9 @@ export function useUpdateNotification(options?: UseMutationOptions<any, any, any
   return mutation;
 }
 
-export function useDeleteNotification(options?: UseMutationOptions<any, any, any>) {
+export function useDeleteNotification(
+  options?: UseMutationOptions<any, any, any>,
+) {
   const mutation = useMutation({
     mutationFn: (id: number) => deleteNotification(id),
     ...options,
@@ -362,7 +395,9 @@ export function useDeleteNotification(options?: UseMutationOptions<any, any, any
   return mutation;
 }
 
-export function useBroadcastNotification(options?: UseMutationOptions<any, any, any>) {
+export function useBroadcastNotification(
+  options?: UseMutationOptions<any, any, any>,
+) {
   const mutation = useMutation({
     mutationFn: (payload: {
       title: string;
@@ -401,7 +436,10 @@ export function useTesterApplicationCounts(options?: { enabled?: boolean }) {
   return query;
 }
 
-export function useTesterApplicationById(id: string, options?: { enabled?: boolean }) {
+export function useTesterApplicationById(
+  id: string,
+  options?: { enabled?: boolean },
+) {
   const query = useQuery({
     queryFn: () => getTesterApplicationById(id),
     queryKey: ["useTesterApplicationById", id],
@@ -411,12 +449,14 @@ export function useTesterApplicationById(id: string, options?: { enabled?: boole
   return query;
 }
 
-export function useUpdateTesterApplicationStatus(options?: UseMutationOptions<any, any, any>) {
+export function useUpdateTesterApplicationStatus(
+  options?: UseMutationOptions<any, any, any>,
+) {
   const mutation = useMutation({
-    mutationFn: (payload: { id: string; status: string; reason?: string }) => updateTesterApplicationStatus(payload),
+    mutationFn: (payload: { id: string; status: string; reason?: string }) =>
+      updateTesterApplicationStatus(payload),
     ...options,
   });
 
   return mutation;
 }
-

@@ -1,34 +1,11 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import dynamic from "next/dynamic";
 import { Card, CardContent } from "@/components/ui/card";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import {
-  DropdownMenu,
-  DropdownMenuTrigger,
-  DropdownMenuContent,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuItem,
-} from "@/components/ui/dropdown-menu";
-import {
-  Search,
-  MoreHorizontal,
-  CheckCircle,
-  Ban,
-  Loader2,
-} from "lucide-react";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Search, CheckCircle, Ban, Loader2 } from "lucide-react";
 import { Tabs, TabsList, TabsContent, TabsTrigger } from "@/components/ui/tabs";
 import {
   Dialog,
@@ -45,7 +22,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import Link from "next/link";
 import { AppPagination } from "@/components/app-pagination";
 import {
   useAllUsers,
@@ -54,204 +30,21 @@ import {
   useUpdateUserRole,
 } from "@/hooks/useAdmin";
 import { useQueryClient } from "@tanstack/react-query";
-import { Skeleton } from "@/components/ui/skeleton";
 
-const ITEMS_PER_PAGE = 5;
-
-// Status Badge Component
-function StatusBadge({ status }: { status: string }) {
-  return (
-    <Badge
-      variant={
-        status === "Banned" || status === "Inactive"
-          ? "destructive"
-          : "secondary"
-      }
-      className={
-        status === "Active"
-          ? "bg-green-500/20 text-green-700 dark:bg-green-500/10 dark:text-green-400"
-          : ""
-      }
-    >
-      {status}
-    </Badge>
-  );
-}
-
-// Role Badge Component
-function RoleBadge({ role }: { role: string }) {
-  // Helper function to format role name for display
-  const formatRoleName = (roleName: string): string => {
-    const roleDisplayNames: Record<string, string> = {
-      super_admin: "Super Admin",
-      admin: "Admin",
-      moderator: "Moderator",
-      support: "Support",
-      tester: "Tester",
-      user: "User",
-    };
-    return roleDisplayNames[roleName] || roleName;
-  };
-
-  const getRoleStyles = () => {
-    switch (role) {
-      case "super_admin":
-        return "bg-purple-500/20 text-purple-700 dark:bg-purple-500/10 dark:text-purple-400";
-      case "admin":
-        return "bg-amber-500/20 text-amber-700 dark:bg-amber-500/10 dark:text-amber-400";
-      case "moderator":
-        return "bg-blue-500/20 text-blue-700 dark:bg-blue-500/10 dark:text-blue-400";
-      case "support":
-        return "bg-pink-500/20 text-pink-700 dark:bg-pink-500/10 dark:text-pink-400";
-      case "tester":
-        return "bg-green-500/20 text-green-700 dark:bg-green-500/10 dark:text-green-400";
-      default:
-        return "bg-secondary text-secondary-foreground";
-    }
-  };
-
-  return (
-    <Badge variant="outline" className={getRoleStyles()}>
-      {formatRoleName(role)}
-    </Badge>
-  );
-}
-
-// Skeleton Row Component
-const SkeletonRow = () => (
-  <TableRow>
-    <TableCell>
-      <div className="flex items-center gap-3">
-        <Skeleton className="h-10 w-10 rounded-full" />
-        <div className="flex flex-col gap-1">
-          <Skeleton className="h-4 w-24" />
-          <Skeleton className="h-3 w-16 md:hidden" />
-        </div>
+const UserTable = dynamic(
+  () =>
+    import("@/components/admin/users/user-table").then((mod) => mod.UserTable),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="p-8 text-center text-muted-foreground animate-pulse">
+        Loading users table...
       </div>
-    </TableCell>
-    <TableCell className="hidden md:table-cell">
-      <Skeleton className="h-4 w-32" />
-    </TableCell>
-    <TableCell>
-      <Skeleton className="h-5 w-16" />
-    </TableCell>
-    <TableCell>
-      <Skeleton className="h-5 w-14" />
-    </TableCell>
-    <TableCell className="text-right">
-      <Skeleton className="h-8 w-8 rounded-md ml-auto" />
-    </TableCell>
-  </TableRow>
+    ),
+  },
 );
 
-// User Table Component
-const UserTable = ({
-  users,
-  onEdit,
-  onStatusChange,
-  isLoading,
-}: {
-  users: any[];
-  onEdit: (user: any) => void;
-  onStatusChange: (user: any) => void;
-  isLoading: boolean;
-}) => {
-  if (isLoading) {
-    return (
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead>User</TableHead>
-            <TableHead className="hidden md:table-cell">Email</TableHead>
-            <TableHead>Role</TableHead>
-            <TableHead>Status</TableHead>
-            <TableHead>
-              <span className="sr-only">Actions</span>
-            </TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {[...Array(5)].map((_, i) => (
-            <SkeletonRow key={i} />
-          ))}
-        </TableBody>
-      </Table>
-    );
-  }
-
-  if (users.length === 0) {
-    return (
-      <div className="text-center py-8 text-muted-foreground">
-        No users found.
-      </div>
-    );
-  }
-
-  return (
-    <Table>
-      <TableHeader>
-        <TableRow>
-          <TableHead>User</TableHead>
-          <TableHead className="hidden md:table-cell">Email</TableHead>
-          <TableHead>Role</TableHead>
-          <TableHead>Status</TableHead>
-          <TableHead>
-            <span className="sr-only">Actions</span>
-          </TableHead>
-        </TableRow>
-      </TableHeader>
-      <TableBody>
-        {users.map((user) => (
-          <TableRow key={user.id}>
-            <TableCell>
-              <div className="flex items-center gap-3">
-                <Avatar>
-                  <AvatarImage src={user.image} />
-                  <AvatarFallback>{user.name?.charAt(0) || "U"}</AvatarFallback>
-                </Avatar>
-                <div className="flex flex-col">
-                  <span className="font-medium">{user.name}</span>
-                  <span className="text-xs text-muted-foreground md:hidden">
-                    {user.email}
-                  </span>
-                </div>
-              </div>
-            </TableCell>
-            <TableCell className="hidden md:table-cell">{user.email}</TableCell>
-            <TableCell>
-              <RoleBadge role={user.role} />
-            </TableCell>
-            <TableCell>
-              <StatusBadge status={user.status} />
-            </TableCell>
-            <TableCell className="text-right">
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button aria-haspopup="true" size="icon" variant="ghost">
-                    <MoreHorizontal className="h-4 w-4" />
-                    <span className="sr-only">Toggle menu</span>
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                  <Link href={`/admin/users/${user.id}`}>
-                    <DropdownMenuItem>View Details</DropdownMenuItem>
-                  </Link>
-                  <DropdownMenuItem onClick={() => onEdit(user)}>
-                    Edit Role
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => onStatusChange(user)}>
-                    Change Status
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
-            </TableCell>
-          </TableRow>
-        ))}
-      </TableBody>
-    </Table>
-  );
-};
+const ITEMS_PER_PAGE = 5;
 
 export default function AdminUsersPage() {
   const queryClient = useQueryClient();
@@ -338,7 +131,7 @@ export default function AdminUsersPage() {
   };
 
   return (
-    <div className="flex-1 space-y-8 container mx-auto px-4 md:px-6">
+    <div className="flex-1 space-y-8 container mx-auto px-4 md:px-6 mb-8">
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between space-y-2">
         <div>
           <h2 className="text-2xl sm:text-4xl font-bold bg-gradient-to-b from-primary to-primary/40 bg-clip-text text-transparent leading-[unset] pb-2">

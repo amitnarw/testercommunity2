@@ -80,7 +80,7 @@ export async function getSubmittedAppsCount(appType?: string) {
   try {
     const response = await api.get(
       API_ROUTES.ADMIN + `/get-submitted-apps-count`,
-      { params: { appType } }
+      { params: { appType } },
     );
     return response?.data?.data;
   } catch (error) {
@@ -157,6 +157,37 @@ export async function rejectApp(payload: {
   }
 }
 
+export async function updateProjectStatus(payload: {
+  id: number;
+  status: string;
+}) {
+  try {
+    const response = await api.post(
+      API_ROUTES.ADMIN + `/update-project-status`,
+      {
+        ...payload,
+        id: payload.id,
+      },
+    );
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error updating project status:", error);
+    if (axios.isAxiosError(error)) {
+      const status = error.response?.status;
+      const responseData = error.response?.data;
+      console.error("Axios error:", status, responseData);
+
+      throw new Error(
+        responseData?.message || error.message || "Unknown Axios error",
+      );
+    } else if (error instanceof Error) {
+      throw new Error(error.message);
+    } else {
+      throw new Error(JSON.stringify(error));
+    }
+  }
+}
+
 // ==================== DASHBOARD STATS ====================
 
 export async function getDashboardStats() {
@@ -183,7 +214,10 @@ export async function getDashboardStats() {
 
 // ==================== FEEDBACK ====================
 
-export async function getAllFeedback(params?: { status?: string; appType?: string }) {
+export async function getAllFeedback(params?: {
+  status?: string;
+  appType?: string;
+}) {
   try {
     const response = await api.get(API_ROUTES.ADMIN + `/feedback`, { params });
     return response?.data?.data;
@@ -249,9 +283,15 @@ export async function getFeedbackCounts() {
   }
 }
 
-export async function updateFeedbackStatus(payload: { id: number; priority?: string }) {
+export async function updateFeedbackStatus(payload: {
+  id: number;
+  priority?: string;
+}) {
   try {
-    const response = await api.post(API_ROUTES.ADMIN + `/feedback/update`, payload);
+    const response = await api.post(
+      API_ROUTES.ADMIN + `/feedback/update`,
+      payload,
+    );
     return response?.data?.data;
   } catch (error) {
     console.error("Error updating feedback:", error);
@@ -295,7 +335,11 @@ export async function deleteFeedback(id: number) {
 
 // ==================== USERS ====================
 
-export async function getAllUsers(params?: { role?: string; status?: string; search?: string }) {
+export async function getAllUsers(params?: {
+  role?: string;
+  status?: string;
+  search?: string;
+}) {
   try {
     const response = await api.get(API_ROUTES.ADMIN + `/users`, { params });
     return response?.data?.data;
@@ -361,9 +405,16 @@ export async function getUserCounts() {
   }
 }
 
-export async function updateUserStatus(payload: { id: string; status: string; banReason?: string }) {
+export async function updateUserStatus(payload: {
+  id: string;
+  status: string;
+  banReason?: string;
+}) {
   try {
-    const response = await api.post(API_ROUTES.ADMIN + `/users/update-status`, payload);
+    const response = await api.post(
+      API_ROUTES.ADMIN + `/users/update-status`,
+      payload,
+    );
     return response?.data?.data;
   } catch (error) {
     console.error("Error updating user status:", error);
@@ -385,7 +436,10 @@ export async function updateUserStatus(payload: { id: string; status: string; ba
 
 export async function updateUserRole(payload: { id: string; role: string }) {
   try {
-    const response = await api.post(API_ROUTES.ADMIN + `/users/update-role`, payload);
+    const response = await api.post(
+      API_ROUTES.ADMIN + `/users/update-role`,
+      payload,
+    );
     return response?.data?.data;
   } catch (error) {
     console.error("Error updating user role:", error);
@@ -409,7 +463,9 @@ export async function updateUserRole(payload: { id: string; role: string }) {
 
 export async function getAllSuggestions(params?: { status?: string }) {
   try {
-    const response = await api.get(API_ROUTES.ADMIN + `/suggestions`, { params });
+    const response = await api.get(API_ROUTES.ADMIN + `/suggestions`, {
+      params,
+    });
     return response?.data?.data;
   } catch (error) {
     console.error("Error fetching suggestions:", error);
@@ -501,9 +557,16 @@ export async function createSuggestion(payload: {
   }
 }
 
-export async function updateSuggestionStatus(payload: { id: number; status: string; reason?: string }) {
+export async function updateSuggestionStatus(payload: {
+  id: number;
+  status: string;
+  reason?: string;
+}) {
   try {
-    const response = await api.post(API_ROUTES.ADMIN + `/suggestions/update`, payload);
+    const response = await api.post(
+      API_ROUTES.ADMIN + `/suggestions/update`,
+      payload,
+    );
     return response?.data?.data;
   } catch (error) {
     console.error("Error updating suggestion:", error);
@@ -549,7 +612,9 @@ export async function deleteSuggestion(id: number) {
 
 export async function getAllNotifications(params?: { type?: string }) {
   try {
-    const response = await api.get(API_ROUTES.ADMIN + `/notifications`, { params });
+    const response = await api.get(API_ROUTES.ADMIN + `/notifications`, {
+      params,
+    });
     return response?.data?.data;
   } catch (error) {
     console.error("Error fetching notifications:", error);
@@ -600,7 +665,10 @@ export async function createNotification(payload: {
   isActive?: boolean;
 }) {
   try {
-    const response = await api.post(API_ROUTES.ADMIN + `/notifications`, payload);
+    const response = await api.post(
+      API_ROUTES.ADMIN + `/notifications`,
+      payload,
+    );
     return response?.data?.data;
   } catch (error) {
     console.error("Error creating notification:", error);
@@ -629,7 +697,10 @@ export async function updateNotification(payload: {
   isActive?: boolean;
 }) {
   try {
-    const response = await api.post(API_ROUTES.ADMIN + `/notifications/update`, payload);
+    const response = await api.post(
+      API_ROUTES.ADMIN + `/notifications/update`,
+      payload,
+    );
     return response?.data?.data;
   } catch (error) {
     console.error("Error updating notification:", error);
@@ -651,7 +722,9 @@ export async function updateNotification(payload: {
 
 export async function deleteNotification(id: number) {
   try {
-    const response = await api.delete(API_ROUTES.ADMIN + `/notifications/${id}`);
+    const response = await api.delete(
+      API_ROUTES.ADMIN + `/notifications/${id}`,
+    );
     return response?.data?.data;
   } catch (error) {
     console.error("Error deleting notification:", error);
@@ -678,7 +751,10 @@ export async function broadcastNotification(payload: {
   url?: string;
 }) {
   try {
-    const response = await api.post(API_ROUTES.ADMIN + `/notifications/broadcast`, payload);
+    const response = await api.post(
+      API_ROUTES.ADMIN + `/notifications/broadcast`,
+      payload,
+    );
     return response?.data?.data;
   } catch (error) {
     console.error("Error broadcasting notification:", error);
@@ -700,9 +776,14 @@ export async function broadcastNotification(payload: {
 
 // ==================== TESTER APPLICATIONS ====================
 
-export async function getTesterApplications(params?: { status?: string; search?: string }) {
+export async function getTesterApplications(params?: {
+  status?: string;
+  search?: string;
+}) {
   try {
-    const response = await api.get(API_ROUTES.ADMIN + `/tester-applications`, { params });
+    const response = await api.get(API_ROUTES.ADMIN + `/tester-applications`, {
+      params,
+    });
     return response?.data?.data;
   } catch (error) {
     console.error("Error fetching tester applications:", error);
@@ -724,7 +805,9 @@ export async function getTesterApplications(params?: { status?: string; search?:
 
 export async function getTesterApplicationCounts() {
   try {
-    const response = await api.get(API_ROUTES.ADMIN + `/tester-applications/counts`);
+    const response = await api.get(
+      API_ROUTES.ADMIN + `/tester-applications/counts`,
+    );
     return response?.data?.data;
   } catch (error) {
     console.error("Error fetching tester application counts:", error);
@@ -746,7 +829,9 @@ export async function getTesterApplicationCounts() {
 
 export async function getTesterApplicationById(id: string) {
   try {
-    const response = await api.get(API_ROUTES.ADMIN + `/tester-applications/${id}`);
+    const response = await api.get(
+      API_ROUTES.ADMIN + `/tester-applications/${id}`,
+    );
     return response?.data?.data;
   } catch (error) {
     console.error("Error fetching tester application:", error);
@@ -766,9 +851,16 @@ export async function getTesterApplicationById(id: string) {
   }
 }
 
-export async function updateTesterApplicationStatus(payload: { id: string; status: string; reason?: string }) {
+export async function updateTesterApplicationStatus(payload: {
+  id: string;
+  status: string;
+  reason?: string;
+}) {
   try {
-    const response = await api.post(API_ROUTES.ADMIN + `/tester-applications/update-status`, payload);
+    const response = await api.post(
+      API_ROUTES.ADMIN + `/tester-applications/update-status`,
+      payload,
+    );
     return response?.data?.data;
   } catch (error) {
     console.error("Error updating tester application status:", error);
@@ -787,5 +879,3 @@ export async function updateTesterApplicationStatus(payload: { id: string; statu
     }
   }
 }
-
-

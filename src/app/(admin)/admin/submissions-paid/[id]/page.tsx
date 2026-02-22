@@ -19,15 +19,71 @@ import {
   Video,
   CreditCard,
   Image as ImageIcon,
+  Loader2,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { BackButton } from "@/components/back-button";
+import { useAcceptApp, useUpdateProjectStatus } from "@/hooks/useAdmin";
 import { useSingleHubAppDetails } from "@/hooks/useHub";
+import { toast } from "@/hooks/use-toast";
 import { SafeImage } from "@/components/safe-image";
 import { ExpandableText } from "@/components/expandable-text";
 import { AppInfoSidebar } from "@/components/appInfoSidebar";
 import DeveloperInstructions from "@/components/developerInstructions";
+import { StatusDropdown } from "@/components/dashboard/status-dropdown";
 import dynamic from "next/dynamic";
+
+const APP_STATUS_OPTIONS = [
+  {
+    value: "PENDING",
+    label: "Pending",
+    dotClass: "bg-gray-500",
+    desc: "Awaiting submission",
+    color: "#6b7280",
+  },
+  {
+    value: "IN_REVIEW",
+    label: "In Review",
+    dotClass: "bg-yellow-500",
+    desc: "Currently under review",
+    color: "#eab308",
+  },
+  {
+    value: "ACCEPTED",
+    label: "Accepted",
+    dotClass: "bg-blue-500",
+    desc: "Approved, awaiting setup",
+    color: "#3b82f6",
+  },
+  {
+    value: "AVAILABLE",
+    label: "Available",
+    dotClass: "bg-emerald-500",
+    desc: "Ready for testers",
+    color: "#10b981",
+  },
+  {
+    value: "IN_TESTING",
+    label: "In Testing",
+    dotClass: "bg-purple-500",
+    desc: "Test is in progress",
+    color: "#a855f7",
+  },
+  {
+    value: "COMPLETED",
+    label: "Completed",
+    dotClass: "bg-green-500",
+    desc: "Testing finished",
+    color: "#22c55e",
+  },
+  {
+    value: "REJECTED",
+    label: "Rejected",
+    dotClass: "bg-red-500",
+    desc: "Submission rejected",
+    color: "#ef4444",
+  },
+];
 
 const AdminRejectDialog = dynamic(
   () =>
@@ -79,6 +135,35 @@ export default function AdminSubmissionDetailPage({
     refetch,
   } = useSingleHubAppDetails({ id });
 
+  const { mutate: updateStatus, isPending: isUpdating } =
+    useUpdateProjectStatus({
+      onSuccess: () => {
+        toast({
+          title: "Success",
+          description: "App status updated to In Testing successfully.",
+        });
+        refetch();
+      },
+      onError: (err: any) => {
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: err?.message || "Failed to update app status.",
+        });
+      },
+    });
+
+  const handleStatusUpdate = (status: string) => {
+    if (!project) return;
+    if (
+      !window.confirm(
+        `Are you sure you want to change the status to ${status}?`,
+      )
+    )
+      return;
+    updateStatus({ id: project.id, status });
+  };
+
   const handleSuccess = () => {
     router.push("/admin/submissions-paid");
   };
@@ -106,25 +191,31 @@ export default function AdminSubmissionDetailPage({
   const visitUrl = `https://play.google.com/store/apps/details?id=${project.androidApp.packageName}`;
 
   return (
-    <div className="bg-[#f8fafc] dark:bg-[#0f151e] text-foreground min-h-screen pb-10">
+    <div className="bg-[#f8fafc] dark:bg-[#0f151e] text-foreground min-h-screen mb-8">
       <div className="container mx-auto px-4 md:px-6">
-        <div className="sticky top-0 z-[50] pt-2 pb-4 pl-0 xl:pl-8 w-1/2">
+        <div className="pt-2 pb-4 pl-0 xl:pl-8 w-1/2">
           <BackButton href="/admin/submissions-paid" />
         </div>
 
-        <main className="max-w-7xl mx-auto grid lg:grid-cols-3 gap-12 mt-8">
-          <div className="lg:col-span-2 space-y-12 overflow-hidden">
-            {/* Sidebar for mobile, shown in flow */}
-
-            {/* Header Section */}
-            <section>
-              <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-br from-primary to-accent bg-clip-text text-transparent pb-2">
-                {project.androidApp?.appName || `App #${project.appId}`}
-              </h1>
-              <div className="flex items-center gap-2 mb-4">
-                <Badge variant="outline" className="text-sm">
+        <main className="max-w-7xl mx-auto flex flex-col gap-6 mt-4">
+          {/* Header with Actions */}
+          <div className="bg-background/80 border border-border/50 shadow-sm rounded-2xl p-3 sm:p-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+            <div className="flex flex-col gap-1">
+              <div className="flex items-center gap-3 relative">
+                <h1 className="text-2xl md:text-3xl font-bold bg-gradient-to-br from-primary to-accent bg-clip-text text-transparent">
+                  {project.androidApp?.appName || `App #${project.appId}`}
+                </h1>
+                <Badge
+                  variant="outline"
+                  className="text-xs uppercase tracking-wider absolute -top-2 -right-2 sm:static"
+                >
                   {project.appType}
                 </Badge>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="text-sm font-medium text-muted-foreground mr-1">
+                  Status:
+                </span>
                 <Badge
                   variant={
                     project.status === "REJECTED" ? "destructive" : "secondary"
@@ -138,385 +229,310 @@ export default function AdminSubmissionDetailPage({
                       : ""
                   }
                 >
-                  {project.status}
+                  {project.status.replace("_", " ")}
                 </Badge>
               </div>
-              <ExpandableText
-                text={project.androidApp?.description}
-                className="text-muted-foreground text-md sm:text-lg leading-relaxed"
-              />
-            </section>
+            </div>
 
-            {/* Submission Meta Details (Redesigned) */}
-            <section>
-              <h2 className="text-2xl font-bold mb-4 flex items-center gap-2">
-                <span className="bg-gradient-to-r from-amber-500 to-orange-400 bg-clip-text text-transparent">
-                  Details
-                </span>
-              </h2>
-              <Card className="border-0 shadow-xl shadow-amber-500/10 dark:shadow-amber-500/5 bg-gradient-to-b from-card to-amber-500/5 overflow-hidden relative border-t-2 border-t-amber-500">
-                <div className="absolute top-0 right-0 p-4 opacity-10 pointer-events-none">
-                  <Package className="w-32 h-32" />
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x border-amber-500/10 dark:border-amber-500/10 relative z-10">
-                  {/* Column 1: App Identity */}
-                  <div className="p-6 space-y-6">
-                    <div className="space-y-2">
-                      <div className="flex items-center gap-2 text-primary font-medium text-sm uppercase tracking-wide">
-                        <Package className="w-4 h-4" /> Package Name
-                      </div>
-                      <p className="font-mono text-sm bg-secondary/50 p-2 rounded-md break-all">
-                        {project.androidApp?.packageName}
+            {/* Top Level Actions */}
+            <div className="flex flex-row sm:flex-col justify-center sm:justify-end items-center md:items-end gap-2 sm:gap-3 w-full md:w-auto mt-4 md:mt-0">
+              <div className="flex flex-wrap justify-end gap-1 md:gap-3 w-auto">
+                {project.status === "IN_REVIEW" && (
+                  <>
+                    <Button
+                      variant="destructive"
+                      size="sm"
+                      onClick={() => setShowRejectDialog(true)}
+                      className="flex-1 md:flex-none shadow-sm"
+                    >
+                      <X className="w-4 h-4 mr-1.5" /> Reject
+                    </Button>
+                    <Button
+                      size="sm"
+                      onClick={() => setShowAcceptDialog(true)}
+                      className="flex-1 md:flex-none bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm"
+                    >
+                      <Check className="w-4 h-4 mr-1.5" /> Approve
+                    </Button>
+                  </>
+                )}
+                {(project.status === "ACCEPTED" ||
+                  project.status === "AVAILABLE" ||
+                  project.status === "IN_TESTING") && (
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setShowManageTestersDialog(true)}
+                    className="flex-none shadow-sm"
+                  >
+                    <Users className="w-4 h-4 mr-1.5 text-primary hidden m:block" />{" "}
+                    Manage Testers
+                  </Button>
+                )}
+                {project.status === "AVAILABLE" && (
+                  <Button
+                    size="sm"
+                    onClick={() => handleStatusUpdate("IN_TESTING")}
+                    disabled={isUpdating}
+                    className="flex-1 md:flex-none bg-blue-600 hover:bg-blue-700 text-white shadow-sm"
+                  >
+                    {isUpdating ? (
+                      <Loader2 className="w-3.5 h-3.5 animate-spin mr-1.5" />
+                    ) : (
+                      <Clock className="w-4 h-4 mr-1.5" />
+                    )}
+                    {isUpdating ? "Updating..." : "Start Testing"}
+                  </Button>
+                )}
+              </div>
+              <StatusDropdown
+                label="App Status"
+                options={APP_STATUS_OPTIONS}
+                value={project.status}
+                onChange={(newStatus) => handleStatusUpdate(newStatus)}
+              />
+            </div>
+          </div>
+          <div className="grid lg:grid-cols-3 gap-6">
+            <div className="lg:col-span-2 space-y-6 overflow-hidden">
+              {/* Summary Cards Row */}
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                <Card className="bg-card/50 border border-border/50">
+                  <CardContent className="p-4 flex flex-col justify-center h-full">
+                    <p className="text-xs font-medium flex items-center gap-1.5 mb-1 text-primary">
+                      Package
+                    </p>
+                    <p
+                      className="font-mono text-xs font-semibold truncate"
+                      title={project.androidApp?.packageName}
+                    >
+                      {project.androidApp?.packageName}
+                    </p>
+                  </CardContent>
+                </Card>
+                <Card className="bg-card/50 border border-border/50">
+                  <CardContent className="p-4 flex flex-col justify-center h-full">
+                    <p className="text-xs font-medium flex items-center gap-1.5 mb-1 text-primary">
+                      Category
+                    </p>
+                    <p className="text-sm font-semibold truncate">
+                      {project.androidApp?.appCategory?.name || "N/A"}
+                    </p>
+                  </CardContent>
+                </Card>
+                <Card className="bg-card/50 border border-border/50">
+                  <CardContent className="p-4 flex flex-col justify-center h-full">
+                    <p className="text-xs text-amber-600 dark:text-amber-500 font-medium flex items-center gap-1.5 mb-1">
+                      <Users className="w-3.5 h-3.5" /> Testers
+                    </p>
+                    <p className="text-lg font-bold">
+                      {project.currentTester || 0}{" "}
+                      <span className="text-sm font-normal text-muted-foreground">
+                        / {project.totalTester}
+                      </span>
+                    </p>
+                  </CardContent>
+                </Card>
+                <Card className="bg-card/50 border border-border/50">
+                  <CardContent className="p-4 flex flex-col justify-center h-full">
+                    <p className="text-xs text-amber-600 dark:text-amber-500 font-medium flex items-center gap-1.5 mb-1">
+                      <Clock className="w-3.5 h-3.5" /> Duration
+                    </p>
+                    <p className="text-lg font-bold">
+                      {project.totalDay || 0}{" "}
+                      <span className="text-sm font-normal text-muted-foreground">
+                        Days
+                      </span>
+                    </p>
+                  </CardContent>
+                </Card>
+              </div>
+
+              {/* Description & Internal Details */}
+              <Card className="border border-border/50 shadow-sm">
+                <CardContent className="p-6">
+                  <h3 className="text-lg font-semibold mb-3 flex items-center gap-2">
+                    <FileText className="w-5 h-5 text-primary" />
+                    Description
+                  </h3>
+                  <ExpandableText
+                    text={project.androidApp?.description}
+                    className="text-muted-foreground text-sm leading-relaxed mb-6"
+                  />
+
+                  <div className="grid grid-cols-2 gap-4 pt-6 border-t border-border/50">
+                    <div>
+                      <p className="text-sm font-medium text-muted-foreground mb-1 flex items-center gap-1.5">
+                        <Smartphone className="w-4 h-4 text-primary" /> Min
+                        Android
+                      </p>
+                      <p className="font-semibold text-md">
+                        Android {project.minimumAndroidVersion}+
                       </p>
                     </div>
-                    <div className="space-y-2">
-                      <div className="flex items-center gap-2 text-primary font-medium text-sm uppercase tracking-wide">
-                        <Package className="w-4 h-4" /> Category
-                      </div>
-                      <Badge
-                        variant="secondary"
-                        className="text-sm font-medium px-3 py-1"
-                      >
-                        {project.androidApp?.appCategory?.name}
-                      </Badge>
-                    </div>
-                  </div>
-
-                  {/* Column 2: Requirements */}
-                  <div className="p-6 space-y-6">
-                    <div className="space-y-2">
-                      <div className="flex items-center gap-2 text-amber-600 dark:text-amber-500 font-medium text-sm uppercase tracking-wide">
-                        <Smartphone className="w-4 h-4" /> Min Android
-                      </div>
-                      <div className="text-2xl font-bold">
-                        Android {project.minimumAndroidVersion}+
-                      </div>
-                    </div>
-                    {project.totalTester > 0 && (
-                      <div className="space-y-2">
-                        <div className="flex items-center gap-2 text-amber-600 dark:text-amber-500 font-medium text-sm uppercase tracking-wide">
-                          <Users className="w-4 h-4" /> Testers Required
-                        </div>
-                        <div className="text-2xl font-bold">
-                          {project.totalTester}{" "}
-                          <span className="text-sm text-muted-foreground font-normal">
-                            Testers
-                          </span>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Column 3: Timeline & Cost */}
-                  <div className="p-6 space-y-6">
-                    {project.totalDay > 0 && (
-                      <div className="space-y-2">
-                        <div className="flex items-center gap-2 text-amber-600 dark:text-amber-500 font-medium text-sm uppercase tracking-wide">
-                          <Clock className="w-4 h-4" /> Duration
-                        </div>
-                        <div className="text-2xl font-bold">
-                          {project.totalDay}{" "}
-                          <span className="text-sm text-muted-foreground font-normal">
-                            Days
-                          </span>
-                        </div>
-                      </div>
-                    )}
                     {(project.costPoints || 0) > 0 && (
-                      <div className="space-y-2">
-                        <div className="flex items-center gap-2 text-amber-600 dark:text-amber-500 font-medium text-sm uppercase tracking-wide">
-                          <CreditCard className="w-4 h-4" /> Points Cost
-                        </div>
-                        <div className="text-2xl font-bold text-amber-500">
-                          {project.costPoints}{" "}
-                          <span className="text-sm text-muted-foreground font-normal">
-                            Points
-                          </span>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </Card>
-            </section>
-
-            {/* Review & Action Section (Professional Design) */}
-            {project.status === "IN_REVIEW" && (
-              <section className="shadow-xl shadow-gray-200 dark:shadow-gray-900 bg-card">
-                <Card className="border-0 bg-transparent overflow-hidden relative">
-                  <div className="absolute top-0 left-0 w-1 h-full bg-gradient-to-b from-amber-400 to-orange-500" />
-                  <CardContent className="p-6 sm:p-8">
-                    <div className="flex flex-col items-start justify-between gap-6">
-                      <div className="space-y-2 relative">
-                        <h2 className="text-2xl font-bold flex items-center gap-2">
-                          <ShieldAlert className="absolute sm:static -top-2 -right-2 scale-[2] sm:scale-100 w-6 h-6 text-amber-500 opacity-50 sm:opacity-100" />
-                          Review Action Required
-                        </h2>
-                        <p className="text-sm sm:text-base text-muted-foreground max-w-lg">
-                          This application is currently pending review. Please
-                          evaluate the submission details and provide a verdict
-                          to proceed.
+                      <div>
+                        <p className="text-sm font-medium text-muted-foreground mb-1 flex items-center gap-1.5">
+                          <CreditCard className="w-4 h-4 text-emerald-500" />{" "}
+                          Reward
+                        </p>
+                        <p className="font-semibold text-md text-emerald-600 dark:text-emerald-400">
+                          {project.costPoints} Points
                         </p>
                       </div>
-                      <div className="flex flex-row gap-3 w-full md:w-auto">
-                        <Button
-                          variant="destructive"
-                          onClick={() => setShowRejectDialog(true)}
-                          className="flex-1 md:flex-none h-12 px-6 text-sm sm:text-md font-semibold rounded-xl bg-gradient-to-br from-red-500 to-red-500/50 hover:from-red-500 hover:to-red-600 text-white shadow-lg hover:shadow-red-500/40"
-                        >
-                          <X className="w-4 h-4 mr-0 sm:mr-2" /> Reject
-                        </Button>
-                        <Button
-                          onClick={() => setShowAcceptDialog(true)}
-                          className="flex-1 md:flex-none h-12 px-8 text-sm sm:text-md font-semibold rounded-xl bg-gradient-to-br from-green-500 to-green-500/50 hover:from-green-500 hover:to-emerald-500 text-white shadow-lg hover:shadow-green-500/40"
-                        >
-                          <Check className="w-4 h-4 mr-0 sm:mr-2" /> Approve
-                        </Button>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              </section>
-            )}
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
 
-            {/* Rejection Details Section */}
-            {project.status === "REJECTED" && (
-              <section className="shadow-xl shadow-gray-200 dark:shadow-gray-900 bg-card">
-                <Card className="border-0 bg-transparent overflow-hidden relative">
-                  <div className="absolute top-0 left-0 w-1 h-full bg-gradient-to-b from-red-500 to-red-700" />
-                  <CardContent className="p-6 sm:p-8">
-                    <div className="flex flex-col gap-6">
-                      <div className="space-y-4">
-                        <h2 className="text-2xl font-bold flex items-center gap-2 text-destructive">
-                          <AlertTriangle className="w-6 h-6 absolute sm:static scale-[2] sm:scale-100 top-5 right-5 opacity-50 sm:opacity-100" />
-                          Submission Rejected
-                        </h2>
+              {/* Rejection Details Section */}
+              {project.status === "REJECTED" && (
+                <section className="mb-6">
+                  <Card className="border-destructive/20 shadow-sm bg-destructive/5 relative overflow-hidden">
+                    <div className="absolute top-0 left-0 w-1 h-full bg-destructive" />
+                    <CardContent className="p-5 sm:p-6">
+                      <div className="flex flex-col gap-4">
+                        <div className="space-y-3">
+                          <h2 className="text-xl font-bold flex items-center gap-2 text-destructive">
+                            <AlertTriangle className="w-5 h-5 absolute sm:static scale-[2] sm:scale-100 top-4 right-4 opacity-10 sm:opacity-100" />
+                            Rejection Reason
+                          </h2>
 
-                        <div className="space-y-2 bg-destructive/5 p-4 rounded-xl border border-destructive/10">
-                          {project.statusDetails?.title && (
-                            <h3 className="font-bold text-lg text-destructive/90">
-                              {project.statusDetails.title}
-                            </h3>
-                          )}
-                          <p className="text-muted-foreground whitespace-pre-wrap leading-relaxed">
-                            {project.statusDetails?.description ||
-                              "No specific reason provided."}
-                          </p>
+                          <div className="space-y-2">
+                            {project.statusDetails?.title && (
+                              <h3 className="font-semibold text-md text-destructive/90">
+                                {project.statusDetails.title}
+                              </h3>
+                            )}
+                            <p className="text-sm text-muted-foreground whitespace-pre-wrap leading-relaxed">
+                              {project.statusDetails?.description ||
+                                "No specific reason provided."}
+                            </p>
+                          </div>
                         </div>
-                      </div>
 
-                      {(project.statusDetails?.image ||
-                        project.statusDetails?.video) && (
-                        <div className="space-y-3 pt-2">
-                          <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-wider flex items-center gap-2">
-                            <ShieldAlert className="w-3 h-3" /> Admin Evidence
-                          </h3>
-                          <div className="flex flex-wrap gap-4">
-                            {project.statusDetails?.image && (
-                              <div className="space-y-2 group">
-                                <div
-                                  className="relative h-48 w-full sm:w-72 rounded-xl overflow-hidden border bg-black/5 cursor-pointer shadow-sm group-hover:shadow-md transition-all"
-                                  onClick={() =>
-                                    setFullscreenImage(
-                                      project.statusDetails!.image,
-                                    )
-                                  }
-                                >
-                                  <SafeImage
-                                    src={project.statusDetails.image}
-                                    alt="Rejection Image"
-                                    fill
-                                    className="object-cover"
-                                  />
-                                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors flex items-center justify-center">
-                                    <Expand className="w-8 h-8 text-white opacity-0 group-hover:opacity-100 transition-opacity transform scale-90 group-hover:scale-100 duration-200" />
+                        {(project.statusDetails?.image ||
+                          project.statusDetails?.video) && (
+                          <div className="space-y-3 pt-4 border-t border-destructive/10">
+                            <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-wider flex items-center gap-2">
+                              <ShieldAlert className="w-3 h-3" /> Evidence
+                            </h3>
+                            <div className="flex flex-wrap gap-4">
+                              {project.statusDetails?.image && (
+                                <div className="space-y-2 group">
+                                  <div
+                                    className="relative h-32 w-full sm:w-48 rounded-lg overflow-hidden border bg-black/5 cursor-pointer shadow-sm group-hover:shadow-md transition-all"
+                                    onClick={() =>
+                                      setFullscreenImage(
+                                        project.statusDetails!.image,
+                                      )
+                                    }
+                                  >
+                                    <SafeImage
+                                      src={project.statusDetails.image}
+                                      alt="Rejection Image"
+                                      fill
+                                      className="object-cover"
+                                    />
+                                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors flex items-center justify-center">
+                                      <Expand className="w-6 h-6 text-white opacity-0 group-hover:opacity-100 transition-opacity transform scale-90 group-hover:scale-100 duration-200" />
+                                    </div>
                                   </div>
                                 </div>
-                                <span className="text-xs text-muted-foreground flex items-center gap-1.5 px-1">
-                                  <ImageIcon className="w-3.5 h-3.5" /> Image
-                                  Attachment
-                                </span>
-                              </div>
-                            )}
+                              )}
 
-                            {project.statusDetails?.video && (
-                              <div className="space-y-2">
-                                <div className="h-48 w-full sm:w-72 rounded-xl overflow-hidden border bg-black relative shadow-sm">
-                                  <video
-                                    src={project.statusDetails.video}
-                                    controls
-                                    className="w-full h-full object-contain"
-                                  />
+                              {project.statusDetails?.video && (
+                                <div className="space-y-2">
+                                  <div className="h-32 w-full sm:w-48 rounded-lg overflow-hidden border bg-black relative shadow-sm">
+                                    <video
+                                      src={project.statusDetails.video}
+                                      controls
+                                      className="w-full h-full object-contain"
+                                    />
+                                  </div>
                                 </div>
-                                <span className="text-xs text-muted-foreground flex items-center gap-1.5 px-1">
-                                  <Video className="w-3.5 h-3.5" /> Video
-                                  Attachment
-                                </span>
-                              </div>
-                            )}
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  </CardContent>
-                </Card>
-              </section>
-            )}
-
-            {/* Approved/Active Status Section */}
-            {(project.status === "ACCEPTED" ||
-              project.status === "AVAILABLE" ||
-              project.status === "IN_TESTING" ||
-              project.status === "COMPLETED") && (
-              <section className="shadow-xl shadow-gray-200 dark:shadow-gray-900 bg-card">
-                <Card className="border-0 bg-transparent overflow-hidden relative">
-                  <div
-                    className={`absolute top-0 left-0 w-1 h-full bg-gradient-to-b ${project.status === "COMPLETED" ? "from-blue-500 to-indigo-600" : "from-green-500 to-emerald-600"}`}
-                  />
-                  <CardContent className="p-6 sm:p-8">
-                    <div className="flex items-start gap-5">
-                      <div
-                        className={`p-4 rounded-full absolute sm:static scale-[2] sm:scale-100 top-0 right-0 ${project.status === "COMPLETED" ? "bg-blue-500/10 opacity-50 sm:opacity-100 text-blue-600 dark:text-blue-400" : "bg-green-500/10 opacity-50 sm:opacity-100 text-green-600 dark:text-green-400"}`}
-                      >
-                        {project.status === "COMPLETED" ? (
-                          <Check className="w-6 h-6" />
-                        ) : (
-                          <ShieldAlert className="w-6 h-6" />
-                        )}
-                      </div>
-                      <div className="space-y-2">
-                        <h2
-                          className={`text-2xl font-bold ${project.status === "COMPLETED" ? "text-blue-700 dark:text-blue-400" : "text-green-700 dark:text-green-400"}`}
-                        >
-                          {project.status === "COMPLETED"
-                            ? "Testing Completed"
-                            : "App Approved & Active"}
-                        </h2>
-                        <p className="text-muted-foreground text-base leading-relaxed max-w-2xl">
-                          {project.status === "ACCEPTED" &&
-                            "This application has been approved by the administration. It is currently in the queue waiting for the required initial setup before becoming available to testers."}
-                          {project.status === "AVAILABLE" &&
-                            "This application is fully approved and is currently listed on the Community Dashboard. Testers can now view and join this testing project."}
-                          {project.status === "IN_TESTING" &&
-                            "This application is currently in the active testing phase. Testers are actively engaged, and feedback is being collected."}
-                          {project.status === "COMPLETED" &&
-                            "The testing phase for this application has been successfully completed. All required testers have participated, and the duration has been fulfilled."}
-                        </p>
-
-                        {project.status !== "COMPLETED" && (
-                          <div className="pt-2">
-                            <Badge
-                              variant="outline"
-                              className="px-3 py-1 text-sm border-green-200 bg-green-50 text-green-700 dark:bg-green-900/20 dark:border-green-800 dark:text-green-400"
-                            >
-                              Current Status: {project.status.replace("_", " ")}
-                            </Badge>
+                              )}
+                            </div>
                           </div>
                         )}
                       </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              </section>
-            )}
+                    </CardContent>
+                  </Card>
+                </section>
+              )}
 
-            {/* Manage Testers Section (For Approved Apps) */}
-            {(project.status === "ACCEPTED" ||
-              project.status === "AVAILABLE" ||
-              project.status === "IN_TESTING") && (
-              <section className="shadow-xl shadow-primary/5 bg-card rounded-xl">
-                <Card className="border-0 bg-transparent overflow-hidden relative">
-                  <div className="absolute top-0 left-0 w-1 h-full bg-gradient-to-b from-primary to-primary/50" />
-                  <CardContent className="p-6 sm:p-8">
-                    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6">
-                      <div className="space-y-2 relative">
-                        <h2 className="text-2xl font-bold flex items-center gap-2">
-                          <Users className="w-6 h-6 text-primary" />
-                          Manage Testers
-                        </h2>
-                        <p className="text-sm sm:text-base text-muted-foreground max-w-lg">
-                          Assign professional testers to this application to
-                          begin the testing process.
-                        </p>
-                      </div>
-                      <Button
-                        onClick={() => setShowManageTestersDialog(true)}
-                        className="w-full sm:w-auto h-12 px-8 text-sm sm:text-md font-semibold rounded-xl bg-primary text-primary-foreground shadow-lg hover:shadow-primary/40"
-                      >
-                        <Users className="w-4 h-4 mr-2" /> Select Testers
-                      </Button>
-                    </div>
-                  </CardContent>
-                </Card>
-              </section>
-            )}
-
-            {/* Rejection Modal */}
-            <AdminRejectDialog
-              appId={project.id}
-              open={showRejectDialog}
-              onOpenChange={setShowRejectDialog}
-              onSuccess={handleSuccess}
-            />
-
-            {/* Accept Modal */}
-            <AdminAcceptDialog
-              appId={project.id}
-              open={showAcceptDialog}
-              onOpenChange={setShowAcceptDialog}
-              onSuccess={() => {
-                refetch();
-                setShowAcceptDialog(false);
-              }}
-            />
-
-            {/* Manage Testers Modal */}
-            <AdminManageTestersDialog
-              appId={project.id}
-              open={showManageTestersDialog}
-              onOpenChange={setShowManageTestersDialog}
-              onSuccess={() => refetch()}
-              totalRequired={project.totalTester}
-              currentAssigned={project.currentTester}
-              assignedTesterIds={
-                project.testerRelations?.map((rel) => rel.testerId) || []
-              }
-            />
-
-            {/* Assigned Testers Table */}
-            {(project.status === "ACCEPTED" ||
-              project.status === "AVAILABLE" ||
-              project.status === "IN_TESTING" ||
-              project.status === "COMPLETED") && (
-              <AdminAssignedTestersTable
-                testerRelations={project.testerRelations}
+              {/* Rejection Modal */}
+              <AdminRejectDialog
                 appId={project.id}
-                onRefetch={() => refetch()}
+                open={showRejectDialog}
+                onOpenChange={setShowRejectDialog}
+                onSuccess={handleSuccess}
               />
-            )}
 
-            {/* Previous Instructions Block (for reference) */}
-            {project.instructionsForTester && (
-              <DeveloperInstructions
-                instruction={project.instructionsForTester}
-                mt={0}
+              {/* Accept Modal */}
+              <AdminAcceptDialog
+                appId={project.id}
+                open={showAcceptDialog}
+                onOpenChange={setShowAcceptDialog}
+                onSuccess={() => {
+                  refetch();
+                  setShowAcceptDialog(false);
+                }}
               />
-            )}
-          </div>
-          <div className="block lg:hidden mt-8">
-            <AppInfoSidebar
-              app={project}
-              hideButton={true}
-              visitUrl={visitUrl}
-            />
-          </div>
-          <aside className="lg:col-span-1 hidden lg:block">
-            <AppInfoSidebar
-              app={project}
-              hideButton={true}
-              visitUrl={visitUrl}
-            />
-          </aside>
+
+              {/* Manage Testers Modal */}
+              <AdminManageTestersDialog
+                appId={project.id}
+                open={showManageTestersDialog}
+                onOpenChange={setShowManageTestersDialog}
+                onSuccess={() => refetch()}
+                totalRequired={project.totalTester}
+                currentAssigned={project.currentTester}
+                assignedTesterIds={
+                  project.testerRelations?.map((rel) => rel.testerId) || []
+                }
+              />
+
+              {/* Assigned Testers Table */}
+              {(project.status === "ACCEPTED" ||
+                project.status === "AVAILABLE" ||
+                project.status === "IN_TESTING" ||
+                project.status === "COMPLETED") && (
+                <AdminAssignedTestersTable
+                  testerRelations={project.testerRelations}
+                  appId={project.id}
+                  onRefetch={() => refetch()}
+                />
+              )}
+
+              {/* Previous Instructions Block (for reference) */}
+              {project.instructionsForTester && (
+                <DeveloperInstructions
+                  instruction={project.instructionsForTester}
+                  mt={0}
+                />
+              )}
+            </div>{" "}
+            {/* End of lg:col-span-2 space-y-6 overflow-hidden */}
+            {/* Right Column (Sidebars) */}
+            <div className="lg:col-span-1 space-y-6">
+              <div className="block lg:hidden">
+                <AppInfoSidebar
+                  app={project}
+                  hideButton={true}
+                  visitUrl={visitUrl}
+                />
+              </div>
+              <aside className="hidden lg:block">
+                <AppInfoSidebar
+                  app={project}
+                  hideButton={true}
+                  visitUrl={visitUrl}
+                />
+              </aside>
+            </div>
+          </div>{" "}
+          {/* End of grid lg:grid-cols-3 gap-6 */}
         </main>
       </div>
       {fullscreenImage && (
