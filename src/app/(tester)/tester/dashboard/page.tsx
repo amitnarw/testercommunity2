@@ -35,6 +35,7 @@ import {
   useTesterProjects,
   useUpdateTesterAvailability,
 } from "@/hooks/useTester";
+import { useUserWallet } from "@/hooks/useUserWallet";
 import { useToast } from "@/hooks/use-toast";
 import { Skeleton } from "@/components/ui/skeleton";
 
@@ -44,26 +45,32 @@ const AVAILABILITY_OPTIONS = [
     label: "Available",
     dotClass: "bg-green-500",
     desc: "Ready for new tests",
+    color: "#22c55e",
   },
   {
     value: "BUSY",
     label: "Busy",
     dotClass: "bg-yellow-500",
     desc: "At capacity right now",
+    color: "#eab308",
   },
   {
     value: "AWAY",
     label: "Away",
     dotClass: "bg-orange-500",
     desc: "Temporarily unavailable",
+    color: "#f97316",
   },
   {
     value: "DO_NOT_DISTURB",
     label: "Do Not Disturb",
     dotClass: "bg-red-500",
     desc: "Not accepting tests",
+    color: "#ef4444",
   },
 ];
+
+import { StatusDropdown } from "@/components/dashboard/status-dropdown";
 
 function DashboardSkeleton() {
   return (
@@ -95,6 +102,7 @@ export default function TesterDashboardPage() {
   const [availability, setAvailability] = useState("AVAILABLE");
 
   const { data: projects, isLoading, isError, error } = useTesterProjects();
+  const { data: walletData, isLoading: isWalletLoading } = useUserWallet();
 
   const updateAvailability = useUpdateTesterAvailability({
     onSuccess: () => {
@@ -126,19 +134,34 @@ export default function TesterDashboardPage() {
     projects?.filter(
       (p) => p.testerStatus === "IN_PROGRESS" || p.testerStatus === "PENDING",
     ) || [];
+
+  const pendingActionProjects = activeProjects.filter((project) => {
+    const currentDayToSubmit = project.daysCompleted + 1;
+    if (currentDayToSubmit > project.totalDay) return false;
+
+    const todayVerification = project.dailyVerifications?.find(
+      (v) => v.dayNumber === currentDayToSubmit,
+    );
+
+    if (!todayVerification || todayVerification.status === "REJECTED") {
+      return true;
+    }
+
+    return false;
+  });
+
   const completedProjects =
     projects?.filter((p) => p.testerStatus === "COMPLETED") || [];
-  const totalEarnings = completedProjects.reduce(
-    (acc, p) => acc + (p.rewardPoints || 0) * 5,
-    0,
-  );
+
+  const totalPoints = walletData?.totalPoints || 0;
+
   const totalFeedback =
     projects?.reduce((acc, p) => acc + (p.feedbackCount || 0), 0) || 0;
 
   return (
     <div className="flex-1 space-y-8 p-4 sm:p-8 pt-0 sm:pt-0">
       {/* Header with Availability Toggle */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+      <div className="flex flex-col sm:flex-row items-end sm:items-center justify-between gap-4">
         <div>
           <h2 className="text-2xl sm:text-4xl font-bold bg-gradient-to-br from-primary to-primary/40 bg-clip-text text-transparent leading-[unset]">
             Tester Dashboard
@@ -147,31 +170,11 @@ export default function TesterDashboardPage() {
             Your central hub for testing projects and earnings.
           </p>
         </div>
-        <div className="flex items-center gap-2.5 bg-card border rounded-xl px-3 py-2">
-          <span
-            className={`w-2.5 h-2.5 rounded-full ${currentOption.dotClass} ring-2 ring-background shrink-0 animate-pulse`}
-          />
-          <Select value={availability} onValueChange={handleAvailabilityChange}>
-            <SelectTrigger className="w-[180px] h-8 border-0 bg-transparent shadow-none px-0 focus:ring-0">
-              <SelectValue placeholder="Set Status" />
-            </SelectTrigger>
-            <SelectContent>
-              {AVAILABILITY_OPTIONS.map((option) => (
-                <SelectItem key={option.value} value={option.value}>
-                  <div className="flex items-center gap-2">
-                    <span
-                      className={`w-2 h-2 rounded-full ${option.dotClass}`}
-                    />
-                    <span className="font-medium">{option.label}</span>
-                    <span className="text-xs text-muted-foreground hidden sm:inline">
-                      — {option.desc}
-                    </span>
-                  </div>
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
+        <StatusDropdown
+          options={AVAILABILITY_OPTIONS}
+          value={availability}
+          onChange={handleAvailabilityChange}
+        />
       </div>
 
       {isLoading ? (
@@ -188,43 +191,130 @@ export default function TesterDashboardPage() {
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
             <Card className="relative overflow-hidden p-5 bg-gradient-to-br from-primary to-primary/60 text-primary-foreground">
               <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-white/10 to-transparent" />
+              <div className="absolute -right-2 -top-2 opacity-20 scale-[2.5] -rotate-12 transition-transform duration-500 group-hover:scale-[3]">
+                <DollarSign className="w-12 h-12" />
+              </div>
               <div className="relative">
                 <p className="text-xs font-medium text-white/80 flex items-center gap-1.5">
-                  <DollarSign className="w-3 h-3" /> Lifetime Earnings
+                  Wallet Balance
                 </p>
-                <p className="text-2xl sm:text-3xl font-bold mt-1 text-white">
-                  ₹{totalEarnings.toLocaleString("en-IN")}
-                </p>
+                <div className="text-2xl sm:text-3xl font-bold mt-1 text-white">
+                  {isWalletLoading ? (
+                    <Loader2 className="w-6 h-6 animate-spin" />
+                  ) : (
+                    <>
+                      {totalPoints.toLocaleString()}{" "}
+                      <span className="text-base font-normal text-white/80">
+                        Pts
+                      </span>
+                    </>
+                  )}
+                </div>
               </div>
             </Card>
 
-            <Card className="p-5">
-              <p className="text-xs text-muted-foreground flex items-center gap-1.5">
-                <Activity className="w-3 h-3 text-blue-500" /> Active Projects
+            <Card className="relative overflow-hidden p-5 group hover:shadow-lg transition-all duration-300">
+              <div className="absolute -right-2 -top-2 opacity-[0.08] dark:opacity-[0.15] scale-[2.5] -rotate-12 text-blue-500 transition-transform duration-500 group-hover:scale-[3] group-hover:-rotate-45">
+                <Activity className="w-12 h-12" />
+              </div>
+              <p className="text-xs text-muted-foreground font-medium relative z-10">
+                Active Projects
               </p>
-              <p className="text-2xl sm:text-3xl font-bold mt-1">
+              <p className="text-2xl sm:text-3xl font-bold mt-1 relative z-10">
                 {activeProjects.length}
               </p>
             </Card>
 
-            <Card className="p-5">
-              <p className="text-xs text-muted-foreground flex items-center gap-1.5">
-                <CheckCircle className="w-3 h-3 text-green-500" /> Completed
+            <Card className="relative overflow-hidden p-5 group hover:shadow-lg transition-all duration-300">
+              <div className="absolute -right-2 -top-2 opacity-[0.08] dark:opacity-[0.15] scale-[2.5] -rotate-12 text-green-500 transition-transform duration-500 group-hover:scale-[3] group-hover:-rotate-45">
+                <CheckCircle className="w-12 h-12" />
+              </div>
+              <p className="text-xs text-muted-foreground font-medium relative z-10">
+                Completed
               </p>
-              <p className="text-2xl sm:text-3xl font-bold mt-1">
+              <p className="text-2xl sm:text-3xl font-bold mt-1 relative z-10">
                 {completedProjects.length}
               </p>
             </Card>
 
-            <Card className="p-5">
-              <p className="text-xs text-muted-foreground flex items-center gap-1.5">
-                <Package className="w-3 h-3 text-purple-500" /> Feedbacks
+            <Card className="relative overflow-hidden p-5 group hover:shadow-lg transition-all duration-300">
+              <div className="absolute -right-2 -top-2 opacity-[0.08] dark:opacity-[0.15] scale-[2.5] -rotate-12 text-purple-500 transition-transform duration-500 group-hover:scale-[3] group-hover:-rotate-45">
+                <Package className="w-12 h-12" />
+              </div>
+              <p className="text-xs text-muted-foreground font-medium relative z-10">
+                Feedbacks
               </p>
-              <p className="text-2xl sm:text-3xl font-bold mt-1">
+              <p className="text-2xl sm:text-3xl font-bold mt-1 relative z-10">
                 {totalFeedback}
               </p>
             </Card>
           </div>
+
+          {/* Action Required Section */}
+          {pendingActionProjects.length > 0 && (
+            <Card className="border-orange-500/50 dark:border-orange-500/30 bg-orange-50/50 dark:bg-orange-500/5 shadow-sm">
+              <CardHeader className="flex flex-row items-center justify-between pb-2">
+                <div>
+                  <CardTitle className="text-orange-600 dark:text-orange-400 flex items-center gap-2">
+                    <Bell className="w-5 h-5" /> Action Required Today
+                  </CardTitle>
+                  <CardDescription>
+                    These tests require your daily screenshot or have rejected
+                    verifications.
+                  </CardDescription>
+                </div>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-3 mt-2">
+                  {pendingActionProjects.slice(0, 3).map((project) => {
+                    const currentDayToSubmit = project.daysCompleted + 1;
+                    const verification = project.dailyVerifications?.find(
+                      (v) => v.dayNumber === currentDayToSubmit,
+                    );
+                    const isRejected = verification?.status === "REJECTED";
+
+                    return (
+                      <Link
+                        key={project.id}
+                        href={`/tester/projects/${project.id}`}
+                        className="flex items-center gap-4 p-3 rounded-lg bg-white dark:bg-zinc-900 border border-border/50 hover:border-orange-300 dark:hover:border-orange-500/50 transition-colors group"
+                      >
+                        <Avatar className="h-10 w-10 shrink-0">
+                          <AvatarImage src={project.appLogo} />
+                          <AvatarFallback>
+                            {project.appName?.charAt(0)}
+                          </AvatarFallback>
+                        </Avatar>
+                        <div className="flex-1 min-w-0">
+                          <p className="font-medium text-sm truncate">
+                            {project.appName}
+                          </p>
+                          <p className="text-xs text-muted-foreground">
+                            {isRejected ? (
+                              <span className="text-red-500 font-medium">
+                                Verification Rejected - Please re-upload
+                              </span>
+                            ) : (
+                              <span className="text-orange-600 dark:text-orange-400">
+                                Day {currentDayToSubmit} screenshot pending
+                              </span>
+                            )}
+                          </p>
+                        </div>
+                        <Button
+                          size="sm"
+                          variant={isRejected ? "destructive" : "default"}
+                          className="shrink-0 h-8"
+                        >
+                          {isRejected ? "Re-upload" : "Submit"}
+                        </Button>
+                      </Link>
+                    );
+                  })}
+                </div>
+              </CardContent>
+            </Card>
+          )}
 
           {/* Active Projects Section */}
           <Card>

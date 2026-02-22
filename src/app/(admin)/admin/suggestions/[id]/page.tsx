@@ -79,7 +79,7 @@ export default function SuggestionDetailsPage() {
   const statusOptions = ["Received", "Planned", "In Development", "Shipped"];
 
   return (
-    <div className="container mx-auto px-4 md:px-6">
+    <div className="container mx-auto px-4 md:px-6 mb-8">
       <div className="sticky top-0 z-[50] pt-2 pb-4 w-1/2">
         <BackButton href="/community-dashboard" />
       </div>

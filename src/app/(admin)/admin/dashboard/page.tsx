@@ -35,19 +35,7 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
-import {
-  LineChart,
-  Line,
-  ResponsiveContainer,
-  XAxis,
-  YAxis,
-  PieChart as RechartsPieChart,
-  Pie,
-  Cell,
-  Legend,
-  AreaChart,
-  Area,
-} from "recharts";
+import { LineChart, Line, ResponsiveContainer, XAxis, YAxis } from "recharts";
 import { cn } from "@/lib/utils";
 import { useDashboardStats } from "@/hooks/useAdmin";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -64,40 +52,38 @@ const CardDesign3 = dynamic(() =>
   import("@/components/admin/CardDesign3").then((mod) => mod.CardDesign3),
 );
 
-const chartConfig = {
-  proSubmissions: {
-    label: "Pro Submissions",
-    color: "#f59e0b",
+const QuickActions = dynamic(
+  () =>
+    import("@/components/admin/dashboard/quick-actions").then(
+      (mod) => mod.QuickActions,
+    ),
+  {
+    ssr: false,
+    loading: () => <Skeleton className="w-full h-24 rounded-xl" />,
   },
-  communitySubmissions: {
-    label: "Community Submissions",
-    color: "#3b82f6",
+);
+
+const PlatformStats = dynamic(
+  () =>
+    import("@/components/admin/dashboard/platform-stats").then(
+      (mod) => mod.PlatformStats,
+    ),
+  {
+    ssr: false,
+    loading: () => <Skeleton className="w-full h-24 rounded-xl" />,
   },
-  totalUsers: {
-    label: "Total Users",
-    color: "#22c55e",
+);
+
+const ServiceComparisonChart = dynamic(
+  () =>
+    import("@/components/admin/dashboard/service-comparison").then(
+      (mod) => mod.ServiceComparisonChart,
+    ),
+  {
+    ssr: false,
+    loading: () => <Skeleton className="w-full h-[350px] rounded-xl" />,
   },
-  submissions: {
-    label: "Submissions",
-    color: "hsl(var(--primary))",
-  },
-  feedback: {
-    label: "Feedback",
-    color: "#8b5cf6",
-  },
-  newUsers: {
-    label: "New Users",
-    color: "#22c55e",
-  },
-  pro: {
-    label: "Professional",
-    color: "#f59e0b",
-  },
-  community: {
-    label: "Community",
-    color: "#3b82f6",
-  },
-};
+);
 
 // Status distribution colors
 const statusColors: Record<string, string> = {
@@ -112,46 +98,6 @@ const statusColors: Record<string, string> = {
 
 export default function AdminDashboardPage() {
   const { data: stats, isLoading } = useDashboardStats();
-
-  // Dynamic quick actions with counts
-  const dynamicQuickActions = [
-    {
-      title: "Paid Apps",
-      description: "Paid submissions awaiting review",
-      icon: Clock,
-      href: "/admin/submissions-paid",
-      color: "text-amber-500",
-      bgColor: "bg-amber-500/10",
-      count: stats?.submissionsByAppType?.PAID || 0,
-      countBadgeColor: "bg-amber-500/20 text-amber-600",
-    },
-    {
-      title: "Free Apps (Community)",
-      description: "Community submissions awaiting review",
-      icon: Clock,
-      href: "/admin/submissions-free",
-      color: "text-blue-500",
-      bgColor: "bg-blue-500/10",
-      count: stats?.submissionsByAppType?.FREE || 0,
-      countBadgeColor: "bg-blue-500/20 text-blue-600",
-    },
-    {
-      title: "Manage Users",
-      description: "View & manage platform users",
-      icon: Users,
-      href: "/admin/users",
-      color: "text-blue-500",
-      bgColor: "bg-blue-500/10",
-    },
-    {
-      title: "Send Notification",
-      description: "Broadcast to all users",
-      icon: AlertCircle,
-      href: "/admin/notifications",
-      color: "text-purple-500",
-      bgColor: "bg-purple-500/10",
-    },
-  ];
 
   // Transform status data for pie chart
   const statusDistribution = stats?.submissionsByStatus
@@ -211,55 +157,7 @@ export default function AdminDashboardPage() {
       </div>
 
       {/* Quick Actions */}
-      <div className="grid gap-3 sm:gap-4 grid-cols-2 lg:grid-cols-4">
-        {dynamicQuickActions.map((action) => (
-          <Link key={action.href} href={action.href}>
-            <Card className="hover:shadow-md transition-shadow cursor-pointer h-full border-none bg-white/50 dark:bg-white/5 backdrop-blur-sm relative overflow-hidden group">
-              {/* Background Watermark Icon - Mobile Only */}
-              <div className="absolute -right-2 -bottom-2 opacity-5 sm:hidden pointer-events-none transition-transform duration-500 group-hover:scale-110">
-                <action.icon
-                  className={cn("h-16 w-16 rotate-12", action.color)}
-                />
-              </div>
-
-              <CardContent className="p-2.5 sm:p-4 h-full flex items-center relative z-10">
-                <div className="flex items-center gap-2 sm:gap-3 w-full">
-                  {/* Foreground Icon - Desktop Only */}
-                  <div
-                    className={cn(
-                      "hidden sm:flex p-2 rounded-xl shrink-0",
-                      action.bgColor,
-                    )}
-                  >
-                    <action.icon className={cn("h-5 w-5", action.color)} />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-start justify-between gap-1">
-                      <p className="font-bold text-[11px] sm:text-sm text-foreground leading-tight mb-0.5">
-                        {action.title}
-                      </p>
-                      {action.count !== undefined && (
-                        <span
-                          className={cn(
-                            "text-[9px] sm:text-[10px] font-bold px-1.5 py-0.5 rounded-full shrink-0",
-                            action.countBadgeColor ||
-                              "bg-primary/10 text-primary",
-                          )}
-                        >
-                          {action.count}
-                        </span>
-                      )}
-                    </div>
-                    <p className="text-[10px] sm:text-[11px] text-muted-foreground truncate">
-                      {action.description}
-                    </p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </Link>
-        ))}
-      </div>
+      <QuickActions stats={stats} />
 
       {/* Exact Image Cards */}
       <div className="grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
@@ -273,68 +171,7 @@ export default function AdminDashboardPage() {
       </div>
 
       {/* Platform-wide Stats */}
-      <div className="grid gap-4 grid-cols-2 md:grid-cols-4">
-        <Card className="bg-white/70 dark:bg-black/70 backdrop-blur-md border border-slate-200 dark:border-slate-800 shadow-lg hover:shadow-xl transition-all duration-300">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Users</CardTitle>
-            <Users className="h-4 w-4 text-blue-500" />
-          </CardHeader>
-          <CardContent>
-            {isLoading ? (
-              <Skeleton className="h-8 w-20" />
-            ) : (
-              <div className="text-2xl font-bold">
-                {stats?.totalUsers?.toLocaleString() || 0}
-              </div>
-            )}
-          </CardContent>
-        </Card>
-        <Card className="bg-white/70 dark:bg-black/70 backdrop-blur-md border border-slate-200 dark:border-slate-800 shadow-lg hover:shadow-xl transition-all duration-300">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Submissions</CardTitle>
-            <FileText className="h-4 w-4 text-purple-500" />
-          </CardHeader>
-          <CardContent>
-            {isLoading ? (
-              <Skeleton className="h-8 w-20" />
-            ) : (
-              <div className="text-2xl font-bold">
-                {stats?.totalSubmissions?.toLocaleString() || 0}
-              </div>
-            )}
-          </CardContent>
-        </Card>
-        <Card className="bg-white/70 dark:bg-black/70 backdrop-blur-md border border-slate-200 dark:border-slate-800 shadow-lg hover:shadow-xl transition-all duration-300">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Feedback</CardTitle>
-            <Bug className="h-4 w-4 text-red-500" />
-          </CardHeader>
-          <CardContent>
-            {isLoading ? (
-              <Skeleton className="h-8 w-20" />
-            ) : (
-              <div className="text-2xl font-bold">
-                {stats?.totalFeedback?.toLocaleString() || 0}
-              </div>
-            )}
-          </CardContent>
-        </Card>
-        <Card className="bg-white/70 dark:bg-black/70 backdrop-blur-md border border-slate-200 dark:border-slate-800 shadow-lg hover:shadow-xl transition-all duration-300">
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Testers</CardTitle>
-            <UserCheck className="h-4 w-4 text-green-500" />
-          </CardHeader>
-          <CardContent>
-            {isLoading ? (
-              <Skeleton className="h-8 w-20" />
-            ) : (
-              <div className="text-2xl font-bold">
-                {stats?.totalTesters?.toLocaleString() || 0}
-              </div>
-            )}
-          </CardContent>
-        </Card>
-      </div>
+      <PlatformStats stats={stats} isLoading={isLoading} />
 
       {/* Charts Row 1 - Trend & Distribution */}
       <div className="grid gap-6 grid-cols-1 lg:grid-cols-2">
@@ -345,84 +182,10 @@ export default function AdminDashboardPage() {
         />
 
         {/* Service Comparison Chart */}
-        <Card className="bg-white/70 dark:bg-black/70 backdrop-blur-md border border-slate-200 dark:border-slate-800 hover:shadow-xl transition-all duration-300 rounded-3xl">
-          <CardHeader className="p-6">
-            <CardTitle className="flex items-center gap-2 text-base">
-              Pro vs Community Comparison
-            </CardTitle>
-            <CardDescription className="text-sm">
-              Comparing Professional and Community services
-            </CardDescription>
-          </CardHeader>
-          <CardContent className="pr-6">
-            {isLoading ? (
-              <div className="space-y-4">
-                <Skeleton className="h-8 w-full bg-white/20" />
-                <Skeleton className="h-8 w-full bg-white/20" />
-                <Skeleton className="h-8 w-full bg-white/20" />
-              </div>
-            ) : serviceComparison.length > 0 ? (
-              <ChartContainer config={chartConfig} className="h-[250px] w-full">
-                <ResponsiveContainer width="100%" height="100%">
-                  <LineChart
-                    data={serviceComparison}
-                    margin={{ top: 10, right: 10, left: 0, bottom: 0 }}
-                  >
-                    <XAxis
-                      dataKey="name"
-                      tickLine={false}
-                      axisLine={false}
-                      stroke="hsl(var(--muted-foreground))"
-                      fontSize={10}
-                    />
-                    <YAxis
-                      tickLine={false}
-                      axisLine={false}
-                      stroke="hsl(var(--muted-foreground))"
-                      fontSize={9}
-                    />
-                    <ChartTooltip
-                      cursor={false}
-                      content={<ChartTooltipContent />}
-                    />
-                    <Line
-                      type="monotone"
-                      dataKey="pro"
-                      stroke="#f59e0b"
-                      strokeWidth={2}
-                      dot={{ r: 3 }}
-                      activeDot={{ r: 5 }}
-                    />
-                    <Line
-                      type="monotone"
-                      dataKey="community"
-                      stroke="#3b82f6"
-                      strokeWidth={2}
-                      dot={{ r: 3 }}
-                      activeDot={{ r: 5 }}
-                    />
-                  </LineChart>
-                </ResponsiveContainer>
-              </ChartContainer>
-            ) : (
-              <div className="flex items-center justify-center h-[250px] text-muted-foreground">
-                No data available
-              </div>
-            )}
-            <div className="flex justify-center gap-6 mt-4">
-              <div className="flex items-center gap-2">
-                <div className="w-3 h-3 rounded bg-amber-500" />
-                <span className="text-xs text-muted-foreground">
-                  Professional
-                </span>
-              </div>
-              <div className="flex items-center gap-2">
-                <div className="w-3 h-3 rounded bg-blue-500" />
-                <span className="text-xs text-muted-foreground">Community</span>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+        <ServiceComparisonChart
+          serviceComparison={serviceComparison}
+          isLoading={isLoading}
+        />
       </div>
 
       {/* Pending Approvals Alert */}
