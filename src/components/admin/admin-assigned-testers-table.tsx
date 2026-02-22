@@ -12,15 +12,70 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { HubSubmittedAppResponse } from "@/lib/types";
-import { Smartphone } from "lucide-react";
+import {
+  Smartphone,
+  MoreHorizontal,
+  User,
+  UserMinus,
+  Loader2,
+} from "lucide-react";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
+import { useState } from "react";
+import { unassignTesterFromApp } from "@/lib/apiCalls";
+import { useToast } from "@/hooks/use-toast";
 
 export interface AdminAssignedTestersTableProps {
   testerRelations: HubSubmittedAppResponse["testerRelations"];
+  appId: number;
+  onRefetch: () => void;
 }
 
 export function AdminAssignedTestersTable({
   testerRelations,
+  appId,
+  onRefetch,
 }: AdminAssignedTestersTableProps) {
+  const [removingId, setRemovingId] = useState<string | null>(null);
+  const { toast } = useToast();
+
+  const handleRemoveTester = async (testerId: string) => {
+    if (
+      !window.confirm(
+        "Are you sure you want to remove this tester from the app?",
+      )
+    )
+      return;
+
+    setRemovingId(testerId);
+    try {
+      await unassignTesterFromApp({
+        id: appId.toString(),
+        testerId: testerId,
+      });
+      toast({
+        title: "Success",
+        description: "Tester removed successfully",
+      });
+      onRefetch();
+    } catch (error: any) {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: error.message || "Failed to remove tester",
+      });
+    } finally {
+      setRemovingId(null);
+    }
+  };
+
   // We only want to show testers who are actually assigned and testing
   const activeTesters = testerRelations?.filter(
     (r) => r.status && r.status !== "PENDING" && r.status !== "REJECTED",
@@ -54,6 +109,7 @@ export function AdminAssignedTestersTable({
               <TableHead>Experience</TableHead>
               <TableHead>Device</TableHead>
               <TableHead>Status</TableHead>
+              <TableHead className="text-right">Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -115,6 +171,40 @@ export function AdminAssignedTestersTable({
                       {req.status === "IN_PROGRESS" ? "Active" : req.status}
                     </Badge>
                   </TableCell>
+                  <TableCell className="text-right">
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button variant="ghost" className="h-8 w-8 p-0">
+                          <span className="sr-only">Open menu</span>
+                          {removingId === req.testerId ? (
+                            <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
+                          ) : (
+                            <MoreHorizontal className="h-4 w-4 text-muted-foreground" />
+                          )}
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end" className="w-[160px]">
+                        <DropdownMenuItem asChild>
+                          <Link
+                            href={`/admin/users/${req.testerId}`}
+                            className="cursor-pointer flex items-center"
+                          >
+                            <User className="mr-2 h-4 w-4" />
+                            <span>View Details</span>
+                          </Link>
+                        </DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem
+                          className="text-red-500 focus:text-red-500 focus:bg-red-50 dark:focus:bg-red-500/10 cursor-pointer flex items-center"
+                          onClick={() => handleRemoveTester(req.testerId)}
+                          disabled={removingId === req.testerId}
+                        >
+                          <UserMinus className="mr-2 h-4 w-4" />
+                          <span>Remove Tester</span>
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </TableCell>
                 </motion.tr>
               ))}
             </AnimatePresence>
@@ -150,17 +240,54 @@ export function AdminAssignedTestersTable({
                     <span className="font-semibold text-sm">
                       {req.tester?.name || "Unknown"}
                     </span>
-                    <span className="text-xs text-muted-foreground">
+                    <span className="text-xs text-muted-foreground flex items-center gap-2">
                       {req.tester?.email}
+                      <Badge
+                        variant="secondary"
+                        className="font-medium text-[8px] bg-green-500/10 text-green-600 border-green-200 dark:border-green-900 h-4 px-1 p-0 leading-none"
+                      >
+                        {req.status === "IN_PROGRESS" ? "Active" : req.status}
+                      </Badge>
                     </span>
                   </div>
                 </div>
-                <Badge
-                  variant="secondary"
-                  className="absolute -top-2 -right-2 font-medium text-[8px] bg-green-500/10 text-green-600 border-green-200 dark:border-green-900 whitespace-nowrap"
-                >
-                  {req.status === "IN_PROGRESS" ? "Active" : req.status}
-                </Badge>
+
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="h-8 w-8 p-0 absolute -top-2 -right-2 bg-background border border-border shadow-sm rounded-full opacity-80 hover:opacity-100 dark:bg-card"
+                    >
+                      <span className="sr-only">Open menu</span>
+                      {removingId === req.testerId ? (
+                        <Loader2 className="h-3 w-3 animate-spin text-muted-foreground" />
+                      ) : (
+                        <MoreHorizontal className="h-4 w-4 text-muted-foreground" />
+                      )}
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-[160px]">
+                    <DropdownMenuItem asChild>
+                      <Link
+                        href={`/admin/users/${req.testerId}`}
+                        className="cursor-pointer flex items-center"
+                      >
+                        <User className="mr-2 h-4 w-4" />
+                        <span>View Details</span>
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem
+                      className="text-red-500 focus:text-red-500 focus:bg-red-50 dark:focus:bg-red-500/10 cursor-pointer flex items-center"
+                      onClick={() => handleRemoveTester(req.testerId)}
+                      disabled={removingId === req.testerId}
+                    >
+                      <UserMinus className="mr-2 h-4 w-4" />
+                      <span>Remove Tester</span>
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </div>
 
               <div className="grid grid-cols-2 gap-2 text-xs text-muted-foreground bg-muted/30 p-2 rounded-lg">

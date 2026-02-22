@@ -1,0 +1,122 @@
+[
+  {
+    "name": "src\\app\\(authenticated)\\community-dashboard\\submit\\page.tsx",
+    "size": 46581
+  },
+  {
+    "name": "src\\components\\community-dashboard\\submitted-feedback.tsx",
+    "size": 41807
+  },
+  {
+    "name": "src\\app\\(authenticated)\\profile\\profile-setup\\page.tsx",
+    "size": 40649
+  },
+  {
+    "name": "src\\app\\(authenticated)\\community-dashboard\\my-submissions\\[id]\\page.tsx",
+    "size": 38290
+  },
+  {
+    "name": "src\\app\\(admin)\\admin\\dashboard\\page.tsx",
+    "size": 37624
+  },
+  {
+    "name": "src\\app\\(authenticated)\\community-dashboard\\page.tsx",
+    "size": 35109
+  },
+  {
+    "name": "src\\components\\community-dashboard\\daily-check-in.tsx",
+    "size": 35061
+  },
+  {
+    "name": "src\\components\\dashboard\\project-details-view.tsx",
+    "size": 33639
+  },
+  {
+    "name": "src\\app\\(authenticated)\\dashboard\\add-app\\form\\page.tsx",
+    "size": 32375
+  },
+  {
+    "name": "src\\components\\tester-requests-section.tsx",
+    "size": 31030
+  },
+  {
+    "name": "src\\components\\dashboard\\submitted-feedback.tsx",
+    "size": 28376
+  },
+  {
+    "name": "src\\app\\(authenticated)\\community-dashboard\\[id]\\page.tsx",
+    "size": 27478
+  },
+  {
+    "name": "src\\app\\(tester)\\tester\\auth\\register\\page.tsx",
+    "size": 26925
+  },
+  {
+    "name": "src\\app\\(admin)\\admin\\submissions-paid\\[id]\\page.tsx",
+    "size": 26303
+  },
+  {
+    "name": "src\\app\\(admin)\\admin\\users\\[id]\\page.tsx",
+    "size": 25637
+  },
+  {
+    "name": "src\\app\\(authenticated)\\community-dashboard\\my-submissions\\page.tsx",
+    "size": 24142
+  },
+  {
+    "name": "src\\app\\(authenticated)\\dashboard\\add-app\\page.tsx",
+    "size": 23502
+  },
+  {
+    "name": "src\\app\\(authenticated)\\profile\\page.tsx",
+    "size": 22788
+  },
+  {
+    "name": "src\\app\\(admin)\\admin\\submissions-free\\[id]\\page.tsx",
+    "size": 22393
+  },
+  {
+    "name": "src\\app\\(authenticated)\\billing\\page.tsx",
+    "size": 21883
+  },
+  {
+    "name": "src\\components\\samples-section.tsx",
+    "size": 21102
+  },
+  {
+    "name": "src\\app\\(authenticated)\\wallet\\page.tsx",
+    "size": 19728
+  },
+  {
+    "name": "src\\app\\(admin)\\admin\\notifications\\page.tsx",
+    "size": 19117
+  },
+  {
+    "name": "src\\components\\admin\\premium-submission-view.tsx",
+    "size": 17203
+  },
+  {
+    "name": "src\\components\\two-paths-section.tsx",
+    "size": 17087
+  },
+  {
+    "name": "src\\app\\(authenticated)\\dashboard\\page.tsx",
+    "size": 16923
+  },
+  {
+    "name": "src\\app\\(admin)\\admin\\users\\page.tsx",
+    "size": 16451
+  },
+  {
+    "name": "src\\app\\(authenticated)\\profile\\referral\\page.tsx",
+    "size": 15573
+  },
+  {
+    "name": "src\\app\\(authenticated)\\settings\\page.tsx",
+    "size": 15453
+  },
+  {
+    "name": "src\\components\\ui\\stepper.tsx",
+    "size": 15386
+  }
+]

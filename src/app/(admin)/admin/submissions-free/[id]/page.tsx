@@ -25,8 +25,22 @@ import { useSingleHubAppDetails } from "@/hooks/useHub";
 import { SafeImage } from "@/components/safe-image";
 import { ExpandableText } from "@/components/expandable-text";
 import { AppInfoSidebar } from "@/components/appInfoSidebar";
-import { AdminRejectDialog } from "@/components/admin/admin-reject-dialog";
-import { AdminAcceptDialog } from "@/components/admin/admin-accept-dialog";
+import dynamic from "next/dynamic";
+
+const AdminRejectDialog = dynamic(
+  () =>
+    import("@/components/admin/admin-reject-dialog").then(
+      (mod) => mod.AdminRejectDialog,
+    ),
+  { ssr: false },
+);
+const AdminAcceptDialog = dynamic(
+  () =>
+    import("@/components/admin/admin-accept-dialog").then(
+      (mod) => mod.AdminAcceptDialog,
+    ),
+  { ssr: false },
+);
 import DeveloperInstructions from "@/components/developerInstructions";
 
 export default function AdminSubmissionDetailPage({

@@ -65,117 +65,15 @@ const isValidUrl = (url: string) => {
   }
 };
 
-const RegistrationSuccess = ({
-  status,
-}: {
-  status: "EARNED_NOW" | "ALREADY_EARNED" | "INCOMPLETE";
-}) => {
-  const [showConfetti, setShowConfetti] = useState(false);
+import dynamic from "next/dynamic";
 
-  useEffect(() => {
-    if (status === "EARNED_NOW") {
-      setShowConfetti(true);
-    }
-  }, [status]);
+const RegistrationSuccess = dynamic(() =>
+  import("@/components/profile-setup/registration-success").then(
+    (mod) => mod.RegistrationSuccess,
+  ),
+);
 
-  const confettiConfig = {
-    angle: 90,
-    spread: 360,
-    startVelocity: 40,
-    elementCount: 70,
-    dragFriction: 0.12,
-    duration: 3000,
-    stagger: 3,
-    width: "10px",
-    height: "10px",
-    perspective: "500px",
-    colors: ["#a864fd", "#29cdff", "#78ff44", "#ff718d", "#fdff6a"],
-  };
-
-  let title = "Profile Setup Saved!";
-  let message =
-    "Your profile has been saved. Complete all fields to earn 200 bonus points!";
-  let icon = (
-    <CheckCircle className="mx-auto h-20 w-20 text-muted-foreground/50 mb-6" />
-  );
-
-  if (status === "EARNED_NOW") {
-    title = "Profile Setup Complete!";
-    message =
-      "Congratulations! You've earned 200 bonus points for completing your profile. You're all set to explore the dashboard.";
-    icon = (
-      <motion.div
-        initial={{ scale: 0 }}
-        animate={{ scale: 1 }}
-        transition={{
-          type: "spring",
-          stiffness: 260,
-          damping: 20,
-          delay: 0.1,
-        }}
-      >
-        <div className="relative">
-          <CheckCircle className="mx-auto h-24 w-24 text-green-500 mb-6 drop-shadow-2xl" />
-          <motion.div
-            className="absolute inset-0 bg-green-500/20 blur-xl rounded-full"
-            animate={{ scale: [1, 1.2, 1] }}
-            transition={{ duration: 2, repeat: Infinity }}
-          />
-        </div>
-      </motion.div>
-    );
-  } else if (status === "ALREADY_EARNED") {
-    title = "Profile Updated!";
-    message = "Your profile has been successfully updated.";
-    icon = <CheckCircle className="mx-auto h-20 w-20 text-blue-500 mb-6" />;
-  }
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, scale: 0.95 }}
-      animate={{ opacity: 1, scale: 1 }}
-      className="text-center py-8 sm:py-12 flex flex-col items-center justify-center h-full relative overflow-hidden px-4"
-    >
-      <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 pointer-events-none">
-        <Confetti active={showConfetti} config={confettiConfig} />
-      </div>
-
-      {icon}
-
-      <h2 className="text-2xl sm:text-3xl font-extrabold bg-clip-text text-transparent bg-gradient-to-r from-primary to-primary/60 mb-2">
-        {title}
-      </h2>
-      <p className="mt-2 text-muted-foreground max-w-sm sm:max-w-md mx-auto text-base sm:text-lg leading-relaxed">
-        {message}
-      </p>
-
-      {status === "EARNED_NOW" && (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5 }}
-          className="mt-6 p-4 bg-primary/10 rounded-xl border border-primary/20 w-full sm:w-auto"
-        >
-          <p className="font-bold text-primary flex items-center justify-center gap-2 text-sm sm:text-base">
-            <span className="text-xl sm:text-2xl">🎉</span> +200 Points Added to
-            Wallet
-          </p>
-        </motion.div>
-      )}
-
-      <Button
-        asChild
-        className="mt-8 w-full sm:w-auto px-8 py-6 text-lg rounded-full shadow-lg hover:shadow-xl transition-all"
-      >
-        <Link href="/dashboard">
-          Go to Dashboard <ArrowRight className="ml-2 h-5 w-5" />
-        </Link>
-      </Button>
-    </motion.div>
-  );
-};
-
-const steps = [
+const stepsMeta = [
   {
     id: "role",
     title: "About You",
@@ -266,7 +164,7 @@ function ProfileSetupPage() {
   useUserProfileInitial({ enabled: !!skipClicked });
 
   const next = () => {
-    if (currentStep < steps.length - 1) {
+    if (currentStep < stepsMeta.length - 1) {
       setPreviousStep(currentStep);
       setCurrentStep((step) => step + 1);
     }
@@ -286,7 +184,7 @@ function ProfileSetupPage() {
     }
   };
 
-  const progress = ((currentStep + 1) / steps.length) * 100;
+  const progress = ((currentStep + 1) / stepsMeta.length) * 100;
 
   const {
     data: controlRoomData,
@@ -386,7 +284,7 @@ function ProfileSetupPage() {
                 </p>
               </div>
               <nav className="space-y-2">
-                {steps.map((step, index) => (
+                {stepsMeta.map((step, index) => (
                   <button
                     key={step.id}
                     onClick={() => goToStep(index)}
@@ -432,7 +330,7 @@ function ProfileSetupPage() {
               {/* Mobile Stepper */}
               <div className="md:hidden mb-6">
                 <nav className="grid grid-cols-5 gap-2">
-                  {steps.map((step, index) => (
+                  {stepsMeta.map((step, index) => (
                     <button
                       key={`mobile-${step.id}`}
                       onClick={() => goToStep(index)}
@@ -474,7 +372,7 @@ function ProfileSetupPage() {
                 <Progress value={progress} className="h-1 mt-4" />
                 <div className="text-center mt-3">
                   <p className="text-sm font-semibold">
-                    {steps[currentStep].title}
+                    {stepsMeta[currentStep].title}
                   </p>
                   <p className="text-xs text-muted-foreground mt-1">
                     Optional Survey - Get{" "}
@@ -554,7 +452,7 @@ function ProfileSetupPage() {
                 </Button>
 
                 <div className="flex items-center gap-4">
-                  {currentStep < steps.length - 1 ? (
+                  {currentStep < stepsMeta.length - 1 ? (
                     <Button onClick={next} type="button">
                       Next <ArrowRight className="ml-2 h-4 w-4" />
                     </Button>
@@ -582,563 +480,28 @@ function ProfileSetupPage() {
   );
 }
 
-const StepWrapper = ({ children }: { children: React.ReactNode }) => (
-  <div className="space-y-6">{children}</div>
+const RoleStep = dynamic(() =>
+  import("@/components/profile-setup/role-step").then((mod) => mod.RoleStep),
 );
-
-const RoleStep = ({ profileData, setProfileData }: ProfileStepperProps) => (
-  <StepWrapper>
-    <div className="space-y-2">
-      <Label>Your professional type</Label>
-      <RadioGroup
-        onValueChange={(value) =>
-          setProfileData((prev) => ({
-            ...prev,
-            profile_type: value as UserProfileType,
-          }))
-        }
-        value={profileData?.profile_type}
-        className="grid grid-cols-2 gap-4"
-      >
-        {Object.values(UserProfileType).map((type) => (
-          <div key={type}>
-            <RadioGroupItem value={type} id={type} className="peer sr-only" />
-            <Label
-              htmlFor={type}
-              className="flex h-full flex-col items-center justify-center rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary cursor-pointer text-center"
-            >
-              {type.replace("_", " ")?.toLowerCase()}
-            </Label>
-          </div>
-        ))}
-      </RadioGroup>
-    </div>
-    <div className="flex flex-col gap-2">
-      <Label>Your job role</Label>
-      <Select
-        onValueChange={(value) =>
-          setProfileData((prev) => ({
-            ...prev,
-            job_role: value as UserJobRole,
-          }))
-        }
-        value={profileData?.job_role}
-      >
-        <SelectTrigger>
-          <SelectValue placeholder="Select your primary role" />
-        </SelectTrigger>
-        <SelectContent>
-          {Object.values(UserJobRole).map((role) => (
-            <SelectItem key={role} value={role}>
-              {role.replace(/_/g, " ")?.toLowerCase()}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
-    </div>
-    <div className="flex flex-col gap-2">
-      <Label>Your experience level</Label>
-      <Select
-        onValueChange={(value) =>
-          setProfileData((prev) => ({
-            ...prev,
-            experience_level: value as UserExperienceLevel,
-          }))
-        }
-        value={profileData?.experience_level}
-      >
-        <SelectTrigger>
-          <SelectValue placeholder="Select your experience level" />
-        </SelectTrigger>
-        <SelectContent>
-          {Object.values(UserExperienceLevel).map((level) => (
-            <SelectItem key={level} value={level}>
-              {level.replace(/_/g, " ")?.toLowerCase()}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
-    </div>
-  </StepWrapper>
+const CompanyStep = dynamic(() =>
+  import("@/components/profile-setup/company-step").then(
+    (mod) => mod.CompanyStep,
+  ),
 );
-
-const CompanyStep = ({ profileData, setProfileData }: ProfileStepperProps) => (
-  <StepWrapper>
-    <div className="flex flex-col gap-2">
-      <Label>Company Name</Label>
-      <Input
-        placeholder="Your Company Inc."
-        value={profileData?.company_name}
-        onChange={(e) =>
-          setProfileData((prev) => ({ ...prev, company_name: e.target.value }))
-        }
-      />
-    </div>
-    <div className="flex flex-col gap-2">
-      <Label>Company Website</Label>
-      <Input
-        placeholder="https://example.com"
-        value={profileData?.company_website}
-        onChange={(e) =>
-          setProfileData((prev) => ({
-            ...prev,
-            company_website: e.target.value,
-          }))
-        }
-      />
-    </div>
-    <div className="flex flex-col gap-2">
-      <Label>Company Size</Label>
-      <Select
-        onValueChange={(value) =>
-          setProfileData((prev) => ({
-            ...prev,
-            company_size: value as UserCompanySize,
-          }))
-        }
-        defaultValue={profileData?.company_size}
-      >
-        <SelectTrigger>
-          <SelectValue placeholder="Select company size" />
-        </SelectTrigger>
-        <SelectContent>
-          {Object.values(UserCompanySize).map((size) => (
-            <SelectItem key={size} value={size}>
-              {size.replace("SIZE_", "").replace(/_/g, "-")?.toLowerCase()}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
-    </div>
-    <div className="flex flex-col gap-2">
-      <Label>Your Position</Label>
-      <Select
-        onValueChange={(value) =>
-          setProfileData((prev) => ({
-            ...prev,
-            position_in_company: value as UserCompanyPosition,
-          }))
-        }
-        defaultValue={profileData?.position_in_company}
-      >
-        <SelectTrigger>
-          <SelectValue placeholder="Select your position" />
-        </SelectTrigger>
-        <SelectContent>
-          {Object.values(UserCompanyPosition).map((pos) => (
-            <SelectItem key={pos} value={pos}>
-              {pos.replace(/_/g, " ")?.toLowerCase()}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
-    </div>
-  </StepWrapper>
+const ProjectsStep = dynamic(() =>
+  import("@/components/profile-setup/projects-step").then(
+    (mod) => mod.ProjectsStep,
+  ),
 );
-
-const ProjectsStep = ({ profileData, setProfileData }: ProfileStepperProps) => (
-  <StepWrapper>
-    <div className="flex flex-col gap-2">
-      <Label>Total Published Apps</Label>
-      <Select
-        onValueChange={(value) =>
-          setProfileData((prev) => ({
-            ...prev,
-            total_published_apps: value as UserTotalPublishedApps,
-          }))
-        }
-        defaultValue={profileData?.total_published_apps}
-      >
-        <SelectTrigger>
-          <SelectValue placeholder="Select number of apps" />
-        </SelectTrigger>
-        <SelectContent>
-          {Object.values(UserTotalPublishedApps).map((val) => (
-            <SelectItem key={val} value={val}>
-              {val.replace("PUB_", "").replace(/_/g, "-")?.toLowerCase()}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
-    </div>
-    <div className="flex flex-col gap-2">
-      <Label>Primary Development Platform</Label>
-      <Select
-        onValueChange={(value) =>
-          setProfileData((prev) => ({
-            ...prev,
-            platform_development: value as UserDevelopmentPlatform,
-          }))
-        }
-        defaultValue={profileData?.platform_development}
-      >
-        <SelectTrigger>
-          <SelectValue placeholder="Select platform" />
-        </SelectTrigger>
-        <SelectContent>
-          {Object.values(UserDevelopmentPlatform).map((val) => (
-            <SelectItem key={val} value={val}>
-              {val.replace(/_/g, " ")?.toLowerCase()}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
-    </div>
-    <div className="flex flex-col gap-2">
-      <Label>App Publish Frequency</Label>
-      <Select
-        onValueChange={(value) =>
-          setProfileData((prev) => ({
-            ...prev,
-            publish_frequency: value as UserPublishFrequency,
-          }))
-        }
-        defaultValue={profileData?.publish_frequency}
-      >
-        <SelectTrigger>
-          <SelectValue placeholder="Select frequency" />
-        </SelectTrigger>
-        <SelectContent>
-          {Object.values(UserPublishFrequency).map((val) => (
-            <SelectItem key={val} value={val}>
-              {val.replace(/_/g, " ")?.toLowerCase()}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
-    </div>
-  </StepWrapper>
+const DeviceStep = dynamic(() =>
+  import("@/components/profile-setup/device-step").then(
+    (mod) => mod.DeviceStep,
+  ),
 );
-
-const DeviceStep = ({ profileData, setProfileData }: ProfileStepperProps) => (
-  <div className="overflow-y-auto h-full">
-    <StepWrapper>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div className="flex flex-col gap-2">
-          <Label>Device Company</Label>
-          <Select
-            onValueChange={(value) =>
-              setProfileData((prev) => ({ ...prev, device_company: value }))
-            }
-            defaultValue={profileData?.device_company as string | undefined}
-          >
-            <SelectTrigger>
-              <SelectValue placeholder="e.g., Google" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="Google">Google</SelectItem>
-              <SelectItem value="Samsung">Samsung</SelectItem>
-              <SelectItem value="OnePlus">OnePlus</SelectItem>
-              <SelectItem value="Xiaomi">Xiaomi</SelectItem>
-              <SelectItem value="Motorola">Motorola</SelectItem>
-              <SelectItem value="Sony">Sony</SelectItem>
-              <SelectItem value="LG">LG</SelectItem>
-              <SelectItem value="Huawei">Huawei</SelectItem>
-              <SelectItem value="Nokia">Nokia</SelectItem>
-              <SelectItem value="Asus">Asus</SelectItem>
-              <SelectItem value="Oppo">Oppo</SelectItem>
-              <SelectItem value="Vivo">Vivo</SelectItem>
-              <SelectItem value="Realme">Realme</SelectItem>
-              <SelectItem value="Lenovo">Lenovo</SelectItem>
-              <SelectItem value="HTC">HTC</SelectItem>
-              <SelectItem value="ZTE">ZTE</SelectItem>
-              <SelectItem value="Alcatel">Alcatel</SelectItem>
-              <SelectItem value="TCL">TCL</SelectItem>
-              <SelectItem value="Nothing">Nothing</SelectItem>
-              <SelectItem value="Other">Other</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-        <div className="flex flex-col gap-2">
-          <Label>Device Model</Label>
-          <Input
-            placeholder="e.g., Pixel 8 Pro"
-            value={profileData?.device_model as string | undefined}
-            onChange={(e) =>
-              setProfileData((prev) => ({
-                ...prev,
-                device_model: e.target.value,
-              }))
-            }
-          />
-        </div>
-        <div className="flex flex-col gap-2">
-          <Label>RAM</Label>
-          <Select
-            onValueChange={(value) =>
-              setProfileData((prev) => ({ ...prev, ram: value }))
-            }
-            defaultValue={profileData?.ram as string | undefined}
-          >
-            <SelectTrigger>
-              <SelectValue placeholder="e.g., 8GB" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="2GB">2GB</SelectItem>
-              <SelectItem value="3GB">3GB</SelectItem>
-              <SelectItem value="4GB">4GB</SelectItem>
-              <SelectItem value="6GB">6GB</SelectItem>
-              <SelectItem value="8GB">8GB</SelectItem>
-              <SelectItem value="12GB">12GB</SelectItem>
-              <SelectItem value="16GB">16GB</SelectItem>
-              <SelectItem value="18GB">18GB</SelectItem>
-              <SelectItem value="24GB">24GB</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-        <div className="flex flex-col gap-2">
-          <Label>Operating System</Label>
-          <Select
-            onValueChange={(value) =>
-              setProfileData((prev) => ({ ...prev, os: value }))
-            }
-            defaultValue={profileData?.os as string | undefined}
-          >
-            <SelectTrigger>
-              <SelectValue placeholder="e.g., Android 14" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="Android 16">Android 16</SelectItem>
-              <SelectItem value="Android 15">Android 15</SelectItem>
-              <SelectItem value="Android 14">Android 14</SelectItem>
-              <SelectItem value="Android 13">Android 13</SelectItem>
-              <SelectItem value="Android 12">Android 12</SelectItem>
-              <SelectItem value="Android 11">Android 11</SelectItem>
-              <SelectItem value="Android 10 or older">
-                Android 10 or older
-              </SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-        <div className="flex flex-col gap-2">
-          <Label>Screen Resolution</Label>
-          <Select
-            onValueChange={(value) =>
-              setProfileData((prev) => ({ ...prev, screen_resolution: value }))
-            }
-            defaultValue={profileData?.screen_resolution as string | undefined}
-          >
-            <SelectTrigger>
-              <SelectValue placeholder="e.g., QHD+" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="HD+ (720p)">HD+ (720p)</SelectItem>
-              <SelectItem value="FHD+ (1080p)">FHD+ (1080p)</SelectItem>
-              <SelectItem value="QHD+ (2K)">QHD+ (2K)</SelectItem>
-              <SelectItem value="UHD (4K)">UHD (4K)</SelectItem>
-              <SelectItem value="UHD (8K)">UHD (8K)</SelectItem>
-              <SelectItem value="Other">Other</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-        <div className="flex flex-col gap-2">
-          <Label>Language</Label>
-          <Select
-            onValueChange={(value) =>
-              setProfileData((prev) => ({ ...prev, language: value }))
-            }
-            defaultValue={profileData?.language as string | undefined}
-          >
-            <SelectTrigger>
-              <SelectValue placeholder="e.g., English (US)" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="English (US)">English (US)</SelectItem>
-              <SelectItem value="English (UK)">English (UK)</SelectItem>
-              <SelectItem value="Spanish">Spanish</SelectItem>
-              <SelectItem value="Mandarin Chinese">Mandarin Chinese</SelectItem>
-              <SelectItem value="Hindi">Hindi</SelectItem>
-              <SelectItem value="Arabic">Arabic</SelectItem>
-              <SelectItem value="Portuguese">Portuguese</SelectItem>
-              <SelectItem value="Bengali">Bengali</SelectItem>
-              <SelectItem value="Russian">Russian</SelectItem>
-              <SelectItem value="Japanese">Japanese</SelectItem>
-              <SelectItem value="German">German</SelectItem>
-              <SelectItem value="French">French</SelectItem>
-              <SelectItem value="Other">Other</SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
-        <div className="flex flex-col gap-2 md:col-span-2">
-          <Label>Primary Network</Label>
-          <RadioGroup
-            onValueChange={(value) =>
-              setProfileData((prev) => ({ ...prev, network: value }))
-            }
-            defaultValue={profileData?.network as string | undefined}
-            className="grid grid-cols-2 gap-4"
-          >
-            <div>
-              <RadioGroupItem value="WiFi" id="wifi" className="peer sr-only" />
-              <Label
-                htmlFor="wifi"
-                className="flex h-full flex-col items-center justify-center rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary cursor-pointer text-center"
-              >
-                WiFi
-              </Label>
-            </div>
-            <div>
-              <RadioGroupItem
-                value="Cellular"
-                id="cellular"
-                className="peer sr-only"
-              />
-              <Label
-                htmlFor="cellular"
-                className="flex h-full flex-col items-center justify-center rounded-md border-2 border-muted bg-popover p-4 hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary cursor-pointer text-center"
-              >
-                Cellular
-              </Label>
-            </div>
-          </RadioGroup>
-        </div>
-      </div>
-    </StepWrapper>
-  </div>
+const ContactStep = dynamic(() =>
+  import("@/components/profile-setup/contact-step").then(
+    (mod) => mod.ContactStep,
+  ),
 );
-
-const ContactStep = ({ profileData, setProfileData }: ProfileStepperProps) => (
-  <div className="overflow-y-auto h-full">
-    <StepWrapper>
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div className="flex flex-col gap-2">
-          <Label>Country</Label>
-          <Select
-            value={profileData?.country || ""}
-            onValueChange={(value) => {
-              const country = countries.find((c) => c.name === value);
-              setProfileData((prev) => ({
-                ...prev,
-                country: value,
-                phone: country ? country.dial_code : prev.phone,
-              }));
-            }}
-          >
-            <SelectTrigger>
-              <SelectValue placeholder="Select Country" />
-            </SelectTrigger>
-            <SelectContent>
-              {countries.map((country) => (
-                <SelectItem key={country.code} value={country.name}>
-                  {country.name} ({country.dial_code})
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-        <div className="flex flex-col gap-2">
-          <Label>Phone Number</Label>
-          <Input
-            type="tel"
-            placeholder="Phone Number"
-            value={profileData?.phone || ""}
-            disabled={!profileData?.country}
-            onChange={(e) => {
-              const value = e.target.value;
-              const country = countries.find(
-                (c) => c.name === profileData?.country,
-              );
-
-              if (country) {
-                // If the user tries to delete the dial code, prevent it or reset
-                if (!value.startsWith(country.dial_code)) {
-                  if (value.length < country.dial_code.length) {
-                    setProfileData((prev) => ({
-                      ...prev,
-                      phone: country.dial_code,
-                    }));
-                  }
-                  return;
-                }
-
-                const numberPart = value.slice(country.dial_code.length);
-
-                // Allow only digits and check length
-                if (
-                  numberPart.length <= country.length &&
-                  /^\d*$/.test(numberPart)
-                ) {
-                  setProfileData((prev) => ({ ...prev, phone: value }));
-                }
-              } else {
-                setProfileData((prev) => ({ ...prev, phone: value }));
-              }
-            }}
-          />
-        </div>
-      </div>
-      <div>
-        <Label>Why are you using our service?</Label>
-        <RadioGroup
-          value={profileData?.service_usage || ""}
-          onValueChange={(value) =>
-            setProfileData((prev) => ({
-              ...prev,
-              service_usage: value as UserTestingServiceReason,
-            }))
-          }
-          className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-2"
-        >
-          {Object.values(UserTestingServiceReason).map((item) => (
-            <div key={item} className="flex items-center gap-3">
-              <RadioGroupItem
-                key={item}
-                value={item}
-                id={`service-${item}`}
-              ></RadioGroupItem>
-              <Label
-                htmlFor={`service-${item}`}
-                className="text-sm font-normal cursor-pointer"
-              >
-                {item.replace(/_/g, " ").toLowerCase()}
-              </Label>
-            </div>
-          ))}
-        </RadioGroup>
-      </div>
-      <div>
-        <Label>Preferred Communication Methods</Label>
-        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 pt-2">
-          {Object.values(UserCommunicationMethod).map((item) => (
-            <div
-              key={item}
-              className="flex items-center space-x-2 rounded-md border has-[:checked]:border-primary"
-            >
-              <Checkbox
-                checked={profileData?.communication_methods?.includes(item)}
-                onCheckedChange={(checked) => {
-                  const current = profileData?.communication_methods || [];
-                  const updated = checked
-                    ? [...current, item]
-                    : current.filter((val) => val !== item);
-                  setProfileData((prev) => ({
-                    ...prev,
-                    communication_methods: updated,
-                  }));
-                }}
-                id={`comm-${item}`}
-                className="ml-3 rounded-[4px]"
-                // className="flex items-center space-x-2
-              />
-              <Label
-                htmlFor={`comm-${item}`}
-                className="text-sm font-normal cursor-pointer w-full p-3"
-              >
-                {item?.toLowerCase()}
-              </Label>
-            </div>
-          ))}
-        </div>
-      </div>
-    </StepWrapper>
-  </div>
-);
-
-interface ProfileStepperProps {
-  profileData: Partial<UserProfileDataAttributes>;
-  setProfileData: React.Dispatch<
-    React.SetStateAction<Partial<UserProfileDataAttributes>>
-  >;
-}
 
 export default ProfileSetupPage;

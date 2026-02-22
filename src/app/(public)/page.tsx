@@ -4,17 +4,34 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import { ScrollToTopButton } from "@/components/scroll-to-top-button";
-import { ScrollingRibbon } from "@/components/scrolling-ribbon";
 import React from "react";
-import { SuccessStories } from "@/components/success-stories";
-import { GlobalImpactSection } from "@/components/global-impact-section";
-import { FaqSection } from "@/components/faq-section";
-import { TwoPathsSection } from "@/components/two-paths-section";
-import { MagneticButton } from "@/components/magnetic-button";
 import { HoverBorderGradient } from "@/components/ui/hover-border-gradient";
-import { CTASection } from "@/components/cta-section";
-import { SamplesSection } from "@/components/samples-section";
-import { HomeFaqSection } from "@/components/home-faq-section";
+import { MagneticButton } from "@/components/magnetic-button";
+import dynamic from "next/dynamic";
+
+const GlobalImpactSection = dynamic(() =>
+  import("@/components/global-impact-section").then(
+    (mod) => mod.GlobalImpactSection,
+  ),
+);
+const SamplesSection = dynamic(() =>
+  import("@/components/samples-section").then((mod) => mod.SamplesSection),
+);
+const SuccessStories = dynamic(() =>
+  import("@/components/success-stories").then((mod) => mod.SuccessStories),
+);
+const ScrollingRibbon = dynamic(() =>
+  import("@/components/scrolling-ribbon").then((mod) => mod.ScrollingRibbon),
+);
+const TwoPathsSection = dynamic(() =>
+  import("@/components/two-paths-section").then((mod) => mod.TwoPathsSection),
+);
+const HomeFaqSection = dynamic(() =>
+  import("@/components/home-faq-section").then((mod) => mod.HomeFaqSection),
+);
+const CTASection = dynamic(() =>
+  import("@/components/cta-section").then((mod) => mod.CTASection),
+);
 import { motion } from "framer-motion";
 import {
   Users,

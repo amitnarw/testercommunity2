@@ -26,11 +26,37 @@ import { useSingleHubAppDetails } from "@/hooks/useHub";
 import { SafeImage } from "@/components/safe-image";
 import { ExpandableText } from "@/components/expandable-text";
 import { AppInfoSidebar } from "@/components/appInfoSidebar";
-import { AdminRejectDialog } from "@/components/admin/admin-reject-dialog";
-import { AdminAcceptDialog } from "@/components/admin/admin-accept-dialog";
-import { AdminManageTestersDialog } from "@/components/admin/admin-manage-testers-dialog";
-import { AdminAssignedTestersTable } from "@/components/admin/admin-assigned-testers-table";
 import DeveloperInstructions from "@/components/developerInstructions";
+import dynamic from "next/dynamic";
+
+const AdminRejectDialog = dynamic(
+  () =>
+    import("@/components/admin/admin-reject-dialog").then(
+      (mod) => mod.AdminRejectDialog,
+    ),
+  { ssr: false },
+);
+const AdminAcceptDialog = dynamic(
+  () =>
+    import("@/components/admin/admin-accept-dialog").then(
+      (mod) => mod.AdminAcceptDialog,
+    ),
+  { ssr: false },
+);
+const AdminManageTestersDialog = dynamic(
+  () =>
+    import("@/components/admin/admin-manage-testers-dialog").then(
+      (mod) => mod.AdminManageTestersDialog,
+    ),
+  { ssr: false },
+);
+const AdminAssignedTestersTable = dynamic(
+  () =>
+    import("@/components/admin/admin-assigned-testers-table").then(
+      (mod) => mod.AdminAssignedTestersTable,
+    ),
+  { ssr: false },
+);
 
 export default function AdminSubmissionDetailPage({
   params,
@@ -464,6 +490,8 @@ export default function AdminSubmissionDetailPage({
               project.status === "COMPLETED") && (
               <AdminAssignedTestersTable
                 testerRelations={project.testerRelations}
+                appId={project.id}
+                onRefetch={() => refetch()}
               />
             )}
 
