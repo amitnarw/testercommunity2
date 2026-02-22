@@ -1,5 +1,6 @@
 import axios from "axios";
 import { decryptData, encryptData } from "./encryptDecryptPayload";
+import { ROUTES } from "./routes";
 
 // Create an Axios instance
 // const api = axios.create({
@@ -19,7 +20,7 @@ api.interceptors.request.use(
   },
   (error) => {
     return Promise.reject(error);
-  }
+  },
 );
 
 // Response interceptor: decrypt data when received
@@ -30,9 +31,32 @@ api.interceptors.response.use(
     }
     return response;
   },
-  (error) => {
+  async (error) => {
+    if (error.response?.status === 401) {
+      if (typeof window !== "undefined") {
+        const pathname = window.location.pathname;
+
+        // Avoid infinite redirect loops if we're already on a login page
+        const isAlreadyOnLogin =
+          pathname.includes(ROUTES.AUTH.LOGIN) ||
+          pathname.includes(ROUTES.ADMIN.AUTH.LOGIN) ||
+          pathname.includes(ROUTES.TESTER.AUTH.LOGIN);
+
+        if (!isAlreadyOnLogin) {
+          let loginUrl: string = ROUTES.AUTH.LOGIN;
+
+          if (pathname.startsWith("/admin")) {
+            loginUrl = ROUTES.ADMIN.AUTH.LOGIN;
+          } else if (pathname.startsWith("/tester")) {
+            loginUrl = ROUTES.TESTER.AUTH.LOGIN;
+          }
+
+          window.location.href = `${loginUrl}?redirect=${encodeURIComponent(pathname)}`;
+        }
+      }
+    }
     return Promise.reject(error);
-  }
+  },
 );
 
 export default api;
