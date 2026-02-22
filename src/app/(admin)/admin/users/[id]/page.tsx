@@ -18,8 +18,14 @@ import {
   Bug,
   Lightbulb,
   Edit,
-  Trash2,
   Loader2,
+  Smartphone,
+  Activity,
+  CalendarDays,
+  Globe,
+  Wallet,
+  XCircle,
+  Clock,
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -54,6 +60,72 @@ import {
   useUpdateUserStatus,
 } from "@/hooks/useAdmin";
 import { useQueryClient } from "@tanstack/react-query";
+import { Separator } from "@/components/ui/separator";
+
+const AVAILABILITY_CONFIG: Record<
+  string,
+  { label: string; color: string; dotClass: string }
+> = {
+  AVAILABLE: {
+    label: "Available",
+    color:
+      "bg-green-500/20 text-green-700 dark:bg-green-500/10 dark:text-green-400",
+    dotClass: "bg-green-500",
+  },
+  BUSY: {
+    label: "Busy",
+    color:
+      "bg-yellow-500/20 text-yellow-700 dark:bg-yellow-500/10 dark:text-yellow-400",
+    dotClass: "bg-yellow-500",
+  },
+  AWAY: {
+    label: "Away",
+    color:
+      "bg-orange-500/20 text-orange-700 dark:bg-orange-500/10 dark:text-orange-400",
+    dotClass: "bg-orange-500",
+  },
+  DO_NOT_DISTURB: {
+    label: "Do Not Disturb",
+    color: "bg-red-500/20 text-red-700 dark:bg-red-500/10 dark:text-red-400",
+    dotClass: "bg-red-500",
+  },
+};
+
+const STATUS_COLORS: Record<string, string> = {
+  IN_PROGRESS:
+    "bg-blue-500/20 text-blue-700 dark:bg-blue-500/10 dark:text-blue-400",
+  PENDING:
+    "bg-yellow-500/20 text-yellow-700 dark:bg-yellow-500/10 dark:text-yellow-400",
+  COMPLETED:
+    "bg-green-500/20 text-green-700 dark:bg-green-500/10 dark:text-green-400",
+  DROPPED: "bg-red-500/20 text-red-700 dark:bg-red-500/10 dark:text-red-400",
+  REMOVED: "bg-red-500/20 text-red-700 dark:bg-red-500/10 dark:text-red-400",
+  REJECTED:
+    "bg-gray-500/20 text-gray-700 dark:bg-gray-500/10 dark:text-gray-400",
+};
+
+function formatDate(dateStr: string | null) {
+  if (!dateStr) return "—";
+  return new Date(dateStr).toLocaleDateString("en-IN", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  });
+}
+
+function formatExperience(exp: string | null) {
+  if (!exp) return null;
+  const map: Record<string, string> = {
+    INTERN: "Intern",
+    JUNIOR: "Junior",
+    MID: "Mid-Level",
+    SENIOR: "Senior",
+    LEAD: "Lead",
+    DIRECTOR: "Director",
+    OTHER: "Other",
+  };
+  return map[exp] || exp;
+}
 
 export default function AdminUserDetailsPage() {
   const params = useParams();
@@ -61,7 +133,6 @@ export default function AdminUserDetailsPage() {
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
-  // Fetch the real user data
   const { data: user, isLoading, isError } = useUserById(id);
 
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -148,7 +219,6 @@ export default function AdminUserDetailsPage() {
           ?.split("=")[1] === "Super+Admin"
       : false;
 
-  // Formatting helpers
   const formatRoleName = (roleName: string): string => {
     const roleDisplayNames: Record<string, string> = {
       super_admin: "Super Admin",
@@ -160,6 +230,9 @@ export default function AdminUserDetailsPage() {
     };
     return roleDisplayNames[roleName] || roleName;
   };
+
+  const availConfig =
+    AVAILABILITY_CONFIG[user.availability] || AVAILABILITY_CONFIG.AVAILABLE;
 
   return (
     <>
@@ -192,16 +265,30 @@ export default function AdminUserDetailsPage() {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-10">
-          <div className="lg:col-span-1 space-y-8">
+          {/* LEFT COLUMN - User Profile & Info */}
+          <div className="lg:col-span-1 space-y-6">
+            {/* Profile Card */}
             <Card>
               <CardContent className="pt-6 flex flex-col items-center text-center">
-                <Avatar className="h-24 w-24 mb-4 border border-border">
-                  <AvatarImage src={user.image || ""} />
-                  <AvatarFallback>{user.name?.charAt(0) || "U"}</AvatarFallback>
-                </Avatar>
+                <div className="relative">
+                  <Avatar className="h-24 w-24 mb-4 border border-border">
+                    <AvatarImage src={user.image || ""} />
+                    <AvatarFallback className="text-2xl">
+                      {user.name?.charAt(0) || "U"}
+                    </AvatarFallback>
+                  </Avatar>
+                  {isTester && (
+                    <span className="absolute bottom-3 right-0">
+                      <span
+                        className={`w-4 h-4 rounded-full ${availConfig.dotClass} block ring-2 ring-background`}
+                        title={availConfig.label}
+                      />
+                    </span>
+                  )}
+                </div>
                 <h3 className="text-xl font-bold">{user.name}</h3>
                 <p className="text-sm text-muted-foreground">{user.email}</p>
-                <div className="flex gap-2 mt-4">
+                <div className="flex gap-2 mt-4 flex-wrap justify-center">
                   <Badge variant="secondary">{formatRoleName(user.role)}</Badge>
                   <Badge
                     variant={
@@ -217,88 +304,303 @@ export default function AdminUserDetailsPage() {
                   >
                     {user.status}
                   </Badge>
+                  {isTester && (
+                    <Badge variant="outline" className={availConfig.color}>
+                      {availConfig.label}
+                    </Badge>
+                  )}
                 </div>
+                <p className="text-xs text-muted-foreground mt-3">
+                  Joined {formatDate(user.createdAt)}
+                </p>
               </CardContent>
             </Card>
 
+            {/* Contact & Info */}
             <Card>
-              <CardHeader>
-                <CardTitle>Contact Information</CardTitle>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-sm font-semibold">
+                  Contact & Info
+                </CardTitle>
               </CardHeader>
-              <CardContent className="space-y-4 text-sm">
+              <CardContent className="space-y-3 text-sm">
                 <div className="flex items-center gap-3">
-                  <Mail className="w-4 h-4 text-muted-foreground" />
-                  <a href={`mailto:${user.email}`} className="hover:underline">
+                  <Mail className="w-4 h-4 text-muted-foreground shrink-0" />
+                  <a
+                    href={`mailto:${user.email}`}
+                    className="hover:underline truncate"
+                  >
                     {user.email}
                   </a>
                 </div>
                 {user.phone && (
                   <div className="flex items-center gap-3">
-                    <Phone className="w-4 h-4 text-muted-foreground" />
+                    <Phone className="w-4 h-4 text-muted-foreground shrink-0" />
                     <span>{user.phone}</span>
+                  </div>
+                )}
+                {user.country && (
+                  <div className="flex items-center gap-3">
+                    <Globe className="w-4 h-4 text-muted-foreground shrink-0" />
+                    <span>{user.country}</span>
+                  </div>
+                )}
+                {user.experience && (
+                  <div className="flex items-center gap-3">
+                    <Shield className="w-4 h-4 text-muted-foreground shrink-0" />
+                    <span>{formatExperience(user.experience)}</span>
                   </div>
                 )}
               </CardContent>
             </Card>
 
-            {isTester && (
+            {/* Device Info (Tester only) */}
+            {isTester && user.deviceDetails && (
               <Card>
-                <CardHeader>
-                  <CardTitle>Tester Stats</CardTitle>
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-sm font-semibold flex items-center gap-2">
+                    <Smartphone className="w-4 h-4" /> Device Information
+                  </CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="flex items-center justify-between text-sm">
-                    <span className="text-muted-foreground flex items-center gap-2">
-                      <CheckCircle className="w-4 h-4" /> Tests Completed
-                    </span>
-                    <span className="font-bold text-lg">0</span>
+                <CardContent className="text-sm">
+                  <div className="grid grid-cols-2 gap-y-3 gap-x-4">
+                    <div>
+                      <p className="text-muted-foreground text-xs">Brand</p>
+                      <p className="font-medium">
+                        {user.deviceDetails.company || "N/A"}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-muted-foreground text-xs">Model</p>
+                      <p className="font-medium">
+                        {user.deviceDetails.model || "N/A"}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-muted-foreground text-xs">OS</p>
+                      <p className="font-medium">
+                        {user.deviceDetails.os || "N/A"}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-muted-foreground text-xs">RAM</p>
+                      <p className="font-medium">
+                        {user.deviceDetails.ram || "N/A"}
+                      </p>
+                    </div>
+                    {user.deviceDetails.screenResolution && (
+                      <div className="col-span-2">
+                        <p className="text-muted-foreground text-xs">
+                          Screen Resolution
+                        </p>
+                        <p className="font-medium">
+                          {user.deviceDetails.screenResolution}
+                        </p>
+                      </div>
+                    )}
                   </div>
-                  <div className="flex items-center justify-between text-sm">
-                    <span className="text-muted-foreground flex items-center gap-2">
-                      <Bug className="w-4 h-4" /> Bugs Reported
+                </CardContent>
+              </Card>
+            )}
+
+            {/* Wallet (if available) */}
+            {user.wallet && (
+              <Card>
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-sm font-semibold flex items-center gap-2">
+                    <Wallet className="w-4 h-4" /> Wallet
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold">
+                    {user.wallet.balance || 0}{" "}
+                    <span className="text-sm font-normal text-muted-foreground">
+                      points
                     </span>
-                    <span className="font-bold text-lg">0</span>
-                  </div>
-                  <div className="flex items-center justify-between text-sm">
-                    <span className="text-muted-foreground flex items-center gap-2">
-                      <Lightbulb className="w-4 h-4" /> Suggestions Made
-                    </span>
-                    <span className="font-bold text-lg">0</span>
                   </div>
                 </CardContent>
               </Card>
             )}
           </div>
-          <div className="lg:col-span-2 space-y-8">
-            {!isTester && (
-              <Card>
-                <CardHeader>
-                  <CardTitle>User Activity</CardTitle>
-                  <CardDescription>
-                    Recent app submissions by this user.
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-muted-foreground text-sm">
-                    Data fetching for user app submissions is not yet fully
-                    implemented on this page.
-                  </div>
-                </CardContent>
+
+          {/* RIGHT COLUMN - Stats & Activity */}
+          <div className="lg:col-span-2 space-y-6">
+            {/* Stats Grid */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+              <Card className="p-4">
+                <div className="flex items-center gap-2 text-muted-foreground mb-1">
+                  <CheckCircle className="w-4 h-4 text-green-500" />
+                  <span className="text-xs">Total Tests</span>
+                </div>
+                <p className="text-2xl font-bold">
+                  {user.stats?.totalTests || 0}
+                </p>
               </Card>
-            )}
+              {isTester && (
+                <Card className="p-4">
+                  <div className="flex items-center gap-2 text-muted-foreground mb-1">
+                    <Activity className="w-4 h-4 text-blue-500" />
+                    <span className="text-xs">Active</span>
+                  </div>
+                  <p className="text-2xl font-bold">
+                    {user.stats?.activeTests || 0}
+                  </p>
+                </Card>
+              )}
+              {isTester && (
+                <Card className="p-4">
+                  <div className="flex items-center gap-2 text-muted-foreground mb-1">
+                    <CheckCircle className="w-4 h-4 text-green-500" />
+                    <span className="text-xs">Completed</span>
+                  </div>
+                  <p className="text-2xl font-bold">
+                    {user.stats?.completedTests || 0}
+                  </p>
+                </Card>
+              )}
+              <Card className="p-4">
+                <div className="flex items-center gap-2 text-muted-foreground mb-1">
+                  <Lightbulb className="w-4 h-4 text-yellow-500" />
+                  <span className="text-xs">Feedbacks</span>
+                </div>
+                <p className="text-2xl font-bold">
+                  {user.stats?.totalFeedbacks || 0}
+                </p>
+              </Card>
+              {!isTester && (
+                <>
+                  <Card className="p-4">
+                    <div className="flex items-center gap-2 text-muted-foreground mb-1">
+                      <Bug className="w-4 h-4 text-red-500" />
+                      <span className="text-xs">Submissions</span>
+                    </div>
+                    <p className="text-2xl font-bold">
+                      {user.stats?.totalSubmissions || 0}
+                    </p>
+                  </Card>
+                </>
+              )}
+              {isTester && (
+                <Card className="p-4">
+                  <div className="flex items-center gap-2 text-muted-foreground mb-1">
+                    <XCircle className="w-4 h-4 text-red-500" />
+                    <span className="text-xs">Dropped</span>
+                  </div>
+                  <p className="text-2xl font-bold">
+                    {user.stats?.droppedTests || 0}
+                  </p>
+                </Card>
+              )}
+            </div>
+
+            {/* Testing History (Tester) */}
             {isTester && (
               <Card>
                 <CardHeader>
-                  <CardTitle>Recent Project History</CardTitle>
+                  <CardTitle>Testing History</CardTitle>
                   <CardDescription>
-                    Projects this tester has contributed to.
+                    Projects this tester has been assigned to.
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <div className="text-muted-foreground text-sm">
-                    Data fetching for tester project history is not yet fully
-                    implemented on this page.
-                  </div>
+                  {user.recentTests?.length > 0 ? (
+                    <div className="overflow-x-auto">
+                      <Table>
+                        <TableHeader>
+                          <TableRow>
+                            <TableHead>App Name</TableHead>
+                            <TableHead>Status</TableHead>
+                            <TableHead>Days</TableHead>
+                            <TableHead>Joined</TableHead>
+                            <TableHead>Last Activity</TableHead>
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          {user.recentTests.map((test: any) => (
+                            <TableRow key={test.id}>
+                              <TableCell className="font-medium">
+                                {test.appName || "Unknown App"}
+                              </TableCell>
+                              <TableCell>
+                                <Badge
+                                  variant="outline"
+                                  className={STATUS_COLORS[test.status] || ""}
+                                >
+                                  {test.status?.replace("_", " ")}
+                                </Badge>
+                              </TableCell>
+                              <TableCell>{test.daysCompleted || 0}</TableCell>
+                              <TableCell className="text-muted-foreground text-xs">
+                                {formatDate(test.joinedAt)}
+                              </TableCell>
+                              <TableCell className="text-muted-foreground text-xs">
+                                {formatDate(test.lastActivityAt)}
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </div>
+                  ) : (
+                    <p className="text-muted-foreground text-sm py-4 text-center">
+                      No testing history yet.
+                    </p>
+                  )}
+                </CardContent>
+              </Card>
+            )}
+
+            {/* Submissions (Non-Tester) */}
+            {!isTester && (
+              <Card>
+                <CardHeader>
+                  <CardTitle>Recent Submissions</CardTitle>
+                  <CardDescription>
+                    Apps submitted by this user.
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  {user.recentSubmissions?.length > 0 ? (
+                    <div className="overflow-x-auto">
+                      <Table>
+                        <TableHeader>
+                          <TableRow>
+                            <TableHead>App Name</TableHead>
+                            <TableHead>Type</TableHead>
+                            <TableHead>Status</TableHead>
+                            <TableHead>Submitted</TableHead>
+                          </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                          {user.recentSubmissions.map((sub: any) => (
+                            <TableRow key={sub.id}>
+                              <TableCell className="font-medium">
+                                {sub.appName || "Unknown"}
+                              </TableCell>
+                              <TableCell>
+                                <Badge variant="outline">{sub.appType}</Badge>
+                              </TableCell>
+                              <TableCell>
+                                <Badge
+                                  variant="outline"
+                                  className={STATUS_COLORS[sub.status] || ""}
+                                >
+                                  {sub.status?.replace("_", " ")}
+                                </Badge>
+                              </TableCell>
+                              <TableCell className="text-muted-foreground text-xs">
+                                {formatDate(sub.createdAt)}
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </div>
+                  ) : (
+                    <p className="text-muted-foreground text-sm py-4 text-center">
+                      No submissions yet.
+                    </p>
+                  )}
                 </CardContent>
               </Card>
             )}
@@ -306,12 +608,13 @@ export default function AdminUserDetailsPage() {
         </div>
       </div>
 
+      {/* Edit Modal */}
       <Dialog open={isEditModalOpen} onOpenChange={setIsEditModalOpen}>
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Edit {user.name}</DialogTitle>
             <DialogDescription>
-              Modify the user's role and status.
+              Modify the user&apos;s role and status.
             </DialogDescription>
           </DialogHeader>
           <div className="py-4 space-y-4">

@@ -17,7 +17,7 @@ import {
 import { ProjectList } from "@/components/project-list";
 import Link from "next/link";
 import { Gem } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useSearchParams, usePathname, useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import type { Project, HubSubmittedAppResponse } from "@/lib/types";
@@ -125,7 +125,7 @@ const PaginatedProjectList = ({
   );
 };
 
-export default function DashboardPage() {
+function DashboardPageContent() {
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const router = useRouter();
@@ -190,7 +190,7 @@ export default function DashboardPage() {
       }
     }
     if (mainTab === "ongoing") {
-      return "IN_TESTING,AVAILABLE,ACCEPTED";
+      return "IN_TESTING,AVAILABLE";
     }
     if (mainTab === "completed") return "COMPLETED";
     return "IN_REVIEW";
@@ -441,5 +441,19 @@ export default function DashboardPage() {
         </main>
       </div>
     </div>
+  );
+}
+
+export default function DashboardPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen flex items-center justify-center">
+          Loading dashboard...
+        </div>
+      }
+    >
+      <DashboardPageContent />
+    </Suspense>
   );
 }

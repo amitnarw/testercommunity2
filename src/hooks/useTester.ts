@@ -1,6 +1,10 @@
-import { getTesterProjects } from "@/lib/apiCalls";
+import { getTesterProjects, updateTesterAvailability } from "@/lib/apiCalls";
 import { TesterProjectResponse } from "@/lib/types";
-import { useQuery } from "@tanstack/react-query";
+import {
+  useMutation,
+  UseMutationOptions,
+  useQuery,
+} from "@tanstack/react-query";
 
 export function useTesterProjects(status?: string) {
   const query = useQuery<TesterProjectResponse[], Error>({
@@ -9,4 +13,16 @@ export function useTesterProjects(status?: string) {
   });
 
   return query;
+}
+
+export function useUpdateTesterAvailability(
+  options?: UseMutationOptions<any, any, string>,
+) {
+  const mutation = useMutation({
+    mutationFn: (availability: string) =>
+      updateTesterAvailability(availability),
+    ...options,
+  });
+
+  return mutation;
 }
