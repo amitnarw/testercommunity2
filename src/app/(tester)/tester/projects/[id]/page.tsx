@@ -37,10 +37,16 @@ import { BackButton } from "@/components/back-button";
 import { AppPagination } from "@/components/app-pagination";
 import AppInfoHeader from "@/components/app-info-header";
 import DeveloperInstructions from "@/components/developerInstructions";
-import Confetti from "react-dom-confetti";
 import { useInView } from "react-intersection-observer";
 import { Progress } from "@/components/ui/progress";
-import { SubmittedFeedback } from "@/components/dashboard/submitted-feedback";
+import dynamic from "next/dynamic";
+
+const Confetti = dynamic(() => import("react-dom-confetti"), { ssr: false });
+const SubmittedFeedback = dynamic(() =>
+  import("@/components/dashboard/submitted-feedback").then(
+    (mod) => mod.SubmittedFeedback,
+  ),
+);
 import { cn } from "@/lib/utils";
 import { copyToClipboard } from "@/components/copy-clipboard";
 

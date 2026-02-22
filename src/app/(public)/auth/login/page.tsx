@@ -1,4 +1,3 @@
-
 "use client";
 
 import { Logo } from "@/components/logo";
@@ -23,7 +22,14 @@ import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { useUserProfileData } from "@/hooks/useUser";
-import { NotVerifiedDialog } from "@/components/unauthenticated/not-verified-dialog";
+import dynamic from "next/dynamic";
+const NotVerifiedDialog = dynamic(
+  () =>
+    import("@/components/unauthenticated/not-verified-dialog").then(
+      (mod) => mod.NotVerifiedDialog,
+    ),
+  { ssr: false },
+);
 import { toast } from "@/hooks/use-toast";
 
 const GoogleIcon = (props: React.HTMLAttributes<HTMLImageElement>) => (
@@ -174,8 +180,15 @@ const LoginForm = () => {
         resendIsSuccess={resendIsSuccess}
         resendIsError={resendIsError}
       />
-      <div className="space-y-6">
+      <form
+        className="space-y-6"
+        onSubmit={(e) => {
+          e.preventDefault();
+          handleLogin();
+        }}
+      >
         <Button
+          type="button"
           variant="outline"
           className="w-full rounded-xl py-2 sm:py-6 text-sm sm:text-base"
           onClick={handleGoogleLogin}
@@ -218,6 +231,7 @@ const LoginForm = () => {
               onChange={handleChange}
             />
             <button
+              type="button"
               className="text-muted-foreground absolute right-3 top-1/2 -translate-y-1/2"
               onClick={() => setShowPassword(!showPassword)}
             >
@@ -250,11 +264,11 @@ const LoginForm = () => {
         <div className="mt-8 pt-5">
           <div className="flex justify-end">
             <LoadingButton
+              type="submit"
               isLoading={isPending}
               isSuccess={isSuccess}
               isError={isError}
               className="text-sm sm:text-base"
-              onClick={handleLogin}
             >
               Log In
             </LoadingButton>
@@ -268,7 +282,7 @@ const LoginForm = () => {
             </p>
           </div>
         )}
-      </div>
+      </form>
     </>
   );
 };
