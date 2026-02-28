@@ -20,9 +20,10 @@ type MotionButtonProps = Omit<
   isLoading?: boolean;
   isSuccess?: boolean;
   isError?: boolean;
+  showSuccessState?: boolean;
   reset?: () => void;
   onClick?: (
-    event: React.MouseEvent<HTMLButtonElement, MouseEvent>
+    event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
   ) => Promise<any> | void;
 };
 
@@ -37,12 +38,13 @@ export const LoadingButton = React.forwardRef<
       isLoading,
       isSuccess,
       isError,
+      showSuccessState = true,
       reset,
       onClick,
       type = "button",
       ...props
     },
-    ref
+    ref,
   ) => {
     const [scope, animate] = useAnimate();
     const [checkError, setCheckError] = useState(true);
@@ -67,7 +69,7 @@ export const LoadingButton = React.forwardRef<
       await animate(
         scope.current,
         { width: 10, height: 25, paddingLeft: "0px", paddingRight: "0px" },
-        { duration: 0.7, ease: "easeInOut" }
+        { duration: 0.7, ease: "easeInOut" },
       );
 
       // 3. Show loader
@@ -92,7 +94,7 @@ export const LoadingButton = React.forwardRef<
       await animate(
         scope.current,
         { width: "auto", height: "auto" },
-        { duration: 0.7, ease: "easeInOut" }
+        { duration: 0.7, ease: "easeInOut" },
       );
       animate(loader, { opacity: 0 });
       // animate(".text", { opacity: 1, y: 0 }, { duration: 0.2 });
@@ -116,7 +118,7 @@ export const LoadingButton = React.forwardRef<
       await animate(
         scope.current,
         { width: "auto", height: "auto" },
-        { duration: 0.7, ease: "easeInOut" }
+        { duration: 0.7, ease: "easeInOut" },
       );
       animate(loader, { opacity: 0, scale: 0 }, { duration: 0.2 });
       animate(text, { opacity: 1, y: 0 }, { duration: 0.2 });
@@ -130,7 +132,14 @@ export const LoadingButton = React.forwardRef<
       const text = scope.current?.querySelector(".text");
 
       if (!loader || !check || !error || !text) return;
-
+      // Restore button to its original state
+      if (scope.current) {
+        animate(
+          scope.current,
+          { width: "auto", height: "auto" },
+          { duration: 0.7, ease: "easeInOut" },
+        );
+      }
       // 4. Animate loader out and check in using a sequence
       await animate([
         [loader, { opacity: 0, scale: 0 }, { duration: 0.2 }],
@@ -146,7 +155,11 @@ export const LoadingButton = React.forwardRef<
         runAnimation();
       }
       if (!isLoading && isSuccess && !isError) {
-        runSuccessAnimation();
+        if (showSuccessState) {
+          runSuccessAnimation();
+        } else {
+          runReset();
+        }
       }
       if (!isLoading && !isSuccess && isError) {
         runErrorAnimation();
@@ -154,7 +167,10 @@ export const LoadingButton = React.forwardRef<
           setCheckError(false);
         }, 1000);
       }
-    }, [isLoading, isSuccess, isError]);
+      if (!isLoading && !isSuccess && !isError) {
+        runReset();
+      }
+    }, [isLoading, isSuccess, isError, showSuccessState]);
 
     useEffect(() => {
       if (reset) {
@@ -168,17 +184,17 @@ export const LoadingButton = React.forwardRef<
         type={type}
         className={cn(
           `relative flex items-center justify-center gap-2 overflow-hidden rounded-full ${
-            isSuccess
+            isSuccess && showSuccessState
               ? "bg-green-500 hover:ring-green-500"
               : isError && checkError
-              ? "bg-red-500 hover:ring-red-500"
-              : "bg-primary hover:ring-primary"
+                ? "bg-red-500 hover:ring-red-500"
+                : "bg-primary hover:ring-primary"
           } px-4 py-2 font-medium text-white ring-offset-2 transition duration-2000 hover:ring-2 dark:ring-offset-black`,
           "disabled:cursor-not-allowed",
-          className
+          className,
         )}
         {...props}
-        disabled={isSuccess}
+        disabled={isSuccess && showSuccessState}
         onClick={onClick}
       >
         <div ref={scope} className="relative flex items-center justify-center">
@@ -206,7 +222,7 @@ export const LoadingButton = React.forwardRef<
         </div>
       </motion.button>
     );
-  }
+  },
 );
 LoadingButton.displayName = "LoadingButton";
 

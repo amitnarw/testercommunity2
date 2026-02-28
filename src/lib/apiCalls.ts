@@ -569,6 +569,31 @@ export async function addHubApp(payload: AppData) {
   }
 }
 
+export async function validatePromoCode(payload: { code: string }) {
+  try {
+    const response = await api.post(
+      API_ROUTES.HUB + `/validate-promo`,
+      payload,
+    );
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error validating promo code:", error);
+    if (axios.isAxiosError(error)) {
+      const status = error.response?.status;
+      const responseData = error.response?.data;
+      console.error("Axios error:", status, responseData);
+
+      throw new Error(
+        responseData?.message || error.message || "Unknown Axios error",
+      );
+    } else if (error instanceof Error) {
+      throw new Error(error.message);
+    } else {
+      throw new Error(JSON.stringify(error));
+    }
+  }
+}
+
 export async function getHubSubmittedApp(
   type: string,
 ): Promise<HubSubmittedAppResponse[]> {

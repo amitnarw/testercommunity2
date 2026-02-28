@@ -39,6 +39,10 @@ import {
   getTesterApplicationById,
   updateTesterApplicationStatus,
   updateProjectStatus,
+  getAllPromoCodes,
+  createPromoCode,
+  updatePromoCode,
+  deletePromoCode,
 } from "@/lib/apiCallsAdmin";
 import {
   useMutation,
@@ -455,6 +459,64 @@ export function useUpdateTesterApplicationStatus(
   const mutation = useMutation({
     mutationFn: (payload: { id: string; status: string; reason?: string }) =>
       updateTesterApplicationStatus(payload),
+    ...options,
+  });
+
+  return mutation;
+}
+
+// ==================== PROMO CODES ====================
+
+export function useAllPromoCodes(options?: { enabled?: boolean }) {
+  const query = useQuery({
+    queryFn: () => getAllPromoCodes(),
+    queryKey: ["useAllPromoCodes"],
+    enabled: options?.enabled ?? true,
+  });
+
+  return query;
+}
+
+export function useCreatePromoCode(
+  options?: UseMutationOptions<any, any, any>,
+) {
+  const mutation = useMutation({
+    mutationFn: (payload: {
+      code: string;
+      fixedPoints: number;
+      isActive?: boolean;
+      maxUses?: number | null;
+      maxPerUser?: number | null;
+    }) => createPromoCode(payload),
+    ...options,
+  });
+
+  return mutation;
+}
+
+export function useUpdatePromoCode(
+  options?: UseMutationOptions<any, any, any>,
+) {
+  const mutation = useMutation({
+    mutationFn: (payload: {
+      id: number;
+      code?: string;
+      fixedPoints?: number;
+      isActive?: boolean;
+      maxUses?: number | null;
+      maxPerUser?: number | null;
+    }) => updatePromoCode(payload),
+    ...options,
+  });
+
+  return mutation;
+}
+
+export function useDeletePromoCode(
+  options?: UseMutationOptions<any, any, any>,
+) {
+  const mutation = useMutation({
+    mutationFn: (id: number) => deletePromoCode(id),
     ...options,
   });
 
