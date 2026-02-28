@@ -26,10 +26,7 @@ import {
   Link as LinkIcon,
   Users,
   AlertCircle,
-  Wallet,
   CheckCircle2,
-  XCircle,
-  CreditCard,
   TrendingUp,
   Zap,
 } from "lucide-react";
@@ -53,7 +50,11 @@ import {
 import { Button } from "@/components/ui/button";
 import { PageHeader } from "@/components/page-header";
 import { useGetUserWallet } from "@/hooks/useUser";
-import { useAddHubApp, useAppCategories } from "@/hooks/useHub";
+import {
+  useAddHubApp,
+  useAppCategories,
+  useValidatePromoCode,
+} from "@/hooks/useHub";
 import SkeletonSubmitAppBottom from "@/components/community-dashboard/submit-app-bottom-skeleton";
 import { LoadingButton } from "@/components/ui/loading-button";
 import dynamic from "next/dynamic";
@@ -98,7 +99,7 @@ const submissionSchema = z.object({
   app_screenshot_url_2: z
     .string()
     .url("Please enter a valid URL for the second screenshot."),
-  category_id: z.string({ required_error: "Please select a category." }),
+  category_id: z.string().min(1, "Please select a category."),
   app_description: z
     .string()
     .min(
@@ -111,6 +112,7 @@ const submissionSchema = z.object({
     .min(1, "Please specify the minimum Android version."),
   total_tester: z.coerce.number().min(1).max(20),
   total_days: z.coerce.number().min(1).max(20),
+  promo_code: z.string().optional(),
 });
 
 type SubmissionFormData = z.infer<typeof submissionSchema>;
@@ -182,6 +184,12 @@ export default function SubmitAppPage() {
   const [activeStep, setActiveStep] = useState(formSteps[0].id);
   const [isErrorModalOpen, setIsErrorModalOpen] = useState(false);
   const [cost, setCost] = useState(0);
+  const [promoCodeInput, setPromoCodeInput] = useState("");
+  const [appliedPromo, setAppliedPromo] = useState<{
+    code: string;
+    fixedPoints: number;
+  } | null>(null);
+  const [promoCodeError, setPromoCodeError] = useState<string | null>(null);
   const router = useRouter();
 
   const form = useForm<SubmissionFormData>({
@@ -205,11 +213,23 @@ export default function SubmitAppPage() {
   const duration = form.watch("total_days");
 
   useEffect(() => {
-    const calculatedCost = testers * 80 + duration * 10;
-    setCost(calculatedCost);
-  }, [testers, duration]);
+    if (appliedPromo) {
+      setCost(appliedPromo.fixedPoints);
+    } else {
+      const calculatedCost = testers * 80 + duration * 10;
+      setCost(calculatedCost);
+    }
+  }, [testers, duration, appliedPromo]);
 
   const onSubmit = (data: SubmissionFormData) => {
+    if (!data.category_id) {
+      form.setError("category_id", {
+        type: "manual",
+        message: "Please select a category.",
+      });
+      return;
+    }
+
     if (isBalanceInsufficient) {
       setIsErrorModalOpen(true);
       return;
@@ -228,6 +248,7 @@ export default function SubmitAppPage() {
       total_tester: data.total_tester,
       total_days: data.total_days,
       points_cost: cost,
+      promo_code: appliedPromo?.code,
     });
   };
 
@@ -252,6 +273,42 @@ export default function SubmitAppPage() {
   useEffect(() => {
     setIsMounted(true);
   }, []);
+
+  const {
+    mutate: validatePromoMutate,
+    isPending: isValidatingPromo,
+    isError: isValidPromoError,
+    isSuccess: isValidPromoSuccess,
+  } = useValidatePromoCode({
+    onSuccess: (data: any) => {
+      if (data && data.fixedPoints !== undefined) {
+        setAppliedPromo({
+          code: promoCodeInput,
+          fixedPoints: data.fixedPoints,
+        });
+        setPromoCodeError(null);
+      }
+    },
+    onError: (error: any) => {
+      setPromoCodeError(error?.message || "Invalid or inactive promo code");
+      setAppliedPromo(null);
+    },
+  });
+
+  const handleApplyPromo = () => {
+    setPromoCodeError(null);
+    if (!promoCodeInput.trim()) {
+      setPromoCodeError("Promo code is required");
+      return;
+    }
+    validatePromoMutate({ code: promoCodeInput });
+  };
+
+  const handleRemovePromo = () => {
+    setAppliedPromo(null);
+    setPromoCodeInput("");
+    setPromoCodeError(null);
+  };
 
   const {
     data: walletData,
@@ -291,7 +348,11 @@ export default function SubmitAppPage() {
           form.reset({
             total_tester: 10,
             total_days: 14,
+            promo_code: "",
           }); // Reset to defaults or initial values
+          setAppliedPromo(null);
+          setPromoCodeInput("");
+          setPromoCodeError(null);
           setActiveStep(formSteps[0].id);
           window.scrollTo(0, 0);
         }}
@@ -722,6 +783,7 @@ export default function SubmitAppPage() {
                             </FormItem>
                           )}
                         />
+
                         {walletIsPending ? (
                           <SkeletonSubmitAppBottom />
                         ) : (
@@ -835,6 +897,59 @@ export default function SubmitAppPage() {
                                     />
                                   </div>
                                 </div>
+
+                                {/* Promo Code Section (Moved to Card bottom) */}
+                                <div className="mt-4 space-y-3">
+                                  <div className="flex gap-2 items-center">
+                                    <Input
+                                      id="promo_code"
+                                      placeholder="Have a promo code?"
+                                      value={promoCodeInput}
+                                      onChange={(e) =>
+                                        setPromoCodeInput(e.target.value)
+                                      }
+                                      disabled={
+                                        !!appliedPromo || isValidatingPromo
+                                      }
+                                      className="max-w-[200px] h-9 bg-black/20 border-white/10 text-white placeholder:text-white/40 focus-visible:ring-1 focus-visible:ring-white/20"
+                                    />
+                                    {!appliedPromo ? (
+                                      <LoadingButton
+                                        type="button"
+                                        className="h-9 px-4 bg-white/10 hover:bg-white/20 text-white border-0"
+                                        onClick={handleApplyPromo}
+                                        isLoading={isValidatingPromo}
+                                        isError={isValidPromoError}
+                                        isSuccess={isValidPromoSuccess}
+                                        showSuccessState={false}
+                                      >
+                                        Apply
+                                      </LoadingButton>
+                                    ) : (
+                                      <Button
+                                        type="button"
+                                        variant="destructive"
+                                        className="h-9 px-4 bg-red-500/80 hover:bg-red-500/90 text-white border-0"
+                                        onClick={handleRemovePromo}
+                                      >
+                                        Remove
+                                      </Button>
+                                    )}
+                                  </div>
+                                  {appliedPromo && (
+                                    <p className="text-emerald-400 font-medium text-xs flex items-center gap-1.5">
+                                      <CheckCircle2 className="w-3.5 h-3.5" />
+                                      Promo applied! Cost reduced to{" "}
+                                      {appliedPromo.fixedPoints}.
+                                    </p>
+                                  )}
+                                  {promoCodeError && !appliedPromo && (
+                                    <p className="text-red-400 font-medium text-xs flex items-center gap-1.5">
+                                      <AlertCircle className="w-3.5 h-3.5" />
+                                      {promoCodeError}
+                                    </p>
+                                  )}
+                                </div>
                               </div>
 
                               {/* Decorative 'Chip' */}
@@ -843,7 +958,7 @@ export default function SubmitAppPage() {
                           </div>
                         )}
 
-                        <div className="flex flex-row items-center justify-end gap-1 sm:gap-3 w-full">
+                        <div className="flex flex-col items-end gap-3 w-full">
                           <div
                             onClick={form.handleSubmit(onSubmit)}
                             className={cn(
@@ -861,6 +976,12 @@ export default function SubmitAppPage() {
                               Submit for Review
                             </LoadingButton>
                           </div>
+                          {Object.keys(form.formState.errors).length > 0 && (
+                            <div className="text-destructive text-sm font-medium animate-pulse flex items-center gap-1">
+                              <AlertCircle className="w-4 h-4" />
+                              Please fix the errors above before submitting.
+                            </div>
+                          )}
                         </div>
                       </CardContent>
                     </Card>

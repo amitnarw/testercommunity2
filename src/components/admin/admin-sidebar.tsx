@@ -16,6 +16,7 @@ import {
   Users2,
   User,
   ChevronDown,
+  Ticket,
 } from "lucide-react";
 import {
   Tooltip,
@@ -74,6 +75,12 @@ const adminNavLinks = [
     icon: Bell,
     section: "platform",
   },
+  {
+    name: "Promo Codes",
+    href: "/admin/promo-codes",
+    icon: Ticket,
+    section: "platform",
+  },
 ];
 
 const NavLink = ({
@@ -94,8 +101,8 @@ const NavLink = ({
   // For links with query params, only active if we're on that exact URL with those params
   const isActive = href.includes("?")
     ? pathname === href.split("?")[0] &&
-    typeof window !== "undefined" &&
-    window.location.search.includes(href.split("?")[1])
+      typeof window !== "undefined" &&
+      window.location.search.includes(href.split("?")[1])
     : pathname === href;
 
   const getBadgeStyles = () => {
@@ -114,7 +121,7 @@ const NavLink = ({
               "flex items-center justify-start w-full h-12 rounded-xl text-white/70 dark:text-black/70 transition-all duration-300 px-3.5",
               "hover:bg-white/20 hover:text-white dark:hover:text-black",
               isActive &&
-              "bg-gradient-to-br from-primary to-primary/30 text-white",
+                "bg-gradient-to-br from-primary to-primary/30 text-white",
             )}
           >
             <Icon className="h-5 w-5 flex-shrink-0" />
@@ -236,8 +243,9 @@ export function AdminSidebar({
           <div className="mb-8 mt-2">
             <button
               onClick={() => setIsCollapsed(!isCollapsed)}
-              className={`bg-primary text-white rounded-full p-1 shadow-2xl absolute -right-3 duration-700 hover:scale-125 flex items-center justify-center ${isCollapsed ? "w-7" : "w-32"
-                }`}
+              className={`bg-primary text-white rounded-full p-1 shadow-2xl absolute -right-3 duration-700 hover:scale-125 flex items-center justify-center ${
+                isCollapsed ? "w-7" : "w-32"
+              }`}
             >
               {isCollapsed ? (
                 <ChevronRight size={20} />

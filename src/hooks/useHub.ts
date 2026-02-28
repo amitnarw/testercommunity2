@@ -14,6 +14,7 @@ import {
   deleteHubAppFeedback,
   submitDailyVerification,
   completeHostedApp,
+  validatePromoCode,
 } from "@/lib/apiCalls";
 import {
   AppCategoriesResponse,
@@ -48,12 +49,29 @@ export function useAppCategories() {
 
 export function useAddHubApp(options?: UseMutationOptions<any, any, any>) {
   const mutation = useMutation({
-    mutationFn: (payload) => addHubApp(payload),
+    mutationFn: (payload: any) => addHubApp(payload),
     onSuccess: (data) => {
       console.log("Hub app added successfully: " + data);
     },
     onError: (data) => {
       console.log("Hub app adding failed: " + data);
+    },
+    ...options,
+  });
+
+  return mutation;
+}
+
+export function useValidatePromoCode(
+  options?: UseMutationOptions<any, any, { code: string }>,
+) {
+  const mutation = useMutation({
+    mutationFn: (payload: { code: string }) => validatePromoCode(payload),
+    onSuccess: (data) => {
+      console.log("Promo code valid: " + data);
+    },
+    onError: (data) => {
+      console.log("Promo code validating failed: " + data);
     },
     ...options,
   });

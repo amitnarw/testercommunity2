@@ -879,3 +879,61 @@ export async function updateTesterApplicationStatus(payload: {
     }
   }
 }
+
+// ==================== PROMO CODES ====================
+
+export async function getAllPromoCodes() {
+  try {
+    const response = await api.get(API_ROUTES.ADMIN + `/promo-codes`);
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error fetching promo codes:", error);
+    throw error;
+  }
+}
+
+export async function createPromoCode(payload: {
+  code: string;
+  fixedPoints: number;
+  isActive?: boolean;
+  maxUses?: number | null;
+  maxPerUser?: number | null;
+}) {
+  try {
+    const response = await api.post(API_ROUTES.ADMIN + `/promo-codes`, payload);
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error creating promo code:", error);
+    throw error;
+  }
+}
+
+export async function updatePromoCode(payload: {
+  id: number;
+  code?: string;
+  fixedPoints?: number;
+  isActive?: boolean;
+  maxUses?: number | null;
+  maxPerUser?: number | null;
+}) {
+  try {
+    const response = await api.post(
+      API_ROUTES.ADMIN + `/promo-codes/update`,
+      payload,
+    );
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error updating promo code:", error);
+    throw error;
+  }
+}
+
+export async function deletePromoCode(id: number) {
+  try {
+    const response = await api.delete(API_ROUTES.ADMIN + `/promo-codes/${id}`);
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error deleting promo code:", error);
+    throw error;
+  }
+}
