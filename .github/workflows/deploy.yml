@@ -19,13 +19,17 @@ jobs:
       - name: 🧾 Checkout repository
         uses: actions/checkout@v4
 
+      # ⏱️ Capture start time
+      - name: ⏱️ Capture start time
+        run: echo "START_TIME=$(date +%s)" >> $GITHUB_ENV
+
       # 2️⃣ Setup Node.js
       - name: ⚙️ Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
 
-      # 3️⃣ Install dependencies (CI only)
+      # 3️⃣ Install dependencies
       - name: 📦 Install dependencies
         run: npm ci
 
@@ -33,7 +37,7 @@ jobs:
       - name: 🏗️ Build Next.js
         run: npm run build
 
-      # 5️⃣ Fail fast if build output missing
+      # 5️⃣ Verify build output
       - name: 🚨 Verify build output
         run: |
           test -d .next || (echo ".next missing" && exit 1)
@@ -41,7 +45,7 @@ jobs:
           test -f package.json || (echo "package.json missing" && exit 1)
           test -f next.config.ts || (echo "next.config.ts missing" && exit 1)
 
-      # 6️⃣ Setup SSH for rsync
+      # 6️⃣ Setup SSH
       - name: 🔑 Setup SSH
         run: |
           mkdir -p ~/.ssh
@@ -49,7 +53,7 @@ jobs:
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -H ${{ secrets.SERVER_IP }} >> ~/.ssh/known_hosts
 
-      # 7️⃣ Sync build to server (NO tar, NO scp-action)
+      # 7️⃣ Sync build to server
       - name: 📤 Sync build to server (rsync)
         run: |
           rsync -avz --delete \
@@ -60,7 +64,7 @@ jobs:
             next.config.ts \
             ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }}:/var/www/frontend
 
-      # 8️⃣ Install prod deps & restart PM2 (Model A)
+      # 8️⃣ Restart app
       - name: ♻️ Restart app
         uses: appleboy/ssh-action@v1.0.3
         with:
@@ -73,3 +77,45 @@ jobs:
             pm2 delete frontend || true
             pm2 start npm --name frontend -- start
             pm2 save
+
+      # ✅ Telegram Success Notification
+      - name: 📣 Telegram Success Notification
+        if: success()
+        run: |
+          END_TIME=$(date +%s)
+          DURATION=$((END_TIME - START_TIME))
+          MIN=$((DURATION / 60))
+          SEC=$((DURATION % 60))
+
+          MESSAGE="🚀 <b>FRONTEND DEPLOYED SUCCESSFULLY</b>%0A
+          ⏱ Duration: <b>${MIN}m ${SEC}s</b>%0A
+          📦 Repo: <b>${{ github.repository }}</b>%0A
+          🌿 Branch: <b>${{ github.ref_name }}</b>%0A
+          👤 By: <b>${{ github.actor }}</b>%0A
+          🧾 Commit: <b>${{ github.event.head_commit.message }}</b>%0A
+          🔗 <a href='${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }}'>View Commit</a>"
+
+          curl -s -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage" \
+          -d chat_id="${{ secrets.TELEGRAM_CHAT_ID }}" \
+          -d parse_mode="HTML" \
+          -d text="$MESSAGE"
+
+      # ❌ Telegram Failure Notification
+      - name: ❌ Telegram Failure Notification
+        if: failure()
+        run: |
+          END_TIME=$(date +%s)
+          DURATION=$((END_TIME - START_TIME))
+          MIN=$((DURATION / 60))
+          SEC=$((DURATION % 60))
+
+          MESSAGE="❌ <b>FRONTEND DEPLOYMENT FAILED</b>%0A
+          ⏱ Failed After: <b>${MIN}m ${SEC}s</b>%0A
+          📦 Repo: <b>${{ github.repository }}</b>%0A
+          👤 By: <b>${{ github.actor }}</b>%0A
+          ⚠️ Check GitHub Actions logs."
+
+          curl -s -X POST "https://api.telegram.org/bot${{ secrets.TELEGRAM_BOT_TOKEN }}/sendMessage" \
+          -d chat_id="${{ secrets.TELEGRAM_CHAT_ID }}" \
+          -d parse_mode="HTML" \
+          -d text="$MESSAGE"
