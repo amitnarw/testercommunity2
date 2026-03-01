@@ -217,10 +217,10 @@ export default function TesterDashboardPage() {
               <div className="absolute -right-2 -top-2 opacity-[0.08] dark:opacity-[0.15] scale-[2.5] -rotate-12 text-blue-500 transition-transform duration-500 group-hover:scale-[3] group-hover:-rotate-45">
                 <Activity className="w-12 h-12" />
               </div>
-              <p className="text-xs text-muted-foreground font-medium relative z-10">
+              <p className="text-xs text-muted-foreground font-medium relative">
                 Active Projects
               </p>
-              <p className="text-2xl sm:text-3xl font-bold mt-1 relative z-10">
+              <p className="text-2xl sm:text-3xl font-bold mt-1 relative">
                 {activeProjects.length}
               </p>
             </Card>
@@ -229,10 +229,10 @@ export default function TesterDashboardPage() {
               <div className="absolute -right-2 -top-2 opacity-[0.08] dark:opacity-[0.15] scale-[2.5] -rotate-12 text-green-500 transition-transform duration-500 group-hover:scale-[3] group-hover:-rotate-45">
                 <CheckCircle className="w-12 h-12" />
               </div>
-              <p className="text-xs text-muted-foreground font-medium relative z-10">
+              <p className="text-xs text-muted-foreground font-medium relative">
                 Completed
               </p>
-              <p className="text-2xl sm:text-3xl font-bold mt-1 relative z-10">
+              <p className="text-2xl sm:text-3xl font-bold mt-1 relative">
                 {completedProjects.length}
               </p>
             </Card>
@@ -241,10 +241,10 @@ export default function TesterDashboardPage() {
               <div className="absolute -right-2 -top-2 opacity-[0.08] dark:opacity-[0.15] scale-[2.5] -rotate-12 text-purple-500 transition-transform duration-500 group-hover:scale-[3] group-hover:-rotate-45">
                 <Package className="w-12 h-12" />
               </div>
-              <p className="text-xs text-muted-foreground font-medium relative z-10">
+              <p className="text-xs text-muted-foreground font-medium relative">
                 Feedbacks
               </p>
-              <p className="text-2xl sm:text-3xl font-bold mt-1 relative z-10">
+              <p className="text-2xl sm:text-3xl font-bold mt-1 relative">
                 {totalFeedback}
               </p>
             </Card>
@@ -318,7 +318,7 @@ export default function TesterDashboardPage() {
 
           {/* Active Projects Section */}
           <Card>
-            <CardHeader className="flex flex-row items-center justify-between">
+            <CardHeader className="flex flex-col sm:flex-row items-start sm:items-center justify-between p-3 sm:p-6">
               <div>
                 <CardTitle>Active Projects</CardTitle>
                 <CardDescription>Tests currently in progress.</CardDescription>
@@ -329,7 +329,7 @@ export default function TesterDashboardPage() {
                 </Link>
               </Button>
             </CardHeader>
-            <CardContent>
+            <CardContent className="p-3 sm:p-6">
               {activeProjects.length === 0 ? (
                 <div className="text-center py-10">
                   <Briefcase className="w-10 h-10 text-muted-foreground/40 mx-auto mb-3" />
@@ -355,7 +355,7 @@ export default function TesterDashboardPage() {
                       <Link
                         key={project.id}
                         href={`/tester/projects/${project.id}`}
-                        className="flex items-center gap-4 p-4 rounded-xl bg-secondary/50 hover:bg-secondary transition-colors group"
+                        className="flex items-center gap-4 p-2 sm:p-4 rounded-xl bg-secondary/50 hover:bg-secondary transition-colors group"
                       >
                         <Avatar className="h-10 w-10 shrink-0">
                           <AvatarImage src={project.appLogo} />
@@ -364,20 +364,20 @@ export default function TesterDashboardPage() {
                           </AvatarFallback>
                         </Avatar>
                         <div className="flex-1 min-w-0">
-                          <div className="flex items-center justify-between gap-2 mb-1">
-                            <p className="font-medium text-sm truncate">
+                          <div className="grid grid-cols-1 sm:grid-cols-[1fr_auto] items-start sm:items-center gap-2 mb-1 w-full">
+                            <p className="font-medium text-sm truncate min-w-0">
                               {project.appName}
                             </p>
                             <Badge
                               variant="outline"
-                              className="text-[10px] shrink-0 bg-blue-500/10 text-blue-600 border-blue-200 dark:border-blue-800"
+                              className="text-[10px] w-fit bg-blue-500/10 text-blue-600 border-blue-200 dark:border-blue-800"
                             >
                               Day {project.daysCompleted}/{project.totalDay}
                             </Badge>
                           </div>
                           <Progress value={progress} className="h-1.5" />
                         </div>
-                        <ArrowRight className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors shrink-0" />
+                        <ArrowRight className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors shrink-0 hidden sm:block" />
                       </Link>
                     );
                   })}
