@@ -785,3 +785,12 @@ export interface PaymentVerificationResponse {
   packagesAwarded: number;
   totalPackages: number;
 }
+
+export interface PromoCodeResponse {
+  id: number;
+  code: string;
+  fixedPoints: number;
+  maxUses: number | null;
+  usedCount: number;
+  updatedAt: string;
+}

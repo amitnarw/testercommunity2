@@ -13,12 +13,14 @@ export const MagicCard = ({
   gradientSize = 200,
   gradientColor = "#262626",
   gradientOpacity = 0.8,
+  showGradient = true,
 }: {
   children: React.ReactNode;
   className?: string;
   gradientSize?: number;
   gradientColor?: string;
   gradientOpacity?: number;
+  showGradient?: boolean;
 }) => {
   const cardRef = useRef<HTMLDivElement>(null);
   const mouseX = useMotionValue(-gradientSize);
@@ -50,19 +52,21 @@ export const MagicCard = ({
       )}
     >
       <div className="relative z-10 size-full">{children}</div>
-      <motion.div
-        className="pointer-events-none absolute -inset-px z-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
-        style={{
-          background: useMotionTemplate`
-            radial-gradient(
-              ${gradientSize}px circle at ${mouseX}px ${mouseY}px,
-              ${gradientColor},
-              transparent 100%
-            )
-          `,
-          opacity: gradientOpacity,
-        }}
-      />
+      {showGradient && (
+        <motion.div
+          className="pointer-events-none absolute -inset-px z-0 opacity-0 transition-opacity duration-300 group-hover:opacity-100"
+          style={{
+            background: useMotionTemplate`
+              radial-gradient(
+                ${gradientSize}px circle at ${mouseX}px ${mouseY}px,
+                ${gradientColor},
+                transparent 100%
+              )
+            `,
+            opacity: gradientOpacity,
+          }}
+        />
+      )}
     </div>
   );
 };

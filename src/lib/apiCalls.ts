@@ -21,6 +21,7 @@ import {
   PaymentVerificationPayload,
   PaymentVerificationResponse,
   TesterProjectResponse,
+  PromoCodeResponse,
 } from "./types";
 import api from "./axios";
 
@@ -1456,6 +1457,24 @@ export async function unassignTesterFromApp(payload: {
       const responseData = error.response?.data;
       console.error("Axios error:", status, responseData);
 
+      throw new Error(
+        responseData?.message || error.message || "Unknown Axios error",
+      );
+    } else if (error instanceof Error) {
+      throw new Error(error.message);
+    } else {
+      throw new Error(JSON.stringify(error));
+    }
+  }
+}
+export async function getPromoCodes(): Promise<PromoCodeResponse[]> {
+  try {
+    const response = await api.get(API_ROUTES.BILLING + "/promo-codes");
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error fetching promo codes:", error);
+    if (axios.isAxiosError(error)) {
+      const responseData = error.response?.data;
       throw new Error(
         responseData?.message || error.message || "Unknown Axios error",
       );

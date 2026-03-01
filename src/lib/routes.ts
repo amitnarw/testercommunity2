@@ -11,6 +11,9 @@ export const ROUTES = {
     VERIFICATION: "/auth/verification",
   },
 
+  // Public
+  OFFERS: "/offers",
+
   // Admin
   ADMIN: {
     ROOT: "/admin",

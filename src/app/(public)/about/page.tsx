@@ -8,7 +8,7 @@ import { Users, Rocket, Globe, Shield } from "lucide-react";
 
 export default function AboutPage() {
   return (
-    <div className="min-h-screen bg-neutral-950 relative w-full overflow-hidden flex flex-col items-center justify-center antialiased">
+    <div className="min-h-screen bg-white dark:bg-neutral-950 relative w-full overflow-hidden flex flex-col items-center justify-center antialiased">
       <div className="absolute inset-0 z-0">
         <InteractiveGridPattern
           width={40}
@@ -29,10 +29,10 @@ export default function AboutPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
           >
-            <h1 className="text-5xl md:text-7xl font-bold bg-clip-text text-transparent bg-gradient-to-b from-neutral-50 to-neutral-400 mb-6 font-sans">
+            <h1 className="text-5xl md:text-7xl font-bold bg-clip-text text-transparent bg-gradient-to-b from-neutral-900 to-neutral-600 dark:from-neutral-50 dark:to-neutral-400 mb-6 font-sans">
               About Us
             </h1>
-            <p className="text-xl text-neutral-400 leading-relaxed max-w-2xl mx-auto">
+            <p className="text-xl text-neutral-600 dark:text-neutral-400 leading-relaxed max-w-2xl mx-auto">
               We are{" "}
               <span className="text-primary font-semibold">
                 GAMDIX PRIVATE LIMITED
@@ -51,12 +51,17 @@ export default function AboutPage() {
             transition={{ delay: 0.2 }}
             viewport={{ once: true }}
           >
-            <MagicCard className="min-h-[300px] p-8 flex flex-col justify-center items-start gap-4 border-white/10 bg-neutral-900/50 backdrop-blur-sm">
+            <MagicCard
+              showGradient={false}
+              className="min-h-[300px] p-8 flex flex-col justify-center items-start gap-4 border-neutral-200 dark:border-white/10 bg-white dark:bg-neutral-900/50 backdrop-blur-sm"
+            >
               <div className="p-3 rounded-full bg-blue-500/10 text-blue-500 mb-2">
                 <Rocket className="w-8 h-8" />
               </div>
-              <h2 className="text-3xl font-bold text-white">Our Mission</h2>
-              <p className="text-neutral-400 leading-relaxed">
+              <h2 className="text-3xl font-bold text-neutral-900 dark:text-white">
+                Our Mission
+              </h2>
+              <p className="text-neutral-600 dark:text-neutral-400 leading-relaxed">
                 To empower developers worldwide by providing a robust,
                 community-driven platform for comprehensive app testing,
                 ensuring every release is bug-free and user-ready.
@@ -70,12 +75,17 @@ export default function AboutPage() {
             transition={{ delay: 0.3 }}
             viewport={{ once: true }}
           >
-            <MagicCard className="min-h-[300px] p-8 flex flex-col justify-center items-start gap-4 border-white/10 bg-neutral-900/50 backdrop-blur-sm">
+            <MagicCard
+              showGradient={false}
+              className="min-h-[300px] p-8 flex flex-col justify-center items-start gap-4 border-neutral-200 dark:border-white/10 bg-white dark:bg-neutral-900/50 backdrop-blur-sm"
+            >
               <div className="p-3 rounded-full bg-purple-500/10 text-purple-500 mb-2">
                 <Globe className="w-8 h-8" />
               </div>
-              <h2 className="text-3xl font-bold text-white">Our Vision</h2>
-              <p className="text-neutral-400 leading-relaxed">
+              <h2 className="text-3xl font-bold text-neutral-900 dark:text-white">
+                Our Vision
+              </h2>
+              <p className="text-neutral-600 dark:text-neutral-400 leading-relaxed">
                 To become the global standard for application quality assurance,
                 fostering a collaborative ecosystem where testers and developers
                 grow together.
@@ -86,7 +96,7 @@ export default function AboutPage() {
 
         {/* Values Section */}
         <div className="max-w-6xl mx-auto mb-24">
-          <h2 className="text-3xl md:text-5xl font-bold text-center text-white mb-16">
+          <h2 className="text-3xl md:text-5xl font-bold text-center text-neutral-900 dark:text-white mb-16">
             Core Values
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -116,26 +126,28 @@ export default function AboutPage() {
                 whileInView={{ opacity: 1, y: 0 }}
                 transition={{ delay: idx * 0.1 + 0.4 }}
                 viewport={{ once: true }}
-                className="p-6 rounded-2xl border border-white/5 bg-neutral-900/30 hover:bg-neutral-800/50 transition-colors"
+                className="p-6 rounded-2xl border border-neutral-200 dark:border-white/5 bg-neutral-50/50 dark:bg-neutral-900/30 hover:bg-neutral-100 dark:hover:bg-neutral-800/50 transition-colors"
               >
-                <div className="w-12 h-12 rounded-lg bg-neutral-800 flex items-center justify-center text-white mb-4">
+                <div className="w-12 h-12 rounded-lg bg-neutral-200 dark:bg-neutral-800 flex items-center justify-center text-neutral-900 dark:text-white mb-4">
                   {value.icon}
                 </div>
-                <h3 className="text-xl font-bold text-white mb-2">
+                <h3 className="text-xl font-bold text-neutral-900 dark:text-white mb-2">
                   {value.title}
                 </h3>
-                <p className="text-neutral-400 text-sm">{value.description}</p>
+                <p className="text-neutral-600 dark:text-neutral-400 text-sm">
+                  {value.description}
+                </p>
               </motion.div>
             ))}
           </div>
         </div>
 
         {/* Company Footer Info */}
-        <div className="border-t border-white/10 pt-12 text-center">
+        <div className="border-t border-neutral-200 dark:border-white/10 pt-12 text-center">
           <p className="text-sm text-neutral-500 uppercase tracking-widest mb-2">
             Operated By
           </p>
-          <h3 className="text-2xl font-bold text-white">
+          <h3 className="text-2xl font-bold text-neutral-900 dark:text-white">
             GAMDIX PRIVATE LIMITED
           </h3>
         </div>

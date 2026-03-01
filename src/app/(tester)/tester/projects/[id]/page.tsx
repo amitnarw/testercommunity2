@@ -3,6 +3,8 @@
 import { notFound } from "next/navigation";
 import Image from "next/image";
 import { projects as allProjects } from "@/lib/data";
+import { useTesterProjects } from "@/hooks/useTester";
+import { Loader2 } from "lucide-react";
 import {
   Card,
   CardContent,
@@ -311,11 +313,68 @@ export default function ProfessionalProjectDetailsPage({
 }: {
   params: { id: string };
 }) {
-  const project = allProjects.find((p) => p.id.toString() === params.id);
+  const { data: projects, isLoading } = useTesterProjects();
 
-  if (!project) {
+  if (isLoading) {
+    return (
+      <div className="flex bg-[#f8fafc] dark:bg-[#0f151e] min-h-screen items-center justify-center">
+        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+      </div>
+    );
+  }
+
+  const rawProject = projects?.find((p) => p.id.toString() === params.id);
+
+  if (!rawProject) {
     notFound();
   }
+
+  const statusMap: Record<string, string> = {
+    IN_TESTING: "In Testing",
+    COMPLETED: "Completed",
+    REJECTED: "Rejected",
+    IN_REVIEW: "In Review",
+  };
+
+  const statusMapped = statusMap[rawProject.appStatus] || "In Testing";
+
+  // Map backend TesterProjectResponse to UI Project shape
+  const project: Project = {
+    id: rawProject.id,
+    name: rawProject.appName,
+    packageName: rawProject.packageName,
+    icon: rawProject.appLogo,
+    category: rawProject.category || "Unknown",
+    status: statusMapped as
+      | "In Testing"
+      | "Completed"
+      | "Rejected"
+      | "In Review",
+    pointsCost: rawProject.rewardPoints || 0,
+    totalDays: rawProject.totalDay,
+    testersCompleted: rawProject.daysCompleted,
+    testersStarted: rawProject.totalDay > 0 ? rawProject.totalDay : 1, // Avoid divide by 0
+    testingInstructions:
+      rawProject.instructionsForTester || "Please test the app as usual.",
+    description: rawProject.description || "",
+    androidVersion: rawProject.minimumAndroidVersion
+      ? rawProject.minimumAndroidVersion.toString() + "+"
+      : "N/A",
+    avgTestersPerDay: 1,
+    startedFrom: rawProject.createdAt
+      ? new Date(rawProject.createdAt).toLocaleDateString()
+      : "N/A",
+    crashFreeRate: 100,
+    overallRating: 5.0,
+    feedbackBreakdown: { total: 0, critical: 0, high: 0, low: 0 },
+    performanceMetrics: { avgStartupTime: "N/A", frozenFrames: "N/A" },
+    deviceCoverage: [],
+    osCoverage: [],
+    topGeographies: [],
+    feedback: [],
+    chartData: [],
+    testers: [],
+  };
 
   return <ProjectDetailsClient project={project} />;
 }
