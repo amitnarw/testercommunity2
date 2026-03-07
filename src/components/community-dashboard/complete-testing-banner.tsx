@@ -156,7 +156,6 @@ export function CompleteTestingBanner({
                   : "bg-white text-blue-600 hover:bg-white/95 hover:shadow-blue-500/20",
               )}
             >
-              <Sparkles className="w-4 h-4 mr-2" />
               {isWarningMode ? "Complete Anyway" : "Finish Testing"}
             </Button>
           </div>
@@ -164,7 +163,7 @@ export function CompleteTestingBanner({
       </motion.div>
 
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent className="sm:max-w-md md:max-w-lg overflow-hidden border-0 p-0 rounded-2xl gap-0 bg-card/95 backdrop-blur-xl shadow-2xl flex flex-col max-h-[90vh]">
+        <DialogContent className="sm:max-w-md md:max-w-lg overflow-hidden border-0 p-0 rounded-2xl gap-0 bg-brand-background backdrop-blur-xl shadow-2xl flex flex-col max-h-[90vh]">
           {/* Native scroll container for reliable scrollbars */}
           <div className="overflow-y-auto flex-1 p-3 sm:p-6">
             <DialogHeader className="mb-4">

@@ -101,11 +101,17 @@ export async function getSubmittedAppsCount(appType?: string) {
   }
 }
 
-export async function acceptApp(id: number) {
+export async function acceptApp(payload: {
+  id: number;
+  totalTester?: number;
+  totalDay?: number;
+  minimumAndroidVersion?: number;
+  rewardPoints?: number;
+}) {
   try {
     const response = await api.post(API_ROUTES.ADMIN + `/accept-app`, {
-      id,
-      appId: id,
+      ...payload,
+      appId: payload.id,
     });
     return response?.data?.data;
   } catch (error) {

@@ -1,6 +1,7 @@
 import { SafeImage } from "@/components/safe-image";
 import { Badge } from "./ui/badge";
 import { ExpandableText } from "./expandable-text";
+import { cn } from "@/lib/utils";
 
 const AppInfoHeader = ({
   logo,
@@ -40,7 +41,14 @@ const AppInfoHeader = ({
             />
           </div>
           <div>
-            <div className="flex items-start sm:items-center flex-col sm:flex-row justify-between sm:justify-start gap-2 sm:gap-4">
+            <div
+              className={cn(
+                "flex justify-between sm:justify-start gap-2 sm:gap-4",
+                description
+                  ? "flex-col sm:flex-row items-start sm:items-center"
+                  : "flex-col items-start",
+              )}
+            >
               <h1 className="text-2xl sm:text-4xl font-bold bg-gradient-to-b from-primary to-primary/50 bg-clip-text text-transparent leading-0 pb-[2px]">
                 {name}
               </h1>

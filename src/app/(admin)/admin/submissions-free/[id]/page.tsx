@@ -404,6 +404,7 @@ export default function AdminSubmissionDetailPage({
             {/* Accept Modal */}
             <AdminAcceptDialog
               appId={project.id}
+              appType={project.appType}
               open={showAcceptDialog}
               onOpenChange={setShowAcceptDialog}
               onSuccess={handleSuccess}

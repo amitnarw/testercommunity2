@@ -17,6 +17,7 @@ import {
   VerificationData,
 } from "@/components/community-dashboard/verification-history-modal";
 import { LastDayReminder } from "@/components/community-dashboard/last-day-reminder";
+import { MediaGallery } from "@/components/media-gallery";
 import { useState } from "react";
 
 const DailyProgress = ({
@@ -135,6 +136,16 @@ export default function OngoingProjectView({
   const displayDay = hasTestedToday
     ? Math.max(1, userDaysCompleted)
     : Math.min(userDaysCompleted + 1, appDetails?.totalDay || 14);
+
+  const screenshots =
+    appDetails?.feedback
+      ?.filter((fb: any) => fb.media?.type === "IMAGE")
+      ?.map((fb: any) => fb.media.src) || [];
+
+  const videos =
+    appDetails?.feedback
+      ?.filter((fb: any) => fb.media?.type === "VIDEO")
+      ?.map((fb: any) => fb.media.src) || [];
 
   const handleDayClick = (day: number) => {
     const relation = appDetails?.testerRelations?.[0];
@@ -303,6 +314,13 @@ export default function OngoingProjectView({
                     </div>
                   )}
                 </div>
+
+                {!isTestingNotStarted &&
+                  (screenshots.length > 0 || videos.length > 0) && (
+                    <section className="mt-8">
+                      <MediaGallery screenshots={screenshots} videos={videos} />
+                    </section>
+                  )}
               </div>
 
               <aside className="lg:col-span-1">

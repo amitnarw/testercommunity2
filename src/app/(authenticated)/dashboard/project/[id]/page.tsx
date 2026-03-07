@@ -49,14 +49,14 @@ export default function ProjectPage({
         id: tr.testerId,
         name: tr.tester?.name || "Tester",
         avatar: tr.tester?.image || "",
-        country: tr.tester?.userDetail?.country || "Unknown",
-        device: tr.tester?.userDetail?.device_model || "Unknown",
-        ram: tr.tester?.userDetail?.ram || "Unknown",
-        os: tr.tester?.userDetail?.os || "Unknown",
-        screenSize: tr.tester?.userDetail?.screen_resolution || "Unknown",
-        language: tr.tester?.userDetail?.language || "Unknown",
-        network: tr.tester?.userDetail?.network || "Unknown",
-        rating: 5,
+        country: tr.tester?.userDetail?.country || "-",
+        device: tr.tester?.userDetail?.device_model || "-",
+        ram: tr.tester?.userDetail?.ram || "-",
+        os: tr.tester?.userDetail?.os || "-",
+        screenSize: tr.tester?.userDetail?.screen_resolution || "-",
+        language: tr.tester?.userDetail?.language || "-",
+        network: tr.tester?.userDetail?.network || "-",
+        rating: tr.tester?.ratings?.[0]?.rating || 0,
       })) || [];
 
     const deviceMap = new Map<string, number>();

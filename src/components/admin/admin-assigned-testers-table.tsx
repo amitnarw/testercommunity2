@@ -82,7 +82,7 @@ export function AdminAssignedTestersTable({
   );
 
   return (
-    <section className="space-y-6 bg-card/50 rounded-2xl p-3 sm:p-6 pt-2 sm:pt-8 w-full mt-10 shadow-lg">
+    <section className="space-y-6 bg-card rounded-2xl p-3 sm:p-6 pt-2 sm:pt-8 w-full mt-10 shadow-sm">
       <div className="flex flex-col sm:flex-row items-center justify-between gap-4 relative">
         <div className="space-y-1">
           <h2 className="text-xl sm:text-2xl font-bold">Assigned Testers</h2>
