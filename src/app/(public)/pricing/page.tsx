@@ -116,8 +116,27 @@ const EnterpriseCard = () => {
   );
 };
 
+import { useState, useEffect } from "react";
+
 export default function PricingPage() {
   const { data: pricingData, isPending: pricingIsPending } = usePricingData();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) {
+    return (
+      <div data-loc="PricingPage" className="bg-background text-foreground">
+        <div className="container mx-auto px-4 md:px-6 py-20">
+          <section className="mt-20 max-w-4xl mx-auto">
+            <SkeletonPricingSetup />
+          </section>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div data-loc="PricingPage" className="bg-background text-foreground">

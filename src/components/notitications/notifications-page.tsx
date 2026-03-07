@@ -15,12 +15,12 @@ import Link from "next/link";
 import { AppPagination } from "@/components/app-pagination";
 import { notifications as allNotifications } from "@/lib/data";
 import { useGetUserNotifications } from "@/hooks/useUser";
-import { NotificationReponse } from "@/lib/types";
+import { NotificationResponse } from "@/lib/types";
 import SkeletonNotification from "./loading-skeleton";
 
 const NOTIFICATIONS_PER_PAGE = 8;
 
-const NotificationIcon = ({ type }: { type: NotificationReponse["type"] }) => {
+const NotificationIcon = ({ type }: { type: NotificationResponse["type"] }) => {
   switch (type) {
     case "NEW_TEST":
       return (
@@ -52,18 +52,19 @@ const NotificationIcon = ({ type }: { type: NotificationReponse["type"] }) => {
 interface NotificationsPageProps {
   title: string;
   description: string;
-  // notifications: Notification[];
+  notifications: NotificationResponse[];
 }
 
 export function NotificationsPageContent({
   title,
   description,
+  notifications: _propNotifications, // using static data below
 }: NotificationsPageProps) {
   const notifications = allNotifications.filter(
     (n) =>
-      n.type === "new_test" ||
-      n.type === "points_awarded" ||
-      n.type === "test_completed"
+      n.type === "NEW_TEST" ||
+      n.type === "POINTS_AWARDED" ||
+      n.type === "TEST_COMPLETED",
   );
 
   const [currentPage, setCurrentPage] = useState(1);
@@ -120,14 +121,14 @@ export function NotificationsPageContent({
                         notification?.type === "NEW_TEST"
                           ? "bg-gradient-to-br from-primary/10 to-primary/0"
                           : notification?.type === "FEEDBACK_RECEIVED"
-                          ? "bg-gradient-to-br from-blue-500/10 to-blue-500/0"
-                          : notification?.type === "TEST_COMPLETED"
-                          ? "bg-gradient-to-br from-green-500/10 to-green-500/0"
-                          : notification?.type === "BUG_REPORT"
-                          ? "bg-gradient-to-br from-red-500/10 to-red-500/0"
-                          : notification?.type === "POINTS_AWARDED"
-                          ? "bg-gradient-to-br from-amber-500/10 to-amber-500/0"
-                          : "bg-gradient-to-br from-muted-foreground/10 to-muted-foreground/0"
+                            ? "bg-gradient-to-br from-blue-500/10 to-blue-500/0"
+                            : notification?.type === "TEST_COMPLETED"
+                              ? "bg-gradient-to-br from-green-500/10 to-green-500/0"
+                              : notification?.type === "BUG_REPORT"
+                                ? "bg-gradient-to-br from-red-500/10 to-red-500/0"
+                                : notification?.type === "POINTS_AWARDED"
+                                  ? "bg-gradient-to-br from-amber-500/10 to-amber-500/0"
+                                  : "bg-gradient-to-br from-muted-foreground/10 to-muted-foreground/0"
                       } hover:bg-secondary/80 rounded-xl duration-300`}
                     >
                       <div className="flex items-start gap-4 p-4 relative sm:static overflow-hidden">
@@ -143,7 +144,7 @@ export function NotificationsPageContent({
                           <p
                             className={cn(
                               "font-semibold",
-                              !notification?.isActive && "text-foreground"
+                              !notification?.isActive && "text-foreground",
                             )}
                           >
                             {notification?.title}
@@ -161,7 +162,7 @@ export function NotificationsPageContent({
                                 hour: "numeric",
                                 minute: "numeric",
                                 hour12: true,
-                              }
+                              },
                             )}
                           </p>
                         </div>

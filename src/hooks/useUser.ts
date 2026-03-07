@@ -138,6 +138,7 @@ export function usePricingData() {
   const query = useQuery<PricingResponse[], Error>({
     queryFn: () => getAllPricingPlans(),
     queryKey: ["usePricingData"],
+    enabled: typeof window !== "undefined",
   });
 
   return query;
