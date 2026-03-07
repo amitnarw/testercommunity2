@@ -83,13 +83,18 @@ const applications = [
   },
 ];
 
+import { use } from "react";
+
 export default function AdminApplicationDetailPage({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{
+    id: string;
+  }>;
 }) {
+  const resolvedParams = use(params);
   const application = applications.find(
-    (app) => app.id.toString() === params.id,
+    (app) => app.id.toString() === resolvedParams.id,
   );
 
   if (!application) {

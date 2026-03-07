@@ -161,7 +161,7 @@ export default function ProfessionalRegisterPage() {
   const { setTheme, theme } = useTheme();
   const [isGoogleAuth, setIsGoogleAuth] = useState(false);
 
-  const form = useForm({
+  const form = useForm<any>({
     resolver: zodResolver(formSchemas[currentStep]),
     mode: "onChange",
     defaultValues: {
@@ -401,7 +401,7 @@ export default function ProfessionalRegisterPage() {
                                                     ])
                                                   : field.onChange(
                                                       field.value?.filter(
-                                                        (value) =>
+                                                        (value: string) =>
                                                           value !== item.id,
                                                       ),
                                                     );
@@ -469,7 +469,7 @@ export default function ProfessionalRegisterPage() {
                                                     ])
                                                   : field.onChange(
                                                       field.value?.filter(
-                                                        (value) =>
+                                                        (value: string) =>
                                                           value !== item.id,
                                                       ),
                                                     );
@@ -518,7 +518,7 @@ export default function ProfessionalRegisterPage() {
                                                     ])
                                                   : field.onChange(
                                                       field.value?.filter(
-                                                        (value) =>
+                                                        (value: string) =>
                                                           value !== item.id,
                                                       ),
                                                     );

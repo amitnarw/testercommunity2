@@ -135,13 +135,18 @@ const TestCompleteSection = ({ app }: { app: any }) => {
   );
 };
 
+import { use } from "react";
+
 export default function AppTestingCompletedPage({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{
+    id: string;
+  }>;
 }) {
+  const resolvedParams = use(params);
   const app = communityApps.find(
-    (p) => p.id.toString() === params.id && p.status === "completed",
+    (p) => p.id.toString() === resolvedParams.id && p.status === "completed",
   );
 
   if (!app) {
@@ -162,7 +167,7 @@ export default function AppTestingCompletedPage({
           </div>
           <aside className="lg:col-span-1">
             <AppInfoSidebar
-              app={app}
+              app={app as any}
               buttonType="external"
               url={app?.playStoreUrl}
             />

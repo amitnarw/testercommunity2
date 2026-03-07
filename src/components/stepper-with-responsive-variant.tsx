@@ -70,7 +70,7 @@ const { Stepper } = defineStepper(
     title: "Contact",
     description: "How to reach you.",
     icon: User,
-  }
+  },
 );
 
 export function StepperWithResponsiveVariant({
@@ -150,10 +150,10 @@ const RoleStep = ({ profileData, setProfileData }: ProfileStepperProps) => (
         onValueChange={(value) =>
           setProfileData((prev) => ({
             ...prev,
-            profileType: value as UserProfileType,
+            profile_type: value as UserProfileType,
           }))
         }
-        defaultValue={profileData?.profileType}
+        defaultValue={profileData?.profile_type}
         className="grid grid-cols-2 lg:grid-cols-4 gap-4"
       >
         {Object.values(UserProfileType).map((type) => (
@@ -173,9 +173,12 @@ const RoleStep = ({ profileData, setProfileData }: ProfileStepperProps) => (
       <Label>Your Job Role</Label>
       <Select
         onValueChange={(value) =>
-          setProfileData((prev) => ({ ...prev, jobRole: value as UserJobRole }))
+          setProfileData((prev) => ({
+            ...prev,
+            job_role: value as UserJobRole,
+          }))
         }
-        defaultValue={profileData?.jobRole}
+        defaultValue={profileData?.job_role}
       >
         <SelectTrigger>
           <SelectValue placeholder="Select your primary role" />
@@ -195,10 +198,10 @@ const RoleStep = ({ profileData, setProfileData }: ProfileStepperProps) => (
         onValueChange={(value) =>
           setProfileData((prev) => ({
             ...prev,
-            experienceLevel: value as UserExperienceLevel,
+            experience_level: value as UserExperienceLevel,
           }))
         }
-        defaultValue={profileData?.experienceLevel}
+        defaultValue={profileData?.experience_level}
       >
         <SelectTrigger>
           <SelectValue placeholder="Select your experience level" />
@@ -221,9 +224,9 @@ const CompanyStep = ({ profileData, setProfileData }: ProfileStepperProps) => (
       <Label>Company Name</Label>
       <Input
         placeholder="Your Company Inc."
-        value={profileData?.companyName}
+        value={profileData?.company_name}
         onChange={(e) =>
-          setProfileData((prev) => ({ ...prev, companyName: e.target.value }))
+          setProfileData((prev) => ({ ...prev, company_name: e.target.value }))
         }
       />
     </div>
@@ -231,11 +234,11 @@ const CompanyStep = ({ profileData, setProfileData }: ProfileStepperProps) => (
       <Label>Company Website</Label>
       <Input
         placeholder="https://example.com"
-        value={profileData?.companyWebsite}
+        value={profileData?.company_website}
         onChange={(e) =>
           setProfileData((prev) => ({
             ...prev,
-            companyWebsite: e.target.value,
+            company_website: e.target.value,
           }))
         }
       />
@@ -246,10 +249,10 @@ const CompanyStep = ({ profileData, setProfileData }: ProfileStepperProps) => (
         onValueChange={(value) =>
           setProfileData((prev) => ({
             ...prev,
-            companySize: value as UserCompanySize,
+            company_size: value as UserCompanySize,
           }))
         }
-        defaultValue={profileData?.companySize}
+        defaultValue={profileData?.company_size}
       >
         <SelectTrigger>
           <SelectValue placeholder="Select company size" />
@@ -269,10 +272,10 @@ const CompanyStep = ({ profileData, setProfileData }: ProfileStepperProps) => (
         onValueChange={(value) =>
           setProfileData((prev) => ({
             ...prev,
-            positionInCompany: value as UserCompanyPosition,
+            position_in_company: value as UserCompanyPosition,
           }))
         }
-        defaultValue={profileData?.positionInCompany}
+        defaultValue={profileData?.position_in_company}
       >
         <SelectTrigger>
           <SelectValue placeholder="Select your position" />
@@ -297,10 +300,10 @@ const ProjectsStep = ({ profileData, setProfileData }: ProfileStepperProps) => (
         onValueChange={(value) =>
           setProfileData((prev) => ({
             ...prev,
-            totalPublishedApps: value as UserTotalPublishedApps,
+            total_published_apps: value as UserTotalPublishedApps,
           }))
         }
-        defaultValue={profileData?.totalPublishedApps}
+        defaultValue={profileData?.total_published_apps}
       >
         <SelectTrigger>
           <SelectValue placeholder="Select number of apps" />
@@ -320,10 +323,10 @@ const ProjectsStep = ({ profileData, setProfileData }: ProfileStepperProps) => (
         onValueChange={(value) =>
           setProfileData((prev) => ({
             ...prev,
-            platformDevelopment: value as UserDevelopmentPlatform,
+            platform_development: value as UserDevelopmentPlatform,
           }))
         }
-        defaultValue={profileData?.platformDevelopment}
+        defaultValue={profileData?.platform_development}
       >
         <SelectTrigger>
           <SelectValue placeholder="Select platform" />
@@ -343,10 +346,10 @@ const ProjectsStep = ({ profileData, setProfileData }: ProfileStepperProps) => (
         onValueChange={(value) =>
           setProfileData((prev) => ({
             ...prev,
-            publishFrequency: value as UserPublishFrequency,
+            publish_frequency: value as UserPublishFrequency,
           }))
         }
-        defaultValue={profileData?.publishFrequency}
+        defaultValue={profileData?.publish_frequency}
       >
         <SelectTrigger>
           <SelectValue placeholder="Select frequency" />
@@ -374,13 +377,17 @@ const ContactStep = ({ profileData, setProfileData }: ProfileStepperProps) => (
             className="flex flex-row items-center space-x-3 space-y-0 rounded-md border p-4 has-[:checked]:border-primary"
           >
             <Checkbox
-              checked={profileData?.serviceUsage?.includes(item)}
+              checked={profileData?.service_usage?.includes(item as any)}
               onCheckedChange={(checked) => {
-                const current = profileData?.serviceUsage || [];
+                const current =
+                  (profileData?.service_usage as unknown as any[]) || [];
                 const updated = checked
-                  ? [...current, item]
-                  : current.filter((val) => val !== item);
-                setProfileData((prev) => ({ ...prev, serviceUsage: updated }));
+                  ? [...current, item as any]
+                  : current.filter((val: string) => val !== item);
+                setProfileData((prev) => ({
+                  ...prev,
+                  service_usage: updated as any,
+                }));
               }}
               id={`service-${item}`}
             />
@@ -400,15 +407,18 @@ const ContactStep = ({ profileData, setProfileData }: ProfileStepperProps) => (
             className="flex flex-row items-center space-x-3 space-y-0 rounded-md border p-4 has-[:checked]:border-primary"
           >
             <Checkbox
-              checked={profileData?.communicationMethods?.includes(item)}
+              checked={profileData?.communication_methods?.includes(
+                item as any,
+              )}
               onCheckedChange={(checked) => {
-                const current = profileData?.communicationMethods || [];
+                const current =
+                  (profileData?.communication_methods as any[]) || [];
                 const updated = checked
-                  ? [...current, item]
-                  : current.filter((val) => val !== item);
+                  ? [...current, item as any]
+                  : current.filter((val: string) => val !== item);
                 setProfileData((prev) => ({
                   ...prev,
-                  communicationMethods: updated,
+                  communication_methods: updated,
                 }));
               }}
               id={`comm-${item}`}
