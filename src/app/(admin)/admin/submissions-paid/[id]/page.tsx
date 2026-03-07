@@ -20,6 +20,10 @@ import {
   CreditCard,
   Image as ImageIcon,
   Loader2,
+  Bug,
+  Lightbulb,
+  PartyPopper,
+  MessageSquare,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { BackButton } from "@/components/back-button";
@@ -30,60 +34,86 @@ import { SafeImage } from "@/components/safe-image";
 import { ExpandableText } from "@/components/expandable-text";
 import { AppInfoSidebar } from "@/components/appInfoSidebar";
 import DeveloperInstructions from "@/components/developerInstructions";
-import { StatusDropdown } from "@/components/dashboard/status-dropdown";
 import dynamic from "next/dynamic";
+// Removed StatusDropdown options as we are using buttons now
 
-const APP_STATUS_OPTIONS = [
-  {
-    value: "PENDING",
-    label: "Pending",
-    dotClass: "bg-gray-500",
-    desc: "Awaiting submission",
-    color: "#6b7280",
-  },
-  {
-    value: "IN_REVIEW",
-    label: "In Review",
-    dotClass: "bg-yellow-500",
-    desc: "Currently under review",
-    color: "#eab308",
-  },
-  {
-    value: "ACCEPTED",
-    label: "Accepted",
-    dotClass: "bg-blue-500",
-    desc: "Approved, awaiting setup",
-    color: "#3b82f6",
-  },
-  {
-    value: "AVAILABLE",
-    label: "Available",
-    dotClass: "bg-emerald-500",
-    desc: "Ready for testers",
-    color: "#10b981",
-  },
-  {
-    value: "IN_TESTING",
-    label: "In Testing",
-    dotClass: "bg-purple-500",
-    desc: "Test is in progress",
-    color: "#a855f7",
-  },
-  {
-    value: "COMPLETED",
-    label: "Completed",
-    dotClass: "bg-green-500",
-    desc: "Testing finished",
-    color: "#22c55e",
-  },
-  {
-    value: "REJECTED",
-    label: "Rejected",
-    dotClass: "bg-red-500",
-    desc: "Submission rejected",
-    color: "#ef4444",
-  },
-];
+function FeedbackTypeBadge({ type }: { type: string }) {
+  switch (type) {
+    case "BUG":
+      return (
+        <Badge
+          variant="secondary"
+          className="font-medium text-xs bg-red-500/10 text-red-600 border-red-200 dark:border-red-900 flex items-center gap-1"
+        >
+          <Bug className="w-3 h-3" />
+          Bug
+        </Badge>
+      );
+    case "SUGGESTION":
+      return (
+        <Badge
+          variant="secondary"
+          className="font-medium text-xs bg-amber-500/10 text-amber-600 border-amber-200 dark:border-amber-900 flex items-center gap-1"
+        >
+          <Lightbulb className="w-3 h-3" />
+          Suggestion
+        </Badge>
+      );
+    case "PRAISE":
+      return (
+        <Badge
+          variant="secondary"
+          className="font-medium text-xs bg-green-500/10 text-green-600 border-green-200 dark:border-green-900 flex items-center gap-1"
+        >
+          <PartyPopper className="w-3 h-3" />
+          Praise
+        </Badge>
+      );
+    default:
+      return (
+        <Badge
+          variant="secondary"
+          className="font-medium text-xs bg-gray-500/10 text-gray-600 border-gray-200 dark:border-gray-900 flex items-center gap-1"
+        >
+          <MessageSquare className="w-3 h-3" />
+          Other
+        </Badge>
+      );
+  }
+}
+
+function FeedbackPriorityBadge({ priority }: { priority: string | null }) {
+  if (!priority) return null;
+
+  switch (priority) {
+    case "CRITICAL":
+      return (
+        <Badge className="font-medium text-xs bg-red-700 text-white">
+          Critical
+        </Badge>
+      );
+    case "HIGH":
+      return (
+        <Badge variant="destructive" className="font-medium text-xs bg-red-500">
+          High
+        </Badge>
+      );
+    case "MEDIUM":
+      return (
+        <Badge className="font-medium text-xs bg-amber-500 text-white">
+          Medium
+        </Badge>
+      );
+    case "LOW":
+      return (
+        <Badge className="font-medium text-xs bg-yellow-500 text-white">
+          Low
+        </Badge>
+      );
+    default:
+      return null;
+  }
+}
 
 const AdminRejectDialog = dynamic(
   () =>
@@ -285,12 +315,6 @@ export default function AdminSubmissionDetailPage({
                   </Button>
                 )}
               </div>
-              <StatusDropdown
-                label="App Status"
-                options={APP_STATUS_OPTIONS}
-                value={project.status}
-                onChange={(newStatus) => handleStatusUpdate(newStatus)}
-              />
             </div>
           </div>
           <div className="grid lg:grid-cols-3 gap-6">
@@ -472,6 +496,8 @@ export default function AdminSubmissionDetailPage({
               {/* Accept Modal */}
               <AdminAcceptDialog
                 appId={project.id}
+                appType={project.appType}
+                paymentInfo={project.paymentInfo}
                 open={showAcceptDialog}
                 onOpenChange={setShowAcceptDialog}
                 onSuccess={() => {
@@ -504,6 +530,112 @@ export default function AdminSubmissionDetailPage({
                   onRefetch={() => refetch()}
                 />
               )}
+
+              {/* Tester Feedback Section */}
+              <section className="space-y-6 bg-card rounded-2xl p-3 sm:p-6 pt-2 sm:pt-8 w-full mt-10 shadow-sm">
+                <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+                  <div className="space-y-1">
+                    <h2 className="text-xl sm:text-2xl font-bold flex items-center gap-2">
+                      Tester Feedback
+                    </h2>
+                    <p className="text-sm sm:text-base text-muted-foreground">
+                      All feedback submitted by testers for this application.
+                    </p>
+                  </div>
+                  <Badge
+                    variant="secondary"
+                    className="text-xs sm:text-sm bg-primary/10 text-primary hover:bg-primary/20 transition-colors"
+                  >
+                    {project.feedback?.length || 0} Feedback
+                  </Badge>
+                </div>
+
+                {project.feedback && project.feedback.length > 0 ? (
+                  <div className="space-y-4">
+                    {project.feedback.map((feedback) => (
+                      <Card
+                        key={feedback.id}
+                        className="border border-border/50 shadow-sm overflow-hidden"
+                      >
+                        <CardContent className="p-4 sm:p-6">
+                          <div className="flex flex-col gap-4">
+                            {/* Header: Tester info and badges */}
+                            <div className="flex flex-wrap items-center gap-2 sm:gap-3">
+                              <Badge
+                                variant="outline"
+                                className="font-medium text-xs"
+                              >
+                                {feedback.tester?.name || "Unknown Tester"}
+                              </Badge>
+                              <FeedbackTypeBadge type={feedback.type} />
+                              {feedback.priority && (
+                                <FeedbackPriorityBadge
+                                  priority={feedback.priority}
+                                />
+                              )}
+                              <span className="text-xs text-muted-foreground ml-auto">
+                                {new Date(
+                                  feedback.createdAt,
+                                ).toLocaleDateString()}
+                              </span>
+                            </div>
+
+                            {/* Feedback Message */}
+                            <p className="text-sm text-foreground leading-relaxed whitespace-pre-wrap">
+                              {feedback.message}
+                            </p>
+
+                            {/* Media Attachment */}
+                            {feedback.media?.src && (
+                              <div className="pt-2">
+                                <p className="text-xs font-medium text-muted-foreground mb-2">
+                                  Attachment:
+                                </p>
+                                {feedback.media.type === "IMAGE" ? (
+                                  <div
+                                    className="relative w-full sm:w-48 h-32 rounded-lg overflow-hidden border cursor-pointer group"
+                                    onClick={() =>
+                                      setFullscreenImage(feedback.media!.src)
+                                    }
+                                  >
+                                    <SafeImage
+                                      src={feedback.media.src}
+                                      alt="Feedback attachment"
+                                      fill
+                                      className="object-cover"
+                                    />
+                                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors flex items-center justify-center">
+                                      <Expand className="w-6 h-6 text-white opacity-0 group-hover:opacity-100 transition-opacity" />
+                                    </div>
+                                  </div>
+                                ) : (
+                                  <div className="w-full sm:w-64 h-36 rounded-lg overflow-hidden border">
+                                    <video
+                                      src={feedback.media.src}
+                                      controls
+                                      className="w-full h-full object-contain bg-black"
+                                    />
+                                  </div>
+                                )}
+                              </div>
+                            )}
+                          </div>
+                        </CardContent>
+                      </Card>
+                    ))}
+                  </div>
+                ) : (
+                  <div className="text-center py-12 border border-dashed border-border/50 rounded-xl bg-muted/20">
+                    <MessageSquare className="w-12 h-12 text-muted-foreground/50 mx-auto mb-3" />
+                    <p className="text-muted-foreground font-medium">
+                      No feedback yet
+                    </p>
+                    <p className="text-sm text-muted-foreground/70 mt-1">
+                      Testers haven't submitted any feedback for this app yet.
+                    </p>
+                  </div>
+                )}
+              </section>
 
               {/* Previous Instructions Block (for reference) */}
               {project.instructionsForTester && (

@@ -28,9 +28,7 @@ import {
 } from "@/hooks/useBilling";
 import { useGetUserWallet, usePricingData } from "@/hooks/useUser";
 import type { PricingResponse } from "@/lib/types";
-import {
-  Accordion,
-} from "@/components/ui/accordion";
+import { Accordion } from "@/components/ui/accordion";
 import FaqItem from "@/components/faq-item";
 import Script from "next/script";
 import { useToast } from "@/hooks/use-toast";
@@ -71,68 +69,36 @@ const itemVariants = {
 
 const PricingCard = ({
   plan,
-  isPopular,
   onSubscribe,
   isProcessing,
 }: {
   plan: PricingResponse;
-  isPopular: boolean;
   onSubscribe: (planId: string) => void;
   isProcessing: boolean;
 }) => {
   return (
     <motion.div
       variants={itemVariants}
-      whileHover={{ y: -8, scale: isPopular ? 1.05 : 1.02 }}
-      className={cn(
-        "relative flex flex-col p-6 sm:p-8 rounded-3xl h-full transition-all duration-300",
-        isPopular
-          ? "bg-primary text-primary-foreground shadow-2xl shadow-primary/30"
-          : "bg-card text-card-foreground hover:shadow-xl"
-      )}
+      whileHover={{ y: -8, scale: 1.03 }}
+      className="relative flex flex-col p-8 sm:p-10 rounded-3xl h-full transition-all duration-300 bg-primary text-primary-foreground shadow-2xl shadow-primary/30"
     >
-      {isPopular && (
-        <>
-          <div className="absolute bottom-0 left-0 -ml-20 -mb-20 w-60 h-60 bg-black/10 rounded-full blur-3xl pointer-events-none" />
-          <div className="absolute top-6 right-6 opacity-20 rotate-12">
-            <Star className="w-24 h-24 fill-current text-white" />
-          </div>
-          <div className="absolute -top-4 left-0 right-0 flex justify-center z-10">
-            <Badge className="bg-black dark:bg-white text-white dark:text-black hover:bg-black/60 px-4 py-1.5 text-xs font-bold uppercase tracking-widest shadow-lg border-0">
-              Most Popular
-            </Badge>
-          </div>
-        </>
-      )}
+      {/* Decorative elements */}
+      <div className="absolute bottom-0 left-0 -ml-20 -mb-20 w-60 h-60 bg-black/10 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute top-6 right-6 opacity-20 rotate-12">
+        <Star className="w-24 h-24 fill-current text-white" />
+      </div>
 
       <div className="mb-8 relative z-10">
-        <h3
-          className={cn(
-            "text-xl font-medium",
-            isPopular ? "text-white" : "text-foreground"
-          )}
-        >
-          {plan.name}
-        </h3>
+        <h3 className="text-xl font-medium text-white">{plan.name}</h3>
         <div className="mt-4 flex items-baseline">
-          <span className="text-4xl font-bold tracking-tight">
+          <span className="text-5xl font-bold tracking-tight">
             ₹{plan.price.toLocaleString("en-IN")}
           </span>
-          <span
-            className={cn(
-              "ml-2 text-sm font-medium",
-              isPopular ? "text-primary-foreground/80" : "text-muted-foreground"
-            )}
-          >
+          <span className="ml-2 text-sm font-medium text-primary-foreground/80">
             / one-time
           </span>
         </div>
-        <p
-          className={cn(
-            "mt-4 text-sm leading-relaxed",
-            isPopular ? "text-primary-foreground/90" : "text-muted-foreground"
-          )}
-        >
+        <p className="mt-4 text-sm leading-relaxed text-primary-foreground/90">
           Get {plan.package} full testing{" "}
           {plan.package > 1 ? "cycles" : "cycle"} for your applications.
         </p>
@@ -141,27 +107,10 @@ const PricingCard = ({
       <div className="flex-1 space-y-4 mb-8 relative z-10">
         {plan.features?.map((feature, i) => (
           <div key={i} className="flex items-start gap-3">
-            <div
-              className={cn(
-                "flex-shrink-0 w-5 h-5 rounded-full flex items-center justify-center mt-0.5",
-                isPopular ? "bg-white/20" : "bg-primary/10"
-              )}
-            >
-              <Check
-                className={cn(
-                  "w-3 h-3",
-                  isPopular ? "text-white" : "text-primary"
-                )}
-              />
+            <div className="flex-shrink-0 w-5 h-5 rounded-full flex items-center justify-center mt-0.5 bg-white/20">
+              <Check className="w-3 h-3 text-white" />
             </div>
-            <span
-              className={cn(
-                "text-sm",
-                isPopular
-                  ? "text-primary-foreground/90"
-                  : "text-muted-foreground"
-              )}
-            >
+            <span className="text-sm text-primary-foreground/90">
               {feature}
             </span>
           </div>
@@ -169,34 +118,22 @@ const PricingCard = ({
       </div>
 
       <div className="mt-auto relative z-10">
-        {isPopular ? (
-          <div className="flex justify-center w-full">
-            <HoverBorderGradient
-              containerClassName="w-full"
-              className="bg-white text-primary flex items-center justify-center space-x-2 w-full py-4 font-bold cursor-pointer"
-              onClick={() => onSubscribe(plan.id)}
-            >
-              {isProcessing ? (
-                <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-              ) : (
-                <Zap className="w-4 h-4 mr-2 fill-current" />
-              )}
-              <span className="font-semibold">
-                {isProcessing ? "Processing..." : "Get Started"}
-              </span>
-            </HoverBorderGradient>
-          </div>
-        ) : (
-          <Button
+        <div className="flex justify-center w-full">
+          <HoverBorderGradient
+            containerClassName="w-full"
+            className="bg-white text-primary flex items-center justify-center space-x-2 w-full py-4 font-bold cursor-pointer"
             onClick={() => onSubscribe(plan.id)}
-            disabled={isProcessing}
-            className="w-full py-6 rounded-full font-semibold text-base transition-all duration-300 group-hover:bg-primary group-hover:text-primary-foreground"
-            variant="outline"
           >
-            {isProcessing && <Loader2 className="w-4 h-4 mr-2 animate-spin" />}
-            {isProcessing ? "Processing..." : "Choose Plan"}
-          </Button>
-        )}
+            {isProcessing ? (
+              <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+            ) : (
+              <Zap className="w-4 h-4 mr-2 fill-current" />
+            )}
+            <span className="font-semibold">
+              {isProcessing ? "Processing..." : "Get Started"}
+            </span>
+          </HoverBorderGradient>
+        </div>
       </div>
     </motion.div>
   );
@@ -296,7 +233,7 @@ const TransactionHistory = () => {
               key={t.id}
               className={cn(
                 "flex items-center justify-between p-4 rounded-xl hover:bg-muted/50 transition-all duration-200 group cursor-pointer",
-                i !== transactions.length - 1 && "mb-1"
+                i !== transactions.length - 1 && "mb-1",
               )}
             >
               <div className="flex items-center gap-4">
@@ -306,7 +243,8 @@ const TransactionHistory = () => {
                 <div>
                   <p className="font-medium text-foreground">{t.plan}</p>
                   <p className="text-sm text-muted-foreground">
-                    {format(new Date(t.date), "MMM dd, yyyy")} • {t.razorpayOrderId}
+                    {format(new Date(t.date), "MMM dd, yyyy")} •{" "}
+                    {t.razorpayOrderId}
                   </p>
                 </div>
               </div>
@@ -320,7 +258,7 @@ const TransactionHistory = () => {
                     "mt-1 border-0",
                     t.status === "Paid" || t.status === "PAID"
                       ? "bg-green-500/10 text-green-600 hover:bg-green-500/20 dark:text-green-400"
-                      : "bg-yellow-500/10 text-yellow-600 hover:bg-yellow-500/20"
+                      : "bg-yellow-500/10 text-yellow-600 hover:bg-yellow-500/20",
                   )}
                 >
                   {t.status}
@@ -380,7 +318,7 @@ const CustomPlanCard = () => {
             >
               {feature}
             </Badge>
-          )
+          ),
         )}
       </div>
 
@@ -443,7 +381,11 @@ const FAQSection = () => {
 
 export default function BillingPage() {
   const { data: pricingData, isPending: pricingIsPending } = usePricingData();
-  const { data: walletData, isPending: walletIsPending, refetch: refetchWallet } = useGetUserWallet();
+  const {
+    data: walletData,
+    isPending: walletIsPending,
+    refetch: refetchWallet,
+  } = useGetUserWallet();
   const { refetch: refetchHistory } = useBillingHistory();
   const { data: paymentConfig } = usePaymentConfig();
 
@@ -455,7 +397,8 @@ export default function BillingPage() {
     if (!paymentConfig?.isConfigured) {
       toast({
         title: "Payment Service Unavailable",
-        description: "Payment system is currently not configured. Please contact support.",
+        description:
+          "Payment system is currently not configured. Please contact support.",
         variant: "destructive",
       });
       return;
@@ -503,7 +446,8 @@ export default function BillingPage() {
             console.error("Verification error:", err);
             toast({
               title: "Verification Failed",
-              description: "Payment was successful but verification failed. Please contact support.",
+              description:
+                "Payment was successful but verification failed. Please contact support.",
               variant: "destructive",
             });
           }
@@ -519,33 +463,38 @@ export default function BillingPage() {
         modal: {
           ondismiss: function () {
             // Handle dismissal if needed
-          }
-        }
+          },
+        },
       };
 
       const razorpayInstance = new window.Razorpay(options);
 
-      razorpayInstance.on('payment.failed', function (response: any) {
+      razorpayInstance.on("payment.failed", function (response: any) {
         toast({
           title: "Payment Failed",
-          description: response.error.description || "Something went wrong with the payment.",
+          description:
+            response.error.description ||
+            "Something went wrong with the payment.",
           variant: "destructive",
         });
       });
 
       razorpayInstance.open();
-
     } catch (error) {
       console.error("Payment initiation error:", error);
       toast({
         title: "Error",
-        description: error instanceof Error ? error.message : "Failed to initiate payment. Please try again.",
+        description:
+          error instanceof Error
+            ? error.message
+            : "Failed to initiate payment. Please try again.",
         variant: "destructive",
       });
     }
   };
 
-  const isProcessing = createOrderMutation.isPending || verifyPaymentMutation.isPending;
+  const isProcessing =
+    createOrderMutation.isPending || verifyPaymentMutation.isPending;
 
   return (
     <>
@@ -589,34 +538,28 @@ export default function BillingPage() {
               </div>
 
               {pricingIsPending ? (
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                  {[1, 2, 3].map((i) => (
-                    <Skeleton
-                      key={i}
-                      className="h-[500px] w-full rounded-3xl bg-muted"
-                    />
-                  ))}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  <Skeleton className="h-[520px] w-full rounded-3xl bg-muted" />
+                  <Skeleton className="h-[520px] w-full rounded-3xl bg-muted" />
                 </div>
               ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 items-start">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-stretch">
                   {pricingData?.map((plan) => (
                     <PricingCard
-                      key={plan.name}
+                      key={plan.id}
                       plan={plan}
-                      isPopular={plan.name === "Accelerator"}
                       onSubscribe={handleSubscribe}
                       isProcessing={isProcessing}
                     />
                   ))}
+                  <CustomPlanCard />
                 </div>
               )}
             </section>
 
-            {/* Section 3: History & Support */}
-            <section className="grid grid-cols-1 lg:grid-cols-2 gap-12 max-w-6xl mx-auto w-full">
+            {/* Section 3: History */}
+            <section className="max-w-6xl mx-auto w-full">
               <TransactionHistory />
-
-              <CustomPlanCard />
             </section>
 
             {/* Section 4: FAQ */}

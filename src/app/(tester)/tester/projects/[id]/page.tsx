@@ -2,8 +2,8 @@
 
 import { notFound } from "next/navigation";
 import Image from "next/image";
-import { projects as allProjects } from "@/lib/data";
-import { useTesterProjects } from "@/hooks/useTester";
+import { useTesterProjects, useRateApp } from "@/hooks/useTester";
+import { useToast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
 import {
   Card,
@@ -13,30 +13,19 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import {
-  Bug,
   CheckCircle,
   Clock,
   Star,
-  Smartphone,
   XCircle,
   Search,
-  AlertTriangle,
-  Expand,
   X,
-  PartyPopper,
-  Lightbulb,
-  Video,
-  Camera,
-  CirclePlay,
   ExternalLink,
   Copy,
 } from "lucide-react";
-import { useState, useEffect } from "react";
+import { use, useState } from "react";
 import type { Project } from "@/lib/types";
 import { BackButton } from "@/components/back-button";
-import { AppPagination } from "@/components/app-pagination";
 import AppInfoHeader from "@/components/app-info-header";
 import DeveloperInstructions from "@/components/developerInstructions";
 import { useInView } from "react-intersection-observer";
@@ -89,8 +78,27 @@ const getStatusConfig = (status: string) => {
 
 function ProjectDetailsClient({ project }: { project: Project }) {
   const [fullscreenImage, setFullscreenImage] = useState<string | null>(null);
-  const [rating, setRating] = useState(0);
+  const [rating, setRating] = useState(project.overallRating);
   const [hoverRating, setHoverRating] = useState(0);
+  const { toast } = useToast();
+  const { mutateAsync: rateApp } = useRateApp();
+
+  const handleRating = async (ratingValue: number) => {
+    setRating(ratingValue);
+    try {
+      await rateApp({ appId: project.id, rating: ratingValue });
+      toast({
+        title: "Success",
+        description: "Your rating has been submitted successfully.",
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to submit rating.",
+        variant: "destructive",
+      });
+    }
+  };
 
   const { ref: confettiTriggerRef, inView: confettiInView } = useInView({
     threshold: 0.5,
@@ -104,7 +112,7 @@ function ProjectDetailsClient({ project }: { project: Project }) {
   );
 
   return (
-    <div className="bg-[#f8fafc] dark:bg-[#0f151e] min-h-screen relative">
+    <div className="min-h-screen relative mb-8">
       <div
         ref={confettiTriggerRef}
         className="absolute top-0 left-1/2 -translate-x-1/2 z-50"
@@ -253,7 +261,7 @@ function ProjectDetailsClient({ project }: { project: Project }) {
                             ? "text-amber-400 fill-amber-400"
                             : "text-muted-foreground/50",
                         )}
-                        onClick={() => setRating(ratingValue)}
+                        onClick={() => handleRating(ratingValue)}
                         onMouseEnter={() => setHoverRating(ratingValue)}
                         onMouseLeave={() => setHoverRating(0)}
                       />
@@ -274,7 +282,13 @@ function ProjectDetailsClient({ project }: { project: Project }) {
           />
 
           <div className="mt-10">
-            <SubmittedFeedback isTester />
+            <SubmittedFeedback
+              isTester
+              feedbacks={project.feedback.map((fb) => ({
+                ...fb,
+                screenshot: fb.screenshot || null,
+              }))}
+            />
           </div>
         </div>
 
@@ -311,8 +325,9 @@ function ProjectDetailsClient({ project }: { project: Project }) {
 export default function ProfessionalProjectDetailsPage({
   params,
 }: {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }) {
+  const { id } = use(params);
   const { data: projects, isLoading } = useTesterProjects();
 
   if (isLoading) {
@@ -323,7 +338,7 @@ export default function ProfessionalProjectDetailsPage({
     );
   }
 
-  const rawProject = projects?.find((p) => p.id.toString() === params.id);
+  const rawProject = projects?.find((p) => p.id.toString() === id);
 
   if (!rawProject) {
     notFound();
@@ -365,7 +380,7 @@ export default function ProfessionalProjectDetailsPage({
       ? new Date(rawProject.createdAt).toLocaleDateString()
       : "N/A",
     crashFreeRate: 100,
-    overallRating: 5.0,
+    overallRating: rawProject.testerRating || 0,
     feedbackBreakdown: { total: 0, critical: 0, high: 0, low: 0 },
     performanceMetrics: { avgStartupTime: "N/A", frozenFrames: "N/A" },
     deviceCoverage: [],

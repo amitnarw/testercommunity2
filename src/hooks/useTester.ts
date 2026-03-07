@@ -1,4 +1,8 @@
-import { getTesterProjects, updateTesterAvailability } from "@/lib/apiCalls";
+import {
+  getTesterProjects,
+  updateTesterAvailability,
+  rateApp,
+} from "@/lib/apiCalls";
 import { TesterProjectResponse } from "@/lib/types";
 import {
   useMutation,
@@ -21,6 +25,17 @@ export function useUpdateTesterAvailability(
   const mutation = useMutation({
     mutationFn: (availability: string) =>
       updateTesterAvailability(availability),
+    ...options,
+  });
+
+  return mutation;
+}
+
+export function useRateApp(
+  options?: UseMutationOptions<any, any, { appId: number; rating: number }>,
+) {
+  const mutation = useMutation({
+    mutationFn: (payload) => rateApp(payload),
     ...options,
   });
 

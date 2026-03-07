@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useEffect } from "react";
+import { createPortal } from "react-dom";
 import {
   Card,
   CardContent,
@@ -112,10 +113,10 @@ const FeedbackFormModal = ({
 }) => {
   const [comment, setComment] = useState(feedback?.comment || "");
   const [type, setType] = useState<SubmittedFeedbackType["type"] | undefined>(
-    feedback?.type
+    feedback?.type,
   );
   const [screenshot, setScreenshot] = useState<string | null>(
-    feedback?.screenshot || null
+    feedback?.screenshot || null,
   );
   const [severity, setSeverity] = useState<
     SubmittedFeedbackType["severity"] | undefined
@@ -147,7 +148,7 @@ const FeedbackFormModal = ({
   return (
     <Dialog>
       <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent className="sm:max-w-[600px] p-0 bg-sidebar border-0 h-full sm:h-auto gap-0">
+      <DialogContent className="sm:max-w-[600px] p-0 bg-brand-background border-0 h-full sm:h-auto gap-0">
         <DialogHeader className="p-6 pb-4 border-b">
           <DialogTitle>
             {feedback ? "Edit Feedback" : "Submit New Feedback"}
@@ -167,10 +168,10 @@ const FeedbackFormModal = ({
                 }
                 defaultValue={type}
               >
-                <SelectTrigger className="bg-gray-100 dark:bg-black border-0">
+                <SelectTrigger className="bg-gray-100 dark:bg-secondary border-0">
                   <SelectValue placeholder="Select feedback type" />
                 </SelectTrigger>
-                <SelectContent className="z-[60] bg-sidebar shadow-2xl dark:shadow-black border-[1px] border-gray-200 dark:border-[#232323] w-[98%] m-auto !py-0">
+                <SelectContent className="z-[60] bg-background shadow-2xl dark:shadow-black border-[1px] border-gray-200 dark:border-[#232323] w-[98%] m-auto !py-0">
                   <SelectItem value="Bug">Bug Report</SelectItem>
                   <SelectItem value="Suggestion">Suggestion</SelectItem>
                   <SelectItem value="Praise">Praise</SelectItem>
@@ -186,10 +187,10 @@ const FeedbackFormModal = ({
                   }
                   defaultValue={severity}
                 >
-                  <SelectTrigger className="bg-gray-100 dark:bg-black border-0">
+                  <SelectTrigger className="bg-gray-100 dark:bg-secondary border-0">
                     <SelectValue placeholder="Select severity level" />
                   </SelectTrigger>
-                  <SelectContent className="z-[60] bg-sidebar shadow-2xl dark:shadow-black border-[1px] border-gray-200 dark:border-[#232323] w-[98%] m-auto !py-0">
+                  <SelectContent className="z-[60] bg-background shadow-2xl dark:shadow-black border-[1px] border-gray-200 dark:border-[#232323] w-[98%] m-auto !py-0">
                     <SelectItem value="Critical">Critical</SelectItem>
                     <SelectItem value="High">High</SelectItem>
                     <SelectItem value="Medium">Medium</SelectItem>
@@ -204,7 +205,7 @@ const FeedbackFormModal = ({
                 value={comment}
                 onChange={(e) => setComment(e.target.value)}
                 placeholder="e.g., The app crashed when..."
-                className="min-h-[120px] text-base bg-gray-100 dark:bg-black border-0"
+                className="min-h-[120px] text-base bg-gray-100 dark:bg-secondary border-0"
               />
             </div>
 
@@ -233,7 +234,7 @@ const FeedbackFormModal = ({
                   {...getRootProps()}
                   className={cn(
                     `border-2 border-dashed rounded-lg p-6 flex flex-col items-center justify-center text-center transition-colors cursor-pointer hover:border-primary hover:bg-secondary/50`,
-                    isDragActive && "border-primary bg-primary/10"
+                    isDragActive && "border-primary bg-primary/10",
                   )}
                 >
                   <input {...getInputProps()} />
@@ -283,14 +284,14 @@ const FeedbackListItem = ({
       fb.type === "Bug"
         ? "from-red-500/20"
         : fb.type === "Suggestion"
-        ? "from-yellow-500/20"
-        : "from-green-500/20"
+          ? "from-yellow-500/20"
+          : "from-green-500/20"
     } ${
       fb.type === "Bug"
         ? "to-red-500/5"
         : fb.type === "Suggestion"
-        ? "to-yellow-500/5"
-        : "to-green-500/5"
+          ? "to-yellow-500/5"
+          : "to-green-500/5"
     } p-2 sm:p-4 pt-2 pr-2 shadow-none border-0 relative overflow-hidden`}
   >
     <div className="flex items-start flex-col gap-0">
@@ -315,7 +316,7 @@ const FeedbackListItem = ({
                   <Trash2 className="w-4 h-4" />
                 </button>
               </AlertDialogTrigger>
-              <AlertDialogContent className="w-[90vw] rounded-2xl bg-sidebar border-0">
+              <AlertDialogContent className="w-[90vw] rounded-2xl bg-background border-0">
                 <AlertDialogHeader>
                   <AlertDialogTitle>Are you sure?</AlertDialogTitle>
                   <AlertDialogDescription>
@@ -324,7 +325,7 @@ const FeedbackListItem = ({
                   </AlertDialogDescription>
                 </AlertDialogHeader>
                 <AlertDialogFooter>
-                  <AlertDialogCancel className="bg-sidebar">
+                  <AlertDialogCancel className="bg-background">
                     Cancel
                   </AlertDialogCancel>
                   <AlertDialogAction
@@ -403,14 +404,14 @@ const FeedbackGridItem = ({
       fb.type === "Bug"
         ? "from-red-500/20"
         : fb.type === "Suggestion"
-        ? "from-yellow-500/20"
-        : "from-green-500/20"
+          ? "from-yellow-500/20"
+          : "from-green-500/20"
     } ${
       fb.type === "Bug"
         ? "to-red-500/10"
         : fb.type === "Suggestion"
-        ? "to-yellow-500/10"
-        : "to-green-500/10"
+          ? "to-yellow-500/10"
+          : "to-green-500/10"
     } p-2 sm:p-4 shadow-none border-0 h-full flex flex-col relative overflow-hidden`}
   >
     <CardHeader className="p-0 flex-row items-center justify-between">
@@ -435,7 +436,7 @@ const FeedbackGridItem = ({
                   <Trash2 className="w-3 h-3" />
                 </button>
               </AlertDialogTrigger>
-              <AlertDialogContent className="w-[90vw] rounded-2xl bg-sidebar border-0">
+              <AlertDialogContent className="w-[90vw] rounded-2xl bg-background border-0">
                 <AlertDialogHeader>
                   <AlertDialogTitle>Are you sure?</AlertDialogTitle>
                   <AlertDialogDescription>
@@ -501,127 +502,27 @@ const FeedbackGridItem = ({
 
 export function SubmittedFeedback({
   isTester = false,
+  feedbacks = [],
 }: {
   isTester?: boolean;
+  feedbacks?: SubmittedFeedbackType[];
 }) {
   const [viewMode, setViewMode] = useState<"grid" | "list">("list");
   const [currentPage, setCurrentPage] = useState(1);
   const [fullscreenImage, setFullscreenImage] = useState<string | null>(null);
   const [fullscreenVideo, setFullscreenVideo] = useState<string | null>(null);
+  const [mounted, setMounted] = useState(false);
 
-  const [submittedFeedback, setSubmittedFeedback] = useState<
-    SubmittedFeedbackType[]
-  >([
-    {
-      id: 1,
-      type: "Bug",
-      comment: "App crashes on launch sometimes.",
-      screenshot: null,
-      tester: "Tester101",
-      severity: "Critical",
-    },
-    {
-      id: 2,
-      type: "Suggestion",
-      comment: "A dark mode would be great for night use.",
-      screenshot: null,
-      tester: "Tester102",
-      severity: "N/A",
-    },
-    {
-      id: 3,
-      type: "Praise",
-      comment: "The new UI is super clean and intuitive. Great job!",
-      screenshot:
-        "https://images.unsplash.com/photo-1601042879364-f3947d3f9c16?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-      videoUrl:
-        "https://storage.googleapis.com/web-dev-assets/video-and-source-tags/chrome.mp4",
-      tester: "Tester103",
-      severity: "N/A",
-    },
-    {
-      id: 4,
-      type: "Bug",
-      comment: "The settings icon is misaligned on tablets.",
-      screenshot:
-        "https://images.unsplash.com/photo-1756303018960-e5279e145963?q=80&w=719&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-      videoUrl:
-        "https://storage.googleapis.com/web-dev-assets/video-and-source-tags/chrome.mp4",
-      tester: "Tester104",
-      severity: "Medium",
-    },
-    {
-      id: 5,
-      type: "Suggestion",
-      comment: "Could we get an option to export data to CSV?",
-      screenshot: null,
-      tester: "Tester105",
-      severity: "N/A",
-    },
-    {
-      id: 6,
-      type: "Praise",
-      comment:
-        "The performance improvement in the latest update is very noticeable!",
-      screenshot: null,
-      tester: "Tester106",
-      severity: "N/A",
-    },
-    {
-      id: 7,
-      type: "Bug",
-      comment: "Login button is unresponsive on older Android versions.",
-      screenshot:
-        "https://images.unsplash.com/photo-1559136560-16de2dc70a2b?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-      videoUrl:
-        "https://storage.googleapis.com/web-dev-assets/video-and-source-tags/chrome.mp4",
-      tester: "Tester107",
-      severity: "High",
-    },
-    {
-      id: 8,
-      type: "Suggestion",
-      comment: "It would be helpful to have a tutorial for new users.",
-      screenshot: null,
-      tester: "Tester108",
-      severity: "N/A",
-    },
-    {
-      id: 9,
-      type: "Praise",
-      comment: "This is one of the most stable beta apps I have tested.",
-      screenshot: null,
-      tester: "Tester109",
-      severity: "N/A",
-    },
-    {
-      id: 10,
-      type: "Bug",
-      comment: "Text overlaps in the profile section on small screens.",
-      screenshot: null,
-      tester: "Tester110",
-      severity: "Low",
-    },
-    {
-      id: 11,
-      type: "Suggestion",
-      comment: "Add integration with other project management tools.",
-      screenshot: null,
-      tester: "Tester111",
-      severity: "N/A",
-    },
-    {
-      id: 12,
-      type: "Bug",
-      comment: "In-app purchases are not going through. Stuck on processing.",
-      screenshot:
-        "https://images.unsplash.com/photo-1580674287405-80cd3582e3b9?q=80&w=687&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-      videoUrl:
-        "https://storage.googleapis.com/web-dev-assets/video-and-source-tags/chrome.mp4",
-      tester: "Tester112",
-      severity: "Critical",
-    },
-  ]);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const [submittedFeedback, setSubmittedFeedback] =
+    useState<SubmittedFeedbackType[]>(feedbacks);
+
+  useEffect(() => {
+    setSubmittedFeedback(feedbacks);
+  }, [feedbacks]);
 
   const FEEDBACK_PER_PAGE = viewMode === "list" ? 4 : 6;
 
@@ -643,8 +544,10 @@ export function SubmittedFeedback({
     if (data.id) {
       setSubmittedFeedback((prev) =>
         prev.map((fb) =>
-          fb.id === data.id ? ({ ...fb, ...data } as SubmittedFeedbackType) : fb
-        )
+          fb.id === data.id
+            ? ({ ...fb, ...data } as SubmittedFeedbackType)
+            : fb,
+        ),
       );
     } else {
       const newFeedback: SubmittedFeedbackType = {
@@ -666,7 +569,7 @@ export function SubmittedFeedback({
   return (
     <>
       <section>
-        <div className="bg-card/50 rounded-2xl p-2 sm:p-6 sm:pt-4">
+        <div className="bg-card rounded-2xl p-2 sm:p-6 sm:pt-4">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
             <div>
               <h2 className="text-xl sm:text-2xl font-bold">Feedbacks</h2>
@@ -756,55 +659,63 @@ export function SubmittedFeedback({
           )}
         </div>
       </section>
-      {fullscreenImage && (
-        <div
-          className="fixed inset-0 bg-black/80 z-[60] flex items-center justify-center p-4 animate-in fade-in-0"
-          onClick={() => setFullscreenImage(null)}
-        >
-          <Button
-            variant="ghost"
-            size="icon"
-            className="absolute top-4 right-4 text-white hover:text-white bg-red-500/60 hover:bg-red-500 h-12 w-12 rounded-lg z-10"
+      {mounted &&
+        fullscreenImage &&
+        typeof document !== "undefined" &&
+        createPortal(
+          <div
+            className="fixed inset-0 bg-black/80 z-[9999] flex items-center justify-center p-4 animate-in fade-in-0"
             onClick={() => setFullscreenImage(null)}
           >
-            <X className="w-8 h-8" />
-            <span className="sr-only">Close</span>
-          </Button>
-          <div className="relative w-full h-full max-w-4xl max-h-[90vh]">
-            <SafeImage
-              src={fullscreenImage}
-              alt="Fullscreen view"
-              layout="fill"
-              objectFit="contain"
-              className="animate-in zoom-in-95"
-            />
-          </div>
-        </div>
-      )}
-      {fullscreenVideo && (
-        <div
-          className="fixed inset-0 bg-black/80 z-[60] flex items-center justify-center p-4 animate-in fade-in-0"
-          onClick={() => setFullscreenVideo(null)}
-        >
-          <Button
-            variant="ghost"
-            size="icon"
-            className="absolute top-4 right-4 text-white hover:text-white bg-red-500/60 hover:bg-red-500 h-12 w-12 rounded-lg z-50"
+            <Button
+              variant="ghost"
+              size="icon"
+              className="absolute top-4 right-4 text-white hover:text-white bg-red-500/60 hover:bg-red-500 h-12 w-12 rounded-lg z-10"
+              onClick={() => setFullscreenImage(null)}
+            >
+              <X className="w-8 h-8" />
+              <span className="sr-only">Close</span>
+            </Button>
+            <div className="relative w-full h-full max-w-4xl max-h-[90vh]">
+              <SafeImage
+                src={fullscreenImage}
+                alt="Fullscreen view"
+                layout="fill"
+                objectFit="contain"
+                className="animate-in zoom-in-95"
+              />
+            </div>
+          </div>,
+          document.body,
+        )}
+      {mounted &&
+        fullscreenVideo &&
+        typeof document !== "undefined" &&
+        createPortal(
+          <div
+            className="fixed inset-0 bg-black/80 z-[9999] flex items-center justify-center p-4 animate-in fade-in-0"
             onClick={() => setFullscreenVideo(null)}
           >
-            <X className="w-8 h-8" />
-            <span className="sr-only">Close</span>
-          </Button>
-          <div className="relative w-full h-full max-w-4xl max-h-[90vh]">
-            <video
-              src={fullscreenVideo}
-              controls
-              autoPlay
-              className="w-full h-full animate-in zoom-in-95"
-            ></video>
-          </div>
-        </div>
-      )}
+            <Button
+              variant="ghost"
+              size="icon"
+              className="absolute top-4 right-4 text-white hover:text-white bg-red-500/60 hover:bg-red-500 h-12 w-12 rounded-lg z-50"
+              onClick={() => setFullscreenVideo(null)}
+            >
+              <X className="w-8 h-8" />
+              <span className="sr-only">Close</span>
+            </Button>
+            <div className="relative w-full h-full max-w-4xl max-h-[90vh]">
+              <video
+                src={fullscreenVideo}
+                controls
+                autoPlay
+                className="w-full h-full animate-in zoom-in-95"
+              ></video>
+            </div>
+          </div>,
+          document.body,
+        )}
     </>
   );
 }

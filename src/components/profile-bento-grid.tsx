@@ -81,94 +81,120 @@ const Card = ({
   return content;
 };
 
-export function ProfileBentoGrid() {
+export interface ProfileBentoGridProps {
+  showReferAndEarn?: boolean;
+  showUpgrade?: boolean;
+  settingsHref?: string;
+  supportHref?: string;
+}
+
+export function ProfileBentoGrid({
+  showReferAndEarn = true,
+  showUpgrade = true,
+  settingsHref = "/settings",
+  supportHref = "/support",
+}: ProfileBentoGridProps = {}) {
   return (
     <section className="mx-auto max-w-7xl py-12">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 auto-rows-auto">
+      <div
+        className={cn(
+          "grid gap-4 auto-rows-auto",
+          showReferAndEarn ? "grid-cols-1 md:grid-cols-2" : "grid-cols-1",
+        )}
+      >
         {/* LEFT COLUMN: Large Vertical "Refer & Earn" */}
-        <div className="md:col-span-1 h-full">
-          <Card
-            href="/profile/referral"
-            className="h-full bg-gradient-to-b from-card to-background"
-          >
-            <div className="relative z-10 flex flex-col h-full justify-between">
-              <div className="space-y-4 flex-1">
-                <h3 className="text-3xl font-bold leading-tight">
-                  Refer Friends. <br />
-                  <span className="text-primary">Earn Pro.</span>
-                </h3>
-                <p className="text-muted-foreground leading-relaxed">
-                  Invite your developer friends to the community. Unlock 1 month
-                  of premium features for every successful referral.
-                </p>
+        {showReferAndEarn && (
+          <div className="md:col-span-1 h-full">
+            <Card
+              href="/profile/referral"
+              className="h-full bg-gradient-to-b from-card to-background"
+            >
+              <div className="relative z-10 flex flex-col h-full justify-between">
+                <div className="space-y-4 flex-1">
+                  <h3 className="text-3xl font-bold leading-tight">
+                    Refer Friends. <br />
+                    <span className="text-primary">Earn Pro.</span>
+                  </h3>
+                  <p className="text-muted-foreground leading-relaxed">
+                    Invite your developer friends to the community. Unlock 1
+                    month of premium features for every successful referral.
+                  </p>
 
-                {/* Visual Element */}
-                <div className="mt-8 flex items-center gap-3">
-                  <div className="flex -space-x-4 rtl:space-x-reverse">
-                    {[1, 2, 3, 4].map((i) => (
-                      <div
-                        key={i}
-                        className="h-10 w-10 rounded-full border-2 border-background bg-zinc-800 flex items-center justify-center text-[10px] text-white font-medium"
-                      >
-                        <Users className="w-4 h-4 opacity-50" />
-                      </div>
-                    ))}
+                  {/* Visual Element */}
+                  <div className="mt-8 flex items-center gap-3">
+                    <div className="flex -space-x-4 rtl:space-x-reverse">
+                      {[1, 2, 3, 4].map((i) => (
+                        <div
+                          key={i}
+                          className="h-10 w-10 rounded-full border-2 border-background bg-zinc-800 flex items-center justify-center text-[10px] text-white font-medium"
+                        >
+                          <Users className="w-4 h-4 opacity-50" />
+                        </div>
+                      ))}
+                    </div>
+                    <span className="text-sm font-medium text-muted-foreground">
+                      +0 joined
+                    </span>
                   </div>
-                  <span className="text-sm font-medium text-muted-foreground">
-                    +0 joined
-                  </span>
+                </div>
+
+                <div className="mt-auto pt-6 flex items-center gap-2 text-primary font-semibold group-hover:translate-x-1 transition-transform">
+                  Get Referral Link <ArrowUpRight className="w-5 h-5" />
                 </div>
               </div>
 
-              <div className="mt-auto pt-6 flex items-center gap-2 text-primary font-semibold group-hover:translate-x-1 transition-transform">
-                Get Referral Link <ArrowUpRight className="w-5 h-5" />
-              </div>
-            </div>
-
-            {/* Decorative Sphere */}
-            <div className="absolute -bottom-24 -right-24 w-64 h-64 bg-primary/20 rounded-full blur-[80px] pointer-events-none group-hover:bg-primary/30 transition-colors" />
-          </Card>
-        </div>
+              {/* Decorative Sphere */}
+              <div className="absolute -bottom-24 -right-24 w-64 h-64 bg-primary/20 rounded-full blur-[80px] pointer-events-none group-hover:bg-primary/30 transition-colors" />
+            </Card>
+          </div>
+        )}
 
         {/* RIGHT COLUMN: Stacked Items */}
-        <div className="md:col-span-1 flex flex-col gap-4">
+        <div
+          className={cn(
+            "flex flex-col gap-4",
+            showReferAndEarn ? "md:col-span-1" : "",
+          )}
+        >
           {/* Top: Upgrade Plan */}
-          <Card
-            href="/billing"
-            delay={0.1}
-            className="flex-1 min-h-[240px] bg-gradient-to-br from-primary via-blue-600 to-indigo-700 border-none"
-          >
-            <div className="relative z-10 flex flex-col h-full justify-between text-white">
-              <div className="flex justify-between items-start">
-                <div className="p-2 bg-white/10 backdrop-blur-md rounded-xl">
-                  <Crown className="w-6 h-6" />
+          {showUpgrade && (
+            <Card
+              href="/billing"
+              delay={0.1}
+              className="flex-1 min-h-[240px] bg-gradient-to-br from-primary via-blue-600 to-indigo-700 border-none"
+            >
+              <div className="relative z-10 flex flex-col h-full justify-between text-white">
+                <div className="flex justify-between items-start">
+                  <div className="p-2 bg-white/10 backdrop-blur-md rounded-xl">
+                    <Crown className="w-6 h-6" />
+                  </div>
+                  <span className="px-2 py-0.5 bg-white/20 rounded-md text-[10px] font-bold uppercase tracking-wider backdrop-blur-sm">
+                    PRO
+                  </span>
                 </div>
-                <span className="px-2 py-0.5 bg-white/20 rounded-md text-[10px] font-bold uppercase tracking-wider backdrop-blur-sm">
-                  PRO
-                </span>
-              </div>
 
-              <div>
-                <h3 className="text-xl font-bold mb-1">Upgrade Plan</h3>
-                <p className="text-blue-100 text-sm opacity-90">
-                  Unlock unlimited testing & priority support.
-                </p>
-              </div>
+                <div>
+                  <h3 className="text-xl font-bold mb-1">Upgrade Plan</h3>
+                  <p className="text-blue-100 text-sm opacity-90">
+                    Unlock unlimited testing & priority support.
+                  </p>
+                </div>
 
-              <div className="flex justify-end">
-                <div className="p-2 bg-white/10 hover:bg-white/20 rounded-full transition-colors backdrop-blur-md">
-                  <ChevronRight className="w-5 h-5" />
+                <div className="flex justify-end">
+                  <div className="p-2 bg-white/10 hover:bg-white/20 rounded-full transition-colors backdrop-blur-md">
+                    <ChevronRight className="w-5 h-5" />
+                  </div>
                 </div>
               </div>
-            </div>
-            <div className="absolute inset-0 opacity-20" />
-          </Card>
+              <div className="absolute inset-0 opacity-20" />
+            </Card>
+          )}
 
           {/* Bottom: Settings & Support Split */}
-          <div className="grid grid-cols-2 gap-4 h-[240px]">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 h-[240px]">
             {/* Settings Card - Ambient Aurora (Cyan) */}
             <Card
-              href="/settings"
+              href={settingsHref}
               delay={0.2}
               className="h-full group/settings !p-6 flex flex-col justify-between bg-white dark:bg-zinc-950  transition-all duration-500 overflow-hidden relative shadow-sm border-none"
             >
@@ -199,7 +225,7 @@ export function ProfileBentoGrid() {
 
             {/* Support Card - Ambient Aurora (Violet) */}
             <Card
-              href="/support"
+              href={supportHref}
               delay={0.3}
               className="h-full group/support !p-6 flex flex-col justify-between bg-white dark:bg-zinc-950 border-none transition-all duration-500 overflow-hidden relative shadow-sm hover:shadow-violet-500/5"
             >

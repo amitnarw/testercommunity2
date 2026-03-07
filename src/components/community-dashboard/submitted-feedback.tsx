@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useCallback, useEffect } from "react";
+import { createPortal } from "react-dom";
 import {
   Card,
   CardContent,
@@ -738,7 +739,7 @@ const FeedbackGridItem = ({
               <Trash2 className="w-4 h-4" />
             </button>
           </AlertDialogTrigger>
-            <AlertDialogContent className="w-[90vw] rounded-2xl bg-sidebar border-0">
+          <AlertDialogContent className="w-[90vw] rounded-2xl bg-sidebar border-0">
             <AlertDialogHeader>
               <AlertDialogTitle>Are you sure?</AlertDialogTitle>
               <AlertDialogDescription>
@@ -780,6 +781,11 @@ export function SubmittedFeedback({
   const [viewMode, setViewMode] = useState<"grid" | "list">("list");
   const [currentPage, setCurrentPage] = useState(1);
   const [fullscreenImage, setFullscreenImage] = useState<string | null>(null);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const totalPages = Math.ceil(feedback?.length / FEEDBACK_PER_PAGE);
   const startIndex = (currentPage - 1) * FEEDBACK_PER_PAGE;
@@ -1047,31 +1053,35 @@ export function SubmittedFeedback({
           </div>
         )}
       </section>
-      {fullscreenImage && (
-        <div
-          className="fixed inset-0 bg-black/80 z-[60] flex items-center justify-center p-4 animate-in fade-in-0"
-          onClick={() => setFullscreenImage(null)}
-        >
-          <Button
-            variant="ghost"
-            size="icon"
-            className="absolute top-4 right-4 text-white hover:text-white bg-red-500/60 hover:bg-red-500 h-12 w-12 rounded-lg"
+      {mounted &&
+        fullscreenImage &&
+        typeof document !== "undefined" &&
+        createPortal(
+          <div
+            className="fixed inset-0 bg-black/80 z-[9999] flex items-center justify-center p-4 animate-in fade-in-0"
             onClick={() => setFullscreenImage(null)}
           >
-            <X className="w-8 h-8" />
-            <span className="sr-only">Close</span>
-          </Button>
-          <div className="relative w-full h-full max-w-4xl max-h-[90vh]">
-            <SafeImage
-              src={fullscreenImage}
-              alt="Fullscreen view"
-              layout="fill"
-              objectFit="contain"
-              className="animate-in zoom-in-95"
-            />
-          </div>
-        </div>
-      )}
+            <Button
+              variant="ghost"
+              size="icon"
+              className="absolute top-4 right-4 text-white hover:text-white bg-red-500/60 hover:bg-red-500 h-12 w-12 rounded-lg z-50"
+              onClick={() => setFullscreenImage(null)}
+            >
+              <X className="w-8 h-8" />
+              <span className="sr-only">Close</span>
+            </Button>
+            <div className="relative w-full h-full max-w-4xl max-h-[90vh]">
+              <SafeImage
+                src={fullscreenImage}
+                alt="Fullscreen view"
+                layout="fill"
+                objectFit="contain"
+                className="animate-in zoom-in-95"
+              />
+            </div>
+          </div>,
+          document.body,
+        )}
     </>
   );
 }

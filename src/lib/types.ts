@@ -460,6 +460,7 @@ export interface HubSubmittedAppResponse {
         language: string | null;
         network: string | null;
       } | null;
+      ratings?: { rating: number }[];
     };
     isActive: boolean;
     status:
@@ -487,6 +488,13 @@ export interface HubSubmittedAppResponse {
       rejectionReason?: string;
     }[];
   }[];
+  paymentInfo?: {
+    amountPaid: number;
+    currency: string;
+    isPersisted?: boolean;
+  } | null;
+  rewardMoney?: number;
+  costMoney?: number;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -709,6 +717,7 @@ export type TesterProjectResponse = {
   }[];
   feedbackCount: number;
   totalTesters: number;
+  testerRating?: number;
   createdAt: string;
   updatedAt: string;
 };

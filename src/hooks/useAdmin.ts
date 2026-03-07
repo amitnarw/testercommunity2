@@ -93,7 +93,13 @@ export function useSubmittedApps(
 
 export function useAcceptApp(options?: UseMutationOptions<any, any, any>) {
   const mutation = useMutation({
-    mutationFn: (id: number) => acceptApp(id),
+    mutationFn: (payload: {
+      id: number;
+      totalTester?: number;
+      totalDay?: number;
+      minimumAndroidVersion?: number;
+      rewardPoints?: number;
+    }) => acceptApp(payload),
     ...options,
   });
 

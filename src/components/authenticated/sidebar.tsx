@@ -87,7 +87,7 @@ const NavLink = ({
               "flex items-center justify-start w-full h-12 rounded-xl text-white/70 dark:text-black/70 transition-all duration-300 px-3.5",
               "hover:bg-white/20 hover:text-white",
               isActive &&
-                "bg-gradient-to-br from-primary to-primary/30 text-white",
+                "bg-white text-black dark:bg-black dark:text-white shadow-xl",
             )}
           >
             <Icon className="h-5 w-5 flex-shrink-0" />
@@ -144,7 +144,7 @@ export function Sidebar({
           isCollapsed ? "w-16" : "w-72",
         )}
       >
-        <div className="flex flex-col items-center justify-between gap-4 bg-sidebar text-white py-5 rounded-2xl shadow-2xl border border-white/10 relative w-full">
+        <div className="flex flex-col items-center justify-between gap-4 bg-gradient-to-r from-primary to-primary/70 text-white py-5 rounded-2xl shadow-2xl border border-white/10 relative w-full">
           <TransitionLink href="/dashboard">
             {/* Logo inverted for sidebar: sidebar is dark in light mode, light in dark mode */}
             <div className="relative w-10 h-10 shrink-0">
@@ -161,7 +161,7 @@ export function Sidebar({
           <div className="mb-8 mt-2">
             <button
               onClick={() => setIsCollapsed(!isCollapsed)}
-              className={`bg-primary text-white rounded-full p-1 shadow-2xl absolute -right-3 duration-700 hover:scale-125 flex items-center justify-center ${
+              className={`bg-sidebar text-white dark:text-black rounded-full p-1 shadow-2xl absolute -right-3 duration-700 hover:scale-125 flex items-center justify-center ${
                 isCollapsed ? "w-7" : "w-32"
               }`}
             >
