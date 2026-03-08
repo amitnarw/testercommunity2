@@ -28,8 +28,11 @@ import {
   useUserCounts,
   useUpdateUserStatus,
   useUpdateUserRole,
+  useDeleteUser,
 } from "@/hooks/useAdmin";
 import { useQueryClient } from "@tanstack/react-query";
+import { toast } from "@/hooks/use-toast";
+import { authClient } from "@/lib/auth-client";
 
 const UserTable = dynamic(
   () =>
@@ -48,11 +51,14 @@ const ITEMS_PER_PAGE = 5;
 
 export default function AdminUsersPage() {
   const queryClient = useQueryClient();
+  const { data: session } = authClient.useSession();
 
   const [userRole, setUserRole] = useState("");
   const [selectedUser, setSelectedUser] = useState<any>(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isStatusModalOpen, setIsStatusModalOpen] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [banReason, setBanReason] = useState("");
   const [activeTab, setActiveTab] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
@@ -72,6 +78,18 @@ export default function AdminUsersPage() {
       queryClient.invalidateQueries({ queryKey: ["useAllUsers"] });
       queryClient.invalidateQueries({ queryKey: ["useUserCounts"] });
       setIsStatusModalOpen(false);
+      setBanReason("");
+      toast({
+        title: "Success",
+        description: "User status updated successfully",
+      });
+    },
+    onError: (error: any) => {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: error.message || "Failed to update status",
+      });
     },
   });
 
@@ -80,6 +98,36 @@ export default function AdminUsersPage() {
       queryClient.invalidateQueries({ queryKey: ["useAllUsers"] });
       queryClient.invalidateQueries({ queryKey: ["useUserCounts"] });
       setIsEditModalOpen(false);
+      toast({
+        title: "Success",
+        description: "User role updated successfully",
+      });
+    },
+    onError: (error: any) => {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: error.message || "Failed to update role",
+      });
+    },
+  });
+
+  const deleteUserMutation = useDeleteUser({
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["useAllUsers"] });
+      queryClient.invalidateQueries({ queryKey: ["useUserCounts"] });
+      setIsDeleteModalOpen(false);
+      toast({
+        title: "Success",
+        description: "User deleted successfully",
+      });
+    },
+    onError: (error: any) => {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: error.message || "Failed to delete user",
+      });
     },
   });
 
@@ -108,7 +156,13 @@ export default function AdminUsersPage() {
 
   const handleStatusChange = (user: any) => {
     setSelectedUser(user);
+    setBanReason(user.banReason || "");
     setIsStatusModalOpen(true);
+  };
+
+  const handleDelete = (user: any) => {
+    setSelectedUser(user);
+    setIsDeleteModalOpen(true);
   };
 
   const handleStatusUpdate = (status: string) => {
@@ -116,7 +170,7 @@ export default function AdminUsersPage() {
       updateStatusMutation.mutate({
         id: selectedUser.id,
         status,
-        banReason: status === "Banned" ? "Banned by admin" : undefined,
+        banReason: status === "Banned" ? banReason : undefined,
       });
     }
   };
@@ -127,6 +181,12 @@ export default function AdminUsersPage() {
         id: selectedUser.id,
         role,
       });
+    }
+  };
+
+  const confirmDelete = () => {
+    if (selectedUser) {
+      deleteUserMutation.mutate(selectedUser.id);
     }
   };
 
@@ -194,7 +254,9 @@ export default function AdminUsersPage() {
                   users={paginatedUsers}
                   onEdit={handleEdit}
                   onStatusChange={handleStatusChange}
+                  onDelete={handleDelete}
                   isLoading={isLoading}
+                  currentUserId={session?.user?.id}
                 />
               </CardContent>
             </Card>
@@ -211,7 +273,7 @@ export default function AdminUsersPage() {
 
       {/* Edit Role Modal */}
       <Dialog open={isEditModalOpen} onOpenChange={setIsEditModalOpen}>
-        <DialogContent>
+        <DialogContent className="sm:max-w-[500px]">
           <DialogHeader>
             <DialogTitle>Edit Role for {selectedUser?.name}</DialogTitle>
             <DialogDescription>
@@ -256,7 +318,7 @@ export default function AdminUsersPage() {
 
       {/* Change Status Modal */}
       <Dialog open={isStatusModalOpen} onOpenChange={setIsStatusModalOpen}>
-        <DialogContent>
+        <DialogContent className="sm:max-w-[500px]">
           <DialogHeader>
             <DialogTitle>Change Status for {selectedUser?.name}</DialogTitle>
             <DialogDescription>
@@ -265,30 +327,95 @@ export default function AdminUsersPage() {
             </DialogDescription>
           </DialogHeader>
           <div className="py-4 flex flex-col gap-4">
+            {selectedUser?.status === "Active" && (
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-muted-foreground ml-1">
+                  Reason for banning (Optional)
+                </label>
+                <Input
+                  placeholder="e.g. Terms of service violation, fraud, etc."
+                  value={banReason}
+                  onChange={(e) => setBanReason(e.target.value)}
+                />
+              </div>
+            )}
             <Button
               variant={
                 selectedUser?.status === "Active" ? "outline" : "default"
               }
-              className="w-full justify-start gap-2"
+              className="w-full justify-start gap-2 h-auto py-3 px-4"
               onClick={() => handleStatusUpdate("Active")}
               disabled={updateStatusMutation.isPending}
             >
-              <CheckCircle className="h-4 w-4" /> Activate Account
+              <CheckCircle className="h-5 w-5" />
+              <div className="flex flex-col items-start">
+                <span>Activate Account</span>
+                <span className="text-xs font-normal opacity-70">
+                  Allow user to log in and use features
+                </span>
+              </div>
             </Button>
             <Button
               variant={
                 selectedUser?.status === "Banned" ? "destructive" : "outline"
               }
-              className="w-full justify-start gap-2"
+              className="w-full justify-start gap-2 h-auto py-3 px-4"
               onClick={() => handleStatusUpdate("Banned")}
               disabled={updateStatusMutation.isPending}
             >
-              <Ban className="h-4 w-4" /> Ban Account
+              <Ban className="h-5 w-5" />
+              <div className="flex flex-col items-start">
+                <span>Ban Account</span>
+                <span className="text-xs font-normal opacity-70">
+                  Prevent user from logging in
+                </span>
+              </div>
             </Button>
           </div>
           <DialogFooter>
             <Button variant="ghost" onClick={() => setIsStatusModalOpen(false)}>
               Cancel
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Delete Confirmation Modal */}
+      <Dialog open={isDeleteModalOpen} onOpenChange={setIsDeleteModalOpen}>
+        <DialogContent className="sm:max-w-[500px]">
+          <DialogHeader>
+            <DialogTitle className="text-destructive flex items-center gap-2">
+              <Ban className="h-5 w-5" /> Delete User Account
+            </DialogTitle>
+            <DialogDescription>
+              Are you sure you want to delete{" "}
+              <strong>{selectedUser?.name}</strong>? This action is permanent
+              and will remove all associated data, including apps, feedbacks,
+              and transactions.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="bg-destructive/10 p-4 rounded-md border border-destructive/20 text-sm">
+            <p className="font-semibold text-destructive mb-1">Warning:</p>
+            <ul className="list-disc list-inside space-y-1 opacity-80">
+              <li>Permanent account removal</li>
+              <li>Deletion of all submitted apps</li>
+              <li>Removal of all earnings and history</li>
+              <li>This action cannot be undone</li>
+            </ul>
+          </div>
+          <DialogFooter className="gap-2 sm:gap-0">
+            <Button variant="ghost" onClick={() => setIsDeleteModalOpen(false)}>
+              Cancel
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={confirmDelete}
+              disabled={deleteUserMutation.isPending}
+            >
+              {deleteUserMutation.isPending && (
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              )}
+              Delete Permanently
             </Button>
           </DialogFooter>
         </DialogContent>

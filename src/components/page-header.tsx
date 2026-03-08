@@ -5,18 +5,24 @@ interface PageHeaderProps {
   title: string;
   backHref: string;
   className?: string;
+  onBack?: (e: React.MouseEvent<HTMLButtonElement>) => void;
 }
 
-export function PageHeader({ title, backHref, className }: PageHeaderProps) {
+export function PageHeader({
+  title,
+  backHref,
+  onBack,
+  className,
+}: PageHeaderProps) {
   return (
     <div
       data-loc="PageHeader"
       className={cn(
         "flex flex-row gap-5 items-center sticky top-0 z-[50] py-2 md:py-3 px-2",
-        className
+        className,
       )}
     >
-      <BackButton href={backHref} />
+      <BackButton href={backHref} onClick={onBack} />
       <h1 className="font-semibold tracking-tight text-xl md:text-2xl bg-gradient-to-b from-primary to-primary/50 bg-clip-text text-transparent leading-0">
         {title}
       </h1>

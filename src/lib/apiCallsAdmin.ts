@@ -465,6 +465,28 @@ export async function updateUserRole(payload: { id: string; role: string }) {
   }
 }
 
+export async function deleteUser(id: string) {
+  try {
+    const response = await api.delete(API_ROUTES.ADMIN + `/users/${id}`);
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error deleting user:", error);
+    if (axios.isAxiosError(error)) {
+      const status = error.response?.status;
+      const responseData = error.response?.data;
+      console.error("Axios error:", status, responseData);
+
+      throw new Error(
+        responseData?.message || error.message || "Unknown Axios error",
+      );
+    } else if (error instanceof Error) {
+      throw new Error(error.message);
+    } else {
+      throw new Error(JSON.stringify(error));
+    }
+  }
+}
+
 // ==================== SUGGESTIONS ====================
 
 export async function getAllSuggestions(params?: { status?: string }) {

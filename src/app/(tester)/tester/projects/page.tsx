@@ -25,7 +25,9 @@ const ProjectCard = ({ project }: { project: TesterProjectResponse }) => {
   const isOngoing =
     project.appStatus === "IN_TESTING" &&
     project.testerStatus === "IN_PROGRESS";
-  const earnings = (project.rewardPoints || 0) * 5;
+  const earnings =
+    project.rewardMoney ||
+    (project.rewardPoints ? project.rewardPoints * 5 : 0);
 
   return (
     <Card

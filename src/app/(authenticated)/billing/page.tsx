@@ -27,9 +27,12 @@ import {
   useVerifyPayment,
 } from "@/hooks/useBilling";
 import { useGetUserWallet, usePricingData } from "@/hooks/useUser";
-import type { PricingResponse } from "@/lib/types";
 import { Accordion } from "@/components/ui/accordion";
 import FaqItem from "@/components/faq-item";
+import {
+  ProfessionalPlanCard,
+  EnterprisePlanCard,
+} from "@/components/pricing-cards";
 import Script from "next/script";
 import { useToast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
@@ -66,78 +69,6 @@ const itemVariants = {
 };
 
 // --- Components ---
-
-const PricingCard = ({
-  plan,
-  onSubscribe,
-  isProcessing,
-}: {
-  plan: PricingResponse;
-  onSubscribe: (planId: string) => void;
-  isProcessing: boolean;
-}) => {
-  return (
-    <motion.div
-      variants={itemVariants}
-      whileHover={{ y: -8, scale: 1.03 }}
-      className="relative flex flex-col p-8 sm:p-10 rounded-3xl h-full transition-all duration-300 bg-primary text-primary-foreground shadow-2xl shadow-primary/30"
-    >
-      {/* Decorative elements */}
-      <div className="absolute bottom-0 left-0 -ml-20 -mb-20 w-60 h-60 bg-black/10 rounded-full blur-3xl pointer-events-none" />
-      <div className="absolute top-6 right-6 opacity-20 rotate-12">
-        <Star className="w-24 h-24 fill-current text-white" />
-      </div>
-
-      <div className="mb-8 relative z-10">
-        <h3 className="text-xl font-medium text-white">{plan.name}</h3>
-        <div className="mt-4 flex items-baseline">
-          <span className="text-5xl font-bold tracking-tight">
-            ₹{plan.price.toLocaleString("en-IN")}
-          </span>
-          <span className="ml-2 text-sm font-medium text-primary-foreground/80">
-            / one-time
-          </span>
-        </div>
-        <p className="mt-4 text-sm leading-relaxed text-primary-foreground/90">
-          Get {plan.package} full testing{" "}
-          {plan.package > 1 ? "cycles" : "cycle"} for your applications.
-        </p>
-      </div>
-
-      <div className="flex-1 space-y-4 mb-8 relative z-10">
-        {plan.features?.map((feature, i) => (
-          <div key={i} className="flex items-start gap-3">
-            <div className="flex-shrink-0 w-5 h-5 rounded-full flex items-center justify-center mt-0.5 bg-white/20">
-              <Check className="w-3 h-3 text-white" />
-            </div>
-            <span className="text-sm text-primary-foreground/90">
-              {feature}
-            </span>
-          </div>
-        ))}
-      </div>
-
-      <div className="mt-auto relative z-10">
-        <div className="flex justify-center w-full">
-          <HoverBorderGradient
-            containerClassName="w-full"
-            className="bg-white text-primary flex items-center justify-center space-x-2 w-full py-4 font-bold cursor-pointer"
-            onClick={() => onSubscribe(plan.id)}
-          >
-            {isProcessing ? (
-              <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-            ) : (
-              <Zap className="w-4 h-4 mr-2 fill-current" />
-            )}
-            <span className="font-semibold">
-              {isProcessing ? "Processing..." : "Get Started"}
-            </span>
-          </HoverBorderGradient>
-        </div>
-      </div>
-    </motion.div>
-  );
-};
 
 const CreditBalanceCard = ({
   isLoading,
@@ -211,9 +142,6 @@ const TransactionHistory = () => {
             </p>
           </div>
         </div>
-        {/* <Button variant="outline" size="sm" className="hidden sm:flex">
-          Download All
-        </Button> */}
       </div>
 
       <div className="flex-1 p-2 max-h-[400px] overflow-y-auto">
@@ -273,62 +201,6 @@ const TransactionHistory = () => {
           </div>
         )}
       </div>
-    </motion.div>
-  );
-};
-
-const CustomPlanCard = () => {
-  return (
-    <motion.div
-      variants={itemVariants}
-      whileHover={{ y: -5 }}
-      className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-[#8364E8] to-[#D397FA] text-white p-8 md:p-12 flex flex-col items-center text-center gap-8 shadow-2xl group"
-    >
-      {/* Decorative Background Elements */}
-      <div className="absolute top-0 right-0 -mr-20 -mt-20 w-80 h-80 bg-white/10 rounded-full blur-3xl opacity-50 pointer-events-none group-hover:scale-110 transition-transform duration-700" />
-      <div className="absolute bottom-0 left-0 -ml-20 -mb-20 w-80 h-80 bg-purple-900/20 rounded-full blur-3xl opacity-50 pointer-events-none group-hover:scale-110 transition-transform duration-700" />
-
-      {/* Icon */}
-      <motion.div
-        whileHover={{ rotate: 10, scale: 1.1 }}
-        className="relative z-10 bg-white/20 p-5 rounded-3xl backdrop-blur-md shadow-[0_8px_30px_rgb(0,0,0,0.12)] ring-1 ring-white/40"
-      >
-        <ShieldCheck className="w-10 h-10 text-white" />
-      </motion.div>
-
-      {/* Text */}
-      <div className="relative z-10 space-y-4 max-w-md">
-        <h3 className="text-3xl font-bold tracking-tight">
-          Need a Custom Plan?
-        </h3>
-        <p className="text-purple-50 text-lg leading-relaxed font-medium">
-          Volume discounts, dedicated support, and custom integrations for
-          high-growth teams.
-        </p>
-      </div>
-
-      {/* Feature Pills */}
-      <div className="relative z-10 flex flex-wrap justify-center gap-3">
-        {["Enterprise SLA", "Dedicated Manager", "Custom Integrations"].map(
-          (feature) => (
-            <Badge
-              key={feature}
-              variant="secondary"
-              className="bg-white/20 hover:bg-white/30 text-white border-0 backdrop-blur-sm px-4 py-1.5"
-            >
-              {feature}
-            </Badge>
-          ),
-        )}
-      </div>
-
-      {/* Button */}
-      <Button
-        size="lg"
-        className="relative z-10 rounded-full bg-white text-purple-700 hover:bg-white/90 font-bold px-10 h-14 text-lg shadow-xl hover:shadow-2xl transition-all"
-      >
-        Contact Sales
-      </Button>
     </motion.div>
   );
 };
@@ -505,7 +377,7 @@ export default function BillingPage() {
       />
       <div
         data-loc="BillingPage"
-        className="min-h-screen w-full relative text-foreground transition-colors duration-300 max-w-7xl mx-auto"
+        className="min-h-screen w-full relative text-foreground transition-colors duration-300 max-w-5xl mx-auto"
       >
         <PageHeader
           title="Billing"
@@ -529,7 +401,8 @@ export default function BillingPage() {
             <section className="relative">
               <div className="text-center mb-12 max-w-2xl mx-auto">
                 <h2 className="text-3xl md:text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-b from-foreground to-foreground/70 mb-4">
-                  Simple, Transparent Pricing
+                  Simple, Transparent{" "}
+                  <span className="text-primary italic">Pricing</span>
                 </h2>
                 <p className="text-lg text-muted-foreground">
                   Choose the package that suits your testing needs. No hidden
@@ -545,20 +418,43 @@ export default function BillingPage() {
               ) : (
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-stretch">
                   {pricingData?.map((plan) => (
-                    <PricingCard
+                    <ProfessionalPlanCard
                       key={plan.id}
                       plan={plan}
-                      onSubscribe={handleSubscribe}
-                      isProcessing={isProcessing}
+                      actionButton={
+                        <HoverBorderGradient
+                          containerClassName="w-full"
+                          className="bg-white text-primary flex items-center justify-center space-x-2 w-full py-4 font-bold cursor-pointer"
+                          onClick={() => handleSubscribe(plan.id)}
+                        >
+                          {isProcessing ? (
+                            <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                          ) : (
+                            <Zap className="w-4 h-4 mr-2 fill-current" />
+                          )}
+                          <span className="font-semibold">
+                            {isProcessing ? "Processing..." : "Get Started"}
+                          </span>
+                        </HoverBorderGradient>
+                      }
                     />
                   ))}
-                  <CustomPlanCard />
+                  <EnterprisePlanCard
+                    actionButton={
+                      <Button
+                        size="lg"
+                        className="w-full relative z-10 rounded-full bg-gradient-to-r from-[#8364E8] to-[#D397FA] text-white hover:opacity-90 font-bold px-10 h-14 text-lg shadow-xl border-0"
+                      >
+                        Contact Sales
+                      </Button>
+                    }
+                  />
                 </div>
               )}
             </section>
 
             {/* Section 3: History */}
-            <section className="max-w-6xl mx-auto w-full">
+            <section className="mx-auto w-full">
               <TransactionHistory />
             </section>
 

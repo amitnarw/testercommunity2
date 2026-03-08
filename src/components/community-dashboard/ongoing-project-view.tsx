@@ -1,7 +1,9 @@
 "use client";
 
-import { CheckCircle, Users } from "lucide-react";
+import { CheckCircle, Users, Loader2 } from "lucide-react";
 import { BackButton } from "@/components/back-button";
+import { useToast } from "@/hooks/use-toast";
+import { useSubmitDailyVerification } from "@/hooks/useHub";
 import { cn } from "@/lib/utils";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
@@ -25,11 +27,13 @@ const DailyProgress = ({
   totalDays,
   onDayClick,
   hasTestedToday,
+  isCheckingIn,
 }: {
   progress: number;
   totalDays: number;
   onDayClick: (day: number) => void;
   hasTestedToday: boolean;
+  isCheckingIn?: boolean;
 }) => {
   const completedDays = Math.floor((totalDays * (progress || 0)) / 100);
 
@@ -43,7 +47,9 @@ const DailyProgress = ({
         return (
           <div
             key={day}
-            onClick={() => (isCompleted || isCurrent) && onDayClick(day)}
+            onClick={() =>
+              (isCompleted || isCurrent) && !isCheckingIn && onDayClick(day)
+            }
             className={cn(
               "aspect-square rounded-xl flex flex-col items-center justify-center p-1 transition-all duration-300 shadow-none hover:scale-105 cursor-pointer",
               isCurrent
@@ -56,6 +62,8 @@ const DailyProgress = ({
           >
             {isCompleted ? (
               <CheckCircle className="w-4 h-4 text-green-500" />
+            ) : isCurrent && isCheckingIn ? (
+              <Loader2 className="w-6 h-6 animate-spin text-primary-foreground" />
             ) : (
               <>
                 <p
@@ -99,6 +107,25 @@ export default function OngoingProjectView({
   const [selectedVerification, setSelectedVerification] =
     useState<VerificationData | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const { toast } = useToast();
+
+  const { mutate: submitCheckIn, isPending: isCheckingIn } =
+    useSubmitDailyVerification({
+      onSuccess: () => {
+        toast({
+          title: "Check-in Successful",
+          description: "Your daily check-in has been recorded.",
+        });
+        refetch();
+      },
+      onError: (err: any) => {
+        toast({
+          title: "Check-in Failed",
+          description: err.message || "Failed to submit check-in.",
+          variant: "destructive",
+        });
+      },
+    });
 
   const isTestingNotStarted = appDetails?.status === "AVAILABLE";
 
@@ -164,8 +191,16 @@ export default function OngoingProjectView({
         metaData: verification.metaData,
       });
       setIsModalOpen(true);
+    } else if (
+      appDetails?.appType === "PAID" &&
+      day === displayDay &&
+      !hasTestedToday &&
+      !isTestingNotStarted &&
+      !isCheckingIn
+    ) {
+      // Paid testers just click check-in
+      submitCheckIn({ hubId, proofImage: "" });
     }
-    // If no verification record exists for this day, don't open the modal
   };
 
   return (
@@ -234,17 +269,20 @@ export default function OngoingProjectView({
                   )}
                 </div>
 
-                {!isTestingNotStarted && !hasTestedToday && (
-                  <section>
-                    <DailyTestingAction
-                      appId={hubId}
-                      packageName={appDetails?.androidApp?.packageName || ""}
-                      currentDay={displayDay}
-                      totalDays={appDetails?.totalDay || 14}
-                      hasTestedToday={hasTestedToday}
-                    />
-                  </section>
-                )}
+                {!isTestingNotStarted &&
+                  !hasTestedToday &&
+                  appDetails?.appType !== "PAID" && (
+                    <section>
+                      <DailyTestingAction
+                        appId={hubId}
+                        packageName={appDetails?.androidApp?.packageName || ""}
+                        currentDay={displayDay}
+                        totalDays={appDetails?.totalDay || 14}
+                        hasTestedToday={hasTestedToday}
+                        onCheckIn={refetch}
+                      />
+                    </section>
+                  )}
                 <section className="relative">
                   <div
                     className={cn(
@@ -259,6 +297,7 @@ export default function OngoingProjectView({
                       totalDays={appDetails?.totalDay || 0}
                       onDayClick={handleDayClick}
                       hasTestedToday={hasTestedToday}
+                      isCheckingIn={isCheckingIn}
                     />
                   </div>
                   {isTestingNotStarted && (

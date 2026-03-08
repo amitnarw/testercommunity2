@@ -6,6 +6,7 @@ import {
   login,
   testerLogin,
   register,
+  registerTester,
   resendEmailVerification,
   // updateProfile
 } from "@/lib/apiCalls";
@@ -77,6 +78,20 @@ export function useRegisterUser() {
     },
     onError: (error) => {
       console.error("Register failed: ", error);
+    },
+  });
+
+  return mutation;
+}
+
+export function useRegisterTester() {
+  const mutation = useMutation<RegisterResponse, Error, RegisterPayload>({
+    mutationFn: (payload) => registerTester(payload),
+    onSuccess: (data) => {
+      console.log("Tester Register success: ", data);
+    },
+    onError: (error) => {
+      console.error("Tester Register failed: ", error);
     },
   });
 

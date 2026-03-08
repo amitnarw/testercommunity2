@@ -4,7 +4,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import Navbar from "@/components/authenticated/navbar";
 import Footer from "@/components/authenticated/footer";
-import { AdminSidebar } from "@/components/admin/admin-sidebar";
+import { Sidebar } from "@/components/authenticated/sidebar";
 
 import PageTransition from "@/components/page-transition";
 import { authClient } from "@/lib/auth-client";
@@ -72,7 +72,7 @@ export default function AdminLayout({
   return (
     <PageTransition>
       <div className="relative flex min-h-screen">
-        <AdminSidebar
+        <Sidebar
           onLogout={handleLogout}
           isCollapsed={isSidebarCollapsed}
           setIsCollapsed={setIsSidebarCollapsed}

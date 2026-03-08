@@ -136,6 +136,8 @@ export default function TesterDashboardPage() {
     ) || [];
 
   const pendingActionProjects = activeProjects.filter((project) => {
+    if (project.appStatus !== "IN_TESTING") return false;
+
     const currentDayToSubmit = project.daysCompleted + 1;
     if (currentDayToSubmit > project.totalDay) return false;
 
@@ -368,14 +370,29 @@ export default function TesterDashboardPage() {
                             <p className="font-medium text-sm truncate min-w-0">
                               {project.appName}
                             </p>
-                            <Badge
-                              variant="outline"
-                              className="text-[10px] w-fit bg-blue-500/10 text-blue-600 border-blue-200 dark:border-blue-800"
-                            >
-                              Day {project.daysCompleted}/{project.totalDay}
-                            </Badge>
+                            {project.appStatus === "IN_TESTING" ? (
+                              <Badge
+                                variant="outline"
+                                className="text-[10px] w-fit bg-blue-500/10 text-blue-600 border-blue-200 dark:border-blue-800"
+                              >
+                                Day {project.daysCompleted}/{project.totalDay}
+                              </Badge>
+                            ) : (
+                              <Badge
+                                variant="outline"
+                                className="text-[10px] w-fit bg-yellow-500/10 text-yellow-600 border-yellow-200 dark:border-yellow-800"
+                              >
+                                Pending Allocation
+                              </Badge>
+                            )}
                           </div>
-                          <Progress value={progress} className="h-1.5" />
+                          {project.appStatus === "IN_TESTING" ? (
+                            <Progress value={progress} className="h-1.5" />
+                          ) : (
+                            <p className="text-xs text-muted-foreground mt-1">
+                              Waiting for all testers to be allocated.
+                            </p>
+                          )}
                         </div>
                         <ArrowRight className="w-4 h-4 text-muted-foreground group-hover:text-primary transition-colors shrink-0 hidden sm:block" />
                       </Link>

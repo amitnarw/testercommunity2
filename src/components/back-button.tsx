@@ -8,12 +8,18 @@ import { useTransitionRouter } from "@/context/transition-context";
 interface BackButtonProps {
   href?: string;
   className?: string;
+  onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
 }
 
-export function BackButton({ href, className }: BackButtonProps) {
+export function BackButton({ href, className, onClick }: BackButtonProps) {
   const router = useTransitionRouter();
 
   const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    if (onClick) {
+      e.preventDefault();
+      onClick(e);
+      return;
+    }
     e.preventDefault();
     if (window.history.length > 1) {
       router.back();

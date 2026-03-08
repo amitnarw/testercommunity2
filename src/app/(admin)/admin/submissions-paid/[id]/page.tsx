@@ -1,9 +1,16 @@
 "use client";
 
 import { useState, use } from "react";
-import { Card, CardContent } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  CardFooter,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import {
   Smartphone,
   Calendar,
@@ -19,101 +26,29 @@ import {
   Video,
   CreditCard,
   Image as ImageIcon,
-  Loader2,
   Bug,
   Lightbulb,
   PartyPopper,
   MessageSquare,
+  Wallet,
+  TrendingUp,
+  ExternalLink,
+  User,
+  CalendarDays,
+  Activity,
+  ArrowRight,
+  ChevronRight,
+  Pencil,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { BackButton } from "@/components/back-button";
-import { useAcceptApp, useUpdateProjectStatus } from "@/hooks/useAdmin";
 import { useSingleHubAppDetails } from "@/hooks/useHub";
 import { toast } from "@/hooks/use-toast";
 import { SafeImage } from "@/components/safe-image";
 import { ExpandableText } from "@/components/expandable-text";
-import { AppInfoSidebar } from "@/components/appInfoSidebar";
 import DeveloperInstructions from "@/components/developerInstructions";
 import dynamic from "next/dynamic";
-// Removed StatusDropdown options as we are using buttons now
-
-function FeedbackTypeBadge({ type }: { type: string }) {
-  switch (type) {
-    case "BUG":
-      return (
-        <Badge
-          variant="secondary"
-          className="font-medium text-xs bg-red-500/10 text-red-600 border-red-200 dark:border-red-900 flex items-center gap-1"
-        >
-          <Bug className="w-3 h-3" />
-          Bug
-        </Badge>
-      );
-    case "SUGGESTION":
-      return (
-        <Badge
-          variant="secondary"
-          className="font-medium text-xs bg-amber-500/10 text-amber-600 border-amber-200 dark:border-amber-900 flex items-center gap-1"
-        >
-          <Lightbulb className="w-3 h-3" />
-          Suggestion
-        </Badge>
-      );
-    case "PRAISE":
-      return (
-        <Badge
-          variant="secondary"
-          className="font-medium text-xs bg-green-500/10 text-green-600 border-green-200 dark:border-green-900 flex items-center gap-1"
-        >
-          <PartyPopper className="w-3 h-3" />
-          Praise
-        </Badge>
-      );
-    default:
-      return (
-        <Badge
-          variant="secondary"
-          className="font-medium text-xs bg-gray-500/10 text-gray-600 border-gray-200 dark:border-gray-900 flex items-center gap-1"
-        >
-          <MessageSquare className="w-3 h-3" />
-          Other
-        </Badge>
-      );
-  }
-}
-
-function FeedbackPriorityBadge({ priority }: { priority: string | null }) {
-  if (!priority) return null;
-
-  switch (priority) {
-    case "CRITICAL":
-      return (
-        <Badge className="font-medium text-xs bg-red-700 text-white">
-          Critical
-        </Badge>
-      );
-    case "HIGH":
-      return (
-        <Badge variant="destructive" className="font-medium text-xs bg-red-500">
-          High
-        </Badge>
-      );
-    case "MEDIUM":
-      return (
-        <Badge className="font-medium text-xs bg-amber-500 text-white">
-          Medium
-        </Badge>
-      );
-    case "LOW":
-      return (
-        <Badge className="font-medium text-xs bg-yellow-500 text-white">
-          Low
-        </Badge>
-      );
-    default:
-      return null;
-  }
-}
+import { SubmittedFeedback } from "@/components/community-dashboard/submitted-feedback";
 
 const AdminRejectDialog = dynamic(
   () =>
@@ -126,6 +61,13 @@ const AdminAcceptDialog = dynamic(
   () =>
     import("@/components/admin/admin-accept-dialog").then(
       (mod) => mod.AdminAcceptDialog,
+    ),
+  { ssr: false },
+);
+const AdminStartTestingDialog = dynamic(
+  () =>
+    import("@/components/admin/admin-start-testing-dialog").then(
+      (mod) => mod.AdminStartTestingDialog,
     ),
   { ssr: false },
 );
@@ -157,6 +99,7 @@ export default function AdminSubmissionDetailPage({
   const [showRejectDialog, setShowRejectDialog] = useState(false);
   const [showAcceptDialog, setShowAcceptDialog] = useState(false);
   const [showManageTestersDialog, setShowManageTestersDialog] = useState(false);
+  const [showStartTestingDialog, setShowStartTestingDialog] = useState(false);
 
   const {
     data: project,
@@ -164,35 +107,6 @@ export default function AdminSubmissionDetailPage({
     error,
     refetch,
   } = useSingleHubAppDetails({ id });
-
-  const { mutate: updateStatus, isPending: isUpdating } =
-    useUpdateProjectStatus({
-      onSuccess: () => {
-        toast({
-          title: "Success",
-          description: "App status updated to In Testing successfully.",
-        });
-        refetch();
-      },
-      onError: (err: any) => {
-        toast({
-          variant: "destructive",
-          title: "Error",
-          description: err?.message || "Failed to update app status.",
-        });
-      },
-    });
-
-  const handleStatusUpdate = (status: string) => {
-    if (!project) return;
-    if (
-      !window.confirm(
-        `Are you sure you want to change the status to ${status}?`,
-      )
-    )
-      return;
-    updateStatus({ id: project.id, status });
-  };
 
   const handleSuccess = () => {
     router.push("/admin/submissions-paid");
@@ -220,453 +134,466 @@ export default function AdminSubmissionDetailPage({
 
   const visitUrl = `https://play.google.com/store/apps/details?id=${project.androidApp.packageName}`;
 
+  // Derived calculations for interconnected financial representation
+  const requiredTesters = project.totalTester || 0;
+  const rewardPerTester = project.rewardMoney || 0;
+  const amountPaidByDeveloper =
+    project.costMoney || project.paymentInfo?.amountPaid || 0;
+  const totalPayout = requiredTesters * rewardPerTester;
+  const platformEarnings = amountPaidByDeveloper - totalPayout;
+  const isLoss = platformEarnings < 0;
+
   return (
-    <div className="bg-[#f8fafc] dark:bg-[#0f151e] text-foreground min-h-screen mb-8">
+    <div className="bg-[#f8fafc] dark:bg-[#0f151e] text-foreground min-h-screen pb-16">
       <div className="container mx-auto px-4 md:px-6">
-        <div className="pt-2 pb-4 pl-0 xl:pl-8 w-1/2">
+        <div className="pt-2 pb-4 pl-0 xl:pl-4">
           <BackButton href="/admin/submissions-paid" />
         </div>
 
-        <main className="max-w-7xl mx-auto flex flex-col gap-6 mt-4">
-          {/* Header with Actions */}
-          <div className="bg-background/80 border border-border/50 shadow-sm rounded-2xl p-3 sm:p-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-            <div className="flex flex-col gap-1">
-              <div className="flex items-center gap-3 relative">
-                <h1 className="text-2xl md:text-3xl font-bold bg-gradient-to-br from-primary to-accent bg-clip-text text-transparent">
-                  {project.androidApp?.appName || `App #${project.appId}`}
-                </h1>
-                <Badge
-                  variant="outline"
-                  className="text-xs uppercase tracking-wider absolute -top-2 -right-2 sm:static"
-                >
-                  {project.appType}
-                </Badge>
-              </div>
-              <div className="flex items-center gap-2">
-                <span className="text-sm font-medium text-muted-foreground mr-1">
-                  Status:
-                </span>
-                <Badge
-                  variant={
-                    project.status === "REJECTED" ? "destructive" : "secondary"
-                  }
-                  className={
-                    project.status === "ACCEPTED" ||
-                    project.status === "AVAILABLE" ||
-                    project.status === "IN_TESTING" ||
-                    project.status === "COMPLETED"
-                      ? "bg-green-500/20 text-green-700 dark:bg-green-500/10 dark:text-green-400"
-                      : ""
-                  }
-                >
-                  {project.status.replace("_", " ")}
-                </Badge>
-              </div>
-            </div>
+        <main className="max-w-7xl mx-auto flex flex-col gap-8 mt-2">
+          {/* Header Action Card - THE MOST CRITICAL BUTTONS & APP STATUS */}
+          <div className="bg-card border border-border/60 shadow-md rounded-3xl p-6 md:p-8 flex flex-col gap-6 relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-3xl -z-10 -translate-y-1/2 translate-x-1/2" />
 
-            {/* Top Level Actions */}
-            <div className="flex flex-row sm:flex-col justify-center sm:justify-end items-center md:items-end gap-2 sm:gap-3 w-full md:w-auto mt-4 md:mt-0">
-              <div className="flex flex-wrap justify-end gap-1 md:gap-3 w-auto">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+              <div className="flex items-center gap-5 z-10">
+                <SafeImage
+                  src={project.androidApp?.appLogoUrl}
+                  alt={project.androidApp?.appName}
+                  width={80}
+                  height={80}
+                  className="rounded-2xl shadow-sm border border-border"
+                />
+                <div className="space-y-1">
+                  <div className="flex items-center gap-3">
+                    <h1 className="text-2xl md:text-3xl font-extrabold bg-gradient-to-br from-primary to-accent bg-clip-text text-transparent">
+                      {project.androidApp?.appName || `App #${project.appId}`}
+                    </h1>
+                    <div className="px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-[10px] font-black tracking-[0.2em] uppercase shadow-sm">
+                      {project.appType} Submission
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm font-medium text-muted-foreground mr-1">
+                      Status:
+                    </span>
+                    <Badge
+                      variant={
+                        project.status === "REJECTED"
+                          ? "destructive"
+                          : "secondary"
+                      }
+                      className={
+                        project.status === "ACCEPTED" ||
+                        project.status === "AVAILABLE" ||
+                        project.status === "IN_TESTING" ||
+                        project.status === "COMPLETED"
+                          ? "bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 font-bold border-emerald-500/20"
+                          : "font-bold"
+                      }
+                    >
+                      {project.status.replace("_", " ")}
+                    </Badge>
+                  </div>
+                </div>
+              </div>
+
+              {/* Action Buttons Zone */}
+              <div className="flex flex-wrap items-center gap-3 w-full md:w-auto z-10 shrink-0">
+                <a
+                  href={visitUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-2 bg-secondary hover:bg-secondary/80 text-foreground px-4 py-2.5 rounded-xl font-semibold transition-colors shadow-sm text-sm border border-border/50"
+                >
+                  <ExternalLink className="w-4 h-4" /> Play Store
+                </a>
+
                 {project.status === "IN_REVIEW" && (
                   <>
                     <Button
                       variant="destructive"
-                      size="sm"
                       onClick={() => setShowRejectDialog(true)}
-                      className="flex-1 md:flex-none shadow-sm"
+                      className="px-5 py-2.5 h-auto rounded-xl shadow-sm font-bold"
                     >
                       <X className="w-4 h-4 mr-1.5" /> Reject
                     </Button>
                     <Button
-                      size="sm"
                       onClick={() => setShowAcceptDialog(true)}
-                      className="flex-1 md:flex-none bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm"
+                      className="px-5 py-2.5 h-auto bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl shadow-md font-bold"
                     >
                       <Check className="w-4 h-4 mr-1.5" /> Approve
                     </Button>
                   </>
                 )}
+
                 {(project.status === "ACCEPTED" ||
                   project.status === "AVAILABLE" ||
                   project.status === "IN_TESTING") && (
                   <Button
                     variant="outline"
-                    size="sm"
                     onClick={() => setShowManageTestersDialog(true)}
-                    className="flex-none shadow-sm"
+                    className="px-5 py-2.5 h-auto rounded-xl shadow-sm border-primary/20 hover:border-primary/50 text-primary font-bold bg-primary/5"
                   >
-                    <Users className="w-4 h-4 mr-1.5 text-primary hidden m:block" />{" "}
-                    Manage Testers
+                    <Users className="w-4 h-4 mr-1.5" /> Manage Testers
                   </Button>
                 )}
+
                 {project.status === "AVAILABLE" && (
                   <Button
-                    size="sm"
-                    onClick={() => handleStatusUpdate("IN_TESTING")}
-                    disabled={isUpdating}
-                    className="flex-1 md:flex-none bg-blue-600 hover:bg-blue-700 text-white shadow-sm"
+                    onClick={() => setShowStartTestingDialog(true)}
+                    className="px-6 py-2.5 h-auto bg-blue-600 hover:bg-blue-700 text-white rounded-xl shadow-md font-bold shadow-blue-600/20"
                   >
-                    {isUpdating ? (
-                      <Loader2 className="w-3.5 h-3.5 animate-spin mr-1.5" />
-                    ) : (
-                      <Clock className="w-4 h-4 mr-1.5" />
-                    )}
-                    {isUpdating ? "Updating..." : "Start Testing"}
+                    <Clock className="w-4 h-4 mr-1.5" /> Start Testing
                   </Button>
                 )}
               </div>
             </div>
           </div>
-          <div className="grid lg:grid-cols-3 gap-6">
-            <div className="lg:col-span-2 space-y-6 overflow-hidden">
-              {/* Summary Cards Row */}
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                <Card className="bg-card/50 border border-border/50">
-                  <CardContent className="p-4 flex flex-col justify-center h-full">
-                    <p className="text-xs font-medium flex items-center gap-1.5 mb-1 text-primary">
-                      Package
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full items-stretch">
+            {/* APP IDENTITY & DETAILS */}
+            <Card className="border border-border/50 shadow-sm bg-card rounded-3xl overflow-hidden h-full flex flex-col">
+              <CardHeader className="bg-secondary/20 border-b border-border/50 pb-4">
+                <CardTitle className="text-lg flex items-center gap-2">
+                  <Package className="w-5 h-5 text-primary" />
+                  App Details
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="p-6 space-y-6 flex-1 flex flex-col">
+                {/* Developer Info injected intelligently */}
+                <div className="flex items-center gap-4 bg-background p-4 rounded-2xl border border-border/50 shadow-sm">
+                  <Avatar className="h-14 w-14 border-2 border-background shadow-sm ring-2 ring-primary/10">
+                    <AvatarImage
+                      src={project.appOwner?.image || ""}
+                      className="object-cover"
+                    />
+                    <AvatarFallback className="bg-secondary text-primary font-bold text-lg">
+                      {project.appOwner?.name?.slice(0, 2)?.toUpperCase()}
+                    </AvatarFallback>
+                  </Avatar>
+                  <div className="flex flex-col min-w-0">
+                    <div className="flex items-center gap-2">
+                      <h3 className="font-bold text-base truncate">
+                        {project.appOwner?.name}
+                      </h3>
+                      {project.appOwner?.emailVerified && (
+                        <Badge
+                          variant="secondary"
+                          className="text-[10px] h-4 px-1.5 bg-green-500/10 text-green-600 border-green-500/20 shrink-0"
+                        >
+                          Verified
+                        </Badge>
+                      )}
+                    </div>
+                    <p className="text-sm text-muted-foreground truncate">
+                      {project.appOwner?.email}
                     </p>
-                    <p
-                      className="font-mono text-xs font-semibold truncate"
-                      title={project.androidApp?.packageName}
-                    >
+                    <div className="flex items-center gap-1.5 text-xs text-muted-foreground mt-1.5">
+                      <CalendarDays className="w-3.5 h-3.5" />
+                      <span className="truncate">
+                        Submitted{" "}
+                        {new Date(project.createdAt).toLocaleDateString(
+                          undefined,
+                          { year: "numeric", month: "short", day: "numeric" },
+                        )}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-1.5">
+                    <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider flex items-center gap-1">
+                      <Smartphone className="w-3.5 h-3.5" /> Package ID
+                    </span>
+                    <p className="font-mono text-sm break-all bg-secondary/30 p-2 rounded-xl border border-border/50">
                       {project.androidApp?.packageName}
                     </p>
-                  </CardContent>
-                </Card>
-                <Card className="bg-card/50 border border-border/50">
-                  <CardContent className="p-4 flex flex-col justify-center h-full">
-                    <p className="text-xs font-medium flex items-center gap-1.5 mb-1 text-primary">
-                      Category
-                    </p>
-                    <p className="text-sm font-semibold truncate">
-                      {project.androidApp?.appCategory?.name || "N/A"}
-                    </p>
-                  </CardContent>
-                </Card>
-                <Card className="bg-card/50 border border-border/50">
-                  <CardContent className="p-4 flex flex-col justify-center h-full">
-                    <p className="text-xs text-amber-600 dark:text-amber-500 font-medium flex items-center gap-1.5 mb-1">
-                      <Users className="w-3.5 h-3.5" /> Testers
-                    </p>
-                    <p className="text-lg font-bold">
-                      {project.currentTester || 0}{" "}
-                      <span className="text-sm font-normal text-muted-foreground">
-                        / {project.totalTester}
-                      </span>
-                    </p>
-                  </CardContent>
-                </Card>
-                <Card className="bg-card/50 border border-border/50">
-                  <CardContent className="p-4 flex flex-col justify-center h-full">
-                    <p className="text-xs text-amber-600 dark:text-amber-500 font-medium flex items-center gap-1.5 mb-1">
-                      <Clock className="w-3.5 h-3.5" /> Duration
-                    </p>
-                    <p className="text-lg font-bold">
+                  </div>
+                  <div className="space-y-1.5">
+                    <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider flex items-center gap-1">
+                      <FileText className="w-3.5 h-3.5" /> Category
+                    </span>
+                    <div className="pt-0.5">
+                      <Badge
+                        variant="outline"
+                        className="bg-background text-sm"
+                      >
+                        {project.androidApp?.appCategory?.name || "N/A"}
+                      </Badge>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* FINANCIALS & TESTING REQUIREMENTS */}
+            <Card className="border border-border/50 shadow-sm bg-card rounded-3xl overflow-hidden h-full flex flex-col">
+              <CardHeader className="bg-emerald-500/5 border-b border-emerald-500/10 pb-4">
+                <CardTitle className="text-lg flex items-center justify-between gap-2 text-emerald-600 dark:text-emerald-500">
+                  <div className="flex items-center gap-2">
+                    <Activity className="w-5 h-5" />
+                    Execution Plan
+                  </div>
+                  {project.status !== "IN_REVIEW" && (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="h-8 w-8 p-0 rounded-lg hover:bg-emerald-500/10 text-emerald-600"
+                      onClick={() => setShowAcceptDialog(true)}
+                    >
+                      <Pencil className="w-4 h-4" />
+                      <span className="sr-only">Edit Plan</span>
+                    </Button>
+                  )}
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="p-0 flex-1 flex flex-col">
+                {/* Requirements Grid */}
+                <div className="grid grid-cols-3 divide-x border-b border-border/50 bg-background/50">
+                  <div className="p-4 flex flex-col items-center justify-center text-center space-y-1.5 hover:bg-background transition-colors">
+                    <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider flex items-center gap-1">
+                      <Users className="w-3.5 h-3.5 text-primary" />
+                      Testers
+                    </span>
+                    <span className="text-2xl font-black text-amber-600 dark:text-amber-500">
+                      {requiredTesters}
+                    </span>
+                  </div>
+                  <div className="p-4 flex flex-col items-center justify-center text-center space-y-1.5 hover:bg-background transition-colors">
+                    <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider flex items-center gap-1">
+                      <Clock className="w-3.5 h-3.5 text-primary" />
+                      Duration
+                    </span>
+                    <span className="text-2xl font-black">
                       {project.totalDay || 0}{" "}
-                      <span className="text-sm font-normal text-muted-foreground">
+                      <span className="text-xs font-bold text-muted-foreground lowercase">
                         Days
                       </span>
-                    </p>
-                  </CardContent>
-                </Card>
-              </div>
+                    </span>
+                  </div>
+                  <div className="p-4 flex flex-col items-center justify-center text-center space-y-1.5 hover:bg-background transition-colors">
+                    <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider flex items-center gap-1">
+                      <Smartphone className="w-3.5 h-3.5 text-primary" />
+                      Min OS
+                    </span>
+                    <span className="text-2xl font-black">
+                      v{project.minimumAndroidVersion}
+                    </span>
+                  </div>
+                </div>
 
-              {/* Description & Internal Details */}
-              <Card className="border border-border/50 shadow-sm">
-                <CardContent className="p-6">
-                  <h3 className="text-lg font-semibold mb-3 flex items-center gap-2">
-                    <FileText className="w-5 h-5 text-primary" />
-                    Description
-                  </h3>
-                  <ExpandableText
-                    text={project.androidApp?.description}
-                    className="text-muted-foreground text-sm leading-relaxed mb-6"
-                  />
-
-                  <div className="grid grid-cols-2 gap-4 pt-6 border-t border-border/50">
-                    <div>
-                      <p className="text-sm font-medium text-muted-foreground mb-1 flex items-center gap-1.5">
-                        <Smartphone className="w-4 h-4 text-primary" /> Min
-                        Android
-                      </p>
-                      <p className="font-semibold text-md">
-                        Android {project.minimumAndroidVersion}+
-                      </p>
-                    </div>
-                    {(project.costPoints || 0) > 0 && (
+                {/* Financial Breakdown Sequence */}
+                <div className="p-6 space-y-6 flex-1 flex flex-col justify-center bg-card">
+                  {/* Step 1: Input */}
+                  <div className="flex justify-between items-center p-4 rounded-2xl bg-blue-500/5 border border-blue-500/20 shadow-sm">
+                    <div className="flex items-center gap-3">
+                      <div className="p-2.5 bg-blue-500/10 rounded-xl text-blue-600 dark:text-blue-400">
+                        <Wallet className="w-5 h-5" />
+                      </div>
                       <div>
-                        <p className="text-sm font-medium text-muted-foreground mb-1 flex items-center gap-1.5">
-                          <CreditCard className="w-4 h-4 text-emerald-500" />{" "}
-                          Reward
+                        <p className="text-[10px] font-bold text-blue-600/70 dark:text-blue-400/70 uppercase tracking-widest mb-0.5">
+                          Paid by Developer
                         </p>
-                        <p className="font-semibold text-md text-emerald-600 dark:text-emerald-400">
-                          {project.costPoints} Points
+                        <p className="font-bold text-sm text-foreground">
+                          Initial Revenue
                         </p>
                       </div>
-                    )}
+                    </div>
+                    <span className="text-2xl font-black text-blue-600 dark:text-blue-400">
+                      ₹{amountPaidByDeveloper.toLocaleString("en-IN")}
+                    </span>
                   </div>
-                </CardContent>
-              </Card>
 
-              {/* Rejection Details Section */}
-              {project.status === "REJECTED" && (
-                <section className="mb-6">
-                  <Card className="border-destructive/20 shadow-sm bg-destructive/5 relative overflow-hidden">
-                    <div className="absolute top-0 left-0 w-1 h-full bg-destructive" />
-                    <CardContent className="p-5 sm:p-6">
-                      <div className="flex flex-col gap-4">
-                        <div className="space-y-3">
-                          <h2 className="text-xl font-bold flex items-center gap-2 text-destructive">
-                            <AlertTriangle className="w-5 h-5 absolute sm:static scale-[2] sm:scale-100 top-4 right-4 opacity-10 sm:opacity-100" />
-                            Rejection Reason
-                          </h2>
+                  {/* Step 2: Distribution */}
+                  <div className="relative pl-7 space-y-5">
+                    {/* Dashed connector line */}
+                    <div className="absolute left-3.5 top-0 bottom-6 w-px bg-border/80 border-dashed" />
 
-                          <div className="space-y-2">
-                            {project.statusDetails?.title && (
-                              <h3 className="font-semibold text-md text-destructive/90">
-                                {project.statusDetails.title}
-                              </h3>
-                            )}
-                            <p className="text-sm text-muted-foreground whitespace-pre-wrap leading-relaxed">
-                              {project.statusDetails?.description ||
-                                "No specific reason provided."}
-                            </p>
-                          </div>
-                        </div>
+                    <div className="relative group">
+                      <div className="absolute -left-[29px] top-1/2 -translate-y-1/2 w-3.5 h-3.5 rounded-full border-[3px] border-background bg-muted-foreground transition-colors group-hover:bg-red-400 z-10" />
+                      <div className="flex justify-between items-center text-sm py-3 px-4 rounded-2xl bg-background border border-border/50 shadow-sm hover:border-border transition-colors">
+                        <span className="text-muted-foreground font-medium flex items-center gap-2">
+                          <Users className="w-4 h-4 text-emerald-500" />
+                          {requiredTesters || 0} Testers × ₹
+                          {rewardPerTester.toLocaleString("en-IN")}
+                        </span>
+                        <span className="font-bold text-red-500 dark:text-red-400">
+                          -₹{totalPayout.toLocaleString("en-IN")}
+                        </span>
+                      </div>
+                    </div>
 
-                        {(project.statusDetails?.image ||
-                          project.statusDetails?.video) && (
-                          <div className="space-y-3 pt-4 border-t border-destructive/10">
-                            <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-wider flex items-center gap-2">
-                              <ShieldAlert className="w-3 h-3" /> Evidence
-                            </h3>
-                            <div className="flex flex-wrap gap-4">
-                              {project.statusDetails?.image && (
-                                <div className="space-y-2 group">
-                                  <div
-                                    className="relative h-32 w-full sm:w-48 rounded-lg overflow-hidden border bg-black/5 cursor-pointer shadow-sm group-hover:shadow-md transition-all"
-                                    onClick={() =>
-                                      setFullscreenImage(
-                                        project.statusDetails!.image,
-                                      )
-                                    }
-                                  >
-                                    <SafeImage
-                                      src={project.statusDetails.image}
-                                      alt="Rejection Image"
-                                      fill
-                                      className="object-cover"
-                                    />
-                                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors flex items-center justify-center">
-                                      <Expand className="w-6 h-6 text-white opacity-0 group-hover:opacity-100 transition-opacity transform scale-90 group-hover:scale-100 duration-200" />
-                                    </div>
-                                  </div>
-                                </div>
-                              )}
+                    <div className="relative group">
+                      <div className="absolute -left-[29px] top-1/2 -translate-y-1/2 w-3.5 h-3.5 rounded-full border-[3px] border-background bg-emerald-500 transition-transform group-hover:scale-110 z-10 shadow-sm shadow-emerald-500/20" />
+                      <div className="flex justify-between items-center py-4 px-4 rounded-2xl bg-gradient-to-r from-emerald-500/10 to-transparent border border-emerald-500/20 shadow-sm">
+                        <span className="font-bold text-emerald-700 dark:text-emerald-400 flex items-center gap-2">
+                          <TrendingUp className="w-5 h-5" />
+                          Platform Earnings
+                        </span>
+                        <span
+                          className={`text-2xl font-black ${isLoss ? "text-red-600 dark:text-red-400" : "text-emerald-600 dark:text-emerald-500"}`}
+                        >
+                          {isLoss && "-"}₹
+                          {Math.abs(platformEarnings).toLocaleString("en-IN")}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
 
-                              {project.statusDetails?.video && (
-                                <div className="space-y-2">
-                                  <div className="h-32 w-full sm:w-48 rounded-lg overflow-hidden border bg-black relative shadow-sm">
-                                    <video
-                                      src={project.statusDetails.video}
-                                      controls
-                                      className="w-full h-full object-contain"
-                                    />
-                                  </div>
-                                </div>
-                              )}
+          {/* Rejection Details Section */}
+          {project.status === "REJECTED" && (
+            <Card className="border-destructive/20 shadow-sm bg-destructive/5 relative overflow-hidden rounded-3xl">
+              <div className="absolute top-0 left-0 w-2 h-full bg-destructive" />
+              <CardContent className="p-6 md:p-8">
+                <div className="flex flex-col gap-5">
+                  <div className="space-y-3">
+                    <h2 className="text-xl font-bold flex items-center gap-2 text-destructive">
+                      <AlertTriangle className="w-6 h-6" />
+                      Rejection Reason
+                    </h2>
+                    <div className="space-y-2 bg-background p-5 rounded-2xl border border-destructive/10">
+                      {project.statusDetails?.title && (
+                        <h3 className="font-bold text-lg text-destructive/90">
+                          {project.statusDetails.title}
+                        </h3>
+                      )}
+                      <p className="text-muted-foreground whitespace-pre-wrap leading-relaxed">
+                        {project.statusDetails?.description ||
+                          "No specific reason provided."}
+                      </p>
+                    </div>
+                  </div>
+
+                  {(project.statusDetails?.image ||
+                    project.statusDetails?.video) && (
+                    <div className="space-y-3 pt-2">
+                      <h3 className="text-sm font-bold text-muted-foreground uppercase tracking-wider flex items-center gap-2">
+                        <ShieldAlert className="w-4 h-4" /> Evidence Provided
+                      </h3>
+                      <div className="flex flex-wrap gap-4">
+                        {project.statusDetails?.image && (
+                          <div
+                            className="relative h-48 w-full sm:w-72 rounded-xl overflow-hidden border bg-black/5 cursor-pointer shadow-sm group-hover:shadow-md transition-all"
+                            onClick={() =>
+                              setFullscreenImage(project.statusDetails!.image)
+                            }
+                          >
+                            <SafeImage
+                              src={project.statusDetails.image}
+                              alt="Rejection Image"
+                              fill
+                              className="object-cover"
+                            />
+                            <div className="absolute inset-0 bg-black/0 hover:bg-black/30 transition-colors flex items-center justify-center group">
+                              <Expand className="w-8 h-8 text-white opacity-0 group-hover:opacity-100 transition-all font-bold scale-90 group-hover:scale-100" />
                             </div>
                           </div>
                         )}
-                      </div>
-                    </CardContent>
-                  </Card>
-                </section>
-              )}
-
-              {/* Rejection Modal */}
-              <AdminRejectDialog
-                appId={project.id}
-                open={showRejectDialog}
-                onOpenChange={setShowRejectDialog}
-                onSuccess={handleSuccess}
-              />
-
-              {/* Accept Modal */}
-              <AdminAcceptDialog
-                appId={project.id}
-                appType={project.appType}
-                paymentInfo={project.paymentInfo}
-                open={showAcceptDialog}
-                onOpenChange={setShowAcceptDialog}
-                onSuccess={() => {
-                  refetch();
-                  setShowAcceptDialog(false);
-                }}
-              />
-
-              {/* Manage Testers Modal */}
-              <AdminManageTestersDialog
-                appId={project.id}
-                open={showManageTestersDialog}
-                onOpenChange={setShowManageTestersDialog}
-                onSuccess={() => refetch()}
-                totalRequired={project.totalTester}
-                currentAssigned={project.currentTester}
-                assignedTesterIds={
-                  project.testerRelations?.map((rel) => rel.testerId) || []
-                }
-              />
-
-              {/* Assigned Testers Table */}
-              {(project.status === "ACCEPTED" ||
-                project.status === "AVAILABLE" ||
-                project.status === "IN_TESTING" ||
-                project.status === "COMPLETED") && (
-                <AdminAssignedTestersTable
-                  testerRelations={project.testerRelations}
-                  appId={project.id}
-                  onRefetch={() => refetch()}
-                />
-              )}
-
-              {/* Tester Feedback Section */}
-              <section className="space-y-6 bg-card rounded-2xl p-3 sm:p-6 pt-2 sm:pt-8 w-full mt-10 shadow-sm">
-                <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-                  <div className="space-y-1">
-                    <h2 className="text-xl sm:text-2xl font-bold flex items-center gap-2">
-                      Tester Feedback
-                    </h2>
-                    <p className="text-sm sm:text-base text-muted-foreground">
-                      All feedback submitted by testers for this application.
-                    </p>
-                  </div>
-                  <Badge
-                    variant="secondary"
-                    className="text-xs sm:text-sm bg-primary/10 text-primary hover:bg-primary/20 transition-colors"
-                  >
-                    {project.feedback?.length || 0} Feedback
-                  </Badge>
-                </div>
-
-                {project.feedback && project.feedback.length > 0 ? (
-                  <div className="space-y-4">
-                    {project.feedback.map((feedback) => (
-                      <Card
-                        key={feedback.id}
-                        className="border border-border/50 shadow-sm overflow-hidden"
-                      >
-                        <CardContent className="p-4 sm:p-6">
-                          <div className="flex flex-col gap-4">
-                            {/* Header: Tester info and badges */}
-                            <div className="flex flex-wrap items-center gap-2 sm:gap-3">
-                              <Badge
-                                variant="outline"
-                                className="font-medium text-xs"
-                              >
-                                {feedback.tester?.name || "Unknown Tester"}
-                              </Badge>
-                              <FeedbackTypeBadge type={feedback.type} />
-                              {feedback.priority && (
-                                <FeedbackPriorityBadge
-                                  priority={feedback.priority}
-                                />
-                              )}
-                              <span className="text-xs text-muted-foreground ml-auto">
-                                {new Date(
-                                  feedback.createdAt,
-                                ).toLocaleDateString()}
-                              </span>
-                            </div>
-
-                            {/* Feedback Message */}
-                            <p className="text-sm text-foreground leading-relaxed whitespace-pre-wrap">
-                              {feedback.message}
-                            </p>
-
-                            {/* Media Attachment */}
-                            {feedback.media?.src && (
-                              <div className="pt-2">
-                                <p className="text-xs font-medium text-muted-foreground mb-2">
-                                  Attachment:
-                                </p>
-                                {feedback.media.type === "IMAGE" ? (
-                                  <div
-                                    className="relative w-full sm:w-48 h-32 rounded-lg overflow-hidden border cursor-pointer group"
-                                    onClick={() =>
-                                      setFullscreenImage(feedback.media!.src)
-                                    }
-                                  >
-                                    <SafeImage
-                                      src={feedback.media.src}
-                                      alt="Feedback attachment"
-                                      fill
-                                      className="object-cover"
-                                    />
-                                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors flex items-center justify-center">
-                                      <Expand className="w-6 h-6 text-white opacity-0 group-hover:opacity-100 transition-opacity" />
-                                    </div>
-                                  </div>
-                                ) : (
-                                  <div className="w-full sm:w-64 h-36 rounded-lg overflow-hidden border">
-                                    <video
-                                      src={feedback.media.src}
-                                      controls
-                                      className="w-full h-full object-contain bg-black"
-                                    />
-                                  </div>
-                                )}
-                              </div>
-                            )}
+                        {project.statusDetails?.video && (
+                          <div className="h-48 w-full sm:w-72 rounded-xl overflow-hidden border bg-black relative shadow-sm">
+                            <video
+                              src={project.statusDetails.video}
+                              controls
+                              className="w-full h-full object-contain"
+                            />
                           </div>
-                        </CardContent>
-                      </Card>
-                    ))}
-                  </div>
-                ) : (
-                  <div className="text-center py-12 border border-dashed border-border/50 rounded-xl bg-muted/20">
-                    <MessageSquare className="w-12 h-12 text-muted-foreground/50 mx-auto mb-3" />
-                    <p className="text-muted-foreground font-medium">
-                      No feedback yet
-                    </p>
-                    <p className="text-sm text-muted-foreground/70 mt-1">
-                      Testers haven't submitted any feedback for this app yet.
-                    </p>
-                  </div>
-                )}
-              </section>
+                        )}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+          )}
 
-              {/* Previous Instructions Block (for reference) */}
-              {project.instructionsForTester && (
-                <DeveloperInstructions
-                  instruction={project.instructionsForTester}
-                  mt={0}
-                />
-              )}
-            </div>{" "}
-            {/* End of lg:col-span-2 space-y-6 overflow-hidden */}
-            {/* Right Column (Sidebars) */}
-            <div className="lg:col-span-1 space-y-6">
-              <div className="block lg:hidden">
-                <AppInfoSidebar
-                  app={project}
-                  hideButton={true}
-                  visitUrl={visitUrl}
-                />
-              </div>
-              <aside className="hidden lg:block">
-                <AppInfoSidebar
-                  app={project}
-                  hideButton={true}
-                  visitUrl={visitUrl}
-                />
-              </aside>
+          {/* Active Testing Stats / Assigned Testers Placeholder Area */}
+
+          {/* Active Testing Stats / Assigned Testers Placeholder Area */}
+          {(project.status === "ACCEPTED" ||
+            project.status === "AVAILABLE" ||
+            project.status === "IN_TESTING" ||
+            project.status === "COMPLETED") && (
+            <div className="rounded-3xl overflow-hidden border border-border/50 shadow-sm bg-card">
+              <AdminAssignedTestersTable
+                testerRelations={project.testerRelations}
+                appId={project.id}
+                totalDays={project.totalDay || 14}
+                onRefetch={() => refetch()}
+                appType="PAID"
+              />
             </div>
-          </div>{" "}
-          {/* End of grid lg:grid-cols-3 gap-6 */}
+          )}
+
+          {/* Tester Feedback Section */}
+          <SubmittedFeedback
+            feedback={project.feedback}
+            isCompleted={true}
+            isLoading={isLoading}
+          />
+
+          {/* Developer Instructions Block */}
+          {project.instructionsForTester && (
+            <DeveloperInstructions
+              instruction={project.instructionsForTester}
+              mt={0}
+            />
+          )}
         </main>
       </div>
+
+      {/* Modals */}
+      <AdminRejectDialog
+        appId={project.id}
+        open={showRejectDialog}
+        onOpenChange={setShowRejectDialog}
+        onSuccess={handleSuccess}
+      />
+      <AdminAcceptDialog
+        appId={project.id}
+        appType={project.appType}
+        paymentInfo={project.paymentInfo}
+        open={showAcceptDialog}
+        onOpenChange={setShowAcceptDialog}
+        onSuccess={() => {
+          refetch();
+          setShowAcceptDialog(false);
+        }}
+        initialData={
+          project.status !== "IN_REVIEW"
+            ? {
+                totalTester: project.totalTester,
+                totalDay: project.totalDay,
+                minimumAndroidVersion: project.minimumAndroidVersion,
+                rewardMoney: project.rewardMoney,
+              }
+            : undefined
+        }
+      />
+      <AdminStartTestingDialog
+        appId={project.id}
+        open={showStartTestingDialog}
+        onOpenChange={setShowStartTestingDialog}
+        onSuccess={() => refetch()}
+      />
+      <AdminManageTestersDialog
+        appId={project.id}
+        open={showManageTestersDialog}
+        onOpenChange={setShowManageTestersDialog}
+        onSuccess={() => refetch()}
+        totalRequired={project.totalTester}
+        currentAssigned={project.currentTester}
+        assignedTesterIds={
+          project.testerRelations?.map((rel) => rel.testerId) || []
+        }
+      />
+
+      {/* Fullscreen Image Viewer */}
       {fullscreenImage && (
         <div
           className="fixed inset-0 bg-black/80 z-[60] flex items-center justify-center p-4 animate-in fade-in-0"
@@ -675,7 +602,7 @@ export default function AdminSubmissionDetailPage({
           <Button
             variant="ghost"
             size="icon"
-            className="absolute top-4 right-4 text-white hover:text-white bg-red-500/60 hover:bg-red-500 h-12 w-12 rounded-lg z-50"
+            className="absolute top-4 right-4 text-white hover:text-white bg-red-500/60 hover:bg-red-500 h-12 w-12 rounded-lg z-50 transition-colors"
             onClick={() => setFullscreenImage(null)}
           >
             <X className="w-8 h-8" />
@@ -689,7 +616,7 @@ export default function AdminSubmissionDetailPage({
               objectFit="contain"
               priority
               className="animate-in zoom-in-95"
-              loadingClassName="w-[300px] h-[600px] max-h-[80vh] rounded-[2.5rem] border-[6px] border-white/5 dark:border-white/10 shadow-2xl bg-muted/20"
+              loadingClassName="w-32 h-32 rounded-full border-4 border-white/10"
             />
           </div>
         </div>

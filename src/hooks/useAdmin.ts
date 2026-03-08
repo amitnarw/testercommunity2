@@ -19,6 +19,7 @@ import {
   getUserCounts,
   updateUserStatus,
   updateUserRole,
+  deleteUser,
   // Suggestions
   getAllSuggestions,
   getSuggestionById,
@@ -252,6 +253,15 @@ export function useUpdateUserRole(options?: UseMutationOptions<any, any, any>) {
   const mutation = useMutation({
     mutationFn: (payload: { id: string; role: string }) =>
       updateUserRole(payload),
+    ...options,
+  });
+
+  return mutation;
+}
+
+export function useDeleteUser(options?: UseMutationOptions<any, any, any>) {
+  const mutation = useMutation({
+    mutationFn: (id: string) => deleteUser(id),
     ...options,
   });
 

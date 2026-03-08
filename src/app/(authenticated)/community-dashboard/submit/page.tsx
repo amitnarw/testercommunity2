@@ -29,6 +29,7 @@ import {
   CheckCircle2,
   TrendingUp,
   Zap,
+  Clock,
 } from "lucide-react";
 import {
   FormField,

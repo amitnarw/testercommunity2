@@ -76,43 +76,54 @@ const AppInfoHeader = ({
           />
         </div>
 
-        {status && statusConfig && (
-          <div className="flex flex-col items-start justify-center gap-2 col-span-4 sm:col-span-1">
-            <p className="text-black dark:text-white font-bold">STATUS</p>
-            <p
-              className={`flex flex-row items-center gap-4 justify-center w-full text-lg sm:text-2xl font-bold rounded-xl p-3 ${
-                status === "Rejected"
-                  ? "bg-gradient-to-br from-red-500/60 to-red-500/20 dark:from-red-500/30 dark:to-red-500/5"
-                  : status === "Completed"
-                    ? "bg-gradient-to-br from-green-500/60 to-green-500/20 dark:from-green-500/30 dark:to-green-500/5"
-                    : status === "In Testing" || status === "Approved"
-                      ? "bg-gradient-to-br from-primary to-primary/20 dark:from-primary dark:to-primary/5"
-                      : "bg-gradient-to-br from-yellow-500/60 to-yellow-500/20 dark:from-yellow-500/30 dark:to-yellow-500/5"
-              } ${
-                status === "Rejected"
-                  ? "text-red-800 dark:text-red-500"
-                  : status === "Completed"
-                    ? "text-green-800 dark:text-green-500"
-                    : status === "In Testing" || status === "Approved"
-                      ? "text-primary-foreground dark:text-primary-foreground"
-                      : "text-yellow-800 dark:text-yellow-500"
-              }`}
-            >
-              <span>{statusConfig.icon}</span>
-              <span>
-                {status === "In Testing"
-                  ? "In Testing"
-                  : status === "Rejected"
-                    ? "Rejected"
-                    : status === "Completed"
-                      ? "Completed"
-                      : status === "Approved"
-                        ? "Approved"
-                        : "In Review"}
-              </span>
-            </p>
-          </div>
-        )}
+        {status &&
+          statusConfig &&
+          (() => {
+            const upperStatus = status.toUpperCase();
+            const isRejected = upperStatus === "REJECTED";
+            const isCompleted = upperStatus === "COMPLETED";
+            const isPrimary =
+              upperStatus === "IN_TESTING" ||
+              upperStatus === "APPROVED" ||
+              upperStatus === "AVAILABLE" ||
+              upperStatus === "IN TESTING";
+
+            let displayStatus = "In Review";
+            if (upperStatus === "IN_TESTING" || upperStatus === "IN TESTING")
+              displayStatus = "In Testing";
+            else if (isRejected) displayStatus = "Rejected";
+            else if (isCompleted) displayStatus = "Completed";
+            else if (upperStatus === "APPROVED") displayStatus = "Approved";
+            else if (upperStatus === "AVAILABLE") displayStatus = "Available";
+
+            return (
+              <div className="flex flex-col items-start justify-center gap-2 col-span-4 sm:col-span-1">
+                <p className="text-black dark:text-white font-bold">STATUS</p>
+                <p
+                  className={`flex flex-row items-center gap-4 justify-center w-full text-lg sm:text-2xl font-bold rounded-xl p-3 ${
+                    isRejected
+                      ? "bg-gradient-to-br from-red-500/60 to-red-500/20 dark:from-red-500/30 dark:to-red-500/5"
+                      : isCompleted
+                        ? "bg-gradient-to-br from-green-500/60 to-green-500/20 dark:from-green-500/30 dark:to-green-500/5"
+                        : isPrimary
+                          ? "bg-gradient-to-br from-primary to-primary/20 dark:from-primary dark:to-primary/5"
+                          : "bg-gradient-to-br from-yellow-500/60 to-yellow-500/20 dark:from-yellow-500/30 dark:to-yellow-500/5"
+                  } ${
+                    isRejected
+                      ? "text-red-800 dark:text-red-500"
+                      : isCompleted
+                        ? "text-green-800 dark:text-green-500"
+                        : isPrimary
+                          ? "text-primary-foreground dark:text-primary-foreground"
+                          : "text-yellow-800 dark:text-yellow-500"
+                  }`}
+                >
+                  <span>{statusConfig.icon}</span>
+                  <span>{displayStatus}</span>
+                </p>
+              </div>
+            );
+          })()}
       </div>
     </header>
   );
