@@ -8,7 +8,6 @@ import { motion, AnimatePresence } from "framer-motion";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import {
   Select,
@@ -33,45 +32,39 @@ import {
   CheckCircle,
   Moon,
   Sun,
+  User,
+  Briefcase,
+  Smartphone,
+  EyeOff,
+  Eye,
 } from "lucide-react";
 import { Logo } from "@/components/logo";
 import Link from "next/link";
 import { useTheme } from "next-themes";
-import { BackButton } from "@/components/back-button";
-import { Separator } from "@/components/ui/separator";
-import { InteractiveGridPattern } from "@/components/ui/interactive-grid-pattern";
 import { ROUTES } from "@/lib/routes";
+import { Progress } from "@/components/ui/progress";
+import { PageHeader } from "@/components/page-header";
+import { useRegisterTester } from "@/hooks/useAuth";
+import { LoadingButton } from "@/components/ui/loading-button";
+import { useRouter } from "next/navigation";
+import { InteractiveGridPattern } from "@/components/ui/interactive-grid-pattern";
+import { Separator } from "@/components/ui/separator";
+import { BackButton } from "@/components/back-button";
+import Image from "next/image";
 
-const GoogleIcon = (props: React.SVGProps<SVGSVGElement>) => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    viewBox="0 0 48 48"
-    width="24px"
-    height="24px"
-    {...props}
-  >
-    <path
-      fill="#FFC107"
-      d="M43.611,20.083H42V20H24v8h11.303c-1.649,4.657-6.08,8-11.303,8c-6.627,0-12-5.373-12-12s5.373-12,12-12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C12.955,4,4,12.955,4,24s8.955,20,20,20s20-8.955,20-20C44,22.659,43.862,21.35,43.611,20.083z"
-    />
-    <path
-      fill="#FF3D00"
-      d="M6.306,14.691l6.571,4.819C14.655,15.108,18.961,12,24,12c3.059,0,5.842,1.154,7.961,3.039l5.657-5.657C34.046,6.053,29.268,4,24,4C16.318,4,9.656,8.337,6.306,14.691z"
-    />
-    <path
-      fill="#4CAF50"
-      d="M24,44c5.166,0,9.86-1.977,13.409-5.192l-6.19-5.238C29.211,35.091,26.715,36,24,36c-5.222,0-9.655-3.307-11.28-7.792l-6.522,5.025C9.505,39.556,16.227,44,24,44z"
-    />
-    <path
-      fill="#1976D2"
-      d="M43.611,20.083H42V20H24v8h11.303c-0.792,2.237-2.231,4.166-4.087,5.574l6.19,5.238C39.99,36.626,44,31.1,44,24C44,22.659,43.862,21.35,43.611,20.083z"
-    />
-  </svg>
+const GoogleIcon = (props: React.HTMLAttributes<HTMLImageElement>) => (
+  <Image src="/google.svg" alt="Google" width={24} height={24} {...props} />
 );
 
 const step1Schema = z.object({
-  fullName: z.string().min(2, "Full name is required."),
-  email: z.string().email("Please enter a valid email."),
+  firstName: z.string().min(2, "First name is required."),
+  lastName: z.string().min(2, "Last name is required."),
+  email: z
+    .string()
+    .email("Please enter a valid email.")
+    .refine((value) => value.toLowerCase().endsWith("@gmail.com"), {
+      message: "Only Gmail addresses are allowed.",
+    }),
   password: z
     .string()
     .min(8, "Password must be at least 8 characters.")
@@ -85,9 +78,7 @@ const step2Schema = z.object({
     .refine((value) => value.some((item) => item), {
       message: "You have to select at least one testing type.",
     }),
-  bio: z
-    .string()
-    .min(50, "Please provide a brief bio of at least 50 characters."),
+  bio: z.string().optional(),
 });
 
 const step3Schema = z.object({
@@ -105,9 +96,24 @@ const step3Schema = z.object({
 const formSchemas = [step1Schema, step2Schema, step3Schema];
 
 const formSteps = [
-  { id: "account", title: "Account Information" },
-  { id: "experience", title: "Professional Background" },
-  { id: "skills", title: "Technical Skills & Devices" },
+  {
+    id: "account",
+    title: "Account Information",
+    description: "Your basic login details.",
+    icon: User,
+  },
+  {
+    id: "experience",
+    title: "Professional Background",
+    description: "Your testing experience and expertise.",
+    icon: Briefcase,
+  },
+  {
+    id: "skills",
+    title: "Technical Skills & Devices",
+    description: "Devices you own and skills.",
+    icon: Smartphone,
+  },
 ];
 
 const testingTypeOptions = [
@@ -139,7 +145,7 @@ const RegistrationSuccess = () => (
   <motion.div
     initial={{ opacity: 0, scale: 0.95 }}
     animate={{ opacity: 1, scale: 1 }}
-    className="text-center py-12"
+    className="flex flex-col items-center justify-center h-full p-12 text-center"
   >
     <CheckCircle className="mx-auto h-16 w-16 text-green-500 mb-4" />
     <h2 className="text-2xl font-bold">Application Submitted!</h2>
@@ -154,12 +160,48 @@ const RegistrationSuccess = () => (
   </motion.div>
 );
 
+const variants = {
+  enter: (direction: number) => ({
+    x: direction > 0 ? 300 : -300,
+    opacity: 0,
+  }),
+  center: {
+    zIndex: 1,
+    x: 0,
+    opacity: 1,
+  },
+  exit: (direction: number) => ({
+    zIndex: 0,
+    x: direction < 0 ? 300 : -300,
+    opacity: 0,
+  }),
+};
+
+// Full-page layout transitions
+const layoutVariants = {
+  initial: (delta: number) => ({
+    opacity: 0,
+    scale: delta >= 0 ? 0.95 : 1.05,
+    y: delta >= 0 ? 20 : -20,
+  }),
+  animate: { opacity: 1, scale: 1, y: 0 },
+  exit: (delta: number) => ({
+    opacity: 0,
+    scale: delta >= 0 ? 1.05 : 0.95,
+    y: delta >= 0 ? -20 : 20,
+  }),
+};
+
 export default function ProfessionalRegisterPage() {
   const [currentStep, setCurrentStep] = useState(0);
   const [previousStep, setPreviousStep] = useState(0);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const { setTheme, theme } = useTheme();
   const [isGoogleAuth, setIsGoogleAuth] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
+  const router = useRouter();
+
+  const { mutate, isPending, isSuccess, isError, error } = useRegisterTester();
 
   const form = useForm<any>({
     resolver: zodResolver(formSchemas[currentStep]),
@@ -190,16 +232,37 @@ export default function ProfessionalRegisterPage() {
     }
   };
 
+  const goToStep = async (index: number) => {
+    // Only allow going backwards or to validated next steps
+    if (index < currentStep) {
+      setPreviousStep(currentStep);
+      setCurrentStep(index);
+    }
+  };
+
   const processForm: SubmitHandler<any> = (data) => {
     console.log("Final application data:", data);
-    // Here you would typically send the data to your backend
-    setIsSubmitted(true);
+
+    mutate(
+      {
+        email: data.email,
+        password: data.password || "google.oauth.123", // Mock for quick testing if using google
+        firstName: data.firstName || "Pro",
+        lastName: data.lastName || "Tester",
+      },
+      {
+        onSuccess: () => {
+          setIsSubmitted(true);
+        },
+      },
+    );
   };
 
   const handleGoogleRegister = () => {
     setIsGoogleAuth(true);
     // Simulate pre-filling form with Google data
-    setValue("fullName", "Pro Tester", { shouldValidate: true });
+    setValue("firstName", "Pro", { shouldValidate: true });
+    setValue("lastName", "Tester", { shouldValidate: true });
     setValue("email", "pro.tester@gmail.com", { shouldValidate: true });
     next();
   };
@@ -207,409 +270,662 @@ export default function ProfessionalRegisterPage() {
   const delta = currentStep - previousStep;
 
   return (
-    <div className="min-h-screen w-full lg:grid lg:grid-cols-2">
-      <div className="relative w-full h-screen flex flex-col items-center justify-center p-6 bg-background">
-        <div className="absolute top-4 right-4 flex items-center gap-4">
-          <BackButton href="/" />
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+    <div className="min-h-screen w-full bg-background relative overflow-hidden">
+      <AnimatePresence mode="wait" custom={delta}>
+        {currentStep === 0 ? (
+          <motion.div
+            key="step-basic"
+            custom={delta}
+            variants={layoutVariants}
+            initial="initial"
+            animate="animate"
+            exit="exit"
+            transition={{ duration: 0.5, ease: "easeInOut" }}
+            className="min-h-screen w-full lg:grid lg:grid-cols-2 bg-background absolute inset-0 z-10"
           >
-            <Sun className="h-6 w-6 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-            <Moon className="absolute h-6 w-6 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-            <span className="sr-only">Toggle theme</span>
-          </Button>
-        </div>
-        <div className="max-w-md w-full">
-          {isSubmitted ? (
-            <RegistrationSuccess />
-          ) : (
-            <>
-              <div className="text-center mb-8">
-                <h2 className="text-2xl font-bold tracking-tight text-foreground">
-                  Become a Professional Tester
-                </h2>
-                <p className="text-muted-foreground mt-2">
-                  Already have an account?{" "}
-                  <Link
-                    href={ROUTES.TESTER.AUTH.LOGIN}
-                    className="text-primary hover:underline"
-                  >
-                    Log in
-                  </Link>
-                  .
+            <div className="relative w-full min-h-screen flex flex-col items-center justify-center px-2 sm:px-6 bg-background">
+              <div className="absolute top-2 sm:top-4 right-4 flex items-center gap-4">
+                <BackButton href="/" />
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  type="button"
+                  onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+                >
+                  <Sun className="h-6 w-6 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+                  <Moon className="absolute h-6 w-6 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+                  <span className="sr-only">Toggle theme</span>
+                </Button>
+              </div>
+
+              <div className="w-full max-w-md">
+                <FormProvider {...form}>
+                  <form className="overflow-hidden relative">
+                    <div className="rounded-2xl px-2 sm:px-6 pt-10 pb-20">
+                      <div className="mb-8 text-center">
+                        <h2 className="font-bold tracking-tight text-2xl sm:text-3xl bg-gradient-to-br from-primary to-accent bg-clip-text text-transparent">
+                          Create an Account
+                        </h2>
+
+                        <p className="text-muted-foreground mt-2">
+                          Or{" "}
+                          <Link
+                            href={ROUTES.TESTER.AUTH.LOGIN}
+                            className="text-primary hover:underline"
+                          >
+                            login to your account
+                          </Link>
+                        </p>
+                      </div>
+
+                      <div className="space-y-4">
+                        <Button
+                          variant="outline"
+                          className="w-full rounded-xl py-2 sm:py-6 text-sm sm:text-base"
+                          type="button"
+                          onClick={handleGoogleRegister}
+                        >
+                          <GoogleIcon className="mr-3" />
+                          Sign up with Google
+                        </Button>
+                        <div className="flex items-center gap-4">
+                          <Separator className="flex-1" />
+                          <span className="text-xs text-muted-foreground">
+                            OR
+                          </span>
+                          <Separator className="flex-1" />
+                        </div>
+                        <div className="grid grid-cols-2 gap-4">
+                          <FormField
+                            name="firstName"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>First Name</FormLabel>
+                                <FormControl>
+                                  <Input placeholder="John" {...field} />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                          <FormField
+                            name="lastName"
+                            render={({ field }) => (
+                              <FormItem>
+                                <FormLabel>Last Name</FormLabel>
+                                <FormControl>
+                                  <Input placeholder="Doe" {...field} />
+                                </FormControl>
+                                <FormMessage />
+                              </FormItem>
+                            )}
+                          />
+                        </div>
+                        <FormField
+                          name="email"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Email</FormLabel>
+                              <FormControl>
+                                <Input
+                                  placeholder="you@example.com"
+                                  {...field}
+                                />
+                              </FormControl>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                        <FormField
+                          name="password"
+                          render={({ field }) => (
+                            <FormItem>
+                              <FormLabel>Password</FormLabel>
+                              <div className="relative">
+                                <FormControl>
+                                  <Input
+                                    {...field}
+                                    type={showPassword ? "text" : "password"}
+                                    placeholder="Enter your password"
+                                  />
+                                </FormControl>
+                                <Button
+                                  type="button"
+                                  variant="ghost"
+                                  size="icon"
+                                  className="absolute right-0 top-1/2 -translate-y-1/2 p-0"
+                                  onClick={() => setShowPassword(!showPassword)}
+                                >
+                                  {showPassword ? (
+                                    <EyeOff size={16} />
+                                  ) : (
+                                    <Eye size={16} />
+                                  )}
+                                </Button>
+                              </div>
+                              <FormMessage />
+                            </FormItem>
+                          )}
+                        />
+                      </div>
+
+                      <div className="mt-8">
+                        <div className="flex justify-end">
+                          <Button
+                            className="text-sm sm:text-base w-full sm:w-auto"
+                            type="button"
+                            onClick={next}
+                          >
+                            Continue Application{" "}
+                            <ArrowRight className="ml-2 h-4 w-4" />
+                          </Button>
+                        </div>
+                      </div>
+                    </div>
+                  </form>
+                </FormProvider>
+              </div>
+            </div>
+            {/* Same login background right side */}
+            <div className="hidden lg:flex flex-col items-center justify-center p-6 text-center relative overflow-hidden bg-background">
+              <InteractiveGridPattern
+                className={cn(
+                  "[mask-image:radial-gradient(700px_circle_at_center,rgba(255,255,255,0.6),transparent)]",
+                  "transform -skew-y-12",
+                )}
+                width={30}
+                height={30}
+                squares={[30, 30]}
+                squaresClassName="hover:fill-gray-100"
+              />
+              <div className="relative z-10 flex flex-col items-center">
+                <Logo className="w-20 h-20 mb-4" />
+                <h1 className="text-3xl font-bold tracking-tight text-foreground">
+                  Join the Community
+                </h1>
+                <p className="mt-2 max-w-md mx-auto text-muted-foreground">
+                  Start your journey to building flawless apps with a global
+                  community of testers.
                 </p>
               </div>
-              <FormProvider {...form}>
-                <form
-                  onSubmit={handleSubmit(processForm)}
-                  className="space-y-6 overflow-hidden relative"
-                >
-                  <div className="flex justify-center items-center gap-2 mb-8">
-                    {formSteps.map((step, index) => (
-                      <div
-                        key={step.id}
-                        className={cn(
-                          "h-2 rounded-full transition-all",
-                          currentStep >= index
-                            ? "bg-primary w-12"
-                            : "bg-muted w-4",
-                        )}
-                      ></div>
-                    ))}
-                  </div>
-                  <AnimatePresence initial={false} custom={delta}>
-                    <motion.div
-                      key={currentStep}
-                      custom={delta}
-                      initial={{ opacity: 0, x: delta > 0 ? 100 : -100 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      exit={{ opacity: 0, x: delta > 0 ? -100 : 100 }}
-                      transition={{
-                        type: "tween",
-                        duration: 0.3,
-                        ease: "easeInOut",
-                      }}
-                      className="min-h-[300px]"
-                    >
-                      <h3 className="font-semibold text-lg mb-4">
-                        {formSteps[currentStep].title}
-                      </h3>
+            </div>
+          </motion.div>
+        ) : (
+          <motion.div
+            key="step-advanced"
+            custom={delta}
+            variants={layoutVariants}
+            initial="initial"
+            animate="animate"
+            exit="exit"
+            transition={{ duration: 0.5, ease: "easeInOut", delay: 0.2 }}
+            className="h-full min-h-[100dvh] w-full flex flex-col items-center justify-start sm:justify-center p-4 py-8 bg-background relative z-20"
+          >
+            <div className="absolute top-4 right-4 flex items-center gap-4 z-50">
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+              >
+                <Sun className="h-6 w-6 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+                <Moon className="absolute h-6 w-6 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+                <span className="sr-only">Toggle theme</span>
+              </Button>
+            </div>
 
-                      {currentStep === 0 && (
-                        <div className="space-y-4">
-                          <Button
-                            variant="outline"
-                            className="w-full rounded-xl py-6 text-base"
-                            onClick={handleGoogleRegister}
+            <PageHeader
+              title="Application Details"
+              backHref="/"
+              onBack={prev}
+              className="w-full max-w-4xl mx-auto mb-4"
+            />
+
+            <div className="w-full max-w-4xl h-auto min-h-[70vh] bg-card rounded-2xl shadow-2xl shadow-primary/10 border border-dashed flex flex-col relative z-20">
+              {isSubmitted ? (
+                <RegistrationSuccess />
+              ) : (
+                <div className="flex flex-col md:flex-row flex-1 relative">
+                  {/* Sidebar */}
+                  <aside className="hidden md:flex flex-col w-1/3 bg-secondary/50 p-8 justify-between border-r rounded-l-xl">
+                    <div>
+                      <h2 className="text-xl font-bold">Your Details</h2>
+                      <p className="text-muted-foreground mt-2 text-xs">
+                        Fill in your experience and devices to find optimal bug
+                        bounties.
+                      </p>
+                    </div>
+                    <nav className="space-y-2">
+                      {formSteps.slice(1).map((step, index) => {
+                        const actualStepId = index + 1;
+                        return (
+                          <button
+                            key={step.id}
+                            onClick={() => goToStep(actualStepId)}
+                            disabled={actualStepId > currentStep}
+                            className={cn(
+                              "flex items-center gap-4 p-3 py-2 rounded-lg transition-all duration-300 w-full text-left",
+                              currentStep === actualStepId
+                                ? "bg-primary/10 text-primary"
+                                : "text-muted-foreground",
+                              actualStepId < currentStep
+                                ? "hover:bg-accent cursor-pointer"
+                                : "cursor-not-allowed",
+                            )}
                           >
-                            <GoogleIcon className="mr-3" />
-                            Sign up with Google
-                          </Button>
-                          <div className="flex items-center gap-4">
-                            <Separator className="flex-1 bg-border/50" />
-                            <span className="text-xs text-muted-foreground">
-                              OR
-                            </span>
-                            <Separator className="flex-1 bg-border/50" />
-                          </div>
-                          <FormField
-                            name="fullName"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>Full Name</FormLabel>
-                                <FormControl>
-                                  <Input placeholder="John Doe" {...field} />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                          <FormField
-                            name="email"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>Email</FormLabel>
-                                <FormControl>
-                                  <Input
-                                    placeholder="you@example.com"
-                                    {...field}
+                            <div
+                              className={cn(
+                                "p-2 rounded-full border-2 transition-all",
+                                currentStep === actualStepId
+                                  ? "bg-primary text-primary-foreground border-primary"
+                                  : "bg-secondary border-border",
+                                actualStepId < currentStep &&
+                                  "bg-green-500/20 text-green-600 border-green-500/30",
+                              )}
+                            >
+                              {actualStepId < currentStep ? (
+                                <CheckCircle className="w-4 h-4" />
+                              ) : (
+                                <step.icon className="w-4 h-4" />
+                              )}
+                            </div>
+                            <div>
+                              <p className="font-bold text-sm">
+                                Step {index + 1}
+                              </p>
+                              <p className="text-xs">{step.title}</p>
+                            </div>
+                          </button>
+                        );
+                      })}
+                    </nav>
+                    <p className="text-xs text-muted-foreground">© inTesters</p>
+                  </aside>
+
+                  {/* Main Content */}
+                  <main className="flex-1 flex flex-col p-3 pt-6 md:p-8">
+                    {/* Mobile Stepper */}
+                    <div className="md:hidden mb-6">
+                      <nav className="grid grid-cols-2 gap-2">
+                        {formSteps.slice(1).map((step, index) => {
+                          const actualStepId = index + 1;
+                          return (
+                            <button
+                              key={`mobile-${step.id}`}
+                              onClick={() => goToStep(actualStepId)}
+                              disabled={actualStepId >= currentStep}
+                              className={cn(
+                                "flex flex-col items-center justify-center gap-2 py-2 rounded-lg transition-all duration-300",
+                                currentStep === actualStepId
+                                  ? "bg-primary/10"
+                                  : "",
+                                actualStepId < currentStep
+                                  ? "cursor-pointer"
+                                  : "cursor-not-allowed opacity-50",
+                              )}
+                            >
+                              <div
+                                className={cn(
+                                  "p-2 rounded-full border-2 transition-all",
+                                  currentStep === actualStepId
+                                    ? "border-primary"
+                                    : "border-border",
+                                  actualStepId < currentStep &&
+                                    "bg-green-500/20 border-green-500/30",
+                                )}
+                              >
+                                {actualStepId < currentStep ? (
+                                  <CheckCircle className="w-4 h-4 text-green-600" />
+                                ) : (
+                                  <step.icon
+                                    className={cn(
+                                      "w-4 h-4",
+                                      currentStep === actualStepId
+                                        ? "text-primary"
+                                        : "text-muted-foreground",
+                                    )}
                                   />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                          <FormField
-                            name="password"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>Password</FormLabel>
-                                <FormControl>
-                                  <Input
-                                    type="password"
-                                    placeholder="••••••••"
-                                    {...field}
-                                  />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                        </div>
-                      )}
-                      {currentStep === 1 && (
-                        <div className="space-y-4">
-                          <FormField
-                            name="experience"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>Years of QA Experience</FormLabel>
-                                <Select
-                                  onValueChange={field.onChange}
-                                  defaultValue={field.value}
-                                >
-                                  <FormControl>
-                                    <SelectTrigger>
-                                      <SelectValue placeholder="Select your experience level" />
-                                    </SelectTrigger>
-                                  </FormControl>
-                                  <SelectContent>
-                                    <SelectItem value="0-1">
-                                      0-1 years
-                                    </SelectItem>
-                                    <SelectItem value="1-3">
-                                      1-3 years
-                                    </SelectItem>
-                                    <SelectItem value="3-5">
-                                      3-5 years
-                                    </SelectItem>
-                                    <SelectItem value="5+">5+ years</SelectItem>
-                                  </SelectContent>
-                                </Select>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                          <FormField
-                            name="testingTypes"
-                            render={() => (
-                              <FormItem>
-                                <FormLabel>Areas of Expertise</FormLabel>
-                                <div className="grid grid-cols-2 gap-2">
-                                  {testingTypeOptions.map((item) => (
+                                )}
+                              </div>
+                            </button>
+                          );
+                        })}
+                      </nav>
+                      <Progress
+                        value={(currentStep / (formSteps.length - 1)) * 100}
+                        className="h-1 mt-4"
+                      />
+                      <div className="text-center mt-3">
+                        <p className="text-sm font-semibold">
+                          {formSteps[currentStep].title}
+                        </p>
+                        <p className="text-xs text-muted-foreground mt-1">
+                          {formSteps[currentStep].description}
+                        </p>
+                      </div>
+                    </div>
+
+                    <FormProvider {...form}>
+                      <form
+                        onSubmit={handleSubmit(processForm)}
+                        className="flex-grow flex flex-col relative w-full"
+                      >
+                        <div className="flex-grow relative min-h-[460px] md:min-h-[360px] w-full overflow-hidden px-1">
+                          <AnimatePresence initial={false} custom={delta}>
+                            <motion.div
+                              key={currentStep}
+                              custom={delta}
+                              variants={variants}
+                              initial="enter"
+                              animate="center"
+                              exit="exit"
+                              transition={{
+                                type: "tween",
+                                duration: 0.4,
+                                ease: "easeInOut",
+                              }}
+                              className="absolute w-full h-full pb-10 overflow-y-auto pr-1"
+                            >
+                              <h3 className="font-bold text-xl mb-4 hidden md:block">
+                                {formSteps[currentStep].title}
+                              </h3>
+
+                              <div className="w-full">
+                                {currentStep === 1 && (
+                                  <div className="space-y-5 max-w-md mx-auto md:mx-0">
                                     <FormField
-                                      key={item.id}
-                                      control={form.control}
-                                      name="testingTypes"
+                                      name="experience"
                                       render={({ field }) => (
-                                        <FormItem
-                                          key={item.id}
-                                          className="flex flex-row items-center space-x-3 space-y-0"
-                                        >
-                                          <FormControl>
-                                            <Checkbox
-                                              checked={field.value?.includes(
-                                                item.id,
-                                              )}
-                                              onCheckedChange={(checked) => {
-                                                return checked
-                                                  ? field.onChange([
-                                                      ...(field.value || []),
-                                                      item.id,
-                                                    ])
-                                                  : field.onChange(
-                                                      field.value?.filter(
-                                                        (value: string) =>
-                                                          value !== item.id,
-                                                      ),
-                                                    );
-                                              }}
-                                            />
-                                          </FormControl>
-                                          <FormLabel className="text-sm font-normal">
-                                            {item.label}
+                                        <FormItem>
+                                          <FormLabel>
+                                            Years of QA Experience
                                           </FormLabel>
+                                          <Select
+                                            onValueChange={field.onChange}
+                                            defaultValue={field.value}
+                                          >
+                                            <FormControl>
+                                              <SelectTrigger>
+                                                <SelectValue placeholder="Select your experience level" />
+                                              </SelectTrigger>
+                                            </FormControl>
+                                            <SelectContent>
+                                              <SelectItem value="0-1">
+                                                0-1 years
+                                              </SelectItem>
+                                              <SelectItem value="1-3">
+                                                1-3 years
+                                              </SelectItem>
+                                              <SelectItem value="3-5">
+                                                3-5 years
+                                              </SelectItem>
+                                              <SelectItem value="5+">
+                                                5+ years
+                                              </SelectItem>
+                                            </SelectContent>
+                                          </Select>
+                                          <FormMessage />
                                         </FormItem>
                                       )}
                                     />
-                                  ))}
-                                </div>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                          <FormField
-                            name="bio"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>Professional Bio</FormLabel>
-                                <FormControl>
-                                  <Textarea
-                                    placeholder="Tell us about your experience..."
-                                    {...field}
-                                  />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                        </div>
-                      )}
-                      {currentStep === 2 && (
-                        <div className="space-y-6">
-                          <FormField
-                            control={form.control}
-                            name="devices"
-                            render={() => (
-                              <FormItem>
-                                <FormLabel>Device Inventory</FormLabel>
-                                <div className="grid grid-cols-2 gap-2">
-                                  {deviceOptions.map((item) => (
                                     <FormField
-                                      key={item.id}
+                                      name="testingTypes"
+                                      render={() => (
+                                        <FormItem>
+                                          <FormLabel>
+                                            Areas of Expertise
+                                          </FormLabel>
+                                          <div className="grid grid-cols-2 gap-3">
+                                            {testingTypeOptions.map((item) => (
+                                              <FormField
+                                                key={item.id}
+                                                control={form.control}
+                                                name="testingTypes"
+                                                render={({ field }) => (
+                                                  <FormItem
+                                                    key={item.id}
+                                                    className="flex flex-row items-center space-x-3 space-y-0"
+                                                  >
+                                                    <FormControl>
+                                                      <Checkbox
+                                                        checked={field.value?.includes(
+                                                          item.id,
+                                                        )}
+                                                        onCheckedChange={(
+                                                          checked,
+                                                        ) => {
+                                                          return checked
+                                                            ? field.onChange([
+                                                                ...(field.value ||
+                                                                  []),
+                                                                item.id,
+                                                              ])
+                                                            : field.onChange(
+                                                                field.value?.filter(
+                                                                  (
+                                                                    value: string,
+                                                                  ) =>
+                                                                    value !==
+                                                                    item.id,
+                                                                ),
+                                                              );
+                                                        }}
+                                                      />
+                                                    </FormControl>
+                                                    <FormLabel className="text-sm font-normal">
+                                                      {item.label}
+                                                    </FormLabel>
+                                                  </FormItem>
+                                                )}
+                                              />
+                                            ))}
+                                          </div>
+                                          <FormMessage />
+                                        </FormItem>
+                                      )}
+                                    />
+                                    <FormField
+                                      name="bio"
+                                      render={({ field }) => (
+                                        <FormItem>
+                                          <FormLabel>
+                                            Professional Bio (Optional)
+                                          </FormLabel>
+                                          <FormControl>
+                                            <Textarea
+                                              className="resize-none"
+                                              placeholder="Tell us about your experience..."
+                                              {...field}
+                                            />
+                                          </FormControl>
+                                          <FormMessage />
+                                        </FormItem>
+                                      )}
+                                    />
+                                  </div>
+                                )}
+
+                                {currentStep === 2 && (
+                                  <div className="space-y-6 w-full max-w-lg mx-auto md:mx-0">
+                                    <FormField
                                       control={form.control}
                                       name="devices"
-                                      render={({ field }) => (
-                                        <FormItem
-                                          key={item.id}
-                                          className="flex flex-row items-start space-x-3 space-y-0"
-                                        >
-                                          <FormControl>
-                                            <Checkbox
-                                              checked={field.value?.includes(
-                                                item.id,
-                                              )}
-                                              onCheckedChange={(checked) => {
-                                                return checked
-                                                  ? field.onChange([
-                                                      ...(field.value || []),
-                                                      item.id,
-                                                    ])
-                                                  : field.onChange(
-                                                      field.value?.filter(
-                                                        (value: string) =>
-                                                          value !== item.id,
-                                                      ),
-                                                    );
-                                              }}
-                                            />
-                                          </FormControl>
-                                          <FormLabel className="text-sm font-normal">
-                                            {item.label}
+                                      render={() => (
+                                        <FormItem>
+                                          <FormLabel>
+                                            Device Inventory
                                           </FormLabel>
+                                          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                                            {deviceOptions.map((item) => (
+                                              <FormField
+                                                key={item.id}
+                                                control={form.control}
+                                                name="devices"
+                                                render={({ field }) => (
+                                                  <FormItem
+                                                    key={item.id}
+                                                    className="flex flex-row items-start space-x-3 space-y-0"
+                                                  >
+                                                    <FormControl>
+                                                      <Checkbox
+                                                        checked={field.value?.includes(
+                                                          item.id,
+                                                        )}
+                                                        onCheckedChange={(
+                                                          checked,
+                                                        ) => {
+                                                          return checked
+                                                            ? field.onChange([
+                                                                ...(field.value ||
+                                                                  []),
+                                                                item.id,
+                                                              ])
+                                                            : field.onChange(
+                                                                field.value?.filter(
+                                                                  (
+                                                                    value: string,
+                                                                  ) =>
+                                                                    value !==
+                                                                    item.id,
+                                                                ),
+                                                              );
+                                                        }}
+                                                      />
+                                                    </FormControl>
+                                                    <FormLabel className="text-sm font-normal">
+                                                      {item.label}
+                                                    </FormLabel>
+                                                  </FormItem>
+                                                )}
+                                              />
+                                            ))}
+                                          </div>
+                                          <FormMessage />
                                         </FormItem>
                                       )}
                                     />
-                                  ))}
-                                </div>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                          <FormField
-                            control={form.control}
-                            name="osVersions"
-                            render={() => (
-                              <FormItem>
-                                <FormLabel>Operating Systems</FormLabel>
-                                <div className="grid grid-cols-2 gap-2">
-                                  {osOptions.map((item) => (
                                     <FormField
-                                      key={item.id}
                                       control={form.control}
                                       name="osVersions"
-                                      render={({ field }) => (
-                                        <FormItem
-                                          key={item.id}
-                                          className="flex flex-row items-start space-x-3 space-y-0"
-                                        >
-                                          <FormControl>
-                                            <Checkbox
-                                              checked={field.value?.includes(
-                                                item.id,
-                                              )}
-                                              onCheckedChange={(checked) => {
-                                                return checked
-                                                  ? field.onChange([
-                                                      ...(field.value || []),
-                                                      item.id,
-                                                    ])
-                                                  : field.onChange(
-                                                      field.value?.filter(
-                                                        (value: string) =>
-                                                          value !== item.id,
-                                                      ),
-                                                    );
-                                              }}
-                                            />
-                                          </FormControl>
-                                          <FormLabel className="text-sm font-normal">
-                                            {item.label}
+                                      render={() => (
+                                        <FormItem>
+                                          <FormLabel>
+                                            Operating Systems
                                           </FormLabel>
+                                          <div className="grid grid-cols-2 gap-3">
+                                            {osOptions.map((item) => (
+                                              <FormField
+                                                key={item.id}
+                                                control={form.control}
+                                                name="osVersions"
+                                                render={({ field }) => (
+                                                  <FormItem
+                                                    key={item.id}
+                                                    className="flex flex-row items-start space-x-3 space-y-0"
+                                                  >
+                                                    <FormControl>
+                                                      <Checkbox
+                                                        checked={field.value?.includes(
+                                                          item.id,
+                                                        )}
+                                                        onCheckedChange={(
+                                                          checked,
+                                                        ) => {
+                                                          return checked
+                                                            ? field.onChange([
+                                                                ...(field.value ||
+                                                                  []),
+                                                                item.id,
+                                                              ])
+                                                            : field.onChange(
+                                                                field.value?.filter(
+                                                                  (
+                                                                    value: string,
+                                                                  ) =>
+                                                                    value !==
+                                                                    item.id,
+                                                                ),
+                                                              );
+                                                        }}
+                                                      />
+                                                    </FormControl>
+                                                    <FormLabel className="text-sm font-normal">
+                                                      {item.label}
+                                                    </FormLabel>
+                                                  </FormItem>
+                                                )}
+                                              />
+                                            ))}
+                                          </div>
+                                          <FormMessage />
                                         </FormItem>
                                       )}
                                     />
-                                  ))}
-                                </div>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
-                          <FormField
-                            name="languages"
-                            render={({ field }) => (
-                              <FormItem>
-                                <FormLabel>
-                                  Programming/Scripting Languages (Optional)
-                                </FormLabel>
-                                <FormControl>
-                                  <Input
-                                    placeholder="e.g., Python, JavaScript, Java"
-                                    {...field}
-                                  />
-                                </FormControl>
-                                <FormMessage />
-                              </FormItem>
-                            )}
-                          />
+                                    <FormField
+                                      name="languages"
+                                      render={({ field }) => (
+                                        <FormItem>
+                                          <FormLabel>
+                                            Programming/Scripting Languages
+                                            (Optional)
+                                          </FormLabel>
+                                          <FormControl>
+                                            <Input
+                                              placeholder="e.g., Python, JavaScript, Java"
+                                              {...field}
+                                            />
+                                          </FormControl>
+                                          <FormMessage />
+                                        </FormItem>
+                                      )}
+                                    />
+                                  </div>
+                                )}
+                              </div>
+                            </motion.div>
+                          </AnimatePresence>
                         </div>
-                      )}
-                    </motion.div>
-                  </AnimatePresence>
-                  <div className="mt-8 pt-5 border-t">
-                    <div className="flex justify-between">
-                      <Button
-                        type="button"
-                        onClick={prev}
-                        disabled={currentStep === 0}
-                        variant="ghost"
-                        className={cn(currentStep === 0 && "invisible")}
-                      >
-                        <ArrowLeft className="mr-2 h-4 w-4" /> Back
-                      </Button>
-                      {currentStep < formSteps.length - 1 && (
-                        <Button type="button" onClick={next}>
-                          Next <ArrowRight className="ml-2 h-4 w-4" />
-                        </Button>
-                      )}
-                      {currentStep === formSteps.length - 1 && (
-                        <Button type="submit">
-                          <UserPlus className="mr-2 h-4 w-4" /> Submit
-                          Application
-                        </Button>
-                      )}
-                    </div>
-                  </div>
-                </form>
-              </FormProvider>
-            </>
-          )}
-        </div>
-      </div>
-      <div className="hidden lg:flex flex-col items-center justify-center p-6 text-center relative overflow-hidden bg-background">
-        <InteractiveGridPattern
-          className={cn(
-            "[mask-image:radial-gradient(700px_circle_at_center,rgba(255,255,255,0.6),transparent)]",
-            "transform -skew-y-12",
-          )}
-          width={30}
-          height={30}
-          squares={[30, 30]}
-          squaresClassName="hover:fill-gray-100"
-        />
-        <div className="relative z-10 flex flex-col items-center">
-          <Logo className="w-20 h-20 mb-4" />
-          <h1 className="text-3xl font-bold tracking-tight text-foreground">
-            Join the Elite
-          </h1>
-          <p className="mt-2 max-w-md mx-auto text-muted-foreground">
-            Become a part of our professional testing team and help shape the
-            future of top-tier applications.
-          </p>
-        </div>
-      </div>
+
+                        {/* Controls */}
+                        <div className="mt-auto pt-4 border-t flex items-center justify-between gap-4">
+                          <Button type="button" variant="ghost" onClick={prev}>
+                            <ArrowLeft className="mr-2 h-4 w-4" /> Back to{" "}
+                            {currentStep === 1 ? "Account Info" : "Experience"}
+                          </Button>
+
+                          <div className="flex items-center gap-4">
+                            {currentStep < formSteps.length - 1 ? (
+                              <Button onClick={next} type="button">
+                                Next Step{" "}
+                                <ArrowRight className="ml-2 h-4 w-4" />
+                              </Button>
+                            ) : (
+                              <LoadingButton
+                                isLoading={isPending}
+                                isSuccess={isSuccess}
+                                isError={isError}
+                                type="submit"
+                              >
+                                <UserPlus className="mr-2 h-4 w-4" /> Submit
+                                Application
+                              </LoadingButton>
+                            )}
+                          </div>
+                        </div>
+                        {isError && !isPending && (
+                          <div className="bg-destructive/10 text-destructive p-3 rounded-md mt-4 text-sm">
+                            {error?.message ||
+                              "An error occurred during registration. Please try again."}
+                          </div>
+                        )}
+                      </form>
+                    </FormProvider>
+                  </main>
+                </div>
+              )}
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

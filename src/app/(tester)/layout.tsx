@@ -28,15 +28,21 @@ export default function ProfessionalLayout({
       pathname === ROUTES.TESTER.AUTH.LOGIN ||
       pathname === ROUTES.TESTER.AUTH.REGISTER;
 
-    if (
-      !session?.user?.id ||
-      (!isAuthPage && roleName !== "tester" && roleName !== "super_admin")
-    ) {
-      router.replace(ROUTES.TESTER.AUTH.LOGIN);
+    if (!isAuthPage) {
+      if (
+        !session?.user?.id ||
+        (roleName !== "tester" && roleName !== "super_admin")
+      ) {
+        router.replace(ROUTES.TESTER.AUTH.LOGIN);
+      }
       return;
     }
 
-    if (session?.user?.id && roleName === "tester" && isAuthPage) {
+    if (
+      session?.user?.id &&
+      (roleName === "tester" || roleName === "super_admin") &&
+      isAuthPage
+    ) {
       router.replace(ROUTES.TESTER.DASHBOARD);
     }
   }, [pathname, router, session, isPending]);

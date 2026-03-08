@@ -43,6 +43,12 @@ interface AdminAcceptDialogProps {
     currency: string;
     isPersisted?: boolean;
   } | null;
+  initialData?: {
+    totalTester?: number;
+    totalDay?: number;
+    minimumAndroidVersion?: number;
+    rewardMoney?: number;
+  };
 }
 
 const ANDROID_VERSIONS = [
@@ -57,9 +63,11 @@ const ANDROID_VERSIONS = [
   "10.0",
   "11.0",
   "12.0",
+  "12.1",
   "13.0",
   "14.0",
   "15.0",
+  "16.0",
 ];
 
 export function AdminAcceptDialog({
@@ -69,13 +77,23 @@ export function AdminAcceptDialog({
   onSuccess,
   appType,
   paymentInfo,
+  initialData,
 }: AdminAcceptDialogProps) {
-  // Default to 14 days (Google Play compliance) and sensible tester count
-  const [totalTester, setTotalTester] = useState<string>("20");
-  const [totalDay, setTotalDay] = useState<string>("14");
-  const [minimumAndroidVersion, setMinimumAndroidVersion] =
-    useState<string>("");
-  const [rewardPoints, setRewardPoints] = useState<string>("");
+  const isEditing = !!initialData;
+
+  // Initialize with initialData if provided, otherwise defaults
+  const [totalTester, setTotalTester] = useState<string>(
+    initialData?.totalTester?.toString() || "20",
+  );
+  const [totalDay, setTotalDay] = useState<string>(
+    initialData?.totalDay?.toString() || "14",
+  );
+  const [minimumAndroidVersion, setMinimumAndroidVersion] = useState<string>(
+    initialData?.minimumAndroidVersion?.toString() || "",
+  );
+  const [rewardPoints, setRewardPoints] = useState<string>(
+    initialData?.rewardMoney?.toString() || "",
+  );
 
   const { mutate: acceptApp, isPending: isAccepting } = useAcceptApp({
     onSuccess: () => {
@@ -142,74 +160,76 @@ export function AdminAcceptDialog({
           <DialogHeader>
             <DialogTitle className="text-green-600 flex items-center gap-2 text-xl font-bold">
               <CheckCircle2 className="w-6 h-6" />
-              Approve Request
+              {isEditing ? "Update Plan" : "Approve Request"}
             </DialogTitle>
             <DialogDescription className="text-green-600/70">
-              Set the testing parameters and review the financial summary.
+              {isEditing
+                ? "Update the current testing parameters."
+                : "Set the testing parameters and review the financial summary."}
             </DialogDescription>
           </DialogHeader>
         </div>
 
-        <div className="p-6 space-y-6 max-h-[70vh] overflow-y-auto custom-scrollbar">
-          {appType === "PAID" && (
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label
-                  htmlFor="totalTester"
-                  className="text-xs font-bold uppercase tracking-wider text-muted-foreground"
-                >
-                  Total Paid Testers
-                </Label>
-                <Input
-                  id="totalTester"
-                  type="number"
-                  placeholder="e.g. 20"
-                  value={totalTester}
-                  onChange={(e) => setTotalTester(e.target.value)}
-                  min="1"
-                  className="h-11"
-                />
-              </div>
-              <div className="space-y-2">
-                <Label
-                  htmlFor="totalDay"
-                  className="text-xs font-bold uppercase tracking-wider text-muted-foreground"
-                >
-                  Total Duration (Days)
-                </Label>
-                <Input
-                  id="totalDay"
-                  type="number"
-                  placeholder="e.g. 14"
-                  value={totalDay}
-                  onChange={(e) => setTotalDay(e.target.value)}
-                  min="1"
-                  className="h-11"
-                />
-              </div>
-              <div className="space-y-2">
-                <Label
-                  htmlFor="minAndroid"
-                  className="text-xs font-bold uppercase tracking-wider text-muted-foreground"
-                >
-                  Min Android Version
-                </Label>
-                <Select
-                  value={minimumAndroidVersion}
-                  onValueChange={setMinimumAndroidVersion}
-                >
-                  <SelectTrigger id="minAndroid" className="h-11">
-                    <SelectValue placeholder="Select version" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {ANDROID_VERSIONS.map((v) => (
-                      <SelectItem key={v} value={v}>
-                        Android {v}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
+        <div className="p-6 space-y-6 max-h-[70vh] overflow-y-auto">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label
+                htmlFor="totalTester"
+                className="text-xs font-bold uppercase tracking-wider text-muted-foreground"
+              >
+                Total Testers
+              </Label>
+              <Input
+                id="totalTester"
+                type="number"
+                placeholder="e.g. 20"
+                value={totalTester}
+                onChange={(e) => setTotalTester(e.target.value)}
+                min="1"
+                className="h-11"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label
+                htmlFor="totalDay"
+                className="text-xs font-bold uppercase tracking-wider text-muted-foreground"
+              >
+                Total Duration (Days)
+              </Label>
+              <Input
+                id="totalDay"
+                type="number"
+                placeholder="e.g. 14"
+                value={totalDay}
+                onChange={(e) => setTotalDay(e.target.value)}
+                min="1"
+                className="h-11"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label
+                htmlFor="minAndroid"
+                className="text-xs font-bold uppercase tracking-wider text-muted-foreground"
+              >
+                Min Android Version
+              </Label>
+              <Select
+                value={minimumAndroidVersion}
+                onValueChange={setMinimumAndroidVersion}
+              >
+                <SelectTrigger id="minAndroid" className="h-11">
+                  <SelectValue placeholder="Select version" />
+                </SelectTrigger>
+                <SelectContent>
+                  {ANDROID_VERSIONS.map((v) => (
+                    <SelectItem key={v} value={v}>
+                      Android {v}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            {appType === "PAID" && (
               <div className="space-y-2">
                 <Label
                   htmlFor="reward"
@@ -227,33 +247,20 @@ export function AdminAcceptDialog({
                   className="h-11"
                 />
               </div>
-            </div>
-          )}
+            )}
+          </div>
 
           {appType === "PAID" && (
             <div className="mt-2 p-5 bg-secondary/30 rounded-2xl border border-border/50 space-y-4">
               <h4 className="text-sm font-bold flex items-center gap-2 text-primary">
                 Financial Summary
-                <span className="text-[10px] font-normal text-muted-foreground ml-1">
-                  Professional Plan · ₹{PLAN_PRICE_INR.toLocaleString("en-IN")}{" "}
-                  / cycle
-                </span>
               </h4>
 
               <div className="space-y-2.5">
                 {/* Income */}
                 <div className="flex justify-between items-center text-sm">
                   <span className="text-muted-foreground flex items-center gap-1.5">
-                    Income from User:
-                    {isIncomeKnown ? (
-                      <span className="px-1.5 py-0.5 rounded-md bg-blue-100 dark:bg-blue-900/30 text-[10px] font-bold text-blue-600 dark:text-blue-400 uppercase tracking-tight">
-                        Confirmed
-                      </span>
-                    ) : (
-                      <span className="px-1.5 py-0.5 rounded-md bg-amber-100 dark:bg-amber-900/30 text-[10px] font-bold text-amber-600 dark:text-amber-400 uppercase tracking-tight">
-                        Plan Price
-                      </span>
-                    )}
+                    Amount Paid by Developer/User:
                   </span>
                   <span className="font-bold text-blue-600">
                     ₹{income.toLocaleString("en-IN")}
@@ -273,20 +280,10 @@ export function AdminAcceptDialog({
                   </div>
                 )}
 
-                {/* Total Payout */}
-                <div className="flex justify-between items-center text-sm">
-                  <span className="text-muted-foreground">
-                    Total Payout (Expense):
-                  </span>
-                  <span className="font-bold text-red-500">
-                    -₹{totalPayout.toLocaleString("en-IN")}
-                  </span>
-                </div>
-
                 {/* Divider + Profit */}
                 <div className="pt-2 border-t border-border flex justify-between items-center">
                   <div className="flex items-center gap-1.5">
-                    <span className="font-bold">Net Profit:</span>
+                    <span className="font-bold">Platform Earnings:</span>
                     {payoutPerTester > 0 &&
                       (isLoss ? (
                         <TrendingDown className="w-4 h-4 text-red-500" />
@@ -303,39 +300,14 @@ export function AdminAcceptDialog({
                     >
                       ₹{profit.toLocaleString("en-IN")}
                     </p>
-                    <p
-                      className={cn(
-                        "text-xs font-medium",
-                        profit >= 0 ? "text-green-600/70" : "text-red-600/70",
-                      )}
-                    >
-                      {profitMargin.toFixed(1)}% margin
-                    </p>
                   </div>
                 </div>
-
-                {/* Per-tester profit */}
-                {testers > 0 && payoutPerTester > 0 && (
-                  <div className="flex justify-between items-center text-xs text-muted-foreground border-t border-border/40 pt-2">
-                    <span>Profit per tester slot:</span>
-                    <span
-                      className={cn(
-                        "font-semibold",
-                        profitPerTester >= 0
-                          ? "text-green-600"
-                          : "text-red-500",
-                      )}
-                    >
-                      ₹{profitPerTester.toFixed(2)}
-                    </span>
-                  </div>
-                )}
 
                 {/* Max safe payout hint */}
                 <div className="text-xs text-muted-foreground/70 pt-1">
                   {testers > 0
-                    ? `Max breakeven payout: ₹${(income / testers).toFixed(2)}/tester`
-                    : `Max budget: ₹${income.toLocaleString("en-IN")} across all testers`}
+                    ? `Max suggested payout: ₹${(income / testers).toFixed(2)} per tester`
+                    : `Total available budget: ₹${income.toLocaleString("en-IN")}`}
                 </div>
               </div>
 
@@ -344,9 +316,10 @@ export function AdminAcceptDialog({
                 <div className="flex items-start gap-2 bg-red-500/10 border border-red-500/20 rounded-xl p-3">
                   <AlertTriangle className="w-4 h-4 text-red-500 flex-shrink-0 mt-0.5" />
                   <p className="text-xs text-red-600 dark:text-red-400 font-medium">
-                    Total payout (₹{totalPayout.toLocaleString("en-IN")})
-                    exceeds income (₹{income.toLocaleString("en-IN")}). Reduce
-                    payout per tester or the number of testers to avoid a loss.
+                    Warning: You are paying out more money (₹
+                    {totalPayout.toLocaleString("en-IN")}) than the developer
+                    paid (₹{income.toLocaleString("en-IN")}). Please lower the
+                    payout or the number of testers.
                   </p>
                 </div>
               )}
@@ -382,6 +355,8 @@ export function AdminAcceptDialog({
                 <Loader2 className="w-4 h-4 animate-spin mr-2" />
                 Processing...
               </>
+            ) : isEditing ? (
+              "Update Project"
             ) : (
               "Confirm Approval"
             )}

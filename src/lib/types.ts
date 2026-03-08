@@ -437,6 +437,7 @@ export interface HubSubmittedAppResponse {
     };
     tester: {
       name: string;
+      image: string | null;
     };
   }[];
   testerRelations: {
@@ -645,6 +646,7 @@ export type Project = {
     | "Rejected"
     | "Approved"
     | "Available";
+  appStatus?: string;
   testerStatus?: TesterStatus;
   testersStarted: number;
   testersCompleted: number;
@@ -655,6 +657,7 @@ export type Project = {
   testingInstructions: string;
   androidVersion: string;
   pointsCost: number;
+  rewardMoney?: number;
   crashFreeRate: number;
   overallRating: number;
   feedbackBreakdown: FeedbackBreakdown;
@@ -672,6 +675,15 @@ export type Project = {
     imageUrl: string;
     dataAiHint: string;
   };
+  dailyVerifications?: {
+    id: number;
+    dayNumber: number;
+    proofImageUrl: string;
+    status: "PENDING" | "VERIFIED" | "REJECTED";
+    verifiedAt: string | null;
+    rejectionReason: string | null;
+    metaData: any;
+  }[];
 };
 
 export type TesterProjectResponse = {
@@ -700,6 +712,8 @@ export type TesterProjectResponse = {
   currentTester: number;
   rewardPoints: number | null;
   costPoints: number | null;
+  rewardMoney?: number | null;
+  costMoney?: number | null;
   instructionsForTester: string | null;
   minimumAndroidVersion: number;
   daysCompleted: number;
@@ -802,4 +816,73 @@ export interface PromoCodeResponse {
   maxUses: number | null;
   usedCount: number;
   updatedAt: string;
+}
+
+export interface TesterEarningsResponse {
+  availableBalance: number;
+  pendingBalance: number;
+  pendingProjectsCount: number;
+  lifetimeEarnings: number;
+}
+
+export interface TesterEarningHistoryItem {
+  id: number;
+  date: string;
+  project: string;
+  amount: number;
+  status: "CREDIT" | "DEBIT" | "HOLD";
+  action: string | null;
+}
+
+export interface TesterEarningHistoryResponse {
+  history: TesterEarningHistoryItem[];
+  pagination: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+  };
+}
+
+export interface WithdrawalHistoryItem {
+  id: number;
+  userId: string;
+  amount: number;
+  currency: string;
+  status: "PENDING" | "APPROVED" | "REJECTED" | "PAID";
+  requestedAt: string;
+  processedAt: string | null;
+  note: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface WithdrawalHistoryResponse {
+  withdrawals: WithdrawalHistoryItem[];
+  pagination: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+  };
+}
+
+export interface TesterActivityItem {
+  id: number;
+  actionType: string;
+  description: string | null;
+  status: "SUCCESS" | "FAIL";
+  appName: string | null;
+  appLogo: string | null;
+  createdAt: string;
+}
+
+export interface TesterActivitiesResponse {
+  activities: TesterActivityItem[];
+  pagination: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+  };
 }

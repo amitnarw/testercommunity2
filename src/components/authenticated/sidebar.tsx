@@ -1,34 +1,23 @@
 "use client";
 
-import Image from "next/image";
-import { TransitionLink } from "@/components/transition-link";
 import { usePathname } from "next/navigation";
-import { cn } from "@/lib/utils";
 import {
   LayoutDashboard,
   Users2,
-  LogOut,
   Bell,
-  ChevronRight,
-  ChevronLeft,
   Briefcase,
   DollarSign,
   LifeBuoy,
-  House,
-  Users,
-  UserPlus,
-  Lightbulb,
   Activity,
   Wallet,
   User,
+  Users,
+  FileCheck,
+  Lightbulb,
+  Ticket,
 } from "lucide-react";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "../ui/tooltip";
-import { Logo } from "@/components/logo";
+import { BaseSidebar, SidebarNavLink } from "@/components/ui/base-sidebar";
+import { authClient } from "@/lib/auth-client";
 
 const mainNavLinks = [
   { name: "Developer Dashboard", href: "/dashboard", icon: LayoutDashboard },
@@ -39,77 +28,66 @@ const mainNavLinks = [
 const proNavLinks = [
   { name: "Dashboard", href: "/tester/dashboard", icon: LayoutDashboard },
   { name: "Projects", href: "/tester/projects", icon: Briefcase },
-  { name: "Earnings", href: "/tester/earnings", icon: DollarSign },
   { name: "Activities", href: "/tester/activities", icon: Activity },
   { name: "Notifications", href: "/tester/notifications", icon: Bell },
   { name: "Support", href: "/tester/support", icon: LifeBuoy },
 ];
 
+// Admin sidebar navigation with sections
 const adminNavLinks = [
-  { name: "Admin Dashboard", href: "/admin/dashboard", icon: LayoutDashboard },
-  { name: "Users", href: "/admin/users", icon: Users },
+  // Overview
   {
-    name: "Professional Submissions",
+    name: "Dashboard",
+    href: "/admin/dashboard",
+    icon: LayoutDashboard,
+    section: "overview",
+  },
+
+  // Paid Services
+  {
+    name: "Pro Submissions",
     href: "/admin/submissions-paid",
     icon: DollarSign,
+    section: "paid",
+    badge: "PRO",
   },
+
+  // Free Services
   {
-    name: "Community Submissions",
+    name: "Community Subs",
     href: "/admin/submissions-free",
     icon: Users2,
+    section: "free",
+    badge: "FREE",
   },
-  { name: "Applications", href: "/admin/applications", icon: UserPlus },
-  { name: "Suggestions", href: "/admin/suggestions", icon: Lightbulb },
-  { name: "Notifications", href: "/admin/notifications", icon: Bell },
+
+  // Platform
+  { name: "Users", href: "/admin/users", icon: Users, section: "platform" },
+  {
+    name: "Applications",
+    href: "/admin/applications",
+    icon: FileCheck,
+    section: "platform",
+  },
+  {
+    name: "Suggestions",
+    href: "/admin/suggestions",
+    icon: Lightbulb,
+    section: "platform",
+  },
+  {
+    name: "Notifications",
+    href: "/admin/notifications",
+    icon: Bell,
+    section: "platform",
+  },
+  {
+    name: "Promo Codes",
+    href: "/admin/promo-codes",
+    icon: Ticket,
+    section: "platform",
+  },
 ];
-
-const NavLink = ({
-  href,
-  icon: Icon,
-  isCollapsed,
-  children,
-}: {
-  href: string;
-  icon: React.ElementType;
-  isCollapsed: boolean;
-  children: React.ReactNode;
-}) => {
-  const pathname = usePathname();
-  const isActive = pathname.startsWith(href);
-
-  return (
-    <TooltipProvider>
-      <Tooltip delayDuration={0}>
-        <TooltipTrigger asChild>
-          <TransitionLink
-            href={href}
-            className={cn(
-              "flex items-center justify-start w-full h-12 rounded-xl text-white/70 dark:text-black/70 transition-all duration-300 px-3.5",
-              "hover:bg-white/20 hover:text-white",
-              isActive &&
-                "bg-white text-black dark:bg-black dark:text-white shadow-xl",
-            )}
-          >
-            <Icon className="h-5 w-5 flex-shrink-0" />
-            {!isCollapsed && (
-              <span className="ml-4 font-light whitespace-nowrap">
-                {children}
-              </span>
-            )}
-          </TransitionLink>
-        </TooltipTrigger>
-        {isCollapsed && (
-          <TooltipContent
-            side="right"
-            className="bg-black text-white border-white/20 ml-2"
-          >
-            {children}
-          </TooltipContent>
-        )}
-      </Tooltip>
-    </TooltipProvider>
-  );
-};
 
 interface SidebarProps {
   onLogout: () => void;
@@ -123,107 +101,204 @@ export function Sidebar({
   setIsCollapsed,
 }: SidebarProps) {
   const pathname = usePathname();
+  const { data: session } = authClient.useSession();
+  const role = (session as any)?.role;
+  const roleName = (
+    typeof role === "string" ? role : role?.name
+  )?.toLowerCase();
 
+  const isAdminPath = pathname.startsWith("/admin");
+  const isTesterPath = pathname.startsWith("/tester");
+
+  // Determine standard nav links for non-admin
   let navLinks = mainNavLinks;
-  if (pathname.startsWith("/admin")) {
-    navLinks = adminNavLinks;
-  } else if (pathname.startsWith("/tester")) {
+  if (roleName === "tester" || isTesterPath) {
     navLinks = proNavLinks;
   }
 
-  return (
-    <div
-      data-loc="Sidebar"
-      className="fixed z-[55] h-full hidden md:flex items-center justify-center pl-4 bg-brand-background"
-    >
-      <aside
-        className={cn(
-          "left-4 h-[95vh]",
-          "flex",
-          "transition-all duration-300",
-          isCollapsed ? "w-16" : "w-72",
-        )}
-      >
-        <div className="flex flex-col items-center justify-between gap-4 bg-gradient-to-r from-primary to-primary/70 text-white py-5 rounded-2xl shadow-2xl border border-white/10 relative w-full">
-          <TransitionLink href="/dashboard">
-            {/* Logo inverted for sidebar: sidebar is dark in light mode, light in dark mode */}
-            <div className="relative w-10 h-10 shrink-0">
-              <Image
-                src="/inTesters-logo.svg"
-                alt="InTesters Logo"
-                fill
-                className="object-contain invert dark:invert-0"
-                priority
-              />
-            </div>
-          </TransitionLink>
-
-          <div className="mb-8 mt-2">
-            <button
-              onClick={() => setIsCollapsed(!isCollapsed)}
-              className={`bg-sidebar text-white dark:text-black rounded-full p-1 shadow-2xl absolute -right-3 duration-700 hover:scale-125 flex items-center justify-center ${
-                isCollapsed ? "w-7" : "w-32"
-              }`}
-            >
-              {isCollapsed ? (
-                <ChevronRight size={20} />
-              ) : (
-                <ChevronLeft size={20} />
-              )}
-            </button>
-          </div>
-
-          <nav className="flex flex-col items-center gap-2 h-full w-full px-2">
-            {navLinks.map((link) => (
-              <NavLink
+  const navContent =
+    roleName === "super_admin" || isAdminPath ? (
+      <>
+        <div className="mb-1">
+          {!isCollapsed && (
+            <span className="text-[10px] font-semibold text-white/40 dark:text-black/40 uppercase tracking-wider px-3">
+              Overview
+            </span>
+          )}
+          {adminNavLinks
+            .filter((l) => l.section === "overview")
+            .map((link) => (
+              <SidebarNavLink
                 key={link.href}
                 href={link.href}
                 icon={link.icon}
                 isCollapsed={isCollapsed}
+                badge={link.badge}
               >
                 {link.name}
-              </NavLink>
+              </SidebarNavLink>
             ))}
-            <NavLink href="/wallet" icon={Wallet} isCollapsed={isCollapsed}>
-              Wallet
-            </NavLink>
-            <NavLink href="/profile" icon={User} isCollapsed={isCollapsed}>
-              Profile
-            </NavLink>
-          </nav>
-
-          <div className="flex flex-col items-center w-full px-2">
-            <TooltipProvider>
-              <Tooltip delayDuration={0}>
-                <TooltipTrigger asChild>
-                  <button
-                    onClick={onLogout}
-                    className={cn(
-                      "flex items-center justify-start w-full h-12 rounded-xl text-white/70 dark:text-black/70 transition-all duration-300 px-3.5",
-                      "hover:bg-white/20 hover:text-white",
-                    )}
-                  >
-                    <LogOut className="h-5 w-5 flex-shrink-0" />
-                    {!isCollapsed && (
-                      <span className="ml-4 font-light whitespace-nowrap">
-                        Log Out
-                      </span>
-                    )}
-                  </button>
-                </TooltipTrigger>
-                {isCollapsed && (
-                  <TooltipContent
-                    side="right"
-                    className="bg-black text-white border-white/20 ml-2"
-                  >
-                    Log Out
-                  </TooltipContent>
-                )}
-              </Tooltip>
-            </TooltipProvider>
-          </div>
         </div>
-      </aside>
+        {!isCollapsed && (
+          <div className="h-px bg-white/10 dark:bg-black/10 mx-3 my-1" />
+        )}
+
+        <div className="mb-1">
+          {!isCollapsed && (
+            <div className="flex items-center gap-2 px-3 mb-1">
+              <span className="text-[10px] font-semibold text-amber-500/70 uppercase tracking-wider">
+                Paid
+              </span>
+            </div>
+          )}
+          {adminNavLinks
+            .filter((l) => l.section === "paid")
+            .map((link) => (
+              <SidebarNavLink
+                key={link.href}
+                href={link.href}
+                icon={link.icon}
+                isCollapsed={isCollapsed}
+                badge={link.badge}
+              >
+                {link.name}
+              </SidebarNavLink>
+            ))}
+        </div>
+        {!isCollapsed && (
+          <div className="h-px bg-white/10 dark:bg-black/10 mx-3 my-1" />
+        )}
+
+        <div className="mb-1">
+          {!isCollapsed && (
+            <div className="flex items-center gap-2 px-3 mb-1">
+              <span className="text-[10px] font-semibold text-blue-500/70 uppercase tracking-wider">
+                Free
+              </span>
+            </div>
+          )}
+          {adminNavLinks
+            .filter((l) => l.section === "free")
+            .map((link) => (
+              <SidebarNavLink
+                key={link.href}
+                href={link.href}
+                icon={link.icon}
+                isCollapsed={isCollapsed}
+                badge={link.badge}
+              >
+                {link.name}
+              </SidebarNavLink>
+            ))}
+        </div>
+        {!isCollapsed && (
+          <div className="h-px bg-white/10 dark:bg-black/10 mx-3 my-1" />
+        )}
+
+        <div className="mb-1">
+          {!isCollapsed && (
+            <span className="text-[10px] font-semibold text-white/40 dark:text-black/40 uppercase tracking-wider px-3">
+              Platform
+            </span>
+          )}
+          {adminNavLinks
+            .filter((l) => l.section === "platform")
+            .map((link) => (
+              <SidebarNavLink
+                key={link.href}
+                href={link.href}
+                icon={link.icon}
+                isCollapsed={isCollapsed}
+                badge={link.badge}
+              >
+                {link.name}
+              </SidebarNavLink>
+            ))}
+        </div>
+      </>
+    ) : (
+      <>
+        {navLinks.map((link) => (
+          <SidebarNavLink
+            key={link.href}
+            href={link.href}
+            icon={link.icon}
+            isCollapsed={isCollapsed}
+          >
+            {link.name}
+          </SidebarNavLink>
+        ))}
+      </>
+    );
+
+  const bottomContent = (
+    <div className="flex flex-col gap-1 w-full">
+      {/* Wallet for regular users */}
+      {!(roleName === "super_admin" || isAdminPath) &&
+        !(roleName === "tester" || isTesterPath) && (
+          <SidebarNavLink
+            href="/wallet"
+            icon={Wallet}
+            isCollapsed={isCollapsed}
+          >
+            Wallet
+          </SidebarNavLink>
+        )}
+
+      {/* Earnings for testers */}
+      {(roleName === "tester" || isTesterPath) && (
+        <SidebarNavLink
+          href="/tester/earnings"
+          icon={DollarSign}
+          isCollapsed={isCollapsed}
+        >
+          Earnings
+        </SidebarNavLink>
+      )}
+
+      {/* Profile links based on role */}
+      {roleName === "super_admin" || isAdminPath ? (
+        <SidebarNavLink
+          href="/admin/profile"
+          icon={User}
+          isCollapsed={isCollapsed}
+        >
+          Profile
+        </SidebarNavLink>
+      ) : roleName === "tester" || isTesterPath ? (
+        <SidebarNavLink
+          href="/tester/settings"
+          icon={User}
+          isCollapsed={isCollapsed}
+        >
+          Profile
+        </SidebarNavLink>
+      ) : (
+        <SidebarNavLink href="/profile" icon={User} isCollapsed={isCollapsed}>
+          Profile
+        </SidebarNavLink>
+      )}
     </div>
+  );
+
+  // Determine logo link based on role
+  let logoHref = "/dashboard";
+  if (roleName === "super_admin" || isAdminPath) {
+    logoHref = "/admin/dashboard";
+  } else if (roleName === "tester" || isTesterPath) {
+    logoHref = "/tester/dashboard";
+  }
+
+  return (
+    <BaseSidebar
+      onLogout={onLogout}
+      isCollapsed={isCollapsed}
+      setIsCollapsed={setIsCollapsed}
+      logoHref={logoHref}
+      className="bg-gradient-to-r from-primary to-primary/70 border-white/10" // Unified gradient style
+      navContent={navContent}
+      bottomContent={bottomContent}
+      showScrollIndicator={isAdminPath} // Admin sidebar has more links, might need scrolling
+    />
   );
 }

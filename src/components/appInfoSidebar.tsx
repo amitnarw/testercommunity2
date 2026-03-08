@@ -254,7 +254,9 @@ export const AppInfoSidebar = ({
               REWARD
             </p>
             <div className="text-3xl font-bold text-foreground flex items-center gap-2 justify-start mt-1">
-              {app?.rewardPoints} Points
+              {app?.appType === "PAID"
+                ? `₹${app?.rewardMoney || 0}`
+                : `${app?.rewardPoints || 0} Points`}
               <Star className="w-7 h-7 text-primary/0 fill-primary/20 scale-[4] sm:scale-[6] absolute bottom-8 right-2 sm:right-6 rotate-90" />
             </div>
           </div>

@@ -14,7 +14,14 @@ import {
   DropdownMenuLabel,
   DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
-import { MoreHorizontal } from "lucide-react";
+import {
+  MoreHorizontal,
+  Shield,
+  ShieldAlert,
+  ShieldCheck,
+  User,
+  Eye,
+} from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Link from "next/link";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -50,12 +57,16 @@ export const UserTable = ({
   users,
   onEdit,
   onStatusChange,
+  onDelete,
   isLoading,
+  currentUserId,
 }: {
   users: any[];
   onEdit: (user: any) => void;
   onStatusChange: (user: any) => void;
+  onDelete: (user: any) => void;
   isLoading: boolean;
+  currentUserId?: string;
 }) => {
   if (isLoading) {
     return (
@@ -126,26 +137,51 @@ export const UserTable = ({
               <StatusBadge status={user.status} />
             </TableCell>
             <TableCell className="text-right">
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button aria-haspopup="true" size="icon" variant="ghost">
-                    <MoreHorizontal className="h-4 w-4" />
-                    <span className="sr-only">Toggle menu</span>
+              <div className="flex items-center justify-end gap-1">
+                <Link href={`/admin/users/${user.id}`}>
+                  <Button variant="ghost" size="icon" title="View Details">
+                    <Eye className="h-4 w-4" />
                   </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end">
-                  <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                  <Link href={`/admin/users/${user.id}`}>
-                    <DropdownMenuItem>View Details</DropdownMenuItem>
-                  </Link>
-                  <DropdownMenuItem onClick={() => onEdit(user)}>
-                    Edit Role
-                  </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => onStatusChange(user)}>
-                    Change Status
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
+                </Link>
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button aria-haspopup="true" size="icon" variant="ghost">
+                      <MoreHorizontal className="h-4 w-4" />
+                      <span className="sr-only">Toggle menu</span>
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuLabel>Actions</DropdownMenuLabel>
+                    <DropdownMenuItem onClick={() => onEdit(user)}>
+                      Edit Role
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      onClick={() => onStatusChange(user)}
+                      disabled={user.id === currentUserId}
+                    >
+                      {user.status === "Banned" ? "Activate User" : "Ban User"}
+                      {user.id === currentUserId && " (Self)"}
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      className="text-destructive focus:text-destructive"
+                      onClick={() => onDelete(user)}
+                      disabled={
+                        user.id === currentUserId ||
+                        user.role === "super_admin" ||
+                        user.role === "Super Admin"
+                      }
+                    >
+                      Delete User{" "}
+                      {user.id === currentUserId
+                        ? "(Self)"
+                        : user.role === "super_admin" ||
+                            user.role === "Super Admin"
+                          ? "(Super Admin)"
+                          : ""}
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </div>
             </TableCell>
           </TableRow>
         ))}

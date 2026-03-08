@@ -47,25 +47,30 @@ const FEEDBACK_PER_PAGE = 5;
 
 const getStatusConfig = (status: string) => {
   switch (status) {
-    case "In Testing":
+    case "IN_TESTING":
       return {
         badgeVariant: "destructive",
         icon: <Clock className="w-5 h-5" />,
       };
-    case "Completed":
+    case "COMPLETED":
       return {
         badgeVariant: "secondary",
         icon: <CheckCircle className="w-5 h-5" />,
       };
-    case "In Review":
+    case "IN_REVIEW":
       return {
         badgeVariant: "secondary",
         icon: <Search className="w-5 h-5" />,
       };
-    case "Rejected":
+    case "REJECTED":
       return {
         badgeVariant: "destructive",
         icon: <XCircle className="w-5 h-5" />,
+      };
+    case "AVAILABLE":
+      return {
+        badgeVariant: "secondary",
+        icon: <Clock className="w-5 h-5" />,
       };
     default:
       return { badgeVariant: "secondary", icon: <Clock className="w-5 h-5" /> };

@@ -27,6 +27,7 @@ export const ROUTES = {
   TESTER: {
     ROOT: "/tester",
     DASHBOARD: "/tester/dashboard",
+    SETUP: "/tester/setup",
     AUTH: {
       LOGIN: "/tester/auth/login",
       REGISTER: "/tester/auth/register",

@@ -1,6 +1,6 @@
 "use client";
 
-import { notFound, useParams } from "next/navigation";
+import { useRouter, notFound, useParams } from "next/navigation";
 import {
   Card,
   CardContent,
@@ -26,6 +26,8 @@ import {
   Wallet,
   XCircle,
   Clock,
+  Trash2,
+  Ban,
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -58,9 +60,12 @@ import {
   useUserById,
   useUpdateUserRole,
   useUpdateUserStatus,
+  useDeleteUser,
 } from "@/hooks/useAdmin";
 import { useQueryClient } from "@tanstack/react-query";
 import { Separator } from "@/components/ui/separator";
+import { authClient } from "@/lib/auth-client";
+import { Input } from "@/components/ui/input";
 
 const AVAILABILITY_CONFIG: Record<
   string,
@@ -132,18 +137,24 @@ export default function AdminUserDetailsPage() {
   const id = params.id as string;
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const router = useRouter();
+  const { data: session } = authClient.useSession();
 
   const { data: user, isLoading, isError } = useUserById(id);
 
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isStatusModalOpen, setIsStatusModalOpen] = useState(false);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [roleSelection, setRoleSelection] = useState<string>("");
   const [statusSelection, setStatusSelection] = useState<string>("");
+  const [banReason, setBanReason] = useState("");
   const [userRole, setUserRole] = useState("");
 
   useEffect(() => {
     if (user) {
       setRoleSelection(user.role);
       setStatusSelection(user.status);
+      setBanReason(user.banReason || "");
     }
   }, [user]);
 
@@ -166,10 +177,10 @@ export default function AdminUserDetailsPage() {
         description: `User's role has been successfully updated.`,
       });
     },
-    onError: () => {
+    onError: (err: any) => {
       toast({
         title: "Error",
-        description: "Failed to update user role.",
+        description: err.message || "Failed to update user role.",
         variant: "destructive",
       });
     },
@@ -185,10 +196,30 @@ export default function AdminUserDetailsPage() {
         description: `User's status has been successfully updated.`,
       });
     },
-    onError: () => {
+    onError: (err: any) => {
       toast({
         title: "Error",
-        description: "Failed to update user status.",
+        description: err.message || "Failed to update user status.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const deleteUserMutation = useDeleteUser({
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["useAllUsers"] });
+      queryClient.invalidateQueries({ queryKey: ["useUserCounts"] });
+      toast({
+        title: "User Deleted",
+        description:
+          "The user account and all associated data have been removed.",
+      });
+      router.push("/admin/users");
+    },
+    onError: (err: any) => {
+      toast({
+        title: "Error",
+        description: err.message || "Failed to delete user.",
         variant: "destructive",
       });
     },
@@ -214,14 +245,24 @@ export default function AdminUserDetailsPage() {
       updateStatusMutation.mutate({
         id: user.id,
         status: statusSelection,
-        banReason: statusSelection === "Banned" ? "Banned by admin" : undefined,
+        banReason:
+          statusSelection === "Banned"
+            ? banReason || "Banned by admin"
+            : undefined,
       });
     }
     setIsEditModalOpen(false);
   };
 
+  const handleDeleteUser = () => {
+    deleteUserMutation.mutate(user.id);
+  };
+
   const isTester = user.role === "tester";
   const isSuperAdmin = userRole === "Super Admin" || userRole === "Super+Admin";
+  const isCurrentUser = session?.user?.id === user.id;
+  const isTargetSuperAdmin =
+    user.role === "super_admin" || user.role === "Super Admin";
 
   const formatRoleName = (roleName: string): string => {
     const roleDisplayNames: Record<string, string> = {
@@ -258,12 +299,44 @@ export default function AdminUserDetailsPage() {
                 onClick={() => {
                   setRoleSelection(user.role);
                   setStatusSelection(user.status);
+                  setBanReason(user.banReason || "");
                   setIsEditModalOpen(true);
                 }}
               >
                 <Edit className="sm:mr-2 !h-3 !w-3 sm:!h-4 sm:!w-4" />
                 <span className="hidden sm:block">Edit Profile</span>
               </Button>
+
+              {!isCurrentUser && (
+                <Button
+                  variant={user.status === "Banned" ? "default" : "outline"}
+                  className="px-3"
+                  onClick={() => setIsStatusModalOpen(true)}
+                >
+                  {user.status === "Banned" ? (
+                    <span className="flex items-center gap-1.5 sm:gap-2">
+                      <CheckCircle className="!h-3 !w-3 sm:!h-4 sm:!w-4 text-green-500" />
+                      <span className="hidden sm:block">Activate User</span>
+                    </span>
+                  ) : (
+                    <span className="flex items-center gap-1.5 sm:gap-2">
+                      <Ban className="!h-3 !w-3 sm:!h-4 sm:!w-4 text-red-500" />
+                      <span className="hidden sm:block">Ban User</span>
+                    </span>
+                  )}
+                </Button>
+              )}
+
+              {!isCurrentUser && !isTargetSuperAdmin && (
+                <Button
+                  variant="destructive"
+                  className="px-3"
+                  onClick={() => setIsDeleteModalOpen(true)}
+                >
+                  <Trash2 className="sm:mr-2 !h-3 !w-3 sm:!h-4 sm:!w-4" />
+                  <span className="hidden sm:block">Delete User</span>
+                </Button>
+              )}
             </div>
           </div>
         </div>
@@ -614,16 +687,16 @@ export default function AdminUserDetailsPage() {
 
       {/* Edit Modal */}
       <Dialog open={isEditModalOpen} onOpenChange={setIsEditModalOpen}>
-        <DialogContent>
+        <DialogContent className="sm:max-w-[500px]">
           <DialogHeader>
             <DialogTitle>Edit {user.name}</DialogTitle>
             <DialogDescription>
               Modify the user&apos;s role and status.
             </DialogDescription>
           </DialogHeader>
-          <div className="py-4 space-y-4">
+          <div className="space-y-4">
             <div className="space-y-2">
-              <label>Role</label>
+              <label className="text-sm font-medium">Role</label>
               <Select
                 value={roleSelection}
                 onValueChange={(value) => setRoleSelection(value)}
@@ -645,22 +718,6 @@ export default function AdminUserDetailsPage() {
                 </SelectContent>
               </Select>
             </div>
-            <div className="space-y-2">
-              <label>Status</label>
-              <Select
-                value={statusSelection}
-                onValueChange={(value) => setStatusSelection(value)}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Select a status" />
-                </SelectTrigger>
-                <SelectContent position="popper">
-                  <SelectItem value="Active">Active</SelectItem>
-                  <SelectItem value="Inactive">Inactive</SelectItem>
-                  <SelectItem value="Banned">Banned</SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
           </div>
           <DialogFooter>
             <Button
@@ -673,15 +730,116 @@ export default function AdminUserDetailsPage() {
             </Button>
             <Button
               onClick={handleSaveChanges}
-              disabled={
-                updateRoleMutation.isPending || updateStatusMutation.isPending
-              }
+              disabled={updateRoleMutation.isPending}
             >
-              {(updateRoleMutation.isPending ||
-                updateStatusMutation.isPending) && (
+              {updateRoleMutation.isPending && (
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
               )}
               Save Changes
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Status Modal */}
+      <Dialog open={isStatusModalOpen} onOpenChange={setIsStatusModalOpen}>
+        <DialogContent className="sm:max-w-[500px]">
+          <DialogHeader>
+            <DialogTitle>
+              {user.status === "Banned" ? "Activate" : "Ban"} {user.name}
+            </DialogTitle>
+            <DialogDescription>
+              {user.status === "Banned"
+                ? "This will allow the user to log in and access all features."
+                : "This will session lock the user and prevent them from logging in."}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="py-4 space-y-4">
+            {user.status !== "Banned" && (
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-muted-foreground ml-1">
+                  Reason for banning (Optional)
+                </label>
+                <Input
+                  placeholder="e.g. Violation of terms, fraud, etc."
+                  value={banReason}
+                  onChange={(e) => setBanReason(e.target.value)}
+                />
+              </div>
+            )}
+            <div className="bg-secondary/20 p-4 rounded-lg border border-border/50 text-sm">
+              <p className="font-medium mb-1">Current Status: {user.status}</p>
+              <p className="opacity-70 text-xs text-muted-foreground">
+                Last updated at: {formatDate(user.updatedAt)}
+              </p>
+            </div>
+          </div>
+          <DialogFooter className="gap-2 sm:gap-0">
+            <Button variant="ghost" onClick={() => setIsStatusModalOpen(false)}>
+              Cancel
+            </Button>
+            {user.status === "Banned" ? (
+              <Button
+                variant="default"
+                onClick={() => handleStatusUpdateInternal("Active")}
+                disabled={updateStatusMutation.isPending}
+                className="bg-green-600 hover:bg-green-700"
+              >
+                {updateStatusMutation.isPending && (
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                )}
+                Activate Account
+              </Button>
+            ) : (
+              <Button
+                variant="destructive"
+                onClick={() => handleStatusUpdateInternal("Banned")}
+                disabled={updateStatusMutation.isPending}
+              >
+                {updateStatusMutation.isPending && (
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                )}
+                Ban Account
+              </Button>
+            )}
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Delete User Modal */}
+      <Dialog open={isDeleteModalOpen} onOpenChange={setIsDeleteModalOpen}>
+        <DialogContent className="sm:max-w-[500px]">
+          <DialogHeader>
+            <DialogTitle className="text-destructive flex items-center gap-2">
+              <Trash2 className="h-5 w-5" /> Delete User Account
+            </DialogTitle>
+            <DialogDescription>
+              Are you sure you want to delete <strong>{user.name}</strong>? This
+              action is permanent and will remove all associated data.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="bg-destructive/10 p-4 rounded-md border border-destructive/20 text-sm">
+            <p className="font-semibold text-destructive mb-1">Warning:</p>
+            <ul className="list-disc list-inside space-y-1 opacity-80">
+              <li>Permanent account removal</li>
+              <li>Deletion of all submitted apps</li>
+              <li>Removal of all earnings and history</li>
+              <li>This action cannot be undone</li>
+            </ul>
+          </div>
+          <DialogFooter className="gap-2 sm:gap-0 mt-4">
+            <Button variant="ghost" onClick={() => setIsDeleteModalOpen(false)}>
+              Cancel
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={handleDeleteUser}
+              disabled={deleteUserMutation.isPending}
+            >
+              {deleteUserMutation.isPending && (
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              )}
+              Delete Permanently
             </Button>
           </DialogFooter>
         </DialogContent>

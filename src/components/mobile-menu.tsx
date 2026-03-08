@@ -30,6 +30,8 @@ import { cn } from "@/lib/utils";
 import { TransitionLink } from "./transition-link";
 import { ROUTES } from "@/lib/routes";
 
+import { authClient } from "@/lib/auth-client";
+
 const mainNavItems = [
   { name: "Home", href: "/" },
   { name: "Dashboard", href: "/dashboard" },
@@ -108,6 +110,11 @@ export default function MobileMenu({
   isAuthenticated: boolean;
 }) {
   const pathname = usePathname();
+  const { data: session } = authClient.useSession();
+  const role = (session as any)?.role;
+  const roleName = (
+    typeof role === "string" ? role : role?.name
+  )?.toLowerCase();
 
   let navItems = mainNavItems;
   let notificationHref = "/notifications";
@@ -115,13 +122,13 @@ export default function MobileMenu({
   let isAdmin = false;
   let showWallet = true;
 
-  if (pathname.startsWith("/admin")) {
+  if (roleName === "super_admin" || pathname.startsWith("/admin")) {
     navItems = adminNavItems;
     notificationHref = "/admin/notifications";
     walletHref = "/wallet";
     isAdmin = true;
     showWallet = false; // Don't show wallet in admin
-  } else if (pathname.startsWith("/tester")) {
+  } else if (roleName === "tester" || pathname.startsWith("/tester")) {
     navItems = proNavItems;
     notificationHref = "/tester/notifications";
     walletHref = "/tester/wallet";

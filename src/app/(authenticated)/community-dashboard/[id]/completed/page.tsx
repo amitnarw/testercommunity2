@@ -2,7 +2,6 @@
 
 import { notFound } from "next/navigation";
 import { CheckCircle, Bug, Lightbulb, PartyPopper } from "lucide-react";
-import { communityApps } from "@/lib/data";
 import { BackButton } from "@/components/back-button";
 import { AppInfoSidebar } from "@/components/appInfoSidebar";
 import { SubmittedFeedback } from "@/components/community-dashboard/submitted-feedback";
@@ -11,7 +10,15 @@ import Confetti from "react-dom-confetti";
 import { useInView } from "react-intersection-observer";
 import { motion } from "framer-motion";
 
-const TestCompleteSection = ({ app }: { app: any }) => {
+const TestCompleteSection = ({
+  app,
+  feedback = [],
+  totalTesters = 0,
+}: {
+  app: any;
+  feedback: any[];
+  totalTesters: number;
+}) => {
   const [isConfettiActive, setConfettiActive] = useState(false);
   const { ref, inView } = useInView({
     threshold: 0.5,
@@ -37,12 +44,12 @@ const TestCompleteSection = ({ app }: { app: any }) => {
     visible: { opacity: 1, y: 0, transition: { type: "spring" } },
   };
 
-  // Mock data for feedback breakdown, as it's not in the app object
   const feedbackBreakdown = {
-    bugs: 3,
-    suggestions: 2,
-    praise: 1,
-    totalTesters: 15,
+    bugs: feedback.filter((f) => f.type?.toUpperCase() === "BUG").length,
+    suggestions: feedback.filter((f) => f.type?.toUpperCase() === "SUGGESTION")
+      .length,
+    praise: feedback.filter((f) => f.type?.toUpperCase() === "PRAISE").length,
+    totalTesters,
   };
 
   return (
@@ -136,6 +143,8 @@ const TestCompleteSection = ({ app }: { app: any }) => {
 };
 
 import { use } from "react";
+import { useSingleHubAppDetails } from "@/hooks/useHub";
+import { Loader2 } from "lucide-react";
 
 export default function AppTestingCompletedPage({
   params,
@@ -145,16 +154,42 @@ export default function AppTestingCompletedPage({
   }>;
 }) {
   const resolvedParams = use(params);
-  const app = communityApps.find(
-    (p) => p.id.toString() === resolvedParams.id && p.status === "completed",
-  );
+  const { id } = resolvedParams;
 
-  if (!app) {
+  const { data: appDetails, isPending } = useSingleHubAppDetails({ id });
+
+  if (isPending) {
+    return (
+      <div className="flex bg-[#f8fafc] dark:bg-[#0f151e] min-h-screen items-center justify-center">
+        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+      </div>
+    );
+  }
+
+  if (!appDetails) {
     notFound();
   }
 
+  // Map backend TesterProjectResponse/HubApp to UI App shape
+  const app = {
+    id: appDetails.id,
+    name: appDetails.androidApp?.appName || "Unknown App",
+    icon: appDetails.androidApp?.appLogoUrl || "",
+    shortDescription: appDetails.androidApp?.description || "",
+    category: appDetails.androidApp?.appCategory?.name || "General",
+    points: appDetails.rewardPoints || 0,
+    androidVersion: appDetails.minimumAndroidVersion?.toString() || "8.0",
+    estimatedTime: `${appDetails.totalDay || 14} Days`,
+    playStoreUrl: `https://play.google.com/store/apps/details?id=${appDetails.androidApp?.packageName}`,
+    screenshots: [
+      { url: appDetails.androidApp?.appScreenshotUrl1, alt: "Screenshot 1" },
+      { url: appDetails.androidApp?.appScreenshotUrl2, alt: "Screenshot 2" },
+    ],
+    status: appDetails.status.toLowerCase(),
+  };
+
   return (
-    <div className="bg-secondary/50 min-h-screen">
+    <div className="bg-secondary/50 min-h-screen mb-8">
       <div className="container mx-auto px-4 md:px-6">
         <div className="sticky top-0 z-[50] pt-2 pb-4 pl-0 xl:pl-8 w-1/2">
           <BackButton href="/community-dashboard" />
@@ -162,12 +197,19 @@ export default function AppTestingCompletedPage({
 
         <main className="max-w-7xl mx-auto grid lg:grid-cols-3 gap-12 mt-8">
           <div className="flex flex-col gap-10 lg:col-span-2">
-            <TestCompleteSection app={app} />
-            <SubmittedFeedback isCompleted={true} feedback={[]} />
+            <TestCompleteSection
+              app={app}
+              feedback={appDetails.feedback || []}
+              totalTesters={appDetails.totalTester || 0}
+            />
+            <SubmittedFeedback
+              isCompleted={true}
+              feedback={appDetails.feedback || []}
+            />
           </div>
           <aside className="lg:col-span-1">
             <AppInfoSidebar
-              app={app as any}
+              app={appDetails}
               buttonType="external"
               url={app?.playStoreUrl}
             />

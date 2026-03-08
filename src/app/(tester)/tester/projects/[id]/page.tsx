@@ -1,326 +1,10 @@
 "use client";
 
 import { notFound } from "next/navigation";
-import Image from "next/image";
-import { useTesterProjects, useRateApp } from "@/hooks/useTester";
-import { useToast } from "@/hooks/use-toast";
+import { useSingleHubAppDetails } from "@/hooks/useHub";
+import { use } from "react";
+import OngoingProjectView from "@/components/community-dashboard/ongoing-project-view";
 import { Loader2 } from "lucide-react";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import {
-  CheckCircle,
-  Clock,
-  Star,
-  XCircle,
-  Search,
-  X,
-  ExternalLink,
-  Copy,
-} from "lucide-react";
-import { use, useState } from "react";
-import type { Project } from "@/lib/types";
-import { BackButton } from "@/components/back-button";
-import AppInfoHeader from "@/components/app-info-header";
-import DeveloperInstructions from "@/components/developerInstructions";
-import { useInView } from "react-intersection-observer";
-import { Progress } from "@/components/ui/progress";
-import dynamic from "next/dynamic";
-
-const Confetti = dynamic(() => import("react-dom-confetti"), { ssr: false });
-const SubmittedFeedback = dynamic(() =>
-  import("@/components/dashboard/submitted-feedback").then(
-    (mod) => mod.SubmittedFeedback,
-  ),
-);
-import { cn } from "@/lib/utils";
-import { copyToClipboard } from "@/components/copy-clipboard";
-
-const getStatusConfig = (status: string) => {
-  switch (status) {
-    case "In Testing":
-      return {
-        badgeVariant: "destructive",
-        icon: <Clock className="w-5 h-5" />,
-        color: "text-destructive",
-      };
-    case "Completed":
-      return {
-        badgeVariant: "secondary",
-        icon: <CheckCircle className="w-5 h-5" />,
-        color: "text-green-500",
-      };
-    case "Rejected":
-      return {
-        badgeVariant: "destructive",
-        icon: <XCircle className="w-5 h-5" />,
-        color: "text-destructive",
-      };
-    case "In Review":
-      return {
-        badgeVariant: "secondary",
-        icon: <Search className="w-5 h-5" />,
-        color: "text-muted-foreground",
-      };
-    default:
-      return {
-        badgeVariant: "secondary",
-        icon: <Clock className="w-5 h-5" />,
-        color: "text-muted-foreground",
-      };
-  }
-};
-
-function ProjectDetailsClient({ project }: { project: Project }) {
-  const [fullscreenImage, setFullscreenImage] = useState<string | null>(null);
-  const [rating, setRating] = useState(project.overallRating);
-  const [hoverRating, setHoverRating] = useState(0);
-  const { toast } = useToast();
-  const { mutateAsync: rateApp } = useRateApp();
-
-  const handleRating = async (ratingValue: number) => {
-    setRating(ratingValue);
-    try {
-      await rateApp({ appId: project.id, rating: ratingValue });
-      toast({
-        title: "Success",
-        description: "Your rating has been submitted successfully.",
-      });
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to submit rating.",
-        variant: "destructive",
-      });
-    }
-  };
-
-  const { ref: confettiTriggerRef, inView: confettiInView } = useInView({
-    threshold: 0.5,
-    triggerOnce: true,
-  });
-
-  const statusConfig = getStatusConfig(project.status);
-  const earnings = project.pointsCost * 5; // Example conversion
-  const daysCompleted = Math.floor(
-    project.totalDays * (project.testersCompleted / project.testersStarted),
-  );
-
-  return (
-    <div className="min-h-screen relative mb-8">
-      <div
-        ref={confettiTriggerRef}
-        className="absolute top-0 left-1/2 -translate-x-1/2 z-50"
-      >
-        <Confetti
-          active={confettiInView && project.status === "Completed"}
-          config={{
-            angle: 90,
-            spread: 360,
-            startVelocity: 40,
-            elementCount: 200,
-            dragFriction: 0.12,
-            duration: 5000,
-            stagger: 3,
-            width: "10px",
-            height: "10px",
-            colors: ["#a864fd", "#29cdff", "#78ff44", "#ff718d", "#fdff6a"],
-          }}
-        />
-      </div>
-
-      <div className="container px-4 md:px-6">
-        <div className="sticky top-0 z-[50] pt-2 pb-4 pl-0 xl:pl-8 w-1/2">
-          <BackButton href="/tester/projects" />
-        </div>
-
-        <div className="max-w-7xl mx-auto">
-          <AppInfoHeader
-            logo={project.icon}
-            name={project.name}
-            dataAiHint={project.dataAiHint}
-            category={project.category}
-            description={project.description}
-            statusConfig={statusConfig}
-          />
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-7 gap-4 mt-8">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:col-span-3">
-              <Card className="shadow-none bg-gradient-to-tr from-primary to-primary/60">
-                <CardHeader>
-                  <CardTitle className="text-sm font-medium text-white">
-                    Project Payout
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-3xl font-bold text-white">
-                    ₹{earnings.toLocaleString("en-IN")}
-                  </div>
-                  <p className="text-xs text-white/80">
-                    Upon successful completion
-                  </p>
-                </CardContent>
-              </Card>
-              <section className="flex flex-col items-center rounded-2xl bg-card text-card-foreground p-3">
-                <div className="flex items-center gap-3 mb-3">
-                  <h3 className="text-sm text-center w-full">
-                    App Information
-                  </h3>
-                </div>
-                <div className="flex flex-col items-center justify-center h-full space-y-3 text-sm w-full">
-                  <div className="flex flex-col items-center justify-between">
-                    <span className="text-xs text-muted-foreground">
-                      Package Name
-                    </span>
-                    <span className="font-mono text-primary break-all">
-                      {project.packageName}
-                    </span>
-                  </div>
-                  <div className="flex flex-col items-start gap-2 w-full">
-                    <div className="flex flex-row gap-2 w-full">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="flex-1 py-1.5"
-                        onClick={() =>
-                          copyToClipboard(
-                            `https://play.google.com/store/apps/details?id=${project.packageName}`,
-                          )
-                        }
-                      >
-                        <Copy className="!h-3 !w-3" />{" "}
-                        <span className="hidden sm:block text-xs">Copy</span>
-                      </Button>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        className="flex-1 py-1.5"
-                        asChild
-                      >
-                        <a
-                          href={`https://play.google.com/store/apps/details?id=${project.packageName}`}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
-                          <ExternalLink className="!h-3 !w-3" />{" "}
-                          <span className="hidden sm:block text-xs">Open</span>
-                        </a>
-                      </Button>
-                    </div>
-                  </div>
-                </div>
-              </section>
-            </div>
-            <Card className="md:col-span-2 shadow-none">
-              <CardHeader>
-                <CardTitle className="text-sm font-medium">
-                  Testing Progress
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="flex justify-between items-center text-xs text-muted-foreground mb-1">
-                  <span>Progress</span>
-                  <span>
-                    Day {daysCompleted} / {project.totalDays}
-                  </span>
-                </div>
-                <Progress
-                  value={(daysCompleted / project.totalDays) * 100}
-                  className="h-3"
-                />
-                <p className="text-xs text-muted-foreground mt-2">
-                  {project.totalDays - daysCompleted} days remaining in test
-                  cycle.
-                </p>
-              </CardContent>
-            </Card>
-            <Card className="overflow-hidden md:col-span-2 shadow-none">
-              <CardHeader>
-                <CardTitle className="text-sm font-medium">
-                  Your Overall Rating
-                </CardTitle>
-                <CardDescription>
-                  Give your overall rating for this application.
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="flex flex-row gap-5 items-center">
-                <div className="flex items-center gap-2">
-                  {[...Array(5)].map((_, i) => {
-                    const ratingValue = i + 1;
-                    return (
-                      <Star
-                        key={ratingValue}
-                        className={cn(
-                          "w-7 h-7 cursor-pointer transition-colors",
-                          ratingValue <= (hoverRating || rating)
-                            ? "text-amber-400 fill-amber-400"
-                            : "text-muted-foreground/50",
-                        )}
-                        onClick={() => handleRating(ratingValue)}
-                        onMouseEnter={() => setHoverRating(ratingValue)}
-                        onMouseLeave={() => setHoverRating(0)}
-                      />
-                    );
-                  })}
-                </div>
-                <span className="text-xl text-muted-foreground">
-                  {rating?.toFixed(1)}
-                </span>
-              </CardContent>
-            </Card>
-          </div>
-
-          <DeveloperInstructions
-            title="Testing Instructions"
-            instruction={project.testingInstructions}
-            mt={20}
-          />
-
-          <div className="mt-10">
-            <SubmittedFeedback
-              isTester
-              feedbacks={project.feedback.map((fb) => ({
-                ...fb,
-                screenshot: fb.screenshot || null,
-              }))}
-            />
-          </div>
-        </div>
-
-        {fullscreenImage && (
-          <div
-            className="fixed inset-0 bg-black/80 z-[60] flex items-center justify-center p-4 animate-in fade-in-0"
-            onClick={() => setFullscreenImage(null)}
-          >
-            <Button
-              variant="ghost"
-              size="icon"
-              className="absolute top-4 right-4 text-white hover:text-white bg-red-500/60 hover:bg-red-500 h-12 w-12 rounded-lg z-50"
-              onClick={() => setFullscreenImage(null)}
-            >
-              <X className="w-8 h-8" />
-              <span className="sr-only">Close</span>
-            </Button>
-            <div className="relative w-full h-full max-w-4xl max-h-[90vh]">
-              <Image
-                src={fullscreenImage}
-                alt="Fullscreen view"
-                layout="fill"
-                objectFit="contain"
-                className="animate-in zoom-in-95"
-              />
-            </div>
-          </div>
-        )}
-      </div>
-    </div>
-  );
-}
 
 export default function ProfessionalProjectDetailsPage({
   params,
@@ -328,9 +12,18 @@ export default function ProfessionalProjectDetailsPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = use(params);
-  const { data: projects, isLoading } = useTesterProjects();
 
-  if (isLoading) {
+  const {
+    data: appDetails,
+    isPending: appDetailsIsPending,
+    refetch: appDetailsRefetch,
+  } = useSingleHubAppDetails({ id });
+
+  if (!id) {
+    notFound();
+  }
+
+  if (appDetailsIsPending) {
     return (
       <div className="flex bg-[#f8fafc] dark:bg-[#0f151e] min-h-screen items-center justify-center">
         <Loader2 className="w-8 h-8 animate-spin text-primary" />
@@ -338,58 +31,17 @@ export default function ProfessionalProjectDetailsPage({
     );
   }
 
-  const rawProject = projects?.find((p) => p.id.toString() === id);
-
-  if (!rawProject) {
+  if (!appDetails) {
     notFound();
   }
 
-  const statusMap: Record<string, string> = {
-    IN_TESTING: "In Testing",
-    COMPLETED: "Completed",
-    REJECTED: "Rejected",
-    IN_REVIEW: "In Review",
-  };
-
-  const statusMapped = statusMap[rawProject.appStatus] || "In Testing";
-
-  // Map backend TesterProjectResponse to UI Project shape
-  const project: Project = {
-    id: rawProject.id,
-    name: rawProject.appName,
-    packageName: rawProject.packageName,
-    icon: rawProject.appLogo,
-    category: rawProject.category || "Unknown",
-    status: statusMapped as
-      | "In Testing"
-      | "Completed"
-      | "Rejected"
-      | "In Review",
-    pointsCost: rawProject.rewardPoints || 0,
-    totalDays: rawProject.totalDay,
-    testersCompleted: rawProject.daysCompleted,
-    testersStarted: rawProject.totalDay > 0 ? rawProject.totalDay : 1, // Avoid divide by 0
-    testingInstructions:
-      rawProject.instructionsForTester || "Please test the app as usual.",
-    description: rawProject.description || "",
-    androidVersion: rawProject.minimumAndroidVersion
-      ? rawProject.minimumAndroidVersion.toString() + "+"
-      : "N/A",
-    avgTestersPerDay: 1,
-    startedFrom: rawProject.createdAt
-      ? new Date(rawProject.createdAt).toLocaleDateString()
-      : "N/A",
-    crashFreeRate: 100,
-    overallRating: rawProject.testerRating || 0,
-    feedbackBreakdown: { total: 0, critical: 0, high: 0, low: 0 },
-    performanceMetrics: { avgStartupTime: "N/A", frozenFrames: "N/A" },
-    deviceCoverage: [],
-    osCoverage: [],
-    topGeographies: [],
-    feedback: [],
-    chartData: [],
-    testers: [],
-  };
-
-  return <ProjectDetailsClient project={project} />;
+  return (
+    <OngoingProjectView
+      appDetails={appDetails}
+      isLoading={appDetailsIsPending}
+      refetch={appDetailsRefetch}
+      hubId={id}
+      showBackButton={true}
+    />
+  );
 }
