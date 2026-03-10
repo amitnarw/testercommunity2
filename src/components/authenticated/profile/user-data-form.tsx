@@ -34,9 +34,10 @@ type ProfileFormData = z.infer<typeof profileSchema>;
 
 interface UserDataFormProps {
   title?: string;
+  showAdvancedSetup?: boolean;
 }
 
-export function UserDataForm({ title = "User data" }: UserDataFormProps) {
+export function UserDataForm({ title = "User data", showAdvancedSetup = true }: UserDataFormProps) {
   const { data: session, isPending } = authClient.useSession();
 
   const { toast } = useToast();
@@ -197,25 +198,27 @@ export function UserDataForm({ title = "User data" }: UserDataFormProps) {
 
             <Separator />
 
-            <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between rounded-lg bg-secondary/50 p-2 sm:p-4">
-              <div className="text-center sm:text-start">
-                <h4 className="font-semibold">Advanced Profile Setup</h4>
-                <p className="text-xs text-muted-foreground">
-                  Add more details about your role and projects to get better
-                  matches.
-                </p>
+            {showAdvancedSetup && (
+              <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between rounded-lg bg-secondary/50 p-2 sm:p-4">
+                <div className="text-center sm:text-start">
+                  <h4 className="font-semibold">Advanced Profile Setup</h4>
+                  <p className="text-xs text-muted-foreground">
+                    Add more details about your role and projects to get better
+                    matches.
+                  </p>
+                </div>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  asChild
+                  className="w-full sm:w-auto px-2"
+                >
+                  <TransitionLink href="/profile/profile-setup">
+                    <UserCog className="mr-2 h-4 w-4" /> Go to Setup
+                  </TransitionLink>
+                </Button>
               </div>
-              <Button
-                size="sm"
-                variant="outline"
-                asChild
-                className="w-full sm:w-auto px-2"
-              >
-                <TransitionLink href="/profile/profile-setup">
-                  <UserCog className="mr-2 h-4 w-4" /> Go to Setup
-                </TransitionLink>
-              </Button>
-            </div>
+            )}
 
             <div className="flex justify-end">
               <Button type="submit" className="w-full sm:w-auto">

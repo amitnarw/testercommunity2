@@ -84,6 +84,7 @@ const Card = ({
 export interface ProfileBentoGridProps {
   showReferAndEarn?: boolean;
   showUpgrade?: boolean;
+  showSupport?: boolean;
   settingsHref?: string;
   supportHref?: string;
 }
@@ -91,6 +92,7 @@ export interface ProfileBentoGridProps {
 export function ProfileBentoGrid({
   showReferAndEarn = true,
   showUpgrade = true,
+  showSupport = true,
   settingsHref = "/settings",
   supportHref = "/support",
 }: ProfileBentoGridProps = {}) {
@@ -191,7 +193,10 @@ export function ProfileBentoGrid({
           )}
 
           {/* Bottom: Settings & Support Split */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 h-[240px]">
+          <div className={cn(
+            "grid grid-cols-1 gap-4 h-[240px]",
+            showSupport ? "sm:grid-cols-2" : "grid-cols-1"
+          )}>
             {/* Settings Card - Ambient Aurora (Cyan) */}
             <Card
               href={settingsHref}
@@ -223,8 +228,10 @@ export function ProfileBentoGrid({
               </div>
             </Card>
 
-            {/* Support Card - Ambient Aurora (Violet) */}
-            <Card
+            {showSupport && (
+              <>
+                {/* Support Card - Ambient Aurora (Violet) */}
+                <Card
               href={supportHref}
               delay={0.3}
               className="h-full group/support !p-6 flex flex-col justify-between bg-white dark:bg-zinc-950 border-none transition-all duration-500 overflow-hidden relative shadow-sm hover:shadow-violet-500/5"
@@ -253,6 +260,8 @@ export function ProfileBentoGrid({
                 </p>
               </div>
             </Card>
+            </>
+            )}
           </div>
         </div>
       </div>
