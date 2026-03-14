@@ -1,6 +1,7 @@
 import axios from "axios";
 import { decryptData, encryptData } from "./encryptDecryptPayload";
 import { ROUTES } from "./routes";
+import { authClient } from "./auth-client";
 
 // Create an Axios instance
 // const api = axios.create({
@@ -43,6 +44,15 @@ api.interceptors.response.use(
           pathname.includes(ROUTES.TESTER.AUTH.LOGIN);
 
         if (!isAlreadyOnLogin) {
+          // Sign out using better-auth client to clear cookies
+          try {
+            await authClient.signOut();
+          } catch (signOutError) {
+            // Continue even if sign-out fails
+            console.error("Sign-out failed:", signOutError);
+          }
+
+          // Redirect to respective login page based on the current path
           let loginUrl: string = ROUTES.AUTH.LOGIN;
 
           if (pathname.startsWith("/admin")) {

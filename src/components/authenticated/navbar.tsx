@@ -4,13 +4,14 @@ import { useEffect, useState } from "react";
 import { useTheme } from "next-themes";
 import { usePathname } from "next/navigation";
 import { Button } from "../ui/button";
-import { Sun, Moon, LayoutDashboard, Users, Code2 } from "lucide-react";
+import { Sun, Moon, LayoutDashboard, Users, Code2, Clock } from "lucide-react";
 import { UserNav } from "../user-nav";
 import MobileMenu from "../mobile-menu";
 import { authClient } from "@/lib/auth-client";
 import { EarnPointsButton } from "../earn-points-button";
 import { Skeleton } from "../ui/skeleton";
 import Link from "next/link";
+import { useTesterProjects } from "@/hooks/useTester";
 
 export default function Navbar({ onLogout }: { onLogout: () => void }) {
   const pathname = usePathname();
@@ -32,6 +33,59 @@ export default function Navbar({ onLogout }: { onLogout: () => void }) {
     }
     return false;
   })();
+
+  const isTester = (() => {
+    const role = (session as any)?.role;
+    if (typeof role === "string") {
+      return (
+        role.toLowerCase() === "tester" || role.toLowerCase() === "super_admin"
+      );
+    } else if (typeof role === "object" && role?.name) {
+      return (
+        role.name.toLowerCase() === "tester" ||
+        role.name.toLowerCase() === "super_admin"
+      );
+    }
+    return false;
+  })();
+
+  const { data: projects } = useTesterProjects();
+
+  const pendingCount =
+    projects?.filter((project) => {
+      if (
+        project.testerStatus !== "IN_PROGRESS" &&
+        project.testerStatus !== "PENDING"
+      )
+        return false;
+      if (project.appStatus !== "IN_TESTING") return false;
+
+      const lastActivity = project.lastActivityAt
+        ? new Date(project.lastActivityAt)
+        : null;
+      const today = new Date();
+      const isSameDay =
+        lastActivity &&
+        lastActivity.getDate() === today.getDate() &&
+        lastActivity.getMonth() === today.getMonth() &&
+        lastActivity.getFullYear() === today.getFullYear();
+
+      const currentDayToSubmit = isSameDay
+        ? project.daysCompleted
+        : project.daysCompleted + 1;
+
+      if (currentDayToSubmit > project.totalDay) return false;
+
+      const verification = project.dailyVerifications?.find(
+        (v) => v.dayNumber === currentDayToSubmit,
+      );
+
+      if (isSameDay && verification?.status !== "REJECTED") return false;
+      if (!isSameDay) return true;
+      if (isSameDay && verification?.status === "REJECTED") return true;
+
+      return false;
+    }).length || 0;
 
   if (!mounted) {
     return (
@@ -112,6 +166,17 @@ export default function Navbar({ onLogout }: { onLogout: () => void }) {
               </div>
             )}
             <div className="flex items-center gap-2">
+              {isTester && pendingCount > 0 && (
+                <Link
+                  href="/tester/dashboard"
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-orange-500/10 text-orange-600 dark:text-orange-400 border border-orange-200 dark:border-orange-500/20 mr-1 animate-pulse hover:animate-none transition-all"
+                >
+                  <Clock className="w-3.5 h-3.5" />
+                  <span className="text-[10px] font-bold">
+                    {pendingCount} Pending
+                  </span>
+                </Link>
+              )}
               <EarnPointsButton />
               <Button
                 variant="ghost"

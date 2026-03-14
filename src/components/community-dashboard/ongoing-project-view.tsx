@@ -19,7 +19,14 @@ import {
   VerificationData,
 } from "@/components/community-dashboard/verification-history-modal";
 import { LastDayReminder } from "@/components/community-dashboard/last-day-reminder";
-import { MediaGallery } from "@/components/media-gallery";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { useState } from "react";
 
 const DailyProgress = ({
@@ -107,6 +114,7 @@ export default function OngoingProjectView({
   const [selectedVerification, setSelectedVerification] =
     useState<VerificationData | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const { toast } = useToast();
 
   const { mutate: submitCheckIn, isPending: isCheckingIn } =
@@ -198,8 +206,8 @@ export default function OngoingProjectView({
       !isTestingNotStarted &&
       !isCheckingIn
     ) {
-      // Paid testers just click check-in
-      submitCheckIn({ hubId, proofImage: "" });
+      // Show confirmation modal instead of immediate check-in
+      setIsConfirmModalOpen(true);
     }
   };
 
@@ -354,12 +362,7 @@ export default function OngoingProjectView({
                   )}
                 </div>
 
-                {!isTestingNotStarted &&
-                  (screenshots.length > 0 || videos.length > 0) && (
-                    <section className="mt-8">
-                      <MediaGallery screenshots={screenshots} videos={videos} />
-                    </section>
-                  )}
+
               </div>
 
               <aside className="lg:col-span-1">
@@ -380,7 +383,38 @@ export default function OngoingProjectView({
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         data={selectedVerification}
+        isPaid={appDetails?.appType === "PAID"}
       />
+
+      <Dialog open={isConfirmModalOpen} onOpenChange={setIsConfirmModalOpen}>
+        <DialogContent className="max-w-[400px] border-none bg-white/80 dark:bg-[#1a2233]/80 backdrop-blur-xl shadow-2xl rounded-3xl p-8 gap-0">
+          <DialogHeader>
+            <DialogTitle className="text-2xl font-bold text-center bg-gradient-to-br from-primary to-accent bg-clip-text text-transparent">
+              Daily Check-in
+            </DialogTitle>
+            <DialogDescription className="text-center text-muted-foreground text-lg pt-2">
+              Are you sure you want to check in for <span className="font-bold text-foreground">Day {displayDay}</span>?
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="flex sm:flex-col gap-3 pt-8 sm:items-stretch">
+            <button
+              onClick={() => {
+                submitCheckIn({ hubId, proofImage: "" });
+                setIsConfirmModalOpen(false);
+              }}
+              className="rounded-2xl py-4 bg-gradient-to-r from-primary to-accent hover:opacity-90 transition-all duration-300 font-semibold text-lg text-white shadow-lg shadow-primary/20"
+            >
+              Yes, Check In
+            </button>
+            <button
+              onClick={() => setIsConfirmModalOpen(false)}
+              className="rounded-2xl py-4 border-2 border-border/50 hover:bg-muted font-medium text-lg transition-colors m-0"
+            >
+              Cancel
+            </button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

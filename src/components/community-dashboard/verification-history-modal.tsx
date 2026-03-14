@@ -36,43 +36,64 @@ interface VerificationHistoryModalProps {
   isOpen: boolean;
   onClose: () => void;
   data: VerificationData | null;
+  isPaid?: boolean;
 }
 
 export function VerificationHistoryModal({
   isOpen,
   onClose,
   data,
+  isPaid = false,
 }: VerificationHistoryModalProps) {
   if (!data) return null;
 
+  const showImage = !isPaid && data.proofImageUrl;
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-[95vw] sm:max-w-4xl p-0 overflow-y-auto md:overflow-hidden border-border bg-background shadow-2xl block max-h-[90vh] md:max-h-none md:h-auto gap-0">
-        <div className="flex flex-col md:grid md:grid-cols-5 h-auto md:h-[600px]">
-          {/* Left: Image Preview (3 cols) */}
-          <div className="md:col-span-3 relative bg-black/5 dark:bg-black flex items-center justify-center p-4 border-b md:border-b-0 md:border-r border-border h-64 shrink-0 md:h-full">
-            {/* Decorative Background Grid */}
-            <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]"></div>
+      <DialogContent
+        className={cn(
+          "p-0 overflow-y-auto md:overflow-hidden border-border bg-background shadow-2xl block max-h-[90vh] md:max-h-none md:h-auto gap-0",
+          showImage ? "max-w-[95vw] sm:max-w-4xl" : "max-w-[95vw] sm:max-w-md",
+        )}
+      >
+        <div
+          className={cn(
+            "flex flex-col h-auto",
+            showImage ? "md:grid md:grid-cols-5 md:h-[600px]" : "md:h-auto",
+          )}
+        >
+          {/* Left: Image Preview (3 cols) - Hidden for Paid Testers */}
+          {showImage && (
+            <div className="md:col-span-3 relative bg-black/5 dark:bg-black flex items-center justify-center p-4 border-b md:border-b-0 md:border-r border-border h-64 shrink-0 md:h-full">
+              {/* Decorative Background Grid */}
+              <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]"></div>
 
-            <div className="relative w-full h-full max-h-[500px] aspect-[9/16] rounded-xl overflow-hidden shadow-none md:shadow-2xl group">
-              <SafeImage
-                src={data.proofImageUrl}
-                alt={`Day ${data.dayNumber} Proof`}
-                fill
-                className="object-contain md:object-cover transition-transform duration-700 group-hover:scale-105"
-              />
+              <div className="relative w-full h-full max-h-[500px] aspect-[9/16] rounded-xl overflow-hidden shadow-none md:shadow-2xl group">
+                <SafeImage
+                  src={data.proofImageUrl}
+                  alt={`Day ${data.dayNumber} Proof`}
+                  fill
+                  className="object-contain md:object-cover transition-transform duration-700 group-hover:scale-105"
+                />
+              </div>
             </div>
-          </div>
+          )}
 
-          {/* Right: Metadata (2 cols) */}
-          <div className="md:col-span-2 flex flex-col w-full md:h-full bg-background md:bg-muted/5 md:overflow-hidden">
+          {/* Right: Metadata (2 cols or full) */}
+          <div
+            className={cn(
+              "flex flex-col w-full md:h-full bg-background md:bg-muted/5 md:overflow-hidden",
+              showImage ? "md:col-span-2" : "",
+            )}
+          >
             <DialogHeader className="p-3 sm:p-6 pb-2 border-b border-border space-y-0.5 shrink-0">
               <DialogTitle className="text-xl font-bold flex items-center gap-2">
                 <span className="text-muted-foreground">#</span>
                 Day {data.dayNumber} Verification
               </DialogTitle>
               <p className="text-start text-sm text-muted-foreground">
-                Detailed proof analysis
+                {isPaid ? "Check-in confirmation" : "Detailed proof analysis"}
               </p>
             </DialogHeader>
 
@@ -116,13 +137,15 @@ export function VerificationHistoryModal({
                   <h4 className="text-xs font-bold text-muted-foreground uppercase tracking-widest">
                     Security Metadata
                   </h4>
-                  <Badge
-                    variant="outline"
-                    className="border-blue-500/30 bg-blue-500/10 text-blue-600 dark:text-blue-400 gap-1"
-                  >
-                    <ShieldCheck className="w-3 h-3" />
-                    Verified
-                  </Badge>
+                  {!isPaid && (
+                    <Badge
+                      variant="outline"
+                      className="border-blue-500/30 bg-blue-500/10 text-blue-600 dark:text-blue-400 gap-1"
+                    >
+                      <ShieldCheck className="w-3 h-3" />
+                      Verified
+                    </Badge>
+                  )}
                 </div>
 
                 <div className="grid grid-cols-1 gap-2">
@@ -150,15 +173,17 @@ export function VerificationHistoryModal({
                     </div>
                   )}
 
-                  <div className="flex items-center justify-between p-3 bg-muted/50 rounded-lg border border-border">
-                    <div className="flex items-center gap-2 text-muted-foreground">
-                      <Monitor className="w-4 h-4" />
-                      <span className="text-xs font-medium">System Scan</span>
+                  {!isPaid && (
+                    <div className="flex items-center justify-between p-3 bg-muted/50 rounded-lg border border-border">
+                      <div className="flex items-center gap-2 text-muted-foreground">
+                        <Monitor className="w-4 h-4" />
+                        <span className="text-xs font-medium">System Scan</span>
+                      </div>
+                      <span className="text-xs font-mono text-emerald-600 dark:text-emerald-400">
+                        Passed
+                      </span>
                     </div>
-                    <span className="text-xs font-mono text-emerald-600 dark:text-emerald-400">
-                      Passed
-                    </span>
-                  </div>
+                  )}
                 </div>
               </div>
 

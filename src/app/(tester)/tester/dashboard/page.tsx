@@ -138,14 +138,38 @@ export default function TesterDashboardPage() {
   const pendingActionProjects = activeProjects.filter((project) => {
     if (project.appStatus !== "IN_TESTING") return false;
 
-    const currentDayToSubmit = project.daysCompleted + 1;
+    const lastActivity = project.lastActivityAt
+      ? new Date(project.lastActivityAt)
+      : null;
+    const today = new Date();
+    const isSameDay =
+      lastActivity &&
+      lastActivity.getDate() === today.getDate() &&
+      lastActivity.getMonth() === today.getMonth() &&
+      lastActivity.getFullYear() === today.getFullYear();
+
+    const currentDayToSubmit = isSameDay
+      ? project.daysCompleted
+      : project.daysCompleted + 1;
+
     if (currentDayToSubmit > project.totalDay) return false;
 
-    const todayVerification = project.dailyVerifications?.find(
+    const verification = project.dailyVerifications?.find(
       (v) => v.dayNumber === currentDayToSubmit,
     );
 
-    if (!todayVerification || todayVerification.status === "REJECTED") {
+    // If already checked in today and not rejected, it's not pending
+    if (isSameDay && verification?.status !== "REJECTED") {
+      return false;
+    }
+
+    // If not checked in today, it's pending
+    if (!isSameDay) {
+      return true;
+    }
+
+    // If checked in today but rejected, it's pending (re-upload)
+    if (isSameDay && verification?.status === "REJECTED") {
       return true;
     }
 
@@ -261,7 +285,7 @@ export default function TesterDashboardPage() {
                     <Bell className="w-5 h-5" /> Action Required Today
                   </CardTitle>
                   <CardDescription>
-                    These tests require your daily screenshot or have rejected
+                    These tests require your daily check-in or have rejected
                     verifications.
                   </CardDescription>
                 </div>
@@ -298,7 +322,7 @@ export default function TesterDashboardPage() {
                               </span>
                             ) : (
                               <span className="text-orange-600 dark:text-orange-400">
-                                Day {currentDayToSubmit} screenshot pending
+                                Day {currentDayToSubmit} check-in pending
                               </span>
                             )}
                           </p>

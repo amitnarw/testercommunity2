@@ -17,7 +17,6 @@ import { DialogHeader } from "@/components/ui/dialog";
 import { DialogTitle } from "@/components/ui/dialog";
 import { DialogDescription } from "@/components/ui/dialog";
 import { DialogFooter } from "@/components/ui/dialog";
-import { DialogClose } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -144,18 +143,14 @@ export function AdminAcceptDialog({
 
   // Income: use persisted payment if available, otherwise use the known plan price
   const income = paymentInfo?.amountPaid ?? PLAN_PRICE_INR;
-  const isIncomeKnown = paymentInfo?.isPersisted === true;
-  const isIncomeEstimated = !isIncomeKnown;
 
   const profit = income - totalPayout;
-  const profitMargin = income > 0 ? (profit / income) * 100 : 0;
-  const profitPerTester = testers > 0 ? profit / testers : 0;
   const isLoss = profit < 0;
   const payoutExceedsIncome = totalPayout > income;
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="w-[95vw] sm:w-[580px] rounded-3xl overflow-hidden p-0 gap-0 border-none shadow-2xl bg-white dark:bg-[#1A1A1A]">
+      <DialogContent className="w-[95vw] sm:w-[580px] h-[90dvh] rounded-3xl overflow-hidden p-0 gap-0 border-none shadow-2xl bg-white dark:bg-[#1A1A1A]">
         <div className="bg-green-500/5 p-6 border-b border-green-500/10">
           <DialogHeader>
             <DialogTitle className="text-green-600 flex items-center gap-2 text-xl font-bold">

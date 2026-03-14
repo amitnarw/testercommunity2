@@ -213,7 +213,7 @@ export default function ProjectDetailsView({
               >
                 <DeveloperInstructions
                   title="Instructions for Testers"
-                  instruction={`"${project?.testingInstructions}"`}
+                  instruction={project?.testingInstructions}
                   mt={1}
                 />
                 <SubmittedFeedback

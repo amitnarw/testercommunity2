@@ -85,11 +85,23 @@ export const registerTester = async ({
   password,
   firstName,
   lastName,
+  experience,
+  testingTypes,
+  bio,
+  devices,
+  osVersions,
+  languages,
 }: {
   email: string;
   password: string;
   firstName: string;
   lastName: string;
+  experience?: string;
+  testingTypes?: string[];
+  bio?: string;
+  devices?: string[];
+  osVersions?: string[];
+  languages?: string;
 }) => {
   try {
     if (!email || !password || !firstName || !lastName) {
@@ -106,6 +118,12 @@ export const registerTester = async ({
         last_name: lastName,
         role: "tester",
         auth_type: "EMAIL_PASSWORD",
+        experience,
+        testingTypes,
+        bio,
+        devices,
+        osVersions,
+        languages,
       },
     });
     if (response?.error) {

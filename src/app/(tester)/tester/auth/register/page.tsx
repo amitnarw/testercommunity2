@@ -135,6 +135,8 @@ const deviceOptions = [
 ];
 
 const osOptions = [
+  { id: "android_16 ", label: "Android 16" },
+  { id: "android_15", label: "Android 15" },
   { id: "android_14", label: "Android 14" },
   { id: "android_13", label: "Android 13" },
   { id: "android_12", label: "Android 12" },
@@ -206,6 +208,7 @@ export default function ProfessionalRegisterPage() {
   const form = useForm<any>({
     resolver: zodResolver(formSchemas[currentStep]),
     mode: "onChange",
+    shouldUnregister: false,
     defaultValues: {
       testingTypes: [],
       devices: [],
@@ -241,14 +244,21 @@ export default function ProfessionalRegisterPage() {
   };
 
   const processForm: SubmitHandler<any> = (data) => {
-    console.log("Final application data:", data);
+    const allData = form.getValues();
+    console.log("Final application data:", allData);
 
     mutate(
       {
-        email: data.email,
-        password: data.password || "google.oauth.123", // Mock for quick testing if using google
-        firstName: data.firstName || "Pro",
-        lastName: data.lastName || "Tester",
+        email: allData.email,
+        password: allData.password || "google.oauth.123", // Mock for quick testing if using google
+        firstName: allData.firstName || "Pro",
+        lastName: allData.lastName || "Tester",
+        experience: allData.experience,
+        testingTypes: allData.testingTypes,
+        bio: allData.bio,
+        devices: allData.devices,
+        osVersions: allData.osVersions,
+        languages: allData.languages,
       },
       {
         onSuccess: () => {
@@ -629,9 +639,9 @@ export default function ProfessionalRegisterPage() {
                                 {formSteps[currentStep].title}
                               </h3>
 
-                              <div className="w-full">
+                              <div className="w-full flex items-center justify-center">
                                 {currentStep === 1 && (
-                                  <div className="space-y-5 max-w-md mx-auto md:mx-0">
+                                  <div className="space-y-5 max-w-md mx-auto md:mx-0 w-full">
                                     <FormField
                                       name="experience"
                                       render={({ field }) => (
@@ -711,7 +721,7 @@ export default function ProfessionalRegisterPage() {
                                                         }}
                                                       />
                                                     </FormControl>
-                                                    <FormLabel className="text-sm font-normal">
+                                                    <FormLabel className="text-sm font-normal cursor-pointer">
                                                       {item.label}
                                                     </FormLabel>
                                                   </FormItem>
@@ -791,7 +801,7 @@ export default function ProfessionalRegisterPage() {
                                                         }}
                                                       />
                                                     </FormControl>
-                                                    <FormLabel className="text-sm font-normal">
+                                                    <FormLabel className="text-sm font-normal cursor-pointer">
                                                       {item.label}
                                                     </FormLabel>
                                                   </FormItem>
@@ -848,7 +858,7 @@ export default function ProfessionalRegisterPage() {
                                                         }}
                                                       />
                                                     </FormControl>
-                                                    <FormLabel className="text-sm font-normal">
+                                                    <FormLabel className="text-sm font-normal cursor-pointer">
                                                       {item.label}
                                                     </FormLabel>
                                                   </FormItem>
@@ -886,7 +896,7 @@ export default function ProfessionalRegisterPage() {
                         </div>
 
                         {/* Controls */}
-                        <div className="mt-auto pt-4 border-t flex items-center justify-between gap-4">
+                        <div className="mt-auto pt-4 border-t flex items-center justify-between gap-4  flex-col sm:flex-row">
                           <Button type="button" variant="ghost" onClick={prev}>
                             <ArrowLeft className="mr-2 h-4 w-4" /> Back to{" "}
                             {currentStep === 1 ? "Account Info" : "Experience"}
@@ -905,8 +915,7 @@ export default function ProfessionalRegisterPage() {
                                 isError={isError}
                                 type="submit"
                               >
-                                <UserPlus className="mr-2 h-4 w-4" /> Submit
-                                Application
+                                Submit Application
                               </LoadingButton>
                             )}
                           </div>

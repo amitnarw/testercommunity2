@@ -7,6 +7,10 @@ const DeveloperInstructions = ({
   instruction: string;
   mt?: number | string;
 }) => {
+  if (!instruction || instruction === "") {
+    return null;
+  }
+
   return (
     <section className={`${mt ? "mt-" + mt : "mt-16"}`}>
       <h2 className="mb-4 flex flex-row items-center justify-between gap-2 sm:justify-start">
@@ -21,7 +25,7 @@ const DeveloperInstructions = ({
         <span className="bg-gradient-to-b from-primary to-primary/50 text-white font-bold rounded-md px-4 py-0.5 text-lg inline sm:hidden">
           Important
         </span>
-        <p className="mt-2 sm:mt-0">{instruction}</p>
+        <p className="mt-2 sm:mt-0">"{instruction}"</p>
       </div>
     </section>
   );
