@@ -241,10 +241,6 @@ export const AppInfoSidebar = ({
                 <Smartphone className="w-5 h-5 text-primary/80" />
                 Android {app?.minimumAndroidVersion}
               </div>
-              <div className="flex items-center gap-2 text-xs sm:text-sm">
-                <Clock className="w-5 h-5 text-primary/80" /> ~
-                {app?.averageTimeTesting} test
-              </div>
             </div>
           </div>
         </CardContent>
@@ -266,49 +262,24 @@ export const AppInfoSidebar = ({
       <Card className="border-0 rounded-2xl shadow-xl shadow-gray-100 dark:shadow-gray-900 overflow-hidden bg-gradient-to-br from-primary/10 to-primary/30 dark:from-secondary dark:to-secondary/30">
         <CardHeader className="pb-2">
           <CardTitle className="text-base font-semibold text-foreground/80">
-            Creator Profile
+            Project Specifications
           </CardTitle>
         </CardHeader>
-        <CardContent className="pb-6">
-          <div className="flex items-center gap-4">
-            <Avatar className="h-12 w-12 border-2 border-background shadow-sm ring-2 ring-secondary/20">
-              <AvatarImage
-                src={app?.appOwner?.image || ""}
-                className="object-cover"
-                data-ai-hint="man developer"
-              />
-              <AvatarFallback className="bg-background text-primary font-bold">
-                {app?.appOwner?.name?.slice(0, 2)?.toUpperCase()}
-              </AvatarFallback>
-            </Avatar>
-
-            <div className="flex flex-col min-w-0">
-              <h3 className="font-semibold text-sm truncate">
-                {app?.appOwner?.name}
-              </h3>
-              <p className="text-xs text-muted-foreground truncate">
-                {app?.appOwner?.email}
-              </p>
-              {app?.appOwner?.emailVerified && (
-                <div className="flex items-center gap-1 mt-1">
-                  <Badge
-                    variant="secondary"
-                    className="text-[10px] h-4 px-1 bg-green-500/10 text-green-600 dark:text-green-400 hover:bg-green-500/20 border-green-500/20"
-                  >
-                    Verified
-                  </Badge>
-                </div>
-              )}
-              <div className="flex items-center gap-1.5 text-xs text-muted-foreground mt-2">
-                <CalendarDays className="w-3.5 h-3.5" />
-                <span className="truncate">
-                  Joined{" "}
-                  {new Date(app?.appOwner?.createdAt).toLocaleDateString(
-                    "en-US",
-                    { month: "short", year: "numeric" },
-                  )}
-                </span>
-              </div>
+        <CardContent className="pb-6 space-y-4">
+          <div className="grid grid-cols-2 gap-4">
+            <div className="flex flex-col gap-1">
+              <span className="text-[10px] uppercase tracking-wider text-muted-foreground font-bold">
+                Duration
+              </span>
+              <span className="text-sm font-semibold">{app?.totalDay} Days</span>
+            </div>
+            <div className="flex flex-col gap-1">
+              <span className="text-[10px] uppercase tracking-wider text-muted-foreground font-bold">
+                Slots
+              </span>
+              <span className="text-sm font-semibold">
+                {app?.currentTester} / {app?.totalTester}
+              </span>
             </div>
           </div>
         </CardContent>

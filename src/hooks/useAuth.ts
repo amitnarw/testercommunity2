@@ -62,6 +62,12 @@ export interface RegisterPayload {
   password: string;
   firstName: string;
   lastName: string;
+  experience?: string;
+  testingTypes?: string[];
+  bio?: string;
+  devices?: string[];
+  osVersions?: string[];
+  languages?: string;
 }
 
 export type RegisterResponse = {

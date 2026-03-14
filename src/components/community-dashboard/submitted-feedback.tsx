@@ -63,6 +63,7 @@ import { useR2 } from "@/hooks/useR2";
 import { Badge } from "@/components/ui/badge";
 import { addHubAppFeedback, updateHubAppFeedback } from "@/lib/apiCalls";
 import { useDeleteHubAppFeedback } from "@/hooks/useHub";
+import { authClient } from "@/lib/auth-client";
 
 const FEEDBACK_PER_PAGE = 3;
 
@@ -240,7 +241,7 @@ const FeedbackFormModal = ({
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent className="w-[95vw] sm:max-w-[600px] p-0 bg-[#fafafa] dark:bg-[#0f0f0f] shadow-2xl rounded-2xl sm:rounded-3xl border-0 overflow-hidden gap-0">
+      <DialogContent className="w-[95vw] h-[95vh] sm:max-w-[600px] p-0 bg-[#fafafa] dark:bg-[#0f0f0f] shadow-2xl rounded-2xl sm:rounded-3xl border-0 overflow-hidden gap-0">
         <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-primary/5 to-transparent pointer-events-none" />
         <DialogHeader className="relative z-10 w-full bg-white dark:bg-[#141414] border-b border-border/40">
           <div className="flex flex-row items-center justify-between p-4 sm:p-5">
@@ -273,10 +274,7 @@ const FeedbackFormModal = ({
           </div>
         </DialogHeader>
 
-        <form
-          onSubmit={handleSubmit}
-          className="flex flex-col h-full max-h-[80vh] overflow-y-auto pt-2"
-        >
+        <form className="flex flex-col h-full max-h-[80vh] overflow-y-auto pt-2">
           <div className="px-3 sm:px-6 py-2 space-y-6 pb-5">
             {/* Type Selector */}
             <div className="space-y-4">
@@ -511,7 +509,7 @@ const FeedbackFormModal = ({
             </div>
           </div>
 
-          <DialogFooter className="p-4 sm:p-6 bg-white dark:bg-[#141414] border-t border-border/40 mt-auto">
+          {/* <DialogFooter className="p-4 sm:p-6 bg-white dark:bg-[#141414] border-t border-border/40 mt-auto">
             <div className="flex w-full gap-3">
               <Button
                 type="button"
@@ -542,8 +540,40 @@ const FeedbackFormModal = ({
                 )}
               </Button>
             </div>
-          </DialogFooter>
+          </DialogFooter> */}
         </form>
+        <DialogFooter className="p-4 sm:p-6 bg-white dark:bg-[#141414] border-t border-border/40 mt-auto">
+          <div className="flex w-full gap-3">
+            <Button
+              type="button"
+              variant="ghost"
+              className="flex-1 rounded-xl h-11 sm:h-12 hover:bg-muted/50"
+              onClick={() => setOpen(false)}
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={handleSubmit}
+              className="flex-[2] rounded-xl h-11 sm:h-12 text-sm sm:text-base font-semibold shadow-lg shadow-primary/25 hover:shadow-primary/40 transition-all active:scale-[0.98]"
+              disabled={
+                !message || !type || isPendingCUU || uploadFileToR2.isPending
+              }
+            >
+              {isPendingCUU || uploadFileToR2.isPending ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin mr-2" />
+                  {isPendingCUU
+                    ? "Preparing..."
+                    : `Uploading... ${uploadPercent}%`}
+                </>
+              ) : feedback ? (
+                "Update Feedback"
+              ) : (
+                "Submit Feedback"
+              )}
+            </Button>
+          </div>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   );
@@ -567,6 +597,7 @@ const FeedbackListItem = ({
   onDelete,
   onImageClick,
   isCompleted,
+  currentUserId,
 }: {
   fb: HubSubmittedAppResponse["feedback"][0];
   onSave: (data: {
@@ -582,6 +613,7 @@ const FeedbackListItem = ({
   onDelete: (id: number) => void;
   onImageClick: (url: string) => void;
   isCompleted: boolean;
+  currentUserId: string | null;
 }) => (
   <Card
     className={`bg-gradient-to-tl ${
@@ -604,7 +636,11 @@ const FeedbackListItem = ({
       </div>
       <div className="flex flex-row items-center justify-between w-full">
         <p className="font-semibold">{fb.type}</p>
-        <div className={`flex items-center gap-1 ${isCompleted && "hidden"}`}>
+        <div
+          className={`flex items-center gap-1 ${
+            (isCompleted || fb.testerId !== currentUserId) && "hidden"
+          }`}
+        >
           <FeedbackFormModal feedback={fb} onSave={onSave}>
             <button className="hover:bg-white/50 p-2 rounded-md duration-300">
               <Edit className="w-4 h-4" />
@@ -616,7 +652,7 @@ const FeedbackListItem = ({
                 <Trash2 className="w-4 h-4" />
               </button>
             </AlertDialogTrigger>
-            <AlertDialogContent className="w-[90vw] rounded-2xl bg-sidebar border-0">
+            <AlertDialogContent className="w-[90vw] sm:max-w-[400px] rounded-2xl bg-white dark:bg-[#1a1a1a] border-border/10 shadow-2xl animate-in zoom-in-95 duration-200">
               <AlertDialogHeader>
                 <AlertDialogTitle>Are you sure?</AlertDialogTitle>
                 <AlertDialogDescription>
@@ -625,7 +661,7 @@ const FeedbackListItem = ({
                 </AlertDialogDescription>
               </AlertDialogHeader>
               <AlertDialogFooter>
-                <AlertDialogCancel className="bg-sidebar">
+                <AlertDialogCancel className="bg-muted hover:bg-muted/80 border-0">
                   Cancel
                 </AlertDialogCancel>
                 <AlertDialogAction
@@ -664,6 +700,7 @@ const FeedbackGridItem = ({
   onDelete,
   onImageClick,
   isCompleted,
+  currentUserId,
 }: {
   fb: HubSubmittedAppResponse["feedback"][number];
   onSave: (data: {
@@ -679,6 +716,7 @@ const FeedbackGridItem = ({
   onDelete: (id: number) => void;
   onImageClick: (url: string) => void;
   isCompleted: boolean;
+  currentUserId: string | null;
 }) => (
   <Card
     className={`bg-gradient-to-bl ${
@@ -727,7 +765,11 @@ const FeedbackGridItem = ({
       ) : (
         <div />
       )}
-      <div className={`flex items-center gap-1 ${isCompleted && "hidden"}`}>
+      <div
+        className={`flex items-center gap-1 ${
+          (isCompleted || fb.testerId !== currentUserId) && "hidden"
+        }`}
+      >
         <FeedbackFormModal feedback={fb} onSave={onSave}>
           <button className="hover:bg-white/50 p-1 sm:p-2 rounded-md duration-300">
             <Edit className="w-3 h-3 sm:w-4 sm:h-4" />
@@ -739,7 +781,7 @@ const FeedbackGridItem = ({
               <Trash2 className="w-4 h-4" />
             </button>
           </AlertDialogTrigger>
-          <AlertDialogContent className="w-[90vw] rounded-2xl bg-sidebar border-0">
+          <AlertDialogContent className="w-[90vw] sm:max-w-[400px] rounded-2xl bg-white dark:bg-[#1a1a1a] border-border/10 shadow-2xl animate-in zoom-in-95 duration-200">
             <AlertDialogHeader>
               <AlertDialogTitle>Are you sure?</AlertDialogTitle>
               <AlertDialogDescription>
@@ -748,7 +790,7 @@ const FeedbackGridItem = ({
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
-              <AlertDialogCancel className="bg-sidebar">
+              <AlertDialogCancel className="bg-muted hover:bg-muted/80 border-0">
                 Cancel
               </AlertDialogCancel>
               <AlertDialogAction
@@ -787,10 +829,19 @@ export function SubmittedFeedback({
     setMounted(true);
   }, []);
 
-  const totalPages = Math.ceil(feedback?.length / FEEDBACK_PER_PAGE);
+  const { data: session } = authClient.useSession();
+  const currentUserId = session?.user?.id || null;
+  const userRole = (session?.user as any)?.role;
+  const isPrivileged = userRole === "ADMIN" || userRole === "SUPER_ADMIN";
+
+  const filteredFeedback =
+    feedback?.filter((fb) => isPrivileged || fb.testerId === currentUserId) ||
+    [];
+
+  const totalPages = Math.ceil(filteredFeedback.length / FEEDBACK_PER_PAGE);
   const startIndex = (currentPage - 1) * FEEDBACK_PER_PAGE;
   const endIndex = startIndex + FEEDBACK_PER_PAGE;
-  const currentFeedback = feedback?.slice(startIndex, endIndex);
+  const currentFeedback = filteredFeedback.slice(startIndex, endIndex);
 
   const handlePageChange = (page: number) => {
     if (page < 1 || page > totalPages) return;
@@ -887,7 +938,7 @@ export function SubmittedFeedback({
               variant="secondary"
               className="w-7 h-7 sm:w-auto sm:h-auto text-xs sm:text-sm rounded-full bg-primary/10 text-primary hover:bg-primary/20 transition-colors gap-1"
             >
-              <span>{feedback.length}</span>
+              <span>{filteredFeedback.length}</span>
               <span className="hidden sm:block">Submitted</span>
             </Badge>
           </div>
@@ -954,6 +1005,7 @@ export function SubmittedFeedback({
                     onDelete={handleDeleteFeedback}
                     onImageClick={setFullscreenImage}
                     isCompleted={isCompleted}
+                    currentUserId={currentUserId}
                   />
                 ))}
               </div>
@@ -967,6 +1019,7 @@ export function SubmittedFeedback({
                     onDelete={handleDeleteFeedback}
                     onImageClick={setFullscreenImage}
                     isCompleted={isCompleted}
+                    currentUserId={currentUserId}
                   />
                 ))}
               </div>
