@@ -25,6 +25,7 @@ import {
   MessageSquare,
   Bug,
   Lightbulb,
+  Star,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { BackButton } from "@/components/back-button";
@@ -340,16 +341,28 @@ export default function AdminSubmissionDetailPage({
                     <Activity className="w-5 h-5" />
                     Execution Plan
                   </div>
+                  {project.status !== "IN_REVIEW" && (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      className="h-8 w-8 p-0 rounded-lg hover:bg-emerald-500/10 text-emerald-600"
+                      onClick={() => setShowAcceptDialog(true)}
+                    >
+                      <Pencil className="w-4 h-4" />
+                      <span className="sr-only">Edit Plan</span>
+                    </Button>
+                  )}
                 </CardTitle>
               </CardHeader>
               <CardContent className="p-0 flex-1 flex flex-col">
-                <div className="grid grid-cols-3 divide-x border-b border-border/50 bg-background/50 flex-1">
+                {/* Primary Requirements Row */}
+                <div className="grid grid-cols-3 divide-x border-b border-border/50 bg-background/50">
                   <div className="p-4 flex flex-col items-center justify-center text-center space-y-1.5 hover:bg-background transition-colors">
                     <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider flex items-center gap-1">
                       <Users className="w-3.5 h-3.5 text-primary" />
                       Testers
                     </span>
-                    <span className="text-3xl font-black text-amber-600 dark:text-amber-500">
+                    <span className="text-2xl font-black text-amber-600 dark:text-amber-500">
                       {requiredTesters}
                     </span>
                   </div>
@@ -358,20 +371,42 @@ export default function AdminSubmissionDetailPage({
                       <Clock className="w-3.5 h-3.5 text-primary" />
                       Duration
                     </span>
-                    <span className="text-3xl font-black">
+                    <span className="text-2xl font-black">
                       {project.totalDay || 0}{" "}
-                      <span className="text-sm font-bold text-muted-foreground lowercase">
+                      <span className="text-xs font-bold text-muted-foreground lowercase">
                         Days
                       </span>
                     </span>
                   </div>
                   <div className="p-4 flex flex-col items-center justify-center text-center space-y-1.5 hover:bg-background transition-colors">
                     <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider flex items-center gap-1">
-                      <Smartphone className="w-3.5 h-3.5" />
+                      <Smartphone className="w-3.5 h-3.5 text-primary" />
                       Min OS
                     </span>
-                    <span className="text-2xl font-black">
-                      Android {project.minimumAndroidVersion}+
+                    <span className="text-2xl font-black truncate">
+                      v{project.minimumAndroidVersion}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Rewards & Payments Row */}
+                <div className="grid grid-cols-2 divide-x border-b border-border/50 bg-secondary/20">
+                  <div className="p-4 flex flex-col items-center justify-center text-center space-y-1.5 hover:bg-background transition-colors">
+                    <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider flex items-center gap-1">
+                      <Activity className="w-3.5 h-3.5 text-primary" />
+                      Cost Points
+                    </span>
+                    <span className="text-2xl font-black text-blue-600">
+                      {project.costPoints || 0} <span className="text-xs font-bold text-muted-foreground lowercase">Pts</span>
+                    </span>
+                  </div>
+                  <div className="p-4 flex flex-col items-center justify-center text-center space-y-1.5 hover:bg-background transition-colors">
+                    <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider flex items-center gap-1">
+                      <Star className="w-3.5 h-3.5 text-primary" />
+                      Reward Points
+                    </span>
+                    <span className="text-2xl font-black text-emerald-600">
+                      {project.rewardPoints || 0} <span className="text-xs font-bold text-muted-foreground lowercase">Pts</span>
                     </span>
                   </div>
                 </div>
@@ -509,15 +544,14 @@ export default function AdminSubmissionDetailPage({
           refetch();
           setShowAcceptDialog(false);
         }}
-        initialData={
-          project.status !== "IN_REVIEW"
-            ? {
-                totalTester: project.totalTester,
-                totalDay: project.totalDay,
-                minimumAndroidVersion: project.minimumAndroidVersion,
-              }
-            : undefined
-        }
+        initialData={{
+          totalTester: project.totalTester,
+          totalDay: project.totalDay,
+          minimumAndroidVersion: project.minimumAndroidVersion,
+          costPoints: project.costPoints || 0,
+          rewardPoints: project.rewardPoints || 0,
+        }}
+        isReview={project.status === "IN_REVIEW"}
       />
       {/* Fullscreen Image Viewer */}
       {fullscreenImage && (

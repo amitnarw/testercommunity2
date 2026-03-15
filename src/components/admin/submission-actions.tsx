@@ -90,6 +90,14 @@ export function SubmissionActions({ submission }: SubmissionActionsProps) {
         open={showAcceptDialog}
         onOpenChange={setShowAcceptDialog}
         onSuccess={onSuccess}
+        appType={submission.appType}
+        initialData={{
+          totalTester: submission.totalTester,
+          totalDay: submission.totalDay,
+          minimumAndroidVersion: submission.minimumAndroidVersion,
+          rewardMoney: submission.rewardMoney,
+        }}
+        isReview={submission.status === "IN_REVIEW"}
       />
     </div>
   );
