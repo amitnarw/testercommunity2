@@ -564,16 +564,13 @@ export default function AdminSubmissionDetailPage({
           refetch();
           setShowAcceptDialog(false);
         }}
-        initialData={
-          project.status !== "IN_REVIEW"
-            ? {
-                totalTester: project.totalTester,
-                totalDay: project.totalDay,
-                minimumAndroidVersion: project.minimumAndroidVersion,
-                rewardMoney: project.rewardMoney,
-              }
-            : undefined
-        }
+        initialData={{
+          totalTester: project.totalTester,
+          totalDay: project.totalDay,
+          minimumAndroidVersion: project.minimumAndroidVersion,
+          rewardMoney: project.rewardMoney,
+        }}
+        isReview={project.status === "IN_REVIEW"}
       />
       <AdminStartTestingDialog
         appId={project.id}

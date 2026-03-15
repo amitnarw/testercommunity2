@@ -199,11 +199,19 @@ const ProjectCard = ({ project }: { project: HubSubmittedAppResponse }) => {
           <CardFooter className="p-0 mt-auto relative z-10">
             <div className="w-full bg-secondary/30 backdrop-blur-sm border-t border-border/40 p-4">
               <div className="flex items-center justify-between text-xs">
-                <div className="flex items-center gap-1.5 text-foreground/80 font-medium">
-                  <div className="p-1.5 rounded-full bg-amber-500/10 text-amber-500">
-                    <Star className="w-3.5 h-3.5 fill-amber-500/20" />
+                <div className="flex flex-col items-start gap-0.5">
+                  <div className="flex items-center gap-1.5 text-foreground/80 font-medium">
+                    <div className="p-1.5 rounded-full bg-blue-500/10 text-blue-500">
+                      <Star className="w-3.5 h-3.5 fill-blue-500/20" />
+                    </div>
+                    <span>{project?.costPoints ?? 0} Pts</span>
+                    {project?.costPoints !== undefined && project.costPoints > 0 && project.costPoints < 1000 && (
+                      <Badge variant="outline" className="px-1 h-3.5 text-[8px] bg-blue-500/10 text-blue-600 border-blue-500/20">COUPON</Badge>
+                    )}
                   </div>
-                  <span>{project?.costPoints ?? 0} Pts</span>
+                  <div className="flex items-center gap-1 text-[10px] text-muted-foreground ml-7">
+                    <span>Reward: {project?.rewardPoints || 0} Pts</span>
+                  </div>
                 </div>
 
                 <div className="h-4 w-px bg-border/60" />

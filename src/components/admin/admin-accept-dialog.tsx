@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Select,
   SelectContent,
@@ -47,7 +47,10 @@ interface AdminAcceptDialogProps {
     totalDay?: number;
     minimumAndroidVersion?: number;
     rewardMoney?: number;
+    costPoints?: number;
+    rewardPoints?: number;
   };
+  isReview?: boolean;
 }
 
 const ANDROID_VERSIONS = [
@@ -77,8 +80,19 @@ export function AdminAcceptDialog({
   appType,
   paymentInfo,
   initialData,
+  isReview,
 }: AdminAcceptDialogProps) {
-  const isEditing = !!initialData;
+  const isEditing = !!initialData && !isReview;
+
+  // Helper to match numeric version to dropdown string values (e.g., 13 -> "13.0")
+  const getVersionString = (v: number | undefined) => {
+    if (v === undefined || v === null) return "";
+    const s = v.toString();
+    if (ANDROID_VERSIONS.includes(s)) return s;
+    const withDotZero = `${v}.0`;
+    if (ANDROID_VERSIONS.includes(withDotZero)) return withDotZero;
+    return s;
+  };
 
   // Initialize with initialData if provided, otherwise defaults
   const [totalTester, setTotalTester] = useState<string>(
@@ -88,11 +102,25 @@ export function AdminAcceptDialog({
     initialData?.totalDay?.toString() || "14",
   );
   const [minimumAndroidVersion, setMinimumAndroidVersion] = useState<string>(
-    initialData?.minimumAndroidVersion?.toString() || "",
+    getVersionString(initialData?.minimumAndroidVersion),
   );
   const [rewardPoints, setRewardPoints] = useState<string>(
-    initialData?.rewardMoney?.toString() || "",
+    initialData?.rewardMoney?.toString() || initialData?.rewardPoints?.toString() || "",
   );
+
+  useEffect(() => {
+    if (open) {
+      setTotalTester(initialData?.totalTester?.toString() || "20");
+      setTotalDay(initialData?.totalDay?.toString() || "14");
+      setMinimumAndroidVersion(
+        getVersionString(initialData?.minimumAndroidVersion),
+      );
+      // Try rewardMoney (PAID) then rewardPoints (FREE)
+      const initialReward =
+        initialData?.rewardMoney || initialData?.rewardPoints;
+      setRewardPoints(initialReward?.toString() || "");
+    }
+  }, [open, initialData]);
 
   const { mutate: acceptApp, isPending: isAccepting } = useAcceptApp({
     onSuccess: () => {
@@ -113,26 +141,23 @@ export function AdminAcceptDialog({
   });
 
   const handleApprove = () => {
-    const payload: any = { id: appId };
-    if (appType === "PAID") {
-      if (
-        !totalTester ||
-        !totalDay ||
-        !minimumAndroidVersion ||
-        !rewardPoints
-      ) {
-        toast({
-          variant: "destructive",
-          title: "Validation Error",
-          description: "Please fill in all the required fields for paid apps.",
-        });
-        return;
-      }
-      payload.totalTester = Number(totalTester);
-      payload.totalDay = Number(totalDay);
-      payload.minimumAndroidVersion = parseFloat(minimumAndroidVersion);
-      payload.rewardPoints = Number(rewardPoints);
+    if (!totalTester || !totalDay || !minimumAndroidVersion || !rewardPoints) {
+      toast({
+        variant: "destructive",
+        title: "Validation Error",
+        description: "Please fill in all the required testing parameters, including tester rewards.",
+      });
+      return;
     }
+
+    const payload: any = {
+      id: appId,
+      totalTester: Number(totalTester),
+      totalDay: Number(totalDay),
+      minimumAndroidVersion: parseFloat(minimumAndroidVersion),
+      rewardPoints: Number(rewardPoints),
+    };
+
     acceptApp(payload);
   };
 
@@ -151,21 +176,70 @@ export function AdminAcceptDialog({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="w-[95vw] sm:w-[580px] h-[90dvh] rounded-3xl overflow-hidden p-0 gap-0 border-none shadow-2xl bg-white dark:bg-[#1A1A1A]">
-        <div className="bg-green-500/5 p-6 border-b border-green-500/10">
+        <div className="bg-green-500/5 p-4 sm:p-6 border-b border-green-500/10">
           <DialogHeader>
-            <DialogTitle className="text-green-600 flex items-center gap-2 text-xl font-bold">
-              <CheckCircle2 className="w-6 h-6" />
+            <DialogTitle className="text-green-600 flex items-center gap-2 text-lg sm:text-xl font-bold">
+              <CheckCircle2 className="w-5 h-5 sm:w-6 sm:h-6" />
               {isEditing ? "Update Plan" : "Approve Request"}
             </DialogTitle>
-            <DialogDescription className="text-green-600/70">
+            <DialogDescription className="text-green-600/70 text-xs sm:text-sm">
               {isEditing
                 ? "Update the current testing parameters."
-                : "Set the testing parameters and review the financial summary."}
+                : "Set parameters and review financials."}
             </DialogDescription>
           </DialogHeader>
         </div>
+        <div className="p-4 sm:p-6 space-y-6 max-h-[70vh] overflow-y-auto">
+          {initialData && (
+            <div className="space-y-2 mb-2">
+              {isReview && (
+                <div className="bg-blue-500/5 px-4 py-2.5 rounded-xl border border-blue-500/10 flex flex-wrap items-center gap-x-6 gap-y-2">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-blue-600/80 dark:text-blue-400/80 shrink-0">
+                    User Request:
+                  </span>
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-[10px] text-muted-foreground font-medium">Testers:</span>
+                    <span className="text-xs font-bold">{initialData.totalTester}</span>
+                  </div>
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-[10px] text-muted-foreground font-medium">Duration:</span>
+                    <span className="text-xs font-bold">{initialData.totalDay}d</span>
+                  </div>
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-[10px] text-muted-foreground font-medium">Min OS:</span>
+                    <span className="text-xs font-bold truncate">
+                      {initialData.minimumAndroidVersion ? `v${initialData.minimumAndroidVersion}` : "Any"}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-1.5 ml-auto">
+                    <span className="text-[10px] text-muted-foreground font-medium">Paid:</span>
+                    <span className="text-xs font-bold text-blue-600">
+                      {appType === "FREE"
+                        ? `${initialData.costPoints || 0} Pts`
+                        : `₹${(paymentInfo?.amountPaid || PLAN_PRICE_INR).toLocaleString("en-IN")}`}
+                    </span>
+                  </div>
+                </div>
+              )}
 
-        <div className="p-6 space-y-6 max-h-[70vh] overflow-y-auto">
+              {appType === "FREE" && (
+                <div className="bg-amber-500/5 px-4 py-2.5 rounded-xl border border-amber-500/10 flex flex-wrap items-center gap-x-6 gap-y-2">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-amber-600/80 dark:text-amber-400/80 shrink-0">
+                    Calculated Summary:
+                  </span>
+                  <div className="flex items-center gap-1.5">
+                    <span className="text-[10px] text-muted-foreground font-medium">Testers:</span>
+                    <span className="text-xs font-bold">{testers}</span>
+                  </div>
+                  <div className="flex items-center gap-1.5 align-baseline">
+                    <span className="text-[10px] text-muted-foreground font-medium">Reward/Tester:</span>
+                    <span className="text-xs font-bold text-emerald-600">{payoutPerTester} Pts</span>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="space-y-2">
               <Label
@@ -224,25 +298,23 @@ export function AdminAcceptDialog({
                 </SelectContent>
               </Select>
             </div>
-            {appType === "PAID" && (
-              <div className="space-y-2">
-                <Label
-                  htmlFor="reward"
-                  className="text-xs font-bold uppercase tracking-wider text-muted-foreground"
-                >
-                  Payout per Tester (₹)
-                </Label>
-                <Input
-                  id="reward"
-                  type="number"
-                  placeholder="e.g. 30"
-                  value={rewardPoints}
-                  onChange={(e) => setRewardPoints(e.target.value)}
-                  min="0"
-                  className="h-11"
-                />
-              </div>
-            )}
+            <div className="space-y-2">
+              <Label
+                htmlFor="reward"
+                className="text-xs font-bold uppercase tracking-wider text-muted-foreground"
+              >
+                {appType === "PAID" ? "Payout per Tester (₹)" : "Reward for Testers (Points)"}
+              </Label>
+              <Input
+                id="reward"
+                type="number"
+                placeholder={appType === "PAID" ? "e.g. 30" : "e.g. 100"}
+                value={rewardPoints}
+                onChange={(e) => setRewardPoints(e.target.value)}
+                min="0"
+                className="h-11"
+              />
+            </div>
           </div>
 
           {appType === "PAID" && (
@@ -253,23 +325,23 @@ export function AdminAcceptDialog({
 
               <div className="space-y-2.5">
                 {/* Income */}
-                <div className="flex justify-between items-center text-sm">
-                  <span className="text-muted-foreground flex items-center gap-1.5">
-                    Amount Paid by Developer/User:
+                <div className="flex justify-between items-start gap-4 text-xs sm:text-sm">
+                  <span className="text-muted-foreground">
+                    Paid by Developer:
                   </span>
-                  <span className="font-bold text-blue-600">
+                  <span className="font-bold text-blue-600 shrink-0">
                     ₹{income.toLocaleString("en-IN")}
                   </span>
                 </div>
 
                 {/* Testers info row */}
                 {testers > 0 && payoutPerTester > 0 && (
-                  <div className="flex justify-between items-center text-sm text-muted-foreground">
+                  <div className="flex justify-between items-start gap-4 text-xs sm:text-sm text-muted-foreground">
                     <span>
                       {testers} tester{testers !== 1 ? "s" : ""} × ₹
                       {payoutPerTester.toLocaleString("en-IN")}
                     </span>
-                    <span className="font-medium text-red-500">
+                    <span className="font-medium text-red-500 shrink-0">
                       -₹{totalPayout.toLocaleString("en-IN")}
                     </span>
                   </div>
@@ -321,28 +393,24 @@ export function AdminAcceptDialog({
             </div>
           )}
 
-          <div className="bg-amber-500/5 p-4 rounded-xl border border-amber-500/20">
-            <p className="text-xs text-amber-700 dark:text-amber-400 leading-relaxed font-medium">
-              Note: Approving this app will set it to "AVAILABLE" status. The
-              app will automatically move to "IN TESTING" only after you
-              manually add the required number of testers (
-              {totalTester || "specified amount"}) via the "Manage Testers"
-              option.
+          <div className="bg-amber-500/5 p-3 sm:p-4 rounded-xl border border-amber-500/20">
+            <p className="text-[11px] sm:text-xs text-amber-700 dark:text-amber-400 leading-relaxed font-medium">
+              Note: Approving this app will set it to "AVAILABLE" status. Add testers via the "Manage Testers" option to start the campaign.
             </p>
           </div>
         </div>
 
-        <DialogFooter className="p-6 bg-secondary/30 gap-3 border-t border-border/50">
+        <DialogFooter className="p-4 sm:p-6 bg-secondary/30 flex flex-col-reverse sm:flex-row gap-2 sm:gap-3 border-t border-border/50">
           <Button
             variant="ghost"
             onClick={() => onOpenChange(false)}
-            className="h-11 rounded-xl px-6"
+            className="h-10 sm:h-11 rounded-xl px-6 w-full sm:w-auto"
           >
             Cancel
           </Button>
           <Button
             onClick={handleApprove}
-            className="h-11 rounded-xl px-8 bg-green-600 hover:bg-green-700 text-white shadow-lg shadow-green-600/20"
+            className="h-10 sm:h-11 rounded-xl px-8 bg-green-600 hover:bg-green-700 text-white shadow-lg shadow-green-600/20 w-full sm:w-auto"
             disabled={isAccepting}
           >
             {isAccepting ? (
