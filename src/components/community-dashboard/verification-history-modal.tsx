@@ -53,7 +53,7 @@ export function VerificationHistoryModal({
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent
         className={cn(
-          "p-0 overflow-y-auto md:overflow-hidden border-border bg-background shadow-2xl block max-h-[90vh] md:max-h-none md:h-auto gap-0",
+          "p-0 overflow-hidden border-none bg-background shadow-2xl block max-h-[90vh] md:max-h-none md:h-auto gap-0 rounded-[2rem]",
           showImage ? "max-w-[95vw] sm:max-w-4xl" : "max-w-[95vw] sm:max-w-md",
         )}
       >
@@ -87,14 +87,20 @@ export function VerificationHistoryModal({
               showImage ? "md:col-span-2" : "",
             )}
           >
-            <DialogHeader className="p-3 sm:p-6 pb-2 border-b border-border space-y-0.5 shrink-0">
-              <DialogTitle className="text-xl font-bold flex items-center gap-2">
-                <span className="text-muted-foreground">#</span>
-                Day {data.dayNumber} Verification
-              </DialogTitle>
-              <p className="text-start text-sm text-muted-foreground">
-                {isPaid ? "Check-in confirmation" : "Detailed proof analysis"}
-              </p>
+            <DialogHeader className="p-6 sm:p-8 pb-4 border-b border-border space-y-1 shrink-0 bg-muted/5">
+              <div className="flex items-center gap-3">
+                <div className="h-10 w-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary shadow-sm ring-1 ring-primary/20">
+                  <Smartphone className="w-5 h-5" />
+                </div>
+                <div className="text-left">
+                  <DialogTitle className="text-xl font-bold tracking-tight">
+                    Day {data.dayNumber} Verification
+                  </DialogTitle>
+                  <p className="text-xs text-muted-foreground font-medium">
+                    {isPaid ? "Check-in confirmation" : "Advanced proof analysis"}
+                  </p>
+                </div>
+              </div>
             </DialogHeader>
 
             <div className="md:flex-1 md:overflow-y-auto p-3 sm:p-6 space-y-8">
