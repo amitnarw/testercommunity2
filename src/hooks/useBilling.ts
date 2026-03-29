@@ -50,10 +50,10 @@ export function usePendingOrders() {
 
 // Mutations
 export function useCreateOrder(
-  options?: UseMutationOptions<CreateOrderResponse, Error, string>,
+  options?: UseMutationOptions<CreateOrderResponse, Error, { planId: string }>,
 ) {
   const mutation = useMutation({
-    mutationFn: (planId: string) => createOrder(planId),
+    mutationFn: (payload: { planId: string }) => createOrder(payload),
     ...options,
   });
 

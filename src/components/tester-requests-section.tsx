@@ -17,7 +17,10 @@ import {
   Smartphone,
   Star,
   Loader2,
+  Users,
 } from "lucide-react";
+
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 import {
   Dialog,
@@ -42,6 +45,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { HubSubmittedAppResponse } from "@/lib/types";
 import { useR2 } from "@/hooks/useR2";
+import { cn } from "@/lib/utils";
 
 import { ActionFeedbackDialog } from "@/components/action-feedback-dialog";
 
@@ -92,6 +96,7 @@ export function TesterRequestsSection({
   const [uploadPercent, setUploadPercent] = useState(0);
 
   const pendingRequests = requests.filter((r) => r.status === "PENDING");
+  const joinedTesters = requests.filter((r) => r.status !== "PENDING");
 
   const { createUploadUrl, isPendingCUU, uploadFileToR2 } = useR2();
   const acceptMutation = useAcceptHubAppTestingRequest();
@@ -229,44 +234,170 @@ export function TesterRequestsSection({
     <section className="space-y-6 bg-card/50 rounded-2xl p-3 sm:p-6 pt-2 sm:pt-8">
       <div className="flex flex-col sm:flex-row items-center justify-between gap-4 relative">
         <div className="space-y-1">
-          <h2 className="text-xl sm:text-2xl font-bold">Tester Requests</h2>
+          <h2 className="text-xl sm:text-2xl font-bold">Manage Testers</h2>
           <p className="text-sm sm:text-base text-muted-foreground">
-            Manage users who want to join your testing program.
+            Manage users who want to join your testing program and track those currently testing.
           </p>
-        </div>
-        <div className="absolute top-0 right-0">
-          <Badge
-            variant="secondary"
-            className="w-7 h-7 sm:w-auto sm:h-auto text-xs sm:text-sm rounded-full bg-primary/10 text-primary hover:bg-primary/20 transition-colors gap-1"
-          >
-            <span>{pendingRequests.length}</span>
-            <span className="hidden sm:block">Pending</span>
-          </Badge>
         </div>
       </div>
 
-      <div className="rounded-xl border bg-card shadow-sm overflow-hidden hidden md:grid md:grid-cols-1">
-        <Table>
-          <TableHeader className="bg-muted/50">
-            <TableRow>
-              <TableHead className="w-[300px]">Tester</TableHead>
-              <TableHead>Experience</TableHead>
-              <TableHead>Device</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead className="text-right">Actions</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
+      <Tabs defaultValue="pending" className="w-full">
+        <TabsList className="grid w-full grid-cols-2 max-w-[400px] mb-4">
+          <TabsTrigger value="pending" className="relative">
+            Pending Requests
+            {pendingRequests.length > 0 && (
+              <Badge
+                variant="destructive"
+                className="ml-2 px-1.5 h-5 min-w-5 flex items-center justify-center rounded-full text-[10px]"
+              >
+                {pendingRequests.length}
+              </Badge>
+            )}
+          </TabsTrigger>
+          <TabsTrigger value="joined">
+            Joined Testers
+            {joinedTesters.length > 0 && (
+              <Badge
+                variant="secondary"
+                className="ml-2 px-1.5 h-5 min-w-5 flex items-center justify-center rounded-full text-[10px]"
+              >
+                {joinedTesters.length}
+              </Badge>
+            )}
+          </TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="pending" className="space-y-4">
+          <div className="rounded-xl border bg-card shadow-sm overflow-hidden hidden md:grid md:grid-cols-1">
+            <Table>
+              <TableHeader className="bg-muted/50">
+                <TableRow>
+                  <TableHead className="w-[300px]">Tester</TableHead>
+                  <TableHead>Experience</TableHead>
+                  <TableHead>Device</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead className="text-right">Actions</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                <AnimatePresence>
+                  {pendingRequests.map((req) => (
+                    <motion.tr
+                      key={req.id}
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      className="group border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted"
+                    >
+                      <TableCell className="py-4">
+                        <div className="flex items-center gap-3">
+                          <Avatar className="h-10 w-10 border border-border">
+                            <AvatarImage src={req.tester?.image || ""} />
+                            <AvatarFallback className="bg-primary/10 text-primary font-medium">
+                              {req.tester?.name?.charAt(0) || "U"}
+                            </AvatarFallback>
+                          </Avatar>
+                          <div className="flex flex-col">
+                            <span className="font-semibold text-sm">
+                              {req.tester?.name || "Unknown"}
+                            </span>
+                            <span className="text-xs text-muted-foreground">
+                              {req.tester?.email}
+                            </span>
+                          </div>
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                          <span>
+                            {req?.tester?.userDetail?.experience_level || "N/A"}
+                          </span>
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <div className="flex items-center gap-2">
+                          <Badge
+                            variant="outline"
+                            className="font-normal text-xs gap-1"
+                          >
+                            <Smartphone className="w-3 h-3 opacity-70" />
+                            {req?.tester?.userDetail?.device_company ||
+                            req?.tester?.userDetail?.device_model
+                              ? req?.tester?.userDetail?.device_company +
+                                " " +
+                                req?.tester?.userDetail?.device_model
+                              : "N/A"}
+                          </Badge>
+                        </div>
+                      </TableCell>
+                      <TableCell>
+                        <Badge
+                          variant="secondary"
+                          className="font-medium text-xs bg-orange-500/10 text-orange-600 hover:bg-orange-500/20 border-orange-200 dark:border-orange-900"
+                        >
+                          Pending Review
+                        </Badge>
+                      </TableCell>
+                      <TableCell className="text-right">
+                        <div className="flex items-center justify-end gap-2">
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            className="h-8 w-8 p-0 text-muted-foreground hover:text-foreground"
+                            onClick={() => handleDetailsClick(req)}
+                            title="View Details"
+                          >
+                            <Eye className="w-4 h-4" />
+                          </Button>
+                          <div className="h-4 w-px bg-border mx-1" />
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            className="h-8 w-8 p-0 text-green-600 border-green-200 dark:border-green-900 hover:bg-green-50 hover:text-green-700 hover:border-green-300 dark:hover:bg-green-900/20"
+                            onClick={() => handleAccept(req.testerId)}
+                            title="Accept"
+                            disabled={processingId === req.testerId}
+                          >
+                            {processingId === req.testerId ? (
+                              <Loader2 className="w-4 h-4 animate-spin" />
+                            ) : (
+                              <Check className="w-4 h-4" />
+                            )}
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            className="h-8 w-8 p-0 text-red-600 border-red-200 dark:border-red-900 hover:bg-red-50 hover:text-red-700 hover:border-red-300 dark:hover:bg-red-900/20"
+                            onClick={() => handleRejectClick(req)}
+                            title="Reject"
+                          >
+                            <X className="w-4 h-4" />
+                          </Button>
+                        </div>
+                      </TableCell>
+                    </motion.tr>
+                  ))}
+                </AnimatePresence>
+              </TableBody>
+            </Table>
+            {pendingRequests.length === 0 && (
+              <div className="p-8 text-center text-muted-foreground">
+                No pending requests found.
+              </div>
+            )}
+          </div>
+
+          <div className="md:hidden space-y-4">
             <AnimatePresence>
               {pendingRequests.map((req) => (
-                <motion.tr
+                <motion.div
                   key={req.id}
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0 }}
-                  className="group border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted"
+                  className="bg-card border border-border rounded-xl p-4 shadow-lg shadow-primary/20 flex flex-col gap-4"
                 >
-                  <TableCell className="py-4">
+                  <div className="flex items-start justify-between relative">
                     <div className="flex items-center gap-3">
                       <Avatar className="h-10 w-10 border border-border">
                         <AvatarImage src={req.tester?.image || ""} />
@@ -283,184 +414,192 @@ export function TesterRequestsSection({
                         </span>
                       </div>
                     </div>
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                    <Badge
+                      variant="secondary"
+                      className="absolute -top-2 -right-2 font-medium text-[8px] bg-orange-500/10 text-orange-600 hover:bg-orange-500/20 border-orange-200 dark:border-orange-900 whitespace-nowrap"
+                    >
+                      Pending
+                    </Badge>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-2 text-xs text-muted-foreground bg-muted/30 p-2 rounded-lg">
+                    <div className="flex items-center gap-2">
                       <span>
                         {req?.tester?.userDetail?.experience_level || "N/A"}
                       </span>
                     </div>
-                  </TableCell>
-                  <TableCell>
                     <div className="flex items-center gap-2">
-                      <Badge
-                        variant="outline"
-                        className="font-normal text-xs gap-1"
-                      >
-                        <Smartphone className="w-3 h-3 opacity-70" />
+                      <Smartphone className="w-3.5 h-3.5 opacity-70" />
+                      <span>
                         {req?.tester?.userDetail?.device_company ||
                         req?.tester?.userDetail?.device_model
                           ? req?.tester?.userDetail?.device_company +
                             " " +
                             req?.tester?.userDetail?.device_model
                           : "N/A"}
-                      </Badge>
+                      </span>
                     </div>
-                  </TableCell>
-                  <TableCell>
-                    <Badge
-                      variant="secondary"
-                      className="font-medium text-xs bg-orange-500/10 text-orange-600 hover:bg-orange-500/20 border-orange-200 dark:border-orange-900"
+                  </div>
+
+                  <div className="flex items-center gap-2 mt-1">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="flex-1 overflow-hidden text-xs h-9"
+                      onClick={() => handleDetailsClick(req)}
                     >
-                      Pending Review
-                    </Badge>
-                  </TableCell>
-                  <TableCell className="text-right">
-                    <div className="flex items-center justify-end gap-2">
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        className="h-8 w-8 p-0 text-muted-foreground hover:text-foreground"
-                        onClick={() => handleDetailsClick(req)}
-                        title="View Details"
-                      >
-                        <Eye className="w-4 h-4" />
-                      </Button>
-                      <div className="h-4 w-px bg-border mx-1" />
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        className="h-8 w-8 p-0 text-green-600 border-green-200 dark:border-green-900 hover:bg-green-50 hover:text-green-700 hover:border-green-300 dark:hover:bg-green-900/20"
-                        onClick={() => handleAccept(req.testerId)}
-                        title="Accept"
-                        disabled={processingId === req.testerId}
-                      >
-                        {processingId === req.testerId ? (
-                          <Loader2 className="w-4 h-4 animate-spin" />
-                        ) : (
-                          <Check className="w-4 h-4" />
-                        )}
-                      </Button>
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        className="h-8 w-8 p-0 text-red-600 border-red-200 dark:border-red-900 hover:bg-red-50 hover:text-red-700 hover:border-red-300 dark:hover:bg-red-900/20"
-                        onClick={() => handleRejectClick(req)}
-                        title="Reject"
-                      >
-                        <X className="w-4 h-4" />
-                      </Button>
-                    </div>
-                  </TableCell>
-                </motion.tr>
+                      Details
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="h-9 w-10 px-0 text-green-600 border-green-200 dark:border-green-900 hover:bg-green-50 hover:text-green-700 hover:border-green-300 dark:hover:bg-green-900/20"
+                      onClick={() => handleAccept(req.testerId)}
+                      title="Accept"
+                      disabled={processingId === req.testerId}
+                    >
+                      {processingId === req.testerId ? (
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                      ) : (
+                        <Check className="w-4 h-4" />
+                      )}
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      className="h-9 w-10 px-0 text-red-600 border-red-200 hover:bg-red-50 hover:text-red-700 hover:border-red-300 dark:border-orange-900 dark:hover:bg-red-900/20"
+                      onClick={() => handleRejectClick(req)}
+                      title="Reject"
+                    >
+                      <X className="w-4 h-4" />
+                    </Button>
+                  </div>
+                </motion.div>
               ))}
             </AnimatePresence>
-          </TableBody>
-        </Table>
-        {pendingRequests.length === 0 && (
-          <div className="p-8 text-center text-muted-foreground">
-            No pending requests found.
+            {pendingRequests.length === 0 && (
+              <div className="p-8 text-center text-muted-foreground border-2 border-dashed rounded-xl">
+                No pending requests found.
+              </div>
+            )}
           </div>
-        )}
-      </div>
+        </TabsContent>
 
-      {/* Mobile Layout (Cards) */}
-      <div className="md:hidden space-y-4">
-        <AnimatePresence>
-          {pendingRequests.map((req) => (
-            <motion.div
-              key={req.id}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0 }}
-              className="bg-card border border-border rounded-xl p-4 shadow-lg shadow-primary/20 flex flex-col gap-4"
-            >
-              <div className="flex items-start justify-between relative">
-                <div className="flex items-center gap-3">
-                  <Avatar className="h-10 w-10 border border-border">
-                    <AvatarImage src={req.tester?.image || ""} />
-                    <AvatarFallback className="bg-primary/10 text-primary font-medium">
-                      {req.tester?.name?.charAt(0) || "U"}
-                    </AvatarFallback>
-                  </Avatar>
-                  <div className="flex flex-col">
-                    <span className="font-semibold text-sm">
-                      {req.tester?.name || "Unknown"}
+        <TabsContent value="joined" className="space-y-4">
+          <div className="rounded-xl border bg-card shadow-sm overflow-hidden hidden md:grid md:grid-cols-1">
+            <Table>
+              <TableHeader className="bg-muted/50">
+                <TableRow>
+                  <TableHead className="w-[300px]">Tester</TableHead>
+                  <TableHead>Status</TableHead>
+                  <TableHead className="text-right">Progress</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                <AnimatePresence>
+                  {joinedTesters.map((req) => (
+                    <motion.tr
+                      key={req.id}
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      className="group border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted"
+                    >
+                      <TableCell className="py-4">
+                        <span className="font-semibold text-sm">
+                          {req.tester?.name || "Unknown"}
+                        </span>
+                      </TableCell>
+                      <TableCell>
+                        <Badge
+                          variant={
+                            req.status === "COMPLETED"
+                              ? "default"
+                              : req.status === "IN_PROGRESS"
+                                ? "secondary"
+                                : "outline"
+                          }
+                          className={cn(
+                            "font-medium text-xs",
+                            req.status === "COMPLETED" &&
+                              "bg-green-500/10 text-green-600 hover:bg-green-500/20 border-green-200",
+                            req.status === "IN_PROGRESS" &&
+                              "bg-blue-500/10 text-blue-600 hover:bg-blue-500/20 border-blue-200",
+                            (req.status === "REJECTED" ||
+                              req.status === "DROPPED" ||
+                              req.status === "REMOVED") &&
+                              "bg-red-500/10 text-red-600 hover:bg-red-500/20 border-red-200",
+                          )}
+                        >
+                          {req.status}
+                        </Badge>
+                      </TableCell>
+                      <TableCell className="text-right">
+                        <span className="text-xs font-medium">
+                          {req.daysCompleted || 0} days
+                        </span>
+                      </TableCell>
+                    </motion.tr>
+                  ))}
+                </AnimatePresence>
+              </TableBody>
+            </Table>
+            {joinedTesters.length === 0 && (
+              <div className="p-8 text-center text-muted-foreground">
+                No joined testers found.
+              </div>
+            )}
+          </div>
+
+          <div className="md:hidden space-y-4">
+            <AnimatePresence>
+              {joinedTesters.map((req) => (
+                <motion.div
+                  key={req.id}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0 }}
+                  className="bg-card border border-border rounded-xl p-4 shadow-sm flex flex-col gap-4"
+                >
+                  <div className="flex items-start justify-between">
+                    <div className="flex items-center gap-3">
+                      <span className="font-semibold text-sm">
+                        {req.tester?.name || "Unknown"}
+                      </span>
+                    </div>
+                    <Badge
+                      variant="outline"
+                      className={cn(
+                        "text-[10px]",
+                        req.status === "COMPLETED" &&
+                          "bg-green-500/10 text-green-600",
+                        req.status === "IN_PROGRESS" &&
+                          "bg-blue-500/10 text-blue-600",
+                      )}
+                    >
+                      {req.status}
+                    </Badge>
+                  </div>
+
+                  <div className="flex items-center justify-between text-xs bg-muted/30 p-2 rounded-lg">
+                    <span className="text-muted-foreground uppercase text-[8px]">
+                      Progress
                     </span>
-                    <span className="text-xs text-muted-foreground">
-                      {req.tester?.email}
+                    <span className="font-medium">
+                      {req.daysCompleted || 0} days
                     </span>
                   </div>
-                </div>
-                <Badge
-                  variant="secondary"
-                  className="absolute -top-2 -right-2 font-medium text-[8px] bg-orange-500/10 text-orange-600 hover:bg-orange-500/20 border-orange-200 dark:border-orange-900 whitespace-nowrap"
-                >
-                  Pending
-                </Badge>
+                </motion.div>
+              ))}
+            </AnimatePresence>
+            {joinedTesters.length === 0 && (
+              <div className="p-8 text-center text-muted-foreground border-2 border-dashed rounded-xl">
+                No joined testers found.
               </div>
-
-              <div className="grid grid-cols-2 gap-2 text-xs text-muted-foreground bg-muted/30 p-2 rounded-lg">
-                <div className="flex items-center gap-2">
-                  <span>
-                    {req?.tester?.userDetail?.experience_level || "N/A"}
-                  </span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Smartphone className="w-3.5 h-3.5 opacity-70" />
-                  <span>
-                    {req?.tester?.userDetail?.device_company ||
-                    req?.tester?.userDetail?.device_model
-                      ? req?.tester?.userDetail?.device_company +
-                        " " +
-                        req?.tester?.userDetail?.device_model
-                      : "N/A"}
-                  </span>
-                </div>
-              </div>
-
-              <div className="flex items-center gap-2 mt-1">
-                <Button
-                  variant="outline"
-                  size="sm"
-                  className="flex-1 overflow-hidden text-xs h-9"
-                  onClick={() => handleDetailsClick(req)}
-                >
-                  Details
-                </Button>
-                <Button
-                  size="sm"
-                  variant="outline"
-                  className="h-9 w-10 px-0 text-green-600 border-green-200 dark:border-green-900 hover:bg-green-50 hover:text-green-700 hover:border-green-300 dark:hover:bg-green-900/20"
-                  onClick={() => handleAccept(req.testerId)}
-                  title="Accept"
-                  disabled={processingId === req.testerId}
-                >
-                  {processingId === req.testerId ? (
-                    <Loader2 className="w-4 h-4 animate-spin" />
-                  ) : (
-                    <Check className="w-4 h-4" />
-                  )}
-                </Button>
-                <Button
-                  size="sm"
-                  variant="outline"
-                  className="h-9 w-10 px-0 text-red-600 border-red-200 hover:bg-red-50 hover:text-red-700 hover:border-red-300 dark:border-orange-900 dark:hover:bg-red-900/20"
-                  onClick={() => handleRejectClick(req)}
-                  title="Reject"
-                >
-                  <X className="w-4 h-4" />
-                </Button>
-              </div>
-            </motion.div>
-          ))}
-        </AnimatePresence>
-        {pendingRequests.length === 0 && (
-          <div className="p-8 text-center text-muted-foreground border-2 border-dashed rounded-xl">
-            No pending requests found.
+            )}
           </div>
-        )}
-      </div>
+        </TabsContent>
+      </Tabs>
 
       {/* Rejection Modal */}
       <Dialog open={isRejectModalOpen} onOpenChange={setIsRejectModalOpen}>

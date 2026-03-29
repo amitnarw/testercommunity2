@@ -278,7 +278,7 @@ export default function BillingPage() {
 
     try {
       // 1. Create Order
-      const order = await createOrderMutation.mutateAsync(planId);
+      const order = await createOrderMutation.mutateAsync({ planId });
 
       // 2. Initialize Razorpay
       if (!window.Razorpay) {

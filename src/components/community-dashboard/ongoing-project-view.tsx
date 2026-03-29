@@ -1,8 +1,9 @@
 "use client";
 
-import { CheckCircle, Users, Loader2 } from "lucide-react";
+import { CheckCircle, Users, Loader2, CalendarDays, AlertCircle } from "lucide-react";
 import { BackButton } from "@/components/back-button";
 import { useToast } from "@/hooks/use-toast";
+import { Button } from "@/components/ui/button";
 import { useSubmitDailyVerification } from "@/hooks/useHub";
 import { cn } from "@/lib/utils";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -343,6 +344,7 @@ export default function OngoingProjectView({
                       refetch={refetch}
                       isLoading={isLoading}
                       isCompleted={isReadOnlyMode}
+                      isLocked={isTestingNotStarted}
                     />
                   </div>
                   {isTestingNotStarted && (
@@ -387,32 +389,52 @@ export default function OngoingProjectView({
       />
 
       <Dialog open={isConfirmModalOpen} onOpenChange={setIsConfirmModalOpen}>
-        <DialogContent className="max-w-[400px] border-none bg-white/80 dark:bg-[#1a2233]/80 backdrop-blur-xl shadow-2xl rounded-3xl p-8 gap-0">
-          <DialogHeader>
-            <DialogTitle className="text-2xl font-bold text-center bg-gradient-to-br from-primary to-accent bg-clip-text text-transparent">
-              Daily Check-in
-            </DialogTitle>
-            <DialogDescription className="text-center text-muted-foreground text-lg pt-2">
-              Are you sure you want to check in for <span className="font-bold text-foreground">Day {displayDay}</span>?
-            </DialogDescription>
-          </DialogHeader>
-          <DialogFooter className="flex sm:flex-col gap-3 pt-8 sm:items-stretch">
-            <button
-              onClick={() => {
-                submitCheckIn({ hubId, proofImage: "" });
-                setIsConfirmModalOpen(false);
-              }}
-              className="rounded-2xl py-4 bg-gradient-to-r from-primary to-accent hover:opacity-90 transition-all duration-300 font-semibold text-lg text-white shadow-lg shadow-primary/20"
-            >
-              Yes, Check In
-            </button>
-            <button
-              onClick={() => setIsConfirmModalOpen(false)}
-              className="rounded-2xl py-4 border-2 border-border/50 hover:bg-muted font-medium text-lg transition-colors m-0"
-            >
-              Cancel
-            </button>
-          </DialogFooter>
+        <DialogContent className="max-w-md w-[95vw] rounded-3xl p-0 overflow-hidden border-none shadow-2xl bg-background">
+          <div className="relative p-8 flex flex-col items-center text-center">
+            {/* Decoration Background */}
+            <div className="absolute inset-0 overflow-hidden pointer-events-none">
+              <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-primary/10 via-transparent to-transparent opacity-70" />
+            </div>
+
+            {/* Icon */}
+            <div className="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center mb-6 ring-8 ring-primary/5 transition-transform duration-500 hover:scale-110">
+              <CalendarDays className="w-10 h-10 text-primary" />
+            </div>
+
+            <DialogHeader className="space-y-3 items-center">
+              <DialogTitle className="text-3xl font-bold tracking-tight bg-gradient-to-br from-primary to-accent bg-clip-text text-transparent">
+                Daily Check-in
+              </DialogTitle>
+              <DialogDescription className="text-muted-foreground text-center max-w-xs text-base leading-relaxed">
+                Ready to record your progress for{" "}
+                <span className="font-bold text-foreground">
+                  Day {displayDay}
+                </span>
+                ? This helps track your consistency and earn rewards.
+              </DialogDescription>
+            </DialogHeader>
+
+            <div className="w-full grid gap-3 mt-10">
+              <Button
+                size="lg"
+                onClick={() => {
+                  submitCheckIn({ hubId, proofImage: "" });
+                  setIsConfirmModalOpen(false);
+                }}
+                className="w-full h-14 rounded-2xl text-lg font-bold shadow-xl shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] transition-all"
+              >
+                Yes, Check In
+              </Button>
+              <Button
+                variant="ghost"
+                size="lg"
+                onClick={() => setIsConfirmModalOpen(false)}
+                className="w-full h-12 rounded-2xl text-muted-foreground font-medium hover:bg-muted"
+              >
+                Maybe Later
+              </Button>
+            </div>
+          </div>
         </DialogContent>
       </Dialog>
     </div>

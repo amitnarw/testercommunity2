@@ -809,12 +809,14 @@ const FeedbackGridItem = ({
 
 export function SubmittedFeedback({
   isCompleted = false,
+  isLocked = false,
   feedback,
   hubId,
   refetch,
   isLoading = false,
 }: {
   isCompleted?: boolean;
+  isLocked?: boolean;
   feedback: HubSubmittedAppResponse["feedback"];
   hubId?: string;
   refetch?: () => void;
@@ -962,7 +964,7 @@ export function SubmittedFeedback({
               <LayoutGrid className="w-4 h-4" />
             </Button>
 
-            {!isCompleted && (
+            {!isCompleted && !isLocked && (
               <FeedbackFormModal onSave={handleSaveFeedback}>
                 <Button size="sm" className="relative overflow-hidden h-9">
                   <PlusCircle className="mr-2 h-4 w-4" />
@@ -1004,7 +1006,7 @@ export function SubmittedFeedback({
                     onSave={handleSaveFeedback}
                     onDelete={handleDeleteFeedback}
                     onImageClick={setFullscreenImage}
-                    isCompleted={isCompleted}
+                    isCompleted={isCompleted || isLocked}
                     currentUserId={currentUserId}
                   />
                 ))}
@@ -1018,7 +1020,7 @@ export function SubmittedFeedback({
                     onSave={handleSaveFeedback}
                     onDelete={handleDeleteFeedback}
                     onImageClick={setFullscreenImage}
-                    isCompleted={isCompleted}
+                    isCompleted={isCompleted || isLocked}
                     currentUserId={currentUserId}
                   />
                 ))}
@@ -1067,7 +1069,7 @@ export function SubmittedFeedback({
                 </p>
               </div>
 
-              {!isCompleted && (
+              {!isCompleted && !isLocked && (
                 <div className="pt-2">
                   <FeedbackFormModal onSave={handleSaveFeedback}>
                     <Button

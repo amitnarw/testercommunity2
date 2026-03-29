@@ -552,38 +552,42 @@ function SubmissionDetailsPage({
                   </div>
                 </div>
 
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-4 lg:flex lg:flex-row lg:flex-wrap lg:items-center lg:justify-center w-full">
-                  <div className="bg-card p-3 pt-4 rounded-2xl flex flex-col justify-center h-full min-w-0 sm:min-w-[140px] flex-1">
-                    <p className="text-xs sm:text-sm mb-2 text-muted-foreground font-medium">Points Cost</p>
+                <div className="grid grid-cols-3 gap-2 sm:gap-4 w-full">
+                  <div className="bg-card p-3 pt-4 rounded-2xl flex flex-col justify-center h-full min-w-0 flex-1">
+                    <p className="text-xs sm:text-sm mb-2 text-muted-foreground font-medium">
+                      Points Cost
+                    </p>
                     <div className="bg-secondary/50 rounded-xl p-3 h-full flex flex-col items-center justify-center">
                       <p className="text-xl sm:text-2xl font-black text-blue-600">
                         {isUnderReviewOrRejected ? 0 : appDetails?.costPoints}
                       </p>
-                      {appDetails?.costPoints && appDetails.costPoints < 1000 && (
-                        <Badge variant="outline" className="mt-1 bg-blue-500/10 text-[10px] text-blue-600 border-blue-500/20 py-0 h-4">
-                          Coupon Applied
-                        </Badge>
-                      )}
+                      {appDetails?.costPoints &&
+                        appDetails.costPoints < 1000 && (
+                          <Badge
+                            variant="outline"
+                            className="mt-1 bg-blue-500/10 text-[10px] text-blue-600 border-blue-500/20 py-0"
+                          >
+                            Coupon Applied
+                          </Badge>
+                        )}
                     </div>
                   </div>
-                  <div className="bg-card p-3 pt-4 rounded-2xl flex flex-col justify-center h-full min-w-0 sm:min-w-[140px] flex-1">
-                    <p className="text-xs sm:text-sm mb-2 text-muted-foreground font-medium">Reward / Tester</p>
+                  <div className="bg-card p-3 pt-4 rounded-2xl flex flex-col justify-center h-full min-w-0 flex-1">
+                    <p className="text-xs sm:text-sm mb-2 text-muted-foreground font-medium">
+                      Reward
+                    </p>
                     <div className="bg-secondary/50 rounded-xl p-3 h-full flex items-center justify-center">
                       <p className="text-xl sm:text-2xl font-black text-amber-600">
-                        {isUnderReviewOrRejected ? 0 : (appDetails?.rewardPoints || 0)}
+                        {isUnderReviewOrRejected
+                          ? 0
+                          : appDetails?.rewardPoints || 0}
                       </p>
                     </div>
                   </div>
-                  <div className="bg-card p-3 pt-4 rounded-2xl flex flex-col justify-center h-full min-w-0 sm:min-w-[140px] flex-1">
-                    <p className="text-xs sm:text-sm mb-2 text-muted-foreground font-medium">Total Payout</p>
-                    <div className="bg-secondary/50 rounded-xl p-3 h-full flex items-center justify-center">
-                      <p className="text-xl sm:text-2xl font-black text-emerald-600">
-                        {(appDetails?.totalTester || 0) * (appDetails?.rewardPoints || 0)}
-                      </p>
-                    </div>
-                  </div>
-                  <div className="bg-card p-3 pt-4 rounded-2xl flex flex-col justify-center h-full min-w-0 sm:min-w-[140px] flex-1">
-                    <p className="text-xs sm:text-sm mb-2 text-muted-foreground font-medium">Android Min</p>
+                  <div className="bg-card p-3 pt-4 rounded-2xl flex flex-col justify-center h-full min-w-0 flex-1">
+                    <p className="text-xs sm:text-sm mb-2 text-muted-foreground font-medium">
+                      Android Min
+                    </p>
                     <div className="bg-secondary/50 rounded-xl p-3 h-full flex items-center justify-center">
                       <p className="text-xl sm:text-2xl font-black">
                         {isUnderReviewOrRejected
@@ -609,7 +613,9 @@ function SubmissionDetailsPage({
               />
             )}
 
-            {appDetails?.status === "AVAILABLE" && (
+            {(appDetails?.status === "AVAILABLE" ||
+              appDetails?.status === "IN_TESTING" ||
+              appDetails?.status === "COMPLETED") && (
               <TesterRequestsSection
                 hubId={id}
                 requests={appDetails?.testerRelations || []}
