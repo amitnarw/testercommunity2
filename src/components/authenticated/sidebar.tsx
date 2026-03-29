@@ -15,6 +15,7 @@ import {
   FileCheck,
   Lightbulb,
   Ticket,
+  Terminal,
 } from "lucide-react";
 import { BaseSidebar, SidebarNavLink } from "@/components/ui/base-sidebar";
 import { authClient } from "@/lib/auth-client";
@@ -85,6 +86,12 @@ const adminNavLinks = [
     name: "Promo Codes",
     href: "/admin/promo-codes",
     icon: Ticket,
+    section: "platform",
+  },
+  {
+    name: "System Logs",
+    href: "/admin/logs",
+    icon: Terminal,
     section: "platform",
   },
 ];

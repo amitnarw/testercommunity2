@@ -1419,13 +1419,14 @@ export async function getBillingHistory(): Promise<BillingHistoryItem[]> {
   }
 }
 
-export async function createOrder(
-  planId: string,
-): Promise<CreateOrderResponse> {
+export async function createOrder(payload: {
+  planId: string;
+}): Promise<CreateOrderResponse> {
   try {
-    const response = await api.post(API_ROUTES.BILLING + `/create-order`, {
-      payload: { planId },
-    });
+    const response = await api.post(
+      API_ROUTES.BILLING + `/create-order`,
+      payload,
+    );
     return response?.data?.data;
   } catch (error) {
     console.error("Error creating order:", error);
@@ -1449,9 +1450,10 @@ export async function verifyPayment(
   payload: PaymentVerificationPayload,
 ): Promise<PaymentVerificationResponse> {
   try {
-    const response = await api.post(API_ROUTES.BILLING + `/verify-payment`, {
+    const response = await api.post(
+      API_ROUTES.BILLING + `/verify-payment`,
       payload,
-    });
+    );
     return response?.data?.data;
   } catch (error) {
     console.error("Error verifying payment:", error);
@@ -1730,3 +1732,102 @@ export async function adminCompleteApp(payload: { appId: number }) {
     }
   }
 }
+
+// ==========================================
+// SYSTEM LOGS
+// ==========================================
+
+export async function fetchAdminLogs() {
+  try {
+    const response = await api.get(API_ROUTES.ADMIN + `/logs`);
+    return response?.data?.data || [];
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      const responseData = error.response?.data;
+      throw new Error(
+        responseData?.message || error.message || "Unknown Axios error",
+      );
+    } else if (error instanceof Error) {
+      throw new Error(error.message);
+    } else {
+      throw new Error(JSON.stringify(error));
+    }
+  }
+}
+
+export async function fetchAdminLogContent(filename: string) {
+  try {
+    const response = await api.get(API_ROUTES.ADMIN + `/logs/${filename}`);
+    return response?.data?.data || { content: "", filename };
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      const responseData = error.response?.data;
+      throw new Error(
+        responseData?.message || error.message || "Unknown Axios error",
+      );
+    } else if (error instanceof Error) {
+      throw new Error(error.message);
+    } else {
+      throw new Error(JSON.stringify(error));
+    }
+  }
+}
+
+export async function deleteAdminLog(filename: string) {
+  try {
+    const response = await api.delete(API_ROUTES.ADMIN + `/logs/${filename}`);
+    return response?.data;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      const responseData = error.response?.data;
+      throw new Error(
+        responseData?.message || error.message || "Unknown Axios error",
+      );
+    } else if (error instanceof Error) {
+      throw new Error(error.message);
+    } else {
+      throw new Error(JSON.stringify(error));
+    }
+  }
+}
+
+export async function deleteAdminLogsBatch(filenames: string[]) {
+  try {
+    const response = await api.post(API_ROUTES.ADMIN + `/logs/batch-delete`, {
+      filenames,
+    });
+    return response?.data?.data;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      const responseData = error.response?.data;
+      throw new Error(
+        responseData?.message || error.message || "Unknown Axios error",
+      );
+    } else if (error instanceof Error) {
+      throw new Error(error.message);
+    } else {
+      throw new Error(JSON.stringify(error));
+    }
+  }
+}
+
+export async function deleteAdminLogEntry(filename: string, index: number) {
+  try {
+    const response = await api.delete(
+      API_ROUTES.ADMIN + `/logs/${filename}/entry/${index}`
+    );
+    return response?.data;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      const responseData = error.response?.data;
+      throw new Error(
+        responseData?.message || error.message || "Unknown Axios error"
+      );
+    } else if (error instanceof Error) {
+      throw new Error(error.message);
+    } else {
+      throw new Error(JSON.stringify(error));
+    }
+  }
+}
+
