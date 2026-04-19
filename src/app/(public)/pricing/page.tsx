@@ -79,7 +79,7 @@ export default function PricingPage() {
                   plan={plan}
                   actionButton={
                     <Link
-                      href="/login"
+                      href="/auth/login"
                       className="flex items-center justify-center w-full"
                     >
                       <HoverBorderGradient
