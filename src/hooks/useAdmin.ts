@@ -44,6 +44,12 @@ import {
   createPromoCode,
   updatePromoCode,
   deletePromoCode,
+  // Blog
+  getAllBlogs,
+  getBlogById,
+  createBlog,
+  updateBlog,
+  deleteBlog,
 } from "@/lib/apiCallsAdmin";
 import {
   useMutation,
@@ -533,6 +539,68 @@ export function useDeletePromoCode(
 ) {
   const mutation = useMutation({
     mutationFn: (id: number) => deletePromoCode(id),
+    ...options,
+  });
+
+  return mutation;
+}
+
+// ==================== BLOGS ====================
+
+export function useAllBlogs(options?: { enabled?: boolean }) {
+  const query = useQuery({
+    queryFn: () => getAllBlogs(),
+    queryKey: ["useAllBlogs"],
+    enabled: options?.enabled ?? true,
+  });
+
+  return query;
+}
+
+export function useBlogById(id: number, options?: { enabled?: boolean }) {
+  const query = useQuery({
+    queryFn: () => getBlogById(id),
+    queryKey: ["useBlogById", id],
+    enabled: options?.enabled ?? true,
+  });
+
+  return query;
+}
+
+export function useCreateBlog(options?: UseMutationOptions<any, any, any>) {
+  const mutation = useMutation({
+    mutationFn: (payload: {
+      title: string;
+      authorName: string;
+      tags?: string[];
+      description: string;
+      isActive?: boolean;
+    }) => createBlog(payload),
+    ...options,
+  });
+
+  return mutation;
+}
+
+export function useUpdateBlog(options?: UseMutationOptions<any, any, any>) {
+  const mutation = useMutation({
+    mutationFn: (payload: {
+      id: number;
+      title?: string;
+      authorName?: string;
+      tags?: string[];
+      description?: string;
+      isActive?: boolean;
+    }) => updateBlog(payload),
+    ...options,
+  });
+
+  return mutation;
+}
+
+export function useDeleteBlog(options?: UseMutationOptions<any, any, any>) {
+  const mutation = useMutation({
+    mutationFn: (id: number) => deleteBlog(id),
     ...options,
   });
 

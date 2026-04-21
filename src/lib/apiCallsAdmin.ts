@@ -965,3 +965,68 @@ export async function deletePromoCode(id: number) {
     throw error;
   }
 }
+
+// ==================== BLOGS ====================
+
+export async function getAllBlogs() {
+  try {
+    const response = await api.get(API_ROUTES.ADMIN + `/blogs`);
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error fetching blogs:", error);
+    throw error;
+  }
+}
+
+export async function getBlogById(id: number) {
+  try {
+    const response = await api.get(API_ROUTES.ADMIN + `/blogs/${id}`);
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error fetching blog:", error);
+    throw error;
+  }
+}
+
+export async function createBlog(payload: {
+  title: string;
+  authorName: string;
+  tags?: string[];
+  description: string;
+  isActive?: boolean;
+}) {
+  try {
+    const response = await api.post(API_ROUTES.ADMIN + `/blogs`, payload);
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error creating blog:", error);
+    throw error;
+  }
+}
+
+export async function updateBlog(payload: {
+  id: number;
+  title?: string;
+  authorName?: string;
+  tags?: string[];
+  description?: string;
+  isActive?: boolean;
+}) {
+  try {
+    const response = await api.post(API_ROUTES.ADMIN + `/blogs/update`, payload);
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error updating blog:", error);
+    throw error;
+  }
+}
+
+export async function deleteBlog(id: number) {
+  try {
+    const response = await api.delete(API_ROUTES.ADMIN + `/blogs/${id}`);
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error deleting blog:", error);
+    throw error;
+  }
+}

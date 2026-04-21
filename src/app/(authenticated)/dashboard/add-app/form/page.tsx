@@ -17,9 +17,7 @@ import {
   CheckCircle2,
   Package,
   ArrowRight,
-  BadgeCheck,
   Zap,
-  Sparkles,
   Tag,
 } from "lucide-react";
 import {
@@ -40,12 +38,14 @@ import {
 } from "@/hooks/useDashboard";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "@/hooks/use-toast";
+import { useRouter } from "next/navigation";
 
 export default function AddAppFormPage() {
   const queryClient = useQueryClient();
   const { data: dashboardData } = useDashboardData();
   const userPackages = Number(dashboardData?.wallet) || 0;
   const hasEnoughPackages = userPackages >= 1;
+  const router = useRouter();
 
   // Form state
   const [appName, setAppName] = useState("");
@@ -514,6 +514,7 @@ export default function AddAppFormPage() {
                         variant="outline"
                         size="sm"
                         className="w-full mt-4 text-destructive border-destructive/30 hover:bg-destructive/10 rounded-xl h-10 font-medium"
+                        onClick={()=>router.push("/billing")}
                       >
                         Buy More Packages
                       </Button>
