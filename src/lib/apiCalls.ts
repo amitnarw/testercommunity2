@@ -1831,3 +1831,86 @@ export async function deleteAdminLogEntry(filename: string, index: number) {
   }
 }
 
+// ==========================================
+// PUBLIC BLOG APIs
+// ==========================================
+
+export interface PublicBlog {
+  id: number;
+  title: string;
+  slug: string;
+  excerpt: string;
+  content: string;
+  authorName: string;
+  authorAvatarUrl: string;
+  authorDataAiHint?: string;
+  imageUrl: string;
+  dataAiHint?: string;
+  tags: string[];
+  date: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export async function getPublicBlogs(category?: string): Promise<PublicBlog[]> {
+  try {
+    const url = category
+      ? `${API_ROUTES.BLOG}/blogs?category=${encodeURIComponent(category)}`
+      : `${API_ROUTES.BLOG}/blogs`;
+    const response = await api.get(url);
+    return response?.data?.data || [];
+  } catch (error) {
+    console.error("Error fetching public blogs:", error);
+    if (axios.isAxiosError(error)) {
+      const responseData = error.response?.data;
+      throw new Error(
+        responseData?.message || error.message || "Unknown Axios error"
+      );
+    } else if (error instanceof Error) {
+      throw new Error(error.message);
+    } else {
+      throw new Error(JSON.stringify(error));
+    }
+  }
+}
+
+export async function getPublicBlogBySlug(
+  slug: string
+): Promise<PublicBlog | null> {
+  try {
+    const response = await api.get(`${API_ROUTES.BLOG}/blogs/${slug}`);
+    return response?.data?.data || null;
+  } catch (error) {
+    console.error("Error fetching blog by slug:", error);
+    if (axios.isAxiosError(error)) {
+      const responseData = error.response?.data;
+      throw new Error(
+        responseData?.message || error.message || "Unknown Axios error"
+      );
+    } else if (error instanceof Error) {
+      throw new Error(error.message);
+    } else {
+      throw new Error(JSON.stringify(error));
+    }
+  }
+}
+
+export async function getPublicBlogTags(): Promise<string[]> {
+  try {
+    const response = await api.get(`${API_ROUTES.BLOG}/tags`);
+    return response?.data?.data || [];
+  } catch (error) {
+    console.error("Error fetching blog tags:", error);
+    if (axios.isAxiosError(error)) {
+      const responseData = error.response?.data;
+      throw new Error(
+        responseData?.message || error.message || "Unknown Axios error"
+      );
+    } else if (error instanceof Error) {
+      throw new Error(error.message);
+    } else {
+      throw new Error(JSON.stringify(error));
+    }
+  }
+}
+

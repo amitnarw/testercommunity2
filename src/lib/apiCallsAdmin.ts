@@ -990,10 +990,17 @@ export async function getBlogById(id: number) {
 
 export async function createBlog(payload: {
   title: string;
+  slug: string;
+  excerpt: string;
+  content: string;
   authorName: string;
+  authorAvatarUrl?: string;
+  authorDataAiHint?: string;
+  imageUrl?: string;
+  dataAiHint?: string;
   tags?: string[];
-  description: string;
   isActive?: boolean;
+  date?: string;
 }) {
   try {
     const response = await api.post(API_ROUTES.ADMIN + `/blogs`, payload);
@@ -1007,10 +1014,17 @@ export async function createBlog(payload: {
 export async function updateBlog(payload: {
   id: number;
   title?: string;
+  slug?: string;
+  excerpt?: string;
+  content?: string;
   authorName?: string;
+  authorAvatarUrl?: string;
+  authorDataAiHint?: string;
+  imageUrl?: string;
+  dataAiHint?: string;
   tags?: string[];
-  description?: string;
   isActive?: boolean;
+  date?: string;
 }) {
   try {
     const response = await api.post(API_ROUTES.ADMIN + `/blogs/update`, payload);

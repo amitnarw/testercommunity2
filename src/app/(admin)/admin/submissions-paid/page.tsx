@@ -68,6 +68,8 @@ function AdminSubmissionsPaidContent() {
 
   const submissions = submissionsData || [];
 
+  console.log(submissionsData, '---------')
+
   // Fetch counts for PAID only
   const { data: countsData } = useSubmittedAppsCount("PAID");
 

@@ -571,10 +571,17 @@ export function useCreateBlog(options?: UseMutationOptions<any, any, any>) {
   const mutation = useMutation({
     mutationFn: (payload: {
       title: string;
+      slug: string;
+      excerpt: string;
+      content: string;
       authorName: string;
+      authorAvatarUrl?: string;
+      authorDataAiHint?: string;
+      imageUrl?: string;
+      dataAiHint?: string;
       tags?: string[];
-      description: string;
       isActive?: boolean;
+      date?: string;
     }) => createBlog(payload),
     ...options,
   });
@@ -587,10 +594,17 @@ export function useUpdateBlog(options?: UseMutationOptions<any, any, any>) {
     mutationFn: (payload: {
       id: number;
       title?: string;
+      slug?: string;
+      excerpt?: string;
+      content?: string;
       authorName?: string;
+      authorAvatarUrl?: string;
+      authorDataAiHint?: string;
+      imageUrl?: string;
+      dataAiHint?: string;
       tags?: string[];
-      description?: string;
       isActive?: boolean;
+      date?: string;
     }) => updateBlog(payload),
     ...options,
   });

@@ -4,6 +4,7 @@ import { useState, Suspense } from "react";
 import { Plus, Search, Loader2, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import {
   Dialog,
   DialogContent,
@@ -36,10 +37,17 @@ import { useToast } from "@/hooks/use-toast";
 const blogSchema = z.object({
   id: z.number().optional(),
   title: z.string().min(1, "Title is required").max(200),
+  slug: z.string().min(1, "Slug is required").max(200),
+  excerpt: z.string().min(1, "Excerpt is required").max(500),
+  content: z.string().min(1, "Content is required"),
   authorName: z.string().min(1, "Author name is required").max(100),
-  description: z.string().min(1, "Description is required").max(500),
+  authorAvatarUrl: z.string().default(""),
+  authorDataAiHint: z.string().optional(),
+  imageUrl: z.string().default(""),
+  dataAiHint: z.string().optional(),
   tags: z.array(z.string()).default([]),
   isActive: z.boolean().default(true),
+  date: z.string().optional(),
 });
 
 type BlogFormValues = z.infer<typeof blogSchema>;
@@ -98,22 +106,43 @@ function AdminBlogManagementContent() {
     resolver: zodResolver(blogSchema),
     defaultValues: {
       title: "",
+      slug: "",
+      excerpt: "",
+      content: "",
       authorName: "",
-      description: "",
+      authorAvatarUrl: "",
+      authorDataAiHint: "",
+      imageUrl: "",
+      dataAiHint: "",
       tags: [],
       isActive: true,
+      date: "",
     },
   });
+
+  const generateSlug = (title: string) => {
+    return title
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-|-$/g, "");
+  };
 
   const onOpenCreate = () => {
     setEditingBlog(null);
     setTagInput("");
     form.reset({
       title: "",
+      slug: "",
+      excerpt: "",
+      content: "",
       authorName: "",
-      description: "",
+      authorAvatarUrl: "",
+      authorDataAiHint: "",
+      imageUrl: "",
+      dataAiHint: "",
       tags: [],
       isActive: true,
+      date: new Date().toISOString().split("T")[0],
     });
     setIsDialogOpen(true);
   };
@@ -123,11 +152,18 @@ function AdminBlogManagementContent() {
     setTagInput("");
     form.reset({
       id: blog.id,
-      title: blog.title,
-      authorName: blog.authorName,
-      description: blog.description,
+      title: blog.title || "",
+      slug: blog.slug || "",
+      excerpt: blog.excerpt || "",
+      content: blog.content || "",
+      authorName: blog.authorName || "",
+      authorAvatarUrl: blog.authorAvatarUrl || "",
+      authorDataAiHint: blog.authorDataAiHint || "",
+      imageUrl: blog.imageUrl || "",
+      dataAiHint: blog.dataAiHint || "",
       tags: blog.tags || [],
-      isActive: blog.isActive,
+      isActive: blog.isActive ?? true,
+      date: blog.date ? new Date(blog.date).toISOString().split("T")[0] : "",
     });
     setIsDialogOpen(true);
   };
@@ -203,7 +239,7 @@ function AdminBlogManagementContent() {
       />
 
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent className="sm:max-w-[500px] p-3 sm:p-6 max-h-[90vh] overflow-y-auto">
+        <DialogContent className="sm:max-w-[600px] p-3 sm:p-6 max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>
               {editingBlog ? "Edit Blog Post" : "Create Blog Post"}
@@ -211,42 +247,56 @@ function AdminBlogManagementContent() {
           </DialogHeader>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="title"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Title</FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="Blog post title"
+                          {...field}
+                          onChange={(e) => {
+                            field.onChange(e);
+                            if (!editingBlog) {
+                              form.setValue("slug", generateSlug(e.target.value));
+                            }
+                          }}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="slug"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Slug</FormLabel>
+                      <FormControl>
+                        <Input placeholder="blog-url-slug" {...field} />
+                      </FormControl>
+                      <FormDescription>URL-friendly version</FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
               <FormField
                 control={form.control}
-                name="title"
+                name="excerpt"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Title</FormLabel>
+                    <FormLabel>Excerpt</FormLabel>
                     <FormControl>
-                      <Input placeholder="Blog post title" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="authorName"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Author Name</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Author name" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="description"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Description / Excerpt</FormLabel>
-                    <FormControl>
-                      <Input
+                      <Textarea
                         placeholder="Brief description for listing page"
                         {...field}
+                        rows={2}
                       />
                     </FormControl>
                     <FormDescription>
@@ -256,6 +306,84 @@ function AdminBlogManagementContent() {
                   </FormItem>
                 )}
               />
+
+              <FormField
+                control={form.control}
+                name="content"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Content</FormLabel>
+                    <FormControl>
+                      <Textarea
+                        placeholder="Full blog content..."
+                        {...field}
+                        rows={6}
+                        className="font-mono text-sm"
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="authorName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Author Name</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Author name" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="authorAvatarUrl"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Author Avatar URL</FormLabel>
+                      <FormControl>
+                        <Input placeholder="https://example.com/avatar.jpg" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              <FormField
+                control={form.control}
+                name="imageUrl"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Featured Image URL</FormLabel>
+                    <FormControl>
+                      <Input placeholder="https://example.com/image.jpg" {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <FormField
+                control={form.control}
+                name="dataAiHint"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Image AI Hint</FormLabel>
+                    <FormControl>
+                      <Input placeholder="Keywords for AI image generation" {...field} />
+                    </FormControl>
+                    <FormDescription>Optional hint for AI image generation</FormDescription>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
               <FormItem>
                 <FormLabel>Tags</FormLabel>
                 <FormControl>
@@ -300,6 +428,7 @@ function AdminBlogManagementContent() {
                   Press Enter or click Add to add tags.
                 </FormDescription>
               </FormItem>
+
               <FormField
                 control={form.control}
                 name="isActive"
@@ -320,6 +449,7 @@ function AdminBlogManagementContent() {
                   </FormItem>
                 )}
               />
+
               <DialogFooter>
                 <Button type="submit" disabled={isPending}>
                   {isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
