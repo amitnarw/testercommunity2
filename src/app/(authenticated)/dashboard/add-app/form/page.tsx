@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, Suspense } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -43,7 +43,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { FeedbackModal } from "@/components/feedback-modal";
 import { InsufficientPackagesDialog } from "@/components/insufficient-packages-dialog";
 
-export default function AddAppFormPage() {
+function AddAppFormContent() {
   const queryClient = useQueryClient();
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -835,5 +835,25 @@ export default function AddAppFormPage() {
         />
       )}
     </div>
+  );
+}
+
+function AddAppFormLoading() {
+  return (
+    <div className="min-h-screen bg-brand-background max-w-6xl mx-auto px-4 md:px-6 pb-16">
+      <div className="animate-pulse space-y-6">
+        <div className="h-8 w-48 bg-muted rounded-lg" />
+        <div className="h-64 bg-muted rounded-2xl" />
+        <div className="h-48 bg-muted rounded-2xl" />
+      </div>
+    </div>
+  );
+}
+
+export default function AddAppFormPage() {
+  return (
+    <Suspense fallback={<AddAppFormLoading />}>
+      <AddAppFormContent />
+    </Suspense>
   );
 }
