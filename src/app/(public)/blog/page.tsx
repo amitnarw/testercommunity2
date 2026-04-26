@@ -1,7 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { motion } from "framer-motion";
 import { BlogListing } from "@/components/blog/blog-listing";
+import { BlogListingSkeleton } from "@/components/blog/blog-listing-skeleton";
 import { getPublicBlogs, PublicBlog } from "@/lib/apiCalls";
 import { decryptData } from "@/lib/encryptDecryptPayload";
 
@@ -61,13 +63,12 @@ export default function BlogPage() {
     return (
       <div
         data-loc="BlogPage"
-        className="min-h-screen bg-background relative overflow-hidden flex items-center justify-center"
+        className="min-h-screen bg-background relative overflow-hidden"
       >
         <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent" />
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[500px] bg-primary/5 blur-[120px] rounded-full pointer-events-none" />
-        <div className="text-center">
-          <div className="animate-spin w-12 h-12 border-4 border-primary border-t-transparent rounded-full mx-auto mb-4" />
-          <p className="text-muted-foreground">Loading blogs...</p>
+        <div className="container mx-auto px-4 md:px-6 py-12 md:py-24 relative z-10">
+          <BlogListingSkeleton />
         </div>
       </div>
     );
@@ -104,7 +105,12 @@ export default function BlogPage() {
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[500px] bg-primary/5 blur-[120px] rounded-full pointer-events-none" />
 
       <div className="container mx-auto px-4 md:px-6 py-12 md:py-24 relative z-10">
-        <div className="max-w-4xl mx-auto text-center mb-16 md:mb-24">
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
+          className="max-w-4xl mx-auto text-center mb-16 md:mb-24"
+        >
           <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight mb-6 bg-clip-text text-transparent bg-gradient-to-b from-foreground to-foreground/70">
             The inTesters
             <span className="block text-primary">Chronicles</span>
@@ -113,9 +119,15 @@ export default function BlogPage() {
             Deep dives into quality assurance, community stories, and the future
             of software testing.
           </p>
-        </div>
+        </motion.div>
 
-        <BlogListing posts={displayPosts} />
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.2 }}
+        >
+          <BlogListing posts={displayPosts} />
+        </motion.div>
       </div>
     </div>
   );

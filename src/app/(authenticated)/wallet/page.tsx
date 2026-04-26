@@ -6,15 +6,13 @@ import {
   ArrowUpRight,
   ArrowDownLeft,
   Plus,
-  Send,
-  MoreHorizontal,
   Wallet,
   TrendingUp,
-  Package,
-  Clock,
   Search,
   Filter,
-  Download,
+  Bell,
+  LayoutDashboard,
+  Briefcase,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -24,6 +22,15 @@ import { useGetUserWallet, useGetUserTransactions } from "@/hooks/useUser";
 import { UserWallerResponse } from "@/lib/types";
 import { Skeleton } from "@/components/ui/skeleton";
 import { UserTransaction } from "@/lib/apiCalls";
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+} from "recharts";
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -174,24 +181,21 @@ const ActionButton = ({
 }) => (
   <TransitionLink
     href={href}
-    className={`flex flex-col items-center gap-2 sm:gap-3 group transition-all duration-300 w-full ${
-      primary ? "hover:-translate-y-1" : ""
-    }`}
+    className={`flex flex-col items-center gap-2 sm:gap-3 group transition-all duration-300 ${primary ? "hover:-translate-y-1" : ""
+      }`}
   >
     <div
       className={`
             w-12 h-12 sm:w-16 sm:h-16 rounded-2xl flex items-center justify-center transition-all duration-300 shadow-lg
-            ${
-              primary
-                ? "bg-gradient-to-br from-primary to-blue-600 text-white shadow-primary/25 group-hover:shadow-primary/40"
-                : "bg-card border border-border text-foreground hover:bg-accent hover:border-accent shadow-sm"
-            }
+            ${primary
+          ? "bg-gradient-to-br from-primary to-blue-600 text-white shadow-primary/25 group-hover:shadow-primary/40"
+          : "bg-card border border-border text-foreground hover:bg-accent hover:border-accent shadow-sm"
+        }
         `}
     >
       <Icon
-        className={`w-5 h-5 sm:w-6 sm:h-6 ${
-          primary ? "" : "text-foreground/70"
-        }`}
+        className={`w-5 h-5 sm:w-6 sm:h-6 ${primary ? "" : "text-foreground/70"
+          }`}
       />
     </div>
     <span className="text-xs sm:text-sm font-medium text-muted-foreground group-hover:text-foreground transition-colors">
@@ -200,29 +204,43 @@ const ActionButton = ({
   </TransitionLink>
 );
 
-const StatCard = ({
+const SpendingChart = ({
   title,
-  value,
-  sub,
-  icon: Icon,
-  colorClass,
+  data,
+  dataKey,
+  color,
 }: {
   title: string;
-  value: string;
-  sub: string;
-  icon: any;
-  colorClass: string;
+  data: { name: string; value: number }[];
+  dataKey: string;
+  color: string;
 }) => (
-  <div className="bg-card/50 backdrop-blur-sm border border-border/50 p-5 sm:p-6 rounded-3xl hover:bg-card/80 transition-colors duration-300">
-    <div className="flex items-start justify-between mb-4">
-      <div className={`p-3 rounded-2xl ${colorClass} bg-opacity-10`}>
-        <Icon className={`w-5 h-5 ${colorClass.replace("bg-", "text-")}`} />
-      </div>
-    </div>
-    <div className="space-y-1">
-      <p className="text-muted-foreground text-sm font-medium">{title}</p>
-      <h3 className="text-2xl font-bold">{value}</h3>
-      <p className="text-xs text-muted-foreground/60">{sub}</p>
+  <div className="bg-card/50 backdrop-blur-sm border border-border/50 p-4 rounded-2xl hover:bg-card/80 transition-colors duration-300">
+    <p className="text-muted-foreground text-xs font-medium mb-2">{title}</p>
+    <div className="h-24">
+      <ResponsiveContainer width="100%" height="100%">
+        <LineChart data={data} margin={{ top: 5, right: 5, left: -20, bottom: 5 }}>
+          <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" opacity={0.3} />
+          <XAxis dataKey="name" tick={{ fontSize: 10 }} stroke="var(--muted-foreground)" />
+          <YAxis tick={{ fontSize: 10 }} stroke="var(--muted-foreground)" />
+          <Tooltip
+            contentStyle={{
+              backgroundColor: "var(--card)",
+              border: "1px solid var(--border)",
+              borderRadius: "0.5rem",
+              fontSize: "12px",
+            }}
+          />
+          <Line
+            type="monotone"
+            dataKey={dataKey}
+            stroke={color}
+            strokeWidth={2}
+            dot={{ r: 2, fill: color }}
+            activeDot={{ r: 4 }}
+          />
+        </LineChart>
+      </ResponsiveContainer>
     </div>
   </div>
 );
@@ -239,11 +257,10 @@ const TransactionItem = ({
         <div
           className={`
                     w-10 h-10 sm:w-12 sm:h-12 rounded-full flex items-center justify-center border flex-shrink-0
-                    ${
-                      isPositive
-                        ? "bg-emerald-500/10 border-emerald-500/20 text-emerald-500"
-                        : "bg-rose-500/10 border-rose-500/20 text-rose-500"
-                    }
+                    ${isPositive
+              ? "bg-emerald-500/10 border-emerald-500/20 text-emerald-500"
+              : "bg-rose-500/10 border-rose-500/20 text-rose-500"
+            }
                 `}
         >
           {isPositive ? (
@@ -272,18 +289,16 @@ const TransactionItem = ({
 
       <div className="flex sm:flex-col justify-between items-center sm:items-end pl-[3.5rem] sm:pl-0">
         <p
-          className={`font-bold tabular-nums text-sm sm:text-base ${
-            isPositive ? "text-emerald-500" : "text-foreground"
-          }`}
+          className={`font-bold tabular-nums text-sm sm:text-base ${isPositive ? "text-emerald-500" : "text-foreground"
+            }`}
         >
           {isPositive ? "+" : ""}
           {item.amount}
         </p>
         <div className="flex items-center gap-2 sm:mt-1">
           <span
-            className={`w-2 h-2 rounded-full ${
-              item.status === "Completed" ? "bg-emerald-500" : "bg-yellow-500"
-            }`}
+            className={`w-2 h-2 rounded-full ${item.status === "Completed" ? "bg-emerald-500" : "bg-yellow-500"
+              }`}
           />
           <p className="text-[10px] sm:text-xs text-muted-foreground capitalize">
             {item.status}
@@ -315,6 +330,31 @@ export default function WalletPage() {
   // Get transactions array from API response
   const transactions = transactionsData?.transactions || [];
 
+  // Calculate total spent from negative transactions in last 30 days
+  const totalPackagesSpent = transactions
+    .filter(t => t.changeType === "negative" && t.package)
+    .reduce((sum, t) => sum + (t.package || 0), 0);
+
+  const totalPointsSpent = transactions
+    .filter(t => t.changeType === "negative" && t.points)
+    .reduce((sum, t) => sum + (t.points || 0), 0);
+
+  // Prepare chart data from transactions (last 7 transactions for graph)
+  const recentNegativeTransactions = transactions
+    .filter(t => t.changeType === "negative")
+    .slice(0, 7)
+    .reverse();
+
+  const packagesChartData = recentNegativeTransactions.map((t, i) => ({
+    name: `T${i + 1}`,
+    value: t.package || 0,
+  }));
+
+  const pointsChartData = recentNegativeTransactions.map((t, i) => ({
+    name: `T${i + 1}`,
+    value: t.points || 0,
+  }));
+
   return (
     <div data-loc="WalletPage" className="min-h-screen w-full relative">
       <main className="container mx-auto px-4 md:px-8 py-6 md:py-10 max-w-7xl">
@@ -338,15 +378,12 @@ export default function WalletPage() {
                 balance in real-time.
               </p>
             </div>
-            <div className="flex gap-3">
-              <Button
-                variant="outline"
-                className="rounded-full h-10 md:h-12 px-4 md:px-6 gap-2 text-sm md:text-base"
-              >
-                <Download className="w-4 h-4" />
-                <span className="hidden sm:inline">Export</span>
-              </Button>
-            </div>
+            <ActionButton
+              icon={Plus}
+              label="Top Up"
+              primary
+              href="/billing"
+            />
           </motion.div>
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
@@ -362,70 +399,26 @@ export default function WalletPage() {
                 walletIsPending={walletIsPending}
               />
 
-              <div className="flex justify-between gap-4">
-                <ActionButton
-                  icon={Plus}
-                  label="Top Up"
-                  primary
-                  href="/billing"
-                />
-                <ActionButton
-                  icon={Send}
-                  label="Transfer"
-                  href="/wallet/transfer"
-                />
-                <ActionButton
-                  icon={MoreHorizontal}
-                  label="More"
-                  href="/wallet/more"
-                />
-              </div>
-
               <div className="grid grid-cols-2 gap-4">
-                <StatCard
-                  title="Total Packages Spent"
-                  value="3"
-                  sub="Last 30 days"
-                  icon={Package}
-                  colorClass="bg-blue-500"
+                <SpendingChart
+                  title="Packages Spent"
+                  data={packagesChartData}
+                  dataKey="value"
+                  color="hsl(var(--chart-1))"
                 />
-                <StatCard
-                  title="Total Points Spent"
-                  value="1,450"
-                  sub="Last 30 days"
-                  icon={Clock}
-                  colorClass="bg-orange-500"
+                <SpendingChart
+                  title="Points Spent"
+                  data={pointsChartData}
+                  dataKey="value"
+                  color="hsl(var(--chart-2))"
                 />
               </div>
 
-              {/* Promo / Upgrade Card - Aligned with Primary Brand */}
-              <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-primary to-blue-700 p-6 text-primary-foreground shadow-xl group">
-                <TransitionLink href="/billing">
-                  <div className="relative z-10 space-y-4">
-                    <div className="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center backdrop-blur-md">
-                      <TrendingUp className="w-6 h-6 text-white" />
-                    </div>
-                    <div>
-                      <h3 className="font-bold text-lg">
-                        Upgrade to get more packages.
-                      </h3>
-                      <p className="text-primary-foreground/80 text-sm mt-1">
-                        Unlock more packages by upgrading to a higher plan.
-                      </p>
-                    </div>
-                    <p className="text-white p-0 h-auto font-semibold group-hover:text-white/80 duration-300">
-                      View Plans &rarr;
-                    </p>
-                  </div>
-                  {/* Decorative Circles */}
-                  <div className="absolute top-[-20%] right-[-20%] w-40 h-40 bg-white/10 rounded-full blur-2xl" />
-                  <div className="absolute bottom-[-10%] left-[-10%] w-32 h-32 bg-black/10 rounded-full blur-xl" />
-                </TransitionLink>
-              </div>
             </motion.div>
 
             {/* Right Column: Transactions */}
-            <motion.div variants={itemVariants} className="lg:col-span-7">
+            <motion.div variants={itemVariants} className="lg:col-span-7 space-y-4">
+
               <div className="bg-card/30 backdrop-blur-xl border border-border/50 rounded-[2.5rem] p-5 md:p-8 shadow-sm h-full min-h-[500px] md:min-h-[600px]">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 md:mb-8 gap-4">
                   <h2 className="text-xl md:text-2xl font-bold">
@@ -458,11 +451,10 @@ export default function WalletPage() {
                       onClick={() => setFilter(tab)}
                       className={`
                                                 px-4 md:px-5 py-2 md:py-2.5 rounded-full text-xs md:text-sm font-medium transition-all whitespace-nowrap flex-shrink-0
-                                                ${
-                                                  filter === tab
-                                                    ? "bg-primary text-primary-foreground shadow-md shadow-primary/20"
-                                                    : "bg-secondary/50 text-muted-foreground hover:bg-secondary hover:text-foreground"
-                                                }
+                                                ${filter === tab
+                          ? "bg-primary text-primary-foreground shadow-md shadow-primary/20"
+                          : "bg-secondary/50 text-muted-foreground hover:bg-secondary hover:text-foreground"
+                        }
                                             `}
                     >
                       {tab}

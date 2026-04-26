@@ -44,14 +44,34 @@ const FormField = <
 const useFormField = () => {
   const fieldContext = React.useContext(FormFieldContext);
   const itemContext = React.useContext(FormItemContext);
-  const { getFieldState, formState } = useFormContext();
 
-  const fieldState = getFieldState(fieldContext.name, formState);
+  let formContext;
+  try {
+    formContext = useFormContext();
+  } catch {
+    // Turbopack may re-evaluate modules in an inconsistent state
+    formContext = null;
+  }
+
+  if (!formContext) {
+    // Return placeholder during Turbopack hot reloading / module re-evaluation
+    return {
+      id: itemContext?.id ?? "",
+      name: fieldContext?.name ?? ("" as any),
+      formItemId: `${itemContext?.id ?? ""}-form-item`,
+      formDescriptionId: `${itemContext?.id ?? ""}-form-item-description`,
+      formMessageId: `${itemContext?.id ?? ""}-form-item-message`,
+      error: undefined,
+    };
+  }
+
+  const { getFieldState, formState } = formContext;
 
   if (!fieldContext) {
     throw new Error("useFormField should be used within <FormField>");
   }
 
+  const fieldState = getFieldState(fieldContext.name, formState);
   const { id } = itemContext;
 
   return {

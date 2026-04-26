@@ -3,6 +3,7 @@ import {
   addDashboardAppDraft,
   getDashboardAppsCount,
   getDashboardApps,
+  deleteDashboardApp,
 } from "@/lib/apiCalls";
 import {
   AppData,
@@ -13,6 +14,7 @@ import {
   useMutation,
   UseMutationOptions,
   useQuery,
+  useQueryClient,
 } from "@tanstack/react-query";
 
 /**
@@ -84,4 +86,25 @@ export function useDashboardApps({ type }: { type: string }) {
   });
 
   return query;
+}
+
+/**
+ * Hook to delete a dashboard draft app
+ * Uses DELETE /api/dashboard/delete-dashboard-app/:id
+ */
+export function useDeleteDashboardApp(
+  options?: UseMutationOptions<any, any, string>,
+) {
+  const queryClient = useQueryClient();
+
+  const mutation = useMutation({
+    mutationFn: (id: string) => deleteDashboardApp(id),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["useDashboardApps"] });
+      queryClient.invalidateQueries({ queryKey: ["useDashboardAppsCount"] });
+    },
+    ...options,
+  });
+
+  return mutation;
 }

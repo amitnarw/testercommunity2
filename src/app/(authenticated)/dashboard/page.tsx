@@ -26,9 +26,10 @@ import { CustomTabsList } from "@/components/custom-tabs-list";
 import { AppPagination } from "@/components/app-pagination";
 import SubTabUI from "@/components/sub-tab-ui";
 import { useDashboardData } from "@/hooks/useUser";
-import { useDashboardAppsCount, useDashboardApps } from "@/hooks/useDashboard";
+import { useDashboardAppsCount, useDashboardApps, useDeleteDashboardApp } from "@/hooks/useDashboard";
 import { AppCardSkeleton } from "@/components/app-card-skeleton";
 import { format } from "date-fns";
+import { FeedbackModal } from "@/components/feedback-modal";
 
 const PROJECTS_PER_PAGE = 6;
 
@@ -52,12 +53,16 @@ const PaginatedProjectList = ({
   emptyTitle = "No Projects Found",
   emptyMessage = "There are no projects in this category.",
   emptyIcon: Icon = Search,
+  showDeleteButton = false,
+  onDeleteDraft,
 }: {
   projects: Project[];
   isLoading?: boolean;
   emptyTitle?: string;
   emptyMessage?: string;
   emptyIcon?: React.ElementType;
+  showDeleteButton?: boolean;
+  onDeleteDraft?: (id: string) => void;
 }) => {
   if (isLoading) {
     return (
@@ -93,7 +98,11 @@ const PaginatedProjectList = ({
         transition={{ duration: 0.3 }}
       >
         {currentProjects.length > 0 ? (
-          <ProjectList projects={currentProjects} />
+          <ProjectList
+            projects={currentProjects}
+            showDeleteButton={showDeleteButton}
+            onDeleteDraft={onDeleteDraft}
+          />
         ) : (
           <div className="flex flex-col items-center justify-center py-20 text-center bg-card/50 rounded-3xl border border-dashed border-muted-foreground/20 relative overflow-hidden group">
             <div className="absolute inset-0 bg-gradient-to-b from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
@@ -202,6 +211,62 @@ function DashboardPageContent() {
   const { data: appsData, isPending: appsIsPending } = useDashboardApps({
     type: currentAppType,
   });
+
+  // Delete draft modal state
+  const [deleteModalState, setDeleteModalState] = useState<{
+    open: boolean;
+    draftId: string | null;
+  }>({ open: false, draftId: null });
+  const [feedbackModal, setFeedbackModal] = useState<{
+    open: boolean;
+    status: "success" | "error" | "warning" | "info" | "loading";
+    title: string;
+    description: string;
+    primaryAction?: { label: string; onClick: () => void };
+    secondaryAction?: { label: string; onClick: () => void };
+  }>({ open: false, status: "info", title: "", description: "" });
+
+  const deleteMutation = useDeleteDashboardApp({
+    onSuccess: () => {
+      setDeleteModalState({ open: false, draftId: null });
+      setFeedbackModal({
+        open: true,
+        status: "success",
+        title: "Draft Deleted",
+        description: "The draft has been deleted successfully.",
+        primaryAction: {
+          label: "OK",
+          onClick: () => setFeedbackModal((prev) => ({ ...prev, open: false })),
+        },
+      });
+    },
+    onError: (error) => {
+      setDeleteModalState({ open: false, draftId: null });
+      setFeedbackModal({
+        open: true,
+        status: "error",
+        title: "Delete Failed",
+        description:
+          error instanceof Error
+            ? error.message
+            : "Failed to delete draft. Please try again.",
+        primaryAction: {
+          label: "OK",
+          onClick: () => setFeedbackModal((prev) => ({ ...prev, open: false })),
+        },
+      });
+    },
+  });
+
+  const handleDeleteDraft = (id: string) => {
+    setDeleteModalState({ open: true, draftId: id });
+  };
+
+  const confirmDeleteDraft = () => {
+    if (deleteModalState.draftId) {
+      deleteMutation.mutate(deleteModalState.draftId);
+    }
+  };
 
   // Calculate counts from API data
   const draftCount = appsCountData?.DRAFT || 0;
@@ -417,6 +482,8 @@ function DashboardPageContent() {
                       ? FileEdit
                       : AlertCircle
                 }
+                showDeleteButton={pendingSubTab === "drafts"}
+                onDeleteDraft={handleDeleteDraft}
               />
             </TabsContent>
             <TabsContent value="ongoing" className="mt-6">
@@ -439,6 +506,35 @@ function DashboardPageContent() {
             </TabsContent>
           </Tabs>
         </main>
+        <FeedbackModal
+          open={deleteModalState.open}
+          onOpenChange={(open) =>
+            setDeleteModalState({ ...deleteModalState, open })
+          }
+          status="warning"
+          title="Delete Draft"
+          description="Are you sure you want to delete this draft? This action cannot be undone."
+          primaryAction={{
+            label: "Delete",
+            onClick: confirmDeleteDraft,
+          }}
+          secondaryAction={{
+            label: "Cancel",
+            onClick: () =>
+              setDeleteModalState({ open: false, draftId: null }),
+          }}
+        />
+        <FeedbackModal
+          open={feedbackModal.open}
+          onOpenChange={(open) =>
+            setFeedbackModal({ ...feedbackModal, open })
+          }
+          status={feedbackModal.status}
+          title={feedbackModal.title}
+          description={feedbackModal.description}
+          primaryAction={feedbackModal.primaryAction}
+          secondaryAction={feedbackModal.secondaryAction}
+        />
       </div>
     </div>
   );

@@ -30,6 +30,7 @@ import {
   // Notifications
   getAllNotifications,
   getNotificationCounts,
+  getNotificationTypes,
   createNotification,
   updateNotification,
   deleteNotification,
@@ -76,10 +77,11 @@ export function useAdminLogin(options?: UseMutationOptions<any, any, any>) {
   return mutation;
 }
 
-export function useSubmittedAppsCount(appType?: string) {
+export function useSubmittedAppsCount(appType?: string, includeDrafts?: boolean) {
   const query = useQuery({
-    queryFn: () => getSubmittedAppsCount(appType),
-    queryKey: ["useSubmittedAppsCount", appType],
+    queryFn: () => getSubmittedAppsCount(appType, includeDrafts),
+    queryKey: ["useSubmittedAppsCount", appType, includeDrafts],
+    staleTime: 0,
   });
 
   return query;
@@ -87,11 +89,13 @@ export function useSubmittedAppsCount(appType?: string) {
 
 export function useSubmittedApps(
   status?: string,
+  includeDrafts?: boolean,
   options?: { enabled?: boolean },
 ) {
   const query = useQuery({
-    queryFn: () => getSubmittedApps(status),
-    queryKey: ["useSubmittedApps", status],
+    queryFn: () => getSubmittedApps(status, includeDrafts),
+    queryKey: ["useSubmittedApps", status, includeDrafts],
+    staleTime: 0,
     enabled: options?.enabled ?? true,
   });
 
@@ -368,6 +372,16 @@ export function useNotificationCounts(options?: { enabled?: boolean }) {
   const query = useQuery({
     queryFn: () => getNotificationCounts(),
     queryKey: ["useNotificationCounts"],
+    enabled: options?.enabled ?? true,
+  });
+
+  return query;
+}
+
+export function useNotificationTypes(options?: { enabled?: boolean }) {
+  const query = useQuery({
+    queryFn: () => getNotificationTypes(),
+    queryKey: ["useNotificationTypes"],
     enabled: options?.enabled ?? true,
   });
 

@@ -793,6 +793,7 @@ export interface CreateOrderResponse {
   currency: string;
   planName: string;
   packages: number;
+  expiresAt?: string;
 }
 
 export interface PaymentVerificationPayload {

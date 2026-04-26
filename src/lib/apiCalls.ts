@@ -565,6 +565,30 @@ export async function getDashboardApps(
   }
 }
 
+export async function deleteDashboardApp(id: string): Promise<void> {
+  try {
+    const response = await api.delete(
+      API_ROUTES.DASHBOARD + `/delete-dashboard-app/${id}`,
+    );
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error deleting dashboard app:", error);
+    if (axios.isAxiosError(error)) {
+      const status = error.response?.status;
+      const responseData = error.response?.data;
+      console.error("Axios error:", status, responseData);
+
+      throw new Error(
+        responseData?.message || error.message || "Unknown Axios error",
+      );
+    } else if (error instanceof Error) {
+      throw new Error(error.message);
+    } else {
+      throw new Error(JSON.stringify(error));
+    }
+  }
+}
+
 // Hub
 export async function getHubData(): Promise<HubDataResponse> {
   try {

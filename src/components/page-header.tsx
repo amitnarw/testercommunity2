@@ -6,6 +6,7 @@ interface PageHeaderProps {
   backHref: string;
   className?: string;
   onBack?: (e: React.MouseEvent<HTMLButtonElement>) => void;
+  rightContent?: React.ReactNode;
 }
 
 export function PageHeader({
@@ -13,6 +14,7 @@ export function PageHeader({
   backHref,
   onBack,
   className,
+  rightContent,
 }: PageHeaderProps) {
   return (
     <div
@@ -26,6 +28,7 @@ export function PageHeader({
       <h1 className="font-semibold tracking-tight text-xl md:text-2xl bg-gradient-to-b from-primary to-primary/50 bg-clip-text text-transparent leading-0">
         {title}
       </h1>
+      {rightContent && <div className="ml-auto">{rightContent}</div>}
     </div>
   );
 }

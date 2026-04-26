@@ -1,89 +1,58 @@
-"use client";
-
-import { notFound } from "next/navigation";
-import { ArticleView } from "@/components/blog/article-view";
+import { getPublicBlogBySlug } from "@/lib/apiCalls";
+import BlogPostClient from "./BlogPostClient";
 import { Metadata } from "next";
-import { useEffect, useState } from "react";
-import { getPublicBlogBySlug, PublicBlog } from "@/lib/apiCalls";
+import { notFound } from "next/navigation";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
 }
 
-function blogPostToDisplayFormat(post: PublicBlog) {
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const { slug } = await params;
+  const blog = await getPublicBlogBySlug(slug);
+
+  if (!blog) {
+    return { title: "Blog Post Not Found" };
+  }
+
   return {
-    id: post.id,
-    slug: post.slug,
-    title: post.title,
-    excerpt: post.excerpt,
-    content: post.content,
-    author: {
-      name: post.authorName,
-      avatarUrl: post.authorAvatarUrl,
-      dataAiHint: post.authorDataAiHint,
+    title: `${blog.title} | inTesters`,
+    description: blog.excerpt,
+    keywords: blog.tags.join(", "),
+    openGraph: {
+      title: blog.title,
+      description: blog.excerpt,
+      type: "article",
+      url: `/blog/${slug}`,
+      siteName: "inTesters",
+      images: [
+        {
+          url: blog.imageUrl,
+          width: 1200,
+          height: 630,
+          alt: blog.title,
+        },
+      ],
+      publishedTime: blog.date,
+      authors: [blog.authorName],
+      tags: blog.tags,
     },
-    date: post.date,
-    imageUrl: post.imageUrl,
-    dataAiHint: post.dataAiHint,
-    tags: post.tags,
+    twitter: {
+      card: "summary_large_image",
+      title: blog.title,
+      description: blog.excerpt,
+      images: [blog.imageUrl],
+    },
   };
 }
 
-export default function BlogPostPage({ params }: PageProps) {
-  const [post, setPost] = useState<PublicBlog | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+export default async function BlogPostPage({ params }: PageProps) {
+  const { slug } = await params;
+  const blog = await getPublicBlogBySlug(slug);
 
-  useEffect(() => {
-    async function fetchBlog() {
-      try {
-        const resolvedParams = await params;
-        const blog = await getPublicBlogBySlug(resolvedParams.slug);
-        if (!blog) {
-          setPost(null);
-        } else {
-          setPost(blog);
-        }
-      } catch (err) {
-        console.error("Failed to fetch blog:", err);
-        setError(err instanceof Error ? err.message : "Failed to load blog");
-      } finally {
-        setLoading(false);
-      }
-    }
-    fetchBlog();
-  }, [params]);
-
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="animate-spin w-12 h-12 border-4 border-primary border-t-transparent rounded-full" />
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="text-center">
-          <p className="text-red-500 mb-4">{error}</p>
-          <button
-            onClick={() => window.location.reload()}
-            className="px-6 py-3 bg-primary text-primary-foreground rounded-full"
-          >
-            Retry
-          </button>
-        </div>
-      </div>
-    );
-  }
-
-  if (!post) {
+  if (!blog) {
     notFound();
   }
 
-  return <ArticleView post={blogPostToDisplayFormat(post)} />;
+  return <BlogPostClient slug={slug} />;
 }
-
-// Generate metadata client-side would require additional handling
-// For now, keep it simple

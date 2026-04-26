@@ -130,8 +130,7 @@ export function Sidebar({
     navLinks = proNavLinks;
   }
 
-  const navContent =
-    roleName === "super_admin" || isAdminPath ? (
+  const navContent = isAdminPath ? (
       <>
         <div className="mb-1">
           {!isCollapsed && (

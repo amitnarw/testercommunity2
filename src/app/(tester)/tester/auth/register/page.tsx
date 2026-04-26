@@ -347,6 +347,7 @@ export default function ProfessionalRegisterPage() {
                         </div>
                         <div className="grid grid-cols-2 gap-4">
                           <FormField
+                            control={form.control}
                             name="firstName"
                             render={({ field }) => (
                               <FormItem>
@@ -359,6 +360,7 @@ export default function ProfessionalRegisterPage() {
                             )}
                           />
                           <FormField
+                            control={form.control}
                             name="lastName"
                             render={({ field }) => (
                               <FormItem>
@@ -372,6 +374,7 @@ export default function ProfessionalRegisterPage() {
                           />
                         </div>
                         <FormField
+                          control={form.control}
                           name="email"
                           render={({ field }) => (
                             <FormItem>
@@ -387,6 +390,7 @@ export default function ProfessionalRegisterPage() {
                           )}
                         />
                         <FormField
+                          control={form.control}
                           name="password"
                           render={({ field }) => (
                             <FormItem>

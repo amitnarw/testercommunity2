@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "./ui/badge";
 import Image from "next/image";
-import { ArrowRight, FileWarning } from "lucide-react";
+import { ArrowRight, FileWarning, Trash2 } from "lucide-react";
 import Link from "next/link";
 import { Separator } from "./ui/separator";
 import type { Project } from "@/lib/types";
@@ -60,7 +60,17 @@ const Metric = ({
   </div>
 );
 
-export function ProjectList({ projects }: { projects: Project[] }) {
+interface ProjectListProps {
+  projects: Project[];
+  showDeleteButton?: boolean;
+  onDeleteDraft?: (id: string) => void;
+}
+
+export function ProjectList({
+  projects,
+  showDeleteButton = false,
+  onDeleteDraft,
+}: ProjectListProps) {
   if (projects.length === 0) {
     return (
       <Card className="rounded-xl border-dashed bg-transparent shadow-sm flex items-center justify-center min-h-[300px]">
@@ -136,11 +146,11 @@ export function ProjectList({ projects }: { projects: Project[] }) {
                     )}
                   </div>
                   {isDraft ? (
-                    <div className="text-center py-8">
+                    <div className="text-center py-4">
                       <p className="text-sm text-muted-foreground">
                         This project is a draft.
                       </p>
-                      <Button variant="link" className="mt-2">
+                      <Button variant="link" className="mt-1">
                         Complete Submission
                       </Button>
                     </div>
@@ -171,6 +181,23 @@ export function ProjectList({ projects }: { projects: Project[] }) {
                         {project.avgTestersPerDay.toFixed(1)}
                       </span>
                     </span>
+                  </CardFooter>
+                )}
+                {isDraft && showDeleteButton && onDeleteDraft && (
+                  <CardFooter className="px-5 pb-5 flex justify-end">
+                    <Button
+                      variant="destructive"
+                      size="sm"
+                      className="text-xs gap-1.5"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        onDeleteDraft(project.id);
+                      }}
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                      Delete Draft
+                    </Button>
                   </CardFooter>
                 )}
               </div>

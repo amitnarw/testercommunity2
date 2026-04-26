@@ -72,11 +72,11 @@ export function BlogListing({ posts }: BlogListingProps) {
             <motion.div
               key={post.id}
               layout
-              initial={{ opacity: 0, y: 50, scale: 0.9 }}
-              whileInView={{ opacity: 1, y: 0, scale: 1 }}
+              initial={{ filter: "blur(20px)", opacity: 0, y: 30 }}
+              whileInView={{ filter: "blur(0px)", opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-50px" }}
-              exit={{ opacity: 0, scale: 0.9, transition: { duration: 0.2 } }}
-              transition={{ duration: 0.5, delay: idx * 0.05 }}
+              exit={{ filter: "blur(20px)", opacity: 0, scale: 0.95, transition: { duration: 0.2 } }}
+              transition={{ duration: 0.8, delay: idx * 0.08, ease: "easeOut" }}
               className="break-inside-avoid"
             >
               <BlogCard post={post} index={idx} />
