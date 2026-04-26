@@ -13,16 +13,26 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { Button } from "@/components/ui/button";
-import { Edit, Trash2 } from "lucide-react";
+import { Trash2 } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { SafeImage } from "@/components/safe-image";
 
 interface Blog {
   id: number;
   title: string;
+  slug: string;
+  excerpt: string;
+  content: string;
   authorName: string;
+  authorAvatarUrl: string;
+  authorDataAiHint?: string;
+  imageUrl: string;
+  dataAiHint?: string;
   tags: string[];
-  description: string;
   isActive: boolean;
+  date: string;
   createdAt: string;
+  updatedAt: string;
   media: { src: string }[];
 }
 
@@ -39,11 +49,13 @@ export function BlogTable({
   onEdit,
   onDelete,
 }: BlogTableProps) {
+  const router = useRouter();
   return (
-    <div className="rounded-md border overflow-hidden">
+    <div className="rounded-md border overflow-hidden grid grid-cols-1">
       <Table>
         <TableHeader>
           <TableRow>
+            <TableHead className="w-16">Image</TableHead>
             <TableHead>Title</TableHead>
             <TableHead>Author</TableHead>
             <TableHead>Tags</TableHead>
@@ -87,7 +99,27 @@ export function BlogTable({
             </TableRow>
           ) : (
             blogs.map((blog) => (
-              <TableRow key={blog.id}>
+              <TableRow
+                key={blog.id}
+                className="cursor-pointer hover:bg-muted/50"
+                onClick={() => router.push(`/admin/blog-management/${blog.id}`)}
+              >
+                <TableCell>
+                  {blog.imageUrl ? (
+                    <div className="relative w-12 h-12 rounded-md overflow-hidden bg-muted">
+                      <SafeImage
+                        src={blog.imageUrl}
+                        alt={blog.title}
+                        fill
+                        className="object-cover"
+                      />
+                    </div>
+                  ) : (
+                    <div className="w-12 h-12 rounded-md bg-muted flex items-center justify-center">
+                      <span className="text-xs text-muted-foreground">No img</span>
+                    </div>
+                  )}
+                </TableCell>
                 <TableCell className="font-medium max-w-[300px] truncate">
                   {blog.title}
                 </TableCell>
@@ -122,23 +154,17 @@ export function BlogTable({
                   {format(new Date(blog.createdAt), "MMM dd, yyyy")}
                 </TableCell>
                 <TableCell className="text-right">
-                  <div className="flex justify-end gap-2">
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => onEdit(blog)}
-                    >
-                      <Edit className="h-4 w-4" />
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="text-destructive hover:text-destructive hover:bg-destructive/10"
-                      onClick={() => onDelete(blog.id)}
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
-                  </div>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="text-destructive hover:text-destructive hover:bg-destructive/10"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onDelete(blog.id);
+                    }}
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </Button>
                 </TableCell>
               </TableRow>
             ))

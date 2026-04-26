@@ -52,10 +52,10 @@ export async function adminLogin(payload: {
   }
 }
 
-export async function getSubmittedApps(status?: string) {
+export async function getSubmittedApps(status?: string, includeDrafts?: boolean) {
   try {
     const response = await api.get(API_ROUTES.ADMIN + `/get-submitted-apps`, {
-      params: { status },
+      params: { status, includeDrafts },
     });
     return response?.data?.data;
   } catch (error) {
@@ -76,11 +76,11 @@ export async function getSubmittedApps(status?: string) {
   }
 }
 
-export async function getSubmittedAppsCount(appType?: string) {
+export async function getSubmittedAppsCount(appType?: string, includeDrafts?: boolean) {
   try {
     const response = await api.get(
       API_ROUTES.ADMIN + `/get-submitted-apps-count`,
-      { params: { appType } },
+      { params: { appType, includeDrafts } },
     );
     return response?.data?.data;
   } catch (error) {
@@ -684,6 +684,28 @@ export async function getNotificationCounts() {
   }
 }
 
+export async function getNotificationTypes() {
+  try {
+    const response = await api.get(API_ROUTES.ADMIN + `/notification-types`);
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error fetching notification types:", error);
+    if (axios.isAxiosError(error)) {
+      const status = error.response?.status;
+      const responseData = error.response?.data;
+      console.error("Axios error:", status, responseData);
+
+      throw new Error(
+        responseData?.message || error.message || "Unknown Axios error",
+      );
+    } else if (error instanceof Error) {
+      throw new Error(error.message);
+    } else {
+      throw new Error(JSON.stringify(error));
+    }
+  }
+}
+
 export async function createNotification(payload: {
   title: string;
   description: string;
@@ -990,10 +1012,17 @@ export async function getBlogById(id: number) {
 
 export async function createBlog(payload: {
   title: string;
+  slug: string;
+  excerpt: string;
+  content: string;
   authorName: string;
+  authorAvatarUrl?: string;
+  authorDataAiHint?: string;
+  imageUrl?: string;
+  dataAiHint?: string;
   tags?: string[];
-  description: string;
   isActive?: boolean;
+  date?: string;
 }) {
   try {
     const response = await api.post(API_ROUTES.ADMIN + `/blogs`, payload);
@@ -1007,10 +1036,17 @@ export async function createBlog(payload: {
 export async function updateBlog(payload: {
   id: number;
   title?: string;
+  slug?: string;
+  excerpt?: string;
+  content?: string;
   authorName?: string;
+  authorAvatarUrl?: string;
+  authorDataAiHint?: string;
+  imageUrl?: string;
+  dataAiHint?: string;
   tags?: string[];
-  description?: string;
   isActive?: boolean;
+  date?: string;
 }) {
   try {
     const response = await api.post(API_ROUTES.ADMIN + `/blogs/update`, payload);

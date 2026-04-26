@@ -13,12 +13,11 @@ import {
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { AppPagination } from "@/components/app-pagination";
-import { notifications as allNotifications } from "@/lib/data";
 import { useGetUserNotifications } from "@/hooks/useUser";
 import { NotificationResponse } from "@/lib/types";
 import SkeletonNotification from "./loading-skeleton";
 
-const NOTIFICATIONS_PER_PAGE = 8;
+const NOTIFICATIONS_PER_PAGE = 10;
 
 const NotificationIcon = ({ type }: { type: NotificationResponse["type"] }) => {
   switch (type) {
@@ -52,39 +51,31 @@ const NotificationIcon = ({ type }: { type: NotificationResponse["type"] }) => {
 interface NotificationsPageProps {
   title: string;
   description: string;
-  notifications: NotificationResponse[];
 }
 
 export function NotificationsPageContent({
   title,
   description,
-  notifications: _propNotifications, // using static data below
 }: NotificationsPageProps) {
-  const notifications = allNotifications.filter(
-    (n) =>
-      n.type === "NEW_TEST" ||
-      n.type === "POINTS_AWARDED" ||
-      n.type === "TEST_COMPLETED",
-  );
-
   const [currentPage, setCurrentPage] = useState(1);
 
-  const totalPages = Math.ceil(notifications.length / NOTIFICATIONS_PER_PAGE);
-  //   const startIndex = (currentPage - 1) * NOTIFICATIONS_PER_PAGE;
-  //   const endIndex = startIndex + NOTIFICATIONS_PER_PAGE;
-  //   const currentNotifications = notifications.slice(startIndex, endIndex);
+  const {
+    data: notificationData,
+    isPending: notificationIsPending,
+  } = useGetUserNotifications();
+
+  const allNotifications = notificationData?.notifications ?? [];
+  const totalNotifications = notificationData?.totalNotifications ?? 0;
+  const totalPages = Math.ceil(totalNotifications / NOTIFICATIONS_PER_PAGE);
+
+  const startIndex = (currentPage - 1) * NOTIFICATIONS_PER_PAGE;
+  const endIndex = startIndex + NOTIFICATIONS_PER_PAGE;
+  const paginatedNotifications = allNotifications.slice(startIndex, endIndex);
 
   const handlePageChange = (page: number) => {
     if (page < 1 || page > totalPages) return;
     setCurrentPage(page);
   };
-
-  const {
-    data: notificationData,
-    isPending: notificationIsPending,
-    isError: notificationIsError,
-    error: notificationError,
-  } = useGetUserNotifications();
 
   return (
     <div
@@ -107,13 +98,12 @@ export function NotificationsPageContent({
           <Card className="rounded-xl bg-transparent shadow-none h-full">
             <CardContent className="p-0">
               <div className="flex flex-col gap-2">
-                {!notificationData?.result ||
-                !notificationData?.result?.length ? (
+                {!paginatedNotifications.length ? (
                   <p className="p-8 text-center text-muted-foreground">
                     You have no notifications yet.
                   </p>
                 ) : (
-                  notificationData?.result.map((notification) => (
+                  paginatedNotifications.map((notification) => (
                     <Link
                       href="#"
                       key={notification.id}
@@ -179,7 +169,7 @@ export function NotificationsPageContent({
             </CardContent>
           </Card>
 
-          {notificationData?.totalNotifications ? (
+          {totalNotifications > NOTIFICATIONS_PER_PAGE ? (
             <AppPagination
               currentPage={currentPage}
               totalPages={totalPages}

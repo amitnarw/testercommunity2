@@ -1,20 +1,18 @@
 "use client";
 
-import { motion, useScroll, useSpring } from "framer-motion";
+import { motion, AnimatePresence, useScroll, useSpring } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import {
   ArrowLeft,
-  Share2,
   Facebook,
   Twitter,
   Linkedin,
-  Bookmark,
+  Copy,
+  Check,
 } from "lucide-react";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import type { BlogPost } from "@/lib/types";
-import { cn } from "@/lib/utils";
 import { useEffect, useState } from "react";
 
 interface ArticleViewProps {
@@ -30,6 +28,7 @@ export function ArticleView({ post }: ArticleViewProps) {
   });
 
   const [isScrolledPastHeader, setIsScrolledPastHeader] = useState(false);
+  const [copied, setCopied] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -39,38 +38,36 @@ export function ArticleView({ post }: ArticleViewProps) {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  const handleShare = (platform: string) => {
+    const url = typeof window !== "undefined" ? window.location.href : "";
+    const text = post.title;
+    const encodedUrl = encodeURIComponent(url);
+    const encodedText = encodeURIComponent(text);
+
+    const shareUrls: Record<string, string> = {
+      facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodedUrl}`,
+      twitter: `https://twitter.com/intent/tweet?url=${encodedUrl}&text=${encodedText}`,
+      linkedin: `https://www.linkedin.com/shareArticle?mini=true&url=${encodedUrl}&title=${encodedText}`,
+    };
+
+    if (shareUrls[platform]) {
+      window.open(shareUrls[platform], "_blank", "width=600,height=400");
+    }
+  };
+
+  const handleCopyLink = () => {
+    navigator.clipboard.writeText(window.location.href);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
   return (
     <div className="relative min-h-screen bg-background text-foreground">
       {/* Reading Progress Bar */}
       <motion.div
-        className="fixed top-0 left-0 right-0 h-1.5 bg-primary z-50 origin-left"
+        className="fixed top-0 left-0 right-0 h-1 bg-primary z-50 origin-left"
         style={{ scaleX }}
       />
-
-      {/* Floating Navigation Header (appears on scroll) */}
-      <motion.div
-        className={cn(
-          "fixed top-0 inset-x-0 h-16 bg-background/80 backdrop-blur-lg border-b border-border/50 z-40 flex items-center justify-between px-4 md:px-8 transition-all duration-300",
-          isScrolledPastHeader
-            ? "translate-y-0 opacity-100"
-            : "-translate-y-full opacity-0"
-        )}
-      >
-        <Link
-          href="/blog"
-          className="flex items-center gap-2 text-sm font-medium hover:text-primary transition-colors"
-        >
-          <ArrowLeft className="w-4 h-4" /> Back to Blog
-        </Link>
-        <span className="text-sm font-semibold truncate max-w-[200px] md:max-w-md">
-          {post.title}
-        </span>
-        <div className="flex gap-2">
-          <button className="p-2 hover:bg-muted rounded-full transition-colors">
-            <Share2 className="w-4 h-4" />
-          </button>
-        </div>
-      </motion.div>
 
       {/* Main Content */}
       <main className="container mx-auto px-4 md:px-6 py-12 lg:py-24">
@@ -85,7 +82,7 @@ export function ArticleView({ post }: ArticleViewProps) {
         </Link>
 
         {/* Article Header */}
-        <header className="max-w-4xl mx-auto text-center mb-16 space-y-8">
+        <header className="max-w-4xl mx-auto text-center mb-10 space-y-8">
           <div className="flex items-center justify-center gap-2">
             {post.tags.map((tag) => (
               <Badge
@@ -98,16 +95,17 @@ export function ArticleView({ post }: ArticleViewProps) {
             ))}
           </div>
 
-          <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight text-foreground leading-[1.1]">
+          <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold tracking-tight text-foreground leading-[1.1]">
             {post.title}
           </h1>
 
           <div className="flex items-center justify-center gap-6 text-muted-foreground">
             <div className="flex items-center gap-3">
-              <Avatar className="h-10 w-10 border-2 border-background shadow-sm">
-                <AvatarImage src={post.author.avatarUrl} />
-                <AvatarFallback>{post.author.name.charAt(0)}</AvatarFallback>
-              </Avatar>
+              <img
+                src={post.author.avatarUrl}
+                alt={post.author.name}
+                className="h-10 w-10 rounded-full border-2 border-background shadow-sm object-cover"
+              />
               <div className="text-left">
                 <p className="text-sm font-semibold text-foreground">
                   {post.author.name}
@@ -130,7 +128,7 @@ export function ArticleView({ post }: ArticleViewProps) {
         </header>
 
         {/* Hero Image */}
-        <div className="max-w-6xl mx-auto mb-20">
+        <div className="max-w-6xl mx-auto mb-10">
           <div className="relative aspect-[21/9] rounded-3xl overflow-hidden shadow-2xl">
             <Image
               src={post.imageUrl}
@@ -152,19 +150,56 @@ export function ArticleView({ post }: ArticleViewProps) {
               <p className="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-2 writing-mode-vertical">
                 Share
               </p>
-              <button className="p-3 rounded-full bg-muted/50 hover:bg-blue-500 hover:text-white transition-all hover:scale-110">
+              <button
+                onClick={() => handleShare("facebook")}
+                className="p-3 rounded-full bg-muted/50 hover:bg-blue-500 hover:text-white transition-all hover:scale-110"
+              >
                 <Facebook className="w-5 h-5" />
               </button>
-              <button className="p-3 rounded-full bg-muted/50 hover:bg-sky-500 hover:text-white transition-all hover:scale-110">
+              <button
+                onClick={() => handleShare("twitter")}
+                className="p-3 rounded-full bg-muted/50 hover:bg-sky-500 hover:text-white transition-all hover:scale-110"
+              >
                 <Twitter className="w-5 h-5" />
               </button>
-              <button className="p-3 rounded-full bg-muted/50 hover:bg-blue-700 hover:text-white transition-all hover:scale-110">
+              <button
+                onClick={() => handleShare("linkedin")}
+                className="p-3 rounded-full bg-muted/50 hover:bg-blue-700 hover:text-white transition-all hover:scale-110"
+              >
                 <Linkedin className="w-5 h-5" />
               </button>
-              <div className="w-8 h-px bg-border my-2" />
-              <button className="p-3 rounded-full bg-muted/50 hover:bg-yellow-500 hover:text-white transition-all hover:scale-110">
-                <Bookmark className="w-5 h-5" />
-              </button>
+              <motion.button
+                onClick={handleCopyLink}
+                whileTap={{ scale: 0.9 }}
+                className="p-3 rounded-full bg-muted/50 relative overflow-hidden"
+              >
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={copied ? "check" : "copy"}
+                    initial={{ scale: 0, opacity: 0, rotate: -180 }}
+                    animate={{ scale: 1, opacity: 1, rotate: 0 }}
+                    exit={{ scale: 0, opacity: 0, rotate: 180 }}
+                    transition={{ type: "spring", stiffness: 400, damping: 15 }}
+                  >
+                    {copied ? (
+                      <Check className="w-5 h-5 text-green-500" />
+                    ) : (
+                      <Copy className="w-5 h-5" />
+                    )}
+                  </motion.div>
+                </AnimatePresence>
+                <AnimatePresence>
+                  {copied && (
+                    <motion.div
+                      initial={{ scale: 0 }}
+                      animate={{ scale: 2.5 }}
+                      exit={{ scale: 0 }}
+                      transition={{ duration: 0.4, ease: "easeOut" }}
+                      className="absolute inset-0 bg-green-500/30 rounded-full"
+                    />
+                  )}
+                </AnimatePresence>
+              </motion.button>
             </div>
           </aside>
 
@@ -180,18 +215,17 @@ export function ArticleView({ post }: ArticleViewProps) {
 
               <hr className="my-12 border-border" />
 
-              <div className="bg-muted/30 p-8 rounded-2xl">
-                <h3 className="text-lg font-semibold mb-2">About the Author</h3>
-                <div className="flex gap-4">
-                  <Avatar className="h-16 w-16">
-                    <AvatarImage src={post.author.avatarUrl} />
-                    <AvatarFallback>
-                      {post.author.name.charAt(0)}
-                    </AvatarFallback>
-                  </Avatar>
-                  <div>
-                    <p className="font-bold text-xl">{post.author.name}</p>
-                    <p className="text-muted-foreground">
+              <div className="bg-gradient-to-tr from-primary to-primary/50 p-3 sm:p-6 rounded-3xl">
+                <h3 className="text-sm font-semibold !mt-0 text-white">About the Author</h3>
+                <div className="flex gap-3">
+                  <img
+                    src={post.author.avatarUrl}
+                    alt={post.author.name}
+                    className="h-12 w-12 rounded-full border-2 border-white/30 object-cover shrink-0 !my-0"
+                  />
+                  <div className="flex-1">
+                    <p className="font-semibold text-sm text-white !my-0">{post.author.name}</p>
+                    <p className="text-xs text-white/80 !my-2">
                       Expert software tester and contributor to the community.
                       Passionate about AI, automation, and user experience.
                     </p>
@@ -210,18 +244,52 @@ export function ArticleView({ post }: ArticleViewProps) {
 
       {/* Mobile Share Bar (Bottom) */}
       <div className="lg:hidden fixed bottom-0 inset-x-0 p-4 bg-background/80 backdrop-blur-lg border-t border-border z-30 flex justify-around">
-        <button className="p-2 text-muted-foreground hover:text-foreground">
-          <Share2 />
-        </button>
-        <button className="p-2 text-muted-foreground hover:text-foreground">
+        <button
+          onClick={() => handleShare("facebook")}
+          className="p-2 text-muted-foreground hover:text-foreground"
+        >
           <Facebook />
         </button>
-        <button className="p-2 text-muted-foreground hover:text-foreground">
+        <button
+          onClick={() => handleShare("twitter")}
+          className="p-2 text-muted-foreground hover:text-foreground"
+        >
           <Twitter />
         </button>
-        <button className="p-2 text-muted-foreground hover:text-foreground">
-          <Bookmark />
+        <button
+          onClick={() => handleShare("linkedin")}
+          className="p-2 text-muted-foreground hover:text-foreground"
+        >
+          <Linkedin />
         </button>
+        <motion.button
+          onClick={handleCopyLink}
+          whileTap={{ scale: 0.9 }}
+          className="p-2 text-muted-foreground hover:text-foreground relative overflow-hidden"
+        >
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={copied ? "check" : "copy"}
+              initial={{ scale: 0, opacity: 0, rotate: -180 }}
+              animate={{ scale: 1, opacity: 1, rotate: 0 }}
+              exit={{ scale: 0, opacity: 0, rotate: 180 }}
+              transition={{ type: "spring", stiffness: 400, damping: 15 }}
+            >
+              {copied ? <Check className="w-5 h-5 text-green-500" /> : <Copy />}
+            </motion.div>
+          </AnimatePresence>
+          <AnimatePresence>
+            {copied && (
+              <motion.div
+                initial={{ scale: 0 }}
+                animate={{ scale: 2.5 }}
+                exit={{ scale: 0 }}
+                transition={{ duration: 0.4, ease: "easeOut" }}
+                className="absolute inset-0 bg-green-500/30 rounded-full"
+              />
+            )}
+          </AnimatePresence>
+        </motion.button>
       </div>
     </div>
   );

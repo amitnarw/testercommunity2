@@ -1,47 +1,58 @@
-import { notFound } from "next/navigation";
-import { blogPosts } from "@/lib/data";
-import { ArticleView } from "@/components/blog/article-view";
+import { getPublicBlogBySlug } from "@/lib/apiCalls";
+import BlogPostClient from "./BlogPostClient";
 import { Metadata } from "next";
+import { notFound } from "next/navigation";
 
-export async function generateStaticParams() {
-  return blogPosts.map((post) => ({
-    slug: post.slug,
-  }));
+interface PageProps {
+  params: Promise<{ slug: string }>;
 }
 
-export async function generateMetadata({
-  params,
-}: {
-  params: Promise<{
-    slug: string;
-  }>;
-}): Promise<Metadata> {
-  // The original code `params.slug` would not work directly if `params` is a Promise.
-  // Assuming the intent is to get the slug from the resolved promise.
-  const resolvedParams = await params;
-  const post = blogPosts.find((p) => p.slug === resolvedParams.slug);
-  if (!post) return { title: "Not Found" };
+export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
+  const { slug } = await params;
+  const blog = await getPublicBlogBySlug(slug);
+
+  if (!blog) {
+    return { title: "Blog Post Not Found" };
+  }
 
   return {
-    title: `${post.title} | inTesters Blog`,
-    description: post.excerpt,
+    title: `${blog.title} | inTesters`,
+    description: blog.excerpt,
+    keywords: blog.tags.join(", "),
     openGraph: {
-      images: [post.imageUrl],
+      title: blog.title,
+      description: blog.excerpt,
+      type: "article",
+      url: `/blog/${slug}`,
+      siteName: "inTesters",
+      images: [
+        {
+          url: blog.imageUrl,
+          width: 1200,
+          height: 630,
+          alt: blog.title,
+        },
+      ],
+      publishedTime: blog.date,
+      authors: [blog.authorName],
+      tags: blog.tags,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: blog.title,
+      description: blog.excerpt,
+      images: [blog.imageUrl],
     },
   };
 }
 
-export default async function BlogPostPage({
-  params,
-}: {
-  params: Promise<{ slug: string }>;
-}) {
-  const resolvedParams = await params;
-  const post = blogPosts.find((p) => p.slug === resolvedParams.slug);
+export default async function BlogPostPage({ params }: PageProps) {
+  const { slug } = await params;
+  const blog = await getPublicBlogBySlug(slug);
 
-  if (!post) {
+  if (!blog) {
     notFound();
   }
 
-  return <ArticleView post={post} />;
+  return <BlogPostClient slug={slug} />;
 }

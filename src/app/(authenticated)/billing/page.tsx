@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import { motion } from "framer-motion";
 import {
   Check,
@@ -19,6 +19,7 @@ import { Badge } from "@/components/ui/badge";
 import { PageHeader } from "@/components/page-header";
 import { HoverBorderGradient } from "@/components/ui/hover-border-gradient";
 import { Skeleton } from "@/components/ui/skeleton";
+import { FeedbackModal } from "@/components/feedback-modal";
 
 import {
   useBillingHistory,
@@ -26,7 +27,7 @@ import {
   usePaymentConfig,
   useVerifyPayment,
 } from "@/hooks/useBilling";
-import { useGetUserWallet, usePricingData } from "@/hooks/useUser";
+import { useGetUserWallet, usePricingData, useUserData } from "@/hooks/useUser";
 import { Accordion } from "@/components/ui/accordion";
 import FaqItem from "@/components/faq-item";
 import {
@@ -34,8 +35,16 @@ import {
   EnterprisePlanCard,
 } from "@/components/pricing-cards";
 import Script from "next/script";
-import { useToast } from "@/hooks/use-toast";
 import { Loader2 } from "lucide-react";
+
+type FeedbackModalState = {
+  open: boolean;
+  status: "success" | "error" | "warning" | "info";
+  title: string;
+  description?: string;
+  primaryAction?: { label: string; onClick: () => void };
+  secondaryAction?: { label: string; onClick: () => void };
+};
 
 declare global {
   interface Window {
@@ -176,14 +185,14 @@ const TransactionHistory = () => {
                   </p>
                 </div>
               </div>
-              <div className="text-right">
+              <div className="text-right flex items-center gap-3">
                 <p className="font-bold text-foreground">
                   ₹{t.amount.toLocaleString("en-IN")}
                 </p>
                 <Badge
                   variant="secondary"
                   className={cn(
-                    "mt-1 border-0",
+                    "border-0",
                     t.status === "Paid" || t.status === "PAID"
                       ? "bg-green-500/10 text-green-600 hover:bg-green-500/20 dark:text-green-400"
                       : "bg-yellow-500/10 text-yellow-600 hover:bg-yellow-500/20",
@@ -260,18 +269,29 @@ export default function BillingPage() {
   } = useGetUserWallet();
   const { refetch: refetchHistory } = useBillingHistory();
   const { data: paymentConfig } = usePaymentConfig();
+  const { data: userData } = useUserData();
 
   const createOrderMutation = useCreateOrder();
   const verifyPaymentMutation = useVerifyPayment();
-  const { toast } = useToast();
+
+  const [feedbackModal, setFeedbackModal] = useState<FeedbackModalState>({
+    open: false,
+    status: "info",
+    title: "",
+  });
 
   const handleSubscribe = async (planId: string) => {
     if (!paymentConfig?.isConfigured) {
-      toast({
+      setFeedbackModal({
+        open: true,
+        status: "warning",
         title: "Payment Service Unavailable",
         description:
           "Payment system is currently not configured. Please contact support.",
-        variant: "destructive",
+        primaryAction: {
+          label: "Close",
+          onClick: () => setFeedbackModal((prev) => ({ ...prev, open: false })),
+        },
       });
       return;
     }
@@ -282,10 +302,15 @@ export default function BillingPage() {
 
       // 2. Initialize Razorpay
       if (!window.Razorpay) {
-        toast({
+        setFeedbackModal({
+          open: true,
+          status: "error",
           title: "System Error",
           description: "Payment SDK failed to load. Please refresh the page.",
-          variant: "destructive",
+          primaryAction: {
+            label: "Refresh Page",
+            onClick: () => window.location.reload(),
+          },
         });
         return;
       }
@@ -294,7 +319,7 @@ export default function BillingPage() {
         key: order.razorpayKeyId,
         amount: order.amount,
         currency: order.currency,
-        name: "Tester Community",
+        name: "InTesters",
         description: `Purchase ${order.planName}`,
         order_id: order.razorpayOrderId,
         handler: async function (response: any) {
@@ -307,27 +332,53 @@ export default function BillingPage() {
             });
 
             if (result.success) {
-              toast({
-                title: "Purchase Successful",
+              setFeedbackModal({
+                open: true,
+                status: "success",
+                title: "Purchase Successful!",
                 description: `You have successfully purchased ${result.packagesAwarded} packages!`,
+                primaryAction: {
+                  label: "View Wallet",
+                  onClick: () => {
+                    setFeedbackModal((prev) => ({ ...prev, open: false }));
+                    window.location.href = "/wallet";
+                  },
+                },
+                secondaryAction: {
+                  label: "Continue Browsing",
+                  onClick: () =>
+                    setFeedbackModal((prev) => ({ ...prev, open: false })),
+                },
               });
               refetchWallet();
               refetchHistory();
             }
           } catch (err) {
             console.error("Verification error:", err);
-            toast({
+            setFeedbackModal({
+              open: true,
+              status: "error",
               title: "Verification Failed",
               description:
                 "Payment was successful but verification failed. Please contact support.",
-              variant: "destructive",
+              primaryAction: {
+                label: "Try Again",
+                onClick: () => handleSubscribe(planId),
+              },
+              secondaryAction: {
+                label: "Contact Support",
+                onClick: () =>
+                  window.open(
+                    "mailto:support@intesters.com?subject=Billing%20Issue%20-%20Payment%20Verification%20Failed",
+                    "_blank",
+                  ),
+              },
             });
           }
         },
         prefill: {
-          // name: user?.name,
-          // email: user?.email,
-          // contact: user?.phone
+          name: userData?.name || "",
+          email: userData?.email || "",
         },
         theme: {
           color: paymentConfig.theme?.color || "#7c3aed",
@@ -342,25 +393,47 @@ export default function BillingPage() {
       const razorpayInstance = new window.Razorpay(options);
 
       razorpayInstance.on("payment.failed", function (response: any) {
-        toast({
+        setFeedbackModal({
+          open: true,
+          status: "error",
           title: "Payment Failed",
           description:
             response.error.description ||
             "Something went wrong with the payment.",
-          variant: "destructive",
+          primaryAction: {
+            label: "Try Again",
+            onClick: () => handleSubscribe(planId),
+          },
+          secondaryAction: {
+            label: "Contact Support",
+            onClick: () =>
+              window.open(
+                "mailto:support@intesters.com?subject=Billing%20Issue%20-%20Payment%20Failed",
+                "_blank",
+              ),
+          },
         });
       });
 
       razorpayInstance.open();
     } catch (error) {
       console.error("Payment initiation error:", error);
-      toast({
+      setFeedbackModal({
+        open: true,
+        status: "error",
         title: "Error",
         description:
           error instanceof Error
             ? error.message
             : "Failed to initiate payment. Please try again.",
-        variant: "destructive",
+        primaryAction: {
+          label: "Try Again",
+          onClick: () => handleSubscribe(planId),
+        },
+        secondaryAction: {
+          label: "Close",
+          onClick: () => setFeedbackModal((prev) => ({ ...prev, open: false })),
+        },
       });
     }
   };
@@ -458,6 +531,39 @@ export default function BillingPage() {
               <TransactionHistory />
             </section>
 
+            {/* Section 3.5: Support */}
+            <section className="mx-auto w-full">
+              <motion.div
+                variants={itemVariants}
+                className="rounded-2xl bg-gradient-to-br from-card to-primary/5 border border-border p-6"
+              >
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                  <div className="flex items-center gap-4">
+                    <div className="p-3 bg-primary/10 rounded-xl">
+                      <FileText className="w-6 h-6 text-primary" />
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-semibold">Need help with billing?</h3>
+                      <p className="text-sm text-muted-foreground">
+                        Our support team is here to assist you with any issues.
+                      </p>
+                    </div>
+                  </div>
+                  <Button
+                    onClick={() =>
+                      window.open(
+                        "mailto:support@intesters.com?subject=Billing%20Support%20Request",
+                        "_blank",
+                      )
+                    }
+                    className="rounded-full"
+                  >
+                    Contact Support
+                  </Button>
+                </div>
+              </motion.div>
+            </section>
+
             {/* Section 4: FAQ */}
             <section className="pb-16 pt-8 border-t border-border">
               <FAQSection />
@@ -465,6 +571,16 @@ export default function BillingPage() {
           </motion.div>
         </div>
       </div>
+
+      <FeedbackModal
+        open={feedbackModal.open}
+        onOpenChange={(open) => setFeedbackModal((prev) => ({ ...prev, open }))}
+        status={feedbackModal.status}
+        title={feedbackModal.title}
+        description={feedbackModal.description}
+        primaryAction={feedbackModal.primaryAction}
+        secondaryAction={feedbackModal.secondaryAction}
+      />
     </>
   );
 }

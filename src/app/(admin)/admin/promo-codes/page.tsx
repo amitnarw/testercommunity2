@@ -31,7 +31,7 @@ import {
   useDeletePromoCode,
 } from "@/hooks/useAdmin";
 import { PromoCodesTable } from "@/components/admin/promo-codes-table";
-import { useToast } from "@/hooks/use-toast";
+import { FeedbackModal } from "@/components/feedback-modal";
 
 const promoSchema = z.z.object({
   id: z.number().optional(),
@@ -46,52 +46,102 @@ type PromoFormValues = z.infer<typeof promoSchema>;
 
 function AdminPromoCodesContent() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [editingPromo, setEditingPromo] = useState<PromoFormValues | null>(
-    null,
-  );
+  const [editingPromo, setEditingPromo] = useState<PromoFormValues | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
-  const { toast } = useToast();
+  const [feedbackModal, setFeedbackModal] = useState<{
+    open: boolean;
+    status: "success" | "error" | "warning" | "info";
+    title: string;
+    description: string;
+    primaryAction?: { label: string; onClick: () => void };
+    secondaryAction?: { label: string; onClick: () => void };
+  } | null>(null);
 
   const { data: promoCodes = [], isLoading, refetch } = useAllPromoCodes();
   const createMutation = useCreatePromoCode({
     onSuccess: () => {
-      toast({ title: "Success", description: "Promo code created" });
+      setFeedbackModal({
+        open: true,
+        status: "success",
+        title: "Promo Code Created",
+        description: "The promo code has been created successfully.",
+        primaryAction: {
+          label: "Continue",
+          onClick: () => setFeedbackModal(null),
+        },
+      });
       refetch();
       setIsDialogOpen(false);
     },
-    onError: (err: any) =>
-      toast({
+    onError: (err: any) => {
+      setFeedbackModal({
+        open: true,
+        status: "error",
         title: "Error",
-        description: err.message || "Failed to create",
-        variant: "destructive",
-      }),
+        description: err?.message || "Failed to create promo code",
+        primaryAction: {
+          label: "Try Again",
+          onClick: () => setFeedbackModal(null),
+        },
+      });
+    },
   });
 
   const updateMutation = useUpdatePromoCode({
     onSuccess: () => {
-      toast({ title: "Success", description: "Promo code updated" });
+      setFeedbackModal({
+        open: true,
+        status: "success",
+        title: "Promo Code Updated",
+        description: "The promo code has been updated successfully.",
+        primaryAction: {
+          label: "Continue",
+          onClick: () => setFeedbackModal(null),
+        },
+      });
       refetch();
       setIsDialogOpen(false);
     },
-    onError: (err: any) =>
-      toast({
+    onError: (err: any) => {
+      setFeedbackModal({
+        open: true,
+        status: "error",
         title: "Error",
-        description: err.message || "Failed to update",
-        variant: "destructive",
-      }),
+        description: err?.message || "Failed to update promo code",
+        primaryAction: {
+          label: "Try Again",
+          onClick: () => setFeedbackModal(null),
+        },
+      });
+    },
   });
 
   const deleteMutation = useDeletePromoCode({
     onSuccess: () => {
-      toast({ title: "Success", description: "Promo code deleted" });
+      setFeedbackModal({
+        open: true,
+        status: "success",
+        title: "Promo Code Deleted",
+        description: "The promo code has been deleted successfully.",
+        primaryAction: {
+          label: "Continue",
+          onClick: () => setFeedbackModal(null),
+        },
+      });
       refetch();
     },
-    onError: (err: any) =>
-      toast({
+    onError: (err: any) => {
+      setFeedbackModal({
+        open: true,
+        status: "error",
         title: "Error",
-        description: err.message || "Failed to delete",
-        variant: "destructive",
-      }),
+        description: err?.message || "Failed to delete promo code",
+        primaryAction: {
+          label: "Close",
+          onClick: () => setFeedbackModal(null),
+        },
+      });
+    },
   });
 
   const form = useForm<PromoFormValues>({
@@ -150,6 +200,19 @@ function AdminPromoCodesContent() {
 
   return (
     <div className="flex-1 space-y-6 container mx-auto px-4 md:px-6 py-6">
+      {feedbackModal && (
+        <FeedbackModal
+          open={feedbackModal.open}
+          onOpenChange={(open) => {
+            setFeedbackModal((prev) => prev ? { ...prev, open } : null);
+          }}
+          status={feedbackModal.status}
+          title={feedbackModal.title}
+          description={feedbackModal.description}
+          primaryAction={feedbackModal.primaryAction}
+          secondaryAction={feedbackModal.secondaryAction}
+        />
+      )}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
           <h2 className="text-2xl sm:text-3xl font-bold bg-gradient-to-b from-primary to-primary/40 bg-clip-text text-transparent leading-[unset]">
@@ -164,29 +227,23 @@ function AdminPromoCodesContent() {
         </Button>
       </div>
 
-      <div className="bg-amber-500/10 border border-amber-500/20 rounded-xl p-4 flex gap-3 items-start">
-        <div className="space-y-1">
-          <h3 className="text-sm font-bold text-amber-600 dark:text-amber-500">
-            How Promo Codes Work
-          </h3>
-          <p className="text-xs text-muted-foreground leading-relaxed">
-            Promo codes (like{" "}
-            <span className="font-mono font-bold text-foreground">
-              WELCOME200
-            </span>
-            ) allow users to submit apps in the{" "}
-            <span className="font-bold text-foreground underline decoration-primary/30">
-              Community Hub
-            </span>{" "}
-            for a fixed point cost, regardless of the actual configuration
-            price.
-            <br />
-            <span className="font-semibold text-amber-600 dark:text-amber-500 mt-1 block italic text-[11px]">
-              ⚠️ Note: These codes apply ONLY to the Community Hub (Free)
-              section and are not valid for Developer Dashboard (Paid)
-              submissions.
-            </span>
-          </p>
+      <div className="bg-sidebar dark:bg-sidebar/50 p-4 sm:p-6 rounded-xl border-l-4 border-primary">
+        <div className="flex flex-row items-center gap-3 mb-4">
+          <span className="bg-gradient-to-b from-primary to-primary/50 text-white font-bold rounded-lg px-4 py-0.5 text-lg">
+            Important
+          </span>
+        </div>
+        <p className="text-sm sm:text-base text-white dark:text-black font-medium mb-4">
+          Promo codes apply <span className="font-bold">ONLY</span> to Community Hub (Free) submissions, not valid for Developer Dashboard (Paid) submissions.
+        </p>
+
+        <div className="border-t border-primary/20 pt-4">
+          <h3 className="text-sm font-bold text-white dark:text-black mb-2">How Promo Codes Work</h3>
+          <ul className="space-y-2 text-sm text-white/70 dark:text-black/70 ml-0">
+            <li>Users enter a code (e.g. <span className="font-mono font-bold text-white dark:text-black">WELCOME200</span>) during Community Hub submission</li>
+            <li>The code sets a fixed point cost, overriding the original configuration price</li>
+            <li>Each code has optional usage limits: total uses and max uses per user</li>
+          </ul>
         </div>
       </div>
 

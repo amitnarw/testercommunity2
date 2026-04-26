@@ -30,6 +30,7 @@ import {
   // Notifications
   getAllNotifications,
   getNotificationCounts,
+  getNotificationTypes,
   createNotification,
   updateNotification,
   deleteNotification,
@@ -76,10 +77,11 @@ export function useAdminLogin(options?: UseMutationOptions<any, any, any>) {
   return mutation;
 }
 
-export function useSubmittedAppsCount(appType?: string) {
+export function useSubmittedAppsCount(appType?: string, includeDrafts?: boolean) {
   const query = useQuery({
-    queryFn: () => getSubmittedAppsCount(appType),
-    queryKey: ["useSubmittedAppsCount", appType],
+    queryFn: () => getSubmittedAppsCount(appType, includeDrafts),
+    queryKey: ["useSubmittedAppsCount", appType, includeDrafts],
+    staleTime: 0,
   });
 
   return query;
@@ -87,11 +89,13 @@ export function useSubmittedAppsCount(appType?: string) {
 
 export function useSubmittedApps(
   status?: string,
+  includeDrafts?: boolean,
   options?: { enabled?: boolean },
 ) {
   const query = useQuery({
-    queryFn: () => getSubmittedApps(status),
-    queryKey: ["useSubmittedApps", status],
+    queryFn: () => getSubmittedApps(status, includeDrafts),
+    queryKey: ["useSubmittedApps", status, includeDrafts],
+    staleTime: 0,
     enabled: options?.enabled ?? true,
   });
 
@@ -374,6 +378,16 @@ export function useNotificationCounts(options?: { enabled?: boolean }) {
   return query;
 }
 
+export function useNotificationTypes(options?: { enabled?: boolean }) {
+  const query = useQuery({
+    queryFn: () => getNotificationTypes(),
+    queryKey: ["useNotificationTypes"],
+    enabled: options?.enabled ?? true,
+  });
+
+  return query;
+}
+
 export function useCreateNotification(
   options?: UseMutationOptions<any, any, any>,
 ) {
@@ -571,10 +585,17 @@ export function useCreateBlog(options?: UseMutationOptions<any, any, any>) {
   const mutation = useMutation({
     mutationFn: (payload: {
       title: string;
+      slug: string;
+      excerpt: string;
+      content: string;
       authorName: string;
+      authorAvatarUrl?: string;
+      authorDataAiHint?: string;
+      imageUrl?: string;
+      dataAiHint?: string;
       tags?: string[];
-      description: string;
       isActive?: boolean;
+      date?: string;
     }) => createBlog(payload),
     ...options,
   });
@@ -587,10 +608,17 @@ export function useUpdateBlog(options?: UseMutationOptions<any, any, any>) {
     mutationFn: (payload: {
       id: number;
       title?: string;
+      slug?: string;
+      excerpt?: string;
+      content?: string;
       authorName?: string;
+      authorAvatarUrl?: string;
+      authorDataAiHint?: string;
+      imageUrl?: string;
+      dataAiHint?: string;
       tags?: string[];
-      description?: string;
       isActive?: boolean;
+      date?: string;
     }) => updateBlog(payload),
     ...options,
   });

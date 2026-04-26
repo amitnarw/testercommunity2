@@ -120,6 +120,7 @@ export default function RegisterPage() {
                   </div>
                   <div className="grid grid-cols-2 gap-4">
                     <FormField
+                      control={form.control}
                       name="firstName"
                       render={({ field }) => (
                         <FormItem>
@@ -132,6 +133,7 @@ export default function RegisterPage() {
                       )}
                     />
                     <FormField
+                      control={form.control}
                       name="lastName"
                       render={({ field }) => (
                         <FormItem>
@@ -145,8 +147,9 @@ export default function RegisterPage() {
                     />
                   </div>
                   <FormField
-                    name="email"
-                    render={({ field }) => (
+                      control={form.control}
+                      name="email"
+                      render={({ field }) => (
                       <FormItem>
                         <FormLabel>Email</FormLabel>
                         <FormControl>
@@ -157,8 +160,9 @@ export default function RegisterPage() {
                     )}
                   />
                   <FormField
-                    name="password"
-                    render={({ field }) => (
+                      control={form.control}
+                      name="password"
+                      render={({ field }) => (
                       <FormItem>
                         <FormLabel>Password</FormLabel>
                         <div className="relative">

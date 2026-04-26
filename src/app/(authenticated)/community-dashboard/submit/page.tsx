@@ -48,6 +48,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import { FeedbackModal } from "@/components/feedback-modal";
 import { Button } from "@/components/ui/button";
 import { PageHeader } from "@/components/page-header";
 import { useGetUserWallet } from "@/hooks/useUser";
@@ -960,23 +961,16 @@ export default function SubmitAppPage() {
                         )}
 
                         <div className="flex flex-col items-end gap-3 w-full">
-                          <div
-                            onClick={form.handleSubmit(onSubmit)}
-                            className={cn(
-                              "cursor-pointer",
-                              isBalanceInsufficient &&
-                                "cursor-not-allowed opacity-50",
-                            )}
-                          >
-                            <LoadingButton
+                          <LoadingButton
                               className="rounded-xl"
                               isLoading={addHubAppIsPending}
                               isSuccess={addHubAppIsSuccess}
                               isError={addHubAppIsError}
+                              disabled={isBalanceInsufficient || !isMounted}
+                              onClick={() => form.handleSubmit(onSubmit)()}
                             >
                               Submit for Review
                             </LoadingButton>
-                          </div>
                           {Object.keys(form.formState.errors).length > 0 && (
                             <div className="text-destructive text-sm font-medium animate-pulse flex items-center gap-1">
                               <AlertCircle className="w-4 h-4" />
@@ -994,31 +988,21 @@ export default function SubmitAppPage() {
         </div>
       </div>
 
-      <AlertDialog open={isErrorModalOpen} onOpenChange={setIsErrorModalOpen}>
-        <AlertDialogContent>
-          <AlertDialogHeader>
-            <AlertDialogTitle>Insufficient Points</AlertDialogTitle>
-            <AlertDialogDescription>
-              You do not have enough points to fund this test configuration.
-              Your current balance is{" "}
-              {(walletData?.totalPoints || 0).toLocaleString()} points, but you
-              need {cost.toLocaleString()} points.
-              <br />
-              <br />
-              Please either reduce the number of testers or earn more points by
-              testing other apps in the Community Hub.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <Button onClick={() => setIsErrorModalOpen(false)}>
-              Okay, I'll adjust
-            </Button>
-            <Button variant="outline" asChild>
-              <Link href="/community-dashboard">Go to Community Hub</Link>
-            </Button>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
+      <FeedbackModal
+        open={isErrorModalOpen}
+        onOpenChange={setIsErrorModalOpen}
+        status="error"
+        title="Insufficient Points"
+        description={`You do not have enough points to fund this test configuration. Your current balance is ${(walletData?.totalPoints || 0).toLocaleString()} points, but you need ${cost.toLocaleString()} points.`}
+        primaryAction={{
+          label: "Okay, I'll adjust",
+          onClick: () => setIsErrorModalOpen(false),
+        }}
+        secondaryAction={{
+          label: "Go to Community Hub",
+          onClick: () => router.push("/community-dashboard"),
+        }}
+      />
     </>
   );
 }

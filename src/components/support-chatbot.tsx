@@ -219,39 +219,44 @@ export function SupportChatbot() {
     }
   }, [messages, isOpen, isLoading]);
 
-  // const handleSendMessage = async (e: React.FormEvent) => {
-  //   e.preventDefault();
-  //   if (!inputValue.trim() || isLoading) return;
+  const handleSendMessage = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!inputValue.trim() || isLoading) return;
 
-  //   const userMessage: Message = {
-  //     id: Date.now(),
-  //     text: inputValue,
-  //     sender: "user",
-  //   };
-  //   setMessages((prev) => [...prev, userMessage]);
-  //   setInputValue("");
-  //   setIsLoading(true);
+    const userMessage: Message = {
+      id: Date.now(),
+      text: inputValue,
+      sender: "user",
+    };
+    setMessages((prev) => [...prev, userMessage]);
+    setInputValue("");
+    setIsLoading(true);
 
-  //   try {
-  //     const botResponseText = await answerInquiry(inputValue);
-  //     const botMessage: Message = {
-  //       id: Date.now() + 1,
-  //       text: botResponseText,
-  //       sender: "bot",
-  //     };
-  //     setMessages((prev) => [...prev, botMessage]);
-  //   } catch (error) {
-  //     console.error("Error getting bot response:", error);
-  //     const errorMessage: Message = {
-  //       id: Date.now() + 1,
-  //       text: "I'm having a little trouble connecting right now. Please try again in a moment.",
-  //       sender: "bot",
-  //     };
-  //     setMessages((prev) => [...prev, errorMessage]);
-  //   } finally {
-  //     setIsLoading(false);
-  //   }
-  // };
+    // Simple canned responses for billing/support queries
+    const lowerInput = inputValue.toLowerCase();
+    let botResponseText = "";
+
+    if (lowerInput.includes("billing") || lowerInput.includes("payment") || lowerInput.includes("refund")) {
+      botResponseText = "For billing and payment issues, please email our support team at support@intesters.com with your order details. Our team typically responds within 24 hours.";
+    } else if (lowerInput.includes("refund")) {
+      botResponseText = "To request a refund, please email support@intesters.com with your order ID and reason. Refunds are processed within 5-7 business days for eligible orders.";
+    } else if (lowerInput.includes("package") || lowerInput.includes("credit")) {
+      botResponseText = "You can view your package credits in the Wallet section. To purchase more packages, visit the Billing page.";
+    } else {
+      botResponseText = "Thanks for reaching out! For immediate assistance, please email support@intesters.com with your query and our team will help you within 24 hours.";
+    }
+
+    // Simulate a brief delay for bot typing effect
+    await new Promise((resolve) => setTimeout(resolve, 800));
+
+    const botMessage: Message = {
+      id: Date.now() + 1,
+      text: botResponseText,
+      sender: "bot",
+    };
+    setMessages((prev) => [...prev, botMessage]);
+    setIsLoading(false);
+  };
 
   return (
     <AnimatePresence>
@@ -263,7 +268,7 @@ export function SupportChatbot() {
           isLoading={isLoading}
           inputValue={inputValue}
           setInputValue={setInputValue}
-          // handleSendMessage={handleSendMessage}
+          handleSendMessage={handleSendMessage}
           scrollAreaRef={scrollAreaRef}
         />
       ) : (

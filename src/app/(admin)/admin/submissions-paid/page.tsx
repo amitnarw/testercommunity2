@@ -59,17 +59,20 @@ function AdminSubmissionsPaidContent() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
-  // Fetch data based on active filters
+  // Fetch data based on active filters - include drafts for "All" tab and DRAFT tab
   const {
     data: submissionsData,
     isLoading,
     error,
-  } = useSubmittedApps(activeTab === "All" ? undefined : activeTab);
+  } = useSubmittedApps(
+    activeTab === "All" ? undefined : activeTab,
+    activeTab === "DRAFT" || activeTab === "All" ? true : false,
+  );
 
   const submissions = submissionsData || [];
 
-  // Fetch counts for PAID only
-  const { data: countsData } = useSubmittedAppsCount("PAID");
+  // Fetch counts for PAID only - always include drafts in count regardless of selected tab
+  const { data: countsData } = useSubmittedAppsCount("PAID", true);
 
   // Filter by PAID app type and search query
   const filteredSubmissions = submissions.filter(
@@ -143,6 +146,9 @@ function AdminSubmissionsPaidContent() {
             </TabsTrigger>
             <TabsTrigger value="REJECTED">
               Rejected ({countsData?.REJECTED || 0})
+            </TabsTrigger>
+            <TabsTrigger value="DRAFT">
+              Draft ({countsData?.DRAFT || 0})
             </TabsTrigger>
           </TabsList>
         </div>

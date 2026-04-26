@@ -19,6 +19,7 @@ import {
   ArrowRight,
   Zap,
   Tag,
+  Trash2,
 } from "lucide-react";
 import {
   Select,
@@ -35,17 +36,22 @@ import { useAppCategories } from "@/hooks/useHub";
 import {
   useAddDashboardAppSubmit,
   useSaveDashboardAppDraft,
+  useDeleteDashboardApp,
 } from "@/hooks/useDashboard";
 import { useQueryClient } from "@tanstack/react-query";
-import { toast } from "@/hooks/use-toast";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
+import { FeedbackModal } from "@/components/feedback-modal";
+import { InsufficientPackagesDialog } from "@/components/insufficient-packages-dialog";
 
 export default function AddAppFormPage() {
   const queryClient = useQueryClient();
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const draftId = searchParams.get("draft_id");
+
   const { data: dashboardData } = useDashboardData();
   const userPackages = Number(dashboardData?.wallet) || 0;
   const hasEnoughPackages = userPackages >= 1;
-  const router = useRouter();
 
   // Form state
   const [appName, setAppName] = useState("");
@@ -53,6 +59,20 @@ export default function AddAppFormPage() {
   const [logoUrl, setLogoUrl] = useState("");
   const [category, setCategory] = useState("");
   const [instructions, setInstructions] = useState("");
+  const [testingUrlError, setTestingUrlError] = useState("");
+  const [logoUrlError, setLogoUrlError] = useState("");
+  const [showInsufficientModal, setShowInsufficientModal] = useState(false);
+  const [feedbackModal, setFeedbackModal] = useState<{
+    open: boolean;
+    status: "success" | "error" | "warning" | "info" | "loading";
+    title: string;
+    description?: string;
+    primaryAction?: { label: string; onClick: () => void };
+    secondaryAction?: { label: string; onClick: () => void };
+  }>({ open: false, status: "error", title: "", description: "" });
+  const [deleteModalState, setDeleteModalState] = useState<{
+    open: boolean;
+  }>({ open: false });
 
   const {
     data: appCategoriesData,
@@ -65,16 +85,21 @@ export default function AddAppFormPage() {
   const { mutate: saveDraft, isPending: isSavingDraft } =
     useSaveDashboardAppDraft({
       onSuccess: () => {
-        toast({
-          title: "Success!",
-          description: "Draft saved successfully!",
+        setFeedbackModal({
+          open: true,
+          status: "success",
+          title: "Draft Saved!",
+          description: "Your app draft has been saved successfully. You can continue editing and submit when ready.",
+          primaryAction: { label: "Continue", onClick: () => {} },
         });
       },
       onError: (error: Error) => {
-        toast({
-          title: "Error",
-          description: error.message || "Failed to save draft",
-          variant: "destructive",
+        setFeedbackModal({
+          open: true,
+          status: "error",
+          title: "Failed to Save Draft",
+          description: error.message || "Something went wrong while saving your draft. Please try again or contact support if the problem persists.",
+          primaryAction: { label: "Try Again", onClick: () => saveDraft({ appName, testingUrl, logoUrl, categoryId: parseInt(category) || 0, instructions: instructions.trim() || null } as any) },
         });
       },
     });
@@ -87,9 +112,15 @@ export default function AddAppFormPage() {
     isError: isSubmitError,
   } = useAddDashboardAppSubmit({
     onSuccess: () => {
-      toast({
-        title: "Success!",
-        description: "App submitted for testing successfully!",
+      setFeedbackModal({
+        open: true,
+        status: "success",
+        title: "App Submitted!",
+        description: "Your app has been submitted for testing. You will be notified when testers start reviewing it.",
+        primaryAction: { label: "View Dashboard", onClick: () => {
+          router.push("/dashboard");
+          setFeedbackModal(prev => ({ ...prev, open: false }));
+        } },
       });
       // Invalidate dashboard data to refresh wallet balance
       queryClient.invalidateQueries({ queryKey: ["useDashboardData"] });
@@ -101,35 +132,139 @@ export default function AddAppFormPage() {
       setInstructions("");
     },
     onError: (error: Error) => {
-      toast({
-        title: "Error",
-        description: error.message || "Failed to submit app for testing",
-        variant: "destructive",
+      setFeedbackModal({
+        open: true,
+        status: "error",
+        title: "Submission Failed",
+        description: error.message || "Something went wrong while submitting your app. Please check your details and try again.",
+        primaryAction: { label: "Try Again", onClick: () => submitApp({ appName, testingUrl, logoUrl, categoryId: parseInt(category), instructions: instructions.trim() || null } as any) },
       });
     },
   });
+
+  // Delete draft mutation
+  const deleteMutation = useDeleteDashboardApp({
+    onSuccess: () => {
+      setDeleteModalState({ open: false });
+      setFeedbackModal({
+        open: true,
+        status: "success",
+        title: "Draft Deleted",
+        description: "The draft has been deleted successfully.",
+        primaryAction: {
+          label: "OK",
+          onClick: () => {
+            setFeedbackModal((prev) => ({ ...prev, open: false }));
+            router.push("/dashboard?tab=pending&subtab=drafts");
+          },
+        },
+      });
+    },
+    onError: (error: Error) => {
+      setDeleteModalState({ open: false });
+      setFeedbackModal({
+        open: true,
+        status: "error",
+        title: "Delete Failed",
+        description: error.message || "Failed to delete draft. Please try again.",
+        primaryAction: {
+          label: "OK",
+          onClick: () => setFeedbackModal((prev) => ({ ...prev, open: false })),
+        },
+      });
+    },
+  });
+
+  const handleDeleteDraft = () => {
+    setDeleteModalState({ open: true });
+  };
+
+  const confirmDeleteDraft = () => {
+    if (draftId) {
+      deleteMutation.mutate(draftId);
+    }
+  };
 
   // Form validation
   const isFormValid =
     appName.trim() && testingUrl.trim() && logoUrl.trim() && category;
 
+  // URL validation helpers
+  const isValidPlayStoreUrl = (url: string) => {
+    try {
+      const parsed = new URL(url);
+      const host = parsed.hostname;
+      const path = parsed.pathname;
+      const id = parsed.searchParams.get("id");
+      if (host !== "play.google.com") return false;
+      if (
+        !path.startsWith("/store/apps/details") &&
+        !path.startsWith("/apps/testing")
+      ) {
+        return false;
+      }
+      if (!id) return false;
+      return true;
+    } catch {
+      return false;
+    }
+  };
+
+  const isValidPlayStoreLogoUrl = (url: string) => {
+    try {
+      const parsed = new URL(url);
+      return (
+        parsed.hostname === "play-lh.googleusercontent.com" &&
+        parsed.protocol === "https:"
+      );
+    } catch {
+      return false;
+    }
+  };
+
+  const validateTestingUrl = (url: string) => {
+    if (!url.trim()) return "";
+    if (!isValidPlayStoreUrl(url)) {
+      return "Must be a Google Play Store link (e.g., https://play.google.com/store/apps/details?id=com.example.app)";
+    }
+    return "";
+  };
+
+  const validateLogoUrl = (url: string) => {
+    if (!url.trim()) return "";
+    if (!isValidPlayStoreLogoUrl(url)) {
+      return "Must be from play-lh.googleusercontent.com. Copy URL from Play Console → Store Listing → Graphic Assets.";
+    }
+    return "";
+  };
+
   // Handle form submission
   const handleSubmit = () => {
+    const urlValidationError = validateTestingUrl(testingUrl) || validateLogoUrl(logoUrl);
+    if (urlValidationError) {
+      setFeedbackModal({
+        open: true,
+        status: "error",
+        title: "Invalid URL",
+        description: urlValidationError,
+        primaryAction: { label: "Fix It", onClick: () => setFeedbackModal(prev => ({ ...prev, open: false })) },
+      });
+      return;
+    }
+
     if (!isFormValid) {
-      toast({
-        title: "Validation Error",
-        description: "Please fill in all required fields",
-        variant: "destructive",
+      setFeedbackModal({
+        open: true,
+        status: "error",
+        title: "Missing Information",
+        description: "Please fill in all required fields before submitting your app.",
+        primaryAction: { label: "Fix It", onClick: () => setFeedbackModal(prev => ({ ...prev, open: false })) },
       });
       return;
     }
 
     if (!hasEnoughPackages) {
-      toast({
-        title: "Insufficient Packages",
-        description: "Please purchase more packages to submit an app.",
-        variant: "destructive",
-      });
+      setShowInsufficientModal(true);
       return;
     }
 
@@ -144,6 +279,18 @@ export default function AddAppFormPage() {
 
   // Handle save as draft - calls the API when user clicks Draft button
   const handleSaveDraft = () => {
+    const urlValidationError = validateTestingUrl(testingUrl) || validateLogoUrl(logoUrl);
+    if (urlValidationError) {
+      setFeedbackModal({
+        open: true,
+        status: "error",
+        title: "Invalid URL",
+        description: urlValidationError,
+        primaryAction: { label: "Fix It", onClick: () => setFeedbackModal(prev => ({ ...prev, open: false })) },
+      });
+      return;
+    }
+
     saveDraft({
       appName,
       testingUrl,
@@ -155,11 +302,14 @@ export default function AddAppFormPage() {
 
   return (
     <div className="min-h-screen bg-brand-background max-w-6xl mx-auto px-4 md:px-6 pb-16">
-      <PageHeader title="" backHref="/dashboard/add-app" className="w-1/2" />
+      <PageHeader
+        title=""
+        backHref="/dashboard/add-app"
+        className="w-1/2"
+      />
       {/* Animated Background Elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        {/* Animated gradient orbs */}
-        <div className="absolute -top-40 -right-40 w-96 h-96 bg-gradient-to-br from-primary/20 via-primary/10 to-transparent rounded-full blur-3xl animate-pulse" />
+
         <div
           className="absolute top-1/3 -left-32 w-80 h-80 bg-gradient-to-tr from-blue-500/15 via-primary/10 to-transparent rounded-full blur-3xl animate-pulse"
           style={{ animationDelay: "1s", animationDuration: "4s" }}
@@ -222,9 +372,6 @@ export default function AddAppFormPage() {
               </div>
               <div className="p-5 sm:p-8">
                 <div className="flex items-center gap-3 sm:gap-4 mb-6 sm:mb-8">
-                  <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center border border-primary/20 shadow-lg shadow-primary/10 shrink-0">
-                    <FileText className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
-                  </div>
                   <div>
                     <h2 className="text-lg sm:text-xl font-bold tracking-tight">
                       App Details
@@ -271,15 +418,24 @@ export default function AddAppFormPage() {
                       </div>
                       <Input
                         id="url"
-                        placeholder="https://play.google.com/apps/testing/..."
+                        placeholder="https://play.google.com/store/apps/details?id=..."
                         value={testingUrl}
-                        onChange={(e) => setTestingUrl(e.target.value)}
+                        onChange={(e) => {
+                          setTestingUrl(e.target.value);
+                          setTestingUrlError(validateTestingUrl(e.target.value));
+                        }}
                         className="pl-14 py-3 h-13 text-base rounded-xl bg-secondary/20 border-border/60 focus-visible:ring-2 focus-visible:ring-primary/30 focus-visible:border-primary focus-visible:bg-card transition-all duration-300 hover:border-primary/40 hover:bg-secondary/30"
                       />
                     </div>
-                    <p className="text-xs text-muted-foreground pl-1">
-                      The internal testing link from Google Play Console
-                    </p>
+                    {testingUrlError ? (
+                      <p className="text-xs text-destructive pl-1">
+                        {testingUrlError}
+                      </p>
+                    ) : (
+                      <p className="text-xs text-muted-foreground pl-1">
+                        Paste your app&apos;s Google Play Store page URL. Example: https://play.google.com/store/apps/details?id=com.example.app
+                      </p>
+                    )}
                   </div>
 
                   <div className="space-y-3">
@@ -292,15 +448,24 @@ export default function AddAppFormPage() {
                     <div className="relative group/input">
                       <Input
                         id="logo"
-                        placeholder="https://example.com/logo.png"
+                        placeholder="https://play-lh.googleusercontent.com/..."
                         value={logoUrl}
-                        onChange={(e) => setLogoUrl(e.target.value)}
+                        onChange={(e) => {
+                          setLogoUrl(e.target.value);
+                          setLogoUrlError(validateLogoUrl(e.target.value));
+                        }}
                         className="py-3 h-13 text-base rounded-xl bg-secondary/20 border-border/60 focus-visible:ring-2 focus-visible:ring-primary/30 focus-visible:border-primary focus-visible:bg-card transition-all duration-300 hover:border-primary/40 hover:bg-secondary/30"
                       />
                     </div>
-                    <p className="text-xs text-muted-foreground pl-1">
-                      Direct URL to your app&apos;s logo image
-                    </p>
+                    {logoUrlError ? (
+                      <p className="text-xs text-destructive pl-1">
+                        {logoUrlError}
+                      </p>
+                    ) : (
+                      <p className="text-xs text-muted-foreground pl-1">
+                        Paste your app logo URL from Google Play. Go to Play Console → Store Listing → Graphic Assets → copy App Icon URL (must be from play-lh.googleusercontent.com)
+                      </p>
+                    )}
                   </div>
 
                   <div className="space-y-3">
@@ -359,9 +524,7 @@ export default function AddAppFormPage() {
               </div>
               <div className="p-5 sm:p-8">
                 <div className="flex items-center gap-3 sm:gap-4 mb-6 sm:mb-8">
-                  <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-gradient-to-br from-blue-500/20 to-blue-500/5 flex items-center justify-center border border-blue-500/20 shadow-lg shadow-blue-500/10 shrink-0">
-                    <Info className="w-4 h-4 sm:w-5 sm:h-5 text-blue-500" />
-                  </div>
+
                   <div>
                     <h2 className="text-lg sm:text-xl font-bold tracking-tight">
                       Instructions for Testers
@@ -401,9 +564,6 @@ export default function AddAppFormPage() {
                   <div className="relative p-4 sm:p-5 rounded-2xl bg-gradient-to-br from-amber-500/10 via-amber-500/5 to-orange-500/5 border border-amber-500/20 overflow-hidden">
                     <div className="absolute top-0 right-0 w-24 sm:w-32 h-24 sm:h-32 bg-gradient-to-bl from-amber-500/10 to-transparent rounded-full blur-2xl" />
                     <div className="flex gap-3 sm:gap-4 relative">
-                      <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-br from-amber-500/20 to-amber-600/10 flex items-center justify-center shrink-0 border border-amber-500/20 shadow-lg shadow-amber-500/5">
-                        <Zap className="w-4 h-4 sm:w-5 sm:h-5 text-amber-500" />
-                      </div>
                       <div>
                         <p className="text-xs sm:text-sm font-semibold text-amber-700 dark:text-amber-400 flex items-center gap-2 flex-wrap">
                           Pro Tip
@@ -418,6 +578,20 @@ export default function AddAppFormPage() {
                       </div>
                     </div>
                   </div>
+
+                  {draftId && (
+                    <div className="pt-4 border-t border-border/40 flex justify-end">
+                      <Button
+                        variant="destructive"
+                        size="sm"
+                        onClick={handleDeleteDraft}
+                        className="text-xs gap-1.5"
+                      >
+                        <Trash2 className="w-3.5 h-3.5" />
+                        Delete Draft
+                      </Button>
+                    </div>
+                  )}
                 </div>
               </div>
             </Card>
@@ -574,9 +748,7 @@ export default function AddAppFormPage() {
                 {/* Compact Verified Testing Protocol */}
                 <div className="mt-6 sm:mt-8 pt-5 sm:pt-6 border-t border-border/40">
                   <div className="flex items-center gap-2 sm:gap-2.5 mb-3 sm:mb-4">
-                    <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-primary/10 flex items-center justify-center">
-                      <ShieldCheck className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary" />
-                    </div>
+
                     <span className="text-xs sm:text-sm font-bold tracking-tight">
                       Verified Testing Protocol
                     </span>
@@ -626,6 +798,42 @@ export default function AddAppFormPage() {
           </div>
         </div>
       </div>
+
+      <InsufficientPackagesDialog
+        open={showInsufficientModal}
+        onOpenChange={setShowInsufficientModal}
+        currentBalance={userPackages}
+        onGoToBilling={() => router.push("/billing")}
+        onGoToWallet={() => router.push("/wallet")}
+      />
+
+      <FeedbackModal
+        open={feedbackModal.open}
+        onOpenChange={(open) => setFeedbackModal((prev) => ({ ...prev, open }))}
+        status={feedbackModal.status}
+        title={feedbackModal.title}
+        description={feedbackModal.description}
+        primaryAction={feedbackModal.primaryAction}
+        secondaryAction={feedbackModal.secondaryAction}
+      />
+
+      {draftId && (
+        <FeedbackModal
+          open={deleteModalState.open}
+          onOpenChange={(open) => setDeleteModalState({ open })}
+          status="warning"
+          title="Delete Draft"
+          description="Are you sure you want to delete this draft? This action cannot be undone."
+          primaryAction={{
+            label: "Delete",
+            onClick: confirmDeleteDraft,
+          }}
+          secondaryAction={{
+            label: "Cancel",
+            onClick: () => setDeleteModalState({ open: false }),
+          }}
+        />
+      )}
     </div>
   );
 }
