@@ -944,7 +944,8 @@ export async function getAllPromoCodes() {
 
 export async function createPromoCode(payload: {
   code: string;
-  fixedPoints: number;
+  discountType?: string;
+  discountValue?: number;
   isActive?: boolean;
   maxUses?: number | null;
   maxPerUser?: number | null;
@@ -961,7 +962,8 @@ export async function createPromoCode(payload: {
 export async function updatePromoCode(payload: {
   id: number;
   code?: string;
-  fixedPoints?: number;
+  discountType?: string;
+  discountValue?: number;
   isActive?: boolean;
   maxUses?: number | null;
   maxPerUser?: number | null;
@@ -984,6 +986,18 @@ export async function deletePromoCode(id: number) {
     return response?.data?.data;
   } catch (error) {
     console.error("Error deleting promo code:", error);
+    throw error;
+  }
+}
+
+export async function getPromoCodeApps(promoCodeId: number) {
+  try {
+    const response = await api.get(
+      API_ROUTES.ADMIN + `/promo-codes/${promoCodeId}/apps`,
+    );
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error fetching promo code apps:", error);
     throw error;
   }
 }

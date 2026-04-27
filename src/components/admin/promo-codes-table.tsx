@@ -13,17 +13,19 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { Button } from "@/components/ui/button";
-import { Edit, Trash2 } from "lucide-react";
+import { Edit, Trash2, Eye } from "lucide-react";
 
 interface PromoCode {
   id: number;
   code: string;
-  fixedPoints: number;
+  discountType: string;
+  discountValue: number;
   isActive: boolean;
   maxUses: number | null;
   usedCount: number;
   maxPerUser: number | null;
   createdAt: string;
+  appCount: number;
 }
 
 interface PromoCodesTableProps {
@@ -31,6 +33,7 @@ interface PromoCodesTableProps {
   isLoading: boolean;
   onEdit: (promo: PromoCode) => void;
   onDelete: (id: number) => void;
+  onViewDetails: (promo: PromoCode) => void;
 }
 
 export function PromoCodesTable({
@@ -38,6 +41,7 @@ export function PromoCodesTable({
   isLoading,
   onEdit,
   onDelete,
+  onViewDetails,
 }: PromoCodesTableProps) {
   return (
     <div className="rounded-md border overflow-hidden grid grid-cols-1  ">
@@ -45,9 +49,10 @@ export function PromoCodesTable({
         <TableHeader>
           <TableRow>
             <TableHead>Code</TableHead>
-            <TableHead>Points</TableHead>
+            <TableHead>Discount</TableHead>
             <TableHead>Status</TableHead>
             <TableHead>Usage (Total)</TableHead>
+            <TableHead>Apps</TableHead>
             <TableHead>Limit (Per User)</TableHead>
             <TableHead className="hidden md:table-cell">Created At</TableHead>
             <TableHead className="text-right">Actions</TableHead>
@@ -73,6 +78,9 @@ export function PromoCodesTable({
                   <Skeleton className="h-4 w-12" />
                 </TableCell>
                 <TableCell className="hidden md:table-cell">
+                  <Skeleton className="h-4 w-16" />
+                </TableCell>
+                <TableCell className="hidden md:table-cell">
                   <Skeleton className="h-4 w-24" />
                 </TableCell>
                 <TableCell className="text-right">
@@ -83,7 +91,7 @@ export function PromoCodesTable({
           ) : promoCodes.length === 0 ? (
             <TableRow>
               <TableCell
-                colSpan={7}
+                colSpan={8}
                 className="text-center py-8 text-muted-foreground"
               >
                 No promo codes found.
@@ -95,7 +103,11 @@ export function PromoCodesTable({
                 <TableCell className="font-mono font-bold tracking-wider">
                   {promo.code}
                 </TableCell>
-                <TableCell>{promo.fixedPoints}</TableCell>
+                <TableCell>
+                  {promo.discountType === "PERCENTAGE"
+                    ? `${promo.discountValue}%`
+                    : promo.discountValue}
+                </TableCell>
                 <TableCell>
                   <Badge
                     variant={promo.isActive ? "default" : "secondary"}
@@ -113,12 +125,24 @@ export function PromoCodesTable({
                     {promo.usedCount} / {promo.maxUses || "∞"}
                   </span>
                 </TableCell>
+                <TableCell>
+                  <Badge variant="outline" className="font-mono text-xs">
+                    {promo.appCount}
+                  </Badge>
+                </TableCell>
                 <TableCell>{promo.maxPerUser || "∞"}</TableCell>
                 <TableCell className="hidden md:table-cell text-muted-foreground">
                   {format(new Date(promo.createdAt), "MMM dd, yyyy")}
                 </TableCell>
                 <TableCell className="text-right">
                   <div className="flex justify-end gap-2">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => onViewDetails(promo)}
+                    >
+                      <Eye className="h-4 w-4" />
+                    </Button>
                     <Button
                       variant="ghost"
                       size="icon"

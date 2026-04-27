@@ -32,11 +32,16 @@ import {
 } from "@/hooks/useAdmin";
 import { PromoCodesTable } from "@/components/admin/promo-codes-table";
 import { FeedbackModal } from "@/components/feedback-modal";
+import { getPromoCodeApps } from "@/lib/apiCallsAdmin";
+import { Badge } from "@/components/ui/badge";
+import { format } from "date-fns";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 const promoSchema = z.z.object({
   id: z.number().optional(),
   code: z.string().min(1, "Code is required").max(50),
-  fixedPoints: z.coerce.number().min(0),
+  discountType: z.string().default("FIXED"),
+  discountValue: z.coerce.number().min(0),
   isActive: z.boolean().default(true),
   maxUses: z.coerce.number().nullable().optional(),
   maxPerUser: z.coerce.number().nullable().optional(),
@@ -48,6 +53,10 @@ function AdminPromoCodesContent() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingPromo, setEditingPromo] = useState<PromoFormValues | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
+  const [detailsDialogOpen, setDetailsDialogOpen] = useState(false);
+  const [selectedPromo, setSelectedPromo] = useState<any>(null);
+  const [promoApps, setPromoApps] = useState<any[]>([]);
+  const [loadingApps, setLoadingApps] = useState(false);
   const [feedbackModal, setFeedbackModal] = useState<{
     open: boolean;
     status: "success" | "error" | "warning" | "info";
@@ -148,7 +157,8 @@ function AdminPromoCodesContent() {
     resolver: zodResolver(promoSchema),
     defaultValues: {
       code: "",
-      fixedPoints: 200,
+      discountType: "FIXED",
+      discountValue: 200,
       isActive: true,
       maxUses: null,
       maxPerUser: 1,
@@ -159,7 +169,8 @@ function AdminPromoCodesContent() {
     setEditingPromo(null);
     form.reset({
       code: "",
-      fixedPoints: 200,
+      discountType: "FIXED",
+      discountValue: 200,
       isActive: true,
       maxUses: null,
       maxPerUser: 1,
@@ -172,12 +183,27 @@ function AdminPromoCodesContent() {
     form.reset({
       id: promo.id,
       code: promo.code,
-      fixedPoints: promo.fixedPoints,
+      discountType: promo.discountType || "FIXED",
+      discountValue: promo.discountValue || promo.fixedPoints,
       isActive: promo.isActive,
       maxUses: promo.maxUses,
       maxPerUser: promo.maxPerUser,
     });
     setIsDialogOpen(true);
+  };
+
+  const onViewDetails = async (promo: any) => {
+    setSelectedPromo(promo);
+    setDetailsDialogOpen(true);
+    setLoadingApps(true);
+    try {
+      const apps = await getPromoCodeApps(promo.id);
+      setPromoApps(apps || []);
+    } catch (err) {
+      setPromoApps([]);
+    } finally {
+      setLoadingApps(false);
+    }
   };
 
   const onDelete = (id: number) => {
@@ -227,20 +253,20 @@ function AdminPromoCodesContent() {
         </Button>
       </div>
 
-      <div className="bg-sidebar dark:bg-sidebar/50 p-4 sm:p-6 rounded-xl border-l-4 border-primary">
+      <div className="bg-border p-4 sm:p-6 rounded-xl border-l-4 border-primary">
         <div className="flex flex-row items-center gap-3 mb-4">
           <span className="bg-gradient-to-b from-primary to-primary/50 text-white font-bold rounded-lg px-4 py-0.5 text-lg">
             Important
           </span>
         </div>
-        <p className="text-sm sm:text-base text-white dark:text-black font-medium mb-4">
+        <p className="text-sm sm:text-base font-medium mb-4">
           Promo codes apply <span className="font-bold">ONLY</span> to Community Hub (Free) submissions, not valid for Developer Dashboard (Paid) submissions.
         </p>
 
         <div className="border-t border-primary/20 pt-4">
-          <h3 className="text-sm font-bold text-white dark:text-black mb-2">How Promo Codes Work</h3>
-          <ul className="space-y-2 text-sm text-white/70 dark:text-black/70 ml-0">
-            <li>Users enter a code (e.g. <span className="font-mono font-bold text-white dark:text-black">WELCOME200</span>) during Community Hub submission</li>
+          <h3 className="text-sm font-bold mb-2">How Promo Codes Work</h3>
+          <ul className="space-y-2 text-sm ml-0">
+            <li>Users enter a code (e.g. <span className="font-mono font-bold">WELCOME200</span>) during Community Hub submission</li>
             <li>The code sets a fixed point cost, overriding the original configuration price</li>
             <li>Each code has optional usage limits: total uses and max uses per user</li>
           </ul>
@@ -262,6 +288,7 @@ function AdminPromoCodesContent() {
         isLoading={isLoading}
         onEdit={onEdit}
         onDelete={onDelete}
+        onViewDetails={onViewDetails}
       />
 
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
@@ -293,23 +320,49 @@ function AdminPromoCodesContent() {
                   </FormItem>
                 )}
               />
-              <FormField
-                control={form.control}
-                name="fixedPoints"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Fixed Price (Points)</FormLabel>
-                    <FormControl>
-                      <Input type="number" {...field} />
-                    </FormControl>
-                    <FormDescription>
-                      The total cost for the user when this code is applied
-                      (e.g., 200), overriding the original configuration price.
-                    </FormDescription>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+              <div className="grid grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="discountType"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Discount Type</FormLabel>
+                      <Select
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                      >
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select type" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="FIXED">Fixed Points</SelectItem>
+                          <SelectItem value="PERCENTAGE">Percentage</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="discountValue"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>
+                        {form.watch("discountType") === "PERCENTAGE"
+                          ? "Discount (%)"
+                          : "Discount (Points)"}
+                      </FormLabel>
+                      <FormControl>
+                        <Input type="number" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
               <div className="grid grid-cols-2 gap-4">
                 <FormField
                   control={form.control}
@@ -383,6 +436,112 @@ function AdminPromoCodesContent() {
               </DialogFooter>
             </form>
           </Form>
+        </DialogContent>
+      </Dialog>
+
+      <Dialog open={detailsDialogOpen} onOpenChange={setDetailsDialogOpen}>
+        <DialogContent className="sm:max-w-[600px] p-3 sm:p-6 max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              Promo Code Details
+              {selectedPromo && (
+                <Badge variant="outline" className="font-mono">
+                  {selectedPromo.code}
+                </Badge>
+              )}
+            </DialogTitle>
+          </DialogHeader>
+          {selectedPromo && (
+            <div className="space-y-4">
+              <div className="grid grid-cols-2 gap-4 text-sm">
+                <div className="space-y-1">
+                  <p className="text-muted-foreground">Discount Type</p>
+                  <p className="font-medium">
+                    {selectedPromo.discountType === "PERCENTAGE" ? "Percentage" : "Fixed Points"}
+                  </p>
+                </div>
+                <div className="space-y-1">
+                  <p className="text-muted-foreground">Discount Value</p>
+                  <p className="font-medium">
+                    {selectedPromo.discountType === "PERCENTAGE"
+                      ? `${selectedPromo.discountValue}%`
+                      : `${selectedPromo.discountValue} pts`}
+                  </p>
+                </div>
+                <div className="space-y-1">
+                  <p className="text-muted-foreground">Status</p>
+                  <Badge
+                    variant={selectedPromo.isActive ? "default" : "secondary"}
+                    className={selectedPromo.isActive ? "bg-green-500/20 text-green-700 border-green-500/30" : ""}
+                  >
+                    {selectedPromo.isActive ? "Active" : "Inactive"}
+                  </Badge>
+                </div>
+                <div className="space-y-1">
+                  <p className="text-muted-foreground">Usage Limit</p>
+                  <p className="font-medium">
+                    {selectedPromo.usedCount} / {selectedPromo.maxUses || "∞"}
+                  </p>
+                </div>
+                <div className="space-y-1">
+                  <p className="text-muted-foreground">Per User Limit</p>
+                  <p className="font-medium">{selectedPromo.maxPerUser || "∞"}</p>
+                </div>
+                <div className="space-y-1">
+                  <p className="text-muted-foreground">Created</p>
+                  <p className="font-medium">
+                    {format(new Date(selectedPromo.createdAt), "MMM dd, yyyy")}
+                  </p>
+                </div>
+              </div>
+
+              <div className="border-t pt-4">
+                <h4 className="font-medium mb-3">
+                  Apps Using This Code ({promoApps.length})
+                </h4>
+                {loadingApps ? (
+                  <div className="flex justify-center py-8">
+                    <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+                  </div>
+                ) : promoApps.length === 0 ? (
+                  <p className="text-muted-foreground text-sm text-center py-4">
+                    No apps have used this promo code yet.
+                  </p>
+                ) : (
+                  <div className="space-y-2 max-h-[300px] overflow-y-auto">
+                    {promoApps.map((app: any) => (
+                      <div
+                        key={app.id}
+                        className="flex items-center justify-between p-3 rounded-lg border bg-card"
+                      >
+                        <div className="flex items-center gap-3">
+                          {app.androidApp?.appLogoUrl && (
+                            <img
+                              src={app.androidApp.appLogoUrl}
+                              alt=""
+                              className="w-8 h-8 rounded-lg object-cover"
+                            />
+                          )}
+                          <div>
+                            <p className="font-medium text-sm">
+                              {app.androidApp?.appName || `App #${app.appId}`}
+                            </p>
+                            <p className="text-xs text-muted-foreground">
+                              {app.appOwner?.name || app.appOwnerId} •{" "}
+                              {format(new Date(app.createdAt), "MMM dd, yyyy")}
+                            </p>
+                          </div>
+                        </div>
+                        <Badge variant="outline" className="text-xs">
+                          {app.status?.replace(/_/g, " ")}
+                        </Badge>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
         </DialogContent>
       </Dialog>
     </div>

@@ -23,11 +23,15 @@ const PromoCard = ({
   points,
   usedCount,
   maxUses,
+  discountType,
+  discountValue,
 }: {
   code: string;
   points: number;
   usedCount: number;
   maxUses: number | null;
+  discountType?: string;
+  discountValue?: number;
 }) => {
   const [copied, setCopied] = useState(false);
 
@@ -68,7 +72,9 @@ const PromoCard = ({
             {code.toUpperCase()}
           </CardTitle>
           <CardDescription className="text-muted-foreground">
-            Get {points} points instantly on your next app submission.
+            {discountType === "PERCENTAGE"
+              ? `Get ${discountValue}% off your next app submission.`
+              : `Get ${points} points instantly on your next app submission.`}
           </CardDescription>
         </CardHeader>
 
@@ -194,9 +200,15 @@ export default function OffersPage() {
                 <PromoCard
                   key={promo.id}
                   code={promo.code}
-                  points={promo.fixedPoints}
+                  points={
+                    promo.discountType === "PERCENTAGE"
+                      ? 0
+                      : promo.discountValue
+                  }
                   usedCount={promo.usedCount}
                   maxUses={promo.maxUses}
+                  discountType={promo.discountType}
+                  discountValue={promo.discountValue}
                 />
               ))
             ) : (

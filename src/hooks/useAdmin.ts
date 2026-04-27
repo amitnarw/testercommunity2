@@ -519,7 +519,8 @@ export function useCreatePromoCode(
   const mutation = useMutation({
     mutationFn: (payload: {
       code: string;
-      fixedPoints: number;
+      discountType?: string;
+      discountValue?: number;
       isActive?: boolean;
       maxUses?: number | null;
       maxPerUser?: number | null;
@@ -537,7 +538,8 @@ export function useUpdatePromoCode(
     mutationFn: (payload: {
       id: number;
       code?: string;
-      fixedPoints?: number;
+      discountType?: string;
+      discountValue?: number;
       isActive?: boolean;
       maxUses?: number | null;
       maxPerUser?: number | null;

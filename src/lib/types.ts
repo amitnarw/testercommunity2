@@ -496,6 +496,12 @@ export interface HubSubmittedAppResponse {
   } | null;
   rewardMoney?: number;
   costMoney?: number;
+  promoCode?: {
+    id: number;
+    code: string;
+    discountType: string;
+    discountValue: number;
+  } | null;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -813,7 +819,8 @@ export interface PaymentVerificationResponse {
 export interface PromoCodeResponse {
   id: number;
   code: string;
-  fixedPoints: number;
+  discountType: string;
+  discountValue: number;
   maxUses: number | null;
   usedCount: number;
   updatedAt: string;
