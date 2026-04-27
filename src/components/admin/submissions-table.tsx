@@ -71,6 +71,7 @@ export function SubmissionsTable({
             </TableHead>
             {showAppType && <TableHead>Type</TableHead>}
             <TableHead>Status</TableHead>
+            <TableHead className="hidden sm:table-cell">Promo Code</TableHead>
             <TableHead>
               <span className="sr-only">Actions</span>
             </TableHead>
@@ -100,6 +101,9 @@ export function SubmissionsTable({
                 <TableCell>
                   <Skeleton className="h-5 w-20" />
                 </TableCell>
+                <TableCell className="hidden sm:table-cell">
+                  <Skeleton className="h-5 w-20" />
+                </TableCell>
                 <TableCell className="text-right">
                   <Skeleton className="h-8 w-8 ml-auto rounded-md" />
                 </TableCell>
@@ -108,7 +112,7 @@ export function SubmissionsTable({
           ) : submissions.length === 0 ? (
             <TableRow>
               <TableCell
-                colSpan={showAppType ? 6 : 5}
+                colSpan={showAppType ? 7 : 6}
                 className="text-center py-8 text-muted-foreground"
               >
                 No submissions found.
@@ -154,6 +158,15 @@ export function SubmissionsTable({
                 </TableCell>
                 <TableCell>
                   <StatusBadge status={submission.status} />
+                </TableCell>
+                <TableCell className="hidden sm:table-cell">
+                  {submission.promoCode ? (
+                    <Badge variant="outline" className="font-mono text-xs">
+                      {submission.promoCode.code}
+                    </Badge>
+                  ) : (
+                    <span className="text-muted-foreground">—</span>
+                  )}
                 </TableCell>
                 <TableCell className="text-right">
                   <SubmissionActions submission={submission} />
