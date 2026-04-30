@@ -26,6 +26,7 @@ import {
   useMutation,
   UseMutationOptions,
   useQuery,
+  useQueryClient,
 } from "@tanstack/react-query";
 
 // Hub
@@ -142,11 +143,14 @@ export function useSingleHubAppDetails({
 export function useAddHubAppTestingRequest(
   options?: UseMutationOptions<any, any, any>,
 ) {
+  const queryClient = useQueryClient();
+
   const mutation = useMutation({
     mutationFn: (payload: { hub_id: string }) =>
       addHubAppTestingRequest(payload),
     onSuccess: (data) => {
       console.log("Hub app testing request added successfully: " + data);
+      queryClient.invalidateQueries({ queryKey: ["useSingleHubAppDetails"] });
     },
     onError: (data) => {
       console.log("Hub app testing request adding failed: " + data);

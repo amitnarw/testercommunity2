@@ -177,7 +177,7 @@ export default function AddAppGuidePage() {
                         <ol className="list-decimal list-inside space-y-3 pl-2">
                           <li>
                             Navigate to the{" "}
-                            <Highlight>Internal Testing</Highlight> page from
+                            <Highlight>Closed Testing</Highlight> page from
                             the side menu.
                           </li>
                           <li>

@@ -5,6 +5,17 @@ import Image, { ImageProps } from "next/image";
 import { ImageOff } from "lucide-react";
 import { cn } from "@/lib/utils";
 
+const ALLOWED_HOSTNAMES = [
+  "placehold.co",
+  "images.unsplash.com",
+  "play.google.com",
+  "play-lh.googleusercontent.com",
+  "lh3.googleusercontent.com",
+  "storage.googleapis.com",
+  "picsum.photos",
+  "pub-4118faf006a140b784ee878b5a5f7a46.r2.dev",
+];
+
 interface SafeImageProps extends Omit<ImageProps, "src"> {
   src?: string | null;
   fallbackClassName?: string;
@@ -35,7 +46,7 @@ export function SafeImage({
     // Allow relative paths and data URLs
     if (src.startsWith("/") || src.startsWith("data:")) return true;
 
-    // Check absolute URLs
+    // Allow any external URL - trust user's content
     try {
       new URL(src);
       return true;

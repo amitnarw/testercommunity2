@@ -13,7 +13,7 @@ import { Sidebar } from "./Sidebar";
 import { useState, useEffect } from "react";
 
 function BlogEditContent({ id }: { id: string }) {
-  const { form, isNew, onSubmit } = useBlogFormContext();
+  const { form, isNew, onSubmit, onDelete } = useBlogFormContext();
   const router = useRouter();
   const [showPreview, setShowPreview] = useState(false);
 
@@ -70,7 +70,7 @@ function BlogEditContent({ id }: { id: string }) {
 
   return (
     <div className="min-h-screen">
-      <TopBar blogSlug={blog?.slug} onPreviewClick={() => setShowPreview(true)} />
+      <TopBar blogSlug={blog?.slug} onPreviewClick={() => setShowPreview(true)} onDelete={!isNew ? onDelete : undefined} />
       <PreviewModal open={showPreview} onOpenChange={setShowPreview} />
       <div className="flex flex-col lg:flex-row">
         <MainEditor />

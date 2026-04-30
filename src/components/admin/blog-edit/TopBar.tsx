@@ -5,15 +5,16 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { useBlogFormContext } from "./useBlogForm";
 import { FeedbackModal } from "@/components/feedback-modal";
-import { ArrowLeft, Globe, Lock, Eye, Save, Loader2 } from "lucide-react";
+import { ArrowLeft, Globe, Lock, Eye, Save, Loader2, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 interface TopBarProps {
   blogSlug?: string;
   onPreviewClick: () => void;
+  onDelete?: () => void;
 }
 
-export function TopBar({ blogSlug, onPreviewClick }: TopBarProps) {
+export function TopBar({ blogSlug, onPreviewClick, onDelete }: TopBarProps) {
   const router = useRouter();
   const { isNew, isPending, isSaving, form, onPublish, onSaveDraft } = useBlogFormContext();
   const watchIsActive = form.watch("isActive");
@@ -26,6 +27,8 @@ export function TopBar({ blogSlug, onPreviewClick }: TopBarProps) {
     primaryAction?: { label: string; onClick: () => void };
     secondaryAction?: { label: string; onClick: () => void };
   } | null>(null);
+
+  const [deleteModal, setDeleteModal] = useState<{ open: boolean }>({ open: false });
 
   const handleSaveDraft = () => {
     const values = form.getValues();
@@ -192,6 +195,43 @@ export function TopBar({ blogSlug, onPreviewClick }: TopBarProps) {
               )}
               <span className="hidden sm:inline">Save Draft</span>
             </Button>
+          )}
+
+          {/* Delete button - only for existing blogs */}
+          {!isNew && onDelete && (
+            <Button
+              variant="destructive"
+              size="sm"
+              className="gap-1"
+              onClick={() => {
+                setDeleteModal({ open: true });
+              }}
+            >
+              <Trash2 className="h-4 w-4" />
+              <span className="hidden sm:inline">Delete</span>
+            </Button>
+          )}
+
+          {/* Delete confirmation modal */}
+          {deleteModal.open && (
+            <FeedbackModal
+              status="warning"
+              title="Delete Blog Post?"
+              description="Are you sure you want to delete this blog post? This action cannot be undone."
+              open={deleteModal.open}
+              onOpenChange={(open) => setDeleteModal({ open })}
+              primaryAction={{
+                label: "Delete",
+                onClick: () => {
+                  setDeleteModal({ open: false });
+                  onDelete?.();
+                },
+              }}
+              secondaryAction={{
+                label: "Cancel",
+                onClick: () => setDeleteModal({ open: false }),
+              }}
+            />
           )}
 
           {/* Publish (new/draft) or Update (published) */}
