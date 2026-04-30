@@ -4,7 +4,8 @@ import { createContext, useContext, useState, useCallback } from "react";
 import { useForm, UseFormReturn } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useToast } from "@/hooks/use-toast";
-import { useBlogById, useCreateBlog, useUpdateBlog, useAllBlogs } from "@/hooks/useAdmin";
+import { useBlogById, useCreateBlog, useUpdateBlog, useAllBlogs, useDeleteBlog } from "@/hooks/useAdmin";
+import { useRouter } from "next/navigation";
 import { blogSchema, BlogFormValues } from "./types";
 
 interface BlogFormContextValue {
@@ -19,6 +20,7 @@ interface BlogFormContextValue {
   removeTag: (index: number) => void;
   onPublish: (values: BlogFormValues, onSuccess?: (slug: string) => void) => void;
   onSaveDraft: (values: BlogFormValues, onSuccess?: (slug: string) => void) => void;
+  onDelete: (onSuccess?: () => void) => void;
 }
 
 const BlogFormContext = createContext<BlogFormContextValue | null>(null);
@@ -39,6 +41,7 @@ export function BlogFormProvider({ children, id }: BlogFormProviderProps) {
   const isNew = id === "new";
   const [isSaving, setIsSaving] = useState(false);
   const { toast } = useToast();
+  const router = useRouter();
 
   const { data: blog, refetch } = useBlogById(blogId, { enabled: !isNew });
   const { refetch: refetchAll } = useAllBlogs();
@@ -70,6 +73,33 @@ export function BlogFormProvider({ children, id }: BlogFormProviderProps) {
       setIsSaving(false);
     },
   });
+
+  const deleteMutation = useDeleteBlog({
+    onSuccess: () => {
+      toast({ title: "Deleted", description: "Blog post deleted" });
+      refetchAll();
+      router.push("/admin/blog-management");
+    },
+    onError: (err: any) => {
+      toast({
+        title: "Error",
+        description: err.message || "Failed to delete",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const onDelete = useCallback(
+    (onSuccess?: () => void) => {
+      if (isNew) return;
+      deleteMutation.mutate(blogId, {
+        onSuccess: () => {
+          if (onSuccess) onSuccess();
+        },
+      });
+    },
+    [isNew, blogId, deleteMutation]
+  );
 
   const form = useForm<BlogFormValues>({
     resolver: zodResolver(blogSchema),
@@ -177,6 +207,7 @@ export function BlogFormProvider({ children, id }: BlogFormProviderProps) {
         removeTag,
         onPublish,
         onSaveDraft,
+        onDelete,
       }}
     >
       {children}
