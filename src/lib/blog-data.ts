@@ -40,7 +40,7 @@ The requirement is officially stated as needing **20 testers** to be opted into 
 
 ### Technical Criteria for Compliance
 
-1. **Closed Testing Track**: You must use a "Closed Testing" track. Internal testing and Open testing do not count toward this 14-day requirement. 
+1. **Closed Testing Track**: You must use a "Closed Testing" track. Closed testing and Open testing do not count toward this 14-day requirement. 
 2. **20 Tester Minimum**: While the requirement is 20, we strongly recommend recruiting 25-30 testers. This provides a safety margin if some testers opt out or their devices become inactive during the period.
 3. **14 Days Continuous**: The clock starts only when at least 20 testers have opted in. If your tester count drops below 20 on day 10, the clock may pause or reset depending on how quickly you replace the testers.
 4. **App Engagement**: Google monitors whether testers are actually interacting with the app. Static installs with zero session time are often flagged as non-genuine testing.
@@ -363,7 +363,7 @@ By maintaining a healthy points balance and securing your wallet, you ensure tha
     description:
       "A technical comparison of Internal, Closed, and Open testing tracks to ensure compliance with the 14-day mandatory period.",
     category: "Google Play Guidelines",
-    slug: "internal-closed-open-testing-differences",
+    slug: "closed-closed-open-testing-differences",
     readTime: "12 min read",
     views: "4.1k",
     publishedAt: "2024-05-28",
@@ -373,8 +373,8 @@ By maintaining a healthy points balance and securing your wallet, you ensure tha
 
 Choosing the wrong testing track in the Google Play Console is one of the most common reasons for project delays. Each track has different review criteria and counts differently toward policy requirements.
 
-## 1. Internal Testing Track
-The Internal Testing track is designed for rapid iteration among a controlled group of up to 100 testers.
+## 1. Closed Testing Track
+The Closed Testing track is designed for rapid iteration among a controlled group of up to 100 testers.
 - **Key Advantage**: App releases are available to testers almost immediately without a standard Google review.
 - **Policy Compliance**: This track **does not** count toward the 20-tester/14-day requirement. It is purely for your own internal QA.
 
@@ -392,7 +392,7 @@ Open testing allows anyone on the Play Store to join your 'Beta' program if they
 ## Strategic Workflow
 
 Your workflow should follow this sequence:
-1. **Internal Testing**: Catch major crashes with your team.
+1. **Closed Testing**: Catch major crashes with your team.
 2. **Closed Testing**: This is where you connect with our platform. Spend 14 days here with your 20+ testers.
 3. **Production Application**: Once the Console confirms the 14 days are complete, apply for production.
 4. **Open Testing (Optional)**: Move to Open testing if you want more general public feedback before a wide marketing launch.

@@ -194,7 +194,7 @@ export default function AddAppGuidePage() {
                             private group of vetted testers.
                           </li>
                         </ol>
-                        <CopyBlock textToCopy="testers-community@googlegroups.com" />
+                        <CopyBlock textToCopy="appstestlab@googlegroups.com" />
                         <p className="text-xs italic">
                           <strong>Why?</strong> This allows our testers to
                           securely download your app from the Play Store for the
@@ -256,7 +256,7 @@ export default function AddAppGuidePage() {
                         </p>
                         <ol className="list-decimal list-inside space-y-3 pl-2">
                           <li>
-                            While still on the internal testing track, click the{" "}
+                            While still on the closed testing track, click the{" "}
                             <Highlight>Countries / regions</Highlight> tab.
                           </li>
                           <li>
@@ -400,7 +400,7 @@ export default function AddAppGuidePage() {
                         </p>
                         <ol className="list-decimal list-inside space-y-3 pl-2">
                           <li>
-                            On your internal testing page, look for the{" "}
+                            On your closed testing page, look for the{" "}
                             <Highlight>Join on the web</Highlight> link.
                           </li>
                           <li>

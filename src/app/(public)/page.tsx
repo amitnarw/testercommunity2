@@ -8,6 +8,7 @@ import React from "react";
 import { HoverBorderGradient } from "@/components/ui/hover-border-gradient";
 import { MagneticButton } from "@/components/magnetic-button";
 import dynamic from "next/dynamic";
+import { AutoTransitionLink } from "@/components/auto-transition-link";
 
 const GlobalImpactSection = dynamic(() =>
   import("@/components/global-impact-section").then(
@@ -83,14 +84,14 @@ export default function Home() {
                   variant="default"
                   className="group text-sm sm:text-base px-4 sm:px-6 sm:pr-3 py-6 sm:py-7 rounded-full shadow-lg shadow-primary/30"
                 >
-                  <Link href="/auth/register">
+                  <AutoTransitionLink href="/auth/register">
                     <span className="relative z-10 font-bold">
                       Get Started for Free
                     </span>
                     <div className="relative inline-flex items-center justify-center w-8 h-8 rounded-full bg-primary-foreground/20 group-hover:bg-black dark:group-hover:bg-white transition-all duration-500 group-hover:scale-[2] ml-3 sm:ml-4">
                       <ChevronRight className="w-4 h-4 text-primary-foreground group-hover:text-white dark:group-hover:text-black transition-colors duration-300" />
                     </div>
-                  </Link>
+                  </AutoTransitionLink>
                 </Button>
               </MagneticButton>
             </div>

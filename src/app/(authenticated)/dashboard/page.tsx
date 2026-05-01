@@ -17,6 +17,7 @@ import {
 import { ProjectList } from "@/components/project-list";
 import Link from "next/link";
 import { Gem } from "lucide-react";
+import { AutoTransitionLink } from "@/components/auto-transition-link";
 import { useState, useEffect, Suspense } from "react";
 import { useSearchParams, usePathname, useRouter } from "next/navigation";
 import { motion } from "framer-motion";
@@ -429,14 +430,14 @@ function DashboardPageContent() {
               asChild
               className="w-full h-full bg-gradient-to-br from-primary to-primary/40"
             >
-              <Link href="/dashboard/add-app">
+              <AutoTransitionLink href="/dashboard/add-app">
                 <PlusCircle className="mr-2 h-4 w-4" /> Submit Your App
-              </Link>
+              </AutoTransitionLink>
             </Button>
             <Button variant="outline" asChild className="w-full h-full">
-              <Link href="/billing">
+              <AutoTransitionLink href="/billing">
                 <Gem className="mr-2 h-4 w-4" /> Buy More Packages
-              </Link>
+              </AutoTransitionLink>
             </Button>
           </BentoCard>
         </div>

@@ -311,7 +311,7 @@ export function AdminVerificationReview({
                 )}
               </div>
 
-              <DialogFooter className="p-6 border-t gap-3 flex-row justify-end items-center bg-secondary/5 mt-auto">
+              <DialogFooter className="p-6 border-t gap-3 flex !flex-col justify-end items-center bg-secondary/5 mt-auto">
                 <Button
                   variant="ghost"
                   onClick={() => {
@@ -331,10 +331,7 @@ export function AdminVerificationReview({
                       variant="outline"
                       className="rounded-xl flex-1 h-11 font-bold border-red-500/20 bg-red-500/5 text-red-600 hover:bg-red-500/10 hover:text-red-700 hover:border-red-500/40"
                       onClick={() => setIsRejectingLocal(true)}
-                      disabled={
-                        isSubmitting ||
-                        selectedVerification?.status === "REJECTED"
-                      }
+                      disabled={isSubmitting || selectedVerification?.status === "VERIFIED"}
                     >
                       <XCircle className="w-4 h-4 mr-2" />
                       Reject
@@ -342,14 +339,14 @@ export function AdminVerificationReview({
                     <Button
                       className="rounded-xl flex-1 h-11 font-bold bg-emerald-600 hover:bg-emerald-700 text-white shadow-lg shadow-emerald-500/20"
                       onClick={() => handleUpdateStatus("VERIFIED")}
-                      disabled={
-                        isSubmitting ||
-                        selectedVerification?.status === "VERIFIED"
-                      }
+                      disabled={isSubmitting || selectedVerification?.status === "REJECTED"}
                     >
                       <CheckCircle2 className="w-4 h-4 mr-2" />
                       Approve
                     </Button>
+                    <p className="text-[10px] text-muted-foreground text-center w-full mt-1">
+                      Auto-approved proofs can be manually rejected if needed
+                    </p>
                   </>
                 ) : (
                   <Button
