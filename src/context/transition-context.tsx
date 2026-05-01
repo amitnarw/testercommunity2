@@ -6,6 +6,7 @@ import { useRouter, usePathname } from "next/navigation";
 interface TransitionContextType {
   triggerTransition: (href: string) => void;
   isTransitioning: boolean;
+  isLoading: boolean;
   targetLabel: string;
   transitionType: string;
   setTransitionType: (type: string) => void;
@@ -23,6 +24,7 @@ export function TransitionProvider({
   children: React.ReactNode;
 }) {
   const [isTransitioning, setIsTransitioning] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [targetLabel, setTargetLabel] = useState("");
   const router = useRouter();
   const pathname = usePathname();
@@ -30,6 +32,7 @@ export function TransitionProvider({
   useEffect(() => {
     // Reset transition state when path changes (navigation complete)
     setIsTransitioning(false);
+    setIsLoading(false);
     setTargetLabel("");
   }, [pathname]);
 
@@ -63,11 +66,13 @@ export function TransitionProvider({
     }
 
     setTargetLabel(getPageName(href));
+    setIsLoading(true);
     setIsTransitioning(true);
 
     // Buffer time to ensure animation starts/completes cleanly
     // If the duration is very short, ensuring at least a frame.
     setTimeout(() => {
+      setIsLoading(false);
       router.push(href);
     }, durationMs);
   };
@@ -111,6 +116,7 @@ export function TransitionProvider({
       value={{
         triggerTransition,
         isTransitioning,
+        isLoading,
         targetLabel,
         transitionType,
         setTransitionType,

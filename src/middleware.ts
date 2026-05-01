@@ -194,8 +194,23 @@ export async function middleware(request: NextRequest) {
     }
   }
 
-  // Role-based access control: prevent admins from accessing tester areas
+  // Role-based access control: prevent admins from accessing tester areas (unless acting-as)
   if (isAdmin) {
+    const actingAsRole = request.cookies.get("acting_as_role")?.value;
+    const isActingAsTester = actingAsRole === "tester";
+    const isActingAsUser = actingAsRole === "user";
+
+    // If acting as tester, allow tester routes
+    if (isActingAsTester && testerRoutes.some((route) => pathname.startsWith(route))) {
+      return NextResponse.next();
+    }
+
+    // If acting as user, allow user routes
+    if (isActingAsUser && authenticatedRoutes.some((route) => pathname.startsWith(route))) {
+      return NextResponse.next();
+    }
+
+    // Normal admin block for tester routes
     if (
       testerRoutes.some((route) => pathname.startsWith(route)) &&
       !testerAuthRoutes.some((route) => pathname.startsWith(route))

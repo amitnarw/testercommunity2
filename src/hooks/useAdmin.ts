@@ -51,7 +51,11 @@ import {
   createBlog,
   updateBlog,
   deleteBlog,
+  // Act As
+  actAsRole,
 } from "@/lib/apiCallsAdmin";
+import { useRouter } from "next/navigation";
+import { useState, useEffect, useCallback } from "react";
 import {
   useMutation,
   UseMutationOptions,
@@ -635,4 +639,67 @@ export function useDeleteBlog(options?: UseMutationOptions<any, any, any>) {
   });
 
   return mutation;
+}
+
+// ==================== ACT AS ROLE ====================
+
+export function useActAsRole(options?: UseMutationOptions<any, any, any>) {
+  const router = useRouter();
+  const [actingAsRole, setActingAsRole] = useState<"tester" | "user" | null>(null);
+
+  // Check for acting_as_role cookie on mount
+  useEffect(() => {
+    const checkCookie = async () => {
+      try {
+        // Read cookie directly since httpOnly cookie can't be accessed from JS
+        const cookies = document.cookie.split("; ");
+        const actingCookie = cookies.find((c) => c.startsWith("acting_as_role="));
+        if (actingCookie) {
+          const role = actingCookie.split("=")[1];
+          if (role === "tester" || role === "user") {
+            setActingAsRole(role);
+          }
+        }
+      } catch (e) {
+        console.error("Error reading acting_as_role cookie:", e);
+      }
+    };
+    checkCookie();
+  }, []);
+
+  const mutation = useMutation({
+    mutationFn: async (role: "tester" | "user" | null) => {
+      const result = await actAsRole(role);
+      return result;
+    },
+    onSuccess: (data, role) => {
+      if (!role) {
+        // Clearing - reload to reset state
+        setActingAsRole(null);
+        router.refresh();
+      } else {
+        setActingAsRole(role);
+        router.refresh();
+      }
+    },
+    ...options,
+  });
+
+  const startActingAs = useCallback(
+    (role: "tester" | "user") => {
+      mutation.mutate(role);
+    },
+    [mutation],
+  );
+
+  const stopActingAs = useCallback(() => {
+    mutation.mutate(null);
+  }, [mutation]);
+
+  return {
+    actingAsRole,
+    startActingAs,
+    stopActingAs,
+    isLoading: mutation.isPending,
+  };
 }

@@ -1080,3 +1080,17 @@ export async function deleteBlog(id: number) {
     throw error;
   }
 }
+
+// ==================== ACT AS ROLE ====================
+
+export async function actAsRole(role: "tester" | "user" | null) {
+  try {
+    const response = await api.post(API_ROUTES.ADMIN + `/act-as`, {
+      payload: { role },
+    });
+    return response?.data;
+  } catch (error) {
+    console.error("Error in actAsRole:", error);
+    throw error;
+  }
+}

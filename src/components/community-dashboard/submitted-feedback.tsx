@@ -833,8 +833,8 @@ export function SubmittedFeedback({
 
   const { data: session } = authClient.useSession();
   const currentUserId = session?.user?.id || null;
-  const userRole = (session?.user as any)?.role;
-  const isPrivileged = userRole === "ADMIN" || userRole === "SUPER_ADMIN";
+  const userRole = (session as any)?.role?.name || (session as any)?.role;
+  const isPrivileged = userRole?.toUpperCase() === "ADMIN" || userRole?.toUpperCase() === "SUPER_ADMIN";
 
   const filteredFeedback =
     feedback?.filter((fb) => isPrivileged || fb.testerId === currentUserId) ||

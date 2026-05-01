@@ -22,6 +22,7 @@ import {
 } from "@/hooks/useAdmin";
 import { useQueryClient } from "@tanstack/react-query";
 import { cn } from "@/lib/utils";
+import { useToast } from "@/hooks/use-toast";
 
 const SuggestionsTable = dynamic(
   () =>
@@ -40,6 +41,7 @@ const SuggestionsTable = dynamic(
 
 export default function AdminSuggestionsPage() {
   const queryClient = useQueryClient();
+  const { toast } = useToast();
   const [filter, setFilter] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -60,6 +62,17 @@ export default function AdminSuggestionsPage() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["useAllSuggestions"] });
       queryClient.invalidateQueries({ queryKey: ["useSuggestionCounts"] });
+      toast({
+        title: "Suggestion Deleted",
+        description: "The suggestion has been removed successfully.",
+      });
+    },
+    onError: (err: any) => {
+      toast({
+        title: "Error",
+        description: err?.message || "Failed to delete suggestion.",
+        variant: "destructive",
+      });
     },
   });
 
@@ -67,6 +80,17 @@ export default function AdminSuggestionsPage() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["useAllSuggestions"] });
       queryClient.invalidateQueries({ queryKey: ["useSuggestionCounts"] });
+      toast({
+        title: "Status Updated",
+        description: "The suggestion status has been updated.",
+      });
+    },
+    onError: (err: any) => {
+      toast({
+        title: "Error",
+        description: err?.message || "Failed to update suggestion status.",
+        variant: "destructive",
+      });
     },
   });
 

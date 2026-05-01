@@ -27,16 +27,18 @@ import { authClient } from "@/lib/auth-client";
 
 const LoginForm = ({
   role,
+  email,
+  password,
 }: {
-  role: "Super Admin" | "Admin" | "Moderator";
+  role: "Super Admin" | "Admin" | "Moderator" | "Support";
+  email: string;
+  password: string;
 }) => {
   const router = useRouter();
   const { toast } = useToast();
   const [showPassword, setShowPassword] = React.useState(false);
-  const [email, setEmail] = React.useState(
-    `${role.toLowerCase().replace(" ", "")}@gmail.com`,
-  );
-  const [password, setPassword] = React.useState("Admin@123Password");
+  const [emailValue, setEmailValue] = React.useState(email);
+  const [passwordValue, setPasswordValue] = React.useState(password);
   const [rememberMe, setRememberMe] = React.useState(false);
 
   const { data: session, isPending: isSessionPending } =
@@ -68,7 +70,7 @@ const LoginForm = ({
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    login({ email, password, role, rememberMe });
+    login({ email: emailValue, password: passwordValue, role, rememberMe });
   };
 
   return (
@@ -90,8 +92,8 @@ const LoginForm = ({
           <Input
             id={`${role}-email`}
             type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            value={emailValue}
+            onChange={(e) => setEmailValue(e.target.value)}
             className="pl-9 h-10 bg-background border-input focus:ring-1 focus:ring-primary/40 rounded-xl text-sm"
           />
         </div>
@@ -108,8 +110,8 @@ const LoginForm = ({
           <Input
             id={`${role}-password`}
             type={showPassword ? "text" : "password"}
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            value={passwordValue}
+            onChange={(e) => setPasswordValue(e.target.value)}
             className="pl-9 pr-10 h-10 bg-background border-input focus:ring-1 focus:ring-primary/40 rounded-xl text-sm"
           />
           <button
@@ -226,8 +228,8 @@ export default function AdminLoginPage() {
 
           {/* Card - Optimized Padding */}
           <div className="bg-card border border-border/60 rounded-[2rem] p-6 shadow-xl shadow-primary/5">
-            <Tabs defaultValue="admin" className="w-full">
-              <TabsList className="grid w-full grid-cols-3 h-10 bg-muted/40 p-1 rounded-xl mb-6 border border-border/10">
+            <Tabs defaultValue="super-admin" className="w-full">
+              <TabsList className="grid w-full grid-cols-4 h-10 bg-muted/40 p-1 rounded-xl mb-6 border border-border/10">
                 <TabsTrigger
                   value="super-admin"
                   className="rounded-lg text-[10px] font-bold data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm transition-all"
@@ -246,16 +248,41 @@ export default function AdminLoginPage() {
                 >
                   Mod
                 </TabsTrigger>
+                <TabsTrigger
+                  value="support"
+                  className="rounded-lg text-[10px] font-bold data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm transition-all"
+                >
+                  Support
+                </TabsTrigger>
               </TabsList>
 
               <TabsContent value="super-admin" className="mt-0 outline-none">
-                <LoginForm role="Super Admin" />
+                <LoginForm
+                  role="Super Admin"
+                  email="super_admin@intesters.com"
+                  password="Super@123Admin"
+                />
               </TabsContent>
               <TabsContent value="admin" className="mt-0 outline-none">
-                <LoginForm role="Admin" />
+                <LoginForm
+                  role="Admin"
+                  email="admin@intesters.com"
+                  password="Admin@123Password"
+                />
               </TabsContent>
               <TabsContent value="moderator" className="mt-0 outline-none">
-                <LoginForm role="Moderator" />
+                <LoginForm
+                  role="Moderator"
+                  email="moderator@intesters.com"
+                  password="Moderator@123Pass"
+                />
+              </TabsContent>
+              <TabsContent value="support" className="mt-0 outline-none">
+                <LoginForm
+                  role="Support"
+                  email="support@intesters.com"
+                  password="Support@123Pass"
+                />
               </TabsContent>
             </Tabs>
           </div>

@@ -11,7 +11,7 @@ interface CommunityOngoingAppCardProps {
 
 export function CommunityOngoingAppCard({ app }: CommunityOngoingAppCardProps) {
   const totalDays = app.totalDay || 14;
-  const daysCompleted = app.currentDay || 0;
+  const daysCompleted = app.testerRelations?.[0]?.daysCompleted || 0;
   const progressPercentage = Math.min(
     Math.max(totalDays > 0 ? (daysCompleted / totalDays) * 100 : 0, 0),
     100,

@@ -20,7 +20,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Slider } from "@/components/ui/slider";
 import {
   FileText,
   Link as LinkIcon,
@@ -30,6 +29,9 @@ import {
   TrendingUp,
   Zap,
   Clock,
+  BookOpen,
+  ArrowRight,
+  PlayCircle,
 } from "lucide-react";
 import {
   FormField,
@@ -48,9 +50,16 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 import { FeedbackModal } from "@/components/feedback-modal";
 import { Button } from "@/components/ui/button";
 import { PageHeader } from "@/components/page-header";
+import { IconRain } from "@/components/icon-rain";
 import { useGetUserWallet } from "@/hooks/useUser";
 import {
   useAddHubApp,
@@ -59,6 +68,7 @@ import {
 } from "@/hooks/useHub";
 import SkeletonSubmitAppBottom from "@/components/community-dashboard/submit-app-bottom-skeleton";
 import { LoadingButton } from "@/components/ui/loading-button";
+import { ModernSlider } from "@/components/ui/modern-slider";
 import dynamic from "next/dynamic";
 
 const SubmissionSuccess = dynamic(() =>
@@ -121,6 +131,14 @@ type SubmissionFormData = z.infer<typeof submissionSchema>;
 
 const formSteps = [
   {
+    id: "rules",
+    title: "Rules",
+    icon: <BookOpen className="w-5 h-5" />,
+    fields: [],
+    description:
+      "Read and understand the submission guidelines before you begin.",
+  },
+  {
     id: "connect",
     title: "Connect",
     icon: <LinkIcon className="w-5 h-5" />,
@@ -132,7 +150,7 @@ const formSteps = [
       "app_screenshot_url_2",
     ],
     description:
-      "First, provide a link to your app on the Google Play Console internal testing track. This allows our testers to securely download it.",
+      "First, provide a link to your app on the Google Play Console closed testing track. This allows our testers to securely download it.",
   },
   {
     id: "describe",
@@ -185,6 +203,7 @@ const Section = ({
 export default function SubmitAppPage() {
   const [activeStep, setActiveStep] = useState(formSteps[0].id);
   const [isErrorModalOpen, setIsErrorModalOpen] = useState(false);
+  const [isVideoExpanded, setIsVideoExpanded] = useState(false);
   const [cost, setCost] = useState(0);
   const [promoCodeInput, setPromoCodeInput] = useState("");
   const [appliedPromo, setAppliedPromo] = useState<{
@@ -254,6 +273,9 @@ export default function SubmitAppPage() {
     });
   };
 
+  const { ref: rulesRef, inView: rulesInView } = useInView({
+    threshold: 0.5,
+  });
   const { ref: connectRef, inView: connectInView } = useInView({
     threshold: 0.5,
   });
@@ -265,10 +287,11 @@ export default function SubmitAppPage() {
   });
 
   useEffect(() => {
-    if (connectInView) setActiveStep("connect");
+    if (rulesInView) setActiveStep("rules");
+    else if (connectInView) setActiveStep("connect");
     else if (describeInView) setActiveStep("describe");
     else if (configureInView) setActiveStep("configure");
-  }, [connectInView, describeInView, configureInView]);
+  }, [rulesInView, connectInView, describeInView, configureInView]);
 
   const [isMounted, setIsMounted] = useState(false);
 
@@ -469,9 +492,220 @@ export default function SubmitAppPage() {
               <FormProvider {...form}>
                 <form onSubmit={form.handleSubmit(onSubmit)}>
                   <Section
+                    sectionRef={rulesRef}
+                    id="rules"
+                    title="1. Read the Guidelines"
+                    description="Take a moment to understand how this process works. This will help you fill out the form correctly."
+                  >
+                    <div className="space-y-8">
+                      <div className="rounded-xl overflow-hidden shadow-lg relative bg-gradient-to-br from-primary/50 to-primary">
+                        {isMounted && <IconRain />}
+                        {isVideoExpanded ? (
+                          <div className="relative aspect-video">
+                            <iframe
+                              className="absolute top-0 left-0 w-full h-full"
+                              src="https://www.youtube.com/embed/9M1Cv8V_I3U?autoplay=1"
+                              title="YouTube video player"
+                              frameBorder="0"
+                              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                              allowFullScreen
+                            ></iframe>
+                          </div>
+                        ) : (
+                          <div
+                            className="p-6 py-10 flex flex-col md:flex-row items-center justify-between gap-4 cursor-pointer relative z-10"
+                            onClick={() => setIsVideoExpanded(true)}
+                          >
+                            <div>
+                              <h3 className="font-bold text-xl sm:text-2xl mb-1 flex flex-col sm:flex-row items-center sm:gap-3 text-white">
+                                Quick Walkthrough{" "}
+                                <span className="text-sm font-medium text-black">
+                                  (2-min watch)
+                                </span>
+                              </h3>
+                              <p className="text-white/80 text-sm text-center sm:text-start">
+                                Watch a short video on how to submit your app for community testing.
+                              </p>
+                            </div>
+                            <Button size="lg" variant="outline">
+                              <PlayCircle className="mr-2 h-5 w-5" />
+                              Watch Guide
+                            </Button>
+                          </div>
+                        )}
+                      </div>
+
+                      <p className="text-center text-muted-foreground text-sm">
+                        You can either watch the video above or follow the step-by-step guide below. Both cover the same process.
+                      </p>
+
+                    <Accordion type="single" collapsible className="w-full space-y-4">
+                      <AccordionItem
+                        value="app-info"
+                        className="bg-white dark:bg-secondary/80 rounded-xl overflow-hidden shadow-xl shadow-gray-200/70 dark:shadow-black/20"
+                      >
+                        <AccordionTrigger className="p-6 text-left hover:no-underline flex flex-row items-center justify-between w-full relative">
+                          <div className="flex items-start flex-1">
+                            <span className="text-7xl md:text-5xl font-black bg-gradient-to-br from-primary/20 to-primary/0 bg-clip-text text-transparent md:w-20 absolute -top-3 -left-3 md:relative md:top-auto md:left-auto">
+                              01
+                            </span>
+                            <div>
+                              <h3 className="font-bold text-xl mb-1">
+                                Finding Your App Details
+                              </h3>
+                              <p className="text-muted-foreground text-sm text-left">
+                                Where to get your testing link, logo, and screenshots
+                              </p>
+                            </div>
+                          </div>
+                        </AccordionTrigger>
+                        <AccordionContent className="px-6 pb-6">
+                          <div className="flex flex-col gap-6 items-start">
+                            <div className="flex-1 space-y-4 text-muted-foreground">
+                              <p>
+                                To submit your app for testing, you need to share some links from the Google Play Console. Here is how to find each one:
+                              </p>
+                              <div className="space-y-4">
+                                <div className="p-4 rounded-lg bg-secondary/50 border border-border/40">
+                                  <p className="font-semibold text-foreground mb-2 flex items-center gap-2">
+                                    <span className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center text-xs font-bold text-primary">1</span>
+                                    Testing Link
+                                  </p>
+                                  <p className="text-sm">Go to your app in the Google Play Console. Click on <span className="font-medium text-foreground">Testing</span> from the left menu. Click on <span className="font-medium text-foreground">Closed Testing</span>. Click on the testers tab. Look for the "Join on the web" link and copy it. This is the link our testers will use to download your app.</p>
+                                </div>
+                                <div className="p-4 rounded-lg bg-secondary/50 border border-border/40">
+                                  <p className="font-semibold text-foreground mb-2 flex items-center gap-2">
+                                    <span className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center text-xs font-bold text-primary">2</span>
+                                    App Logo
+                                  </p>
+                                  <p className="text-sm">Go to your app in Google Play Console. Click on <span className="font-medium text-foreground">Store presence</span> on the left menu. Click on <span className="font-medium text-foreground">Store listing</span>. Scroll down to <span className="font-medium text-foreground">Graphic Assets</span>. Find the App Icon section. Right-click on the icon and copy the image address. This is your logo URL.</p>
+                                </div>
+                                <div className="p-4 rounded-lg bg-secondary/50 border border-border/40">
+                                  <p className="font-semibold text-foreground mb-2 flex items-center gap-2">
+                                    <span className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center text-xs font-bold text-primary">3</span>
+                                    Screenshots
+                                  </p>
+                                  <p className="text-sm">In the same Store listing page, scroll down to <span className="font-medium text-foreground">Screenshots</span>. Click on any screenshot. Right-click and copy the image address. You need to provide two screenshots. These help testers understand what your app looks like.</p>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </AccordionContent>
+                      </AccordionItem>
+
+                      <AccordionItem
+                        value="points"
+                        className="bg-white dark:bg-secondary/80 rounded-xl overflow-hidden shadow-xl shadow-gray-200/70 dark:shadow-black/20"
+                      >
+                        <AccordionTrigger className="p-6 text-left hover:no-underline flex flex-row items-center justify-between w-full relative">
+                          <div className="flex items-start flex-1">
+                            <span className="text-7xl md:text-5xl font-black bg-gradient-to-br from-primary/20 to-primary/0 bg-clip-text text-transparent md:w-20 absolute -top-3 -left-3 md:relative md:top-auto md:left-auto">
+                              02
+                            </span>
+                            <div>
+                              <h3 className="font-bold text-xl mb-1">
+                                Understanding Points
+                              </h3>
+                              <p className="text-muted-foreground text-sm text-left">
+                                How the point system works and how much it costs
+                              </p>
+                            </div>
+                          </div>
+                        </AccordionTrigger>
+                        <AccordionContent className="px-6 pb-6">
+                          <div className="flex flex-col gap-6 items-start">
+                            <div className="flex-1 space-y-4 text-muted-foreground">
+                              <p>
+                                Points are the currency for our community testing. Here is how it works:
+                              </p>
+                              <div className="space-y-4">
+                                <div className="p-4 rounded-lg bg-secondary/50 border border-border/40">
+                                  <p className="font-semibold text-foreground mb-2 flex items-center gap-2">
+                                    <span className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center text-xs font-bold text-primary">1</span>
+                                    What are points?
+                                  </p>
+                                  <p className="text-sm">Points represent your budget for testing. When you submit an app, points are deducted based on how many testers you need and how long your test runs. You earn points when other community members test your apps.</p>
+                                </div>
+                                <div className="p-4 rounded-lg bg-secondary/50 border border-border/40">
+                                  <p className="font-semibold text-foreground mb-2 flex items-center gap-2">
+                                    <span className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center text-xs font-bold text-primary">2</span>
+                                    How cost is calculated
+                                  </p>
+                                  <p className="text-sm">The total cost depends on two things. First, how many testers you want. Second, how many days your test should run. More testers and longer tests mean higher costs. The formula is simple. Multiply testers by 80. Multiply days by 10. Add both numbers together to get your total cost.</p>
+                                </div>
+                                <div className="p-4 rounded-lg bg-secondary/50 border border-border/40">
+                                  <p className="font-semibold text-foreground mb-2 flex items-center gap-2">
+                                    <span className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center text-xs font-bold text-primary">3</span>
+                                    Checking your balance
+                                  </p>
+                                  <p className="text-sm">You can see your current point balance on your dashboard. If you do not have enough points, you can still submit but it will be reviewed once you earn more points from testing other apps.</p>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </AccordionContent>
+                      </AccordionItem>
+
+                      <AccordionItem
+                        value="test-config"
+                        className="bg-white dark:bg-secondary/80 rounded-xl overflow-hidden shadow-xl shadow-gray-200/70 dark:shadow-black/20"
+                      >
+                        <AccordionTrigger className="p-6 text-left hover:no-underline flex flex-row items-center justify-between w-full relative">
+                          <div className="flex items-start flex-1">
+                            <span className="text-7xl md:text-5xl font-black bg-gradient-to-br from-primary/20 to-primary/0 bg-clip-text text-transparent md:w-20 absolute -top-3 -left-3 md:relative md:top-auto md:left-auto">
+                              03
+                            </span>
+                            <div>
+                              <h3 className="font-bold text-xl mb-1">
+                                Setting Up Your Test
+                              </h3>
+                              <p className="text-muted-foreground text-sm text-left">
+                                How to choose testers, duration, and Android version
+                              </p>
+                            </div>
+                          </div>
+                        </AccordionTrigger>
+                        <AccordionContent className="px-6 pb-6">
+                          <div className="flex flex-col gap-6 items-start">
+                            <div className="flex-1 space-y-4 text-muted-foreground">
+                              <p>
+                                When you configure your test, you need to decide three things:
+                              </p>
+                              <div className="space-y-4">
+                                <div className="p-4 rounded-lg bg-secondary/50 border border-border/40">
+                                  <p className="font-semibold text-foreground mb-2 flex items-center gap-2">
+                                    <span className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center text-xs font-bold text-primary">1</span>
+                                    Number of testers
+                                  </p>
+                                  <p className="text-sm">Choose how many testers you want for your app. We recommend at least 15 testers because some testers may drop out during the testing period. Each tester must complete testing within the time limit you set. The more testers you choose, the more points the test will cost.</p>
+                                </div>
+                                <div className="p-4 rounded-lg bg-secondary/50 border border-border/40">
+                                  <p className="font-semibold text-foreground mb-2 flex items-center gap-2">
+                                    <span className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center text-xs font-bold text-primary">2</span>
+                                    Test duration
+                                  </p>
+                                  <p className="text-sm">Choose how many days testers have to complete their testing. The minimum is 14 days. We recommend 16 to 20 days because testers have different schedules. Longer durations give testers more flexibility to provide thorough feedback. Each extra day adds to your total cost.</p>
+                                </div>
+                                <div className="p-4 rounded-lg bg-secondary/50 border border-border/40">
+                                  <p className="font-semibold text-foreground mb-2 flex items-center gap-2">
+                                    <span className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center text-xs font-bold text-primary">3</span>
+                                    Minimum Android version
+                                  </p>
+                                  <p className="text-sm">Select the oldest Android version your app supports. This helps us match testers who have devices that can run your app. If your app works on Android 8, select Android 8.0 from the list. Only testers with devices running that version or newer will be assigned to your test.</p>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </AccordionContent>
+                      </AccordionItem>
+                    </Accordion>
+                    </div>
+                  </Section>
+
+                  <Section
                     sectionRef={connectRef}
                     id="connect"
-                    title="1. Connect Your App"
+                    title="2. Connect Your App"
                     description="Provide the essential links and name for your project."
                   >
                     <Card className="bg-secondary/30 border-dashed">
@@ -579,7 +813,7 @@ export default function SubmitAppPage() {
                   <Section
                     sectionRef={describeRef}
                     id="describe"
-                    title="2. Describe Your Project"
+                    title="3. Describe Your Project"
                     description="Give testers the context they need for quality feedback."
                   >
                     <Card className="bg-secondary/30 border-dashed">
@@ -664,7 +898,7 @@ export default function SubmitAppPage() {
                   <Section
                     sectionRef={configureRef}
                     id="configure"
-                    title="3. Configure Your Test"
+                    title="4. Configure Your Test"
                     description="Set the final parameters for your testing cycle. You must have enough earned points to cover this budget."
                   >
                     <Card className="bg-secondary/30 border-dashed">
@@ -713,21 +947,15 @@ export default function SubmitAppPage() {
                             <FormItem>
                               <FormLabel>Number of Testers</FormLabel>
                               <FormControl>
-                                <div className="flex items-center gap-4">
-                                  <Slider
-                                    defaultValue={[field.value]}
-                                    min={1}
-                                    max={20}
-                                    step={1}
-                                    onValueChange={(value) =>
-                                      field.onChange(value[0])
-                                    }
-                                    className={cn("w-[85%]", field.name)}
-                                  />
-                                  <div className="font-bold text-lg text-primary w-[15%] text-center">
-                                    {field.value}
-                                  </div>
-                                </div>
+                                <ModernSlider
+                                  value={field.value}
+                                  onChange={field.onChange}
+                                  min={1}
+                                  max={20}
+                                  label=""
+                                  unit="testers"
+                                  accentColor="primary"
+                                />
                               </FormControl>
                               <FormDescription className="mt-4 flex items-start gap-2 bg-secondary/80 p-3 rounded-lg border border-border">
                                 <AlertCircle className="w-5 h-5 text-muted-foreground mt-0.5 flex-shrink-0" />
@@ -753,21 +981,15 @@ export default function SubmitAppPage() {
                             <FormItem>
                               <FormLabel>Test Duration (Days)</FormLabel>
                               <FormControl>
-                                <div className="flex items-center gap-4">
-                                  <Slider
-                                    defaultValue={[field.value]}
-                                    min={1}
-                                    max={20}
-                                    step={1}
-                                    onValueChange={(value) =>
-                                      field.onChange(value[0])
-                                    }
-                                    className={cn("w-[85%]", field.name)}
-                                  />
-                                  <div className="font-bold text-lg text-primary w-[15%] text-center">
-                                    {field.value}
-                                  </div>
-                                </div>
+                                <ModernSlider
+                                  value={field.value}
+                                  onChange={field.onChange}
+                                  min={1}
+                                  max={20}
+                                  label=""
+                                  unit="days"
+                                  accentColor="primary"
+                                />
                               </FormControl>
                               <FormDescription className="mt-4 flex items-start gap-2 bg-secondary/80 p-3 rounded-lg border border-border">
                                 <AlertCircle className="w-5 h-5 text-muted-foreground mt-0.5 flex-shrink-0" />

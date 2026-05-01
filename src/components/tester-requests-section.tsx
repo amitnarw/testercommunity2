@@ -18,6 +18,11 @@ import {
   Star,
   Loader2,
   Users,
+  CheckCircle2,
+  XCircle,
+  Clock,
+  CalendarDays,
+  Info,
 } from "lucide-react";
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -48,6 +53,9 @@ import { useR2 } from "@/hooks/useR2";
 import { cn } from "@/lib/utils";
 
 import { ActionFeedbackDialog } from "@/components/action-feedback-dialog";
+import { SafeImage } from "@/components/safe-image";
+import { format } from "date-fns";
+import { updateDailyVerificationStatus } from "@/lib/apiCalls";
 
 export interface TesterRequestsSectionProps {
   hubId: string;
@@ -65,6 +73,16 @@ export function TesterRequestsSection({
   >(null);
   const [isRejectModalOpen, setIsRejectModalOpen] = useState(false);
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
+  const [isVerificationModalOpen, setIsVerificationModalOpen] = useState(false);
+  const [selectedVerification, setSelectedVerification] = useState<{
+    id: number;
+    dayNumber: number;
+    proofImageUrl: string;
+    status: "PENDING" | "VERIFIED" | "REJECTED";
+    verifiedAt: string;
+    rejectionReason?: string;
+    metaData?: any;
+  } | null>(null);
   const [processingId, setProcessingId] = useState<string | null>(null);
 
   // Feedback State
@@ -94,6 +112,8 @@ export function TesterRequestsSection({
   );
 
   const [uploadPercent, setUploadPercent] = useState(0);
+  const [verificationRejectionReason, setVerificationRejectionReason] = useState("");
+  const [isUpdatingVerification, setIsUpdatingVerification] = useState(false);
 
   const pendingRequests = requests.filter((r) => r.status === "PENDING");
   const joinedTesters = requests.filter((r) => r.status !== "PENDING");
@@ -227,6 +247,52 @@ export function TesterRequestsSection({
           actionLabel: "Close",
         });
       }
+    }
+  };
+
+  const handleUpdateVerificationStatus = async (status: "VERIFIED" | "REJECTED") => {
+    if (!selectedVerification) return;
+    if (status === "REJECTED" && !verificationRejectionReason.trim()) {
+      setFeedback({
+        open: true,
+        status: "error",
+        title: "Reason required",
+        description: "Please provide a reason for rejection.",
+        actionLabel: "Close",
+      });
+      return;
+    }
+
+    setIsUpdatingVerification(true);
+    try {
+      await updateDailyVerificationStatus({
+        id: selectedVerification.id.toString(),
+        status,
+        reason: verificationRejectionReason,
+      });
+
+      setFeedback({
+        open: true,
+        status: "success",
+        title: "Verification Updated",
+        description: `Verification has been ${status.toLowerCase()}.`,
+        actionLabel: "Done",
+      });
+
+      setIsVerificationModalOpen(false);
+      setSelectedVerification(null);
+      setVerificationRejectionReason("");
+      refetch();
+    } catch (error: any) {
+      setFeedback({
+        open: true,
+        status: "error",
+        title: "Update Failed",
+        description: error.message || "Could not update verification status.",
+        actionLabel: "Close",
+      });
+    } finally {
+      setIsUpdatingVerification(false);
     }
   };
 
@@ -492,7 +558,7 @@ export function TesterRequestsSection({
                 <TableRow>
                   <TableHead className="w-[300px]">Tester</TableHead>
                   <TableHead>Status</TableHead>
-                  <TableHead className="text-right">Progress</TableHead>
+                  <TableHead className="text-center">Verification</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -534,10 +600,52 @@ export function TesterRequestsSection({
                           {req.status}
                         </Badge>
                       </TableCell>
-                      <TableCell className="text-right">
-                        <span className="text-xs font-medium">
-                          {req.daysCompleted || 0} days
-                        </span>
+                      <TableCell className="text-center">
+                        <div className="flex items-center justify-center gap-1 flex-wrap">
+                          {Array.from({ length: 10 }, (_, i) => {
+                            const dayNum = i + 1;
+                            const verification = req.dailyVerifications?.find(
+                              (v) => v.dayNumber === dayNum,
+                            );
+                            return (
+                              <button
+                                key={dayNum}
+                                onClick={() => {
+                                  if (verification) {
+                                    setSelectedVerification(verification);
+                                    setIsVerificationModalOpen(true);
+                                  }
+                                }}
+                                className={cn(
+                                  "h-6 w-6 rounded-full flex items-center justify-center text-[10px] font-bold transition-all",
+                                  verification?.status === "VERIFIED" &&
+                                    "bg-emerald-500/20 text-emerald-600 hover:bg-emerald-500/30 cursor-pointer",
+                                  verification?.status === "REJECTED" &&
+                                    "bg-red-500/20 text-red-600 hover:bg-red-500/30 cursor-pointer",
+                                  verification?.status === "PENDING" &&
+                                    "bg-amber-500/20 text-amber-600 hover:bg-amber-500/30 cursor-pointer",
+                                  !verification &&
+                                    "bg-muted text-muted-foreground cursor-default",
+                                )}
+                                title={
+                                  verification
+                                    ? `Day ${dayNum}: ${verification.status}`
+                                    : `Day ${dayNum}: Not submitted`
+                                }
+                              >
+                                {verification?.status === "VERIFIED" ? (
+                                  <CheckCircle2 className="h-3.5 w-3.5" />
+                                ) : verification?.status === "REJECTED" ? (
+                                  <XCircle className="h-3.5 w-3.5" />
+                                ) : verification?.status === "PENDING" ? (
+                                  <Clock className="h-3.5 w-3.5" />
+                                ) : (
+                                  <span className="opacity-50">{dayNum}</span>
+                                )}
+                              </button>
+                            );
+                          })}
+                        </div>
                       </TableCell>
                     </motion.tr>
                   ))}
@@ -581,13 +689,50 @@ export function TesterRequestsSection({
                     </Badge>
                   </div>
 
-                  <div className="flex items-center justify-between text-xs bg-muted/30 p-2 rounded-lg">
-                    <span className="text-muted-foreground uppercase text-[8px]">
-                      Progress
-                    </span>
-                    <span className="font-medium">
-                      {req.daysCompleted || 0} days
-                    </span>
+                  <div className="flex items-center justify-center gap-1 flex-wrap">
+                    {Array.from({ length: 10 }, (_, i) => {
+                      const dayNum = i + 1;
+                      const verification = req.dailyVerifications?.find(
+                        (v) => v.dayNumber === dayNum,
+                      );
+                      return (
+                        <button
+                          key={dayNum}
+                          onClick={() => {
+                            if (verification) {
+                              setSelectedVerification(verification);
+                              setIsVerificationModalOpen(true);
+                            }
+                          }}
+                          className={cn(
+                            "h-5 w-5 rounded-full flex items-center justify-center text-[8px] font-bold transition-all",
+                            verification?.status === "VERIFIED" &&
+                              "bg-emerald-500/20 text-emerald-600 hover:bg-emerald-500/30 cursor-pointer",
+                            verification?.status === "REJECTED" &&
+                              "bg-red-500/20 text-red-600 hover:bg-red-500/30 cursor-pointer",
+                            verification?.status === "PENDING" &&
+                              "bg-amber-500/20 text-amber-600 hover:bg-amber-500/30 cursor-pointer",
+                            !verification &&
+                              "bg-muted text-muted-foreground cursor-default",
+                          )}
+                          title={
+                            verification
+                              ? `Day ${dayNum}: ${verification.status}`
+                              : `Day ${dayNum}: Not submitted`
+                          }
+                        >
+                          {verification?.status === "VERIFIED" ? (
+                            <CheckCircle2 className="h-3 w-3" />
+                          ) : verification?.status === "REJECTED" ? (
+                            <XCircle className="h-3 w-3" />
+                          ) : verification?.status === "PENDING" ? (
+                            <Clock className="h-3 w-3" />
+                          ) : (
+                            <span className="opacity-50">{dayNum}</span>
+                          )}
+                        </button>
+                      );
+                    })}
                   </div>
                 </motion.div>
               ))}
@@ -884,6 +1029,200 @@ export function TesterRequestsSection({
           </div>
         </DialogContent>
       </Dialog>
+
+      {/* Verification Details Modal */}
+      <Dialog
+        open={isVerificationModalOpen}
+        onOpenChange={setIsVerificationModalOpen}
+      >
+        <DialogContent
+          className={cn(
+            "p-0 overflow-hidden border-none bg-background shadow-2xl block max-h-[90vh] md:max-h-none md:h-auto gap-0 rounded-[2rem]",
+            selectedVerification?.proofImageUrl
+              ? "max-w-[95vw] sm:max-w-4xl"
+              : "max-w-[95vw] sm:max-w-md",
+          )}
+        >
+          <div
+            className={cn(
+              "flex flex-col h-auto",
+              selectedVerification?.proofImageUrl
+                ? "md:grid md:grid-cols-5 md:h-[600px]"
+                : "md:h-auto",
+            )}
+          >
+            {/* Left: Image Preview (3 cols) */}
+            {selectedVerification?.proofImageUrl && (
+              <div className="md:col-span-3 relative bg-black/5 dark:bg-black flex items-center justify-center p-4 border-b md:border-b-0 md:border-r border-border h-64 shrink-0 md:h-full">
+                <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px] dark:bg-[linear-gradient(to_right,#52525b18_1px,transparent_1px),linear-gradient(to_bottom,#52525b18_1px,transparent_1px)]"></div>
+                <div className="relative w-full h-full max-h-[500px] aspect-[9/16] rounded-xl overflow-hidden shadow-none md:shadow-2xl group">
+                  <SafeImage
+                    src={selectedVerification.proofImageUrl}
+                    alt={`Day ${selectedVerification.dayNumber} Proof`}
+                    fill
+                    className="object-contain md:object-cover transition-transform duration-700 group-hover:scale-105"
+                  />
+                </div>
+              </div>
+            )}
+
+            {/* Right: Metadata */}
+            <div
+              className={cn(
+                "flex flex-col w-full md:h-full bg-background md:bg-muted/5 md:overflow-hidden",
+                selectedVerification?.proofImageUrl ? "md:col-span-2" : "",
+              )}
+            >
+              <DialogHeader className="p-6 sm:p-8 pb-4 border-b border-border space-y-1 shrink-0 bg-muted/5">
+                <div className="flex items-center gap-3">
+                  <div className="h-10 w-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary shadow-sm ring-1 ring-primary/20">
+                    <Smartphone className="w-5 h-5" />
+                  </div>
+                  <div className="text-left">
+                    <DialogTitle className="text-xl font-bold tracking-tight">
+                      Day {selectedVerification?.dayNumber} Verification
+                    </DialogTitle>
+                    <p className="text-xs text-muted-foreground font-medium">
+                      Verification proof and status
+                    </p>
+                  </div>
+                </div>
+              </DialogHeader>
+
+              <div className="md:flex-1 md:overflow-y-auto p-3 sm:p-6 space-y-8">
+                {/* Status Section */}
+                <div className="space-y-3">
+                  <h4 className="text-xs font-bold text-muted-foreground uppercase tracking-widest">
+                    Status
+                  </h4>
+                  <div
+                    className={cn(
+                      "flex items-center gap-3 p-4 rounded-xl border",
+                      selectedVerification?.status === "VERIFIED"
+                        ? "bg-emerald-500/10 border-emerald-500/20 text-emerald-600 dark:text-emerald-400"
+                        : selectedVerification?.status === "REJECTED"
+                          ? "bg-red-500/10 border-red-500/20 text-red-600 dark:text-red-400"
+                          : "bg-amber-500/10 border-amber-500/20 text-amber-600 dark:text-amber-400",
+                    )}
+                  >
+                    {selectedVerification?.status === "VERIFIED" ? (
+                      <CheckCircle2 className="w-6 h-6" />
+                    ) : selectedVerification?.status === "REJECTED" ? (
+                      <XCircle className="w-6 h-6" />
+                    ) : (
+                      <Clock className="w-6 h-6" />
+                    )}
+                    <div>
+                      <p className="font-bold text-lg">
+                        {selectedVerification?.status}
+                      </p>
+                      <p className="text-xs opacity-70">
+                        {selectedVerification?.status === "VERIFIED"
+                          ? "Successfully verified"
+                          : "Pending review"}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Security Metadata */}
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <h4 className="text-xs font-bold text-muted-foreground uppercase tracking-widest">
+                      Security Metadata
+                    </h4>
+                  </div>
+
+                  <div className="grid grid-cols-1 gap-2">
+                    <div className="flex items-center justify-between p-3 bg-muted/50 rounded-lg border border-border">
+                      <div className="flex items-center gap-2 text-muted-foreground">
+                        <CalendarDays className="w-4 h-4" />
+                        <span className="text-xs font-medium">Timestamp</span>
+                      </div>
+                      <span className="text-end text-xs font-mono text-foreground">
+                        {selectedVerification?.verifiedAt
+                          ? format(
+                              new Date(selectedVerification.verifiedAt),
+                              "PPP p",
+                            )
+                          : "N/A"}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                {selectedVerification?.rejectionReason && (
+                  <div className="p-4 bg-red-500/10 border border-red-500/20 rounded-xl space-y-2">
+                    <h5 className="text-sm font-bold text-red-600 dark:text-red-400 flex items-center gap-2">
+                      <Info className="w-4 h-4" /> Rejection Reason
+                    </h5>
+                    <p className="text-xs text-red-600/80 dark:text-red-300/80 leading-relaxed">
+                      {selectedVerification.rejectionReason}
+                    </p>
+                  </div>
+                )}
+
+                {/* Rejection Reason Input */}
+                {selectedVerification?.status !== "VERIFIED" && (
+                  <div className="space-y-2">
+                    <label className="text-xs font-bold text-muted-foreground uppercase tracking-widest">
+                      {selectedVerification?.status === "REJECTED"
+                        ? "Update Rejection Reason"
+                        : "Rejection Reason"}
+                    </label>
+                    <Textarea
+                      placeholder="Enter reason for rejection..."
+                      className="min-h-[80px] text-sm resize-none"
+                      value={verificationRejectionReason}
+                      onChange={(e) => setVerificationRejectionReason(e.target.value)}
+                    />
+                  </div>
+                )}
+              </div>
+
+              {/* Action Buttons */}
+              <div className="p-6 border-t border-border bg-muted/20 shrink-0 flex flex-col gap-2">
+                <div className="flex gap-3">
+                  <Button
+                    variant="outline"
+                    className="flex-1 h-11 font-bold border-red-500/20 bg-red-500/5 text-red-600 hover:bg-red-500/10 hover:text-red-700 hover:border-red-500/40"
+                    onClick={() => handleUpdateVerificationStatus("REJECTED")}
+                    disabled={
+                      isUpdatingVerification ||
+                      selectedVerification?.status === "REJECTED"
+                    }
+                  >
+                    <XCircle className="w-4 h-4 mr-2" />
+                    {isUpdatingVerification ? "Rejecting..." : "Reject"}
+                  </Button>
+                  <Button
+                    className="flex-1 h-11 font-bold bg-emerald-600 hover:bg-emerald-700 text-white shadow-lg shadow-emerald-500/20"
+                    onClick={() => handleUpdateVerificationStatus("VERIFIED")}
+                    disabled={
+                      isUpdatingVerification ||
+                      selectedVerification?.status === "VERIFIED"
+                    }
+                  >
+                    <CheckCircle2 className="w-4 h-4 mr-2" />
+                    {isUpdatingVerification ? "Approving..." : "Approve"}
+                  </Button>
+                </div>
+                <p className="text-[10px] text-muted-foreground text-center">
+                  Auto-approved proofs can be manually rejected if needed
+                </p>
+              </div>
+
+              <div className="p-6 border-t border-border bg-muted/20 shrink-0">
+                <p className="text-[10px] text-center text-muted-foreground">
+                  Verification ID: {selectedVerification?.id} • Proof of daily
+                  check-in
+                </p>
+              </div>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
       {/* Feedback Dialog */}
       <ActionFeedbackDialog
         open={feedback.open}
