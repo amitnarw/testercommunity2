@@ -28,6 +28,7 @@ import {
   Star,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { Progress } from "@/components/ui/progress";
 import { BackButton } from "@/components/back-button";
 import { useSingleHubAppDetails } from "@/hooks/useHub";
 import { SafeImage } from "@/components/safe-image";
@@ -126,6 +127,47 @@ export default function AdminSubmissionDetailPage({
   const visitUrl = `https://play.google.com/store/apps/details?id=${project.androidApp.packageName}`;
   const requiredTesters = project?.totalTester || 0;
 
+  // Analytics Calculations
+  const activeTestersCount =
+    project.testerRelations?.filter((r) => r.status === "IN_PROGRESS")?.length ||
+    0;
+  const pendingTestersCount =
+    project.testerRelations?.filter((r) => r.status === "PENDING")?.length || 0;
+  const completedTestersCount =
+    project.testerRelations?.filter((r) => r.status === "COMPLETED")?.length ||
+    0;
+  const totalJoinedCount = project.testerRelations?.length || 0;
+
+  const currentDay = project.currentDay || 0;
+  const totalDay = project.totalDay || 14;
+  const progressPercent = Math.min(
+    Math.round((currentDay / totalDay) * 100),
+    100,
+  );
+  const daysRemaining = Math.max(totalDay - currentDay, 0);
+
+  const lastActivityAt = project.testerRelations
+    ?.map((r) => (r.lastActivityAt ? new Date(r.lastActivityAt) : null))
+    .filter((d): d is Date => d !== null)
+    .reduce(
+      (max, d) => (max && d > max ? d : max || d),
+      null as Date | null,
+    );
+
+  const averageProgress =
+    project.testerRelations
+      ?.filter((r) => r.status === "IN_PROGRESS" || r.status === "COMPLETED")
+      ?.reduce((acc, r) => acc + (r.daysCompleted || 0), 0) /
+    (activeTestersCount + completedTestersCount) || 0;
+
+  const feedbackStats = {
+    BUG: project.feedback?.filter((f) => f.type === "BUG").length || 0,
+    SUGGESTION:
+      project.feedback?.filter((f) => f.type === "SUGGESTION").length || 0,
+    PRAISE: project.feedback?.filter((f) => f.type === "PRAISE").length || 0,
+    TOTAL: project.feedback?.length || 0,
+  };
+
   return (
     <div className="bg-[#f8fafc] dark:bg-[#0f151e] text-foreground min-h-screen pb-16">
       <div className="container mx-auto px-4 md:px-6">
@@ -169,9 +211,9 @@ export default function AdminSubmissionDetailPage({
                         }
                         className={
                           project.status === "ACCEPTED" ||
-                          project.status === "AVAILABLE" ||
-                          project.status === "IN_TESTING" ||
-                          project.status === "COMPLETED"
+                            project.status === "AVAILABLE" ||
+                            project.status === "IN_TESTING" ||
+                            project.status === "COMPLETED"
                             ? "bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 font-bold border-emerald-500/20"
                             : "font-bold"
                         }
@@ -183,17 +225,17 @@ export default function AdminSubmissionDetailPage({
                       project.status === "AVAILABLE" ||
                       project.status === "IN_TESTING" ||
                       project.status === "COMPLETED") && (
-                      <p className="text-sm text-muted-foreground max-w-xl leading-snug">
-                        {project.status === "ACCEPTED" &&
-                          "This application has been approved. It is currently in the queue waiting for setup before becoming available to testers."}
-                        {project.status === "AVAILABLE" &&
-                          "This application is active and listed on the Dashboard. Testers can now join this project."}
-                        {project.status === "IN_TESTING" &&
-                          "Active testing phase. Testers are participating and feedback is being collected."}
-                        {project.status === "COMPLETED" &&
-                          "Testing completed. All required testers have participated and duration fulfilled."}
-                      </p>
-                    )}
+                        <p className="text-sm text-muted-foreground max-w-xl leading-snug">
+                          {project.status === "ACCEPTED" &&
+                            "This application has been approved. It is currently in the queue waiting for setup before becoming available to testers."}
+                          {project.status === "AVAILABLE" &&
+                            "This application is active and listed on the Dashboard. Testers can now join this project."}
+                          {project.status === "IN_TESTING" &&
+                            "Active testing phase. Testers are participating and feedback is being collected."}
+                          {project.status === "COMPLETED" &&
+                            "Testing completed. All required testers have participated and duration fulfilled."}
+                        </p>
+                      )}
                   </div>
                 </div>
               </div>
@@ -245,7 +287,7 @@ export default function AdminSubmissionDetailPage({
             </div>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 w-full items-stretch">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 w-full items-stretch">
             {/* APP IDENTITY & DETAILS */}
             <Card className="border border-border/50 shadow-sm bg-card rounded-3xl overflow-hidden h-full flex flex-col">
               <CardHeader className="bg-secondary/20 border-b border-border/50 pb-4">
@@ -430,6 +472,180 @@ export default function AdminSubmissionDetailPage({
             </Card>
           </div>
 
+          {/* LIVE TESTING ANALYTICS */}
+          <Card className="border border-border/50 shadow-sm bg-card rounded-3xl overflow-hidden h-full flex flex-col">
+            <CardHeader className="bg-primary/5 border-b border-border/50 pb-4">
+              <CardTitle className="text-lg flex items-center gap-2 text-primary">
+                <Activity className="w-5 h-5" />
+                Live Testing Analytics
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="p-6 space-y-8 flex-1 flex flex-col justify-between">
+              {/* Progress Section */}
+              <div className="space-y-4">
+                <div className="flex justify-between items-end">
+                  <div className="space-y-1">
+                    <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider">
+                      Testing Timeline
+                    </span>
+                    <p className="text-2xl font-black">
+                      Day {currentDay}{" "}
+                      <span className="text-sm font-bold text-muted-foreground">
+                        / {totalDay}
+                      </span>
+                    </p>
+                  </div>
+                  <Badge
+                    variant="secondary"
+                    className="bg-primary/10 text-primary font-bold"
+                  >
+                    {progressPercent}% Complete
+                  </Badge>
+                </div>
+                <Progress value={progressPercent} className="h-3" />
+                <div className="flex flex-col gap-1.5">
+                  <p className="text-xs text-muted-foreground flex items-center gap-1.5 font-medium">
+                    <Clock className="w-3.5 h-3.5" />
+                    {daysRemaining > 0
+                      ? `${daysRemaining} days remaining in testing cycle`
+                      : "Testing cycle completed"}
+                  </p>
+                  {(activeTestersCount > 0 || completedTestersCount > 0) && (
+                    <p className="text-xs text-muted-foreground flex items-center gap-1.5 font-medium">
+                      <Activity className="w-3.5 h-3.5" />
+                      Average Tester Progress: {averageProgress.toFixed(1)} /{" "}
+                      {totalDay} Days
+                    </p>
+                  )}
+                </div>
+              </div>
+
+              {/* Tester Funnel */}
+              <div className="space-y-4">
+                <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider">
+                  Tester Pipeline
+                </span>
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="bg-secondary/20 p-3 rounded-2xl border border-border/50 space-y-1">
+                    <p className="text-xs font-bold text-muted-foreground uppercase">
+                      Active
+                    </p>
+                    <p className="text-xl font-black text-emerald-600">
+                      {activeTestersCount}
+                    </p>
+                  </div>
+                  <div className="bg-secondary/20 p-3 rounded-2xl border border-border/50 space-y-1">
+                    <p className="text-xs font-bold text-muted-foreground uppercase">
+                      Completed
+                    </p>
+                    <p className="text-xl font-black text-blue-600">
+                      {completedTestersCount}
+                    </p>
+                  </div>
+                  <div className="bg-secondary/20 p-3 rounded-2xl border border-border/50 space-y-1">
+                    <p className="text-xs font-bold text-muted-foreground uppercase">
+                      Pending
+                    </p>
+                    <p className="text-xl font-black text-amber-600">
+                      {pendingTestersCount}
+                    </p>
+                  </div>
+                  <div className="bg-secondary/20 p-3 rounded-2xl border border-border/50 space-y-1">
+                    <p className="text-xs font-bold text-muted-foreground uppercase">
+                      Joined
+                    </p>
+                    <p className="text-xl font-black text-foreground">
+                      {totalJoinedCount}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Feedback Summary */}
+              <div className="space-y-4 pt-2 border-t border-border/50">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider">
+                    Feedback Summary
+                  </span>
+                  <Badge variant="outline" className="text-[10px] font-bold">
+                    {feedbackStats.TOTAL} Total
+                  </Badge>
+                </div>
+                <div className="flex gap-4">
+                  <div className="flex flex-col">
+                    <span className="text-[10px] font-bold text-red-500 uppercase">
+                      Bugs
+                    </span>
+                    <span className="text-lg font-black">
+                      {feedbackStats.BUG}
+                    </span>
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="text-[10px] font-bold text-blue-500 uppercase">
+                      Suggestions
+                    </span>
+                    <span className="text-lg font-black">
+                      {feedbackStats.SUGGESTION}
+                    </span>
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="text-[10px] font-bold text-emerald-500 uppercase">
+                      Praise
+                    </span>
+                    <span className="text-lg font-black">
+                      {feedbackStats.PRAISE}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Promo & Financial Info (If applicable) */}
+              {project.promoCode && (
+                <div className="pt-4 border-t border-border/50">
+                  <div className="bg-primary/5 p-3 rounded-2xl border border-primary/20 flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <Package className="w-4 h-4 text-primary" />
+                      <span className="text-xs font-bold text-foreground">
+                        Promo Code: {project.promoCode.code}
+                      </span>
+                    </div>
+                    <Badge className="bg-emerald-500 text-white font-bold text-[10px]">
+                      {project.promoCode.discountType === "PERCENTAGE"
+                        ? `${project.promoCode.discountValue}% OFF`
+                        : `Fixed Reward`}
+                    </Badge>
+                  </div>
+                </div>
+              )}
+
+              {/* Health Indicator */}
+              <div className="pt-2">
+                <div className="flex flex-col gap-3 p-3 bg-emerald-500/5 rounded-2xl border border-emerald-500/10">
+                  <div className="flex items-center gap-3">
+                    <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                    <p className="text-xs font-bold text-emerald-700 dark:text-emerald-400">
+                      Project is active and collecting data
+                    </p>
+                  </div>
+                  {lastActivityAt && (
+                    <p className="text-[10px] text-muted-foreground font-medium pl-5">
+                      Latest activity:{" "}
+                      {lastActivityAt.toLocaleDateString(undefined, {
+                        month: "short",
+                        day: "numeric",
+                      })}{" "}
+                      at{" "}
+                      {lastActivityAt.toLocaleTimeString(undefined, {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })}
+                    </p>
+                  )}
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
           {/* Rejection Details Section */}
           {project.status === "REJECTED" && (
             <Card className="border-destructive/20 shadow-sm bg-destructive/5 relative overflow-hidden rounded-3xl">
@@ -456,41 +672,41 @@ export default function AdminSubmissionDetailPage({
 
                   {(project.statusDetails?.image ||
                     project.statusDetails?.video) && (
-                    <div className="space-y-3 pt-2">
-                      <h3 className="text-sm font-bold text-muted-foreground uppercase tracking-wider flex items-center gap-2">
-                        <ShieldAlert className="w-4 h-4" /> Evidence Provided
-                      </h3>
-                      <div className="flex flex-wrap gap-4">
-                        {project.statusDetails?.image && (
-                          <div
-                            className="relative h-48 w-full sm:w-72 rounded-xl overflow-hidden border bg-black/5 cursor-pointer shadow-sm group-hover:shadow-md transition-all"
-                            onClick={() =>
-                              setFullscreenImage(project.statusDetails!.image)
-                            }
-                          >
-                            <SafeImage
-                              src={project.statusDetails.image}
-                              alt="Rejection Image"
-                              fill
-                              className="object-cover"
-                            />
-                            <div className="absolute inset-0 bg-black/0 hover:bg-black/30 transition-colors flex items-center justify-center group">
-                              <Expand className="w-8 h-8 text-white opacity-0 group-hover:opacity-100 transition-all font-bold scale-90 group-hover:scale-100" />
+                      <div className="space-y-3 pt-2">
+                        <h3 className="text-sm font-bold text-muted-foreground uppercase tracking-wider flex items-center gap-2">
+                          <ShieldAlert className="w-4 h-4" /> Evidence Provided
+                        </h3>
+                        <div className="flex flex-wrap gap-4">
+                          {project.statusDetails?.image && (
+                            <div
+                              className="relative h-48 w-full sm:w-72 rounded-xl overflow-hidden border bg-black/5 cursor-pointer shadow-sm group-hover:shadow-md transition-all"
+                              onClick={() =>
+                                setFullscreenImage(project.statusDetails!.image)
+                              }
+                            >
+                              <SafeImage
+                                src={project.statusDetails.image}
+                                alt="Rejection Image"
+                                fill
+                                className="object-cover"
+                              />
+                              <div className="absolute inset-0 bg-black/0 hover:bg-black/30 transition-colors flex items-center justify-center group">
+                                <Expand className="w-8 h-8 text-white opacity-0 group-hover:opacity-100 transition-all font-bold scale-90 group-hover:scale-100" />
+                              </div>
                             </div>
-                          </div>
-                        )}
-                        {project.statusDetails?.video && (
-                          <div className="h-48 w-full sm:w-72 rounded-xl overflow-hidden border bg-black relative shadow-sm">
-                            <video
-                              src={project.statusDetails.video}
-                              controls
-                              className="w-full h-full object-contain"
-                            />
-                          </div>
-                        )}
+                          )}
+                          {project.statusDetails?.video && (
+                            <div className="h-48 w-full sm:w-72 rounded-xl overflow-hidden border bg-black relative shadow-sm">
+                              <video
+                                src={project.statusDetails.video}
+                                controls
+                                className="w-full h-full object-contain"
+                              />
+                            </div>
+                          )}
+                        </div>
                       </div>
-                    </div>
-                  )}
+                    )}
                 </div>
               </CardContent>
             </Card>
@@ -500,16 +716,16 @@ export default function AdminSubmissionDetailPage({
           {(project.status === "AVAILABLE" ||
             project.status === "IN_TESTING" ||
             project.status === "COMPLETED") && (
-            <div className="bg-card rounded-3xl overflow-hidden border border-border/50 shadow-sm">
-              <AdminAssignedTestersTable
-                testerRelations={project.testerRelations}
-                appId={project.id}
-                totalDays={project.totalDay || 14}
-                onRefetch={refetch}
-                appType="FREE"
-              />
-            </div>
-          )}
+              <div className="bg-card rounded-3xl overflow-hidden border border-border/50 shadow-sm">
+                <AdminAssignedTestersTable
+                  testerRelations={project.testerRelations}
+                  appId={project.id}
+                  totalDays={project.totalDay || 14}
+                  onRefetch={refetch}
+                  appType="FREE"
+                />
+              </div>
+            )}
 
           {/* Tester Feedback Section */}
           <SubmittedFeedback

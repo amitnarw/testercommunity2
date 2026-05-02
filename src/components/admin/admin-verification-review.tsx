@@ -227,9 +227,9 @@ export function AdminVerificationReview({
                     <span className="text-xs font-mono font-medium text-foreground">
                       {selectedVerification?.verifiedAt
                         ? format(
-                            new Date(selectedVerification.verifiedAt),
-                            "MMM d, h:mm a",
-                          )
+                          new Date(selectedVerification.verifiedAt),
+                          "MMM d, h:mm a",
+                        )
                         : "N/A"}
                     </span>
                   </div>

@@ -184,11 +184,6 @@ export default function AddAppGuidePage() {
                             Go to the <Highlight>Testers</Highlight> tab.
                           </li>
                           <li>
-                            Find the "Tester lists" section and click "Create
-                            email list" if you don't have one, or select an
-                            existing one.
-                          </li>
-                          <li>
                             In the "Add email addresses" field, paste the
                             following Google Group address. This is our secure,
                             private group of vetted testers.
@@ -401,7 +396,7 @@ export default function AddAppGuidePage() {
                         <ol className="list-decimal list-inside space-y-3 pl-2">
                           <li>
                             On your closed testing page, look for the{" "}
-                            <Highlight>Join on the web</Highlight> link.
+                            <Highlight>Join on Android</Highlight> link.
                           </li>
                           <li>
                             Click the copy icon next to it to copy the URL.
