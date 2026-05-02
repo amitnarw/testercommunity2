@@ -1,5 +1,6 @@
 "use client";
 
+import { Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Ban, Mail, ArrowLeft, Home } from "lucide-react";
@@ -7,6 +8,14 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 export default function BannedPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <BannedPageContent />
+    </Suspense>
+  );
+}
+
+function BannedPageContent() {
   const searchParams = useSearchParams();
   const errorDescription = searchParams.get("error_description") || "Your account has been suspended. Please contact support for more information.";
 
