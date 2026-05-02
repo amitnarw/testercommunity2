@@ -65,7 +65,7 @@ export const SidebarNavLink = ({
             href={href}
             className={cn(
               "flex items-center justify-start w-full h-12 rounded-xl text-white/70 dark:text-black/70 transition-all duration-300 px-3.5",
-              "hover:bg-white/20 hover:text-white dark:hover:text-black",
+              "hover:bg-white/20 hover:text-white dark:hover:bg-black/20 dark:hover:text-black",
               isActive &&
                 "bg-white text-black shadow-xl dark:bg-black dark:text-white dark:from-black dark:to-black",
             )}
@@ -250,7 +250,7 @@ export function BaseSidebar({
                   transition={{ duration: 0.3, ease: "easeOut" }}
                   className="absolute bottom-4 left-0 right-0 pointer-events-none flex justify-center z-20"
                 >
-                  <span className="text-[10px] text-white/70 animate-pulse bg-white/10 px-2 py-1 rounded-full backdrop-blur-sm border border-white/10 shadow-lg">
+                  <span className="text-[10px] text-white/70 dark:text-black/70 animate-pulse bg-white/10 dark:bg-black/10 px-2 py-1 rounded-full backdrop-blur-sm border border-white/10 dark:border-black/10 shadow-lg">
                     Scroll for more
                   </span>
                 </motion.div>
@@ -269,7 +269,7 @@ export function BaseSidebar({
                     onClick={onLogout}
                     className={cn(
                       "flex items-center justify-start w-full h-12 rounded-xl text-white/70 dark:text-black/70 transition-all duration-300 px-3.5",
-                      "hover:bg-white/20 hover:text-white",
+                      "hover:bg-white/20 hover:text-white dark:hover:bg-black/20 dark:hover:text-black",
                     )}
                   >
                     <LogOut className="h-5 w-5 flex-shrink-0" />
