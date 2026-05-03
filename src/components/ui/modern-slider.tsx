@@ -26,7 +26,7 @@ export function ModernSlider({
   const progress = ((value - min) / (max - min)) * 100;
   const sliderRef = useRef<HTMLDivElement>(null);
 
-  const handleDrag = (e: React.MouseEvent | React.TouchEvent) => {
+  const handleDrag = (e: React.MouseEvent | React.TouchEvent | MouseEvent | TouchEvent) => {
     if (!sliderRef.current) return;
     const rect = sliderRef.current.getBoundingClientRect();
     const clientX = "touches" in e ? e.touches[0].clientX : e.clientX;
@@ -120,11 +120,11 @@ export function ModernSlider({
       </div>
 
       {/* Scale markers */}
-      <div className="flex justify-between text-xs text-muted-foreground px-1">
+      {/* <div className="flex justify-between text-xs text-muted-foreground px-1">
         <span>{min}</span>
         <span className="text-primary font-medium">{value}</span>
         <span>{max}</span>
-      </div>
+      </div> */}
     </div>
   );
 }

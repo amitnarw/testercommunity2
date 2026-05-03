@@ -589,6 +589,32 @@ export async function deleteDashboardApp(id: string): Promise<void> {
   }
 }
 
+export async function getDashboardAppById(
+  id: string,
+): Promise<HubSubmittedAppResponse> {
+  try {
+    const response = await api.get(
+      API_ROUTES.DASHBOARD + `/get-dashboard-app/${id}`,
+    );
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error fetching dashboard app by ID:", error);
+    if (axios.isAxiosError(error)) {
+      const status = error.response?.status;
+      const responseData = error.response?.data;
+      console.error("Axios error:", status, responseData);
+
+      throw new Error(
+        responseData?.message || error.message || "Unknown Axios error",
+      );
+    } else if (error instanceof Error) {
+      throw new Error(error.message);
+    } else {
+      throw new Error(JSON.stringify(error));
+    }
+  }
+}
+
 // Hub
 export async function getHubData(): Promise<HubDataResponse> {
   try {
@@ -1133,7 +1159,10 @@ export interface UserTransaction {
   action: string | null;
   points: number | null;
   package: number | null;
+  /** null for legacy rows created before the paymentMethod column was added */
+  paymentMethod: "POINTS" | "PACKAGE" | "PROMO_FREE" | null;
 }
+
 
 export interface UserTransactionsResponse {
   transactions: UserTransaction[];

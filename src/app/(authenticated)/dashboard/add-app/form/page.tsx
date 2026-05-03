@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, Suspense } from "react";
+import { useState, Suspense, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -37,6 +37,7 @@ import {
   useAddDashboardAppSubmit,
   useSaveDashboardAppDraft,
   useDeleteDashboardApp,
+  useDashboardAppById,
 } from "@/hooks/useDashboard";
 import { useQueryClient } from "@tanstack/react-query";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -52,6 +53,8 @@ function AddAppFormContent() {
   const { data: dashboardData } = useDashboardData();
   const userPackages = Number(dashboardData?.wallet) || 0;
   const hasEnoughPackages = userPackages >= 1;
+
+  const { data: draftData, isLoading: isLoadingDraft } = useDashboardAppById(draftId);
 
   // Form state
   const [appName, setAppName] = useState("");
@@ -78,8 +81,26 @@ function AddAppFormContent() {
     data: appCategoriesData,
     isPending: appCategoriesIsPending,
     isError: appCategoriesIsError,
-    error: appCategoriesError,
   } = useAppCategories();
+
+  // Prefill form if draftId exists
+  const [isPrefilled, setIsPrefilled] = useState(false);
+
+  useEffect(() => {
+    if (draftData && !isPrefilled) {
+      setAppName(draftData.androidApp?.appName || "");
+      setTestingUrl(
+        draftData.androidApp?.packageName
+          ? `https://play.google.com/store/apps/details?id=${draftData.androidApp.packageName}`
+          : "",
+      );
+      setLogoUrl(draftData.androidApp?.appLogoUrl || "");
+      setCategory(draftData.androidApp?.appCategoryId?.toString() || "");
+      setInstructions(draftData.instructionsForTester || "");
+      setIsPrefilled(true);
+    }
+  }, [draftData, isPrefilled]);
+
 
   // Save draft mutation - only triggered when user clicks Draft button
   const { mutate: saveDraft, isPending: isSavingDraft } =
@@ -274,6 +295,7 @@ function AddAppFormContent() {
       logoUrl,
       categoryId: parseInt(category),
       instructions: instructions.trim() || null,
+      draftId: draftId || undefined,
     } as any); // Using 'as any' since the exact payload structure depends on your backend
   };
 
@@ -297,8 +319,22 @@ function AddAppFormContent() {
       logoUrl,
       categoryId: parseInt(category) || 0,
       instructions: instructions.trim() || null,
+      draftId: draftId || undefined,
     } as any); // Using 'as any' since the exact payload structure depends on your backend
   };
+
+  if (draftId && isLoadingDraft) {
+    return (
+      <div className="min-h-screen bg-brand-background flex items-center justify-center">
+        <div className="flex flex-col items-center gap-4">
+          <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin" />
+          <p className="text-muted-foreground font-medium">
+            Loading draft details...
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-brand-background max-w-6xl mx-auto px-4 md:px-6 pb-16">

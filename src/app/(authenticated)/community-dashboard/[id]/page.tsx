@@ -25,9 +25,11 @@ import {
   RotateCcw,
   Check,
   XCircle,
+  Users,
 } from "lucide-react";
 import { BackButton } from "@/components/back-button";
 import { AppInfoSidebar } from "@/components/appInfoSidebar";
+import { GoogleGroupBanner } from "@/components/google-group-banner";
 import {
   useAddHubAppTestingRequest,
   useSingleHubAppDetails,
@@ -192,6 +194,8 @@ function AppTestingPageClient({ id }: { id: string }) {
                 className="text-muted-foreground text-md sm:text-lg leading-relaxed"
               />
             </section>
+
+            <GoogleGroupBanner variant="rules" />
 
             {appDetails?.testerRelations?.[0]?.status === "REJECTED" && (
               <motion.section
@@ -364,6 +368,17 @@ function AppTestingPageClient({ id }: { id: string }) {
                     will reset to Day 1. Consistency is key!
                   </p>
                 </Card>
+                <Card className="p-4 bg-gradient-to-br from-primary/10 to-primary/5 hover:shadow-lg transition-shadow border-primary/20">
+                  <div className="flex items-center gap-3 mb-2">
+                    <div className="p-2 bg-primary/20 rounded-lg text-primary">
+                      <Users className="w-5 h-5" />
+                    </div>
+                    <h3 className="font-semibold">Join the Google Group</h3>
+                  </div>
+                  <p className="text-xs text-muted-foreground">
+                    You <strong>must</strong> join our Google Group (appstestlab) to get access to test builds on Google Play.
+                  </p>
+                </Card>
                 <Card className="p-4 bg-gradient-to-br from-secondary to-secondary/50 hover:shadow-lg transition-shadow">
                   <div className="flex items-center gap-3 mb-2">
                     <div className="p-2 bg-primary/10 rounded-lg text-primary">
@@ -432,6 +447,15 @@ function AppTestingPageClient({ id }: { id: string }) {
                     <p className="text-muted-foreground">
                       When you find a bug, describe the steps to reproduce it.
                       Clear context helps developers fix issues faster.
+                    </p>
+                  </div>
+                </div>
+                <div className="bg-gradient-to-br from-primary/20 to-accent/20 p-4 rounded-lg flex items-start gap-3">
+                  <Users className="w-6 h-6 text-primary flex-shrink-0 mt-1" />
+                  <div>
+                    <h4 className="font-semibold">Google Group Access</h4>
+                    <p className="text-muted-foreground">
+                      Membership in the appstestlab Google Group is mandatory. Without it, the Google Play Store will show "App not available".
                     </p>
                   </div>
                 </div>

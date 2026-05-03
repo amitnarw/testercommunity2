@@ -4,9 +4,8 @@ import { useState, useEffect } from "react";
 import { useForm, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { useInView } from "react-intersection-observer";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 import { Card, CardContent } from "@/components/ui/card";
@@ -34,6 +33,7 @@ import {
   PlayCircle,
   Clipboard,
   Check,
+  Loader2,
 } from "lucide-react";
 import {
   FormField,
@@ -239,7 +239,8 @@ export default function SubmitAppPage() {
   const [promoCodeInput, setPromoCodeInput] = useState("");
   const [appliedPromo, setAppliedPromo] = useState<{
     code: string;
-    fixedPoints: number;
+    discountValue: number;
+    discountType: string;
   } | null>(null);
   const [promoCodeError, setPromoCodeError] = useState<string | null>(null);
   const router = useRouter();
@@ -265,10 +266,14 @@ export default function SubmitAppPage() {
   const duration = form.watch("total_days");
 
   useEffect(() => {
+    const calculatedCost = testers * 80 + duration * 10;
     if (appliedPromo) {
-      setCost(appliedPromo.fixedPoints);
+      if (appliedPromo.discountType === "PERCENTAGE") {
+        setCost(Math.max(0, calculatedCost * (1 - appliedPromo.discountValue / 100)));
+      } else {
+        setCost(appliedPromo.discountValue);
+      }
     } else {
-      const calculatedCost = testers * 80 + duration * 10;
       setCost(calculatedCost);
     }
   }, [testers, duration, appliedPromo]);
@@ -337,10 +342,19 @@ export default function SubmitAppPage() {
     isSuccess: isValidPromoSuccess,
   } = useValidatePromoCode({
     onSuccess: (data: any) => {
-      if (data && data.fixedPoints !== undefined) {
+      if (data && data.discountValue !== undefined) {
         setAppliedPromo({
           code: promoCodeInput,
-          fixedPoints: data.fixedPoints,
+          discountValue: data.discountValue,
+          discountType: data.discountType || "FIXED",
+        });
+        setPromoCodeError(null);
+      } else if (data && data.fixedPoints !== undefined) {
+        // Fallback in case some older API returns fixedPoints
+        setAppliedPromo({
+          code: promoCodeInput,
+          discountValue: data.fixedPoints,
+          discountType: "FIXED",
         });
         setPromoCodeError(null);
       }
@@ -391,6 +405,27 @@ export default function SubmitAppPage() {
     reset: addHubAppReset,
   } = useAddHubApp();
 
+  const watchedFields = form.watch();
+
+  const getPendingRequirements = () => {
+    const requirements = [];
+
+    if (!watchedFields.app_name || watchedFields.app_name.length < 3) requirements.push("App Name (min 3 chars)");
+    if (!watchedFields.app_url || !watchedFields.app_url.startsWith('http')) requirements.push("Valid Google Play URL");
+    if (!watchedFields.app_logo_url || !watchedFields.app_logo_url.startsWith('http')) requirements.push("App Logo URL");
+    if (!watchedFields.app_screenshot_url_1 || !watchedFields.app_screenshot_url_1.startsWith('http')) requirements.push("Screenshot 1");
+    if (!watchedFields.app_screenshot_url_2 || !watchedFields.app_screenshot_url_2.startsWith('http')) requirements.push("Screenshot 2");
+    if (!watchedFields.category_id) requirements.push("Category Selection");
+    if (!watchedFields.app_description || watchedFields.app_description.length < 50) requirements.push("Description (min 50 chars)");
+    if (!watchedFields.minimum_android_version) requirements.push("Minimum Android Version");
+    if (isBalanceInsufficient) requirements.push("Sufficient Balance");
+
+    return requirements;
+  };
+
+  const pendingRequirements = getPendingRequirements();
+  const isSubmitDisabled = pendingRequirements.length > 0 || !isMounted || addHubAppIsPending;
+
   if (!isMounted) {
     return null;
   }
@@ -437,7 +472,7 @@ export default function SubmitAppPage() {
           className="w-1/2 px-5 sm:px-10"
         />
 
-        <div className="mx-auto px-2 py-5">
+        <div className="mx-auto px-2 sm:px-5 py-5">
           <div className="lg:grid lg:grid-cols-12 lg:gap-16 bg-background rounded-3xl px-3 sm:px-5">
             {/* Mobile Step Navigator */}
             <nav className="lg:hidden sticky top-12 sm:top-14 z-30 flex items-center justify-around border-b bg-background/80 backdrop-blur-lg">
@@ -620,7 +655,7 @@ export default function SubmitAppPage() {
                                       <span className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center text-xs font-bold text-primary">3</span>
                                       Submit for Google's Review
                                     </p>
-                                    <p className="text-sm">Click <Highlight>Save</Highlight> at the bottom right. This triggers a quick configuration check by Google. Approval is usually very fast (minutes to a few hours).</p>
+                                    <p className="text-sm"><Highlight>Save</Highlight> your changes. Go to Publishing Overview and Send Changes for Review.</p>
                                   </div>
                                 </div>
                               </div>
@@ -1224,34 +1259,56 @@ export default function SubmitAppPage() {
                                       }
                                       className="max-w-[200px] h-9 bg-black/20 border-white/10 text-white placeholder:text-white/40 focus-visible:ring-1 focus-visible:ring-white/20"
                                     />
-                                    {!appliedPromo ? (
-                                      <LoadingButton
-                                        type="button"
-                                        className="h-9 px-4 bg-white/10 hover:bg-white/20 text-white border-0"
-                                        onClick={handleApplyPromo}
-                                        isLoading={isValidatingPromo}
-                                        isError={isValidPromoError}
-                                        isSuccess={isValidPromoSuccess}
-                                        showSuccessState={false}
-                                      >
-                                        Apply
-                                      </LoadingButton>
-                                    ) : (
-                                      <Button
-                                        type="button"
-                                        variant="destructive"
-                                        className="h-9 px-4 bg-red-500/80 hover:bg-red-500/90 text-white border-0"
-                                        onClick={handleRemovePromo}
-                                      >
-                                        Remove
-                                      </Button>
-                                    )}
+                                    <AnimatePresence mode="wait">
+                                      {isValidatingPromo ? (
+                                        <motion.div
+                                          key="loading"
+                                          initial={{ opacity: 0 }}
+                                          animate={{ opacity: 1 }}
+                                          exit={{ opacity: 0 }}
+                                          className="flex items-center justify-center h-9 px-4"
+                                        >
+                                          <Loader2 className="w-5 h-5 text-white animate-spin" />
+                                        </motion.div>
+                                      ) : !appliedPromo ? (
+                                        <motion.div
+                                          key="apply"
+                                          initial={{ opacity: 0 }}
+                                          animate={{ opacity: 1 }}
+                                          exit={{ opacity: 0 }}
+                                        >
+                                          <Button
+                                            type="button"
+                                            className="h-9 px-4 bg-white/10 hover:bg-white/20 text-white border-0 hover:shadow-white/0"
+                                            onClick={handleApplyPromo}
+                                          >
+                                            Apply
+                                          </Button>
+                                        </motion.div>
+                                      ) : (
+                                        <motion.div
+                                          key="remove"
+                                          initial={{ opacity: 0 }}
+                                          animate={{ opacity: 1 }}
+                                          exit={{ opacity: 0 }}
+                                        >
+                                          <Button
+                                            type="button"
+                                            variant="destructive"
+                                            className="h-9 px-4 bg-red-500/80 hover:bg-red-500/90 text-white border-0"
+                                            onClick={handleRemovePromo}
+                                          >
+                                            Remove
+                                          </Button>
+                                        </motion.div>
+                                      )}
+                                    </AnimatePresence>
                                   </div>
                                   {appliedPromo && (
                                     <p className="text-emerald-400 font-medium text-xs flex items-center gap-1.5">
                                       <CheckCircle2 className="w-3.5 h-3.5" />
                                       Promo applied! Cost reduced to{" "}
-                                      {appliedPromo.fixedPoints}.
+                                      {cost}.
                                     </p>
                                   )}
                                   {promoCodeError && !appliedPromo && (
@@ -1263,28 +1320,51 @@ export default function SubmitAppPage() {
                                 </div>
                               </div>
 
-                              {/* Decorative 'Chip' */}
-                              <div className="absolute top-1/2 right-8 -translate-y-1/2 w-12 h-16 rounded-lg bg-gradient-to-br from-yellow-200/20 to-yellow-500/10 border border-white/10 backdrop-blur-sm opacity-50 hidden sm:block"></div>
+                              {/* Highly Realistic Chip Pattern */}
+                              <div className="absolute top-1/2 right-12 -translate-y-1/2 w-12 h-9 rounded-md bg-gradient-to-br from-yellow-200/40 via-yellow-400/20 to-yellow-500/30 border border-white/30 backdrop-blur-md hidden sm:block overflow-hidden shadow-inner">
+                                <div className="absolute inset-0">
+                                  {/* Contact Grid */}
+                                  <div className="absolute inset-0 grid grid-cols-3 grid-rows-2 gap-[0.5px]">
+                                    <div className="border-[0.5px] border-white/10" />
+                                    <div className="border-[0.5px] border-white/10" />
+                                    <div className="border-[0.5px] border-white/10" />
+                                    <div className="border-[0.5px] border-white/10" />
+                                    <div className="border-[0.5px] border-white/10" />
+                                    <div className="border-[0.5px] border-white/10" />
+                                  </div>
+
+                                  {/* Center Etching Core */}
+                                  <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-5 h-6 border-x border-white/20 bg-white/5 rounded-[1px]" />
+
+                                  {/* Horizontal separators */}
+                                  <div className="absolute top-[30%] left-0 w-full h-[0.5px] bg-white/10" />
+                                  <div className="absolute top-[70%] left-0 w-full h-[0.5px] bg-white/10" />
+
+                                  {/* Fine circuitry detail */}
+                                  <div className="absolute top-[45%] left-1/2 -translate-x-1/2 w-2 h-[0.5px] bg-white/40" />
+                                  <div className="absolute top-[55%] left-1/2 -translate-x-1/2 w-2 h-[0.5px] bg-white/40" />
+                                </div>
+                              </div>
                             </div>
                           </div>
                         )}
 
                         <div className="flex flex-col items-end gap-3 w-full">
                           <LoadingButton
-                            className="rounded-xl"
+                            className="rounded-xl px-8 h-12 text-base font-semibold transition-all duration-300 hover:scale-[1.02] active:scale-[0.98]"
                             isLoading={addHubAppIsPending}
                             isSuccess={addHubAppIsSuccess}
                             isError={addHubAppIsError}
-                            disabled={isBalanceInsufficient || !isMounted}
+                            disabled={isSubmitDisabled}
                             onClick={() => form.handleSubmit(onSubmit)()}
                           >
                             Submit for Review
                           </LoadingButton>
-                          {Object.keys(form.formState.errors).length > 0 && (
-                            <div className="text-destructive text-sm font-medium animate-pulse flex items-center gap-1">
-                              <AlertCircle className="w-4 h-4" />
-                              Please fix the errors above before submitting.
-                            </div>
+
+                          {pendingRequirements.length > 0 && (
+                            <p className="text-[11px] text-neutral-500 dark:text-white/40 font-medium mt-2">
+                              <span className="opacity-60">Requirements:</span> {pendingRequirements.join(", ")}
+                            </p>
                           )}
                         </div>
                       </CardContent>

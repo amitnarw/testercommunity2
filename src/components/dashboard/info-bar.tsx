@@ -37,11 +37,11 @@ export default function InfoBar({project, isUnderReviewOrRejected, feedbackBreak
             <div className='flex flex-row gap-1 items-center justify-center rounded-2xl overflow-hidden col-span-3 sm:col-span-2'>
                 <div className="bg-gradient-to-tl from-primary/20 to-primary text-primary-foreground p-5 h-full w-full flex flex-col items-center justify-center gap-1">
                     <p className="text-xs">Testers</p>
-                    <p className="text-4xl sm:text-5xl font-bold">{project.testersStarted}<span className='text-2xl text-white/50'>/14</span></p>
+                    <p className="text-4xl sm:text-5xl font-bold">{project.testersStarted}<span className='text-2xl text-white/50'>/{project.testersCompleted}</span></p>
                 </div>
                 <div className="bg-gradient-to-tr from-primary/20 to-primary text-primary-foreground p-5 h-full w-full flex flex-col items-center justify-center gap-1">
                     <p className="text-xs">Days</p>
-                    <p className="text-4xl sm:text-5xl font-bold">{isUnderReviewOrRejected ? 0 : project.totalDays}<span className='text-2xl text-white/50'>/16</span></p>
+                    <p className="text-4xl sm:text-5xl font-bold">{isUnderReviewOrRejected ? 0 : project.currentDay}<span className='text-2xl text-white/50'>/{project.totalDays}</span></p>
                 </div>
             </div>
 

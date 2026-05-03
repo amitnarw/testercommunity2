@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import {
   ArrowUpRight,
@@ -13,6 +13,8 @@ import {
   Bell,
   LayoutDashboard,
   Briefcase,
+  ChevronRight,
+  ChevronLeft,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -23,8 +25,8 @@ import { UserWallerResponse } from "@/lib/types";
 import { Skeleton } from "@/components/ui/skeleton";
 import { UserTransaction } from "@/lib/apiCalls";
 import {
-  LineChart,
-  Line,
+  AreaChart,
+  Area,
   XAxis,
   YAxis,
   CartesianGrid,
@@ -133,9 +135,11 @@ const WalletCard = ({
             )}
           </div>
         </div>
-        <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full border border-white/20 flex items-center justify-center bg-white/5 backdrop-blur-md">
-          <Wallet className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
-        </div>
+        <ActionButton
+          icon={Plus}
+          label="Top Up"
+          href="/billing"
+        />
       </div>
 
       <div className="flex justify-between items-end">
@@ -204,46 +208,122 @@ const ActionButton = ({
   </TransitionLink>
 );
 
-const SpendingChart = ({
-  title,
+const UnifiedActivityChart = ({
   data,
-  dataKey,
-  color,
+  totalPackages,
+  totalPoints,
 }: {
-  title: string;
-  data: { name: string; value: number }[];
-  dataKey: string;
-  color: string;
-}) => (
-  <div className="bg-card/50 backdrop-blur-sm border border-border/50 p-4 rounded-2xl hover:bg-card/80 transition-colors duration-300">
-    <p className="text-muted-foreground text-xs font-medium mb-2">{title}</p>
-    <div className="h-24">
-      <ResponsiveContainer width="100%" height="100%">
-        <LineChart data={data} margin={{ top: 5, right: 5, left: -20, bottom: 5 }}>
-          <CartesianGrid strokeDasharray="3 3" stroke="var(--border)" opacity={0.3} />
-          <XAxis dataKey="name" tick={{ fontSize: 10 }} stroke="var(--muted-foreground)" />
-          <YAxis tick={{ fontSize: 10 }} stroke="var(--muted-foreground)" />
-          <Tooltip
-            contentStyle={{
-              backgroundColor: "var(--card)",
-              border: "1px solid var(--border)",
-              borderRadius: "0.5rem",
-              fontSize: "12px",
-            }}
-          />
-          <Line
-            type="monotone"
-            dataKey={dataKey}
-            stroke={color}
-            strokeWidth={2}
-            dot={{ r: 2, fill: color }}
-            activeDot={{ r: 4 }}
-          />
-        </LineChart>
-      </ResponsiveContainer>
+  data: { name: string; package: number; points: number }[];
+  totalPackages: number;
+  totalPoints: number;
+}) => {
+  return (
+    <div className="bg-card/50 backdrop-blur-sm border border-border/50 p-6 md:p-8 rounded-[2.5rem] hover:bg-card/80 transition-all duration-300 group shadow-sm">
+      <div className="flex flex-col md:flex-row justify-between items-start mb-8 gap-6">
+        <div className="space-y-1">
+          <h3 className="text-xl font-bold">Wallet Activity</h3>
+        </div>
+        <div className="flex gap-8">
+          <div className="space-y-1">
+            <div className="flex items-center gap-2">
+              <div className="w-2 h-2 rounded-full bg-[#3b82f6]" />
+              <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground opacity-70">Packages</p>
+            </div>
+            <h4 className="text-2xl font-bold tabular-nums">{totalPackages}</h4>
+          </div>
+          <div className="space-y-1">
+            <div className="flex items-center gap-2">
+              <div className="w-2 h-2 rounded-full bg-[#10b981]" />
+              <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground opacity-70">Points</p>
+            </div>
+            <h4 className="text-2xl font-bold tabular-nums">{totalPoints}</h4>
+          </div>
+        </div>
+      </div>
+
+      <div className="h-64 -mx-2">
+        <ResponsiveContainer width="100%" height="100%">
+          <AreaChart data={data} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+            <defs>
+              <linearGradient id="gradient-package" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.2} />
+                <stop offset="95%" stopColor="#3b82f6" stopOpacity={0} />
+              </linearGradient>
+              <linearGradient id="gradient-points" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="5%" stopColor="#10b981" stopOpacity={0.2} />
+                <stop offset="95%" stopColor="#10b981" stopOpacity={0} />
+              </linearGradient>
+            </defs>
+            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="hsl(var(--border))" opacity={0.1} />
+            <XAxis
+              dataKey="name"
+              axisLine={false}
+              tickLine={false}
+              tick={{ fontSize: 12, fill: 'hsl(var(--muted-foreground))' }}
+              padding={{ left: 10, right: 10 }}
+            />
+            <YAxis
+              axisLine={false}
+              tickLine={false}
+              tick={{ fontSize: 12, fill: 'hsl(var(--muted-foreground))' }}
+              domain={[0, 'auto']}
+            />
+            <Tooltip
+              contentStyle={{
+                backgroundColor: "hsl(var(--card))",
+                border: "1px solid hsl(var(--border))",
+                borderRadius: "1.5rem",
+                padding: "12px 16px",
+                fontSize: "14px",
+                color: "hsl(var(--foreground))",
+                boxShadow: "0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1)",
+                backdropFilter: "blur(10px)",
+              }}
+              cursor={{ stroke: 'hsl(var(--border))', strokeWidth: 2 }}
+            />
+            <Area
+              type="monotone"
+              dataKey="package"
+              name="Packages"
+              stroke="#3b82f6"
+              strokeWidth={3}
+              fillOpacity={1}
+              fill="url(#gradient-package)"
+              dot={{ r: 4, fill: '#3b82f6', stroke: 'hsl(var(--card))', strokeWidth: 2 }}
+              activeDot={{ r: 6, fill: '#3b82f6', stroke: 'hsl(var(--card))', strokeWidth: 2 }}
+            />
+            <Area
+              type="monotone"
+              dataKey="points"
+              name="Points"
+              stroke="#10b981"
+              strokeWidth={3}
+              fillOpacity={1}
+              fill="url(#gradient-points)"
+              dot={{ r: 4, fill: '#10b981', stroke: 'hsl(var(--card))', strokeWidth: 2 }}
+              activeDot={{ r: 6, fill: '#10b981', stroke: 'hsl(var(--card))', strokeWidth: 2 }}
+            />
+          </AreaChart>
+        </ResponsiveContainer>
+      </div>
     </div>
-  </div>
-);
+  );
+};
+
+/** Maps paymentMethod to a tiny pill shown next to the amount */
+const CurrencyBadge = ({ method }: { method: UserTransaction["paymentMethod"] }) => {
+  if (!method) return null; // legacy rows — no badge
+  const config = {
+    POINTS: { label: "pts", className: "bg-emerald-500/10 text-emerald-600 border-emerald-500/20" },
+    PACKAGE: { label: "pkg", className: "bg-blue-500/10 text-blue-600 border-blue-500/20" },
+    PROMO_FREE: { label: "promo", className: "bg-purple-500/10 text-purple-600 border-purple-500/20" },
+  }[method];
+  return (
+    <span className={`inline-flex items-center px-1.5 py-0.5 rounded-full text-[9px] font-semibold border uppercase tracking-wider ${config.className}`}>
+      {config.label}
+    </span>
+  );
+};
 
 const TransactionItem = ({
   item,
@@ -288,13 +368,15 @@ const TransactionItem = ({
       </div>
 
       <div className="flex sm:flex-col justify-between items-center sm:items-end pl-[3.5rem] sm:pl-0">
-        <p
-          className={`font-bold tabular-nums text-sm sm:text-base ${isPositive ? "text-emerald-500" : "text-foreground"
-            }`}
-        >
-          {isPositive ? "+" : ""}
-          {item.amount}
-        </p>
+        <div className="flex items-center gap-1.5">
+          <p
+            className={`font-bold tabular-nums text-sm sm:text-base ${isPositive ? "text-emerald-500" : "text-foreground"
+              }`}
+          >
+            {item.amount}
+          </p>
+          <CurrencyBadge method={item.paymentMethod} />
+        </div>
         <div className="flex items-center gap-2 sm:mt-1">
           <span
             className={`w-2 h-2 rounded-full ${item.status === "Completed" ? "bg-emerald-500" : "bg-yellow-500"
@@ -309,9 +391,18 @@ const TransactionItem = ({
   );
 };
 
+
 export default function WalletPage() {
   const { data: session, isPending } = authClient.useSession();
   const [filter, setFilter] = useState("All");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [page, setPage] = useState(1);
+  const itemsPerPage = 5;
+
+  // Reset to first page when filter or search changes
+  useEffect(() => {
+    setPage(1);
+  }, [filter, searchQuery]);
 
   const {
     data: walletData,
@@ -330,29 +421,76 @@ export default function WalletPage() {
   // Get transactions array from API response
   const transactions = transactionsData?.transactions || [];
 
-  // Calculate total spent from negative transactions in last 30 days
-  const totalPackagesSpent = transactions
-    .filter(t => t.changeType === "negative" && t.package)
-    .reduce((sum, t) => sum + (t.package || 0), 0);
+  // Robust amount extraction helper
+  const getAmountValue = (t: UserTransaction, key: 'points' | 'package') => {
+    if (t[key] !== null && t[key] !== undefined && t[key] !== 0) return Math.abs(t[key] as number);
 
-  const totalPointsSpent = transactions
-    .filter(t => t.changeType === "negative" && t.points)
-    .reduce((sum, t) => sum + (t.points || 0), 0);
+    // Fallback: try to parse from the 'amount' string if it contains the key word
+    const amountStr = t.amount?.toLowerCase() || "";
+    if (amountStr.includes(key)) {
+      const val = parseFloat(amountStr.replace(/[^\d.-]/g, ''));
+      return isNaN(val) ? 0 : Math.abs(val);
+    }
+    return 0;
+  };
 
-  // Prepare chart data from transactions (last 7 transactions for graph)
-  const recentNegativeTransactions = transactions
-    .filter(t => t.changeType === "negative")
-    .slice(0, 7)
-    .reverse();
+  // Improved filtering logic
+  const isSpent = (t: UserTransaction) => {
+    return (
+      t.changeType === "negative" ||
+      t.type?.toLowerCase().includes("spent") ||
+      t.amount?.includes("-")
+    );
+  };
 
-  const packagesChartData = recentNegativeTransactions.map((t, i) => ({
-    name: `T${i + 1}`,
-    value: t.package || 0,
-  }));
+  // Calculate totals for all activity (Purchased + Spent)
+  const totalPackagesActivity = transactions
+    .reduce((sum, t) => sum + getAmountValue(t, 'package'), 0);
 
-  const pointsChartData = recentNegativeTransactions.map((t, i) => ({
-    name: `T${i + 1}`,
-    value: t.points || 0,
+  const totalPointsActivity = transactions
+    .reduce((sum, t) => sum + getAmountValue(t, 'points'), 0);
+
+  // Group transactions by month for the last 6 months
+  const last6MonthsData = [...Array(6)].map((_, i) => {
+    const date = new Date();
+    date.setMonth(date.getMonth() - (5 - i));
+    const month = date.getMonth();
+    const year = date.getFullYear();
+    const monthLabel = date.toLocaleDateString("en-US", { month: "short" });
+
+    // Include ALL transactions for "Activity" view
+    const monthTransactions = transactions.filter(t => {
+      const tDate = new Date(t.date);
+      if (isNaN(tDate.getTime())) return false;
+      return tDate.getMonth() === month && tDate.getFullYear() === year;
+    });
+
+    return {
+      name: monthLabel,
+      package: monthTransactions.reduce((sum, t) => sum + getAmountValue(t, 'package'), 0),
+      points: monthTransactions.reduce((sum, t) => sum + getAmountValue(t, 'points'), 0),
+    };
+  });
+
+  const filteredTransactions = transactions.filter((item: UserTransaction) => {
+    const matchesFilter = filter === "All" || item.type.includes(filter);
+    const matchesSearch =
+      item.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      item.type.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      item.amount.toLowerCase().includes(searchQuery.toLowerCase());
+    return matchesFilter && matchesSearch;
+  });
+
+  const totalPages = Math.ceil(filteredTransactions.length / itemsPerPage);
+  const paginatedTransactions = filteredTransactions.slice(
+    (page - 1) * itemsPerPage,
+    page * itemsPerPage
+  );
+
+  const combinedChartData = last6MonthsData.map(d => ({
+    name: d.name,
+    package: d.package,
+    points: d.points,
   }));
 
   return (
@@ -373,17 +511,11 @@ export default function WalletPage() {
               <h1 className="text-3xl sm:text-5xl font-bold bg-gradient-to-b from-primary to-primary/40 bg-clip-text text-transparent">
                 Wallet
               </h1>
-              <p className="text-muted-foreground text-base md:text-lg max-w-lg">
+              <p className="text-muted-foreground text-base md:text-lg">
                 Manage your points, track transactions, and view your package
                 balance in real-time.
               </p>
             </div>
-            <ActionButton
-              icon={Plus}
-              label="Top Up"
-              primary
-              href="/billing"
-            />
           </motion.div>
 
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
@@ -399,109 +531,113 @@ export default function WalletPage() {
                 walletIsPending={walletIsPending}
               />
 
-              <div className="grid grid-cols-2 gap-4">
-                <SpendingChart
-                  title="Packages Spent"
-                  data={packagesChartData}
-                  dataKey="value"
-                  color="hsl(var(--chart-1))"
-                />
-                <SpendingChart
-                  title="Points Spent"
-                  data={pointsChartData}
-                  dataKey="value"
-                  color="hsl(var(--chart-2))"
-                />
-              </div>
+              <UnifiedActivityChart
+                data={combinedChartData}
+                totalPackages={totalPackagesActivity}
+                totalPoints={totalPointsActivity}
+              />
 
             </motion.div>
 
             {/* Right Column: Transactions */}
-            <motion.div variants={itemVariants} className="lg:col-span-7 space-y-4">
+            <motion.div variants={itemVariants} className="lg:col-span-7 space-y-4 h-full">
 
-              <div className="bg-card/30 backdrop-blur-xl border border-border/50 rounded-[2.5rem] p-5 md:p-8 shadow-sm h-full min-h-[500px] md:min-h-[600px]">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 md:mb-8 gap-4">
-                  <h2 className="text-xl md:text-2xl font-bold">
-                    Transactions
-                  </h2>
-                  <div className="flex items-center gap-2 w-full sm:w-auto">
-                    <div className="relative w-full sm:w-auto">
-                      <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-                      <input
-                        type="text"
-                        placeholder="Search..."
-                        className="h-10 pl-9 pr-4 rounded-full bg-secondary/50 border-none text-sm w-full sm:w-48 focus:ring-2 focus:ring-primary/20 outline-none transition-all hover:bg-secondary"
-                      />
+              <div className="bg-card/30 backdrop-blur-xl border border-border/50 rounded-[2.5rem] p-5 md:p-8 shadow-sm h-full flex flex-col min-h-[600px]">
+                <div className="flex-1 flex flex-col">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 md:mb-8 gap-4">
+                    <h2 className="text-xl md:text-2xl font-bold">
+                      Transactions
+                    </h2>
+                    <div className="flex items-center gap-2 w-full sm:w-auto">
+                      <div className="relative w-full sm:w-auto">
+                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                        <input
+                          type="text"
+                          placeholder="Search transactions..."
+                          value={searchQuery}
+                          onChange={(e) => setSearchQuery(e.target.value)}
+                          className="h-10 pl-9 pr-4 rounded-full bg-secondary/50 border-none text-sm w-full sm:w-48 focus:ring-2 focus:ring-primary/20 outline-none transition-all hover:bg-secondary"
+                        />
+                      </div>
                     </div>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      className="rounded-full w-10 h-10 hover:bg-secondary flex-shrink-0"
-                    >
-                      <Filter className="w-5 h-5 text-muted-foreground" />
-                    </Button>
+                  </div>
+
+                  {/* Tabs/Filter */}
+                  <div className="flex gap-2 overflow-x-auto pb-4 mb-2 no-scrollbar px-1">
+                    {["All", "Purchase", "Earned", "Spent"].map((tab) => (
+                      <button
+                        key={tab}
+                        onClick={() => setFilter(tab)}
+                        className={`
+                                                  px-4 md:px-5 py-2 md:py-2.5 rounded-full text-xs md:text-sm font-medium transition-all whitespace-nowrap flex-shrink-0
+                                                  ${filter === tab
+                            ? "bg-primary text-primary-foreground shadow-md shadow-primary/20"
+                            : "bg-secondary/50 text-muted-foreground hover:bg-secondary hover:text-foreground"
+                          }
+                                              `}
+                      >
+                        {tab}
+                      </button>
+                    ))}
+                  </div>
+
+                  <div className="space-y-2 mt-2 md:mt-4 flex-1">
+                    {transactionsIsPending ? (
+                      <div className="text-center py-20 text-muted-foreground">
+                        Loading transactions...
+                      </div>
+                    ) : transactionsIsError ? (
+                      <div className="text-center py-20 text-muted-foreground">
+                        Error loading transactions.
+                      </div>
+                    ) : paginatedTransactions.length === 0 ? (
+                      <div className="text-center py-20 text-muted-foreground">
+                        No transactions found matching your criteria.
+                      </div>
+                    ) : (
+                      <>
+                        {paginatedTransactions.map((transaction: UserTransaction, index: number) => (
+                          <motion.div
+                            key={transaction.id}
+                            initial={{ opacity: 0, x: -10 }}
+                            animate={{ opacity: 1, x: 0 }}
+                            transition={{ delay: index * 0.05 }}
+                          >
+                            <TransactionItem item={transaction} />
+                          </motion.div>
+                        ))}
+                      </>
+                    )}
                   </div>
                 </div>
 
-                {/* Tabs/Filter */}
-                <div className="flex gap-2 overflow-x-auto pb-4 mb-2 no-scrollbar px-1">
-                  {["All", "Purchase", "Earned", "Spent"].map((tab) => (
-                    <button
-                      key={tab}
-                      onClick={() => setFilter(tab)}
-                      className={`
-                                                px-4 md:px-5 py-2 md:py-2.5 rounded-full text-xs md:text-sm font-medium transition-all whitespace-nowrap flex-shrink-0
-                                                ${filter === tab
-                          ? "bg-primary text-primary-foreground shadow-md shadow-primary/20"
-                          : "bg-secondary/50 text-muted-foreground hover:bg-secondary hover:text-foreground"
-                        }
-                                            `}
+                {/* Pagination Controls */}
+                <div className="mt-8 flex items-center justify-between">
+                  <p className="text-xs text-muted-foreground font-medium hidden sm:block">
+                    Page <span className="text-foreground">{page}</span> of <span className="text-foreground">{totalPages || 1}</span>
+                  </p>
+                  <div className="flex gap-2 sm:gap-3 w-full sm:w-auto justify-between sm:justify-end">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="rounded-xl px-3 sm:px-5 hover:bg-secondary transition-all disabled:opacity-30 flex items-center justify-center min-w-[40px] sm:min-w-0"
+                      onClick={() => setPage(p => Math.max(1, p - 1))}
+                      disabled={page === 1}
                     >
-                      {tab}
-                    </button>
-                  ))}
-                </div>
-
-                <div className="space-y-2 mt-2 md:mt-4">
-                  {transactionsIsPending ? (
-                    <div className="text-center py-20 text-muted-foreground">
-                      Loading transactions...
-                    </div>
-                  ) : transactionsIsError ? (
-                    <div className="text-center py-20 text-muted-foreground">
-                      Error loading transactions.
-                    </div>
-                  ) : (
-                    transactions
-                      .filter(
-                        (item: UserTransaction) => filter === "All" || item.type.includes(filter),
-                      )
-                      .map((transaction: UserTransaction, index: number) => (
-                        <motion.div
-                          key={transaction.id}
-                          initial={{ opacity: 0, x: -10 }}
-                          animate={{ opacity: 1, x: 0 }}
-                          transition={{ delay: index * 0.05 }}
-                        >
-                          <TransactionItem item={transaction} />
-                        </motion.div>
-                      ))
-                  )}
-
-                  {!transactionsIsPending && transactions.length === 0 && (
-                    <div className="text-center py-20 text-muted-foreground">
-                      No transactions found.
-                    </div>
-                  )}
-                </div>
-
-                <div className="mt-8 text-center">
-                  <Button
-                    variant="outline"
-                    className="rounded-full px-8 w-full sm:w-auto"
-                  >
-                    View All History
-                  </Button>
+                      <ChevronLeft className="w-4 h-4 sm:mr-1" />
+                      <span className="hidden sm:inline">Previous</span>
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="rounded-xl px-3 sm:px-5 hover:bg-secondary transition-all disabled:opacity-30 flex items-center justify-center min-w-[40px] sm:min-w-0"
+                      onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+                      disabled={page >= totalPages}
+                    >
+                      <span className="hidden sm:inline">Next</span>
+                      <ChevronRight className="w-4 h-4 sm:ml-1" />
+                    </Button>
+                  </div>
                 </div>
               </div>
             </motion.div>

@@ -4,6 +4,7 @@ import {
   getDashboardAppsCount,
   getDashboardApps,
   deleteDashboardApp,
+  getDashboardAppById,
 } from "@/lib/apiCalls";
 import {
   AppData,
@@ -107,4 +108,19 @@ export function useDeleteDashboardApp(
   });
 
   return mutation;
+}
+
+/**
+ * Hook to fetch a single dashboard app/draft by ID
+ * Uses GET /api/dashboard/get-dashboard-app/:id
+ * @param id - The ID of the dashboard app to fetch
+ */
+export function useDashboardAppById(id: string | null) {
+  const query = useQuery<HubSubmittedAppResponse, Error>({
+    queryFn: () => getDashboardAppById(id!),
+    queryKey: ["useDashboardAppById", id],
+    enabled: !!id,
+  });
+
+  return query;
 }

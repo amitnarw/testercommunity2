@@ -312,25 +312,11 @@ export default function TransitionOverlay() {
               exit={{ opacity: 0, y: -20 }}
               transition={{ duration: 0.3, delay: 0.2 }}
             >
-              {isLoading ? (
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.8 }}
-                  className="flex items-center gap-3"
-                >
-                  <div className="w-3 h-3 rounded-full bg-white animate-pulse" />
-                  <span className="text-white text-lg font-medium tracking-wide">
-                    Loading {targetLabel}...
-                  </span>
-                </motion.div>
-              ) : (
-                <p
-                  className={`${colors.text} text-2xl md:text-4xl font-bold tracking-widest uppercase drop-shadow-lg text-center px-4`}
-                >
-                  {targetLabel || ""}
-                </p>
-              )}
+              <p
+                className={`${colors.text} text-2xl md:text-4xl font-bold tracking-widest uppercase drop-shadow-lg text-center px-4`}
+              >
+                {targetLabel || ""}
+              </p>
             </motion.section>
           </motion.div>
         )}

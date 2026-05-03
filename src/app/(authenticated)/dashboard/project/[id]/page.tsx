@@ -75,8 +75,9 @@ export default function ProjectPage({
       category: "App",
       status: status,
       testersStarted: app.currentTester || 0,
-      testersCompleted: 0,
+      testersCompleted: app.totalTester || 20,
       totalDays: app.totalDay || 14,
+      currentDay: app.currentDay || 0,
       avgTestersPerDay:
         app.currentDay > 0 ? (app.currentTester || 0) / app.currentDay : 0,
       startedFrom: app.createdAt

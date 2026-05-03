@@ -315,12 +315,15 @@ export default function BillingPage() {
         return;
       }
 
+      const logoUrl = paymentConfig?.image ? (paymentConfig.image.startsWith('http') ? paymentConfig.image : `${window.location.origin}${paymentConfig.image}`) : undefined;
+
       const options = {
         key: order.razorpayKeyId,
         amount: order.amount,
         currency: order.currency,
-        name: "InTesters",
+        name: paymentConfig?.name || "InTesters",
         description: `Purchase ${order.planName}`,
+        image: logoUrl,
         order_id: order.razorpayOrderId,
         handler: async function (response: any) {
           // 3. Verify Payment
