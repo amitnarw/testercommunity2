@@ -1,5 +1,7 @@
 "use client";
 
+import { useState } from "react";
+
 import { useTheme } from "next-themes";
 import { SafeImage } from "@/components/safe-image";
 import {
@@ -22,6 +24,8 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Label } from "@/components/ui/label";
 import { HubSubmittedAppResponse } from "@/lib/types";
 import { LoadingButton } from "./ui/loading-button";
 
@@ -73,40 +77,51 @@ const SidebarButton = ({
   // Show "Testers are joining" when on ongoing page (external button) and app is still AVAILABLE
   if (buttonType === "external" && app?.status === "AVAILABLE") {
     return (
-      <div className="w-full rounded-2xl bg-gradient-to-br from-amber-500/10 to-orange-500/10 border border-amber-500/20 p-4 space-y-3">
-        <div className="flex items-center gap-2 text-amber-600 dark:text-amber-500">
-          <Users className="w-5 h-5" />
-          <span className="font-semibold">Testers are joining</span>
-        </div>
-        <p className="text-sm text-muted-foreground">
-          Testing will start once all testers have joined.
-        </p>
-        <div className="space-y-1.5">
-          <div className="flex justify-between text-xs font-medium text-muted-foreground">
-            <span>Progress</span>
-            <span>
-              {app?.currentTester || 0} / {app?.totalTester || 0}
+      <div className="w-full space-y-4">
+        <div className="w-full rounded-2xl bg-gradient-to-br from-amber-500/10 to-orange-500/10 border border-amber-500/20 p-4 space-y-3">
+          <div className="flex items-center gap-2 text-amber-600 dark:text-amber-500">
+            <Users className="w-5 h-5" />
+            <span className="font-semibold">Testers are joining</span>
+          </div>
+          <p className="text-sm text-muted-foreground">
+            Testing will start once all testers have joined.
+          </p>
+          <div className="space-y-1.5">
+            <div className="flex justify-between text-xs font-medium text-muted-foreground">
+              <span>Progress</span>
+              <span>
+                {app?.currentTester || 0} / {app?.totalTester || 0}
+              </span>
+            </div>
+            <div className="h-2 w-full bg-secondary rounded-full overflow-hidden">
+              <div
+                className="h-full bg-gradient-to-r from-amber-500 to-orange-500 transition-all duration-500 ease-out"
+                style={{
+                  width: `${Math.min(
+                    ((app?.currentTester || 0) / (app?.totalTester || 1)) * 100,
+                    100,
+                  )}%`,
+                }}
+              />
+            </div>
+          </div>
+          <div className="flex items-center justify-center gap-1.5 text-xs text-muted-foreground pt-1">
+            <span className="relative flex h-2 w-2">
+              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-500 opacity-75"></span>
+              <span className="relative inline-flex rounded-full h-2 w-2 bg-amber-500"></span>
             </span>
-          </div>
-          <div className="h-2 w-full bg-secondary rounded-full overflow-hidden">
-            <div
-              className="h-full bg-gradient-to-r from-amber-500 to-orange-500 transition-all duration-500 ease-out"
-              style={{
-                width: `${Math.min(
-                  ((app?.currentTester || 0) / (app?.totalTester || 1)) * 100,
-                  100,
-                )}%`,
-              }}
-            />
+            <span>Waiting for testers...</span>
           </div>
         </div>
-        <div className="flex items-center justify-center gap-1.5 text-xs text-muted-foreground pt-1">
-          <span className="relative flex h-2 w-2">
-            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-amber-500 opacity-75"></span>
-            <span className="relative inline-flex rounded-full h-2 w-2 bg-amber-500"></span>
-          </span>
-          <span>Waiting for testers...</span>
-        </div>
+
+        <a
+          href={url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex flex-row gap-2 w-full bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl items-center justify-center py-3 font-semibold transition-all shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-[0.98]"
+        >
+          View on Google Play <SquareArrowOutUpRight className="w-5 h-5" />
+        </a>
       </div>
     );
   }
@@ -152,10 +167,48 @@ const SidebarButton = ({
     );
   }
 
+  const [hasJoinedGroup, setHasJoinedGroup] = useState(false);
+  const [showGateError, setShowGateError] = useState(false);
+
+  const onJoinClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    if (!hasJoinedGroup) {
+      setShowGateError(true);
+      setTimeout(() => setShowGateError(false), 3000);
+      return;
+    }
+    handleRequestToJoin?.();
+  };
+
   return (
-    <div className="w-full m-auto">
+    <div className="w-full m-auto space-y-4">
+      <div className="bg-primary/5 dark:bg-primary/10 border border-primary/20 rounded-xl p-4 space-y-3">
+        <div className="flex items-start gap-3 text-sm">
+          <Checkbox
+            id="google-group-join"
+            checked={hasJoinedGroup}
+            onCheckedChange={(checked) => setHasJoinedGroup(checked === true)}
+            className="mt-1"
+          />
+          <Label
+            htmlFor="google-group-join"
+            className="text-muted-foreground leading-tight cursor-pointer font-medium"
+          >
+            I have joined the{" "}
+            <a
+              href="https://groups.google.com/g/appstestlab"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-primary hover:underline font-bold"
+            >
+              Google Group (appstestlab)
+            </a>{" "}
+            to receive access to this app.
+          </Label>
+        </div>
+      </div>
+
       <LoadingButton
-        onClick={handleRequestToJoin}
+        onClick={onJoinClick}
         isLoading={isPending}
         isSuccess={isSuccess}
         isError={isError}
@@ -164,6 +217,11 @@ const SidebarButton = ({
       >
         Request to Join Testing
       </LoadingButton>
+      {showGateError && (
+        <p className="text-destructive text-[11px] text-center font-bold mt-2 animate-pulse">
+          Please join the Google Group and check the box above first!
+        </p>
+      )}
       <p className="text-red-500 text-sm text-center mt-2">{error?.message}</p>
     </div>
   );

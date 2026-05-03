@@ -13,6 +13,7 @@ import {
 } from "@/components/appInfoSidebar";
 import { SubmittedFeedback } from "@/components/community-dashboard/submitted-feedback";
 import DeveloperInstructions from "@/components/developerInstructions";
+import { GoogleGroupBanner } from "@/components/google-group-banner";
 import { ExpandableText } from "@/components/expandable-text";
 import { DailyTestingAction } from "@/components/community-dashboard/daily-check-in";
 import {
@@ -268,6 +269,8 @@ export default function OngoingProjectView({
                       className="text-muted-foreground text-md sm:text-lg leading-relaxed"
                     />
                   </section>
+
+                  <GoogleGroupBanner variant="note" />
 
                   {/* Last Day Reminder Banner */}
                   {!isTestingNotStarted && (isLastDay || isReadOnlyMode) && (

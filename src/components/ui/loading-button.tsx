@@ -194,7 +194,7 @@ export const LoadingButton = React.forwardRef<
           className,
         )}
         {...props}
-        disabled={isSuccess && showSuccessState}
+        disabled={props.disabled || isLoading || (isSuccess && showSuccessState)}
         onClick={onClick}
       >
         <div ref={scope} className="relative flex items-center justify-center">

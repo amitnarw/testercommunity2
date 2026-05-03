@@ -657,6 +657,7 @@ export type Project = {
   testersStarted: number;
   testersCompleted: number;
   totalDays: number;
+  currentDay: number;
   avgTestersPerDay: number;
   startedFrom: string;
   description: string;
@@ -786,6 +787,7 @@ export interface PaymentConfigResponse {
   currency?: string;
   name?: string;
   description?: string;
+  image?: string;
   theme?: {
     color: string;
   };

@@ -199,9 +199,9 @@ export function Footer() {
       {/* Background Big Text Animation */}
       <motion.div
         style={{ y: testersY, opacity }}
-        className="absolute -bottom-5 lg:-bottom-20 left-0 right-0 flex justify-center items-center pointer-events-none select-none z-10"
+        className="absolute -bottom-6 lg:-bottom-32 left-0 right-0 flex justify-center items-center pointer-events-none select-none z-10"
       >
-        <span className="font-black text-[25vw] lg:text-[15vw] leading-none text-primary/5 tracking-tighter mix-blend-overlay">
+        <span className="font-black text-[25vw] leading-none text-primary/5 tracking-tighter mix-blend-overlay">
           inTesters
         </span>
       </motion.div>
