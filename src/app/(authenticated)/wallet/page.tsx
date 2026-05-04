@@ -421,19 +421,6 @@ export default function WalletPage() {
   // Get transactions array from API response
   const transactions = transactionsData?.transactions || [];
 
-  // Robust amount extraction helper
-  const getAmountValue = (t: UserTransaction, key: 'points' | 'package') => {
-    if (t[key] !== null && t[key] !== undefined && t[key] !== 0) return Math.abs(t[key] as number);
-
-    // Fallback: try to parse from the 'amount' string if it contains the key word
-    const amountStr = t.amount?.toLowerCase() || "";
-    if (amountStr.includes(key)) {
-      const val = parseFloat(amountStr.replace(/[^\d.-]/g, ''));
-      return isNaN(val) ? 0 : Math.abs(val);
-    }
-    return 0;
-  };
-
   // Improved filtering logic
   const isSpent = (t: UserTransaction) => {
     return (
@@ -443,22 +430,28 @@ export default function WalletPage() {
     );
   };
 
-  // Calculate totals for all activity (Purchased + Spent)
-  const totalPackagesActivity = transactions
-    .reduce((sum, t) => sum + getAmountValue(t, 'package'), 0);
+  const getNetValue = (t: UserTransaction, key: 'points' | 'package') => {
+    let raw = 0;
+    if (t[key] !== null && t[key] !== undefined && t[key] !== 0) {
+      raw = Math.abs(t[key] as number);
+    } else {
+      const amountStr = t.amount?.toLowerCase() || "";
+      if (amountStr.includes(key)) {
+        const parsed = parseFloat(amountStr.replace(/[^\d.-]/g, ''));
+        raw = isNaN(parsed) ? 0 : Math.abs(parsed);
+      }
+    }
+    return isSpent(t) ? -raw : raw;
+  };
 
-  const totalPointsActivity = transactions
-    .reduce((sum, t) => sum + getAmountValue(t, 'points'), 0);
-
-  // Group transactions by month for the last 6 months
-  const last6MonthsData = [...Array(6)].map((_, i) => {
+  // Build cumulative chart data over the last 6 months
+  const monthlyNet = [...Array(6)].map((_, i) => {
     const date = new Date();
     date.setMonth(date.getMonth() - (5 - i));
     const month = date.getMonth();
     const year = date.getFullYear();
     const monthLabel = date.toLocaleDateString("en-US", { month: "short" });
 
-    // Include ALL transactions for "Activity" view
     const monthTransactions = transactions.filter(t => {
       const tDate = new Date(t.date);
       if (isNaN(tDate.getTime())) return false;
@@ -467,10 +460,19 @@ export default function WalletPage() {
 
     return {
       name: monthLabel,
-      package: monthTransactions.reduce((sum, t) => sum + getAmountValue(t, 'package'), 0),
-      points: monthTransactions.reduce((sum, t) => sum + getAmountValue(t, 'points'), 0),
+      package: monthTransactions.reduce((sum, t) => sum + getNetValue(t, 'package'), 0),
+      points: monthTransactions.reduce((sum, t) => sum + getNetValue(t, 'points'), 0),
     };
   });
+
+  const sumNetPackages = monthlyNet.reduce((s, m) => s + m.package, 0);
+  const sumNetPoints = monthlyNet.reduce((s, m) => s + m.points, 0);
+
+  const startPackages = (walletData?.totalPackages || 0) - sumNetPackages;
+  const startPoints = (walletData?.totalPoints || 0) - sumNetPoints;
+
+  let runningPackages = startPackages;
+  let runningPoints = startPoints;
 
   const filteredTransactions = transactions.filter((item: UserTransaction) => {
     const matchesFilter = filter === "All" || item.type.includes(filter);
@@ -487,11 +489,15 @@ export default function WalletPage() {
     page * itemsPerPage
   );
 
-  const combinedChartData = last6MonthsData.map(d => ({
-    name: d.name,
-    package: d.package,
-    points: d.points,
-  }));
+  const combinedChartData = monthlyNet.map(d => {
+    runningPackages += d.package;
+    runningPoints += d.points;
+    return {
+      name: d.name,
+      package: runningPackages,
+      points: runningPoints,
+    };
+  });
 
   return (
     <div data-loc="WalletPage" className="min-h-screen w-full relative">
@@ -533,8 +539,8 @@ export default function WalletPage() {
 
               <UnifiedActivityChart
                 data={combinedChartData}
-                totalPackages={totalPackagesActivity}
-                totalPoints={totalPointsActivity}
+                totalPackages={walletData?.totalPackages || 0}
+                totalPoints={walletData?.totalPoints || 0}
               />
 
             </motion.div>

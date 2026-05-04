@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
@@ -13,6 +13,7 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { SearchableSelect } from '@/components/ui/searchable-select';
 import { useAllNotifications, useNotificationCounts, useDeleteNotification, useCreateNotification, useNotificationTypes, useAllUsers } from '@/hooks/useAdmin';
+import { AppPagination } from '@/components/app-pagination';
 import { useQueryClient } from '@tanstack/react-query';
 import { FeedbackModal } from '@/components/feedback-modal';
 import { cn } from '@/lib/utils';
@@ -85,6 +86,8 @@ export default function AdminNotificationsPage() {
         primaryAction?: { label: string; onClick: () => void };
         secondaryAction?: { label: string; onClick: () => void };
     }>({ open: false, status: 'info', title: '', description: '' });
+    const [currentPage, setCurrentPage] = useState(1);
+    const NOTIFICATIONS_PER_PAGE = 10;
 
     // Fetch notifications
     const { data: notificationsData, isLoading, error } = useAllNotifications({
@@ -164,9 +167,19 @@ export default function AdminNotificationsPage() {
         return title.includes(query) || description.includes(query);
     });
 
+    const totalPages = Math.ceil(filteredNotifications.length / NOTIFICATIONS_PER_PAGE);
+    const paginatedNotifications = filteredNotifications.slice(
+        (currentPage - 1) * NOTIFICATIONS_PER_PAGE,
+        currentPage * NOTIFICATIONS_PER_PAGE
+    );
+
     const handleDelete = (id: number) => {
         setDeleteModalState({ open: true, notificationId: id });
     };
+
+    useEffect(() => {
+        setCurrentPage(1);
+    }, [searchQuery, filter]);
 
     const handleBroadcast = () => {
         if (!broadcastData.title || !broadcastData.description) {
@@ -287,9 +300,9 @@ export default function AdminNotificationsPage() {
                                 </TableRow>
                             </TableHeader>
                             <TableBody>
-                                {filteredNotifications.map((notification: any, index: number) => (
+                                {paginatedNotifications.map((notification: any, index: number) => (
                                     <TableRow key={notification.id}>
-                                        <TableCell className="text-muted-foreground">{index + 1}</TableCell>
+                                        <TableCell className="text-muted-foreground">{(currentPage - 1) * NOTIFICATIONS_PER_PAGE + index + 1}</TableCell>
                                         <TableCell>
                                             <div className="flex flex-col">
                                                 <span className="font-medium">{notification.title}</span>
@@ -360,6 +373,13 @@ export default function AdminNotificationsPage() {
                                 ))}
                             </TableBody>
                         </Table>
+                    )}
+                    {filteredNotifications.length > 0 && totalPages > 1 && (
+                        <AppPagination
+                            currentPage={currentPage}
+                            totalPages={totalPages}
+                            onPageChange={setCurrentPage}
+                        />
                     )}
                 </CardContent>
             </Card>

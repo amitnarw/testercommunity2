@@ -1081,6 +1081,91 @@ export async function deleteBlog(id: number) {
   }
 }
 
+// ==================== TESTIMONIALS ====================
+
+export async function getAllTestimonials() {
+  try {
+    const response = await api.get(API_ROUTES.ADMIN + `/testimonials`);
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error fetching testimonials:", error);
+    throw error;
+  }
+}
+
+export async function getTestimonialById(id: number) {
+  try {
+    const response = await api.get(API_ROUTES.ADMIN + `/testimonials/${id}`);
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error fetching testimonial:", error);
+    throw error;
+  }
+}
+
+export async function createTestimonial(payload: {
+  name: string;
+  role: string;
+  avatar: string;
+  dataAiHint?: string;
+  comment: string;
+  image?: string;
+  appLink?: string;
+  tags?: string[];
+  rating?: number;
+  isActive?: boolean;
+}) {
+  try {
+    const response = await api.post(API_ROUTES.ADMIN + `/testimonials`, payload);
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error creating testimonial:", error);
+    throw error;
+  }
+}
+
+export async function updateTestimonial(payload: {
+  id: number;
+  name?: string;
+  role?: string;
+  avatar?: string;
+  dataAiHint?: string;
+  comment?: string;
+  image?: string;
+  appLink?: string;
+  tags?: string[];
+  rating?: number;
+  isActive?: boolean;
+}) {
+  try {
+    const response = await api.post(API_ROUTES.ADMIN + `/testimonials/update`, payload);
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error updating testimonial:", error);
+    throw error;
+  }
+}
+
+export async function deleteTestimonial(id: number) {
+  try {
+    const response = await api.delete(API_ROUTES.ADMIN + `/testimonials/${id}`);
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error deleting testimonial:", error);
+    throw error;
+  }
+}
+
+export async function getPublicTestimonials() {
+  try {
+    const response = await api.get(API_ROUTES.BLOG + `/testimonials`);
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error fetching public testimonials:", error);
+    throw error;
+  }
+}
+
 // ==================== ACT AS ROLE ====================
 
 export async function actAsRole(role: "tester" | "user" | null) {
