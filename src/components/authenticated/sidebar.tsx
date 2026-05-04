@@ -17,6 +17,7 @@ import {
   Ticket,
   Terminal,
   BookOpen,
+  Star,
 } from "lucide-react";
 import { BaseSidebar, SidebarNavLink } from "@/components/ui/base-sidebar";
 import { authClient } from "@/lib/auth-client";
@@ -87,6 +88,12 @@ const adminNavLinks = [
     name: "Promo Codes",
     href: "/admin/promo-codes",
     icon: Ticket,
+    section: "platform",
+  },
+  {
+    name: "Reviews",
+    href: "/admin/reviews",
+    icon: Star,
     section: "platform",
   },
   {

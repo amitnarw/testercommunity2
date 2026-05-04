@@ -7,12 +7,16 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import type { Testimonial } from "@/lib/types";
-import { testimonials } from "@/lib/data";
 import { Quote } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-const sampleTestimonial = testimonials[0];
+const sampleTestimonial = {
+  name: "Sarah Jennings",
+  role: "Lead Developer, TechNova",
+  avatar: "https://images.unsplash.com/photo-1580489944761-15a19d654956?q=80&w=400&auto=format&fit=crop",
+  dataAiHint: "woman portrait",
+  comment: "inTesters has revolutionized our QA process. The real-time feedback and detailed reports are game-changers. The platform isn't just functional, it's a joy to use!"
+};
 
 export function TestimonialCardShowcase() {
   return (

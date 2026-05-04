@@ -4,33 +4,44 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 import { MessageSquareQuote, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { testimonials } from "@/lib/data";
+import { getPublicTestimonials } from "@/lib/apiCallsAdmin";
 import Image from "next/image";
 import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 
 export function CommunityTestimonials() {
+  const [testimonials, setTestimonials] = useState<any[]>([]);
   const [activeIndex, setActiveIndex] = useState(0);
   const duration = 10000;
 
   useEffect(() => {
+    getPublicTestimonials().then((data) => {
+      if (data && data.length > 0) setTestimonials(data);
+    });
+  }, []);
+
+  useEffect(() => {
+    if (testimonials.length === 0) return;
     const interval = setInterval(() => {
       setActiveIndex((prev) => (prev + 1) % testimonials.length);
     }, duration);
     return () => clearInterval(interval);
-  }, [activeIndex]);
+  }, [activeIndex, testimonials.length]);
 
   const handlePrev = () => {
+    if (testimonials.length === 0) return;
     setActiveIndex(
       (prev) => (prev - 1 + testimonials.length) % testimonials.length,
     );
   };
 
   const handleNext = () => {
+    if (testimonials.length === 0) return;
     setActiveIndex((prev) => (prev + 1) % testimonials.length);
   };
 
   const getTestimonial = (offset: number) => {
+    if (testimonials.length === 0) return null;
     return testimonials[(activeIndex + offset) % testimonials.length];
   };
 
@@ -39,7 +50,7 @@ export function CommunityTestimonials() {
     getTestimonial(1),
     getTestimonial(2),
     getTestimonial(3),
-  ];
+  ].filter(Boolean);
 
   const variantsUp = {
     enter: { y: "100%" },

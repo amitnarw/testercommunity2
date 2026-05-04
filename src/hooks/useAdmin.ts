@@ -1,32 +1,9 @@
 import {
-  adminLogin,
-  getControlRoomData,
-  getSubmittedApps,
-  acceptApp,
-  rejectApp,
-  getSubmittedAppsCount,
-  // Dashboard
-  getDashboardStats,
-  // Feedback
-  getAllFeedback,
-  getFeedbackById,
-  getFeedbackCounts,
-  updateFeedbackStatus,
-  deleteFeedback,
-  // Users
-  getAllUsers,
-  getUserById,
-  getUserCounts,
-  updateUserStatus,
-  updateUserRole,
-  deleteUser,
-  // Suggestions
-  getAllSuggestions,
-  getSuggestionById,
-  getSuggestionCounts,
-  createSuggestion,
-  updateSuggestionStatus,
-  deleteSuggestion,
+  getAllBlogs,
+  getBlogById,
+  createBlog,
+  updateBlog,
+  deleteBlog,
   // Notifications
   getAllNotifications,
   getNotificationCounts,
@@ -35,22 +12,12 @@ import {
   updateNotification,
   deleteNotification,
   broadcastNotification,
-  // Tester Applications
-  getTesterApplications,
-  getTesterApplicationCounts,
-  getTesterApplicationById,
-  updateTesterApplicationStatus,
-  updateProjectStatus,
-  getAllPromoCodes,
-  createPromoCode,
-  updatePromoCode,
-  deletePromoCode,
-  // Blog
-  getAllBlogs,
-  getBlogById,
-  createBlog,
-  updateBlog,
-  deleteBlog,
+  // Testimonials
+  getAllTestimonials,
+  getTestimonialById,
+  createTestimonial,
+  updateTestimonial,
+  deleteTestimonial,
   // Act As
   actAsRole,
 } from "@/lib/apiCallsAdmin";
@@ -635,6 +602,78 @@ export function useUpdateBlog(options?: UseMutationOptions<any, any, any>) {
 export function useDeleteBlog(options?: UseMutationOptions<any, any, any>) {
   const mutation = useMutation({
     mutationFn: (id: number) => deleteBlog(id),
+    ...options,
+  });
+
+  return mutation;
+}
+
+// ==================== TESTIMONIALS ====================
+
+export function useAllTestimonials(options?: { enabled?: boolean }) {
+  const query = useQuery({
+    queryFn: () => getAllTestimonials(),
+    queryKey: ["useAllTestimonials"],
+    enabled: options?.enabled ?? true,
+  });
+
+  return query;
+}
+
+export function useTestimonialById(id: number, options?: { enabled?: boolean }) {
+  const query = useQuery({
+    queryFn: () => getTestimonialById(id),
+    queryKey: ["useTestimonialById", id],
+    enabled: options?.enabled ?? (id > 0),
+  });
+
+  return query;
+}
+
+export function useCreateTestimonial(options?: UseMutationOptions<any, any, any>) {
+  const mutation = useMutation({
+    mutationFn: (payload: {
+      name: string;
+      role: string;
+      avatar: string;
+      dataAiHint?: string;
+      comment: string;
+      image?: string;
+      appLink?: string;
+      tags?: string[];
+      rating?: number;
+      isActive?: boolean;
+    }) => createTestimonial(payload),
+    ...options,
+  });
+
+  return mutation;
+}
+
+export function useUpdateTestimonial(options?: UseMutationOptions<any, any, any>) {
+  const mutation = useMutation({
+    mutationFn: (payload: {
+      id: number;
+      name?: string;
+      role?: string;
+      avatar?: string;
+      dataAiHint?: string;
+      comment?: string;
+      image?: string;
+      appLink?: string;
+      tags?: string[];
+      rating?: number;
+      isActive?: boolean;
+    }) => updateTestimonial(payload),
+    ...options,
+  });
+
+  return mutation;
+}
+
+export function useDeleteTestimonial(options?: UseMutationOptions<any, any, any>) {
+  const mutation = useMutation({
+    mutationFn: (id: number) => deleteTestimonial(id),
     ...options,
   });
 
