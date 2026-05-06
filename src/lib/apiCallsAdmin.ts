@@ -1179,3 +1179,56 @@ export async function actAsRole(role: "tester" | "user" | null) {
     throw error;
   }
 }
+
+// ==================== USER REVIEWS (Admin) ====================
+
+export async function getAllUserReviews(params?: {
+  status?: string;
+  search?: string;
+}) {
+  try {
+    const response = await api.get(API_ROUTES.ADMIN + `/user-reviews`, { params });
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error fetching user reviews:", error);
+    throw error;
+  }
+}
+
+export async function getUserReviewById(id: number) {
+  try {
+    const response = await api.get(API_ROUTES.ADMIN + `/user-reviews/${id}`);
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error fetching user review:", error);
+    throw error;
+  }
+}
+
+export async function updateUserReviewStatus(payload: {
+  id: number;
+  status?: string;
+  isPublished?: boolean;
+  adminNote?: string;
+}) {
+  try {
+    const response = await api.post(
+      API_ROUTES.ADMIN + `/user-reviews/update-status`,
+      payload,
+    );
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error updating user review status:", error);
+    throw error;
+  }
+}
+
+export async function deleteUserReview(id: number) {
+  try {
+    const response = await api.delete(API_ROUTES.ADMIN + `/user-reviews/${id}`);
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error deleting user review:", error);
+    throw error;
+  }
+}

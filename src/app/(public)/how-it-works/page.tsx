@@ -89,7 +89,7 @@ export default function HowItWorksPage() {
           <h1 className="text-[2.25rem] sm:text-[2.75rem] md:text-[3.5rem] lg:text-[4.25rem] font-heading leading-[1.1] tracking-tight font-bold mb-5 sm:mb-6 md:mb-8">
             Step Inside the{" "}
             <span className="bg-gradient-to-br from-primary to-accent bg-clip-text text-transparent">
-              App Creation
+              App Testing
             </span>{" "}
             Process
           </h1>

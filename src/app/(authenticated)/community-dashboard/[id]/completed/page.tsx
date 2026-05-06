@@ -5,6 +5,7 @@ import { CheckCircle, Bug, Lightbulb, PartyPopper } from "lucide-react";
 import { BackButton } from "@/components/back-button";
 import { AppInfoSidebar } from "@/components/appInfoSidebar";
 import { SubmittedFeedback } from "@/components/community-dashboard/submitted-feedback";
+import { ReviewSubmissionForm } from "@/components/review-submission-form";
 import { useState, useEffect } from "react";
 import Confetti from "react-dom-confetti";
 import { useInView } from "react-intersection-observer";
@@ -205,6 +206,10 @@ export default function AppTestingCompletedPage({
             <SubmittedFeedback
               isCompleted={true}
               feedback={appDetails.feedback || []}
+            />
+            <ReviewSubmissionForm
+              appId={appDetails.androidApp?.id}
+              appName={appDetails.androidApp?.appName}
             />
           </div>
           <aside className="lg:col-span-1">

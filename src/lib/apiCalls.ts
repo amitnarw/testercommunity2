@@ -1967,3 +1967,108 @@ export async function getPublicBlogTags(): Promise<string[]> {
   }
 }
 
+// ==================== REVIEWS (User/Tester) ====================
+
+export async function createReview(payload: {
+  rating: number;
+  comment: string;
+  appId?: number;
+}) {
+  try {
+    const response = await api.post(API_ROUTES.REVIEW, { payload });
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error creating review:", error);
+    if (axios.isAxiosError(error)) {
+      const responseData = error.response?.data;
+      throw new Error(
+        responseData?.message || error.message || "Unknown Axios error"
+      );
+    } else if (error instanceof Error) {
+      throw new Error(error.message);
+    } else {
+      throw new Error(JSON.stringify(error));
+    }
+  }
+}
+
+export async function getMyReviews() {
+  try {
+    const response = await api.get(API_ROUTES.REVIEW + `/my`);
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error fetching my reviews:", error);
+    if (axios.isAxiosError(error)) {
+      const responseData = error.response?.data;
+      throw new Error(
+        responseData?.message || error.message || "Unknown Axios error"
+      );
+    } else if (error instanceof Error) {
+      throw new Error(error.message);
+    } else {
+      throw new Error(JSON.stringify(error));
+    }
+  }
+}
+
+export async function updateReview(payload: {
+  id: number;
+  rating?: number;
+  comment?: string;
+}) {
+  try {
+    const response = await api.put(API_ROUTES.REVIEW + `/${payload.id}`, { payload });
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error updating review:", error);
+    if (axios.isAxiosError(error)) {
+      const responseData = error.response?.data;
+      throw new Error(
+        responseData?.message || error.message || "Unknown Axios error"
+      );
+    } else if (error instanceof Error) {
+      throw new Error(error.message);
+    } else {
+      throw new Error(JSON.stringify(error));
+    }
+  }
+}
+
+export async function deleteMyReview(id: number) {
+  try {
+    const response = await api.delete(API_ROUTES.REVIEW + `/${id}`);
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error deleting review:", error);
+    if (axios.isAxiosError(error)) {
+      const responseData = error.response?.data;
+      throw new Error(
+        responseData?.message || error.message || "Unknown Axios error"
+      );
+    } else if (error instanceof Error) {
+      throw new Error(error.message);
+    } else {
+      throw new Error(JSON.stringify(error));
+    }
+  }
+}
+
+export async function getPublishedReviews() {
+  try {
+    const response = await api.get(API_ROUTES.BLOG + `/reviews`);
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error fetching published reviews:", error);
+    if (axios.isAxiosError(error)) {
+      const responseData = error.response?.data;
+      throw new Error(
+        responseData?.message || error.message || "Unknown Axios error"
+      );
+    } else if (error instanceof Error) {
+      throw new Error(error.message);
+    } else {
+      throw new Error(JSON.stringify(error));
+    }
+  }
+}
+

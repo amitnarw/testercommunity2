@@ -115,6 +115,8 @@ export function SuccessStories() {
     </div>
   );
 
+  if (testimonials.length === 0) return null;
+
   return (
     <section className="pb-12 sm:pb-40 pt-8 sm:pt-20 bg-gray-50 dark:bg-zinc-950/50 flex flex-col justify-center">
       <div className="container mx-auto px-4 md:px-6">

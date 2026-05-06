@@ -41,6 +41,7 @@ import { useSingleHubAppDetails, useCompleteHostedApp } from "@/hooks/useHub";
 import { HubSubmittedAppResponse } from "@/lib/types";
 import { TesterRequestsSection } from "@/components/tester-requests-section";
 import { CompleteTestingBanner } from "@/components/community-dashboard/complete-testing-banner";
+import { ReviewSubmissionForm } from "@/components/review-submission-form";
 import { SubmissionDetailsSkeleton } from "@/components/skeletons/submission-details-skeleton";
 
 const FEEDBACK_PER_PAGE = 5;
@@ -602,6 +603,13 @@ function SubmissionDetailsPage({
               <TestCompleteSection
                 app={appDetails}
                 isUnderReviewOrRejected={isUnderReviewOrRejected}
+              />
+            )}
+
+            {appDetails?.status === "COMPLETED" && !isUnderReviewOrRejected && (
+              <ReviewSubmissionForm
+                appId={appDetails?.androidApp?.id}
+                appName={appDetails?.androidApp?.appName}
               />
             )}
 
