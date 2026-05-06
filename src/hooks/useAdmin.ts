@@ -1,10 +1,29 @@
 import {
-  getAllBlogs,
-  getBlogById,
-  createBlog,
-  updateBlog,
-  deleteBlog,
-  // Notifications
+  adminLogin,
+  getControlRoomData,
+  getSubmittedApps,
+  getSubmittedAppsCount,
+  acceptApp,
+  rejectApp,
+  updateProjectStatus,
+  getDashboardStats,
+  getAllFeedback,
+  getFeedbackById,
+  getFeedbackCounts,
+  updateFeedbackStatus,
+  deleteFeedback,
+  getAllUsers,
+  getUserById,
+  getUserCounts,
+  updateUserStatus,
+  updateUserRole,
+  deleteUser,
+  getAllSuggestions,
+  getSuggestionById,
+  getSuggestionCounts,
+  createSuggestion,
+  updateSuggestionStatus,
+  deleteSuggestion,
   getAllNotifications,
   getNotificationCounts,
   getNotificationTypes,
@@ -12,14 +31,29 @@ import {
   updateNotification,
   deleteNotification,
   broadcastNotification,
-  // Testimonials
+  getTesterApplications,
+  getTesterApplicationCounts,
+  getTesterApplicationById,
+  updateTesterApplicationStatus,
+  getAllPromoCodes,
+  createPromoCode,
+  updatePromoCode,
+  deletePromoCode,
+  getAllBlogs,
+  getBlogById,
+  createBlog,
+  updateBlog,
+  deleteBlog,
   getAllTestimonials,
   getTestimonialById,
   createTestimonial,
   updateTestimonial,
   deleteTestimonial,
-  // Act As
   actAsRole,
+  getAllUserReviews,
+  getUserReviewById,
+  updateUserReviewStatus,
+  deleteUserReview,
 } from "@/lib/apiCallsAdmin";
 import { useRouter } from "next/navigation";
 import { useState, useEffect, useCallback } from "react";
@@ -680,6 +714,54 @@ export function useDeleteTestimonial(options?: UseMutationOptions<any, any, any>
   return mutation;
 }
 
+// ==================== USER REVIEWS (Admin) ====================
+
+export function useAllUserReviews(
+  params?: { status?: string; search?: string },
+  options?: { enabled?: boolean },
+) {
+  const query = useQuery({
+    queryFn: () => getAllUserReviews(params),
+    queryKey: ["useAllUserReviews", params],
+    enabled: options?.enabled ?? true,
+  });
+  return query;
+}
+
+export function useUserReviewById(id: number, options?: { enabled?: boolean }) {
+  const query = useQuery({
+    queryFn: () => getUserReviewById(id),
+    queryKey: ["useUserReviewById", id],
+    enabled: options?.enabled ?? (id > 0),
+  });
+  return query;
+}
+
+export function useUpdateUserReviewStatus(
+  options?: UseMutationOptions<any, any, any>,
+) {
+  const mutation = useMutation({
+    mutationFn: (payload: {
+      id: number;
+      status?: string;
+      isPublished?: boolean;
+      adminNote?: string;
+    }) => updateUserReviewStatus(payload),
+    ...options,
+  });
+  return mutation;
+}
+
+export function useDeleteUserReview(
+  options?: UseMutationOptions<any, any, any>,
+) {
+  const mutation = useMutation({
+    mutationFn: (id: number) => deleteUserReview(id),
+    ...options,
+  });
+  return mutation;
+}
+
 // ==================== ACT AS ROLE ====================
 
 export function useActAsRole(options?: UseMutationOptions<any, any, any>) {
@@ -706,23 +788,28 @@ export function useActAsRole(options?: UseMutationOptions<any, any, any>) {
     checkCookie();
   }, []);
 
-  const mutation = useMutation({
-    mutationFn: async (role: "tester" | "user" | null) => {
-      const result = await actAsRole(role);
-      return result;
-    },
-    onSuccess: (data, role) => {
-      if (!role) {
-        // Clearing - reload to reset state
-        setActingAsRole(null);
-        router.refresh();
-      } else {
-        setActingAsRole(role);
-        router.refresh();
-      }
-    },
-    ...options,
-  });
+    const mutation = useMutation({
+      mutationFn: async (role: "tester" | "user" | null) => {
+        const result = await actAsRole(role);
+        return result;
+      },
+      onSuccess: (data, role) => {
+        if (!role) {
+          // Clearing - go to admin dashboard
+          setActingAsRole(null);
+          router.push("/admin/dashboard");
+        } else {
+          setActingAsRole(role);
+          // Redirect to the respective dashboard after acting as
+          if (role === "tester") {
+            router.push("/tester/dashboard");
+          } else if (role === "user") {
+            router.push("/dashboard");
+          }
+        }
+      },
+      ...options,
+    });
 
   const startActingAs = useCallback(
     (role: "tester" | "user") => {

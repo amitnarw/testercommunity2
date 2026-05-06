@@ -18,6 +18,7 @@ import {
   Terminal,
   BookOpen,
   Star,
+  MessageSquare,
 } from "lucide-react";
 import { BaseSidebar, SidebarNavLink } from "@/components/ui/base-sidebar";
 import { authClient } from "@/lib/auth-client";
@@ -94,6 +95,12 @@ const adminNavLinks = [
     name: "Reviews",
     href: "/admin/reviews",
     icon: Star,
+    section: "platform",
+  },
+  {
+    name: "User Reviews",
+    href: "/admin/user-reviews",
+    icon: MessageSquare,
     section: "platform",
   },
   {

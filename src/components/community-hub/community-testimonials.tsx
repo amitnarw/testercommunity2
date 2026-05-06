@@ -50,7 +50,7 @@ export function CommunityTestimonials() {
     getTestimonial(1),
     getTestimonial(2),
     getTestimonial(3),
-  ].filter(Boolean);
+  ].filter(Boolean) as any[];
 
   const variantsUp = {
     enter: { y: "100%" },
@@ -101,6 +101,7 @@ export function CommunityTestimonials() {
           </p>
         </motion.div>
 
+        {testimonials.length > 0 && (
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-3 md:gap-5 max-w-5xl mx-auto">
           {/* Large Left Card */}
           <motion.div
@@ -116,9 +117,10 @@ export function CommunityTestimonials() {
                 <div>
                   <MessageSquareQuote className="text-red-500 w-6 h-6 md:w-8 md:h-8 mb-3 md:mb-4" />
                   <p className="text-sm md:text-lg leading-relaxed text-muted-foreground mb-4 md:mb-6 font-medium">
-                    "{stories[0].comment}"
+                    "{stories[0]?.comment}"
                   </p>
                 </div>
+                {stories[0] && (
                 <div className="flex items-center gap-3 pt-3 border-t border-gray-100 dark:border-zinc-800">
                   <Image
                     src={stories[0].avatar}
@@ -136,6 +138,7 @@ export function CommunityTestimonials() {
                     </span>
                   </div>
                 </div>
+                )}
               </div>
             </div>
           </motion.div>
@@ -143,6 +146,7 @@ export function CommunityTestimonials() {
           {/* Right Column Stack */}
           <div className="lg:col-span-7 flex flex-col gap-3 md:gap-5">
             {/* Top Card */}
+            {stories[1] && (
             <motion.div
               initial={{ opacity: 0, x: 30 }}
               whileInView={{ opacity: 1, x: 0 }}
@@ -179,10 +183,12 @@ export function CommunityTestimonials() {
                 </div>
               </div>
             </motion.div>
+            )}
 
             {/* Bottom Two Cards */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-5">
               {/* Card 1 */}
+              {stories[2] && (
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -219,8 +225,10 @@ export function CommunityTestimonials() {
                   </div>
                 </div>
               </motion.div>
+              )}
 
               {/* Card 2 - Dark */}
+              {stories[3] && (
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -255,9 +263,11 @@ export function CommunityTestimonials() {
                   </div>
                 </div>
               </motion.div>
+              )}
             </div>
           </div>
         </div>
+        )}
 
         {/* Navigation */}
         <motion.div

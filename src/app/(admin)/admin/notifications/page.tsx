@@ -52,6 +52,8 @@ function NotificationTypeBadge({ type }: { type: string }) {
                 return "bg-orange-500/20 text-orange-700 dark:bg-orange-500/10 dark:text-orange-400 border-orange-500/30";
             case "APP_SUBMISSION":
                 return "bg-cyan-500/20 text-cyan-700 dark:bg-cyan-500/10 dark:text-cyan-400 border-cyan-500/30";
+            case "SPECIAL_OFFERS":
+                return "bg-pink-500/20 text-pink-700 dark:bg-pink-500/10 dark:text-pink-400 border-pink-500/30";
             default:
                 return "bg-secondary text-secondary-foreground";
         }
