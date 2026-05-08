@@ -64,6 +64,8 @@ function AddAppFormContent() {
   const [instructions, setInstructions] = useState("");
   const [testingUrlError, setTestingUrlError] = useState("");
   const [logoUrlError, setLogoUrlError] = useState("");
+  const [appNameError, setAppNameError] = useState("");
+  const [categoryError, setCategoryError] = useState("");
   const [showInsufficientModal, setShowInsufficientModal] = useState(false);
   const [feedbackModal, setFeedbackModal] = useState<{
     open: boolean;
@@ -261,30 +263,57 @@ function AddAppFormContent() {
 
   // Handle form submission
   const handleSubmit = () => {
-    const urlValidationError = validateTestingUrl(testingUrl) || validateLogoUrl(logoUrl);
-    if (urlValidationError) {
-      setFeedbackModal({
-        open: true,
-        status: "error",
-        title: "Invalid URL",
-        description: urlValidationError,
-        primaryAction: { label: "Fix It", onClick: () => setFeedbackModal(prev => ({ ...prev, open: false })) },
-      });
-      return;
+    // Reset errors
+    setAppNameError("");
+    setTestingUrlError("");
+    setLogoUrlError("");
+    setCategoryError("");
+
+    let firstErrorId = "";
+
+    // Validation checks
+    if (!appName.trim()) {
+      setAppNameError("App name is required");
+      if (!firstErrorId) firstErrorId = "name";
     }
 
-    if (!isFormValid) {
-      setFeedbackModal({
-        open: true,
-        status: "error",
-        title: "Missing Information",
-        description: "Please fill in all required fields before submitting your app.",
-        primaryAction: { label: "Fix It", onClick: () => setFeedbackModal(prev => ({ ...prev, open: false })) },
-      });
+    const testingUrlErr = validateTestingUrl(testingUrl);
+    if (testingUrlErr) {
+      setTestingUrlError(testingUrlErr);
+      if (!firstErrorId) firstErrorId = "url";
+    } else if (!testingUrl.trim()) {
+      setTestingUrlError("Testing URL is required");
+      if (!firstErrorId) firstErrorId = "url";
+    }
+
+    const logoUrlErr = validateLogoUrl(logoUrl);
+    if (logoUrlErr) {
+      setLogoUrlError(logoUrlErr);
+      if (!firstErrorId) firstErrorId = "logo";
+    } else if (!logoUrl.trim()) {
+      setLogoUrlError("App logo URL is required");
+      if (!firstErrorId) firstErrorId = "logo";
+    }
+
+    if (!category) {
+      setCategoryError("Please select a category");
+      if (!firstErrorId) firstErrorId = "category";
+    }
+
+    if (firstErrorId) {
+      const element = document.getElementById(firstErrorId);
+      if (element) {
+        element.scrollIntoView({ behavior: "smooth", block: "center" });
+        setTimeout(() => element.focus(), 500);
+      }
       return;
     }
 
     if (!hasEnoughPackages) {
+      const element = document.getElementById("balance-card");
+      if (element) {
+        element.scrollIntoView({ behavior: "smooth", block: "center" });
+      }
       setShowInsufficientModal(true);
       return;
     }
@@ -296,7 +325,7 @@ function AddAppFormContent() {
       categoryId: parseInt(category),
       instructions: instructions.trim() || null,
       draftId: draftId || undefined,
-    } as any); // Using 'as any' since the exact payload structure depends on your backend
+    } as any);
   };
 
   // Handle save as draft - calls the API when user clicks Draft button
@@ -436,9 +465,15 @@ function AddAppFormContent() {
                       />
                       <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-primary/0 via-primary/5 to-primary/0 opacity-0 group-focus-within/input:opacity-100 transition-opacity pointer-events-none" />
                     </div>
-                    <p className="text-xs text-muted-foreground pl-1">
-                      This will be displayed to testers
-                    </p>
+                    {appNameError ? (
+                      <p className="text-xs text-destructive pl-1">
+                        {appNameError}
+                      </p>
+                    ) : (
+                      <p className="text-xs text-muted-foreground pl-1">
+                        This will be displayed to testers
+                      </p>
+                    )}
                   </div>
 
                   <div className="space-y-3">
@@ -545,9 +580,15 @@ function AddAppFormContent() {
                       </Select>
                       <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-primary/0 via-primary/5 to-primary/0 opacity-0 group-focus-within/input:opacity-100 transition-opacity pointer-events-none" />
                     </div>
-                    <p className="text-xs text-muted-foreground pl-1">
-                      Choose the category that best describes your app
-                    </p>
+                    {categoryError ? (
+                      <p className="text-xs text-destructive pl-1">
+                        {categoryError}
+                      </p>
+                    ) : (
+                      <p className="text-xs text-muted-foreground pl-1">
+                        Choose the category that best describes your app
+                      </p>
+                    )}
                   </div>
                 </div>
               </div>
@@ -682,6 +723,7 @@ function AddAppFormContent() {
 
                   {/* User Balance */}
                   <div
+                    id="balance-card"
                     className={cn(
                       "p-5 rounded-2xl border relative overflow-hidden transition-all duration-300",
                       hasEnoughPackages
@@ -766,7 +808,7 @@ function AddAppFormContent() {
                     isLoading={isSubmitting}
                     isSuccess={isSubmitSuccess}
                     isError={isSubmitError}
-                    disabled={!hasEnoughPackages || isSubmitting}
+                    disabled={isSubmitting}
                     onClick={handleSubmit}
                     className="flex-1 h-10 sm:h-12 text-xs sm:text-base font-bold rounded-xl bg-gradient-to-r from-primary via-primary to-primary/90 hover:from-primary/90 hover:via-primary/85 hover:to-primary/80 shadow-xl shadow-primary/25 transition-all duration-300 hover:shadow-primary/40 hover:scale-[1.02] active:scale-[0.98]"
                     type="button"

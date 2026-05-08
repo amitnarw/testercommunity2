@@ -97,13 +97,6 @@ export default function SuccessStoriesPage() {
 
         <div className="container mx-auto px-4 md:px-6 relative z-10 text-center">
           <div className="max-w-4xl mx-auto">
-            <Link
-              href="/"
-              className="inline-flex items-center text-sm text-muted-foreground hover:text-primary transition-colors mb-8"
-            >
-              <ChevronLeft className="w-4 h-4 mr-1" />
-              Back to Home
-            </Link>
 
             <HoverBorderGradient
               containerClassName="rounded-full m-auto mb-6"
@@ -115,9 +108,9 @@ export default function SuccessStoriesPage() {
             </HoverBorderGradient>
 
             <h1 className="text-4xl sm:text-5xl md:text-6xl font-heading leading-tight tracking-tight font-bold mb-6 text-center mx-auto">
-              Trusted by the{" "}
+              Success Stories of the{" "}
               <span className="bg-gradient-to-br from-primary to-accent bg-clip-text text-transparent">
-                Community
+                Developers
               </span>
             </h1>
 
@@ -181,9 +174,9 @@ export default function SuccessStoriesPage() {
                         "break-inside-avoid rounded-3xl p-6 md:p-8 shadow-sm border border-border/50 flex flex-col relative group overflow-hidden transition-all duration-300",
                         "bg-background hover:shadow-xl hover:border-primary/20",
                         index % 4 === 0 &&
-                          "bg-gradient-to-br from-background to-blue-50/50 dark:from-background dark:to-blue-900/10",
+                        "bg-gradient-to-br from-background to-blue-50/50 dark:from-background dark:to-blue-900/10",
                         index % 4 === 2 &&
-                          "bg-gradient-to-br from-background to-amber-50/50 dark:from-background dark:to-amber-900/10",
+                        "bg-gradient-to-br from-background to-amber-50/50 dark:from-background dark:to-amber-900/10",
                       )}
                     >
                       <div className="absolute top-4 right-6 opacity-5 group-hover:opacity-10 transition-opacity">
@@ -373,7 +366,7 @@ export default function SuccessStoriesPage() {
       </section>
 
       {/* Additional Social Proof / Stats Section */}
-      <section className="py-20 border-y bg-background">
+      <section className="py-20">
         <div className="container mx-auto px-4 text-center">
           <h2 className="text-2xl md:text-3xl font-bold font-heading mb-12">
             Join thousands of happy users

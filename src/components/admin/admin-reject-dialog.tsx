@@ -22,6 +22,12 @@ interface AdminRejectDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onSuccess?: () => void;
+  initialData?: {
+    title?: string;
+    description?: string;
+    image?: string;
+    video?: string;
+  };
 }
 
 export function AdminRejectDialog({
@@ -29,16 +35,19 @@ export function AdminRejectDialog({
   open,
   onOpenChange,
   onSuccess,
+  initialData,
 }: AdminRejectDialogProps) {
-  const [rejectTitle, setRejectTitle] = useState("");
-  const [rejectDescription, setRejectDescription] = useState("");
+  const [rejectTitle, setRejectTitle] = useState(initialData?.title || "");
+  const [rejectDescription, setRejectDescription] = useState(
+    initialData?.description || "",
+  );
   const [rejectImage, setRejectImage] = useState<File | null>(null);
   const [rejectVideo, setRejectVideo] = useState<File | null>(null);
   const [rejectImagePreview, setRejectImagePreview] = useState<string | null>(
-    null,
+    initialData?.image || null,
   );
   const [rejectVideoPreview, setRejectVideoPreview] = useState<string | null>(
-    null,
+    initialData?.video || null,
   );
   const [uploadPercent, setUploadPercent] = useState(0);
 
@@ -72,16 +81,16 @@ export function AdminRejectDialog({
 
   // Reset state when dialog opens/closes
   useEffect(() => {
-    if (!open) {
-      setRejectTitle("");
-      setRejectDescription("");
+    if (open) {
+      setRejectTitle(initialData?.title || "");
+      setRejectDescription(initialData?.description || "");
       setRejectImage(null);
       setRejectVideo(null);
-      setRejectImagePreview(null);
-      setRejectVideoPreview(null);
+      setRejectImagePreview(initialData?.image || null);
+      setRejectVideoPreview(initialData?.video || null);
       setUploadPercent(0);
     }
-  }, [open]);
+  }, [open, initialData]);
 
   const handleRejectSubmit = async () => {
     if (!rejectDescription) {
@@ -158,7 +167,7 @@ export function AdminRejectDialog({
           <DialogHeader>
             <DialogTitle className="text-red-600 flex items-center gap-2">
               <ShieldAlert className="w-5 h-5" />
-              Reject Request
+              {initialData?.description ? "Update Rejection" : "Reject Request"}
             </DialogTitle>
             <DialogDescription className="text-red-600/70">
               Provide a reason for rejecting this tester. This will be shared
@@ -332,7 +341,7 @@ export function AdminRejectDialog({
                   : "Rejecting..."}
               </>
             ) : (
-              "Confirm Rejection"
+              initialData?.description ? "Update Rejection" : "Confirm Rejection"
             )}
           </Button>
         </DialogFooter>

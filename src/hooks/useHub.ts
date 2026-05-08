@@ -15,6 +15,7 @@ import {
   submitDailyVerification,
   completeHostedApp,
   validatePromoCode,
+  resubmitHubApp,
 } from "@/lib/apiCalls";
 import {
   AppCategoriesResponse,
@@ -276,6 +277,25 @@ export function useCompleteHostedApp(
     },
     onError: (data) => {
       console.log("App completion failed: " + data);
+    },
+    ...options,
+  });
+
+  return mutation;
+}
+
+export function useResubmitHubApp(options?: UseMutationOptions<any, any, any>) {
+  const queryClient = useQueryClient();
+
+  const mutation = useMutation({
+    mutationFn: (payload: any) => resubmitHubApp(payload),
+    onSuccess: (data) => {
+      console.log("Hub app resubmitted successfully: " + data);
+      queryClient.invalidateQueries({ queryKey: ["useSingleHubAppDetails"] });
+      queryClient.invalidateQueries({ queryKey: ["useHubSubmittedApp"] });
+    },
+    onError: (data) => {
+      console.log("Hub app resubmitting failed: " + data);
     },
     ...options,
   });

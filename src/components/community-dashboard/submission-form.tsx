@@ -1,0 +1,993 @@
+"use client";
+
+import { useState, useEffect } from "react";
+import { useForm, FormProvider } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
+import { motion, AnimatePresence } from "framer-motion";
+import { useInView } from "react-intersection-observer";
+import {
+  FileText,
+  Link as LinkIcon,
+  Users,
+  AlertCircle,
+  CheckCircle2,
+  TrendingUp,
+  Zap,
+  BookOpen,
+  PlayCircle,
+  Loader2,
+  Check,
+  Clipboard,
+} from "lucide-react";
+
+import { Card, CardContent } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  FormField,
+  FormControl,
+  FormItem,
+  FormMessage,
+  FormLabel,
+  FormDescription,
+} from "@/components/ui/form";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
+import { Button } from "@/components/ui/button";
+import { IconRain } from "@/components/icon-rain";
+import { LoadingButton } from "@/components/ui/loading-button";
+import { ModernSlider } from "@/components/ui/modern-slider";
+import { cn } from "@/lib/utils";
+import { useAppCategories, useValidatePromoCode } from "@/hooks/useHub";
+import { useGetUserWallet } from "@/hooks/useUser";
+import SkeletonSubmitAppBottom from "@/components/community-dashboard/submit-app-bottom-skeleton";
+
+const minimum_android_versions = [
+  { name: "Android 5.0 (Lollipop)", value: 5.0 },
+  { name: "Android 5.1 (Lollipop)", value: 5.1 },
+  { name: "Android 6.0 (Marshmallow)", value: 6.0 },
+  { name: "Android 7.0 (Nougat)", value: 7.0 },
+  { name: "Android 7.1 (Nougat)", value: 7.1 },
+  { name: "Android 8.0 (Oreo)", value: 8.0 },
+  { name: "Android 8.1 (Oreo)", value: 8.1 },
+  { name: "Android 9 (Pie)", value: 9.0 },
+  { name: "Android 10 (Quince Tart)", value: 10.0 },
+  { name: "Android 11 (Red Velvet Cake)", value: 11.0 },
+  { name: "Android 12 (Snow Cone)", value: 12.0 },
+  { name: "Android 12L (Snow Cone v2)", value: 12.1 },
+  { name: "Android 13 (Tiramisu)", value: 13.0 },
+  { name: "Android 14 (Upside Down Cake)", value: 14.0 },
+  { name: "Android 15 (Vanilla Ice Cream)", value: 15.0 },
+  { name: "Android 16 (Baklava)", value: 16.0 },
+];
+
+const submissionSchema = z.object({
+  app_url: z.string().url("Please enter a valid Google Play testing URL."),
+  app_name: z.string().min(3, "App name must be at least 3 characters."),
+  app_logo_url: z.string().url("Please enter a valid URL for the app logo."),
+  app_screenshot_url_1: z
+    .string()
+    .url("Please enter a valid URL for the first screenshot."),
+  app_screenshot_url_2: z
+    .string()
+    .url("Please enter a valid URL for the second screenshot."),
+  category_id: z.string().min(1, "Please select a category."),
+  app_description: z
+    .string()
+    .min(
+      50,
+      "Please provide a detailed description of at least 50 characters.",
+    ),
+  instruction_for_tester: z.string().optional(),
+  minimum_android_version: z.coerce
+    .number()
+    .min(1, "Please specify the minimum Android version."),
+  total_tester: z.coerce.number().min(1).max(20),
+  total_days: z.coerce.number().min(1).max(20),
+  promo_code: z.string().optional(),
+});
+
+type SubmissionFormData = z.infer<typeof submissionSchema>;
+
+const formSteps = [
+  {
+    id: "rules",
+    title: "Rules",
+    icon: <BookOpen className="w-5 h-5" />,
+    fields: [],
+    description: "Read and understand the submission guidelines before you begin.",
+  },
+  {
+    id: "connect",
+    title: "Connect",
+    icon: <LinkIcon className="w-5 h-5" />,
+    fields: ["app_name", "app_url", "app_logo_url", "app_screenshot_url_1", "app_screenshot_url_2"],
+    description: "First, provide a link to your app on the Google Play Console closed testing track.",
+  },
+  {
+    id: "describe",
+    title: "Describe",
+    icon: <FileText className="w-5 h-5" />,
+    fields: ["category_id", "app_description", "instruction_for_tester"],
+    description: "Tell us about your app and what you want testers to focus on.",
+  },
+  {
+    id: "configure",
+    title: "Configure",
+    icon: <Users className="w-5 h-5" />,
+    fields: ["minimum_android_version", "total_tester", "total_days"],
+    description: "Finally, set the technical parameters and choose how many testers you need.",
+  },
+];
+
+const Highlight = ({ children }: { children: React.ReactNode }) => (
+  <span className="bg-primary/20 text-primary font-semibold px-1.5 py-0.5 rounded-md">
+    {children}
+  </span>
+);
+
+const CopyBlock = ({ textToCopy }: { textToCopy: string }) => {
+  const [copied, setCopied] = useState(false);
+
+  const handleCopy = () => {
+    navigator.clipboard.writeText(textToCopy);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+
+  return (
+    <div className="bg-secondary/50 p-4 py-2 rounded-lg flex items-center justify-between my-4">
+      <code className="text-sm text-muted-foreground">{textToCopy}</code>
+      <Button variant="ghost" size="icon" onClick={handleCopy}>
+        {copied ? (
+          <Check className="w-4 h-4 text-green-500" />
+        ) : (
+          <Clipboard className="w-4 h-4" />
+        )}
+      </Button>
+    </div>
+  );
+};
+
+const Section = ({
+  id,
+  title,
+  description,
+  children,
+  sectionRef,
+}: {
+  id: string;
+  title: string;
+  description: string;
+  children: React.ReactNode;
+  sectionRef: React.Ref<HTMLDivElement>;
+}) => {
+  return (
+    <section
+      ref={sectionRef}
+      id={id}
+      className="min-h-[85vh] flex flex-col justify-center scroll-mt-10 py-16"
+    >
+      <div className="mb-8">
+        <h2 className="text-2xl sm:text-3xl font-bold">{title}</h2>
+        <p className="text-sm sm:text-base text-muted-foreground mt-2">
+          {description}
+        </p>
+      </div>
+      {children}
+    </section>
+  );
+};
+
+interface SubmissionFormProps {
+  initialData?: Partial<SubmissionFormData>;
+  onSubmit: (data: any) => void;
+  isPending?: boolean;
+  isSuccess?: boolean;
+  isError?: boolean;
+  mode?: "create" | "edit";
+  onCancel?: () => void;
+}
+
+export function SubmissionForm({
+  initialData,
+  onSubmit,
+  isPending,
+  isSuccess,
+  isError,
+  mode = "create",
+  onCancel,
+}: SubmissionFormProps) {
+  const [activeStep, setActiveStep] = useState(formSteps[0].id);
+  const [isErrorModalOpen, setIsErrorModalOpen] = useState(false);
+  const [isVideoExpanded, setIsVideoExpanded] = useState(false);
+  const [cost, setCost] = useState(0);
+  const [promoCodeInput, setPromoCodeInput] = useState("");
+  const [appliedPromo, setAppliedPromo] = useState<{
+    code: string;
+    discountValue: number;
+    discountType: string;
+  } | null>(null);
+  const [promoCodeError, setPromoCodeError] = useState<string | null>(null);
+
+  const form = useForm<SubmissionFormData>({
+    resolver: zodResolver(submissionSchema),
+    mode: "onBlur",
+    defaultValues: {
+      app_name: initialData?.app_name || "",
+      app_url: initialData?.app_url || "",
+      app_logo_url: initialData?.app_logo_url || "",
+      app_screenshot_url_1: initialData?.app_screenshot_url_1 || "",
+      app_screenshot_url_2: initialData?.app_screenshot_url_2 || "",
+      category_id: initialData?.category_id || "",
+      app_description: initialData?.app_description || "",
+      instruction_for_tester: initialData?.instruction_for_tester || "",
+      total_tester: initialData?.total_tester || 10,
+      total_days: initialData?.total_days || 14,
+      minimum_android_version: initialData?.minimum_android_version || undefined,
+    },
+  });
+
+  const testers = form.watch("total_tester");
+  const duration = form.watch("total_days");
+
+  useEffect(() => {
+    const calculatedCost = testers * 80 + duration * 10;
+    if (appliedPromo) {
+      if (appliedPromo.discountType === "PERCENTAGE") {
+        setCost(Math.max(0, calculatedCost * (1 - appliedPromo.discountValue / 100)));
+      } else {
+        setCost(appliedPromo.discountValue);
+      }
+    } else {
+      setCost(calculatedCost);
+    }
+  }, [testers, duration, appliedPromo]);
+
+  const { ref: rulesRef, inView: rulesInView } = useInView({ threshold: 0.5 });
+  const { ref: connectRef, inView: connectInView } = useInView({ threshold: 0.5 });
+  const { ref: describeRef, inView: describeInView } = useInView({ threshold: 0.5 });
+  const { ref: configureRef, inView: configureInView } = useInView({ threshold: 0.4 });
+
+  useEffect(() => {
+    if (rulesInView) setActiveStep("rules");
+    else if (connectInView) setActiveStep("connect");
+    else if (describeInView) setActiveStep("describe");
+    else if (configureInView) setActiveStep("configure");
+  }, [rulesInView, connectInView, describeInView, configureInView]);
+
+  const {
+    mutate: validatePromoMutate,
+    isPending: isValidatingPromo,
+  } = useValidatePromoCode({
+    onSuccess: (data: any) => {
+      if (data && data.discountValue !== undefined) {
+        setAppliedPromo({
+          code: promoCodeInput,
+          discountValue: data.discountValue,
+          discountType: data.discountType || "FIXED",
+        });
+        setPromoCodeError(null);
+      }
+    },
+    onError: (error: any) => {
+      setPromoCodeError(error?.message || "Invalid or inactive promo code");
+      setAppliedPromo(null);
+    },
+  });
+
+  const handleApplyPromo = () => {
+    setPromoCodeError(null);
+    if (!promoCodeInput.trim()) {
+      setPromoCodeError("Promo code is required");
+      return;
+    }
+    validatePromoMutate({ code: promoCodeInput });
+  };
+
+  const handleRemovePromo = () => {
+    setAppliedPromo(null);
+    setPromoCodeInput("");
+    setPromoCodeError(null);
+  };
+
+  const { data: walletData, isPending: walletIsPending } = useGetUserWallet();
+  const { data: appCategoriesData } = useAppCategories();
+
+  const isBalanceInsufficient = cost > (walletData?.totalPoints || 0);
+
+  const watchedFields = form.watch();
+
+  const getPendingRequirements = () => {
+    const requirements = [];
+    if (!watchedFields.app_name || watchedFields.app_name.length < 3)
+      requirements.push("App Name (min 3 chars)");
+    if (!watchedFields.app_url || !watchedFields.app_url.startsWith("http"))
+      requirements.push("Valid Google Play URL");
+    if (
+      !watchedFields.app_logo_url ||
+      !watchedFields.app_logo_url.startsWith("http")
+    )
+      requirements.push("App Logo URL");
+    if (
+      !watchedFields.app_screenshot_url_1 ||
+      !watchedFields.app_screenshot_url_1.startsWith("http")
+    )
+      requirements.push("Screenshot 1");
+    if (
+      !watchedFields.app_screenshot_url_2 ||
+      !watchedFields.app_screenshot_url_2.startsWith("http")
+    )
+      requirements.push("Screenshot 2");
+    if (!watchedFields.category_id) requirements.push("Category Selection");
+    if (
+      !watchedFields.app_description ||
+      watchedFields.app_description.length < 50
+    )
+      requirements.push("Description (min 50 chars)");
+    if (!watchedFields.minimum_android_version)
+      requirements.push("Minimum Android Version");
+
+    if (mode === "edit") {
+      const hasChanges =
+        watchedFields.app_name !== initialData?.app_name ||
+        watchedFields.app_url !== initialData?.app_url ||
+        watchedFields.app_logo_url !== initialData?.app_logo_url ||
+        watchedFields.app_screenshot_url_1 !== initialData?.app_screenshot_url_1 ||
+        watchedFields.app_screenshot_url_2 !== initialData?.app_screenshot_url_2 ||
+        watchedFields.category_id !== initialData?.category_id ||
+        watchedFields.app_description !== initialData?.app_description ||
+        watchedFields.instruction_for_tester !== initialData?.instruction_for_tester ||
+        watchedFields.minimum_android_version !== initialData?.minimum_android_version;
+
+      if (!hasChanges) requirements.push("At least one change");
+    }
+
+    if (mode === "create" && isBalanceInsufficient) requirements.push("Sufficient Balance");
+    return requirements;
+  };
+
+  const pendingRequirements = getPendingRequirements();
+  const isSubmitDisabled = isPending;
+
+  const onInvalid = (errors: any) => {
+    const errorFields = Object.keys(errors);
+    if (errorFields.length > 0) {
+      const firstField = errorFields[0];
+      const element = document.getElementById(firstField);
+      if (element) {
+        element.scrollIntoView({ behavior: "smooth", block: "center" });
+        setTimeout(() => {
+          element.focus();
+        }, 500);
+      }
+    }
+  };
+
+  const handleFormSubmit = (data: SubmissionFormData) => {
+    if (mode === "create" && isBalanceInsufficient) {
+      form.setError("total_tester", { message: "Insufficient balance in your wallet." });
+      const element = document.getElementById("total_tester");
+      if (element) {
+        element.scrollIntoView({ behavior: "smooth", block: "center" });
+      }
+      return;
+    }
+
+    if (mode === "edit") {
+      const hasChanges =
+        watchedFields.app_name !== initialData?.app_name ||
+        watchedFields.app_url !== initialData?.app_url ||
+        watchedFields.app_logo_url !== initialData?.app_logo_url ||
+        watchedFields.app_screenshot_url_1 !== initialData?.app_screenshot_url_1 ||
+        watchedFields.app_screenshot_url_2 !== initialData?.app_screenshot_url_2 ||
+        watchedFields.category_id !== initialData?.category_id ||
+        watchedFields.app_description !== initialData?.app_description ||
+        watchedFields.instruction_for_tester !== initialData?.instruction_for_tester ||
+        watchedFields.minimum_android_version !== initialData?.minimum_android_version;
+
+      if (!hasChanges) {
+        form.setError("app_name", { message: "Please make at least one change before resubmitting." });
+        const element = document.getElementById("app_name");
+        if (element) {
+          element.scrollIntoView({ behavior: "smooth", block: "center" });
+        }
+        return;
+      }
+    }
+
+    onSubmit({
+      ...data,
+      points_cost: cost,
+      promo_code: appliedPromo?.code,
+    });
+  };
+
+  return (
+    <div className="lg:grid lg:grid-cols-12 lg:gap-16 bg-background rounded-3xl px-3 sm:px-5">
+      {/* Mobile Step Navigator */}
+      <nav className="lg:hidden sticky top-0 z-30 flex items-center justify-around border-b bg-background/80 backdrop-blur-lg">
+        {formSteps.map((step) => (
+          <a
+            key={`mobile-${step.id}`}
+            href={`#${step.id}`}
+            onClick={(e) => {
+              e.preventDefault();
+              document.getElementById(step.id)?.scrollIntoView({ behavior: "smooth" });
+            }}
+            className={cn(
+              "flex-1 flex items-center justify-center gap-2 text-center p-3 text-sm font-medium transition-all text-muted-foreground relative",
+              activeStep === step.id && "text-primary",
+            )}
+          >
+            {step.title}
+            {activeStep === step.id && (
+              <motion.div
+                className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary"
+                layoutId="mobile-active-step-indicator"
+              />
+            )}
+          </a>
+        ))}
+      </nav>
+
+      <aside className="hidden lg:block lg:col-span-3 py-16">
+        <div className="sticky top-36">
+          <nav>
+            <ul className="space-y-2">
+              {formSteps.map((step) => (
+                <li key={step.id}>
+                  <a
+                    href={`#${step.id}`}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      document.getElementById(step.id)?.scrollIntoView({ behavior: "smooth" });
+                    }}
+                    className={cn(
+                      "flex items-center gap-3 p-3 rounded-lg transition-all",
+                      activeStep === step.id
+                        ? "bg-primary/10 text-primary"
+                        : "text-muted-foreground hover:bg-secondary/50",
+                    )}
+                  >
+                    <div
+                      className={cn(
+                        "p-2 rounded-full flex items-center justify-center border-2 transition-all",
+                        activeStep === step.id
+                          ? "bg-primary text-primary-foreground border-primary"
+                          : "bg-secondary border-border group-hover:border-primary/50",
+                      )}
+                    >
+                      {step.icon}
+                    </div>
+                    <div>
+                      <p className={cn("font-bold transition-all", activeStep === step.id ? "text-primary" : "text-foreground")}>
+                        {step.title}
+                      </p>
+                      <p className="text-xs">{step.description.split(".")[0]}</p>
+                    </div>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        </div>
+      </aside>
+
+      <main className="lg:col-span-9">
+        <FormProvider {...form}>
+          <form onSubmit={form.handleSubmit(handleFormSubmit, onInvalid)}>
+            <Section
+              sectionRef={rulesRef}
+              id="rules"
+              title="1. Read the Guidelines"
+              description="Take a moment to understand how this process works."
+            >
+              <div className="space-y-8">
+                <div className="rounded-xl overflow-hidden shadow-lg relative bg-gradient-to-br from-primary/50 to-primary">
+                  <IconRain />
+                  {isVideoExpanded ? (
+                    <div className="relative aspect-video">
+                      <iframe
+                        className="absolute top-0 left-0 w-full h-full"
+                        src="https://www.youtube.com/watch?v=9OZQ_pyWzS4?autoplay=1"
+                        title="YouTube video player"
+                        frameBorder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowFullScreen
+                      ></iframe>
+                    </div>
+                  ) : (
+                    <div
+                      className="p-6 py-10 flex flex-col md:flex-row items-center justify-between gap-4 cursor-pointer relative z-10"
+                      onClick={() => setIsVideoExpanded(true)}
+                    >
+                      <div>
+                        <h3 className="font-bold text-xl sm:text-2xl mb-1 flex flex-col sm:flex-row items-center sm:gap-3 text-white">
+                          Quick Walkthrough <span className="text-sm font-medium text-black">(2-min watch)</span>
+                        </h3>
+                        <p className="text-white/80 text-sm text-center sm:text-start">
+                          Watch a short video on how to submit your app for community testing.
+                        </p>
+                      </div>
+                      <Button size="lg" variant="outline" type="button">
+                        <PlayCircle className="mr-2 h-5 w-5" />
+                        Watch Guide
+                      </Button>
+                    </div>
+                  )}
+                </div>
+
+                <Accordion type="single" collapsible className="w-full space-y-4">
+                  <AccordionItem value="prepare-app" className="bg-white dark:bg-secondary/80 rounded-xl overflow-hidden shadow-xl shadow-gray-200/70 dark:shadow-black/20">
+                    <AccordionTrigger className="p-6 text-left hover:no-underline flex flex-row items-center justify-between w-full relative">
+                      <div className="flex items-start flex-1">
+                        <span className="text-7xl md:text-5xl font-black bg-gradient-to-br from-primary/20 to-primary/0 bg-clip-text text-transparent md:w-20 absolute -top-3 -left-3 md:relative md:top-auto md:left-auto">01</span>
+                        <div>
+                          <h3 className="font-bold text-xl mb-1">Prepare App for Testing</h3>
+                          <p className="text-muted-foreground text-sm text-left">Grant access and enable global reach in Play Console</p>
+                        </div>
+                      </div>
+                    </AccordionTrigger>
+                    <AccordionContent className="px-6 pb-6">
+                      <div className="flex flex-col gap-6 items-start text-muted-foreground">
+                        <p>Ensure your app is correctly configured in the Google Play Console:</p>
+                        <div className="space-y-4 w-full">
+                          <div className="p-4 rounded-lg bg-secondary/50 border border-border/40">
+                            <p className="font-semibold text-foreground mb-2 flex items-center gap-2">
+                              <span className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center text-xs font-bold text-primary">1</span>
+                              Grant Testers Access
+                            </p>
+                            <div className="text-sm space-y-2">
+                              <p>Navigate to Closed Testing &gt; Testers and add:</p>
+                              <CopyBlock textToCopy="appstestlab@googlegroups.com" />
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </AccordionContent>
+                  </AccordionItem>
+                </Accordion>
+              </div>
+            </Section>
+
+            <Section
+              sectionRef={connectRef}
+              id="connect"
+              title="2. Connect Your App"
+              description="Provide the essential links and name for your project."
+            >
+              <Card className="bg-secondary/30 border-dashed">
+                <CardContent className="grid md:grid-cols-2 gap-6 p-3 sm:p-6">
+                  <FormField
+                    control={form.control}
+                    name="app_url"
+                    render={({ field }) => (
+                      <FormItem>
+                        <Label htmlFor="app_url">Google Play Testing Link</Label>
+                        <FormControl><Input id="app_url" placeholder="https://play.google.com/apps/testing/..." {...field} className="py-0" /></FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="app_name"
+                    render={({ field }) => (
+                      <FormItem>
+                        <Label htmlFor="app_name">App Name</Label>
+                        <FormControl><Input id="app_name" placeholder="e.g., PhotoSnap Editor" {...field} className="py-0" /></FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="app_logo_url"
+                    render={({ field }) => (
+                      <FormItem>
+                        <Label htmlFor="app_logo_url">App Logo URL</Label>
+                        <FormControl><Input id="app_logo_url" placeholder="https://play-lh.googleusercontent.com/..." {...field} className="py-0" /></FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="app_screenshot_url_1"
+                    render={({ field }) => (
+                      <FormItem>
+                        <Label htmlFor="app_screenshot_url_1">Screenshot 1 URL</Label>
+                        <FormControl><Input id="app_screenshot_url_1" placeholder="https://play-lh.googleusercontent.com/..." {...field} className="py-0" /></FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="app_screenshot_url_2"
+                    render={({ field }) => (
+                      <FormItem>
+                        <Label htmlFor="app_screenshot_url_2">Screenshot 2 URL</Label>
+                        <FormControl><Input id="app_screenshot_url_2" placeholder="https://play-lh.googleusercontent.com/..." {...field} className="py-0" /></FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </CardContent>
+              </Card>
+            </Section>
+
+            <Section
+              sectionRef={describeRef}
+              id="describe"
+              title="3. Describe Your Project"
+              description="Give testers the context they need for quality feedback."
+            >
+              <Card className="bg-secondary/30 border-dashed">
+                <CardContent className="p-3 sm:p-6 space-y-6">
+                  <FormField
+                    control={form.control}
+                    name="category_id"
+                    render={({ field }) => (
+                      <FormItem>
+                        <Label>Category</Label>
+                        <Select onValueChange={field.onChange} defaultValue={field.value}>
+                          <FormControl><SelectTrigger id="category_id" className="py-0"><SelectValue placeholder="Select a category" /></SelectTrigger></FormControl>
+                          <SelectContent>
+                            {appCategoriesData?.map((cat) => (
+                              <SelectItem key={cat.id} value={cat.id.toString()}>{cat.name}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="app_description"
+                    render={({ field }) => (
+                      <FormItem>
+                        <Label htmlFor="app_description">App Description</Label>
+                        <FormControl><Textarea id="app_description" placeholder="Briefly describe what your app does." className="min-h-[120px]" {...field} /></FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="instruction_for_tester"
+                    render={({ field }) => (
+                      <FormItem>
+                        <Label htmlFor="instruction_for_tester">Instructions for Testers <span className="text-muted-foreground ml-1">(Optional)</span></Label>
+                        <FormControl><Textarea id="instruction_for_tester" placeholder="Any specific areas you want testers to focus on?" className="min-h-[120px]" {...field} /></FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </CardContent>
+              </Card>
+            </Section>
+
+            <Section
+              sectionRef={configureRef}
+              id="configure"
+              title="4. Configure Your Test"
+              description="Set the final parameters for your testing cycle."
+            >
+              <Card className="bg-secondary/30 border-dashed">
+                <CardContent className="p-3 sm:p-6 grid gap-8">
+                  <FormField
+                    control={form.control}
+                    name="minimum_android_version"
+                    render={({ field }) => (
+                      <FormItem>
+                        <Label htmlFor="minimum_android_version">Min. Android Version</Label>
+                        <Select onValueChange={field.onChange} defaultValue={field.value?.toString()}>
+                          <FormControl><SelectTrigger id="minimum_android_version" className="py-0"><SelectValue placeholder="Select Android version" /></SelectTrigger></FormControl>
+                          <SelectContent>
+                            {minimum_android_versions.map((version) => (
+                              <SelectItem key={version.value} value={version.value.toString()}>{version.name}</SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  {mode === "create" && (
+                    <>
+                      <FormField
+                        control={form.control}
+                        name="total_tester"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Number of Testers</FormLabel>
+                            <FormControl>
+                              <ModernSlider id="total_tester" value={field.value} onChange={field.onChange} min={1} max={20} label="" unit="testers" accentColor="primary" />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="total_days"
+                        render={({ field }) => (
+                          <FormItem>
+                            <FormLabel>Test Duration (Days)</FormLabel>
+                            <FormControl>
+                              <ModernSlider value={field.value} onChange={field.onChange} min={1} max={20} label="" unit="days" accentColor="primary" />
+                            </FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </>
+                  )}
+
+                  {mode === "create" && (
+                    walletIsPending ? <SkeletonSubmitAppBottom /> : (
+                      <div className="mt-8 flex justify-center">
+                        {/* Premium Card Design */}
+                        <div
+                          className={cn(
+                            "relative w-full overflow-hidden rounded-3xl p-8 shadow-2xl transition-all duration-500",
+                            isBalanceInsufficient
+                              ? "bg-gradient-to-br from-red-600 to-rose-900 shadow-red-900/20"
+                              : "bg-gradient-to-br from-[#1e293b] via-[#334155] to-[#0f172a] shadow-blue-900/20 dark:from-slate-900 dark:via-slate-800 dark:to-black",
+                          )}
+                        >
+                          {/* Background Pattern/Noise */}
+                          <div className="absolute inset-0 opacity-10 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] bg-repeat mix-blend-overlay pointer-events-none"></div>
+                          <div className="absolute -top-24 -right-24 h-64 w-64 rounded-full bg-white/5 blur-3xl pointer-events-none"></div>
+                          <div className="absolute -bottom-24 -left-24 h-64 w-64 rounded-full bg-white/5 blur-3xl pointer-events-none"></div>
+
+                          <div className="relative z-10 flex flex-col justify-between h-full min-h-[220px]">
+                            {/* Card Header */}
+                            <div className="flex justify-between items-start">
+                              <div className="flex items-center gap-2">
+                                <div className="p-2 rounded-lg bg-white/10 backdrop-blur-md border border-white/10">
+                                  <Zap className="w-5 h-5 text-yellow-400 fill-yellow-400" />
+                                </div>
+                                <div>
+                                  <p className="text-xs font-semibold text-white/60 tracking-widest uppercase">
+                                    COMMUNITY POINTS
+                                  </p>
+                                  <p className="text-white text-sm font-medium tracking-wide">
+                                    Virtual Card
+                                  </p>
+                                </div>
+                              </div>
+                              <div className="flex flex-col items-end">
+                                <div className="text-white/80">
+                                  <TrendingUp className="w-6 h-6" />
+                                </div>
+                              </div>
+                            </div>
+
+                            {/* Main Balance/Cost Display */}
+                            <div className="my-6">
+                              <p className="text-sm text-white/60 font-medium mb-1">
+                                Total Campaign Cost
+                              </p>
+                              <div className="flex items-baseline gap-2">
+                                <h2 className="text-5xl sm:text-6xl font-bold text-white tracking-tighter">
+                                  {cost.toLocaleString()}
+                                </h2>
+                                <span className="text-xl text-white/60 font-medium">
+                                  pts
+                                </span>
+                              </div>
+                              {isBalanceInsufficient && (
+                                <div className="mt-2 inline-flex items-center gap-2 px-3 py-1 rounded-full bg-black/20 backdrop-blur-md border border-white/10 text-white/90 text-xs font-medium">
+                                  <div className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
+                                  Exceeds Balance
+                                </div>
+                              )}
+                            </div>
+
+                            {/* Card Footer / Progress */}
+                            <div className="space-y-4">
+                              <div className="flex justify-between items-end text-sm">
+                                <div className="flex flex-col">
+                                  <span className="text-white/50 text-xs font-medium uppercase tracking-wider mb-1">
+                                    Wallet Balance
+                                  </span>
+                                  <span className="text-2xl font-semibold text-white tracking-tight">
+                                    {(
+                                      walletData?.totalPoints || 0
+                                    ).toLocaleString()}
+                                  </span>
+                                </div>
+                                <div className="text-right">
+                                  <span
+                                    className={cn(
+                                      "text-xs font-bold px-2 py-1 rounded bg-white/10 backdrop-blur border border-white/5",
+                                      isBalanceInsufficient
+                                        ? "text-red-200"
+                                        : "text-emerald-300",
+                                    )}
+                                  >
+                                    {isBalanceInsufficient
+                                      ? "INSUFFICIENT FUNDS"
+                                      : "SUFFICIENT FUNDS"}
+                                  </span>
+                                </div>
+                              </div>
+
+                              {/* Glassy Progress Bar */}
+                              <div className="relative h-2 w-full bg-white/10 rounded-full overflow-hidden backdrop-blur-sm">
+                                <div
+                                  className={cn(
+                                    "absolute top-0 left-0 h-full transition-all duration-700 ease-out rounded-full",
+                                    isBalanceInsufficient
+                                      ? "bg-white/40 w-full"
+                                      : "bg-emerald-400 w-[var(--prog)] shadow-[0_0_10px_2px_rgba(52,211,153,0.5)]",
+                                  )}
+                                  style={
+                                    {
+                                      "--prog": `${Math.min(
+                                        (cost /
+                                          (walletData?.totalPoints || 1)) *
+                                        100,
+                                        100,
+                                      )}%`,
+                                    } as React.CSSProperties
+                                  }
+                                />
+                              </div>
+                            </div>
+
+                            {/* Promo Code Section (Moved to Card bottom) */}
+                            <div className="mt-4 space-y-3">
+                              <div className="flex gap-2 items-center">
+                                <Input
+                                  id="promo_code"
+                                  placeholder="Have a promo code?"
+                                  value={promoCodeInput}
+                                  onChange={(e) =>
+                                    setPromoCodeInput(e.target.value)
+                                  }
+                                  disabled={
+                                    !!appliedPromo || isValidatingPromo
+                                  }
+                                  className="max-w-[200px] h-9 bg-black/20 border-white/10 text-white placeholder:text-white/40 focus-visible:ring-1 focus-visible:ring-white/20"
+                                />
+                                <AnimatePresence mode="wait">
+                                  {isValidatingPromo ? (
+                                    <motion.div
+                                      key="loading"
+                                      initial={{ opacity: 0 }}
+                                      animate={{ opacity: 1 }}
+                                      exit={{ opacity: 0 }}
+                                      className="flex items-center justify-center h-9 px-4"
+                                    >
+                                      <Loader2 className="w-5 h-5 text-white animate-spin" />
+                                    </motion.div>
+                                  ) : !appliedPromo ? (
+                                    <motion.div
+                                      key="apply"
+                                      initial={{ opacity: 0 }}
+                                      animate={{ opacity: 1 }}
+                                      exit={{ opacity: 0 }}
+                                    >
+                                      <Button
+                                        type="button"
+                                        className="h-9 px-4 bg-white/10 hover:bg-white/20 text-white border-0 hover:shadow-white/0"
+                                        onClick={handleApplyPromo}
+                                      >
+                                        Apply
+                                      </Button>
+                                    </motion.div>
+                                  ) : (
+                                    <motion.div
+                                      key="remove"
+                                      initial={{ opacity: 0 }}
+                                      animate={{ opacity: 1 }}
+                                      exit={{ opacity: 0 }}
+                                    >
+                                      <Button
+                                        type="button"
+                                        variant="destructive"
+                                        className="h-9 px-4 bg-red-500/80 hover:bg-red-500/90 text-white border-0"
+                                        onClick={handleRemovePromo}
+                                      >
+                                        Remove
+                                      </Button>
+                                    </motion.div>
+                                  )}
+                                </AnimatePresence>
+                              </div>
+                              {appliedPromo && (
+                                <p className="text-emerald-400 font-medium text-xs flex items-center gap-1.5">
+                                  <CheckCircle2 className="w-3.5 h-3.5" />
+                                  Promo applied! Cost reduced to{" "}
+                                  {cost}.
+                                </p>
+                              )}
+                              {promoCodeError && !appliedPromo && (
+                                <p className="text-red-400 font-medium text-xs flex items-center gap-1.5">
+                                  <AlertCircle className="w-3.5 h-3.5" />
+                                  {promoCodeError}
+                                </p>
+                              )}
+                            </div>
+                          </div>
+
+                          {/* Highly Realistic Chip Pattern */}
+                          <div className="absolute top-1/2 right-12 -translate-y-1/2 w-12 h-9 rounded-md bg-gradient-to-br from-yellow-200/40 via-yellow-400/20 to-yellow-500/30 border border-white/30 backdrop-blur-md hidden sm:block overflow-hidden shadow-inner">
+                            <div className="absolute inset-0">
+                              {/* Contact Grid */}
+                              <div className="absolute inset-0 grid grid-cols-3 grid-rows-2 gap-[0.5px]">
+                                <div className="border-[0.5px] border-white/10" />
+                                <div className="border-[0.5px] border-white/10" />
+                                <div className="border-[0.5px] border-white/10" />
+                                <div className="border-[0.5px] border-white/10" />
+                                <div className="border-[0.5px] border-white/10" />
+                                <div className="border-[0.5px] border-white/10" />
+                              </div>
+
+                              {/* Center Etching Core */}
+                              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-5 h-6 border-x border-white/20 bg-white/5 rounded-[1px]" />
+
+                              {/* Horizontal separators */}
+                              <div className="absolute top-[30%] left-0 w-full h-[0.5px] bg-white/10" />
+                              <div className="absolute top-[70%] left-0 w-full h-[0.5px] bg-white/10" />
+
+                              {/* Fine circuitry detail */}
+                              <div className="absolute top-[45%] left-1/2 -translate-x-1/2 w-2 h-[0.5px] bg-white/40" />
+                              <div className="absolute top-[55%] left-1/2 -translate-x-1/2 w-2 h-[0.5px] bg-white/40" />
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    )
+                  )}
+
+                  <div className="flex flex-col sm:flex-row items-center justify-end gap-3 w-full">
+                    {onCancel && (
+                      <Button variant="outline" type="button" onClick={onCancel} className="w-full sm:w-auto h-12 rounded-xl">
+                        Cancel
+                      </Button>
+                    )}
+                    <LoadingButton
+                      className="w-full sm:w-auto rounded-xl px-8 h-12 text-base font-semibold"
+                      isLoading={isPending}
+                      isSuccess={isSuccess}
+                      isError={isError}
+                      disabled={isSubmitDisabled}
+                      type="submit"
+                    >
+                      {mode === "create" ? "Submit for Review" : "Save Changes and Resubmit"}
+                    </LoadingButton>
+                  </div>
+                  {pendingRequirements.length > 0 && (
+                    <p className="text-[11px] text-neutral-500 text-right">
+                      Requirements: {pendingRequirements.join(", ")}
+                    </p>
+                  )}
+                </CardContent>
+              </Card>
+            </Section>
+          </form>
+        </FormProvider>
+      </main>
+    </div>
+  );
+}

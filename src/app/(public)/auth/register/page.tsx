@@ -18,10 +18,11 @@ import { useTheme } from "next-themes";
 import { BackButton } from "@/components/back-button";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useRegisterUser } from "@/hooks/useAuth";
+import { useRegisterUser, useGoogleLoginUser } from "@/hooks/useAuth";
 import { BackgroundBeams } from "@/components/ui/background-beams";
 import { LoadingButton } from "@/components/ui/loading-button";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useUserProfileData } from "@/hooks/useUser";
 import Link from "next/link";
 import { ROUTES } from "@/lib/routes";
 
@@ -55,12 +56,44 @@ export default function RegisterPage() {
   const { handleSubmit } = form;
   const { mutate, isPending, isSuccess, isError, error } = useRegisterUser();
 
+  const {
+    mutate: googleLoginMutate,
+    isPending: googleLoginIsPending,
+  } = useGoogleLoginUser({
+    onSuccess: async () => {
+      await new Promise((r) => setTimeout(r, 50));
+      userProfileDataRefetch();
+    },
+  });
+
+  const {
+    data: userProfileData,
+    isSuccess: userProfileIsSuccess,
+    refetch: userProfileDataRefetch,
+    isFetching: userProfileisFetching,
+  } = useUserProfileData();
+
+  useEffect(() => {
+    if (!userProfileIsSuccess || userProfileisFetching || !userProfileData)
+      return;
+
+    if (userProfileData.initial) {
+      router.replace("/profile/profile-setup");
+    } else {
+      router.replace("/dashboard");
+    }
+  }, [userProfileIsSuccess, userProfileisFetching, userProfileData, router]);
+
   const processForm: SubmitHandler<any> = (data) => {
     mutate(data, {
       onSuccess: () => {
         router.push(ROUTES.AUTH.REGISTER_CHECK_EMAIL);
       },
     });
+  };
+
+  const handleGoogleLogin = () => {
+    googleLoginMutate();
   };
 
   return (
@@ -109,9 +142,12 @@ export default function RegisterPage() {
                   <Button
                     variant="outline"
                     className="w-full rounded-xl py-2 sm:py-6 text-sm sm:text-base"
+                    type="button"
+                    onClick={handleGoogleLogin}
+                    disabled={googleLoginIsPending}
                   >
                     <GoogleIcon className="mr-3" />
-                    Sign up with Google
+                    {googleLoginIsPending ? "Connecting..." : "Sign up with Google"}
                   </Button>
                   <div className="flex items-center gap-4">
                     <div className="flex-1 border-t"></div>

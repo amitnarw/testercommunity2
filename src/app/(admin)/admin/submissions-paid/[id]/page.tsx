@@ -39,10 +39,12 @@ import {
   ArrowRight,
   ChevronRight,
   Pencil,
+  Loader2,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { BackButton } from "@/components/back-button";
 import { useSingleHubAppDetails } from "@/hooks/useHub";
+import { useUpdateProjectStatus } from "@/hooks/useAdmin";
 import { toast } from "@/hooks/use-toast";
 import { SafeImage } from "@/components/safe-image";
 import { ExpandableText } from "@/components/expandable-text";
@@ -100,6 +102,28 @@ export default function AdminSubmissionDetailPage({
   const [showAcceptDialog, setShowAcceptDialog] = useState(false);
   const [showManageTestersDialog, setShowManageTestersDialog] = useState(false);
   const [showStartTestingDialog, setShowStartTestingDialog] = useState(false);
+  const [isUpdatingStatus, setIsUpdatingStatus] = useState(false);
+
+  const { mutate: updateStatus } = useUpdateProjectStatus({
+    onSuccess: () => {
+      toast({ title: "Success", description: "Status updated successfully." });
+      refetch();
+    },
+    onError: (err: any) => {
+      toast({
+        title: "Error",
+        description: err.message,
+        variant: "destructive",
+      });
+    },
+    onSettled: () => setIsUpdatingStatus(false),
+  });
+
+  const handleMoveToReview = () => {
+    if (!window.confirm("Move this app back to IN_REVIEW status?")) return;
+    setIsUpdatingStatus(true);
+    updateStatus({ id: project!.id, status: "IN_REVIEW" });
+  };
 
   const {
     data: project,
@@ -209,14 +233,17 @@ export default function AdminSubmissionDetailPage({
                   <ExternalLink className="w-4 h-4" /> Play Store
                 </a>
 
-                {project.status === "IN_REVIEW" && (
+                {(project.status === "IN_REVIEW" || project.status === "REJECTED") && (
                   <>
                     <Button
                       variant="destructive"
                       onClick={() => setShowRejectDialog(true)}
                       className="px-5 py-2.5 h-auto rounded-xl shadow-sm font-bold"
                     >
-                      <X className="w-4 h-4 mr-1.5" /> Reject
+                      <X className="w-4 h-4 mr-1.5" />{" "}
+                      {project.status === "REJECTED"
+                        ? "Edit Rejection"
+                        : "Reject"}
                     </Button>
                     <Button
                       onClick={() => setShowAcceptDialog(true)}
@@ -224,6 +251,22 @@ export default function AdminSubmissionDetailPage({
                     >
                       <Check className="w-4 h-4 mr-1.5" /> Approve
                     </Button>
+
+                    {project.status === "REJECTED" && (
+                      <Button
+                        variant="outline"
+                        onClick={handleMoveToReview}
+                        disabled={isUpdatingStatus}
+                        className="px-5 py-2.5 h-auto rounded-xl shadow-sm font-bold"
+                      >
+                        {isUpdatingStatus ? (
+                          <Loader2 className="w-4 h-4 mr-1.5 animate-spin" />
+                        ) : (
+                          <Activity className="w-4 h-4 mr-1.5" />
+                        )}
+                        Move to Review
+                      </Button>
+                    )}
                   </>
                 )}
 
@@ -552,7 +595,11 @@ export default function AdminSubmissionDetailPage({
         appId={project.id}
         open={showRejectDialog}
         onOpenChange={setShowRejectDialog}
-        onSuccess={handleSuccess}
+        onSuccess={() => {
+          refetch();
+          setShowRejectDialog(false);
+        }}
+        initialData={project.statusDetails || undefined}
       />
       <AdminAcceptDialog
         appId={project.id}

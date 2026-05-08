@@ -105,7 +105,9 @@ export function NotificationsPageContent({
                 ) : (
                   paginatedNotifications.map((notification) => (
                     <Link
-                      href="#"
+                      href={notification?.url || "#"}
+                      target={notification?.url ? "_blank" : undefined}
+                      rel={notification?.url ? "noopener noreferrer" : undefined}
                       key={notification.id}
                       className={`block ${
                         notification?.type === "NEW_TEST"

@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 
 interface ModernSliderProps {
+  id?: string;
   value: number;
   onChange: (value: number) => void;
   min: number;
@@ -15,6 +16,7 @@ interface ModernSliderProps {
 }
 
 export function ModernSlider({
+  id,
   value,
   onChange,
   min,
@@ -58,7 +60,7 @@ export function ModernSlider({
   };
 
   return (
-    <div className="space-y-4">
+    <div id={id} className="space-y-4">
       <div className="flex items-center justify-between">
         <label className="text-sm font-medium text-foreground/80">{label}</label>
         <div className="flex items-baseline gap-1">

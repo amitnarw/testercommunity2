@@ -682,6 +682,28 @@ export async function addHubApp(payload: AppData) {
   }
 }
 
+export async function resubmitHubApp(payload: any) {
+  try {
+    const response = await api.post(API_ROUTES.HUB + `/resubmit-hub-app`, payload);
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error resubmitting hub app:", error);
+    if (axios.isAxiosError(error)) {
+      const status = error.response?.status;
+      const responseData = error.response?.data;
+      console.error("Axios error:", status, responseData);
+
+      throw new Error(
+        responseData?.message || error.message || "Unknown Axios error",
+      );
+    } else if (error instanceof Error) {
+      throw new Error(error.message);
+    } else {
+      throw new Error(JSON.stringify(error));
+    }
+  }
+}
+
 export async function validatePromoCode(payload: { code: string }) {
   try {
     const response = await api.post(
@@ -1764,7 +1786,7 @@ export async function updateDailyVerificationStatus(payload: {
   }
 }
 
-export async function adminCompleteApp(payload: { appId: number }) {
+export async function adminCompleteApp(payload: { id: number }) {
   try {
     const response = await api.post(
       API_ROUTES.ADMIN + "/admin-complete-app",

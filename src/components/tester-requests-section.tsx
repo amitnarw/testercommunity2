@@ -347,9 +347,9 @@ export function TesterRequestsSection({
               </TableHeader>
               <TableBody>
                 <AnimatePresence>
-                  {pendingRequests.map((req) => (
+                  {pendingRequests.map((req, index) => (
                     <motion.tr
-                      key={req.id}
+                      key={req.id || req.testerId || `pending-${index}`}
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
                       exit={{ opacity: 0 }}
@@ -388,10 +388,10 @@ export function TesterRequestsSection({
                           >
                             <Smartphone className="w-3 h-3 opacity-70" />
                             {req?.tester?.userDetail?.device_company ||
-                            req?.tester?.userDetail?.device_model
+                              req?.tester?.userDetail?.device_model
                               ? req?.tester?.userDetail?.device_company +
-                                " " +
-                                req?.tester?.userDetail?.device_model
+                              " " +
+                              req?.tester?.userDetail?.device_model
                               : "N/A"}
                           </Badge>
                         </div>
@@ -455,9 +455,9 @@ export function TesterRequestsSection({
 
           <div className="md:hidden space-y-4">
             <AnimatePresence>
-              {pendingRequests.map((req) => (
+              {pendingRequests.map((req, index) => (
                 <motion.div
-                  key={req.id}
+                  key={req.id || req.testerId || `pending-mob-${index}`}
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0 }}
@@ -498,10 +498,10 @@ export function TesterRequestsSection({
                       <Smartphone className="w-3.5 h-3.5 opacity-70" />
                       <span>
                         {req?.tester?.userDetail?.device_company ||
-                        req?.tester?.userDetail?.device_model
+                          req?.tester?.userDetail?.device_model
                           ? req?.tester?.userDetail?.device_company +
-                            " " +
-                            req?.tester?.userDetail?.device_model
+                          " " +
+                          req?.tester?.userDetail?.device_model
                           : "N/A"}
                       </span>
                     </div>
@@ -563,9 +563,9 @@ export function TesterRequestsSection({
               </TableHeader>
               <TableBody>
                 <AnimatePresence>
-                  {joinedTesters.map((req) => (
+                  {joinedTesters.map((req, index) => (
                     <motion.tr
-                      key={req.id}
+                      key={req.id || req.testerId || `joined-${index}`}
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
                       exit={{ opacity: 0 }}
@@ -588,13 +588,13 @@ export function TesterRequestsSection({
                           className={cn(
                             "font-medium text-xs",
                             req.status === "COMPLETED" &&
-                              "bg-green-500/10 text-green-600 hover:bg-green-500/20 border-green-200",
+                            "bg-green-500/10 text-green-600 hover:bg-green-500/20 border-green-200",
                             req.status === "IN_PROGRESS" &&
-                              "bg-blue-500/10 text-blue-600 hover:bg-blue-500/20 border-blue-200",
+                            "bg-blue-500/10 text-blue-600 hover:bg-blue-500/20 border-blue-200",
                             (req.status === "REJECTED" ||
                               req.status === "DROPPED" ||
                               req.status === "REMOVED") &&
-                              "bg-red-500/10 text-red-600 hover:bg-red-500/20 border-red-200",
+                            "bg-red-500/10 text-red-600 hover:bg-red-500/20 border-red-200",
                           )}
                         >
                           {req.status}
@@ -619,13 +619,13 @@ export function TesterRequestsSection({
                                 className={cn(
                                   "h-6 w-6 rounded-full flex items-center justify-center text-[10px] font-bold transition-all",
                                   verification?.status === "VERIFIED" &&
-                                    "bg-emerald-500/20 text-emerald-600 hover:bg-emerald-500/30 cursor-pointer",
+                                  "bg-emerald-500/20 text-emerald-600 hover:bg-emerald-500/30 cursor-pointer",
                                   verification?.status === "REJECTED" &&
-                                    "bg-red-500/20 text-red-600 hover:bg-red-500/30 cursor-pointer",
+                                  "bg-red-500/20 text-red-600 hover:bg-red-500/30 cursor-pointer",
                                   verification?.status === "PENDING" &&
-                                    "bg-amber-500/20 text-amber-600 hover:bg-amber-500/30 cursor-pointer",
+                                  "bg-amber-500/20 text-amber-600 hover:bg-amber-500/30 cursor-pointer",
                                   !verification &&
-                                    "bg-muted text-muted-foreground cursor-default",
+                                  "bg-muted text-muted-foreground cursor-default",
                                 )}
                                 title={
                                   verification
@@ -661,9 +661,9 @@ export function TesterRequestsSection({
 
           <div className="md:hidden space-y-4">
             <AnimatePresence>
-              {joinedTesters.map((req) => (
+              {joinedTesters.map((req, index) => (
                 <motion.div
-                  key={req.id}
+                  key={req.id || req.testerId || `joined-mob-${index}`}
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0 }}
@@ -680,9 +680,9 @@ export function TesterRequestsSection({
                       className={cn(
                         "text-[10px]",
                         req.status === "COMPLETED" &&
-                          "bg-green-500/10 text-green-600",
+                        "bg-green-500/10 text-green-600",
                         req.status === "IN_PROGRESS" &&
-                          "bg-blue-500/10 text-blue-600",
+                        "bg-blue-500/10 text-blue-600",
                       )}
                     >
                       {req.status}
@@ -707,13 +707,13 @@ export function TesterRequestsSection({
                           className={cn(
                             "h-5 w-5 rounded-full flex items-center justify-center text-[8px] font-bold transition-all",
                             verification?.status === "VERIFIED" &&
-                              "bg-emerald-500/20 text-emerald-600 hover:bg-emerald-500/30 cursor-pointer",
+                            "bg-emerald-500/20 text-emerald-600 hover:bg-emerald-500/30 cursor-pointer",
                             verification?.status === "REJECTED" &&
-                              "bg-red-500/20 text-red-600 hover:bg-red-500/30 cursor-pointer",
+                            "bg-red-500/20 text-red-600 hover:bg-red-500/30 cursor-pointer",
                             verification?.status === "PENDING" &&
-                              "bg-amber-500/20 text-amber-600 hover:bg-amber-500/30 cursor-pointer",
+                            "bg-amber-500/20 text-amber-600 hover:bg-amber-500/30 cursor-pointer",
                             !verification &&
-                              "bg-muted text-muted-foreground cursor-default",
+                            "bg-muted text-muted-foreground cursor-default",
                           )}
                           title={
                             verification
@@ -893,8 +893,8 @@ export function TesterRequestsSection({
               }
             >
               {isPendingCUU ||
-              uploadFileToR2.isPending ||
-              rejectMutation.isPending ? (
+                uploadFileToR2.isPending ||
+                rejectMutation.isPending ? (
                 <>
                   <Loader2 className="w-4 h-4 animate-spin mr-2" />
                   {isPendingCUU || uploadFileToR2.isPending
@@ -951,11 +951,11 @@ export function TesterRequestsSection({
                     <span className="truncate ml-2">
                       {selectedRequest?.tester?.createdAt
                         ? new Date(
-                            selectedRequest?.tester?.createdAt,
-                          )?.toLocaleDateString("en-US", {
-                            month: "short",
-                            year: "numeric",
-                          })
+                          selectedRequest?.tester?.createdAt,
+                        )?.toLocaleDateString("en-US", {
+                          month: "short",
+                          year: "numeric",
+                        })
                         : "N/A"}
                     </span>
                   </div>
@@ -975,10 +975,10 @@ export function TesterRequestsSection({
                     </span>
                     <span className="truncate ml-2">
                       {selectedRequest?.tester?.userDetail?.device_company ||
-                      selectedRequest?.tester?.userDetail?.device_model
+                        selectedRequest?.tester?.userDetail?.device_model
                         ? selectedRequest?.tester?.userDetail?.device_company +
-                          " " +
-                          selectedRequest?.tester?.userDetail?.device_model
+                        " " +
+                        selectedRequest?.tester?.userDetail?.device_model
                         : "N/A"}
                     </span>
                   </div>
@@ -1016,7 +1016,7 @@ export function TesterRequestsSection({
                 disabled={processingId === selectedRequest?.testerId}
               >
                 {selectedRequest &&
-                processingId === selectedRequest.testerId ? (
+                  processingId === selectedRequest.testerId ? (
                   <>
                     <Loader2 className="w-4 h-4 animate-spin mr-2" />
                     Accepting...
@@ -1047,7 +1047,7 @@ export function TesterRequestsSection({
             className={cn(
               "flex flex-col h-auto",
               selectedVerification?.proofImageUrl
-                ? "md:grid md:grid-cols-5 md:h-[600px]"
+                ? "md:grid md:grid-cols-5 h-[600px] overflow-y-auto"
                 : "md:h-auto",
             )}
           >
@@ -1055,12 +1055,12 @@ export function TesterRequestsSection({
             {selectedVerification?.proofImageUrl && (
               <div className="md:col-span-3 relative bg-black/5 dark:bg-black flex items-center justify-center p-4 border-b md:border-b-0 md:border-r border-border h-64 shrink-0 md:h-full">
                 <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px] dark:bg-[linear-gradient(to_right,#52525b18_1px,transparent_1px),linear-gradient(to_bottom,#52525b18_1px,transparent_1px)]"></div>
-                <div className="relative w-full h-full max-h-[500px] aspect-[9/16] rounded-xl overflow-hidden shadow-none md:shadow-2xl group">
+                <div className="relative w-full h-full rounded-xl overflow-hidden group">
                   <SafeImage
                     src={selectedVerification.proofImageUrl}
                     alt={`Day ${selectedVerification.dayNumber} Proof`}
                     fill
-                    className="object-contain md:object-cover transition-transform duration-700 group-hover:scale-105"
+                    className="transition-opacity duration-300 opacity-100 absolute inset-0 w-full h-full object-contain"
                   />
                 </div>
               </div>
@@ -1142,9 +1142,9 @@ export function TesterRequestsSection({
                       <span className="text-end text-xs font-mono text-foreground">
                         {selectedVerification?.verifiedAt
                           ? format(
-                              new Date(selectedVerification.verifiedAt),
-                              "PPP p",
-                            )
+                            new Date(selectedVerification.verifiedAt),
+                            "PPP p",
+                          )
                           : "N/A"}
                       </span>
                     </div>
@@ -1163,12 +1163,10 @@ export function TesterRequestsSection({
                 )}
 
                 {/* Rejection Reason Input */}
-                {selectedVerification?.status !== "VERIFIED" && (
+                {selectedVerification?.status !== "REJECTED" && (
                   <div className="space-y-2">
                     <label className="text-xs font-bold text-muted-foreground uppercase tracking-widest">
-                      {selectedVerification?.status === "REJECTED"
-                        ? "Update Rejection Reason"
-                        : "Rejection Reason"}
+                      Rejection Reason
                     </label>
                     <Textarea
                       placeholder="Enter reason for rejection..."
@@ -1184,8 +1182,8 @@ export function TesterRequestsSection({
               <div className="p-6 border-t border-border bg-muted/20 shrink-0 flex flex-col gap-2">
                 <div className="flex gap-3">
                   <Button
-                    variant="outline"
-                    className="flex-1 h-11 font-bold border-red-500/20 bg-red-500/5 text-red-600 hover:bg-red-500/10 hover:text-red-700 hover:border-red-500/40"
+                    variant="destructive"
+                    className="flex-1 h-11 font-bold shadow-lg shadow-red-500/20"
                     onClick={() => handleUpdateVerificationStatus("REJECTED")}
                     disabled={
                       isUpdatingVerification ||

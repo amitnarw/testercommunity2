@@ -102,7 +102,7 @@ export function CTASection() {
               Android
             </span>
             <span className="font-bold text-sm md:text-base tracking-tight">
-              Firebase
+              WearOS
             </span>
           </div>
         </motion.div>
