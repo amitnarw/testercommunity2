@@ -37,12 +37,18 @@ import AppInfoHeader from "@/components/app-info-header";
 import Confetti from "react-dom-confetti";
 import { useInView } from "react-intersection-observer";
 import { motion } from "framer-motion";
-import { useSingleHubAppDetails, useCompleteHostedApp } from "@/hooks/useHub";
+import { useSingleHubAppDetails, useCompleteHostedApp, useResubmitHubApp, useAppCategories } from "@/hooks/useHub";
 import { HubSubmittedAppResponse } from "@/lib/types";
 import { TesterRequestsSection } from "@/components/tester-requests-section";
 import { CompleteTestingBanner } from "@/components/community-dashboard/complete-testing-banner";
 import { ReviewSubmissionForm } from "@/components/review-submission-form";
 import { SubmissionDetailsSkeleton } from "@/components/skeletons/submission-details-skeleton";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { useToast } from "@/hooks/use-toast";
+import { EditSubmissionModal } from "@/components/community-dashboard/edit-submission-modal";
 
 const FEEDBACK_PER_PAGE = 5;
 
@@ -255,6 +261,8 @@ function SubmissionDetailsPage({
   const [viewMode, setViewMode] = useState<"list" | "grid">("list");
   const [fullscreenImage, setFullscreenImage] = useState<string | null>(null);
   const [isConfettiActive, setConfettiActive] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const { toast } = useToast();
 
   const {
     data: appDetails,
@@ -400,7 +408,6 @@ function SubmissionDetailsPage({
               <div className="absolute inset-0 bg-gradient-to-br from-red-500/60 to-red-500/20 dark:from-red-500/30 dark:to-red-500/5 opacity-30 dark:opacity-70" />
 
               <div className="flex flex-col lg:flex-row relative z-10">
-                {/* Content Side */}
                 <div className="flex-1 p-4 sm:p-10 sm:pr-14 flex flex-col justify-center">
                   <div className="flex items-center gap-4 mb-8">
                     <div className="h-14 w-14 rounded-2xl bg-destructive/10 text-destructive flex items-center justify-center shadow-inner ring-1 ring-destructive/20 relative overflow-hidden">
@@ -436,8 +443,17 @@ function SubmissionDetailsPage({
                     <Button
                       variant="outline"
                       className="border-destructive/20 hover:bg-destructive/5 text-destructive rounded-xl h-12 px-8 text-base bg-background/50"
+                      onClick={() =>
+                        (window.location.href = "mailto:support@intesters.com")
+                      }
                     >
                       Contact Support
+                    </Button>
+                    <Button
+                      onClick={() => setIsEditModalOpen(true)}
+                      className="rounded-xl h-12 px-8 text-base shadow-lg shadow-primary/20"
+                    >
+                      Edit and Resubmit
                     </Button>
                   </div>
                 </div>
@@ -457,18 +473,28 @@ function SubmissionDetailsPage({
                       className="object-cover transition-transform duration-700 group-hover/image:scale-105"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-60 lg:opacity-0 group-hover/image:opacity-100 transition-all duration-500 lg:bg-black/40 flex flex-col items-center justify-center gap-3 backdrop-blur-[2px]">
-                      <div className="h-12 w-12 rounded-full bg-white/10 backdrop-blur-md flex items-center justify-center border border-white/20 transform scale-0 group-hover/image:scale-100 transition-transform duration-300 delay-100">
-                        <Expand className="w-6 h-6 text-white" />
+                      <div className="p-3 rounded-full bg-white/20 backdrop-blur-md border border-white/30 text-white scale-0 group-hover/image:scale-100 transition-transform duration-500">
+                        <Expand className="w-6 h-6" />
                       </div>
-                      <span className="text-white text-sm font-medium opacity-0 group-hover/image:opacity-100 transition-opacity duration-300 delay-200">
-                        View Evidence
-                      </span>
+                      <p className="text-white font-medium text-sm opacity-0 group-hover/image:opacity-100 transition-opacity duration-500 delay-100">
+                        View Attachment
+                      </p>
                     </div>
                   </div>
                 )}
               </div>
             </motion.section>
           )}
+
+          {appDetails && (
+            <EditSubmissionModal
+              isOpen={isEditModalOpen}
+              onOpenChange={setIsEditModalOpen}
+              app={appDetails}
+              onSuccess={() => appDetailsRefetch()}
+            />
+          )}
+
 
           {showCompleteTestingBanner && (
             <CompleteTestingBanner

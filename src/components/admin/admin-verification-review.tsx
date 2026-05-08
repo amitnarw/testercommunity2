@@ -180,7 +180,7 @@ export function AdminVerificationReview({
         }}
       >
         <DialogContent className="max-w-[95vw] sm:max-w-5xl p-0 overflow-hidden bg-background rounded-3xl border-none shadow-2xl">
-          <div className="flex flex-col md:flex-row h-auto md:h-[600px]">
+          <div className="flex flex-col md:flex-row h-[600px] overflow-y-auto">
             {/* Left: Image Preview */}
             <div className="flex-1 relative bg-slate-900 flex items-center justify-center p-4 border-r border-border/10 overflow-hidden min-h-[300px] md:min-h-0">
               <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]"></div>
@@ -212,7 +212,7 @@ export function AdminVerificationReview({
                 </p>
               </DialogHeader>
 
-              <div className="flex-1 overflow-y-auto p-6 space-y-6">
+              <div className="flex-1 p-6 space-y-6">
                 {/* Meta Info */}
                 <div className="space-y-3">
                   <div className="flex items-center justify-between p-3.5 bg-muted/40 rounded-2xl border border-border/60 transition-colors hover:bg-muted/60">
@@ -328,10 +328,10 @@ export function AdminVerificationReview({
                 {!isRejectingLocal ? (
                   <>
                     <Button
-                      variant="outline"
-                      className="rounded-xl flex-1 h-11 font-bold border-red-500/20 bg-red-500/5 text-red-600 hover:bg-red-500/10 hover:text-red-700 hover:border-red-500/40"
+                      variant="destructive"
+                      className="rounded-xl flex-1 h-11 font-bold shadow-lg shadow-red-500/20"
                       onClick={() => setIsRejectingLocal(true)}
-                      disabled={isSubmitting || selectedVerification?.status === "VERIFIED"}
+                      disabled={isSubmitting || selectedVerification?.status === "REJECTED"}
                     >
                       <XCircle className="w-4 h-4 mr-2" />
                       Reject
@@ -339,7 +339,7 @@ export function AdminVerificationReview({
                     <Button
                       className="rounded-xl flex-1 h-11 font-bold bg-emerald-600 hover:bg-emerald-700 text-white shadow-lg shadow-emerald-500/20"
                       onClick={() => handleUpdateStatus("VERIFIED")}
-                      disabled={isSubmitting || selectedVerification?.status === "REJECTED"}
+                      disabled={isSubmitting || selectedVerification?.status === "VERIFIED"}
                     >
                       <CheckCircle2 className="w-4 h-4 mr-2" />
                       Approve

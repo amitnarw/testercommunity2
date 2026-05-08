@@ -17,25 +17,22 @@ import {
   Package,
   ShieldAlert,
   FileText,
-  Video,
   ExternalLink,
   Activity,
   CheckCircle2,
   Pencil,
-  MessageSquare,
-  Bug,
-  Lightbulb,
   Star,
+  Loader2,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { Progress } from "@/components/ui/progress";
 import { BackButton } from "@/components/back-button";
 import { useSingleHubAppDetails } from "@/hooks/useHub";
+import { useUpdateProjectStatus } from "@/hooks/useAdmin";
 import { SafeImage } from "@/components/safe-image";
 import { ExpandableText } from "@/components/expandable-text";
 import DeveloperInstructions from "@/components/developerInstructions";
 import { AdminAssignedTestersTable } from "@/components/admin/admin-assigned-testers-table";
-import { adminCompleteApp } from "@/lib/apiCalls";
 import { useToast } from "@/hooks/use-toast";
 import dynamic from "next/dynamic";
 import { SubmittedFeedback } from "@/components/community-dashboard/submitted-feedback";
@@ -54,6 +51,13 @@ const AdminAcceptDialog = dynamic(
     ),
   { ssr: false },
 );
+const AdminCompleteDialog = dynamic(
+  () =>
+    import("@/components/admin/admin-complete-dialog").then(
+      (mod) => mod.AdminCompleteDialog,
+    ),
+  { ssr: false },
+);
 
 export default function AdminSubmissionDetailPage({
   params,
@@ -67,8 +71,30 @@ export default function AdminSubmissionDetailPage({
   // Details Dialog State
   const [showRejectDialog, setShowRejectDialog] = useState(false);
   const [showAcceptDialog, setShowAcceptDialog] = useState(false);
-  const [isCompleting, setIsCompleting] = useState(false);
+  const [showCompleteDialog, setShowCompleteDialog] = useState(false);
   const { toast } = useToast();
+  const [isUpdatingStatus, setIsUpdatingStatus] = useState(false);
+
+  const { mutate: updateStatus } = useUpdateProjectStatus({
+    onSuccess: () => {
+      toast({ title: "Success", description: "Status updated successfully." });
+      refetch();
+    },
+    onError: (err: any) => {
+      toast({
+        title: "Error",
+        description: err.message,
+        variant: "destructive",
+      });
+    },
+    onSettled: () => setIsUpdatingStatus(false),
+  });
+
+  const handleMoveToReview = () => {
+    if (!window.confirm("Move this app back to IN_REVIEW status?")) return;
+    setIsUpdatingStatus(true);
+    updateStatus({ id: project!.id, status: "IN_REVIEW" });
+  };
 
   const {
     data: project,
@@ -77,27 +103,8 @@ export default function AdminSubmissionDetailPage({
     refetch,
   } = useSingleHubAppDetails({ id });
 
-  const handleAdminComplete = async () => {
-    if (
-      !window.confirm(
-        "Are you sure you want to mark this app as COMPLETED? This will notify the owner.",
-      )
-    )
-      return;
-    setIsCompleting(true);
-    try {
-      await adminCompleteApp({ appId: project!.id });
-      toast({ title: "Success", description: "App marked as completed." });
-      refetch();
-    } catch (err: any) {
-      toast({
-        title: "Error",
-        description: err.message,
-        variant: "destructive",
-      });
-    } finally {
-      setIsCompleting(false);
-    }
+  const handleAdminComplete = () => {
+    setShowCompleteDialog(true);
   };
 
   const handleSuccess = () => {
@@ -251,14 +258,17 @@ export default function AdminSubmissionDetailPage({
                   <ExternalLink className="w-4 h-4" /> Play Store
                 </a>
 
-                {project.status === "IN_REVIEW" && (
+                {(project.status === "IN_REVIEW" || project.status === "REJECTED") && (
                   <>
                     <Button
                       variant="destructive"
                       onClick={() => setShowRejectDialog(true)}
                       className="px-5 py-2.5 h-auto rounded-xl shadow-sm font-bold"
                     >
-                      <X className="w-4 h-4 mr-1.5" /> Reject
+                      <X className="w-4 h-4 mr-1.5" />{" "}
+                      {project.status === "REJECTED"
+                        ? "Edit Rejection"
+                        : "Reject"}
                     </Button>
                     <Button
                       onClick={() => setShowAcceptDialog(true)}
@@ -266,20 +276,31 @@ export default function AdminSubmissionDetailPage({
                     >
                       <Check className="w-4 h-4 mr-1.5" /> Approve
                     </Button>
+
+                    {project.status === "REJECTED" && (
+                      <Button
+                        variant="outline"
+                        onClick={handleMoveToReview}
+                        disabled={isUpdatingStatus}
+                        className="px-5 py-2.5 h-auto rounded-xl shadow-sm font-bold"
+                      >
+                        {isUpdatingStatus ? (
+                          <Loader2 className="w-4 h-4 mr-1.5 animate-spin" />
+                        ) : (
+                          <Activity className="w-4 h-4 mr-1.5" />
+                        )}
+                        Move to Review
+                      </Button>
+                    )}
                   </>
                 )}
 
                 {project.status === "IN_TESTING" && (
                   <Button
                     onClick={handleAdminComplete}
-                    disabled={isCompleting}
                     className="px-5 py-2.5 h-auto bg-blue-600 hover:bg-blue-700 text-white rounded-xl shadow-md font-bold"
                   >
-                    {isCompleting ? (
-                      <Clock className="w-4 h-4 mr-1.5 animate-spin" />
-                    ) : (
-                      <CheckCircle2 className="w-4 h-4 mr-1.5" />
-                    )}
+                    <CheckCircle2 className="w-4 h-4 mr-1.5" />
                     Mark Completed
                   </Button>
                 )}
@@ -749,7 +770,11 @@ export default function AdminSubmissionDetailPage({
         appId={project.id}
         open={showRejectDialog}
         onOpenChange={setShowRejectDialog}
-        onSuccess={handleSuccess}
+        onSuccess={() => {
+          refetch();
+          setShowRejectDialog(false);
+        }}
+        initialData={project.statusDetails || undefined}
       />
       <AdminAcceptDialog
         appId={project.id}
@@ -768,6 +793,12 @@ export default function AdminSubmissionDetailPage({
           rewardPoints: project.rewardPoints || 0,
         }}
         isReview={project.status === "IN_REVIEW"}
+      />
+      <AdminCompleteDialog
+        appId={project.id}
+        open={showCompleteDialog}
+        onOpenChange={setShowCompleteDialog}
+        onSuccess={() => refetch()}
       />
       {/* Fullscreen Image Viewer */}
       {fullscreenImage && (
