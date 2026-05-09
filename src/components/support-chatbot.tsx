@@ -43,13 +43,9 @@ const ChatWindow = ({
   >
     <header className="flex items-center justify-between p-4 border-b bg-primary text-primary-foreground flex-shrink-0">
       <div className="flex items-center gap-3">
-        <Avatar>
-          <AvatarImage
-            src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?q=80&w=400"
-            data-ai-hint="support agent"
-          />
-          <AvatarFallback>A</AvatarFallback>
-        </Avatar>
+        <div className="h-10 w-10 rounded-full bg-primary-foreground/20 flex items-center justify-center text-primary-foreground">
+          <Bot className="h-6 w-6" />
+        </div>
         <div>
           <h3 className="font-bold">Alex @ inTesters</h3>
           <p className="text-xs text-primary-foreground/80 flex items-center gap-1.5">
@@ -78,10 +74,9 @@ const ChatWindow = ({
             )}
           >
             {message.sender === "bot" && (
-              <Avatar className="w-8 h-8 flex-shrink-0">
-                <AvatarImage src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?q=80&w=400" />
-                <AvatarFallback>A</AvatarFallback>
-              </Avatar>
+              <div className="w-8 h-8 rounded-full bg-secondary flex items-center justify-center text-secondary-foreground flex-shrink-0">
+                <Bot className="h-5 w-5" />
+              </div>
             )}
             <motion.div
               initial={{ opacity: 0, y: 10 }}
@@ -106,10 +101,9 @@ const ChatWindow = ({
         ))}
         {isLoading && (
           <div className="flex items-end gap-2 justify-start">
-            <Avatar className="w-8 h-8">
-              <AvatarImage src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?q=80&w=400" />
-              <AvatarFallback>A</AvatarFallback>
-            </Avatar>
+            <div className="w-8 h-8 rounded-full bg-secondary flex items-center justify-center text-secondary-foreground flex-shrink-0">
+              <Bot className="h-5 w-5" />
+            </div>
             <div className="p-3 rounded-2xl bg-secondary rounded-bl-none">
               <div className="flex items-center gap-1">
                 <span className="w-2 h-2 rounded-full bg-muted-foreground animate-bounce [animation-delay:-0.3s]"></span>
@@ -149,13 +143,9 @@ const ChatButton = ({ openChat }: any) => (
     transition={{ duration: 0.3 }}
   >
     <div className="flex items-center gap-2">
-      <Avatar className="w-8 h-8 border-2 border-primary-foreground/50">
-        <AvatarImage
-          src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?q=80&w=400"
-          data-ai-hint="support agent"
-        />
-        <AvatarFallback>A</AvatarFallback>
-      </Avatar>
+      <div className="w-8 h-8 rounded-full border-2 border-primary-foreground/50 bg-primary-foreground/20 flex items-center justify-center text-primary-foreground">
+        <Bot className="h-5 w-5" />
+      </div>
       <span className="font-semibold text-sm">Chat with Alex</span>
     </div>
     <div className="bg-primary-foreground/20 rounded-full p-2">

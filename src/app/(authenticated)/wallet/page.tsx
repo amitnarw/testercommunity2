@@ -15,6 +15,8 @@ import {
   Briefcase,
   ChevronRight,
   ChevronLeft,
+  FileText,
+  FileClock,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -24,6 +26,7 @@ import { useGetUserWallet, useGetUserTransactions } from "@/hooks/useUser";
 import { UserWallerResponse } from "@/lib/types";
 import { Skeleton } from "@/components/ui/skeleton";
 import { UserTransaction } from "@/lib/apiCalls";
+import { BillingInfoModal } from "@/components/billing-info-modal";
 import {
   AreaChart,
   Area,
@@ -63,6 +66,7 @@ const WalletCard = ({
   sessionIsPending,
   walletData,
   walletIsPending,
+  onBillingClick,
 }: {
   session: {
     user: {
@@ -88,6 +92,7 @@ const WalletCard = ({
   sessionIsPending: boolean;
   walletData: UserWallerResponse | undefined;
   walletIsPending: boolean;
+  onBillingClick: () => void;
 }) => (
   <div className="relative h-40 sm:h-64 w-full rounded-[2rem] overflow-hidden group shadow-2xl shadow-primary/20">
     <div className="absolute inset-0 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900" />
@@ -103,7 +108,7 @@ const WalletCard = ({
       }}
     />
 
-    <div className="relative h-full p-6 sm:p-8 flex flex-col justify-between z-10 text-white">
+    <div className="relative h-full p-6 sm:p-8 flex flex-col justify-between z-10 text-white gap-5">
       <div className="flex justify-between items-start">
         <div className="space-y-1">
           <p className="text-white/60 text-xs sm:text-sm font-medium tracking-wider">
@@ -135,11 +140,6 @@ const WalletCard = ({
             )}
           </div>
         </div>
-        <ActionButton
-          icon={Plus}
-          label="Top Up"
-          href="/billing"
-        />
       </div>
 
       <div className="flex justify-between items-end">
@@ -151,16 +151,11 @@ const WalletCard = ({
             >
               Active
             </Badge>
-            <Badge
-              variant="outline"
-              className="bg-white/5 border-white/10 text-emerald-400 hover:bg-white/10 cursor-pointer backdrop-blur-sm transition-colors flex items-center gap-1 text-[10px] sm:text-xs"
-            >
-              <TrendingUp className="w-3 h-3" /> +12.5%
-            </Badge>
+
           </div>
         </div>
         <div className="text-right">
-          <p className="text-white/40 text-[10px] sm:text-xs font-mono mb-1">
+          <p className="text-white/40 text-[10px] sm:text-xs font-mono">
             CARD HOLDER
           </p>
           <p className="font-semibold tracking-wide text-sm sm:text-base">
@@ -176,18 +171,16 @@ const ActionButton = ({
   icon: Icon,
   label,
   href,
+  onClick,
   primary = false,
 }: {
   icon: any;
   label: string;
-  href: string;
+  href?: string;
+  onClick?: () => void;
   primary?: boolean;
-}) => (
-  <TransitionLink
-    href={href}
-    className={`flex flex-col items-center gap-2 sm:gap-3 group transition-all duration-300 ${primary ? "hover:-translate-y-1" : ""
-      }`}
-  >
+}) => {
+  const content = (
     <div
       className={`
             w-12 h-12 sm:w-16 sm:h-16 rounded-2xl flex items-center justify-center transition-all duration-300 shadow-lg
@@ -197,16 +190,36 @@ const ActionButton = ({
         }
         `}
     >
-      <Icon
-        className={`w-5 h-5 sm:w-6 sm:h-6 ${primary ? "" : "text-foreground/70"
-          }`}
-      />
+      <Icon className="w-5 h-5 sm:w-7 sm:h-7" />
     </div>
-    <span className="text-xs sm:text-sm font-medium text-muted-foreground group-hover:text-foreground transition-colors">
-      {label}
-    </span>
-  </TransitionLink>
-);
+  );
+
+  if (href) {
+    return (
+      <TransitionLink
+        href={href}
+        className="flex flex-col items-center gap-1 sm:gap-3 group/button transition-all duration-300 hover:-translate-y-1"
+      >
+        {content}
+        <span className="text-[10px] sm:text-xs font-medium text-muted-foreground group-hover/button:text-foreground transition-colors">
+          {label}
+        </span>
+      </TransitionLink>
+    );
+  }
+
+  return (
+    <button
+      onClick={onClick}
+      className="flex flex-col items-center gap-1 sm:gap-3 group/button transition-all duration-300 hover:-translate-y-1"
+    >
+      {content}
+      <span className="text-[10px] sm:text-xs font-medium text-muted-foreground group-hover/button:text-foreground transition-colors">
+        {label}
+      </span>
+    </button>
+  );
+};
 
 const UnifiedActivityChart = ({
   data,
@@ -398,6 +411,7 @@ export default function WalletPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [page, setPage] = useState(1);
   const itemsPerPage = 5;
+  const [isBillingModalOpen, setIsBillingModalOpen] = useState(false);
 
   // Reset to first page when filter or search changes
   useEffect(() => {
@@ -535,7 +549,27 @@ export default function WalletPage() {
                 sessionIsPending={isPending}
                 walletData={walletData}
                 walletIsPending={walletIsPending}
+                onBillingClick={() => setIsBillingModalOpen(true)}
               />
+
+              <div className="flex flex-row gap-10 items-center justify-center">
+                <ActionButton
+                  icon={FileText}
+                  label="Billing"
+                  onClick={() => setIsBillingModalOpen(true)}
+                />
+                <ActionButton
+                  icon={Plus}
+                  label="Top Up"
+                  href="/billing"
+                  primary
+                />
+                <ActionButton
+                  icon={FileClock}
+                  label="Invoices"
+                  href="/billing#billing-history"
+                />
+              </div>
 
               <UnifiedActivityChart
                 data={combinedChartData}
@@ -650,6 +684,10 @@ export default function WalletPage() {
           </div>
         </motion.div>
       </main>
+      <BillingInfoModal
+        open={isBillingModalOpen}
+        onOpenChange={setIsBillingModalOpen}
+      />
     </div>
   );
 }

@@ -549,7 +549,6 @@ export interface NotificationResponse {
     | "FEEDBACK_RECEIVED"
     | "TEST_COMPLETED"
     | "BUG_REPORT"
-    | "BUG_REPORT"
     | "POINTS_AWARDED"
     | "APP_SUBMISSION"
     | "OTHER";
@@ -579,6 +578,17 @@ export interface PricingResponse {
   isActive: true;
   createdAt: Date;
   updatedAt: Date;
+}
+
+export interface RegionalPricingResponse {
+  id: number;
+  country_code: string;
+  country_name: string;
+  currency_code: string;
+  currency_symbol: string;
+  amount: number;
+  is_active: boolean;
+  updatedAt: string;
 }
 
 export interface SessionResponse {
@@ -742,13 +752,14 @@ export type TesterProjectResponse = {
   createdAt: string;
   updatedAt: string;
 };
+
 export type CommunityApp = {
   id: number | string;
   name: string;
   icon: string;
   shortDescription: string;
   category: string;
-  points?: number; // Changed or added to match data
+  points?: number;
   rewardPoints?: number;
   androidVersion: string;
   estimatedTime: string;
@@ -763,13 +774,11 @@ export type CommunityApp = {
   status?: string;
   progress?: number;
   totalDays?: number;
-  completedDate?: string;
-  rejectionReason?: string;
 };
 
-// Billing APIs Types
 export interface BillingHistoryItem {
   id: string;
+  invoiceId: string | null;
   orderId: number;
   razorpayOrderId: string;
   date: string;
@@ -814,6 +823,7 @@ export interface PaymentVerificationResponse {
   success: boolean;
   orderId: number;
   paymentId: number;
+  invoiceId: string;
   packagesAwarded: number;
   totalPackages: number;
 }
@@ -895,4 +905,16 @@ export interface TesterActivitiesResponse {
     total: number;
     totalPages: number;
   };
+}
+
+export interface BillingInfo {
+  id: number;
+  userId: string;
+  name: string;
+  email: string;
+  address: string;
+  country: string;
+  gstin?: string;
+  createdAt: string;
+  updatedAt: string;
 }

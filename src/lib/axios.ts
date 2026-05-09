@@ -33,6 +33,14 @@ api.interceptors.response.use(
     return response;
   },
   async (error) => {
+    if (error.response?.data?.data) {
+      try {
+        error.response.data.data = await decryptData(error.response.data.data);
+      } catch (e) {
+        console.error("Failed to decrypt error data:", e);
+      }
+    }
+
     if (error.response?.status === 401) {
       if (typeof window !== "undefined") {
         const pathname = window.location.pathname;

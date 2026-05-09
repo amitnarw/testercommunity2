@@ -20,6 +20,7 @@ import {
   Layout,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useRegionalPricing } from "@/hooks/useUser";
 
 const AnimatedCounter = ({
   to,
@@ -117,11 +118,16 @@ const StatCard = ({
 
 export function GlobalImpactSection() {
   const sectionRef = useRef(null);
+  const { data: regionalPricing } = useRegionalPricing();
   const { scrollYProgress } = useScroll({
     target: sectionRef,
     offset: ["start end", "end start"],
   });
   const rotate = useTransform(scrollYProgress, [0, 1], [0, 360]);
+
+  const displayPrice = regionalPricing
+    ? `${regionalPricing.currency_symbol}${Math.round(regionalPricing.amount / 100)}`
+    : "₹999";
 
   return (
     <section
@@ -143,7 +149,7 @@ export function GlobalImpactSection() {
           <h2 className="text-3xl md:text-5xl font-bold mt-4">
             From Local{" "}
             <span className="bg-gradient-to-br from-primary to-accent bg-clip-text text-transparent">
-              ₹999
+              {displayPrice}
             </span>{" "}
             to Global Ripples
           </h2>

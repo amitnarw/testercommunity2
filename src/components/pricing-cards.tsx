@@ -4,7 +4,7 @@ import React from "react";
 import { motion } from "framer-motion";
 import { Check, Star, ShieldCheck } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { PricingResponse } from "@/lib/types";
+import { PricingResponse, RegionalPricingResponse } from "@/lib/types";
 
 export const itemVariants = {
   hidden: { y: 20, opacity: 0 },
@@ -22,10 +22,17 @@ export const itemVariants = {
 export const ProfessionalPlanCard = ({
   plan,
   actionButton,
+  regionalPricing,
 }: {
   plan: PricingResponse;
   actionButton: React.ReactNode;
+  regionalPricing?: RegionalPricingResponse;
 }) => {
+  const displayPrice = regionalPricing
+    ? regionalPricing.amount / 100
+    : plan.price;
+  const displaySymbol = regionalPricing?.currency_symbol || "₹";
+  const displayCurrency = regionalPricing?.currency_code || "INR";
   return (
     <motion.div
       variants={itemVariants}
@@ -45,10 +52,14 @@ export const ProfessionalPlanCard = ({
           </Badge>
           <div className="mt-4 flex items-baseline">
             <span className="text-5xl font-bold tracking-tight">
-              ₹{plan.price.toLocaleString("en-IN")}
+              {displaySymbol}
+              {displayPrice.toLocaleString(undefined, {
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 2,
+              })}
             </span>
             <span className="ml-2 text-sm font-medium text-primary-foreground/80">
-              / one-time
+              / one-time ({displayCurrency})
             </span>
           </div>
           <p className="mt-4 text-sm leading-relaxed text-primary-foreground/90">
