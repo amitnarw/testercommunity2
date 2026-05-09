@@ -38,6 +38,7 @@ const mainNavItems = [
   { name: "Community", href: "/community-dashboard" },
   { name: "Pricing", href: "/billing" },
   { name: "Blog", href: "/blog" },
+  { name: "Support", href: "/support" },
 ];
 
 const proNavItems = [
@@ -139,6 +140,7 @@ export default function MobileMenu({
     { name: "How It Works", href: "/how-it-works" },
     { name: "Pricing", href: "/pricing" },
     { name: "Blog", href: "/blog" },
+    { name: "Support", href: "/support" },
   ];
 
   const displayItems = isAuthenticated ? navItems : publicNavItems;

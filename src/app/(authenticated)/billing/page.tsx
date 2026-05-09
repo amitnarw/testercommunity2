@@ -12,6 +12,7 @@ import {
   FileClock,
 } from "lucide-react";
 import { format } from "date-fns";
+import Link from "next/link";
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -20,6 +21,8 @@ import { PageHeader } from "@/components/page-header";
 import { HoverBorderGradient } from "@/components/ui/hover-border-gradient";
 import { Skeleton } from "@/components/ui/skeleton";
 import { FeedbackModal } from "@/components/feedback-modal";
+import { BillingInfoModal } from "@/components/billing-info-modal";
+import { ComplianceModal } from "@/components/compliance-modal";
 
 import {
   useBillingHistory,
@@ -27,7 +30,7 @@ import {
   usePaymentConfig,
   useVerifyPayment,
 } from "@/hooks/useBilling";
-import { useGetUserWallet, usePricingData, useUserData } from "@/hooks/useUser";
+import { useGetUserWallet, usePricingData, useUserData, useRegionalPricing } from "@/hooks/useUser";
 import { Accordion } from "@/components/ui/accordion";
 import FaqItem from "@/components/faq-item";
 import {
@@ -187,7 +190,10 @@ const TransactionHistory = () => {
               </div>
               <div className="text-right flex items-center gap-3">
                 <p className="font-bold text-foreground">
-                  ₹{t.amount.toLocaleString("en-IN")}
+                  {t.currency === "INR" ? "₹" : t.currency}
+                  {t.amount.toLocaleString(undefined, {
+                    minimumFractionDigits: 0,
+                  })}
                 </p>
                 <Badge
                   variant="secondary"
@@ -200,6 +206,18 @@ const TransactionHistory = () => {
                 >
                   {t.status}
                 </Badge>
+                {t.invoiceId && (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    className="h-8 px-2 text-xs text-primary hover:text-primary hover:bg-primary/5"
+                    asChild
+                  >
+                    <Link href={`/invoice/${t.invoiceId}`}>
+                      View Invoice
+                    </Link>
+                  </Button>
+                )}
               </div>
             </div>
           ))
@@ -262,6 +280,7 @@ const FAQSection = () => {
 
 export default function BillingPage() {
   const { data: pricingData, isPending: pricingIsPending } = usePricingData();
+  const { data: regionalPricing } = useRegionalPricing();
   const {
     data: walletData,
     isPending: walletIsPending,
@@ -279,6 +298,10 @@ export default function BillingPage() {
     status: "info",
     title: "",
   });
+
+  const [isBillingModalOpen, setIsBillingModalOpen] = useState(false);
+  const [isComplianceModalOpen, setIsComplianceModalOpen] = useState(false);
+  const [selectedPlanId, setSelectedPlanId] = useState<string | null>(null);
 
   const handleSubscribe = async (planId: string) => {
     if (!paymentConfig?.isConfigured) {
@@ -335,26 +358,7 @@ export default function BillingPage() {
             });
 
             if (result.success) {
-              setFeedbackModal({
-                open: true,
-                status: "success",
-                title: "Purchase Successful!",
-                description: `You have successfully purchased ${result.packagesAwarded} packages!`,
-                primaryAction: {
-                  label: "View Wallet",
-                  onClick: () => {
-                    setFeedbackModal((prev) => ({ ...prev, open: false }));
-                    window.location.href = "/wallet";
-                  },
-                },
-                secondaryAction: {
-                  label: "Continue Browsing",
-                  onClick: () =>
-                    setFeedbackModal((prev) => ({ ...prev, open: false })),
-                },
-              });
-              refetchWallet();
-              refetchHistory();
+              window.location.href = `/billing/success?paymentId=${response.razorpay_payment_id}&orderId=${response.razorpay_order_id}&invoiceId=${result.invoiceId}`;
             }
           } catch (err) {
             console.error("Verification error:", err);
@@ -419,8 +423,15 @@ export default function BillingPage() {
       });
 
       razorpayInstance.open();
-    } catch (error) {
+    } catch (error: any) {
       console.error("Payment initiation error:", error);
+      
+      if (error.billingInfoMissing) {
+        setSelectedPlanId(planId);
+        setIsComplianceModalOpen(true);
+        return;
+      }
+
       setFeedbackModal({
         open: true,
         status: "error",
@@ -497,6 +508,7 @@ export default function BillingPage() {
                     <ProfessionalPlanCard
                       key={plan.id}
                       plan={plan}
+                      regionalPricing={regionalPricing}
                       actionButton={
                         <HoverBorderGradient
                           containerClassName="w-full"
@@ -574,6 +586,26 @@ export default function BillingPage() {
           </motion.div>
         </div>
       </div>
+
+      <ComplianceModal
+        open={isComplianceModalOpen}
+        onOpenChange={setIsComplianceModalOpen}
+        onContinue={() => {
+          setIsComplianceModalOpen(false);
+          setIsBillingModalOpen(true);
+        }}
+      />
+
+      <BillingInfoModal
+        open={isBillingModalOpen}
+        onOpenChange={setIsBillingModalOpen}
+        onSuccess={() => {
+          if (selectedPlanId) {
+            handleSubscribe(selectedPlanId);
+            setSelectedPlanId(null);
+          }
+        }}
+      />
 
       <FeedbackModal
         open={feedbackModal.open}

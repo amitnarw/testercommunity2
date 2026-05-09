@@ -27,6 +27,7 @@ const mainNavLinks = [
   { name: "Developer Dashboard", href: "/dashboard", icon: LayoutDashboard },
   { name: "Community Hub", href: "/community-dashboard", icon: Users2 },
   { name: "Notifications", href: "/notifications", icon: Bell },
+  { name: "Support", href: "/support", icon: LifeBuoy },
 ];
 
 const proNavLinks = [

@@ -26,6 +26,8 @@ import {
   TesterEarningHistoryResponse,
   WithdrawalHistoryResponse,
   TesterActivitiesResponse,
+  BillingInfo,
+  RegionalPricingResponse,
 } from "./types";
 import api from "./axios";
 
@@ -1478,19 +1480,35 @@ export async function getBillingHistory(): Promise<BillingHistoryItem[]> {
     return response?.data?.data;
   } catch (error) {
     console.error("Error fetching billing history:", error);
-    if (axios.isAxiosError(error)) {
-      const status = error.response?.status;
-      const responseData = error.response?.data;
-      console.error("Axios error:", status, responseData);
+    throw error;
+  }
+}
 
-      throw new Error(
-        responseData?.message || error.message || "Unknown Axios error",
-      );
-    } else if (error instanceof Error) {
-      throw new Error(error.message);
-    } else {
-      throw new Error(JSON.stringify(error));
+export async function getBillingInfo(): Promise<BillingInfo | null> {
+  try {
+    const response = await api.get(API_ROUTES.BILLING + `/info`);
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error fetching billing info:", error);
+    if (axios.isAxiosError(error)) {
+      const responseData = error.response?.data;
+      throw new Error(responseData?.message || "Failed to fetch billing info");
     }
+    throw error;
+  }
+}
+
+export async function saveBillingInfo(payload: Partial<BillingInfo>): Promise<BillingInfo> {
+  try {
+    const response = await api.post(API_ROUTES.BILLING + `/info`, payload);
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error saving billing info:", error);
+    if (axios.isAxiosError(error)) {
+      const responseData = error.response?.data;
+      throw new Error(responseData?.message || "Failed to save billing info");
+    }
+    throw error;
   }
 }
 
@@ -1510,9 +1528,12 @@ export async function createOrder(payload: {
       const responseData = error.response?.data;
       console.error("Axios error:", status, responseData);
 
-      throw new Error(
-        responseData?.message || error.message || "Unknown Axios error",
-      );
+      const errorMessage = responseData?.message || error.message || "Unknown Axios error";
+      const customError: any = new Error(errorMessage);
+      if (responseData?.data?.billingInfoMissing || responseData?.billingInfoMissing) {
+        customError.billingInfoMissing = true;
+      }
+      throw customError;
     } else if (error instanceof Error) {
       throw new Error(error.message);
     } else {
@@ -2093,4 +2114,35 @@ export async function getPublishedReviews() {
     }
   }
 }
+
+export async function getRegionalPricing(): Promise<RegionalPricingResponse> {
+  try {
+    const response = await api.get(API_ROUTES.BILLING + `/pricing`);
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error fetching regional pricing:", error);
+    throw error;
+  }
+}
+
+export async function getInvoice(invoiceNumber: string) {
+  try {
+    const response = await api.get(API_ROUTES.BILLING + `/invoice/${invoiceNumber}`);
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error fetching invoice:", error);
+    throw error;
+  }
+}
+
+export async function getMyInvoices() {
+  try {
+    const response = await api.get(API_ROUTES.BILLING + `/my-invoices`);
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error fetching my invoices:", error);
+    throw error;
+  }
+}
+
 

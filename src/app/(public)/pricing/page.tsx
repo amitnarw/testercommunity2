@@ -20,7 +20,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { pricingFaqs } from "@/lib/data";
-import { usePricingData } from "@/hooks/useUser";
+import { usePricingData, useRegionalPricing } from "@/hooks/useUser";
 import { PricingResponse } from "@/lib/types";
 import SkeletonPricingSetup from "@/components/unauthenticated/pricing-skeleton";
 import FaqItem from "@/components/faq-item";
@@ -34,6 +34,7 @@ import { useState, useEffect } from "react";
 
 export default function PricingPage() {
   const { data: pricingData, isPending: pricingIsPending } = usePricingData();
+  const { data: regionalPricing } = useRegionalPricing();
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -77,6 +78,7 @@ export default function PricingPage() {
                 <ProfessionalPlanCard
                   key={plan.id}
                   plan={plan}
+                  regionalPricing={regionalPricing}
                   actionButton={
                     <Link
                       href="/auth/login"

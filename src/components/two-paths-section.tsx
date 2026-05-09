@@ -273,7 +273,7 @@ export function TwoPathsSection() {
                         >
                           <Zap className="w-4 h-4 mr-2 fill-current" />
                           <span className="font-semibold">
-                            View Point Packages
+                            View Packages
                           </span>
                         </HoverBorderGradient>
                       </Link>
@@ -397,7 +397,7 @@ export function TwoPathsSection() {
                     className="bg-white text-primary flex items-center justify-center space-x-2 w-full py-4 font-bold"
                   >
                     <Zap className="w-4 h-4 mr-2 fill-current" />
-                    <span className="font-semibold">View Point Packages</span>
+                    <span className="font-semibold">View Packages</span>
                   </HoverBorderGradient>
                 </Link>
               </div>

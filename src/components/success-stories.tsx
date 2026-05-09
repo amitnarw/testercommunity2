@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { MessageSquareQuote, ChevronRight } from "lucide-react";
+import { MessageSquareQuote, ChevronRight, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { getPublicTestimonials } from "@/lib/apiCallsAdmin";
 import { cn } from "@/lib/utils";
@@ -173,6 +173,23 @@ export function SuccessStories() {
                         </span>
                       </div>
                     </div>
+
+                    {stories[0].appLink && (
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        asChild
+                        className="rounded-full h-6 w-6 md:h-8 md:w-8 hover:bg-primary/10 hover:text-primary transition-colors"
+                      >
+                        <Link
+                          href={stories[0].appLink}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          <ExternalLink className="w-3 h-3 md:w-4 md:h-4" />
+                        </Link>
+                      </Button>
+                    )}
                   </div>
                 </motion.div>
               </AnimatePresence>
@@ -219,6 +236,23 @@ export function SuccessStories() {
                         </span>
                       </div>
                     </div>
+
+                    {stories[1].appLink && (
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        asChild
+                        className="rounded-full h-8 w-8 hover:bg-primary/10 hover:text-primary transition-colors"
+                      >
+                        <Link
+                          href={stories[1].appLink}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                        >
+                          <ExternalLink className="w-4 h-4" />
+                        </Link>
+                      </Button>
+                    )}
                   </div>
                 </motion.div>
               </AnimatePresence>
@@ -244,22 +278,41 @@ export function SuccessStories() {
                         "{stories[2].comment}"
                       </p>
                     </div>
-                    <div className="flex items-center gap-2 md:gap-3 mt-3 md:mt-4">
-                      <Image
-                        src={stories[2].avatar}
-                        alt={stories[2].name}
-                        width={32}
-                        height={32}
-                        className="rounded-full object-cover w-6 h-6 md:w-8 md:h-8"
-                      />
-                      <div className="flex flex-col text-left">
-                        <span className="font-bold text-foreground text-[10px] md:text-xs">
-                          {stories[2].name}
-                        </span>
-                        <span className="text-[9px] md:text-[10px] text-muted-foreground">
-                          {stories[2].role}
-                        </span>
+                    <div className="flex items-center justify-between gap-2 md:gap-3 mt-3 md:mt-4">
+                      <div className="flex items-center gap-2 md:gap-3">
+                        <Image
+                          src={stories[2].avatar}
+                          alt={stories[2].name}
+                          width={32}
+                          height={32}
+                          className="rounded-full object-cover w-6 h-6 md:w-8 md:h-8"
+                        />
+                        <div className="flex flex-col text-left">
+                          <span className="font-bold text-foreground text-[10px] md:text-xs">
+                            {stories[2].name}
+                          </span>
+                          <span className="text-[9px] md:text-[10px] text-muted-foreground">
+                            {stories[2].role}
+                          </span>
+                        </div>
                       </div>
+
+                      {stories[2].appLink && (
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          asChild
+                          className="rounded-full h-6 w-6 md:h-7 md:w-7 hover:bg-primary/10 hover:text-primary transition-colors"
+                        >
+                          <Link
+                            href={stories[2].appLink}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            <ExternalLink className="w-3 h-3 md:w-4 md:h-4" />
+                          </Link>
+                        </Button>
+                      )}
                     </div>
                   </motion.div>
                 </AnimatePresence>
@@ -283,22 +336,41 @@ export function SuccessStories() {
                         "{stories[3].comment}"
                       </p>
                     </div>
-                    <div className="flex items-center gap-1 md:gap-3 mt-1 md:mt-4">
-                      <Image
-                        src={stories[3].avatar}
-                        alt={stories[3].name}
-                        width={32}
-                        height={32}
-                        className="rounded-full object-cover w-5 h-5 md:w-8 md:h-8"
-                      />
-                      <div className="flex flex-col text-left">
-                        <span className="font-bold text-white text-[9px] md:text-xs">
-                          {stories[3].name}
-                        </span>
-                        <span className="text-[8px] md:text-[10px] text-gray-400">
-                          {stories[3].role}
-                        </span>
+                    <div className="flex items-center justify-between gap-1 md:gap-3 mt-1 md:mt-4">
+                      <div className="flex items-center gap-1 md:gap-3">
+                        <Image
+                          src={stories[3].avatar}
+                          alt={stories[3].name}
+                          width={32}
+                          height={32}
+                          className="rounded-full object-cover w-5 h-5 md:w-8 md:h-8"
+                        />
+                        <div className="flex flex-col text-left">
+                          <span className="font-bold text-white text-[9px] md:text-xs">
+                            {stories[3].name}
+                          </span>
+                          <span className="text-[8px] md:text-[10px] text-gray-400">
+                            {stories[3].role}
+                          </span>
+                        </div>
                       </div>
+
+                      {stories[3].appLink && (
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          asChild
+                          className="rounded-full h-5 w-5 md:h-7 md:w-7 hover:bg-white/10 hover:text-white transition-colors"
+                        >
+                          <Link
+                            href={stories[3].appLink}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            <ExternalLink className="w-3 h-3 md:w-4 md:h-4" />
+                          </Link>
+                        </Button>
+                      )}
                     </div>
                   </motion.div>
                 </AnimatePresence>

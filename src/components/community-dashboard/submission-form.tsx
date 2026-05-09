@@ -531,29 +531,219 @@ export function SubmissionForm({
                   )}
                 </div>
 
+                <p className="text-center text-muted-foreground text-sm">
+                  You can either watch the video above or follow the step-by-step guide below. Both cover the same process.
+                </p>
+
                 <Accordion type="single" collapsible className="w-full space-y-4">
-                  <AccordionItem value="prepare-app" className="bg-white dark:bg-secondary/80 rounded-xl overflow-hidden shadow-xl shadow-gray-200/70 dark:shadow-black/20">
+                  <AccordionItem
+                    value="prepare-app"
+                    className="bg-white dark:bg-secondary/80 rounded-xl overflow-hidden shadow-xl shadow-gray-200/70 dark:shadow-black/20"
+                  >
                     <AccordionTrigger className="p-6 text-left hover:no-underline flex flex-row items-center justify-between w-full relative">
                       <div className="flex items-start flex-1">
-                        <span className="text-7xl md:text-5xl font-black bg-gradient-to-br from-primary/20 to-primary/0 bg-clip-text text-transparent md:w-20 absolute -top-3 -left-3 md:relative md:top-auto md:left-auto">01</span>
+                        <span className="text-7xl md:text-5xl font-black bg-gradient-to-br from-primary/20 to-primary/0 bg-clip-text text-transparent md:w-20 absolute -top-3 -left-3 md:relative md:top-auto md:left-auto">
+                          01
+                        </span>
                         <div>
-                          <h3 className="font-bold text-xl mb-1">Prepare App for Testing</h3>
-                          <p className="text-muted-foreground text-sm text-left">Grant access and enable global reach in Play Console</p>
+                          <h3 className="font-bold text-xl mb-1">
+                            Prepare App for Testing
+                          </h3>
+                          <p className="text-muted-foreground text-sm text-left">
+                            Grant access and enable global reach in Play Console
+                          </p>
                         </div>
                       </div>
                     </AccordionTrigger>
                     <AccordionContent className="px-6 pb-6">
-                      <div className="flex flex-col gap-6 items-start text-muted-foreground">
-                        <p>Ensure your app is correctly configured in the Google Play Console:</p>
-                        <div className="space-y-4 w-full">
-                          <div className="p-4 rounded-lg bg-secondary/50 border border-border/40">
-                            <p className="font-semibold text-foreground mb-2 flex items-center gap-2">
-                              <span className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center text-xs font-bold text-primary">1</span>
-                              Grant Testers Access
-                            </p>
-                            <div className="text-sm space-y-2">
-                              <p>Navigate to Closed Testing &gt; Testers and add:</p>
-                              <CopyBlock textToCopy="appstestlab@googlegroups.com" />
+                      <div className="flex flex-col gap-6 items-start">
+                        <div className="flex-1 space-y-4 text-muted-foreground">
+                          <p>
+                            Before you share your link, ensure your app is correctly configured in the Google Play Console:
+                          </p>
+                          <div className="space-y-4">
+                            <div className="p-4 rounded-lg bg-secondary/50 border border-border/40">
+                              <p className="font-semibold text-foreground mb-2 flex items-center gap-2">
+                                <span className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center text-xs font-bold text-primary">1</span>
+                                Grant Testers Access
+                              </p>
+                              <div className="text-sm space-y-2">
+                                <p>Navigate to the <Highlight>Closed Testing</Highlight> page and go to the <Highlight>Testers</Highlight> tab. Paste the following Google Group address in the "Add email addresses" field:</p>
+                                <CopyBlock textToCopy="appstestlab@googlegroups.com" />
+                                <p className="text-xs italic"><strong>Why?</strong> This allows our secure community of testers to download your app while it remains invisible to the public.</p>
+                              </div>
+                            </div>
+                            <div className="p-4 rounded-lg bg-secondary/50 border border-border/40">
+                              <p className="font-semibold text-foreground mb-2 flex items-center gap-2">
+                                <span className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center text-xs font-bold text-primary">2</span>
+                                Enable Global Reach
+                              </p>
+                              <p className="text-sm">Click the <Highlight>Countries / regions</Highlight> tab and click <Highlight>Add countries / regions</Highlight>. Select the first checkbox to include <Highlight>All</Highlight> countries and regions for maximum test coverage.</p>
+                            </div>
+                            <div className="p-4 rounded-lg bg-secondary/50 border border-border/40">
+                              <p className="font-semibold text-foreground mb-2 flex items-center gap-2">
+                                <span className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center text-xs font-bold text-primary">3</span>
+                                Submit for Google's Review
+                              </p>
+                              <p className="text-sm"><Highlight>Save</Highlight> your changes. Go to Publishing Overview and Send Changes for Review.</p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </AccordionContent>
+                  </AccordionItem>
+                  <AccordionItem
+                    value="app-info"
+                    className="bg-white dark:bg-secondary/80 rounded-xl overflow-hidden shadow-xl shadow-gray-200/70 dark:shadow-black/20"
+                  >
+                    <AccordionTrigger className="p-6 text-left hover:no-underline flex flex-row items-center justify-between w-full relative">
+                      <div className="flex items-start flex-1">
+                        <span className="text-7xl md:text-5xl font-black bg-gradient-to-br from-primary/20 to-primary/0 bg-clip-text text-transparent md:w-20 absolute -top-3 -left-3 md:relative md:top-auto md:left-auto">
+                          02
+                        </span>
+                        <div>
+                          <h3 className="font-bold text-xl mb-1">
+                            Finding Your App Details
+                          </h3>
+                          <p className="text-muted-foreground text-sm text-left">
+                            Where to get your testing link, logo, and screenshots
+                          </p>
+                        </div>
+                      </div>
+                    </AccordionTrigger>
+                    <AccordionContent className="px-6 pb-6">
+                      <div className="flex flex-col gap-6 items-start">
+                        <div className="flex-1 space-y-4 text-muted-foreground">
+                          <p>
+                            To submit your app for testing, you need to share some links from the Google Play Console. Here is how to find each one:
+                          </p>
+                          <div className="space-y-4">
+                            <div className="p-4 rounded-lg bg-secondary/50 border border-border/40">
+                              <p className="font-semibold text-foreground mb-2 flex items-center gap-2">
+                                <span className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center text-xs font-bold text-primary">1</span>
+                                Testing Link
+                              </p>
+                              <p className="text-sm">Go to your app in the Google Play Console. Click on <Highlight>Testing</Highlight> from the left menu. Click on <Highlight>Closed Testing</Highlight>. Click on the testers tab. Look for the <Highlight>Join on Android</Highlight> link and copy it. This is the link our testers will use to download your app.</p>
+                            </div>
+                            <div className="p-4 rounded-lg bg-secondary/50 border border-border/40">
+                              <p className="font-semibold text-foreground mb-2 flex items-center gap-2">
+                                <span className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center text-xs font-bold text-primary">2</span>
+                                App Logo
+                              </p>
+                              <p className="text-sm">Go to your app in Google Play Console. Click on <Highlight>Store presence</Highlight> on the left menu. Click on <Highlight>Store listing</Highlight>. Scroll down to <Highlight>Graphic Assets</Highlight>. Find the App Icon section. Right-click on the icon and copy the image address. This is your logo URL.</p>
+                            </div>
+                            <div className="p-4 rounded-lg bg-secondary/50 border border-border/40">
+                              <p className="font-semibold text-foreground mb-2 flex items-center gap-2">
+                                <span className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center text-xs font-bold text-primary">3</span>
+                                Screenshots
+                              </p>
+                              <p className="text-sm">In the same Store listing page, scroll down to <Highlight>Screenshots</Highlight>. Click on any screenshot. Right-click and copy the image address. You need to provide two screenshots. These help testers understand what your app looks like.</p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </AccordionContent>
+                  </AccordionItem>
+
+                  <AccordionItem
+                    value="points"
+                    className="bg-white dark:bg-secondary/80 rounded-xl overflow-hidden shadow-xl shadow-gray-200/70 dark:shadow-black/20"
+                  >
+                    <AccordionTrigger className="p-6 text-left hover:no-underline flex flex-row items-center justify-between w-full relative">
+                      <div className="flex items-start flex-1">
+                        <span className="text-7xl md:text-5xl font-black bg-gradient-to-br from-primary/20 to-primary/0 bg-clip-text text-transparent md:w-20 absolute -top-3 -left-3 md:relative md:top-auto md:left-auto">
+                          03
+                        </span>
+                        <div>
+                          <h3 className="font-bold text-xl mb-1">
+                            Understanding Points
+                          </h3>
+                          <p className="text-muted-foreground text-sm text-left">
+                            How the point system works and how much it costs
+                          </p>
+                        </div>
+                      </div>
+                    </AccordionTrigger>
+                    <AccordionContent className="px-6 pb-6">
+                      <div className="flex flex-col gap-6 items-start">
+                        <div className="flex-1 space-y-4 text-muted-foreground">
+                          <p>
+                            Points are the currency for our community testing. Here is how it works:
+                          </p>
+                          <div className="space-y-4">
+                            <div className="p-4 rounded-lg bg-secondary/50 border border-border/40">
+                              <p className="font-semibold text-foreground mb-2 flex items-center gap-2">
+                                <span className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center text-xs font-bold text-primary">1</span>
+                                What are points?
+                              </p>
+                              <p className="text-sm">Points represent your budget for testing. When you submit an app, points are deducted based on how many testers you need and how long your test runs. Community members will earn points when they test your apps.</p>
+                            </div>
+                            <div className="p-4 rounded-lg bg-secondary/50 border border-border/40">
+                              <p className="font-semibold text-foreground mb-2 flex items-center gap-2">
+                                <span className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center text-xs font-bold text-primary">2</span>
+                                How cost is calculated
+                              </p>
+                              <p className="text-sm">The total cost depends on two things. First, how many testers you want. Second, how many days your test should run. More testers and longer tests mean higher costs. The formula is simple. Multiply testers by 80. Multiply days by 10. Add both numbers together to get your total cost.</p>
+                            </div>
+                            <div className="p-4 rounded-lg bg-secondary/50 border border-border/40">
+                              <p className="font-semibold text-foreground mb-2 flex items-center gap-2">
+                                <span className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center text-xs font-bold text-primary">3</span>
+                                Checking your balance
+                              </p>
+                              <p className="text-sm">You can see your current point balance on your dashboard. If you do not have enough points, you can still submit but it will be reviewed once you earn more points from testing other apps.</p>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </AccordionContent>
+                  </AccordionItem>
+
+                  <AccordionItem
+                    value="test-config"
+                    className="bg-white dark:bg-secondary/80 rounded-xl overflow-hidden shadow-xl shadow-gray-200/70 dark:shadow-black/20"
+                  >
+                    <AccordionTrigger className="p-6 text-left hover:no-underline flex flex-row items-center justify-between w-full relative">
+                      <div className="flex items-start flex-1">
+                        <span className="text-7xl md:text-5xl font-black bg-gradient-to-br from-primary/20 to-primary/0 bg-clip-text text-transparent md:w-20 absolute -top-3 -left-3 md:relative md:top-auto md:left-auto">
+                          04
+                        </span>
+                        <div>
+                          <h3 className="font-bold text-xl mb-1">
+                            Setting Up Your Test
+                          </h3>
+                          <p className="text-muted-foreground text-sm text-left">
+                            How to choose testers, duration, and Android version
+                          </p>
+                        </div>
+                      </div>
+                    </AccordionTrigger>
+                    <AccordionContent className="px-6 pb-6">
+                      <div className="flex flex-col gap-6 items-start">
+                        <div className="flex-1 space-y-4 text-muted-foreground">
+                          <p>
+                            When you configure your test, you need to decide three things:
+                          </p>
+                          <div className="space-y-4">
+                            <div className="p-4 rounded-lg bg-secondary/50 border border-border/40">
+                              <p className="font-semibold text-foreground mb-2 flex items-center gap-2">
+                                <span className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center text-xs font-bold text-primary">1</span>
+                                Number of testers
+                              </p>
+                              <p className="text-sm">Choose how many testers you want for your app. We recommend at least <Highlight>15 testers</Highlight> because some testers may drop out during the testing period. Each tester must complete testing within the time limit you set. The more testers you choose, the more points the test will cost.</p>
+                            </div>
+                            <div className="p-4 rounded-lg bg-secondary/50 border border-border/40">
+                              <p className="font-semibold text-foreground mb-2 flex items-center gap-2">
+                                <span className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center text-xs font-bold text-primary">2</span>
+                                Test duration
+                              </p>
+                              <p className="text-sm">Choose how many days testers have to complete their testing. The minimum is <Highlight>14 days</Highlight>. We recommend <Highlight>16 to 20 days</Highlight> because testers have different schedules. Longer durations give testers more flexibility to provide thorough feedback. Each extra day adds to your total cost.</p>
+                            </div>
+                            <div className="p-4 rounded-lg bg-secondary/50 border border-border/40">
+                              <p className="font-semibold text-foreground mb-2 flex items-center gap-2">
+                                <span className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center text-xs font-bold text-primary">3</span>
+                                Minimum Android version
+                              </p>
+                              <p className="text-sm">Select the oldest Android version your app supports. This helps us match testers who have devices that can run your app. If your app works on Android 8, select <Highlight>Android 8.0</Highlight> from the list. Only testers with devices running that version or newer will be assigned to your test.</p>
                             </div>
                           </div>
                         </div>

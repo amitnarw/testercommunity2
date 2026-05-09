@@ -14,6 +14,7 @@ import {
   saveProfileData,
   saveUserData,
   UserTransactionsResponse,
+  getRegionalPricing,
 } from "@/lib/apiCalls";
 import {
   DashboardDataResponse,
@@ -23,6 +24,7 @@ import {
   UserDataAttributes,
   UserProfileDataAttributes,
   UserWallerResponse,
+  RegionalPricingResponse,
 } from "@/lib/types";
 import {
   useMutation,
@@ -139,6 +141,16 @@ export function usePricingData() {
     queryFn: () => getAllPricingPlans(),
     queryKey: ["usePricingData"],
     enabled: typeof window !== "undefined",
+  });
+
+  return query;
+}
+
+export function useRegionalPricing() {
+  const query = useQuery<RegionalPricingResponse, Error>({
+    queryFn: () => getRegionalPricing(),
+    queryKey: ["useRegionalPricing"],
+    staleTime: 1000 * 60 * 60, // 1 hour
   });
 
   return query;

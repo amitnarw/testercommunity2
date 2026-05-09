@@ -5,6 +5,10 @@ import {
   getPendingOrders,
   verifyPayment,
   getPromoCodes,
+  getBillingInfo,
+  saveBillingInfo,
+  getInvoice,
+  getMyInvoices,
 } from "@/lib/apiCalls";
 import {
   BillingHistoryItem,
@@ -13,6 +17,7 @@ import {
   PaymentVerificationPayload,
   PaymentVerificationResponse,
   PromoCodeResponse,
+  BillingInfo,
 } from "@/lib/types";
 import {
   useMutation,
@@ -79,6 +84,48 @@ export function usePromoCodes() {
   const query = useQuery<PromoCodeResponse[], Error>({
     queryFn: () => getPromoCodes(),
     queryKey: ["getPromoCodes"],
+  });
+
+  return query;
+}
+
+export function useBillingInfo(options?: { enabled?: boolean }) {
+  const query = useQuery<BillingInfo | null, Error>({
+    queryFn: () => getBillingInfo(),
+    queryKey: ["getBillingInfo"],
+    enabled: options?.enabled,
+    retry: false,
+    staleTime: 5 * 60 * 1000, // 5 minutes
+  });
+
+  return query;
+}
+
+export function useBillingInfoSave(
+  options?: UseMutationOptions<BillingInfo, Error, Partial<BillingInfo>>,
+) {
+  const mutation = useMutation({
+    mutationFn: (payload: Partial<BillingInfo>) => saveBillingInfo(payload),
+    ...options,
+  });
+
+  return mutation;
+}
+
+export function useInvoice(invoiceNumber: string) {
+  const query = useQuery<any, Error>({
+    queryFn: () => getInvoice(invoiceNumber),
+    queryKey: ["getInvoice", invoiceNumber],
+    enabled: !!invoiceNumber,
+  });
+
+  return query;
+}
+
+export function useMyInvoices() {
+  const query = useQuery<any[], Error>({
+    queryFn: () => getMyInvoices(),
+    queryKey: ["getMyInvoices"],
   });
 
   return query;

@@ -41,6 +41,7 @@ import {
   Pencil,
   Loader2,
 } from "lucide-react";
+import { Progress } from "@/components/ui/progress";
 import { useRouter } from "next/navigation";
 import { BackButton } from "@/components/back-button";
 import { useSingleHubAppDetails } from "@/hooks/useHub";
@@ -166,6 +167,47 @@ export default function AdminSubmissionDetailPage({
   const totalPayout = requiredTesters * rewardPerTester;
   const platformEarnings = amountPaidByDeveloper - totalPayout;
   const isLoss = platformEarnings < 0;
+
+  // Analytics Calculations
+  const activeTestersCount =
+    project.testerRelations?.filter((r) => r.status === "IN_PROGRESS")?.length ||
+    0;
+  const pendingTestersCount =
+    project.testerRelations?.filter((r) => r.status === "PENDING")?.length || 0;
+  const completedTestersCount =
+    project.testerRelations?.filter((r) => r.status === "COMPLETED")?.length ||
+    0;
+  const totalJoinedCount = project.testerRelations?.length || 0;
+
+  const currentDay = project.currentDay || 0;
+  const totalDay = project.totalDay || 14;
+  const progressPercent = Math.min(
+    Math.round((currentDay / totalDay) * 100),
+    100,
+  );
+  const daysRemaining = Math.max(totalDay - currentDay, 0);
+
+  const lastActivityAt = project.testerRelations
+    ?.map((r) => (r.lastActivityAt ? new Date(r.lastActivityAt) : null))
+    .filter((d): d is Date => d !== null)
+    .reduce(
+      (max, d) => (max && d > max ? d : max || d),
+      null as Date | null,
+    );
+
+  const averageProgress =
+    project.testerRelations
+      ?.filter((r) => r.status === "IN_PROGRESS" || r.status === "COMPLETED")
+      ?.reduce((acc, r) => acc + (r.daysCompleted || 0), 0) /
+    (activeTestersCount + completedTestersCount) || 0;
+
+  const feedbackStats = {
+    BUG: project.feedback?.filter((f) => f.type === "BUG").length || 0,
+    SUGGESTION:
+      project.feedback?.filter((f) => f.type === "SUGGESTION").length || 0,
+    PRAISE: project.feedback?.filter((f) => f.type === "PRAISE").length || 0,
+    TOTAL: project.feedback?.length || 0,
+  };
 
   return (
     <div className="bg-[#f8fafc] dark:bg-[#0f151e] text-foreground min-h-screen pb-16">
@@ -488,6 +530,180 @@ export default function AdminSubmissionDetailPage({
               </CardContent>
             </Card>
           </div>
+
+          {/* LIVE TESTING ANALYTICS */}
+          <Card className="border border-border/50 shadow-sm bg-card rounded-3xl overflow-hidden h-full flex flex-col">
+            <CardHeader className="bg-primary/5 border-b border-border/50 pb-4">
+              <CardTitle className="text-lg flex items-center gap-2 text-primary">
+                <Activity className="w-5 h-5" />
+                Live Testing Analytics
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="p-6 space-y-8 flex-1 flex flex-col justify-between">
+              {/* Progress Section */}
+              <div className="space-y-4">
+                <div className="flex justify-between items-end">
+                  <div className="space-y-1">
+                    <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider">
+                      Testing Timeline
+                    </span>
+                    <p className="text-2xl font-black">
+                      Day {currentDay}{" "}
+                      <span className="text-sm font-bold text-muted-foreground">
+                        / {totalDay}
+                      </span>
+                    </p>
+                  </div>
+                  <Badge
+                    variant="secondary"
+                    className="bg-primary/10 text-primary font-bold"
+                  >
+                    {progressPercent}% Complete
+                  </Badge>
+                </div>
+                <Progress value={progressPercent} className="h-3" />
+                <div className="flex flex-col gap-1.5">
+                  <p className="text-xs text-muted-foreground flex items-center gap-1.5 font-medium">
+                    <Clock className="w-3.5 h-3.5" />
+                    {daysRemaining > 0
+                      ? `${daysRemaining} days remaining in testing cycle`
+                      : "Testing cycle completed"}
+                  </p>
+                  {(activeTestersCount > 0 || completedTestersCount > 0) && (
+                    <p className="text-xs text-muted-foreground flex items-center gap-1.5 font-medium">
+                      <Activity className="w-3.5 h-3.5" />
+                      Average Tester Progress: {averageProgress.toFixed(1)} /{" "}
+                      {totalDay} Days
+                    </p>
+                  )}
+                </div>
+              </div>
+
+              {/* Tester Funnel */}
+              <div className="space-y-4">
+                <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider">
+                  Tester Pipeline
+                </span>
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="bg-secondary/20 p-3 rounded-2xl border border-border/50 space-y-1">
+                    <p className="text-xs font-bold text-muted-foreground uppercase">
+                      Active
+                    </p>
+                    <p className="text-xl font-black text-emerald-600">
+                      {activeTestersCount}
+                    </p>
+                  </div>
+                  <div className="bg-secondary/20 p-3 rounded-2xl border border-border/50 space-y-1">
+                    <p className="text-xs font-bold text-muted-foreground uppercase">
+                      Completed
+                    </p>
+                    <p className="text-xl font-black text-blue-600">
+                      {completedTestersCount}
+                    </p>
+                  </div>
+                  <div className="bg-secondary/20 p-3 rounded-2xl border border-border/50 space-y-1">
+                    <p className="text-xs font-bold text-muted-foreground uppercase">
+                      Pending
+                    </p>
+                    <p className="text-xl font-black text-amber-600">
+                      {pendingTestersCount}
+                    </p>
+                  </div>
+                  <div className="bg-secondary/20 p-3 rounded-2xl border border-border/50 space-y-1">
+                    <p className="text-xs font-bold text-muted-foreground uppercase">
+                      Joined
+                    </p>
+                    <p className="text-xl font-black text-foreground">
+                      {totalJoinedCount}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* Feedback Summary */}
+              <div className="space-y-4 pt-2 border-t border-border/50">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider">
+                    Feedback Summary
+                  </span>
+                  <Badge variant="outline" className="text-[10px] font-bold">
+                    {feedbackStats.TOTAL} Total
+                  </Badge>
+                </div>
+                <div className="flex gap-4">
+                  <div className="flex flex-col">
+                    <span className="text-[10px] font-bold text-red-500 uppercase">
+                      Bugs
+                    </span>
+                    <span className="text-lg font-black">
+                      {feedbackStats.BUG}
+                    </span>
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="text-[10px] font-bold text-blue-500 uppercase">
+                      Suggestions
+                    </span>
+                    <span className="text-lg font-black">
+                      {feedbackStats.SUGGESTION}
+                    </span>
+                  </div>
+                  <div className="flex flex-col">
+                    <span className="text-[10px] font-bold text-emerald-500 uppercase">
+                      Praise
+                    </span>
+                    <span className="text-lg font-black">
+                      {feedbackStats.PRAISE}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Promo & Financial Info (If applicable) */}
+              {project.promoCode && (
+                <div className="pt-4 border-t border-border/50">
+                  <div className="bg-primary/5 p-3 rounded-2xl border border-primary/20 flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <Package className="w-4 h-4 text-primary" />
+                      <span className="text-xs font-bold text-foreground">
+                        Promo Code: {project.promoCode.code}
+                      </span>
+                    </div>
+                    <Badge className="bg-emerald-500 text-white font-bold text-[10px]">
+                      {project.promoCode.discountType === "PERCENTAGE"
+                        ? `${project.promoCode.discountValue}% OFF`
+                        : `Fixed Reward`}
+                    </Badge>
+                  </div>
+                </div>
+              )}
+
+              {/* Health Indicator */}
+              <div className="pt-2">
+                <div className="flex flex-col gap-3 p-3 bg-emerald-500/5 rounded-2xl border border-emerald-500/10">
+                  <div className="flex items-center gap-3">
+                    <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                    <p className="text-xs font-bold text-emerald-700 dark:text-emerald-400">
+                      Project is active and collecting data
+                    </p>
+                  </div>
+                  {lastActivityAt && (
+                    <p className="text-[10px] text-muted-foreground font-medium pl-5">
+                      Latest activity:{" "}
+                      {lastActivityAt.toLocaleDateString(undefined, {
+                        month: "short",
+                        day: "numeric",
+                      })}{" "}
+                      at{" "}
+                      {lastActivityAt.toLocaleTimeString(undefined, {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })}
+                    </p>
+                  )}
+                </div>
+              </div>
+            </CardContent>
+          </Card>
 
           {/* Rejection Details Section */}
           {project.status === "REJECTED" && (
