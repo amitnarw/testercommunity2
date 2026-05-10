@@ -16,11 +16,12 @@ import {
   Command,
   ChevronRight,
   Bot,
+  Ticket,
+  History as HistoryIcon,
 } from "lucide-react";
 import { getPopularArticles, searchArticles } from "@/lib/blog-data";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { SupportChatbot } from "@/components/support-chatbot";
 import { Card, CardDescription, CardTitle } from "@/components/ui/card";
 import { TransitionLink } from "@/components/transition-link";
 
@@ -83,34 +84,29 @@ export default function SupportPage() {
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
               </span>
-              Knowledge Base 2.0
+              Production Ready Support
             </div>
             <h1 className="text-4xl md:text-7xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-b from-foreground to-foreground/70 pb-2">
-              How can we <span className="italic">Optimize</span> you?
+              How can we <span className="italic">Support</span> you?
             </h1>
             <p className="text-lg sm:text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-              Find technical documentation, connect with experts, or explore our
-              knowledge base.
+              Connect with Alex via AI chat, or file a formal ticket for technical assistance.
             </p>
 
-            {/* Search Bar */}
-            <div className="relative max-w-2xl mx-auto mt-10 group">
-              <div className="absolute inset-0 bg-gradient-to-r from-primary/20 to-blue-600/20 blur-xl rounded-full opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity duration-500" />
-              <div className="relative flex items-center bg-card/80 backdrop-blur-xl border border-border/50 rounded-full p-1 px-2 transition-transform duration-300 group-hover:scale-[1.01] group-focus-within:scale-[1.01]">
-                <Search className="ml-4 w-6 h-6 text-muted-foreground hidden sm:block" />
-                <input
-                  type="text"
-                  placeholder="Ask a question or search keywords..."
-                  className="w-full bg-transparent border-none focus:outline-none focus:ring-0 px-4 py-3 text-md sm:text-lg placeholder:text-muted-foreground/50"
-                />
-                <Button
-                  size="lg"
-                  className="rounded-full px-4 sm:px-8 shadow-lg shadow-primary/25"
-                >
-                  <span className="hidden sm:block">Search</span>
-                  <Search className="w-10 h-10 block sm:hidden" />
+            {/* Ticket Management Buttons */}
+            <div className="flex flex-wrap justify-center gap-4 mt-8">
+              <TransitionLink href="/support/tickets/new">
+                <Button size="lg" className="rounded-full px-8 shadow-xl shadow-primary/20">
+                  <Ticket className="w-4 h-4 mr-2" />
+                  Create Support Ticket
                 </Button>
-              </div>
+              </TransitionLink>
+              <TransitionLink href="/support/tickets">
+                <Button size="lg" variant="outline" className="rounded-full px-8">
+                  <HistoryIcon className="w-4 h-4 mr-2" />
+                  My Ticket History
+                </Button>
+              </TransitionLink>
             </div>
           </div>
 
@@ -158,7 +154,6 @@ export default function SupportPage() {
             </div>
 
             {/* Sidebar / Trending */}
-            {/* Trending Articles */}
             <Card className="border border-border/50 bg-secondary p-6 rounded-3xl h-[max-content]">
               <div className="flex items-center gap-2 mb-4">
                 <h3 className="font-bold text-lg text-primary">
@@ -209,14 +204,13 @@ export default function SupportPage() {
                       Chat with Alex
                     </CardTitle>
                     <CardDescription className="text-lg max-w-md">
-                      Our advanced AI assistant can help you with 90% of common
-                      queries instantly. No waiting required.
+                      Alex can help you with most questions instantly. If it's a complex issue, Alex can also file a ticket for you.
                     </CardDescription>
                   </div>
 
                   <div className="mt-10">
                     <div
-                      data-chatbot-trigger
+                      onClick={() => window.dispatchEvent(new CustomEvent("open-alex-chat"))}
                       className="inline-flex items-center gap-2 text-primary font-semibold cursor-pointer group/btn"
                     >
                       Start a Conversation
@@ -234,7 +228,6 @@ export default function SupportPage() {
           </div>
         </div>
       </div>
-      <SupportChatbot />
     </>
   );
 }

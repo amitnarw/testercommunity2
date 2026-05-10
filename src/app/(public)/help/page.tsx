@@ -10,7 +10,6 @@ import {
   Mail,
   Search,
 } from "lucide-react";
-import { SupportChatbot } from "@/components/support-chatbot";
 import { Button } from "@/components/ui/button";
 import { TransitionLink } from "@/components/transition-link";
 
@@ -178,7 +177,6 @@ export default function HelpPage() {
           </div>
         </div>
       </div>
-      <SupportChatbot />
     </>
   );
 }

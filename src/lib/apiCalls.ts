@@ -2146,3 +2146,40 @@ export async function getMyInvoices() {
 }
 
 
+
+// Support API Calls
+export const getSupportHistory = async () => {
+  try {
+    const response = await api.get(API_ROUTES.SUPPORT + "/chat/history");
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error fetching support history:", error);
+    return [];
+  }
+};
+
+export const createSupportTicket = async (payload: {
+  subject: string;
+  description: string;
+  category?: string;
+}) => {
+  try {
+    const response = await api.post(API_ROUTES.SUPPORT + "/tickets", payload);
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error creating ticket:", error);
+    throw error;
+  }
+};
+
+export const saveChatMessage = async (payload: {
+  message: string;
+  role: "user" | "assistant";
+}) => {
+  try {
+    const response = await api.post(API_ROUTES.SUPPORT + "/chat/message", payload);
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error saving chat message:", error);
+  }
+};

@@ -781,7 +781,7 @@ export default function AdminUserDetailsPage() {
             {user.status === "Banned" ? (
               <Button
                 variant="default"
-                onClick={() => handleStatusUpdateInternal("Active")}
+                onClick={() => updateStatusMutation.mutate({ id: user.id, status: "Active" })}
                 disabled={updateStatusMutation.isPending}
                 className="bg-green-600 hover:bg-green-700"
               >
@@ -793,7 +793,7 @@ export default function AdminUserDetailsPage() {
             ) : (
               <Button
                 variant="destructive"
-                onClick={() => handleStatusUpdateInternal("Banned")}
+                onClick={() => updateStatusMutation.mutate({ id: user.id, status: "Banned", banReason: "Banned by admin" })}
                 disabled={updateStatusMutation.isPending}
               >
                 {updateStatusMutation.isPending && (
