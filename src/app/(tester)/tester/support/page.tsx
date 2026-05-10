@@ -15,7 +15,6 @@ import {
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { SupportChatbot } from "@/components/support-chatbot";
 
 const helpOptions = [
     {
@@ -167,8 +166,6 @@ export default function ProfessionalSupportPage() {
                     </motion.div>
                 </motion.div>
             </main>
-
-            <SupportChatbot />
         </div>
     );
 }

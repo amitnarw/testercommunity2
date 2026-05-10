@@ -61,6 +61,8 @@ export const metadata: Metadata = {
   },
 };
 
+import { SupportChat } from "@/components/support/SupportChat";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -74,7 +76,7 @@ export default function RootLayout({
           rel="preconnect"
           href="https://fonts.gstatic.com"
           crossOrigin="anonymous"
-        />
+          />
         <link
           href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;700;800&family=Playfair+Display:wght@400;700&display=swap"
           rel="stylesheet"
@@ -94,6 +96,7 @@ export default function RootLayout({
             <TransitionProvider>
               <TransitionOverlay />
               {children}
+              <SupportChat />
             </TransitionProvider>
           </QueryProvider>
           <Toaster />

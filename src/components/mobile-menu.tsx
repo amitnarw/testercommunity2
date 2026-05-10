@@ -37,8 +37,8 @@ const mainNavItems = [
   { name: "Dashboard", href: "/dashboard" },
   { name: "Community", href: "/community-dashboard" },
   { name: "Pricing", href: "/billing" },
-  { name: "Blog", href: "/blog" },
   { name: "Support", href: "/support" },
+  { name: "Blog", href: "/blog" },
 ];
 
 const proNavItems = [
@@ -46,7 +46,7 @@ const proNavItems = [
   { name: "Projects", href: "/tester/projects", icon: Briefcase },
   { name: "Earnings", href: "/tester/earnings", icon: DollarSign },
   { name: "Activities", href: "/tester/activities", icon: Activity },
-  { name: "Support", href: "/tester/support", icon: LifeBuoy },
+  { name: "Support", href: "/support", icon: LifeBuoy },
 ];
 
 // Compact admin nav items for mobile
@@ -139,8 +139,8 @@ export default function MobileMenu({
     { name: "Home", href: "/" },
     { name: "How It Works", href: "/how-it-works" },
     { name: "Pricing", href: "/pricing" },
-    { name: "Blog", href: "/blog" },
     { name: "Support", href: "/support" },
+    { name: "Blog", href: "/blog" },
   ];
 
   const displayItems = isAuthenticated ? navItems : publicNavItems;
