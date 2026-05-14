@@ -503,7 +503,7 @@ export function SubmissionForm({
                     <div className="relative aspect-video">
                       <iframe
                         className="absolute top-0 left-0 w-full h-full"
-                        src="https://www.youtube.com/watch?v=9OZQ_pyWzS4?autoplay=1"
+                        src="https://www.youtube-nocookie.com/embed/9OZQ_pyWzS4?autoplay=1"
                         title="YouTube video player"
                         frameBorder="0"
                         allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -768,7 +768,7 @@ export function SubmissionForm({
                     render={({ field }) => (
                       <FormItem>
                         <Label htmlFor="app_url">Google Play Testing Link</Label>
-                        <FormControl><Input id="app_url" placeholder="https://play.google.com/apps/testing/..." {...field} className="py-0" /></FormControl>
+                        <FormControl><Input id="app_url" placeholder="https://play.google.com/store/apps/details?id=..." {...field} className="py-0" /></FormControl>
                         <FormMessage />
                       </FormItem>
                     )}

@@ -37,6 +37,7 @@ export default function AdminLayout({
           "super_admin",
           "super admin",
           "moderator",
+          "support",
         ].includes(lowerRole);
 
         if (isAdminRole) {

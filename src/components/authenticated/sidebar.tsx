@@ -19,6 +19,9 @@ import {
   BookOpen,
   Star,
   MessageSquare,
+  MessageSquareMore,
+  Headphones,
+  BarChart3,
 } from "lucide-react";
 import { BaseSidebar, SidebarNavLink } from "@/components/ui/base-sidebar";
 import { authClient } from "@/lib/auth-client";
@@ -115,6 +118,27 @@ const adminNavLinks = [
     href: "/admin/logs",
     icon: Terminal,
     section: "platform",
+  },
+
+  // Support Operations
+  {
+    name: "Live Chat",
+    href: "/admin/support/live-chat",
+    icon: MessageSquareMore,
+    section: "support_ops",
+    badge: "LIVE",
+  },
+  {
+    name: "Tickets",
+    href: "/admin/support/tickets",
+    icon: Ticket,
+    section: "support_ops",
+  },
+  {
+    name: "Support Stats",
+    href: "/admin/support",
+    icon: BarChart3,
+    section: "support_ops",
   },
 ];
 
@@ -231,6 +255,30 @@ export function Sidebar({
           )}
           {adminNavLinks
             .filter((l) => l.section === "platform")
+            .map((link) => (
+              <SidebarNavLink
+                key={link.href}
+                href={link.href}
+                icon={link.icon}
+                isCollapsed={isCollapsed}
+                badge={link.badge}
+              >
+                {link.name}
+              </SidebarNavLink>
+            ))}
+        </div>
+        {!isCollapsed && (
+          <div className="h-px bg-white/10 dark:bg-black/10 mx-3 my-1" />
+        )}
+
+        <div className="mb-1">
+          {!isCollapsed && (
+            <span className="text-[10px] font-semibold text-green-500/70 uppercase tracking-wider px-3">
+              Support Ops
+            </span>
+          )}
+          {adminNavLinks
+            .filter((l) => l.section === "support_ops")
             .map((link) => (
               <SidebarNavLink
                 key={link.href}
