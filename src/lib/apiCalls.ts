@@ -2183,3 +2183,84 @@ export const saveChatMessage = async (payload: {
     console.error("Error saving chat message:", error);
   }
 };
+
+// ==========================================
+// HUMAN LIVE CHAT API CALLS
+// ==========================================
+
+export const requestHumanChat = async (payload?: { aiChatRequestId?: number }) => {
+  try {
+    const response = await api.post(API_ROUTES.SUPPORT + "/human-chat/request", payload || {});
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error requesting human chat:", error);
+    throw error;
+  }
+};
+
+export const getActiveHumanChat = async () => {
+  try {
+    const response = await api.get(API_ROUTES.SUPPORT + "/human-chat/active");
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error fetching active human chat:", error);
+    return null;
+  }
+};
+
+export const getHumanChatMessages = async (chatId: number, since?: string) => {
+  try {
+    const params = since ? `?since=${encodeURIComponent(since)}` : "";
+    const response = await api.get(
+      API_ROUTES.SUPPORT + `/human-chat/${chatId}/messages${params}`
+    );
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error fetching human chat messages:", error);
+    return [];
+  }
+};
+
+// ==========================================
+// ADMIN SUPPORT API CALLS
+// ==========================================
+
+export const getControlRoom = async () => {
+  try {
+    const response = await api.get(API_ROUTES.ADMIN + "/get-control-room-data");
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error fetching control room:", error);
+    return null;
+  }
+};
+
+export const updateControlRoom = async (payload: { humanChatEnabled: boolean }) => {
+  try {
+    const response = await api.post(API_ROUTES.ADMIN + "/control-room", payload);
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error updating control room:", error);
+    throw error;
+  }
+};
+
+export const getSupportStats = async () => {
+  try {
+    const response = await api.get(API_ROUTES.ADMIN + "/support/stats");
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error fetching support stats:", error);
+    return null;
+  }
+};
+
+export const getHumanChatQueue = async () => {
+  try {
+    const response = await api.get(API_ROUTES.ADMIN + "/support/queue");
+    return response?.data?.data || [];
+  } catch (error) {
+    console.error("Error fetching queue:", error);
+    return [];
+  }
+};

@@ -23,6 +23,7 @@ import {
   Download,
   AlertTriangle,
   ExternalLink,
+  Headphones,
 } from "lucide-react";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Button } from "@/components/ui/button";
@@ -36,6 +37,8 @@ import {
 import { Slider } from "@/components/ui/slider";
 
 import { useTransitionContext } from "@/context/transition-context";
+import { authClient } from "@/lib/auth-client";
+import { getControlRoom, updateControlRoom } from "@/lib/apiCalls";
 
 interface SettingsViewProps {
   backHref?: string;
@@ -52,6 +55,28 @@ export function SettingsView({ backHref = "/profile" }: SettingsViewProps) {
   const [enableTransitions, setEnableTransitions] = useState(true);
   const [transitionDuration, setTransitionDuration] = useState(400);
   const [mounted, setMounted] = useState(false);
+  const [humanChatEnabled, setHumanChatEnabled] = useState(true);
+  const { data: session } = authClient.useSession();
+  const role = (session as any)?.role;
+  const roleName = (typeof role === "string" ? role : role?.name)?.toLowerCase();
+  const isSuperAdmin = roleName === "super_admin";
+
+  useEffect(() => {
+    getControlRoom().then((data: any) => {
+      if (data && data.humanChatEnabled !== undefined) {
+        setHumanChatEnabled(data.humanChatEnabled);
+      }
+    }).catch(() => {});
+  }, []);
+
+  const handleHumanChatToggle = async (enabled: boolean) => {
+    setHumanChatEnabled(enabled);
+    try {
+      await updateControlRoom({ humanChatEnabled: enabled });
+    } catch {
+      setHumanChatEnabled(!enabled);
+    }
+  };
 
   useEffect(() => {
     setMounted(true);
@@ -341,6 +366,35 @@ export function SettingsView({ backHref = "/profile" }: SettingsViewProps) {
             </div>
           </CardContent>
         </Card>
+
+        {/* Support Operations */}
+        {isSuperAdmin && (
+          <Card className="rounded-2xl shadow-sm border-white/5">
+            <CardHeader>
+              <CardTitle className="text-xl flex items-center gap-2">
+                <Headphones className="w-5 h-5 text-green-500" />
+                Support Operations
+              </CardTitle>
+              <CardDescription>
+                Configure support features for the platform.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div className="flex items-center justify-between rounded-lg border p-4">
+                <div>
+                  <Label className="text-base">Human Live Chat</Label>
+                  <p className="text-sm text-muted-foreground mt-1">
+                    Allow users to request real-time support from human agents. When disabled, only Alex AI chat is available.
+                  </p>
+                </div>
+                <Switch
+                  checked={humanChatEnabled}
+                  onCheckedChange={handleHumanChatToggle}
+                />
+              </div>
+            </CardContent>
+          </Card>
+        )}
 
         {/* Danger Zone */}
         <Card className="rounded-2xl shadow-sm border-red-500/20 bg-red-500/5">

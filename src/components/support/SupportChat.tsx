@@ -1,25 +1,53 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { useChat } from "@ai-sdk/react";
-import { type UIMessage as Message, DefaultChatTransport } from "ai";
+import { DefaultChatTransport } from "ai";
 import { motion, AnimatePresence } from "framer-motion";
-import { MessageSquare, X, Send, User, Bot, Ticket, ExternalLink, HelpCircle } from "lucide-react";
+import { MessageSquare, X, Send, User, Bot, Ticket, HelpCircle, Headphones, Phone, Loader2, AlertCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import ReactMarkdown from "react-markdown";
 import { cn } from "@/lib/utils";
 import { getSupportHistory, saveChatMessage } from "@/lib/apiCalls";
-import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { TransitionLink } from "@/components/transition-link";
+import { connectSupportSocket } from "@/lib/supportSocket";
+
+type ChatMode = "AI" | "WAITING" | "HUMAN" | "OFFLINE_FAIL";
 
 export function SupportChat() {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
   const [windowWidth, setWindowWidth] = useState(typeof window !== "undefined" ? window.innerWidth : 1200);
+  const [chatMode, setChatMode] = useState<ChatMode>("AI");
+  const [queuePosition, setQueuePosition] = useState(0);
+  const [agentName, setAgentName] = useState("");
+  const [humanMessages, setHumanMessages] = useState<any[]>([]);
+  const [humanChatId, setHumanChatId] = useState<number | null>(null);
+  const [humanInput, setHumanInput] = useState("");
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [agentTyping, setAgentTyping] = useState(false);
+  const [sendingMessage, setSendingMessage] = useState(false);
+  const requestTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const errorTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const typingTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const lastTypingEmitRef = useRef(0);
 
-  // Responsive listener
+  const clearError = useCallback(() => {
+    setErrorMessage(null);
+    if (errorTimerRef.current) {
+      clearTimeout(errorTimerRef.current);
+      errorTimerRef.current = null;
+    }
+  }, []);
+
+  const showError = useCallback((msg: string) => {
+    setErrorMessage(msg);
+    if (errorTimerRef.current) clearTimeout(errorTimerRef.current);
+    errorTimerRef.current = setTimeout(() => setErrorMessage(null), 10000);
+  }, []);
+
   useEffect(() => {
     const handleResize = () => setWindowWidth(window.innerWidth);
     window.addEventListener("resize", handleResize);
@@ -27,18 +55,13 @@ export function SupportChat() {
   }, []);
 
   const [initialHistoryLoaded, setInitialHistoryLoaded] = useState(false);
-
-  const setHistoryLoaded = (value: boolean) => {
-    setInitialHistoryLoaded(value);
-  };
-
   const [isHistoryLoading, setIsHistoryLoading] = useState(false);
   const [isWaitingForGreeting, setIsWaitingForGreeting] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const [displayedMessages, setDisplayedMessages] = useState<any[]>([]);
+  const humanScrollRef = useRef<HTMLDivElement>(null);
 
-  // Only visible on /support or /help paths
   const isSupportPath = pathname?.startsWith("/support") || 
                        pathname?.startsWith("/help") || 
                        pathname?.startsWith("/tester/support");
@@ -54,56 +77,35 @@ export function SupportChat() {
     },
   });
 
-  const { 
-    messages, 
-    handleInputChange, 
-    handleSubmit, 
-    isLoading, 
-    setMessages,
-    sendMessage,
-    input
-  } = chat;
-
-  // Polyfill input state since newer AI SDK versions removed it or changed it
+  const { messages, status, setMessages, sendMessage } = chat;
+  const isLoading = status === "streaming" || status === "submitted";
   const [localInput, setLocalInput] = useState("");
 
-  // Global event listener to open chat from other components
   useEffect(() => {
     const handleOpenChat = () => setIsOpen(true);
     window.addEventListener("open-alex-chat", handleOpenChat);
     return () => window.removeEventListener("open-alex-chat", handleOpenChat);
   }, []);
 
-  // Handle Input locally
   const handleLocalSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!localInput?.trim()) return;
-    
-    // Optimistically save user message to history
-    saveChatMessage({ message: localInput, role: "user" }).catch(err => console.error("History save failed:", err));
-    
-    // Trigger AI response
-    if (sendMessage) {
-      sendMessage({ text: localInput });
-    }
+    saveChatMessage({ message: localInput, role: "user" }).catch(() => {});
+    if (sendMessage) sendMessage({ text: localInput });
     setLocalInput("");
   };
 
-  // Sync displayed messages
   useEffect(() => {
     setDisplayedMessages(messages);
   }, [messages]);
 
-  // Load history OR Greeting on open
   useEffect(() => {
     if (isOpen && !initialHistoryLoaded) {
-      console.log("SupportChat: Triggering history/greeting load...");
       setIsHistoryLoading(true);
-      setHistoryLoaded(true); // set this synchronously so it never runs again
-      
+      setInitialHistoryLoaded(true);
+
       getSupportHistory().then(history => {
         if (history && history.length > 0) {
-          console.log("SupportChat: Loaded history:", history.length, "messages");
           const formatted = history.map((h: any, i: number) => ({
             id: `hist-${i}`,
             role: h.role,
@@ -112,8 +114,6 @@ export function SupportChat() {
           setMessages(formatted);
           setIsHistoryLoading(false);
         } else {
-          console.log("SupportChat: No history found, showing greeting...");
-          // No history, show greeting with typing effect
           setIsHistoryLoading(false);
           setIsWaitingForGreeting(true);
           setTimeout(() => {
@@ -125,10 +125,8 @@ export function SupportChat() {
             setIsWaitingForGreeting(false);
           }, 1500);
         }
-      }).catch(err => {
-        console.error("SupportChat: Failed to load support history:", err);
+      }).catch(() => {
         setIsHistoryLoading(false);
-        // Fallback to greeting if history fails
         setIsWaitingForGreeting(true);
         setTimeout(() => {
           setMessages((prev: any) => [...prev, {
@@ -142,15 +140,214 @@ export function SupportChat() {
     }
   }, [isOpen, initialHistoryLoaded, setMessages]);
 
-  // Scroll to bottom
   useEffect(() => {
-    if (scrollRef.current) {
-      const scrollElement = scrollRef.current.querySelector('[data-radix-scroll-area-viewport]');
-      if (scrollElement) {
-        scrollElement.scrollTop = scrollElement.scrollHeight;
+    if (scrollRef.current && chatMode === "AI") {
+      const el = scrollRef.current.querySelector('[data-radix-scroll-area-viewport]');
+      if (el) el.scrollTop = el.scrollHeight;
+    }
+  }, [displayedMessages, isLoading, isWaitingForGreeting, chatMode]);
+
+  useEffect(() => {
+    requestAnimationFrame(() => {
+      if (humanScrollRef.current && chatMode === "HUMAN") {
+        const el = humanScrollRef.current.querySelector('[data-radix-scroll-area-viewport]');
+        if (el) el.scrollTop = el.scrollHeight;
+      }
+    });
+  }, [humanMessages, chatMode]);
+
+  // Socket.IO integration — listeners registered once
+  const socketInitialized = useRef(false);
+
+  // Set up socket listeners once, remove listeners on cleanup
+  useEffect(() => {
+    if (!isSupportPath) return;
+    if (socketInitialized.current) return;
+    socketInitialized.current = true;
+
+    const s = connectSupportSocket();
+    console.log("[SupportChat] Initializing socket listeners");
+
+    s.on("connect", () => {
+      console.log("[SupportChat] Socket connected");
+      clearError();
+      s.emit("user:rejoin");
+    });
+
+    s.on("connect_error", (err) => {
+      console.error("[SupportChat] Socket connect error:", err.message);
+      showError(`Connection failed: ${err.message}. Please try again.`);
+    });
+
+    s.on("chat:requested", (data: { chatId: number; position: number }) => {
+      console.log("[SupportChat] Chat requested:", data);
+      if (requestTimeoutRef.current) {
+        clearTimeout(requestTimeoutRef.current);
+        requestTimeoutRef.current = null;
+      }
+      setHumanChatId(data.chatId);
+      setQueuePosition(data.position);
+      setChatMode("WAITING");
+      clearError();
+    });
+
+    s.on("chat:unavailable", (data: { reason?: string }) => {
+      if (data?.reason) {
+        showError(data.reason);
+      }
+      setChatMode("OFFLINE_FAIL");
+    });
+
+    s.on("chat:assigned", (data: { chatId: number; agentName: string }) => {
+      console.log("[SupportChat] Chat assigned to agent:", data.agentName);
+      clearError();
+      setHumanChatId(data.chatId);
+      setAgentName(data.agentName);
+      setChatMode("HUMAN");
+    });
+
+    s.on("chat:message", (data: any) => {
+      setHumanMessages((prev) => {
+        if (prev.some((m) => m.id === data.id)) return prev;
+        const filtered = prev.filter(
+          (m) => !(m._optimistic && m.senderType === "USER" && m.message === data.message)
+        );
+        return [...filtered, data];
+      });
+    });
+
+    s.on("chat:closed", () => {
+      setHumanMessages((prev) => [...prev, {
+        id: "closed",
+        senderType: "AGENT",
+        senderName: "System",
+        message: "This chat has been closed.",
+        createdAt: new Date().toISOString(),
+      }]);
+      setHumanInput("");
+    });
+
+    s.on("chat:error", (data: { message?: string }) => {
+      console.error("[SupportChat] Chat error:", data?.message);
+      showError(data?.message || "Something went wrong. Please try again.");
+    });
+
+    s.on("agent:typing", () => {
+      setAgentTyping(true);
+      if (typingTimerRef.current) clearTimeout(typingTimerRef.current);
+      typingTimerRef.current = setTimeout(() => setAgentTyping(false), 3000);
+    });
+
+    s.on("chat:position_updated", (data: { position: number }) => {
+      setQueuePosition(data.position);
+    });
+
+    // If socket is already connected, request rejoin immediately
+    if (s.connected) {
+      console.log("[SupportChat] Socket already connected, requesting rejoin");
+      s.emit("user:rejoin");
+    }
+
+    return () => {
+      console.log("[SupportChat] Cleaning up socket listeners");
+      if (requestTimeoutRef.current) {
+        clearTimeout(requestTimeoutRef.current);
+        requestTimeoutRef.current = null;
+      }
+      if (errorTimerRef.current) {
+        clearTimeout(errorTimerRef.current);
+        errorTimerRef.current = null;
+      }
+      if (typingTimerRef.current) {
+        clearTimeout(typingTimerRef.current);
+        typingTimerRef.current = null;
+      }
+      s.off("connect");
+      s.off("connect_error");
+      s.off("chat:requested");
+      s.off("chat:unavailable");
+      s.off("chat:assigned");
+      s.off("chat:message");
+      s.off("chat:closed");
+      s.off("chat:error");
+      s.off("chat:typing");
+      s.off("agent:typing");
+      s.off("chat:position_updated");
+      socketInitialized.current = false;
+    };
+  }, [isSupportPath]);
+
+  const requestHumanChat = useCallback(() => {
+    clearError();
+    const s = connectSupportSocket();
+    if (s.connected) {
+      console.log("[SupportChat] Emitting user:request_human (connected)");
+      s.emit("user:request_human", {});
+      requestTimeoutRef.current = setTimeout(() => {
+        showError("Support request timed out — no response from server. Please try again.");
+      }, 15000);
+    } else {
+      console.log("[SupportChat] Socket not connected, waiting for connect...");
+      s.once("connect", () => {
+        console.log("[SupportChat] Now connected, emitting user:request_human");
+        s.emit("user:request_human", {});
+        requestTimeoutRef.current = setTimeout(() => {
+          showError("Support request timed out — no response from server. Please try again.");
+        }, 15000);
+      });
+      const timeout = setTimeout(() => {
+        if (!s.connected) {
+          console.log("[SupportChat] Socket connection timeout");
+          showError("Could not connect to the support server. Please check your connection and try again.");
+          setChatMode("OFFLINE_FAIL");
+        }
+      }, 5000);
+      s.once("connect", () => clearTimeout(timeout));
+    }
+  }, [showError, clearError]);
+
+  const handleHumanSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!humanInput.trim() || !humanChatId) return;
+    const socket = connectSupportSocket();
+    if (!socket.connected) {
+      showError("Connection lost. Trying to reconnect...");
+      return;
+    }
+    const msg = humanInput.trim();
+    setSendingMessage(true);
+    socket.emit("chat:send_message", { chatId: humanChatId, message: msg });
+    setHumanMessages((prev) => [...prev, {
+      id: -Date.now(),
+      senderType: "USER",
+      senderName: "You",
+      message: msg,
+      createdAt: new Date().toISOString(),
+      _optimistic: true,
+    }]);
+    setHumanInput("");
+    setAgentTyping(false);
+    setTimeout(() => setSendingMessage(false), 800);
+  };
+
+  const emitHumanTyping = useCallback(() => {
+    if (!humanChatId) return;
+    const now = Date.now();
+    if (now - lastTypingEmitRef.current > 2000) {
+      lastTypingEmitRef.current = now;
+      const s = connectSupportSocket();
+      if (s.connected) {
+        s.emit("chat:typing", { chatId: humanChatId });
       }
     }
-  }, [displayedMessages, isLoading, isWaitingForGreeting, isOpen]);
+  }, [humanChatId]);
+
+  const handleBackToAlex = useCallback(() => {
+    setHumanMessages([]);
+    setHumanChatId(null);
+    setAgentName("");
+    setChatMode("AI");
+  }, []);
 
   if (!isSupportPath) return null;
 
@@ -184,13 +381,21 @@ export function SupportChat() {
               <div className="flex items-center gap-2.5">
                 <div className="relative">
                   <div className="h-9 w-9 rounded-full bg-white/20 flex items-center justify-center border border-white/10">
-                    <Bot className="h-5 w-5 text-primary-foreground" />
+                    {chatMode === "HUMAN" ? (
+                      <Headphones className="h-5 w-5 text-primary-foreground" />
+                    ) : (
+                      <Bot className="h-5 w-5 text-primary-foreground" />
+                    )}
                   </div>
                   <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 border-2 border-primary rounded-full" />
                 </div>
                 <div className="flex flex-col">
-                  <span className="font-bold text-sm tracking-tight whitespace-nowrap">Chat with Alex</span>
-                  <span className="text-[10px] text-primary-foreground/70 leading-none">Support Online</span>
+                  <span className="font-bold text-xs tracking-tight whitespace-nowrap">
+                    {chatMode === "HUMAN" ? `Chat with ${agentName}` : "Chat with Alex"}
+                  </span>
+                  <span className="text-xs text-primary-foreground/70 leading-none">
+                    {chatMode === "HUMAN" ? "Live Agent" : "Support Online"}
+                  </span>
                 </div>
               </div>
             </motion.div>
@@ -207,13 +412,24 @@ export function SupportChat() {
               <header className="flex items-center justify-between p-4 border-b bg-primary text-primary-foreground flex-shrink-0">
                 <div className="flex items-center gap-3">
                   <div className="h-10 w-10 rounded-full bg-white/20 flex items-center justify-center border border-white/10">
-                    <Bot className="h-6 w-6 text-primary-foreground" />
+                    {chatMode === "HUMAN" ? (
+                      <Headphones className="h-6 w-6 text-primary-foreground" />
+                    ) : (
+                      <Bot className="h-6 w-6 text-primary-foreground" />
+                    )}
                   </div>
                   <div>
-                    <h3 className="font-bold text-sm">Alex @ inTesters</h3>
+                    <h3 className="font-bold text-sm">
+                      {chatMode === "HUMAN" ? `${agentName} @ inTesters` : "Alex @ inTesters"}
+                    </h3>
                     <p className="text-[10px] text-primary-foreground/80 flex items-center gap-1.5">
-                      <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
-                      Online
+                      <span className={cn(
+                        "w-1.5 h-1.5 rounded-full animate-pulse",
+                        chatMode === "HUMAN" ? "bg-green-400" :
+                        chatMode === "WAITING" ? "bg-amber-400" : "bg-green-400"
+                      )} />
+                      {chatMode === "WAITING" ? "Connecting..." :
+                       chatMode === "HUMAN" ? "Live Agent" : "Online"}
                     </p>
                   </div>
                 </div>
@@ -222,126 +438,258 @@ export function SupportChat() {
                 </Button>
               </header>
 
-              {/* Messages */}
-              <ScrollArea className="flex-1 p-4 bg-background/50" ref={scrollRef}>
-                <div className="space-y-4 pb-4">
-                  {displayedMessages.map((m: any, index: number) => {
-                    // Hide the assistant message while it's being streamed
-                    const isLast = index === displayedMessages.length - 1;
-                    const isCurrentlyStreaming = isLoading && m.role === "assistant" && isLast;
+              {/* Messages - AI Mode */}
+              {chatMode === "AI" && (
+                <>
+                  <ScrollArea className="flex-1 p-4 bg-background/50" ref={scrollRef}>
+                    <div className="space-y-4 pb-4">
+                      {displayedMessages.map((m: any, index: number) => {
+                        const isLast = index === displayedMessages.length - 1;
+                        const isCurrentlyStreaming = isLoading && m.role === "assistant" && isLast;
+                        if (isCurrentlyStreaming) return null;
 
-                    if (isCurrentlyStreaming) return null;
-
-                    return (
-                    <div key={m.id} className={cn("flex gap-3", m.role === "user" ? "flex-row-reverse" : "flex-row")}>
-                      <div className={cn(
-                        "h-8 w-8 rounded-full flex items-center justify-center flex-shrink-0 border",
-                        m.role === "assistant" ? "bg-primary/10 border-primary/20" : "bg-muted"
-                      )}>
-                        {m.role === "assistant" ? (
-                          <Bot className="h-4 w-4 text-primary" />
-                        ) : (
-                          <User className="h-4 w-4 text-muted-foreground" />
-                        )}
-                      </div>
-
-                      <div className={cn("flex flex-col max-w-[80%] gap-1", m.role === "user" ? "items-end" : "items-start")}>
-                        <div className={cn(
-                          "px-4 py-2.5 rounded-2xl text-sm shadow-sm leading-relaxed",
-                          m.role === "user"
-                            ? "bg-primary text-primary-foreground rounded-tr-none"
-                            : "bg-card border rounded-tl-none"
-                        )}>
-                            <div className="prose prose-sm dark:prose-invert max-w-none break-words">
-                              <ReactMarkdown>
-                                {m.content}
-                              </ReactMarkdown>
-                            </div>
-                        </div>
-
-                        {/* Tool Call Rendering */}
-                        {m.toolInvocations?.map((toolInvocation: any) => {
-                          const { toolCallId, toolName, state } = toolInvocation;
-                          if (toolName === "create_ticket") {
-                            return (
-                              <div key={toolCallId} className="mt-2 p-3 bg-muted/50 rounded-xl border border-dashed flex items-center gap-3 w-full">
-                                <Ticket className="h-4 w-4 text-primary" />
-                                <div className="flex-1 overflow-hidden">
-                                  <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">Action: Support Ticket</p>
-                                  <p className="text-xs truncate italic">
-                                    {state === "result" ? "✅ Ticket created successfully" : "⏳ Working on your ticket..."}
-                                  </p>
-                                </div>
+                        return (
+                        <div key={m.id} className={cn("flex gap-3", m.role === "user" ? "flex-row-reverse" : "flex-row")}>
+                          <div className={cn(
+                            "h-8 w-8 rounded-full flex items-center justify-center flex-shrink-0 border",
+                            m.role === "assistant" ? "bg-primary/10 border-primary/20" : "bg-muted"
+                          )}>
+                            {m.role === "assistant" ? (
+                              <Bot className="h-4 w-4 text-primary" />
+                            ) : (
+                              <User className="h-4 w-4 text-muted-foreground" />
+                            )}
+                          </div>
+                          <div className={cn("flex flex-col max-w-[80%] gap-1", m.role === "user" ? "items-end" : "items-start")}>
+                            <div className={cn(
+                              "px-4 py-2.5 rounded-2xl text-sm shadow-sm leading-relaxed",
+                              m.role === "user"
+                                ? "bg-primary text-primary-foreground rounded-tr-none"
+                                : "bg-card border rounded-tl-none"
+                            )}>
+                              <div className="prose prose-sm dark:prose-invert max-w-none break-words">
+                                <ReactMarkdown>{m.content}</ReactMarkdown>
                               </div>
-                            );
-                          }
-                          return null;
-                        })}
+                            </div>
+                            {m.toolInvocations?.map((toolInvocation: any) => {
+                              const { toolCallId, toolName, state } = toolInvocation;
+                              if (toolName === "create_ticket") {
+                                return (
+                                  <div key={toolCallId} className="mt-2 p-3 bg-muted/50 rounded-xl border border-dashed flex items-center gap-3 w-full">
+                                    <Ticket className="h-4 w-4 text-primary" />
+                                    <div className="flex-1 overflow-hidden">
+                                      <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">Action: Support Ticket</p>
+                                      <p className="text-xs truncate italic">
+                                        {state === "result" ? "✅ Ticket created successfully" : "⏳ Working on your ticket..."}
+                                      </p>
+                                    </div>
+                                  </div>
+                                );
+                              }
+                              return null;
+                            })}
+                          </div>
+                        </div>
+                      )})}
+                      
+                      {(isLoading || isWaitingForGreeting || isHistoryLoading) && (
+                        <div className="flex gap-3 animate-in fade-in duration-300">
+                          <div className="h-8 w-8 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center">
+                            <Bot className="h-4 w-4 text-primary" />
+                          </div>
+                          <div className="bg-muted/30 px-4 py-3 rounded-2xl rounded-tl-none border">
+                            <div className="flex gap-1">
+                              <span className="w-1.5 h-1.5 rounded-full bg-primary/40 animate-bounce [animation-delay:-0.3s]" />
+                              <span className="w-1.5 h-1.5 rounded-full bg-primary/40 animate-bounce [animation-delay:-0.15s]" />
+                              <span className="w-1.5 h-1.5 rounded-full bg-primary/40 animate-bounce" />
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  </ScrollArea>
+                  <footer className="p-4 border-t bg-card/80 backdrop-blur-sm">
+                    {errorMessage && (
+                      <div className="mb-3 px-3 py-2 bg-destructive/10 border border-destructive/20 rounded-xl flex items-center gap-2 text-xs text-destructive">
+                        <AlertCircle className="h-3.5 w-3.5 flex-shrink-0" />
+                        <span className="flex-1">{errorMessage}</span>
+                        <button type="button" onClick={clearError} className="text-destructive/70 hover:text-destructive flex-shrink-0">
+                          <X className="h-3 w-3" />
+                        </button>
+                      </div>
+                    )}
+                    <form onSubmit={handleLocalSubmit} className="relative flex items-center gap-2">
+                      <input
+                        ref={inputRef}
+                        value={localInput}
+                        onChange={(e) => setLocalInput(e.target.value)}
+                        placeholder="How can Alex help you?"
+                        autoFocus
+                        className="flex-1 bg-muted/50 border-none focus:ring-1 focus:ring-primary/30 rounded-xl px-4 py-2.5 text-sm outline-none transition-all"
+                      />
+                      <Button type="submit" size="icon" disabled={isLoading || !localInput?.trim()} className="rounded-xl shadow-md hover:shadow-lg active:scale-95 transition-all">
+                        <Send className="h-4 w-4" />
+                      </Button>
+                    </form>
+                    <div className="mt-3 flex items-center justify-between px-1">
+                      <div className="flex items-center gap-4">
+                        <button
+                          onClick={requestHumanChat}
+                          className="text-[10px] text-muted-foreground hover:text-primary flex items-center gap-1 transition-colors"
+                        >
+                          <Headphones className="h-3 w-3" />
+                          Talk to a human
+                        </button>
+                        <TransitionLink href="/support/tickets" onClick={() => setIsOpen(false)} className="text-[10px] text-muted-foreground hover:text-primary flex items-center gap-1 transition-colors">
+                          <Ticket className="h-3 w-3" />
+                          Tickets
+                        </TransitionLink>
+                        <TransitionLink href="/support" onClick={() => setIsOpen(false)} className="text-[10px] text-muted-foreground hover:text-primary flex items-center gap-1 transition-colors">
+                          <HelpCircle className="h-3 w-3" />
+                          Help
+                        </TransitionLink>
                       </div>
                     </div>
-                  )})}
-                  
-                  {(isLoading || isWaitingForGreeting || isHistoryLoading) && (
-                    <div className="flex gap-3 animate-in fade-in duration-300">
-                      <div className="h-8 w-8 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center">
-                        <Bot className="h-4 w-4 text-primary" />
-                      </div>
-                      <div className="bg-muted/30 px-4 py-3 rounded-2xl rounded-tl-none border">
-                        <div className="flex gap-1">
-                          <span className="w-1.5 h-1.5 rounded-full bg-primary/40 animate-bounce [animation-delay:-0.3s]" />
-                          <span className="w-1.5 h-1.5 rounded-full bg-primary/40 animate-bounce [animation-delay:-0.15s]" />
-                          <span className="w-1.5 h-1.5 rounded-full bg-primary/40 animate-bounce" />
-                        </div>
-                      </div>
+                  </footer>
+                </>
+              )}
+
+              {/* WAITING Mode */}
+              {chatMode === "WAITING" && (
+                <div className="flex-1 flex flex-col items-center justify-center p-8 bg-background/50 space-y-4">
+                  <div className="h-16 w-16 rounded-full bg-primary/10 flex items-center justify-center animate-pulse">
+                    <Headphones className="h-8 w-8 text-primary" />
+                  </div>
+                  <h3 className="font-bold text-lg">Connecting you to support...</h3>
+                  <p className="text-sm text-muted-foreground text-center max-w-xs">
+                    {queuePosition > 0
+                      ? `You're #${queuePosition} in the queue. A support agent will be with you shortly.`
+                      : "Finding an available support agent..."}
+                  </p>
+                  <div className="flex gap-1 mt-2">
+                    <span className="w-2 h-2 rounded-full bg-primary/40 animate-bounce [animation-delay:-0.3s]" />
+                    <span className="w-2 h-2 rounded-full bg-primary/40 animate-bounce [animation-delay:-0.15s]" />
+                    <span className="w-2 h-2 rounded-full bg-primary/40 animate-bounce" />
+                  </div>
+                  {errorMessage && (
+                    <div className="mt-4 px-3 py-2 bg-destructive/10 border border-destructive/20 rounded-xl flex items-center gap-2 text-xs text-destructive max-w-xs">
+                      <AlertCircle className="h-3.5 w-3.5 flex-shrink-0" />
+                      <span className="flex-1">{errorMessage}</span>
+                      <button type="button" onClick={clearError} className="text-destructive/70 hover:text-destructive flex-shrink-0">
+                        <X className="h-3 w-3" />
+                      </button>
                     </div>
                   )}
-                </div>
-              </ScrollArea>
-
-              {/* Footer / Input */}
-              <footer className="p-4 border-t bg-card/80 backdrop-blur-sm">
-                <form
-                  onSubmit={handleLocalSubmit}
-                  className="relative flex items-center gap-2"
-                >
-                  <input
-                    ref={inputRef}
-                    value={localInput}
-                    onChange={(e) => setLocalInput(e.target.value)}
-                    placeholder="How can Alex help you?"
-                    autoFocus
-                    className="flex-1 bg-muted/50 border-none focus:ring-1 focus:ring-primary/30 rounded-xl px-4 py-2.5 text-sm outline-none transition-all"
-                  />
                   <Button
-                    type="submit"
-                    size="icon"
-                    disabled={isLoading || !localInput?.trim()}
-                    className="rounded-xl shadow-md hover:shadow-lg active:scale-95 transition-all"
+                    variant="ghost"
+                    size="sm"
+                    className="mt-4 text-xs text-muted-foreground"
+                    onClick={handleBackToAlex}
                   >
-                    <Send className="h-4 w-4" />
+                    Back to Alex instead
                   </Button>
-                </form>
-                <div className="mt-3 flex items-center justify-between px-1">
-                  <div className="flex items-center gap-4">
-                    <TransitionLink 
-                      href="/support/tickets" 
-                      onClick={() => setIsOpen(false)}
-                      className="text-[10px] text-muted-foreground hover:text-primary flex items-center gap-1 transition-colors"
-                    >
-                      <Ticket className="h-3 w-3" />
-                      Manage Support Tickets
-                    </TransitionLink>
-                    <TransitionLink 
-                      href="/support" 
-                      onClick={() => setIsOpen(false)}
-                      className="text-[10px] text-muted-foreground hover:text-primary flex items-center gap-1 transition-colors"
-                    >
-                      <HelpCircle className="h-3 w-3" />
-                      Help Center
-                    </TransitionLink>
-                  </div>
                 </div>
-              </footer>
+              )}
+
+              {/* HUMAN Mode */}
+              {chatMode === "HUMAN" && (
+                <>
+                  <ScrollArea ref={humanScrollRef} className="flex-1 p-4 bg-background/50">
+                    <div className="space-y-4 pb-4">
+                      {humanMessages.map((m: any, i: number) => (
+                        <div key={m.id || i} className={cn("flex gap-3", m.senderType === "USER" ? "flex-row-reverse" : "flex-row")}>
+                          <div className={cn(
+                            "h-8 w-8 rounded-full flex items-center justify-center flex-shrink-0 border",
+                            m.senderType === "AGENT" ? "bg-primary/10 border-primary/20" : "bg-muted"
+                          )}>
+                            {m.senderType === "AGENT" ? (
+                              <Headphones className="h-4 w-4 text-primary" />
+                            ) : (
+                              <User className="h-4 w-4 text-muted-foreground" />
+                            )}
+                          </div>
+                          <div className={cn("flex flex-col max-w-[80%] gap-1", m.senderType === "USER" ? "items-end" : "items-start")}>
+                            <div className={cn(
+                              "px-4 py-2.5 rounded-2xl text-sm shadow-sm leading-relaxed",
+                              m.senderType === "USER"
+                                ? "bg-primary text-primary-foreground rounded-tr-none"
+                                : "bg-card border rounded-tl-none"
+                            )}>
+                              {m.message}
+                            </div>
+                            <span className="text-[10px] text-muted-foreground">
+                              {m.createdAt ? new Date(m.createdAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) : ""}
+                            </span>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </ScrollArea>
+                  {agentTyping && (
+                    <div className="px-4 py-1.5 text-xs text-muted-foreground flex items-center gap-2 border-t bg-background/30">
+                      <div className="flex gap-1">
+                        <span className="w-1 h-1 rounded-full bg-primary/40 animate-bounce [animation-delay:-0.3s]" />
+                        <span className="w-1 h-1 rounded-full bg-primary/40 animate-bounce [animation-delay:-0.15s]" />
+                        <span className="w-1 h-1 rounded-full bg-primary/40 animate-bounce" />
+                      </div>
+                      {agentName || "Agent"} is typing...
+                    </div>
+                  )}
+                  <footer className="p-4 border-t bg-card/80 backdrop-blur-sm">
+                    {errorMessage && (
+                      <div className="mb-3 px-3 py-2 bg-destructive/10 border border-destructive/20 rounded-xl flex items-center gap-2 text-xs text-destructive">
+                        <AlertCircle className="h-3.5 w-3.5 flex-shrink-0" />
+                        <span className="flex-1">{errorMessage}</span>
+                        <button type="button" onClick={clearError} className="text-destructive/70 hover:text-destructive flex-shrink-0">
+                          <X className="h-3 w-3" />
+                        </button>
+                      </div>
+                    )}
+                    <form onSubmit={handleHumanSubmit} className="relative flex items-center gap-2">
+                      <input
+                        value={humanInput}
+                        onChange={(e) => {
+                          setHumanInput(e.target.value);
+                          emitHumanTyping();
+                        }}
+                        placeholder="Type your message..."
+                        autoFocus
+                        className="flex-1 bg-muted/50 border-none focus:ring-1 focus:ring-primary/30 rounded-xl px-4 py-2.5 text-sm outline-none transition-all"
+                      />
+                      <Button type="submit" size="icon" disabled={!humanInput.trim() || sendingMessage} className="rounded-xl shadow-md hover:shadow-lg active:scale-95 transition-all">
+                        {sendingMessage ? (
+                          <Loader2 className="h-4 w-4 animate-spin" />
+                        ) : (
+                          <Send className="h-4 w-4" />
+                        )}
+                      </Button>
+                    </form>
+                    {sendingMessage && (
+                      <p className="text-[10px] text-muted-foreground mt-1.5 text-center">Sending...</p>
+                    )}
+                  </footer>
+                </>
+              )}
+
+              {/* OFFLINE_FAIL Mode */}
+              {chatMode === "OFFLINE_FAIL" && (
+                <div className="flex-1 flex flex-col items-center justify-center p-8 bg-background/50 space-y-4">
+                  <div className="h-16 w-16 rounded-full bg-muted flex items-center justify-center">
+                    <Phone className="h-8 w-8 text-muted-foreground" />
+                  </div>
+                  <h3 className="font-bold text-lg">Support Offline</h3>
+                  <p className="text-sm text-muted-foreground text-center max-w-xs">
+                    All agents are currently offline. Alex is still available for instant help!
+                  </p>
+                  <Button
+                    variant="default"
+                    size="sm"
+                    onClick={handleBackToAlex}
+                  >
+                    Chat with Alex instead
+                  </Button>
+                </div>
+              )}
             </motion.div>
           )}
         </AnimatePresence>

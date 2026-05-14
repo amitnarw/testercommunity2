@@ -47,6 +47,24 @@ export async function POST(req: Request) {
             }
           },
         } as any,
+        transfer_to_human: {
+          description: "Transfer the user to a real human support agent when they request a real person or have a complex issue",
+          parameters: z.object({
+            reason: z.string().describe("Brief reason for the transfer"),
+          }),
+          execute: async ({ reason }: any) => {
+            try {
+              await axios.post(
+                `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/support/human-chat/request`,
+                {},
+                { headers: { Cookie: cookieHeader } }
+              );
+              return { success: true, message: "A support agent will be with you shortly. Please hold on!" };
+            } catch (err) {
+              return { success: false, message: "All agents are currently offline. You can try again later or continue chatting with me." };
+            }
+          },
+        } as any,
       },
       temperature: 0.5,
       maxOutputTokens: 500,

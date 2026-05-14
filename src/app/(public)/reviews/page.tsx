@@ -109,7 +109,7 @@ export default function SuccessStoriesPage() {
 
             <h1 className="text-4xl sm:text-5xl md:text-6xl font-heading leading-tight tracking-tight font-bold mb-6 text-center mx-auto">
               Success Stories of the{" "}
-              <span className="bg-gradient-to-br from-primary to-accent bg-clip-text text-transparent">
+              <span className="text-primary italic">
                 Developers
               </span>
             </h1>
@@ -170,14 +170,14 @@ export default function SuccessStoriesPage() {
                         ease: "easeOut",
                       }}
                       whileHover={{ y: -6, scale: 1.01 }}
-                      className={cn(
-                        "break-inside-avoid rounded-3xl p-6 md:p-8 shadow-sm border border-border/50 flex flex-col relative group overflow-hidden transition-all duration-300",
-                        "bg-background hover:shadow-xl hover:border-primary/20",
-                        index % 4 === 0 &&
-                        "bg-gradient-to-br from-background to-blue-50/50 dark:from-background dark:to-blue-900/10",
-                        index % 4 === 2 &&
-                        "bg-gradient-to-br from-background to-amber-50/50 dark:from-background dark:to-amber-900/10",
-                      )}
+                        className={cn(
+                          "break-inside-avoid rounded-3xl p-6 md:p-8 shadow-sm border border-border/50 flex flex-col relative group overflow-hidden transition-all duration-300 will-change-transform",
+                          "bg-background hover:shadow-xl hover:border-primary/20",
+                          index % 4 === 0 &&
+                          "bg-gradient-to-br from-background to-blue-50/50 dark:from-background dark:to-blue-900/10",
+                          index % 4 === 2 &&
+                          "bg-gradient-to-br from-background to-amber-50/50 dark:from-background dark:to-amber-900/10",
+                        )}
                     >
                       <div className="absolute top-4 right-6 opacity-5 group-hover:opacity-10 transition-opacity">
                         <Quote className="w-16 h-16 text-primary rotate-12" />
@@ -290,11 +290,11 @@ export default function SuccessStoriesPage() {
                       ease: "easeOut",
                     }}
                     whileHover={{ y: -6, scale: 1.01 }}
-                    className={cn(
-                      "break-inside-avoid rounded-3xl p-6 md:p-8 shadow-sm border border-border/50 flex flex-col relative group overflow-hidden transition-all duration-300",
-                      "bg-background hover:shadow-xl hover:border-primary/20",
-                      "bg-gradient-to-br from-background to-purple-50/50 dark:from-background dark:to-purple-900/10",
-                    )}
+                      className={cn(
+                        "break-inside-avoid rounded-3xl p-6 md:p-8 shadow-sm border border-border/50 flex flex-col relative group overflow-hidden transition-all duration-300 will-change-transform",
+                        "bg-background hover:shadow-xl hover:border-primary/20",
+                        "bg-gradient-to-br from-background to-purple-50/50 dark:from-background dark:to-purple-900/10",
+                      )}
                   >
                     <div className="absolute top-4 right-6 opacity-5 group-hover:opacity-10 transition-opacity">
                       <Quote className="w-16 h-16 text-primary rotate-12" />

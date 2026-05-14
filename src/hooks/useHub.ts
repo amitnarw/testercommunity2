@@ -120,6 +120,7 @@ export function useHubAppsCount() {
   const query = useQuery<SubmittedAppsCount, Error>({
     queryFn: () => getHubAppsCount(),
     queryKey: ["useHubAppsCount"],
+    refetchInterval: 30000,
   });
 
   return query;
@@ -269,11 +270,17 @@ export function useSubmitDailyVerification(
 export function useCompleteHostedApp(
   options?: UseMutationOptions<any, any, any>,
 ) {
+  const queryClient = useQueryClient();
+
   const mutation = useMutation({
     mutationFn: (payload: { appId: number | string }) =>
       completeHostedApp(payload),
     onSuccess: (data) => {
       console.log("App completed successfully: " + data);
+      queryClient.invalidateQueries({ queryKey: ["useHubAppsCount"] });
+      queryClient.invalidateQueries({ queryKey: ["useHubApps"] });
+      queryClient.invalidateQueries({ queryKey: ["useSingleHubAppDetails"] });
+      queryClient.invalidateQueries({ queryKey: ["useHubData"] });
     },
     onError: (data) => {
       console.log("App completion failed: " + data);
