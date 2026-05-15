@@ -21,13 +21,18 @@ import {
   Loader2,
   Smartphone,
   Activity,
-  CalendarDays,
   Globe,
   Wallet,
   XCircle,
-  Clock,
   Trash2,
   Ban,
+  Briefcase,
+  Building2,
+  FolderGit,
+  Languages,
+  Wifi,
+  MessageSquare,
+  UserCircle,
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -60,12 +65,32 @@ import {
   useUserById,
   useUpdateUserRole,
   useUpdateUserStatus,
+  useUpdateUserProfile,
   useDeleteUser,
 } from "@/hooks/useAdmin";
 import { useQueryClient } from "@tanstack/react-query";
 import { Separator } from "@/components/ui/separator";
 import { authClient } from "@/lib/auth-client";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  RadioGroup,
+  RadioGroupItem,
+} from "@/components/ui/radio-group";
+import { Checkbox } from "@/components/ui/checkbox";
+import {
+  UserProfileType,
+  UserJobRole,
+  UserExperienceLevel,
+  UserCompanySize,
+  UserCompanyPosition,
+  UserTotalPublishedApps,
+  UserDevelopmentPlatform,
+  UserPublishFrequency,
+  UserTestingServiceReason,
+  UserCommunicationMethod,
+} from "@/lib/types";
+import { countries } from "@/lib/countries";
 
 const AVAILABILITY_CONFIG: Record<
   string,
@@ -132,6 +157,31 @@ function formatExperience(exp: string | null) {
   return map[exp] || exp;
 }
 
+function formatEnum(label: string | null) {
+  if (!label) return null;
+  return label.replace(/_/g, " ").toLowerCase().replace(/\b\w/g, (c) => c.toUpperCase());
+}
+
+function formatProfileType(val: string | null) {
+  if (!val) return null;
+  return val.replace(/_/g, " ").toLowerCase().replace(/\b\w/g, (c) => c.toUpperCase());
+}
+
+function formatCompanySize(val: string | null) {
+  if (!val) return null;
+  return val.replace("SIZE_", "").replace(/_/g, "-").toLowerCase();
+}
+
+function formatPublishedApps(val: string | null) {
+  if (!val) return null;
+  return val.replace("PUB_", "").replace(/_/g, "-").toLowerCase();
+}
+
+function formatCommunicationMethods(methods: string[] | undefined) {
+  if (!methods || methods.length === 0) return null;
+  return methods.map((m) => m.toLowerCase()).join(", ");
+}
+
 export default function AdminUserDetailsPage() {
   const params = useParams();
   const id = params.id as string;
@@ -150,11 +200,36 @@ export default function AdminUserDetailsPage() {
   const [banReason, setBanReason] = useState("");
   const [userRole, setUserRole] = useState("");
 
+  const [editProfileData, setEditProfileData] = useState<any>({});
+
   useEffect(() => {
     if (user) {
       setRoleSelection(user.role);
       setStatusSelection(user.status);
       setBanReason(user.banReason || "");
+      setEditProfileData({
+        profile_type: user.profileType || "",
+        job_role: user.jobRole || "",
+        experience_level: user.experience || "",
+        phone: user.phone || "",
+        country: user.country || "",
+        service_usage: user.serviceUsage || "",
+        communication_methods: user.communicationMethods || [],
+        company_name: user.companyName || "",
+        company_website: user.companyWebsite || "",
+        company_size: user.companySize || "",
+        position_in_company: user.positionInCompany || "",
+        total_published_apps: user.totalPublishedApps || "",
+        platform_development: user.platformDevelopment || "",
+        publish_frequency: user.publishFrequency || "",
+        device_company: user.deviceDetails?.company || "",
+        device_model: user.deviceDetails?.model || "",
+        ram: user.deviceDetails?.ram || "",
+        os: user.deviceDetails?.os || "",
+        screen_resolution: user.deviceDetails?.screenResolution || "",
+        language: user.deviceDetails?.language || "",
+        network: user.deviceDetails?.network || "",
+      });
     }
   }, [user]);
 
@@ -225,6 +300,24 @@ export default function AdminUserDetailsPage() {
     },
   });
 
+  const updateProfileMutation = useUpdateUserProfile({
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["useUserById", id] });
+      setIsEditModalOpen(false);
+      toast({
+        title: "Profile Updated",
+        description: "User profile has been successfully updated.",
+      });
+    },
+    onError: (err: any) => {
+      toast({
+        title: "Error",
+        description: err.message || "Failed to update user profile.",
+        variant: "destructive",
+      });
+    },
+  });
+
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
@@ -251,7 +344,10 @@ export default function AdminUserDetailsPage() {
             : undefined,
       });
     }
-    setIsEditModalOpen(false);
+    updateProfileMutation.mutate({
+      id: user.id,
+      data: editProfileData,
+    });
   };
 
   const handleDeleteUser = () => {
@@ -341,10 +437,9 @@ export default function AdminUserDetailsPage() {
           </div>
         </div>
 
+        {/* TOP ROW: Profile Card + Stats */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-10">
-          {/* LEFT COLUMN - User Profile & Info */}
-          <div className="lg:col-span-1 space-y-6">
-            {/* Profile Card */}
+          <div className="lg:col-span-1">
             <Card>
               <CardContent className="pt-6 flex flex-col items-center text-center">
                 <div className="relative">
@@ -392,117 +487,8 @@ export default function AdminUserDetailsPage() {
                 </p>
               </CardContent>
             </Card>
-
-            {/* Contact & Info */}
-            <Card>
-              <CardHeader className="pb-3">
-                <CardTitle className="text-sm font-semibold">
-                  Contact & Info
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-3 text-sm">
-                <div className="flex items-center gap-3">
-                  <Mail className="w-4 h-4 text-muted-foreground shrink-0" />
-                  <a
-                    href={`mailto:${user.email}`}
-                    className="hover:underline truncate"
-                  >
-                    {user.email}
-                  </a>
-                </div>
-                {user.phone && (
-                  <div className="flex items-center gap-3">
-                    <Phone className="w-4 h-4 text-muted-foreground shrink-0" />
-                    <span>{user.phone}</span>
-                  </div>
-                )}
-                {user.country && (
-                  <div className="flex items-center gap-3">
-                    <Globe className="w-4 h-4 text-muted-foreground shrink-0" />
-                    <span>{user.country}</span>
-                  </div>
-                )}
-                {user.experience && (
-                  <div className="flex items-center gap-3">
-                    <Shield className="w-4 h-4 text-muted-foreground shrink-0" />
-                    <span>{formatExperience(user.experience)}</span>
-                  </div>
-                )}
-              </CardContent>
-            </Card>
-
-            {/* Device Info (Tester only) */}
-            {isTester && user.deviceDetails && (
-              <Card>
-                <CardHeader className="pb-3">
-                  <CardTitle className="text-sm font-semibold flex items-center gap-2">
-                    <Smartphone className="w-4 h-4" /> Device Information
-                  </CardTitle>
-                </CardHeader>
-                <CardContent className="text-sm">
-                  <div className="grid grid-cols-2 gap-y-3 gap-x-4">
-                    <div>
-                      <p className="text-muted-foreground text-xs">Brand</p>
-                      <p className="font-medium">
-                        {user.deviceDetails.company || "N/A"}
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-muted-foreground text-xs">Model</p>
-                      <p className="font-medium">
-                        {user.deviceDetails.model || "N/A"}
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-muted-foreground text-xs">OS</p>
-                      <p className="font-medium">
-                        {user.deviceDetails.os || "N/A"}
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-muted-foreground text-xs">RAM</p>
-                      <p className="font-medium">
-                        {user.deviceDetails.ram || "N/A"}
-                      </p>
-                    </div>
-                    {user.deviceDetails.screenResolution && (
-                      <div className="col-span-2">
-                        <p className="text-muted-foreground text-xs">
-                          Screen Resolution
-                        </p>
-                        <p className="font-medium">
-                          {user.deviceDetails.screenResolution}
-                        </p>
-                      </div>
-                    )}
-                  </div>
-                </CardContent>
-              </Card>
-            )}
-
-            {/* Wallet (if available) */}
-            {user.wallet && (
-              <Card>
-                <CardHeader className="pb-3">
-                  <CardTitle className="text-sm font-semibold flex items-center gap-2">
-                    <Wallet className="w-4 h-4" /> Wallet
-                  </CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">
-                    {user.wallet.balance || 0}{" "}
-                    <span className="text-sm font-normal text-muted-foreground">
-                      points
-                    </span>
-                  </div>
-                </CardContent>
-              </Card>
-            )}
           </div>
-
-          {/* RIGHT COLUMN - Stats & Activity */}
-          <div className="lg:col-span-2 space-y-6">
-            {/* Stats Grid */}
+          <div className="lg:col-span-2">
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
               <Card className="p-4">
                 <div className="flex items-center gap-2 text-muted-foreground mb-1">
@@ -545,17 +531,15 @@ export default function AdminUserDetailsPage() {
                 </p>
               </Card>
               {!isTester && (
-                <>
-                  <Card className="p-4">
-                    <div className="flex items-center gap-2 text-muted-foreground mb-1">
-                      <Bug className="w-4 h-4 text-red-500" />
-                      <span className="text-xs">Submissions</span>
-                    </div>
-                    <p className="text-2xl font-bold">
-                      {user.stats?.totalSubmissions || 0}
-                    </p>
-                  </Card>
-                </>
+                <Card className="p-4">
+                  <div className="flex items-center gap-2 text-muted-foreground mb-1">
+                    <Bug className="w-4 h-4 text-red-500" />
+                    <span className="text-xs">Submissions</span>
+                  </div>
+                  <p className="text-2xl font-bold">
+                    {user.stats?.totalSubmissions || 0}
+                  </p>
+                </Card>
               )}
               {isTester && (
                 <Card className="p-4">
@@ -569,22 +553,210 @@ export default function AdminUserDetailsPage() {
                 </Card>
               )}
             </div>
+          </div>
+        </div>
 
-            {/* Testing History (Tester) */}
-            {isTester && (
+        {/* MIDDLE: 2-Column Profile Detail Cards */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-10">
+          <div className="space-y-6">
+            {/* Role & Professional Info */}
+            <Card>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-sm font-semibold flex items-center gap-2">
+                  <UserCircle className="w-4 h-4" /> Role & Professional Info
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3 text-sm">
+                <div className="flex items-center gap-3">
+                  <Briefcase className="w-4 h-4 text-muted-foreground shrink-0" />
+                  <span>{formatProfileType(user.profileType) || "—"}</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <Shield className="w-4 h-4 text-muted-foreground shrink-0" />
+                  <span>{formatEnum(user.jobRole) || "—"}</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <Activity className="w-4 h-4 text-muted-foreground shrink-0" />
+                  <span>{formatExperience(user.experience) || "—"}</span>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Contact & Communication */}
+            <Card>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-sm font-semibold flex items-center gap-2">
+                  <MessageSquare className="w-4 h-4" /> Contact & Communication
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3 text-sm">
+                <div className="flex items-center gap-3">
+                  <Mail className="w-4 h-4 text-muted-foreground shrink-0" />
+                  <a
+                    href={`mailto:${user.email}`}
+                    className="hover:underline truncate"
+                  >
+                    {user.email}
+                  </a>
+                </div>
+                <div className="flex items-center gap-3">
+                  <Phone className="w-4 h-4 text-muted-foreground shrink-0" />
+                  <span>{user.phone || "—"}</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <Globe className="w-4 h-4 text-muted-foreground shrink-0" />
+                  <span>{user.country || "—"}</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <Lightbulb className="w-4 h-4 text-muted-foreground shrink-0" />
+                  <span className="capitalize">{formatEnum(user.serviceUsage) || "—"}</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <MessageSquare className="w-4 h-4 text-muted-foreground shrink-0" />
+                  <span className="capitalize">{formatCommunicationMethods(user.communicationMethods) || "—"}</span>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Wallet */}
+            {user.wallet && (
               <Card>
-                <CardHeader>
-                  <CardTitle>Testing History</CardTitle>
-                  <CardDescription>
-                    Projects this tester has been assigned to.
-                  </CardDescription>
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-sm font-semibold flex items-center gap-2">
+                    <Wallet className="w-4 h-4" /> Wallet
+                  </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  {user.recentTests?.length > 0 ? (
-                    <div className="overflow-x-auto">
-                      <Table>
-                        <TableHeader>
-                          <TableRow>
+                  <div className="text-2xl font-bold">
+                    {user.wallet.balance || 0}{" "}
+                    <span className="text-sm font-normal text-muted-foreground">
+                      points
+                    </span>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+          </div>
+
+          <div className="space-y-6">
+            {/* Company Information */}
+            <Card>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-sm font-semibold flex items-center gap-2">
+                  <Building2 className="w-4 h-4" /> Company Information
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3 text-sm">
+                <div className="flex items-center gap-3">
+                  <Building2 className="w-4 h-4 text-muted-foreground shrink-0" />
+                  <span>{user.companyName || "—"}</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <Globe className="w-4 h-4 text-muted-foreground shrink-0" />
+                  {user.companyWebsite ? (
+                    <a href={user.companyWebsite} target="_blank" rel="noreferrer" className="hover:underline truncate">{user.companyWebsite}</a>
+                  ) : (
+                    <span>—</span>
+                  )}
+                </div>
+                <div className="flex items-center gap-3">
+                  <Briefcase className="w-4 h-4 text-muted-foreground shrink-0" />
+                  <span>{user.companySize ? `${formatCompanySize(user.companySize)} employees` : "—"}</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <Shield className="w-4 h-4 text-muted-foreground shrink-0" />
+                  <span>{formatEnum(user.positionInCompany) || "—"}</span>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Project Information */}
+            <Card>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-sm font-semibold flex items-center gap-2">
+                  <FolderGit className="w-4 h-4" /> Project Information
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-3 text-sm">
+                <div className="flex items-center gap-3">
+                  <FolderGit className="w-4 h-4 text-muted-foreground shrink-0" />
+                  <span>{user.totalPublishedApps ? `${formatPublishedApps(user.totalPublishedApps)} published apps` : "—"}</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <Smartphone className="w-4 h-4 text-muted-foreground shrink-0" />
+                  <span className="capitalize">{formatEnum(user.platformDevelopment) || "—"}</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <Activity className="w-4 h-4 text-muted-foreground shrink-0" />
+                  <span className="capitalize">{formatEnum(user.publishFrequency) || "—"}</span>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Device Information */}
+            <Card>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-sm font-semibold flex items-center gap-2">
+                  <Smartphone className="w-4 h-4" /> Device Information
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="text-sm">
+                <div className="grid grid-cols-2 gap-y-3 gap-x-4">
+                  <div>
+                    <p className="text-muted-foreground text-xs">Brand</p>
+                    <p className="font-medium">{user.deviceDetails?.company || "—"}</p>
+                  </div>
+                  <div>
+                    <p className="text-muted-foreground text-xs">Model</p>
+                    <p className="font-medium">{user.deviceDetails?.model || "—"}</p>
+                  </div>
+                  <div>
+                    <p className="text-muted-foreground text-xs">OS</p>
+                    <p className="font-medium">{user.deviceDetails?.os || "—"}</p>
+                  </div>
+                  <div>
+                    <p className="text-muted-foreground text-xs">RAM</p>
+                    <p className="font-medium">{user.deviceDetails?.ram || "—"}</p>
+                  </div>
+                  <div>
+                    <p className="text-muted-foreground text-xs">Resolution</p>
+                    <p className="font-medium">{user.deviceDetails?.screenResolution || "—"}</p>
+                  </div>
+                  <div>
+                    <p className="text-muted-foreground text-xs">Language</p>
+                    <p className="font-medium flex items-center gap-1">
+                      <Languages className="w-3 h-3" /> {user.deviceDetails?.language || "—"}
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-muted-foreground text-xs">Network</p>
+                    <p className="font-medium flex items-center gap-1">
+                      <Wifi className="w-3 h-3" /> {user.deviceDetails?.network || "—"}
+                    </p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+
+        {/* BOTTOM: Tables */}
+        <div className="mt-10">
+          {/* Testing History (Tester) */}
+          {isTester && (
+            <Card>
+              <CardHeader>
+                <CardTitle>Testing History</CardTitle>
+                <CardDescription>
+                  Projects this tester has been assigned to.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                {user.recentTests?.length > 0 ? (
+                  <div className="overflow-x-auto">
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
                             <TableHead>App Name</TableHead>
                             <TableHead>Status</TableHead>
                             <TableHead>Days</TableHead>
@@ -681,58 +853,393 @@ export default function AdminUserDetailsPage() {
                 </CardContent>
               </Card>
             )}
-          </div>
         </div>
       </div>
 
       {/* Edit Modal */}
       <Dialog open={isEditModalOpen} onOpenChange={setIsEditModalOpen}>
-        <DialogContent className="sm:max-w-[500px]">
+        <DialogContent className="sm:max-w-[700px] max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Edit {user.name}</DialogTitle>
             <DialogDescription>
-              Modify the user&apos;s role and status.
+              Admin can update all profile fields, role, and status.
             </DialogDescription>
           </DialogHeader>
-          <div className="space-y-4">
-            <div className="space-y-2">
-              <label className="text-sm font-medium">Role</label>
-              <Select
-                value={roleSelection}
-                onValueChange={(value) => setRoleSelection(value)}
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Select a role" />
-                </SelectTrigger>
-                <SelectContent position="popper">
-                  <SelectItem value="user">User</SelectItem>
-                  <SelectItem value="tester">Tester</SelectItem>
-                  <SelectItem value="support">Support</SelectItem>
-                  <SelectItem value="moderator">Moderator</SelectItem>
-                  <SelectItem value="admin" disabled={!isSuperAdmin}>
-                    Admin {!isSuperAdmin && "(Super Admin only)"}
-                  </SelectItem>
-                  {isSuperAdmin && (
-                    <SelectItem value="super_admin">Super Admin</SelectItem>
-                  )}
-                </SelectContent>
-              </Select>
+          <div className="space-y-6 py-4">
+
+            {/* Role & Status */}
+            <div>
+              <h4 className="text-base font-bold border-b pb-2 mb-4">Role & Status</h4>
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label>Role</Label>
+                  <Select
+                    value={roleSelection}
+                    onValueChange={(value) => setRoleSelection(value)}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select a role" />
+                    </SelectTrigger>
+                    <SelectContent position="popper">
+                      <SelectItem value="user">User</SelectItem>
+                      <SelectItem value="tester">Tester</SelectItem>
+                      <SelectItem value="support">Support</SelectItem>
+                      <SelectItem value="moderator">Moderator</SelectItem>
+                      <SelectItem value="admin" disabled={!isSuperAdmin}>
+                        Admin {!isSuperAdmin && "(Super Admin only)"}
+                      </SelectItem>
+                      {isSuperAdmin && (
+                        <SelectItem value="super_admin">Super Admin</SelectItem>
+                      )}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-2">
+                  <Label>Status</Label>
+                  <Select
+                    value={statusSelection}
+                    onValueChange={(value) => setStatusSelection(value)}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select status" />
+                    </SelectTrigger>
+                    <SelectContent position="popper">
+                      <SelectItem value="Active">Active</SelectItem>
+                      <SelectItem value="Banned">Banned</SelectItem>
+                      <SelectItem value="Inactive">Inactive</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
             </div>
+
+            <Separator />
+
+            {/* Section 1: Role & Professional Info */}
+            <div>
+              <h4 className="text-base font-bold border-b pb-2 mb-4">Role & Professional Info</h4>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label>Profile Type</Label>
+                  <Select
+                    value={editProfileData.profile_type}
+                    onValueChange={(val) => setEditProfileData((prev: any) => ({ ...prev, profile_type: val }))}
+                  >
+                    <SelectTrigger><SelectValue placeholder="Select type" /></SelectTrigger>
+                    <SelectContent>
+                      {Object.values(UserProfileType).map((t) => (
+                        <SelectItem key={t} value={t}>{t.replace(/_/g, " ").toLowerCase()}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-2">
+                  <Label>Job Role</Label>
+                  <Select
+                    value={editProfileData.job_role}
+                    onValueChange={(val) => setEditProfileData((prev: any) => ({ ...prev, job_role: val }))}
+                  >
+                    <SelectTrigger><SelectValue placeholder="Select role" /></SelectTrigger>
+                    <SelectContent>
+                      {Object.values(UserJobRole).map((r) => (
+                        <SelectItem key={r} value={r}>{r.replace(/_/g, " ").toLowerCase()}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-2">
+                  <Label>Experience Level</Label>
+                  <Select
+                    value={editProfileData.experience_level}
+                    onValueChange={(val) => setEditProfileData((prev: any) => ({ ...prev, experience_level: val }))}
+                  >
+                    <SelectTrigger><SelectValue placeholder="Select level" /></SelectTrigger>
+                    <SelectContent>
+                      {Object.values(UserExperienceLevel).map((l) => (
+                        <SelectItem key={l} value={l}>{l.replace(/_/g, " ").toLowerCase()}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+            </div>
+
+            <Separator />
+
+            {/* Section 2: Company Information */}
+            <div>
+              <h4 className="text-base font-bold border-b pb-2 mb-4">Company Information</h4>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label>Company Name</Label>
+                  <Input
+                    value={editProfileData.company_name}
+                    onChange={(e) => setEditProfileData((prev: any) => ({ ...prev, company_name: e.target.value }))}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label>Company Website</Label>
+                  <Input
+                    value={editProfileData.company_website}
+                    onChange={(e) => setEditProfileData((prev: any) => ({ ...prev, company_website: e.target.value }))}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label>Company Size</Label>
+                  <Select
+                    value={editProfileData.company_size}
+                    onValueChange={(val) => setEditProfileData((prev: any) => ({ ...prev, company_size: val }))}
+                  >
+                    <SelectTrigger><SelectValue placeholder="Select size" /></SelectTrigger>
+                    <SelectContent>
+                      {Object.values(UserCompanySize).map((s) => (
+                        <SelectItem key={s} value={s}>{s.replace("SIZE_", "").replace(/_/g, "-").toLowerCase()}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-2">
+                  <Label>Position in Company</Label>
+                  <Select
+                    value={editProfileData.position_in_company}
+                    onValueChange={(val) => setEditProfileData((prev: any) => ({ ...prev, position_in_company: val }))}
+                  >
+                    <SelectTrigger><SelectValue placeholder="Select position" /></SelectTrigger>
+                    <SelectContent>
+                      {Object.values(UserCompanyPosition).map((p) => (
+                        <SelectItem key={p} value={p}>{p.replace(/_/g, " ").toLowerCase()}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+            </div>
+
+            <Separator />
+
+            {/* Section 3: Project Information */}
+            <div>
+              <h4 className="text-base font-bold border-b pb-2 mb-4">Project Information</h4>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label>Total Published Apps</Label>
+                  <Select
+                    value={editProfileData.total_published_apps}
+                    onValueChange={(val) => setEditProfileData((prev: any) => ({ ...prev, total_published_apps: val }))}
+                  >
+                    <SelectTrigger><SelectValue placeholder="Select" /></SelectTrigger>
+                    <SelectContent>
+                      {Object.values(UserTotalPublishedApps).map((a) => (
+                        <SelectItem key={a} value={a}>{a.replace("PUB_", "").replace(/_/g, "-").toLowerCase()}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-2">
+                  <Label>Development Platform</Label>
+                  <Select
+                    value={editProfileData.platform_development}
+                    onValueChange={(val) => setEditProfileData((prev: any) => ({ ...prev, platform_development: val }))}
+                  >
+                    <SelectTrigger><SelectValue placeholder="Select platform" /></SelectTrigger>
+                    <SelectContent>
+                      {Object.values(UserDevelopmentPlatform).map((p) => (
+                        <SelectItem key={p} value={p}>{p.replace(/_/g, " ").toLowerCase()}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-2">
+                  <Label>Publish Frequency</Label>
+                  <Select
+                    value={editProfileData.publish_frequency}
+                    onValueChange={(val) => setEditProfileData((prev: any) => ({ ...prev, publish_frequency: val }))}
+                  >
+                    <SelectTrigger><SelectValue placeholder="Select frequency" /></SelectTrigger>
+                    <SelectContent>
+                      {Object.values(UserPublishFrequency).map((f) => (
+                        <SelectItem key={f} value={f}>{f.replace(/_/g, " ").toLowerCase()}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+            </div>
+
+            <Separator />
+
+            {/* Section 4: Device Information */}
+            <div>
+              <h4 className="text-base font-bold border-b pb-2 mb-4">Device Information</h4>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label>Device Company</Label>
+                  <Input
+                    value={editProfileData.device_company}
+                    onChange={(e) => setEditProfileData((prev: any) => ({ ...prev, device_company: e.target.value }))}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label>Device Model</Label>
+                  <Input
+                    value={editProfileData.device_model}
+                    onChange={(e) => setEditProfileData((prev: any) => ({ ...prev, device_model: e.target.value }))}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label>RAM</Label>
+                  <Select
+                    value={editProfileData.ram}
+                    onValueChange={(val) => setEditProfileData((prev: any) => ({ ...prev, ram: val }))}
+                  >
+                    <SelectTrigger><SelectValue placeholder="Select RAM" /></SelectTrigger>
+                    <SelectContent>
+                      {["2GB","3GB","4GB","6GB","8GB","12GB","16GB","18GB","24GB"].map((r) => (
+                        <SelectItem key={r} value={r}>{r}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-2">
+                  <Label>Operating System</Label>
+                  <Select
+                    value={editProfileData.os}
+                    onValueChange={(val) => setEditProfileData((prev: any) => ({ ...prev, os: val }))}
+                  >
+                    <SelectTrigger><SelectValue placeholder="Select OS" /></SelectTrigger>
+                    <SelectContent>
+                      {["Android 16","Android 15","Android 14","Android 13","Android 12","Android 11","Android 10 or older"].map((o) => (
+                        <SelectItem key={o} value={o}>{o}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-2">
+                  <Label>Screen Resolution</Label>
+                  <Select
+                    value={editProfileData.screen_resolution}
+                    onValueChange={(val) => setEditProfileData((prev: any) => ({ ...prev, screen_resolution: val }))}
+                  >
+                    <SelectTrigger><SelectValue placeholder="Select resolution" /></SelectTrigger>
+                    <SelectContent>
+                      {["HD+ (720p)","FHD+ (1080p)","QHD+ (2K)","UHD (4K)","UHD (8K)","Other"].map((r) => (
+                        <SelectItem key={r} value={r}>{r}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-2">
+                  <Label>Language</Label>
+                  <Select
+                    value={editProfileData.language}
+                    onValueChange={(val) => setEditProfileData((prev: any) => ({ ...prev, language: val }))}
+                  >
+                    <SelectTrigger><SelectValue placeholder="Select language" /></SelectTrigger>
+                    <SelectContent>
+                      {["English (US)","English (UK)","Spanish","Mandarin Chinese","Hindi","Arabic","Portuguese","Bengali","Russian","Japanese","German","French","Other"].map((l) => (
+                        <SelectItem key={l} value={l}>{l}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-2">
+                  <Label>Primary Network</Label>
+                  <Select
+                    value={editProfileData.network}
+                    onValueChange={(val) => setEditProfileData((prev: any) => ({ ...prev, network: val }))}
+                  >
+                    <SelectTrigger><SelectValue placeholder="Select network" /></SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="WiFi">WiFi</SelectItem>
+                      <SelectItem value="Cellular">Cellular</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+            </div>
+
+            <Separator />
+
+            {/* Section 5: Contact & Communication */}
+            <div>
+              <h4 className="text-base font-bold border-b pb-2 mb-4">Contact & Communication</h4>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label>Country</Label>
+                  <Select
+                    value={editProfileData.country}
+                    onValueChange={(val) => setEditProfileData((prev: any) => ({ ...prev, country: val }))}
+                  >
+                    <SelectTrigger><SelectValue placeholder="Select country" /></SelectTrigger>
+                    <SelectContent>
+                      {countries.map((c) => (
+                        <SelectItem key={c.code} value={c.name}>{c.name}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-2">
+                  <Label>Phone</Label>
+                  <Input
+                    value={editProfileData.phone}
+                    onChange={(e) => setEditProfileData((prev: any) => ({ ...prev, phone: e.target.value }))}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label>Service Usage Reason</Label>
+                  <Select
+                    value={editProfileData.service_usage}
+                    onValueChange={(val) => setEditProfileData((prev: any) => ({ ...prev, service_usage: val }))}
+                  >
+                    <SelectTrigger><SelectValue placeholder="Select reason" /></SelectTrigger>
+                    <SelectContent>
+                      {Object.values(UserTestingServiceReason).map((r) => (
+                        <SelectItem key={r} value={r}>{r.replace(/_/g, " ").toLowerCase()}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="space-y-2 col-span-2">
+                  <Label>Communication Methods</Label>
+                  <div className="flex flex-wrap gap-3">
+                    {Object.values(UserCommunicationMethod).map((m) => {
+                      const checked = (editProfileData.communication_methods || []).includes(m);
+                      return (
+                        <div key={m} className="flex items-center gap-2">
+                          <Checkbox
+                            id={`edit-comm-${m}`}
+                            checked={checked}
+                            onCheckedChange={(c) => {
+                              setEditProfileData((prev: any) => {
+                                const current = prev.communication_methods || [];
+                                return {
+                                  ...prev,
+                                  communication_methods: c
+                                    ? [...current, m]
+                                    : current.filter((v: string) => v !== m),
+                                };
+                              });
+                            }}
+                          />
+                          <Label htmlFor={`edit-comm-${m}`} className="text-sm font-normal cursor-pointer">
+                            {m.toLowerCase()}
+                          </Label>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
+            </div>
+
           </div>
-          <DialogFooter>
-            <Button
-              variant="ghost"
-              onClick={() => {
-                setIsEditModalOpen(false);
-              }}
-            >
-              Cancel
-            </Button>
+          <DialogFooter className="gap-2">
+            <Button variant="ghost" onClick={() => setIsEditModalOpen(false)}>Cancel</Button>
             <Button
               onClick={handleSaveChanges}
-              disabled={updateRoleMutation.isPending}
+              disabled={updateProfileMutation.isPending || updateRoleMutation.isPending}
             >
-              {updateRoleMutation.isPending && (
+              {(updateProfileMutation.isPending || updateRoleMutation.isPending) && (
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
               )}
               Save Changes
