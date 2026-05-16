@@ -106,7 +106,7 @@ export function MainEditor() {
                   <FormItem>
                     <FormLabel className="text-xs">AI Image Hint</FormLabel>
                     <FormControl>
-                      <Input placeholder="Keywords for AI image generation" {...field} />
+                      <Input placeholder="Keywords for AI image generation" {...field} value={field.value ?? ""} />
                     </FormControl>
                     <FormDescription className="text-xs">
                       Optional hint for AI image generation

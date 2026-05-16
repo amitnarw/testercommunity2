@@ -213,6 +213,12 @@ export default function ProfessionalRegisterPage() {
       testingTypes: [],
       devices: [],
       osVersions: [],
+      firstName: "",
+      lastName: "",
+      email: "",
+      password: "",
+      bio: "",
+      languages: "",
     },
   });
 
@@ -353,7 +359,7 @@ export default function ProfessionalRegisterPage() {
                               <FormItem>
                                 <FormLabel>First Name</FormLabel>
                                 <FormControl>
-                                  <Input placeholder="John" {...field} />
+                                  <Input placeholder="John" {...field} value={field.value ?? ""} />
                                 </FormControl>
                                 <FormMessage />
                               </FormItem>
@@ -366,7 +372,7 @@ export default function ProfessionalRegisterPage() {
                               <FormItem>
                                 <FormLabel>Last Name</FormLabel>
                                 <FormControl>
-                                  <Input placeholder="Doe" {...field} />
+                                  <Input placeholder="Doe" {...field} value={field.value ?? ""} />
                                 </FormControl>
                                 <FormMessage />
                               </FormItem>
@@ -383,6 +389,7 @@ export default function ProfessionalRegisterPage() {
                                 <Input
                                   placeholder="you@example.com"
                                   {...field}
+                                  value={field.value ?? ""}
                                 />
                               </FormControl>
                               <FormMessage />
@@ -401,6 +408,7 @@ export default function ProfessionalRegisterPage() {
                                     {...field}
                                     type={showPassword ? "text" : "password"}
                                     placeholder="Enter your password"
+                                    value={field.value ?? ""}
                                   />
                                 </FormControl>
                                 <Button
@@ -749,6 +757,7 @@ export default function ProfessionalRegisterPage() {
                                               className="resize-none"
                                               placeholder="Tell us about your experience..."
                                               {...field}
+                                              value={field.value ?? ""}
                                             />
                                           </FormControl>
                                           <FormMessage />
@@ -886,6 +895,7 @@ export default function ProfessionalRegisterPage() {
                                             <Input
                                               placeholder="e.g., Python, JavaScript, Java"
                                               {...field}
+                                              value={field.value ?? ""}
                                             />
                                           </FormControl>
                                           <FormMessage />

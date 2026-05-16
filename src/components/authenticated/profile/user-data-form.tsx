@@ -74,11 +74,11 @@ export function UserDataForm({ title = "User data", showAdvancedSetup = true }: 
   useEffect(() => {
     if (!userProfileIsPending && !isPending && userProfileData && session) {
       reset({
-        first_name: userProfileData.first_name,
-        last_name: userProfileData.last_name,
+        first_name: userProfileData.first_name ?? "",
+        last_name: userProfileData.last_name ?? "",
         email: session.user.email,
-        phone: userProfileData.phone,
-        country: userProfileData.country,
+        phone: userProfileData.phone ?? "",
+        country: userProfileData.country ?? "",
       });
     }
   }, [userProfileIsPending, isPending, userProfileData, session, reset]);
@@ -213,7 +213,13 @@ export function UserDataForm({ title = "User data", showAdvancedSetup = true }: 
                   asChild
                   className="w-full sm:w-auto px-2"
                 >
-                  <TransitionLink href="/profile/profile-setup">
+                  <TransitionLink
+                    href={
+                      (session as any)?.role?.name?.toLowerCase() === "tester"
+                        ? "/tester/setup"
+                        : "/profile/profile-setup"
+                    }
+                  >
                     <UserCog className="mr-2 h-4 w-4" /> Go to Setup
                   </TransitionLink>
                 </Button>

@@ -18,6 +18,8 @@ export const ROUTES = {
   ADMIN: {
     ROOT: "/admin",
     DASHBOARD: "/admin/dashboard",
+    FINANCE: "/admin/finance",
+    INVOICE: "/admin/invoice",
     AUTH: {
       LOGIN: "/admin/auth/login",
     },
@@ -27,6 +29,8 @@ export const ROUTES = {
   TESTER: {
     ROOT: "/tester",
     DASHBOARD: "/tester/dashboard",
+    PROJECTS: "/tester/projects",
+    COMMUNITY_TASKS: "/tester/community-tasks",
     SETUP: "/tester/setup",
     AUTH: {
       LOGIN: "/tester/auth/login",

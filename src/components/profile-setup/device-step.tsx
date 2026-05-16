@@ -59,7 +59,7 @@ export const DeviceStep = ({
           <Label>Device Model</Label>
           <Input
             placeholder="e.g., Pixel 8 Pro"
-            value={profileData?.device_model as string | undefined}
+            value={profileData?.device_model ?? ""}
             onChange={(e) =>
               setProfileData((prev) => ({
                 ...prev,

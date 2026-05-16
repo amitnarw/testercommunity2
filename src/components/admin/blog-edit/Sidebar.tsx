@@ -104,7 +104,7 @@ export function Sidebar({ blog }: SidebarProps) {
             <FormItem>
               <FormLabel className="text-xs">Name</FormLabel>
               <FormControl>
-                <Input placeholder="Author name" {...field} />
+                <Input placeholder="Author name" {...field} value={field.value ?? ""} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -117,7 +117,7 @@ export function Sidebar({ blog }: SidebarProps) {
             <FormItem>
               <FormLabel className="text-xs">Avatar URL</FormLabel>
               <FormControl>
-                <Input placeholder="https://...avatar.jpg" {...field} />
+                <Input placeholder="https://...avatar.jpg" {...field} value={field.value ?? ""} />
               </FormControl>
               <FormMessage />
             </FormItem>
@@ -148,7 +148,7 @@ export function Sidebar({ blog }: SidebarProps) {
             <FormItem>
               <FormLabel className="text-xs">URL Slug</FormLabel>
               <FormControl>
-                <Input placeholder="blog-url-slug" {...field} className="font-mono text-sm" />
+                <Input placeholder="blog-url-slug" {...field} value={field.value ?? ""} className="font-mono text-sm" />
               </FormControl>
               <FormDescription className="text-xs">
                 URL-friendly version of the title
@@ -175,6 +175,7 @@ export function Sidebar({ blog }: SidebarProps) {
                 <Textarea
                   placeholder="Brief description for listing page..."
                   {...field}
+                  value={field.value ?? ""}
                   rows={3}
                   className="text-sm"
                 />

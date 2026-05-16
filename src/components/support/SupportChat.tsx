@@ -14,7 +14,7 @@ import { usePathname } from "next/navigation";
 import { TransitionLink } from "@/components/transition-link";
 import { connectSupportSocket } from "@/lib/supportSocket";
 
-type ChatMode = "AI" | "WAITING" | "HUMAN" | "OFFLINE_FAIL";
+type ChatMode = "AI" | "WAITING" | "HUMAN";
 
 export function SupportChat() {
   const pathname = usePathname();
@@ -29,6 +29,7 @@ export function SupportChat() {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [agentTyping, setAgentTyping] = useState(false);
   const [sendingMessage, setSendingMessage] = useState(false);
+  const [agentsOnline, setAgentsOnline] = useState(false);
   const requestTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const errorTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const typingTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -62,8 +63,8 @@ export function SupportChat() {
   const [displayedMessages, setDisplayedMessages] = useState<any[]>([]);
   const humanScrollRef = useRef<HTMLDivElement>(null);
 
-  const isSupportPath = pathname?.startsWith("/support") || 
-                       pathname?.startsWith("/help") || 
+  const isSupportPath = pathname?.startsWith("/support") ||
+                       pathname?.startsWith("/help") ||
                        pathname?.startsWith("/tester/support");
 
   const chat = useChat({
@@ -109,7 +110,7 @@ export function SupportChat() {
           const formatted = history.map((h: any, i: number) => ({
             id: `hist-${i}`,
             role: h.role,
-            content: h.message
+            content: h.content || h.message
           }));
           setMessages(formatted);
           setIsHistoryLoading(false);
@@ -156,31 +157,26 @@ export function SupportChat() {
     });
   }, [humanMessages, chatMode]);
 
-  // Socket.IO integration — listeners registered once
+  // Socket.IO integration
   const socketInitialized = useRef(false);
 
-  // Set up socket listeners once, remove listeners on cleanup
   useEffect(() => {
     if (!isSupportPath) return;
     if (socketInitialized.current) return;
     socketInitialized.current = true;
 
     const s = connectSupportSocket();
-    console.log("[SupportChat] Initializing socket listeners");
 
     s.on("connect", () => {
-      console.log("[SupportChat] Socket connected");
       clearError();
       s.emit("user:rejoin");
     });
 
     s.on("connect_error", (err) => {
-      console.error("[SupportChat] Socket connect error:", err.message);
       showError(`Connection failed: ${err.message}. Please try again.`);
     });
 
     s.on("chat:requested", (data: { chatId: number; position: number }) => {
-      console.log("[SupportChat] Chat requested:", data);
       if (requestTimeoutRef.current) {
         clearTimeout(requestTimeoutRef.current);
         requestTimeoutRef.current = null;
@@ -191,15 +187,33 @@ export function SupportChat() {
       clearError();
     });
 
-    s.on("chat:unavailable", (data: { reason?: string }) => {
-      if (data?.reason) {
-        showError(data.reason);
+    s.on("chat:fallback_to_ai", (data: { message: string; chatId: number }) => {
+      if (requestTimeoutRef.current) {
+        clearTimeout(requestTimeoutRef.current);
+        requestTimeoutRef.current = null;
       }
-      setChatMode("OFFLINE_FAIL");
+      setHumanChatId(data.chatId);
+      // Stay in AI mode but let the user know a ticket was created
+      setMessages((prev: any) => [...prev, {
+        id: "fallback-" + Date.now(),
+        role: "assistant",
+        content: data.message,
+      }]);
+      clearError();
+    });
+
+    s.on("chat:unavailable", (data: { reason?: string }) => {
+      // Never go to OFFLINE_FAIL. Fallback to AI.
+      const msg = data?.reason || "No agents are available right now. Alex can help!";
+      setMessages((prev: any) => [...prev, {
+        id: "fallback-" + Date.now(),
+        role: "assistant",
+        content: msg + " A human agent will review your conversation when they come online.",
+      }]);
+      clearError();
     });
 
     s.on("chat:assigned", (data: { chatId: number; agentName: string }) => {
-      console.log("[SupportChat] Chat assigned to agent:", data.agentName);
       clearError();
       setHumanChatId(data.chatId);
       setAgentName(data.agentName);
@@ -219,7 +233,7 @@ export function SupportChat() {
     s.on("chat:closed", () => {
       setHumanMessages((prev) => [...prev, {
         id: "closed",
-        senderType: "AGENT",
+        senderType: "SYSTEM",
         senderName: "System",
         message: "This chat has been closed.",
         createdAt: new Date().toISOString(),
@@ -228,7 +242,6 @@ export function SupportChat() {
     });
 
     s.on("chat:error", (data: { message?: string }) => {
-      console.error("[SupportChat] Chat error:", data?.message);
       showError(data?.message || "Something went wrong. Please try again.");
     });
 
@@ -242,14 +255,24 @@ export function SupportChat() {
       setQueuePosition(data.position);
     });
 
-    // If socket is already connected, request rejoin immediately
+    s.on("agent:status_changed", () => {
+      // Re-fetch agent status (simple: just toggle a state to trigger re-evaluation)
+      setAgentsOnline((prev) => !prev);
+    });
+
     if (s.connected) {
-      console.log("[SupportChat] Socket already connected, requesting rejoin");
       s.emit("user:rejoin");
     }
 
+    // Fetch agent status on mount
+    fetch("/api/support/agent-status")
+      .then((r) => r.json())
+      .then((d) => {
+        if (d?.data?.online) setAgentsOnline(true);
+      })
+      .catch(() => {});
+
     return () => {
-      console.log("[SupportChat] Cleaning up socket listeners");
       if (requestTimeoutRef.current) {
         clearTimeout(requestTimeoutRef.current);
         requestTimeoutRef.current = null;
@@ -265,6 +288,7 @@ export function SupportChat() {
       s.off("connect");
       s.off("connect_error");
       s.off("chat:requested");
+      s.off("chat:fallback_to_ai");
       s.off("chat:unavailable");
       s.off("chat:assigned");
       s.off("chat:message");
@@ -273,6 +297,7 @@ export function SupportChat() {
       s.off("chat:typing");
       s.off("agent:typing");
       s.off("chat:position_updated");
+      s.off("agent:status_changed");
       socketInitialized.current = false;
     };
   }, [isSupportPath]);
@@ -281,15 +306,12 @@ export function SupportChat() {
     clearError();
     const s = connectSupportSocket();
     if (s.connected) {
-      console.log("[SupportChat] Emitting user:request_human (connected)");
       s.emit("user:request_human", {});
       requestTimeoutRef.current = setTimeout(() => {
         showError("Support request timed out — no response from server. Please try again.");
       }, 15000);
     } else {
-      console.log("[SupportChat] Socket not connected, waiting for connect...");
       s.once("connect", () => {
-        console.log("[SupportChat] Now connected, emitting user:request_human");
         s.emit("user:request_human", {});
         requestTimeoutRef.current = setTimeout(() => {
           showError("Support request timed out — no response from server. Please try again.");
@@ -297,9 +319,7 @@ export function SupportChat() {
       });
       const timeout = setTimeout(() => {
         if (!s.connected) {
-          console.log("[SupportChat] Socket connection timeout");
           showError("Could not connect to the support server. Please check your connection and try again.");
-          setChatMode("OFFLINE_FAIL");
         }
       }, 5000);
       s.once("connect", () => clearTimeout(timeout));
@@ -387,14 +407,17 @@ export function SupportChat() {
                       <Bot className="h-5 w-5 text-primary-foreground" />
                     )}
                   </div>
-                  <span className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 border-2 border-primary rounded-full" />
+                  <span className={cn(
+                    "absolute bottom-0 right-0 w-2.5 h-2.5 border-2 border-primary rounded-full",
+                    agentsOnline ? "bg-green-500" : "bg-gray-400"
+                  )} />
                 </div>
                 <div className="flex flex-col">
                   <span className="font-bold text-xs tracking-tight whitespace-nowrap">
                     {chatMode === "HUMAN" ? `Chat with ${agentName}` : "Chat with Alex"}
                   </span>
                   <span className="text-xs text-primary-foreground/70 leading-none">
-                    {chatMode === "HUMAN" ? "Live Agent" : "Support Online"}
+                    {chatMode === "HUMAN" ? "Live Agent" : agentsOnline ? "Support Online • Usually replies in 5 min" : "Leave a message"}
                   </span>
                 </div>
               </div>
@@ -424,12 +447,13 @@ export function SupportChat() {
                     </h3>
                     <p className="text-[10px] text-primary-foreground/80 flex items-center gap-1.5">
                       <span className={cn(
-                        "w-1.5 h-1.5 rounded-full animate-pulse",
-                        chatMode === "HUMAN" ? "bg-green-400" :
-                        chatMode === "WAITING" ? "bg-amber-400" : "bg-green-400"
+                        "w-1.5 h-1.5 rounded-full",
+                        chatMode === "HUMAN" ? "bg-green-400 animate-pulse" :
+                        chatMode === "WAITING" ? "bg-amber-400 animate-pulse" : "bg-green-400"
                       )} />
                       {chatMode === "WAITING" ? "Connecting..." :
-                       chatMode === "HUMAN" ? "Live Agent" : "Online"}
+                       chatMode === "HUMAN" ? "Live Agent" :
+                       agentsOnline ? "Support Online" : "Leave a message"}
                     </p>
                   </div>
                 </div>
@@ -472,15 +496,15 @@ export function SupportChat() {
                               </div>
                             </div>
                             {m.toolInvocations?.map((toolInvocation: any) => {
-                              const { toolCallId, toolName, state } = toolInvocation;
+                              const { toolCallId, toolName } = toolInvocation;
                               if (toolName === "create_ticket") {
                                 return (
                                   <div key={toolCallId} className="mt-2 p-3 bg-muted/50 rounded-xl border border-dashed flex items-center gap-3 w-full">
                                     <Ticket className="h-4 w-4 text-primary" />
                                     <div className="flex-1 overflow-hidden">
-                                      <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">Action: Support Ticket</p>
+                                      <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">Support Ticket</p>
                                       <p className="text-xs truncate italic">
-                                        {state === "result" ? "✅ Ticket created successfully" : "⏳ Working on your ticket..."}
+                                        {"✅ Ticket created successfully"}
                                       </p>
                                     </div>
                                   </div>
@@ -491,7 +515,7 @@ export function SupportChat() {
                           </div>
                         </div>
                       )})}
-                      
+
                       {(isLoading || isWaitingForGreeting || isHistoryLoading) && (
                         <div className="flex gap-3 animate-in fade-in duration-300">
                           <div className="h-8 w-8 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center">
@@ -538,7 +562,7 @@ export function SupportChat() {
                           className="text-[10px] text-muted-foreground hover:text-primary flex items-center gap-1 transition-colors"
                         >
                           <Headphones className="h-3 w-3" />
-                          Talk to a human
+                          {agentsOnline ? "Talk to a human" : "Leave a message"}
                         </button>
                         <TransitionLink href="/support/tickets" onClick={() => setIsOpen(false)} className="text-[10px] text-muted-foreground hover:text-primary flex items-center gap-1 transition-colors">
                           <Ticket className="h-3 w-3" />
@@ -600,10 +624,12 @@ export function SupportChat() {
                         <div key={m.id || i} className={cn("flex gap-3", m.senderType === "USER" ? "flex-row-reverse" : "flex-row")}>
                           <div className={cn(
                             "h-8 w-8 rounded-full flex items-center justify-center flex-shrink-0 border",
-                            m.senderType === "AGENT" ? "bg-primary/10 border-primary/20" : "bg-muted"
+                            m.senderType === "AGENT" ? "bg-primary/10 border-primary/20" : m.senderType === "SYSTEM" ? "bg-muted border-dashed" : "bg-muted"
                           )}>
                             {m.senderType === "AGENT" ? (
                               <Headphones className="h-4 w-4 text-primary" />
+                            ) : m.senderType === "SYSTEM" ? (
+                              <Bot className="h-4 w-4 text-muted-foreground" />
                             ) : (
                               <User className="h-4 w-4 text-muted-foreground" />
                             )}
@@ -613,6 +639,8 @@ export function SupportChat() {
                               "px-4 py-2.5 rounded-2xl text-sm shadow-sm leading-relaxed",
                               m.senderType === "USER"
                                 ? "bg-primary text-primary-foreground rounded-tr-none"
+                                : m.senderType === "SYSTEM"
+                                ? "bg-muted/30 border border-dashed rounded-tl-none text-muted-foreground italic text-xs"
                                 : "bg-card border rounded-tl-none"
                             )}>
                               {m.message}
@@ -664,31 +692,8 @@ export function SupportChat() {
                         )}
                       </Button>
                     </form>
-                    {sendingMessage && (
-                      <p className="text-[10px] text-muted-foreground mt-1.5 text-center">Sending...</p>
-                    )}
                   </footer>
                 </>
-              )}
-
-              {/* OFFLINE_FAIL Mode */}
-              {chatMode === "OFFLINE_FAIL" && (
-                <div className="flex-1 flex flex-col items-center justify-center p-8 bg-background/50 space-y-4">
-                  <div className="h-16 w-16 rounded-full bg-muted flex items-center justify-center">
-                    <Phone className="h-8 w-8 text-muted-foreground" />
-                  </div>
-                  <h3 className="font-bold text-lg">Support Offline</h3>
-                  <p className="text-sm text-muted-foreground text-center max-w-xs">
-                    All agents are currently offline. Alex is still available for instant help!
-                  </p>
-                  <Button
-                    variant="default"
-                    size="sm"
-                    onClick={handleBackToAlex}
-                  >
-                    Chat with Alex instead
-                  </Button>
-                </div>
               )}
             </motion.div>
           )}

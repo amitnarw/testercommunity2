@@ -9,8 +9,10 @@ import Confetti from "react-dom-confetti";
 
 export const RegistrationSuccess = ({
   status,
+  dashboardHref = "/dashboard",
 }: {
   status: "EARNED_NOW" | "ALREADY_EARNED" | "INCOMPLETE";
+  dashboardHref?: string;
 }) => {
   const [showConfetti, setShowConfetti] = useState(false);
 
@@ -109,7 +111,7 @@ export const RegistrationSuccess = ({
         asChild
         className="mt-8 w-full sm:w-auto px-8 py-6 text-lg rounded-full shadow-lg hover:shadow-xl transition-all"
       >
-        <Link href="/dashboard">
+        <Link href={dashboardHref}>
           Go to Dashboard <ArrowRight className="ml-2 h-5 w-5" />
         </Link>
       </Button>

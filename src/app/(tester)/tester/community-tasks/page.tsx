@@ -21,13 +21,10 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 const PROJECTS_PER_PAGE = 6;
 
-const ProjectCard = ({ project }: { project: TesterProjectResponse }) => {
+const TaskCard = ({ project }: { project: TesterProjectResponse }) => {
   const isOngoing =
     project.appStatus === "IN_TESTING" &&
     project.testerStatus === "IN_PROGRESS";
-  const earnings =
-    project.rewardMoney ||
-    (project.rewardPoints ? project.rewardPoints * 5 : 0);
 
   return (
     <Card
@@ -61,11 +58,11 @@ const ProjectCard = ({ project }: { project: TesterProjectResponse }) => {
             </div>
           )}
         </CardContent>
-        <CardFooter className="p-4 bg-gradient-to-t from-primary/20 to-primary/0 flex items-center justify-between">
+        <CardFooter className="p-4 bg-gradient-to-t from-amber-500/20 to-amber-500/0 flex items-center justify-between">
           <div className="text-sm text-right">
-            <p className="text-muted-foreground text-xs">Payout</p>
-            <p className="font-semibold text-primary">
-              ₹{earnings.toLocaleString("en-IN")}
+            <p className="text-muted-foreground text-xs">Reward</p>
+            <p className="font-semibold text-amber-600 dark:text-amber-400">
+              No Reward
             </p>
           </div>
           {isOngoing ? (
@@ -85,7 +82,7 @@ const ProjectCard = ({ project }: { project: TesterProjectResponse }) => {
   );
 };
 
-const ProjectsSkeleton = () => (
+const TasksSkeleton = () => (
   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
     {Array.from({ length: 6 }).map((_, i) => (
       <Card
@@ -111,7 +108,7 @@ const ProjectsSkeleton = () => (
   </div>
 );
 
-const PaginatedProjectList = ({
+const PaginatedTaskList = ({
   projects,
 }: {
   projects: TesterProjectResponse[];
@@ -130,7 +127,7 @@ const PaginatedProjectList = ({
   if (projects.length === 0) {
     return (
       <p className="text-muted-foreground text-center py-8">
-        No projects assigned to you yet.
+        No community tasks assigned to you yet.
       </p>
     );
   }
@@ -139,7 +136,7 @@ const PaginatedProjectList = ({
     <>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {currentProjects.map((project) => (
-          <ProjectCard key={project.id} project={project} />
+          <TaskCard key={project.id} project={project} />
         ))}
       </div>
       <AppPagination
@@ -151,18 +148,18 @@ const PaginatedProjectList = ({
   );
 };
 
-export default function ProfessionalProjectsPage() {
-  const { data: projects, isLoading, isError, error } = useTesterProjects(undefined, "PAID");
+export default function CommunityTasksPage() {
+  const { data: projects, isLoading, isError, error } = useTesterProjects(undefined, "FREE");
 
   return (
     <div className="flex-1 space-y-8 p-4 sm:p-8 pt-0 sm:pt-0">
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between space-y-2">
         <div>
-          <h2 className="text-2xl sm:text-4xl font-bold bg-gradient-to-b from-primary to-primary/40 bg-clip-text text-transparent leading-0 pb-[2px]">
-            Projects
+          <h2 className="text-2xl sm:text-4xl font-bold bg-gradient-to-b from-amber-500 to-amber-500/40 bg-clip-text text-transparent leading-0 pb-[2px]">
+            Community Tasks
           </h2>
           <p className="text-muted-foreground">
-            Manage your assigned projects and find new opportunities.
+            Admin-assigned community apps for testing.
           </p>
         </div>
       </div>
@@ -170,15 +167,15 @@ export default function ProfessionalProjectsPage() {
       <div>
         <CardContent className="p-0">
           {isLoading ? (
-            <ProjectsSkeleton />
+            <TasksSkeleton />
           ) : isError ? (
             <div className="text-center py-8">
               <p className="text-red-500">
-                Failed to load projects: {error?.message}
+                Failed to load tasks: {error?.message}
               </p>
             </div>
           ) : (
-            <PaginatedProjectList projects={projects || []} />
+            <PaginatedTaskList projects={projects || []} />
           )}
         </CardContent>
       </div>

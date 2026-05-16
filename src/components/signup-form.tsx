@@ -63,6 +63,11 @@ export function SignupForm() {
   const form = useForm<SignupFormData>({
     resolver: zodResolver(signupSchema),
     mode: "onChange",
+    defaultValues: {
+      fullName: "",
+      email: "",
+      password: "",
+    },
   });
 
   const processForm: SubmitHandler<SignupFormData> = (data) => {
@@ -120,6 +125,7 @@ export function SignupForm() {
                     placeholder="John Doe"
                     {...field}
                     className="rounded-xl h-12"
+                    value={field.value ?? ""}
                   />
                 </FormControl>
                 <FormMessage />
@@ -137,6 +143,7 @@ export function SignupForm() {
                     placeholder="you@example.com"
                     {...field}
                     className="rounded-xl h-12"
+                    value={field.value ?? ""}
                   />
                 </FormControl>
                 <FormMessage />
@@ -155,6 +162,7 @@ export function SignupForm() {
                     placeholder="••••••••"
                     {...field}
                     className="rounded-xl h-12"
+                    value={field.value ?? ""}
                   />
                 </FormControl>
                 <FormMessage />

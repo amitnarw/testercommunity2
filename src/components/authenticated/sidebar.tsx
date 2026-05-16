@@ -19,9 +19,8 @@ import {
   BookOpen,
   Star,
   MessageSquare,
-  MessageSquareMore,
   Headphones,
-  BarChart3,
+  Landmark,
 } from "lucide-react";
 import { BaseSidebar, SidebarNavLink } from "@/components/ui/base-sidebar";
 import { authClient } from "@/lib/auth-client";
@@ -36,6 +35,7 @@ const mainNavLinks = [
 const proNavLinks = [
   { name: "Dashboard", href: "/tester/dashboard", icon: LayoutDashboard },
   { name: "Projects", href: "/tester/projects", icon: Briefcase },
+  { name: "Community Tasks", href: "/tester/community-tasks", icon: Users2 },
   { name: "Activities", href: "/tester/activities", icon: Activity },
   { name: "Notifications", href: "/tester/notifications", icon: Bell },
   { name: "Support", href: "/tester/support", icon: LifeBuoy },
@@ -67,6 +67,15 @@ const adminNavLinks = [
     icon: Users2,
     section: "free",
     badge: "FREE",
+  },
+
+  // Finance (super_admin only)
+  {
+    name: "Finance",
+    href: "/admin/finance",
+    icon: Landmark,
+    section: "finance",
+    superAdminOnly: true,
   },
 
   // Platform
@@ -120,25 +129,12 @@ const adminNavLinks = [
     section: "platform",
   },
 
-  // Support Operations
+  // Support
   {
-    name: "Live Chat",
-    href: "/admin/support/live-chat",
-    icon: MessageSquareMore,
-    section: "support_ops",
-    badge: "LIVE",
-  },
-  {
-    name: "Tickets",
-    href: "/admin/support/tickets",
-    icon: Ticket,
-    section: "support_ops",
-  },
-  {
-    name: "Support Stats",
+    name: "Support",
     href: "/admin/support",
-    icon: BarChart3,
-    section: "support_ops",
+    icon: Headphones,
+    section: "support",
   },
 ];
 
@@ -160,16 +156,21 @@ export function Sidebar({
     typeof role === "string" ? role : role?.name
   )?.toLowerCase();
 
-  const isAdminPath = pathname.startsWith("/admin");
-  const isTesterPath = pathname.startsWith("/tester");
+  const isAdminRole = [
+    "admin",
+    "super_admin",
+    "super admin",
+    "moderator",
+    "support",
+  ].includes(roleName);
+  const isTesterRole = roleName === "tester" || roleName === "super_admin";
 
-  // Determine standard nav links for non-admin
   let navLinks = mainNavLinks;
-  if (roleName === "tester" || isTesterPath) {
+  if (isTesterRole) {
     navLinks = proNavLinks;
   }
 
-  const navContent = isAdminPath ? (
+  const navContent = isAdminRole ? (
       <>
         <div className="mb-1">
           {!isCollapsed && (
@@ -247,6 +248,37 @@ export function Sidebar({
           <div className="h-px bg-white/10 dark:bg-black/10 mx-3 my-1" />
         )}
 
+        {/* Finance section - super_admin only */}
+        {roleName === "super_admin" && (
+          <>
+            <div className="mb-1">
+              {!isCollapsed && (
+                <div className="flex items-center gap-2 px-3 mb-1">
+                  <span className="text-[10px] font-semibold text-emerald-500/70 uppercase tracking-wider">
+                    Finance
+                  </span>
+                </div>
+              )}
+              {adminNavLinks
+                .filter((l) => l.section === "finance")
+                .map((link) => (
+                  <SidebarNavLink
+                    key={link.href}
+                    href={link.href}
+                    icon={link.icon}
+                    isCollapsed={isCollapsed}
+                    badge={link.badge}
+                  >
+                    {link.name}
+                  </SidebarNavLink>
+                ))}
+            </div>
+            {!isCollapsed && (
+              <div className="h-px bg-white/10 dark:bg-black/10 mx-3 my-1" />
+            )}
+          </>
+        )}
+
         <div className="mb-1">
           {!isCollapsed && (
             <span className="text-[10px] font-semibold text-white/40 dark:text-black/40 uppercase tracking-wider px-3">
@@ -274,11 +306,11 @@ export function Sidebar({
         <div className="mb-1">
           {!isCollapsed && (
             <span className="text-[10px] font-semibold text-green-500/70 uppercase tracking-wider px-3">
-              Support Ops
+              Support
             </span>
           )}
           {adminNavLinks
-            .filter((l) => l.section === "support_ops")
+            .filter((l) => l.section === "support")
             .map((link) => (
               <SidebarNavLink
                 key={link.href}
@@ -310,19 +342,18 @@ export function Sidebar({
   const bottomContent = (
     <div className="flex flex-col gap-1 w-full">
       {/* Wallet for regular users */}
-      {!(roleName === "super_admin" || isAdminPath) &&
-        !(roleName === "tester" || isTesterPath) && (
-          <SidebarNavLink
-            href="/wallet"
-            icon={Wallet}
-            isCollapsed={isCollapsed}
-          >
-            Wallet
-          </SidebarNavLink>
-        )}
+      {!isAdminRole && !isTesterRole && (
+        <SidebarNavLink
+          href="/wallet"
+          icon={Wallet}
+          isCollapsed={isCollapsed}
+        >
+          Wallet
+        </SidebarNavLink>
+      )}
 
       {/* Earnings for testers */}
-      {(roleName === "tester" || isTesterPath) && (
+      {isTesterRole && (
         <SidebarNavLink
           href="/tester/earnings"
           icon={DollarSign}
@@ -333,7 +364,7 @@ export function Sidebar({
       )}
 
       {/* Profile links based on role */}
-      {roleName === "super_admin" || isAdminPath ? (
+      {isAdminRole ? (
         <SidebarNavLink
           href="/admin/profile"
           icon={User}
@@ -341,7 +372,7 @@ export function Sidebar({
         >
           Profile
         </SidebarNavLink>
-      ) : roleName === "tester" || isTesterPath ? (
+      ) : isTesterRole ? (
         <SidebarNavLink
           href="/tester/settings"
           icon={User}
@@ -359,9 +390,9 @@ export function Sidebar({
 
   // Determine logo link based on role
   let logoHref = "/dashboard";
-  if (roleName === "super_admin" || isAdminPath) {
+  if (isAdminRole) {
     logoHref = "/admin/dashboard";
-  } else if (roleName === "tester" || isTesterPath) {
+  } else if (isTesterRole) {
     logoHref = "/tester/dashboard";
   }
 
@@ -374,7 +405,7 @@ export function Sidebar({
       className="bg-gradient-to-r from-primary to-primary/70 border-white/10" // Unified gradient style
       navContent={navContent}
       bottomContent={bottomContent}
-      showScrollIndicator={isAdminPath} // Admin sidebar has more links, might need scrolling
+      showScrollIndicator={isAdminRole} // Admin sidebar has more links, might need scrolling
     />
   );
 }

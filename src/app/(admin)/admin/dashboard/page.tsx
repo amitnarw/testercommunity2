@@ -248,7 +248,7 @@ export default function AdminDashboardPage() {
                             className="h-7 text-xs"
                             asChild
                           >
-                            <Link href={`/admin/submissions/${item.id}`}>
+                            <Link href={item.appType === "PAID" ? `/admin/submissions-paid/${item.id}` : `/admin/submissions-free/${item.id}`}>
                               Review
                             </Link>
                           </Button>
@@ -346,7 +346,7 @@ export default function AdminDashboardPage() {
                       asChild
                       className="flex-shrink-0"
                     >
-                      <Link href={`/admin/submissions/${submission.id}`}>
+                      <Link href={`/admin/submissions-paid/${submission.id}`}>
                         <Eye className="h-4 w-4" />
                       </Link>
                     </Button>
@@ -440,7 +440,7 @@ export default function AdminDashboardPage() {
                       asChild
                       className="flex-shrink-0"
                     >
-                      <Link href={`/admin/submissions/${submission.id}`}>
+                      <Link href={`/admin/submissions-free/${submission.id}`}>
                         <Eye className="h-4 w-4" />
                       </Link>
                     </Button>

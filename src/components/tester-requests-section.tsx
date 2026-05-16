@@ -572,9 +572,19 @@ export function TesterRequestsSection({
                       className="group border-b transition-colors hover:bg-muted/50 data-[state=selected]:bg-muted"
                     >
                       <TableCell className="py-4">
-                        <span className="font-semibold text-sm">
-                          {req.tester?.name || "Unknown"}
-                        </span>
+                        <div className="flex items-center gap-1.5">
+                          <span className="font-semibold text-sm">
+                            {req.tester?.name || "Unknown"}
+                          </span>
+                          {(req as any).assignmentSource === "ADMIN_ASSIGNED" && (
+                            <Badge
+                              variant="outline"
+                              className="text-[9px] h-4 px-1 bg-purple-500/10 text-purple-600 border-purple-500/20 dark:text-purple-400"
+                            >
+                              Platform
+                            </Badge>
+                          )}
+                        </div>
                       </TableCell>
                       <TableCell>
                         <Badge
@@ -674,6 +684,14 @@ export function TesterRequestsSection({
                       <span className="font-semibold text-sm">
                         {req.tester?.name || "Unknown"}
                       </span>
+                      {(req as any).assignmentSource === "ADMIN_ASSIGNED" && (
+                        <Badge
+                          variant="outline"
+                          className="text-[9px] h-4 px-1 bg-purple-500/10 text-purple-600 border-purple-500/20 dark:text-purple-400"
+                        >
+                          Platform
+                        </Badge>
+                      )}
                     </div>
                     <Badge
                       variant="outline"

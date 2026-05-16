@@ -16,6 +16,13 @@ import {
   Wallet,
   Settings,
   Users2,
+  User,
+  Star,
+  BookOpen,
+  Terminal,
+  Ticket,
+  Headphones,
+  Landmark,
 } from "lucide-react";
 import { Button } from "./ui/button";
 import {
@@ -49,7 +56,7 @@ const proNavItems = [
   { name: "Support", href: "/support", icon: LifeBuoy },
 ];
 
-// Compact admin nav items for mobile
+// Compact admin nav items for mobile (mirrors sidebar)
 const adminNavItems = [
   // Overview
   {
@@ -77,6 +84,15 @@ const adminNavItems = [
     badge: "FREE",
   },
 
+  // Finance (super_admin only)
+  {
+    name: "Finance",
+    href: "/admin/finance",
+    icon: Landmark,
+    section: "finance",
+    superAdminOnly: true,
+  },
+
   // Platform
   { name: "Users", href: "/admin/users", icon: Users, section: "platform" },
   {
@@ -96,6 +112,44 @@ const adminNavItems = [
     href: "/admin/notifications",
     icon: Bell,
     section: "platform",
+  },
+  {
+    name: "Promo Codes",
+    href: "/admin/promo-codes",
+    icon: Ticket,
+    section: "platform",
+  },
+  {
+    name: "Reviews",
+    href: "/admin/reviews",
+    icon: Star,
+    section: "platform",
+  },
+  {
+    name: "User Reviews",
+    href: "/admin/user-reviews",
+    icon: MessageSquare,
+    section: "platform",
+  },
+  {
+    name: "Blog Management",
+    href: "/admin/blog-management",
+    icon: BookOpen,
+    section: "platform",
+  },
+  {
+    name: "System Logs",
+    href: "/admin/logs",
+    icon: Terminal,
+    section: "platform",
+  },
+
+  // Support
+  {
+    name: "Support",
+    href: "/admin/support",
+    icon: Headphones,
+    section: "support",
   },
 ];
 
@@ -123,16 +177,24 @@ export default function MobileMenu({
   let isAdmin = false;
   let showWallet = true;
 
-  if (roleName === "super_admin" || pathname.startsWith("/admin")) {
+  const isAdminRole = [
+    "admin",
+    "super_admin",
+    "super admin",
+    "moderator",
+    "support",
+  ].includes(roleName);
+
+  if (isAdminRole) {
     navItems = adminNavItems;
     notificationHref = "/admin/notifications";
     walletHref = "/wallet";
     isAdmin = true;
-    showWallet = false; // Don't show wallet in admin
-  } else if (roleName === "tester" || pathname.startsWith("/tester")) {
+    showWallet = false;
+  } else if (roleName === "tester" || roleName === "super_admin") {
     navItems = proNavItems;
     notificationHref = "/tester/notifications";
-    walletHref = "/tester/wallet";
+    walletHref = "/tester/earnings";
   }
 
   const publicNavItems = [
@@ -153,8 +215,14 @@ export default function MobileMenu({
         ),
         paid: displayItems.filter((item: any) => item.section === "paid"),
         free: displayItems.filter((item: any) => item.section === "free"),
+        finance: roleName === "super_admin"
+          ? displayItems.filter((item: any) => item.section === "finance")
+          : [],
         platform: displayItems.filter(
           (item: any) => item.section === "platform",
+        ),
+        support: displayItems.filter(
+          (item: any) => item.section === "support",
         ),
       }
     : null;
@@ -295,6 +363,32 @@ export default function MobileMenu({
                 {/* Divider */}
                 <div className="h-px bg-border mx-3 my-1" />
 
+                {/* Finance Section (super_admin only) */}
+                {groupedAdminItems.finance.length > 0 && (
+                  <>
+                    <div className="space-y-0.5">
+                      <span className="text-[10px] font-semibold text-emerald-500 uppercase tracking-wider px-3">
+                        Finance
+                      </span>
+                      {groupedAdminItems.finance.map((item: any) => (
+                        <TransitionLink
+                          key={item.name}
+                          href={item.href}
+                          onClick={() => setIsMenuOpen(false)}
+                          className={cn(
+                            "flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors hover:bg-emerald-500/10",
+                            "text-foreground",
+                          )}
+                        >
+                          {item.icon && <item.icon className="h-4 w-4 text-emerald-500" />}
+                          {item.name}
+                        </TransitionLink>
+                      ))}
+                    </div>
+                    <div className="h-px bg-border mx-3 my-1" />
+                  </>
+                )}
+
                 {/* Platform Section */}
                 <div className="space-y-0.5">
                   <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider px-3">
@@ -317,6 +411,32 @@ export default function MobileMenu({
                     </TransitionLink>
                   ))}
                 </div>
+
+                {/* Divider */}
+                <div className="h-px bg-border mx-3 my-1" />
+
+                {/* Support Section */}
+                {groupedAdminItems.support.length > 0 && (
+                  <div className="space-y-0.5">
+                    <span className="text-[10px] font-semibold text-green-500 uppercase tracking-wider px-3">
+                      Support
+                    </span>
+                    {groupedAdminItems.support.map((item: any) => (
+                      <TransitionLink
+                        key={item.name}
+                        href={item.href}
+                        onClick={() => setIsMenuOpen(false)}
+                        className={cn(
+                          "flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors hover:bg-green-500/10",
+                          "text-foreground",
+                        )}
+                      >
+                        {item.icon && <item.icon className="h-4 w-4 text-green-500" />}
+                        {item.name}
+                      </TransitionLink>
+                    ))}
+                  </div>
+                )}
               </nav>
             ) : (
               // Regular menu (non-admin)
@@ -348,7 +468,7 @@ export default function MobileMenu({
                   onClick={() => setIsMenuOpen(false)}
                   className="border h-8"
                 >
-                  <TransitionLink href="/settings">
+                  <TransitionLink href={isAdminRole ? "/admin/profile" : roleName === "tester" ? "/tester/settings" : "/settings"}>
                     <Settings className="h-4 w-4" />
                     <span className="sr-only">Settings</span>
                   </TransitionLink>
@@ -359,7 +479,7 @@ export default function MobileMenu({
                   onClick={() => setIsMenuOpen(false)}
                   className="border h-8"
                 >
-                  <TransitionLink href="/profile">Profile</TransitionLink>
+                  <TransitionLink href={isAdminRole ? "/admin/profile" : roleName === "tester" ? "/tester/settings" : "/profile"}>Profile</TransitionLink>
                 </Button>
                 <Button
                   variant="ghost"

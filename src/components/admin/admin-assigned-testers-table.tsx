@@ -88,17 +88,21 @@ export function AdminAssignedTestersTable({
     (r) => r.status && r.status !== "PENDING" && r.status !== "REJECTED",
   );
 
+  const hasAdminAssigned = activeTesters?.some(
+    (r) => r.assignmentSource === "ADMIN_ASSIGNED",
+  );
+
   return (
     <section className="space-y-6 bg-card rounded-2xl p-3 sm:p-6 pt-2 sm:pt-8 w-full mt-10 shadow-sm">
       <div className="flex flex-col sm:flex-row items-center justify-between gap-4 relative">
         <div className="space-y-1">
           <h2 className="text-xl sm:text-2xl font-bold">
-            {appType === "PAID" ? "Managed Testers" : "Independent Testers"}
+            {appType === "PAID" ? "Managed Testers" : "Community Testers"}
           </h2>
           <p className="text-sm sm:text-base text-muted-foreground max-w-2xl">
             {appType === "PAID"
               ? "These testers are manually assigned by the platform admin. You control exactly who participates in this project."
-              : "In free testing, testers join independently. The app owner reviews each request and decides whom to approve or reject."}
+              : "Testers participate in this app. Some may be platform-assigned by the admin."}
           </p>
         </div>
         <div className="absolute top-0 right-0">
@@ -145,9 +149,19 @@ export function AdminAssignedTestersTable({
                         </AvatarFallback>
                       </Avatar>
                       <div className="flex flex-col">
-                        <span className="font-semibold text-sm">
-                          {req.tester?.name || "Unknown"}
-                        </span>
+                        <div className="flex items-center gap-1.5">
+                          <span className="font-semibold text-sm">
+                            {req.tester?.name || "Unknown"}
+                          </span>
+                          {req.assignmentSource === "ADMIN_ASSIGNED" && (
+                            <Badge
+                              variant="outline"
+                              className="text-[9px] h-4 px-1 bg-purple-500/10 text-purple-600 border-purple-500/20 dark:text-purple-400"
+                            >
+                              Platform
+                            </Badge>
+                          )}
+                        </div>
                         <span className="text-xs text-muted-foreground">
                           {req.tester?.email}
                         </span>

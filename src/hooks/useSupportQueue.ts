@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import { connectSupportSocket } from "@/lib/supportSocket";
 
 interface PendingChat {
@@ -19,6 +19,7 @@ export function useSupportQueue() {
   const [activeChats, setActiveChats] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [agentOnline, setAgentOnline] = useState(false);
+  const initRef = useRef(false);
 
   const goOnline = useCallback(() => {
     const socket = connectSupportSocket();
@@ -47,31 +48,45 @@ export function useSupportQueue() {
     socket.emit("agent:close_chat", { chatId });
   }, []);
 
+  const fetchInitialState = useCallback(async () => {
+    try {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL || ""}/api/admin/support/stats`, {
+        credentials: "include",
+      });
+      const data = await res.json();
+      if (data?.data) {
+        setAgentOnline(data.data.onlineAgents > 0);
+      }
+    } catch {}
+  }, []);
+
   useEffect(() => {
+    if (initRef.current) return;
+    initRef.current = true;
+
     const socket = connectSupportSocket();
 
     const handleQueue = (data: PendingChat[]) => {
       setQueue(data);
       setLoading(false);
-      setAgentOnline(true);
     };
 
     const handleActiveChats = (data: any[]) => {
       setActiveChats(data);
       setLoading(false);
-      setAgentOnline(true);
     };
 
     const handleQueueUpdated = () => {
-      socket.emit("agent:online");
+      const s = connectSupportSocket();
+      s.emit("agent:online");
     };
 
     const handleChatTaken = (data: { chatId: number }) => {
       setQueue((prev) => prev.filter((c) => c.id !== data.chatId));
     };
 
-    const handleConnect = () => {
-      socket.emit("agent:online");
+    const handleConnect = async () => {
+      fetchInitialState();
     };
 
     socket.on("agent:queue", handleQueue);
@@ -81,7 +96,7 @@ export function useSupportQueue() {
     socket.on("connect", handleConnect);
 
     if (socket.connected) {
-      socket.emit("agent:online");
+      fetchInitialState();
     }
 
     return () => {
@@ -91,7 +106,7 @@ export function useSupportQueue() {
       socket.off("agent:chat_taken", handleChatTaken);
       socket.off("connect", handleConnect);
     };
-  }, []);
+  }, [fetchInitialState]);
 
   return {
     queue,

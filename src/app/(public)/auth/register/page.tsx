@@ -51,6 +51,12 @@ export default function RegisterPage() {
   const form = useForm({
     resolver: zodResolver(signupSchema),
     mode: "onChange",
+    defaultValues: {
+      firstName: "",
+      lastName: "",
+      email: "",
+      password: "",
+    },
   });
 
   const { handleSubmit } = form;
@@ -162,7 +168,7 @@ export default function RegisterPage() {
                         <FormItem>
                           <FormLabel>First Name</FormLabel>
                           <FormControl>
-                            <Input placeholder="John" {...field} />
+                            <Input placeholder="John" {...field} value={field.value ?? ""} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -175,7 +181,7 @@ export default function RegisterPage() {
                         <FormItem>
                           <FormLabel>Last Name</FormLabel>
                           <FormControl>
-                            <Input placeholder="Doe" {...field} />
+                            <Input placeholder="Doe" {...field} value={field.value ?? ""} />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -189,7 +195,7 @@ export default function RegisterPage() {
                       <FormItem>
                         <FormLabel>Email</FormLabel>
                         <FormControl>
-                          <Input placeholder="you@example.com" {...field} />
+                          <Input placeholder="you@example.com" {...field} value={field.value ?? ""} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -207,6 +213,7 @@ export default function RegisterPage() {
                               {...field}
                               type={showPassword ? "text" : "password"}
                               placeholder="Enter your password"
+                              value={field.value ?? ""}
                             />
                           </FormControl>
                           <Button

@@ -55,6 +55,19 @@ import {
   getUserReviewById,
   updateUserReviewStatus,
   deleteUserReview,
+  getFinanceDashboard,
+  getFinanceOrders,
+  getFinancePayments,
+  getFinanceInvoices,
+  getFinanceRefunds,
+  getFinanceWithdrawals,
+  approveWithdrawal,
+  rejectWithdrawal,
+  getFinancePricing,
+  updateFinancePricing,
+  getUserWalletDetail,
+  getFinancePlans,
+  getFinancePaymentMethods,
 } from "@/lib/apiCallsAdmin";
 import { useRouter } from "next/navigation";
 import { useState, useEffect, useCallback } from "react";
@@ -839,4 +852,122 @@ export function useActAsRole(options?: UseMutationOptions<any, any, any>) {
     stopActingAs,
     isLoading: mutation.isPending,
   };
+}
+
+// ==================== FINANCE HOOKS ====================
+
+export function useFinanceDashboard() {
+  return useQuery({
+    queryFn: () => getFinanceDashboard(),
+    queryKey: ["useFinanceDashboard"],
+  });
+}
+
+export function useFinanceOrders(params?: {
+  page?: number;
+  limit?: number;
+  status?: string;
+  search?: string;
+}) {
+  return useQuery({
+    queryFn: () => getFinanceOrders(params),
+    queryKey: ["useFinanceOrders", params],
+  });
+}
+
+export function useFinancePayments(params?: {
+  page?: number;
+  limit?: number;
+  status?: string;
+  method?: string;
+  search?: string;
+}) {
+  return useQuery({
+    queryFn: () => getFinancePayments(params),
+    queryKey: ["useFinancePayments", params],
+  });
+}
+
+export function useFinanceInvoices(params?: {
+  page?: number;
+  limit?: number;
+  search?: string;
+}) {
+  return useQuery({
+    queryFn: () => getFinanceInvoices(params),
+    queryKey: ["useFinanceInvoices", params],
+  });
+}
+
+export function useFinanceRefunds(params?: {
+  page?: number;
+  limit?: number;
+  status?: string;
+}) {
+  return useQuery({
+    queryFn: () => getFinanceRefunds(params),
+    queryKey: ["useFinanceRefunds", params],
+  });
+}
+
+export function useFinanceWithdrawals(params?: {
+  page?: number;
+  limit?: number;
+  status?: string;
+  search?: string;
+}) {
+  return useQuery({
+    queryFn: () => getFinanceWithdrawals(params),
+    queryKey: ["useFinanceWithdrawals", params],
+  });
+}
+
+export function useApproveWithdrawal(options?: UseMutationOptions<any, any, number>) {
+  return useMutation({
+    mutationFn: (id: number) => approveWithdrawal(id),
+    ...options,
+  });
+}
+
+export function useRejectWithdrawal(options?: UseMutationOptions<any, any, { id: number; note?: string }>) {
+  return useMutation({
+    mutationFn: ({ id, note }) => rejectWithdrawal(id, note),
+    ...options,
+  });
+}
+
+export function useFinancePricing() {
+  return useQuery({
+    queryFn: () => getFinancePricing(),
+    queryKey: ["useFinancePricing"],
+  });
+}
+
+export function useUpdateFinancePricing(options?: UseMutationOptions<any, any, { id: number; payload: any }>) {
+  return useMutation({
+    mutationFn: ({ id, payload }) => updateFinancePricing(id, payload),
+    ...options,
+  });
+}
+
+export function useUserWalletDetail(userId: string | null) {
+  return useQuery({
+    queryFn: () => getUserWalletDetail(userId!),
+    queryKey: ["useUserWalletDetail", userId],
+    enabled: !!userId,
+  });
+}
+
+export function useFinancePlans() {
+  return useQuery({
+    queryFn: () => getFinancePlans(),
+    queryKey: ["useFinancePlans"],
+  });
+}
+
+export function useFinancePaymentMethods() {
+  return useQuery({
+    queryFn: () => getFinancePaymentMethods(),
+    queryKey: ["useFinancePaymentMethods"],
+  });
 }

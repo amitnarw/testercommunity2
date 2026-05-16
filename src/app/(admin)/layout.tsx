@@ -25,24 +25,24 @@ export default function AdminLayout({
     if (isPending) return;
 
     if (session) {
-      if (isLoginPage) {
-        // Robust role detection from session user
-        const user = session.user as any;
-        const roleField = user?.role;
-        const roleName =
-          typeof roleField === "string" ? roleField : roleField?.name;
-        const lowerRole = roleName?.toLowerCase() || "";
-        const isAdminRole = [
-          "admin",
-          "super_admin",
-          "super admin",
-          "moderator",
-          "support",
-        ].includes(lowerRole);
+      const roleField = (session as any)?.role;
+      const roleName =
+        typeof roleField === "string" ? roleField : roleField?.name;
+      const lowerRole = roleName?.toLowerCase() || "";
+      const isAdminRole = [
+        "admin",
+        "super_admin",
+        "super admin",
+        "moderator",
+        "support",
+      ].includes(lowerRole);
 
+      if (isLoginPage) {
         if (isAdminRole) {
           router.replace(ROUTES.ADMIN.DASHBOARD);
         }
+      } else if (!isAdminRole) {
+        router.replace(ROUTES.ADMIN.AUTH.LOGIN);
       }
       return;
     }

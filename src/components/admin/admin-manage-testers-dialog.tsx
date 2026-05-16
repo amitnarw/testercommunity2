@@ -173,7 +173,6 @@ export function AdminManageTestersDialog({
         <div className="bg-primary/5 px-4 py-4 sm:p-6 border-b border-primary/10 shrink-0">
           <DialogHeader>
             <DialogTitle className="text-primary flex items-center gap-2 text-base sm:text-lg">
-              <Users className="w-4 h-4 sm:w-5 sm:h-5" />
               Manage Testers
             </DialogTitle>
             <DialogDescription className="text-xs sm:text-sm">

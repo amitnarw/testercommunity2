@@ -807,11 +807,16 @@ export async function getHubApps(
 
 export async function getTesterProjects(
   status?: string,
+  appType?: string,
 ): Promise<TesterProjectResponse[]> {
   try {
-    const params = status ? `?status=${status}` : "";
+    const params = new URLSearchParams();
+    if (status) params.set("status", status);
+    if (appType) params.set("appType", appType);
+    const queryString = params.toString();
+    const query = queryString ? `?${queryString}` : "";
     const response = await api.get(
-      API_ROUTES.TESTER + `/get-projects${params}`,
+      API_ROUTES.TESTER + `/get-projects${query}`,
     );
     return response?.data?.data;
   } catch (error) {
@@ -2262,5 +2267,73 @@ export const getHumanChatQueue = async () => {
   } catch (error) {
     console.error("Error fetching queue:", error);
     return [];
+  }
+};
+
+// ==========================================
+// NEW CONVERSATION API CALLS
+// ==========================================
+
+export const getAdminConversations = async (params?: { type?: string; status?: string }) => {
+  try {
+    const searchParams = new URLSearchParams();
+    if (params?.type) searchParams.set("type", params.type);
+    if (params?.status) searchParams.set("status", params.status);
+    const qs = searchParams.toString();
+    const response = await api.get(API_ROUTES.ADMIN + `/support/conversations${qs ? `?${qs}` : ""}`);
+    return response?.data?.data || [];
+  } catch (error) {
+    console.error("Error fetching conversations:", error);
+    return [];
+  }
+};
+
+export const getAdminConversationById = async (id: number) => {
+  try {
+    const response = await api.get(API_ROUTES.ADMIN + `/support/conversations/${id}`);
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error fetching conversation:", error);
+    return null;
+  }
+};
+
+export const assignConversation = async (id: number) => {
+  try {
+    const response = await api.post(API_ROUTES.ADMIN + `/support/conversations/${id}/assign`, {});
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error assigning conversation:", error);
+    throw error;
+  }
+};
+
+export const closeConversation = async (id: number) => {
+  try {
+    const response = await api.post(API_ROUTES.ADMIN + `/support/conversations/${id}/close`, {});
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error closing conversation:", error);
+    throw error;
+  }
+};
+
+export const getAgentStatuses = async () => {
+  try {
+    const response = await api.get(API_ROUTES.ADMIN + "/support/agent-statuses");
+    return response?.data?.data || [];
+  } catch (error) {
+    console.error("Error fetching agent statuses:", error);
+    return [];
+  }
+};
+
+export const setMyStatus = async (status: "ONLINE" | "AWAY" | "OFFLINE") => {
+  try {
+    const response = await api.post(API_ROUTES.ADMIN + "/support/agents/status", { status });
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error setting agent status:", error);
+    throw error;
   }
 };

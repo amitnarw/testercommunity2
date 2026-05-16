@@ -237,7 +237,7 @@ export function SubmissionForm({
       instruction_for_tester: initialData?.instruction_for_tester || "",
       total_tester: initialData?.total_tester || 10,
       total_days: initialData?.total_days || 14,
-      minimum_android_version: initialData?.minimum_android_version || undefined,
+      minimum_android_version: initialData?.minimum_android_version ?? undefined,
     },
   });
 
@@ -768,7 +768,7 @@ export function SubmissionForm({
                     render={({ field }) => (
                       <FormItem>
                         <Label htmlFor="app_url">Google Play Testing Link</Label>
-                        <FormControl><Input id="app_url" placeholder="https://play.google.com/store/apps/details?id=..." {...field} className="py-0" /></FormControl>
+                        <FormControl><Input id="app_url" placeholder="https://play.google.com/store/apps/details?id=..." {...field} value={field.value ?? ""} className="py-0" /></FormControl>
                         <FormMessage />
                       </FormItem>
                     )}
@@ -779,7 +779,7 @@ export function SubmissionForm({
                     render={({ field }) => (
                       <FormItem>
                         <Label htmlFor="app_name">App Name</Label>
-                        <FormControl><Input id="app_name" placeholder="e.g., PhotoSnap Editor" {...field} className="py-0" /></FormControl>
+                        <FormControl><Input id="app_name" placeholder="e.g., PhotoSnap Editor" {...field} value={field.value ?? ""} className="py-0" /></FormControl>
                         <FormMessage />
                       </FormItem>
                     )}
@@ -790,7 +790,7 @@ export function SubmissionForm({
                     render={({ field }) => (
                       <FormItem>
                         <Label htmlFor="app_logo_url">App Logo URL</Label>
-                        <FormControl><Input id="app_logo_url" placeholder="https://play-lh.googleusercontent.com/..." {...field} className="py-0" /></FormControl>
+                        <FormControl><Input id="app_logo_url" placeholder="https://play-lh.googleusercontent.com/..." {...field} value={field.value ?? ""} className="py-0" /></FormControl>
                         <FormMessage />
                       </FormItem>
                     )}
@@ -801,7 +801,7 @@ export function SubmissionForm({
                     render={({ field }) => (
                       <FormItem>
                         <Label htmlFor="app_screenshot_url_1">Screenshot 1 URL</Label>
-                        <FormControl><Input id="app_screenshot_url_1" placeholder="https://play-lh.googleusercontent.com/..." {...field} className="py-0" /></FormControl>
+                        <FormControl><Input id="app_screenshot_url_1" placeholder="https://play-lh.googleusercontent.com/..." {...field} value={field.value ?? ""} className="py-0" /></FormControl>
                         <FormMessage />
                       </FormItem>
                     )}
@@ -812,7 +812,7 @@ export function SubmissionForm({
                     render={({ field }) => (
                       <FormItem>
                         <Label htmlFor="app_screenshot_url_2">Screenshot 2 URL</Label>
-                        <FormControl><Input id="app_screenshot_url_2" placeholder="https://play-lh.googleusercontent.com/..." {...field} className="py-0" /></FormControl>
+                        <FormControl><Input id="app_screenshot_url_2" placeholder="https://play-lh.googleusercontent.com/..." {...field} value={field.value ?? ""} className="py-0" /></FormControl>
                         <FormMessage />
                       </FormItem>
                     )}
@@ -853,7 +853,7 @@ export function SubmissionForm({
                     render={({ field }) => (
                       <FormItem>
                         <Label htmlFor="app_description">App Description</Label>
-                        <FormControl><Textarea id="app_description" placeholder="Briefly describe what your app does." className="min-h-[120px]" {...field} /></FormControl>
+                        <FormControl><Textarea id="app_description" placeholder="Briefly describe what your app does." className="min-h-[120px]" {...field} value={field.value ?? ""} /></FormControl>
                         <FormMessage />
                       </FormItem>
                     )}
@@ -864,7 +864,7 @@ export function SubmissionForm({
                     render={({ field }) => (
                       <FormItem>
                         <Label htmlFor="instruction_for_tester">Instructions for Testers <span className="text-muted-foreground ml-1">(Optional)</span></Label>
-                        <FormControl><Textarea id="instruction_for_tester" placeholder="Any specific areas you want testers to focus on?" className="min-h-[120px]" {...field} /></FormControl>
+                        <FormControl><Textarea id="instruction_for_tester" placeholder="Any specific areas you want testers to focus on?" className="min-h-[120px]" {...field} value={field.value ?? ""} /></FormControl>
                         <FormMessage />
                       </FormItem>
                     )}

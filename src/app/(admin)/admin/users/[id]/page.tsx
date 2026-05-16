@@ -437,10 +437,11 @@ export default function AdminUserDetailsPage() {
           </div>
         </div>
 
-        {/* TOP ROW: Profile Card + Stats */}
+        {/* SUMMARY CARDS */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-10">
+          {/* Profile Card */}
           <div className="lg:col-span-1">
-            <Card>
+            <Card className="border-l-4 border-l-slate-500">
               <CardContent className="pt-6 flex flex-col items-center text-center">
                 <div className="relative">
                   <Avatar className="h-24 w-24 mb-4 border border-border">
@@ -488,72 +489,135 @@ export default function AdminUserDetailsPage() {
               </CardContent>
             </Card>
           </div>
+
+          {/* Economy Summary Card */}
           <div className="lg:col-span-2">
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-              <Card className="p-4">
-                <div className="flex items-center gap-2 text-muted-foreground mb-1">
-                  <CheckCircle className="w-4 h-4 text-green-500" />
-                  <span className="text-xs">Total Tests</span>
+            <Card className="border-l-4 border-l-emerald-500 h-full">
+              <CardHeader className="pb-3">
+                <CardTitle className="text-sm font-semibold flex items-center gap-2">
+                  <Wallet className="w-4 h-4 text-emerald-500" /> Account Economy
+                </CardTitle>
+                <CardDescription>
+                  Current wallet balances and lifetime transaction history for this user.
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div>
+                  <h4 className="text-xs font-semibold text-muted-foreground tracking-wide mb-3 uppercase">
+                    Current Balances
+                  </h4>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-1.5">
+                      <p className="text-xs text-muted-foreground">Total Points</p>
+                      <p className="text-2xl font-bold">{user.wallet?.totalPoints || 0}</p>
+                    </div>
+                    <div className="space-y-1.5">
+                      <p className="text-xs text-muted-foreground">Total Packages</p>
+                      <p className="text-2xl font-bold">{user.wallet?.totalPackages || 0}</p>
+                    </div>
+                  </div>
                 </div>
-                <p className="text-2xl font-bold">
-                  {user.stats?.totalTests || 0}
-                </p>
-              </Card>
-              {isTester && (
-                <Card className="p-4">
-                  <div className="flex items-center gap-2 text-muted-foreground mb-1">
-                    <Activity className="w-4 h-4 text-blue-500" />
-                    <span className="text-xs">Active</span>
+                <Separator />
+                <div>
+                  <h4 className="text-xs font-semibold text-muted-foreground tracking-wide mb-3 uppercase">
+                    Lifetime History
+                  </h4>
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                    <div className="space-y-1.5">
+                      <p className="text-xs text-muted-foreground">Points Earned</p>
+                      <p className="text-lg font-bold text-green-600 dark:text-green-400">
+                        {user.walletStats?.pointsEarned || 0}
+                      </p>
+                    </div>
+                    <div className="space-y-1.5">
+                      <p className="text-xs text-muted-foreground">Points Spent</p>
+                      <p className="text-lg font-bold text-red-600 dark:text-red-400">
+                        {user.walletStats?.pointsSpent || 0}
+                      </p>
+                    </div>
+                    <div className="space-y-1.5">
+                      <p className="text-xs text-muted-foreground">Packages Purchased</p>
+                      <p className="text-lg font-bold text-blue-600 dark:text-blue-400">
+                        {user.walletStats?.packagesPurchased || 0}
+                      </p>
+                    </div>
+                    <div className="space-y-1.5">
+                      <p className="text-xs text-muted-foreground">Packages Used</p>
+                      <p className="text-lg font-bold text-orange-600 dark:text-orange-400">
+                        {user.walletStats?.packagesUsed || 0}
+                      </p>
+                    </div>
                   </div>
-                  <p className="text-2xl font-bold">
-                    {user.stats?.activeTests || 0}
-                  </p>
-                </Card>
-              )}
-              {isTester && (
-                <Card className="p-4">
-                  <div className="flex items-center gap-2 text-muted-foreground mb-1">
-                    <CheckCircle className="w-4 h-4 text-green-500" />
-                    <span className="text-xs">Completed</span>
-                  </div>
-                  <p className="text-2xl font-bold">
-                    {user.stats?.completedTests || 0}
-                  </p>
-                </Card>
-              )}
-              <Card className="p-4">
-                <div className="flex items-center gap-2 text-muted-foreground mb-1">
-                  <Lightbulb className="w-4 h-4 text-yellow-500" />
-                  <span className="text-xs">Feedbacks</span>
                 </div>
-                <p className="text-2xl font-bold">
-                  {user.stats?.totalFeedbacks || 0}
-                </p>
-              </Card>
-              {!isTester && (
-                <Card className="p-4">
-                  <div className="flex items-center gap-2 text-muted-foreground mb-1">
-                    <Bug className="w-4 h-4 text-red-500" />
-                    <span className="text-xs">Submissions</span>
-                  </div>
-                  <p className="text-2xl font-bold">
-                    {user.stats?.totalSubmissions || 0}
-                  </p>
-                </Card>
-              )}
-              {isTester && (
-                <Card className="p-4">
-                  <div className="flex items-center gap-2 text-muted-foreground mb-1">
-                    <XCircle className="w-4 h-4 text-red-500" />
-                    <span className="text-xs">Dropped</span>
-                  </div>
-                  <p className="text-2xl font-bold">
-                    {user.stats?.droppedTests || 0}
-                  </p>
-                </Card>
-              )}
-            </div>
+              </CardContent>
+            </Card>
           </div>
+        </div>
+
+        {/* Activity Summary Card */}
+        <div className="mt-8">
+          <Card className="border-l-4 border-l-blue-500">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-sm font-semibold flex items-center gap-2">
+                <Activity className="w-4 h-4 text-blue-500" /> Activity Summary
+              </CardTitle>
+              <CardDescription>
+                Testing participation and community contributions by this user.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div className="space-y-4">
+                  <h4 className="text-xs font-semibold text-muted-foreground tracking-wide uppercase">
+                    Testing Activity
+                  </h4>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-1.5">
+                      <p className="text-xs text-muted-foreground">Tests Participated In</p>
+                      <p className="text-2xl font-bold">{user.stats?.totalTests || 0}</p>
+                    </div>
+                    {isTester && (
+                      <>
+                        <div className="space-y-1.5">
+                          <p className="text-xs text-muted-foreground">Active Tests</p>
+                          <p className="text-2xl font-bold text-blue-600 dark:text-blue-400">
+                            {user.stats?.activeTests || 0}
+                          </p>
+                        </div>
+                        <div className="space-y-1.5">
+                          <p className="text-xs text-muted-foreground">Completed Tests</p>
+                          <p className="text-2xl font-bold text-green-600 dark:text-green-400">
+                            {user.stats?.completedTests || 0}
+                          </p>
+                        </div>
+                        <div className="space-y-1.5">
+                          <p className="text-xs text-muted-foreground">Dropped Tests</p>
+                          <p className="text-2xl font-bold text-red-600 dark:text-red-400">
+                            {user.stats?.droppedTests || 0}
+                          </p>
+                        </div>
+                      </>
+                    )}
+                  </div>
+                </div>
+                <div className="space-y-4">
+                  <h4 className="text-xs font-semibold text-muted-foreground tracking-wide uppercase">
+                    Community Activity
+                  </h4>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div className="space-y-1.5">
+                      <p className="text-xs text-muted-foreground">Feedback Reports Submitted</p>
+                      <p className="text-2xl font-bold">{user.stats?.totalFeedbacks || 0}</p>
+                    </div>
+                    <div className="space-y-1.5">
+                      <p className="text-xs text-muted-foreground">Apps Submitted for Testing</p>
+                      <p className="text-2xl font-bold">{user.stats?.totalSubmissions || 0}</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         </div>
 
         {/* MIDDLE: 2-Column Profile Detail Cards */}
@@ -626,12 +690,20 @@ export default function AdminUserDetailsPage() {
                     <Wallet className="w-4 h-4" /> Wallet
                   </CardTitle>
                 </CardHeader>
-                <CardContent>
-                  <div className="text-2xl font-bold">
-                    {user.wallet.balance || 0}{" "}
-                    <span className="text-sm font-normal text-muted-foreground">
-                      points
-                    </span>
+                <CardContent className="space-y-3 text-sm">
+                  <div className="flex items-center gap-3">
+                    <Wallet className="w-4 h-4 text-muted-foreground shrink-0" />
+                    <div>
+                      <p className="font-medium">{user.wallet.totalPoints || 0} points</p>
+                      <p className="text-xs text-muted-foreground">Available Points</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <Briefcase className="w-4 h-4 text-muted-foreground shrink-0" />
+                    <div>
+                      <p className="font-medium">{user.wallet.totalPackages || 0} packages</p>
+                      <p className="text-xs text-muted-foreground">Available Packages</p>
+                    </div>
                   </div>
                 </CardContent>
               </Card>

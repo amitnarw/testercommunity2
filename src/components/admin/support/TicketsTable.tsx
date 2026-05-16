@@ -6,6 +6,14 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import {
   Table,
   TableBody,
   TableCell,
@@ -16,102 +24,204 @@ import {
 import { format } from "date-fns";
 import API_ROUTES from "@/lib/apiRoutes";
 import api from "@/lib/axios";
+import { Eye, User, Bot, Headphones } from "lucide-react";
+import { cn } from "@/lib/utils";
 
-interface Ticket {
+interface Conversation {
   id: number;
-  userId: string | null;
-  subject: string;
-  description: string;
-  status: string;
+  type: "LIVE_CHAT" | "TICKET" | "AI_CHAT";
+  status: "OPEN" | "IN_PROGRESS" | "WAITING_AGENT" | "RESOLVED" | "CLOSED";
   category: string;
+  subject: string | null;
+  description: string | null;
+  userId: string | null;
+  assignedTo: string | null;
   createdAt: string;
-  user: { name: string; email: string } | null;
-  assignedUser: { name: string } | null;
+  user: { name: string; email: string; image: string | null } | null;
+  assignedAgent: { name: string; image: string | null } | null;
   _count: { messages: number };
 }
 
+interface Message {
+  id: number;
+  senderType: "USER" | "AGENT" | "AI" | "SYSTEM";
+  senderName: string;
+  content: string;
+  isAi: boolean;
+  createdAt: string;
+}
+
+interface ConversationDetail extends Conversation {
+  messages: Message[];
+}
+
 const statusColors: Record<string, string> = {
-  PENDING: "bg-amber-500/20 text-amber-600 dark:text-amber-400",
+  OPEN: "bg-amber-500/20 text-amber-600 dark:text-amber-400",
   IN_PROGRESS: "bg-blue-500/20 text-blue-600 dark:text-blue-400",
+  WAITING_AGENT: "bg-purple-500/20 text-purple-600 dark:text-purple-400",
   RESOLVED: "bg-green-500/20 text-green-600 dark:text-green-400",
   CLOSED: "bg-gray-500/20 text-gray-600 dark:text-gray-400",
 };
 
-export function TicketsTable() {
-  const [tickets, setTickets] = useState<Ticket[]>([]);
-  const [loading, setLoading] = useState(true);
+const typeColors: Record<string, string> = {
+  LIVE_CHAT: "bg-sky-500/20 text-sky-600 dark:text-sky-400",
+  TICKET: "bg-rose-500/20 text-rose-600 dark:text-rose-400",
+  AI_CHAT: "bg-violet-500/20 text-violet-600 dark:text-violet-400",
+};
 
-  useEffect(() => {
-    API_ROUTES;
+export function TicketsTable() {
+  const [conversations, setConversations] = useState<Conversation[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [selected, setSelected] = useState<ConversationDetail | null>(null);
+  const [detailLoading, setDetailLoading] = useState(false);
+
+  const fetch = () => {
+    setLoading(true);
     api
-      .get(API_ROUTES.ADMIN + "/support/human-chats")
-      .then((res) => setTickets(res.data?.data || []))
+      .get(API_ROUTES.ADMIN + "/support/conversations")
+      .then((res) => setConversations(res.data?.data || []))
       .catch(console.error)
       .finally(() => setLoading(false));
-  }, []);
+  };
+
+  useEffect(() => { fetch(); }, []);
+
+  const openDetail = async (id: number) => {
+    setDetailLoading(true);
+    setSelected(null);
+    try {
+      const res = await api.get(API_ROUTES.ADMIN + `/support/conversations/${id}`);
+      setSelected(res.data?.data || null);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setDetailLoading(false);
+    }
+  };
 
   return (
-    <Card className="border-border/50">
-      <CardContent className="p-0">
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Subject</TableHead>
-              <TableHead>User</TableHead>
-              <TableHead>Category</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead className="hidden md:table-cell">Agent</TableHead>
-              <TableHead className="hidden md:table-cell">Messages</TableHead>
-              <TableHead className="hidden md:table-cell">Date</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {loading ? (
-              Array.from({ length: 5 }).map((_, i) => (
-                <TableRow key={i}>
-                  {Array.from({ length: 6 }).map((_, j) => (
-                    <TableCell key={j}><Skeleton className="h-4 w-20" /></TableCell>
-                  ))}
-                </TableRow>
-              ))
-            ) : tickets.length === 0 ? (
+    <>
+      <Card className="border-border/50">
+        <CardContent className="p-0">
+          <Table>
+            <TableHeader>
               <TableRow>
-                <TableCell colSpan={7} className="text-center py-8 text-muted-foreground">
-                  No tickets found
-                </TableCell>
+                <TableHead>Type</TableHead>
+                <TableHead>Subject</TableHead>
+                <TableHead>User</TableHead>
+                <TableHead>Status</TableHead>
+                <TableHead className="hidden md:table-cell">Agent</TableHead>
+                <TableHead className="hidden md:table-cell">Messages</TableHead>
+                <TableHead className="hidden md:table-cell">Date</TableHead>
+                <TableHead></TableHead>
               </TableRow>
-            ) : (
-              tickets.map((ticket) => (
-                <TableRow key={ticket.id}>
-                  <TableCell className="font-medium text-sm max-w-[200px] truncate">
-                    {ticket.subject}
-                  </TableCell>
-                  <TableCell className="text-sm">{ticket.user?.name || "Anonymous"}</TableCell>
-                  <TableCell>
-                    <Badge variant="outline" className="text-xs">
-                      {ticket.category}
-                    </Badge>
-                  </TableCell>
-                  <TableCell>
-                    <Badge className={`text-xs ${statusColors[ticket.status] || ""}`}>
-                      {ticket.status.replace(/_/g, " ")}
-                    </Badge>
-                  </TableCell>
-                  <TableCell className="hidden md:table-cell text-sm">
-                    {ticket.assignedUser?.name || "-"}
-                  </TableCell>
-                  <TableCell className="hidden md:table-cell text-sm">
-                    {ticket._count.messages}
-                  </TableCell>
-                  <TableCell className="hidden md:table-cell text-xs text-muted-foreground">
-                    {format(new Date(ticket.createdAt), "MMM d, yyyy")}
+            </TableHeader>
+            <TableBody>
+              {loading ? (
+                Array.from({ length: 5 }).map((_, i) => (
+                  <TableRow key={i}>
+                    {Array.from({ length: 7 }).map((_, j) => (
+                      <TableCell key={j}><Skeleton className="h-4 w-20" /></TableCell>
+                    ))}
+                  </TableRow>
+                ))
+              ) : conversations.length === 0 ? (
+                <TableRow>
+                  <TableCell colSpan={8} className="text-center py-8 text-muted-foreground">
+                    No conversations found
                   </TableCell>
                 </TableRow>
-              ))
-            )}
-          </TableBody>
-        </Table>
-      </CardContent>
-    </Card>
+              ) : (
+                conversations.map((conv) => (
+                  <TableRow key={conv.id}>
+                    <TableCell>
+                      <Badge className={`text-xs ${typeColors[conv.type] || ""}`}>
+                        {conv.type.replace(/_/g, " ")}
+                      </Badge>
+                    </TableCell>
+                    <TableCell className="font-medium text-sm max-w-[200px] truncate">
+                      {conv.subject || "(No subject)"}
+                    </TableCell>
+                    <TableCell className="text-sm">{conv.user?.name || "Anonymous"}</TableCell>
+                    <TableCell>
+                      <Badge className={`text-xs ${statusColors[conv.status] || ""}`}>
+                        {conv.status.replace(/_/g, " ")}
+                      </Badge>
+                    </TableCell>
+                    <TableCell className="hidden md:table-cell text-sm">
+                      {conv.assignedAgent?.name || "-"}
+                    </TableCell>
+                    <TableCell className="hidden md:table-cell text-sm">
+                      {conv._count.messages}
+                    </TableCell>
+                    <TableCell className="hidden md:table-cell text-xs text-muted-foreground">
+                      {format(new Date(conv.createdAt), "MMM d, yyyy")}
+                    </TableCell>
+                    <TableCell>
+                      <Button variant="ghost" size="sm" onClick={() => openDetail(conv.id)}>
+                        <Eye className="h-3.5 w-3.5" />
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))
+              )}
+            </TableBody>
+          </Table>
+        </CardContent>
+      </Card>
+
+      <Dialog open={!!selected || detailLoading} onOpenChange={(open) => { if (!open) { setSelected(null); } }}>
+        <DialogContent className="max-w-2xl max-h-[80vh]">
+          <DialogHeader>
+            <DialogTitle>
+              {selected?.subject || "Conversation Details"}
+            </DialogTitle>
+            <DialogDescription>
+              {selected?.user?.name || "User"} &middot; {selected?.type?.replace(/_/g, " ")} &middot; {selected?.status?.replace(/_/g, " ")}
+            </DialogDescription>
+          </DialogHeader>
+          <ScrollArea className="max-h-[60vh]">
+            <div className="space-y-4 p-1">
+              {detailLoading ? (
+                <div className="space-y-2">
+                  <Skeleton className="h-12 w-full" />
+                  <Skeleton className="h-12 w-3/4" />
+                  <Skeleton className="h-12 w-full" />
+                </div>
+              ) : selected?.messages?.length ? (
+                selected.messages.map((msg) => (
+                  <div key={msg.id} className={cn("flex gap-3", msg.senderType === "USER" ? "flex-row-reverse" : "flex-row")}>
+                    <div className={cn(
+                      "h-8 w-8 rounded-full flex items-center justify-center flex-shrink-0 border",
+                      msg.senderType === "AGENT" ? "bg-primary/10 border-primary/20" :
+                      msg.senderType === "SYSTEM" ? "bg-muted border-dashed" : "bg-muted"
+                    )}>
+                      {msg.senderType === "AGENT" ? <Bot className="h-4 w-4 text-primary" /> :
+                       msg.senderType === "SYSTEM" ? <Headphones className="h-4 w-4 text-muted-foreground" /> :
+                       <User className="h-4 w-4 text-muted-foreground" />}
+                    </div>
+                    <div className={cn("flex flex-col max-w-[75%] gap-1", msg.senderType === "USER" ? "items-end" : "items-start")}>
+                      <div className={cn(
+                        "px-4 py-2.5 rounded-2xl text-sm leading-relaxed",
+                        msg.senderType === "USER" ? "bg-primary text-primary-foreground rounded-tr-none" :
+                        msg.senderType === "SYSTEM" ? "bg-muted/30 border border-dashed rounded-tl-none text-muted-foreground italic text-xs" :
+                        "bg-card border rounded-tl-none"
+                      )}>
+                        {msg.isAi ? <span className="italic opacity-70">[AI] {msg.content}</span> : msg.content}
+                      </div>
+                      <span className="text-[10px] text-muted-foreground">
+                        {format(new Date(msg.createdAt), "MMM d, h:mm a")}
+                      </span>
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <p className="text-sm text-muted-foreground">No messages in this conversation.</p>
+              )}
+            </div>
+          </ScrollArea>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 }
