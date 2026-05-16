@@ -165,7 +165,7 @@ export default function TicketDetailPage() {
                           </span>
                         </div>
                         <p className="text-muted-foreground leading-relaxed">
-                          {msg.message}
+                          {msg.content || msg.message}
                         </p>
                       </Card>
                     </motion.div>

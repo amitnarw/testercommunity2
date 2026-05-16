@@ -1257,3 +1257,167 @@ export async function deleteUserReview(id: number) {
     throw error;
   }
 }
+
+// ==================== FINANCE (Super Admin) ====================
+
+export async function getFinanceDashboard() {
+  try {
+    const response = await api.get(API_ROUTES.ADMIN + `/finance/dashboard`);
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error fetching finance dashboard:", error);
+    throw error;
+  }
+}
+
+export async function getFinanceOrders(params?: {
+  page?: number;
+  limit?: number;
+  status?: string;
+  search?: string;
+}) {
+  try {
+    const response = await api.get(API_ROUTES.ADMIN + `/finance/orders`, { params });
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error fetching finance orders:", error);
+    throw error;
+  }
+}
+
+export async function getFinancePayments(params?: {
+  page?: number;
+  limit?: number;
+  status?: string;
+  method?: string;
+  search?: string;
+}) {
+  try {
+    const response = await api.get(API_ROUTES.ADMIN + `/finance/payments`, { params });
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error fetching finance payments:", error);
+    throw error;
+  }
+}
+
+export async function getFinanceInvoices(params?: {
+  page?: number;
+  limit?: number;
+  search?: string;
+}) {
+  try {
+    const response = await api.get(API_ROUTES.ADMIN + `/finance/invoices`, { params });
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error fetching finance invoices:", error);
+    throw error;
+  }
+}
+
+export async function getFinanceRefunds(params?: {
+  page?: number;
+  limit?: number;
+  status?: string;
+}) {
+  try {
+    const response = await api.get(API_ROUTES.ADMIN + `/finance/refunds`, { params });
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error fetching finance refunds:", error);
+    throw error;
+  }
+}
+
+export async function getFinanceWithdrawals(params?: {
+  page?: number;
+  limit?: number;
+  status?: string;
+  search?: string;
+}) {
+  try {
+    const response = await api.get(API_ROUTES.ADMIN + `/finance/withdrawals`, { params });
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error fetching finance withdrawals:", error);
+    throw error;
+  }
+}
+
+export async function approveWithdrawal(id: number) {
+  try {
+    const response = await api.post(API_ROUTES.ADMIN + `/finance/withdrawals/${id}/approve`);
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error approving withdrawal:", error);
+    throw error;
+  }
+}
+
+export async function rejectWithdrawal(id: number, note?: string) {
+  try {
+    const response = await api.post(API_ROUTES.ADMIN + `/finance/withdrawals/${id}/reject`, {
+      payload: { note },
+    });
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error rejecting withdrawal:", error);
+    throw error;
+  }
+}
+
+export async function getFinancePricing() {
+  try {
+    const response = await api.get(API_ROUTES.ADMIN + `/finance/pricing`);
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error fetching finance pricing:", error);
+    throw error;
+  }
+}
+
+export async function updateFinancePricing(id: number, payload: {
+  amount?: number;
+  is_active?: boolean;
+  country_name?: string;
+  currency_code?: string;
+  currency_symbol?: string;
+}) {
+  try {
+    const response = await api.put(API_ROUTES.ADMIN + `/finance/pricing/${id}`, { payload });
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error updating finance pricing:", error);
+    throw error;
+  }
+}
+
+export async function getUserWalletDetail(userId: string) {
+  try {
+    const response = await api.get(API_ROUTES.ADMIN + `/finance/user/${userId}/wallet`);
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error fetching user wallet detail:", error);
+    throw error;
+  }
+}
+
+export async function getFinancePlans() {
+  try {
+    const response = await api.get(API_ROUTES.ADMIN + `/finance/plans`);
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error fetching finance plans:", error);
+    throw error;
+  }
+}
+
+export async function getFinancePaymentMethods() {
+  try {
+    const response = await api.get(API_ROUTES.ADMIN + `/finance/payment-methods`);
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error fetching finance payment methods:", error);
+    throw error;
+  }
+}

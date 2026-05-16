@@ -282,7 +282,7 @@ export default function TesterDashboardPage() {
               <CardHeader className="flex flex-row items-center justify-between pb-2">
                 <div>
                   <CardTitle className="text-orange-600 dark:text-orange-400 flex items-center gap-2">
-                    <Bell className="w-5 h-5" /> Action Required Today
+                    Action Required Today
                   </CardTitle>
                   <CardDescription>
                     These tests require your daily check-in or have rejected
@@ -374,8 +374,8 @@ export default function TesterDashboardPage() {
                     const progress =
                       project.totalDay > 0
                         ? Math.round(
-                            (project.daysCompleted / project.totalDay) * 100,
-                          )
+                          (project.daysCompleted / project.totalDay) * 100,
+                        )
                         : 0;
                     return (
                       <Link
@@ -464,12 +464,12 @@ export default function TesterDashboardPage() {
                         <p className="text-[10px] text-muted-foreground">
                           {project.completedAt
                             ? new Date(project.completedAt).toLocaleDateString(
-                                "en-IN",
-                                {
-                                  month: "short",
-                                  day: "numeric",
-                                },
-                              )
+                              "en-IN",
+                              {
+                                month: "short",
+                                day: "numeric",
+                              },
+                            )
                             : ""}
                         </p>
                       </div>

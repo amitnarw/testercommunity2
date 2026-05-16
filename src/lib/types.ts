@@ -464,6 +464,7 @@ export interface HubSubmittedAppResponse {
       ratings?: { rating: number }[];
     };
     isActive: boolean;
+    assignmentSource?: TesterAssignmentSource;
     status:
       | "PENDING"
       | "IN_PROGRESS"
@@ -703,6 +704,8 @@ export type Project = {
   }[];
 };
 
+export type TesterAssignmentSource = "SELF_JOIN" | "ADMIN_ASSIGNED";
+
 export type TesterProjectResponse = {
   id: number;
   appId: number;
@@ -713,6 +716,8 @@ export type TesterProjectResponse = {
   description: string | null;
   appScreenshot1: string;
   appScreenshot2: string;
+  appType?: "PAID" | "FREE";
+  assignmentSource: TesterAssignmentSource;
   appStatus:
     | "IN_REVIEW"
     | "DRAFT"
@@ -917,4 +922,178 @@ export interface BillingInfo {
   gstin?: string;
   createdAt: string;
   updatedAt: string;
+}
+
+export interface FinanceDashboardData {
+  totalRevenue: number;
+  totalOrders: number;
+  paidOrders: number;
+  totalPayments: number;
+  capturedPayments: number;
+  totalInvoices: number;
+  totalRefunds: number;
+  ordersByStatus: Record<string, number>;
+  packagesSold: number;
+  pointsDistributed: number;
+  testerEarnings: number;
+  pendingWithdrawalsCount: number;
+  pendingWithdrawalsAmount: number;
+  refundsByStatus: Record<string, { count: number; amount: number }>;
+  monthlyRevenue: Array<{ month: string; revenue: number; count: number }>;
+}
+
+export interface FinanceOrder {
+  id: number;
+  razorpayOrderId: string;
+  receipt: string;
+  amount: number;
+  currency: string;
+  status: string;
+  invoiceId: string | null;
+  packageCount: number | null;
+  plan: { name: string; package: number } | null;
+  user: { id: string; name: string; email: string; image: string | null };
+  payment: {
+    id: number;
+    razorpayPaymentId: string;
+    amount: number;
+    status: string;
+    method: string | null;
+    createdAt: string;
+  } | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface FinancePayment {
+  id: number;
+  razorpayPaymentId: string;
+  razorpayOrderId: string;
+  amount: number;
+  amount_inr: number | null;
+  currency: string;
+  status: string;
+  method: string | null;
+  bank: string | null;
+  fee: number | null;
+  tax: number | null;
+  amountRefunded: number;
+  refundStatus: string | null;
+  captured: boolean;
+  customer_name: string | null;
+  customer_email: string | null;
+  order: { id: number; razorpayOrderId: string; amount: number; status: string; invoiceId: string | null };
+  user: { id: string; name: string; email: string; image: string | null } | null;
+  refunds: Array<{ id: number; amount: number; status: string; reason: string | null }>;
+  invoice: { id: number; invoice_number: string } | null;
+  createdAt: string;
+}
+
+export interface FinanceInvoice {
+  id: number;
+  invoice_number: string;
+  service_name: string;
+  user: { id: string; name: string; email: string };
+  payment: {
+    id: number;
+    razorpayPaymentId: string;
+    amount: number;
+    currency: string;
+    status: string;
+    method: string | null;
+    createdAt: string;
+  };
+  createdAt: string;
+}
+
+export interface FinanceRefund {
+  id: number;
+  razorpayRefundId: string;
+  razorpayPaymentId: string;
+  amount: number;
+  currency: string;
+  status: string;
+  reason: string | null;
+  speed: string | null;
+  payment: {
+    id: number;
+    razorpayPaymentId: string;
+    amount: number;
+    currency: string;
+    status: string;
+    method: string | null;
+    user: { id: string; name: string; email: string } | null;
+  };
+  createdAt: string;
+  processedAt: string | null;
+}
+
+export interface FinanceWithdrawal {
+  id: number;
+  amount: number;
+  currency: string;
+  status: string;
+  note: string | null;
+  user: { id: string; name: string; email: string; image: string | null };
+  requestedAt: string;
+  processedAt: string | null;
+  createdAt: string;
+}
+
+export interface FinancePricing {
+  id: number;
+  country_code: string;
+  country_name: string;
+  currency_code: string;
+  currency_symbol: string;
+  amount: number;
+  is_active: boolean;
+  updatedAt: string;
+}
+
+export interface FinancePlan {
+  id: string;
+  name: string;
+  price: number;
+  package: number;
+  features: any;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface FinancePaymentMethod {
+  method: string;
+  count: number;
+  totalAmount: number;
+}
+
+export interface FinancePagination {
+  total: number;
+  page: number;
+  limit: number;
+  totalPages: number;
+}
+
+export interface FinanceUserWallet {
+  wallet: { totalPoints: number; totalPackages: number; balanceMoney: number };
+  transactions: Array<{
+    id: number;
+    action: string | null;
+    points: number | null;
+    package: number | null;
+    transactionType: string;
+    status: string;
+    paymentMethod: string | null;
+    createdAt: string;
+  }>;
+  withdrawals: Array<{
+    id: number;
+    amount: number;
+    currency: string;
+    status: string;
+    note: string | null;
+    requestedAt: string;
+    processedAt: string | null;
+  }>;
 }

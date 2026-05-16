@@ -182,12 +182,12 @@ function AdminPromoCodesContent() {
     setEditingPromo(promo);
     form.reset({
       id: promo.id,
-      code: promo.code,
+      code: promo.code ?? "",
       discountType: promo.discountType || "FIXED",
       discountValue: promo.discountValue || promo.fixedPoints,
       isActive: promo.isActive,
-      maxUses: promo.maxUses,
-      maxPerUser: promo.maxPerUser,
+      maxUses: promo.maxUses ?? "",
+      maxPerUser: promo.maxPerUser ?? "",
     });
     setIsDialogOpen(true);
   };
@@ -310,6 +310,7 @@ function AdminPromoCodesContent() {
                       <Input
                         placeholder="WELCOME200"
                         {...field}
+                        value={field.value ?? ""}
                         className="uppercase"
                       />
                     </FormControl>
@@ -356,7 +357,7 @@ function AdminPromoCodesContent() {
                           : "Discount (Points)"}
                       </FormLabel>
                       <FormControl>
-                        <Input type="number" {...field} />
+                        <Input type="number" {...field} value={field.value ?? ""} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>

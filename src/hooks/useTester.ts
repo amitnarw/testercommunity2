@@ -10,10 +10,10 @@ import {
   useQuery,
 } from "@tanstack/react-query";
 
-export function useTesterProjects(status?: string) {
+export function useTesterProjects(status?: string, appType?: string) {
   const query = useQuery<TesterProjectResponse[], Error>({
-    queryFn: () => getTesterProjects(status),
-    queryKey: ["useTesterProjects", status],
+    queryFn: () => getTesterProjects(status, appType),
+    queryKey: ["useTesterProjects", status, appType],
   });
 
   return query;

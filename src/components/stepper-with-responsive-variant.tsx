@@ -224,7 +224,7 @@ const CompanyStep = ({ profileData, setProfileData }: ProfileStepperProps) => (
       <Label>Company Name</Label>
       <Input
         placeholder="Your Company Inc."
-        value={profileData?.company_name}
+        value={profileData?.company_name ?? ""}
         onChange={(e) =>
           setProfileData((prev) => ({ ...prev, company_name: e.target.value }))
         }
@@ -234,7 +234,7 @@ const CompanyStep = ({ profileData, setProfileData }: ProfileStepperProps) => (
       <Label>Company Website</Label>
       <Input
         placeholder="https://example.com"
-        value={profileData?.company_website}
+        value={profileData?.company_website ?? ""}
         onChange={(e) =>
           setProfileData((prev) => ({
             ...prev,

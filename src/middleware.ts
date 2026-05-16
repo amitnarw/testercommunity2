@@ -89,6 +89,7 @@ export async function middleware(request: NextRequest) {
   ];
   const adminRoutes = [ROUTES.ADMIN.ROOT];
   const adminAuthRoutes = [ROUTES.ADMIN.AUTH.LOGIN];
+  const adminFinanceRoutes = [ROUTES.ADMIN.FINANCE];
   const testerAuthRoutes = [
     ROUTES.TESTER.AUTH.LOGIN,
     ROUTES.TESTER.AUTH.REGISTER,
@@ -117,6 +118,14 @@ export async function middleware(request: NextRequest) {
 
   if (isSuperAdmin) {
     return NextResponse.next();
+  }
+
+  // Finance routes are super_admin only
+  if (
+    isAuthenticated &&
+    adminFinanceRoutes.some((route) => pathname.startsWith(route))
+  ) {
+    return NextResponse.redirect(new URL(ROUTES.ADMIN.DASHBOARD, request.url));
   }
 
   // Redirect authenticated users away from public auth pages

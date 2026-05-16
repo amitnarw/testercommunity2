@@ -58,6 +58,13 @@ const AdminCompleteDialog = dynamic(
     ),
   { ssr: false },
 );
+const AdminManageTestersDialog = dynamic(
+  () =>
+    import("@/components/admin/admin-manage-testers-dialog").then(
+      (mod) => mod.AdminManageTestersDialog,
+    ),
+  { ssr: false },
+);
 
 export default function AdminSubmissionDetailPage({
   params,
@@ -72,6 +79,7 @@ export default function AdminSubmissionDetailPage({
   const [showRejectDialog, setShowRejectDialog] = useState(false);
   const [showAcceptDialog, setShowAcceptDialog] = useState(false);
   const [showCompleteDialog, setShowCompleteDialog] = useState(false);
+  const [showManageTestersDialog, setShowManageTestersDialog] = useState(false);
   const { toast } = useToast();
   const [isUpdatingStatus, setIsUpdatingStatus] = useState(false);
 
@@ -187,7 +195,7 @@ export default function AdminSubmissionDetailPage({
           <div className="bg-card border border-border/60 shadow-md rounded-3xl p-6 md:p-8 flex flex-col gap-6 relative overflow-hidden">
             <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-3xl -z-10 -translate-y-1/2 translate-x-1/2" />
 
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+            <div className="flex flex-col lg:flex-row md:items-center justify-between gap-6">
               <div className="flex items-center gap-5 z-10">
                 <SafeImage
                   src={project.androidApp?.appLogoUrl}
@@ -293,6 +301,16 @@ export default function AdminSubmissionDetailPage({
                       </Button>
                     )}
                   </>
+                )}
+
+                {(project.status === "AVAILABLE" || project.status === "IN_TESTING") && (
+                  <Button
+                    onClick={() => setShowManageTestersDialog(true)}
+                    className="px-5 py-2.5 h-auto rounded-xl shadow-sm font-bold"
+                  >
+                    <Users className="w-4 h-4 mr-1.5" />
+                    Manage Testers
+                  </Button>
                 )}
 
                 {project.status === "IN_TESTING" && (
@@ -800,6 +818,21 @@ export default function AdminSubmissionDetailPage({
         onOpenChange={setShowCompleteDialog}
         onSuccess={() => refetch()}
       />
+      {project?.id && (
+        <AdminManageTestersDialog
+          appId={project.id}
+          open={showManageTestersDialog}
+          onOpenChange={setShowManageTestersDialog}
+          onSuccess={() => refetch()}
+          totalRequired={project.totalTester || 0}
+          currentAssigned={project.currentTester || 0}
+          assignedTesterIds={
+            project.testerRelations
+              ?.filter((r: any) => r.status !== "PENDING" && r.status !== "REJECTED")
+              ?.map((r: any) => r.testerId) || []
+          }
+        />
+      )}
       {/* Fullscreen Image Viewer */}
       {fullscreenImage && (
         <div
