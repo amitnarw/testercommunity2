@@ -54,6 +54,10 @@ const LoginForm = ({
       });
     },
     onError: (error: any) => {
+      if (error?.code === "ACCOUNT_BANNED") {
+        router.push(`/banned?error_description=${encodeURIComponent(error.message)}`);
+        return;
+      }
       toast({
         variant: "destructive",
         title: "Login Failed",

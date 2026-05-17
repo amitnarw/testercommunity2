@@ -28,6 +28,7 @@ import {
   TesterActivitiesResponse,
   BillingInfo,
   RegionalPricingResponse,
+  PlayStoreDeclaration,
 } from "./types";
 import api from "./axios";
 
@@ -2334,6 +2335,53 @@ export const setMyStatus = async (status: "ONLINE" | "AWAY" | "OFFLINE") => {
     return response?.data?.data;
   } catch (error) {
     console.error("Error setting agent status:", error);
+    throw error;
+  }
+};
+
+export const getDeclaration = async (
+  appId: string | number,
+): Promise<PlayStoreDeclaration> => {
+  try {
+    const response = await api.get(API_ROUTES.DECLARATION + `/${appId}`);
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error fetching declaration:", error);
+    throw error;
+  }
+};
+
+export const updateDeclaration = async ({
+  appId,
+  answers,
+  status,
+}: {
+  appId: string | number;
+  answers?: Partial<PlayStoreDeclaration["answers"]>;
+  status?: string;
+}): Promise<PlayStoreDeclaration> => {
+  try {
+    const response = await api.put(API_ROUTES.DECLARATION + `/${appId}`, {
+      answers,
+      status,
+    });
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error updating declaration:", error);
+    throw error;
+  }
+};
+
+export const regenerateDeclaration = async (
+  appId: string | number,
+): Promise<PlayStoreDeclaration> => {
+  try {
+    const response = await api.post(
+      API_ROUTES.DECLARATION + `/${appId}/regenerate`,
+    );
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error regenerating declaration:", error);
     throw error;
   }
 };

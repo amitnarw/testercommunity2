@@ -52,7 +52,7 @@ function BannedPageContent() {
               </Button>
 
               <Button variant="outline" asChild className="flex-1 rounded-xl">
-                <Link href="/tester/auth/login">
+                <Link href="/auth/login">
                   <ArrowLeft className="w-4 h-4 mr-2" />
                   Back to Login
                 </Link>

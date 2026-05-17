@@ -69,6 +69,9 @@ const LoginForm = () => {
       if (err.code === "EMAIL_NOT_VERIFIED") {
         setShowNotVerifiedDialog(true);
       }
+      if (err.code === "ACCOUNT_BANNED") {
+        router.push(`/banned?error_description=${encodeURIComponent(err.message)}`);
+      }
     },
   });
 

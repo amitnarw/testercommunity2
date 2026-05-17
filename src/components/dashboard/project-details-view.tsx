@@ -18,6 +18,8 @@ import InfoBar from "@/components/dashboard/info-bar";
 import { TesterDeviceDetails } from "@/components/dashboard/tester-device-details";
 import { TestCompleteSection } from "@/components/dashboard/test-complete-section";
 import { RejectedProjectSection } from "@/components/dashboard/rejected-project-section";
+import { DeclarationReport } from "@/components/declaration/declaration-report";
+import { ChevronDown, ChevronUp, FileText } from "lucide-react";
 
 const getStatusConfig = (status: string) => {
   switch (status) {
@@ -69,6 +71,7 @@ export default function ProjectDetailsView({
 }) {
   const [fullscreenImage, setFullscreenImage] = useState<string | null>(null);
   const [isConfettiActive, setConfettiActive] = useState(false);
+  const [showDeclaration, setShowDeclaration] = useState(false);
 
   const { ref: confettiTriggerRef, inView: confettiInView } = useInView({
     threshold: 0.5,
@@ -242,6 +245,33 @@ export default function ProjectDetailsView({
             <motion.div variants={itemVariants}>
               <TesterDeviceDetails testers={project.testers} />
             </motion.div>
+
+            {project.status === "Completed" && (
+              <motion.div variants={itemVariants} className="mt-8">
+                <Button
+                  variant="outline"
+                  onClick={() => setShowDeclaration(!showDeclaration)}
+                  className="w-full gap-2 h-12"
+                >
+                  <FileText className="w-5 h-5" />
+                  {showDeclaration ? "Hide" : "View"} Declaration Report
+                  {showDeclaration ? (
+                    <ChevronUp className="w-4 h-4" />
+                  ) : (
+                    <ChevronDown className="w-4 h-4" />
+                  )}
+                </Button>
+                {showDeclaration && (
+                  <div className="mt-6">
+                    <DeclarationReport
+                      appId={project.id}
+                      appDetails={undefined}
+                      onClose={() => setShowDeclaration(false)}
+                    />
+                  </div>
+                )}
+              </motion.div>
+            )}
           </div>
         </motion.div>
         {fullscreenImage && (

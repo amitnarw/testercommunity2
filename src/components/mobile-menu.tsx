@@ -16,13 +16,12 @@ import {
   Wallet,
   Settings,
   Users2,
-  User,
-  Star,
   BookOpen,
   Terminal,
   Ticket,
   Headphones,
   Landmark,
+  Star,
 } from "lucide-react";
 import { Button } from "./ui/button";
 import {
@@ -43,6 +42,7 @@ const mainNavItems = [
   { name: "Home", href: "/" },
   { name: "Dashboard", href: "/dashboard" },
   { name: "Community", href: "/community-dashboard" },
+  { name: "Reviews", href: "/reviews" },
   { name: "Pricing", href: "/billing" },
   { name: "Support", href: "/support" },
   { name: "Blog", href: "/blog" },
@@ -52,6 +52,7 @@ const proNavItems = [
   { name: "Pro Dashboard", href: "/tester/dashboard", icon: LayoutDashboard },
   { name: "Projects", href: "/tester/projects", icon: Briefcase },
   { name: "Earnings", href: "/tester/earnings", icon: DollarSign },
+  { name: "Reviews", href: "/reviews", icon: Star },
   { name: "Activities", href: "/tester/activities", icon: Activity },
   { name: "Support", href: "/support", icon: LifeBuoy },
 ];

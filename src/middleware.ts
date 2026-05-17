@@ -22,6 +22,8 @@ interface RoleInfo {
 interface SessionValidationResult {
   isAuthenticated: boolean;
   role: RoleInfo | null;
+  banned: boolean;
+  ban_reason: string | null;
 }
 
 async function validateSession(
@@ -45,10 +47,12 @@ async function validateSession(
     )?.value;
 
   if (!sessionToken) {
-    return { isAuthenticated: false, role: null };
+    return { isAuthenticated: false, role: null, banned: false, ban_reason: null };
   }
 
   let role: RoleInfo | null = null;
+  let banned = false;
+  let ban_reason: string | null = null;
   if (roleCache && secret) {
     try {
       const { payload } = await jwtVerify(
@@ -56,6 +60,8 @@ async function validateSession(
         new TextEncoder().encode(secret),
       );
       role = (payload as any).role || null;
+      banned = (payload as any).banned === true;
+      ban_reason = (payload as any).ban_reason || null;
     } catch (err) {
       role = null;
     }
@@ -64,6 +70,8 @@ async function validateSession(
   return {
     isAuthenticated: true,
     role,
+    banned,
+    ban_reason,
   };
 }
 
@@ -107,7 +115,18 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  const { isAuthenticated, role } = await validateSession(request);
+  const { isAuthenticated, role, banned, ban_reason } = await validateSession(request);
+
+  // If the user is banned, redirect to /banned (unless already there)
+  if (banned && pathname !== "/banned") {
+    const bannedUrl = request.nextUrl.clone();
+    bannedUrl.pathname = "/banned";
+    bannedUrl.searchParams.set(
+      "error_description",
+      ban_reason || "Your account has been suspended. Please contact support.",
+    );
+    return NextResponse.redirect(bannedUrl);
+  }
 
   const roleName = typeof role === "string" ? role : role?.name;
   const lowerRole = roleName?.toLowerCase() || "";

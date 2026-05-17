@@ -6,6 +6,12 @@ import { TransitionProvider } from "@/context/transition-context";
 import TransitionOverlay from "@/components/transition-overlay";
 import { Metadata } from "next";
 
+import {
+  OrganizationJsonLd,
+  WebSiteJsonLd,
+  SoftwareApplicationJsonLd,
+} from "@/components/schema";
+
 export const metadata: Metadata = {
   metadataBase: new URL("https://intesters.com"),
   title: {
@@ -84,6 +90,9 @@ export default function RootLayout({
         <link rel="icon" href="/favicon.ico" sizes="any" />
         <link rel="icon" href="/icon.png" type="image/png" sizes="32x32" />
         <link rel="apple-touch-icon" href="/apple-icon.png" />
+        <OrganizationJsonLd />
+        <WebSiteJsonLd />
+        <SoftwareApplicationJsonLd />
       </head>
       <body className="font-body antialiased bg-background text-foreground">
         <ThemeProvider

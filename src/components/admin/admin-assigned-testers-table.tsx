@@ -32,7 +32,7 @@ import { useState } from "react";
 import { unassignTesterFromApp } from "@/lib/apiCalls";
 import { useToast } from "@/hooks/use-toast";
 import { AdminVerificationReview } from "./admin-verification-review";
-import { Eye, CheckCircle2, History } from "lucide-react";
+import { Eye, CheckCircle2, History, Clock } from "lucide-react";
 
 export interface AdminAssignedTestersTableProps {
   testerRelations: HubSubmittedAppResponse["testerRelations"];
@@ -40,6 +40,7 @@ export interface AdminAssignedTestersTableProps {
   totalDays: number;
   appType: "PAID" | "FREE";
   onRefetch: () => void;
+  currentDay?: number;
 }
 
 export function AdminAssignedTestersTable({
@@ -48,6 +49,7 @@ export function AdminAssignedTestersTable({
   totalDays,
   appType,
   onRefetch,
+  currentDay = 0,
 }: AdminAssignedTestersTableProps) {
   const [removingId, setRemovingId] = useState<string | null>(null);
   const [reviewTesterId, setReviewTesterId] = useState<string | null>(null);
@@ -125,7 +127,8 @@ export function AdminAssignedTestersTable({
               <TableHead className="w-[300px]">Tester</TableHead>
               <TableHead>Experience</TableHead>
               <TableHead>Device</TableHead>
-              {appType === "FREE" && <TableHead>Verifications</TableHead>}
+              <TableHead>Progress</TableHead>
+              <TableHead>Today (Day {currentDay})</TableHead>
               <TableHead>Status</TableHead>
               <TableHead className="text-right">Actions</TableHead>
             </TableRow>
@@ -191,28 +194,55 @@ export function AdminAssignedTestersTable({
                       </Badge>
                     </div>
                   </TableCell>
-                  {appType === "FREE" && (
-                    <TableCell>
-                      <div className="flex flex-col gap-2">
-                        <div className="flex items-center gap-2">
-                          <span className="text-sm font-bold">
-                            {req.daysCompleted || 0}
-                          </span>
-                          <span className="text-xs text-muted-foreground">
-                            / {totalDays} Days
-                          </span>
-                        </div>
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          className="h-7 text-[10px] gap-1.5 px-2 bg-secondary/50 hover:bg-secondary"
-                          onClick={() => setReviewTesterId(req.testerId)}
-                        >
-                          <History className="w-3 h-3" /> Review
-                        </Button>
+                  <TableCell>
+                    <div className="flex flex-col gap-2">
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm font-bold">
+                          {req.daysCompleted || 0}
+                        </span>
+                        <span className="text-xs text-muted-foreground">
+                          / {totalDays} Days
+                        </span>
                       </div>
-                    </TableCell>
-                  )}
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        className="h-7 text-[10px] gap-1.5 px-2 bg-secondary/50 hover:bg-secondary"
+                        onClick={() => setReviewTesterId(req.testerId)}
+                      >
+                        <History className="w-3 h-3" /> Review
+                      </Button>
+                    </div>
+                  </TableCell>
+                  <TableCell>
+                    {currentDay > 0 ? (
+                      (() => {
+                        const todayV = req.dailyVerifications?.find((v) => v.dayNumber === currentDay);
+                        const status = todayV?.status;
+                        if (status === "VERIFIED") {
+                          return (
+                            <Badge variant="outline" className="bg-green-500/10 text-green-600 border-green-500/20 font-medium text-xs whitespace-nowrap">
+                              <CheckCircle2 className="w-3 h-3 mr-1" /> Done
+                            </Badge>
+                          );
+                        }
+                        if (status === "REJECTED") {
+                          return (
+                            <Badge variant="outline" className="bg-red-500/10 text-red-600 border-red-500/20 font-medium text-xs whitespace-nowrap">
+                              Rejected
+                            </Badge>
+                          );
+                        }
+                        return (
+                          <Badge variant="outline" className="bg-amber-500/10 text-amber-600 border-amber-500/20 font-medium text-xs whitespace-nowrap">
+                            <Clock className="w-3 h-3 mr-1" /> Pending
+                          </Badge>
+                        );
+                      })()
+                    ) : (
+                      <span className="text-xs text-muted-foreground">-</span>
+                    )}
+                  </TableCell>
                   <TableCell>
                     <Badge
                       variant="secondary"
@@ -368,8 +398,8 @@ export function AdminAssignedTestersTable({
                   </div>
                 </div>
 
-                {appType === "FREE" && (
-                  <div className="pt-2 border-t border-border/40 flex items-center justify-between gap-4 mt-1">
+                <div className="pt-2 border-t border-border/40 space-y-3 mt-1">
+                  <div className="flex items-center justify-between gap-4">
                     <div className="flex flex-col">
                       <span className="text-[10px] font-bold text-muted-foreground uppercase opacity-70">
                         Progress
@@ -393,7 +423,37 @@ export function AdminAssignedTestersTable({
                       Review
                     </Button>
                   </div>
-                )}
+                  {currentDay > 0 && (
+                    <div className="flex items-center gap-3">
+                      <span className="text-[10px] font-bold text-muted-foreground uppercase opacity-70">
+                        Today (Day {currentDay}):
+                      </span>
+                      {(() => {
+                        const todayV = req.dailyVerifications?.find((v) => v.dayNumber === currentDay);
+                        const status = todayV?.status;
+                        if (status === "VERIFIED") {
+                          return (
+                            <Badge variant="outline" className="bg-green-500/10 text-green-600 border-green-500/20 font-medium text-xs">
+                              <CheckCircle2 className="w-3 h-3 mr-1" /> Done
+                            </Badge>
+                          );
+                        }
+                        if (status === "REJECTED") {
+                          return (
+                            <Badge variant="outline" className="bg-red-500/10 text-red-600 border-red-500/20 font-medium text-xs">
+                              Rejected
+                            </Badge>
+                          );
+                        }
+                        return (
+                          <Badge variant="outline" className="bg-amber-500/10 text-amber-600 border-amber-500/20 font-medium text-xs">
+                            <Clock className="w-3 h-3 mr-1" /> Pending
+                          </Badge>
+                        );
+                      })()}
+                    </div>
+                  )}
+                </div>
               </div>
             </motion.div>
           ))}

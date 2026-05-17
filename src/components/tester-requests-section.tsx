@@ -48,6 +48,12 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { HubSubmittedAppResponse } from "@/lib/types";
 import { useR2 } from "@/hooks/useR2";
 import { cn } from "@/lib/utils";
@@ -577,12 +583,24 @@ export function TesterRequestsSection({
                             {req.tester?.name || "Unknown"}
                           </span>
                           {(req as any).assignmentSource === "ADMIN_ASSIGNED" && (
-                            <Badge
-                              variant="outline"
-                              className="text-[9px] h-4 px-1 bg-purple-500/10 text-purple-600 border-purple-500/20 dark:text-purple-400"
-                            >
-                              Platform
-                            </Badge>
+                            <TooltipProvider>
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <span className="inline-flex items-center gap-1">
+                                    <Badge
+                                      variant="outline"
+                                      className="text-[9px] h-4 px-1 bg-amber-500/10 text-amber-600 border-amber-500/20 dark:text-amber-400"
+                                    >
+                                      Pro
+                                    </Badge>
+                                    <Info className="h-3 w-3 text-muted-foreground/50 cursor-help" />
+                                  </span>
+                                </TooltipTrigger>
+                                <TooltipContent side="top" className="max-w-[200px] text-xs">
+                                  <p>This is a paid professional tester, assigned by the admin as a gift for your app testing.</p>
+                                </TooltipContent>
+                              </Tooltip>
+                            </TooltipProvider>
                           )}
                         </div>
                       </TableCell>
@@ -598,13 +616,13 @@ export function TesterRequestsSection({
                           className={cn(
                             "font-medium text-xs",
                             req.status === "COMPLETED" &&
-                            "bg-green-500/10 text-green-600 hover:bg-green-500/20 border-green-200",
+                            "bg-green-500/10 text-green-600 hover:bg-green-500/20 border-green-200 dark:border-green-500/20",
                             req.status === "IN_PROGRESS" &&
-                            "bg-blue-500/10 text-blue-600 hover:bg-blue-500/20 border-blue-200",
+                            "bg-blue-500/10 text-blue-600 hover:bg-blue-500/20 border-blue-200 dark:border-blue-500/20",
                             (req.status === "REJECTED" ||
                               req.status === "DROPPED" ||
                               req.status === "REMOVED") &&
-                            "bg-red-500/10 text-red-600 hover:bg-red-500/20 border-red-200",
+                            "bg-red-500/10 text-red-600 hover:bg-red-500/20 border-red-200 dark:border-red-500/20",
                           )}
                         >
                           {req.status}
@@ -685,12 +703,24 @@ export function TesterRequestsSection({
                         {req.tester?.name || "Unknown"}
                       </span>
                       {(req as any).assignmentSource === "ADMIN_ASSIGNED" && (
-                        <Badge
-                          variant="outline"
-                          className="text-[9px] h-4 px-1 bg-purple-500/10 text-purple-600 border-purple-500/20 dark:text-purple-400"
-                        >
-                          Platform
-                        </Badge>
+                        <TooltipProvider>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <span className="inline-flex items-center gap-0.5">
+                                <Badge
+                                  variant="outline"
+                                  className="text-[9px] h-4 px-1 bg-amber-500/10 text-amber-600 border-amber-500/20 dark:text-amber-400"
+                                >
+                                  Pro
+                                </Badge>
+                                <Info className="h-3 w-3 text-muted-foreground cursor-help" />
+                              </span>
+                            </TooltipTrigger>
+                            <TooltipContent side="top" className="max-w-[200px] text-xs">
+                              <p>This is a paid professional tester, assigned by the admin as a gift for your app testing.</p>
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
                       )}
                     </div>
                     <Badge
@@ -698,9 +728,13 @@ export function TesterRequestsSection({
                       className={cn(
                         "text-[10px]",
                         req.status === "COMPLETED" &&
-                        "bg-green-500/10 text-green-600",
+                        "bg-green-500/10 text-green-600 border-green-200 dark:border-green-500/20",
                         req.status === "IN_PROGRESS" &&
-                        "bg-blue-500/10 text-blue-600",
+                        "bg-blue-500/10 text-blue-600 border-blue-200 dark:border-blue-500/20",
+                        (req.status === "REJECTED" ||
+                          req.status === "DROPPED" ||
+                          req.status === "REMOVED") &&
+                        "bg-red-500/10 text-red-600 border-red-200 dark:border-red-500/20",
                       )}
                     >
                       {req.status}
