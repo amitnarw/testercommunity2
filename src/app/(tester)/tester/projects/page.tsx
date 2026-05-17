@@ -18,10 +18,13 @@ import { AppPagination } from "@/components/app-pagination";
 import { Progress } from "@/components/ui/progress";
 import { useTesterProjects } from "@/hooks/useTester";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useRouter } from "next/navigation";
 
 const PROJECTS_PER_PAGE = 6;
 
 const ProjectCard = ({ project }: { project: TesterProjectResponse }) => {
+  const router = useRouter();
+  
   const isOngoing =
     project.appStatus === "IN_TESTING" &&
     project.testerStatus === "IN_PROGRESS";
@@ -29,58 +32,61 @@ const ProjectCard = ({ project }: { project: TesterProjectResponse }) => {
     project.rewardMoney ||
     (project.rewardPoints ? project.rewardPoints * 5 : 0);
 
+  const openProjectDetails = (id: number) => {
+    router.push(`/tester/projects/${id}`)
+  }
+
   return (
     <Card
       key={project.id}
       className="flex flex-col h-full overflow-hidden rounded-2xl transition-all duration-300 hover:shadow-lg hover:-translate-y-1"
+      onClick={() => openProjectDetails(project.id)}
     >
-      <Link href={`/tester/projects/${project.id}`}>
-        <CardHeader className="flex flex-row items-start gap-4 p-4">
-          <Avatar className="h-12 w-12">
-            <AvatarImage src={project.appLogo} />
-            <AvatarFallback>{project.appName?.charAt(0)}</AvatarFallback>
-          </Avatar>
-          <div>
-            <CardTitle className="text-base">{project.appName}</CardTitle>
-            <CardDescription>{project.category}</CardDescription>
-          </div>
-        </CardHeader>
-        <CardContent className="p-4 pt-0 flex-grow">
-          {isOngoing && (
-            <div className="w-full">
-              <div className="flex justify-between items-center text-xs text-muted-foreground mb-1">
-                <span>Progress</span>
-                <span>
-                  Day {project.daysCompleted} / {project.totalDay}
-                </span>
-              </div>
-              <Progress
-                value={(project.daysCompleted / project.totalDay) * 100}
-                className="h-2"
-              />
-            </div>
-          )}
-        </CardContent>
-        <CardFooter className="p-4 bg-gradient-to-t from-primary/20 to-primary/0 flex items-center justify-between">
-          <div className="text-sm text-right">
-            <p className="text-muted-foreground text-xs">Payout</p>
-            <p className="font-semibold text-primary">
-              ₹{earnings.toLocaleString("en-IN")}
-            </p>
-          </div>
-          {isOngoing ? (
-            <Button variant="outline" size="sm" asChild>
+      <CardHeader className="flex flex-row items-start gap-4 p-4">
+        <Avatar className="h-12 w-12">
+          <AvatarImage src={project.appLogo} />
+          <AvatarFallback>{project.appName?.charAt(0)}</AvatarFallback>
+        </Avatar>
+        <div>
+          <CardTitle className="text-base">{project.appName}</CardTitle>
+          <CardDescription>{project.category}</CardDescription>
+        </div>
+      </CardHeader>
+      <CardContent className="p-4 pt-0 flex-grow">
+        {isOngoing && (
+          <div className="w-full">
+            <div className="flex justify-between items-center text-xs text-muted-foreground mb-1">
+              <span>Progress</span>
               <span>
-                Continue Testing <ArrowRight className="ml-2 h-4 w-4" />
+                Day {project.daysCompleted} / {project.totalDay}
               </span>
-            </Button>
-          ) : (
-            <Button variant="default" size="sm">
-              View Details
-            </Button>
-          )}
-        </CardFooter>
-      </Link>
+            </div>
+            <Progress
+              value={(project.daysCompleted / project.totalDay) * 100}
+              className="h-2"
+            />
+          </div>
+        )}
+      </CardContent>
+      <CardFooter className="p-4 bg-gradient-to-t from-primary/20 to-primary/0 flex items-center justify-between">
+        <div className="text-sm text-right">
+          <p className="text-muted-foreground text-xs">Payout</p>
+          <p className="font-semibold text-primary">
+            ₹{earnings.toLocaleString("en-IN")}
+          </p>
+        </div>
+        {isOngoing ? (
+          <Button variant="outline" size="sm" asChild>
+            <span>
+              Continue Testing <ArrowRight className="ml-2 h-4 w-4" />
+            </span>
+          </Button>
+        ) : (
+          <Button variant="default" size="sm">
+            View Details
+          </Button>
+        )}
+      </CardFooter>
     </Card>
   );
 };

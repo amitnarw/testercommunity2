@@ -7,6 +7,7 @@ import { getPublicBlogBySlug, PublicBlog } from "@/lib/apiCalls";
 
 interface BlogPostClientProps {
   slug: string;
+  initialData: PublicBlog | null;
 }
 
 function blogPostToDisplayFormat(post: PublicBlog) {
@@ -28,12 +29,14 @@ function blogPostToDisplayFormat(post: PublicBlog) {
   };
 }
 
-export default function BlogPostClient({ slug }: BlogPostClientProps) {
-  const [post, setPost] = useState<PublicBlog | null>(null);
-  const [loading, setLoading] = useState(true);
+export default function BlogPostClient({ slug, initialData }: BlogPostClientProps) {
+  const [post, setPost] = useState<PublicBlog | null>(initialData);
+  const [loading, setLoading] = useState(!initialData);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    if (initialData) return;
+
     async function fetchBlog() {
       try {
         const blog = await getPublicBlogBySlug(slug);
@@ -50,7 +53,7 @@ export default function BlogPostClient({ slug }: BlogPostClientProps) {
       }
     }
     fetchBlog();
-  }, [slug]);
+  }, [slug, initialData]);
 
   if (loading) {
     return (
@@ -78,6 +81,7 @@ export default function BlogPostClient({ slug }: BlogPostClientProps) {
 
   if (!post) {
     notFound();
+    return null;
   }
 
   return <ArticleView post={blogPostToDisplayFormat(post)} />;

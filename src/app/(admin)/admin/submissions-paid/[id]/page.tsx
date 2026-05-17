@@ -168,7 +168,8 @@ export default function AdminSubmissionDetailPage({
   const platformEarnings = amountPaidByDeveloper - totalPayout;
   const isLoss = platformEarnings < 0;
 
-  // Analytics Calculations
+  // Analytics Calculations - Overall Cycle
+  const totalJoinedCount = project.testerRelations?.length || 0;
   const activeTestersCount =
     project.testerRelations?.filter((r) => r.status === "IN_PROGRESS")?.length ||
     0;
@@ -177,10 +178,20 @@ export default function AdminSubmissionDetailPage({
   const completedTestersCount =
     project.testerRelations?.filter((r) => r.status === "COMPLETED")?.length ||
     0;
-  const totalJoinedCount = project.testerRelations?.length || 0;
+  const notCompletedCount = Math.max(totalJoinedCount - completedTestersCount, 0);
 
   const currentDay = project.currentDay || 0;
   const totalDay = project.totalDay || 14;
+
+  // Analytics Calculations - Per Day (Today)
+  const verifiedTodayCount =
+    project.testerRelations?.filter((r) => {
+      if (r.status !== "IN_PROGRESS") return false;
+      const todayV = r.dailyVerifications?.find((v) => v.dayNumber === currentDay);
+      return todayV?.status === "VERIFIED";
+    })?.length || 0;
+  const pendingTodayCount = Math.max(activeTestersCount - verifiedTodayCount, 0);
+
   const progressPercent = Math.min(
     Math.round((currentDay / totalDay) * 100),
     100,
@@ -579,45 +590,87 @@ export default function AdminSubmissionDetailPage({
                 </div>
               </div>
 
-              {/* Tester Funnel */}
-              <div className="space-y-4">
+              {/* Tester Pipeline */}
+              <div className="space-y-6">
                 <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider">
                   Tester Pipeline
                 </span>
-                <div className="grid grid-cols-2 gap-3">
-                  <div className="bg-secondary/20 p-3 rounded-2xl border border-border/50 space-y-1">
-                    <p className="text-xs font-bold text-muted-foreground uppercase">
-                      Active
-                    </p>
-                    <p className="text-xl font-black text-emerald-600">
-                      {activeTestersCount}
-                    </p>
-                  </div>
-                  <div className="bg-secondary/20 p-3 rounded-2xl border border-border/50 space-y-1">
-                    <p className="text-xs font-bold text-muted-foreground uppercase">
-                      Completed
-                    </p>
-                    <p className="text-xl font-black text-blue-600">
-                      {completedTestersCount}
-                    </p>
-                  </div>
-                  <div className="bg-secondary/20 p-3 rounded-2xl border border-border/50 space-y-1">
-                    <p className="text-xs font-bold text-muted-foreground uppercase">
-                      Pending
-                    </p>
-                    <p className="text-xl font-black text-amber-600">
-                      {pendingTestersCount}
-                    </p>
-                  </div>
-                  <div className="bg-secondary/20 p-3 rounded-2xl border border-border/50 space-y-1">
-                    <p className="text-xs font-bold text-muted-foreground uppercase">
-                      Joined
-                    </p>
-                    <p className="text-xl font-black text-foreground">
-                      {totalJoinedCount}
-                    </p>
+
+                {/* Overall Cycle */}
+                <div className="space-y-3">
+                  <span className="text-[10px] font-bold text-muted-foreground/60 uppercase tracking-wider">
+                    Overall Testing Cycle
+                  </span>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="bg-secondary/20 p-3 rounded-2xl border border-border/50 space-y-1">
+                      <p className="text-xs font-bold text-muted-foreground uppercase">
+                        Joined
+                      </p>
+                      <p className="text-xl font-black text-foreground">
+                        {totalJoinedCount}
+                      </p>
+                    </div>
+                    <div className="bg-secondary/20 p-3 rounded-2xl border border-border/50 space-y-1">
+                      <p className="text-xs font-bold text-muted-foreground uppercase">
+                        Active
+                      </p>
+                      <p className="text-xl font-black text-emerald-600">
+                        {activeTestersCount}
+                      </p>
+                    </div>
+                    <div className="bg-secondary/20 p-3 rounded-2xl border border-border/50 space-y-1">
+                      <p className="text-xs font-bold text-muted-foreground uppercase">
+                        Completed
+                      </p>
+                      <p className="text-xl font-black text-blue-600">
+                        {completedTestersCount}
+                      </p>
+                    </div>
+                    <div className="bg-secondary/20 p-3 rounded-2xl border border-border/50 space-y-1">
+                      <p className="text-xs font-bold text-muted-foreground uppercase">
+                        Not Completed
+                      </p>
+                      <p className="text-xl font-black text-amber-600">
+                        {notCompletedCount}
+                      </p>
+                    </div>
                   </div>
                 </div>
+
+                {/* Today's Progress */}
+                {currentDay > 0 && (
+                  <div className="space-y-3 pt-4 border-t border-border/50">
+                    <span className="text-[10px] font-bold text-muted-foreground/60 uppercase tracking-wider">
+                      Today's Progress (Day {currentDay})
+                    </span>
+                    <div className="grid grid-cols-2 gap-3">
+                      <div className="bg-secondary/20 p-3 rounded-2xl border border-border/50 space-y-1">
+                        <p className="text-xs font-bold text-muted-foreground uppercase">
+                          Active Today
+                        </p>
+                        <p className="text-xl font-black text-emerald-600">
+                          {activeTestersCount}
+                        </p>
+                      </div>
+                      <div className="bg-secondary/20 p-3 rounded-2xl border border-border/50 space-y-1">
+                        <p className="text-xs font-bold text-muted-foreground uppercase">
+                          Verified Today
+                        </p>
+                        <p className="text-xl font-black text-blue-600">
+                          {verifiedTodayCount}
+                        </p>
+                      </div>
+                      <div className="bg-secondary/20 p-3 rounded-2xl border border-border/50 space-y-1 col-span-2">
+                        <p className="text-xs font-bold text-muted-foreground uppercase">
+                          Pending Today
+                        </p>
+                        <p className="text-xl font-black text-amber-600">
+                          {pendingTodayCount}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
 
               {/* Feedback Summary */}
@@ -783,6 +836,7 @@ export default function AdminSubmissionDetailPage({
                 testerRelations={project.testerRelations}
                 appId={project.id}
                 totalDays={project.totalDay || 14}
+                currentDay={currentDay}
                 onRefetch={() => refetch()}
                 appType="PAID"
               />

@@ -7,8 +7,6 @@ import {
   Cell,
   ResponsiveContainer,
 } from "recharts";
-import { ArrowUpRight } from "lucide-react";
-import { cn } from "@/lib/utils";
 import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 
@@ -21,18 +19,20 @@ interface StatusDistributionCardProps {
   isLoading?: boolean;
 }
 
-const BRAND_COLORS = {
-  PURPLE: "#9d7bff",
-  LIME: "#dcff50",
-  SKY: "#4bc9ff",
-  GRAY: "#3c3c3c",
-};
-
 export function StatusDistributionCard({
   data,
   isLoading,
 }: StatusDistributionCardProps) {
   const [activeTab, setActiveTab] = React.useState("Week");
+  const [isMobile, setIsMobile] = React.useState(false);
+
+  React.useEffect(() => {
+    const mq = window.matchMedia("(max-width: 639px)");
+    const handler = (e: MediaQueryListEvent | MediaQueryList) => setIsMobile(e.matches);
+    handler(mq);
+    mq.addEventListener("change", handler);
+    return () => mq.removeEventListener("change", handler);
+  }, []);
 
   if (isLoading) {
     return (
@@ -48,18 +48,10 @@ export function StatusDistributionCard({
     );
   }
 
-  const chartData = data.map((item, index) => {
-    let color = BRAND_COLORS.GRAY;
-    if (item.name.toUpperCase().includes("COMPLETED") || index === 0)
-      color = BRAND_COLORS.PURPLE;
-    else if (item.name.toUpperCase().includes("AVAILABLE") || index === 1)
-      color = BRAND_COLORS.LIME;
-    else if (item.name.toUpperCase().includes("TESTING") || index === 2)
-      color = BRAND_COLORS.SKY;
-    else if (item.name.toUpperCase().includes("REVIEW") || index === 4)
+  const chartData = data.map((item) => {
+    if (item.name.toUpperCase().includes("REVIEW"))
       return { ...item, color: "url(#stripePatternSmall)" };
-
-    return { ...item, color };
+    return item;
   });
 
   const renderCustomLabel = ({
@@ -108,9 +100,9 @@ export function StatusDistributionCard({
         </div>
       </div>
 
-      <div className="flex flex-row gap-4 items-center relative z-10">
+      <div className="flex flex-col sm:flex-row gap-4 items-center sm:items-center relative z-10">
         {/* Legend */}
-        <div className="flex flex-col gap-3 w-1/2">
+        <div className="grid grid-cols-2 sm:flex sm:flex-col gap-3 w-full sm:w-1/2">
           {chartData.map((item) => {
             const isStriped = item.color === "url(#stripePatternSmall)";
             return (
@@ -119,7 +111,7 @@ export function StatusDistributionCard({
                 className="flex items-center gap-3 group cursor-default"
               >
                 <div
-                  className="h-5 w-5 rounded-md"
+                  className="h-5 w-5 rounded-md shrink-0"
                   style={{
                     background: isStriped
                       ? "repeating-linear-gradient(45deg, #1c1c1c, #1c1c1c 2px, #444 2px, #444 4px)"
@@ -135,7 +127,7 @@ export function StatusDistributionCard({
         </div>
 
         {/* Chart */}
-        <div className="h-[250px] w-full relative">
+        <div className="h-[220px] sm:h-[250px] w-full relative">
           <ResponsiveContainer width="100%" height="100%">
             <RechartsPieChart>
               <defs>
@@ -168,8 +160,8 @@ export function StatusDistributionCard({
                 data={chartData}
                 cx="50%"
                 cy="50%"
-                innerRadius={80}
-                outerRadius={120}
+                innerRadius={isMobile ? 50 : 80}
+                outerRadius={isMobile ? 85 : 120}
                 paddingAngle={2}
                 cornerRadius={8}
                 dataKey="value"

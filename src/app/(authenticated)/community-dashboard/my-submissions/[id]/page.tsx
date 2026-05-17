@@ -26,6 +26,8 @@ import {
   XCircle,
   AlertTriangle,
   Expand,
+  FileText,
+  ChevronDown,
 } from "lucide-react";
 import { useState, useEffect, use } from "react";
 import { cn } from "@/lib/utils";
@@ -43,6 +45,7 @@ import { TesterRequestsSection } from "@/components/tester-requests-section";
 import { CompleteTestingBanner } from "@/components/community-dashboard/complete-testing-banner";
 import { ReviewSubmissionForm } from "@/components/review-submission-form";
 import { SubmissionDetailsSkeleton } from "@/components/skeletons/submission-details-skeleton";
+import { DeclarationReport } from "@/components/declaration/declaration-report";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
@@ -262,6 +265,7 @@ function SubmissionDetailsPage({
   const [fullscreenImage, setFullscreenImage] = useState<string | null>(null);
   const [isConfettiActive, setConfettiActive] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [showDeclaration, setShowDeclaration] = useState(false);
   const { toast } = useToast();
 
   const {
@@ -637,6 +641,41 @@ function SubmissionDetailsPage({
                 appId={appDetails?.androidApp?.id}
                 appName={appDetails?.androidApp?.appName}
               />
+            )}
+
+            {appDetails?.status === "COMPLETED" && !isUnderReviewOrRejected && (
+              <div className="bg-card rounded-2xl p-6 border">
+                <button
+                  onClick={() => setShowDeclaration(!showDeclaration)}
+                  className="w-full flex items-center justify-between text-left"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
+                      <FileText className="w-5 h-5 text-primary" />
+                    </div>
+                    <div>
+                      <h3 className="font-semibold">Declaration Report</h3>
+                      <p className="text-sm text-muted-foreground">
+                        Testing summary &amp; Google Play production declaration
+                      </p>
+                    </div>
+                  </div>
+                  <ChevronDown
+                    className={`w-5 h-5 text-muted-foreground transition-transform ${
+                      showDeclaration ? "rotate-180" : ""
+                    }`}
+                  />
+                </button>
+                {showDeclaration && (
+                  <div className="mt-6 pt-6 border-t">
+                    <DeclarationReport
+                      appId={appDetails.id}
+                      appDetails={appDetails}
+                      onClose={() => setShowDeclaration(false)}
+                    />
+                  </div>
+                )}
+              </div>
             )}
 
             {appDetails?.instructionsForTester && (

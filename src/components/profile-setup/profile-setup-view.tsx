@@ -44,8 +44,8 @@ import {
   useProfileDataSave,
   useUserProfileData,
   useUserProfileInitial,
+  useEarnPoints,
 } from "@/hooks/useUser";
-import { useControlRoomData } from "@/hooks/useAdmin";
 import SkeletonProfileSetup from "@/components/profile-setup/loading-skeleton";
 import { useRouter } from "next/navigation";
 import { LoadingButton } from "@/components/ui/loading-button";
@@ -191,13 +191,11 @@ export function ProfileSetupView({
   const progress = ((currentStep + 1) / stepsMeta.length) * 100;
 
   const {
-    data: controlRoomData,
-    isPending: controlRoomIsPending,
-    isError: controlRoomIsError,
-    error: controlRoomError,
-  } = useControlRoomData({
-    enabled: true,
-  });
+    data: earnPointsData,
+    isPending: earnPointsIsPending,
+    isError: earnPointsIsError,
+    error: earnPointsError,
+  } = useEarnPoints();
 
   const {
     mutate,
@@ -240,10 +238,10 @@ export function ProfileSetupView({
     }
   };
 
-  if (controlRoomIsPending || userProfileIsPending)
+  if (earnPointsIsPending || userProfileIsPending)
     return <SkeletonProfileSetup />;
-  if (controlRoomIsError || userProfileIsError)
-    return <p>{controlRoomError?.message || userProfileError?.message}</p>;
+  if (earnPointsIsError || userProfileIsError)
+    return <p>{earnPointsError?.message || userProfileError?.message}</p>;
 
   return (
     <div
@@ -285,7 +283,7 @@ export function ProfileSetupView({
                 <p className="text-muted-foreground mt-2 text-xs">
                   This survey is optional, but you'll get a{" "}
                   <span className="text-primary font-bold">
-                    {controlRoomData?.profileSurveyPoints ?? 200} point bonus
+                    {earnPointsData?.surveyPoints ?? 200} point bonus
                   </span>{" "}
                   for completing it!
                 </p>
@@ -384,7 +382,7 @@ export function ProfileSetupView({
                   <p className="text-xs text-muted-foreground mt-1">
                     Optional Survey - Get{" "}
                     <span className="text-primary font-semibold">
-                      200 points
+                      {earnPointsData?.surveyPoints ?? 200} points
                     </span>{" "}
                     for completion!
                   </p>

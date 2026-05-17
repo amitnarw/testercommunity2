@@ -41,6 +41,19 @@ api.interceptors.response.use(
       }
     }
 
+    if (error.response?.status === 403 && error.response?.data?.code === "ACCOUNT_BANNED") {
+      if (typeof window !== "undefined") {
+        try {
+          await authClient.signOut();
+        } catch (signOutError) {
+          console.error("Sign-out failed:", signOutError);
+        }
+        const message = error.response.data.message || "Your account has been suspended. Please contact support.";
+        window.location.href = `/banned?error_description=${encodeURIComponent(message)}`;
+      }
+      return Promise.reject(error);
+    }
+
     if (error.response?.status === 401) {
       if (typeof window !== "undefined") {
         const pathname = window.location.pathname;

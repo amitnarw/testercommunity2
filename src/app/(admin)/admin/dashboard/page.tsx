@@ -87,13 +87,14 @@ const ServiceComparisonChart = dynamic(
 
 // Status distribution colors
 const statusColors: Record<string, string> = {
-  COMPLETED: "#A855F7",
-  AVAILABLE: "#BEF264",
-  IN_TESTING: "#38BDF8",
-  REJECTED: "#3F3F46",
+  COMPLETED: "#22c55e",
+  AVAILABLE: "#a855f7",
+  IN_TESTING: "#3b82f6",
+  REJECTED: "#ef4444",
   IN_REVIEW: "#f59e0b", // Will be replaced by stripes in component
   DRAFT: "#6b7280",
-  ON_HOLD: "#94a3b8",
+  ON_HOLD: "#facc15",
+  REQUESTED: "#f97316",
 };
 
 export default function AdminDashboardPage() {
@@ -200,7 +201,7 @@ export default function AdminDashboardPage() {
                 </CardTitle>
               </div>
               <Button variant="outline" size="sm" asChild>
-                <Link href="/admin/submissions?tab=IN_REVIEW">
+                <Link href="/admin/submissions-paid?tab=IN_REVIEW">
                   View All <ArrowRight className="ml-2 h-4 w-4" />
                 </Link>
               </Button>
@@ -282,7 +283,7 @@ export default function AdminDashboardPage() {
                 </div>
               </div>
               <Button variant="ghost" size="sm" asChild className="text-sm">
-                <Link href="/admin/submissions?appType=PAID">
+                <Link href="/admin/submissions-paid">
                   View All <ArrowRight className="ml-2 h-4 w-4" />
                 </Link>
               </Button>
@@ -376,7 +377,7 @@ export default function AdminDashboardPage() {
                 </div>
               </div>
               <Button variant="ghost" size="sm" asChild className="text-sm">
-                <Link href="/admin/submissions?appType=FREE">
+                <Link href="/admin/submissions-free">
                   View All <ArrowRight className="ml-2 h-4 w-4" />
                 </Link>
               </Button>

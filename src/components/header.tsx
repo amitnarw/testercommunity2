@@ -20,6 +20,7 @@ import { ROUTES } from "@/lib/routes";
 const visitorNavItems = [
   { name: "Home", href: "/" },
   { name: "How It Works", href: "/how-it-works" },
+  { name: "Reviews", href: "/reviews" },
   { name: "Pricing", href: "/pricing" },
   { name: "Blog", href: "/blog" },
 ];
@@ -28,6 +29,7 @@ const authenticatedNavItems = [
   { name: "Home", href: "/" },
   { name: "Dashboard", href: "/dashboard" },
   { name: "Community", href: "/community-dashboard" },
+  { name: "Reviews", href: "/reviews" },
   { name: "Pricing", href: "/pricing" },
   { name: "Blog", href: "/blog" },
 ];

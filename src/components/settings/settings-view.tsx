@@ -62,12 +62,13 @@ export function SettingsView({ backHref = "/profile" }: SettingsViewProps) {
   const isSuperAdmin = roleName === "super_admin";
 
   useEffect(() => {
+    if (!isSuperAdmin) return;
     getControlRoom().then((data: any) => {
       if (data && data.humanChatEnabled !== undefined) {
         setHumanChatEnabled(data.humanChatEnabled);
       }
     }).catch(() => {});
-  }, []);
+  }, [isSuperAdmin]);
 
   const handleHumanChatToggle = async (enabled: boolean) => {
     setHumanChatEnabled(enabled);

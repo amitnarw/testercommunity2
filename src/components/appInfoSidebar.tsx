@@ -131,7 +131,7 @@ const SidebarButton = ({
       <a
         href={url}
         target="_blank"
-        className="flex flex-row gap-2 w-full border border-primary/50 rounded-full items-center justify-center py-2 text-primary"
+        className="flex flex-row gap-2 w-full bg-primary rounded-full items-center justify-center py-2 text-white hover:scale-105 duration-300"
       >
         Re-open Google Play <SquareArrowOutUpRight size={20} />
       </a>

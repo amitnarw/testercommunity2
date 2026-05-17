@@ -2,6 +2,7 @@ import { getPublicBlogBySlug } from "@/lib/apiCalls";
 import BlogPostClient from "./BlogPostClient";
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { ArticleJsonLd, BreadcrumbJsonLd } from "@/components/schema";
 
 interface PageProps {
   params: Promise<{ slug: string }>;
@@ -12,7 +13,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const blog = await getPublicBlogBySlug(slug);
 
   if (!blog) {
-    return { title: "Blog Post Not Found" };
+    return { title: "Blog Post Not Found | inTesters" };
   }
 
   return {
@@ -54,5 +55,26 @@ export default async function BlogPostPage({ params }: PageProps) {
     notFound();
   }
 
-  return <BlogPostClient slug={slug} />;
+  return (
+    <>
+      <BreadcrumbJsonLd
+        items={[
+          { name: "Home", url: "/" },
+          { name: "Blog", url: "/blog" },
+          { name: blog.title, url: `/blog/${slug}` },
+        ]}
+      />
+      <ArticleJsonLd
+        title={blog.title}
+        description={blog.excerpt}
+        url={`/blog/${slug}`}
+        imageUrl={blog.imageUrl}
+        publishedTime={blog.date}
+        updatedTime={blog.updatedAt}
+        authorName={blog.authorName}
+        tags={blog.tags}
+      />
+      <BlogPostClient slug={slug} initialData={blog} />
+    </>
+  );
 }
