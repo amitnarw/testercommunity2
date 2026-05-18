@@ -99,6 +99,15 @@ export default function InvoicePage() {
             border: none !important;
             border-radius: 0 !important;
             box-shadow: none !important;
+            position: relative !important;
+          }
+          .print-paid-stamp {
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
+          }
+          .print-paid-stamp div {
+            -webkit-print-color-adjust: exact !important;
+            print-color-adjust: exact !important;
           }
           .print-header-solid {
             background-color: #3b82f6 !important;

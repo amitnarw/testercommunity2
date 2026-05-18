@@ -24,6 +24,8 @@ const COMPANY = {
 };
 
 const PRIMARY = "#3b82f6";
+const PRIMARY_LIGHT = "#eff6ff";
+const PRIMARY_DARK = "#1e40af";
 
 function formatCurrency(amount: number, currency: string): string {
   const value = amount / 100;
@@ -68,188 +70,314 @@ export function TaxInvoice({ invoice }: TaxInvoiceProps) {
   }
 
   const invoiceDate = invoice.createdAt ? format(new Date(invoice.createdAt), "dd MMM yyyy") : "\u2014";
-  const dueDate = invoice.due_date ? format(new Date(invoice.due_date), "dd MMM yyyy") : "\u2014";
 
   return (
-    <div className="bg-white text-gray-900 text-[11px] leading-[1.4] print-card">
-      {/** ---- HEADER ---- */}
-      <div style={{ backgroundColor: PRIMARY }} className="px-6 py-4 flex items-center justify-between print-header-solid">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-white rounded-lg flex items-center justify-center p-1 shrink-0">
-            <Image src="/inTesters-logo.svg" alt="InTesters" width={32} height={32} className="object-contain" />
+    <div className="bg-white text-slate-800 print-card relative overflow-hidden" style={{ fontFamily: "'Inter', 'Segoe UI', system-ui, sans-serif" }}>
+      {/** PAID WATERMARK PATTERN */}
+      <div className="absolute inset-0 z-[1] pointer-events-none print-paid-stamp overflow-hidden">
+        <div className="absolute inset-0" style={{
+          backgroundImage: `repeating-linear-gradient(
+            -35deg,
+            transparent,
+            transparent 120px,
+            rgba(59,130,246,0.04) 120px,
+            rgba(59,130,246,0.04) 122px,
+            transparent 122px,
+            transparent 180px,
+            rgba(59,130,246,0.06) 180px,
+            rgba(59,130,246,0.06) 182px,
+            transparent 182px
+          )`,
+        }} />
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div className="grid grid-cols-3 grid-rows-3 w-full h-full">
+            {[
+              { row: 1, col: 1, x: "5%", y: "12%", rot: -30, sz: 52, op: 0.045 },
+              { row: 1, col: 2, x: "38%", y: "8%", rot: -35, sz: 44, op: 0.035 },
+              { row: 1, col: 3, x: "72%", y: "15%", rot: -28, sz: 48, op: 0.04 },
+              { row: 2, col: 1, x: "15%", y: "38%", rot: -32, sz: 56, op: 0.05 },
+              { row: 2, col: 2, x: "50%", y: "42%", rot: -30, sz: 40, op: 0.035 },
+              { row: 2, col: 3, x: "78%", y: "35%", rot: -34, sz: 44, op: 0.04 },
+              { row: 3, col: 1, x: "8%", y: "65%", rot: -30, sz: 44, op: 0.04 },
+              { row: 3, col: 2, x: "42%", y: "68%", rot: -35, sz: 52, op: 0.045 },
+              { row: 3, col: 3, x: "75%", y: "62%", rot: -28, sz: 40, op: 0.035 },
+              { row: 4, col: 1, x: "20%", y: "88%", rot: -32, sz: 44, op: 0.04 },
+              { row: 4, col: 2, x: "55%", y: "90%", rot: -30, sz: 48, op: 0.045 },
+            ].map((pos, i) => (
+              <div
+                key={i}
+                className="absolute font-extrabold uppercase select-none"
+                style={{
+                  top: pos.y,
+                  left: pos.x,
+                  fontSize: `${pos.sz}px`,
+                  transform: `rotate(${pos.rot}deg)`,
+                  letterSpacing: "0.3em",
+                  color: `rgba(59, 130, 246, ${pos.op})`,
+                  fontWeight: 900,
+                }}
+              >
+                PAID
+              </div>
+            ))}
           </div>
-          <div>
-            <h1 className="text-white text-lg font-bold leading-none">{COMPANY.brandName}</h1>
-            <p className="text-white/70 text-[10px]">Professional App Testing Community</p>
-          </div>
-        </div>
-        <div className="text-right">
-          <h2 className="text-white text-xl font-extrabold uppercase tracking-tight leading-none">Tax Invoice</h2>
-          {isExport && (
-            <span className="inline-block mt-1 px-2 py-0.5 rounded bg-white/20 text-white text-[9px] font-bold uppercase tracking-wider">
-              Export of Services
-            </span>
-          )}
         </div>
       </div>
 
-      {/** ---- BODY ---- */}
-      <div className="px-6 pt-4 pb-2">
-        {/** ---- SELLER + INVOICE META ---- */}
-        <div className="grid grid-cols-2 gap-0 border border-gray-300 border-b-0 print-grid-2col">
-          <div className="p-3 border-r border-b border-gray-300">
-            <p className="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-1.5">Sold By</p>
-            <p className="font-bold text-gray-900 text-[12px]">{COMPANY.name}</p>
-            <p className="text-gray-600">{COMPANY.addressLine1}</p>
-            <p className="text-gray-600">{COMPANY.addressLine2}</p>
-            <p className="text-gray-600">{COMPANY.city}, {COMPANY.state} &mdash; {COMPANY.pincode}</p>
-            <p className="text-gray-600 mb-1.5">{COMPANY.country}</p>
-            <div className="grid grid-cols-2 gap-x-3 gap-y-0.5 text-gray-700">
-              <span className="text-gray-400">GSTIN</span><span className="font-mono font-semibold">{COMPANY.gstin}</span>
-              <span className="text-gray-400">PAN</span><span className="font-mono font-semibold">{COMPANY.pan}</span>
-              <span className="text-gray-400">Email</span><span>{COMPANY.email}</span>
-            </div>
-          </div>
-          <div className="p-3 border-b border-gray-300">
-            <p className="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-1.5">Invoice Details</p>
-            <div className="grid grid-cols-2 gap-x-3 gap-y-1 text-gray-700">
-              <span className="text-gray-400">Invoice No.</span><span className="font-mono font-semibold text-gray-900">{invoice.invoice_number}</span>
-              <span className="text-gray-400">Date</span><span className="font-semibold text-gray-900">{invoiceDate}</span>
-              <span className="text-gray-400">Due Date</span><span>{dueDate}</span>
-              <span className="text-gray-400">Supply Type</span><span className="font-semibold">{invoice.supply_type || (isExport ? "Export of Services" : "Supply of Services")}</span>
-              <span className="text-gray-400">Place of Supply</span><span>{invoice.place_of_supply || "\u2014"}</span>
-              <span className="text-gray-400">Currency</span><span className="font-semibold">{currency}</span>
-              {isExport && invoice.lut_number && (<><span className="text-gray-400">LUT No.</span><span className="font-mono">{invoice.lut_number}</span></>)}
-            </div>
-          </div>
-        </div>
+      {/** CONTENT */}
+      <div className="relative z-[2]">
+        {/** TOP ACCENT LINE */}
+        <div className="h-1.5" style={{ background: `linear-gradient(90deg, ${PRIMARY}, ${PRIMARY_DARK})` }} />
 
-        {/** ---- BUYER + NATURE ---- */}
-        <div className="grid grid-cols-2 gap-0 border border-gray-300 border-b-0 border-t-0 print-grid-2col">
-          <div className="p-3 border-r border-b border-gray-300">
-            <p className="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-1.5">Bill To</p>
-            <p className="font-bold text-gray-900 text-[12px]">{billingInfo?.name || user?.name || "Customer"}</p>
-            {userDetail?.company_name && <p className="font-semibold text-gray-700">{userDetail.company_name}</p>}
-            <div className="text-gray-600">
-              {billingInfo?.address && <p>{billingInfo.address}</p>}
-              {(billingInfo?.city || billingInfo?.state || billingInfo?.zipCode) && (
-                <p>{[billingInfo?.city, billingInfo?.state, billingInfo?.zipCode].filter(Boolean).join(", ")}</p>
-              )}
-              {billingInfo?.country && <p>{billingInfo.country}</p>}
-              {billingInfo?.gstin && <p className="mt-1"><span className="text-gray-400">GSTIN:</span> <span className="font-mono">{billingInfo.gstin}</span></p>}
-              <p><span className="text-gray-400">Email:</span> {billingInfo?.email || user?.email}</p>
+        {/** HEADER */}
+        <div className="px-10 pt-7 pb-6">
+          <div className="flex items-start justify-between">
+            <div className="flex items-center gap-4">
+              <div className="w-14 h-14 rounded-2xl flex items-center justify-center p-2 shrink-0" style={{ background: `linear-gradient(135deg, ${PRIMARY}, ${PRIMARY_DARK})` }}>
+                <Image src="/inTesters-logo.svg" alt="InTesters" width={36} height={36} className="object-contain brightness-0 invert" />
+              </div>
+              <div>
+                <h1 className="text-2xl font-bold tracking-tight text-slate-900">{COMPANY.brandName}</h1>
+                <p className="text-slate-400 text-sm font-medium mt-0.5">Professional App Testing Community</p>
+              </div>
             </div>
-          </div>
-          <div className="p-3 border-b border-gray-300">
-            {isExport ? (
-              <>
-                <p className="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-1.5">Nature of Export</p>
-                <p className="text-gray-700">Zero-Rated Supply (Export under LUT without payment of Integrated Tax)</p>
-              </>
-            ) : (
-              <>
-                <p className="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-1.5">Nature of Supply</p>
-                <p className="text-gray-700">Supply of Services</p>
-                {billingInfo?.gstin && (
-                  <p className="mt-1 text-gray-600"><span className="text-gray-400">Buyer GSTIN:</span> <span className="font-mono">{billingInfo.gstin}</span></p>
+            <div className="text-right">
+              <div className="inline-flex flex-col items-end">
+                <h2 className="text-3xl font-black uppercase tracking-tight" style={{ color: PRIMARY }}>Tax Invoice</h2>
+                <div className="mt-2 flex items-center gap-2">
+                  <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">No.</span>
+                  <span className="font-mono text-sm font-bold text-slate-700 bg-slate-50 px-2.5 py-1 rounded-md border border-slate-200">{invoice.invoice_number}</span>
+                </div>
+                {isExport && (
+                  <span className="mt-2 px-3 py-1 rounded-md text-xs font-bold uppercase tracking-wider text-white" style={{ backgroundColor: PRIMARY }}>
+                    Export of Services
+                  </span>
                 )}
-              </>
-            )}
+              </div>
+            </div>
           </div>
         </div>
 
-        {/** ---- ITEMS TABLE ---- */}
-        <table className="w-full border border-gray-300 border-t-0">
-          <thead>
-            <tr style={{ backgroundColor: PRIMARY }} className="text-white text-[10px]">
-              <th className="py-2 px-3 text-left font-semibold w-6">#</th>
-              <th className="py-2 px-3 text-left font-semibold">Description of Service</th>
-              <th className="py-2 px-3 text-center font-semibold">SAC</th>
-              <th className="py-2 px-3 text-center font-semibold">Period</th>
-              <th className="py-2 px-3 text-center font-semibold">Qty</th>
-              <th className="py-2 px-3 text-right font-semibold">Rate</th>
-              <th className="py-2 px-3 text-right font-semibold">Amount ({currency})</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr className="border-b border-gray-200">
-              <td className="py-2.5 px-3 text-gray-500 text-center">1</td>
-              <td className="py-2.5 px-3">
-                <p className="font-semibold text-gray-900">{invoice.service_name}</p>
-                <p className="text-gray-500">App Testing Services</p>
-              </td>
-              <td className="py-2.5 px-3 text-center font-mono text-gray-600">{invoice.sac_code || COMPANY.sacCode}</td>
-              <td className="py-2.5 px-3 text-center text-gray-600">{invoice.period || "\u2014"}</td>
-              <td className="py-2.5 px-3 text-center font-medium text-gray-900">{quantity}</td>
-              <td className="py-2.5 px-3 text-right font-medium text-gray-900">{formatCurrency(unitPrice, currency)}</td>
-              <td className="py-2.5 px-3 text-right font-bold text-gray-900">{formatCurrency(subtotal, currency)}</td>
-            </tr>
-          </tbody>
-        </table>
+        {/** DIVIDER */}
+        <div className="mx-10 h-px bg-slate-100" />
 
-        {/** ---- TOTALS ---- */}
-        <div className="border-x border-b border-gray-300">
-          <div className="grid grid-cols-[1fr_180px]">
-            <div className="p-3 border-r border-gray-300">
-              <p className="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-1">Amount in Words</p>
-              <p className="text-[12px] font-semibold text-gray-800 italic">
+        {/** SELLER + INVOICE DETAILS */}
+        <div className="px-10 py-5">
+          <div className="grid grid-cols-2 print-grid-2col gap-8">
+            <div>
+              <p className="text-[10px] font-bold uppercase tracking-[0.2em] mb-3" style={{ color: PRIMARY }}>Sold By</p>
+              <p className="text-[15px] font-bold text-slate-900 leading-snug">{COMPANY.name}</p>
+              <div className="mt-2 space-y-0.5 text-sm text-slate-500 leading-relaxed">
+                <p>{COMPANY.addressLine1}</p>
+                <p>{COMPANY.addressLine2}</p>
+                <p>{COMPANY.city}, {COMPANY.state} &mdash; {COMPANY.pincode}</p>
+                <p>{COMPANY.country}</p>
+              </div>
+              <div className="mt-3 space-y-1 text-sm">
+                <div className="flex gap-2">
+                  <span className="text-slate-400 font-medium w-14 shrink-0">GSTIN</span>
+                  <span className="font-mono font-semibold text-slate-700">{COMPANY.gstin}</span>
+                </div>
+                <div className="flex gap-2">
+                  <span className="text-slate-400 font-medium w-14 shrink-0">PAN</span>
+                  <span className="font-mono font-semibold text-slate-700">{COMPANY.pan}</span>
+                </div>
+                <div className="flex gap-2">
+                  <span className="text-slate-400 font-medium w-14 shrink-0">Email</span>
+                  <span className="text-slate-600">{COMPANY.email}</span>
+                </div>
+              </div>
+            </div>
+            <div>
+              <p className="text-[10px] font-bold uppercase tracking-[0.2em] mb-3" style={{ color: PRIMARY }}>Invoice Details</p>
+              <div className="space-y-2 text-sm">
+                <div className="flex justify-between">
+                  <span className="text-slate-400 font-medium">Invoice No.</span>
+                  <span className="font-mono font-bold text-slate-800">{invoice.invoice_number}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-slate-400 font-medium">Date</span>
+                  <span className="font-semibold text-slate-800">{invoiceDate}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-slate-400 font-medium">Supply Type</span>
+                  <span className="font-medium text-slate-700">{invoice.supply_type || (isExport ? "Export of Services" : "Supply of Services")}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-slate-400 font-medium">Place of Supply</span>
+                  <span className="font-medium text-slate-700">{invoice.place_of_supply || "\u2014"}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-slate-400 font-medium">Currency</span>
+                  <span className="font-bold text-slate-800">{currency}</span>
+                </div>
+                {isExport && invoice.lut_number && (
+                  <div className="flex justify-between">
+                    <span className="text-slate-400 font-medium">LUT No.</span>
+                    <span className="font-mono font-medium text-slate-700">{invoice.lut_number}</span>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/** DIVIDER */}
+        <div className="mx-10 h-px bg-slate-100" />
+
+        {/** BUYER + NATURE */}
+        <div className="px-10 py-5">
+          <div className="grid grid-cols-2 print-grid-2col gap-8">
+            <div>
+              <p className="text-[10px] font-bold uppercase tracking-[0.2em] mb-3" style={{ color: PRIMARY }}>Bill To</p>
+              <p className="text-[15px] font-bold text-slate-900 leading-snug">{billingInfo?.name || user?.name || "Customer"}</p>
+              {userDetail?.company_name && <p className="text-sm font-semibold text-slate-600 mt-0.5">{userDetail.company_name}</p>}
+              <div className="mt-2 space-y-0.5 text-sm text-slate-500 leading-relaxed">
+                {billingInfo?.address && <p>{billingInfo.address}</p>}
+                {(billingInfo?.city || billingInfo?.state || billingInfo?.zipCode) && (
+                  <p>{[billingInfo?.city, billingInfo?.state, billingInfo?.zipCode].filter(Boolean).join(", ")}</p>
+                )}
+                {billingInfo?.country && <p>{billingInfo.country}</p>}
+              </div>
+              <div className="mt-3 space-y-1 text-sm">
+                {billingInfo?.gstin && (
+                  <div className="flex gap-2">
+                    <span className="text-slate-400 font-medium w-14 shrink-0">GSTIN</span>
+                    <span className="font-mono font-semibold text-slate-700">{billingInfo.gstin}</span>
+                  </div>
+                )}
+                <div className="flex gap-2">
+                  <span className="text-slate-400 font-medium w-14 shrink-0">Email</span>
+                  <span className="text-slate-600">{billingInfo?.email || user?.email}</span>
+                </div>
+              </div>
+            </div>
+            <div>
+              {isExport ? (
+                <>
+                  <p className="text-[10px] font-bold uppercase tracking-[0.2em] mb-3" style={{ color: PRIMARY }}>Nature of Export</p>
+                  <p className="text-[15px] font-semibold text-slate-800 leading-snug">Professional Application Testing Services</p>
+                  <p className="text-sm text-slate-500 mt-1">Zero-Rated Supply (Export under LUT without payment of Integrated Tax)</p>
+                </>
+              ) : (
+                <>
+                  <p className="text-[10px] font-bold uppercase tracking-[0.2em] mb-3" style={{ color: PRIMARY }}>Nature of Supply</p>
+                  <p className="text-[15px] font-semibold text-slate-800 leading-snug">Professional Application Testing Services</p>
+                  {billingInfo?.gstin && (
+                    <div className="mt-2 flex gap-2 text-sm">
+                      <span className="text-slate-400 font-medium">Buyer GSTIN:</span>
+                      <span className="font-mono font-semibold text-slate-700">{billingInfo.gstin}</span>
+                    </div>
+                  )}
+                </>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {/** DIVIDER */}
+        <div className="mx-10 h-px bg-slate-100" />
+
+        {/** ITEMS TABLE */}
+        <div className="px-10 py-5">
+          <p className="text-[10px] font-bold uppercase tracking-[0.2em] mb-3" style={{ color: PRIMARY }}>Service Details</p>
+          <table className="w-full text-sm">
+            <thead>
+              <tr className="border-b-2" style={{ borderColor: PRIMARY }}>
+                <th className="pb-2 text-left font-semibold text-slate-500 w-8 text-xs">#</th>
+                <th className="pb-2 text-left font-semibold text-slate-500 text-xs">Description</th>
+                <th className="pb-2 text-center font-semibold text-slate-500 text-xs">SAC</th>
+                <th className="pb-2 text-center font-semibold text-slate-500 text-xs">Qty</th>
+                <th className="pb-2 text-right font-semibold text-slate-500 text-xs">Rate</th>
+                <th className="pb-2 text-right font-semibold text-slate-500 text-xs">Amount ({currency})</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr className="border-b border-slate-100">
+                <td className="py-3 text-slate-400 text-center">1</td>
+                <td className="py-3">
+                  <p className="font-semibold text-slate-900">{invoice.service_name || "Android App Closed Testing Package"}</p>
+                  <p className="text-xs text-slate-400 mt-0.5">Professional Application Testing Services</p>
+                </td>
+                <td className="py-3 text-center font-mono text-slate-500 text-xs">{invoice.sac_code || COMPANY.sacCode}</td>
+                <td className="py-3 text-center font-semibold text-slate-800">{quantity}</td>
+                <td className="py-3 text-right font-medium text-slate-700">{formatCurrency(unitPrice, currency)}</td>
+                <td className="py-3 text-right font-bold text-slate-900">{formatCurrency(subtotal, currency)}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        {/** DIVIDER */}
+        <div className="mx-10 h-px bg-slate-100" />
+
+        {/** TOTALS */}
+        <div className="px-10 py-5">
+          <div className="grid grid-cols-2 print-grid-2col gap-8">
+            <div>
+              <p className="text-[10px] font-bold uppercase tracking-[0.2em] mb-2" style={{ color: PRIMARY }}>Amount in Words</p>
+              <p className="text-sm font-medium text-slate-600 italic">
                 {formatAmountInWords(invoice.amount_in_words, totalAmount, currency)}
               </p>
             </div>
-            <div className="text-[11px]">
-              <div className="flex justify-between px-3 py-1.5 border-b border-gray-200">
-                <span className="text-gray-500">Subtotal</span>
-                <span className="font-medium">{formatCurrency(subtotal, currency)}</span>
+            <div className="space-y-0">
+              <div className="flex justify-between py-2 text-sm border-b border-slate-100">
+                <span className="text-slate-400">Subtotal</span>
+                <span className="font-semibold text-slate-700">{formatCurrency(subtotal, currency)}</span>
               </div>
               {isIndia && isDelhi && !isExport ? (
                 <>
-                  <div className="flex justify-between px-3 py-1.5 border-b border-gray-200">
-                    <span className="text-gray-500">CGST @ 9%</span>
-                    <span className="font-medium">{formatCurrency(cgstAmount, currency)}</span>
+                  <div className="flex justify-between py-2 text-sm border-b border-slate-100">
+                    <span className="text-slate-400">CGST @ 9%</span>
+                    <span className="font-semibold text-slate-700">{formatCurrency(cgstAmount, currency)}</span>
                   </div>
-                  <div className="flex justify-between px-3 py-1.5 border-b border-gray-200">
-                    <span className="text-gray-500">SGST @ 9%</span>
-                    <span className="font-medium">{formatCurrency(sgstAmount, currency)}</span>
+                  <div className="flex justify-between py-2 text-sm border-b border-slate-100">
+                    <span className="text-slate-400">SGST @ 9%</span>
+                    <span className="font-semibold text-slate-700">{formatCurrency(sgstAmount, currency)}</span>
                   </div>
                 </>
               ) : isIndia && !isExport ? (
-                <div className="flex justify-between px-3 py-1.5 border-b border-gray-200">
-                  <span className="text-gray-500">IGST @ 18%</span>
-                  <span className="font-medium">{formatCurrency(igstAmount, currency)}</span>
+                <div className="flex justify-between py-2 text-sm border-b border-slate-100">
+                  <span className="text-slate-400">IGST @ 18%</span>
+                  <span className="font-semibold text-slate-700">{formatCurrency(igstAmount, currency)}</span>
                 </div>
               ) : (
-                <div className="flex justify-between px-3 py-1.5 border-b border-gray-200">
-                  <span className="text-gray-500">IGST @ 0% (Zero-rated)</span>
-                  <span className="font-medium">{formatCurrency(0, currency)}</span>
+                <div className="flex justify-between py-2 text-sm border-b border-slate-100">
+                  <span className="text-slate-400">IGST @ 0% (Zero-rated)</span>
+                  <span className="font-semibold text-slate-700">{formatCurrency(0, currency)}</span>
                 </div>
               )}
-              <div className="flex justify-between px-3 py-2 font-bold text-gray-900" style={{ backgroundColor: "#eff6ff" }}>
+              <div className="flex justify-between py-3 text-base font-bold text-slate-900 mt-1 rounded-lg px-3" style={{ backgroundColor: PRIMARY_LIGHT }}>
                 <span>Total</span>
-                <span className="text-[13px]">{formatCurrency(totalAmount, currency)}</span>
+                <span>{formatCurrency(totalAmount, currency)}</span>
               </div>
             </div>
           </div>
         </div>
 
-        {/** ---- DECLARATION + SIGNATORY ---- */}
-        <div className="grid grid-cols-2 gap-0 border border-gray-300 border-t-0 mt-0 print-grid-2col">
-          <div className="p-3 border-r border-gray-300">
-            <p className="text-[9px] font-bold text-gray-400 uppercase tracking-widest mb-1.5">Declaration</p>
-            <p className="text-gray-500">This is a computer-generated tax invoice.</p>
-            {isExport && <p className="text-gray-500">Supply meant for Export under LUT without payment of Integrated Tax.</p>}
-            <p className="text-gray-500">E&amp;OE; Subject to {COMPANY.stateName} jurisdiction.</p>
-          </div>
-          <div className="p-3 text-right">
-            <p className="text-gray-400 text-[10px] mb-10">For {COMPANY.name}</p>
-            <div className="border-t border-gray-300 pt-1 inline-block min-w-[140px]">
-              <p className="text-gray-500 text-[10px]">Authorised Signatory</p>
+        {/** DIVIDER */}
+        <div className="mx-10 h-px bg-slate-100" />
+
+        {/** DECLARATION + SIGNATORY */}
+        <div className="px-10 py-5">
+          <div className="grid grid-cols-2 print-grid-2col gap-8">
+            <div>
+              <p className="text-[10px] font-bold uppercase tracking-[0.2em] mb-2" style={{ color: PRIMARY }}>Declaration</p>
+              <p className="text-xs text-slate-400 leading-relaxed">This is a computer-generated tax invoice. {isExport && "Supply meant for Export under LUT without payment of Integrated Tax. "}E&amp;OE; Subject to {COMPANY.stateName} jurisdiction.</p>
+            </div>
+            <div className="text-right">
+              <p className="text-xs text-slate-400 mb-16">For {COMPANY.name}</p>
+              <div className="border-t-2 border-slate-800 pt-2 inline-block min-w-[160px]">
+                <p className="text-xs text-slate-500 font-medium">Authorised Signatory</p>
+              </div>
             </div>
           </div>
         </div>
 
-        {/** ---- FOOTER BAR ---- */}
-        <div className="py-2.5 text-center" style={{ backgroundColor: PRIMARY }}>
-          <p className="text-white/80 text-[9px] font-semibold tracking-wider uppercase">
+        {/** FOOTER */}
+        <div className="h-1.5" style={{ background: `linear-gradient(90deg, ${PRIMARY}, ${PRIMARY_DARK})` }} />
+        <div className="text-center py-3">
+          <p className="text-[10px] font-semibold text-slate-300 uppercase tracking-[0.25em]">
             {COMPANY.website} &nbsp;&middot;&nbsp; {COMPANY.email}
           </p>
         </div>
@@ -264,90 +392,90 @@ function LegacyInvoice({ invoice }: { invoice: InvoiceDetail }) {
   const currency = payment?.currency || "INR";
 
   return (
-    <div className="bg-white text-slate-900 rounded-3xl shadow-xl overflow-hidden print:shadow-none print:rounded-none print:bg-white print-card">
-      <div className="bg-slate-900 text-white p-8 sm:p-12 flex flex-col md:flex-row justify-between gap-8 print-flex">
-        <div className="space-y-4">
-          <div className="flex items-center gap-3">
-            <div className="w-12 h-12 bg-white rounded-xl flex items-center justify-center p-1 overflow-hidden">
-              <Image src="/apple-icon.png" alt="InTesters Logo" width={40} height={40} className="object-contain" />
+    <div className="bg-white text-slate-900 rounded-2xl shadow-lg overflow-hidden print:shadow-none print:rounded-none print:bg-white print-card">
+      <div className="relative overflow-hidden" style={{ background: `linear-gradient(135deg, ${PRIMARY}, ${PRIMARY_DARK})` }}>
+        <div className="px-8 pt-8 pb-10 sm:px-12 flex flex-col md:flex-row justify-between gap-8 print-flex">
+          <div className="space-y-4">
+            <div className="flex items-center gap-3">
+              <div className="w-11 h-11 bg-white/15 backdrop-blur rounded-xl flex items-center justify-center p-1.5 overflow-hidden">
+                <Image src="/apple-icon.png" alt="InTesters Logo" width={32} height={32} className="object-contain brightness-0 invert" />
+              </div>
+              <h1 className="text-xl font-bold tracking-tight text-white">{COMPANY.brandName}</h1>
             </div>
-            <h1 className="text-2xl font-bold tracking-tighter">InTesters</h1>
+            <p className="text-white/60 text-xs max-w-[200px]">Professional Android App Testing Community.</p>
           </div>
-          <p className="text-slate-400 text-sm max-w-[200px]">Professional Android App Testing Community.</p>
-        </div>
-        <div className="text-right flex flex-col justify-end">
-          <h2 className="text-4xl font-black uppercase tracking-tighter text-primary/80 mb-1">Invoice</h2>
-          <p className="text-slate-400 font-medium">#{invoice.invoice_number}</p>
+          <div className="text-right flex flex-col justify-end">
+            <h2 className="text-3xl font-black uppercase tracking-tighter text-white/90 mb-1">Invoice</h2>
+            <p className="text-white/60 font-mono text-sm">#{invoice.invoice_number}</p>
+          </div>
         </div>
       </div>
-      <div className="p-8 sm:p-12 space-y-12">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-12 border-b border-slate-100 pb-12 print-grid">
-          <div className="space-y-4">
-            <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest">Bill To</h3>
+      <div className="p-8 sm:p-10 space-y-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 print-grid">
+          <div className="space-y-3">
+            <h3 className="text-[10px] font-bold uppercase tracking-[0.2em]" style={{ color: PRIMARY }}>Bill To</h3>
             <div className="space-y-1">
-              <p className="font-bold text-lg">{billingInfo?.name || user?.name || "Customer"}</p>
-              <p className="text-slate-600 text-sm">{billingInfo?.email || user?.email}</p>
-              {billingInfo?.address && <p className="text-slate-600 text-sm">{billingInfo.address}</p>}
+              <p className="font-bold text-lg text-slate-900">{billingInfo?.name || user?.name || "Customer"}</p>
+              <p className="text-slate-500 text-sm">{billingInfo?.email || user?.email}</p>
+              {billingInfo?.address && <p className="text-slate-500 text-sm">{billingInfo.address}</p>}
               {billingInfo?.city && (
-                <p className="text-slate-600 text-sm">{billingInfo.city}, {billingInfo.state} {billingInfo.zipCode}</p>
+                <p className="text-slate-500 text-sm">{billingInfo.city}, {billingInfo.state} {billingInfo.zipCode}</p>
               )}
-              {billingInfo?.country && <p className="text-slate-600 text-sm">{billingInfo.country}</p>}
+              {billingInfo?.country && <p className="text-slate-500 text-sm">{billingInfo.country}</p>}
             </div>
           </div>
           <div className="md:text-right space-y-4">
-            <div className="space-y-4">
-              <div>
-                <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Date Issued</h3>
-                <p className="font-bold">{format(new Date(invoice.createdAt), "MMMM dd, yyyy")}</p>
-              </div>
-              <div>
-                <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Payment Method</h3>
-                <p className="font-bold capitalize">{payment?.method || "Razorpay"}</p>
-              </div>
-              <div>
-                <h3 className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Transaction ID</h3>
-                <p className="font-mono text-xs text-slate-500">{payment?.razorpayPaymentId}</p>
-              </div>
+            <div>
+              <h3 className="text-[10px] font-bold uppercase tracking-[0.2em] mb-1" style={{ color: PRIMARY }}>Date Issued</h3>
+              <p className="font-bold text-slate-900">{format(new Date(invoice.createdAt), "MMMM dd, yyyy")}</p>
+            </div>
+            <div>
+              <h3 className="text-[10px] font-bold uppercase tracking-[0.2em] mb-1" style={{ color: PRIMARY }}>Payment Method</h3>
+              <p className="font-bold text-slate-900 capitalize">{payment?.method || "Razorpay"}</p>
+            </div>
+            <div>
+              <h3 className="text-[10px] font-bold uppercase tracking-[0.2em] mb-1" style={{ color: PRIMARY }}>Transaction ID</h3>
+              <p className="font-mono text-xs text-slate-400">{payment?.razorpayPaymentId}</p>
             </div>
           </div>
         </div>
-        <div className="space-y-4">
-          <div className="overflow-x-auto">
-            <table className="w-full text-left">
-              <thead>
-                <tr className="border-b-2 border-slate-900">
-                  <th className="py-4 font-bold text-slate-900">Description</th>
-                  <th className="py-4 font-bold text-slate-900 text-center">Qty</th>
-                  <th className="py-4 font-bold text-slate-900 text-right">Unit Price</th>
-                  <th className="py-4 font-bold text-slate-900 text-right">Amount</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-slate-100">
-                <tr>
-                  <td className="py-6">
-                    <p className="font-bold text-slate-900">{invoice.service_name}</p>
-                    <p className="text-slate-500 text-sm">Professional Android Testing Package</p>
-                  </td>
-                  <td className="py-6 text-center font-medium">1</td>
-                  <td className="py-6 text-right font-medium">{currency} {((payment?.amount || 0) / 100).toLocaleString()}</td>
-                  <td className="py-6 text-right font-bold">{currency} {((payment?.amount || 0) / 100).toLocaleString()}</td>
-                </tr>
-              </tbody>
-            </table>
+        <div className="overflow-x-auto">
+          <table className="w-full text-left">
+            <thead>
+              <tr className="border-b-2" style={{ borderColor: PRIMARY }}>
+                <th className="py-3 font-semibold text-slate-500 text-xs">Description</th>
+                <th className="py-3 font-semibold text-slate-500 text-xs text-center">Qty</th>
+                <th className="py-3 font-semibold text-slate-500 text-xs text-right">Unit Price</th>
+                <th className="py-3 font-semibold text-slate-500 text-xs text-right">Amount</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr className="border-b border-slate-100">
+                <td className="py-4">
+                  <p className="font-semibold text-slate-900">{invoice.service_name || "Android App Closed Testing Package"}</p>
+                  <p className="text-xs text-slate-400 mt-0.5">Professional Application Testing Services</p>
+                </td>
+                <td className="py-4 text-center font-medium">1</td>
+                <td className="py-4 text-right font-medium">{currency} {((payment?.amount || 0) / 100).toLocaleString()}</td>
+                <td className="py-4 text-right font-bold text-slate-900">{currency} {((payment?.amount || 0) / 100).toLocaleString()}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div className="flex justify-end">
+          <div className="w-full sm:w-64 space-y-2">
+            <div className="flex justify-between text-sm text-slate-500"><span>Subtotal</span><span className="font-medium text-slate-700">{currency} {((payment?.amount || 0) / 100).toLocaleString()}</span></div>
+            <div className="flex justify-between text-sm text-slate-500"><span>Tax (0%)</span><span className="font-medium text-slate-700">0.00</span></div>
+            <div className="flex justify-between text-lg font-black text-slate-900 border-t-2 pt-3" style={{ borderColor: PRIMARY }}>
+              <span>Total</span><span>{currency} {((payment?.amount || 0) / 100).toLocaleString()}</span>
+            </div>
           </div>
         </div>
-        <div className="flex justify-end pt-8">
-          <div className="w-full sm:w-64 space-y-3">
-            <div className="flex justify-between text-slate-600"><span>Subtotal</span><span className="font-medium">{currency} {((payment?.amount || 0) / 100).toLocaleString()}</span></div>
-            <div className="flex justify-between text-slate-600"><span>Tax (0%)</span><span className="font-medium">0.00</span></div>
-            <div className="flex justify-between text-2xl font-black text-slate-900 border-t-2 border-slate-900 pt-3"><span>Total</span><span>{currency} {((payment?.amount || 0) / 100).toLocaleString()}</span></div>
-          </div>
-        </div>
-        <div className="pt-20 text-center border-t border-slate-100">
-          <p className="text-slate-400 text-xs italic">Thank you for choosing InTesters for your app testing needs. This is a computer generated invoice.</p>
-          <div className="mt-4 flex justify-center gap-6 text-slate-300">
-            <p className="text-[10px] font-bold tracking-widest uppercase">www.intesters.com</p>
-            <p className="text-[10px] font-bold tracking-widest uppercase">support@intesters.com</p>
+        <div className="pt-6 text-center border-t border-slate-100">
+          <p className="text-slate-300 text-[10px]">Thank you for choosing InTesters. This is a computer generated invoice.</p>
+          <div className="mt-2 flex justify-center gap-4">
+            <p className="text-[9px] font-bold tracking-[0.2em] uppercase text-slate-300">{COMPANY.website}</p>
+            <p className="text-[9px] font-bold tracking-[0.2em] uppercase text-slate-300">{COMPANY.email}</p>
           </div>
         </div>
       </div>
