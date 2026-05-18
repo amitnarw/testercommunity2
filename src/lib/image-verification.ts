@@ -1,12 +1,27 @@
 import exifr from "exifr";
 
-// Minimum image dimensions (in pixels)
 const MIN_WIDTH = 200;
 const MIN_HEIGHT = 200;
-// Minimum file size (in bytes) - 10KB
 const MIN_FILE_SIZE = 10 * 1024;
+const MAX_FILE_SIZE = 5 * 1024 * 1024;
+const LEGIT_SOFTWARE_KEYWORDS = [
+  "android",
+  "samsung",
+  "one ui",
+  "oneui",
+  "xiaomi",
+  "miui",
+  "oppo",
+  "coloros",
+  "vivo",
+  "funtouch",
+  "realme",
+  "google",
+  "pixel",
+  "nothing",
+];
+const EPOCH_MS = 86400000;
 
-// Known image editing software signatures that might appear in EXIF
 const EDITING_SOFTWARE_PATTERNS = [
   /photoshop/i,
   /adobe/i,
@@ -30,12 +45,27 @@ const EDITING_SOFTWARE_PATTERNS = [
   /kapwing/i,
   /figma/i,
   /sketch/i,
-  /editor/i,
   /edited/i,
   /modified/i,
 ];
 
-// Suspicious patterns in filenames
+const SOCIAL_MEDIA_PATTERNS = [
+  /wa\d{4,}/i,
+  /whatsapp/i,
+  /telegram/i,
+  /signal/i,
+  /instagram/i,
+  /fb_img/i,
+  /messenger/i,
+  /drive_/i,
+  /gmail/i,
+  /dropbox/i,
+  /icloud/i,
+  /^photo_\d{4}-\d{2}-\d{2}_/i,
+  /^video_\d{4}-\d{2}-\d{2}_/i,
+  /^vid-\d{8}-/i,
+];
+
 const SUSPICIOUS_FILENAME_PATTERNS = [
   /edit/i,
   /edited/i,
@@ -44,7 +74,6 @@ const SUSPICIOUS_FILENAME_PATTERNS = [
   /crop/i,
   /resized/i,
   /copy/i,
-  /\(\d+\)/,
   /\s-\s*copy/i,
   /final/i,
   /v\d+/i,
@@ -60,6 +89,19 @@ const SUSPICIOUS_FILENAME_PATTERNS = [
   /canva/i,
 ];
 
+export type VerificationErrorCode =
+  | "SIZE_TOO_SMALL"
+  | "FILE_TOO_LARGE"
+  | "DIMENSIONS_TOO_SMALL"
+  | "SUSPICIOUS_FILENAME"
+  | "SOCIAL_MEDIA_DETECTED"
+  | "FILENAME_DATE_MISMATCH"
+  | "EDITING_SOFTWARE_DETECTED"
+  | "DATE_NOT_TODAY"
+  | "IMAGE_LOAD_FAILED"
+  | "EXIF_PARSE_FAILED"
+  | "VERIFICATION_FAILED";
+
 export interface ImageVerificationResult {
   isValid: boolean;
   errors: VerificationError[];
@@ -67,11 +109,7 @@ export interface ImageVerificationResult {
 }
 
 export interface VerificationError {
-  code:
-    | "SIZE_TOO_SMALL"
-    | "EDITING_SOFTWARE_DETECTED"
-    | "DATE_NOT_TODAY"
-    | "VERIFICATION_FAILED";
+  code: VerificationErrorCode;
   message: string;
   details?: string;
 }
@@ -87,11 +125,9 @@ export interface ImageMetadata {
   createDate?: Date;
   modifyDate?: Date;
   dateOfCapture?: Date;
+  dateSource?: "exif" | "filename" | "lastModified";
 }
 
-/**
- * Get image dimensions by loading it into an Image element
- */
 async function getImageDimensions(
   file: File,
 ): Promise<{ width: number; height: number }> {
@@ -113,26 +149,8 @@ async function getImageDimensions(
   });
 }
 
-/**
- * Check if a date is from today (same calendar day)
- */
-function isDateToday(date: Date): boolean {
-  const today = new Date();
-  return (
-    date.getFullYear() === today.getFullYear() &&
-    date.getMonth() === today.getMonth() &&
-    date.getDate() === today.getDate()
-  );
-}
-
-/**
- * Parse EXIF date string to Date object
- */
-function parseExifDate(
-  dateString: string | Date | undefined,
-): Date | undefined {
+function parseExifDate(dateString: string | Date | undefined): Date | undefined {
   if (!dateString) return undefined;
-
   if (dateString instanceof Date) {
     return isNaN(dateString.getTime()) ? undefined : dateString;
   }
@@ -156,50 +174,104 @@ function parseExifDate(
   return isNaN(parsed.getTime()) ? undefined : parsed;
 }
 
-// Generic error message shown to users - intentionally vague
-const GENERIC_ERROR_MESSAGE = "Screenshot verification failed";
-const GENERIC_ERROR_DETAILS =
-  "Please take a fresh screenshot directly from your device and try again.";
+function extractDateFromFilename(filename: string): Date | null {
+  const patterns = [
+    /(\d{4})(\d{2})(\d{2})[_-]?(\d{2})(\d{2})(\d{2})/,
+    /(\d{4})[-_]?(\d{2})[-_]?(\d{2})/,
+  ];
 
-/**
- * Verify an image file before uploading
- */
+  for (const pattern of patterns) {
+    const match = filename.match(pattern);
+    if (!match) continue;
+
+    let year: number, month: number, day: number;
+
+    if (match[1].length === 4 && match[1].startsWith("20")) {
+      year = parseInt(match[1]);
+      month = parseInt(match[2]);
+      day = parseInt(match[3]);
+    } else {
+      continue;
+    }
+
+    if (month < 1 || month > 12 || day < 1 || day > 31) continue;
+
+    const date = new Date(year, month - 1, day);
+    if (!isNaN(date.getTime())) {
+      return date;
+    }
+  }
+
+  return null;
+}
+
+function isLastModifiedReliable(lastModified: number): boolean {
+  if (lastModified <= 0) return false;
+  if (lastModified < EPOCH_MS) return false;
+  return true;
+}
+
+function isWithin24Hours(date: Date): boolean {
+  const now = Date.now();
+  const diff = Math.abs(now - date.getTime());
+  return diff <= 24 * 60 * 60 * 1000;
+}
+
 export async function verifyImage(
   file: File,
 ): Promise<ImageVerificationResult> {
-  const errors: VerificationError[] = [];
   const metadata: ImageMetadata = {
     fileSize: file.size,
   };
 
-  // Track if any verification failed (for vague error messaging)
-  let verificationFailed = false;
+  const filename = file.name.toLowerCase();
 
-  // 1. Check file size
   if (file.size < MIN_FILE_SIZE) {
-    verificationFailed = true;
+    return {
+      isValid: false,
+      errors: [{ code: "SIZE_TOO_SMALL", message: "Screenshot is too small", details: `Minimum size is ${MIN_FILE_SIZE / 1024}KB.` }],
+      metadata,
+    };
+  }
+  if (file.size > MAX_FILE_SIZE) {
+    return {
+      isValid: false,
+      errors: [{ code: "FILE_TOO_LARGE", message: "Screenshot is too large", details: `Maximum size is ${MAX_FILE_SIZE / (1024 * 1024)}MB.` }],
+      metadata,
+    };
   }
 
-  // 2. Check filename for suspicious patterns
-  const filename = file.name.toLowerCase();
-  for (const pattern of SUSPICIOUS_FILENAME_PATTERNS) {
+  for (const pattern of SOCIAL_MEDIA_PATTERNS) {
     if (pattern.test(filename)) {
-      verificationFailed = true;
-      break;
+      return {
+        isValid: false,
+        errors: [{ code: "SOCIAL_MEDIA_DETECTED", message: "Screenshot appears to be from a messaging or cloud app", details: "Please upload the original screenshot directly from your device gallery, not through social media or cloud storage." }],
+        metadata,
+      };
     }
   }
 
-  // 3. Check if filename contains a date that's not today
-  const datePatterns = [
-    /(\d{4})[-_]?(\d{2})[-_]?(\d{2})/,
-    /(\d{2})[-_](\d{2})[-_](\d{4})/,
-  ];
+  for (const pattern of SUSPICIOUS_FILENAME_PATTERNS) {
+    if (pattern.test(filename)) {
+      return {
+        isValid: false,
+        errors: [{ code: "SUSPICIOUS_FILENAME", message: "Screenshot filename looks suspicious", details: "Please upload the original screenshot without renaming or editing it." }],
+        metadata,
+      };
+    }
+  }
 
   const today = new Date();
   const todayYear = today.getFullYear();
   const todayMonth = today.getMonth() + 1;
   const todayDay = today.getDate();
 
+  const datePatterns = [
+    /(\d{4})[-_]?(\d{2})[-_]?(\d{2})/,
+    /(\d{2})[-_](\d{2})[-_](\d{4})/,
+  ];
+
+  let passedFromFilename = false;
   for (const datePattern of datePatterns) {
     const match = filename.match(datePattern);
     if (match) {
@@ -215,31 +287,40 @@ export async function verifyImage(
         year = parseInt(match[3]);
       }
 
-      if (year !== todayYear || month !== todayMonth || day !== todayDay) {
-        verificationFailed = true;
+      if (year === todayYear && month === todayMonth && day === todayDay) {
+        passedFromFilename = true;
       }
       break;
     }
   }
 
-  // 4. Check image dimensions
   try {
     const dimensions = await getImageDimensions(file);
     metadata.width = dimensions.width;
     metadata.height = dimensions.height;
 
     if (dimensions.width < MIN_WIDTH || dimensions.height < MIN_HEIGHT) {
-      verificationFailed = true;
+      return {
+        isValid: false,
+        errors: [{ code: "DIMENSIONS_TOO_SMALL", message: "Image resolution is too low", details: `Minimum resolution is ${MIN_WIDTH}x${MIN_HEIGHT}.` }],
+        metadata,
+      };
     }
   } catch {
-    // Failed to load image
-    verificationFailed = true;
+    return {
+      isValid: false,
+      errors: [{ code: "IMAGE_LOAD_FAILED", message: "Failed to read image", details: "The file may be corrupted." }],
+      metadata,
+    };
   }
 
-  // Variable to track if we found a valid date in EXIF
-  let foundExifDate = false;
+  if (passedFromFilename) {
+    metadata.dateSource = "filename";
+    const fd = extractDateFromFilename(filename);
+    if (fd) metadata.dateOfCapture = fd;
+    return { isValid: true, errors: [], metadata };
+  }
 
-  // 5. Read EXIF data
   try {
     const exifData = await exifr.parse(file, {
       exif: true,
@@ -251,7 +332,6 @@ export async function verifyImage(
     });
 
     if (exifData) {
-      // Extract metadata (for internal use, not shown to user)
       metadata.software =
         exifData.Software ||
         exifData.ProcessingSoftware ||
@@ -262,7 +342,6 @@ export async function verifyImage(
       metadata.make = exifData.Make;
       metadata.model = exifData.Model;
 
-      // Check for editing software in all fields
       const fieldsToCheck = [
         exifData.Software,
         exifData.ProcessingSoftware,
@@ -282,36 +361,36 @@ export async function verifyImage(
 
       for (const field of fieldsToCheck) {
         if (field && typeof field === "string") {
+          const lowerField = field.toLowerCase();
+          if (LEGIT_SOFTWARE_KEYWORDS.some(kw => lowerField.includes(kw))) continue;
           for (const pattern of EDITING_SOFTWARE_PATTERNS) {
             if (pattern.test(field)) {
-              verificationFailed = true;
-              break;
+              return {
+                isValid: false,
+                errors: [{ code: "EDITING_SOFTWARE_DETECTED", message: "Editing software was detected in image metadata", details: "Please upload an unedited screenshot taken directly from your device." }],
+                metadata,
+              };
             }
           }
         }
-        if (verificationFailed) break;
       }
 
-      // Also scan all string fields
-      if (!verificationFailed) {
-        for (const [, value] of Object.entries(exifData)) {
-          if (
-            typeof value === "string" &&
-            value.length > 3 &&
-            value.length < 500
-          ) {
-            for (const pattern of EDITING_SOFTWARE_PATTERNS) {
-              if (pattern.test(value)) {
-                verificationFailed = true;
-                break;
-              }
+      for (const [, value] of Object.entries(exifData)) {
+        if (typeof value === "string" && value.length > 3 && value.length < 500) {
+          const lowerValue = value.toLowerCase();
+          if (LEGIT_SOFTWARE_KEYWORDS.some(kw => lowerValue.includes(kw))) continue;
+          for (const pattern of EDITING_SOFTWARE_PATTERNS) {
+            if (pattern.test(value)) {
+              return {
+                isValid: false,
+                errors: [{ code: "EDITING_SOFTWARE_DETECTED", message: "Editing software was detected in image metadata", details: "Please upload an unedited screenshot taken directly from your device." }],
+                metadata,
+              };
             }
           }
-          if (verificationFailed) break;
         }
       }
 
-      // Check date metadata
       metadata.dateTimeOriginal = parseExifDate(exifData.DateTimeOriginal);
       metadata.createDate = parseExifDate(
         exifData.CreateDate || exifData.DateTimeDigitized,
@@ -325,49 +404,59 @@ export async function verifyImage(
       metadata.dateOfCapture = dateToCheck;
 
       if (dateToCheck) {
-        foundExifDate = true;
-        if (!isDateToday(dateToCheck)) {
-          verificationFailed = true;
+        metadata.dateSource = "exif";
+        if (isWithin24Hours(dateToCheck)) {
+          return { isValid: true, errors: [], metadata };
         }
+        return {
+          isValid: false,
+          errors: [{ code: "DATE_NOT_TODAY", message: "Screenshot was not taken within the last 24 hours", details: "Please take a fresh screenshot and upload it immediately." }],
+          metadata,
+        };
       }
     }
   } catch {
-    // EXIF parsing failed - continue with other checks
+    // EXIF parsing failed
   }
 
-  // 6. If no EXIF date was found, use file.lastModified as fallback
-  if (!foundExifDate) {
+  const filenameDate = extractDateFromFilename(filename);
+  if (filenameDate) {
+    if (isWithin24Hours(filenameDate)) {
+      metadata.dateOfCapture = filenameDate;
+      metadata.dateSource = "filename";
+      return { isValid: true, errors: [], metadata };
+    }
+    return {
+      isValid: false,
+      errors: [{ code: "DATE_NOT_TODAY", message: "Screenshot filename shows an older date", details: "Please take a fresh screenshot from your device." }],
+      metadata,
+    };
+  }
+
+  if (isLastModifiedReliable(file.lastModified)) {
     const fileDate = new Date(file.lastModified);
     metadata.modifyDate = fileDate;
-    metadata.dateOfCapture = fileDate;
-
-    if (!isDateToday(fileDate)) {
-      verificationFailed = true;
+    metadata.dateSource = "lastModified";
+    if (isWithin24Hours(fileDate)) {
+      return { isValid: true, errors: [], metadata };
     }
-  }
-
-  // If any verification failed, add a single generic error
-  if (verificationFailed) {
-    errors.push({
-      code: "VERIFICATION_FAILED",
-      message: GENERIC_ERROR_MESSAGE,
-      details: GENERIC_ERROR_DETAILS,
-    });
+    return {
+      isValid: false,
+      errors: [{ code: "DATE_NOT_TODAY", message: "Screenshot was not taken within the last 24 hours", details: "Please take a fresh screenshot and upload it immediately." }],
+      metadata,
+    };
   }
 
   return {
-    isValid: errors.length === 0,
-    errors,
+    isValid: false,
+    errors: [{ code: "DATE_NOT_TODAY", message: "Could not verify screenshot date", details: "Please take a fresh screenshot directly from your device and try again." }],
     metadata,
   };
 }
 
-/**
- * Get a human-readable summary of verification errors
- */
 export function getVerificationErrorSummary(
   errors: VerificationError[],
 ): string {
   if (errors.length === 0) return "";
-  return GENERIC_ERROR_MESSAGE;
+  return "Screenshot verification failed";
 }

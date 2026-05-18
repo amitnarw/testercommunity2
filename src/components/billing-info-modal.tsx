@@ -51,6 +51,9 @@ export function BillingInfoModal({
     name: "",
     email: "",
     address: "",
+    city: "",
+    state: "",
+    zipCode: "",
     country: "India",
     gstin: "",
   });
@@ -61,6 +64,9 @@ export function BillingInfoModal({
         name: billingInfo.name || "",
         email: billingInfo.email || "",
         address: billingInfo.address || "",
+        city: billingInfo.city || "",
+        state: billingInfo.state || "",
+        zipCode: billingInfo.zipCode || "",
         country: billingInfo.country || "India",
         gstin: billingInfo.gstin || "",
       });
@@ -161,16 +167,101 @@ export function BillingInfoModal({
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="address" className="text-xs font-bold uppercase tracking-widest text-zinc-400 ml-1">Business Address</Label>
+                <Label htmlFor="address" className="text-xs font-bold uppercase tracking-widest text-zinc-400 ml-1">Street Address</Label>
                 <div className="relative group">
                   <MapPin className="absolute left-4 top-4 w-4 h-4 text-zinc-400 group-focus-within:text-primary transition-colors" />
                   <textarea
                     id="address"
-                    placeholder="123 Street, City, State, ZIP Code"
-                    className="w-full min-h-[80px] sm:min-h-[100px] pl-11 pr-4 py-3 sm:py-4 rounded-xl sm:rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/50 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all resize-none"
+                    placeholder="123 Street, Building, Area"
+                    className="w-full min-h-[60px] sm:min-h-[70px] pl-11 pr-4 py-3 sm:py-4 rounded-xl sm:rounded-2xl border border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/50 text-sm focus:outline-none focus:ring-2 focus:ring-primary/20 transition-all resize-none"
                     value={formData.address}
                     onChange={(e) => setFormData({ ...formData, address: e.target.value })}
                     required
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-5">
+                <div className="space-y-2">
+                  <Label htmlFor="city" className="text-xs font-bold uppercase tracking-widest text-zinc-400 ml-1">City</Label>
+                  <Input
+                    id="city"
+                    placeholder="New Delhi"
+                    className="h-12 sm:h-14 rounded-xl sm:rounded-2xl border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/50 focus:ring-primary/20 transition-all"
+                    value={formData.city}
+                    onChange={(e) => setFormData({ ...formData, city: e.target.value })}
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="state" className="text-xs font-bold uppercase tracking-widest text-zinc-400 ml-1">
+                    {formData.country === "India" ? "State" : "State / Province"}
+                  </Label>
+                  {formData.country === "India" ? (
+                    <Select
+                      value={formData.state}
+                      onValueChange={(val) => setFormData({ ...formData, state: val })}
+                    >
+                      <SelectTrigger id="state" className="h-12 sm:h-14 rounded-xl sm:rounded-2xl border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/50">
+                        <SelectValue placeholder="Select" />
+                      </SelectTrigger>
+                      <SelectContent className="rounded-xl border-zinc-200 dark:border-zinc-800 max-h-[200px]">
+                        <SelectItem value="Andhra Pradesh">Andhra Pradesh</SelectItem>
+                        <SelectItem value="Arunachal Pradesh">Arunachal Pradesh</SelectItem>
+                        <SelectItem value="Assam">Assam</SelectItem>
+                        <SelectItem value="Bihar">Bihar</SelectItem>
+                        <SelectItem value="Chhattisgarh">Chhattisgarh</SelectItem>
+                        <SelectItem value="Delhi">Delhi</SelectItem>
+                        <SelectItem value="Goa">Goa</SelectItem>
+                        <SelectItem value="Gujarat">Gujarat</SelectItem>
+                        <SelectItem value="Haryana">Haryana</SelectItem>
+                        <SelectItem value="Himachal Pradesh">Himachal Pradesh</SelectItem>
+                        <SelectItem value="Jharkhand">Jharkhand</SelectItem>
+                        <SelectItem value="Jammu and Kashmir">Jammu and Kashmir</SelectItem>
+                        <SelectItem value="Karnataka">Karnataka</SelectItem>
+                        <SelectItem value="Kerala">Kerala</SelectItem>
+                        <SelectItem value="Ladakh">Ladakh</SelectItem>
+                        <SelectItem value="Madhya Pradesh">Madhya Pradesh</SelectItem>
+                        <SelectItem value="Maharashtra">Maharashtra</SelectItem>
+                        <SelectItem value="Manipur">Manipur</SelectItem>
+                        <SelectItem value="Meghalaya">Meghalaya</SelectItem>
+                        <SelectItem value="Mizoram">Mizoram</SelectItem>
+                        <SelectItem value="Nagaland">Nagaland</SelectItem>
+                        <SelectItem value="Odisha">Odisha</SelectItem>
+                        <SelectItem value="Punjab">Punjab</SelectItem>
+                        <SelectItem value="Rajasthan">Rajasthan</SelectItem>
+                        <SelectItem value="Sikkim">Sikkim</SelectItem>
+                        <SelectItem value="Tamil Nadu">Tamil Nadu</SelectItem>
+                        <SelectItem value="Telangana">Telangana</SelectItem>
+                        <SelectItem value="Tripura">Tripura</SelectItem>
+                        <SelectItem value="Uttar Pradesh">Uttar Pradesh</SelectItem>
+                        <SelectItem value="Uttarakhand">Uttarakhand</SelectItem>
+                        <SelectItem value="West Bengal">West Bengal</SelectItem>
+                        <SelectItem value="Chandigarh">Chandigarh</SelectItem>
+                        <SelectItem value="Puducherry">Puducherry</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  ) : (
+                    <Input
+                      id="state"
+                      placeholder="State / Province"
+                      className="h-12 sm:h-14 rounded-xl sm:rounded-2xl border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/50 focus:ring-primary/20 transition-all"
+                      value={formData.state}
+                      onChange={(e) => setFormData({ ...formData, state: e.target.value })}
+                    />
+                  )}
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="zipCode" className="text-xs font-bold uppercase tracking-widest text-zinc-400 ml-1">
+                    {formData.country === "India" ? "PIN Code" : "ZIP Code"}
+                  </Label>
+                  <Input
+                    id="zipCode"
+                    placeholder={formData.country === "India" ? "110058" : "ZIP Code"}
+                    className="h-12 sm:h-14 rounded-xl sm:rounded-2xl border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/50 focus:ring-primary/20 transition-all"
+                    value={formData.zipCode}
+                    onChange={(e) => setFormData({ ...formData, zipCode: e.target.value })}
                   />
                 </div>
               </div>
