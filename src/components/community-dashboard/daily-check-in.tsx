@@ -98,6 +98,36 @@ export function DailyTestingAction({
     };
   }, [localPreviewUrl]);
 
+  const getErrorMessage = useCallback((errors: VerificationError[]): string => {
+    if (errors.length === 0) return "An unknown error occurred.";
+
+    const code = errors[0].code;
+    switch (code) {
+      case "SIZE_TOO_SMALL":
+        return "The image is too small. Please upload a screenshot larger than 10KB.";
+      case "FILE_TOO_LARGE":
+        return "The image is too large. Please compress it and try again.";
+      case "DIMENSIONS_TOO_SMALL":
+        return "The image resolution is too low. Please upload a full-resolution screenshot.";
+      case "SUSPICIOUS_FILENAME":
+        return "The filename looks modified. Please upload the original screenshot without renaming it.";
+      case "SOCIAL_MEDIA_DETECTED":
+        return "This screenshot appears to be from a messaging or cloud app. Please upload the original screenshot directly from your device gallery.";
+      case "FILENAME_DATE_MISMATCH":
+        return "The screenshot filename shows an older date. Please take a fresh screenshot.";
+      case "EDITING_SOFTWARE_DETECTED":
+        return "Editing software was detected. Please upload an unedited screenshot.";
+      case "DATE_NOT_TODAY":
+        return "The screenshot metadata shows it was not taken today. Please take a fresh screenshot.";
+      case "IMAGE_LOAD_FAILED":
+        return "Failed to process the image. The file may be corrupted.";
+      case "EXIF_PARSE_FAILED":
+        return "Could not read image metadata. Please upload the original screenshot file.";
+      default:
+        return "Your screenshot could not be verified. Please take a fresh screenshot and try again.";
+    }
+  }, []);
+
   const handleOpenApp = () => {
     window.open(
       `https://play.google.com/store/apps/details?id=${packageName}`,
@@ -160,7 +190,8 @@ export function DailyTestingAction({
         setImageMetadata(result.metadata);
 
         if (!result.isValid) {
-          // Verification failed - show error dialog
+          console.log("[DailyCheckIn] Metadata:", JSON.stringify(result.metadata, null, 2));
+          console.log("[DailyCheckIn] Verification errors:", JSON.stringify(result.errors, null, 2));
           setVerificationErrors(result.errors);
           setShowErrorDialog(true);
           return;
@@ -269,9 +300,8 @@ export function DailyTestingAction({
             </div>
             <AlertDialogDescription asChild>
               <div className="space-y-4">
-                <p className="text-sm text-muted-foreground">
-                  We couldn&apos;t verify your screenshot. This may happen if
-                  the image was modified or is not a fresh screenshot.
+                <p className="text-sm text-destructive font-medium">
+                  {getErrorMessage(verificationErrors)}
                 </p>
                 <div className="p-4 rounded-lg bg-amber-50 dark:bg-amber-950/20 border border-amber-200 dark:border-amber-900/50">
                   <p className="text-sm text-amber-800 dark:text-amber-200 font-medium">

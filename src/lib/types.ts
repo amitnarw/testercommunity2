@@ -918,10 +918,62 @@ export interface BillingInfo {
   name: string;
   email: string;
   address: string;
+  city?: string;
+  state?: string;
+  zipCode?: string;
   country: string;
   gstin?: string;
   createdAt: string;
   updatedAt: string;
+}
+
+export interface InvoiceDetail {
+  id: number;
+  paymentId: number;
+  userId: string;
+  invoice_number: string;
+  invoice_type: string;
+  service_name: string;
+  sac_code: string;
+  period: string | null;
+  quantity: number;
+  unit_price: number | null;
+  tax_rate: number;
+  cgst_amount: number;
+  sgst_amount: number;
+  igst_amount: number;
+  due_date: string | null;
+  place_of_supply: string | null;
+  supply_type: string | null;
+  amount_in_words: string | null;
+  lut_number: string | null;
+  createdAt: string;
+  payment: {
+    id: number;
+    razorpayPaymentId: string;
+    razorpayOrderId: string;
+    amount: number;
+    currency: string;
+    status: string;
+    method: string | null;
+    bank: string | null;
+    fee: number | null;
+    tax: number | null;
+    order: {
+      id: number;
+      packageCount: number | null;
+      plan: { name: string; package: number } | null;
+    };
+  };
+  user: {
+    id: string;
+    name: string;
+    email: string;
+    billingInfo: BillingInfo | null;
+    userDetail: {
+      company_name: string | null;
+    } | null;
+  };
 }
 
 export interface FinanceDashboardData {

@@ -18,6 +18,7 @@ import {
   PaymentVerificationResponse,
   PromoCodeResponse,
   BillingInfo,
+  InvoiceDetail,
 } from "@/lib/types";
 import {
   useMutation,
@@ -113,7 +114,7 @@ export function useBillingInfoSave(
 }
 
 export function useInvoice(invoiceNumber: string) {
-  const query = useQuery<any, Error>({
+  const query = useQuery<InvoiceDetail, Error>({
     queryFn: () => getInvoice(invoiceNumber),
     queryKey: ["getInvoice", invoiceNumber],
     enabled: !!invoiceNumber,
