@@ -85,16 +85,16 @@ const ServiceComparisonChart = dynamic(
   },
 );
 
-// Status distribution colors
+// Status distribution colors — lighter shades of primary blue
 const statusColors: Record<string, string> = {
-  COMPLETED: "#22c55e",
-  AVAILABLE: "#a855f7",
-  IN_TESTING: "#3b82f6",
-  REJECTED: "#ef4444",
-  IN_REVIEW: "#f59e0b", // Will be replaced by stripes in component
-  DRAFT: "#6b7280",
-  ON_HOLD: "#facc15",
-  REQUESTED: "#f97316",
+  COMPLETED: "#3B82F6",
+  AVAILABLE: "#60A5FA",
+  IN_TESTING: "#93C5FD",
+  REJECTED: "#BFDBFE",
+  IN_REVIEW: "#DBEAFE",
+  DRAFT: "#EFF6FF",
+  ON_HOLD: "#A5B4FC",
+  REQUESTED: "#C7D2FE",
 };
 
 export default function AdminDashboardPage() {

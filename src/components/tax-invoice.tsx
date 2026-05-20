@@ -73,59 +73,8 @@ export function TaxInvoice({ invoice }: TaxInvoiceProps) {
 
   return (
     <div className="bg-white text-slate-800 print-card relative overflow-hidden" style={{ fontFamily: "'Inter', 'Segoe UI', system-ui, sans-serif" }}>
-      {/** PAID WATERMARK PATTERN */}
-      <div className="absolute inset-0 z-[1] pointer-events-none print-paid-stamp overflow-hidden">
-        <div className="absolute inset-0" style={{
-          backgroundImage: `repeating-linear-gradient(
-            -35deg,
-            transparent,
-            transparent 120px,
-            rgba(59,130,246,0.04) 120px,
-            rgba(59,130,246,0.04) 122px,
-            transparent 122px,
-            transparent 180px,
-            rgba(59,130,246,0.06) 180px,
-            rgba(59,130,246,0.06) 182px,
-            transparent 182px
-          )`,
-        }} />
-        <div className="absolute inset-0 flex items-center justify-center">
-          <div className="grid grid-cols-3 grid-rows-3 w-full h-full">
-            {[
-              { row: 1, col: 1, x: "5%", y: "12%", rot: -30, sz: 52, op: 0.045 },
-              { row: 1, col: 2, x: "38%", y: "8%", rot: -35, sz: 44, op: 0.035 },
-              { row: 1, col: 3, x: "72%", y: "15%", rot: -28, sz: 48, op: 0.04 },
-              { row: 2, col: 1, x: "15%", y: "38%", rot: -32, sz: 56, op: 0.05 },
-              { row: 2, col: 2, x: "50%", y: "42%", rot: -30, sz: 40, op: 0.035 },
-              { row: 2, col: 3, x: "78%", y: "35%", rot: -34, sz: 44, op: 0.04 },
-              { row: 3, col: 1, x: "8%", y: "65%", rot: -30, sz: 44, op: 0.04 },
-              { row: 3, col: 2, x: "42%", y: "68%", rot: -35, sz: 52, op: 0.045 },
-              { row: 3, col: 3, x: "75%", y: "62%", rot: -28, sz: 40, op: 0.035 },
-              { row: 4, col: 1, x: "20%", y: "88%", rot: -32, sz: 44, op: 0.04 },
-              { row: 4, col: 2, x: "55%", y: "90%", rot: -30, sz: 48, op: 0.045 },
-            ].map((pos, i) => (
-              <div
-                key={i}
-                className="absolute font-extrabold uppercase select-none"
-                style={{
-                  top: pos.y,
-                  left: pos.x,
-                  fontSize: `${pos.sz}px`,
-                  transform: `rotate(${pos.rot}deg)`,
-                  letterSpacing: "0.3em",
-                  color: `rgba(59, 130, 246, ${pos.op})`,
-                  fontWeight: 900,
-                }}
-              >
-                PAID
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-
       {/** CONTENT */}
-      <div className="relative z-[2]">
+      <div className="relative">
         {/** TOP ACCENT LINE */}
         <div className="h-1.5" style={{ background: `linear-gradient(90deg, ${PRIMARY}, ${PRIMARY_DARK})` }} />
 
@@ -148,11 +97,16 @@ export function TaxInvoice({ invoice }: TaxInvoiceProps) {
                   <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">No.</span>
                   <span className="font-mono text-sm font-bold text-slate-700 bg-slate-50 px-2.5 py-1 rounded-md border border-slate-200">{invoice.invoice_number}</span>
                 </div>
-                {isExport && (
-                  <span className="mt-2 px-3 py-1 rounded-md text-xs font-bold uppercase tracking-wider text-white" style={{ backgroundColor: PRIMARY }}>
-                    Export of Services
+                <div className="mt-2 flex items-center gap-2">
+                  <span className="px-4 py-1.5 rounded-lg text-sm font-extrabold uppercase tracking-widest text-white bg-emerald-500">
+                    Paid
                   </span>
-                )}
+                  {isExport && (
+                    <span className="px-3 py-1 rounded-md text-xs font-bold uppercase tracking-wider text-white" style={{ backgroundColor: PRIMARY }}>
+                      Export of Services
+                    </span>
+                  )}
+                </div>
               </div>
             </div>
           </div>
@@ -211,7 +165,7 @@ export function TaxInvoice({ invoice }: TaxInvoiceProps) {
                   <span className="text-slate-400 font-medium">Currency</span>
                   <span className="font-bold text-slate-800">{currency}</span>
                 </div>
-                {isExport && invoice.lut_number && (
+                {invoice.lut_number && (
                   <div className="flex justify-between">
                     <span className="text-slate-400 font-medium">LUT No.</span>
                     <span className="font-mono font-medium text-slate-700">{invoice.lut_number}</span>
@@ -226,20 +180,20 @@ export function TaxInvoice({ invoice }: TaxInvoiceProps) {
         <div className="mx-10 h-px bg-slate-100" />
 
         {/** BUYER + NATURE */}
-        <div className="px-10 py-5">
+        <div className="px-10 py-3">
           <div className="grid grid-cols-2 print-grid-2col gap-8">
             <div>
-              <p className="text-[10px] font-bold uppercase tracking-[0.2em] mb-3" style={{ color: PRIMARY }}>Bill To</p>
-              <p className="text-[15px] font-bold text-slate-900 leading-snug">{billingInfo?.name || user?.name || "Customer"}</p>
-              {userDetail?.company_name && <p className="text-sm font-semibold text-slate-600 mt-0.5">{userDetail.company_name}</p>}
-              <div className="mt-2 space-y-0.5 text-sm text-slate-500 leading-relaxed">
+              <p className="text-[10px] font-bold uppercase tracking-[0.2em] mb-1.5" style={{ color: PRIMARY }}>Bill To</p>
+              <p className="text-[13px] font-bold text-slate-900 leading-snug">{billingInfo?.name || user?.name || "Customer"}</p>
+              {userDetail?.company_name && <p className="text-xs font-semibold text-slate-600 mt-0.5">{userDetail.company_name}</p>}
+              <div className="mt-1.5 space-y-0 text-xs text-slate-500 leading-relaxed">
                 {billingInfo?.address && <p>{billingInfo.address}</p>}
                 {(billingInfo?.city || billingInfo?.state || billingInfo?.zipCode) && (
                   <p>{[billingInfo?.city, billingInfo?.state, billingInfo?.zipCode].filter(Boolean).join(", ")}</p>
                 )}
                 {billingInfo?.country && <p>{billingInfo.country}</p>}
               </div>
-              <div className="mt-3 space-y-1 text-sm">
+              <div className="mt-2 space-y-0.5 text-xs">
                 {billingInfo?.gstin && (
                   <div className="flex gap-2">
                     <span className="text-slate-400 font-medium w-14 shrink-0">GSTIN</span>

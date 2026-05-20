@@ -15,7 +15,7 @@ import {
   Activity,
   Wallet,
   Settings,
-  Users2,
+  Handshake,
   BookOpen,
   Terminal,
   Ticket,
@@ -80,7 +80,7 @@ const adminNavItems = [
   {
     name: "Community Subs",
     href: "/admin/submissions-free",
-    icon: Users2,
+    icon: Handshake,
     section: "free",
     badge: "FREE",
   },

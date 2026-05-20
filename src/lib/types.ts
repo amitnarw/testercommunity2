@@ -15,6 +15,7 @@ export type BlogPost = {
   imageUrl: string;
   dataAiHint?: string;
   tags: string[];
+  views: number;
 };
 
 export type Testimonial = {

@@ -5,8 +5,10 @@ import { Textarea } from "@/components/ui/textarea";
 import { FormField, FormItem, FormLabel, FormControl, FormDescription, FormMessage } from "@/components/ui/form";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Switch } from "@/components/ui/switch";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useBlogFormContext } from "./useBlogForm";
 import { SidebarPanel } from "./SidebarPanel";
+import { useAllAuthors } from "@/hooks/useAdmin";
 import {
   Globe,
   Lock,
@@ -37,6 +39,8 @@ export function Sidebar({ blog }: SidebarProps) {
   const watchAuthorAvatarUrl = form.watch("authorAvatarUrl");
   const watchAuthorName = form.watch("authorName");
   const watchContent = form.watch("content");
+
+  const { data: authors = [] } = useAllAuthors();
 
   const handleAddTag = () => {
     if (tagInput.trim()) {
@@ -102,23 +106,36 @@ export function Sidebar({ blog }: SidebarProps) {
           name="authorName"
           render={({ field }) => (
             <FormItem>
-              <FormLabel className="text-xs">Name</FormLabel>
-              <FormControl>
-                <Input placeholder="Author name" {...field} value={field.value ?? ""} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <FormField
-          control={form.control}
-          name="authorAvatarUrl"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel className="text-xs">Avatar URL</FormLabel>
-              <FormControl>
-                <Input placeholder="https://...avatar.jpg" {...field} value={field.value ?? ""} />
-              </FormControl>
+              <FormLabel className="text-xs">Author</FormLabel>
+              <Select
+                onValueChange={(value) => {
+                  if (value === "__custom__") return;
+                  const selectedAuthor = (authors as any[]).find(
+                    (a) => a.id.toString() === value,
+                  );
+                  if (selectedAuthor) {
+                    form.setValue("authorName", selectedAuthor.name, { shouldDirty: true });
+                    form.setValue("authorAvatarUrl", selectedAuthor.avatarUrl || "", { shouldDirty: true });
+                    form.setValue("authorDataAiHint", selectedAuthor.dataAiHint || "", { shouldDirty: true });
+                  }
+                }}
+                value={
+                  (authors as any[]).find((a) => a.name === field.value)?.id?.toString() || ""
+                }
+              >
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select an author" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {(authors as any[]).map((author: any) => (
+                    <SelectItem key={author.id} value={author.id.toString()}>
+                      {author.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
               <FormMessage />
             </FormItem>
           )}

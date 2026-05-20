@@ -236,8 +236,9 @@ function AddAppFormContent() {
   const isValidPlayStoreLogoUrl = (url: string) => {
     try {
       const parsed = new URL(url);
+      const allowedHosts = ["play-lh.googleusercontent.com", "lh3.googleusercontent.com"];
       return (
-        parsed.hostname === "play-lh.googleusercontent.com" &&
+        allowedHosts.includes(parsed.hostname) &&
         parsed.protocol === "https:"
       );
     } catch {
@@ -256,7 +257,7 @@ function AddAppFormContent() {
   const validateLogoUrl = (url: string) => {
     if (!url.trim()) return "";
     if (!isValidPlayStoreLogoUrl(url)) {
-      return "Must be from play-lh.googleusercontent.com. Copy URL from Play Console → Store Listing → Graphic Assets.";
+      return "Must be from play-lh.googleusercontent.com or lh3.googleusercontent.com. Copy URL from Play Console → Store Listing → Graphic Assets.";
     }
     return "";
   };
@@ -533,8 +534,8 @@ function AddAppFormContent() {
                         {logoUrlError}
                       </p>
                     ) : (
-                      <p className="text-xs text-muted-foreground pl-1">
-                        Paste your app logo URL from Google Play. Go to Play Console → Store Listing → Graphic Assets → copy App Icon URL (must be from play-lh.googleusercontent.com)
+                      <p className="text-xs text-muted-foreground pl-1 leading-relaxed">
+                        Go to Play Console → Side Menu → Grow Users → Store Presence → Store listing → Open Default Store Listing → Right-click on your app icon and open the image in a new tab → Copy the image URL
                       </p>
                     )}
                   </div>
