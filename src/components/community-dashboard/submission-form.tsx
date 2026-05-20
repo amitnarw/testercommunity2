@@ -767,8 +767,9 @@ export function SubmissionForm({
                     name="app_url"
                     render={({ field }) => (
                       <FormItem>
-                        <Label htmlFor="app_url">Google Play Testing Link</Label>
+                        <Label htmlFor="app_url">Google Play Testing Link <span className="text-destructive">*</span></Label>
                         <FormControl><Input id="app_url" placeholder="https://play.google.com/store/apps/details?id=..." {...field} value={field.value ?? ""} className="py-0" /></FormControl>
+                        <p className="text-xs text-muted-foreground">Paste your app&apos;s Google Play Store page URL. Example: https://play.google.com/store/apps/details?id=com.example.app</p>
                         <FormMessage />
                       </FormItem>
                     )}
@@ -778,8 +779,9 @@ export function SubmissionForm({
                     name="app_name"
                     render={({ field }) => (
                       <FormItem>
-                        <Label htmlFor="app_name">App Name</Label>
+                        <Label htmlFor="app_name">App Name <span className="text-destructive">*</span></Label>
                         <FormControl><Input id="app_name" placeholder="e.g., PhotoSnap Editor" {...field} value={field.value ?? ""} className="py-0" /></FormControl>
+                        <p className="text-xs text-muted-foreground">This will be displayed to testers</p>
                         <FormMessage />
                       </FormItem>
                     )}
@@ -789,8 +791,11 @@ export function SubmissionForm({
                     name="app_logo_url"
                     render={({ field }) => (
                       <FormItem>
-                        <Label htmlFor="app_logo_url">App Logo URL</Label>
+                        <Label htmlFor="app_logo_url">App Logo URL <span className="text-destructive">*</span></Label>
                         <FormControl><Input id="app_logo_url" placeholder="https://play-lh.googleusercontent.com/..." {...field} value={field.value ?? ""} className="py-0" /></FormControl>
+                        <p className="text-xs text-muted-foreground leading-relaxed">
+                          Go to Play Console → Side Menu → Grow Users → Store Presence → Store listing → Open Default Store Listing → Right-click on your app icon and open the image in a new tab → Copy the image URL
+                        </p>
                         <FormMessage />
                       </FormItem>
                     )}
@@ -800,8 +805,9 @@ export function SubmissionForm({
                     name="app_screenshot_url_1"
                     render={({ field }) => (
                       <FormItem>
-                        <Label htmlFor="app_screenshot_url_1">Screenshot 1 URL</Label>
+                        <Label htmlFor="app_screenshot_url_1">Screenshot 1 URL <span className="text-destructive">*</span></Label>
                         <FormControl><Input id="app_screenshot_url_1" placeholder="https://play-lh.googleusercontent.com/..." {...field} value={field.value ?? ""} className="py-0" /></FormControl>
+                        <p className="text-xs text-muted-foreground">Paste the screenshot URL from your Play Store listing</p>
                         <FormMessage />
                       </FormItem>
                     )}
@@ -811,8 +817,9 @@ export function SubmissionForm({
                     name="app_screenshot_url_2"
                     render={({ field }) => (
                       <FormItem>
-                        <Label htmlFor="app_screenshot_url_2">Screenshot 2 URL</Label>
+                        <Label htmlFor="app_screenshot_url_2">Screenshot 2 URL <span className="text-destructive">*</span></Label>
                         <FormControl><Input id="app_screenshot_url_2" placeholder="https://play-lh.googleusercontent.com/..." {...field} value={field.value ?? ""} className="py-0" /></FormControl>
+                        <p className="text-xs text-muted-foreground">Paste another screenshot URL from your Play Store listing</p>
                         <FormMessage />
                       </FormItem>
                     )}
@@ -834,9 +841,10 @@ export function SubmissionForm({
                     name="category_id"
                     render={({ field }) => (
                       <FormItem>
-                        <Label>Category</Label>
+                        <Label>Category <span className="text-destructive">*</span></Label>
                         <Select onValueChange={field.onChange} defaultValue={field.value}>
                           <FormControl><SelectTrigger id="category_id" className="py-0"><SelectValue placeholder="Select a category" /></SelectTrigger></FormControl>
+                          <p className="text-xs text-muted-foreground">Choose the category that best describes your app</p>
                           <SelectContent>
                             {appCategoriesData?.map((cat) => (
                               <SelectItem key={cat.id} value={cat.id.toString()}>{cat.name}</SelectItem>
@@ -852,8 +860,9 @@ export function SubmissionForm({
                     name="app_description"
                     render={({ field }) => (
                       <FormItem>
-                        <Label htmlFor="app_description">App Description</Label>
+                        <Label htmlFor="app_description">App Description <span className="text-destructive">*</span></Label>
                         <FormControl><Textarea id="app_description" placeholder="Briefly describe what your app does." className="min-h-[120px]" {...field} value={field.value ?? ""} /></FormControl>
+                        <p className="text-xs text-muted-foreground">Minimum 50 characters. Describe what your app does and its key features.</p>
                         <FormMessage />
                       </FormItem>
                     )}
@@ -865,6 +874,7 @@ export function SubmissionForm({
                       <FormItem>
                         <Label htmlFor="instruction_for_tester">Instructions for Testers <span className="text-muted-foreground ml-1">(Optional)</span></Label>
                         <FormControl><Textarea id="instruction_for_tester" placeholder="Any specific areas you want testers to focus on?" className="min-h-[120px]" {...field} value={field.value ?? ""} /></FormControl>
+                        <p className="text-xs text-muted-foreground">Include any login credentials, specific features to test, or setup instructions</p>
                         <FormMessage />
                       </FormItem>
                     )}
@@ -886,9 +896,10 @@ export function SubmissionForm({
                     name="minimum_android_version"
                     render={({ field }) => (
                       <FormItem>
-                        <Label htmlFor="minimum_android_version">Min. Android Version</Label>
+                        <Label htmlFor="minimum_android_version">Min. Android Version <span className="text-destructive">*</span></Label>
                         <Select onValueChange={field.onChange} defaultValue={field.value?.toString()}>
                           <FormControl><SelectTrigger id="minimum_android_version" className="py-0"><SelectValue placeholder="Select Android version" /></SelectTrigger></FormControl>
+                        <p className="text-xs text-muted-foreground">Select the oldest Android version your app supports</p>
                           <SelectContent>
                             {minimum_android_versions.map((version) => (
                               <SelectItem key={version.value} value={version.value.toString()}>{version.name}</SelectItem>

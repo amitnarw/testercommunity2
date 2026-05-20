@@ -23,6 +23,7 @@ function blogPostToDisplayFormat(post: PublicBlog) {
     imageUrl: post.imageUrl,
     dataAiHint: post.dataAiHint,
     tags: post.tags,
+    views: post.viewCount,
   };
 }
 

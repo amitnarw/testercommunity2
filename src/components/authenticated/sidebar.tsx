@@ -4,6 +4,7 @@ import { usePathname } from "next/navigation";
 import {
   LayoutDashboard,
   Users2,
+  Handshake,
   Bell,
   Briefcase,
   DollarSign,
@@ -21,6 +22,7 @@ import {
   MessageSquare,
   Headphones,
   Landmark,
+  UserCircle,
 } from "lucide-react";
 import { BaseSidebar, SidebarNavLink } from "@/components/ui/base-sidebar";
 import { authClient } from "@/lib/auth-client";
@@ -64,7 +66,7 @@ const adminNavLinks = [
   {
     name: "Community Subs",
     href: "/admin/submissions-free",
-    icon: Users2,
+    icon: Handshake,
     section: "free",
     badge: "FREE",
   },
@@ -114,6 +116,12 @@ const adminNavLinks = [
     name: "User Reviews",
     href: "/admin/user-reviews",
     icon: MessageSquare,
+    section: "platform",
+  },
+  {
+    name: "Blog Authors",
+    href: "/admin/blog-authors",
+    icon: UserCircle,
     section: "platform",
   },
   {

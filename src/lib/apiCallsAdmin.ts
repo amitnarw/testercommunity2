@@ -1421,3 +1421,66 @@ export async function getFinancePaymentMethods() {
     throw error;
   }
 }
+
+// ==================== AUTHORS ====================
+
+export async function getAllAuthors() {
+  try {
+    const response = await api.get(API_ROUTES.ADMIN + `/authors`);
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error fetching authors:", error);
+    throw error;
+  }
+}
+
+export async function getAuthorById(id: number) {
+  try {
+    const response = await api.get(API_ROUTES.ADMIN + `/authors/${id}`);
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error fetching author:", error);
+    throw error;
+  }
+}
+
+export async function createAuthor(payload: {
+  name: string;
+  avatarUrl?: string;
+  bio?: string;
+  dataAiHint?: string;
+}) {
+  try {
+    const response = await api.post(API_ROUTES.ADMIN + `/authors`, { payload });
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error creating author:", error);
+    throw error;
+  }
+}
+
+export async function updateAuthor(payload: {
+  id: number;
+  name?: string;
+  avatarUrl?: string;
+  bio?: string;
+  dataAiHint?: string;
+}) {
+  try {
+    const response = await api.post(API_ROUTES.ADMIN + `/authors/update`, { payload });
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error updating author:", error);
+    throw error;
+  }
+}
+
+export async function deleteAuthor(id: number) {
+  try {
+    const response = await api.delete(API_ROUTES.ADMIN + `/authors/${id}`);
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error deleting author:", error);
+    throw error;
+  }
+}

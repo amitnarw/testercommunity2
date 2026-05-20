@@ -10,6 +10,7 @@ import {
   Linkedin,
   Copy,
   Check,
+  Eye,
 } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import type { BlogPost } from "@/lib/types";
@@ -124,6 +125,18 @@ export function ArticleView({ post }: ArticleViewProps) {
               </p>
               <p className="text-xs">Published</p>
             </div>
+            {post.views > 0 && (
+              <>
+                <div className="w-px h-8 bg-border" />
+                <div className="text-left">
+                  <p className="text-sm font-semibold text-foreground flex items-center gap-1.5">
+                    <Eye className="w-3.5 h-3.5" />
+                    {post.views.toLocaleString()}
+                  </p>
+                  <p className="text-xs">Views</p>
+                </div>
+              </>
+            )}
           </div>
         </header>
 

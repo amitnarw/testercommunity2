@@ -1949,6 +1949,7 @@ export interface PublicBlog {
   imageUrl: string;
   dataAiHint?: string;
   tags: string[];
+  viewCount: number;
   date: string;
   createdAt: string;
   updatedAt: string;

@@ -68,6 +68,11 @@ import {
   getUserWalletDetail,
   getFinancePlans,
   getFinancePaymentMethods,
+  getAllAuthors,
+  getAuthorById,
+  createAuthor,
+  updateAuthor,
+  deleteAuthor,
 } from "@/lib/apiCallsAdmin";
 import { useRouter } from "next/navigation";
 import { useState, useEffect, useCallback } from "react";
@@ -732,6 +737,66 @@ export function useUpdateTestimonial(options?: UseMutationOptions<any, any, any>
 export function useDeleteTestimonial(options?: UseMutationOptions<any, any, any>) {
   const mutation = useMutation({
     mutationFn: (id: number) => deleteTestimonial(id),
+    ...options,
+  });
+
+  return mutation;
+}
+
+// ==================== AUTHORS ====================
+
+export function useAllAuthors(options?: { enabled?: boolean }) {
+  const query = useQuery({
+    queryFn: () => getAllAuthors(),
+    queryKey: ["useAllAuthors"],
+    enabled: options?.enabled ?? true,
+  });
+
+  return query;
+}
+
+export function useAuthorById(id: number, options?: { enabled?: boolean }) {
+  const query = useQuery({
+    queryFn: () => getAuthorById(id),
+    queryKey: ["useAuthorById", id],
+    enabled: options?.enabled ?? (id > 0),
+  });
+
+  return query;
+}
+
+export function useCreateAuthor(options?: UseMutationOptions<any, any, any>) {
+  const mutation = useMutation({
+    mutationFn: (payload: {
+      name: string;
+      avatarUrl?: string;
+      bio?: string;
+      dataAiHint?: string;
+    }) => createAuthor(payload),
+    ...options,
+  });
+
+  return mutation;
+}
+
+export function useUpdateAuthor(options?: UseMutationOptions<any, any, any>) {
+  const mutation = useMutation({
+    mutationFn: (payload: {
+      id: number;
+      name?: string;
+      avatarUrl?: string;
+      bio?: string;
+      dataAiHint?: string;
+    }) => updateAuthor(payload),
+    ...options,
+  });
+
+  return mutation;
+}
+
+export function useDeleteAuthor(options?: UseMutationOptions<any, any, any>) {
+  const mutation = useMutation({
+    mutationFn: (id: number) => deleteAuthor(id),
     ...options,
   });
 

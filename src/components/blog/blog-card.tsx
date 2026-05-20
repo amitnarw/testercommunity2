@@ -3,7 +3,7 @@
 import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowUpRight, Clock, Calendar } from "lucide-react";
+import { ArrowUpRight, Clock, Calendar, Eye } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import type { BlogPost } from "@/lib/types";
 import { cn } from "@/lib/utils";
@@ -67,6 +67,15 @@ export function BlogCard({ post, index }: BlogCardProps) {
               <Clock className="w-3.5 h-3.5" />
               {Math.ceil(post.content.length / 800)} min read
             </span>
+            {post.views > 0 && (
+              <>
+                <span className="w-1 h-1 rounded-full bg-border" />
+                <span className="flex items-center gap-1.5">
+                  <Eye className="w-3.5 h-3.5" />
+                  {post.views.toLocaleString()}
+                </span>
+              </>
+            )}
           </div>
 
           <h3 className="text-2xl md:text-3xl font-bold leading-tight mb-4 group-hover:text-primary transition-colors duration-300">

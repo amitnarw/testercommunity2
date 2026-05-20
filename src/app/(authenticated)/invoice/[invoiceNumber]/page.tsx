@@ -101,14 +101,6 @@ export default function InvoicePage() {
             box-shadow: none !important;
             position: relative !important;
           }
-          .print-paid-stamp {
-            -webkit-print-color-adjust: exact !important;
-            print-color-adjust: exact !important;
-          }
-          .print-paid-stamp div {
-            -webkit-print-color-adjust: exact !important;
-            print-color-adjust: exact !important;
-          }
           .print-header-solid {
             background-color: #3b82f6 !important;
             color: white !important;
