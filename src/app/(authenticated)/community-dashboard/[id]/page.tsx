@@ -8,6 +8,7 @@ import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { motion } from "framer-motion";
+import { ROUTES } from "@/lib/routes";
 import Confetti from "react-dom-confetti";
 import {
   Expand,
@@ -85,7 +86,7 @@ function AppTestingPageClient({ id }: { id: string }) {
   const handleSuccessConfirm = () => {
     setShowSuccessModal(false);
     setFireConfetti(false);
-    router.push("/community-dashboard");
+    router.push(ROUTES.AUTHENTICATED.COMMUNITY_DASHBOARD);
   };
 
   const handleErrorRetry = () => {
@@ -180,7 +181,7 @@ function AppTestingPageClient({ id }: { id: string }) {
     <div className="bg-[#f8fafc] dark:bg-[#0f151e] text-foreground min-h-screen pb-10">
       <div className="container mx-auto px-4 md:px-6">
         <div className="sticky top-0 z-[50] pt-2 pb-4 pl-0 xl:pl-8 w-1/2">
-          <BackButton href="/community-dashboard" />
+          <BackButton href={ROUTES.AUTHENTICATED.COMMUNITY_DASHBOARD} />
         </div>
 
         <main className="max-w-7xl mx-auto grid lg:grid-cols-3 gap-12 mt-8">

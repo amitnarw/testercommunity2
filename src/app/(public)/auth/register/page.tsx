@@ -84,9 +84,9 @@ export default function RegisterPage() {
       return;
 
     if (userProfileData.initial) {
-      router.replace("/profile/profile-setup");
+      router.replace(ROUTES.AUTHENTICATED.PROFILE_SETUP);
     } else {
-      router.replace("/dashboard");
+      router.replace(ROUTES.AUTHENTICATED.COMMUNITY_DASHBOARD);
     }
   }, [userProfileIsSuccess, userProfileisFetching, userProfileData, router]);
 

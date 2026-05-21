@@ -7,6 +7,7 @@ import { useBlogFormContext } from "./useBlogForm";
 import { FeedbackModal } from "@/components/feedback-modal";
 import { ArrowLeft, Globe, Lock, Eye, Save, Loader2, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { ROUTES } from "@/lib/routes";
 
 interface TopBarProps {
   blogSlug?: string;
@@ -65,7 +66,7 @@ export function TopBar({ blogSlug, onPreviewClick, onDelete }: TopBarProps) {
         },
         secondaryAction: {
           label: "Back to Blogs",
-          onClick: () => router.push("/admin/blog-management"),
+          onClick: () => router.push(ROUTES.ADMIN.BLOG_MANAGEMENT),
         },
       });
     });
@@ -134,7 +135,7 @@ export function TopBar({ blogSlug, onPreviewClick, onDelete }: TopBarProps) {
           <Button
             variant="ghost"
             size="sm"
-            onClick={() => router.push("/admin/blog-management")}
+            onClick={() => router.push(ROUTES.ADMIN.BLOG_MANAGEMENT)}
             className="gap-1 sm:gap-2"
           >
             <ArrowLeft className="h-4 w-4" />

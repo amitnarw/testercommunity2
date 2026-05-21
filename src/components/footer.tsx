@@ -7,17 +7,18 @@ import { Github, Twitter, Linkedin } from "lucide-react";
 import Image from "next/image";
 import { useScroll, useTransform, motion } from "framer-motion";
 import { Logo } from "./logo";
+import { ROUTES } from "@/lib/routes";
 
 const platformItems = [
-  { name: "Home", href: "/" },
-  { name: "How It Works", href: "/how-it-works" },
-  { name: "Pricing", href: "/pricing" },
-  { name: "Reviews", href: "/reviews" },
+  { name: "Home", href: ROUTES.PUBLIC.HOME },
+  { name: "How It Works", href: ROUTES.PUBLIC.HOW_IT_WORKS },
+  { name: "Pricing", href: ROUTES.PUBLIC.PRICING },
+  { name: "Reviews", href: ROUTES.PUBLIC.REVIEWS },
   { name: "About Us", href: "/about" },
 ];
 
 const resourceItems = [
-  { name: "Blog", href: "/blog" },
+  { name: "Blog", href: ROUTES.PUBLIC.BLOG },
   { name: "FAQ", href: "/faq" },
   { name: "Support", href: "/help" },
   { name: "Contact Us", href: "/contact-us" },

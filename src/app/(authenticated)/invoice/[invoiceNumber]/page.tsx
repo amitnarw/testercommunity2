@@ -8,6 +8,7 @@ import { Printer } from "lucide-react";
 import { Skeleton } from "@/components/ui/skeleton";
 import Link from "next/link";
 import { BackButton } from "@/components/back-button";
+import { ROUTES } from "@/lib/routes";
 import { TaxInvoice } from "@/components/tax-invoice";
 
 export default function InvoicePage() {
@@ -36,7 +37,7 @@ export default function InvoicePage() {
           The invoice you are looking for does not exist or you don&apos;t have permission to view it.
         </p>
         <Button asChild>
-          <Link href="/wallet">Go to Wallet</Link>
+          <Link href={ROUTES.AUTHENTICATED.WALLET}>Go to Wallet</Link>
         </Button>
       </div>
     );
@@ -46,7 +47,7 @@ export default function InvoicePage() {
     <div className="min-h-screen pb-20">
       <div className="container mx-auto px-4 py-8 max-w-[820px] print:p-0 print:max-w-none">
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4 print:hidden">
-          <BackButton href="/wallet" />
+          <BackButton href={ROUTES.AUTHENTICATED.WALLET} />
           <div className="flex gap-3 w-full sm:w-auto">
             <Button variant="outline" onClick={handlePrint} className="flex-1 sm:flex-none">
               <Printer className="w-4 h-4 mr-2" />

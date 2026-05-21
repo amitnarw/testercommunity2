@@ -6,10 +6,11 @@ import { CheckCircle, ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import Confetti from "react-dom-confetti";
+import { ROUTES } from "@/lib/routes";
 
 export const RegistrationSuccess = ({
   status,
-  dashboardHref = "/dashboard",
+  dashboardHref = ROUTES.AUTHENTICATED.COMMUNITY_DASHBOARD,
 }: {
   status: "EARNED_NOW" | "ALREADY_EARNED" | "INCOMPLETE";
   dashboardHref?: string;

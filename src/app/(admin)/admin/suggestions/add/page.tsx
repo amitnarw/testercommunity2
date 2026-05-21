@@ -8,6 +8,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { ROUTES } from "@/lib/routes";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -33,14 +34,14 @@ export default function AddSuggestionPage() {
       title: "Suggestion Added",
       description: "The new feature suggestion has been successfully recorded.",
     });
-    router.push("/admin/suggestions");
+    router.push(ROUTES.ADMIN.SUGGESTIONS);
   };
 
   return (
     <div className="flex-1 space-y-8 p-4 sm:p-8 pt-6 mb-8">
       <div className="flex items-center gap-4">
         <Button variant="outline" size="icon" asChild>
-          <Link href="/admin/suggestions">
+          <Link href={ROUTES.ADMIN.SUGGESTIONS}>
             <ArrowLeft className="h-4 w-4" />
           </Link>
         </Button>

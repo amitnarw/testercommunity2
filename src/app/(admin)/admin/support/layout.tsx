@@ -2,9 +2,10 @@
 
 import { usePathname, useRouter } from "next/navigation";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { ROUTES } from "@/lib/routes";
 
 const SUPPORT_TABS = [
-  { value: "/admin/support", label: "Support Stats" },
+  { value: ROUTES.ADMIN.SUPPORT, label: "Support Stats" },
   { value: "/admin/support/tickets", label: "Tickets" },
   { value: "/admin/support/live-chat", label: "Live Chat" },
 ];
@@ -15,7 +16,7 @@ export default function SupportLayout({ children }: { children: React.ReactNode 
 
   const currentTab = SUPPORT_TABS.some((t) => t.value === pathname)
     ? pathname
-    : "/admin/support";
+    : ROUTES.ADMIN.SUPPORT;
 
   return (
     <div className="flex flex-col w-full">

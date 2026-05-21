@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Loader2 } from "lucide-react";
+import { ArrowRight, Loader2, CheckCircle } from "lucide-react";
 import Link from "next/link";
 import type { TesterProjectResponse } from "@/lib/types";
 import { useState } from "react";
@@ -28,6 +28,7 @@ const ProjectCard = ({ project }: { project: TesterProjectResponse }) => {
   const isOngoing =
     project.appStatus === "IN_TESTING" &&
     project.testerStatus === "IN_PROGRESS";
+  const isCompleted = project.testerStatus === "COMPLETED";
   const earnings =
     project.rewardMoney ||
     (project.rewardPoints ? project.rewardPoints * 5 : 0);
@@ -65,6 +66,12 @@ const ProjectCard = ({ project }: { project: TesterProjectResponse }) => {
               value={(project.daysCompleted / project.totalDay) * 100}
               className="h-2"
             />
+          </div>
+        )}
+        {isCompleted && (
+          <div className="flex items-center gap-2 text-sm text-green-600 dark:text-green-400">
+            <CheckCircle className="h-4 w-4" />
+            <span className="font-medium">Completed</span>
           </div>
         )}
       </CardContent>

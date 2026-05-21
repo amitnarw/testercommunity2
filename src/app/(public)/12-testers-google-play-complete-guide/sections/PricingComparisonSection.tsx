@@ -4,6 +4,7 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { Check, ArrowUpRight } from "lucide-react";
 import { usePricingData, useRegionalPricing } from "@/hooks/useUser";
+import { ROUTES } from "@/lib/routes";
 
 const methods = [
   {
@@ -119,7 +120,7 @@ export function PricingComparisonSection() {
             <tr className="border-t-2 border-primary/30 bg-primary/5">
               <td className="py-4 px-4 font-bold text-primary text-sm">
                 <Link
-                  href="/pricing"
+                  href={ROUTES.PUBLIC.PRICING}
                   className="hover:underline inline-flex items-center gap-1"
                 >
                   inTesters
@@ -177,7 +178,7 @@ export function PricingComparisonSection() {
             <ArrowUpRight className="w-4 h-4" />
           </Link>
           <Link
-            href="/pricing"
+            href={ROUTES.PUBLIC.PRICING}
             className="inline-flex items-center px-6 py-3 bg-muted text-foreground rounded-full font-medium hover:bg-muted/80 transition-colors"
           >
             View Pricing

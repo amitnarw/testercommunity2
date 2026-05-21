@@ -3,6 +3,7 @@
 import { motion, AnimatePresence, useScroll, useSpring } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
+import { ROUTES } from "@/lib/routes";
 import {
   ArrowLeft,
   Facebook,
@@ -73,7 +74,7 @@ export function ArticleView({ post }: ArticleViewProps) {
       {/* Main Content */}
       <main className="container mx-auto px-4 md:px-6 py-12 lg:py-24">
         <Link
-          href="/blog"
+          href={ROUTES.PUBLIC.BLOG}
           className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-primary transition-colors mb-12 group"
         >
           <span className="p-2 rounded-full bg-muted group-hover:bg-primary/10 transition-colors">

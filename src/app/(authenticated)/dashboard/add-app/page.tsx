@@ -21,6 +21,7 @@ import {
 import { IconRain } from "@/components/icon-rain";
 import { BackButton } from "@/components/back-button";
 import Link from "next/link";
+import { ROUTES } from "@/lib/routes";
 
 const Highlight = ({ children }: { children: React.ReactNode }) => (
   <span className="bg-primary/20 text-primary font-semibold px-1.5 py-0.5 rounded-md">
@@ -88,7 +89,7 @@ export default function AddAppGuidePage() {
       <div className="min-h-screen bg-brand-background">
         <div className="container mx-auto px-4 md:px-6 pb-12">
           <div className="sticky top-0 z-[50] pt-2 sm:pt-3 pb-10 max-w-[50%] sm:max-w-4xl mx-0 sm:mx-auto">
-            <BackButton href="/dashboard" />
+            <BackButton href={ROUTES.AUTHENTICATED.DASHBOARD} />
           </div>
           <header className="mb-8 max-w-4xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-2">
             <div className="flex flex-col items-start justify-center">

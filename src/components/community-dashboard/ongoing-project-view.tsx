@@ -2,6 +2,7 @@
 
 import { CheckCircle, Users, Loader2, CalendarDays, AlertCircle } from "lucide-react";
 import { BackButton } from "@/components/back-button";
+import { ROUTES } from "@/lib/routes";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
 import { useSubmitDailyVerification } from "@/hooks/useHub";
@@ -162,12 +163,16 @@ export default function OngoingProjectView({
   // Testing completed: user has completed all days including verification on the last day
   const isTestingFullyCompleted = userDaysCompleted >= totalDays;
 
+  // Admin force-completed: app or tester relation was marked COMPLETED (e.g. by admin)
+  const isAdminCompleted =
+    appDetails?.status === "COMPLETED" || userRelation?.status === "COMPLETED";
+
   // On last day, after verification, user can only view
   const isLastDayVerificationCompleted = isLastDay && hasTestedToday;
 
-  // Combined check: either fully completed all days or just completed last day verification
+  // Combined check: either fully completed all days, completed last day verification, or admin-completed
   const isReadOnlyMode =
-    isTestingFullyCompleted || isLastDayVerificationCompleted;
+    isTestingFullyCompleted || isLastDayVerificationCompleted || isAdminCompleted;
 
   const displayDay = hasTestedToday
     ? Math.max(1, userDaysCompleted)
@@ -205,6 +210,7 @@ export default function OngoingProjectView({
       day === displayDay &&
       !hasTestedToday &&
       !isTestingNotStarted &&
+      !isAdminCompleted &&
       !isCheckingIn
     ) {
       // Show confirmation modal instead of immediate check-in
@@ -217,7 +223,7 @@ export default function OngoingProjectView({
       <div className="container mx-auto px-4 md:px-6">
         {showBackButton && (
           <div className="sticky top-0 z-[50] pt-2 sm:pt-3 pb-4 pl-0 xl:pl-8 w-1/2">
-            <BackButton href="/community-dashboard" />
+            <BackButton href={ROUTES.AUTHENTICATED.COMMUNITY_DASHBOARD} />
           </div>
         )}
 
@@ -271,8 +277,18 @@ export default function OngoingProjectView({
 
                   <GoogleGroupBanner variant="note" />
 
+                  {/* Admin Force-Completed Banner */}
+                  {isAdminCompleted && (
+                    <div className="flex items-center gap-3 rounded-xl border border-green-500/30 bg-green-500/10 px-4 py-3">
+                      <CheckCircle className="h-5 w-5 text-green-500 shrink-0" />
+                      <p className="text-sm font-medium text-green-700 dark:text-green-400">
+                        This project has been marked as completed. Testing is no longer active.
+                      </p>
+                    </div>
+                  )}
+
                   {/* Last Day Reminder Banner */}
-                  {!isTestingNotStarted && (isLastDay || isReadOnlyMode) && (
+                  {!isTestingNotStarted && !isAdminCompleted && (isLastDay || isReadOnlyMode) && (
                     <LastDayReminder
                       appName={appDetails?.androidApp?.appName}
                       isTestingCompleted={isReadOnlyMode}
@@ -282,6 +298,7 @@ export default function OngoingProjectView({
 
                 {!isTestingNotStarted &&
                   !hasTestedToday &&
+                  !isAdminCompleted &&
                   appDetails?.appType !== "PAID" && (
                     <section>
                       <DailyTestingAction
@@ -297,7 +314,7 @@ export default function OngoingProjectView({
                 <section className="relative">
                   <div
                     className={cn(
-                      isTestingNotStarted &&
+                      (isTestingNotStarted || isAdminCompleted) &&
                         "blur-sm pointer-events-none select-none",
                     )}
                   >
@@ -334,7 +351,7 @@ export default function OngoingProjectView({
                 <div className="relative">
                   <div
                     className={cn(
-                      isTestingNotStarted &&
+                      (isTestingNotStarted || isAdminCompleted) &&
                         "blur-sm pointer-events-none select-none",
                     )}
                   >
@@ -344,7 +361,7 @@ export default function OngoingProjectView({
                       refetch={refetch}
                       isLoading={isLoading}
                       isCompleted={isReadOnlyMode}
-                      isLocked={isTestingNotStarted}
+                      isLocked={isTestingNotStarted || isAdminCompleted}
                     />
                   </div>
                   {isTestingNotStarted && (

@@ -151,7 +151,7 @@ const CopyBlock = ({ textToCopy }: { textToCopy: string }) => {
   return (
     <div className="bg-secondary/50 p-4 py-2 rounded-lg flex items-center justify-between my-4">
       <code className="text-sm text-muted-foreground">{textToCopy}</code>
-      <Button variant="ghost" size="icon" onClick={handleCopy}>
+      <Button variant="ghost" size="icon" type="button" onClick={handleCopy}>
         {copied ? (
           <Check className="w-4 h-4 text-green-500" />
         ) : (

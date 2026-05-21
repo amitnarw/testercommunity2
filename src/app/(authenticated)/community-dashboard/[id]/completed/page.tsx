@@ -8,6 +8,7 @@ import { SubmittedFeedback } from "@/components/community-dashboard/submitted-fe
 import { ReviewSubmissionForm } from "@/components/review-submission-form";
 import { useState, useEffect } from "react";
 import Confetti from "react-dom-confetti";
+import { ROUTES } from "@/lib/routes";
 import { useInView } from "react-intersection-observer";
 import { motion } from "framer-motion";
 
@@ -193,7 +194,7 @@ export default function AppTestingCompletedPage({
     <div className="bg-secondary/50 min-h-screen mb-8">
       <div className="container mx-auto px-4 md:px-6">
         <div className="sticky top-0 z-[50] pt-2 pb-4 pl-0 xl:pl-8 w-1/2">
-          <BackButton href="/community-dashboard" />
+          <BackButton href={ROUTES.AUTHENTICATED.COMMUNITY_DASHBOARD} />
         </div>
 
         <main className="max-w-7xl mx-auto grid lg:grid-cols-3 gap-12 mt-8">

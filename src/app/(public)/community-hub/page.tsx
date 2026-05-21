@@ -7,6 +7,7 @@ import { motion } from "framer-motion";
 import { Users } from "lucide-react";
 import AnimatedRoundedButton from "@/components/ui/animated-rounded-button";
 import { Button } from "@/components/ui/button";
+import { ROUTES } from "@/lib/routes";
 
 const CommunityHero = dynamic(() =>
   import("@/components/community-hub/community-hero").then(
@@ -130,7 +131,7 @@ function CommunityCTASection() {
               className="w-full sm:w-auto rounded-full h-12 px-6 border border-white/30 text-base bg-transparent hover:bg-white/10 text-white hover:text-white sm:min-w-[160px] transition-all hover:border-white/60 backdrop-blur-sm"
               asChild
             >
-              <AutoTransitionLink href="/community-dashboard">
+              <AutoTransitionLink href={ROUTES.AUTHENTICATED.COMMUNITY_DASHBOARD}>
                 Explore Community Hub
               </AutoTransitionLink>
             </Button>

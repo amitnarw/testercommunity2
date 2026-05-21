@@ -8,6 +8,7 @@ import { Sun, Moon, LayoutDashboard, Users, Code2, Clock, AlertTriangle } from "
 import { UserNav } from "../user-nav";
 import MobileMenu from "../mobile-menu";
 import { authClient } from "@/lib/auth-client";
+import { ROUTES } from "@/lib/routes";
 import { EarnPointsButton } from "../earn-points-button";
 import { Skeleton } from "../ui/skeleton";
 import Link from "next/link";
@@ -128,52 +129,52 @@ export default function Navbar({ onLogout }: { onLogout: () => void }) {
           <div className="flex flex-row justify-end gap-2 w-auto">
             {isSuperAdmin && (
                <div className="flex items-center gap-1 bg-sidebar rounded-3xl p-1 border border-white/10 mr-auto sm:mr-0">
-                 <AutoTransitionLink href="/admin/dashboard">
-                   <button
-                     className={`flex items-center gap-2 py-1.5 px-3.5 rounded-3xl hover:bg-white/20 hover:text-white transition-all text-xs duration-300 font-light ${
-                       pathname.startsWith("/admin") && !actingAsRole
-                         ? "bg-gradient-to-br from-primary to-primary/30 text-white dark:text-black"
-                         : "text-white/70 dark:text-gray-500"
-                     }`}
-                   >
-                     <Users className="h-3.5 w-4 flex-shrink-0" />
-                     <span className="hidden md:inline">Admin</span>
-                   </button>
-                 </AutoTransitionLink>
-                 <AutoTransitionLink href="/tester/dashboard" replace={true} onClick={() => startActingAs("tester")}>
-                   <button
-                     disabled={isLoading}
-                     className={`flex items-center gap-2 py-1.5 px-3.5 rounded-3xl hover:bg-white/20 hover:text-white transition-all text-xs duration-300 font-light ${
-                       pathname.startsWith("/tester") && !actingAsRole
-                         ? "bg-gradient-to-br from-primary to-primary/30 text-white dark:text-black"
-                         : "text-white/70 dark:text-gray-500"
-                     }`}
-                   >
-                     <Code2 className="h-3.5 w-4 flex-shrink-0" />
-                     <span className="hidden md:inline">Tester</span>
-                   </button>
-                 </AutoTransitionLink>
-                 <AutoTransitionLink href="/dashboard" replace={true} onClick={() => startActingAs("user")}>
-                   <button
-                     disabled={isLoading}
-                     className={`flex items-center gap-2 py-1.5 px-3.5 rounded-3xl hover:bg-white/20 hover:text-white transition-all text-xs duration-300 font-light ${
-                       pathname.startsWith("/dashboard") &&
-                       !pathname.startsWith("/admin") &&
-                       !pathname.startsWith("/tester") && !actingAsRole
-                         ? "bg-gradient-to-br from-primary to-primary/30 text-white dark:text-black"
-                         : "text-white/70 dark:text-gray-500"
-                     }`}
-                   >
-                     <LayoutDashboard className="h-3.5 w-3.5 flex-shrink-0" />
-                     <span className="hidden md:inline">User</span>
-                   </button>
-                 </AutoTransitionLink>
+                 <AutoTransitionLink href={ROUTES.ADMIN.DASHBOARD}>
+                    <button
+                      className={`flex items-center gap-2 py-1.5 px-3.5 rounded-3xl hover:bg-white/20 hover:text-white transition-all text-xs duration-300 font-light ${
+                        pathname.startsWith("/admin") && !actingAsRole
+                          ? "bg-gradient-to-br from-primary to-primary/30 text-white dark:text-black"
+                          : "text-white/70 dark:text-gray-500"
+                      }`}
+                    >
+                      <Users className="h-3.5 w-4 flex-shrink-0" />
+                      <span className="hidden md:inline">Admin</span>
+                    </button>
+                  </AutoTransitionLink>
+                  <AutoTransitionLink href={ROUTES.TESTER.DASHBOARD} replace={true} onClick={() => startActingAs("tester")}>
+                    <button
+                      disabled={isLoading}
+                      className={`flex items-center gap-2 py-1.5 px-3.5 rounded-3xl hover:bg-white/20 hover:text-white transition-all text-xs duration-300 font-light ${
+                        pathname.startsWith("/tester") && !actingAsRole
+                          ? "bg-gradient-to-br from-primary to-primary/30 text-white dark:text-black"
+                          : "text-white/70 dark:text-gray-500"
+                      }`}
+                    >
+                      <Code2 className="h-3.5 w-4 flex-shrink-0" />
+                      <span className="hidden md:inline">Tester</span>
+                    </button>
+                  </AutoTransitionLink>
+                  <AutoTransitionLink href={ROUTES.AUTHENTICATED.COMMUNITY_DASHBOARD} replace={true} onClick={() => startActingAs("user")}>
+                    <button
+                      disabled={isLoading}
+                      className={`flex items-center gap-2 py-1.5 px-3.5 rounded-3xl hover:bg-white/20 hover:text-white transition-all text-xs duration-300 font-light ${
+                        pathname.startsWith("/dashboard") &&
+                        !pathname.startsWith("/admin") &&
+                        !pathname.startsWith("/tester") && !actingAsRole
+                          ? "bg-gradient-to-br from-primary to-primary/30 text-white dark:text-black"
+                          : "text-white/70 dark:text-gray-500"
+                      }`}
+                    >
+                      <LayoutDashboard className="h-3.5 w-3.5 flex-shrink-0" />
+                      <span className="hidden md:inline">User</span>
+                    </button>
+                  </AutoTransitionLink>
                </div>
              )}
             <div className="flex items-center gap-2">
               {isTester && pendingCount > 0 && (
                 <Link
-                  href="/tester/dashboard"
+                  href={ROUTES.TESTER.DASHBOARD}
                   className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-orange-500/10 text-orange-600 dark:text-orange-400 border border-orange-200 dark:border-orange-500/20 mr-1 animate-pulse hover:animate-none transition-all"
                 >
                   <Clock className="w-3.5 h-3.5" />

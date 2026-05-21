@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { getPublicTestimonials } from "@/lib/apiCallsAdmin";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
+import { ROUTES } from "@/lib/routes";
 
 export function SuccessStories() {
   const [testimonials, setTestimonials] = useState<any[]>([]);
@@ -388,7 +389,7 @@ export function SuccessStories() {
             size="lg"
             className="rounded-full px-8 group font-medium text-base"
           >
-            <Link href="/reviews">
+            <Link href={ROUTES.PUBLIC.REVIEWS}>
               View All Success Stories
               <ChevronRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
             </Link>

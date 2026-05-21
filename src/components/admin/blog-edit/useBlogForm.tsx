@@ -7,6 +7,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useBlogById, useCreateBlog, useUpdateBlog, useAllBlogs, useDeleteBlog } from "@/hooks/useAdmin";
 import { useRouter } from "next/navigation";
 import { blogSchema, BlogFormValues } from "./types";
+import { ROUTES } from "@/lib/routes";
 
 interface BlogFormContextValue {
   form: UseFormReturn<BlogFormValues>;
@@ -78,7 +79,7 @@ export function BlogFormProvider({ children, id }: BlogFormProviderProps) {
     onSuccess: () => {
       toast({ title: "Deleted", description: "Blog post deleted" });
       refetchAll();
-      router.push("/admin/blog-management");
+      router.push(ROUTES.ADMIN.BLOG_MANAGEMENT);
     },
     onError: (err: any) => {
       toast({

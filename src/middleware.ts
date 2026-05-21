@@ -153,7 +153,7 @@ export async function middleware(request: NextRequest) {
     authRoutes.some((route) => pathname.startsWith(route))
   ) {
     return NextResponse.redirect(
-      new URL(ROUTES.AUTHENTICATED.DASHBOARD, request.url),
+      new URL(ROUTES.AUTHENTICATED.COMMUNITY_DASHBOARD, request.url),
     );
   }
 
@@ -209,7 +209,7 @@ export async function middleware(request: NextRequest) {
       !adminAuthRoutes.some((route) => pathname.startsWith(route))
     ) {
       return NextResponse.redirect(
-        new URL(ROUTES.AUTHENTICATED.DASHBOARD, request.url),
+        new URL(ROUTES.AUTHENTICATED.COMMUNITY_DASHBOARD, request.url),
       );
     }
     if (
@@ -217,7 +217,7 @@ export async function middleware(request: NextRequest) {
       !testerAuthRoutes.some((route) => pathname.startsWith(route))
     ) {
       return NextResponse.redirect(
-        new URL(ROUTES.AUTHENTICATED.DASHBOARD, request.url),
+        new URL(ROUTES.AUTHENTICATED.COMMUNITY_DASHBOARD, request.url),
       );
     }
   }

@@ -22,6 +22,7 @@ import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { useUserProfileData } from "@/hooks/useUser";
+import { ROUTES } from "@/lib/routes";
 import dynamic from "next/dynamic";
 const NotVerifiedDialog = dynamic(
   () =>
@@ -100,9 +101,9 @@ const LoginForm = () => {
       return;
 
     if (userProfileData.initial) {
-      router.replace("/profile/profile-setup");
+      router.replace(ROUTES.AUTHENTICATED.PROFILE_SETUP);
     } else {
-      router.replace("/dashboard");
+      router.replace(ROUTES.AUTHENTICATED.COMMUNITY_DASHBOARD);
     }
   }, [userProfileIsSuccess, userProfileisFetching, userProfileData, router]);
 
