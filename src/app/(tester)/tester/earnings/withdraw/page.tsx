@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { ROUTES } from "@/lib/routes";
 import {
   Card,
   CardContent,
@@ -192,7 +193,7 @@ export default function WithdrawFundsPage() {
   return (
     <div className="flex-1 space-y-8 container mx-auto px-4 md:px-6">
       <div className="sticky top-0 z-[50] pt-2 sm:pt-3 pb-4 w-1/2">
-        <BackButton href="/tester/earnings" />
+        <BackButton href={ROUTES.TESTER.EARNINGS} />
       </div>
       <div className="flex items-center gap-4">
         <div>

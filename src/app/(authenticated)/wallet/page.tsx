@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
+import { ROUTES } from "@/lib/routes";
 import {
   ArrowUpRight,
   ArrowDownLeft,
@@ -561,7 +562,7 @@ export default function WalletPage() {
                 <ActionButton
                   icon={Plus}
                   label="Top Up"
-                  href="/billing"
+                  href={ROUTES.AUTHENTICATED.BILLING}
                   primary
                 />
                 <ActionButton

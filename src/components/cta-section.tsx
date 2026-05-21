@@ -6,6 +6,7 @@ import AnimatedRoundedButton from "@/components/ui/animated-rounded-button";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { AutoTransitionLink } from "@/components/auto-transition-link";
+import { ROUTES } from "@/lib/routes";
 
 export function CTASection() {
   return (
@@ -86,7 +87,7 @@ export function CTASection() {
               className="w-full sm:w-auto rounded-full h-12 px-6 border border-white/30 text-base bg-transparent hover:bg-white/10 text-white hover:text-white sm:min-w-[160px] transition-all hover:border-white/60 backdrop-blur-sm"
               asChild
             >
-              <AutoTransitionLink href="/community-dashboard">Explore Community</AutoTransitionLink>
+              <AutoTransitionLink href={ROUTES.AUTHENTICATED.COMMUNITY_DASHBOARD}>Explore Community</AutoTransitionLink>
             </Button>
           </div>
 

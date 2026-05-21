@@ -8,6 +8,7 @@ import { useBlogById } from "@/hooks/useAdmin";
 import { BlogFormProvider, useBlogFormContext } from "./useBlogForm";
 import { TopBar } from "./TopBar";
 import { PreviewModal } from "./PreviewModal";
+import { ROUTES } from "@/lib/routes";
 import { MainEditor } from "./MainEditor";
 import { Sidebar } from "./Sidebar";
 import { useState, useEffect } from "react";
@@ -58,7 +59,7 @@ function BlogEditContent({ id }: { id: string }) {
   if (!isNew && !blog) {
     return (
       <div className="flex-1 container mx-auto px-4 md:px-6 py-6">
-        <Button variant="ghost" onClick={() => router.push("/admin/blog-management")} className="mb-4 gap-2">
+        <Button variant="ghost" onClick={() => router.push(ROUTES.ADMIN.BLOG_MANAGEMENT)} className="mb-4 gap-2">
           Back to Blog Management
         </Button>
         <div className="text-center py-12 text-muted-foreground">

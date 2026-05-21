@@ -7,6 +7,7 @@ import { SubmissionForm } from "@/components/community-dashboard/submission-form
 import { SubmissionSuccess } from "@/components/community-dashboard/submission-success";
 import { SubmissionError } from "@/components/community-dashboard/submission-error";
 import { useAddHubApp } from "@/hooks/useHub";
+import { ROUTES } from "@/lib/routes";
 
 export default function SubmitAppPage() {
   const router = useRouter();
@@ -36,7 +37,7 @@ export default function SubmitAppPage() {
   if (addHubAppIsSuccess) {
     return (
       <SubmissionSuccess
-        onReturn={() => router.push("/community-dashboard")}
+        onReturn={() => router.push(ROUTES.AUTHENTICATED.COMMUNITY_DASHBOARD)}
         onSubmitAnother={() => {
           addHubAppReset();
           window.scrollTo(0, 0);
@@ -60,7 +61,7 @@ export default function SubmitAppPage() {
     <div className="bg-brand-background min-h-screen">
       <PageHeader
         title="Submit"
-        backHref="/community-dashboard"
+        backHref={ROUTES.AUTHENTICATED.COMMUNITY_DASHBOARD}
         className="w-1/2 px-5 sm:px-10"
       />
 

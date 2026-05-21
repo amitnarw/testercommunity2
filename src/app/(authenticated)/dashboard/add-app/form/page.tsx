@@ -43,6 +43,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useRouter, useSearchParams } from "next/navigation";
 import { FeedbackModal } from "@/components/feedback-modal";
 import { InsufficientPackagesDialog } from "@/components/insufficient-packages-dialog";
+import { ROUTES } from "@/lib/routes";
 
 function AddAppFormContent() {
   const queryClient = useQueryClient();
@@ -141,7 +142,7 @@ function AddAppFormContent() {
         title: "App Submitted!",
         description: "Your app has been submitted for testing. You will be notified when testers start reviewing it.",
         primaryAction: { label: "View Dashboard", onClick: () => {
-          router.push("/dashboard");
+          router.push(ROUTES.AUTHENTICATED.DASHBOARD);
           setFeedbackModal(prev => ({ ...prev, open: false }));
         } },
       });
@@ -767,7 +768,7 @@ function AddAppFormContent() {
                         variant="outline"
                         size="sm"
                         className="w-full mt-4 text-destructive border-destructive/30 hover:bg-destructive/10 rounded-xl h-10 font-medium"
-                        onClick={()=>router.push("/billing")}
+                        onClick={()=>router.push(ROUTES.AUTHENTICATED.BILLING)}
                       >
                         Buy More Packages
                       </Button>
@@ -882,8 +883,8 @@ function AddAppFormContent() {
         open={showInsufficientModal}
         onOpenChange={setShowInsufficientModal}
         currentBalance={userPackages}
-        onGoToBilling={() => router.push("/billing")}
-        onGoToWallet={() => router.push("/wallet")}
+        onGoToBilling={() => router.push(ROUTES.AUTHENTICATED.BILLING)}
+        onGoToWallet={() => router.push(ROUTES.AUTHENTICATED.WALLET)}
       />
 
       <FeedbackModal

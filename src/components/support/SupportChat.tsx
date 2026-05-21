@@ -8,6 +8,7 @@ import { MessageSquare, X, Send, User, Bot, Ticket, HelpCircle, Headphones, Phon
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import ReactMarkdown from "react-markdown";
+import { ROUTES } from "@/lib/routes";
 import { cn } from "@/lib/utils";
 import { getSupportHistory, saveChatMessage } from "@/lib/apiCalls";
 import { usePathname } from "next/navigation";
@@ -63,9 +64,9 @@ export function SupportChat() {
   const [displayedMessages, setDisplayedMessages] = useState<any[]>([]);
   const humanScrollRef = useRef<HTMLDivElement>(null);
 
-  const isSupportPath = pathname?.startsWith("/support") ||
+  const isSupportPath = pathname?.startsWith(ROUTES.PUBLIC.SUPPORT) ||
                        pathname?.startsWith("/help") ||
-                       pathname?.startsWith("/tester/support");
+                       pathname?.startsWith(ROUTES.TESTER.SUPPORT);
 
   const chat = useChat({
     transport: new DefaultChatTransport({ api: "/api/support/chat" }),
@@ -568,7 +569,7 @@ export function SupportChat() {
                           <Ticket className="h-3 w-3" />
                           Tickets
                         </TransitionLink>
-                        <TransitionLink href="/support" onClick={() => setIsOpen(false)} className="text-[10px] text-muted-foreground hover:text-primary flex items-center gap-1 transition-colors">
+                        <TransitionLink href={ROUTES.PUBLIC.SUPPORT} onClick={() => setIsOpen(false)} className="text-[10px] text-muted-foreground hover:text-primary flex items-center gap-1 transition-colors">
                           <HelpCircle className="h-3 w-3" />
                           Help
                         </TransitionLink>

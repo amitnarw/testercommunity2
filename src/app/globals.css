@@ -134,6 +134,35 @@
     scrollbar-width: none; /* Firefox */
   }
 
+  /* Modal scrollbar - thin floating thumb, no track, works with border-radius */
+  .scrollbar-modal::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  .scrollbar-modal::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .scrollbar-modal::-webkit-scrollbar-thumb {
+    background-color: hsl(var(--muted-foreground) / 0.2);
+    border: 2px solid transparent;
+    background-clip: padding-box;
+    border-radius: 100px;
+  }
+
+  .scrollbar-modal::-webkit-scrollbar-thumb:hover {
+    background-color: hsl(var(--muted-foreground) / 0.4);
+  }
+
+  .scrollbar-modal {
+    scrollbar-width: thin;
+    scrollbar-color: hsl(var(--muted-foreground) / 0.2) transparent;
+    /* Overlay scrollbar on supported browsers so it doesn't take up space */
+    overflow-y: overlay;
+    /* Reserve space for scrollbar to prevent layout shifts */
+    scrollbar-gutter: stable;
+  }
+
   .seamless-scroll-mask {
     mask-image: linear-gradient(to bottom, black 80%, transparent 100%);
     -webkit-mask-image: linear-gradient(to bottom, black 80%, transparent 100%);

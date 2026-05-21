@@ -26,21 +26,22 @@ import {
 } from "lucide-react";
 import { BaseSidebar, SidebarNavLink } from "@/components/ui/base-sidebar";
 import { authClient } from "@/lib/auth-client";
+import { ROUTES } from "@/lib/routes";
 
 const mainNavLinks = [
-  { name: "Developer Dashboard", href: "/dashboard", icon: LayoutDashboard },
-  { name: "Community Hub", href: "/community-dashboard", icon: Users2 },
-  { name: "Notifications", href: "/notifications", icon: Bell },
-  { name: "Support", href: "/support", icon: LifeBuoy },
+  { name: "Community Hub", href: ROUTES.AUTHENTICATED.COMMUNITY_DASHBOARD, icon: Users2 },
+  { name: "Developer Dashboard", href: ROUTES.AUTHENTICATED.DASHBOARD, icon: LayoutDashboard },
+  { name: "Notifications", href: ROUTES.AUTHENTICATED.NOTIFICATIONS, icon: Bell },
+  { name: "Support", href: ROUTES.PUBLIC.SUPPORT, icon: LifeBuoy },
 ];
 
 const proNavLinks = [
-  { name: "Dashboard", href: "/tester/dashboard", icon: LayoutDashboard },
-  { name: "Projects", href: "/tester/projects", icon: Briefcase },
-  { name: "Community Tasks", href: "/tester/community-tasks", icon: Users2 },
-  { name: "Activities", href: "/tester/activities", icon: Activity },
-  { name: "Notifications", href: "/tester/notifications", icon: Bell },
-  { name: "Support", href: "/tester/support", icon: LifeBuoy },
+  { name: "Dashboard", href: ROUTES.TESTER.DASHBOARD, icon: LayoutDashboard },
+  { name: "Projects", href: ROUTES.TESTER.PROJECTS, icon: Briefcase },
+  { name: "Community Tasks", href: ROUTES.TESTER.COMMUNITY_TASKS, icon: Users2 },
+  { name: "Activities", href: ROUTES.TESTER.ACTIVITIES, icon: Activity },
+  { name: "Notifications", href: ROUTES.TESTER.NOTIFICATIONS, icon: Bell },
+  { name: "Support", href: ROUTES.TESTER.SUPPORT, icon: LifeBuoy },
 ];
 
 // Admin sidebar navigation with sections
@@ -48,7 +49,7 @@ const adminNavLinks = [
   // Overview
   {
     name: "Dashboard",
-    href: "/admin/dashboard",
+    href: ROUTES.ADMIN.DASHBOARD,
     icon: LayoutDashboard,
     section: "overview",
   },
@@ -56,7 +57,7 @@ const adminNavLinks = [
   // Paid Services
   {
     name: "Pro Submissions",
-    href: "/admin/submissions-paid",
+    href: ROUTES.ADMIN.SUBMISSIONS_PAID,
     icon: DollarSign,
     section: "paid",
     badge: "PRO",
@@ -65,7 +66,7 @@ const adminNavLinks = [
   // Free Services
   {
     name: "Community Subs",
-    href: "/admin/submissions-free",
+    href: ROUTES.ADMIN.SUBMISSIONS_FREE,
     icon: Handshake,
     section: "free",
     badge: "FREE",
@@ -74,65 +75,65 @@ const adminNavLinks = [
   // Finance (super_admin only)
   {
     name: "Finance",
-    href: "/admin/finance",
+    href: ROUTES.ADMIN.FINANCE,
     icon: Landmark,
     section: "finance",
     superAdminOnly: true,
   },
 
   // Platform
-  { name: "Users", href: "/admin/users", icon: Users, section: "platform" },
+  { name: "Users", href: ROUTES.ADMIN.USERS, icon: Users, section: "platform" },
   {
     name: "Applications",
-    href: "/admin/applications",
+    href: ROUTES.ADMIN.APPLICATIONS,
     icon: FileCheck,
     section: "platform",
   },
   {
     name: "Suggestions",
-    href: "/admin/suggestions",
+    href: ROUTES.ADMIN.SUGGESTIONS,
     icon: Lightbulb,
     section: "platform",
   },
   {
     name: "Notifications",
-    href: "/admin/notifications",
+    href: ROUTES.ADMIN.NOTIFICATIONS,
     icon: Bell,
     section: "platform",
   },
   {
     name: "Promo Codes",
-    href: "/admin/promo-codes",
+    href: ROUTES.ADMIN.PROMO_CODES,
     icon: Ticket,
     section: "platform",
   },
   {
     name: "Reviews",
-    href: "/admin/reviews",
+    href: ROUTES.ADMIN.REVIEWS,
     icon: Star,
     section: "platform",
   },
   {
     name: "User Reviews",
-    href: "/admin/user-reviews",
+    href: ROUTES.ADMIN.USER_REVIEWS,
     icon: MessageSquare,
     section: "platform",
   },
   {
     name: "Blog Authors",
-    href: "/admin/blog-authors",
+    href: ROUTES.ADMIN.BLOG_AUTHORS,
     icon: UserCircle,
     section: "platform",
   },
   {
     name: "Blog Management",
-    href: "/admin/blog-management",
+    href: ROUTES.ADMIN.BLOG_MANAGEMENT,
     icon: BookOpen,
     section: "platform",
   },
   {
     name: "System Logs",
-    href: "/admin/logs",
+    href: ROUTES.ADMIN.LOGS,
     icon: Terminal,
     section: "platform",
   },
@@ -140,7 +141,7 @@ const adminNavLinks = [
   // Support
   {
     name: "Support",
-    href: "/admin/support",
+    href: ROUTES.ADMIN.SUPPORT,
     icon: Headphones,
     section: "support",
   },
@@ -352,7 +353,7 @@ export function Sidebar({
       {/* Wallet for regular users */}
       {!isAdminRole && !isTesterRole && (
         <SidebarNavLink
-          href="/wallet"
+          href={ROUTES.AUTHENTICATED.WALLET}
           icon={Wallet}
           isCollapsed={isCollapsed}
         >
@@ -363,7 +364,7 @@ export function Sidebar({
       {/* Earnings for testers */}
       {isTesterRole && (
         <SidebarNavLink
-          href="/tester/earnings"
+          href={ROUTES.TESTER.EARNINGS}
           icon={DollarSign}
           isCollapsed={isCollapsed}
         >
@@ -374,7 +375,7 @@ export function Sidebar({
       {/* Profile links based on role */}
       {isAdminRole ? (
         <SidebarNavLink
-          href="/admin/profile"
+          href={ROUTES.ADMIN.PROFILE}
           icon={User}
           isCollapsed={isCollapsed}
         >
@@ -382,14 +383,14 @@ export function Sidebar({
         </SidebarNavLink>
       ) : isTesterRole ? (
         <SidebarNavLink
-          href="/tester/settings"
+          href={ROUTES.TESTER.SETTINGS}
           icon={User}
           isCollapsed={isCollapsed}
         >
           Profile
         </SidebarNavLink>
       ) : (
-        <SidebarNavLink href="/profile" icon={User} isCollapsed={isCollapsed}>
+        <SidebarNavLink href={ROUTES.AUTHENTICATED.PROFILE} icon={User} isCollapsed={isCollapsed}>
           Profile
         </SidebarNavLink>
       )}
@@ -397,11 +398,11 @@ export function Sidebar({
   );
 
   // Determine logo link based on role
-  let logoHref = "/dashboard";
+  let logoHref = ROUTES.AUTHENTICATED.COMMUNITY_DASHBOARD;
   if (isAdminRole) {
-    logoHref = "/admin/dashboard";
+    logoHref = ROUTES.ADMIN.DASHBOARD;
   } else if (isTesterRole) {
-    logoHref = "/tester/dashboard";
+    logoHref = ROUTES.TESTER.DASHBOARD;
   }
 
   return (

@@ -18,20 +18,20 @@ import { Button } from "./ui/button";
 import { ROUTES } from "@/lib/routes";
 
 const visitorNavItems = [
-  { name: "Home", href: "/" },
-  { name: "How It Works", href: "/how-it-works" },
-  { name: "Reviews", href: "/reviews" },
-  { name: "Pricing", href: "/pricing" },
-  { name: "Blog", href: "/blog" },
+  { name: "Home", href: ROUTES.PUBLIC.HOME },
+  { name: "How It Works", href: ROUTES.PUBLIC.HOW_IT_WORKS },
+  { name: "Reviews", href: ROUTES.PUBLIC.REVIEWS },
+  { name: "Pricing", href: ROUTES.PUBLIC.PRICING },
+  { name: "Blog", href: ROUTES.PUBLIC.BLOG },
 ];
 
 const authenticatedNavItems = [
-  { name: "Home", href: "/" },
-  { name: "Dashboard", href: "/dashboard" },
-  { name: "Community", href: "/community-dashboard" },
-  { name: "Reviews", href: "/reviews" },
-  { name: "Pricing", href: "/pricing" },
-  { name: "Blog", href: "/blog" },
+  { name: "Home", href: ROUTES.PUBLIC.HOME },
+  { name: "Community", href: ROUTES.AUTHENTICATED.COMMUNITY_DASHBOARD },
+  { name: "Dashboard", href: ROUTES.AUTHENTICATED.DASHBOARD },
+  { name: "Reviews", href: ROUTES.PUBLIC.REVIEWS },
+  { name: "Pricing", href: ROUTES.PUBLIC.PRICING },
+  { name: "Blog", href: ROUTES.PUBLIC.BLOG },
 ];
 
 interface HeaderProps {

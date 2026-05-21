@@ -39,22 +39,22 @@ import { ROUTES } from "@/lib/routes";
 import { authClient } from "@/lib/auth-client";
 
 const mainNavItems = [
-  { name: "Home", href: "/" },
-  { name: "Dashboard", href: "/dashboard" },
-  { name: "Community", href: "/community-dashboard" },
-  { name: "Reviews", href: "/reviews" },
-  { name: "Pricing", href: "/billing" },
-  { name: "Support", href: "/support" },
-  { name: "Blog", href: "/blog" },
+  { name: "Home", href: ROUTES.PUBLIC.HOME },
+  { name: "Community", href: ROUTES.AUTHENTICATED.COMMUNITY_DASHBOARD },
+  { name: "Dashboard", href: ROUTES.AUTHENTICATED.DASHBOARD },
+  { name: "Reviews", href: ROUTES.PUBLIC.REVIEWS },
+  { name: "Pricing", href: ROUTES.AUTHENTICATED.BILLING },
+  { name: "Support", href: ROUTES.PUBLIC.SUPPORT },
+  { name: "Blog", href: ROUTES.PUBLIC.BLOG },
 ];
 
 const proNavItems = [
-  { name: "Pro Dashboard", href: "/tester/dashboard", icon: LayoutDashboard },
-  { name: "Projects", href: "/tester/projects", icon: Briefcase },
-  { name: "Earnings", href: "/tester/earnings", icon: DollarSign },
-  { name: "Reviews", href: "/reviews", icon: Star },
-  { name: "Activities", href: "/tester/activities", icon: Activity },
-  { name: "Support", href: "/support", icon: LifeBuoy },
+  { name: "Pro Dashboard", href: ROUTES.TESTER.DASHBOARD, icon: LayoutDashboard },
+  { name: "Projects", href: ROUTES.TESTER.PROJECTS, icon: Briefcase },
+  { name: "Earnings", href: ROUTES.TESTER.EARNINGS, icon: DollarSign },
+  { name: "Reviews", href: ROUTES.PUBLIC.REVIEWS, icon: Star },
+  { name: "Activities", href: ROUTES.TESTER.ACTIVITIES, icon: Activity },
+  { name: "Support", href: ROUTES.PUBLIC.SUPPORT, icon: LifeBuoy },
 ];
 
 // Compact admin nav items for mobile (mirrors sidebar)
@@ -95,52 +95,52 @@ const adminNavItems = [
   },
 
   // Platform
-  { name: "Users", href: "/admin/users", icon: Users, section: "platform" },
+  { name: "Users", href: ROUTES.ADMIN.USERS, icon: Users, section: "platform" },
   {
     name: "Applications",
-    href: "/admin/applications",
+    href: ROUTES.ADMIN.APPLICATIONS,
     icon: FileCheck,
     section: "platform",
   },
   {
     name: "Suggestions",
-    href: "/admin/suggestions",
+    href: ROUTES.ADMIN.SUGGESTIONS,
     icon: Lightbulb,
     section: "platform",
   },
   {
     name: "Notifications",
-    href: "/admin/notifications",
+    href: ROUTES.ADMIN.NOTIFICATIONS,
     icon: Bell,
     section: "platform",
   },
   {
     name: "Promo Codes",
-    href: "/admin/promo-codes",
+    href: ROUTES.ADMIN.PROMO_CODES,
     icon: Ticket,
     section: "platform",
   },
   {
     name: "Reviews",
-    href: "/admin/reviews",
+    href: ROUTES.ADMIN.REVIEWS,
     icon: Star,
     section: "platform",
   },
   {
     name: "User Reviews",
-    href: "/admin/user-reviews",
+    href: ROUTES.ADMIN.USER_REVIEWS,
     icon: MessageSquare,
     section: "platform",
   },
   {
     name: "Blog Management",
-    href: "/admin/blog-management",
+    href: ROUTES.ADMIN.BLOG_MANAGEMENT,
     icon: BookOpen,
     section: "platform",
   },
   {
     name: "System Logs",
-    href: "/admin/logs",
+    href: ROUTES.ADMIN.LOGS,
     icon: Terminal,
     section: "platform",
   },
@@ -148,7 +148,7 @@ const adminNavItems = [
   // Support
   {
     name: "Support",
-    href: "/admin/support",
+    href: ROUTES.ADMIN.SUPPORT,
     icon: Headphones,
     section: "support",
   },
@@ -188,22 +188,22 @@ export default function MobileMenu({
 
   if (isAdminRole) {
     navItems = adminNavItems;
-    notificationHref = "/admin/notifications";
-    walletHref = "/wallet";
+    notificationHref = ROUTES.ADMIN.NOTIFICATIONS;
+    walletHref = ROUTES.AUTHENTICATED.WALLET;
     isAdmin = true;
     showWallet = false;
   } else if (roleName === "tester" || roleName === "super_admin") {
     navItems = proNavItems;
-    notificationHref = "/tester/notifications";
-    walletHref = "/tester/earnings";
+    notificationHref = ROUTES.TESTER.NOTIFICATIONS;
+    walletHref = ROUTES.TESTER.EARNINGS;
   }
 
   const publicNavItems = [
-    { name: "Home", href: "/" },
-    { name: "How It Works", href: "/how-it-works" },
-    { name: "Pricing", href: "/pricing" },
-    { name: "Support", href: "/support" },
-    { name: "Blog", href: "/blog" },
+    { name: "Home", href: ROUTES.PUBLIC.HOME },
+    { name: "How It Works", href: ROUTES.PUBLIC.HOW_IT_WORKS },
+    { name: "Pricing", href: ROUTES.PUBLIC.PRICING },
+    { name: "Support", href: ROUTES.PUBLIC.SUPPORT },
+    { name: "Blog", href: ROUTES.PUBLIC.BLOG },
   ];
 
   const displayItems = isAuthenticated ? navItems : publicNavItems;
@@ -469,7 +469,7 @@ export default function MobileMenu({
                   onClick={() => setIsMenuOpen(false)}
                   className="border h-8"
                 >
-                  <TransitionLink href={isAdminRole ? "/admin/profile" : roleName === "tester" ? "/tester/settings" : "/settings"}>
+                  <TransitionLink href={isAdminRole ? ROUTES.ADMIN.PROFILE : roleName === "tester" ? ROUTES.TESTER.SETTINGS : ROUTES.AUTHENTICATED.SETTINGS}>
                     <Settings className="h-4 w-4" />
                     <span className="sr-only">Settings</span>
                   </TransitionLink>
@@ -480,7 +480,7 @@ export default function MobileMenu({
                   onClick={() => setIsMenuOpen(false)}
                   className="border h-8"
                 >
-                  <TransitionLink href={isAdminRole ? "/admin/profile" : roleName === "tester" ? "/tester/settings" : "/profile"}>Profile</TransitionLink>
+                  <TransitionLink href={isAdminRole ? ROUTES.ADMIN.PROFILE : roleName === "tester" ? ROUTES.TESTER.SETTINGS : ROUTES.AUTHENTICATED.PROFILE}>Profile</TransitionLink>
                 </Button>
                 <Button
                   variant="ghost"

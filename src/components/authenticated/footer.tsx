@@ -1,6 +1,7 @@
 
 import Link from 'next/link';
 import { AutoTransitionLink } from '@/components/auto-transition-link';
+import { ROUTES } from '@/lib/routes';
 
 export default function Footer() {
   return (
@@ -11,7 +12,7 @@ export default function Footer() {
           <p>&copy; {new Date().getFullYear()} Gamdix Pvt Ltd. All rights reserved.</p>
           <div className="flex items-center gap-3 sm:gap-4 mt-2 md:mt-0">
             <AutoTransitionLink href="/terms" className="hover:text-primary transition-colors">Terms of Service</AutoTransitionLink>
-            <AutoTransitionLink href="/support" className="hover:text-primary transition-colors">Support</AutoTransitionLink>
+            <AutoTransitionLink href={ROUTES.PUBLIC.SUPPORT} className="hover:text-primary transition-colors">Support</AutoTransitionLink>
           </div>
         </div>
       </div>

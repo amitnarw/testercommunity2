@@ -75,6 +75,7 @@ import {
   deleteAuthor,
 } from "@/lib/apiCallsAdmin";
 import { useRouter } from "next/navigation";
+import { ROUTES } from "@/lib/routes";
 import { useState, useEffect, useCallback } from "react";
 import {
   useMutation,
@@ -886,14 +887,14 @@ export function useActAsRole(options?: UseMutationOptions<any, any, any>) {
         if (!role) {
           // Clearing - go to admin dashboard
           setActingAsRole(null);
-          router.push("/admin/dashboard");
+          router.push(ROUTES.ADMIN.DASHBOARD);
         } else {
           setActingAsRole(role);
           // Redirect to the respective dashboard after acting as
           if (role === "tester") {
-            router.push("/tester/dashboard");
+            router.push(ROUTES.TESTER.DASHBOARD);
           } else if (role === "user") {
-            router.push("/dashboard");
+            router.push(ROUTES.AUTHENTICATED.COMMUNITY_DASHBOARD);
           }
         }
       },

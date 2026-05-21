@@ -21,6 +21,7 @@ import { Separator } from "@/components/ui/separator";
 import { useUserProfileData } from "@/hooks/useUser";
 import { authClient } from "@/lib/auth-client";
 import { TransitionLink } from "@/components/transition-link";
+import { ROUTES } from "@/lib/routes";
 
 const profileSchema = z.object({
   first_name: z.string().min(2, "First name is required."),
@@ -216,8 +217,8 @@ export function UserDataForm({ title = "User data", showAdvancedSetup = true }: 
                   <TransitionLink
                     href={
                       (session as any)?.role?.name?.toLowerCase() === "tester"
-                        ? "/tester/setup"
-                        : "/profile/profile-setup"
+                        ? ROUTES.TESTER.SETUP
+                        : ROUTES.AUTHENTICATED.PROFILE_SETUP
                     }
                   >
                     <UserCog className="mr-2 h-4 w-4" /> Go to Setup

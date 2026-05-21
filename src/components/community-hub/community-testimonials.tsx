@@ -8,6 +8,7 @@ import { getPublicTestimonials } from "@/lib/apiCallsAdmin";
 import Image from "next/image";
 import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
+import { ROUTES } from "@/lib/routes";
 
 export function CommunityTestimonials() {
   const [testimonials, setTestimonials] = useState<any[]>([]);
@@ -312,7 +313,7 @@ export function CommunityTestimonials() {
           className="mt-6 text-center"
         >
           <Button asChild variant="outline" size="lg" className="rounded-full px-8 group">
-            <Link href="/reviews">
+            <Link href={ROUTES.PUBLIC.REVIEWS}>
               View All Stories
               <ChevronRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
             </Link>

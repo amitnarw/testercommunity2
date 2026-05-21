@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { ArrowRight, Users, CheckCircle, Star } from "lucide-react";
+import { ROUTES } from "@/lib/routes";
 
 export function CtaSection() {
   return (
@@ -52,7 +53,7 @@ export function CtaSection() {
               <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
             </Link>
             <Link
-              href="/how-it-works"
+              href={ROUTES.PUBLIC.HOW_IT_WORKS}
               className="inline-flex items-center px-8 py-4 bg-muted text-foreground rounded-full font-medium hover:bg-muted/80 transition-colors"
             >
               How It Works

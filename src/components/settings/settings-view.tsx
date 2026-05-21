@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useTheme } from "next-themes";
 import { PageHeader } from "@/components/page-header";
+import { ROUTES } from "@/lib/routes";
 import {
   Card,
   CardContent,
@@ -44,7 +45,7 @@ interface SettingsViewProps {
   backHref?: string;
 }
 
-export function SettingsView({ backHref = "/profile" }: SettingsViewProps) {
+export function SettingsView({ backHref = ROUTES.AUTHENTICATED.PROFILE }: SettingsViewProps) {
   const { theme, setTheme } = useTheme();
   const {
     transitionType,

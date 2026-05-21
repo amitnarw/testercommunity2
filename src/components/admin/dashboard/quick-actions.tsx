@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/card";
 import { Users, Clock, AlertCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { ROUTES } from "@/lib/routes";
 
 export function QuickActions({ stats }: { stats: any }) {
   // Dynamic quick actions with counts
@@ -30,7 +31,7 @@ export function QuickActions({ stats }: { stats: any }) {
       title: "Manage Users",
       description: "View & manage platform users",
       icon: Users,
-      href: "/admin/users",
+      href: ROUTES.ADMIN.USERS,
       color: "text-blue-500",
       bgColor: "bg-blue-500/10",
     },
@@ -38,7 +39,7 @@ export function QuickActions({ stats }: { stats: any }) {
       title: "Send Notification",
       description: "Broadcast to all users",
       icon: AlertCircle,
-      href: "/admin/notifications",
+      href: ROUTES.ADMIN.NOTIFICATIONS,
       color: "text-purple-500",
       bgColor: "bg-purple-500/10",
     },

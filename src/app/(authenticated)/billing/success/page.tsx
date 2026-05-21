@@ -3,6 +3,7 @@
 import React, { Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
+import { ROUTES } from "@/lib/routes";
 import { 
   CheckCircle2, 
   FileText, 
@@ -130,13 +131,13 @@ function SuccessContent() {
         {/* Action Buttons */}
         <motion.div variants={itemVariants} className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <Button size="lg" className="rounded-full h-14 text-lg font-bold" asChild>
-            <Link href="/wallet">
+            <Link href={ROUTES.AUTHENTICATED.WALLET}>
               <Wallet className="w-5 h-5 mr-2" />
               Go to Wallet
             </Link>
           </Button>
           <Button size="lg" variant="outline" className="rounded-full h-14 text-lg font-bold" asChild>
-            <Link href="/dashboard">
+            <Link href={ROUTES.AUTHENTICATED.COMMUNITY_DASHBOARD}>
               Dashboard
               <ArrowRight className="w-5 h-5 ml-2" />
             </Link>
@@ -145,7 +146,7 @@ function SuccessContent() {
 
         {/* Need Help */}
         <motion.p variants={itemVariants} className="text-sm text-muted-foreground">
-          Having issues? <Link href="/support" className="text-primary hover:underline font-medium">Contact our billing support</Link>
+          Having issues? <Link href={ROUTES.PUBLIC.SUPPORT} className="text-primary hover:underline font-medium">Contact our billing support</Link>
         </motion.p>
       </motion.div>
     </div>
@@ -155,7 +156,7 @@ function SuccessContent() {
 export default function PaymentSuccessPage() {
   return (
     <div className="min-h-screen bg-muted/30">
-      <PageHeader title="Purchase Success" backHref="/billing" className="max-w-5xl mx-auto px-4" />
+      <PageHeader title="Purchase Success" backHref={ROUTES.AUTHENTICATED.BILLING} className="max-w-5xl mx-auto px-4" />
       <Suspense fallback={
         <div className="flex items-center justify-center min-h-[60vh]">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>

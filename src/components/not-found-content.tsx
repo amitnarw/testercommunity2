@@ -7,6 +7,7 @@ import { useTheme } from "next-themes";
 import { Moon, Sun } from "lucide-react";
 import { authClient } from "@/lib/auth-client";
 import { BackgroundBeams } from "@/components/ui/background-beams";
+import { ROUTES } from "@/lib/routes";
 
 export function NotFoundContent() {
   const { setTheme, theme } = useTheme();
@@ -104,7 +105,7 @@ export function NotFoundContent() {
               variant="outline"
               className="rounded-full px-6 py-5 text-base"
             >
-              <Link href="/dashboard">Dashboard</Link>
+              <Link href={ROUTES.AUTHENTICATED.COMMUNITY_DASHBOARD}>Dashboard</Link>
             </Button>
           )}
         </div>

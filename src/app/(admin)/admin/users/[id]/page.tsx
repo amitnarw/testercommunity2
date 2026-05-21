@@ -1,6 +1,7 @@
 "use client";
 
 import { useRouter, notFound, useParams } from "next/navigation";
+import { ROUTES } from "@/lib/routes";
 import {
   Card,
   CardContent,
@@ -289,7 +290,7 @@ export default function AdminUserDetailsPage() {
         description:
           "The user account and all associated data have been removed.",
       });
-      router.push("/admin/users");
+      router.push(ROUTES.ADMIN.USERS);
     },
     onError: (err: any) => {
       toast({
@@ -379,7 +380,7 @@ export default function AdminUserDetailsPage() {
     <>
       <div className="container mx-auto px-4 md:px-6 mb-8">
         <div className="sticky top-0 z-[50] pt-2 sm:pt-3 pb-4 w-1/2">
-          <BackButton href="/admin/users" />
+          <BackButton href={ROUTES.ADMIN.USERS} />
         </div>
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div className="flex items-center justify-between gap-4 w-full">

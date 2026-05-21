@@ -1,6 +1,7 @@
 "use client";
 
 import { useParams, useRouter } from "next/navigation";
+import { ROUTES } from "@/lib/routes";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -28,7 +29,7 @@ export default function AdminReviewEditPage() {
   const createMutation = useCreateTestimonial({
     onSuccess: () => {
       toast({ title: "Success", description: "Review created" });
-      router.push("/admin/reviews");
+      router.push(ROUTES.ADMIN.REVIEWS);
     },
     onError: (err: any) =>
       toast({ title: "Error", description: err.message || "Failed to create", variant: "destructive" }),
@@ -37,7 +38,7 @@ export default function AdminReviewEditPage() {
   const updateMutation = useUpdateTestimonial({
     onSuccess: () => {
       toast({ title: "Success", description: "Review updated" });
-      router.push("/admin/reviews");
+      router.push(ROUTES.ADMIN.REVIEWS);
     },
     onError: (err: any) =>
       toast({ title: "Error", description: err.message || "Failed to update", variant: "destructive" }),
@@ -116,7 +117,7 @@ export default function AdminReviewEditPage() {
   return (
     <div className="flex-1 space-y-6 container mx-auto px-4 md:px-6 py-6">
       <div className="flex items-center gap-4">
-        <Button variant="ghost" size="icon" onClick={() => router.push("/admin/reviews")}>
+        <Button variant="ghost" size="icon" onClick={() => router.push(ROUTES.ADMIN.REVIEWS)}>
           <ArrowLeft className="h-5 w-5" />
         </Button>
         <div>
@@ -286,7 +287,7 @@ export default function AdminReviewEditPage() {
         )}
 
         <div className="flex gap-3 justify-end">
-          <Button type="button" variant="outline" onClick={() => router.push("/admin/reviews")}>
+          <Button type="button" variant="outline" onClick={() => router.push(ROUTES.ADMIN.REVIEWS)}>
             Cancel
           </Button>
           <Button type="submit" className="gap-2" disabled={createMutation.isPending || updateMutation.isPending}>

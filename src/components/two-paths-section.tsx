@@ -8,6 +8,7 @@ import { Button } from "./ui/button";
 import { HoverBorderGradient } from "./ui/hover-border-gradient";
 import { useTheme } from "next-themes";
 import { motion, AnimatePresence } from "framer-motion";
+import { ROUTES } from "@/lib/routes";
 import { useState } from "react";
 
 export function TwoPathsSection() {
@@ -194,7 +195,7 @@ export function TwoPathsSection() {
 
                     <div className="mt-auto relative z-10">
                       <Link
-                        href="/community-dashboard"
+                        href={ROUTES.AUTHENTICATED.COMMUNITY_DASHBOARD}
                         className="w-full block"
                       >
                         <Button
@@ -266,7 +267,7 @@ export function TwoPathsSection() {
                     </div>
 
                     <div className="mt-auto relative z-10">
-                      <Link href="/pricing" className="w-full block">
+                      <Link href={ROUTES.PUBLIC.PRICING} className="w-full block">
                         <HoverBorderGradient
                           containerClassName="w-full"
                           className="bg-white text-primary flex items-center justify-center space-x-2 w-full py-4 font-bold"
@@ -326,7 +327,7 @@ export function TwoPathsSection() {
               </div>
 
               <div className="mt-auto relative z-10">
-                <Link href="/community-dashboard" className="w-full block">
+                <Link href={ROUTES.AUTHENTICATED.COMMUNITY_DASHBOARD} className="w-full block">
                   <Button
                     className="w-full py-6 rounded-full font-semibold text-base transition-all duration-300 group-hover:bg-primary group-hover:text-primary-foreground"
                     variant="outline"
@@ -391,7 +392,7 @@ export function TwoPathsSection() {
               </div>
 
               <div className="mt-auto relative z-10">
-                <Link href="/pricing" className="w-full block">
+                <Link href={ROUTES.PUBLIC.PRICING} className="w-full block">
                   <HoverBorderGradient
                     containerClassName="w-full"
                     className="bg-white text-primary flex items-center justify-center space-x-2 w-full py-4 font-bold"

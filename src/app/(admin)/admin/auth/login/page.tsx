@@ -24,22 +24,29 @@ import { Label } from "@/components/ui/label";
 import { useAdminLogin } from "@/hooks/useAdmin";
 import { useToast } from "@/hooks/use-toast";
 import { authClient } from "@/lib/auth-client";
+import { ROUTES } from "@/lib/routes";
+import { z } from "zod";
+
+const adminSigninSchema = z.object({
+  email: z.string().email("Please enter a valid email."),
+  password: z.string().min(8, "Password must be at least 8 characters."),
+});
 
 const LoginForm = ({
   role,
-  email,
-  password,
 }: {
   role: "Super Admin" | "Admin" | "Moderator" | "Support";
-  email: string;
-  password: string;
 }) => {
   const router = useRouter();
   const { toast } = useToast();
   const [showPassword, setShowPassword] = React.useState(false);
-  const [emailValue, setEmailValue] = React.useState(email);
-  const [passwordValue, setPasswordValue] = React.useState(password);
+  const [emailValue, setEmailValue] = React.useState("");
+  const [passwordValue, setPasswordValue] = React.useState("");
   const [rememberMe, setRememberMe] = React.useState(false);
+  const [errors, setErrors] = React.useState<{
+    email?: string[];
+    password?: string[];
+  }>({});
 
   const { data: session, isPending: isSessionPending } =
     authClient.useSession();
@@ -69,12 +76,23 @@ const LoginForm = ({
   React.useEffect(() => {
     if (isSessionPending || !session) return;
 
-    router.replace("/admin/dashboard");
+    router.replace(ROUTES.ADMIN.DASHBOARD);
   }, [session, isSessionPending, router]);
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    login({ email: emailValue, password: passwordValue, role, rememberMe });
+    const result = adminSigninSchema.safeParse({
+      email: emailValue,
+      password: passwordValue,
+    });
+
+    if (!result.success) {
+      setErrors(result.error.flatten().fieldErrors);
+      return;
+    }
+
+    setErrors({});
+    login({ email: result.data.email, password: result.data.password, role, rememberMe });
   };
 
   return (
@@ -97,10 +115,20 @@ const LoginForm = ({
             id={`${role}-email`}
             type="email"
             value={emailValue}
-            onChange={(e) => setEmailValue(e.target.value)}
+            onChange={(e) => {
+              setEmailValue(e.target.value);
+              const fieldResult = adminSigninSchema.shape.email.safeParse(e.target.value);
+              setErrors((prev) => ({
+                ...prev,
+                email: fieldResult.success ? undefined : fieldResult.error.errors.map((err) => err.message),
+              }));
+            }}
             className="pl-9 h-10 bg-background border-input focus:ring-1 focus:ring-primary/40 rounded-xl text-sm"
           />
         </div>
+        {errors.email && (
+          <p className="text-red-500 text-xs mt-1">{errors.email[0]}</p>
+        )}
       </div>
       <div className="space-y-1">
         <Label
@@ -115,7 +143,14 @@ const LoginForm = ({
             id={`${role}-password`}
             type={showPassword ? "text" : "password"}
             value={passwordValue}
-            onChange={(e) => setPasswordValue(e.target.value)}
+            onChange={(e) => {
+              setPasswordValue(e.target.value);
+              const fieldResult = adminSigninSchema.shape.password.safeParse(e.target.value);
+              setErrors((prev) => ({
+                ...prev,
+                password: fieldResult.success ? undefined : fieldResult.error.errors.map((err) => err.message),
+              }));
+            }}
             className="pl-9 pr-10 h-10 bg-background border-input focus:ring-1 focus:ring-primary/40 rounded-xl text-sm"
           />
           <button
@@ -130,6 +165,9 @@ const LoginForm = ({
             )}
           </button>
         </div>
+        {errors.password && (
+          <p className="text-red-500 text-xs mt-1">{errors.password[0]}</p>
+        )}
       </div>
 
       <div className="flex items-center justify-between px-1 mb-1">
@@ -261,32 +299,16 @@ export default function AdminLoginPage() {
               </TabsList>
 
               <TabsContent value="super-admin" className="mt-0 outline-none">
-                <LoginForm
-                  role="Super Admin"
-                  email="super_admin@intesters.com"
-                  password="Super@123Admin"
-                />
+                <LoginForm role="Super Admin" />
               </TabsContent>
               <TabsContent value="admin" className="mt-0 outline-none">
-                <LoginForm
-                  role="Admin"
-                  email="admin@intesters.com"
-                  password="Admin@123Password"
-                />
+                <LoginForm role="Admin" />
               </TabsContent>
               <TabsContent value="moderator" className="mt-0 outline-none">
-                <LoginForm
-                  role="Moderator"
-                  email="moderator@intesters.com"
-                  password="Moderator@123Pass"
-                />
+                <LoginForm role="Moderator" />
               </TabsContent>
               <TabsContent value="support" className="mt-0 outline-none">
-                <LoginForm
-                  role="Support"
-                  email="support@intesters.com"
-                  password="Support@123Pass"
-                />
+                <LoginForm role="Support" />
               </TabsContent>
             </Tabs>
           </div>

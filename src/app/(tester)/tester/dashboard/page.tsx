@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { ROUTES } from "@/lib/routes";
 import {
   Card,
   CardContent,
@@ -350,7 +351,7 @@ export default function TesterDashboardPage() {
                 <CardDescription>Tests currently in progress.</CardDescription>
               </div>
               <Button asChild variant="ghost" size="sm">
-                <Link href="/tester/projects">
+                <Link href={ROUTES.TESTER.PROJECTS}>
                   View All <ArrowRight className="ml-1 w-4 h-4" />
                 </Link>
               </Button>
@@ -363,7 +364,7 @@ export default function TesterDashboardPage() {
                     No active tests right now.
                   </p>
                   <Button asChild variant="outline" size="sm" className="mt-3">
-                    <Link href="/tester/projects">
+                    <Link href={ROUTES.TESTER.PROJECTS}>
                       Browse Available Projects
                     </Link>
                   </Button>

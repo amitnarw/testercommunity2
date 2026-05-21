@@ -29,6 +29,7 @@ import {
   Settings,
 } from "lucide-react";
 import { TransitionLink } from "./transition-link";
+import { ROUTES } from "@/lib/routes";
 
 interface UserNavProps {
   session?: {
@@ -184,34 +185,34 @@ export function UserNav({ session, onLogout }: UserNavProps) {
         <>
           <div className="grid grid-cols-2 gap-2 mb-2">
             <BentoItem
-              href="/admin/dashboard"
+              href={ROUTES.ADMIN.DASHBOARD}
               icon={LayoutDashboard}
               label="Dashboard"
             />
-            <BentoItem href="/admin/users" icon={Users} label="Users" />
+            <BentoItem href={ROUTES.ADMIN.USERS} icon={Users} label="Users" />
             <BentoItem
-              href="/admin/submissions"
+              href={ROUTES.ADMIN.SUBMISSIONS}
               icon={FileCheck}
               label="Submissions"
             />
             <BentoItem
-              href="/admin/feedback"
+              href={ROUTES.ADMIN.FEEDBACK}
               icon={MessageSquare}
               label="Feedback"
             />
           </div>
           <div className="space-y-1">
             <ListItem
-              href="/admin/applications"
+              href={ROUTES.ADMIN.APPLICATIONS}
               icon={UserPlus}
               label="Applications"
             />
             <ListItem
-              href="/admin/suggestions"
+              href={ROUTES.ADMIN.SUGGESTIONS}
               icon={Lightbulb}
               label="Suggestions"
             />
-            <ListItem href="/admin/profile" icon={User} label="My Profile" />
+            <ListItem href={ROUTES.ADMIN.PROFILE} icon={User} label="My Profile" />
           </div>
         </>
       );
@@ -221,21 +222,21 @@ export function UserNav({ session, onLogout }: UserNavProps) {
         <>
           <div className="grid grid-cols-2 gap-2 mb-2">
             <BentoItem
-              href="/tester/dashboard"
+              href={ROUTES.TESTER.DASHBOARD}
               icon={LayoutDashboard}
               label="Dashboard"
             />
             <BentoItem
-              href="/tester/projects"
+              href={ROUTES.TESTER.PROJECTS}
               icon={Briefcase}
               label="Projects"
             />
             <BentoItem
-              href="/tester/earnings"
+              href={ROUTES.TESTER.EARNINGS}
               icon={DollarSign}
               label="Earnings"
             />
-            <BentoItem href="/tester/profile" icon={User} label="Profile" />
+            <BentoItem href={ROUTES.TESTER.PROFILE} icon={User} label="Profile" />
           </div>
         </>
       );
@@ -244,21 +245,21 @@ export function UserNav({ session, onLogout }: UserNavProps) {
       <>
         <div className="grid grid-cols-2 gap-2 mb-2">
           <BentoItem
-            href="/dashboard"
-            icon={LayoutDashboard}
-            label="Developer"
-          />
-          <BentoItem
-            href="/community-dashboard"
+            href={ROUTES.AUTHENTICATED.COMMUNITY_DASHBOARD}
             icon={Users2}
             label="Community"
           />
-          <BentoItem href="/wallet" icon={Wallet} label="Wallet" />
-          <BentoItem href="/profile" icon={User} label="Profile" />
+          <BentoItem
+            href={ROUTES.AUTHENTICATED.DASHBOARD}
+            icon={LayoutDashboard}
+            label="Developer"
+          />
+          <BentoItem href={ROUTES.AUTHENTICATED.WALLET} icon={Wallet} label="Wallet" />
+          <BentoItem href={ROUTES.AUTHENTICATED.PROFILE} icon={User} label="Profile" />
         </div>
         <div className="space-y-1">
-          <ListItem href="/billing" icon={Package} label="Plans & Billing" />
-          <ListItem href="/support" icon={LifeBuoy} label="Help & Support" />
+          <ListItem href={ROUTES.AUTHENTICATED.BILLING} icon={Package} label="Plans & Billing" />
+          <ListItem href={ROUTES.PUBLIC.SUPPORT} icon={LifeBuoy} label="Help & Support" />
         </div>
       </>
     );

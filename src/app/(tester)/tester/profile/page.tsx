@@ -4,6 +4,7 @@ import { ActiveSessions } from "@/components/authenticated/profile/active-sessio
 import { UserDataForm } from "@/components/authenticated/profile/user-data-form";
 import { PageHeader } from "@/components/page-header";
 import { ProfileBentoGrid } from "@/components/profile-bento-grid";
+import { ROUTES } from "@/lib/routes";
 
 export default function ProfilePage() {
   return (
@@ -13,7 +14,7 @@ export default function ProfilePage() {
     >
       <PageHeader
         title="Profile"
-        backHref="/tester/dashboard"
+        backHref={ROUTES.TESTER.DASHBOARD}
         className="w-1/2 lg:w-full"
       />
       <div className="mx-auto space-y-12">
@@ -22,8 +23,8 @@ export default function ProfilePage() {
         <ProfileBentoGrid
           showReferAndEarn={false}
           showUpgrade={false}
-          settingsHref="/tester/settings"
-          supportHref="/tester/support"
+          settingsHref={ROUTES.TESTER.SETTINGS}
+          supportHref={ROUTES.TESTER.SUPPORT}
         />
       </div>
     </div>

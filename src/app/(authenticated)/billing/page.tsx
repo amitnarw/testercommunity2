@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import { motion } from "framer-motion";
+import { ROUTES } from "@/lib/routes";
 import {
   Check,
   Zap,
@@ -468,7 +469,7 @@ export default function BillingPage() {
       >
         <PageHeader
           title="Billing"
-          backHref="/wallet"
+          backHref={ROUTES.AUTHENTICATED.WALLET}
           className="w-1/2 px-4 md:px-6"
         />
         <div className="relative z-10 container mx-auto px-4 md:px-6 py-8 space-y-16">
