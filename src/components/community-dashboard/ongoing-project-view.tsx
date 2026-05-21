@@ -32,19 +32,18 @@ import {
 import { useState } from "react";
 
 const DailyProgress = ({
-  progress,
+  completedDays,
   totalDays,
   onDayClick,
   hasTestedToday,
   isCheckingIn,
 }: {
-  progress: number;
+  completedDays: number;
   totalDays: number;
   onDayClick: (day: number) => void;
   hasTestedToday: boolean;
   isCheckingIn?: boolean;
 }) => {
-  const completedDays = Math.floor((totalDays * (progress || 0)) / 100);
 
   return (
     <div className="w-full grid grid-cols-5 sm:grid-cols-10 gap-3 sm:gap-3">
@@ -303,9 +302,7 @@ export default function OngoingProjectView({
                     )}
                   >
                     <DailyProgress
-                      progress={
-                        (userDaysCompleted / (appDetails?.totalDay || 14)) * 100
-                      }
+                      completedDays={userDaysCompleted}
                       totalDays={appDetails?.totalDay || 0}
                       onDayClick={handleDayClick}
                       hasTestedToday={hasTestedToday}
