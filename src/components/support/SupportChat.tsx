@@ -4,18 +4,20 @@ import React, { useState, useEffect, useRef, useCallback } from "react";
 import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport } from "ai";
 import { motion, AnimatePresence } from "framer-motion";
-import { MessageSquare, X, Send, User, Bot, Ticket, HelpCircle, Headphones, Phone, Loader2, AlertCircle } from "lucide-react";
+import { X, Send, User, Bot, Ticket, HelpCircle, Headphones, Loader2, AlertCircle, CheckCircle2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import ReactMarkdown from "react-markdown";
 import { ROUTES } from "@/lib/routes";
 import { cn } from "@/lib/utils";
-import { getSupportHistory, saveChatMessage } from "@/lib/apiCalls";
+import { getSupportHistory, saveChatMessage, createSupportTicket } from "@/lib/apiCalls";
+import API_ROUTES from "@/lib/apiRoutes";
+import api from "@/lib/axios";
 import { usePathname } from "next/navigation";
 import { TransitionLink } from "@/components/transition-link";
 import { connectSupportSocket } from "@/lib/supportSocket";
 
-type ChatMode = "AI" | "WAITING" | "HUMAN";
+type ChatMode = "AI" | "WAITING" | "HUMAN" | "OFFLINE_OPTIONS" | "TICKET_FORM" | "CHECKING";
 
 export function SupportChat() {
   const pathname = usePathname();
@@ -31,6 +33,14 @@ export function SupportChat() {
   const [agentTyping, setAgentTyping] = useState(false);
   const [sendingMessage, setSendingMessage] = useState(false);
   const [agentsOnline, setAgentsOnline] = useState(false);
+  const [ticketSubmitted, setTicketSubmitted] = useState(false);
+  const [ticketCategory, setTicketCategory] = useState("GENERAL");
+  const [ticketSubject, setTicketSubject] = useState("");
+  const [ticketDescription, setTicketDescription] = useState("");
+  const [ticketSubmitting, setTicketSubmitting] = useState(false);
+  const [ticketSuccess, setTicketSuccess] = useState(false);
+  const [userChoseAlex, setUserChoseAlex] = useState(false);
+  const [hasCheckedStatus, setHasCheckedStatus] = useState(false);
   const requestTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const errorTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const typingTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -68,15 +78,13 @@ export function SupportChat() {
                        pathname?.startsWith("/help") ||
                        pathname?.startsWith(ROUTES.TESTER.SUPPORT);
 
+  const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || "";
+
   const chat = useChat({
-    transport: new DefaultChatTransport({ api: "/api/support/chat" }),
-    onFinish: async (message: any) => {
-      try {
-        await saveChatMessage({ message: message.content, role: "assistant" });
-      } catch (err) {
-        console.error("Failed to persist assistant message:", err);
-      }
-    },
+    transport: new DefaultChatTransport({
+      api: `${BACKEND_URL}/api/support/chat/stream`,
+      credentials: "include",
+    }),
   });
 
   const { messages, status, setMessages, sendMessage } = chat;
@@ -265,13 +273,7 @@ export function SupportChat() {
       s.emit("user:rejoin");
     }
 
-    // Fetch agent status on mount
-    fetch("/api/support/agent-status")
-      .then((r) => r.json())
-      .then((d) => {
-        if (d?.data?.online) setAgentsOnline(true);
-      })
-      .catch(() => {});
+    // Agent status fetched when chat opens via CHECKING flow
 
     return () => {
       if (requestTimeoutRef.current) {
@@ -327,6 +329,40 @@ export function SupportChat() {
     }
   }, [showError, clearError]);
 
+  useEffect(() => {
+    if (agentsOnline && chatMode === "OFFLINE_OPTIONS") {
+      setChatMode("AI");
+    }
+  }, [agentsOnline, chatMode, isOpen]);
+
+  useEffect(() => {
+    if (isOpen && !hasCheckedStatus) {
+      if (userChoseAlex || ticketSubmitted) {
+        setChatMode("AI");
+        setHasCheckedStatus(true);
+        return;
+      }
+      setChatMode("CHECKING");
+    }
+  }, [isOpen, hasCheckedStatus, userChoseAlex, ticketSubmitted]);
+
+  useEffect(() => {
+    if (chatMode !== "CHECKING") return;
+
+    api.get(API_ROUTES.SUPPORT + "/agent-status")
+      .then((r) => {
+        const online = r?.data?.data?.online || false;
+        setAgentsOnline(online);
+        setHasCheckedStatus(true);
+        setChatMode(online ? "AI" : "OFFLINE_OPTIONS");
+      })
+      .catch(() => {
+        setAgentsOnline(false);
+        setHasCheckedStatus(true);
+        setChatMode("OFFLINE_OPTIONS");
+      });
+  }, [chatMode]);
+
   const handleHumanSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!humanInput.trim() || !humanChatId) return;
@@ -370,6 +406,54 @@ export function SupportChat() {
     setChatMode("AI");
   }, []);
 
+  const formatChatTranscript = useCallback(() => {
+    const chatMessages = displayedMessages.filter(
+      (m: any) => (m.role === "user" || m.role === "assistant") && m.id !== "greeting"
+    );
+    if (chatMessages.length === 0) return "";
+    const transcript = chatMessages
+      .map((m: any) => `${m.role === "user" ? "User" : "Alex"}: ${m.content}`)
+      .join("\n");
+    return `\n\n--- Chat Transcript ---\n${transcript}`;
+  }, [displayedMessages]);
+
+  const handleTicketSubmit = useCallback(async () => {
+    if (!ticketSubject.trim() || !ticketDescription.trim()) return;
+    setTicketSubmitting(true);
+    clearError();
+    try {
+      const transcript = formatChatTranscript();
+      const description = ticketDescription + transcript;
+      const ticket = await createSupportTicket({
+        subject: ticketSubject,
+        description,
+        category: ticketCategory,
+      });
+      setTicketSuccess(true);
+      setMessages((prev: any) => [...prev, {
+        id: "ticket-success-" + Date.now(),
+        role: "assistant",
+        content: `Thanks! Your ticket **#${ticket.id}** has been submitted. A human agent will review it when they come online. You can track your tickets in the [Tickets](/support/tickets) page.`,
+      }]);
+      setTimeout(() => {
+        setTicketSubject("");
+        setTicketDescription("");
+        setTicketCategory("GENERAL");
+        setTicketSuccess(false);
+        setTicketSubmitting(false);
+        setTicketSubmitted(true);
+        setChatMode("AI");
+      }, 2000);
+    } catch (err) {
+      showError("Failed to submit ticket. Please try again.");
+      setTicketSubmitting(false);
+    }
+  }, [ticketSubject, ticketDescription, ticketCategory, formatChatTranscript, setMessages, showError, clearError]);
+
+  const handleOpenOfflineOptions = useCallback(() => {
+    setChatMode("OFFLINE_OPTIONS");
+  }, []);
+
   if (!isSupportPath) return null;
 
   return (
@@ -399,29 +483,22 @@ export function SupportChat() {
               onClick={() => setIsOpen(true)}
               className="w-full h-full flex items-center justify-between gap-3 p-2 bg-primary text-primary-foreground cursor-pointer hover:bg-primary/95 transition-colors"
             >
-              <div className="flex items-center gap-2.5">
-                <div className="relative">
-                  <div className="h-9 w-9 rounded-full bg-white/20 flex items-center justify-center border border-white/10">
-                    {chatMode === "HUMAN" ? (
-                      <Headphones className="h-5 w-5 text-primary-foreground" />
-                    ) : (
+                <div className="flex items-center gap-2.5">
+                  <div className="relative">
+                    <div className="h-9 w-9 rounded-full bg-white/20 flex items-center justify-center border border-white/10">
                       <Bot className="h-5 w-5 text-primary-foreground" />
-                    )}
+                    </div>
+                    <span className="absolute bottom-0 right-0 w-2.5 h-2.5 border-2 border-primary rounded-full bg-green-500" />
                   </div>
-                  <span className={cn(
-                    "absolute bottom-0 right-0 w-2.5 h-2.5 border-2 border-primary rounded-full",
-                    agentsOnline ? "bg-green-500" : "bg-gray-400"
-                  )} />
+                  <div className="flex flex-col">
+                    <span className="font-bold text-xs tracking-tight whitespace-nowrap">
+                      Chat with agent
+                    </span>
+                    <span className="text-xs text-primary-foreground/70 leading-none">
+                      AI + Support
+                    </span>
+                  </div>
                 </div>
-                <div className="flex flex-col">
-                  <span className="font-bold text-xs tracking-tight whitespace-nowrap">
-                    {chatMode === "HUMAN" ? `Chat with ${agentName}` : "Chat with Alex"}
-                  </span>
-                  <span className="text-xs text-primary-foreground/70 leading-none">
-                    {chatMode === "HUMAN" ? "Live Agent" : agentsOnline ? "Support Online • Usually replies in 5 min" : "Leave a message"}
-                  </span>
-                </div>
-              </div>
             </motion.div>
           ) : (
             <motion.div
@@ -438,23 +515,35 @@ export function SupportChat() {
                   <div className="h-10 w-10 rounded-full bg-white/20 flex items-center justify-center border border-white/10">
                     {chatMode === "HUMAN" ? (
                       <Headphones className="h-6 w-6 text-primary-foreground" />
+                    ) : chatMode === "TICKET_FORM" ? (
+                      <Ticket className="h-6 w-6 text-primary-foreground" />
                     ) : (
                       <Bot className="h-6 w-6 text-primary-foreground" />
                     )}
                   </div>
                   <div>
                     <h3 className="font-bold text-sm">
-                      {chatMode === "HUMAN" ? `${agentName} @ inTesters` : "Alex @ inTesters"}
+                      {chatMode === "HUMAN" ? `${agentName} @ inTesters` :
+                       chatMode === "TICKET_FORM" ? "Submit a Ticket" :
+                       chatMode === "OFFLINE_OPTIONS" ? "Leave a message" :
+                       chatMode === "CHECKING" ? "Connecting..." :
+                       "Alex @ inTesters"}
                     </h3>
                     <p className="text-[10px] text-primary-foreground/80 flex items-center gap-1.5">
                       <span className={cn(
                         "w-1.5 h-1.5 rounded-full",
                         chatMode === "HUMAN" ? "bg-green-400 animate-pulse" :
-                        chatMode === "WAITING" ? "bg-amber-400 animate-pulse" : "bg-green-400"
+                        chatMode === "WAITING" ? "bg-amber-400 animate-pulse" :
+                        chatMode === "CHECKING" ? "bg-amber-400 animate-pulse" :
+                        chatMode === "OFFLINE_OPTIONS" || chatMode === "TICKET_FORM" ? "bg-gray-400" :
+                        "bg-green-400"
                       )} />
                       {chatMode === "WAITING" ? "Connecting..." :
                        chatMode === "HUMAN" ? "Live Agent" :
-                       agentsOnline ? "Support Online" : "Leave a message"}
+                       chatMode === "CHECKING" ? "Checking availability..." :
+                       chatMode === "OFFLINE_OPTIONS" ? "Agent Offline" :
+                       chatMode === "TICKET_FORM" ? (ticketSuccess ? "Submitted!" : "Fill details") :
+                       "AI Assistant"}
                     </p>
                   </div>
                 </div>
@@ -558,13 +647,23 @@ export function SupportChat() {
                     </form>
                     <div className="mt-3 flex items-center justify-between px-1">
                       <div className="flex items-center gap-4">
-                        <button
-                          onClick={requestHumanChat}
-                          className="text-[10px] text-muted-foreground hover:text-primary flex items-center gap-1 transition-colors"
-                        >
-                          <Headphones className="h-3 w-3" />
-                          {agentsOnline ? "Talk to a human" : "Leave a message"}
-                        </button>
+                        {agentsOnline ? (
+                          <button
+                            onClick={requestHumanChat}
+                            className="text-[10px] text-muted-foreground hover:text-primary flex items-center gap-1 transition-colors"
+                          >
+                            <Headphones className="h-3 w-3" />
+                            Talk to a human
+                          </button>
+                        ) : (ticketSubmitted || userChoseAlex) ? null : (
+                          <button
+                            onClick={handleOpenOfflineOptions}
+                            className="text-[10px] text-muted-foreground hover:text-primary flex items-center gap-1 transition-colors"
+                          >
+                            <Headphones className="h-3 w-3" />
+                            Leave a message
+                          </button>
+                        )}
                         <TransitionLink href="/support/tickets" onClick={() => setIsOpen(false)} className="text-[10px] text-muted-foreground hover:text-primary flex items-center gap-1 transition-colors">
                           <Ticket className="h-3 w-3" />
                           Tickets
@@ -613,6 +712,143 @@ export function SupportChat() {
                   >
                     Back to Alex instead
                   </Button>
+                </div>
+              )}
+
+              {/* CHECKING Mode */}
+              {chatMode === "CHECKING" && (
+                <div className="flex-1 flex flex-col items-center justify-center p-8 bg-background/50 space-y-4">
+                  <div className="h-16 w-16 rounded-full bg-muted/50 flex items-center justify-center">
+                    <Loader2 className="h-8 w-8 text-muted-foreground animate-spin" />
+                  </div>
+                  <h3 className="font-bold text-lg">Connecting you...</h3>
+                  <p className="text-sm text-muted-foreground text-center">
+                    Checking agent availability...
+                  </p>
+                </div>
+              )}
+
+              {/* OFFLINE OPTIONS Mode */}
+              {chatMode === "OFFLINE_OPTIONS" && (
+                <div className="flex-1 flex flex-col items-center justify-center p-8 bg-background/50 space-y-6">
+                  <div className="h-16 w-16 rounded-full bg-muted/50 flex items-center justify-center">
+                    <Headphones className="h-8 w-8 text-muted-foreground" />
+                  </div>
+                  <div className="text-center space-y-2">
+                    <h3 className="font-bold text-lg">Support Agent Offline</h3>
+                    <p className="text-sm text-muted-foreground max-w-xs">
+                      No support agents are available right now. You can submit a ticket and we&apos;ll get back to you, or continue chatting with Alex.
+                    </p>
+                  </div>
+                  <div className="flex flex-col gap-3 w-full max-w-xs">
+                    <Button
+                      onClick={() => setChatMode("TICKET_FORM")}
+                      className="rounded-2xl h-12 font-semibold w-full shadow-lg"
+                    >
+                      <Ticket className="h-4 w-4 mr-2" />
+                      Submit a Support Ticket
+                    </Button>
+                    <Button
+                      variant="outline"
+                      onClick={() => {
+                        setUserChoseAlex(true);
+                        setChatMode("AI");
+                      }}
+                      className="rounded-2xl h-12 font-semibold w-full"
+                    >
+                      <Bot className="h-4 w-4 mr-2" />
+                      Chat with Alex
+                    </Button>
+                  </div>
+                </div>
+              )}
+
+              {/* TICKET FORM Mode */}
+              {chatMode === "TICKET_FORM" && (
+                <div className="flex-1 flex flex-col bg-background/50">
+                  <ScrollArea className="flex-1 p-4">
+                    <div className="space-y-4">
+                      <div className="space-y-1">
+                        <h3 className="font-bold text-base">Submit a Ticket</h3>
+                        <p className="text-xs text-muted-foreground">
+                          Describe your issue and our team will get back to you.
+                        </p>
+                      </div>
+                      <div className="space-y-3">
+                        <select
+                          value={ticketCategory}
+                          onChange={(e) => setTicketCategory(e.target.value)}
+                          disabled={ticketSubmitting || ticketSuccess}
+                          className="w-full rounded-xl bg-muted/50 border px-4 py-2.5 text-sm outline-none focus:ring-1 focus:ring-primary/30"
+                        >
+                          <option value="GENERAL">General Inquiry</option>
+                          <option value="TECHNICAL">Technical Issue</option>
+                          <option value="BILLING">Billing &amp; Payments</option>
+                          <option value="BUG_REPORT">Bug Report</option>
+                        </select>
+                        <input
+                          value={ticketSubject}
+                          onChange={(e) => setTicketSubject(e.target.value)}
+                          placeholder="Subject"
+                          disabled={ticketSubmitting || ticketSuccess}
+                          className="w-full rounded-xl bg-muted/50 border px-4 py-2.5 text-sm outline-none focus:ring-1 focus:ring-primary/30"
+                        />
+                        <textarea
+                          value={ticketDescription}
+                          onChange={(e) => setTicketDescription(e.target.value)}
+                          placeholder="Describe your issue in detail..."
+                          rows={4}
+                          disabled={ticketSubmitting || ticketSuccess}
+                          className="w-full rounded-xl bg-muted/50 border p-4 text-sm outline-none focus:ring-1 focus:ring-primary/30 resize-none"
+                        />
+                        {errorMessage && (
+                          <div className="px-3 py-2 bg-destructive/10 border border-destructive/20 rounded-xl flex items-center gap-2 text-xs text-destructive">
+                            <AlertCircle className="h-3.5 w-3.5 flex-shrink-0" />
+                            <span className="flex-1">{errorMessage}</span>
+                            <button type="button" onClick={clearError} className="text-destructive/70 hover:text-destructive flex-shrink-0">
+                              <X className="h-3 w-3" />
+                            </button>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </ScrollArea>
+                  {ticketSuccess ? (
+                    <div className="p-6 flex flex-col items-center justify-center space-y-4">
+                      <div className="h-12 w-12 rounded-full bg-emerald-500/10 flex items-center justify-center">
+                        <CheckCircle2 className="h-6 w-6 text-emerald-500" />
+                      </div>
+                      <p className="text-sm font-semibold text-center">Ticket Submitted!</p>
+                    </div>
+                  ) : (
+                    <footer className="p-4 border-t bg-card/80 backdrop-blur-sm space-y-2">
+                      <Button
+                        onClick={handleTicketSubmit}
+                        disabled={ticketSubmitting || !ticketSubject.trim() || !ticketDescription.trim()}
+                        className="w-full rounded-2xl h-12 font-semibold"
+                      >
+                        {ticketSubmitting ? (
+                          <div className="flex items-center gap-2">
+                            <Loader2 className="h-4 w-4 animate-spin" />
+                            Submitting...
+                          </div>
+                        ) : (
+                          <div className="flex items-center gap-2">
+                            <Send className="h-4 w-4" />
+                            Submit Ticket
+                          </div>
+                        )}
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        onClick={() => setChatMode("OFFLINE_OPTIONS")}
+                        disabled={ticketSubmitting}
+                        className="w-full rounded-2xl h-10 text-xs text-muted-foreground"
+                      >
+                        Back
+                      </Button>
+                    </footer>
+                  )}
                 </div>
               )}
 

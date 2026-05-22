@@ -13,6 +13,7 @@ import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
+  DialogTitle,
 } from "@/components/ui/dialog";
 
 type FeedbackStatus = "success" | "error" | "warning" | "info" | "loading";
@@ -165,6 +166,7 @@ export function FeedbackModal({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-[420px] w-[calc(100vw-40px)] p-0 overflow-hidden border-none shadow-2xl">
+        <DialogTitle className="sr-only">{title}</DialogTitle>
         <AnimatePresence mode="wait">
           {open && (
             <motion.div

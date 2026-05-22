@@ -100,11 +100,15 @@ export function useDeleteDashboardApp(
 
   const mutation = useMutation({
     mutationFn: (id: string) => deleteDashboardApp(id),
-    onSuccess: () => {
+    ...options,
+    onSuccess: (data, variables, onMutateResult, context) => {
       queryClient.invalidateQueries({ queryKey: ["useDashboardApps"] });
       queryClient.invalidateQueries({ queryKey: ["useDashboardAppsCount"] });
+      options?.onSuccess?.(data, variables, onMutateResult, context);
     },
-    ...options,
+    onError: (error, variables, onMutateResult, context) => {
+      options?.onError?.(error, variables, onMutateResult, context);
+    },
   });
 
   return mutation;

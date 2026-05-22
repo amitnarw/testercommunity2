@@ -248,14 +248,14 @@ export default function MobileMenu({
                   <>
                     <button onClick={() => setIsMenuOpen(false)}>
                       <TransitionLink href={notificationHref}>
-                        <Bell className="h-5 w-5" />
+                        <Bell className="h-7 w-7" />
                         <span className="sr-only">Notifications</span>
                       </TransitionLink>
                     </button>
                     {showWallet && (
                       <button onClick={() => setIsMenuOpen(false)}>
                         <TransitionLink href={walletHref}>
-                          <Wallet className="h-5 w-5" />
+                          <Wallet className="h-7 w-7" />
                           <span className="sr-only">Wallet</span>
                         </TransitionLink>
                       </button>
@@ -265,7 +265,7 @@ export default function MobileMenu({
               </div>
               <SheetClose asChild>
                 <Button size="icon" variant="ghost">
-                  <X className="h-6 w-6" />
+                  <X className="!h-7 !w-7" />
                   <span className="sr-only">Close menu</span>
                 </Button>
               </SheetClose>
@@ -441,14 +441,14 @@ export default function MobileMenu({
               </nav>
             ) : (
               // Regular menu (non-admin)
-              <nav className="flex flex-col items-center text-center justify-center gap-3 flex-1">
+              <nav className="flex flex-col items-center text-center justify-center gap-5 flex-1">
                 {displayItems.map((item: any) => (
                   <TransitionLink
                     key={item.name}
                     href={item.href}
                     onClick={() => setIsMenuOpen(false)}
                     className={cn(
-                      "text-xl font-medium transition-colors hover:text-primary w-full",
+                      "text-2xl font-medium transition-colors hover:text-primary w-full",
                       pathname === item.href
                         ? "text-primary"
                         : "text-foreground",
@@ -467,10 +467,10 @@ export default function MobileMenu({
                   variant="ghost"
                   asChild
                   onClick={() => setIsMenuOpen(false)}
-                  className="border h-8"
+                  className="border h-10"
                 >
                   <TransitionLink href={isAdminRole ? ROUTES.ADMIN.PROFILE : roleName === "tester" ? ROUTES.TESTER.SETTINGS : ROUTES.AUTHENTICATED.SETTINGS}>
-                    <Settings className="h-4 w-4" />
+                    <Settings className="!h-5 !w-5" />
                     <span className="sr-only">Settings</span>
                   </TransitionLink>
                 </Button>
@@ -478,7 +478,7 @@ export default function MobileMenu({
                   variant="ghost"
                   asChild
                   onClick={() => setIsMenuOpen(false)}
-                  className="border h-8"
+                  className="border h-10"
                 >
                   <TransitionLink href={isAdminRole ? ROUTES.ADMIN.PROFILE : roleName === "tester" ? ROUTES.TESTER.SETTINGS : ROUTES.AUTHENTICATED.PROFILE}>Profile</TransitionLink>
                 </Button>
@@ -488,7 +488,7 @@ export default function MobileMenu({
                     onLogout();
                     setIsMenuOpen(false);
                   }}
-                  className="bg-red-500/20 h-8"
+                  className="bg-red-500/20 h-10"
                 >
                   Log Out
                 </Button>
