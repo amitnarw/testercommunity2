@@ -68,6 +68,7 @@ export const metadata: Metadata = {
 };
 
 import { SupportChat } from "@/components/support/SupportChat";
+import { TooltipProvider } from "@/components/ui/tooltip";
 
 export default function RootLayout({
   children,
@@ -102,11 +103,13 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <QueryProvider>
+            <TooltipProvider>
             <TransitionProvider>
               <TransitionOverlay />
               {children}
               <SupportChat />
             </TransitionProvider>
+            </TooltipProvider>
           </QueryProvider>
           <Toaster />
         </ThemeProvider>
