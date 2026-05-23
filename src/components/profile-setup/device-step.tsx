@@ -26,10 +26,10 @@ export const DeviceStep = ({
             onValueChange={(value) =>
               setProfileData((prev) => ({ ...prev, device_company: value }))
             }
-            defaultValue={profileData?.device_company as string | undefined}
+            value={profileData?.device_company ? profileData.device_company : undefined}
           >
             <SelectTrigger>
-              <SelectValue placeholder="e.g., Google" />
+              <SelectValue placeholder="Select" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="Google">Google</SelectItem>
@@ -74,10 +74,10 @@ export const DeviceStep = ({
             onValueChange={(value) =>
               setProfileData((prev) => ({ ...prev, ram: value }))
             }
-            defaultValue={profileData?.ram as string | undefined}
+            value={profileData?.ram ? profileData.ram : undefined}
           >
             <SelectTrigger>
-              <SelectValue placeholder="e.g., 8GB" />
+              <SelectValue placeholder="Select" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="2GB">2GB</SelectItem>
@@ -98,10 +98,10 @@ export const DeviceStep = ({
             onValueChange={(value) =>
               setProfileData((prev) => ({ ...prev, os: value }))
             }
-            defaultValue={profileData?.os as string | undefined}
+            value={profileData?.os ? profileData.os : undefined}
           >
             <SelectTrigger>
-              <SelectValue placeholder="e.g., Android 14" />
+              <SelectValue placeholder="Select" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="Android 16">Android 16</SelectItem>
@@ -122,10 +122,10 @@ export const DeviceStep = ({
             onValueChange={(value) =>
               setProfileData((prev) => ({ ...prev, screen_resolution: value }))
             }
-            defaultValue={profileData?.screen_resolution as string | undefined}
+            value={profileData?.screen_resolution ? profileData.screen_resolution : undefined}
           >
             <SelectTrigger>
-              <SelectValue placeholder="e.g., QHD+" />
+              <SelectValue placeholder="Select" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="HD+ (720p)">HD+ (720p)</SelectItem>
@@ -143,10 +143,10 @@ export const DeviceStep = ({
             onValueChange={(value) =>
               setProfileData((prev) => ({ ...prev, language: value }))
             }
-            defaultValue={profileData?.language as string | undefined}
+            value={profileData?.language ? profileData.language : undefined}
           >
             <SelectTrigger>
-              <SelectValue placeholder="e.g., English (US)" />
+              <SelectValue placeholder="Select" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="English (US)">English (US)</SelectItem>
@@ -171,7 +171,7 @@ export const DeviceStep = ({
             onValueChange={(value) =>
               setProfileData((prev) => ({ ...prev, network: value }))
             }
-            defaultValue={profileData?.network as string | undefined}
+            value={profileData?.network ? profileData.network : undefined}
             className="grid grid-cols-2 gap-4"
           >
             <div>

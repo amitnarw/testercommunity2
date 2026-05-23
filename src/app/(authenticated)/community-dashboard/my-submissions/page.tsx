@@ -205,7 +205,7 @@ const ProjectCard = ({ project }: { project: HubSubmittedAppResponse }) => {
                       <Star className="w-3.5 h-3.5 fill-blue-500/20" />
                     </div>
                     <span>{project?.costPoints ?? 0} Pts</span>
-                    {project?.costPoints !== undefined && project.costPoints > 0 && project.costPoints < 1000 && (
+                    {project?.costPoints != null && project.costPoints > 0 && project.costPoints < 1000 && (
                       <Badge variant="outline" className="px-1 h-3.5 text-[8px] bg-blue-500/10 text-blue-600 border-blue-500/20">COUPON</Badge>
                     )}
                   </div>

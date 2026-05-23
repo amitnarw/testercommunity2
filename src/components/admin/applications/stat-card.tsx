@@ -11,6 +11,7 @@ export function StatCard({
   bgColor,
   isLoading,
   isActive,
+  onClick,
 }: {
   title: string;
   value: string | number;
@@ -19,13 +20,16 @@ export function StatCard({
   bgColor: string;
   isLoading?: boolean;
   isActive?: boolean;
+  onClick?: () => void;
 }) {
   return (
     <Card
       className={cn(
         "transition-all relative",
         isActive && "ring-2 ring-primary shadow-md",
+        onClick && "cursor-pointer hover:shadow-md",
       )}
+      onClick={onClick}
     >
       <CardContent className="p-4">
         {/* Background Icon - absolute, scaled up, semi-transparent */}

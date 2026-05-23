@@ -189,7 +189,7 @@ export default function TicketsListPage() {
                   <Inbox className="h-12 w-12 text-primary/40" />
                 </div>
                 <h3 className="text-2xl font-bold mb-2">No tickets found</h3>
-                <p className="text-muted-foreground text-lg mb-8 max-w-sm mx-auto">
+                <p className="text-muted-foreground text-lg mb-8 max-w-sm mx-auto px-2">
                   {search ? "Try adjusting your search filters to find what you're looking for." : "You haven't created any support tickets yet."}
                 </p>
                 {!search && (

@@ -64,7 +64,7 @@ export function NotificationsPageContent({
     isPending: notificationIsPending,
   } = useGetUserNotifications();
 
-  const allNotifications = notificationData?.notifications ?? [];
+  const allNotifications = notificationData?.result ?? [];
   const totalNotifications = notificationData?.totalNotifications ?? 0;
   const totalPages = Math.ceil(totalNotifications / NOTIFICATIONS_PER_PAGE);
 
@@ -103,7 +103,7 @@ export function NotificationsPageContent({
                     You have no notifications yet.
                   </p>
                 ) : (
-                  paginatedNotifications.map((notification) => (
+                  paginatedNotifications.map((notification: NotificationResponse) => (
                     <Link
                       href={notification?.url || "#"}
                       target={notification?.url ? "_blank" : undefined}

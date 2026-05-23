@@ -212,7 +212,7 @@ export function UserDataForm({ title = "User data", showAdvancedSetup = true }: 
                   size="sm"
                   variant="outline"
                   asChild
-                  className="w-full sm:w-auto px-2"
+                  className="w-full sm:w-auto !px-5"
                 >
                   <TransitionLink
                     href={

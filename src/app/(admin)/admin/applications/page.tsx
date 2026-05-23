@@ -4,17 +4,31 @@ import React, { useState } from "react";
 import dynamic from "next/dynamic";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Search, Users, UserCheck, Clock, UserPlus } from "lucide-react";
+import {
+  Search,
+  Users,
+  UserCheck,
+  Clock,
+  UserPlus,
+  CheckCircle2,
+  XCircle,
+} from "lucide-react";
 import { AppPagination } from "@/components/app-pagination";
-import { Tabs, TabsList, TabsContent, TabsTrigger } from "@/components/ui/tabs";
+import {
+  Tabs,
+  TabsList,
+  TabsContent,
+  TabsTrigger,
+} from "@/components/ui/tabs";
 import {
   useAllTesterApplications,
   useTesterApplicationCounts,
+  useUpdateTesterApplicationStatus,
 } from "@/hooks/useAdmin";
+import { useQueryClient } from "@tanstack/react-query";
 import { StatCard } from "@/components/admin/applications/stat-card";
-import { mockApplications } from "./mock-data";
+import { FeedbackModal } from "@/components/feedback-modal";
 
-// Dynamically import the ApplicationTable to improve initial load time
 const ApplicationTable = dynamic(
   () =>
     import("@/components/admin/applications/application-table").then(
@@ -30,9 +44,16 @@ const ApplicationTable = dynamic(
   },
 );
 
+interface TesterApp {
+  id: string;
+  name: string;
+  email: string;
+  status: string;
+  [key: string]: unknown;
+}
+
 const ITEMS_PER_PAGE = 5;
 
-// Filter type for stat cards
 type FilterType =
   | "all"
   | "active"
@@ -46,56 +67,106 @@ export default function AdminApplicationsPage() {
   const [activeFilter, setActiveFilter] = useState<FilterType>("all");
   const [activeTab, setActiveTab] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
+  const queryClient = useQueryClient();
 
-  // Fetch applications data
+  const [feedbackModal, setFeedbackModal] = useState<{
+    open: boolean;
+    status: "success" | "error" | "warning" | "info" | "loading";
+    title: string;
+    description?: string;
+    primaryAction?: { label: string; onClick: () => void };
+  }>({ open: false, status: "info", title: "" });
+
   const { data: applicationsData, isLoading } = useAllTesterApplications({
     status: activeTab === "all" ? undefined : activeTab,
     search: searchQuery || undefined,
   });
 
-  // Fetch counts
   const { data: countsData, isLoading: countsLoading } =
     useTesterApplicationCounts();
 
-  // Use mock data for now, replace with API data when available
-  const applications = applicationsData || mockApplications;
+  const applications = applicationsData || [];
 
-  // Get counts from API or use mock data
   const counts = {
-    total: countsData?.total || 156,
-    active: countsData?.active || 142,
-    new: countsData?.new || 12,
-    pending: countsData?.pending || 24,
-    approved: countsData?.approved || 118,
-    rejected: countsData?.rejected || 14,
+    total: countsData?.total || 0,
+    active: countsData?.active || 0,
+    new: countsData?.new || 0,
+    pending: countsData?.pending || 0,
+    approved: countsData?.approved || 0,
+    rejected: countsData?.rejected || 0,
   };
 
-  // Handle stat card click - sets both filter and tab
+  const invalidateQueries = () => {
+    queryClient.invalidateQueries({ queryKey: ["useAllTesterApplications"] });
+    queryClient.invalidateQueries({ queryKey: ["useTesterApplicationCounts"] });
+  };
+
+  const updateStatusMutation = useUpdateTesterApplicationStatus({
+    onSuccess: (_data, variables) => {
+      invalidateQueries();
+      const action =
+        variables.status === "approved" ? "approved" : "rejected";
+      setFeedbackModal({
+        open: true,
+        status: "success",
+        title: `Application ${action === "approved" ? "Approved" : "Rejected"}`,
+        description: `The tester application has been successfully ${action}.`,
+        primaryAction: {
+          label: "Done",
+          onClick: () => setFeedbackModal((prev) => ({ ...prev, open: false })),
+        },
+      });
+    },
+    onError: (err: Error) => {
+      setFeedbackModal({
+        open: true,
+        status: "error",
+        title: "Action Failed",
+        description: err.message || "Failed to update application status.",
+        primaryAction: {
+          label: "Try Again",
+          onClick: () => setFeedbackModal((prev) => ({ ...prev, open: false })),
+        },
+      });
+    },
+  });
+
+  const handleApprove = (appId: string) => {
+    updateStatusMutation.mutate({ id: appId, status: "approved" });
+  };
+
+  const handleReject = (appId: string, reason?: string) => {
+    updateStatusMutation.mutate({
+      id: appId,
+      status: "rejected",
+      reason: reason || undefined,
+    });
+  };
+
   const handleStatCardClick = (filter: FilterType) => {
     setActiveFilter(filter);
     setCurrentPage(1);
 
-    // Map filter to tab
     if (filter === "all") {
       setActiveTab("all");
     } else if (filter === "active") {
-      // Active testers show all approved applications
       setActiveTab("approved");
     } else if (filter === "new") {
-      // New testers (last 7 days) - show all for now
       setActiveTab("all");
     } else {
       setActiveTab(filter);
     }
   };
 
-  // Filter applications based on tab and search
-  const filteredApplications = applications.filter((app: any) => {
-    const matchesTab = activeTab === "all" || app.status === activeTab;
+  // Server handles filtering, but do client-side tab filtering as fallback
+  const filteredApplications = applications.filter((app: TesterApp) => {
+    const matchesTab =
+      activeTab === "all" ||
+      app.status?.toLowerCase() === activeTab.toLowerCase();
     const matchesSearch =
       !searchQuery ||
-      app.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      app.email.toLowerCase().includes(searchQuery.toLowerCase());
+      app.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      app.email?.toLowerCase().includes(searchQuery.toLowerCase());
     return matchesTab && matchesSearch;
   });
 
@@ -119,39 +190,66 @@ export default function AdminApplicationsPage() {
         </div>
       </div>
 
-      {/* Stats Cards - Display information only */}
-      <div className="grid gap-4 grid-cols-2 md:grid-cols-4">
+      <div className="grid gap-4 grid-cols-2 md:grid-cols-3 lg:grid-cols-6">
         <StatCard
-          title="Total Testers"
+          title="Total Applications"
           value={counts.total}
           icon={Users}
           iconColor="text-blue-500"
           bgColor="bg-blue-500/10"
           isLoading={countsLoading}
+          onClick={() => handleStatCardClick("all")}
+          isActive={activeFilter === "all"}
         />
         <StatCard
-          title="Active Testers"
-          value={counts.active}
-          icon={UserCheck}
-          iconColor="text-green-500"
-          bgColor="bg-green-500/10"
-          isLoading={countsLoading}
-        />
-        <StatCard
-          title="New (7 days)"
-          value={counts.new}
-          icon={UserPlus}
-          iconColor="text-purple-500"
-          bgColor="bg-purple-500/10"
-          isLoading={countsLoading}
-        />
-        <StatCard
-          title="Pending Apps"
+          title="Pending Review"
           value={counts.pending}
           icon={Clock}
           iconColor="text-amber-500"
           bgColor="bg-amber-500/10"
           isLoading={countsLoading}
+          onClick={() => handleStatCardClick("pending")}
+          isActive={activeFilter === "pending"}
+        />
+        <StatCard
+          title="Approved"
+          value={counts.approved}
+          icon={CheckCircle2}
+          iconColor="text-green-500"
+          bgColor="bg-green-500/10"
+          isLoading={countsLoading}
+          onClick={() => handleStatCardClick("approved")}
+          isActive={activeFilter === "approved"}
+        />
+        <StatCard
+          title="Rejected"
+          value={counts.rejected}
+          icon={XCircle}
+          iconColor="text-red-500"
+          bgColor="bg-red-500/10"
+          isLoading={countsLoading}
+          onClick={() => handleStatCardClick("rejected")}
+          isActive={activeFilter === "rejected"}
+        />
+        <StatCard
+          title="Active Testers"
+          value={counts.active}
+          icon={UserCheck}
+          iconColor="text-emerald-500"
+          bgColor="bg-emerald-500/10"
+          isLoading={countsLoading}
+          onClick={() => handleStatCardClick("active")}
+          isActive={activeFilter === "active"}
+        />
+        <StatCard
+          title="New This Week"
+          value={counts.new}
+          icon={UserPlus}
+          iconColor="text-purple-500"
+          bgColor="bg-purple-500/10"
+          isLoading={countsLoading}
+          onClick={() => handleStatCardClick("new")}
+          isActive={activeFilter === "new"}
         />
       </div>
 
@@ -161,7 +259,6 @@ export default function AdminApplicationsPage() {
         onValueChange={(value) => {
           setActiveTab(value);
           setCurrentPage(1);
-          // Do NOT update active filter to match tab - only update when stat card is clicked
         }}
       >
         <div className="flex flex-col md:flex-row items-center justify-between gap-4">
@@ -197,6 +294,8 @@ export default function AdminApplicationsPage() {
               <ApplicationTable
                 applications={paginatedApplications}
                 isLoading={isLoading}
+                onApprove={handleApprove}
+                onReject={handleReject}
               />
             </CardContent>
           </Card>
@@ -209,6 +308,17 @@ export default function AdminApplicationsPage() {
           )}
         </TabsContent>
       </Tabs>
+
+      <FeedbackModal
+        open={feedbackModal.open}
+        onOpenChange={(open) =>
+          setFeedbackModal((prev) => ({ ...prev, open }))
+        }
+        status={feedbackModal.status}
+        title={feedbackModal.title}
+        description={feedbackModal.description}
+        primaryAction={feedbackModal.primaryAction}
+      />
     </div>
   );
 }

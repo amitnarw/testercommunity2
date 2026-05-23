@@ -54,7 +54,7 @@ const AnimatedCounter = ({
 
 interface StatCardProps {
   title: string;
-  value: string;
+  value: React.ReactNode;
   description: string;
   icon: React.ReactNode;
   className?: string;

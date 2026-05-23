@@ -86,9 +86,9 @@ const SearchableSelect = React.forwardRef<
               // Check if this item matches the search
               if (search) {
                 const searchableText = [
-                  childProps.value,
-                  childProps["data-name"],
-                  childProps["data-email"],
+                  childProps.value ?? "",
+                  childProps["data-name"] ?? "",
+                  childProps["data-email"] ?? "",
                 ].filter(Boolean).join(" ").toLowerCase();
 
                 if (!searchableText.includes(search.toLowerCase())) {
@@ -99,7 +99,7 @@ const SearchableSelect = React.forwardRef<
               // Clone with onClick handler
               return React.cloneElement(child as React.ReactElement<any>, {
                 onClick: () => {
-                  onValueChange(childProps.value);
+                  onValueChange(childProps.value ?? "");
                   setSearch("");
                   setOpen(false);
                 },

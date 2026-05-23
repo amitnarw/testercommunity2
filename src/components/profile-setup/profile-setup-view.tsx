@@ -15,30 +15,10 @@ import {
 } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
-  UserProfileType,
-  UserJobRole,
-  UserExperienceLevel,
-  UserCompanySize,
-  UserCompanyPosition,
-  UserTotalPublishedApps,
-  UserDevelopmentPlatform,
-  UserPublishFrequency,
-  UserTestingServiceReason,
-  UserCommunicationMethod,
   UserProfileDataAttributes,
 } from "@/lib/types";
 import { cn } from "@/lib/utils";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Label } from "@/components/ui/label";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Input } from "@/components/ui/input";
-import { Checkbox } from "@/components/ui/checkbox";
+import { authClient } from "@/lib/auth-client";
 import { Progress } from "@/components/ui/progress";
 import {
   useProfileDataSave,
@@ -68,6 +48,8 @@ const RegistrationSuccess = dynamic(() =>
     (mod) => mod.RegistrationSuccess,
   ),
 );
+
+import { TesterPreferencesStep } from "./tester-preferences-step";
 
 const stepsMeta = [
   {
@@ -129,6 +111,18 @@ export function ProfileSetupView({
   dashboardHref,
 }: ProfileSetupViewProps) {
   const router = useRouter();
+  const { data: session } = authClient.useSession();
+  const isTester = (session as any)?.role?.name === "tester";
+
+  // Filter steps for testers: About You (0), Your Device (3), Preferences (5)
+  const activeStepsMeta = isTester
+    ? [stepsMeta[0], stepsMeta[3], { id: "tester-preferences", title: "Preferences", description: "Your contact preferences.", icon: Phone }]
+    : stepsMeta;
+
+  // Map active step index to original step index for component rendering
+  // For testers: 0 = RoleStep (About You), 3 = DeviceStep, 5 = TesterPreferencesStep
+  const activeStepOriginalIndices = isTester ? [0, 3, 5] : [0, 1, 2, 3, 4];
+
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [submissionStatus, setSubmissionStatus] = useState<
     "EARNED_NOW" | "ALREADY_EARNED" | "INCOMPLETE"
@@ -168,7 +162,7 @@ export function ProfileSetupView({
   useUserProfileInitial({ enabled: !!skipClicked });
 
   const next = () => {
-    if (currentStep < stepsMeta.length - 1) {
+    if (currentStep < activeStepsMeta.length - 1) {
       setPreviousStep(currentStep);
       setCurrentStep((step) => step + 1);
     }
@@ -188,7 +182,7 @@ export function ProfileSetupView({
     }
   };
 
-  const progress = ((currentStep + 1) / stepsMeta.length) * 100;
+  const progress = ((currentStep + 1) / activeStepsMeta.length) * 100;
 
   const {
     data: earnPointsData,
@@ -289,7 +283,7 @@ export function ProfileSetupView({
                 </p>
               </div>
               <nav className="space-y-2">
-                {stepsMeta.map((step, index) => (
+                {activeStepsMeta.map((step, index) => (
                   <button
                     key={step.id}
                     onClick={() => goToStep(index)}
@@ -334,8 +328,8 @@ export function ProfileSetupView({
             <main className="flex-1 flex flex-col p-3 pt-6 md:p-8">
               {/* Mobile Stepper */}
               <div className="md:hidden mb-6">
-                <nav className="grid grid-cols-5 gap-2">
-                  {stepsMeta.map((step, index) => (
+                <nav className={`grid gap-2 ${isTester ? "grid-cols-3" : "grid-cols-5"}`}>
+                  {activeStepsMeta.map((step, index) => (
                     <button
                       key={`mobile-${step.id}`}
                       onClick={() => goToStep(index)}
@@ -405,32 +399,38 @@ export function ProfileSetupView({
                     }}
                     className="absolute w-full h-full"
                   >
-                    {currentStep === 0 && (
+                    {activeStepOriginalIndices[currentStep] === 0 && (
                       <RoleStep
                         profileData={profileData}
                         setProfileData={setProfileData}
                       />
                     )}
-                    {currentStep === 1 && (
+                    {activeStepOriginalIndices[currentStep] === 1 && (
                       <CompanyStep
                         profileData={profileData}
                         setProfileData={setProfileData}
                       />
                     )}
-                    {currentStep === 2 && (
+                    {activeStepOriginalIndices[currentStep] === 2 && (
                       <ProjectsStep
                         profileData={profileData}
                         setProfileData={setProfileData}
                       />
                     )}
-                    {currentStep === 3 && (
+                    {activeStepOriginalIndices[currentStep] === 3 && (
                       <DeviceStep
                         profileData={profileData}
                         setProfileData={setProfileData}
                       />
                     )}
-                    {currentStep === 4 && (
+                    {activeStepOriginalIndices[currentStep] === 4 && (
                       <ContactStep
+                        profileData={profileData}
+                        setProfileData={setProfileData}
+                      />
+                    )}
+                    {activeStepOriginalIndices[currentStep] === 5 && (
+                      <TesterPreferencesStep
                         profileData={profileData}
                         setProfileData={setProfileData}
                       />
@@ -457,7 +457,7 @@ export function ProfileSetupView({
                 </Button>
 
                 <div className="flex items-center gap-4">
-                  {currentStep < stepsMeta.length - 1 ? (
+                  {currentStep < activeStepsMeta.length - 1 ? (
                     <Button onClick={next} type="button">
                       Next <ArrowRight className="ml-2 h-4 w-4" />
                     </Button>

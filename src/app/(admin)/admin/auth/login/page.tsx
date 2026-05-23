@@ -79,8 +79,7 @@ const LoginForm = ({
     router.replace(ROUTES.ADMIN.DASHBOARD);
   }, [session, isSessionPending, router]);
 
-  const handleLogin = (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleLogin = React.useCallback(() => {
     const result = adminSigninSchema.safeParse({
       email: emailValue,
       password: passwordValue,
@@ -93,13 +92,23 @@ const LoginForm = ({
 
     setErrors({});
     login({ email: result.data.email, password: result.data.password, role, rememberMe });
-  };
+  }, [emailValue, passwordValue, login, role, rememberMe]);
+
+  React.useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        handleLogin();
+      }
+    };
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [handleLogin]);
 
   return (
-    <motion.form
+    <motion.div
       initial={{ opacity: 0, y: 5 }}
       animate={{ opacity: 1, y: 0 }}
-      onSubmit={handleLogin}
       className="space-y-3 md:space-y-4"
     >
       <div className="space-y-1">
@@ -183,8 +192,8 @@ const LoginForm = ({
       </div>
 
       <Button
-        type="submit"
         disabled={isPending}
+        onClick={handleLogin}
         className="w-full h-10 rounded-xl bg-primary text-primary-foreground font-bold shadow-sm hover:shadow-md transition-all active:scale-[0.98] group text-sm"
       >
         {isPending ? (
@@ -199,7 +208,7 @@ const LoginForm = ({
           </span>
         )}
       </Button>
-    </motion.form>
+    </motion.div>
   );
 };
 

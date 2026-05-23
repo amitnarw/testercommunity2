@@ -99,62 +99,6 @@ export function BlogListing({ posts }: BlogListingProps) {
         </motion.div>
       )}
 
-      {/* Newsletter Section */}
-      <motion.section
-        initial={{ opacity: 0, scale: 0.95 }}
-        whileInView={{ opacity: 1, scale: 1 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.8, ease: "circOut" }}
-        className="relative overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-primary via-primary to-blue-600 text-primary-foreground p-8 md:p-24 text-center mt-32"
-      >
-        <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 mix-blend-overlay"></div>
-
-        {/* Animated Background Shapes */}
-        <motion.div
-          animate={{
-            rotate: [0, 360],
-            scale: [1, 1.2, 1],
-          }}
-          transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-          className="absolute -top-1/2 -right-1/2 w-full h-full bg-white/10 blur-[100px] rounded-full"
-        />
-        <motion.div
-          animate={{
-            rotate: [360, 0],
-            scale: [1, 1.5, 1],
-          }}
-          transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
-          className="absolute -bottom-1/2 -left-1/2 w-full h-full bg-blue-300/20 blur-[120px] rounded-full"
-        />
-
-        <div className="relative z-10 max-w-3xl mx-auto space-y-8">
-          <Badge className="bg-white/20 text-white hover:bg-white/30 border-none backdrop-blur-md px-4 py-1.5 text-sm uppercase tracking-wider">
-            Weekly Digest
-          </Badge>
-          <h2 className="text-4xl md:text-6xl font-bold tracking-tight leading-tight">
-            Stop Testing in Production.
-            <span className="block text-blue-200">Start Learning.</span>
-          </h2>
-          <p className="text-blue-100/80 text-lg md:text-xl max-w-xl mx-auto">
-            Join 10,000+ QA professionals. We distill the noise into actionable
-            insights, sent every Monday.
-          </p>
-
-          <form
-            className="flex flex-col sm:flex-row gap-4 max-w-lg mx-auto pt-6"
-            onSubmit={(e) => e.preventDefault()}
-          >
-            <input
-              type="email"
-              placeholder="name@company.com"
-              className="flex-1 rounded-full px-6 py-4 bg-white/10 border border-white/20 text-white placeholder:text-blue-100/50 focus:outline-none focus:ring-2 focus:ring-white/50 focus:bg-white/20 backdrop-blur-xl transition-all"
-            />
-            <button className="px-8 py-4 rounded-full bg-white text-primary font-bold hover:scale-105 active:scale-95 transition-all shadow-xl shadow-black/10">
-              Join Now
-            </button>
-          </form>
-        </div>
-      </motion.section>
     </div>
   );
 }

@@ -98,13 +98,7 @@ export default function GooglePlay12TestersGuide() {
           },
         ]}
       />
-      <SoftwareApplicationJsonLd
-        name="inTesters - Google Play 12 Testers Service"
-        description="Professional testing service to help Android developers meet Google Play's 12-tester closed testing requirement."
-        operatingSystem="Android"
-        applicationCategory="DeveloperApplication"
-        url="https://intesters.com"
-      />
+      <SoftwareApplicationJsonLd />
       <FAQPageJsonLd items={faqItems} />
       <GuidePageClient />
     </>
