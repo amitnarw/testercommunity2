@@ -51,7 +51,6 @@ import { Badge } from "@/components/ui/badge";
 import {
   Tooltip,
   TooltipContent,
-  TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { HubSubmittedAppResponse } from "@/lib/types";
@@ -583,24 +582,22 @@ export function TesterRequestsSection({
                             {req.tester?.name || "Unknown"}
                           </span>
                           {(req as any).assignmentSource === "ADMIN_ASSIGNED" && (
-                            <TooltipProvider>
-                              <Tooltip>
-                                <TooltipTrigger asChild>
-                                  <span className="inline-flex items-center gap-1">
-                                    <Badge
-                                      variant="outline"
-                                      className="text-[9px] h-4 px-1 bg-amber-500/10 text-amber-600 border-amber-500/20 dark:text-amber-400"
-                                    >
-                                      Pro
-                                    </Badge>
-                                    <Info className="h-3 w-3 text-muted-foreground/50 cursor-help" />
-                                  </span>
-                                </TooltipTrigger>
-                                <TooltipContent side="top" className="max-w-[200px] text-xs">
-                                  <p>This is a paid professional tester, assigned by the admin as a gift for your app testing.</p>
-                                </TooltipContent>
-                              </Tooltip>
-                            </TooltipProvider>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <span className="inline-flex items-center gap-1">
+                                  <Badge
+                                    variant="outline"
+                                    className="text-[9px] h-4 px-1 bg-amber-500/10 text-amber-600 border-amber-500/20 dark:text-amber-400"
+                                  >
+                                    Pro
+                                  </Badge>
+                                  <Info className="h-3 w-3 text-muted-foreground/50 cursor-help" />
+                                </span>
+                              </TooltipTrigger>
+                              <TooltipContent side="top">
+                                <p>This is a paid professional tester, assigned by the admin as a gift for your app testing.</p>
+                              </TooltipContent>
+                            </Tooltip>
                           )}
                         </div>
                       </TableCell>
@@ -703,24 +700,22 @@ export function TesterRequestsSection({
                         {req.tester?.name || "Unknown"}
                       </span>
                       {(req as any).assignmentSource === "ADMIN_ASSIGNED" && (
-                        <TooltipProvider>
-                          <Tooltip>
-                            <TooltipTrigger asChild>
-                              <span className="inline-flex items-center gap-0.5">
-                                <Badge
-                                  variant="outline"
-                                  className="text-[9px] h-4 px-1 bg-amber-500/10 text-amber-600 border-amber-500/20 dark:text-amber-400"
-                                >
-                                  Pro
-                                </Badge>
-                                <Info className="h-3 w-3 text-muted-foreground cursor-help" />
-                              </span>
-                            </TooltipTrigger>
-                            <TooltipContent side="top" className="max-w-[200px] text-xs">
-                              <p>This is a paid professional tester, assigned by the admin as a gift for your app testing.</p>
-                            </TooltipContent>
-                          </Tooltip>
-                        </TooltipProvider>
+                        <Tooltip>
+                          <TooltipTrigger asChild>
+                            <span className="inline-flex items-center gap-0.5">
+                              <Badge
+                                variant="outline"
+                                className="text-[9px] h-4 px-1 bg-amber-500/10 text-amber-600 border-amber-500/20 dark:text-amber-400"
+                              >
+                                Pro
+                              </Badge>
+                              <Info className="h-3 w-3 text-muted-foreground cursor-help" />
+                            </span>
+                          </TooltipTrigger>
+                          <TooltipContent side="top">
+                            <p>This is a paid professional tester, assigned by the admin as a gift for your app testing.</p>
+                          </TooltipContent>
+                        </Tooltip>
                       )}
                     </div>
                     <Badge

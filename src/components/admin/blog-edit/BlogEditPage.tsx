@@ -14,7 +14,7 @@ import { Sidebar } from "./Sidebar";
 import { useState, useEffect } from "react";
 
 function BlogEditContent({ id }: { id: string }) {
-  const { form, isNew, onSubmit, onDelete } = useBlogFormContext();
+  const { form, isNew, onPublish, onDelete } = useBlogFormContext();
   const router = useRouter();
   const [showPreview, setShowPreview] = useState(false);
 

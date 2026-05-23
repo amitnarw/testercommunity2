@@ -32,7 +32,6 @@ export default function ProTesterNotificationsPage() {
     <NotificationsPageContent
       title="Pro Tester Notifications"
       description="Updates on new projects, payments, and test cycles."
-      notifications={proNotifications}
     />
   );
 }

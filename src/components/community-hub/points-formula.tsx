@@ -63,7 +63,7 @@ function ModernSlider({
   const progress = ((value - min) / (max - min)) * 100;
   const sliderRef = useRef<HTMLDivElement>(null);
 
-  const handleDrag = (e: React.MouseEvent | React.TouchEvent) => {
+  const handleDrag = (e: React.MouseEvent | React.TouchEvent | MouseEvent | TouchEvent) => {
     if (!sliderRef.current) return;
     const rect = sliderRef.current.getBoundingClientRect();
     const clientX = "touches" in e ? e.touches[0].clientX : e.clientX;

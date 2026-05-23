@@ -8,7 +8,6 @@ import { ChevronRight, ChevronLeft, LogOut } from "lucide-react";
 import {
   Tooltip,
   TooltipContent,
-  TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { ReactNode, useEffect, useRef, useState } from "react";
@@ -58,49 +57,27 @@ export const SidebarNavLink = ({
   };
 
   return (
-    <TooltipProvider>
-      <Tooltip delayDuration={0}>
-        <TooltipTrigger asChild>
-          <TransitionLink
-            href={href}
-            className={cn(
-              "flex items-center justify-start w-full h-12 rounded-xl text-white/70 dark:text-black/70 transition-all duration-300 px-3.5",
-              "hover:bg-white/20 hover:text-white dark:hover:bg-black/20 dark:hover:text-black",
-              isActive &&
-                "bg-white text-black shadow-xl dark:bg-black dark:text-white dark:from-black dark:to-black",
-            )}
-          >
-            <Icon className="h-5 w-5 flex-shrink-0" />
-            {!isCollapsed && (
-              <div className="ml-4 flex items-center justify-between w-full overflow-hidden">
-                <span className="font-light whitespace-nowrap truncate text-sm">
-                  {children}
-                </span>
-                {badge && (
-                  <span
-                    className={cn(
-                      "text-[10px] font-bold px-1.5 py-0.5 rounded flex-shrink-0",
-                      getBadgeStyles(),
-                    )}
-                  >
-                    {badge}
-                  </span>
-                )}
-              </div>
-            )}
-          </TransitionLink>
-        </TooltipTrigger>
-        {isCollapsed && (
-          <TooltipContent
-            side="right"
-            className="bg-black text-white border-white/20 ml-2 z-[60]"
-          >
-            <div className="flex items-center gap-2">
-              <span>{children}</span>
+    <Tooltip delayDuration={0} open={isCollapsed ? undefined : false}>
+      <TooltipTrigger asChild>
+        <TransitionLink
+          href={href}
+          className={cn(
+            "flex items-center justify-start w-full h-12 rounded-xl text-white/70 dark:text-black/70 transition-all duration-300 px-3.5",
+            "hover:bg-white/20 hover:text-white dark:hover:bg-black/20 dark:hover:text-black",
+            isActive &&
+              "bg-white text-black shadow-xl dark:bg-black dark:text-white dark:from-black dark:to-black",
+          )}
+        >
+          <Icon className="h-5 w-5 flex-shrink-0" />
+          {!isCollapsed && (
+            <div className="ml-4 flex items-center justify-between w-full overflow-hidden">
+              <span className="font-light whitespace-nowrap truncate text-sm">
+                {children}
+              </span>
               {badge && (
                 <span
                   className={cn(
-                    "text-[9px] font-bold px-1.5 py-0.5 rounded",
+                    "text-[10px] font-bold px-1.5 py-0.5 rounded flex-shrink-0",
                     getBadgeStyles(),
                   )}
                 >
@@ -108,10 +85,25 @@ export const SidebarNavLink = ({
                 </span>
               )}
             </div>
-          </TooltipContent>
-        )}
-      </Tooltip>
-    </TooltipProvider>
+          )}
+        </TransitionLink>
+      </TooltipTrigger>
+      <TooltipContent side="right">
+        <div className="flex items-center gap-2">
+          <span>{children}</span>
+          {badge && (
+            <span
+              className={cn(
+                "text-[9px] font-bold px-1.5 py-0.5 rounded",
+                getBadgeStyles(),
+              )}
+            >
+              {badge}
+            </span>
+          )}
+        </div>
+      </TooltipContent>
+    </Tooltip>
   );
 };
 
@@ -262,34 +254,27 @@ export function BaseSidebar({
           <div className="w-full px-2 pt-2 border-t border-white/20 dark:border-black/30 flex-shrink-0 flex flex-col gap-1 z-20 bg-inherit">
             {bottomContent}
 
-            <TooltipProvider>
-              <Tooltip delayDuration={0}>
-                <TooltipTrigger asChild>
-                  <button
-                    onClick={onLogout}
-                    className={cn(
-                      "flex items-center justify-start w-full h-12 rounded-xl text-white/70 dark:text-black/70 transition-all duration-300 px-3.5",
-                      "hover:bg-white/20 hover:text-white dark:hover:bg-black/20 dark:hover:text-black",
-                    )}
-                  >
-                    <LogOut className="h-5 w-5 flex-shrink-0" />
-                    {!isCollapsed && (
-                      <span className="ml-4 font-light whitespace-nowrap text-sm">
-                        Log Out
-                      </span>
-                    )}
-                  </button>
-                </TooltipTrigger>
-                {isCollapsed && (
-                  <TooltipContent
-                    side="right"
-                    className="bg-black text-white border-white/20 ml-2 z-[60]"
-                  >
-                    Log Out
-                  </TooltipContent>
-                )}
-              </Tooltip>
-            </TooltipProvider>
+            <Tooltip delayDuration={0} open={isCollapsed ? undefined : false}>
+              <TooltipTrigger asChild>
+                <button
+                  onClick={onLogout}
+                  className={cn(
+                    "flex items-center justify-start w-full h-12 rounded-xl text-white/70 dark:text-black/70 transition-all duration-300 px-3.5",
+                    "hover:bg-white/20 hover:text-white dark:hover:bg-black/20 dark:hover:text-black",
+                  )}
+                >
+                  <LogOut className="h-5 w-5 flex-shrink-0" />
+                  {!isCollapsed && (
+                    <span className="ml-4 font-light whitespace-nowrap text-sm">
+                      Log Out
+                    </span>
+                  )}
+                </button>
+              </TooltipTrigger>
+              <TooltipContent side="right">
+                Log Out
+              </TooltipContent>
+            </Tooltip>
           </div>
         </div>
       </aside>

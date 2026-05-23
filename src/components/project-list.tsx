@@ -192,7 +192,7 @@ export function ProjectList({
                       onClick={(e) => {
                         e.preventDefault();
                         e.stopPropagation();
-                        onDeleteDraft(project.id);
+                        onDeleteDraft(String(project.id));
                       }}
                     >
                       <Trash2 className="w-3.5 h-3.5" />

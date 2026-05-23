@@ -172,7 +172,7 @@ export default function MobileMenu({
     typeof role === "string" ? role : role?.name
   )?.toLowerCase();
 
-  let navItems = mainNavItems;
+  let navItems: { name: string; href: string; icon?: typeof LayoutDashboard; section?: string; badge?: string; superAdminOnly?: boolean }[] = mainNavItems;
   let notificationHref = "/notifications";
   let walletHref = "/wallet";
   let isAdmin = false;

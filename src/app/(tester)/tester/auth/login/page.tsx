@@ -10,7 +10,7 @@ import { useRouter } from "next/navigation";
 import { BackButton } from "@/components/back-button";
 import { InteractiveGridPattern } from "@/components/ui/interactive-grid-pattern";
 import { cn } from "@/lib/utils";
-import { ChangeEvent, useEffect, useState } from "react";
+import { ChangeEvent, useCallback, useEffect, useState } from "react";
 import { z } from "zod";
 import Image from "next/image";
 import { LoadingButton } from "@/components/ui/loading-button";
@@ -117,7 +117,7 @@ const TesterLoginForm = () => {
     }));
   };
 
-  const handleLogin = () => {
+  const handleLogin = useCallback(() => {
     const result = signinSchema.safeParse(loginValues);
 
     if (!result.success) {
@@ -131,7 +131,7 @@ const TesterLoginForm = () => {
       password: data?.password,
       rememberMe: loginValues?.rememberMe,
     });
-  };
+  }, [loginValues, mutate]);
 
   const handleGoogleLogin = () => {
     googleLoginMutate();
@@ -167,6 +167,17 @@ const TesterLoginForm = () => {
     resendMutate({ email: data?.email });
   };
 
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        handleLogin();
+      }
+    };
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [handleLogin]);
+
   return (
     <>
       <NotVerifiedDialog
@@ -177,13 +188,7 @@ const TesterLoginForm = () => {
         resendIsSuccess={resendIsSuccess}
         resendIsError={resendIsError}
       />
-      <form
-        className="space-y-6"
-        onSubmit={(e) => {
-          e.preventDefault();
-          handleLogin();
-        }}
-      >
+      <div className="space-y-6">
         <Button
           type="button"
           variant="outline"
@@ -262,11 +267,11 @@ const TesterLoginForm = () => {
         <div className="mt-8 pt-5">
           <div className="flex justify-end">
             <LoadingButton
-              type="submit"
               isLoading={isPending}
               isSuccess={isSuccess}
               isError={isError}
               className="text-sm sm:text-base"
+              onClick={handleLogin}
             >
               Log In
             </LoadingButton>
@@ -280,7 +285,7 @@ const TesterLoginForm = () => {
             </p>
           </div>
         )}
-      </form>
+      </div>
     </>
   );
 };

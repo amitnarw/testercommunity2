@@ -88,23 +88,41 @@ export const registerTester = async ({
   password,
   firstName,
   lastName,
-  experience,
-  testingTypes,
+  // About You
+  years_of_experience,
+  areas_of_expertise,
   bio,
-  devices,
-  osVersions,
-  languages,
+  // Your Device
+  device_company,
+  device_model,
+  ram,
+  os,
+  screen_resolution,
+  language,
+  network,
+  // Preferences
+  country,
+  phone,
 }: {
   email: string;
   password: string;
   firstName: string;
   lastName: string;
-  experience?: string;
-  testingTypes?: string[];
+  // About You
+  years_of_experience: string;
+  areas_of_expertise: string[];
   bio?: string;
-  devices?: string[];
-  osVersions?: string[];
-  languages?: string;
+  // Your Device
+  device_company: string;
+  device_model: string;
+  ram: string;
+  os: string;
+  screen_resolution: string;
+  language: string;
+  network: string;
+  // Preferences
+  country: string;
+  phone: string;
 }) => {
   try {
     if (!email || !password || !firstName || !lastName) {
@@ -121,12 +139,21 @@ export const registerTester = async ({
         last_name: lastName,
         role: "tester",
         auth_type: "EMAIL_PASSWORD",
-        experience,
-        testingTypes,
+        // About You
+        years_of_experience,
+        areas_of_expertise,
         bio,
-        devices,
-        osVersions,
-        languages,
+        // Your Device
+        device_company,
+        device_model,
+        ram,
+        os,
+        screen_resolution,
+        language,
+        network,
+        // Preferences
+        country,
+        phone,
       },
     });
     if (response?.error) {
@@ -2155,16 +2182,6 @@ export async function getMyInvoices() {
 
 
 // Support API Calls
-export const getSupportHistory = async () => {
-  try {
-    const response = await api.get(API_ROUTES.SUPPORT + "/chat/history");
-    return response?.data?.data;
-  } catch (error) {
-    console.error("Error fetching support history:", error);
-    return [];
-  }
-};
-
 export const createSupportTicket = async (payload: {
   subject: string;
   description: string;
@@ -2176,18 +2193,6 @@ export const createSupportTicket = async (payload: {
   } catch (error) {
     console.error("Error creating ticket:", error);
     throw error;
-  }
-};
-
-export const saveChatMessage = async (payload: {
-  message: string;
-  role: "user" | "assistant";
-}) => {
-  try {
-    const response = await api.post(API_ROUTES.SUPPORT + "/chat/message", payload);
-    return response?.data?.data;
-  } catch (error) {
-    console.error("Error saving chat message:", error);
   }
 };
 

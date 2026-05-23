@@ -211,15 +211,20 @@ export type UserProfileDataAttributes = {
   communication_methods?: UserCommunicationMethod[];
   notification_preference?: UserNotificationPreference[];
 
-  device_company?: String;
-  device_model?: String;
-  ram?: String;
-  os?: String;
-  screen_resolution?: String;
-  language?: String;
-  network?: String;
+  device_company?: string;
+  device_model?: string;
+  ram?: string;
+  os?: string;
+  screen_resolution?: string;
+  language?: string;
+  network?: string;
 
-  initial: Boolean;
+  // About You fields (for testers)
+  years_of_experience?: string;
+  areas_of_expertise?: string[];
+  bio?: string;
+
+  initial: boolean;
 
   createdAt: string;
   updatedAt: string;
@@ -780,6 +785,8 @@ export type CommunityApp = {
   status?: string;
   progress?: number;
   totalDays?: number;
+  completedDate?: string;
+  rejectionReason?: string;
 };
 
 export interface BillingHistoryItem {

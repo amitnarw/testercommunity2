@@ -6,7 +6,6 @@ import Navbar from "@/components/authenticated/navbar";
 import Footer from "@/components/authenticated/footer";
 import { Sidebar } from "@/components/authenticated/sidebar";
 import { authClient } from "@/lib/auth-client";
-import { motion, AnimatePresence } from "framer-motion";
 import PageTransition from "@/components/page-transition";
 import { ROUTES } from "@/lib/routes";
 
@@ -15,7 +14,7 @@ export default function ProfessionalLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const { data: session, isPending, error, refetch } = authClient.useSession();
+  const { data: session, isPending } = authClient.useSession();
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(true);
   const router = useRouter();
   const pathname = usePathname();
@@ -23,10 +22,20 @@ export default function ProfessionalLayout({
   useEffect(() => {
     if (isPending) return;
 
-    const roleName = (session as any)?.role?.name;
+    const sessionData = session as unknown as {
+      role?: { name: string };
+      applicationStatus?: string;
+      ban_reason?: string;
+      user?: { id: string };
+    };
+    const roleName = sessionData?.role?.name;
+    const applicationStatus = sessionData?.applicationStatus;
     const isAuthPage =
       pathname === ROUTES.TESTER.AUTH.LOGIN ||
       pathname === ROUTES.TESTER.AUTH.REGISTER;
+    const isPendingPage = pathname === ROUTES.TESTER.PENDING_APPROVAL;
+    const isRejectedPage = pathname === ROUTES.TESTER.APPLICATION_REJECTED;
+    const isStatusPage = isPendingPage || isRejectedPage;
 
     if (!isAuthPage) {
       if (
@@ -34,7 +43,27 @@ export default function ProfessionalLayout({
         (roleName !== "tester" && roleName !== "super_admin")
       ) {
         router.replace(ROUTES.TESTER.AUTH.LOGIN);
+        return;
       }
+
+      // Gate access based on application status for testers
+      if (roleName === "tester" && applicationStatus !== "APPROVED") {
+        if (applicationStatus === "PENDING" && !isPendingPage) {
+          router.replace(ROUTES.TESTER.PENDING_APPROVAL);
+          return;
+        }
+        if (applicationStatus === "REJECTED" && !isRejectedPage) {
+          router.replace(ROUTES.TESTER.APPLICATION_REJECTED);
+          return;
+        }
+      }
+
+      // If approved, redirect away from status pages to dashboard
+      if (applicationStatus === "APPROVED" && isStatusPage) {
+        router.replace(ROUTES.TESTER.DASHBOARD);
+        return;
+      }
+
       return;
     }
 
@@ -43,6 +72,15 @@ export default function ProfessionalLayout({
       (roleName === "tester" || roleName === "super_admin") &&
       isAuthPage
     ) {
+      // For testers, check application status before redirecting to dashboard
+      if (roleName === "tester" && applicationStatus === "PENDING") {
+        router.replace(ROUTES.TESTER.PENDING_APPROVAL);
+        return;
+      }
+      if (roleName === "tester" && applicationStatus === "REJECTED") {
+        router.replace(ROUTES.TESTER.APPLICATION_REJECTED);
+        return;
+      }
       router.replace(ROUTES.TESTER.DASHBOARD);
     }
   }, [pathname, router, session, isPending]);
@@ -60,8 +98,11 @@ export default function ProfessionalLayout({
   const isAuthPage =
     pathname === ROUTES.TESTER.AUTH.LOGIN ||
     pathname === ROUTES.TESTER.AUTH.REGISTER;
+  const isPendingPage = pathname === ROUTES.TESTER.PENDING_APPROVAL;
+  const isRejectedPage = pathname === ROUTES.TESTER.APPLICATION_REJECTED;
+  const isStandalonePage = isAuthPage || isPendingPage || isRejectedPage;
 
-  if (isAuthPage) {
+  if (isStandalonePage) {
     return (
       <PageTransition>
         <main className="flex-1 bg-background">{children}</main>

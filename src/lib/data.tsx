@@ -47,6 +47,7 @@ export const blogPosts: BlogPost[] = [
       "https://images.unsplash.com/photo-1516116216624-53e697320f64?q=80&w=600&auto=format=fit=crop",
     dataAiHint: "code testing",
     tags: ["Automation", "Beginner", "CI/CD"],
+    views: 0,
   },
   {
     id: 2,
@@ -66,6 +67,7 @@ export const blogPosts: BlogPost[] = [
       "https://images.unsplash.com/photo-1587440871875-191322ee64b0?q=80&w=600&auto=format=fit=crop",
     dataAiHint: "ux design",
     tags: ["UI/UX", "Design", "User Research"],
+    views: 0,
   },
   {
     id: 3,
@@ -85,6 +87,7 @@ export const blogPosts: BlogPost[] = [
       "https://images.unsplash.com/photo-1555949963-ff9fe0c870eb?q=80&w=600&auto=format=fit=crop",
     dataAiHint: "cyber security",
     tags: ["Security", "Mobile", "Checklist"],
+    views: 0,
   },
   {
     id: 4,
@@ -104,6 +107,7 @@ export const blogPosts: BlogPost[] = [
       "https://images.unsplash.com/photo-1620712943543-bcc4688e7485?q=80&w=600&auto=format=fit=crop",
     dataAiHint: "ai brain network",
     tags: ["AI", "Future Tech", "Automation"],
+    views: 0,
   },
   {
     id: 5,
@@ -123,6 +127,7 @@ export const blogPosts: BlogPost[] = [
       "https://images.unsplash.com/photo-1573164713988-8665fc963095?q=80&w=600&auto=format=fit=crop",
     dataAiHint: "accessible technology",
     tags: ["Accessibility", "Guide", "Inclusive Design"],
+    views: 0,
   },
   {
     id: 6,
@@ -142,6 +147,7 @@ export const blogPosts: BlogPost[] = [
       "https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=600&auto=format=fit=crop",
     dataAiHint: "speedometer dashboard",
     tags: ["Performance", "Backend", "DevOps"],
+    views: 0,
   },
   {
     id: 7,
@@ -162,6 +168,7 @@ export const blogPosts: BlogPost[] = [
       "https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?q=80&w=600&auto=format=fit=crop",
     dataAiHint: "money graph success",
     tags: ["Google Play", "Testing", "Requirements"],
+    views: 0,
   },
   {
     id: 8,
@@ -181,6 +188,7 @@ export const blogPosts: BlogPost[] = [
       "https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=600&auto=format=fit=crop",
     dataAiHint: "seo metrics website",
     tags: ["App Marketing", "ASO", "SEO"],
+    views: 0,
   },
   {
     id: 9,
@@ -200,6 +208,7 @@ export const blogPosts: BlogPost[] = [
       "https://images.unsplash.com/photo-1620712943543-bcc4688e7485?q=80&w=600&auto=format=fit=crop",
     dataAiHint: "network connections",
     tags: ["SEO", "Backlinks", "Marketing"],
+    views: 0,
   },
 ];
 
@@ -1649,6 +1658,7 @@ export const projects: Project[] = [
     testersStarted: 14,
     testersCompleted: 8,
     totalDays: 14,
+    currentDay: 8,
     avgTestersPerDay: 1.2,
     startedFrom: "22 Aug 2024",
     description:
@@ -1692,6 +1702,7 @@ export const projects: Project[] = [
     testersStarted: 12,
     testersCompleted: 10,
     totalDays: 10,
+    currentDay: 10,
     avgTestersPerDay: 1.0,
     startedFrom: "15 Jul 2024",
     description:
@@ -1737,6 +1748,7 @@ export const projects: Project[] = [
     testersStarted: 20,
     testersCompleted: 20,
     totalDays: 14,
+    currentDay: 14,
     avgTestersPerDay: 1.4,
     startedFrom: "01 Jun 2024",
     description:
@@ -1778,6 +1790,7 @@ export const projects: Project[] = [
     testersStarted: 0,
     testersCompleted: 0,
     totalDays: 0,
+    currentDay: 0,
     avgTestersPerDay: 0,
     startedFrom: "28 Aug 2024",
     description:
@@ -1810,6 +1823,7 @@ export const projects: Project[] = [
     testersStarted: 0,
     testersCompleted: 0,
     totalDays: 0,
+    currentDay: 0,
     avgTestersPerDay: 0,
     startedFrom: "N/A",
     description:
@@ -1840,6 +1854,7 @@ export const projects: Project[] = [
     testersStarted: 15,
     testersCompleted: 15,
     totalDays: 14,
+    currentDay: 14,
     avgTestersPerDay: 1.1,
     startedFrom: "10 May 2024",
     description:
@@ -1876,6 +1891,7 @@ export const projects: Project[] = [
     testersStarted: 25,
     testersCompleted: 25,
     totalDays: 14,
+    currentDay: 14,
     avgTestersPerDay: 1.8,
     startedFrom: "05 Apr 2024",
     description:
@@ -1957,6 +1973,7 @@ export const projects: Project[] = [
       testersStarted: testersStarted,
       testersCompleted: testersCompleted,
       totalDays: baseApp.totalDays || 14,
+      currentDay: isCompleted ? (baseApp.totalDays || 14) : isOngoing ? 5 + (override.id % 7) : 0,
       avgTestersPerDay: testersStarted / (baseApp.totalDays || 14),
       startedFrom: "15 Aug 2024",
       description: baseApp.shortDescription,

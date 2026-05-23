@@ -62,6 +62,8 @@ export const ROUTES = {
     SUPPORT: "/tester/support",
     PROFILE: "/tester/profile",
     SETTINGS: "/tester/settings",
+    PENDING_APPROVAL: "/tester/pending-approval",
+    APPLICATION_REJECTED: "/tester/application-rejected",
     AUTH: {
       LOGIN: "/tester/auth/login",
       REGISTER: "/tester/auth/register",

@@ -174,7 +174,7 @@ export function Sidebar({
   ].includes(roleName);
   const isTesterRole = roleName === "tester" || roleName === "super_admin";
 
-  let navLinks = mainNavLinks;
+  let navLinks: { name: string; href: string; icon: typeof LayoutDashboard }[] = mainNavLinks;
   if (isTesterRole) {
     navLinks = proNavLinks;
   }
@@ -398,7 +398,7 @@ export function Sidebar({
   );
 
   // Determine logo link based on role
-  let logoHref = ROUTES.AUTHENTICATED.COMMUNITY_DASHBOARD;
+  let logoHref: string = ROUTES.AUTHENTICATED.COMMUNITY_DASHBOARD;
   if (isAdminRole) {
     logoHref = ROUTES.ADMIN.DASHBOARD;
   } else if (isTesterRole) {
