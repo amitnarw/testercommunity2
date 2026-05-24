@@ -56,7 +56,7 @@ if (typeof window !== "undefined") {
   });
 
   s.on("connect_error", (err) => {
-    console.error(`[SocketClient] Connection error:`, err.message);
+    console.warn(`[SocketClient] Connection error:`, err.message);
   });
 }
 

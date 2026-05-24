@@ -19,10 +19,7 @@ function useIsBlockedTester() {
   };
   const roleName = sessionData?.role?.name;
   const appStatus = sessionData?.applicationStatus;
-  return (
-    roleName === "tester" &&
-    (appStatus === "PENDING" || appStatus === "REJECTED")
-  );
+  return roleName === "tester" && appStatus !== "APPROVED";
 }
 
 export function useTesterProjects(status?: string, appType?: string) {

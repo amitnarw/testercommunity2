@@ -12,10 +12,9 @@ export function useUserWallet() {
   const roleName = sessionData?.role?.name;
   const appStatus = sessionData?.applicationStatus;
 
-  // Don't fire for pending or rejected testers
+  // Don't fire for non-approved testers
   const isBlockedTester =
-    roleName === "tester" &&
-    (appStatus === "PENDING" || appStatus === "REJECTED");
+    roleName === "tester" && appStatus !== "APPROVED";
 
   return useQuery<UserWallerResponse, Error>({
     queryFn: getUserWallet,

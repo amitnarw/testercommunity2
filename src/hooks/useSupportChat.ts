@@ -3,7 +3,8 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import API_ROUTES from "@/lib/apiRoutes";
 import api from "@/lib/axios";
-import { connectSupportSocket } from "@/lib/supportSocket";
+import { connectSupportSocket, disconnectSupportSocket, getSupportSocket } from "@/lib/supportSocket";
+import { authClient } from "@/lib/auth-client";
 
 export type ChatMode = "AI" | "WAITING" | "HUMAN" | "OFFLINE_OPTIONS" | "CHECKING";
 
@@ -34,6 +35,8 @@ export function useSupportChat(chat: SupportChatAI) {
   const [isWaitingForGreeting, setIsWaitingForGreeting] = useState(false);
   const [displayedMessages, setDisplayedMessages] = useState<any[]>([]);
   const [isOpen, setIsOpen] = useState(false);
+
+  const { data: session } = authClient.useSession();
 
   const requestTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const errorTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -134,10 +137,10 @@ export function useSupportChat(chat: SupportChatAI) {
 
   // -- Socket.IO integration --
   useEffect(() => {
-    if (socketInitialized.current) return;
+    if (socketInitialized.current || !session) return;
     socketInitialized.current = true;
 
-    const s = connectSupportSocket();
+    const s = getSupportSocket();
 
     s.on("connect", () => {
       clearError();
@@ -145,7 +148,10 @@ export function useSupportChat(chat: SupportChatAI) {
     });
 
     s.on("connect_error", (err) => {
-      showError(`Connection failed: ${err.message}. Please try again.`);
+      if (s.connected) return;
+      if (err.message.includes("Authentication required")) {
+        showError("Login required. Please sign in to use live support.");
+      }
     });
 
     s.on("chat:requested", (data: { chatId: number; position: number }) => {
@@ -232,10 +238,6 @@ export function useSupportChat(chat: SupportChatAI) {
         .catch(() => setAgentsOnline(false));
     });
 
-    if (s.connected) {
-      s.emit("user:rejoin");
-    }
-
     return () => {
       if (requestTimeoutRef.current) {
         clearTimeout(requestTimeoutRef.current);
@@ -264,7 +266,15 @@ export function useSupportChat(chat: SupportChatAI) {
       s.off("agent:status_changed");
       socketInitialized.current = false;
     };
-  }, [clearError, showError, setMessages]);
+  }, [session, clearError, showError, setMessages]);
+
+  // -- Disconnect socket on session loss --
+  useEffect(() => {
+    if (!session) {
+      disconnectSupportSocket();
+      socketInitialized.current = false;
+    }
+  }, [session]);
 
   // -- Request human chat --
   const requestHumanChat = useCallback(() => {
