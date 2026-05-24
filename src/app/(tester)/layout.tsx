@@ -48,12 +48,12 @@ export default function ProfessionalLayout({
 
       // Gate access based on application status for testers
       if (roleName === "tester" && applicationStatus !== "APPROVED") {
-        if (applicationStatus === "PENDING" && !isPendingPage) {
-          router.replace(ROUTES.TESTER.PENDING_APPROVAL);
-          return;
-        }
         if (applicationStatus === "REJECTED" && !isRejectedPage) {
           router.replace(ROUTES.TESTER.APPLICATION_REJECTED);
+          return;
+        }
+        if (!isPendingPage) {
+          router.replace(ROUTES.TESTER.PENDING_APPROVAL);
           return;
         }
       }
@@ -73,12 +73,12 @@ export default function ProfessionalLayout({
       isAuthPage
     ) {
       // For testers, check application status before redirecting to dashboard
-      if (roleName === "tester" && applicationStatus === "PENDING") {
+      if (roleName === "tester" && applicationStatus !== "APPROVED") {
+        if (applicationStatus === "REJECTED") {
+          router.replace(ROUTES.TESTER.APPLICATION_REJECTED);
+          return;
+        }
         router.replace(ROUTES.TESTER.PENDING_APPROVAL);
-        return;
-      }
-      if (roleName === "tester" && applicationStatus === "REJECTED") {
-        router.replace(ROUTES.TESTER.APPLICATION_REJECTED);
         return;
       }
       router.replace(ROUTES.TESTER.DASHBOARD);
