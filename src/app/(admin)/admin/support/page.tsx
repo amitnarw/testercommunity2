@@ -35,7 +35,7 @@ interface SupportStats {
   }>;
 }
 
-export default function AdminSupportStatsPage() {
+export default function SupportStatsPage() {
   const [stats, setStats] = useState<SupportStats | null>(null);
   const [loading, setLoading] = useState(true);
 

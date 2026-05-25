@@ -115,7 +115,7 @@ export function useDashboardData() {
 // Notification
 export function useGetUserNotifications() {
   const query = useQuery<
-    { result: NotificationResponse[]; totalNotifications: number },
+    { notifications: NotificationResponse[]; totalNotifications: number },
     Error
   >({
     queryFn: () => getUserNotifications(),

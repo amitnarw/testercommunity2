@@ -1155,7 +1155,7 @@ export async function completeHostedApp(payload: { appId: number | string }) {
 
 // Notifications
 export async function getUserNotifications(): Promise<{
-  result: NotificationResponse[];
+  notifications: NotificationResponse[];
   totalNotifications: number;
 }> {
   try {

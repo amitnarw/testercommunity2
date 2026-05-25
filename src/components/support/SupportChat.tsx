@@ -459,13 +459,17 @@ export function SupportChat() {
                     </div>
                   </ScrollArea>
                   {agentTyping && (
-                    <div className="px-4 py-1.5 text-xs text-muted-foreground flex items-center gap-2 border-t bg-background/30">
-                      <div className="flex gap-1">
-                        <span className="w-1 h-1 rounded-full bg-primary/40 animate-bounce [animation-delay:-0.3s]" />
-                        <span className="w-1 h-1 rounded-full bg-primary/40 animate-bounce [animation-delay:-0.15s]" />
-                        <span className="w-1 h-1 rounded-full bg-primary/40 animate-bounce" />
+                    <div className="flex gap-3 animate-in fade-in duration-300 px-4 py-2">
+                      <div className="h-8 w-8 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center flex-shrink-0">
+                        <User className="h-4 w-4 text-primary" />
                       </div>
-                      {agentName || "Agent"} is typing...
+                      <div className="bg-muted/30 px-4 py-3 rounded-2xl rounded-tl-none border">
+                        <div className="flex gap-1">
+                          <span className="w-1.5 h-1.5 rounded-full bg-primary/40 animate-bounce [animation-delay:-0.3s]" />
+                          <span className="w-1.5 h-1.5 rounded-full bg-primary/40 animate-bounce [animation-delay:-0.15s]" />
+                          <span className="w-1.5 h-1.5 rounded-full bg-primary/40 animate-bounce" />
+                        </div>
+                      </div>
                     </div>
                   )}
                   <footer className="p-4 border-t bg-card/80 backdrop-blur-sm">

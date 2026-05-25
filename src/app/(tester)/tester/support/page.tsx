@@ -73,10 +73,7 @@ const itemVariants = {
 
 export default function ProfessionalSupportPage() {
     return (
-        <div className="min-h-screen w-full bg-background text-foreground selection:bg-primary/30 overflow-x-hidden">
-            {/* Subtle Background Mesh */}
-            <div className="fixed inset-0 bg-[radial-gradient(circle_at_50%_50%,hsl(var(--muted)/0.5)_0%,hsl(var(--background))_100%)] dark:bg-[radial-gradient(circle_at_50%_50%,rgba(17,24,39,1)_0%,rgba(5,5,5,1)_100%)] pointer-events-none" />
-            <div className="fixed inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.03] pointer-events-none mix-blend-overlay" />
+        <div className="min-h-screen w-full text-foreground overflow-x-hidden">
 
             <main className="container mx-auto px-4 md:px-8 py-12 md:py-20 max-w-6xl relative z-10 w-full">
                 <motion.div
