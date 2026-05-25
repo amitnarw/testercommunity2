@@ -54,6 +54,7 @@ export function AgentDashboard() {
   const scrollRef = useRef<HTMLDivElement>(null);
   const typingTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const lastTypingEmitRef = useRef(0);
+  const heartbeatRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const activeChat = activeChats.find((c) => c.id === activeChatId) || activeChats[0] || null;
 
@@ -94,8 +95,28 @@ export function AgentDashboard() {
 
   const handleSend = () => {
     if (!input.trim() || !activeChat?.id) return;
+    const msg = input.trim();
     const s = connectSupportSocket();
-    s.emit("agent:send_message", { chatId: activeChat.id, message: input.trim() });
+    s.emit("agent:send_message", { chatId: activeChat.id, message: msg });
+
+    setLocalMessages((prev) => {
+      const existing = prev[activeChat.id] || [];
+      return {
+        ...prev,
+        [activeChat.id]: [
+          ...existing,
+          {
+            id: -Date.now(),
+            senderType: "AGENT" as const,
+            senderName: "You",
+            message: msg,
+            createdAt: new Date().toISOString(),
+            _optimistic: true,
+          },
+        ],
+      };
+    });
+
     setInput("");
     setUserTyping(false);
   };
@@ -112,69 +133,96 @@ export function AgentDashboard() {
     }
   }, [activeChatId]);
 
-  // Socket listeners
-  const initRef = useRef(false);
+  // Socket listeners — cleanup removes only our handlers (not other components')
   useEffect(() => {
-    if (initRef.current) return;
-    initRef.current = true;
-
     const s = connectSupportSocket();
 
-    s.on("agent:queue", (data: PendingChat[]) => {
-      setQueue(data);
-      setLoading(false);
-    });
+    const on = <T extends (...args: any[]) => void>(event: string, handler: T): T => {
+      s.on(event, handler);
+      return handler;
+    };
 
-    s.on("agent:active_chats", (data: ActiveChat[]) => {
-      setActiveChats(data);
-      setLoading(false);
-    });
+    const h = {
+      agent_queue: on("agent:queue", (data: PendingChat[]) => {
+        setQueue(data);
+        setLoading(false);
+      }),
+      agent_active_chats: on("agent:active_chats", (data: ActiveChat[]) => {
+        setActiveChats(data);
+        setLoading(false);
+      }),
+      agent_queue_updated: on("agent:queue_updated", () => {
+        connectSupportSocket().emit("agent:refresh_queue");
+      }),
+      agent_chat_taken: on("agent:chat_taken", (data: { chatId: number; chat?: ActiveChat }) => {
+        setQueue((prev) => prev.filter((c) => c.id !== data.chatId));
+        if (data.chat) {
+          setActiveChats((prev) => {
+            if (prev.some((c) => c.id === data.chat!.id)) return prev;
+            return [...prev, data.chat!];
+          });
+          setActiveChatId(data.chatId);
+        }
+      }),
+      chat_message: on("chat:message", (data: { chatId: number } & ChatMessage) => {
+        console.log("[ADMIN] chat:message RECEIVED:", data);
+        setLocalMessages((prev) => {
+          const existing = prev[data.chatId] || [];
+          if (existing.some((m) => m.id === data.id)) return prev;
+          const filtered = existing.filter(
+            (m) => !((m as { _optimistic?: boolean })._optimistic && m.senderType === data.senderType && m.message === data.message)
+          );
+          return { ...prev, [data.chatId]: [...filtered, data] };
+        });
+      }),
+      chat_closed: on("chat:closed", (data: { chatId: number }) => {
+        setLocalMessages((prev) => {
+          const updated = { ...prev };
+          delete updated[data.chatId];
+          return updated;
+        });
+      }),
+      chat_typing: on("chat:typing", () => {
+        console.log("[ADMIN] chat:typing RECEIVED");
+        setUserTyping(true);
+        if (typingTimerRef.current) clearTimeout(typingTimerRef.current);
+        typingTimerRef.current = setTimeout(() => setUserTyping(false), 3000);
+      }),
+      agent_status: on("agent:status", (data: { online: boolean }) => {
+        setAgentOnline(data.online);
+      }),
+    };
 
-    s.on("agent:queue_updated", () => {
-      connectSupportSocket().emit("agent:online");
-    });
-
-    s.on("agent:chat_taken", (data: { chatId: number }) => {
-      setQueue((prev) => prev.filter((c) => c.id !== data.chatId));
-    });
-
-    s.on("chat:message", (data: { chatId: number } & ChatMessage) => {
-      setLocalMessages((prev) => {
-        const existing = prev[data.chatId] || [];
-        if (existing.some((m) => m.id === data.id)) return prev;
-        return { ...prev, [data.chatId]: [...existing, data] };
-      });
-    });
-
-    s.on("chat:closed", (data: { chatId: number }) => {
-      setLocalMessages((prev) => {
-        const updated = { ...prev };
-        delete updated[data.chatId];
-        return updated;
-      });
-    });
-
-    s.on("chat:typing", (data: { chatId?: number }) => {
-      if (data?.chatId && data.chatId !== activeChatId) return;
-      setUserTyping(true);
-      if (typingTimerRef.current) clearTimeout(typingTimerRef.current);
-      typingTimerRef.current = setTimeout(() => setUserTyping(false), 3000);
-    });
-
-    if (s.connected) {
-      s.emit("agent:online");
-    }
+    // Sync agent status from backend on mount
+    s.emit("agent:get_status");
 
     return () => {
-      s.off("agent:queue");
-      s.off("agent:active_chats");
-      s.off("agent:queue_updated");
-      s.off("agent:chat_taken");
-      s.off("chat:message");
-      s.off("chat:closed");
-      s.off("chat:typing");
+      s.off("agent:queue", h.agent_queue);
+      s.off("agent:active_chats", h.agent_active_chats);
+      s.off("agent:queue_updated", h.agent_queue_updated);
+      s.off("agent:chat_taken", h.agent_chat_taken);
+      s.off("chat:message", h.chat_message);
+      s.off("chat:closed", h.chat_closed);
+      s.off("chat:typing", h.chat_typing);
+      s.off("agent:status", h.agent_status);
     };
-  }, [activeChatId]);
+  }, []);
+
+  // Heartbeat: emit every 10s when agent is online
+  useEffect(() => {
+    if (agentOnline) {
+      connectSupportSocket().emit("agent:heartbeat");
+      heartbeatRef.current = setInterval(() => {
+        connectSupportSocket().emit("agent:heartbeat");
+      }, 10 * 1000);
+    }
+    return () => {
+      if (heartbeatRef.current) {
+        clearInterval(heartbeatRef.current);
+        heartbeatRef.current = null;
+      }
+    };
+  }, [agentOnline]);
 
   useEffect(() => {
     if (activeChats.length > 0 && !activeChats.find((c) => c.id === activeChatId)) {
@@ -407,14 +455,18 @@ export function AgentDashboard() {
                   </div>
                 </ScrollArea>
 
-                {userTyping && (
-                  <div className="px-4 py-1.5 text-xs text-muted-foreground flex items-center gap-2 border-t bg-background/30">
-                    <div className="flex gap-1">
-                      <span className="w-1 h-1 rounded-full bg-primary/40 animate-bounce" />
-                      <span className="w-1 h-1 rounded-full bg-primary/40 animate-bounce" style={{ animationDelay: "0.15s" }} />
-                      <span className="w-1 h-1 rounded-full bg-primary/40 animate-bounce" style={{ animationDelay: "0.3s" }} />
+                {userTyping && activeChat && (
+                  <div className="flex gap-3 animate-in fade-in duration-300 px-4 py-2">
+                    <div className="h-7 w-7 rounded-full bg-muted flex items-center justify-center border flex-shrink-0">
+                      <User className="h-3.5 w-3.5 text-muted-foreground" />
                     </div>
-                    {activeChat?.userName || "User"} is typing...
+                    <div className="bg-muted/30 px-4 py-3 rounded-2xl rounded-tl-none border">
+                      <div className="flex gap-1">
+                        <span className="w-1.5 h-1.5 rounded-full bg-primary/40 animate-bounce [animation-delay:-0.3s]" />
+                        <span className="w-1.5 h-1.5 rounded-full bg-primary/40 animate-bounce [animation-delay:-0.15s]" />
+                        <span className="w-1.5 h-1.5 rounded-full bg-primary/40 animate-bounce" />
+                      </div>
+                    </div>
                   </div>
                 )}
 

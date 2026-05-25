@@ -64,7 +64,7 @@ export function NotificationsPageContent({
     isPending: notificationIsPending,
   } = useGetUserNotifications();
 
-  const allNotifications = notificationData?.result ?? [];
+  const allNotifications = notificationData?.notifications ?? [];
   const totalNotifications = notificationData?.totalNotifications ?? 0;
   const totalPages = Math.ceil(totalNotifications / NOTIFICATIONS_PER_PAGE);
 

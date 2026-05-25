@@ -2,7 +2,7 @@
 
 import { TicketsTable } from "@/components/admin/support/TicketsTable";
 
-export default function AdminSupportTicketsPage() {
+export default function SupportTicketsPage() {
   return (
     <div className="px-4 sm:px-6 py-6 w-full">
       <div className="mb-6">

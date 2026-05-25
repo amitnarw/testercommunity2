@@ -5,25 +5,14 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
   Ticket,
   Plus,
-  Clock,
   CheckCircle,
-  AlertCircle,
   Search,
   MoreHorizontal,
-  ArrowUpRight,
   RefreshCw,
   Inbox,
-  Sparkles,
-  Filter,
-  MessageSquare,
-  Calendar,
-  ChevronDown,
-  LayoutGrid,
-  List
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import {
   DropdownMenu,
@@ -44,7 +33,6 @@ export default function TicketsListPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [activeTab, setActiveTab] = useState<string>("ALL");
-  const [viewMode, setViewMode] = useState<"LIST" | "GRID">("LIST");
 
   const handleUpdateStatus = async (id: number, status: string) => {
     try {
@@ -82,15 +70,20 @@ export default function TicketsListPage() {
 
   const filteredTickets = tickets.filter(t => {
     const matchesSearch = t.subject.toLowerCase().includes(search.toLowerCase()) || t.id.toString().includes(search);
-    const matchesTab = activeTab === "ALL" || (activeTab === "OPEN" && t.status !== "CLOSED") || (activeTab === "CLOSED" && t.status === "CLOSED");
+    const matchesTab = activeTab === "ALL" ||
+      (activeTab === "OPEN" && (t.status === "OPEN" || t.status === "IN_PROGRESS" || t.status === "WAITING_AGENT")) ||
+      (activeTab === "RESOLVED" && t.status === "RESOLVED") ||
+      (activeTab === "CLOSED" && t.status === "CLOSED");
     return matchesSearch && matchesTab;
   });
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case "PENDING": return "text-amber-400 bg-amber-400/10 border-amber-400/20";
       case "OPEN": return "text-blue-400 bg-blue-400/10 border-blue-400/20";
-      case "CLOSED": return "text-emerald-400 bg-emerald-400/10 border-emerald-400/20";
+      case "IN_PROGRESS": return "text-amber-400 bg-amber-400/10 border-amber-400/20";
+      case "WAITING_AGENT": return "text-purple-400 bg-purple-400/10 border-purple-400/20";
+      case "RESOLVED": return "text-emerald-400 bg-emerald-400/10 border-emerald-400/20";
+      case "CLOSED": return "text-gray-400 bg-gray-400/10 border-gray-400/20";
       default: return "text-muted-foreground bg-muted/10 border-muted/20";
     }
   };
@@ -133,7 +126,7 @@ export default function TicketsListPage() {
 
           <div className="flex flex-row gap-2 items-center justify-center">
             <div className="flex bg-muted/30 p-1 rounded-xl border border-border/50">
-              {["ALL", "OPEN", "CLOSED"].map((tab) => (
+              {["ALL", "OPEN", "RESOLVED", "CLOSED"].map((tab) => (
                 <button
                   key={tab}
                   onClick={() => setActiveTab(tab)}
@@ -218,7 +211,7 @@ export default function TicketsListPage() {
                           statusColor.split(' ')[0],
                           statusColor.split(' ')[1]
                         )}>
-                          {ticket.status === "CLOSED" ? <CheckCircle className="h-5 w-5" /> : <Ticket className="h-5 w-5" />}
+                          {ticket.status === "CLOSED" || ticket.status === "RESOLVED" ? <CheckCircle className="h-5 w-5" /> : <Ticket className="h-5 w-5" />}
                         </div>
 
                         <div className="flex-1 min-w-0">
@@ -261,7 +254,7 @@ export default function TicketsListPage() {
                               </DropdownMenuItem>
                               <DropdownMenuItem 
                                 className="rounded-lg text-xs font-bold py-2 cursor-pointer text-emerald-500"
-                                onClick={() => handleUpdateStatus(ticket.id, "CLOSED")}
+                                onClick={() => handleUpdateStatus(ticket.id, "RESOLVED")}
                               >
                                 Mark Resolved
                               </DropdownMenuItem>

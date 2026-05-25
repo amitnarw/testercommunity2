@@ -383,7 +383,7 @@ export function Sidebar({
         </SidebarNavLink>
       ) : isTesterRole ? (
         <SidebarNavLink
-          href={ROUTES.TESTER.SETTINGS}
+          href={ROUTES.TESTER.PROFILE}
           icon={User}
           isCollapsed={isCollapsed}
         >

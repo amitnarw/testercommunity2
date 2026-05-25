@@ -142,101 +142,104 @@ export function useSupportChat(chat: SupportChatAI) {
 
     const s = getSupportSocket();
 
-    s.on("connect", () => {
-      clearError();
-      s.emit("user:rejoin");
-    });
+    // Store handler references so cleanup only removes our own handlers
+    // (not other components' handlers on the shared singleton socket)
+    const on = <T extends (...args: any[]) => void>(event: string, handler: T): T => {
+      s.on(event, handler);
+      return handler;
+    };
 
-    s.on("connect_error", (err) => {
-      if (s.connected) return;
-      if (err.message.includes("Authentication required")) {
-        showError("Login required. Please sign in to use live support.");
-      }
-    });
-
-    s.on("chat:requested", (data: { chatId: number; position: number }) => {
-      if (requestTimeoutRef.current) {
-        clearTimeout(requestTimeoutRef.current);
-        requestTimeoutRef.current = null;
-      }
-      setHumanChatId(data.chatId);
-      setQueuePosition(data.position);
-      setChatMode("WAITING");
-      clearError();
-    });
-
-    s.on("chat:fallback_to_ai", (data: { message: string; chatId: number }) => {
-      if (requestTimeoutRef.current) {
-        clearTimeout(requestTimeoutRef.current);
-        requestTimeoutRef.current = null;
-      }
-      setHumanChatId(data.chatId);
-      setMessages((prev: any) => [...prev, {
-        id: "fallback-" + Date.now(),
-        role: "assistant",
-        content: data.message,
-      }]);
-      clearError();
-    });
-
-    s.on("chat:unavailable", (data: { reason?: string }) => {
-      const msg = data?.reason || "No agents are available right now. Alex can help!";
-      setMessages((prev: any) => [...prev, {
-        id: "fallback-" + Date.now(),
-        role: "assistant",
-        content: msg + " A human agent will review your conversation when they come online.",
-      }]);
-      clearError();
-    });
-
-    s.on("chat:assigned", (data: { chatId: number; agentName: string }) => {
-      clearError();
-      setHumanChatId(data.chatId);
-      setAgentName(data.agentName);
-      setChatMode("HUMAN");
-    });
-
-    s.on("chat:message", (data: any) => {
-      setHumanMessages((prev) => {
-        if (prev.some((m) => m.id === data.id)) return prev;
-        const filtered = prev.filter(
-          (m) => !(m._optimistic && m.senderType === "USER" && m.message === data.message)
-        );
-        return [...filtered, data];
-      });
-    });
-
-    s.on("chat:closed", () => {
-      setHumanMessages((prev) => [...prev, {
-        id: "closed",
-        senderType: "SYSTEM",
-        senderName: "System",
-        message: "This chat has been closed.",
-        createdAt: new Date().toISOString(),
-      }]);
-    });
-
-    s.on("chat:error", (data: { message?: string }) => {
-      showError(data?.message || "Something went wrong. Please try again.");
-    });
-
-    s.on("agent:typing", () => {
-      setAgentTyping(true);
-      if (typingTimerRef.current) clearTimeout(typingTimerRef.current);
-      typingTimerRef.current = setTimeout(() => setAgentTyping(false), 3000);
-    });
-
-    s.on("chat:position_updated", (data: { position: number }) => {
-      setQueuePosition(data.position);
-    });
-
-    s.on("agent:status_changed", () => {
-      api.get(API_ROUTES.SUPPORT + "/agent-status")
-        .then((r) => {
-          setAgentsOnline(r?.data?.data?.online || false);
-        })
-        .catch(() => setAgentsOnline(false));
-    });
+    const h = {
+      connect: on("connect", () => {
+        clearError();
+        s.emit("user:rejoin");
+      }),
+      connect_error: on("connect_error", (err: any) => {
+        if (s.connected) return;
+        if (err.message.includes("Authentication required")) {
+          showError("Login required. Please sign in to use live support.");
+        }
+      }),
+      chat_requested: on("chat:requested", (data: { chatId: number; position: number }) => {
+        if (requestTimeoutRef.current) {
+          clearTimeout(requestTimeoutRef.current);
+          requestTimeoutRef.current = null;
+        }
+        setHumanChatId(data.chatId);
+        setQueuePosition(data.position);
+        setChatMode("WAITING");
+        clearError();
+      }),
+      chat_fallback_to_ai: on("chat:fallback_to_ai", (data: { message: string; chatId: number }) => {
+        if (requestTimeoutRef.current) {
+          clearTimeout(requestTimeoutRef.current);
+          requestTimeoutRef.current = null;
+        }
+        setHumanChatId(data.chatId);
+        setMessages((prev: any) => [...prev, {
+          id: "fallback-" + Date.now(),
+          role: "assistant",
+          content: data.message,
+        }]);
+        clearError();
+      }),
+      chat_unavailable: on("chat:unavailable", (data: { reason?: string }) => {
+        const msg = data?.reason || "No agents are available right now. Alex can help!";
+        setMessages((prev: any) => [...prev, {
+          id: "fallback-" + Date.now(),
+          role: "assistant",
+          content: msg + " A human agent will review your conversation when they come online.",
+        }]);
+        clearError();
+      }),
+      chat_assigned: on("chat:assigned", (data: { chatId: number; agentName: string }) => {
+        clearError();
+        setHumanChatId(data.chatId);
+        setAgentName(data.agentName);
+        setChatMode("HUMAN");
+      }),
+      chat_message: on("chat:message", (data: any) => {
+        setHumanMessages((prev) => {
+          if (prev.some((m) => m.id === data.id)) return prev;
+          const filtered = prev.filter(
+            (m) => !(m._optimistic && m.senderType === "USER" && m.message === data.message)
+          );
+          return [...filtered, data];
+        });
+      }),
+      chat_closed: on("chat:closed", (data: { chatId: number; reason?: string }) => {
+        setHumanMessages((prev) => [...prev, {
+          id: "closed",
+          senderType: "SYSTEM",
+          senderName: "System",
+          message: data?.reason === "Agent disconnected" || data?.reason === "Agent went offline"
+            ? "The support agent is no longer available. You can submit a ticket or chat with Alex."
+            : "This chat has been closed.",
+          createdAt: new Date().toISOString(),
+        }]);
+        setHumanChatId(null);
+        setAgentName("");
+        setChatMode("OFFLINE_OPTIONS");
+      }),
+      chat_error: on("chat:error", (data: { message?: string }) => {
+        showError(data?.message || "Something went wrong. Please try again.");
+      }),
+      agent_typing: on("agent:typing", () => {
+        setAgentTyping(true);
+        if (typingTimerRef.current) clearTimeout(typingTimerRef.current);
+        typingTimerRef.current = setTimeout(() => setAgentTyping(false), 3000);
+      }),
+      chat_position_updated: on("chat:position_updated", (data: { position: number }) => {
+        setQueuePosition(data.position);
+      }),
+      agent_status_changed: on("agent:status_changed", () => {
+        api.get(API_ROUTES.SUPPORT + "/agent-status")
+          .then((r) => {
+            setAgentsOnline(r?.data?.data?.online || false);
+          })
+          .catch(() => setAgentsOnline(false));
+      }),
+    };
 
     return () => {
       if (requestTimeoutRef.current) {
@@ -251,19 +254,19 @@ export function useSupportChat(chat: SupportChatAI) {
         clearTimeout(typingTimerRef.current);
         typingTimerRef.current = null;
       }
-      s.off("connect");
-      s.off("connect_error");
-      s.off("chat:requested");
-      s.off("chat:fallback_to_ai");
-      s.off("chat:unavailable");
-      s.off("chat:assigned");
-      s.off("chat:message");
-      s.off("chat:closed");
-      s.off("chat:error");
-      s.off("chat:typing");
-      s.off("agent:typing");
-      s.off("chat:position_updated");
-      s.off("agent:status_changed");
+      // Only remove OUR specific handlers — others on the shared socket are untouched
+      s.off("connect", h.connect);
+      s.off("connect_error", h.connect_error);
+      s.off("chat:requested", h.chat_requested);
+      s.off("chat:fallback_to_ai", h.chat_fallback_to_ai);
+      s.off("chat:unavailable", h.chat_unavailable);
+      s.off("chat:assigned", h.chat_assigned);
+      s.off("chat:message", h.chat_message);
+      s.off("chat:closed", h.chat_closed);
+      s.off("chat:error", h.chat_error);
+      s.off("agent:typing", h.agent_typing);
+      s.off("chat:position_updated", h.chat_position_updated);
+      s.off("agent:status_changed", h.agent_status_changed);
       socketInitialized.current = false;
     };
   }, [session, clearError, showError, setMessages]);
@@ -309,20 +312,13 @@ export function useSupportChat(chat: SupportChatAI) {
     }
   }, [agentsOnline, chatMode, userChoseAlex, requestHumanChat]);
 
-  // -- Agent goes offline while in HUMAN or WAITING --
+  // -- Agent goes offline while in WAITING (no active chat yet) --
   useEffect(() => {
-    if (!agentsOnline && (chatMode === "HUMAN" || chatMode === "WAITING")) {
-      if (humanChatId) {
-        const s = connectSupportSocket();
-        s.emit("chat:close", { chatId: humanChatId });
-      }
-      setHumanMessages([]);
-      setHumanChatId(null);
-      setAgentName("");
+    if (!agentsOnline && chatMode === "WAITING" && !humanChatId) {
       setMessages((prev: any) => [...prev, {
         id: "agent-offline-" + Date.now(),
         role: "assistant",
-        content: "The support agent is no longer available. You can submit a ticket or chat with Alex.",
+        content: "No agents are currently available. You can submit a ticket or chat with Alex.",
       }]);
       setChatMode("OFFLINE_OPTIONS");
     }

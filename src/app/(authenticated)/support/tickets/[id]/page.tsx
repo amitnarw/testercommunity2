@@ -1,8 +1,8 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useParams, useRouter } from "next/navigation";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import {
   Ticket,
   Clock,
@@ -12,15 +12,17 @@ import {
   User,
   Shield,
   Calendar,
-  ChevronLeft,
   Loader2,
-  Inbox,
   Sparkles,
-  ArrowRight
+  ArrowRight,
+  Send,
+  Info,
+  RotateCcw,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Textarea } from "@/components/ui/textarea";
 import { BackButton } from "@/components/back-button";
 import { cn } from "@/lib/utils";
 import api from "@/lib/axios";
@@ -32,6 +34,9 @@ export default function TicketDetailPage() {
   const router = useRouter();
   const [ticket, setTicket] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [replyText, setReplyText] = useState("");
+  const [isSending, setIsSending] = useState(false);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const fetchTicket = async () => {
     setIsLoading(true);
@@ -57,18 +62,64 @@ export default function TicketDetailPage() {
     }
   }, [params.id]);
 
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [ticket?.messages]);
+
+  const handleSendReply = async () => {
+    if (!replyText.trim() || isSending) return;
+
+    setIsSending(true);
+    try {
+      await api.post(API_ROUTES.SUPPORT + `/tickets/${params.id}/messages`, {
+        message: replyText.trim(),
+      });
+      setReplyText("");
+      toast({
+        title: "Message Sent",
+        description: "Your reply has been added to the ticket.",
+      });
+      await fetchTicket();
+    } catch (err) {
+      console.error("Failed to send reply:", err);
+      toast({
+        title: "Failed to Send",
+        description: "Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSending(false);
+    }
+  };
+
   const getStatusConfig = (status: string) => {
     switch (status) {
-      case "PENDING":
-        return { label: "Pending", icon: Clock, className: "bg-amber-500/10 text-amber-500 border-amber-500/20" };
       case "OPEN":
         return { label: "Open", icon: AlertCircle, className: "bg-blue-500/10 text-blue-500 border-blue-500/20" };
-      case "CLOSED":
+      case "IN_PROGRESS":
+        return { label: "In Progress", icon: Clock, className: "bg-amber-500/10 text-amber-500 border-amber-500/20" };
+      case "WAITING_AGENT":
+        return { label: "Waiting for Agent", icon: Clock, className: "bg-purple-500/10 text-purple-500 border-purple-500/20" };
+      case "RESOLVED":
         return { label: "Resolved", icon: CheckCircle, className: "bg-emerald-500/10 text-emerald-500 border-emerald-500/20" };
+      case "CLOSED":
+        return { label: "Closed", icon: CheckCircle, className: "bg-gray-500/10 text-gray-500 border-gray-500/20" };
       default:
         return { label: status, icon: Ticket, className: "bg-muted text-muted-foreground" };
     }
   };
+
+  const getPriorityConfig = (priority: string) => {
+    switch (priority) {
+      case "URGENT": return { label: "Urgent", className: "text-red-500" };
+      case "HIGH": return { label: "High", className: "text-orange-500" };
+      case "MEDIUM": return { label: "Medium", className: "text-amber-500" };
+      case "LOW": return { label: "Low", className: "text-muted-foreground" };
+      default: return { label: priority || "Medium", className: "text-muted-foreground" };
+    }
+  };
+
+  const canReply = ticket?.status !== "CLOSED";
 
   if (isLoading) {
     return (
@@ -84,7 +135,7 @@ export default function TicketDetailPage() {
   if (!ticket) return null;
 
   const statusConfig = getStatusConfig(ticket.status);
-  const StatusIcon = statusConfig.icon;
+  const priorityConfig = getPriorityConfig(ticket.priority);
 
   return (
     <div className="min-h-screen">
@@ -150,26 +201,33 @@ export default function TicketDetailPage() {
                     >
                       <div className={cn(
                         "absolute left-5 top-0 w-6 h-6 rounded-full flex items-center justify-center border-2 border-background z-10",
-                        msg.senderType === "USER" ? "bg-primary text-primary-foreground" : "bg-emerald-500 text-white"
+                        msg.senderType === "USER" ? "bg-primary text-primary-foreground" :
+                        msg.senderType === "AGENT" ? "bg-emerald-500 text-white" :
+                        "bg-muted text-muted-foreground"
                       )}>
-                        {msg.senderType === "USER" ? <User className="h-3 w-3" /> : <Shield className="h-3 w-3" />}
+                        {msg.senderType === "USER" ? <User className="h-3 w-3" /> :
+                         msg.senderType === "AGENT" ? <Shield className="h-3 w-3" /> :
+                         <Info className="h-3 w-3" />}
                       </div>
                       
                       <Card className="p-6 rounded-[24px] border-none shadow-xl shadow-primary/5 bg-card hover:shadow-primary/10 transition-shadow">
                         <div className="flex justify-between items-center mb-3">
                           <span className="font-black text-sm uppercase tracking-widest text-primary/60">
-                            {msg.senderType === "USER" ? "You" : "Support Team"}
+                            {msg.senderType === "USER" ? "You" :
+                             msg.senderType === "AGENT" ? "Support Agent" :
+                             "System"}
                           </span>
                           <span className="text-[10px] font-bold text-muted-foreground/50 uppercase tracking-widest">
                             {new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                           </span>
                         </div>
-                        <p className="text-muted-foreground leading-relaxed">
-                          {msg.content || msg.message}
+                        <p className="text-muted-foreground leading-relaxed whitespace-pre-wrap">
+                          {msg.content}
                         </p>
                       </Card>
                     </motion.div>
                   ))}
+                  <div ref={messagesEndRef} />
                 </div>
               ) : (
                 <Card className="p-12 text-center border-2 border-dashed border-muted-foreground/10 rounded-[32px] bg-card/50">
@@ -178,6 +236,58 @@ export default function TicketDetailPage() {
                   </div>
                   <h3 className="text-xl font-bold mb-2">Awaiting Response</h3>
                   <p className="text-muted-foreground">Our support team is reviewing your ticket and will get back to you shortly.</p>
+                </Card>
+              )}
+
+              {/* Reply Input */}
+              {canReply ? (
+                <Card className="p-6 rounded-[24px] border-none shadow-xl shadow-primary/5 bg-card">
+                  {isTicketResolved && (
+                    <div className="flex items-center gap-2 mb-4 px-4 py-2.5 bg-amber-500/10 rounded-xl text-amber-600 dark:text-amber-400 text-sm font-medium">
+                      <RotateCcw className="h-4 w-4" />
+                      This ticket is resolved. Sending a message will reopen it.
+                    </div>
+                  )}
+                  <div className="flex gap-3">
+                    <Textarea
+                      placeholder="Type your reply..."
+                      value={replyText}
+                      onChange={(e) => setReplyText(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" && !e.shiftKey) {
+                          e.preventDefault();
+                          handleSendReply();
+                        }
+                      }}
+                      className="min-h-[80px] rounded-2xl resize-none border-border/50 bg-muted/30 focus-visible:ring-primary/30"
+                      disabled={isSending}
+                    />
+                    <Button
+                      onClick={handleSendReply}
+                      disabled={!replyText.trim() || isSending}
+                      className="self-end h-12 w-12 rounded-2xl shrink-0"
+                      size="icon"
+                    >
+                      {isSending ? (
+                        <Loader2 className="h-5 w-5 animate-spin" />
+                      ) : (
+                        <Send className="h-5 w-5" />
+                      )}
+                    </Button>
+                  </div>
+                </Card>
+              ) : (
+                <Card className="p-6 rounded-[24px] border-2 border-dashed border-muted-foreground/10 bg-card/50 text-center">
+                  <p className="text-muted-foreground text-sm font-medium">
+                    This ticket is closed. Create a new ticket if you need further assistance.
+                  </p>
+                  <Button
+                    variant="outline"
+                    className="mt-4 rounded-xl"
+                    onClick={() => router.push("/support/tickets/new")}
+                  >
+                    Create New Ticket
+                  </Button>
                 </Card>
               )}
             </div>
@@ -189,7 +299,7 @@ export default function TicketDetailPage() {
               <div className="relative z-10 space-y-4">
                 <h3 className="text-2xl font-black tracking-tight">Need more help?</h3>
                 <p className="text-primary-foreground/80 leading-relaxed font-medium">
-                  If your issue is urgent, you can also use our real-time AI assistant "Alex" for immediate technical guidance.
+                  If your issue is urgent, you can also use our real-time AI assistant &quot;Alex&quot; for immediate technical guidance.
                 </p>
                 <Button 
                   onClick={() => window.dispatchEvent(new CustomEvent('open-alex-chat'))}
@@ -216,12 +326,20 @@ export default function TicketDetailPage() {
                 </div>
                 <div className="flex justify-between items-center">
                   <span className="text-sm font-bold text-muted-foreground">Priority</span>
-                  <span className="text-sm font-black text-primary uppercase tracking-widest">High</span>
+                  <span className={cn("text-sm font-black uppercase tracking-widest", priorityConfig.className)}>
+                    {priorityConfig.label}
+                  </span>
                 </div>
                 <div className="flex justify-between items-center">
                   <span className="text-sm font-bold text-muted-foreground">Category</span>
                   <span className="text-sm font-black text-primary uppercase tracking-widest">{ticket.category}</span>
                 </div>
+                {ticket.assignedAgent && (
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm font-bold text-muted-foreground">Assigned To</span>
+                    <span className="text-sm font-black text-primary">{ticket.assignedAgent.name}</span>
+                  </div>
+                )}
               </div>
             </Card>
           </div>
