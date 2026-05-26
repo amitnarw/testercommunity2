@@ -9,7 +9,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 import { connectSupportSocket } from "@/lib/supportSocket";
 import {
-  Clock, User, AlertCircle, Bot, Send, Power, MessageSquare, Users,
+  Clock, User, AlertCircle, Bot, Send, Power, MessageSquare, Users, Inbox,
 } from "lucide-react";
 
 interface PendingChat {
@@ -43,9 +43,11 @@ interface ActiveChat {
 }
 
 export function AgentDashboard() {
+  const [mobilePanel, setMobilePanel] = useState<"queue" | "chat" | "overview">("chat");
   const [queue, setQueue] = useState<PendingChat[]>([]);
   const [activeChats, setActiveChats] = useState<ActiveChat[]>([]);
   const [loading, setLoading] = useState(true);
+  const [showSkeleton, setShowSkeleton] = useState(true);
   const [agentOnline, setAgentOnline] = useState(false);
   const [activeChatId, setActiveChatId] = useState<number | null>(null);
   const [input, setInput] = useState("");
@@ -73,6 +75,7 @@ export function AgentDashboard() {
   const takeChat = useCallback((chatId: number) => {
     const s = connectSupportSocket();
     s.emit("agent:take_chat", { chatId });
+    setMobilePanel("chat");
   }, []);
 
   const closeChat = useCallback((chatId: number) => {
@@ -224,6 +227,12 @@ export function AgentDashboard() {
     };
   }, [agentOnline]);
 
+  // Ensure skeleton is visible for at least 500ms
+  useEffect(() => {
+    const timer = setTimeout(() => setShowSkeleton(false), 500);
+    return () => clearTimeout(timer);
+  }, []);
+
   useEffect(() => {
     if (activeChats.length > 0 && !activeChats.find((c) => c.id === activeChatId)) {
       setActiveChatId(activeChats[0].id);
@@ -253,12 +262,12 @@ export function AgentDashboard() {
 
   return (
     <div className="flex-1 w-full px-4 sm:px-6 py-6 max-w-full overflow-x-hidden">
-      <div className="mb-6 flex items-center justify-between">
+      <div className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h2 className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-slate-900 to-slate-700 dark:from-white dark:to-slate-400 bg-clip-text text-transparent leading-[unset] pb-1">
+          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold bg-gradient-to-r from-slate-900 to-slate-700 dark:from-white dark:to-slate-400 bg-clip-text text-transparent leading-[unset] pb-1">
             Live Support
           </h2>
-          <p className="text-muted-foreground">Manage incoming support chat requests in real-time.</p>
+          <p className="text-muted-foreground text-sm sm:text-base">Manage incoming support chat requests in real-time.</p>
         </div>
         <div className="flex items-center gap-3">
           <div className={cn(
@@ -278,9 +287,64 @@ export function AgentDashboard() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 h-[calc(100vh-280px)] min-h-[500px]">
+      <div className="flex gap-1 mb-4 p-1 bg-muted/50 rounded-xl lg:hidden">
+        <button
+          onClick={() => setMobilePanel("queue")}
+          className={cn(
+            "flex-1 flex items-center justify-center gap-1.5 py-2 px-3 rounded-lg text-xs font-medium transition-all",
+            mobilePanel === "queue"
+              ? "bg-background shadow-sm text-foreground"
+              : "text-muted-foreground hover:text-foreground"
+          )}
+        >
+          <Inbox className="h-3.5 w-3.5" />
+          Queue
+          {queue.length > 0 && (
+            <Badge variant="secondary" className="h-4 min-w-4 px-1 text-[10px]">
+              {queue.length}
+            </Badge>
+          )}
+        </button>
+        <button
+          onClick={() => setMobilePanel("chat")}
+          className={cn(
+            "flex-1 flex items-center justify-center gap-1.5 py-2 px-3 rounded-lg text-xs font-medium transition-all",
+            mobilePanel === "chat"
+              ? "bg-background shadow-sm text-foreground"
+              : "text-muted-foreground hover:text-foreground"
+          )}
+        >
+          <MessageSquare className="h-3.5 w-3.5" />
+          Chat
+          {activeChats.length > 0 && (
+            <Badge variant="secondary" className="h-4 min-w-4 px-1 text-[10px]">
+              {activeChats.length}
+            </Badge>
+          )}
+        </button>
+        <button
+          onClick={() => setMobilePanel("overview")}
+          className={cn(
+            "flex-1 flex items-center justify-center gap-1.5 py-2 px-3 rounded-lg text-xs font-medium transition-all",
+            mobilePanel === "overview"
+              ? "bg-background shadow-sm text-foreground"
+              : "text-muted-foreground hover:text-foreground"
+          )}
+        >
+          <Users className="h-3.5 w-3.5" />
+          Overview
+        </button>
+      </div>
+
+      <div className={cn(
+        "grid gap-6 grid-cols-1 h-[calc(100vh-340px)] min-h-[400px] lg:grid-cols-4 lg:h-[calc(100vh-280px)] lg:min-h-[500px]"
+      )}>
         {/* Queue Panel */}
-        <div className="lg:col-span-1 overflow-hidden flex flex-col">
+        <div className={cn(
+          "overflow-hidden flex flex-col",
+          mobilePanel === "queue" ? "flex" : "hidden",
+          "lg:col-span-1 lg:flex"
+        )}>
           <Card className="flex flex-col h-full border-border/50">
             <CardHeader className="pb-3 flex-shrink-0">
               <div className="flex items-center justify-between">
@@ -296,7 +360,7 @@ export function AgentDashboard() {
             <CardContent className="p-0 flex-1 overflow-hidden">
               <ScrollArea className="h-full">
                 <div className="space-y-1 px-3 pb-3">
-                  {loading ? (
+                  {(loading || showSkeleton) ? (
                     Array.from({ length: 3 }).map((_, i) => (
                       <div key={i} className="p-3 rounded-xl space-y-2">
                         <Skeleton className="h-4 w-24" />
@@ -355,9 +419,45 @@ export function AgentDashboard() {
         </div>
 
         {/* Chat Panel */}
-        <div className="lg:col-span-2 overflow-hidden flex flex-col">
+        <div className={cn(
+          "overflow-hidden flex flex-col",
+          mobilePanel === "chat" ? "flex" : "hidden",
+          "lg:col-span-2 lg:flex"
+        )}>
           <Card className="flex flex-col h-full border-border/50">
-            {!activeChat ? (
+            {(loading || showSkeleton) ? (
+              <>
+                <CardHeader className="pb-3 flex-shrink-0 border-b">
+                  <div className="flex items-center gap-2">
+                    <Skeleton className="h-8 w-8 rounded-full" />
+                    <div className="space-y-1.5">
+                      <Skeleton className="h-4 w-28" />
+                      <Skeleton className="h-3 w-36" />
+                    </div>
+                  </div>
+                </CardHeader>
+                <div className="flex-1 p-4 space-y-4">
+                  <div className="flex gap-2">
+                    <Skeleton className="h-7 w-7 rounded-full flex-shrink-0" />
+                    <Skeleton className="h-10 w-48 rounded-xl" />
+                  </div>
+                  <div className="flex gap-2 flex-row-reverse">
+                    <Skeleton className="h-7 w-7 rounded-full flex-shrink-0" />
+                    <Skeleton className="h-10 w-36 rounded-xl" />
+                  </div>
+                  <div className="flex gap-2">
+                    <Skeleton className="h-7 w-7 rounded-full flex-shrink-0" />
+                    <Skeleton className="h-14 w-56 rounded-xl" />
+                  </div>
+                </div>
+                <div className="p-2 sm:p-3 border-t flex-shrink-0">
+                  <div className="flex items-center gap-2">
+                    <Skeleton className="flex-1 h-10 rounded-xl" />
+                    <Skeleton className="h-9 w-9 rounded-xl" />
+                  </div>
+                </div>
+              </>
+            ) : !activeChat ? (
               <CardContent className="flex items-center justify-center h-full">
                 <div className="text-center">
                   <MessageSquare className="h-12 w-12 text-muted-foreground/30 mx-auto mb-3" />
@@ -369,19 +469,19 @@ export function AgentDashboard() {
               <>
                 <CardHeader className="pb-3 flex-shrink-0 border-b">
                   <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center">
+                    <div className="flex items-center gap-2 min-w-0">
+                      <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0">
                         <User className="h-4 w-4 text-primary" />
                       </div>
-                      <div>
-                        <p className="text-sm font-medium">{activeChat.userName}</p>
-                        <p className="text-xs text-muted-foreground">{activeChat.userEmail}</p>
+                      <div className="min-w-0">
+                        <p className="text-sm font-medium truncate">{activeChat.userName}</p>
+                        <p className="text-xs text-muted-foreground truncate">{activeChat.userEmail}</p>
                       </div>
                     </div>
                     <Button
                       variant="ghost"
                       size="sm"
-                      className="h-8 text-xs text-red-500 hover:text-red-600"
+                      className="h-8 text-xs text-red-500 hover:text-red-600 flex-shrink-0"
                       onClick={() => closeChat(activeChat.id)}
                     >
                       <Clock className="h-3 w-3 mr-1" /> Resolve
@@ -389,13 +489,13 @@ export function AgentDashboard() {
                   </div>
                 </CardHeader>
 
-                <div className="flex border-b">
+                <div className="flex border-b overflow-x-auto scrollbar-none">
                   {activeChats.map((chat) => (
                     <button
                       key={chat.id}
                       onClick={() => setActiveChatId(chat.id)}
                       className={cn(
-                        "px-3 py-2 text-xs font-medium border-b-2 transition-colors",
+                        "px-3 py-2 text-xs font-medium border-b-2 transition-colors whitespace-nowrap flex-shrink-0",
                         activeChatId === chat.id
                           ? "border-primary text-primary"
                           : "border-transparent text-muted-foreground hover:text-foreground"
@@ -406,8 +506,8 @@ export function AgentDashboard() {
                   ))}
                 </div>
 
-                <ScrollArea className="flex-1 p-4" ref={scrollRef}>
-                  <div className="space-y-4">
+                <ScrollArea className="flex-1 p-3 sm:p-4" ref={scrollRef}>
+                  <div className="space-y-3 sm:space-y-4">
                     {getMessages(activeChat.id).map((msg) => (
                       <div
                         key={msg.id}
@@ -417,23 +517,23 @@ export function AgentDashboard() {
                         )}
                       >
                         <div className={cn(
-                          "h-7 w-7 rounded-full flex items-center justify-center flex-shrink-0 border",
+                          "h-6 w-6 sm:h-7 sm:w-7 rounded-full flex items-center justify-center flex-shrink-0 border",
                           msg.senderType === "AGENT" ? "bg-primary/10 border-primary/20" : msg.senderType === "SYSTEM" ? "bg-muted border-dashed" : "bg-muted"
                         )}>
                           {msg.senderType === "AGENT" ? (
-                            <Bot className="h-3.5 w-3.5 text-primary" />
+                            <Bot className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-primary" />
                           ) : msg.senderType === "SYSTEM" ? (
-                            <AlertCircle className="h-3.5 w-3.5 text-muted-foreground" />
+                            <AlertCircle className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-muted-foreground" />
                           ) : (
-                            <User className="h-3.5 w-3.5 text-muted-foreground" />
+                            <User className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-muted-foreground" />
                           )}
                         </div>
                         <div className={cn(
-                          "flex flex-col max-w-[75%] gap-1",
+                          "flex flex-col max-w-[85%] sm:max-w-[75%] gap-1",
                           msg.senderType === "AGENT" ? "items-end" : "items-start"
                         )}>
                           <div className={cn(
-                            "px-3 py-2 rounded-xl text-sm leading-relaxed",
+                            "px-3 py-2 rounded-xl text-sm leading-relaxed break-words",
                             msg.senderType === "AGENT"
                               ? "bg-primary text-primary-foreground"
                               : msg.senderType === "SYSTEM"
@@ -456,11 +556,11 @@ export function AgentDashboard() {
                 </ScrollArea>
 
                 {userTyping && activeChat && (
-                  <div className="flex gap-3 animate-in fade-in duration-300 px-4 py-2">
-                    <div className="h-7 w-7 rounded-full bg-muted flex items-center justify-center border flex-shrink-0">
-                      <User className="h-3.5 w-3.5 text-muted-foreground" />
+                  <div className="flex gap-3 animate-in fade-in duration-300 px-3 sm:px-4 py-2">
+                    <div className="h-6 w-6 sm:h-7 sm:w-7 rounded-full bg-muted flex items-center justify-center border flex-shrink-0">
+                      <User className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-muted-foreground" />
                     </div>
-                    <div className="bg-muted/30 px-4 py-3 rounded-2xl rounded-tl-none border">
+                    <div className="bg-muted/30 px-3 sm:px-4 py-2.5 sm:py-3 rounded-2xl rounded-tl-none border">
                       <div className="flex gap-1">
                         <span className="w-1.5 h-1.5 rounded-full bg-primary/40 animate-bounce [animation-delay:-0.3s]" />
                         <span className="w-1.5 h-1.5 rounded-full bg-primary/40 animate-bounce [animation-delay:-0.15s]" />
@@ -470,7 +570,7 @@ export function AgentDashboard() {
                   </div>
                 )}
 
-                <div className="p-3 border-t flex-shrink-0">
+                <div className="p-2 sm:p-3 border-t flex-shrink-0">
                   <form
                     onSubmit={(e) => { e.preventDefault(); handleSend(); }}
                     className="flex items-center gap-2"
@@ -479,9 +579,9 @@ export function AgentDashboard() {
                       value={input}
                       onChange={(e) => { setInput(e.target.value); emitAgentTyping(); }}
                       placeholder="Type your reply..."
-                      className="flex-1 bg-muted/50 border-none focus:ring-1 focus:ring-primary/30 rounded-xl px-3 py-2 text-sm outline-none transition-all"
+                      className="flex-1 bg-muted/50 border-none focus:ring-1 focus:ring-primary/30 rounded-xl px-3 py-2 text-sm outline-none transition-all min-w-0"
                     />
-                    <Button type="submit" size="icon" disabled={!input.trim()} className="rounded-xl h-9 w-9">
+                    <Button type="submit" size="icon" disabled={!input.trim()} className="rounded-xl h-9 w-9 flex-shrink-0">
                       <Send className="h-4 w-4" />
                     </Button>
                   </form>
@@ -492,7 +592,11 @@ export function AgentDashboard() {
         </div>
 
         {/* Stats Panel */}
-        <div className="lg:col-span-1 overflow-hidden flex flex-col">
+        <div className={cn(
+          "overflow-hidden flex flex-col",
+          mobilePanel === "overview" ? "flex" : "hidden",
+          "lg:col-span-1 lg:flex"
+        )}>
           <Card className="flex flex-col h-full border-border/50">
             <CardHeader className="pb-3 flex-shrink-0">
               <CardTitle className="text-sm flex items-center gap-2">
@@ -501,30 +605,55 @@ export function AgentDashboard() {
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="grid grid-cols-2 gap-3">
-                <div className="p-3 rounded-xl bg-secondary/20 text-center">
-                  <MessageSquare className="h-4 w-4 text-amber-500 mx-auto mb-1" />
-                  <p className="text-lg font-bold">{queue.length}</p>
-                  <p className="text-[10px] text-muted-foreground">In Queue</p>
-                </div>
-                <div className="p-3 rounded-xl bg-secondary/20 text-center">
-                  <Clock className="h-4 w-4 text-blue-500 mx-auto mb-1" />
-                  <p className="text-lg font-bold">{activeChats.length}</p>
-                  <p className="text-[10px] text-muted-foreground">Active</p>
-                </div>
-              </div>
+              {(loading || showSkeleton) ? (
+                <>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="p-3 rounded-xl bg-secondary/20 text-center space-y-2">
+                      <Skeleton className="h-4 w-4 mx-auto rounded" />
+                      <Skeleton className="h-6 w-10 mx-auto" />
+                      <Skeleton className="h-3 w-12 mx-auto" />
+                    </div>
+                    <div className="p-3 rounded-xl bg-secondary/20 text-center space-y-2">
+                      <Skeleton className="h-4 w-4 mx-auto rounded" />
+                      <Skeleton className="h-6 w-10 mx-auto" />
+                      <Skeleton className="h-3 w-12 mx-auto" />
+                    </div>
+                  </div>
+                  <div className="pt-2 border-t border-border/50 space-y-2">
+                    <Skeleton className="h-3 w-20" />
+                    <Skeleton className="h-3 w-full" />
+                    <Skeleton className="h-3 w-full" />
+                    <Skeleton className="h-3 w-3/4" />
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div className="grid grid-cols-2 gap-3">
+                    <div className="p-3 rounded-xl bg-secondary/20 text-center">
+                      <MessageSquare className="h-4 w-4 text-amber-500 mx-auto mb-1" />
+                      <p className="text-lg font-bold">{queue.length}</p>
+                      <p className="text-[10px] text-muted-foreground">In Queue</p>
+                    </div>
+                    <div className="p-3 rounded-xl bg-secondary/20 text-center">
+                      <Clock className="h-4 w-4 text-blue-500 mx-auto mb-1" />
+                      <p className="text-lg font-bold">{activeChats.length}</p>
+                      <p className="text-[10px] text-muted-foreground">Active</p>
+                    </div>
+                  </div>
 
-              <div className="pt-2 border-t border-border/50">
-                <p className="text-[10px] text-muted-foreground uppercase tracking-wider font-medium mb-2">
-                  Quick Tips
-                </p>
-                <ul className="space-y-1 text-xs text-muted-foreground/70">
-                  <li>• Click Take to accept a chat from the queue</li>
-                  <li>• Type & press Enter to reply</li>
-                  <li>• Click Resolve to end a chat</li>
-                  <li>• Tabs let you switch between active chats</li>
-                </ul>
-              </div>
+                  <div className="pt-2 border-t border-border/50">
+                    <p className="text-[10px] text-muted-foreground uppercase tracking-wider font-medium mb-2">
+                      Quick Tips
+                    </p>
+                    <ul className="space-y-1 text-xs text-muted-foreground/70">
+                      <li>• Click Take to accept a chat from the queue</li>
+                      <li>• Type & press Enter to reply</li>
+                      <li>• Click Resolve to end a chat</li>
+                      <li>• Tabs let you switch between active chats</li>
+                    </ul>
+                  </div>
+                </>
+              )}
             </CardContent>
           </Card>
         </div>

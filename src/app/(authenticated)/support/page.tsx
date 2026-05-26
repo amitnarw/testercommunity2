@@ -103,7 +103,7 @@ export default function SupportPage() {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
             <div className="lg:col-span-2 space-y-8">
               {/* Specialized Tracks - Bento Grid */}
               <div className="grid grid-cols-2 gap-2 sm:gap-6">
@@ -184,7 +184,7 @@ export default function SupportPage() {
             </Card>
 
             {/* AI Chat Card - Featured */}
-            <div className="md:col-span-3 group">
+            <div className="lg:col-span-3 group">
               <Card className="h-full relative overflow-hidden border-border/50 bg-gradient-to-br from-secondary/50 to-primary/5 hover:shadow-2xl hover:shadow-primary/5 transition-all duration-500 hover:-translate-y-1 rounded-3xl">
                 <div className="absolute top-0 right-0 w-96 h-96 bg-primary/10 blur-[100px] rounded-full group-hover:bg-primary/20 transition-colors duration-500" />
 

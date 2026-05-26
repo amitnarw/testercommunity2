@@ -38,6 +38,30 @@ function TabSkeleton() {
   );
 }
 
+function LiveChatSkeleton() {
+  return (
+    <div className="flex-1 w-full px-4 sm:px-6 py-6 max-w-full overflow-x-hidden">
+      <div className="mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div className="space-y-2">
+          <Skeleton className="h-8 w-48" />
+          <Skeleton className="h-4 w-72" />
+        </div>
+        <Skeleton className="h-8 w-28" />
+      </div>
+      <div className="flex gap-1 mb-4 p-1 bg-muted/50 rounded-xl lg:hidden">
+        <Skeleton className="h-9 flex-1 rounded-lg" />
+        <Skeleton className="h-9 flex-1 rounded-lg" />
+        <Skeleton className="h-9 flex-1 rounded-lg" />
+      </div>
+      <div className="grid gap-6 grid-cols-1 h-[calc(100vh-340px)] min-h-[400px] lg:grid-cols-4 lg:h-[calc(100vh-280px)] lg:min-h-[500px]">
+        <Skeleton className="h-full w-full rounded-xl lg:col-span-1" />
+        <Skeleton className="h-full w-full rounded-xl lg:col-span-2" />
+        <Skeleton className="h-full w-full rounded-xl lg:col-span-1" />
+      </div>
+    </div>
+  );
+}
+
 export default function SupportLayout() {
   const pathname = usePathname();
   const [activeTab, setActiveTab] = useState(() => getTabFromPathname(pathname));
@@ -78,7 +102,7 @@ export default function SupportLayout() {
         </Suspense>
       </div>
       <div style={{ display: activeTab === "live-chat" ? "contents" : "none" }}>
-        <Suspense fallback={<TabSkeleton />}>
+        <Suspense fallback={<LiveChatSkeleton />}>
           <LiveChatContent />
         </Suspense>
       </div>
