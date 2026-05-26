@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport } from "ai";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Send, User, Bot, Ticket, HelpCircle, Headphones, Loader2, AlertCircle, Power } from "lucide-react";
+import { X, Send, User, Bot, Ticket, HelpCircle, Headphones, Loader2, AlertCircle, Power, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import ReactMarkdown from "react-markdown";
@@ -14,10 +14,12 @@ import { cn } from "@/lib/utils";
 import { usePathname } from "next/navigation";
 import { TransitionLink } from "@/components/transition-link";
 import { useSupportChat } from "@/hooks/useSupportChat";
+import { useToast } from "@/hooks/use-toast";
 
 export function SupportChat() {
   const pathname = usePathname();
   const router = useRouter();
+  const { toast } = useToast();
   const [windowWidth, setWindowWidth] = useState(typeof window !== "undefined" ? window.innerWidth : 1200);
   const [localInput, setLocalInput] = useState("");
   const [humanInput, setHumanInput] = useState("");
@@ -46,9 +48,18 @@ export function SupportChat() {
     ticketSubmitted,
     errorMessage, clearError, aiError,
     requestHumanChat, handleEndChat, handleBackToAlex,
-    chooseAlex, openOfflineOptions,
+    chooseAlex, openOfflineOptions, refreshAgentStatus, refreshing,
     isOpen, setIsOpen,
   } = useSupportChat(chat);
+
+  const handleRefresh = () => {
+    toast({
+      title: "Checking availability...",
+      description: "Looking for available support agents.",
+      duration: 2000,
+    });
+    refreshAgentStatus();
+  };
 
   const getTextContent = (m: any): string => {
     let text = "";
@@ -190,6 +201,11 @@ export function SupportChat() {
                   {(chatMode === "AI" || chatMode === "HUMAN" || chatMode === "WAITING") && (
                     <Button variant="ghost" size="icon" onClick={handleEndChat} title="End chat" className="h-8 w-8 rounded-full hover:bg-white/10 text-primary-foreground">
                       <Power className="h-4 w-4" />
+                    </Button>
+                  )}
+                  {(chatMode !== "AI" && chatMode !== "HUMAN") && (
+                    <Button variant="ghost" size="icon" onClick={handleRefresh} disabled={refreshing} title="Refresh availability" className="h-8 w-8 rounded-full hover:bg-white/10 text-primary-foreground">
+                      <RefreshCw className={cn("h-4 w-4", refreshing && "animate-spin")} />
                     </Button>
                   )}
                   <Button variant="ghost" size="icon" onClick={() => setIsOpen(false)} className="h-8 w-8 rounded-full hover:bg-white/10 text-primary-foreground">
@@ -343,6 +359,14 @@ export function SupportChat() {
                           <HelpCircle className="h-3 w-3" />
                           Help
                         </TransitionLink>
+                        <button
+                          onClick={handleRefresh}
+                          disabled={refreshing}
+                          className="text-[10px] text-muted-foreground hover:text-primary flex items-center gap-1 transition-colors"
+                        >
+                          <RefreshCw className={cn("h-3 w-3", refreshing && "animate-spin")} />
+                          {refreshing ? "Checking..." : "Check availability"}
+                        </button>
                       </div>
                     </div>
                     <p className="mt-2 text-[9px] text-muted-foreground/60 text-center leading-tight">

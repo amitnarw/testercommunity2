@@ -35,6 +35,7 @@ export function useSupportChat(chat: SupportChatAI) {
   const [isWaitingForGreeting, setIsWaitingForGreeting] = useState(false);
   const [displayedMessages, setDisplayedMessages] = useState<any[]>([]);
   const [isOpen, setIsOpen] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
 
   const { data: session } = authClient.useSession();
 
@@ -232,12 +233,16 @@ export function useSupportChat(chat: SupportChatAI) {
       chat_position_updated: on("chat:position_updated", (data: { position: number }) => {
         setQueuePosition(data.position);
       }),
-      agent_status_changed: on("agent:status_changed", () => {
-        api.get(API_ROUTES.SUPPORT + "/agent-status")
-          .then((r) => {
-            setAgentsOnline(r?.data?.data?.online || false);
-          })
-          .catch(() => setAgentsOnline(false));
+      agent_status_changed: on("agent:status_changed", (data?: { online?: boolean }) => {
+        if (data && typeof data.online === "boolean") {
+          setAgentsOnline(data.online);
+        } else {
+          api.get(API_ROUTES.SUPPORT + "/agent-status")
+            .then((r) => {
+              setAgentsOnline(r?.data?.data?.online || false);
+            })
+            .catch(() => setAgentsOnline(false));
+        }
       }),
     };
 
@@ -335,6 +340,13 @@ export function useSupportChat(chat: SupportChatAI) {
       setChatMode("CHECKING");
     }
   }, [isOpen, hasCheckedStatus, userChoseAlex, ticketSubmitted]);
+
+  // -- Reset hasCheckedStatus when chat is closed so it re-checks on next open --
+  useEffect(() => {
+    if (!isOpen) {
+      setHasCheckedStatus(false);
+    }
+  }, [isOpen]);
 
   // -- CHECKING flow: check agent status --
   useEffect(() => {
@@ -439,6 +451,21 @@ export function useSupportChat(chat: SupportChatAI) {
     setChatMode("AI");
   }, [setMessages]);
 
+  const refreshAgentStatus = useCallback(() => {
+    setRefreshing(true);
+    api.get(API_ROUTES.SUPPORT + "/agent-status")
+      .then((r) => {
+        const online = r?.data?.data?.online || false;
+        setAgentsOnline(online);
+        if (online && chatMode === "OFFLINE_OPTIONS") {
+          requestHumanChat();
+          setChatMode("WAITING");
+        }
+      })
+      .catch(() => setAgentsOnline(false))
+      .finally(() => setRefreshing(false));
+  }, [chatMode, requestHumanChat]);
+
   const openOfflineOptions = useCallback(() => {
     setChatMode("OFFLINE_OPTIONS");
   }, []);
@@ -474,6 +501,8 @@ export function useSupportChat(chat: SupportChatAI) {
 
     // Actions
     requestHumanChat,
+    refreshAgentStatus,
+    refreshing,
     handleEndChat,
     handleBackToAlex,
     chooseAlex,
