@@ -175,7 +175,7 @@ export default function TicketDetailPage() {
                 </div>
 
                 <div className="pt-6 border-t border-border/50">
-                  <p className="text-lg text-muted-foreground leading-relaxed whitespace-pre-wrap">
+                  <p className="text-lg text-muted-foreground leading-relaxed whitespace-pre-wrap break-all">
                     {ticket.description}
                   </p>
                 </div>
@@ -221,7 +221,7 @@ export default function TicketDetailPage() {
                             {new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                           </span>
                         </div>
-                        <p className="text-muted-foreground leading-relaxed whitespace-pre-wrap">
+                        <p className="text-muted-foreground leading-relaxed whitespace-pre-wrap break-all">
                           {msg.content}
                         </p>
                       </Card>

@@ -271,9 +271,9 @@ export function TicketsTable() {
                          msg.senderType === "SYSTEM" ? <Headphones className="h-4 w-4 text-muted-foreground" /> :
                          <User className="h-4 w-4 text-muted-foreground" />}
                       </div>
-                      <div className={cn("flex flex-col max-w-[75%] gap-1", msg.senderType === "USER" ? "items-end" : "items-start")}>
+                      <div className={cn("flex flex-col max-w-[75%] min-w-0 gap-1", msg.senderType === "USER" ? "items-end" : "items-start")}>
                         <div className={cn(
-                          "px-4 py-2.5 rounded-2xl text-sm leading-relaxed whitespace-pre-wrap",
+                          "px-4 py-2.5 rounded-2xl text-sm leading-relaxed whitespace-pre-wrap break-all",
                           msg.senderType === "USER" ? "bg-primary text-primary-foreground rounded-tr-none" :
                           msg.senderType === "SYSTEM" ? "bg-muted/30 border border-dashed rounded-tl-none text-muted-foreground italic text-xs" :
                           "bg-card border rounded-tl-none"

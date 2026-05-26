@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useChat } from "@ai-sdk/react";
 import { DefaultChatTransport } from "ai";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Send, User, Bot, Ticket, HelpCircle, Headphones, Loader2, AlertCircle, Power, RefreshCw } from "lucide-react";
+import { X, Send, User, Bot, Ticket, HelpCircle, Headphones, Loader2, AlertCircle, Power, RefreshCw, CheckCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import ReactMarkdown from "react-markdown";
@@ -44,7 +44,8 @@ export function SupportChat() {
     chatMode, agentsOnline,
     displayedMessages, isLoading, isWaitingForGreeting, sendAiMessage,
     humanMessages, agentName, agentTyping, sendingMessage, queuePosition,
-    sendHumanMessage, emitHumanTyping,
+    sendHumanMessage, emitHumanTyping, emitHumanStopTyping,
+    startNewChat,
     ticketSubmitted,
     errorMessage, clearError, aiError,
     requestHumanChat, handleEndChat, handleBackToAlex,
@@ -235,10 +236,10 @@ export function SupportChat() {
                                 <User className="h-4 w-4 text-muted-foreground" />
                               )}
                             </div>
-                            <div className={cn("flex flex-col max-w-[80%] gap-1", m.role === "user" ? "items-end" : "items-start")}>
+                            <div className={cn("flex flex-col max-w-[80%] min-w-0 gap-1", m.role === "user" ? "items-end" : "items-start")}>
                               {textContent && (
                                 <div className={cn(
-                                  "px-4 py-2.5 rounded-2xl text-sm shadow-sm leading-relaxed",
+                              "px-4 py-2.5 rounded-2xl text-sm shadow-sm leading-relaxed break-all",
                                   m.role === "user"
                                     ? "bg-primary text-primary-foreground rounded-tr-none"
                                     : "bg-card border rounded-tl-none"
@@ -444,6 +445,31 @@ export function SupportChat() {
                 </div>
               )}
 
+              {/* RESOLVED Mode */}
+              {chatMode === "RESOLVED" && (
+                <div className="flex-1 flex flex-col items-center justify-center p-8 bg-background/50 space-y-6">
+                  <div className="h-16 w-16 rounded-full bg-emerald-500/10 flex items-center justify-center">
+                    <CheckCircle className="h-8 w-8 text-emerald-500" />
+                  </div>
+                  <div className="text-center space-y-2">
+                    <h3 className="font-bold text-lg">Chat Resolved</h3>
+                    <p className="text-sm text-muted-foreground max-w-xs">
+                      Your conversation has been resolved. Thank you for contacting support!
+                    </p>
+                  </div>
+                  <div className="flex flex-col gap-3 w-full max-w-xs">
+                    <Button onClick={startNewChat} className="rounded-2xl h-12 font-semibold w-full shadow-lg">
+                      <Headphones className="h-4 w-4 mr-2" />
+                      Start New Chat
+                    </Button>
+                    <Button variant="outline" onClick={chooseAlex} className="rounded-2xl h-12 font-semibold w-full">
+                      <Bot className="h-4 w-4 mr-2" />
+                      Chat with Alex
+                    </Button>
+                  </div>
+                </div>
+              )}
+
               {/* HUMAN Mode */}
               {chatMode === "HUMAN" && (
                 <>
@@ -463,9 +489,9 @@ export function SupportChat() {
                               <User className="h-4 w-4 text-muted-foreground" />
                             )}
                           </div>
-                          <div className={cn("flex flex-col max-w-[80%] gap-1", m.senderType === "USER" ? "items-end" : "items-start")}>
+                          <div className={cn("flex flex-col max-w-[80%] min-w-0 gap-1", m.senderType === "USER" ? "items-end" : "items-start")}>
                             <div className={cn(
-                              "px-4 py-2.5 rounded-2xl text-sm shadow-sm leading-relaxed",
+                              "px-4 py-2.5 rounded-2xl text-sm shadow-sm leading-relaxed break-all",
                               m.senderType === "USER"
                                 ? "bg-primary text-primary-foreground rounded-tr-none"
                                 : m.senderType === "SYSTEM"
@@ -513,6 +539,7 @@ export function SupportChat() {
                           setHumanInput(e.target.value);
                           emitHumanTyping();
                         }}
+                        onBlur={() => { if (!humanInput.trim()) emitHumanStopTyping(); }}
                         placeholder="Type your message..."
                         autoFocus
                         className="flex-1 bg-muted/50 border-none focus:ring-1 focus:ring-primary/30 rounded-xl px-4 py-2.5 text-sm outline-none transition-all"
