@@ -6,7 +6,7 @@ import api from "@/lib/axios";
 import { connectSupportSocket, disconnectSupportSocket, getSupportSocket } from "@/lib/supportSocket";
 import { authClient } from "@/lib/auth-client";
 
-export type ChatMode = "AI" | "WAITING" | "HUMAN" | "OFFLINE_OPTIONS" | "CHECKING";
+export type ChatMode = "AI" | "WAITING" | "HUMAN" | "OFFLINE_OPTIONS" | "CHECKING" | "RESOLVED";
 
 export interface SupportChatAI {
   messages: any[];
@@ -36,6 +36,7 @@ export function useSupportChat(chat: SupportChatAI) {
   const [displayedMessages, setDisplayedMessages] = useState<any[]>([]);
   const [isOpen, setIsOpen] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
+  const [closeReason, setCloseReason] = useState<string | null>(null);
 
   const { data: session } = authClient.useSession();
 
@@ -209,18 +210,30 @@ export function useSupportChat(chat: SupportChatAI) {
         });
       }),
       chat_closed: on("chat:closed", (data: { chatId: number; reason?: string }) => {
+        const reason = data?.reason || "";
+        const isResolved = reason === "Resolved" || reason === "Resolved by support agent";
+        const isAgentGone = reason === "Agent disconnected" || reason === "Agent went offline";
+
+        setCloseReason(reason);
         setHumanMessages((prev) => [...prev, {
           id: "closed",
           senderType: "SYSTEM",
           senderName: "System",
-          message: data?.reason === "Agent disconnected" || data?.reason === "Agent went offline"
+          message: isResolved
+            ? "Your chat has been resolved. Thank you for contacting support!"
+            : isAgentGone
             ? "The support agent is no longer available. You can submit a ticket or chat with Alex."
             : "This chat has been closed.",
           createdAt: new Date().toISOString(),
         }]);
         setHumanChatId(null);
         setAgentName("");
-        setChatMode("OFFLINE_OPTIONS");
+        setAgentTyping(false);
+        if (typingTimerRef.current) {
+          clearTimeout(typingTimerRef.current);
+          typingTimerRef.current = null;
+        }
+        setChatMode(isResolved ? "RESOLVED" : "OFFLINE_OPTIONS");
       }),
       chat_error: on("chat:error", (data: { message?: string }) => {
         showError(data?.message || "Something went wrong. Please try again.");
@@ -229,6 +242,13 @@ export function useSupportChat(chat: SupportChatAI) {
         setAgentTyping(true);
         if (typingTimerRef.current) clearTimeout(typingTimerRef.current);
         typingTimerRef.current = setTimeout(() => setAgentTyping(false), 3000);
+      }),
+      agent_stop_typing: on("agent:stop_typing", () => {
+        setAgentTyping(false);
+        if (typingTimerRef.current) {
+          clearTimeout(typingTimerRef.current);
+          typingTimerRef.current = null;
+        }
       }),
       chat_position_updated: on("chat:position_updated", (data: { position: number }) => {
         setQueuePosition(data.position);
@@ -270,6 +290,7 @@ export function useSupportChat(chat: SupportChatAI) {
       s.off("chat:closed", h.chat_closed);
       s.off("chat:error", h.chat_error);
       s.off("agent:typing", h.agent_typing);
+      s.off("agent:stop_typing", h.agent_stop_typing);
       s.off("chat:position_updated", h.chat_position_updated);
       s.off("agent:status_changed", h.agent_status_changed);
       socketInitialized.current = false;
@@ -371,6 +392,27 @@ export function useSupportChat(chat: SupportChatAI) {
       });
   }, [chatMode, requestHumanChat]);
 
+  // -- Typing indicator --
+  const emitHumanTyping = useCallback(() => {
+    if (!humanChatId) return;
+    const now = Date.now();
+    if (now - lastTypingEmitRef.current > 2000) {
+      lastTypingEmitRef.current = now;
+      const s = connectSupportSocket();
+      if (s.connected) {
+        s.emit("chat:typing", { chatId: humanChatId });
+      }
+    }
+  }, [humanChatId]);
+
+  const emitHumanStopTyping = useCallback(() => {
+    if (!humanChatId) return;
+    const s = connectSupportSocket();
+    if (s.connected) {
+      s.emit("chat:stop_typing", { chatId: humanChatId });
+    }
+  }, [humanChatId]);
+
   // -- Human message sending --
   const sendHumanMessage = useCallback((message: string) => {
     if (!humanChatId) return;
@@ -390,21 +432,9 @@ export function useSupportChat(chat: SupportChatAI) {
       _optimistic: true,
     }]);
     setAgentTyping(false);
+    emitHumanStopTyping();
     setTimeout(() => setSendingMessage(false), 800);
-  }, [humanChatId, showError]);
-
-  // -- Typing indicator --
-  const emitHumanTyping = useCallback(() => {
-    if (!humanChatId) return;
-    const now = Date.now();
-    if (now - lastTypingEmitRef.current > 2000) {
-      lastTypingEmitRef.current = now;
-      const s = connectSupportSocket();
-      if (s.connected) {
-        s.emit("chat:typing", { chatId: humanChatId });
-      }
-    }
-  }, [humanChatId]);
+  }, [humanChatId, showError, emitHumanStopTyping]);
 
   // -- Back to Alex --
   const handleBackToAlex = useCallback(() => {
@@ -470,6 +500,20 @@ export function useSupportChat(chat: SupportChatAI) {
     setChatMode("OFFLINE_OPTIONS");
   }, []);
 
+  const startNewChat = useCallback(() => {
+    setHumanMessages([]);
+    setHumanChatId(null);
+    setAgentName("");
+    setQueuePosition(0);
+    setCloseReason(null);
+    setAgentTyping(false);
+    if (typingTimerRef.current) {
+      clearTimeout(typingTimerRef.current);
+      typingTimerRef.current = null;
+    }
+    setChatMode("CHECKING");
+  }, []);
+
   return {
     // Mode
     chatMode,
@@ -490,6 +534,9 @@ export function useSupportChat(chat: SupportChatAI) {
     queuePosition,
     sendHumanMessage,
     emitHumanTyping,
+    emitHumanStopTyping,
+    closeReason,
+    startNewChat,
 
     // Ticket
     ticketSubmitted,

@@ -122,6 +122,7 @@ export function AgentDashboard() {
 
     setInput("");
     setUserTyping(false);
+    emitAgentStopTyping();
   };
 
   const emitAgentTyping = useCallback(() => {
@@ -133,6 +134,14 @@ export function AgentDashboard() {
       if (s.connected) {
         s.emit("agent:typing", { chatId: activeChatId });
       }
+    }
+  }, [activeChatId]);
+
+  const emitAgentStopTyping = useCallback(() => {
+    if (!activeChatId) return;
+    const s = connectSupportSocket();
+    if (s.connected) {
+      s.emit("agent:stop_typing", { chatId: activeChatId });
     }
   }, [activeChatId]);
 
@@ -191,6 +200,13 @@ export function AgentDashboard() {
         if (typingTimerRef.current) clearTimeout(typingTimerRef.current);
         typingTimerRef.current = setTimeout(() => setUserTyping(false), 3000);
       }),
+      chat_stop_typing: on("chat:stop_typing", () => {
+        setUserTyping(false);
+        if (typingTimerRef.current) {
+          clearTimeout(typingTimerRef.current);
+          typingTimerRef.current = null;
+        }
+      }),
       agent_status: on("agent:status", (data: { online: boolean }) => {
         setAgentOnline(data.online);
       }),
@@ -207,6 +223,7 @@ export function AgentDashboard() {
       s.off("chat:message", h.chat_message);
       s.off("chat:closed", h.chat_closed);
       s.off("chat:typing", h.chat_typing);
+      s.off("chat:stop_typing", h.chat_stop_typing);
       s.off("agent:status", h.agent_status);
     };
   }, []);
@@ -512,33 +529,33 @@ export function AgentDashboard() {
                       <div
                         key={msg.id}
                         className={cn(
-                          "flex gap-2",
+                          "flex gap-3",
                           msg.senderType === "AGENT" ? "flex-row-reverse" : "flex-row"
                         )}
                       >
                         <div className={cn(
-                          "h-6 w-6 sm:h-7 sm:w-7 rounded-full flex items-center justify-center flex-shrink-0 border",
+                          "h-8 w-8 rounded-full flex items-center justify-center flex-shrink-0 border",
                           msg.senderType === "AGENT" ? "bg-primary/10 border-primary/20" : msg.senderType === "SYSTEM" ? "bg-muted border-dashed" : "bg-muted"
                         )}>
                           {msg.senderType === "AGENT" ? (
-                            <Bot className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-primary" />
+                            <Bot className="h-4 w-4 text-primary" />
                           ) : msg.senderType === "SYSTEM" ? (
-                            <AlertCircle className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-muted-foreground" />
+                            <AlertCircle className="h-4 w-4 text-muted-foreground" />
                           ) : (
-                            <User className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-muted-foreground" />
+                            <User className="h-4 w-4 text-muted-foreground" />
                           )}
                         </div>
                         <div className={cn(
-                          "flex flex-col max-w-[85%] sm:max-w-[75%] gap-1",
+                          "flex flex-col max-w-[80%] min-w-0 gap-1",
                           msg.senderType === "AGENT" ? "items-end" : "items-start"
                         )}>
                           <div className={cn(
-                            "px-3 py-2 rounded-xl text-sm leading-relaxed break-words",
+                            "px-4 py-2.5 rounded-2xl text-sm shadow-sm leading-relaxed break-all",
                             msg.senderType === "AGENT"
-                              ? "bg-primary text-primary-foreground"
+                              ? "bg-primary text-primary-foreground rounded-tr-none"
                               : msg.senderType === "SYSTEM"
-                              ? "bg-muted/30 border border-dashed text-muted-foreground italic text-xs"
-                              : "bg-card border"
+                              ? "bg-muted/30 border border-dashed rounded-tl-none text-muted-foreground italic text-xs"
+                              : "bg-card border rounded-tl-none"
                           )}>
                             {msg.isAi ? (
                               <span className="text-xs italic opacity-70">[AI Context] {msg.message}</span>
@@ -556,11 +573,11 @@ export function AgentDashboard() {
                 </ScrollArea>
 
                 {userTyping && activeChat && (
-                  <div className="flex gap-3 animate-in fade-in duration-300 px-3 sm:px-4 py-2">
-                    <div className="h-6 w-6 sm:h-7 sm:w-7 rounded-full bg-muted flex items-center justify-center border flex-shrink-0">
-                      <User className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-muted-foreground" />
+                  <div className="flex gap-3 animate-in fade-in duration-300 px-4 py-2">
+                    <div className="h-8 w-8 rounded-full bg-muted flex items-center justify-center border flex-shrink-0">
+                      <User className="h-4 w-4 text-muted-foreground" />
                     </div>
-                    <div className="bg-muted/30 px-3 sm:px-4 py-2.5 sm:py-3 rounded-2xl rounded-tl-none border">
+                    <div className="bg-muted/30 px-4 py-3 rounded-2xl rounded-tl-none border">
                       <div className="flex gap-1">
                         <span className="w-1.5 h-1.5 rounded-full bg-primary/40 animate-bounce [animation-delay:-0.3s]" />
                         <span className="w-1.5 h-1.5 rounded-full bg-primary/40 animate-bounce [animation-delay:-0.15s]" />
@@ -578,6 +595,7 @@ export function AgentDashboard() {
                     <input
                       value={input}
                       onChange={(e) => { setInput(e.target.value); emitAgentTyping(); }}
+                      onBlur={() => { if (!input.trim()) emitAgentStopTyping(); }}
                       placeholder="Type your reply..."
                       className="flex-1 bg-muted/50 border-none focus:ring-1 focus:ring-primary/30 rounded-xl px-3 py-2 text-sm outline-none transition-all min-w-0"
                     />
