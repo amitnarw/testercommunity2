@@ -29,7 +29,7 @@ export function CommunityHero() {
             className="dark:bg-black text-[10px] sm:text-xs bg-white text-black dark:text-white flex items-center space-x-2"
           >
             <Coins className="w-4 h-4 mr-2 text-primary" />
-            <span>Built for the Community, By the Community</span>
+            <span>Test Apps for Free — No Credit Card Needed</span>
           </HoverBorderGradient>
 
           <h1 className="text-[1.85rem] sm:text-[2.75rem] md:text-[3.5rem] lg:text-[4.25rem] font-heading leading-[1.2] md:leading-[1.1] tracking-tight font-bold mb-5 sm:mb-8 text-center mx-auto max-w-[900px]">
@@ -42,7 +42,7 @@ export function CommunityHero() {
 
           <p className="text-sm sm:text-base md:text-lg font-body max-w-xs sm:max-w-md md:max-w-lg lg:max-w-[700px] mx-auto mb-8 text-muted-foreground">
             Join a reciprocal community where you test apps to earn points, then
-            use those points to get your own app tested — completely free.
+            use those points to get your own app tested, completely free.
           </p>
 
           <div className="mt-5 inline-block p-4">
@@ -80,7 +80,7 @@ export function CommunityHero() {
             <span className="hidden sm:block text-muted-foreground/30">|</span>
             <Button variant="link" asChild className="text-muted-foreground">
               <AutoTransitionLink href="/community-dashboard">
-                Browse Community Hub <ArrowRight className="w-4 h-4 ml-1" />
+                Browse Free Testing <ArrowRight className="w-4 h-4 ml-1" />
               </AutoTransitionLink>
             </Button>
           </motion.div>

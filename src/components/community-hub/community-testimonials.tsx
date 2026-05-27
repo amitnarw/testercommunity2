@@ -1,14 +1,39 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { MessageSquareQuote, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { getPublicTestimonials } from "@/lib/apiCallsAdmin";
 import Image from "next/image";
 import { useState, useEffect } from "react";
-import { cn } from "@/lib/utils";
 import { ROUTES } from "@/lib/routes";
+
+const variantsUp = {
+  enter: { y: "100%" },
+  center: { y: 0 },
+  exit: { y: "-100%" },
+};
+
+const variantsLeft = {
+  enter: { x: "100%" },
+  center: { x: 0 },
+  exit: { x: "-100%" },
+};
+
+const variantsDown = {
+  enter: { y: "-100%" },
+  center: { y: 0 },
+  exit: { y: "100%" },
+};
+
+const variantsRight = {
+  enter: { x: "-100%" },
+  center: { x: 0 },
+  exit: { x: "100%" },
+};
+
+const transition = { duration: 0.8, ease: "easeInOut" };
 
 export function CommunityTestimonials() {
   const [testimonials, setTestimonials] = useState<any[]>([]);
@@ -53,31 +78,7 @@ export function CommunityTestimonials() {
     getTestimonial(3),
   ].filter(Boolean) as any[];
 
-  const variantsUp = {
-    enter: { y: "100%" },
-    center: { y: 0 },
-    exit: { y: "-100%" },
-  };
-
-  const variantsLeft = {
-    enter: { x: "100%" },
-    center: { x: 0 },
-    exit: { x: "-100%" },
-  };
-
-  const variantsDown = {
-    enter: { y: "-100%" },
-    center: { y: 0 },
-    exit: { y: "100%" },
-  };
-
-  const variantsRight = {
-    enter: { x: "-100%" },
-    center: { x: 0 },
-    exit: { x: "100%" },
-  };
-
-  const transition = { duration: 0.8, ease: "easeInOut" };
+  if (testimonials.length === 0) return null;
 
   return (
     <section
@@ -93,182 +94,188 @@ export function CommunityTestimonials() {
           className="text-center max-w-2xl mx-auto mb-10 md:mb-16"
         >
           <h2 className="text-2xl md:text-4xl lg:text-5xl font-bold font-heading tracking-tight">
-            Community{" "}
+            Free Testing{" "}
             <span className="text-primary italic">Success Stories</span>
           </h2>
           <p className="mt-3 text-muted-foreground text-sm md:text-base">
-            Hear from developers and testers who benefited from the community
-            hub.
+            Hear from developers and testers who benefited from free testing.
           </p>
         </motion.div>
 
-        {testimonials.length > 0 && (
+        {/* Grid Layout */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-3 md:gap-5 max-w-5xl mx-auto">
-          {/* Large Left Card */}
-          <motion.div
-            initial={{ opacity: 0, y: 30 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.1, duration: 0.6 }}
-            className="lg:col-span-5"
-          >
-            <div className="rounded-2xl h-full overflow-hidden relative group min-h-[280px] md:min-h-[380px]">
-              <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent" />
-              <div className="p-5 md:p-6 flex flex-col justify-between h-full bg-white dark:bg-zinc-900 rounded-2xl shadow-md hover:shadow-lg transition-shadow">
-                <div>
-                  <MessageSquareQuote className="text-red-500 w-6 h-6 md:w-8 md:h-8 mb-3 md:mb-4" />
-                  <p className="text-sm md:text-lg leading-relaxed text-muted-foreground mb-4 md:mb-6 font-medium">
-                    "{stories[0]?.comment}"
-                  </p>
-                </div>
-                {stories[0] && (
-                <div className="flex items-center gap-3 pt-3 border-t border-gray-100 dark:border-zinc-800">
-                  <Image
-                    src={stories[0].avatar}
-                    alt={stories[0].name}
-                    width={40}
-                    height={40}
-                    className="rounded-full object-cover w-8 h-8 md:w-10 md:h-10"
-                  />
-                  <div className="flex flex-col">
-                    <span className="font-bold text-foreground text-xs md:text-sm">
-                      {stories[0].name}
-                    </span>
-                    <span className="text-[10px] md:text-xs text-muted-foreground">
-                      {stories[0].role}
-                    </span>
+          {/* Large Left Card - Animation: UP */}
+          <div className="lg:col-span-5 h-full">
+            <div className="rounded-xl md:rounded-2xl h-full overflow-hidden grid place-items-stretch relative group min-h-[280px] md:min-h-[380px]">
+              <AnimatePresence initial={false} mode="popLayout">
+                <motion.div
+                  key={stories[0]?.name}
+                  variants={variantsUp}
+                  initial="enter"
+                  animate="center"
+                  exit="exit"
+                  transition={transition}
+                  className="col-start-1 row-start-1 flex flex-col justify-between p-5 md:p-6 bg-white dark:bg-zinc-900 shadow-md hover:shadow-lg transition-shadow rounded-xl md:rounded-2xl"
+                >
+                  <div>
+                    <MessageSquareQuote className="text-red-500 w-6 h-6 md:w-8 md:h-8 mb-3 md:mb-4" />
+                    <p className="text-sm md:text-lg leading-relaxed text-muted-foreground mb-4 md:mb-6 font-medium">
+                      &ldquo;{stories[0]?.comment}&rdquo;
+                    </p>
                   </div>
-                </div>
-                )}
-              </div>
+                  {stories[0] && (
+                    <div className="flex items-center gap-3 pt-3 border-t border-gray-100 dark:border-zinc-800">
+                      <Image
+                        src={stories[0].avatar}
+                        alt={stories[0].name}
+                        width={40}
+                        height={40}
+                        className="rounded-full object-cover w-8 h-8 md:w-10 md:h-10"
+                      />
+                      <div className="flex flex-col">
+                        <span className="font-bold text-foreground text-xs md:text-sm">
+                          {stories[0].name}
+                        </span>
+                        <span className="text-[10px] md:text-xs text-muted-foreground">
+                          {stories[0].role}
+                        </span>
+                      </div>
+                    </div>
+                  )}
+                </motion.div>
+              </AnimatePresence>
             </div>
-          </motion.div>
+          </div>
 
           {/* Right Column Stack */}
           <div className="lg:col-span-7 flex flex-col gap-3 md:gap-5">
-            {/* Top Card */}
-            {stories[1] && (
-            <motion.div
-              initial={{ opacity: 0, x: 30 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: 0.2, duration: 0.6 }}
-              className="hidden md:block"
-            >
-              <div className="rounded-2xl overflow-hidden relative group min-h-[160px]">
-                <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent" />
-                <div className="p-5 md:p-6 flex flex-col justify-between h-full bg-white dark:bg-zinc-900 rounded-2xl shadow-md hover:shadow-lg transition-shadow">
+            {/* Top Card - Animation: LEFT */}
+            <div className="hidden md:grid rounded-xl md:rounded-2xl flex-1 overflow-hidden place-items-stretch relative group min-h-[160px]">
+              <AnimatePresence initial={false} mode="popLayout">
+                <motion.div
+                  key={stories[1]?.name}
+                  variants={variantsLeft}
+                  initial="enter"
+                  animate="center"
+                  exit="exit"
+                  transition={transition}
+                  className="col-start-1 row-start-1 p-5 md:p-6 flex flex-col justify-between bg-white dark:bg-zinc-900 shadow-md hover:shadow-lg transition-shadow rounded-xl md:rounded-2xl"
+                >
                   <div>
                     <MessageSquareQuote className="text-red-500 w-5 h-5 mb-2" />
                     <p className="text-muted-foreground leading-relaxed text-sm md:text-base font-medium">
-                      "{stories[1].comment}"
+                      &ldquo;{stories[1]?.comment}&rdquo;
                     </p>
                   </div>
-                  <div className="flex items-center gap-2 md:gap-3 pt-2 mt-auto">
-                    <Image
-                      src={stories[1].avatar}
-                      alt={stories[1].name}
-                      width={32}
-                      height={32}
-                      className="rounded-full object-cover w-7 h-7 md:w-9 md:h-9"
-                    />
-                    <div className="flex flex-col">
-                      <span className="font-bold text-foreground text-xs md:text-sm">
-                        {stories[1].name}
-                      </span>
-                      <span className="text-[10px] md:text-xs text-muted-foreground">
-                        {stories[1].role}
-                      </span>
+                  {stories[1] && (
+                    <div className="flex items-center gap-2 md:gap-3 pt-2 mt-auto">
+                      <Image
+                        src={stories[1].avatar}
+                        alt={stories[1].name}
+                        width={32}
+                        height={32}
+                        className="rounded-full object-cover w-7 h-7 md:w-9 md:h-9"
+                      />
+                      <div className="flex flex-col">
+                        <span className="font-bold text-foreground text-xs md:text-sm">
+                          {stories[1].name}
+                        </span>
+                        <span className="text-[10px] md:text-xs text-muted-foreground">
+                          {stories[1].role}
+                        </span>
+                      </div>
                     </div>
-                  </div>
-                </div>
-              </div>
-            </motion.div>
-            )}
+                  )}
+                </motion.div>
+              </AnimatePresence>
+            </div>
 
             {/* Bottom Two Cards */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-5">
-              {/* Card 1 */}
-              {stories[2] && (
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.3, duration: 0.5 }}
-                className="hidden md:block"
-              >
-                <div className="rounded-2xl overflow-hidden relative group min-h-[140px]">
-                  <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent" />
-                  <div className="p-4 md:p-5 flex flex-col justify-between h-full bg-white dark:bg-zinc-900 rounded-2xl shadow-md hover:shadow-lg transition-shadow">
+              {/* Card 1 - Animation: DOWN */}
+              <div className="hidden md:grid rounded-xl md:rounded-2xl overflow-hidden place-items-stretch relative group min-h-[140px]">
+                <AnimatePresence initial={false} mode="popLayout">
+                  <motion.div
+                    key={stories[2]?.name}
+                    variants={variantsDown}
+                    initial="enter"
+                    animate="center"
+                    exit="exit"
+                    transition={transition}
+                    className="col-start-1 row-start-1 p-4 md:p-5 flex flex-col justify-between bg-white dark:bg-zinc-900 shadow-md hover:shadow-lg transition-shadow rounded-xl md:rounded-2xl"
+                  >
                     <div>
                       <MessageSquareQuote className="text-red-500 w-4 h-4 mb-2" />
                       <p className="text-muted-foreground text-xs leading-relaxed">
-                        "{stories[2].comment}"
+                        &ldquo;{stories[2]?.comment}&rdquo;
                       </p>
                     </div>
-                    <div className="flex items-center gap-2 mt-3">
-                      <Image
-                        src={stories[2].avatar}
-                        alt={stories[2].name}
-                        width={28}
-                        height={28}
-                        className="rounded-full object-cover w-6 h-6 md:w-8 md:h-8"
-                      />
-                      <div className="flex flex-col">
-                        <span className="font-bold text-foreground text-[10px] md:text-xs">
-                          {stories[2].name}
-                        </span>
-                        <span className="text-[9px] md:text-[10px] text-muted-foreground">
-                          {stories[2].role}
-                        </span>
+                    {stories[2] && (
+                      <div className="flex items-center gap-2 mt-3">
+                        <Image
+                          src={stories[2].avatar}
+                          alt={stories[2].name}
+                          width={28}
+                          height={28}
+                          className="rounded-full object-cover w-6 h-6 md:w-8 md:h-8"
+                        />
+                        <div className="flex flex-col">
+                          <span className="font-bold text-foreground text-[10px] md:text-xs">
+                            {stories[2].name}
+                          </span>
+                          <span className="text-[9px] md:text-[10px] text-muted-foreground">
+                            {stories[2].role}
+                          </span>
+                        </div>
                       </div>
-                    </div>
-                  </div>
-                </div>
-              </motion.div>
-              )}
+                    )}
+                  </motion.div>
+                </AnimatePresence>
+              </div>
 
-              {/* Card 2 - Dark */}
-              {stories[3] && (
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ delay: 0.4, duration: 0.5 }}
-              >
-                <div className="rounded-2xl overflow-hidden relative group min-h-[120px] md:min-h-[140px] bg-zinc-900 dark:bg-black text-white">
-                  <div className="p-4 md:p-5 flex flex-col justify-between h-full rounded-2xl shadow-md hover:shadow-lg transition-shadow">
+              {/* Card 2 (Dark) - Animation: RIGHT */}
+              <div className="rounded-xl md:rounded-2xl overflow-hidden grid place-items-stretch relative group min-h-[120px] md:min-h-[140px]">
+                <AnimatePresence initial={false} mode="popLayout">
+                  <motion.div
+                    key={stories[3]?.name}
+                    variants={variantsRight}
+                    initial="enter"
+                    animate="center"
+                    exit="exit"
+                    transition={transition}
+                    className="col-start-1 row-start-1 p-4 md:p-5 flex flex-col justify-between bg-zinc-900 dark:bg-black text-white shadow-md hover:shadow-lg transition-shadow rounded-xl md:rounded-2xl"
+                  >
                     <div>
                       <MessageSquareQuote className="text-red-500 w-4 h-4 mb-2" />
                       <p className="text-gray-300 text-xs leading-relaxed">
-                        "{stories[3].comment}"
+                        &ldquo;{stories[3]?.comment}&rdquo;
                       </p>
                     </div>
-                    <div className="flex items-center gap-2 mt-3">
-                      <Image
-                        src={stories[3].avatar}
-                        alt={stories[3].name}
-                        width={28}
-                        height={28}
-                        className="rounded-full object-cover w-6 h-6 md:w-8 md:h-8"
-                      />
-                      <div className="flex flex-col">
-                        <span className="font-bold text-white text-[10px] md:text-xs">
-                          {stories[3].name}
-                        </span>
-                        <span className="text-gray-400 text-[9px] md:text-[10px]">
-                          {stories[3].role}
-                        </span>
+                    {stories[3] && (
+                      <div className="flex items-center gap-2 mt-3">
+                        <Image
+                          src={stories[3].avatar}
+                          alt={stories[3].name}
+                          width={28}
+                          height={28}
+                          className="rounded-full object-cover w-6 h-6 md:w-8 md:h-8"
+                        />
+                        <div className="flex flex-col">
+                          <span className="font-bold text-white text-[10px] md:text-xs">
+                            {stories[3].name}
+                          </span>
+                          <span className="text-gray-400 text-[9px] md:text-[10px]">
+                            {stories[3].role}
+                          </span>
+                        </div>
                       </div>
-                    </div>
-                  </div>
-                </div>
-              </motion.div>
-              )}
+                    )}
+                  </motion.div>
+                </AnimatePresence>
+              </div>
             </div>
           </div>
         </div>
-        )}
 
         {/* Navigation */}
         <motion.div

@@ -11,7 +11,7 @@ const steps = [
     number: "01",
     title: "Find Apps to Test",
     description:
-      "Browse available apps in the community hub. Filter by category, testing duration, or number of testers to find the perfect match.",
+      "Browse available apps in the free testing hub. Filter by category, testing duration, or number of testers to find the perfect match.",
     icon: Search,
   },
   {
@@ -65,8 +65,8 @@ export function HowItWorks() {
           className="text-center max-w-2xl mx-auto mb-10 md:mb-16"
         >
           <h2 className="text-2xl md:text-4xl lg:text-5xl font-bold font-heading tracking-tight">
-            How the{" "}
-            <span className="text-primary italic">Community Path</span> Works
+            How{" "}
+            <span className="text-primary italic">Free Testing</span> Works
           </h2>
           <p className="mt-3 text-muted-foreground text-sm md:text-base max-w-xl mx-auto">
             A simple three-step process. Test apps to earn points, then use those

@@ -39,6 +39,12 @@ const MemberBenefits = dynamic(() =>
   ),
 );
 
+const WhatProUnlocks = dynamic(() =>
+  import("@/components/community-hub/what-pro-unlocks").then(
+    (mod) => mod.WhatProUnlocks,
+  ),
+);
+
 const CommunityTestimonials = dynamic(() =>
   import("@/components/community-hub/community-testimonials").then(
     (mod) => mod.CommunityTestimonials,
@@ -55,7 +61,7 @@ const CommunityFaqSection = dynamic(() =>
   ),
 );
 
-function CommunityCTASection() {
+function FreeTestingCTASection() {
   return (
     <section className="w-full relative overflow-hidden bg-primary text-primary-foreground select-none flex flex-col items-center justify-center min-h-screen">
       <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.12] mix-blend-overlay pointer-events-none" />
@@ -78,15 +84,15 @@ function CommunityCTASection() {
           <div className="inline-flex items-center gap-2 px-4 py-1.5 md:px-5 md:py-2 rounded-full bg-white/10 text-white font-medium mb-1 border border-white/20 backdrop-blur-md shadow-lg shadow-black/5 hover:bg-white/20 transition-colors cursor-default">
             <Users className="w-3.5 h-3.5 text-yellow-300 fill-yellow-300" />
             <span className="text-xs md:text-sm tracking-wide uppercase font-bold">
-              Join 500+ Community Testers
+              Join 500+ Free Testers
             </span>
           </div>
 
           <h2 className="text-3xl md:text-5xl lg:text-6xl font-bold tracking-tight font-heading leading-tight drop-shadow-sm">
-            Ready to Join the{" "}
+            Ready to Start
             <br className="hidden md:block" />
             <span className="relative inline-block">
-              Community?
+              Free Testing?
               <svg
                 className="absolute w-full h-3 -bottom-1 left-0 text-white/30"
                 viewBox="0 0 100 10"
@@ -132,7 +138,7 @@ function CommunityCTASection() {
               asChild
             >
               <AutoTransitionLink href={ROUTES.AUTHENTICATED.COMMUNITY_DASHBOARD}>
-                Explore Community Hub
+                Explore Free Testing
               </AutoTransitionLink>
             </Button>
           </div>
@@ -142,7 +148,7 @@ function CommunityCTASection() {
   );
 }
 
-export default function CommunityHubPage() {
+export default function FreeTestingPage() {
   return (
     <>
       <CommunityHero />
@@ -150,10 +156,11 @@ export default function CommunityHubPage() {
       <HowItWorks />
       <PointsFormula />
       <MemberBenefits />
+      <WhatProUnlocks />
       <CommunityTestimonials />
       <ScrollingRibbon />
       <CommunityFaqSection />
-      <CommunityCTASection />
+      <FreeTestingCTASection />
       <ScrollToTopButton />
     </>
   );

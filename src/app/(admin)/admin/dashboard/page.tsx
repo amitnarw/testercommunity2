@@ -85,7 +85,7 @@ const ServiceComparisonChart = dynamic(
   },
 );
 
-// Status distribution colors — lighter shades of primary blue
+// Status distribution colors, lighter shades of primary blue
 const statusColors: Record<string, string> = {
   COMPLETED: "#3B82F6",
   AVAILABLE: "#60A5FA",

@@ -19,7 +19,7 @@ export default function SampleFreeCommunityHubPage() {
         <div className="container mx-auto px-4 md:px-6 py-3 flex flex-col sm:flex-row items-center justify-between gap-1 sm:gap-2">
           <div className="flex items-center justify-between sm:justify-center gap-2 w-full">
             <h1 className="text-lg sm:text-xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-              Community Hub
+              Free Testing
             </h1>
             <Badge>FREE</Badge>
             <Button

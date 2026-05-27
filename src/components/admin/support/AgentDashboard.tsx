@@ -53,6 +53,7 @@ export function AgentDashboard() {
   const [input, setInput] = useState("");
   const [localMessages, setLocalMessages] = useState<Record<number, ChatMessage[]>>({});
   const [userTyping, setUserTyping] = useState(false);
+  const [disconnectedChats, setDisconnectedChats] = useState<Set<number>>(new Set());
   const scrollRef = useRef<HTMLDivElement>(null);
   const typingTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const lastTypingEmitRef = useRef(0);
@@ -161,6 +162,7 @@ export function AgentDashboard() {
       }),
       agent_active_chats: on("agent:active_chats", (data: ActiveChat[]) => {
         setActiveChats(data);
+        setDisconnectedChats(new Set());
         setLoading(false);
       }),
       agent_queue_updated: on("agent:queue_updated", () => {
@@ -193,6 +195,11 @@ export function AgentDashboard() {
           delete updated[data.chatId];
           return updated;
         });
+        setDisconnectedChats((prev) => {
+          const next = new Set(prev);
+          next.delete(data.chatId);
+          return next;
+        });
       }),
       chat_typing: on("chat:typing", () => {
         console.log("[ADMIN] chat:typing RECEIVED");
@@ -210,6 +217,16 @@ export function AgentDashboard() {
       agent_status: on("agent:status", (data: { online: boolean }) => {
         setAgentOnline(data.online);
       }),
+      user_disconnected: on("user:disconnected", (data: { chatId: number }) => {
+        setDisconnectedChats((prev) => new Set(prev).add(data.chatId));
+      }),
+      user_reconnected: on("user:reconnected", (data: { chatId: number }) => {
+        setDisconnectedChats((prev) => {
+          const next = new Set(prev);
+          next.delete(data.chatId);
+          return next;
+        });
+      }),
     };
 
     // Sync agent status from backend on mount
@@ -225,6 +242,8 @@ export function AgentDashboard() {
       s.off("chat:typing", h.chat_typing);
       s.off("chat:stop_typing", h.chat_stop_typing);
       s.off("agent:status", h.agent_status);
+      s.off("user:disconnected", h.user_disconnected);
+      s.off("user:reconnected", h.user_reconnected);
     };
   }, []);
 
@@ -512,16 +531,26 @@ export function AgentDashboard() {
                       key={chat.id}
                       onClick={() => setActiveChatId(chat.id)}
                       className={cn(
-                        "px-3 py-2 text-xs font-medium border-b-2 transition-colors whitespace-nowrap flex-shrink-0",
+                        "px-3 py-2 text-xs font-medium border-b-2 transition-colors whitespace-nowrap flex-shrink-0 flex items-center gap-1.5",
                         activeChatId === chat.id
                           ? "border-primary text-primary"
                           : "border-transparent text-muted-foreground hover:text-foreground"
                       )}
                     >
                       {chat.userName}
+                      {disconnectedChats.has(chat.id) && (
+                        <span className="h-2 w-2 rounded-full bg-yellow-500 animate-pulse" />
+                      )}
                     </button>
                   ))}
                 </div>
+
+                {disconnectedChats.has(activeChat.id) && (
+                  <div className="flex items-center gap-2 px-4 py-2 bg-yellow-500/10 border-b border-yellow-500/20 text-yellow-700 dark:text-yellow-400 text-xs">
+                    <AlertCircle className="h-3.5 w-3.5 animate-pulse" />
+                    <span>User disconnected — waiting 30s before resolving...</span>
+                  </div>
+                )}
 
                 <ScrollArea className="flex-1 p-3 sm:p-4" ref={scrollRef}>
                   <div className="space-y-3 sm:space-y-4">
