@@ -37,6 +37,7 @@ export function useSupportChat(chat: SupportChatAI) {
   const [isOpen, setIsOpen] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
   const [closeReason, setCloseReason] = useState<string | null>(null);
+  const [reconnecting, setReconnecting] = useState(false);
 
   const { data: session } = authClient.useSession();
 
@@ -48,6 +49,8 @@ export function useSupportChat(chat: SupportChatAI) {
   const greetingShownRef = useRef(false);
   const lastTypingEmitRef = useRef(0);
   const socketInitialized = useRef(false);
+  // Fix #1: Store chatId before it gets cleared on resolution
+  const lastChatIdRef = useRef<number | null>(null);
 
   // -- Error helpers --
   const clearError = useCallback(() => {
@@ -153,8 +156,12 @@ export function useSupportChat(chat: SupportChatAI) {
 
     const h = {
       connect: on("connect", () => {
+        setReconnecting(false);
         clearError();
         s.emit("user:rejoin");
+      }),
+      disconnect: on("disconnect", () => {
+        setReconnecting(true);
       }),
       connect_error: on("connect_error", (err: any) => {
         if (s.connected) return;
@@ -212,17 +219,26 @@ export function useSupportChat(chat: SupportChatAI) {
       chat_closed: on("chat:closed", (data: { chatId: number; reason?: string }) => {
         const reason = data?.reason || "";
         const isResolved = reason === "Resolved" || reason === "Resolved by support agent";
-        const isAgentGone = reason === "Agent disconnected" || reason === "Agent went offline";
+        const isAgentGone = reason === "Agent disconnected"
+          || reason === "Agent went offline"
+          || reason === "No agents available";
+
+        // Deduplicate: if already in target mode, skip processing
+        if ((isAgentGone && chatMode === "OFFLINE_OPTIONS") ||
+            (isResolved && chatMode === "RESOLVED")) {
+          return;
+        }
 
         setCloseReason(reason);
+        lastChatIdRef.current = data.chatId || humanChatId;
         setHumanMessages((prev) => [...prev, {
-          id: "closed",
+          id: "closed-" + data.chatId,
           senderType: "SYSTEM",
           senderName: "System",
           message: isResolved
             ? "Your chat has been resolved. Thank you for contacting support!"
             : isAgentGone
-            ? "The support agent is no longer available. You can submit a ticket or chat with Alex."
+            ? "No agents are available right now. You can submit a ticket or chat with Alex."
             : "This chat has been closed.",
           createdAt: new Date().toISOString(),
         }]);
@@ -264,6 +280,10 @@ export function useSupportChat(chat: SupportChatAI) {
             .catch(() => setAgentsOnline(false));
         }
       }),
+      chat_saved_as_ticket: on("chat:saved_as_ticket", (data: { chatId: number; messageCount: number }) => {
+        setTicketSubmitted(true);
+        clearError();
+      }),
     };
 
     return () => {
@@ -279,8 +299,9 @@ export function useSupportChat(chat: SupportChatAI) {
         clearTimeout(typingTimerRef.current);
         typingTimerRef.current = null;
       }
-      // Only remove OUR specific handlers — others on the shared socket are untouched
+      // Only remove OUR specific handlers, others on the shared socket are untouched
       s.off("connect", h.connect);
+      s.off("disconnect", h.disconnect);
       s.off("connect_error", h.connect_error);
       s.off("chat:requested", h.chat_requested);
       s.off("chat:fallback_to_ai", h.chat_fallback_to_ai);
@@ -293,6 +314,7 @@ export function useSupportChat(chat: SupportChatAI) {
       s.off("agent:stop_typing", h.agent_stop_typing);
       s.off("chat:position_updated", h.chat_position_updated);
       s.off("agent:status_changed", h.agent_status_changed);
+      s.off("chat:saved_as_ticket", h.chat_saved_as_ticket);
       socketInitialized.current = false;
     };
   }, [session, clearError, showError, setMessages]);
@@ -340,7 +362,7 @@ export function useSupportChat(chat: SupportChatAI) {
 
   // -- Agent goes offline while in WAITING (no active chat yet) --
   useEffect(() => {
-    if (!agentsOnline && chatMode === "WAITING" && !humanChatId) {
+    if (!agentsOnline && chatMode === "WAITING") {
       setMessages((prev: any) => [...prev, {
         id: "agent-offline-" + Date.now(),
         role: "assistant",
@@ -348,7 +370,7 @@ export function useSupportChat(chat: SupportChatAI) {
       }]);
       setChatMode("OFFLINE_OPTIONS");
     }
-  }, [agentsOnline, chatMode, humanChatId, setMessages]);
+  }, [agentsOnline, chatMode, setMessages]);
 
   // -- On open: trigger CHECKING or skip to AI --
   useEffect(() => {
@@ -464,6 +486,7 @@ export function useSupportChat(chat: SupportChatAI) {
     setTicketSubmitted(false);
     setUserChoseAlex(false);
     setHasCheckedStatus(false);
+    lastChatIdRef.current = null; // Fix #1: Reset ref
     setIsOpen(false);
   }, [chatMode, humanChatId, setMessages]);
 
@@ -507,12 +530,51 @@ export function useSupportChat(chat: SupportChatAI) {
     setQueuePosition(0);
     setCloseReason(null);
     setAgentTyping(false);
+    lastChatIdRef.current = null; // Fix #1: Reset ref
     if (typingTimerRef.current) {
       clearTimeout(typingTimerRef.current);
       typingTimerRef.current = null;
     }
     setChatMode("CHECKING");
   }, []);
+
+  // -- Save live chat as ticket (via socket event) --
+  const saveAsTicket = useCallback((subject?: string) => {
+    // Fix #1: Use lastChatIdRef if humanChatId is null (after resolution)
+    const chatId = humanChatId || lastChatIdRef.current;
+    if (!chatId) {
+      showError("No chat to save");
+      return;
+    }
+    if (humanMessages.length === 0) {
+      showError("No messages to save");
+      return;
+    }
+
+    // Fix #15: Filter out SYSTEM messages and unconfirmed optimistic messages
+    const messagesToSave = humanMessages
+      .filter((msg) => msg.senderType !== "SYSTEM" && !msg._optimistic)
+      .map((msg) => ({
+        senderId: msg.senderId || null,
+        senderType: msg.senderType || "USER",
+        content: msg.message || msg.content,
+        isAi: msg.isAi || false,
+        createdAt: msg.createdAt,
+      }));
+
+    if (messagesToSave.length === 0) {
+      showError("No messages to save");
+      return;
+    }
+
+    // Use socket event (fixes #2 - server-side cleanup works)
+    const s = connectSupportSocket();
+    s.emit("user:save_as_ticket", {
+      chatId,
+      subject: subject || "Live Chat Support",
+      messages: messagesToSave,
+    });
+  }, [humanChatId, humanMessages, showError]);
 
   return {
     // Mode
@@ -546,6 +608,9 @@ export function useSupportChat(chat: SupportChatAI) {
     clearError,
     aiError,
 
+    // Reconnecting
+    reconnecting,
+
     // Actions
     requestHumanChat,
     refreshAgentStatus,
@@ -556,5 +621,6 @@ export function useSupportChat(chat: SupportChatAI) {
     openOfflineOptions,
     isOpen,
     setIsOpen,
+    saveAsTicket,
   };
 }

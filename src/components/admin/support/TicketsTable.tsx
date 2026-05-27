@@ -145,8 +145,6 @@ export function TicketsTable() {
       <div className="flex gap-2 mb-4">
         {[
           { value: "TICKET", label: "Tickets" },
-          { value: "LIVE_CHAT", label: "Live Chats" },
-          { value: "AI_CHAT", label: "AI Chats" },
           { value: "ALL", label: "All" },
         ].map((tab) => (
           <button
@@ -164,7 +162,7 @@ export function TicketsTable() {
         ))}
       </div>
 
-      <Card className="border-border/50">
+      <Card className="border-border/50 grid grid-cols-1">
         <CardContent className="p-0">
           <Table>
             <TableHeader>
@@ -234,7 +232,7 @@ export function TicketsTable() {
       </Card>
 
       <Dialog open={!!selected || detailLoading} onOpenChange={(open) => { if (!open) { setSelected(null); } }}>
-        <DialogContent className="max-w-2xl max-h-[85vh] flex flex-col">
+        <DialogContent className="max-w-2xl max-h-[85vh] flex flex-col px-2 sm:px-4 w-[95%]">
           <DialogHeader>
             <DialogTitle>
               {selected?.subject || "Conversation Details"}
@@ -298,7 +296,7 @@ export function TicketsTable() {
           <div className="border-t pt-4 mt-2 space-y-3">
             {selected && !isConversationClosed ? (
               <>
-                <div className="flex gap-2">
+                <div className="flex flex-row items-end justify-center gap-2">
                   <Textarea
                     placeholder="Type your reply..."
                     value={replyText}
@@ -309,13 +307,13 @@ export function TicketsTable() {
                         handleSendReply();
                       }
                     }}
-                    className="min-h-[60px] rounded-xl resize-none"
+                    className="min-h-[60px] rounded-xl resize-none flex-1 min-w-0 w-auto"
                     disabled={isSending}
                   />
                   <Button
                     onClick={handleSendReply}
                     disabled={!replyText.trim() || isSending}
-                    className="self-end shrink-0"
+                    className="shrink-0"
                     size="icon"
                   >
                     {isSending ? (

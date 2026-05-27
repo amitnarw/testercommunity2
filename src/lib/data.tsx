@@ -1449,19 +1449,29 @@ export const generalFaqs: FaqItem[] = [
 
 export const communityFaqs: FaqItem[] = [
   {
-    question: "How does the 'Community Path' work?",
+    question: "How does Free Testing work?",
     answer:
-      "It's a reciprocal ecosystem. You test apps submitted by other community members. For each valid test you complete, you earn points. You must have enough points to submit your own app for free testing by the community.",
+      "It's a reciprocal ecosystem. You test apps submitted by other developers. For each valid test you complete, you earn points. You must have enough points to submit your own app for free testing by the community.",
   },
   {
-    question: "Is the Community Path really free?",
+    question: "Is Free Testing really free?",
     answer:
-      "Yes, in terms of money. It requires your time and effort to test other apps, which is how you contribute to the community and earn your own testing credits (points). You cannot buy points for community testing; they must be earned.",
+      "Yes, in terms of money. It requires your time and effort to test other apps, which is how you contribute and earn your own testing credits (points). You cannot buy points for free testing; they must be earned.",
   },
   {
-    question: "What kind of feedback can I expect from the community?",
+    question: "What kind of feedback can I expect from free testing?",
     answer:
       "You'll receive feedback from a diverse range of real users on real devices. This often uncovers usability issues, device-specific bugs, and general feedback that you might not find in a controlled environment.",
+  },
+  {
+    question: "Should I use Free Testing or Pro Testing?",
+    answer:
+      "Free Testing is great if you have time to test other apps and want to save money. Pro Testing is ideal if you need guaranteed results, vetted testers, detailed bug reports, and a fully managed 14-day cycle. Most developers start free and upgrade to Pro when they need faster, more reliable results.",
+  },
+  {
+    question: "Why do developers upgrade from Free to Pro?",
+    answer:
+      "The #1 reason is time. Free testing requires you to spend 20+ hours testing other apps before you can submit yours. Pro Testing gives you 20+ vetted testers, detailed bug reports, device coverage stats, and Google Play compliance verification — all managed by our team with zero effort from you. Check our pricing page for current rates.",
   },
 ];
 

@@ -98,8 +98,8 @@ export function MemberBenefits() {
             <span className="text-primary italic">Get Started</span>
           </h2>
           <p className="mt-3 text-muted-foreground text-sm md:text-base max-w-xl mx-auto">
-            Join thousands of testers and developers in the most rewarding app
-            testing community.
+            Join thousands of testers and developers on the most rewarding free
+            testing platform.
           </p>
         </motion.div>
 
@@ -177,9 +177,21 @@ export function MemberBenefits() {
                   className="w-full sm:w-auto rounded-full px-8"
                 >
                   <AutoTransitionLink href="/community-dashboard">
-                    Preview Community Hub
+                    Preview Free Testing
                   </AutoTransitionLink>
                 </Button>
+              </div>
+
+              {/* Pro Upsell */}
+              <div className="mt-4 text-center">
+                <AutoTransitionLink href="/pricing">
+                  <span className="text-xs text-muted-foreground hover:text-primary transition-colors cursor-pointer">
+                    Want guaranteed results?{" "}
+                    <span className="font-bold underline underline-offset-2">
+                      See Pro Plans →
+                    </span>
+                  </span>
+                </AutoTransitionLink>
               </div>
 
               {/* Trust indicators */}

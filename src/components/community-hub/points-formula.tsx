@@ -3,7 +3,8 @@
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
-import { Coins, Sparkles, ArrowUpRight, ArrowDownRight } from "lucide-react";
+import { Coins, Sparkles, ArrowUpRight, ArrowDownRight, Zap } from "lucide-react";
+import { usePricingData, useRegionalPricing } from "@/hooks/useUser";
 
 const EARN_PER_TESTER = 80;
 const EARN_PER_DAY = 10;
@@ -170,6 +171,19 @@ export function PointsFormula() {
   const [testers, setTesters] = useState(12);
   const [days, setDays] = useState(14);
   const [activeTab, setActiveTab] = useState<"earn" | "spend">("earn");
+
+  const { data: pricingPlans } = usePricingData();
+  const { data: regionalPricing } = useRegionalPricing();
+
+  const cheapestPlan = pricingPlans?.length
+    ? pricingPlans.reduce((min, p) => (p.price < min.price ? p : min), pricingPlans[0])
+    : null;
+
+  const proPriceLabel = regionalPricing
+    ? `${regionalPricing.currency_symbol}${Math.round(regionalPricing.amount / 100).toLocaleString()}`
+    : cheapestPlan
+      ? `₹${cheapestPlan.price.toLocaleString()}`
+      : null;
 
   const earnAmount = testers * EARN_PER_TESTER + days * EARN_PER_DAY;
   const costAmount = testers * COST_PER_TESTER + days * COST_PER_DAY;
@@ -407,6 +421,28 @@ export function PointsFormula() {
                 </p>
               </div>
             </div>
+          </div>
+        </motion.div>
+
+        {/* Pro Upsell Nudge */}
+        <motion.div
+          initial={{ opacity: 0, y: 15 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ delay: 0.6, duration: 0.5 }}
+          className="mt-8 text-center"
+        >
+          <div className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-secondary/50 border border-border/50">
+            <Zap className="w-4 h-4 text-primary" />
+            <span className="text-sm text-muted-foreground">
+              Don&apos;t have time to earn points?{" "}
+              <a
+                href="/pricing"
+                className="font-bold text-foreground hover:text-primary transition-colors underline underline-offset-2"
+              >
+                Pro starts at {proPriceLabel || "₹699"} →
+              </a>
+            </span>
           </div>
         </motion.div>
       </div>

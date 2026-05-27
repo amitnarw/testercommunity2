@@ -136,7 +136,7 @@ export default function SupportStatsPage() {
                       <p className="text-xs text-muted-foreground">{agent.chatsHandled} chats handled</p>
                     </div>
                     <div className="text-right">
-                      <p className="text-sm font-semibold">{formatMs(agent.avgResponseTime)}</p>
+                      <p className="text-sm font-semibold">{formatMs(agent.avgResponseTime ?? 0)}</p>
                       <p className="text-xs text-muted-foreground">{agent.resolutionRate}% resolved</p>
                     </div>
                   </div>

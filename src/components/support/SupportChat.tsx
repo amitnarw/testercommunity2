@@ -43,7 +43,7 @@ export function SupportChat() {
   const {
     chatMode, agentsOnline,
     displayedMessages, isLoading, isWaitingForGreeting, sendAiMessage,
-    humanMessages, agentName, agentTyping, sendingMessage, queuePosition,
+    humanMessages, humanChatId, agentName, agentTyping, sendingMessage, queuePosition,
     sendHumanMessage, emitHumanTyping, emitHumanStopTyping,
     startNewChat,
     ticketSubmitted,
@@ -51,6 +51,8 @@ export function SupportChat() {
     requestHumanChat, handleEndChat, handleBackToAlex,
     chooseAlex, openOfflineOptions, refreshAgentStatus, refreshing,
     isOpen, setIsOpen,
+    saveAsTicket,
+    reconnecting,
   } = useSupportChat(chat);
 
   const handleRefresh = () => {
@@ -454,10 +456,21 @@ export function SupportChat() {
                   <div className="text-center space-y-2">
                     <h3 className="font-bold text-lg">Chat Resolved</h3>
                     <p className="text-sm text-muted-foreground max-w-xs">
-                      Your conversation has been resolved. Thank you for contacting support!
+                      {ticketSubmitted
+                        ? "Your conversation has been saved as a ticket for your records."
+                        : "Your conversation has been resolved. Would you like to save it as a ticket?"}
                     </p>
                   </div>
                   <div className="flex flex-col gap-3 w-full max-w-xs">
+                    {!ticketSubmitted && humanMessages.length > 0 && (
+                      <Button
+                        onClick={() => saveAsTicket()}
+                        className="rounded-2xl h-12 font-semibold w-full shadow-lg"
+                      >
+                        <Ticket className="h-4 w-4 mr-2" />
+                        Save as Ticket
+                      </Button>
+                    )}
                     <Button onClick={startNewChat} className="rounded-2xl h-12 font-semibold w-full shadow-lg">
                       <Headphones className="h-4 w-4 mr-2" />
                       Start New Chat
@@ -473,6 +486,12 @@ export function SupportChat() {
               {/* HUMAN Mode */}
               {chatMode === "HUMAN" && (
                 <>
+                  {reconnecting && (
+                    <div className="flex items-center gap-2 px-4 py-2.5 bg-amber-500/10 border-b border-amber-500/20 text-amber-700 dark:text-amber-400 text-xs">
+                      <Loader2 className="h-3.5 w-3.5 animate-spin flex-shrink-0" />
+                      <span>Reconnecting to support chat...</span>
+                    </div>
+                  )}
                   <ScrollArea ref={humanScrollRef} className="flex-1 p-4 bg-background/50">
                     <div className="space-y-4 pb-4">
                       {humanMessages.map((m: any, i: number) => (
@@ -553,7 +572,7 @@ export function SupportChat() {
                       </Button>
                     </form>
                     <p className="mt-2 text-[9px] text-muted-foreground/60 text-center leading-tight">
-                      This chat is not recorded. Ask the agent to create a ticket if you need a follow-up.
+                      This chat is ephemeral. You can save it as a ticket when resolved if you need a follow-up.
                     </p>
                   </footer>
                 </>

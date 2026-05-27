@@ -23,7 +23,7 @@ export function CommunityFaqSection() {
             Frequently Asked Questions
           </h2>
           <p className="mt-3 text-muted-foreground">
-            Everything you need to know about the Community Hub.
+            Everything you need to know about Free Testing.
           </p>
         </motion.div>
 

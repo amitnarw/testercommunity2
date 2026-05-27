@@ -310,7 +310,7 @@ Upon completion of the 14 days, we compile our findings into a final report. Thi
 - **UI/UX Audit**: Specific notes on layout inconsistencies or confusing user flows.
 - **Performance Data**: Notes on app speed and resource usage.
 
-This managed approach ensures that by the end of the testing period, you have more than just a certificate of completion—you have a better, more stable product.
+This managed approach ensures that by the end of the testing period, you have more than just a certificate of completion, you have a better, more stable product.
     `,
   },
   {
@@ -1000,7 +1000,7 @@ However, in late 2024, developer forums and Google's official documentation refl
 
 ## What Exactly Has Changed?
 
-Google's primary goal—improving the overall quality of apps on the Play Store—remains unchanged. The adjustment to 12 testers acknowledges that gathering a dedicated cohort of 20 people was often an insurmountable hurdle for solo developers without a massive social network.
+Google's primary goal—improving the overall quality of apps on the Play Store, remains unchanged. The adjustment to 12 testers acknowledges that gathering a dedicated cohort of 20 people was often an insurmountable hurdle for solo developers without a massive social network.
 
 **The New Core Policy:**
 - **Tester Count**: You need a minimum of **12 unique testers**.
