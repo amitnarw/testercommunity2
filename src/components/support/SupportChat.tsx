@@ -126,7 +126,7 @@ export function SupportChat() {
         layout
         initial={false}
         animate={{
-          width: isOpen ? (windowWidth < 640 ? "calc(100vw - 32px)" : 380) : 180,
+          width: isOpen ? (windowWidth < 640 ? "calc(100vw - 32px)" : 380) : (windowWidth < 640 ? 52 : 180),
           height: isOpen ? "70vh" : 52,
           borderRadius: isOpen ? 16 : 26,
         }}
@@ -142,7 +142,7 @@ export function SupportChat() {
               exit={{ opacity: 0 }}
               transition={{ duration: 0.1 }}
               onClick={() => setIsOpen(true)}
-              className="w-full h-full flex items-center justify-between gap-3 p-2 bg-primary text-primary-foreground cursor-pointer hover:bg-primary/95 transition-colors"
+              className="w-full h-full flex items-center justify-center sm:justify-between gap-3 p-2 bg-primary text-primary-foreground cursor-pointer hover:bg-primary/95 transition-colors"
             >
               <div className="flex items-center gap-2.5">
                 <div className="relative">
@@ -151,7 +151,7 @@ export function SupportChat() {
                   </div>
                   <span className="absolute bottom-0 right-0 w-2.5 h-2.5 border-2 border-primary rounded-full bg-green-500" />
                 </div>
-                <div className="flex flex-col">
+                <div className="hidden sm:flex flex-col">
                   <span className="font-bold text-xs tracking-tight whitespace-nowrap">Chat with agent</span>
                   <span className="text-xs text-primary-foreground/70 leading-none">AI + Support</span>
                 </div>

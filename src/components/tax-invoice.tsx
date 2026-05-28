@@ -167,7 +167,7 @@ export function TaxInvoice({ invoice }: TaxInvoiceProps) {
                 </div>
                 {invoice.lut_number && (
                   <div className="flex justify-between">
-                    <span className="text-slate-400 font-medium">LUT No.</span>
+                    <span className="text-slate-400 font-medium">Export LUT</span>
                     <span className="font-mono font-medium text-slate-700">{invoice.lut_number}</span>
                   </div>
                 )}
