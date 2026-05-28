@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, useRef } from "react";
+import { motion } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -8,12 +9,12 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { Textarea } from "@/components/ui/textarea";
 import {
   Dialog,
+  DialogClose,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import {
   Table,
   TableBody,
@@ -25,7 +26,10 @@ import {
 import { format } from "date-fns";
 import API_ROUTES from "@/lib/apiRoutes";
 import api from "@/lib/axios";
-import { Eye, User, Bot, Headphones, Send, Loader2 } from "lucide-react";
+import {
+  Eye, User, Bot, Send, Loader2,
+  MessageCircle, Shield, Info, Clock, RotateCcw, X, RefreshCw,
+} from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface Conversation {
@@ -75,22 +79,39 @@ export function TicketsTable() {
   const [loading, setLoading] = useState(true);
   const [selected, setSelected] = useState<ConversationDetail | null>(null);
   const [detailLoading, setDetailLoading] = useState(false);
-  const [typeFilter, setTypeFilter] = useState<string>("TICKET");
   const [replyText, setReplyText] = useState("");
   const [isSending, setIsSending] = useState(false);
+  const [secondsUntilRefresh, setSecondsUntilRefresh] = useState(30);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const fetchConversations = () => {
     setLoading(true);
-    const params = typeFilter !== "ALL" ? `?type=${typeFilter}` : "";
     api
-      .get(API_ROUTES.ADMIN + "/support/conversations" + params)
+      .get(API_ROUTES.ADMIN + "/support/conversations?type=TICKET")
       .then((res) => setConversations(res.data?.data || []))
       .catch(console.error)
       .finally(() => setLoading(false));
   };
 
-  useEffect(() => { fetchConversations(); }, [typeFilter]);
+  useEffect(() => { fetchConversations(); }, []);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setSecondsUntilRefresh((prev) => {
+        if (prev <= 1) {
+          fetchConversations();
+          return 30;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const handleRefresh = () => {
+    fetchConversations();
+    setSecondsUntilRefresh(30);
+  };
 
   const openDetail = async (id: number) => {
     setDetailLoading(true);
@@ -118,6 +139,7 @@ export function TicketsTable() {
       const res = await api.get(API_ROUTES.ADMIN + `/support/conversations/${selected.id}`);
       setSelected(res.data?.data || null);
       fetchConversations();
+      setSecondsUntilRefresh(30);
     } catch (err) {
       console.error("Failed to send reply:", err);
     } finally {
@@ -128,10 +150,11 @@ export function TicketsTable() {
   const handleClose = async () => {
     if (!selected) return;
     try {
-      await api.post(API_ROUTES.ADMIN + `/support/conversations/${selected.id}/close`);
+      await api.post(API_ROUTES.ADMIN + `/support/conversations/${selected.id}/close`, {});
       const res = await api.get(API_ROUTES.ADMIN + `/support/conversations/${selected.id}`);
       setSelected(res.data?.data || null);
       fetchConversations();
+      setSecondsUntilRefresh(30);
     } catch (err) {
       console.error("Failed to close conversation:", err);
     }
@@ -141,27 +164,12 @@ export function TicketsTable() {
 
   return (
     <>
-      {/* Type Filter Tabs */}
-      <div className="flex gap-2 mb-4">
-        {[
-          { value: "TICKET", label: "Tickets" },
-          { value: "ALL", label: "All" },
-        ].map((tab) => (
-          <button
-            key={tab.value}
-            onClick={() => setTypeFilter(tab.value)}
-            className={cn(
-              "px-4 py-1.5 rounded-lg text-xs font-bold transition-all",
-              typeFilter === tab.value
-                ? "bg-primary text-primary-foreground shadow-sm"
-                : "bg-muted/30 text-muted-foreground hover:text-foreground"
-            )}
-          >
-            {tab.label}
-          </button>
-        ))}
+      <div className="flex items-center justify-end gap-2 mb-3">
+        <span className="text-xs text-muted-foreground font-medium">Auto-refresh in {secondsUntilRefresh}s</span>
+        <Button variant="ghost" size="sm" onClick={handleRefresh} className="h-8 w-8 p-0" title="Refresh now">
+          <RefreshCw className={cn("h-3.5 w-3.5", loading && "animate-spin")} />
+        </Button>
       </div>
-
       <Card className="border-border/50 grid grid-cols-1">
         <CardContent className="p-0">
           <Table>
@@ -232,71 +240,118 @@ export function TicketsTable() {
       </Card>
 
       <Dialog open={!!selected || detailLoading} onOpenChange={(open) => { if (!open) { setSelected(null); } }}>
-        <DialogContent className="max-w-2xl max-h-[85vh] flex flex-col px-2 sm:px-4 w-[95%]">
-          <DialogHeader>
-            <DialogTitle>
+        <DialogContent className="max-w-2xl max-h-[85vh] flex flex-col px-2 sm:px-4 w-[95%] overflow-hidden">
+          <DialogHeader className="relative">
+            <DialogTitle className="text-start">
               {selected?.subject || "Conversation Details"}
             </DialogTitle>
+            <DialogClose className="absolute right-0 top-0 rounded-sm opacity-70 ring-offset-background transition-opacity hover:opacity-100 focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:pointer-events-none">
+              <X className="h-4 w-4" />
+              <span className="sr-only">Close</span>
+            </DialogClose>
             <DialogDescription>
-              {selected?.user?.name || "User"} &middot; {selected?.type?.replace(/_/g, " ")} &middot;{" "}
-              <span className={cn(
-                "inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold",
-                selected?.status ? statusColors[selected.status] : ""
-              )}>
-                {selected?.status?.replace(/_/g, " ")}
+              <span className="flex items-center justify-between gap-2 w-full">
+                <span className="text-start">
+                  {selected?.user?.name || "User"} &middot; {selected?.type?.replace(/_/g, " ")} &middot;{" "}
+                  <span className={cn(
+                    "inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-bold",
+                    selected?.status ? statusColors[selected.status] : ""
+                  )}>
+                    {selected?.status?.replace(/_/g, " ")}
+                  </span>
+                </span>
+                {selected && selected.status !== "CLOSED" && selected.status !== "RESOLVED" && (
+                  <span className="shrink-0 sm:mr-10">
+                    <Button variant="outline" size="sm" onClick={handleClose} className="text-[11px] h-7 px-2.5 rounded-lg">
+                      Mark Resolved
+                    </Button>
+                  </span>
+                )}
               </span>
             </DialogDescription>
           </DialogHeader>
 
-          <ScrollArea className="flex-1 min-h-0 max-h-[50vh]">
-            <div className="space-y-4 p-1">
+          <div className="flex-1 min-h-0 overflow-y-auto">
+            <div className="space-y-6 p-1 pr-3">
+              <div className="flex items-center gap-3 px-4">
+                <MessageCircle className="h-6 w-6 text-primary" />
+                <h2 className="text-2xl font-black tracking-tight">Conversation <span className="text-primary italic">History</span></h2>
+              </div>
+
               {detailLoading ? (
-                <div className="space-y-2">
+                <div className="space-y-2 px-4">
                   <Skeleton className="h-12 w-full" />
                   <Skeleton className="h-12 w-3/4" />
                   <Skeleton className="h-12 w-full" />
                 </div>
               ) : selected?.messages?.length ? (
-                <>
-                  {selected.messages.map((msg) => (
-                    <div key={msg.id} className={cn("flex gap-3", msg.senderType === "USER" ? "flex-row-reverse" : "flex-row")}>
+                <div className="space-y-6 relative before:absolute before:left-8 before:top-4 before:bottom-4 before:w-0.5 before:bg-gradient-to-b before:from-primary/20 before:to-transparent">
+                  {selected.messages.map((msg, idx) => (
+                    <motion.div
+                      key={msg.id}
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: idx * 0.1 }}
+                      className="relative pl-16"
+                    >
                       <div className={cn(
-                        "h-8 w-8 rounded-full flex items-center justify-center flex-shrink-0 border",
-                        msg.senderType === "AGENT" ? "bg-primary/10 border-primary/20" :
-                        msg.senderType === "SYSTEM" ? "bg-muted border-dashed" : "bg-muted"
+                        "absolute left-5 top-0 w-6 h-6 rounded-full flex items-center justify-center border-2 border-background z-10",
+                        msg.senderType === "USER" ? "bg-primary text-primary-foreground" :
+                          msg.senderType === "AGENT" ? "bg-emerald-500 text-white" :
+                            msg.senderType === "AI" ? "bg-violet-500 text-white" :
+                              "bg-muted text-muted-foreground"
                       )}>
-                        {msg.senderType === "AGENT" ? <Bot className="h-4 w-4 text-primary" /> :
-                         msg.senderType === "SYSTEM" ? <Headphones className="h-4 w-4 text-muted-foreground" /> :
-                         <User className="h-4 w-4 text-muted-foreground" />}
+                        {msg.senderType === "USER" ? <User className="h-3 w-3" /> :
+                          msg.senderType === "AGENT" ? <Shield className="h-3 w-3" /> :
+                            msg.senderType === "AI" ? <Bot className="h-3 w-3" /> :
+                              <Info className="h-3 w-3" />}
                       </div>
-                      <div className={cn("flex flex-col max-w-[75%] min-w-0 gap-1", msg.senderType === "USER" ? "items-end" : "items-start")}>
-                        <div className={cn(
-                          "px-4 py-2.5 rounded-2xl text-sm leading-relaxed whitespace-pre-wrap break-all",
-                          msg.senderType === "USER" ? "bg-primary text-primary-foreground rounded-tr-none" :
-                          msg.senderType === "SYSTEM" ? "bg-muted/30 border border-dashed rounded-tl-none text-muted-foreground italic text-xs" :
-                          "bg-card border rounded-tl-none"
-                        )}>
-                          {msg.isAi ? <span className="italic opacity-70">[AI] {msg.content}</span> : msg.content}
+
+                      <Card className="p-6 rounded-[24px] border-none shadow-xl shadow-primary/5 bg-card hover:shadow-primary/10 transition-shadow">
+                        <div className="flex justify-between items-center mb-3">
+                          <span className="font-black text-sm uppercase tracking-widest text-primary/60">
+                            {msg.senderName || (
+                              msg.senderType === "USER" ? "User" :
+                                msg.senderType === "AGENT" ? "Support Agent" :
+                                  msg.senderType === "AI" ? "AI Assistant" :
+                                    "System"
+                            )}
+                          </span>
+                          <span className="text-[10px] font-bold text-muted-foreground/50 uppercase tracking-widest">
+                            {format(new Date(msg.createdAt), "MMM d, h:mm a")}
+                          </span>
                         </div>
-                        <span className="text-[10px] text-muted-foreground">
-                          {format(new Date(msg.createdAt), "MMM d, h:mm a")}
-                        </span>
-                      </div>
-                    </div>
+                        <p className="text-muted-foreground leading-relaxed whitespace-pre-wrap break-all">
+                          {msg.isAi ? <span className="italic opacity-70">[AI] {msg.content}</span> : msg.content}
+                        </p>
+                      </Card>
+                    </motion.div>
                   ))}
                   <div ref={messagesEndRef} />
-                </>
+                </div>
               ) : (
-                <p className="text-sm text-muted-foreground">No messages in this conversation.</p>
+                <Card className="mx-4 p-12 text-center border-2 border-dashed border-muted-foreground/10 rounded-[32px] bg-card/50">
+                  <div className="h-16 w-16 bg-primary/5 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <Clock className="h-8 w-8 text-primary/30" />
+                  </div>
+                  <h3 className="text-xl font-bold mb-2">Awaiting Response</h3>
+                  <p className="text-muted-foreground">This conversation has no messages yet.</p>
+                </Card>
               )}
             </div>
-          </ScrollArea>
+          </div>
 
           {/* Reply Input */}
-          <div className="border-t pt-4 mt-2 space-y-3">
+          <div className="border-t pt-2 mt-1">
             {selected && !isConversationClosed ? (
-              <>
-                <div className="flex flex-row items-end justify-center gap-2">
+              <Card className="p-3 rounded-[24px] border-none shadow-xl shadow-primary/5 bg-card">
+                {selected.status === "RESOLVED" && (
+                  <div className="flex items-center gap-2 mb-3 px-3 py-2 bg-amber-500/10 rounded-xl text-amber-600 dark:text-amber-400 text-sm font-medium">
+                    <RotateCcw className="h-4 w-4" />
+                    This conversation is resolved. Sending a message will reopen it.
+                  </div>
+                )}
+                <div className="flex gap-3">
                   <Textarea
                     placeholder="Type your reply..."
                     value={replyText}
@@ -307,34 +362,29 @@ export function TicketsTable() {
                         handleSendReply();
                       }
                     }}
-                    className="min-h-[60px] rounded-xl resize-none flex-1 min-w-0 w-auto"
+                    className="min-h-[56px] rounded-2xl resize-none border-border/50 bg-muted/30 focus-visible:ring-primary/30 flex-1"
                     disabled={isSending}
                   />
                   <Button
                     onClick={handleSendReply}
                     disabled={!replyText.trim() || isSending}
-                    className="shrink-0"
+                    className="self-end h-10 w-10 rounded-2xl shrink-0"
                     size="icon"
                   >
                     {isSending ? (
-                      <Loader2 className="h-4 w-4 animate-spin" />
+                      <Loader2 className="h-5 w-5 animate-spin" />
                     ) : (
-                      <Send className="h-4 w-4" />
+                      <Send className="h-5 w-5" />
                     )}
                   </Button>
                 </div>
-                <div className="flex gap-2 justify-end">
-                  {selected.status !== "CLOSED" && selected.status !== "RESOLVED" && (
-                    <Button variant="outline" size="sm" onClick={handleClose} className="text-xs">
-                      Mark Resolved
-                    </Button>
-                  )}
-                </div>
-              </>
+              </Card>
             ) : selected && isConversationClosed ? (
-              <p className="text-center text-sm text-muted-foreground py-2">
-                This conversation is closed.
-              </p>
+              <Card className="p-6 rounded-[24px] border-2 border-dashed border-muted-foreground/10 bg-card/50 text-center">
+                <p className="text-muted-foreground text-sm font-medium">
+                  This conversation is closed.
+                </p>
+              </Card>
             ) : null}
           </div>
         </DialogContent>

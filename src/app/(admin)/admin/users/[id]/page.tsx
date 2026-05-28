@@ -34,6 +34,7 @@ import {
   Wifi,
   MessageSquare,
   UserCircle,
+  Send,
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -68,12 +69,15 @@ import {
   useUpdateUserStatus,
   useUpdateUserProfile,
   useDeleteUser,
+  useCreateNotification,
+  useNotificationTypes,
 } from "@/hooks/useAdmin";
 import { useQueryClient } from "@tanstack/react-query";
 import { Separator } from "@/components/ui/separator";
 import { authClient } from "@/lib/auth-client";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
 import {
   RadioGroup,
   RadioGroupItem,
@@ -92,6 +96,7 @@ import {
   UserCommunicationMethod,
 } from "@/lib/types";
 import { countries } from "@/lib/countries";
+import { FeedbackModal } from "@/components/feedback-modal";
 
 const AVAILABILITY_CONFIG: Record<
   string,
@@ -200,6 +205,22 @@ export default function AdminUserDetailsPage() {
   const [statusSelection, setStatusSelection] = useState<string>("");
   const [banReason, setBanReason] = useState("");
   const [userRole, setUserRole] = useState("");
+
+  const [isSendNotificationModalOpen, setIsSendNotificationModalOpen] = useState(false);
+  const [notificationData, setNotificationData] = useState({
+    title: '',
+    description: '',
+    type: 'OTHER',
+    url: '',
+  });
+  const [feedbackModal, setFeedbackModal] = useState<{
+    open: boolean;
+    status: 'success' | 'error' | 'warning' | 'info' | 'loading';
+    title: string;
+    description: string;
+    primaryAction?: { label: string; onClick: () => void };
+    secondaryAction?: { label: string; onClick: () => void };
+  }>({ open: false, status: 'info', title: '', description: '' });
 
   const [editProfileData, setEditProfileData] = useState<any>({});
 
@@ -319,6 +340,42 @@ export default function AdminUserDetailsPage() {
     },
   });
 
+  const { data: notificationTypes, isLoading: isLoadingTypes } = useNotificationTypes();
+
+  const createNotificationMutation = useCreateNotification({
+    onSuccess: () => {
+      setIsSendNotificationModalOpen(false);
+      setNotificationData({ title: '', description: '', type: 'OTHER', url: '' });
+      setFeedbackModal({
+        open: true,
+        status: 'success',
+        title: 'Notification Sent!',
+        description: 'The notification has been sent to the user successfully.',
+        primaryAction: { label: 'OK', onClick: () => setFeedbackModal(prev => ({ ...prev, open: false })) },
+      });
+    },
+    onError: (error: any) => {
+      setFeedbackModal({
+        open: true,
+        status: 'error',
+        title: 'Failed to Send',
+        description: error?.message || 'Something went wrong. Please try again.',
+        primaryAction: { label: 'OK', onClick: () => setFeedbackModal(prev => ({ ...prev, open: false })) },
+      });
+    },
+  });
+
+  const handleSendNotification = () => {
+    if (!notificationData.title || !notificationData.description) return;
+    createNotificationMutation.mutate({
+      title: notificationData.title,
+      description: notificationData.description,
+      type: notificationData.type || 'OTHER',
+      url: notificationData.url || undefined,
+      userId: id,
+    });
+  };
+
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
@@ -390,6 +447,14 @@ export default function AdminUserDetailsPage() {
               </h2>
             </div>
             <div className="flex gap-2 sm:gap-4">
+              <Button
+                variant="outline"
+                className="px-3"
+                onClick={() => setIsSendNotificationModalOpen(true)}
+              >
+                <Send className="sm:mr-2 !h-3 !w-3 sm:!h-4 sm:!w-4" />
+                <span className="hidden sm:block">Send Notification</span>
+              </Button>
               <Button
                 variant="outline"
                 className="px-3"
@@ -1424,6 +1489,93 @@ export default function AdminUserDetailsPage() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {/* Send Notification Modal */}
+      <Dialog open={isSendNotificationModalOpen} onOpenChange={setIsSendNotificationModalOpen}>
+        <DialogContent className="sm:max-w-[500px] max-h-[90vh] overflow-hidden flex flex-col">
+          <DialogHeader>
+            <DialogTitle>Send Notification to {user.name}</DialogTitle>
+            <DialogDescription>
+              Send a notification directly to this user.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-4 py-4 overflow-y-auto flex-1 pr-2 -mr-2">
+            <div className="grid gap-2">
+              <Label htmlFor="notif-title">Title</Label>
+              <Input
+                id="notif-title"
+                placeholder="Notification title"
+                value={notificationData.title}
+                onChange={(e) => setNotificationData({ ...notificationData, title: e.target.value })}
+              />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="notif-description">Description</Label>
+              <Textarea
+                id="notif-description"
+                placeholder="Notification description"
+                value={notificationData.description}
+                onChange={(e) => setNotificationData({ ...notificationData, description: e.target.value })}
+              />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="notif-type">Type</Label>
+              {isLoadingTypes ? (
+                <div className="flex items-center justify-center h-10 rounded-md border border-input bg-background">
+                  <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
+                </div>
+              ) : (
+                <Select
+                  value={notificationData.type}
+                  onValueChange={(value) => setNotificationData({ ...notificationData, type: value })}
+                >
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select type" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {(notificationTypes || []).map((type: string) => (
+                      <SelectItem key={type} value={type}>
+                        {type.replace(/_/g, ' ')}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              )}
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="notif-url">URL (Optional)</Label>
+              <Input
+                id="notif-url"
+                placeholder="https://example.com"
+                value={notificationData.url}
+                onChange={(e) => setNotificationData({ ...notificationData, url: e.target.value })}
+              />
+            </div>
+          </div>
+          <DialogFooter className="shrink-0">
+            <Button variant="ghost" onClick={() => setIsSendNotificationModalOpen(false)}>
+              Cancel
+            </Button>
+            <Button
+              onClick={handleSendNotification}
+              disabled={createNotificationMutation.isPending || !notificationData.title || !notificationData.description}
+            >
+              {createNotificationMutation.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              Send Notification
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <FeedbackModal
+        open={feedbackModal.open}
+        onOpenChange={(open) => setFeedbackModal(prev => ({ ...prev, open }))}
+        status={feedbackModal.status}
+        title={feedbackModal.title}
+        description={feedbackModal.description}
+        primaryAction={feedbackModal.primaryAction}
+        secondaryAction={feedbackModal.secondaryAction}
+      />
     </>
   );
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import {
@@ -18,12 +18,24 @@ import {
   Send,
   Info,
   RotateCcw,
+  XCircle,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
 import { BackButton } from "@/components/back-button";
+import {
+  AlertDialog,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogCancel,
+  AlertDialogAction,
+} from "@/components/ui/alert-dialog";
+import { FeedbackModal } from "@/components/feedback-modal";
 import { cn } from "@/lib/utils";
 import api from "@/lib/axios";
 import API_ROUTES from "@/lib/apiRoutes";
@@ -36,9 +48,17 @@ export default function TicketDetailPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [replyText, setReplyText] = useState("");
   const [isSending, setIsSending] = useState(false);
+  const [isUpdatingStatus, setIsUpdatingStatus] = useState(false);
+  const [confirmAction, setConfirmAction] = useState<"RESOLVED" | "CLOSED" | null>(null);
+  const [feedbackModal, setFeedbackModal] = useState<{
+    open: boolean;
+    status: "success" | "error";
+    title: string;
+    description: string;
+  }>({ open: false, status: "success", title: "", description: "" });
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  const fetchTicket = async () => {
+  const fetchTicket = useCallback(async () => {
     setIsLoading(true);
     try {
       const response = await api.get(API_ROUTES.SUPPORT + `/tickets/${params.id}`);
@@ -54,13 +74,27 @@ export default function TicketDetailPage() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [params.id, router]);
 
   useEffect(() => {
     if (params.id) {
       fetchTicket();
     }
-  }, [params.id]);
+  }, [params.id, fetchTicket]);
+
+  useEffect(() => {
+    const handleRefresh = () => {
+      if (params.id && document.visibilityState === "visible") {
+        fetchTicket();
+      }
+    };
+    window.addEventListener("focus", handleRefresh);
+    window.addEventListener("visibilitychange", handleRefresh);
+    return () => {
+      window.removeEventListener("focus", handleRefresh);
+      window.removeEventListener("visibilitychange", handleRefresh);
+    };
+  }, [params.id, fetchTicket]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -119,7 +153,38 @@ export default function TicketDetailPage() {
     }
   };
 
+  const handleUpdateStatus = async (status: "RESOLVED" | "CLOSED" | "OPEN") => {
+    setIsUpdatingStatus(true);
+    try {
+      await api.patch(API_ROUTES.SUPPORT + `/tickets/${params.id}/status`, { status });
+      setConfirmAction(null);
+      setFeedbackModal({
+        open: true,
+        status: "success",
+        title: status === "RESOLVED" ? "Ticket Resolved" : status === "CLOSED" ? "Ticket Closed" : "Ticket Reopened",
+        description: status === "RESOLVED"
+          ? "Your ticket has been marked as resolved. You can still send a message to reopen it if needed."
+          : status === "CLOSED"
+            ? "Your ticket has been closed. You can create a new ticket if you need further assistance."
+            : "Your ticket has been reopened and is now visible to support agents.",
+      });
+      await fetchTicket();
+    } catch (err) {
+      console.error("Failed to update ticket status:", err);
+      setConfirmAction(null);
+      setFeedbackModal({
+        open: true,
+        status: "error",
+        title: "Something Went Wrong",
+        description: "Failed to update ticket status. Please try again.",
+      });
+    } finally {
+      setIsUpdatingStatus(false);
+    }
+  };
+
   const canReply = ticket?.status !== "CLOSED";
+  const isTicketResolved = ticket?.status === "RESOLVED";
 
   if (isLoading) {
     return (
@@ -139,8 +204,10 @@ export default function TicketDetailPage() {
 
   return (
     <div className="min-h-screen">
-      <div className="container py-12 px-4 max-w-5xl mx-auto">
+      <div className="sticky top-0 z-[50] pt-2 pb-4 px-4 max-w-5xl mx-auto">
         <BackButton href="/support/tickets" className="mb-8" />
+      </div>
+      <div className="container py-12 px-4 max-w-5xl mx-auto">
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Main Content */}
@@ -150,7 +217,7 @@ export default function TicketDetailPage() {
               <div className="absolute top-0 right-0 p-8 opacity-[0.03]">
                 <Ticket className="h-48 w-48 rotate-12" />
               </div>
-              
+
               <div className="relative z-10 space-y-6">
                 <div className="flex flex-wrap items-center gap-3">
                   <Badge variant="outline" className={cn("rounded-full px-4 py-1 font-bold uppercase text-[10px] tracking-[0.2em]", statusConfig.className)}>
@@ -202,20 +269,20 @@ export default function TicketDetailPage() {
                       <div className={cn(
                         "absolute left-5 top-0 w-6 h-6 rounded-full flex items-center justify-center border-2 border-background z-10",
                         msg.senderType === "USER" ? "bg-primary text-primary-foreground" :
-                        msg.senderType === "AGENT" ? "bg-emerald-500 text-white" :
-                        "bg-muted text-muted-foreground"
+                          msg.senderType === "AGENT" ? "bg-emerald-500 text-white" :
+                            "bg-muted text-muted-foreground"
                       )}>
                         {msg.senderType === "USER" ? <User className="h-3 w-3" /> :
-                         msg.senderType === "AGENT" ? <Shield className="h-3 w-3" /> :
-                         <Info className="h-3 w-3" />}
+                          msg.senderType === "AGENT" ? <Shield className="h-3 w-3" /> :
+                            <Info className="h-3 w-3" />}
                       </div>
-                      
+
                       <Card className="p-6 rounded-[24px] border-none shadow-xl shadow-primary/5 bg-card hover:shadow-primary/10 transition-shadow">
                         <div className="flex justify-between items-center mb-3">
                           <span className="font-black text-sm uppercase tracking-widest text-primary/60">
                             {msg.senderType === "USER" ? "You" :
-                             msg.senderType === "AGENT" ? "Support Agent" :
-                             "System"}
+                              msg.senderType === "AGENT" ? "Support Agent" :
+                                "System"}
                           </span>
                           <span className="text-[10px] font-bold text-muted-foreground/50 uppercase tracking-widest">
                             {new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
@@ -301,7 +368,7 @@ export default function TicketDetailPage() {
                 <p className="text-primary-foreground/80 leading-relaxed font-medium">
                   If your issue is urgent, you can also use our real-time AI assistant &quot;Alex&quot; for immediate technical guidance.
                 </p>
-                <Button 
+                <Button
                   onClick={() => window.dispatchEvent(new CustomEvent('open-alex-chat'))}
                   className="w-full h-14 rounded-2xl bg-white text-primary hover:bg-white/90 font-bold text-base shadow-xl"
                 >
@@ -316,7 +383,7 @@ export default function TicketDetailPage() {
                 <h3 className="text-xl font-black tracking-tight uppercase">Support Info</h3>
                 <p className="text-xs text-muted-foreground/60 font-bold uppercase tracking-widest">Quick Reference</p>
               </div>
-              
+
               <div className="space-y-4 pt-4 border-t border-border/50">
                 <div className="flex justify-between items-center">
                   <span className="text-sm font-bold text-muted-foreground">Status</span>
@@ -341,10 +408,98 @@ export default function TicketDetailPage() {
                   </div>
                 )}
               </div>
+
+              <div className="pt-4 border-t border-border/50 space-y-2">
+                {ticket.status === "OPEN" || ticket.status === "IN_PROGRESS" ? (
+                  <>
+                    <Button
+                      variant="default"
+                      disabled={isUpdatingStatus}
+                      onClick={() => setConfirmAction("RESOLVED")}
+                      className="w-full h-12 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold shadow-lg shadow-emerald-500/20"
+                    >
+                      {isUpdatingStatus ? (
+                        <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                      ) : (
+                        <CheckCircle className="h-4 w-4 mr-2" />
+                      )}
+                      Mark as Resolved
+                    </Button>
+                    <Button
+                      variant="outline"
+                      disabled={isUpdatingStatus}
+                      onClick={() => setConfirmAction("CLOSED")}
+                      className="w-full h-12 rounded-2xl border-red-500/30 text-red-500 hover:bg-red-500/10 hover:text-red-600 font-bold"
+                    >
+                      <XCircle className="h-4 w-4 mr-2" />
+                      Close Ticket
+                    </Button>
+                  </>
+                ) : (
+                  <Button
+                    variant="default"
+                    disabled={isUpdatingStatus}
+                    onClick={() => handleUpdateStatus("OPEN")}
+                    className="w-full h-12 rounded-2xl font-bold shadow-lg shadow-primary/20"
+                  >
+                    {isUpdatingStatus ? (
+                      <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                    ) : (
+                      <RotateCcw className="h-4 w-4 mr-2" />
+                    )}
+                    Reopen Ticket
+                  </Button>
+                )}
+              </div>
             </Card>
           </div>
         </div>
       </div>
+
+      <AlertDialog open={confirmAction !== null} onOpenChange={() => setConfirmAction(null)}>
+        <AlertDialogContent className="w-[90vw] sm:max-w-[400px] rounded-2xl border-border/10 shadow-2xl">
+          <AlertDialogHeader>
+            <AlertDialogTitle>
+              {confirmAction === "RESOLVED" ? "Mark as Resolved?" : "Close Ticket?"}
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              {confirmAction === "RESOLVED"
+                ? "This will mark your ticket as resolved. You can still send a message to reopen it if needed."
+                : "This will close your ticket permanently. You will not be able to send further replies."}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel className="rounded-xl">Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              disabled={isUpdatingStatus}
+              onClick={() => handleUpdateStatus(confirmAction!)}
+              className={cn(
+                "rounded-xl font-bold",
+                confirmAction === "RESOLVED"
+                  ? "bg-emerald-600 hover:bg-emerald-700 text-white"
+                  : "bg-red-600 hover:bg-red-700 text-white"
+              )}
+            >
+              {isUpdatingStatus ? (
+                <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+              ) : null}
+              {confirmAction === "RESOLVED" ? "Yes, Mark Resolved" : "Yes, Close Ticket"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      <FeedbackModal
+        open={feedbackModal.open}
+        onOpenChange={(open) => setFeedbackModal((prev) => ({ ...prev, open }))}
+        status={feedbackModal.status}
+        title={feedbackModal.title}
+        description={feedbackModal.description}
+        primaryAction={{
+          label: "Done",
+          onClick: () => setFeedbackModal((prev) => ({ ...prev, open: false })),
+        }}
+      />
     </div>
   );
 }

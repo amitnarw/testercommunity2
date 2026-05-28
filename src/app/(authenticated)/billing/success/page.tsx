@@ -155,7 +155,7 @@ function SuccessContent() {
 
 export default function PaymentSuccessPage() {
   return (
-    <div className="min-h-screen bg-muted/30">
+    <div className="min-h-screen">
       <PageHeader title="Purchase Success" backHref={ROUTES.AUTHENTICATED.BILLING} className="max-w-5xl mx-auto px-4" />
       <Suspense fallback={
         <div className="flex items-center justify-center min-h-[60vh]">

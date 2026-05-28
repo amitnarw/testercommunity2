@@ -97,7 +97,7 @@ export default function SupportPage() {
               <TransitionLink href="/support/tickets">
                 <Button size="lg" variant="outline" className="rounded-full px-8">
                   <HistoryIcon className="w-4 h-4 mr-2" />
-                  My Ticket History
+                  My Tickets
                 </Button>
               </TransitionLink>
             </div>
