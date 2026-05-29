@@ -208,8 +208,6 @@ export default function AdminUserDetailsPage() {
   const [roleSelection, setRoleSelection] = useState<string>("");
   const [statusSelection, setStatusSelection] = useState<string>("");
   const [banReason, setBanReason] = useState("");
-  const [userRole, setUserRole] = useState("");
-
   const [isSendNotificationModalOpen, setIsSendNotificationModalOpen] = useState(false);
   const [notificationData, setNotificationData] = useState({
     title: '',
@@ -217,14 +215,14 @@ export default function AdminUserDetailsPage() {
     type: 'OTHER',
     url: '',
   });
-  const [feedbackModal, setFeedbackModal] = useState<{
-    open: boolean;
-    status: 'success' | 'error' | 'warning' | 'info' | 'loading';
-    title: string;
-    description: string;
-    primaryAction?: { label: string; onClick: () => void };
-    secondaryAction?: { label: string; onClick: () => void };
-  }>({ open: false, status: 'info', title: '', description: '' });
+  const [feedbackModal, setFeedbackModal] = useState({
+    open: false,
+    status: "info" as const,
+    title: '',
+    description: '',
+    primaryAction: null,
+    secondaryAction: null,
+  })
 
   const [isWalletModalOpen, setIsWalletModalOpen] = useState(false);
   const [walletEditData, setWalletEditData] = useState({
@@ -275,15 +273,6 @@ export default function AdminUserDetailsPage() {
       });
     }
   }, [user]);
-
-  useEffect(() => {
-    const role =
-      document.cookie
-        .split("; ")
-        .find((row) => row.startsWith("userRole="))
-        ?.split("=")[1] || "";
-    setUserRole(decodeURIComponent(role));
-  }, []);
 
   const updateRoleMutation = useUpdateUserRole({
     onSuccess: () => {
@@ -471,7 +460,11 @@ export default function AdminUserDetailsPage() {
   };
 
   const isTester = user.role === "tester";
-  const isSuperAdmin = userRole === "Super Admin" || userRole === "Super+Admin";
+  const isSuperAdmin = (() => {
+    const role = (session as any)?.role;
+    const roleName = (typeof role === "string" ? role : role?.name)?.toLowerCase();
+    return roleName === "super_admin" || roleName === "super admin";
+  })();
   const isCurrentUser = session?.user?.id === user.id;
   const isTargetSuperAdmin =
     user.role === "super_admin" || user.role === "Super Admin";
