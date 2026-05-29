@@ -35,6 +35,7 @@ import {
   MessageSquare,
   UserCircle,
   Send,
+  FileText,
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -68,9 +69,12 @@ import {
   useUpdateUserRole,
   useUpdateUserStatus,
   useUpdateUserProfile,
+  useUpdateUserWallet,
   useDeleteUser,
   useCreateNotification,
   useNotificationTypes,
+  useUserInvoices,
+  useUpdateInvoice,
 } from "@/hooks/useAdmin";
 import { useQueryClient } from "@tanstack/react-query";
 import { Separator } from "@/components/ui/separator";
@@ -222,6 +226,18 @@ export default function AdminUserDetailsPage() {
     secondaryAction?: { label: string; onClick: () => void };
   }>({ open: false, status: 'info', title: '', description: '' });
 
+  const [isWalletModalOpen, setIsWalletModalOpen] = useState(false);
+  const [walletEditData, setWalletEditData] = useState({
+    totalPoints: 0,
+    totalPackages: 0,
+    reason: "",
+  });
+
+  const { data: userInvoices } = useUserInvoices(id);
+  const [isInvoiceModalOpen, setIsInvoiceModalOpen] = useState(false);
+  const [selectedInvoice, setSelectedInvoice] = useState<any>(null);
+  const [invoiceEditData, setInvoiceEditData] = useState<any>({});
+
   const [editProfileData, setEditProfileData] = useState<any>({});
 
   useEffect(() => {
@@ -229,6 +245,11 @@ export default function AdminUserDetailsPage() {
       setRoleSelection(user.role);
       setStatusSelection(user.status);
       setBanReason(user.banReason || "");
+      setWalletEditData({
+        totalPoints: user.wallet?.totalPoints || 0,
+        totalPackages: user.wallet?.totalPackages || 0,
+        reason: "",
+      });
       setEditProfileData({
         profile_type: user.profileType || "",
         job_role: user.jobRole || "",
@@ -341,6 +362,43 @@ export default function AdminUserDetailsPage() {
   });
 
   const { data: notificationTypes, isLoading: isLoadingTypes } = useNotificationTypes();
+
+  const updateInvoiceMutation = useUpdateInvoice({
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["useUserInvoices", id] });
+      setIsInvoiceModalOpen(false);
+      setSelectedInvoice(null);
+      toast({
+        title: "Invoice Updated",
+        description: "Invoice has been updated successfully.",
+      });
+    },
+    onError: (err: any) => {
+      toast({
+        title: "Error",
+        description: err.message || "Failed to update invoice.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const updateWalletMutation = useUpdateUserWallet({
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["useUserById", id] });
+      setIsWalletModalOpen(false);
+      toast({
+        title: "Wallet Updated",
+        description: "User's wallet balance has been updated successfully.",
+      });
+    },
+    onError: (err: any) => {
+      toast({
+        title: "Error",
+        description: err.message || "Failed to update wallet balance.",
+        variant: "destructive",
+      });
+    },
+  });
 
   const createNotificationMutation = useCreateNotification({
     onSuccess: () => {
@@ -468,6 +526,24 @@ export default function AdminUserDetailsPage() {
                 <Edit className="sm:mr-2 !h-3 !w-3 sm:!h-4 sm:!w-4" />
                 <span className="hidden sm:block">Edit Profile</span>
               </Button>
+
+              {isSuperAdmin && (
+                <Button
+                  variant="outline"
+                  className="px-3"
+                  onClick={() => {
+                    setWalletEditData({
+                      totalPoints: user.wallet?.totalPoints || 0,
+                      totalPackages: user.wallet?.totalPackages || 0,
+                      reason: "",
+                    });
+                    setIsWalletModalOpen(true);
+                  }}
+                >
+                  <Wallet className="sm:mr-2 !h-3 !w-3 sm:!h-4 sm:!w-4" />
+                  <span className="hidden sm:block">Edit Wallet</span>
+                </Button>
+              )}
 
               {!isCurrentUser && (
                 <Button
@@ -877,6 +953,109 @@ export default function AdminUserDetailsPage() {
             </Card>
           </div>
         </div>
+
+        {/* Invoices */}
+        {isSuperAdmin && (
+          <div className="mt-10">
+            <Card className="border-l-4 border-l-purple-500">
+              <CardHeader className="pb-3">
+                <CardTitle className="text-sm font-semibold flex items-center gap-2">
+                  <FileText className="w-4 h-4 text-purple-500" /> Invoices
+                </CardTitle>
+                <CardDescription>
+                  All invoices issued to this user.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                {userInvoices?.invoices?.length > 0 ? (
+                  <div className="overflow-x-auto">
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead>Invoice #</TableHead>
+                          <TableHead>Service</TableHead>
+                          <TableHead>Amount</TableHead>
+                          <TableHead>Status</TableHead>
+                          <TableHead>Date</TableHead>
+                          <TableHead className="text-right">Actions</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {userInvoices.invoices.map((inv: any) => (
+                          <TableRow key={inv.id}>
+                            <TableCell className="font-mono text-xs font-medium">
+                              {inv.invoice_number}
+                            </TableCell>
+                            <TableCell>{inv.service_name}</TableCell>
+                            <TableCell>
+                              {inv.payment?.currency || "INR"} {((inv.payment?.amount || 0) / 100).toLocaleString("en-IN")}
+                            </TableCell>
+                            <TableCell>
+                              <Badge
+                                variant="outline"
+                                className={
+                                  inv.payment?.status === "CAPTURED"
+                                    ? "bg-green-500/20 text-green-700 dark:bg-green-500/10 dark:text-green-400"
+                                    : "bg-yellow-500/20 text-yellow-700 dark:bg-yellow-500/10 dark:text-yellow-400"
+                                }
+                              >
+                                {inv.payment?.status || "UNKNOWN"}
+                              </Badge>
+                            </TableCell>
+                            <TableCell className="text-muted-foreground text-xs">
+                              {formatDate(inv.createdAt)}
+                            </TableCell>
+                            <TableCell className="text-right">
+                              <div className="flex justify-end gap-2">
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() => window.open(`/admin/invoice/${inv.invoice_number}`, "_blank")}
+                                >
+                                  View
+                                </Button>
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() => {
+                                    setSelectedInvoice(inv);
+                                    setInvoiceEditData({
+                                      service_name: inv.service_name || "",
+                                      period: inv.period || "",
+                                      quantity: inv.quantity || 1,
+                                      unit_price: inv.unit_price || 0,
+                                      tax_rate: inv.tax_rate || 0,
+                                      cgst_amount: inv.cgst_amount || 0,
+                                      sgst_amount: inv.sgst_amount || 0,
+                                      igst_amount: inv.igst_amount || 0,
+                                      due_date: inv.due_date ? inv.due_date.split("T")[0] : "",
+                                      place_of_supply: inv.place_of_supply || "",
+                                      supply_type: inv.supply_type || "",
+                                      amount_in_words: inv.amount_in_words || "",
+                                      lut_number: inv.lut_number || "",
+                                      sac_code: inv.sac_code || "",
+                                    });
+                                    setIsInvoiceModalOpen(true);
+                                  }}
+                                >
+                                  Edit
+                                </Button>
+                              </div>
+                            </TableCell>
+                          </TableRow>
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </div>
+                ) : (
+                  <p className="text-muted-foreground text-sm py-4 text-center">
+                    No invoices found for this user.
+                  </p>
+                )}
+              </CardContent>
+            </Card>
+          </div>
+        )}
 
         {/* BOTTOM: Tables */}
         <div className="mt-10">
@@ -1562,6 +1741,248 @@ export default function AdminUserDetailsPage() {
             >
               {createNotificationMutation.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               Send Notification
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Edit Wallet Modal */}
+      <Dialog open={isWalletModalOpen} onOpenChange={setIsWalletModalOpen}>
+        <DialogContent className="sm:max-w-[500px]">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <Wallet className="w-5 h-5" /> Edit Wallet Balance
+            </DialogTitle>
+            <DialogDescription>
+              Adjust the wallet balance for <strong>{user.name}</strong>.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="bg-amber-500/10 border border-amber-500/20 p-3 rounded-md text-xs text-amber-700 dark:text-amber-400 mb-4">
+            Only Super Admins can modify wallet balances. A transaction record will be created for any change.
+          </div>
+          <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <Label>Total Points</Label>
+              <Input
+                type="number"
+                min="0"
+                value={walletEditData.totalPoints}
+                onChange={(e) =>
+                  setWalletEditData((prev) => ({
+                    ...prev,
+                    totalPoints: Math.max(0, parseInt(e.target.value) || 0),
+                  }))
+                }
+              />
+            </div>
+            <div className="space-y-2">
+              <Label>Total Packages</Label>
+              <Input
+                type="number"
+                min="0"
+                value={walletEditData.totalPackages}
+                onChange={(e) =>
+                  setWalletEditData((prev) => ({
+                    ...prev,
+                    totalPackages: Math.max(0, parseInt(e.target.value) || 0),
+                  }))
+                }
+              />
+            </div>
+            <div className="space-y-2">
+              <Label>Reason / Note <span className="text-muted-foreground">(optional)</span></Label>
+              <Textarea
+                placeholder="e.g. Compensation for bug, promotional bonus, etc."
+                value={walletEditData.reason}
+                onChange={(e) =>
+                  setWalletEditData((prev) => ({
+                    ...prev,
+                    reason: e.target.value,
+                  }))
+                }
+              />
+            </div>
+          </div>
+          <DialogFooter className="gap-2">
+            <Button variant="ghost" onClick={() => setIsWalletModalOpen(false)}>
+              Cancel
+            </Button>
+            <Button
+              onClick={() =>
+                updateWalletMutation.mutate({
+                  id: user.id,
+                  totalPoints: walletEditData.totalPoints,
+                  totalPackages: walletEditData.totalPackages,
+                  reason: walletEditData.reason || undefined,
+                })
+              }
+              disabled={updateWalletMutation.isPending}
+            >
+              {updateWalletMutation.isPending && (
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              )}
+              Save Wallet
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Edit Invoice Modal */}
+      <Dialog open={isInvoiceModalOpen} onOpenChange={(open) => { setIsInvoiceModalOpen(open); if (!open) setSelectedInvoice(null); }}>
+        <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <FileText className="w-5 h-5" /> Edit Invoice
+            </DialogTitle>
+            <DialogDescription>
+              Invoice #{selectedInvoice?.invoice_number} for {user.name}.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="bg-amber-500/10 border border-amber-500/20 p-3 rounded-md text-xs text-amber-700 dark:text-amber-400 mb-4">
+            Only Super Admins can modify invoices. Changes take effect immediately.
+          </div>
+          <div className="space-y-4 py-4">
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label>Service Name</Label>
+                <Input
+                  value={invoiceEditData.service_name || ""}
+                  onChange={(e) => setInvoiceEditData((prev: any) => ({ ...prev, service_name: e.target.value }))}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label>SAC Code</Label>
+                <Input
+                  value={invoiceEditData.sac_code || ""}
+                  onChange={(e) => setInvoiceEditData((prev: any) => ({ ...prev, sac_code: e.target.value }))}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label>Period</Label>
+                <Input
+                  value={invoiceEditData.period || ""}
+                  onChange={(e) => setInvoiceEditData((prev: any) => ({ ...prev, period: e.target.value }))}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label>Quantity</Label>
+                <Input
+                  type="number"
+                  min="1"
+                  value={invoiceEditData.quantity || 1}
+                  onChange={(e) => setInvoiceEditData((prev: any) => ({ ...prev, quantity: Math.max(1, parseInt(e.target.value) || 1) }))}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label>Unit Price (in paise)</Label>
+                <Input
+                  type="number"
+                  min="0"
+                  value={invoiceEditData.unit_price || 0}
+                  onChange={(e) => setInvoiceEditData((prev: any) => ({ ...prev, unit_price: Math.max(0, parseInt(e.target.value) || 0) }))}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label>Tax Rate (%)</Label>
+                <Input
+                  type="number"
+                  min="0"
+                  value={invoiceEditData.tax_rate || 0}
+                  onChange={(e) => setInvoiceEditData((prev: any) => ({ ...prev, tax_rate: Math.max(0, parseInt(e.target.value) || 0) }))}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label>CGST Amount</Label>
+                <Input
+                  type="number"
+                  min="0"
+                  value={invoiceEditData.cgst_amount || 0}
+                  onChange={(e) => setInvoiceEditData((prev: any) => ({ ...prev, cgst_amount: Math.max(0, parseInt(e.target.value) || 0) }))}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label>SGST Amount</Label>
+                <Input
+                  type="number"
+                  min="0"
+                  value={invoiceEditData.sgst_amount || 0}
+                  onChange={(e) => setInvoiceEditData((prev: any) => ({ ...prev, sgst_amount: Math.max(0, parseInt(e.target.value) || 0) }))}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label>IGST Amount</Label>
+                <Input
+                  type="number"
+                  min="0"
+                  value={invoiceEditData.igst_amount || 0}
+                  onChange={(e) => setInvoiceEditData((prev: any) => ({ ...prev, igst_amount: Math.max(0, parseInt(e.target.value) || 0) }))}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label>Due Date</Label>
+                <Input
+                  type="date"
+                  value={invoiceEditData.due_date || ""}
+                  onChange={(e) => setInvoiceEditData((prev: any) => ({ ...prev, due_date: e.target.value }))}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label>Place of Supply</Label>
+                <Input
+                  value={invoiceEditData.place_of_supply || ""}
+                  onChange={(e) => setInvoiceEditData((prev: any) => ({ ...prev, place_of_supply: e.target.value }))}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label>Supply Type</Label>
+                <Input
+                  value={invoiceEditData.supply_type || ""}
+                  onChange={(e) => setInvoiceEditData((prev: any) => ({ ...prev, supply_type: e.target.value }))}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label>LUT Number</Label>
+                <Input
+                  value={invoiceEditData.lut_number || ""}
+                  onChange={(e) => setInvoiceEditData((prev: any) => ({ ...prev, lut_number: e.target.value }))}
+                />
+              </div>
+              <div className="space-y-2 col-span-2">
+                <Label>Amount in Words</Label>
+                <Textarea
+                  value={invoiceEditData.amount_in_words || ""}
+                  onChange={(e) => setInvoiceEditData((prev: any) => ({ ...prev, amount_in_words: e.target.value }))}
+                />
+              </div>
+            </div>
+          </div>
+          <DialogFooter className="gap-2">
+            <Button variant="ghost" onClick={() => { setIsInvoiceModalOpen(false); setSelectedInvoice(null); }}>
+              Cancel
+            </Button>
+            <Button
+              onClick={() => {
+                if (!selectedInvoice) return;
+                const payload: any = { id: selectedInvoice.id };
+                const fields = [
+                  "service_name", "period", "quantity", "unit_price",
+                  "tax_rate", "cgst_amount", "sgst_amount", "igst_amount",
+                  "due_date", "place_of_supply", "supply_type",
+                  "amount_in_words", "lut_number", "sac_code",
+                ];
+                for (const f of fields) {
+                  if (invoiceEditData[f] !== undefined) {
+                    payload[f] = invoiceEditData[f];
+                  }
+                }
+                updateInvoiceMutation.mutate(payload);
+              }}
+              disabled={updateInvoiceMutation.isPending}
+            >
+              {updateInvoiceMutation.isPending && (
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              )}
+              Save Invoice
             </Button>
           </DialogFooter>
         </DialogContent>

@@ -18,6 +18,7 @@ import {
   updateUserStatus,
   updateUserRole,
   updateUserProfile,
+  updateUserWallet,
   deleteUser,
   getAllSuggestions,
   getSuggestionById,
@@ -66,6 +67,8 @@ import {
   getFinancePricing,
   updateFinancePricing,
   getUserWalletDetail,
+  getUserInvoices,
+  updateInvoice,
   getFinancePlans,
   getFinancePaymentMethods,
   getAllAuthors,
@@ -307,6 +310,20 @@ export function useUpdateUserProfile(options?: UseMutationOptions<any, any, any>
   const mutation = useMutation({
     mutationFn: (payload: { id: string; data: any }) =>
       updateUserProfile(payload),
+    ...options,
+  });
+
+  return mutation;
+}
+
+export function useUpdateUserWallet(options?: UseMutationOptions<any, any, any>) {
+  const mutation = useMutation({
+    mutationFn: (payload: {
+      id: string;
+      totalPoints: number;
+      totalPackages: number;
+      reason?: string;
+    }) => updateUserWallet(payload),
     ...options,
   });
 
@@ -962,6 +979,40 @@ export function useFinanceInvoices(params?: {
   return useQuery({
     queryFn: () => getFinanceInvoices(params),
     queryKey: ["useFinanceInvoices", params],
+  });
+}
+
+export function useUserInvoices(userId: string | null, params?: {
+  page?: number;
+  limit?: number;
+}) {
+  return useQuery({
+    queryFn: () => getUserInvoices(userId!, params),
+    queryKey: ["useUserInvoices", userId, params],
+    enabled: !!userId,
+  });
+}
+
+export function useUpdateInvoice(options?: UseMutationOptions<any, any, any>) {
+  return useMutation({
+    mutationFn: (payload: {
+      id: number;
+      service_name?: string;
+      period?: string;
+      quantity?: number;
+      unit_price?: number;
+      tax_rate?: number;
+      cgst_amount?: number;
+      sgst_amount?: number;
+      igst_amount?: number;
+      due_date?: string;
+      place_of_supply?: string;
+      supply_type?: string;
+      amount_in_words?: string;
+      lut_number?: string;
+      sac_code?: string;
+    }) => updateInvoice(payload),
+    ...options,
   });
 }
 
