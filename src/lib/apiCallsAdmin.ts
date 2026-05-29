@@ -465,6 +465,35 @@ export async function updateUserRole(payload: { id: string; role: string }) {
   }
 }
 
+export async function updateUserWallet(payload: {
+  id: string;
+  totalPoints: number;
+  totalPackages: number;
+  reason?: string;
+}) {
+  try {
+    const response = await api.post(
+      API_ROUTES.ADMIN + `/users/update-wallet`,
+      payload,
+    );
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error updating user wallet:", error);
+    if (axios.isAxiosError(error)) {
+      const status = error.response?.status;
+      const responseData = error.response?.data;
+      console.error("Axios error:", status, responseData);
+      throw new Error(
+        responseData?.message || error.message || "Unknown Axios error",
+      );
+    } else if (error instanceof Error) {
+      throw new Error(error.message);
+    } else {
+      throw new Error(JSON.stringify(error));
+    }
+  }
+}
+
 export async function updateUserProfile(payload: { id: string; data: any }) {
   try {
     const response = await api.post(
@@ -1311,6 +1340,45 @@ export async function getFinanceInvoices(params?: {
     return response?.data?.data;
   } catch (error) {
     console.error("Error fetching finance invoices:", error);
+    throw error;
+  }
+}
+
+export async function getUserInvoices(userId: string, params?: {
+  page?: number;
+  limit?: number;
+}) {
+  try {
+    const response = await api.get(API_ROUTES.ADMIN + `/finance/invoices/user/${userId}`, { params });
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error fetching user invoices:", error);
+    throw error;
+  }
+}
+
+export async function updateInvoice(payload: {
+  id: number;
+  service_name?: string;
+  period?: string;
+  quantity?: number;
+  unit_price?: number;
+  tax_rate?: number;
+  cgst_amount?: number;
+  sgst_amount?: number;
+  igst_amount?: number;
+  due_date?: string;
+  place_of_supply?: string;
+  supply_type?: string;
+  amount_in_words?: string;
+  lut_number?: string;
+  sac_code?: string;
+}) {
+  try {
+    const response = await api.post(API_ROUTES.ADMIN + `/finance/invoices/update`, { payload });
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error updating invoice:", error);
     throw error;
   }
 }
