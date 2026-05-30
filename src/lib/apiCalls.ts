@@ -418,6 +418,28 @@ export const saveInitialProfileData = async () => {
   }
 };
 
+export const saveDiscoverySource = async (discovery_source: string) => {
+  try {
+    await api.put(API_ROUTES.USER + "/discovery-source", {
+      discovery_source,
+    });
+    return true;
+  } catch (error) {
+    console.error("Error saving discovery source:", error);
+    if (axios.isAxiosError(error)) {
+      const status = error.response?.status;
+      const responseData = error.response?.data;
+      throw new Error(
+        responseData?.message || error.message || "Unknown Axios error",
+      );
+    } else if (error instanceof Error) {
+      throw new Error(error.message);
+    } else {
+      throw new Error(JSON.stringify(error));
+    }
+  }
+};
+
 // export async function fetchUser(id: string) {
 //   try {
 //     const response = await api.get(API_ROUTES.USER + `/${id}`);

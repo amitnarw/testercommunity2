@@ -347,7 +347,7 @@ export function AdminDeclarationEditor({ appId }: { appId: number }) {
             <span className="text-amber-600 dark:text-amber-400 font-medium">
               {declaration?.adminAnswers?.questions?.length
                 ? "You have unsaved changes."
-                : "Seeded with auto-generated answers — save to create your draft."}
+                : "Seeded with auto-generated answers, save to create your draft."}
             </span>
           )}
           {!hasUnsaved && questions.length > 0 && (

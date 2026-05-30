@@ -1589,3 +1589,38 @@ export async function deleteAuthor(id: number) {
     throw error;
   }
 }
+
+// ==================== PERMISSION MATRIX ====================
+
+export async function getAllPermissions() {
+  try {
+    const response = await api.get(API_ROUTES.ADMIN + "/permissions");
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error fetching permissions:", error);
+    throw error;
+  }
+}
+
+export async function updatePermission(
+  roleId: number,
+  moduleId: number,
+  payload: {
+    canReadList?: boolean;
+    canReadSingle?: boolean;
+    canCreate?: boolean;
+    canUpdate?: boolean;
+    canDelete?: boolean;
+  },
+) {
+  try {
+    const response = await api.put(
+      API_ROUTES.ADMIN + `/permissions/${roleId}/${moduleId}`,
+      payload,
+    );
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error updating permission:", error);
+    throw error;
+  }
+}

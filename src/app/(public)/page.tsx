@@ -65,16 +65,17 @@ export default function Home() {
               <span>Built for Google's 12-Tester Requirement.</span>
             </HoverBorderGradient>
             <h1 className="text-[1.85rem] sm:text-[2.75rem] md:text-[3.5rem] lg:text-[4.25rem] font-heading leading-[1.2] md:leading-[1.1] tracking-tight font-bold mb-5 sm:mb-8 text-center mx-auto max-w-[900px]">
-              Launch Your{" "}
+              Get{" "}
+              <span className="text-primary italic">12 Testers</span>{" "}
+              for{" "}
               <span className="bg-gradient-to-br from-primary to-accent bg-clip-text text-transparent">
-                Android App
+                14 Days
               </span>{" "}
               <br className="hidden md:block" />
-              in <span className="text-primary italic">14 Days</span> Flat
+              &amp; Publish Faster
             </h1>
             <p className="text-sm sm:text-base md:text-lg font-body max-w-xs sm:max-w-md md:max-w-lg lg:max-w-[700px] mx-auto mb-8 text-muted-foreground">
-              Earn points to test your app for free in our Community Hub, or
-              upgrade to Pro for guaranteed, professional results.
+              Get Google Play production access - faster, smoother, and without rejections. Join devs from 180+ countries using our service.
             </p>
             <div className="mt-5 inline-block p-4">
               <MagneticButton>

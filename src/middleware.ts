@@ -97,7 +97,7 @@ export async function middleware(request: NextRequest) {
   ];
   const adminRoutes = [ROUTES.ADMIN.ROOT];
   const adminAuthRoutes = [ROUTES.ADMIN.AUTH.LOGIN];
-  const adminFinanceRoutes = [ROUTES.ADMIN.FINANCE];
+  const superAdminOnlyRoutes = [ROUTES.ADMIN.FINANCE, ROUTES.ADMIN.PERMISSIONS];
   const testerAuthRoutes = [
     ROUTES.TESTER.AUTH.LOGIN,
     ROUTES.TESTER.AUTH.REGISTER,
@@ -139,10 +139,11 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  // Finance routes are super_admin only
+  // Super admin only routes (finance, permissions, etc.)
   if (
     isAuthenticated &&
-    adminFinanceRoutes.some((route) => pathname.startsWith(route))
+    !isSuperAdmin &&
+    superAdminOnlyRoutes.some((route) => pathname.startsWith(route))
   ) {
     return NextResponse.redirect(new URL(ROUTES.ADMIN.DASHBOARD, request.url));
   }
@@ -262,6 +263,30 @@ export async function middleware(request: NextRequest) {
     ) {
       return NextResponse.redirect(
         new URL(ROUTES.TESTER.DASHBOARD, request.url),
+      );
+    }
+  }
+
+  // Role-based access control: moderators can only access blog management, profile, and admin auth routes
+  if (lowerRole === "moderator") {
+    const moderatorAllowedRoutes = [
+      ROUTES.ADMIN.BLOG_MANAGEMENT,
+      ROUTES.ADMIN.PROFILE,
+    ];
+    const isModeratorAllowed = moderatorAllowedRoutes.some((route) =>
+      pathname.startsWith(route),
+    );
+    const isAdminAuthRoute = adminAuthRoutes.some((route) =>
+      pathname.startsWith(route),
+    );
+
+    if (
+      !isModeratorAllowed &&
+      !isAdminAuthRoute &&
+      adminRoutes.some((route) => pathname.startsWith(route))
+    ) {
+      return NextResponse.redirect(
+        new URL(ROUTES.ADMIN.BLOG_MANAGEMENT, request.url),
       );
     }
   }

@@ -224,6 +224,8 @@ export type UserProfileDataAttributes = {
   areas_of_expertise?: string[];
   bio?: string;
 
+  discovery_source?: string;
+  discovery_source_answered?: boolean;
   initial: boolean;
 
   createdAt: string;
@@ -301,6 +303,7 @@ export interface ControlRoomResponse {
   communityApps?: number | null | undefined;
   uniqueDevices?: number | null | undefined;
   communityPoints?: number | null | undefined;
+  alexSystemPrompt?: string | null | undefined;
 }
 
 export interface DashboardDataResponse {

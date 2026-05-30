@@ -31,6 +31,7 @@ import {
   MessageCircle, Shield, Info, Clock, RotateCcw, X, RefreshCw,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { LinkifyText } from "@/components/linkify-text";
 
 interface Conversation {
   id: number;
@@ -321,8 +322,14 @@ export function TicketsTable() {
                             {format(new Date(msg.createdAt), "MMM d, h:mm a")}
                           </span>
                         </div>
-                        <p className="text-muted-foreground leading-relaxed whitespace-pre-wrap break-all">
-                          {msg.isAi ? <span className="italic opacity-70">[AI] {msg.content}</span> : msg.content}
+                        <p className="text-muted-foreground leading-relaxed whitespace-pre-wrap break-words">
+                          {msg.isAi ? (
+                            <span className="italic opacity-70">[AI] <LinkifyText text={msg.content} /></span>
+                          ) : msg.senderType === "SYSTEM" ? (
+                            msg.content
+                          ) : (
+                            <LinkifyText text={msg.content} />
+                          )}
                         </p>
                       </Card>
                     </motion.div>

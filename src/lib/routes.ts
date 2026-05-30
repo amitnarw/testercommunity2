@@ -43,6 +43,7 @@ export const ROUTES = {
     SUPPORT: "/admin/support",
     PROFILE: "/admin/profile",
     FEEDBACK: "/admin/feedback",
+    PERMISSIONS: "/admin/permissions",
     CONTROL_ROOM: "/admin/control-room",
     AUTH: {
       LOGIN: "/admin/auth/login",

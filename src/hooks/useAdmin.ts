@@ -78,6 +78,8 @@ import {
   createAuthor,
   updateAuthor,
   deleteAuthor,
+  getAllPermissions,
+  updatePermission,
 } from "@/lib/apiCallsAdmin";
 import { useRouter } from "next/navigation";
 import { ROUTES } from "@/lib/routes";
@@ -1113,5 +1115,41 @@ export function useFinancePaymentMethods() {
   return useQuery({
     queryFn: () => getFinancePaymentMethods(),
     queryKey: ["useFinancePaymentMethods"],
+  });
+}
+
+// ==================== PERMISSIONS ====================
+
+export function useAllPermissions(options?: { enabled?: boolean }) {
+  return useQuery({
+    queryFn: () => getAllPermissions(),
+    queryKey: ["useAllPermissions"],
+    enabled: options?.enabled ?? true,
+  });
+}
+
+export function useUpdatePermission(options?: UseMutationOptions<any, any, any>) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({
+      roleId,
+      moduleId,
+      payload,
+    }: {
+      roleId: number;
+      moduleId: number;
+      payload: {
+        canReadList?: boolean;
+        canReadSingle?: boolean;
+        canCreate?: boolean;
+        canUpdate?: boolean;
+        canDelete?: boolean;
+      };
+    }) => updatePermission(roleId, moduleId, payload),
+    onSuccess: (data, variables, context) => {
+      queryClient.invalidateQueries({ queryKey: ["useAllPermissions"] });
+      options?.onSuccess?.(data, variables, context);
+    },
+    ...options,
   });
 }

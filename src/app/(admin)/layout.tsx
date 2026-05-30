@@ -39,7 +39,11 @@ export default function AdminLayout({
 
       if (isLoginPage) {
         if (isAdminRole) {
-          router.replace(ROUTES.ADMIN.DASHBOARD);
+          if (lowerRole === "moderator") {
+            router.replace(ROUTES.ADMIN.BLOG_MANAGEMENT);
+          } else {
+            router.replace(ROUTES.ADMIN.DASHBOARD);
+          }
         }
       } else if (!isAdminRole) {
         router.replace(ROUTES.ADMIN.AUTH.LOGIN);

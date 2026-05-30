@@ -17,6 +17,7 @@ import {
   Lightbulb,
   Ticket,
   Terminal,
+  Shield,
   BookOpen,
   Star,
   MessageSquare,
@@ -45,6 +46,15 @@ const proNavLinks = [
 ];
 
 // Admin sidebar navigation with sections
+// Permissions link (super_admin only)
+const permissionsNavLink = {
+  name: "Permission Matrix",
+  href: ROUTES.ADMIN.PERMISSIONS,
+  icon: Shield,
+  section: "system",
+  superAdminOnly: true,
+};
+
 const adminNavLinks = [
   // Overview
   {
@@ -138,6 +148,9 @@ const adminNavLinks = [
     section: "platform",
   },
 
+  // System (super_admin only)
+  permissionsNavLink,
+
   // Support
   {
     name: "Support",
@@ -180,6 +193,30 @@ export function Sidebar({
   }
 
   const navContent = isAdminRole ? (
+    roleName === "moderator" ? (
+      <>
+        <div className="mb-1">
+          {!isCollapsed && (
+            <span className="text-[10px] font-semibold text-white/40 dark:text-black/40 uppercase tracking-wider px-3">
+              Content
+            </span>
+          )}
+          {adminNavLinks
+            .filter((l) => l.name === "Blog Management")
+            .map((link) => (
+              <SidebarNavLink
+                key={link.href}
+                href={link.href}
+                icon={link.icon}
+                isCollapsed={isCollapsed}
+                badge={link.badge}
+              >
+                {link.name}
+              </SidebarNavLink>
+            ))}
+        </div>
+      </>
+    ) : (
       <>
         <div className="mb-1">
           {!isCollapsed && (
@@ -332,10 +369,40 @@ export function Sidebar({
               </SidebarNavLink>
             ))}
         </div>
+
+        {/* System section - super_admin only */}
+        {roleName === "super_admin" && (
+          <>
+            {!isCollapsed && (
+              <div className="h-px bg-white/10 dark:bg-black/10 mx-3 my-1" />
+            )}
+            <div className="mb-1">
+              {!isCollapsed && (
+                <span className="text-[10px] font-semibold text-purple-500/70 uppercase tracking-wider px-3">
+                  System
+                </span>
+              )}
+              {adminNavLinks
+                .filter((l) => l.section === "system")
+                .map((link) => (
+                  <SidebarNavLink
+                    key={link.href}
+                    href={link.href}
+                    icon={link.icon}
+                    isCollapsed={isCollapsed}
+                    badge={link.badge}
+                  >
+                    {link.name}
+                  </SidebarNavLink>
+                ))}
+            </div>
+          </>
+        )}
       </>
-    ) : (
-      <>
-        {navLinks.map((link) => (
+    )
+  ) : (
+    <>
+      {navLinks.map((link) => (
           <SidebarNavLink
             key={link.href}
             href={link.href}

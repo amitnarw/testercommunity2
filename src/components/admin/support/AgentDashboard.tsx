@@ -8,6 +8,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 import { connectSupportSocket } from "@/lib/supportSocket";
+import { LinkifyText } from "@/components/linkify-text";
 import {
   Clock, User, AlertCircle, Bot, Send, Power, MessageSquare, Users, Inbox,
 } from "lucide-react";
@@ -579,7 +580,7 @@ export function AgentDashboard() {
                           msg.senderType === "AGENT" ? "items-end" : "items-start"
                         )}>
                           <div className={cn(
-                            "px-4 py-2.5 rounded-2xl text-sm shadow-sm leading-relaxed break-all",
+                            "px-4 py-2.5 rounded-2xl text-sm shadow-sm leading-relaxed break-words",
                             msg.senderType === "AGENT"
                               ? "bg-primary text-primary-foreground rounded-tr-none"
                               : msg.senderType === "SYSTEM"
@@ -587,9 +588,12 @@ export function AgentDashboard() {
                               : "bg-card border rounded-tl-none"
                           )}>
                             {msg.isAi ? (
-                              <span className="text-xs italic opacity-70">[AI Context] {msg.message}</span>
-                            ) : (
+                              <span className="text-xs italic opacity-70">[AI Context] </span>
+                            ) : null}
+                            {msg.senderType === "SYSTEM" ? (
                               msg.message
+                            ) : (
+                              <LinkifyText text={msg.message} />
                             )}
                           </div>
                           <span className="text-[10px] text-muted-foreground">

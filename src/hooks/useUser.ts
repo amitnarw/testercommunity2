@@ -10,6 +10,7 @@ import {
   getUserProfileData,
   getUserWallet,
   getUserTransactions,
+  saveDiscoverySource,
   saveInitialProfileData,
   saveProfileData,
   saveUserData,
@@ -30,6 +31,7 @@ import {
   useMutation,
   UseMutationOptions,
   useQuery,
+  useQueryClient,
 } from "@tanstack/react-query";
 
 export type CommonResponse = {
@@ -95,6 +97,22 @@ export function useProfileDataSave(
     },
     onError: (data) => {
       console.log("Profile data saving failed: " + data);
+    },
+    ...options,
+  });
+
+  return mutation;
+}
+
+export function useDiscoverySourceSave(
+  options?: UseMutationOptions<any, any, any>,
+) {
+  const queryClient = useQueryClient();
+  const mutation = useMutation({
+    mutationFn: (discovery_source: string) =>
+      saveDiscoverySource(discovery_source),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["getUserProfileData"] });
     },
     ...options,
   });

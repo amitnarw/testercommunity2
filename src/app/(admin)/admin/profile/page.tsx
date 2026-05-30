@@ -6,8 +6,14 @@ import { UserDataForm } from "@/components/authenticated/profile/user-data-form"
 import { ActiveSessions } from "@/components/authenticated/profile/active-sessions";
 import { ProfileBentoGrid } from "@/components/profile-bento-grid";
 import { ROUTES } from "@/lib/routes";
+import { authClient } from "@/lib/auth-client";
 
 export default function ProfilePage() {
+    const { data: session } = authClient.useSession();
+    const role = (session as any)?.role;
+    const roleName = (typeof role === "string" ? role : role?.name)?.toLowerCase();
+    const backHref = roleName === "moderator" ? ROUTES.ADMIN.BLOG_MANAGEMENT : ROUTES.ADMIN.DASHBOARD;
+
     return (
         <div
             data-loc="ProfilePage"
@@ -15,7 +21,7 @@ export default function ProfilePage() {
         >
             <PageHeader
                 title="Profile"
-                backHref={ROUTES.ADMIN.DASHBOARD}
+                backHref={backHref}
                 className="w-1/2 lg:w-full"
             />
             <div className="mx-auto space-y-12">

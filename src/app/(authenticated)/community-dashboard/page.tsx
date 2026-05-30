@@ -41,6 +41,8 @@ import { Badge } from "@/components/ui/badge";
 import type { HubSubmittedAppResponse } from "@/lib/types";
 import SubTabUI from "@/components/sub-tab-ui";
 import { useHubApps, useHubAppsCount, useHubData } from "@/hooks/useHub";
+import { useUserProfileData } from "@/hooks/useUser";
+import { DiscoverySourceModal } from "@/components/discovery-source-modal";
 import { AppCardSkeleton } from "@/components/app-card-skeleton";
 import { format } from "date-fns";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -388,6 +390,19 @@ function CommunityDashboardContent() {
 
   const [filter, setFilter] = useState("All");
   const [sort, setSort] = useState("Most Recent");
+  const [showDiscoveryModal, setShowDiscoveryModal] = useState(false);
+
+  const { data: userProfileData, refetch: refetchProfile } = useUserProfileData();
+
+  useEffect(() => {
+    refetchProfile();
+  }, [refetchProfile]);
+
+  useEffect(() => {
+    if (userProfileData && !userProfileData.discovery_source_answered) {
+      setShowDiscoveryModal(true);
+    }
+  }, [userProfileData]);
 
   const [selectedTab, setSelectedTab] = useState(
     searchParams.get("tab") || "available",
@@ -549,6 +564,10 @@ function CommunityDashboardContent() {
 
   return (
     <div data-loc="CommunityDashboardPage" className="min-h-screen mb-8">
+      <DiscoverySourceModal
+        open={showDiscoveryModal}
+        onComplete={() => setShowDiscoveryModal(false)}
+      />
       <div className="container mx-auto px-4 md:px-6">
         <header className="mb-12">
           <div className="mb-6">
