@@ -186,6 +186,23 @@ export default function AdminSubmissionDetailPage({
       ?.reduce((acc, r) => acc + (r.daysCompleted || 0), 0) /
     (activeTestersCount + completedTestersCount) || 0;
 
+  const healthIndicator =
+    project.status === "IN_TESTING"
+      ? {
+          containerClass: "bg-emerald-500/5 border-emerald-500/10",
+          dotClass: "bg-emerald-500 animate-pulse",
+          textClass: "text-emerald-700 dark:text-emerald-400",
+          message: "Project is active and collecting data",
+        }
+      : project.status === "COMPLETED"
+        ? {
+            containerClass: "bg-blue-500/5 border-blue-500/10",
+            dotClass: "bg-blue-500",
+            textClass: "text-blue-700 dark:text-blue-400",
+            message: "Project completed",
+          }
+        : null;
+
   const feedbackStats = {
     BUG: project.feedback?.filter((f) => f.type === "BUG").length || 0,
     SUGGESTION:
@@ -711,30 +728,38 @@ export default function AdminSubmissionDetailPage({
               )}
 
               {/* Health Indicator */}
-              <div className="pt-2">
-                <div className="flex flex-col gap-3 p-3 bg-emerald-500/5 rounded-2xl border border-emerald-500/10">
-                  <div className="flex items-center gap-3">
-                    <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                    <p className="text-xs font-bold text-emerald-700 dark:text-emerald-400">
-                      Project is active and collecting data
-                    </p>
+              {healthIndicator && (
+                <div className="pt-2">
+                  <div
+                    className={`flex flex-col gap-3 p-3 rounded-2xl border ${healthIndicator.containerClass}`}
+                  >
+                    <div className="flex items-center gap-3">
+                      <div
+                        className={`w-2 h-2 rounded-full ${healthIndicator.dotClass}`}
+                      />
+                      <p
+                        className={`text-xs font-bold ${healthIndicator.textClass}`}
+                      >
+                        {healthIndicator.message}
+                      </p>
+                    </div>
+                    {lastActivityAt && (
+                      <p className="text-[10px] text-muted-foreground font-medium pl-5">
+                        Latest activity:{" "}
+                        {lastActivityAt.toLocaleDateString(undefined, {
+                          month: "short",
+                          day: "numeric",
+                        })}{" "}
+                        at{" "}
+                        {lastActivityAt.toLocaleTimeString(undefined, {
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        })}
+                      </p>
+                    )}
                   </div>
-                  {lastActivityAt && (
-                    <p className="text-[10px] text-muted-foreground font-medium pl-5">
-                      Latest activity:{" "}
-                      {lastActivityAt.toLocaleDateString(undefined, {
-                        month: "short",
-                        day: "numeric",
-                      })}{" "}
-                      at{" "}
-                      {lastActivityAt.toLocaleTimeString(undefined, {
-                        hour: "2-digit",
-                        minute: "2-digit",
-                      })}
-                    </p>
-                  )}
                 </div>
-              </div>
+              )}
             </CardContent>
           </Card>
 

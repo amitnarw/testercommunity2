@@ -36,6 +36,10 @@ import {
   UserCircle,
   Send,
   FileText,
+  Bell,
+  Plus,
+  CheckCircle2,
+  X,
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -72,9 +76,12 @@ import {
   useUpdateUserWallet,
   useDeleteUser,
   useCreateNotification,
+  useUpdateNotification,
+  useDeleteNotification,
   useNotificationTypes,
   useUserInvoices,
   useUpdateInvoice,
+  useUserNotifications,
 } from "@/hooks/useAdmin";
 import { useQueryClient } from "@tanstack/react-query";
 import { Separator } from "@/components/ui/separator";
@@ -224,14 +231,30 @@ export default function AdminUserDetailsPage() {
     secondaryAction: null,
   })
 
-  const [isWalletModalOpen, setIsWalletModalOpen] = useState(false);
+  const [isEconomyEditing, setIsEconomyEditing] = useState(false);
   const [walletEditData, setWalletEditData] = useState({
     totalPoints: 0,
     totalPackages: 0,
-    reason: "",
   });
 
   const { data: userInvoices } = useUserInvoices(id);
+  const { data: userNotifications, isLoading: isLoadingNotifications } = useUserNotifications(id);
+
+  const [isCreatingNotification, setIsCreatingNotification] = useState(false);
+  const [createFormData, setCreateFormData] = useState({
+    title: '',
+    description: '',
+    type: 'OTHER',
+    url: '',
+  });
+  const [editingNotificationId, setEditingNotificationId] = useState<number | null>(null);
+  const [editFormData, setEditFormData] = useState({
+    title: '',
+    description: '',
+    url: '',
+    isActive: true,
+  });
+
   const [isInvoiceModalOpen, setIsInvoiceModalOpen] = useState(false);
   const [selectedInvoice, setSelectedInvoice] = useState<any>(null);
   const [invoiceEditData, setInvoiceEditData] = useState<any>({});
@@ -246,7 +269,6 @@ export default function AdminUserDetailsPage() {
       setWalletEditData({
         totalPoints: user.wallet?.totalPoints || 0,
         totalPackages: user.wallet?.totalPackages || 0,
-        reason: "",
       });
       setEditProfileData({
         profile_type: user.profileType || "",
@@ -374,7 +396,7 @@ export default function AdminUserDetailsPage() {
   const updateWalletMutation = useUpdateUserWallet({
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["useUserById", id] });
-      setIsWalletModalOpen(false);
+      setIsEconomyEditing(false);
       toast({
         title: "Wallet Updated",
         description: "User's wallet balance has been updated successfully.",
@@ -393,6 +415,7 @@ export default function AdminUserDetailsPage() {
     onSuccess: () => {
       setIsSendNotificationModalOpen(false);
       setNotificationData({ title: '', description: '', type: 'OTHER', url: '' });
+      queryClient.invalidateQueries({ queryKey: ["useUserNotifications", id] });
       setFeedbackModal({
         open: true,
         status: 'success',
@@ -412,6 +435,28 @@ export default function AdminUserDetailsPage() {
     },
   });
 
+  const updateNotificationMutation = useUpdateNotification({
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["useUserNotifications", id] });
+      setEditingNotificationId(null);
+      toast({ title: "Notification Updated" });
+    },
+    onError: (err: any) => {
+      toast({ title: "Error", description: err.message || "Failed to update notification.", variant: "destructive" });
+    },
+  });
+
+  const deleteNotificationMutation = useDeleteNotification({
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["useUserNotifications", id] });
+      setFeedbackModal(prev => ({ ...prev, open: false }));
+      toast({ title: "Notification Deleted" });
+    },
+    onError: (err: any) => {
+      toast({ title: "Error", description: err.message || "Failed to delete notification.", variant: "destructive" });
+    },
+  });
+
   const handleSendNotification = () => {
     if (!notificationData.title || !notificationData.description) return;
     createNotificationMutation.mutate({
@@ -420,6 +465,39 @@ export default function AdminUserDetailsPage() {
       type: notificationData.type || 'OTHER',
       url: notificationData.url || undefined,
       userId: id,
+    });
+  };
+
+  const handleCreateNotification = () => {
+    if (!createFormData.title || !createFormData.description) return;
+    createNotificationMutation.mutate({
+      title: createFormData.title,
+      description: createFormData.description,
+      type: createFormData.type || 'OTHER',
+      url: createFormData.url || undefined,
+      userId: id,
+    }, {
+      onSuccess: () => {
+        setIsCreatingNotification(false);
+        setCreateFormData({ title: '', description: '', type: 'OTHER', url: '' });
+      },
+    });
+  };
+
+  const handleDeleteNotification = (notifId: number) => {
+    setFeedbackModal({
+      open: true,
+      status: 'warning',
+      title: 'Delete Notification?',
+      description: 'This action cannot be undone. The notification will be permanently removed.',
+      primaryAction: {
+        label: 'Delete',
+        onClick: () => deleteNotificationMutation.mutate(notifId),
+      },
+      secondaryAction: {
+        label: 'Cancel',
+        onClick: () => setFeedbackModal(prev => ({ ...prev, open: false })),
+      },
     });
   };
 
@@ -520,24 +598,6 @@ export default function AdminUserDetailsPage() {
                 <span className="hidden sm:block">Edit Profile</span>
               </Button>
 
-              {isSuperAdmin && (
-                <Button
-                  variant="outline"
-                  className="px-3"
-                  onClick={() => {
-                    setWalletEditData({
-                      totalPoints: user.wallet?.totalPoints || 0,
-                      totalPackages: user.wallet?.totalPackages || 0,
-                      reason: "",
-                    });
-                    setIsWalletModalOpen(true);
-                  }}
-                >
-                  <Wallet className="sm:mr-2 !h-3 !w-3 sm:!h-4 sm:!w-4" />
-                  <span className="hidden sm:block">Edit Wallet</span>
-                </Button>
-              )}
-
               {!isCurrentUser && (
                 <Button
                   variant={user.status === "Banned" ? "default" : "outline"}
@@ -629,11 +689,30 @@ export default function AdminUserDetailsPage() {
           <div className="lg:col-span-2">
             <Card className="border-l-4 border-l-emerald-500 h-full">
               <CardHeader className="pb-3">
-                <CardTitle className="text-sm font-semibold flex items-center gap-2">
-                  <Wallet className="w-4 h-4 text-emerald-500" /> Account Economy
-                </CardTitle>
+                <div className="flex items-center justify-between">
+                  <CardTitle className="text-sm font-semibold flex items-center gap-2">
+                    <Wallet className="w-4 h-4 text-emerald-500" /> Account Economy
+                  </CardTitle>
+                  {isSuperAdmin && !isEconomyEditing && (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => {
+                        setWalletEditData({
+                          totalPoints: user.wallet?.totalPoints || 0,
+                          totalPackages: user.wallet?.totalPackages || 0,
+                        });
+                        setIsEconomyEditing(true);
+                      }}
+                    >
+                      <Edit className="w-4 h-4 mr-1" /> Edit
+                    </Button>
+                  )}
+                </div>
                 <CardDescription>
-                  Current wallet balances and lifetime transaction history for this user.
+                  {isEconomyEditing
+                    ? "Modify wallet balances directly. Changes take effect immediately."
+                    : "Current wallet balances and lifetime transaction history for this user."}
                 </CardDescription>
               </CardHeader>
               <CardContent className="space-y-4">
@@ -644,11 +723,39 @@ export default function AdminUserDetailsPage() {
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-1.5">
                       <p className="text-xs text-muted-foreground">Total Points</p>
-                      <p className="text-2xl font-bold">{user.wallet?.totalPoints || 0}</p>
+                      {isEconomyEditing ? (
+                        <Input
+                          type="number"
+                          min="0"
+                          value={walletEditData.totalPoints}
+                          onChange={(e) =>
+                            setWalletEditData((prev) => ({
+                              ...prev,
+                              totalPoints: Math.max(0, parseInt(e.target.value) || 0),
+                            }))
+                          }
+                        />
+                      ) : (
+                        <p className="text-2xl font-bold">{user.wallet?.totalPoints || 0}</p>
+                      )}
                     </div>
                     <div className="space-y-1.5">
                       <p className="text-xs text-muted-foreground">Total Packages</p>
-                      <p className="text-2xl font-bold">{user.wallet?.totalPackages || 0}</p>
+                      {isEconomyEditing ? (
+                        <Input
+                          type="number"
+                          min="0"
+                          value={walletEditData.totalPackages}
+                          onChange={(e) =>
+                            setWalletEditData((prev) => ({
+                              ...prev,
+                              totalPackages: Math.max(0, parseInt(e.target.value) || 0),
+                            }))
+                          }
+                        />
+                      ) : (
+                        <p className="text-2xl font-bold">{user.wallet?.totalPackages || 0}</p>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -684,6 +791,31 @@ export default function AdminUserDetailsPage() {
                     </div>
                   </div>
                 </div>
+                {isEconomyEditing && (
+                  <div className="flex items-center justify-end gap-2 pt-2">
+                    <Button
+                      variant="ghost"
+                      onClick={() => setIsEconomyEditing(false)}
+                    >
+                      Cancel
+                    </Button>
+                    <Button
+                      onClick={() =>
+                        updateWalletMutation.mutate({
+                          id: user.id,
+                          totalPoints: walletEditData.totalPoints,
+                          totalPackages: walletEditData.totalPackages,
+                        })
+                      }
+                      disabled={updateWalletMutation.isPending}
+                    >
+                      {updateWalletMutation.isPending && (
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      )}
+                      Save Changes
+                    </Button>
+                  </div>
+                )}
               </CardContent>
             </Card>
           </div>
@@ -751,6 +883,320 @@ export default function AdminUserDetailsPage() {
                   </div>
                 </div>
               </div>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Notifications History */}
+        <div className="mt-8">
+          <Card className="border-l-4 border-l-purple-500">
+            <CardHeader className="pb-3">
+              <div className="flex items-center justify-between">
+                <CardTitle className="text-sm font-semibold flex items-center gap-2">
+                  <Bell className="w-4 h-4 text-purple-500" /> Notifications History
+                </CardTitle>
+                {!isCreatingNotification && (
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setIsCreatingNotification(true)}
+                    title="New Notification"
+                  >
+                    <Plus className="w-4 h-4" />
+                  </Button>
+                )}
+              </div>
+              <CardDescription>
+                All notifications sent to this user, including wallet updates and admin messages.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              {/* Inline Create Form */}
+              {isCreatingNotification && (
+                <div className="border border-border rounded-lg p-4 mb-4 space-y-3 bg-muted/30">
+                  <h5 className="text-sm font-semibold">New Notification</h5>
+                  <div className="space-y-2">
+                    <Label>Title</Label>
+                    <Input
+                      placeholder="Notification title"
+                      value={createFormData.title}
+                      onChange={(e) =>
+                        setCreateFormData((prev) => ({ ...prev, title: e.target.value }))
+                      }
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label>Description</Label>
+                    <Textarea
+                      placeholder="Notification description"
+                      value={createFormData.description}
+                      onChange={(e) =>
+                        setCreateFormData((prev) => ({ ...prev, description: e.target.value }))
+                      }
+                    />
+                  </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label>Type</Label>
+                      <Select
+                        value={createFormData.type}
+                        onValueChange={(value) =>
+                          setCreateFormData((prev) => ({ ...prev, type: value }))
+                        }
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select type" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {(notificationTypes || []).map((type: string) => (
+                            <SelectItem key={type} value={type}>
+                              {type.replace(/_/g, " ")}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div className="space-y-2">
+                      <Label>URL (Optional)</Label>
+                      <Input
+                        placeholder="https://"
+                        value={createFormData.url}
+                        onChange={(e) =>
+                          setCreateFormData((prev) => ({ ...prev, url: e.target.value }))
+                        }
+                      />
+                    </div>
+                  </div>
+                  <div className="flex items-center justify-end gap-2 pt-2">
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => {
+                        setIsCreatingNotification(false);
+                        setCreateFormData({ title: '', description: '', type: 'OTHER', url: '' });
+                      }}
+                      title="Cancel"
+                    >
+                      <X className="w-4 h-4" />
+                    </Button>
+                    <Button
+                      size="sm"
+                      onClick={handleCreateNotification}
+                      disabled={
+                        createNotificationMutation.isPending ||
+                        !createFormData.title ||
+                        !createFormData.description
+                      }
+                      title="Send"
+                    >
+                      {createNotificationMutation.isPending ? (
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      ) : (
+                        <Send className="w-4 h-4" />
+                      )}
+                    </Button>
+                  </div>
+                </div>
+              )}
+
+              {/* Notifications Table */}
+              {isLoadingNotifications ? (
+                <div className="flex items-center justify-center py-8">
+                  <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+                </div>
+              ) : userNotifications && userNotifications.length > 0 ? (
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>Title</TableHead>
+                      <TableHead className="max-w-xs">Description</TableHead>
+                      <TableHead>Type</TableHead>
+                      <TableHead>Status</TableHead>
+                      <TableHead>Date</TableHead>
+                      <TableHead className="w-[100px]">Actions</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {userNotifications.map((notif: any) => (
+                      <TableRow key={notif.id}>
+                        {editingNotificationId === notif.id ? (
+                          <>
+                            <TableCell>
+                              <Input
+                                value={editFormData.title}
+                                onChange={(e) =>
+                                  setEditFormData((prev) => ({ ...prev, title: e.target.value }))
+                                }
+                              />
+                            </TableCell>
+                            <TableCell>
+                              <Textarea
+                                className="min-h-[60px]"
+                                value={editFormData.description}
+                                onChange={(e) =>
+                                  setEditFormData((prev) => ({
+                                    ...prev,
+                                    description: e.target.value,
+                                  }))
+                                }
+                              />
+                            </TableCell>
+                            <TableCell>
+                              <Badge variant="outline" className="text-xs">
+                                {notif.type?.replace(/_/g, " ")}
+                              </Badge>
+                            </TableCell>
+                            <TableCell>
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                className={`text-xs ${
+                                  editFormData.isActive
+                                    ? "text-green-600 dark:text-green-400"
+                                    : "text-muted-foreground"
+                                }`}
+                                onClick={() =>
+                                  setEditFormData((prev) => ({
+                                    ...prev,
+                                    isActive: !prev.isActive,
+                                  }))
+                                }
+                              >
+                                <span
+                                  className={`h-1.5 w-1.5 rounded-full mr-1.5 ${
+                                    editFormData.isActive
+                                      ? "bg-green-500"
+                                      : "bg-muted-foreground"
+                                  }`}
+                                />
+                                {editFormData.isActive ? "Active" : "Inactive"}
+                              </Button>
+                            </TableCell>
+                            <TableCell className="text-sm text-muted-foreground">
+                              {formatDate(notif.createdAt)}
+                            </TableCell>
+                            <TableCell>
+                              <div className="flex items-center gap-1">
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  className="h-8 w-8 p-0"
+                                  onClick={() =>
+                                    updateNotificationMutation.mutate({
+                                      id: notif.id,
+                                      title: editFormData.title,
+                                      description: editFormData.description,
+                                      isActive: editFormData.isActive,
+                                      url: editFormData.url || undefined,
+                                    })
+                                  }
+                                  disabled={updateNotificationMutation.isPending}
+                                  title="Save"
+                                >
+                                  {updateNotificationMutation.isPending ? (
+                                    <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                                  ) : (
+                                    <CheckCircle2 className="h-3.5 w-3.5" />
+                                  )}
+                                </Button>
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  className="h-8 w-8 p-0"
+                                  onClick={() => setEditingNotificationId(null)}
+                                  title="Cancel"
+                                >
+                                  <X className="h-3.5 w-3.5" />
+                                </Button>
+                              </div>
+                            </TableCell>
+                          </>
+                        ) : (
+                          <>
+                            <TableCell className="font-medium">{notif.title}</TableCell>
+                            <TableCell
+                              className="max-w-xs truncate"
+                              title={notif.description}
+                            >
+                              {notif.description}
+                            </TableCell>
+                            <TableCell>
+                              <Badge variant="outline" className="text-xs">
+                                {notif.type?.replace(/_/g, " ")}
+                              </Badge>
+                            </TableCell>
+                            <TableCell>
+                              <button
+                                className={`inline-flex items-center gap-1.5 text-xs cursor-pointer hover:opacity-80 ${
+                                  notif.isActive
+                                    ? "text-green-600 dark:text-green-400"
+                                    : "text-muted-foreground"
+                                }`}
+                                onClick={() => {
+                                  setEditFormData({
+                                    title: notif.title,
+                                    description: notif.description,
+                                    url: notif.url || '',
+                                    isActive: !notif.isActive,
+                                  });
+                                  updateNotificationMutation.mutate({
+                                    id: notif.id,
+                                    isActive: !notif.isActive,
+                                  });
+                                }}
+                                title="Toggle status"
+                              >
+                                <span
+                                  className={`h-1.5 w-1.5 rounded-full ${
+                                    notif.isActive ? "bg-green-500" : "bg-muted-foreground"
+                                  }`}
+                                />
+                                {notif.isActive ? "Active" : "Inactive"}
+                              </button>
+                            </TableCell>
+                            <TableCell className="text-sm text-muted-foreground">
+                              {formatDate(notif.createdAt)}
+                            </TableCell>
+                            <TableCell>
+                              <div className="flex items-center gap-1">
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  className="h-8 w-8 p-0"
+                                  onClick={() => {
+                                    setEditingNotificationId(notif.id);
+                                    setEditFormData({
+                                      title: notif.title,
+                                      description: notif.description,
+                                      url: notif.url || '',
+                                      isActive: notif.isActive,
+                                    });
+                                  }}
+                                >
+                                  <Edit className="h-3.5 w-3.5" />
+                                </Button>
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  className="h-8 w-8 p-0 text-red-500 hover:text-red-600"
+                                  onClick={() => handleDeleteNotification(notif.id)}
+                                >
+                                  <Trash2 className="h-3.5 w-3.5" />
+                                </Button>
+                              </div>
+                            </TableCell>
+                          </>
+                        )}
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              ) : (
+                <div className="py-8 text-center text-sm text-muted-foreground">
+                  <Bell className="h-8 w-8 mx-auto mb-2 opacity-30" />
+                  <p>No notifications sent to this user yet.</p>
+                </div>
+              )}
             </CardContent>
           </Card>
         </div>
@@ -1013,6 +1459,7 @@ export default function AdminUserDetailsPage() {
                                   onClick={() => {
                                     setSelectedInvoice(inv);
                                     setInvoiceEditData({
+                                      invoice_number: inv.invoice_number || "",
                                       service_name: inv.service_name || "",
                                       period: inv.period || "",
                                       quantity: inv.quantity || 1,
@@ -1739,87 +2186,6 @@ export default function AdminUserDetailsPage() {
         </DialogContent>
       </Dialog>
 
-      {/* Edit Wallet Modal */}
-      <Dialog open={isWalletModalOpen} onOpenChange={setIsWalletModalOpen}>
-        <DialogContent className="sm:max-w-[500px]">
-          <DialogHeader>
-            <DialogTitle className="flex items-center gap-2">
-              <Wallet className="w-5 h-5" /> Edit Wallet Balance
-            </DialogTitle>
-            <DialogDescription>
-              Adjust the wallet balance for <strong>{user.name}</strong>.
-            </DialogDescription>
-          </DialogHeader>
-          <div className="bg-amber-500/10 border border-amber-500/20 p-3 rounded-md text-xs text-amber-700 dark:text-amber-400 mb-4">
-            Only Super Admins can modify wallet balances. A transaction record will be created for any change.
-          </div>
-          <div className="space-y-4 py-4">
-            <div className="space-y-2">
-              <Label>Total Points</Label>
-              <Input
-                type="number"
-                min="0"
-                value={walletEditData.totalPoints}
-                onChange={(e) =>
-                  setWalletEditData((prev) => ({
-                    ...prev,
-                    totalPoints: Math.max(0, parseInt(e.target.value) || 0),
-                  }))
-                }
-              />
-            </div>
-            <div className="space-y-2">
-              <Label>Total Packages</Label>
-              <Input
-                type="number"
-                min="0"
-                value={walletEditData.totalPackages}
-                onChange={(e) =>
-                  setWalletEditData((prev) => ({
-                    ...prev,
-                    totalPackages: Math.max(0, parseInt(e.target.value) || 0),
-                  }))
-                }
-              />
-            </div>
-            <div className="space-y-2">
-              <Label>Reason / Note <span className="text-muted-foreground">(optional)</span></Label>
-              <Textarea
-                placeholder="e.g. Compensation for bug, promotional bonus, etc."
-                value={walletEditData.reason}
-                onChange={(e) =>
-                  setWalletEditData((prev) => ({
-                    ...prev,
-                    reason: e.target.value,
-                  }))
-                }
-              />
-            </div>
-          </div>
-          <DialogFooter className="gap-2">
-            <Button variant="ghost" onClick={() => setIsWalletModalOpen(false)}>
-              Cancel
-            </Button>
-            <Button
-              onClick={() =>
-                updateWalletMutation.mutate({
-                  id: user.id,
-                  totalPoints: walletEditData.totalPoints,
-                  totalPackages: walletEditData.totalPackages,
-                  reason: walletEditData.reason || undefined,
-                })
-              }
-              disabled={updateWalletMutation.isPending}
-            >
-              {updateWalletMutation.isPending && (
-                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-              )}
-              Save Wallet
-            </Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
-
       {/* Edit Invoice Modal */}
       <Dialog open={isInvoiceModalOpen} onOpenChange={(open) => { setIsInvoiceModalOpen(open); if (!open) setSelectedInvoice(null); }}>
         <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
@@ -1835,6 +2201,16 @@ export default function AdminUserDetailsPage() {
             Only Super Admins can modify invoices. Changes take effect immediately.
           </div>
           <div className="space-y-4 py-4">
+            <div className="space-y-2">
+              <Label>Invoice Number</Label>
+              <Input
+                value={invoiceEditData.invoice_number || ""}
+                onChange={(e) => setInvoiceEditData((prev: any) => ({ ...prev, invoice_number: e.target.value }))}
+              />
+              <p className="text-xs text-amber-600 dark:text-amber-400">
+                Changing the invoice number breaks existing links.
+              </p>
+            </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="space-y-2">
                 <Label>Service Name</Label>
@@ -1958,7 +2334,7 @@ export default function AdminUserDetailsPage() {
                 if (!selectedInvoice) return;
                 const payload: any = { id: selectedInvoice.id };
                 const fields = [
-                  "service_name", "period", "quantity", "unit_price",
+                  "invoice_number", "service_name", "period", "quantity", "unit_price",
                   "tax_rate", "cgst_amount", "sgst_amount", "igst_amount",
                   "due_date", "place_of_supply", "supply_type",
                   "amount_in_words", "lut_number", "sac_code",

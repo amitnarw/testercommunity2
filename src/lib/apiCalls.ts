@@ -2247,6 +2247,16 @@ export const getControlRoom = async () => {
   }
 };
 
+export const getPublicStats = async () => {
+  try {
+    const response = await api.get(API_ROUTES.BLOG + "/stats");
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error fetching public stats:", error);
+    return null;
+  }
+};
+
 export const updateControlRoom = async (payload: { humanChatEnabled: boolean }) => {
   try {
     const response = await api.post(API_ROUTES.ADMIN + "/control-room", payload);
@@ -2388,6 +2398,57 @@ export const regenerateDeclaration = async (
     return response?.data?.data;
   } catch (error) {
     console.error("Error regenerating declaration:", error);
+    throw error;
+  }
+};
+
+// ==========================================
+// ADMIN DECLARATION
+// ==========================================
+
+export const getAdminDeclaration = async (
+  appId: string | number,
+): Promise<PlayStoreDeclaration> => {
+  try {
+    const response = await api.get(
+      API_ROUTES.ADMIN + `/declarations/${appId}`,
+    );
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error fetching admin declaration:", error);
+    throw error;
+  }
+};
+
+export const updateAdminDeclaration = async ({
+  appId,
+  adminAnswers,
+}: {
+  appId: string | number;
+  adminAnswers: { questions: Array<{ id: string; question: string; answer: string; createdAt: string }> };
+}): Promise<PlayStoreDeclaration> => {
+  try {
+    const response = await api.put(
+      API_ROUTES.ADMIN + `/declarations/${appId}`,
+      { adminAnswers },
+    );
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error updating admin declaration:", error);
+    throw error;
+  }
+};
+
+export const publishAdminDeclaration = async (
+  appId: string | number,
+): Promise<PlayStoreDeclaration> => {
+  try {
+    const response = await api.post(
+      API_ROUTES.ADMIN + `/declarations/${appId}/publish`,
+    );
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error publishing admin declaration:", error);
     throw error;
   }
 };

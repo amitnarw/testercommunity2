@@ -38,12 +38,12 @@ export const ROUTES = {
     PROMO_CODES: "/admin/promo-codes",
     REVIEWS: "/admin/reviews",
     USER_REVIEWS: "/admin/user-reviews",
-    BLOG_AUTHORS: "/admin/blog-authors",
     BLOG_MANAGEMENT: "/admin/blog-management",
     LOGS: "/admin/logs",
     SUPPORT: "/admin/support",
     PROFILE: "/admin/profile",
     FEEDBACK: "/admin/feedback",
+    CONTROL_ROOM: "/admin/control-room",
     AUTH: {
       LOGIN: "/admin/auth/login",
     },

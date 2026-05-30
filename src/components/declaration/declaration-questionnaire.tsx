@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { Plus, Trash2, GripVertical } from "lucide-react";
-import type { DeclarationAnswers, CustomQuestion } from "@/lib/types";
+import type { DeclarationAnswers, CustomQuestion, AdminQuestion } from "@/lib/types";
 
 interface GoogleQuestion {
   id: keyof Omit<DeclarationAnswers, "customQuestions" | "deletedQuestions">;
@@ -113,9 +113,11 @@ function generateCustomId(): string {
 export function DeclarationQuestionnaire({
   answers,
   onChange,
+  adminQuestions,
 }: {
   answers: DeclarationAnswers;
   onChange: (answers: DeclarationAnswers) => void;
+  adminQuestions?: AdminQuestion[];
 }) {
   const [localAnswers, setLocalAnswers] = useState(answers);
   const [debounceTimer, setDebounceTimer] = useState<ReturnType<typeof setTimeout> | null>(null);
@@ -211,17 +213,56 @@ export function DeclarationQuestionnaire({
     return acc;
   }, {} as Record<string, GoogleQuestion[]>);
 
+  const showAdminQuestions = adminQuestions && adminQuestions.length > 0;
+
   return (
     <div className="space-y-8">
       <div>
-        <h2 className="text-xl font-bold">Google Play Declaration</h2>
+        <h2 className="text-xl font-bold">
+          {showAdminQuestions ? "Admin Declaration" : "Google Play Declaration"}
+        </h2>
         <p className="text-sm text-muted-foreground mt-1">
-          Fill out the answers you need to submit to Google Play for production
-          access. Answers are saved automatically as you type.
+          {showAdminQuestions
+            ? "The following questions and answers have been prepared by our team."
+            : "Fill out the answers you need to submit to Google Play for production access. Answers are saved automatically as you type."}
         </p>
       </div>
 
-      {Object.entries(sections).map(([sectionName, questions]) => {
+      {/* Admin Questions Section (read-only for PAID apps) */}
+      {showAdminQuestions && (
+        <motion.div
+          variants={sectionVariants}
+          initial="hidden"
+          animate="visible"
+          className="rounded-2xl border bg-card overflow-hidden"
+        >
+          <div className="bg-primary/5 px-6 py-4 border-b">
+            <h3 className="font-semibold text-lg">Admin Questions & Answers</h3>
+          </div>
+          <div className="divide-y">
+            {adminQuestions.map((aq, index) => (
+              <div key={aq.id} className="p-6 space-y-2">
+                <div className="flex items-start gap-3">
+                  <span className="text-xs font-bold text-primary bg-primary/10 rounded-full w-6 h-6 flex items-center justify-center shrink-0 mt-0.5">
+                    {index + 1}
+                  </span>
+                  <div className="space-y-2 flex-1 min-w-0">
+                    <p className="text-sm font-semibold text-foreground">
+                      {aq.question}
+                    </p>
+                    <p className="text-sm text-muted-foreground whitespace-pre-wrap leading-relaxed bg-muted/30 p-3 rounded-xl border border-border/50">
+                      {aq.answer || "No answer provided."}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </motion.div>
+      )}
+
+      {/* Google Play Standard Questions (only for FREE apps) */}
+      {!showAdminQuestions && Object.entries(sections).map(([sectionName, questions]) => {
         const visible = questions.filter(
           (q) => !(localAnswers.deletedQuestions || []).includes(q.id as string),
         );
@@ -304,7 +345,7 @@ export function DeclarationQuestionnaire({
       );
       })}
 
-      {/* Custom Questions */}
+      {/* Custom Questions (same for both PAID and FREE) */}
       {(localAnswers.customQuestions || []).length > 0 && (
         <motion.div
           variants={sectionVariants}
@@ -313,7 +354,9 @@ export function DeclarationQuestionnaire({
           className="rounded-2xl border bg-card overflow-hidden"
         >
           <div className="bg-primary/5 px-6 py-4 border-b">
-            <h3 className="font-semibold text-lg">Custom Questions</h3>
+            <h3 className="font-semibold text-lg">
+              {showAdminQuestions ? "Your Custom Questions" : "Custom Questions"}
+            </h3>
           </div>
           <div className="divide-y">
             {(localAnswers.customQuestions || []).map((cq) => (
@@ -368,9 +411,9 @@ export function DeclarationQuestionnaire({
 
       <div className="rounded-2xl border bg-muted/50 p-4">
         <p className="text-xs text-muted-foreground">
-          <strong>Tip:</strong> Your answers are saved automatically as you type.
-          You can add custom questions beyond the standard Google Play ones
-          using the &quot;Add Question&quot; button above.
+          {showAdminQuestions
+            ? "Your custom questions are saved automatically. They will be included in the PDF report alongside the admin-provided answers."
+            : "Your answers are saved automatically as you type. You can add custom questions beyond the standard Google Play ones using the &quot;Add Question&quot; button above."}
         </p>
       </div>
     </div>
