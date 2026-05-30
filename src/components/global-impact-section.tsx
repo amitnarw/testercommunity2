@@ -13,14 +13,13 @@ import {
   Users,
   Bug,
   Smartphone,
-  TrendingUp,
-  ShieldCheck,
   Coins,
   Rocket,
   Layout,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useRegionalPricing } from "@/hooks/useUser";
+import { getPublicStats } from "@/lib/apiCalls";
 
 const AnimatedCounter = ({
   to,
@@ -119,15 +118,34 @@ const StatCard = ({
 export function GlobalImpactSection() {
   const sectionRef = useRef(null);
   const { data: regionalPricing } = useRegionalPricing();
+  const [stats, setStats] = useState<{
+    communitySize?: number;
+    bugsFound?: number;
+    proAppsTested?: number;
+    communityApps?: number;
+    uniqueDevices?: number;
+    communityPoints?: number;
+  } | null>(null);
   const { scrollYProgress } = useScroll({
     target: sectionRef,
     offset: ["start end", "end start"],
   });
   const rotate = useTransform(scrollYProgress, [0, 1], [0, 360]);
 
+  useEffect(() => {
+    getPublicStats().then(setStats);
+  }, []);
+
   const displayPrice = regionalPricing
     ? `${regionalPricing.currency_symbol}${Math.round(regionalPricing.amount / 100)}`
     : "₹999";
+
+  const communitySize = stats?.communitySize ?? 100;
+  const bugsFound = stats?.bugsFound ?? 554;
+  const proAppsTested = stats?.proAppsTested ?? 55;
+  const communityApps = stats?.communityApps ?? 106;
+  const uniqueDevices = stats?.uniqueDevices ?? 350;
+  const communityPoints = stats?.communityPoints ?? 25000;
 
   return (
     <section
@@ -155,7 +173,7 @@ export function GlobalImpactSection() {
           </h2>
           <p className="mt-4 text-muted-foreground text-lg">
             Our platform empowers developers and testers worldwide, creating a
-            virtuous cycle of quality and innovation. Here's a look at our
+            virtuous cycle of quality and innovation. Here&apos;s a look at our
             collective impact.
           </p>
         </div>
@@ -168,7 +186,7 @@ export function GlobalImpactSection() {
           >
             <div className="relative z-10 h-full flex flex-col justify-center">
               <p className="text-2xl sm:text-3xl font-bold">
-                <AnimatedCounter to={100} suffix="+" />
+                <AnimatedCounter to={communitySize} suffix="+" />
               </p>
               <p className="text-primary-foreground/80 mt-1 text-xs">
                 Vetted testers across 12+ countries.
@@ -177,7 +195,7 @@ export function GlobalImpactSection() {
           </StatCard>
           <StatCard title="Bugs Squashed" icon={<Bug className="w-4 h-4" />}>
             <p className="text-2xl sm:text-3xl font-bold">
-              <AnimatedCounter to={554} suffix="+" />
+              <AnimatedCounter to={bugsFound} suffix="+" />
             </p>
             <p className="text-muted-foreground mt-1 text-[10px]">
               Critical & minor bugs found.
@@ -189,7 +207,7 @@ export function GlobalImpactSection() {
             className="bg-gradient-to-br from-primary to-primary/50 text-primary-foreground"
           >
             <p className="text-2xl sm:text-3xl font-bold">
-              <AnimatedCounter to={55} suffix="+" />
+              <AnimatedCounter to={proAppsTested} suffix="+" />
             </p>
             <p className="text-primary-foreground/80 mt-1 text-[10px]">
               Paid apps fully tested.
@@ -200,7 +218,7 @@ export function GlobalImpactSection() {
             icon={<Layout className="w-4 h-4" />}
           >
             <p className="text-2xl sm:text-3xl font-bold">
-              <AnimatedCounter to={106} suffix="+" />
+              <AnimatedCounter to={communityApps} suffix="+" />
             </p>
             <p className="text-muted-foreground mt-1 text-[10px]">
               Free apps submitted by users.
@@ -211,7 +229,7 @@ export function GlobalImpactSection() {
             icon={<Smartphone className="w-4 h-4" />}
           >
             <p className="text-2xl sm:text-3xl font-bold">
-              <AnimatedCounter to={350} suffix="+" />
+              <AnimatedCounter to={uniqueDevices} suffix="+" />
             </p>
             <p className="text-muted-foreground mt-1 text-[10px]">
               Diverse Android models.
@@ -223,7 +241,7 @@ export function GlobalImpactSection() {
             className="col-span-2 lg:col-span-2 bg-gradient-to-br from-primary to-primary/50 text-primary-foreground"
           >
             <p className="text-2xl sm:text-3xl font-bold">
-              <AnimatedCounter to={25000} suffix="+" />
+              <AnimatedCounter to={communityPoints} suffix="+" />
             </p>
             <p className="text-primary-foreground/80 mt-1 text-xs">
               Points earned by community.

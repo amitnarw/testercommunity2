@@ -1,6 +1,7 @@
 import {
   adminLogin,
   getControlRoomData,
+  updateControlRoomData,
   getSubmittedApps,
   getSubmittedAppsCount,
   acceptApp,
@@ -15,6 +16,7 @@ import {
   getAllUsers,
   getUserById,
   getUserCounts,
+  getUserNotifications,
   updateUserStatus,
   updateUserRole,
   updateUserProfile,
@@ -84,16 +86,31 @@ import {
   useMutation,
   UseMutationOptions,
   useQuery,
+  useQueryClient,
 } from "@tanstack/react-query";
 
 export function useControlRoomData(options?: { enabled?: boolean }) {
   const query = useQuery({
     queryFn: () => getControlRoomData(),
-    queryKey: ["useUserProfileInitial"],
+    queryKey: ["useControlRoomData"],
     enabled: options?.enabled ?? true,
   });
 
   return query;
+}
+
+export function useUpdateControlRoom(options?: UseMutationOptions<any, any, any>) {
+  const queryClient = useQueryClient();
+  const mutation = useMutation({
+    mutationFn: (payload: any) => updateControlRoomData(payload),
+    onSuccess: (data, variables, context) => {
+      queryClient.invalidateQueries({ queryKey: ["useControlRoomData"] });
+      options?.onSuccess?.(data, variables, context);
+    },
+    ...options,
+  });
+
+  return mutation;
 }
 
 export function useAdminLogin(options?: UseMutationOptions<any, any, any>) {
@@ -259,6 +276,16 @@ export function useUserById(id: string, options?: { enabled?: boolean }) {
   const query = useQuery({
     queryFn: () => getUserById(id),
     queryKey: ["useUserById", id],
+    enabled: options?.enabled ?? true,
+  });
+
+  return query;
+}
+
+export function useUserNotifications(id: string, options?: { enabled?: boolean }) {
+  const query = useQuery({
+    queryFn: () => getUserNotifications(id),
+    queryKey: ["useUserNotifications", id],
     enabled: options?.enabled ?? true,
   });
 

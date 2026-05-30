@@ -8,7 +8,7 @@ import { AuthError } from "./apiCalls";
 export async function getControlRoomData(): Promise<ControlRoomResponse> {
   try {
     const response = await api.get(API_ROUTES.ADMIN + `/get-control-room-data`);
-    return response.data;
+    return response?.data?.data;
   } catch (error) {
     console.error("Error fetching control room:", error);
     if (axios.isAxiosError(error)) {
@@ -16,6 +16,27 @@ export async function getControlRoomData(): Promise<ControlRoomResponse> {
       const responseData = error.response?.data;
       console.error("Axios error:", status, responseData);
 
+      throw new Error(
+        responseData?.message || error.message || "Unknown Axios error",
+      );
+    } else if (error instanceof Error) {
+      throw new Error(error.message);
+    } else {
+      throw new Error(JSON.stringify(error));
+    }
+  }
+}
+
+export async function updateControlRoomData(payload: Partial<ControlRoomResponse>): Promise<ControlRoomResponse> {
+  try {
+    const response = await api.post(API_ROUTES.ADMIN + `/control-room`, payload);
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error updating control room:", error);
+    if (axios.isAxiosError(error)) {
+      const status = error.response?.status;
+      const responseData = error.response?.data;
+      console.error("Axios error:", status, responseData);
       throw new Error(
         responseData?.message || error.message || "Unknown Axios error",
       );
@@ -469,7 +490,6 @@ export async function updateUserWallet(payload: {
   id: string;
   totalPoints: number;
   totalPackages: number;
-  reason?: string;
 }) {
   try {
     const response = await api.post(
@@ -704,6 +724,27 @@ export async function getAllNotifications(params?: { type?: string }) {
       const status = error.response?.status;
       const responseData = error.response?.data;
       console.error("Axios error:", status, responseData);
+
+      throw new Error(
+        responseData?.message || error.message || "Unknown Axios error",
+      );
+    } else if (error instanceof Error) {
+      throw new Error(error.message);
+    } else {
+      throw new Error(JSON.stringify(error));
+    }
+  }
+}
+
+export async function getUserNotifications(userId: string) {
+  try {
+    const response = await api.get(API_ROUTES.ADMIN + `/users/notifications/${userId}`);
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error fetching user notifications:", error);
+    if (axios.isAxiosError(error)) {
+      const status = error.response?.status;
+      const responseData = error.response?.data;
 
       throw new Error(
         responseData?.message || error.message || "Unknown Axios error",
@@ -1224,9 +1265,7 @@ export async function getPublicTestimonials() {
 
 export async function actAsRole(role: "tester" | "user" | null) {
   try {
-    const response = await api.post(API_ROUTES.ADMIN + `/act-as`, {
-      payload: { role },
-    });
+    const response = await api.post(API_ROUTES.ADMIN + `/act-as`, { role });
     return response?.data;
   } catch (error) {
     console.error("Error in actAsRole:", error);
@@ -1375,7 +1414,7 @@ export async function updateInvoice(payload: {
   sac_code?: string;
 }) {
   try {
-    const response = await api.post(API_ROUTES.ADMIN + `/finance/invoices/update`, { payload });
+    const response = await api.post(API_ROUTES.ADMIN + `/finance/invoices/update`, payload);
     return response?.data?.data;
   } catch (error) {
     console.error("Error updating invoice:", error);
@@ -1424,9 +1463,7 @@ export async function approveWithdrawal(id: number) {
 
 export async function rejectWithdrawal(id: number, note?: string) {
   try {
-    const response = await api.post(API_ROUTES.ADMIN + `/finance/withdrawals/${id}/reject`, {
-      payload: { note },
-    });
+    const response = await api.post(API_ROUTES.ADMIN + `/finance/withdrawals/${id}/reject`, { note });
     return response?.data?.data;
   } catch (error) {
     console.error("Error rejecting withdrawal:", error);
@@ -1452,7 +1489,7 @@ export async function updateFinancePricing(id: number, payload: {
   currency_symbol?: string;
 }) {
   try {
-    const response = await api.put(API_ROUTES.ADMIN + `/finance/pricing/${id}`, { payload });
+    const response = await api.put(API_ROUTES.ADMIN + `/finance/pricing/${id}`, payload);
     return response?.data?.data;
   } catch (error) {
     console.error("Error updating finance pricing:", error);
@@ -1519,7 +1556,7 @@ export async function createAuthor(payload: {
   dataAiHint?: string;
 }) {
   try {
-    const response = await api.post(API_ROUTES.ADMIN + `/authors`, { payload });
+    const response = await api.post(API_ROUTES.ADMIN + `/authors`, payload);
     return response?.data?.data;
   } catch (error) {
     console.error("Error creating author:", error);
@@ -1535,7 +1572,7 @@ export async function updateAuthor(payload: {
   dataAiHint?: string;
 }) {
   try {
-    const response = await api.post(API_ROUTES.ADMIN + `/authors/update`, { payload });
+    const response = await api.post(API_ROUTES.ADMIN + `/authors/update`, payload);
     return response?.data?.data;
   } catch (error) {
     console.error("Error updating author:", error);

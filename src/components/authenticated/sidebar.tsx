@@ -22,7 +22,7 @@ import {
   MessageSquare,
   Headphones,
   Landmark,
-  UserCircle,
+  Settings,
 } from "lucide-react";
 import { BaseSidebar, SidebarNavLink } from "@/components/ui/base-sidebar";
 import { authClient } from "@/lib/auth-client";
@@ -120,9 +120,9 @@ const adminNavLinks = [
     section: "platform",
   },
   {
-    name: "Blog Authors",
-    href: ROUTES.ADMIN.BLOG_AUTHORS,
-    icon: UserCircle,
+    name: "Control Room",
+    href: ROUTES.ADMIN.CONTROL_ROOM,
+    icon: Settings,
     section: "platform",
   },
   {

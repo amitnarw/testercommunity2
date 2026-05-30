@@ -40,9 +40,16 @@ import {
   ChevronRight,
   Pencil,
   Loader2,
+  CheckCircle2,
 } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import { useRouter } from "next/navigation";
+import {
+  Accordion,
+  AccordionItem,
+  AccordionTrigger,
+  AccordionContent,
+} from "@/components/ui/accordion";
 import { BackButton } from "@/components/back-button";
 import { useSingleHubAppDetails } from "@/hooks/useHub";
 import { useUpdateProjectStatus } from "@/hooks/useAdmin";
@@ -81,10 +88,24 @@ const AdminManageTestersDialog = dynamic(
     ),
   { ssr: false },
 );
+const AdminCompleteDialog = dynamic(
+  () =>
+    import("@/components/admin/admin-complete-dialog").then(
+      (mod) => mod.AdminCompleteDialog,
+    ),
+  { ssr: false },
+);
 const AdminAssignedTestersTable = dynamic(
   () =>
     import("@/components/admin/admin-assigned-testers-table").then(
       (mod) => mod.AdminAssignedTestersTable,
+    ),
+  { ssr: false },
+);
+const AdminDeclarationEditor = dynamic(
+  () =>
+    import("@/components/admin/admin-declaration-editor").then(
+      (mod) => mod.AdminDeclarationEditor,
     ),
   { ssr: false },
 );
@@ -103,6 +124,7 @@ export default function AdminSubmissionDetailPage({
   const [showAcceptDialog, setShowAcceptDialog] = useState(false);
   const [showManageTestersDialog, setShowManageTestersDialog] = useState(false);
   const [showStartTestingDialog, setShowStartTestingDialog] = useState(false);
+  const [showCompleteDialog, setShowCompleteDialog] = useState(false);
   const [isUpdatingStatus, setIsUpdatingStatus] = useState(false);
 
   const { mutate: updateStatus } = useUpdateProjectStatus({
@@ -132,6 +154,10 @@ export default function AdminSubmissionDetailPage({
     error,
     refetch,
   } = useSingleHubAppDetails({ id });
+
+  const handleAdminComplete = () => {
+    setShowCompleteDialog(true);
+  };
 
   const handleSuccess = () => {
     router.push("/admin/submissions-paid");
@@ -212,6 +238,23 @@ export default function AdminSubmissionDetailPage({
       ?.reduce((acc, r) => acc + (r.daysCompleted || 0), 0) /
     (activeTestersCount + completedTestersCount) || 0;
 
+  const healthIndicator =
+    project.status === "IN_TESTING"
+      ? {
+          containerClass: "bg-emerald-500/5 border-emerald-500/10",
+          dotClass: "bg-emerald-500 animate-pulse",
+          textClass: "text-emerald-700 dark:text-emerald-400",
+          message: "Project is active and collecting data",
+        }
+      : project.status === "COMPLETED"
+        ? {
+            containerClass: "bg-blue-500/5 border-blue-500/10",
+            dotClass: "bg-blue-500",
+            textClass: "text-blue-700 dark:text-blue-400",
+            message: "Project completed",
+          }
+        : null;
+
   const feedbackStats = {
     BUG: project.feedback?.filter((f) => f.type === "BUG").length || 0,
     SUGGESTION:
@@ -229,7 +272,7 @@ export default function AdminSubmissionDetailPage({
 
         <main className="max-w-7xl mx-auto flex flex-col gap-8 mt-2">
           {/* Header Action Card - THE MOST CRITICAL BUTTONS & APP STATUS */}
-          <div className="bg-card border border-border/60 shadow-md rounded-3xl p-6 md:p-8 flex flex-col gap-6 relative overflow-hidden">
+          <div className="bg-card border border-border/60 shadow-xl shadow-black/5 rounded-3xl p-3 sm:p-6 md:p-8 flex flex-col gap-6 relative overflow-hidden">
             <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-3xl -z-10 -translate-y-1/2 translate-x-1/2" />
 
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
@@ -247,7 +290,7 @@ export default function AdminSubmissionDetailPage({
                       {project.androidApp?.appName || `App #${project.appId}`}
                     </h1>
                     <div className="px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-[10px] font-black tracking-[0.2em] uppercase shadow-sm">
-                      {project.appType} Submission
+                      {project.appType} <span className="hidden sm:inline">Submission</span>
                     </div>
                   </div>
                   <div className="flex items-center gap-2">
@@ -332,6 +375,17 @@ export default function AdminSubmissionDetailPage({
                     className="px-5 py-2.5 h-auto rounded-xl shadow-sm border-primary/20 hover:border-primary/50 text-primary font-bold bg-primary/5"
                   >
                     <Users className="w-4 h-4 mr-1.5" /> Manage Testers
+                  </Button>
+                )}
+
+                {(project.status === "ACCEPTED" ||
+                  project.status === "AVAILABLE" ||
+                  project.status === "IN_TESTING") && (
+                  <Button
+                    onClick={handleAdminComplete}
+                    className="px-5 py-2.5 h-auto bg-blue-600 hover:bg-blue-700 text-white rounded-xl shadow-md font-bold"
+                  >
+                    <CheckCircle2 className="w-4 h-4 mr-1.5" /> Complete Testing
                   </Button>
                 )}
 
@@ -448,18 +502,18 @@ export default function AdminSubmissionDetailPage({
               <CardContent className="p-0 flex-1 flex flex-col">
                 {/* Requirements Grid */}
                 <div className="grid grid-cols-3 divide-x border-b border-border/50 bg-background/50">
-                  <div className="p-4 flex flex-col items-center justify-center text-center space-y-1.5 hover:bg-background transition-colors">
+                  <div className="p-2 sm:p-4 flex flex-col items-center justify-center text-center space-y-1.5 hover:bg-background transition-colors">
                     <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider flex items-center gap-1">
-                      <Users className="w-3.5 h-3.5 text-primary" />
+                      <Users className="w-3.5 h-3.5 text-primary hidden sm:inline" />
                       Testers
                     </span>
                     <span className="text-2xl font-black text-amber-600 dark:text-amber-500">
                       {requiredTesters}
                     </span>
                   </div>
-                  <div className="p-4 flex flex-col items-center justify-center text-center space-y-1.5 hover:bg-background transition-colors">
+                  <div className="p-2 sm:p-4 flex flex-col items-center justify-center text-center space-y-1.5 hover:bg-background transition-colors">
                     <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider flex items-center gap-1">
-                      <Clock className="w-3.5 h-3.5 text-primary" />
+                      <Clock className="w-3.5 h-3.5 text-primary hidden sm:inline" />
                       Duration
                     </span>
                     <span className="text-2xl font-black">
@@ -469,9 +523,9 @@ export default function AdminSubmissionDetailPage({
                       </span>
                     </span>
                   </div>
-                  <div className="p-4 flex flex-col items-center justify-center text-center space-y-1.5 hover:bg-background transition-colors">
+                  <div className="p-2 sm:p-4 flex flex-col items-center justify-center text-center space-y-1.5 hover:bg-background transition-colors">
                     <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider flex items-center gap-1">
-                      <Smartphone className="w-3.5 h-3.5 text-primary" />
+                      <Smartphone className="w-3.5 h-3.5 text-primary hidden sm:inline" />
                       Min OS
                     </span>
                     <span className="text-2xl font-black">
@@ -481,9 +535,9 @@ export default function AdminSubmissionDetailPage({
                 </div>
 
                 {/* Financial Breakdown Sequence */}
-                <div className="p-6 space-y-6 flex-1 flex flex-col justify-center bg-card">
+                <div className="p-6 flex-1 flex flex-col justify-center bg-card">
                   {/* Step 1: Input */}
-                  <div className="flex justify-between items-center p-4 rounded-2xl bg-blue-500/5 border border-blue-500/20 shadow-sm">
+                  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center p-4 rounded-2xl bg-blue-500/5 border border-blue-500/20 shadow-sm">
                     <div className="flex items-center gap-3">
                       <div className="p-2.5 bg-blue-500/10 rounded-xl text-blue-600 dark:text-blue-400">
                         <Wallet className="w-5 h-5" />
@@ -497,7 +551,7 @@ export default function AdminSubmissionDetailPage({
                         </p>
                       </div>
                     </div>
-                    <span className="text-2xl font-black text-blue-600 dark:text-blue-400">
+                    <span className="text-2xl font-black text-blue-600 dark:text-blue-400 text-end ml-12 sm:ml-0">
                       ₹{amountPaidByDeveloper.toLocaleString("en-IN")}
                     </span>
                   </div>
@@ -505,17 +559,17 @@ export default function AdminSubmissionDetailPage({
                   {/* Step 2: Distribution */}
                   <div className="relative pl-7 space-y-5">
                     {/* Dashed connector line */}
-                    <div className="absolute left-3.5 top-0 bottom-6 w-px bg-border/80 border-dashed" />
+                    <div className="absolute left-1.5 top-0 bottom-6 w-px bg-border/80 border-dashed" />
 
                     <div className="relative group">
                       <div className="absolute -left-[29px] top-1/2 -translate-y-1/2 w-3.5 h-3.5 rounded-full border-[3px] border-background bg-muted-foreground transition-colors group-hover:bg-red-400 z-10" />
-                      <div className="flex justify-between items-center text-sm py-3 px-4 rounded-2xl bg-background border border-border/50 shadow-sm hover:border-border transition-colors">
+                      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center text-sm py-3 px-4 rounded-2xl bg-background border border-border/50 shadow-sm hover:border-border transition-colors">
                         <span className="text-muted-foreground font-medium flex items-center gap-2">
                           <Users className="w-4 h-4 text-emerald-500" />
                           {requiredTesters || 0} Testers × ₹
                           {rewardPerTester.toLocaleString("en-IN")}
                         </span>
-                        <span className="font-bold text-red-500 dark:text-red-400">
+                        <span className="font-bold text-red-500 dark:text-red-400 text-end ml-5 sm:ml-0">
                           -₹{totalPayout.toLocaleString("en-IN")}
                         </span>
                       </div>
@@ -523,13 +577,12 @@ export default function AdminSubmissionDetailPage({
 
                     <div className="relative group">
                       <div className="absolute -left-[29px] top-1/2 -translate-y-1/2 w-3.5 h-3.5 rounded-full border-[3px] border-background bg-emerald-500 transition-transform group-hover:scale-110 z-10 shadow-sm shadow-emerald-500/20" />
-                      <div className="flex justify-between items-center py-4 px-4 rounded-2xl bg-gradient-to-r from-emerald-500/10 to-transparent border border-emerald-500/20 shadow-sm">
+                      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center py-4 px-4 rounded-2xl bg-gradient-to-r from-emerald-500/10 to-transparent border border-emerald-500/20 shadow-sm">
                         <span className="font-bold text-emerald-700 dark:text-emerald-400 flex items-center gap-2">
-                          <TrendingUp className="w-5 h-5" />
                           Platform Earnings
                         </span>
                         <span
-                          className={`text-2xl font-black ${isLoss ? "text-red-600 dark:text-red-400" : "text-emerald-600 dark:text-emerald-500"}`}
+                          className={`text-2xl font-black ${isLoss ? "text-red-600 dark:text-red-400" : "text-emerald-600 dark:text-emerald-500"} text-end`}
                         >
                           {isLoss && "-"}₹
                           {Math.abs(platformEarnings).toLocaleString("en-IN")}
@@ -731,30 +784,38 @@ export default function AdminSubmissionDetailPage({
               )}
 
               {/* Health Indicator */}
-              <div className="pt-2">
-                <div className="flex flex-col gap-3 p-3 bg-emerald-500/5 rounded-2xl border border-emerald-500/10">
-                  <div className="flex items-center gap-3">
-                    <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-                    <p className="text-xs font-bold text-emerald-700 dark:text-emerald-400">
-                      Project is active and collecting data
-                    </p>
+              {healthIndicator && (
+                <div className="pt-2">
+                  <div
+                    className={`flex flex-col gap-3 p-3 rounded-2xl border ${healthIndicator.containerClass}`}
+                  >
+                    <div className="flex items-center gap-3">
+                      <div
+                        className={`w-2 h-2 rounded-full ${healthIndicator.dotClass}`}
+                      />
+                      <p
+                        className={`text-xs font-bold ${healthIndicator.textClass}`}
+                      >
+                        {healthIndicator.message}
+                      </p>
+                    </div>
+                    {lastActivityAt && (
+                      <p className="text-[10px] text-muted-foreground font-medium pl-5">
+                        Latest activity:{" "}
+                        {lastActivityAt.toLocaleDateString(undefined, {
+                          month: "short",
+                          day: "numeric",
+                        })}{" "}
+                        at{" "}
+                        {lastActivityAt.toLocaleTimeString(undefined, {
+                          hour: "2-digit",
+                          minute: "2-digit",
+                        })}
+                      </p>
+                    )}
                   </div>
-                  {lastActivityAt && (
-                    <p className="text-[10px] text-muted-foreground font-medium pl-5">
-                      Latest activity:{" "}
-                      {lastActivityAt.toLocaleDateString(undefined, {
-                        month: "short",
-                        day: "numeric",
-                      })}{" "}
-                      at{" "}
-                      {lastActivityAt.toLocaleTimeString(undefined, {
-                        hour: "2-digit",
-                        minute: "2-digit",
-                      })}
-                    </p>
-                  )}
                 </div>
-              </div>
+              )}
             </CardContent>
           </Card>
 
@@ -850,6 +911,30 @@ export default function AdminSubmissionDetailPage({
             isLoading={isLoading}
           />
 
+          {/* Admin Declaration Editor */}
+          {project.status === "COMPLETED" && (
+            <Accordion type="single" collapsible className="w-full">
+              <AccordionItem value="admin-declaration" className="border border-border/50 rounded-3xl bg-card shadow-sm overflow-hidden">
+                <AccordionTrigger className="px-6 py-5 hover:no-underline hover:bg-muted/30 transition-colors">
+                  <div className="flex items-center gap-3 flex-1">
+                    <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+                      <FileText className="w-5 h-5 text-primary" />
+                    </div>
+                    <div className="text-left flex-1 min-w-0">
+                      <span className="font-bold text-lg text-foreground">Admin Declaration</span>
+                      <p className="text-xs text-muted-foreground mt-0.5">
+                        Review, edit, and publish the declaration report for this app
+                      </p>
+                    </div>
+                  </div>
+                </AccordionTrigger>
+                <AccordionContent>
+                  <AdminDeclarationEditor appId={project.id} />
+                </AccordionContent>
+              </AccordionItem>
+            </Accordion>
+          )}
+
           {/* Developer Instructions Block */}
           {project.instructionsForTester && (
             <DeveloperInstructions
@@ -905,6 +990,12 @@ export default function AdminSubmissionDetailPage({
         assignedTesterIds={
           project.testerRelations?.map((rel) => rel.testerId) || []
         }
+      />
+      <AdminCompleteDialog
+        appId={project.id}
+        open={showCompleteDialog}
+        onOpenChange={setShowCompleteDialog}
+        onSuccess={() => refetch()}
       />
 
       {/* Fullscreen Image Viewer */}
