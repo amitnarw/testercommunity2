@@ -25,6 +25,7 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
 import { BackButton } from "@/components/back-button";
+import { LinkifyText } from "@/components/linkify-text";
 import {
   AlertDialog,
   AlertDialogContent,
@@ -242,8 +243,8 @@ export default function TicketDetailPage() {
                 </div>
 
                 <div className="pt-6 border-t border-border/50">
-                  <p className="text-lg text-muted-foreground leading-relaxed whitespace-pre-wrap break-all">
-                    {ticket.description}
+                  <p className="text-lg text-muted-foreground leading-relaxed whitespace-pre-wrap break-words">
+                    <LinkifyText text={ticket.description} />
                   </p>
                 </div>
               </div>
@@ -288,9 +289,9 @@ export default function TicketDetailPage() {
                             {new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                           </span>
                         </div>
-                        <p className="text-muted-foreground leading-relaxed whitespace-pre-wrap break-all">
-                          {msg.content}
-                        </p>
+                              <p className="text-muted-foreground leading-relaxed whitespace-pre-wrap break-words">
+                                {msg.senderType === "SYSTEM" ? msg.content : <LinkifyText text={msg.content} />}
+                              </p>
                       </Card>
                     </motion.div>
                   ))}

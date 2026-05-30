@@ -9,7 +9,9 @@ import { X, Send, User, Bot, Ticket, HelpCircle, Headphones, Loader2, AlertCircl
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 import { ROUTES } from "@/lib/routes";
+import { LinkifyText } from "@/components/linkify-text";
 import { cn } from "@/lib/utils";
 import { usePathname } from "next/navigation";
 import { TransitionLink } from "@/components/transition-link";
@@ -241,13 +243,33 @@ export function SupportChat() {
                             <div className={cn("flex flex-col max-w-[80%] min-w-0 gap-1", m.role === "user" ? "items-end" : "items-start")}>
                               {textContent && (
                                 <div className={cn(
-                              "px-4 py-2.5 rounded-2xl text-sm shadow-sm leading-relaxed break-all",
+                              "px-4 py-2.5 rounded-2xl text-sm shadow-sm leading-relaxed break-words",
                                   m.role === "user"
                                     ? "bg-primary text-primary-foreground rounded-tr-none"
                                     : "bg-card border rounded-tl-none"
                                 )}>
-                                  <div className="prose prose-sm dark:prose-invert max-w-none break-words">
-                                    <ReactMarkdown>{textContent}</ReactMarkdown>
+                                  <div className="prose prose-sm dark:prose-invert max-w-none">
+                                    <ReactMarkdown
+                                      remarkPlugins={[remarkGfm]}
+                                      components={{
+                                        a: ({ href, children }) => (
+                                          <a
+                                            href={href}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="text-primary underline underline-offset-2 hover:opacity-80 transition-opacity"
+                                            onClick={(e) => {
+                                              if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+                                              e.preventDefault();
+                                              e.stopPropagation();
+                                              window.open(href, "_blank", "noopener,noreferrer");
+                                            }}
+                                          >
+                                            {children}
+                                          </a>
+                                        ),
+                                      }}
+                                    >{textContent}</ReactMarkdown>
                                   </div>
                                 </div>
                               )}
@@ -345,22 +367,9 @@ export function SupportChat() {
                             Talk to a human
                           </button>
                         )}
-                        {!ticketSubmitted && (
-                          <button
-                            onClick={openOfflineOptions}
-                            className="text-[10px] text-muted-foreground hover:text-primary flex items-center gap-1 transition-colors"
-                          >
-                            <Headphones className="h-3 w-3" />
-                            Leave a message
-                          </button>
-                        )}
                         <TransitionLink href="/support/tickets" onClick={() => setIsOpen(false)} className="text-[10px] text-muted-foreground hover:text-primary flex items-center gap-1 transition-colors">
                           <Ticket className="h-3 w-3" />
                           Tickets
-                        </TransitionLink>
-                        <TransitionLink href={ROUTES.PUBLIC.SUPPORT} onClick={() => setIsOpen(false)} className="text-[10px] text-muted-foreground hover:text-primary flex items-center gap-1 transition-colors">
-                          <HelpCircle className="h-3 w-3" />
-                          Help
                         </TransitionLink>
                         <button
                           onClick={handleRefresh}
@@ -510,14 +519,18 @@ export function SupportChat() {
                           </div>
                           <div className={cn("flex flex-col max-w-[80%] min-w-0 gap-1", m.senderType === "USER" ? "items-end" : "items-start")}>
                             <div className={cn(
-                              "px-4 py-2.5 rounded-2xl text-sm shadow-sm leading-relaxed break-all",
+                              "px-4 py-2.5 rounded-2xl text-sm shadow-sm leading-relaxed break-words",
                               m.senderType === "USER"
                                 ? "bg-primary text-primary-foreground rounded-tr-none"
                                 : m.senderType === "SYSTEM"
                                 ? "bg-muted/30 border border-dashed rounded-tl-none text-muted-foreground italic text-xs"
                                 : "bg-card border rounded-tl-none"
                             )}>
-                              {m.message}
+                              {m.senderType === "SYSTEM" ? (
+                                m.message
+                              ) : (
+                                <LinkifyText text={m.message} />
+                              )}
                             </div>
                             <span className="text-[10px] text-muted-foreground">
                               {m.createdAt ? new Date(m.createdAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) : ""}

@@ -342,7 +342,7 @@ export default function AdminLoginPage() {
 
       {/* Minimal Footer */}
       <footer className="shrink-0 h-6 flex justify-center text-[9px] font-medium text-muted-foreground/50">
-        <p>&copy; 2026 iTesters Community</p>
+        <p>&copy; 2026 Gamdix Pvt. Ltd.</p>
       </footer>
     </div>
   );
