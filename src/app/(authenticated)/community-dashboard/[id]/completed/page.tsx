@@ -3,7 +3,7 @@
 import { notFound } from "next/navigation";
 import { CheckCircle, Bug, Lightbulb, PartyPopper } from "lucide-react";
 import { BackButton } from "@/components/back-button";
-import { AppInfoSidebar } from "@/components/appInfoSidebar";
+import { AppActionButton, AppInfoSidebar } from "@/components/appInfoSidebar";
 import { SubmittedFeedback } from "@/components/community-dashboard/submitted-feedback";
 import { ReviewSubmissionForm } from "@/components/review-submission-form";
 import { useState, useEffect } from "react";
@@ -204,6 +204,13 @@ export default function AppTestingCompletedPage({
               feedback={appDetails.feedback || []}
               totalTesters={appDetails.totalTester || 0}
             />
+            <div className="lg:hidden">
+              <AppActionButton
+                app={appDetails}
+                buttonType="external"
+                url={`https://play.google.com/store/apps/details?id=${appDetails?.androidApp?.packageName}`}
+              />
+            </div>
             <SubmittedFeedback
               isCompleted={true}
               feedback={appDetails.feedback || []}
@@ -218,6 +225,7 @@ export default function AppTestingCompletedPage({
               app={appDetails}
               buttonType="external"
               url={app?.playStoreUrl}
+              buttonClassName="hidden lg:block"
             />
           </aside>
         </main>

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 
+import { cn } from "@/lib/utils";
 import { useTheme } from "next-themes";
 import { SafeImage } from "@/components/safe-image";
 import {
@@ -29,7 +30,7 @@ import { Label } from "@/components/ui/label";
 import { HubSubmittedAppResponse } from "@/lib/types";
 import { LoadingButton } from "./ui/loading-button";
 
-const SidebarButton = ({
+export const AppActionButton = ({
   app,
   handleRequestToJoin,
   buttonType,
@@ -239,6 +240,7 @@ export const AppInfoSidebar = ({
   url,
   hideButton,
   visitUrl,
+  buttonClassName,
 }: {
   app: HubSubmittedAppResponse;
   handleRequestToJoin?: () => void;
@@ -251,6 +253,7 @@ export const AppInfoSidebar = ({
   url?: string;
   hideButton?: boolean;
   visitUrl?: string;
+  buttonClassName?: string;
 }) => {
   const { theme } = useTheme();
 
@@ -261,21 +264,23 @@ export const AppInfoSidebar = ({
 
   return (
     <div className="sticky top-24 space-y-6">
-      <SidebarButton
-        app={app}
-        handleRequestToJoin={handleRequestToJoin}
-        isPending={isPending}
-        isSuccess={isSuccess}
-        isError={isError}
-        error={error}
-        reset={reset}
-        buttonType={buttonType}
-        url={url}
-        hideButton={hideButton}
-        visitUrl={visitUrl}
-        hoverTextColor={hoverTextColor}
-        hoverBgColor={hoverBgColor}
-      />
+      <div className={cn("w-full", buttonClassName)}>
+        <AppActionButton
+          app={app}
+          handleRequestToJoin={handleRequestToJoin}
+          isPending={isPending}
+          isSuccess={isSuccess}
+          isError={isError}
+          error={error}
+          reset={reset}
+          buttonType={buttonType}
+          url={url}
+          hideButton={hideButton}
+          visitUrl={visitUrl}
+          hoverTextColor={hoverTextColor}
+          hoverBgColor={hoverBgColor}
+        />
+      </div>
 
       <Card className="border-0 rounded-2xl shadow-xl shadow-gray-100 dark:shadow-gray-900 overflow-hidden">
         <CardContent className="p-6 pb-0">
