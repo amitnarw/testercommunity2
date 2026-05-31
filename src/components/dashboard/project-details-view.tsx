@@ -19,7 +19,7 @@ import InfoBar from "@/components/dashboard/info-bar";
 import { TesterDeviceDetails } from "@/components/dashboard/tester-device-details";
 import { TestCompleteSection } from "@/components/dashboard/test-complete-section";
 import { RejectedProjectSection } from "@/components/dashboard/rejected-project-section";
-import { DeclarationReport } from "@/components/declaration/declaration-report";
+import { DeclarationReportAccordion } from "@/components/declaration/declaration-report-accordion";
 
 const getStatusConfig = (status: string) => {
   switch (status) {
@@ -71,6 +71,7 @@ export default function ProjectDetailsView({
 }) {
   const [fullscreenImage, setFullscreenImage] = useState<string | null>(null);
   const [isConfettiActive, setConfettiActive] = useState(false);
+  const [isAccordionOpen, setIsAccordionOpen] = useState(false);
 
   const { ref: confettiTriggerRef, inView: confettiInView } = useInView({
     threshold: 0.5,
@@ -140,7 +141,7 @@ export default function ProjectDetailsView({
     <div className="min-h-screen relative">
       <div
         ref={confettiTriggerRef}
-        className="absolute top-0 left-1/2 -translate-x-1/2 z-50"
+        className="fixed top-0 left-1/2 -translate-x-1/2 z-50 pointer-events-none"
       >
         <Confetti
           active={isConfettiActive}
@@ -197,9 +198,13 @@ export default function ProjectDetailsView({
           >
             {/* Declaration Report */}
             {project.status === "Completed" && (
-              <motion.div variants={itemVariants} className="mt-6">
-                <DeclarationReport appId={project.id} />
-              </motion.div>
+              <div className="my-6">
+                <DeclarationReportAccordion
+                  appId={project.id}
+                  isOpen={isAccordionOpen}
+                  onToggle={() => setIsAccordionOpen((p) => !p)}
+                />
+              </div>
             )}
 
             {project?.status !== "Completed" ? (

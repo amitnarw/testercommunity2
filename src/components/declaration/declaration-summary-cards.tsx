@@ -7,13 +7,13 @@ const containerVariants = {
   hidden: { opacity: 0 },
   visible: {
     opacity: 1,
-    transition: { staggerChildren: 0.04 },
+    transition: { staggerChildren: 0.05 },
   },
 };
 
 const itemVariants = {
-  hidden: { opacity: 0, y: 12 },
-  visible: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 80 } },
+  hidden: { opacity: 0, scale: 0.95 },
+  visible: { opacity: 1, scale: 1 },
 };
 
 interface StatCardProps {
@@ -23,10 +23,7 @@ interface StatCardProps {
 
 function StatCard({ label, value }: StatCardProps) {
   return (
-    <motion.div
-      variants={itemVariants}
-      className="rounded-xl border bg-card p-4"
-    >
+    <motion.div variants={itemVariants} className="rounded-xl border bg-card p-4">
       <p className="text-2xl sm:text-3xl font-bold text-foreground">{value}</p>
       <p className="text-xs text-muted-foreground mt-1">{label}</p>
     </motion.div>

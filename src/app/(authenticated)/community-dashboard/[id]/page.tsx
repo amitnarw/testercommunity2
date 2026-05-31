@@ -29,7 +29,7 @@ import {
   Users,
 } from "lucide-react";
 import { BackButton } from "@/components/back-button";
-import { AppInfoSidebar } from "@/components/appInfoSidebar";
+import { AppActionButton, AppInfoSidebar } from "@/components/appInfoSidebar";
 import { GoogleGroupBanner } from "@/components/google-group-banner";
 import {
   useAddHubAppTestingRequest,
@@ -196,6 +196,18 @@ function AppTestingPageClient({ id }: { id: string }) {
               />
             </section>
 
+            <div className="lg:hidden">
+              <AppActionButton
+                app={appDetails}
+                handleRequestToJoin={handleSubmit}
+                isPending={isPending}
+                isSuccess={isSuccess}
+                isError={isError}
+                error={error}
+                reset={reset}
+              />
+            </div>
+
             <GoogleGroupBanner variant="rules" />
 
             {appDetails?.testerRelations?.[0]?.status === "REJECTED" && (
@@ -339,6 +351,7 @@ function AppTestingPageClient({ id }: { id: string }) {
                 isError={isError}
                 error={error}
                 reset={reset}
+                buttonClassName="hidden lg:block"
               />
             </div>
 

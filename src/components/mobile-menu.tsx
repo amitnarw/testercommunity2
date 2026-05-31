@@ -201,6 +201,7 @@ export default function MobileMenu({
   const publicNavItems = [
     { name: "Home", href: ROUTES.PUBLIC.HOME },
     { name: "How It Works", href: ROUTES.PUBLIC.HOW_IT_WORKS },
+    { name: "Reviews", href: ROUTES.PUBLIC.REVIEWS },
     { name: "Pricing", href: ROUTES.PUBLIC.PRICING },
     { name: "Support", href: ROUTES.PUBLIC.SUPPORT },
     { name: "Blog", href: ROUTES.PUBLIC.BLOG },

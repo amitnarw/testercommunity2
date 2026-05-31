@@ -9,6 +9,7 @@ import { useSubmitDailyVerification } from "@/hooks/useHub";
 import { cn } from "@/lib/utils";
 import { Skeleton } from "@/components/ui/skeleton";
 import {
+  AppActionButton,
   AppInfoSidebar,
   AppInfoSidebarSkeleton,
 } from "@/components/appInfoSidebar";
@@ -275,6 +276,14 @@ export default function OngoingProjectView({
                     />
                   </section>
 
+                  <div className="lg:hidden">
+                    <AppActionButton
+                      app={appDetails}
+                      buttonType="external"
+                      url={`https://play.google.com/store/apps/details?id=${appDetails?.androidApp?.packageName}`}
+                    />
+                  </div>
+
                   <GoogleGroupBanner variant="note" />
 
                   {/* Admin Force-Completed Banner */}
@@ -390,6 +399,7 @@ export default function OngoingProjectView({
                     app={appDetails}
                     buttonType="external"
                     url={`https://play.google.com/store/apps/details?id=${appDetails?.androidApp?.packageName}`}
+                    buttonClassName="hidden lg:block"
                   />
                 )}
               </aside>

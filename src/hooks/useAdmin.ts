@@ -22,6 +22,7 @@ import {
   updateUserProfile,
   updateUserWallet,
   deleteUser,
+  createUser,
   getAllSuggestions,
   getSuggestionById,
   getSuggestionCounts,
@@ -329,6 +330,21 @@ export function useUpdateUserRole(options?: UseMutationOptions<any, any, any>) {
 export function useDeleteUser(options?: UseMutationOptions<any, any, any>) {
   const mutation = useMutation({
     mutationFn: (id: string) => deleteUser(id),
+    ...options,
+  });
+
+  return mutation;
+}
+
+export function useCreateUser(options?: UseMutationOptions<any, any, any>) {
+  const queryClient = useQueryClient();
+  const mutation = useMutation({
+    mutationFn: (payload: any) => createUser(payload),
+    onSuccess: (data, variables, context) => {
+      queryClient.invalidateQueries({ queryKey: ["useAllUsers"] });
+      queryClient.invalidateQueries({ queryKey: ["useUserCounts"] });
+      options?.onSuccess?.(data, variables, context);
+    },
     ...options,
   });
 

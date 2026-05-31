@@ -561,6 +561,27 @@ export async function deleteUser(id: string) {
   }
 }
 
+export async function createUser(payload: any) {
+  try {
+    const response = await api.post(API_ROUTES.ADMIN + `/users`, payload);
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error creating user:", error);
+    if (axios.isAxiosError(error)) {
+      const status = error.response?.status;
+      const responseData = error.response?.data;
+      console.error("Axios error:", status, responseData);
+      throw new Error(
+        responseData?.message || error.message || "Unknown error",
+      );
+    } else if (error instanceof Error) {
+      throw new Error(error.message);
+    } else {
+      throw new Error(JSON.stringify(error));
+    }
+  }
+}
+
 // ==================== SUGGESTIONS ====================
 
 export async function getAllSuggestions(params?: { status?: string }) {

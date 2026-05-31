@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useCallback, useRef } from "react";
 import { motion } from "framer-motion";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
@@ -13,7 +13,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-import { Plus, Trash2, GripVertical } from "lucide-react";
+import { Plus, Trash2, GripVertical, Save, Loader2 } from "lucide-react";
 import type { DeclarationAnswers, CustomQuestion, AdminQuestion } from "@/lib/types";
 
 interface GoogleQuestion {
@@ -99,42 +99,40 @@ const GOOGLE_QUESTIONS: GoogleQuestion[] = [
   },
 ];
 
-const sectionVariants = {
-  hidden: { opacity: 0, y: 10 },
-  visible: { opacity: 1, y: 0, transition: { type: "spring", stiffness: 80 } },
-};
-
 let customQuestionCounter = 0;
 function generateCustomId(): string {
   customQuestionCounter += 1;
   return `custom_${customQuestionCounter}_${Date.now()}`;
 }
 
+const sectionVariants = {
+  hidden: { opacity: 0, y: 20 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.4, ease: "easeOut" } },
+};
+
 export function DeclarationQuestionnaire({
   answers,
   onChange,
   adminQuestions,
+  onSave,
 }: {
   answers: DeclarationAnswers;
   onChange: (answers: DeclarationAnswers) => void;
   adminQuestions?: AdminQuestion[];
+  onSave?: (answers: DeclarationAnswers) => Promise<void>;
 }) {
   const [localAnswers, setLocalAnswers] = useState(answers);
-  const [debounceTimer, setDebounceTimer] = useState<ReturnType<typeof setTimeout> | null>(null);
-
-  useEffect(() => {
-    setLocalAnswers(answers);
-  }, [answers]);
+  const debounceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [savingId, setSavingId] = useState<string | null>(null);
 
   const scheduleSave = useCallback(
     (updated: DeclarationAnswers) => {
-      if (debounceTimer) clearTimeout(debounceTimer);
-      const timer = setTimeout(() => {
+      if (debounceTimerRef.current) clearTimeout(debounceTimerRef.current);
+      debounceTimerRef.current = setTimeout(() => {
         onChange(updated);
       }, 500);
-      setDebounceTimer(timer);
     },
-    [debounceTimer, onChange],
+    [onChange],
   );
 
   const handleChange = (id: keyof DeclarationAnswers, value: string) => {
@@ -179,6 +177,21 @@ export function DeclarationQuestionnaire({
     scheduleSave(updated);
   };
 
+  const saveCustomQuestion = async (customId: string) => {
+    if (debounceTimerRef.current) clearTimeout(debounceTimerRef.current);
+    debounceTimerRef.current = null;
+    setSavingId(customId);
+    try {
+      if (onSave) {
+        await onSave(localAnswers);
+      } else {
+        onChange(localAnswers);
+      }
+    } finally {
+      setSavingId(null);
+    }
+  };
+
   const handleDeleteQuestion = (id: keyof DeclarationAnswers) => {
     const deleted = localAnswers.deletedQuestions || [];
     if (deleted.includes(id as string)) return;
@@ -216,7 +229,12 @@ export function DeclarationQuestionnaire({
   const showAdminQuestions = adminQuestions && adminQuestions.length > 0;
 
   return (
-    <div className="space-y-8">
+    <motion.div
+      variants={sectionVariants}
+      initial="hidden"
+      animate="visible"
+      className="space-y-8"
+    >
       <div>
         <h2 className="text-xl font-bold">
           {showAdminQuestions ? "Admin Declaration" : "Google Play Declaration"}
@@ -230,12 +248,7 @@ export function DeclarationQuestionnaire({
 
       {/* Admin Questions Section (read-only for PAID apps) */}
       {showAdminQuestions && (
-        <motion.div
-          variants={sectionVariants}
-          initial="hidden"
-          animate="visible"
-          className="rounded-2xl border bg-card overflow-hidden"
-        >
+        <div className="rounded-2xl border bg-card overflow-hidden">
           <div className="bg-primary/5 px-6 py-4 border-b">
             <h3 className="font-semibold text-lg">Admin Questions & Answers</h3>
           </div>
@@ -258,7 +271,7 @@ export function DeclarationQuestionnaire({
               </div>
             ))}
           </div>
-        </motion.div>
+        </div>
       )}
 
       {/* Google Play Standard Questions (only for FREE apps) */}
@@ -271,11 +284,8 @@ export function DeclarationQuestionnaire({
         );
         if (visible.length === 0 && deleted.length === 0) return null;
         return (
-          <motion.div
+          <div
             key={sectionName}
-            variants={sectionVariants}
-            initial="hidden"
-            animate="visible"
             className="rounded-2xl border bg-card overflow-hidden"
           >
             <div className="bg-primary/5 px-6 py-4 border-b flex items-center justify-between">
@@ -341,16 +351,13 @@ export function DeclarationQuestionnaire({
               </div>
             ))}
           </div>
-        </motion.div>
+        </div>
       );
       })}
 
       {/* Custom Questions (same for both PAID and FREE) */}
       {(localAnswers.customQuestions || []).length > 0 && (
-        <motion.div
-          variants={sectionVariants}
-          initial="hidden"
-          animate="visible"
+        <div
           className="rounded-2xl border bg-card overflow-hidden"
         >
           <div className="bg-primary/5 px-6 py-4 border-b">
@@ -361,20 +368,36 @@ export function DeclarationQuestionnaire({
           <div className="divide-y">
             {(localAnswers.customQuestions || []).map((cq) => (
               <div key={cq.id} className="p-6 space-y-3">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2 text-muted-foreground">
-                    <GripVertical className="w-4 h-4" />
-                    <span className="text-xs font-medium">Custom Question</span>
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2 text-muted-foreground">
+                      <GripVertical className="w-4 h-4" />
+                      <span className="text-xs font-medium">Custom Question</span>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => saveCustomQuestion(cq.id)}
+                        disabled={savingId !== null}
+                        className="text-primary hover:text-primary h-8 px-2"
+                      >
+                        {savingId === cq.id ? (
+                          <Loader2 className="w-4 h-4 animate-spin" />
+                        ) : (
+                          <Save className="w-4 h-4" />
+                        )}
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => removeCustomQuestion(cq.id)}
+                        disabled={savingId !== null}
+                        className="text-destructive hover:text-destructive h-8 px-2"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </Button>
+                    </div>
                   </div>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => removeCustomQuestion(cq.id)}
-                    className="text-destructive hover:text-destructive h-8 px-2"
-                  >
-                    <Trash2 className="w-4 h-4" />
-                  </Button>
-                </div>
                 <Input
                   value={cq.question}
                   onChange={(e) =>
@@ -394,7 +417,7 @@ export function DeclarationQuestionnaire({
               </div>
             ))}
           </div>
-        </motion.div>
+        </div>
       )}
 
       <div className="flex items-center justify-center">
@@ -416,6 +439,6 @@ export function DeclarationQuestionnaire({
             : "Your answers are saved automatically as you type. You can add custom questions beyond the standard Google Play ones using the &quot;Add Question&quot; button above."}
         </p>
       </div>
-    </div>
+    </motion.div>
   );
 }
