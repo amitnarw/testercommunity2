@@ -1,18 +1,20 @@
 // src/types/better-auth.d.ts
 
-import "better-auth";   // ← correct package (not /react)
+import "better-auth";
 
-declare module "better-auth" {   // ← correct module name
+declare module "better-auth" {
   interface Session {
-    role: {
+    role?: {
       name: string;
       permissions: {
-        id: number;
         moduleId: number;
-        canRead: boolean;
+        canReadList: boolean;
+        canReadSingle: boolean;
+        canCreate: boolean;
         canUpdate: boolean;
         canDelete: boolean;
+        module: { name: string };
       }[];
-    } | null;
+    };
   }
 }

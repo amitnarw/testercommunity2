@@ -2,20 +2,19 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { jwtVerify } from "jose";
 import { ROUTES } from "@/lib/routes";
+import { hasPermission } from "@/lib/permissions";
+import type { Action } from "@/lib/permissions";
 
 interface RoleInfo {
   name: string;
   permissions: Array<{
-    id: number;
-    roleId: number;
     moduleId: number;
     canReadList: boolean;
     canReadSingle: boolean;
     canCreate: boolean;
     canUpdate: boolean;
     canDelete: boolean;
-    createdAt: string;
-    updatedAt: string;
+    module: { name: string };
   }>;
 }
 
@@ -97,7 +96,6 @@ export async function middleware(request: NextRequest) {
   ];
   const adminRoutes = [ROUTES.ADMIN.ROOT];
   const adminAuthRoutes = [ROUTES.ADMIN.AUTH.LOGIN];
-  const superAdminOnlyRoutes = [ROUTES.ADMIN.FINANCE, ROUTES.ADMIN.PERMISSIONS];
   const testerAuthRoutes = [
     ROUTES.TESTER.AUTH.LOGIN,
     ROUTES.TESTER.AUTH.REGISTER,
@@ -139,13 +137,9 @@ export async function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  // Super admin only routes (finance, permissions, etc.)
-  if (
-    isAuthenticated &&
-    !isSuperAdmin &&
-    superAdminOnlyRoutes.some((route) => pathname.startsWith(route))
-  ) {
-    return NextResponse.redirect(new URL(ROUTES.ADMIN.DASHBOARD, request.url));
+  // If role is null despite being authenticated, role_cache JWT is corrupt/expired
+  if (isAuthenticated && !role && adminRoutes.some((route) => pathname.startsWith(route)) && !adminAuthRoutes.some((route) => pathname.startsWith(route))) {
+    return NextResponse.redirect(new URL(ROUTES.ADMIN.AUTH.LOGIN, request.url));
   }
 
   // Redirect authenticated users away from public auth pages
@@ -267,27 +261,36 @@ export async function middleware(request: NextRequest) {
     }
   }
 
-  // Role-based access control: moderators can only access blog management, profile, and admin auth routes
-  if (lowerRole === "moderator") {
-    const moderatorAllowedRoutes = [
-      ROUTES.ADMIN.BLOG_MANAGEMENT,
-      ROUTES.ADMIN.PROFILE,
+  // Permission-based admin route guard
+  if (adminRoutes.some((route) => pathname.startsWith(route)) && !adminAuthRoutes.some((route) => pathname.startsWith(route))) {
+    const adminRouteChecks: Array<{ path: string; module: string; action: Action }> = [
+      { path: ROUTES.ADMIN.SUBMISSIONS_PAID, module: "submissions", action: "canReadList" },
+      { path: ROUTES.ADMIN.SUBMISSIONS_FREE, module: "submissions", action: "canReadList" },
+      { path: ROUTES.ADMIN.DASHBOARD, module: "dashboard", action: "canReadList" },
+      { path: ROUTES.ADMIN.FINANCE, module: "finance", action: "canReadList" },
+      { path: ROUTES.ADMIN.USERS, module: "users", action: "canReadList" },
+      { path: ROUTES.ADMIN.APPLICATIONS, module: "tester_applications", action: "canReadList" },
+      { path: ROUTES.ADMIN.SUGGESTIONS, module: "suggestions", action: "canReadList" },
+      { path: ROUTES.ADMIN.NOTIFICATIONS, module: "notifications", action: "canReadList" },
+      { path: ROUTES.ADMIN.PROMO_CODES, module: "promo_codes", action: "canReadList" },
+      { path: ROUTES.ADMIN.REVIEWS, module: "testimonial", action: "canReadList" },
+      { path: ROUTES.ADMIN.USER_REVIEWS, module: "review", action: "canReadList" },
+      { path: ROUTES.ADMIN.CONTROL_ROOM, module: "control_room", action: "canReadList" },
+      { path: ROUTES.ADMIN.BLOG_MANAGEMENT, module: "blogs", action: "canReadList" },
+      { path: ROUTES.ADMIN.LOGS, module: "logs", action: "canReadList" },
+      { path: ROUTES.ADMIN.SUPPORT, module: "support", action: "canReadList" },
+      { path: ROUTES.ADMIN.PERMISSIONS, module: "permissions", action: "canReadList" },
+      { path: ROUTES.ADMIN.FEEDBACK, module: "feedback", action: "canReadList" },
+      { path: ROUTES.ADMIN.INVOICE, module: "finance", action: "canReadList" },
     ];
-    const isModeratorAllowed = moderatorAllowedRoutes.some((route) =>
-      pathname.startsWith(route),
-    );
-    const isAdminAuthRoute = adminAuthRoutes.some((route) =>
-      pathname.startsWith(route),
-    );
 
-    if (
-      !isModeratorAllowed &&
-      !isAdminAuthRoute &&
-      adminRoutes.some((route) => pathname.startsWith(route))
-    ) {
-      return NextResponse.redirect(
-        new URL(ROUTES.ADMIN.BLOG_MANAGEMENT, request.url),
-      );
+    const matchedCheck = adminRouteChecks.find((c) => pathname.startsWith(c.path));
+    if (matchedCheck && role && !hasPermission(role.name, role.permissions, matchedCheck.module, matchedCheck.action)) {
+      const dashboardUrl = new URL(ROUTES.ADMIN.DASHBOARD, request.url);
+      if (pathname === dashboardUrl.pathname) {
+        return NextResponse.next();
+      }
+      return NextResponse.redirect(dashboardUrl);
     }
   }
 

@@ -16,12 +16,10 @@ import { cn } from "@/lib/utils";
 import { usePathname } from "next/navigation";
 import { TransitionLink } from "@/components/transition-link";
 import { useSupportChat } from "@/hooks/useSupportChat";
-import { useToast } from "@/hooks/use-toast";
 
 export function SupportChat() {
   const pathname = usePathname();
   const router = useRouter();
-  const { toast } = useToast();
   const [windowWidth, setWindowWidth] = useState(typeof window !== "undefined" ? window.innerWidth : 1200);
   const [localInput, setLocalInput] = useState("");
   const [humanInput, setHumanInput] = useState("");
@@ -58,11 +56,6 @@ export function SupportChat() {
   } = useSupportChat(chat);
 
   const handleRefresh = () => {
-    toast({
-      title: "Checking availability...",
-      description: "Looking for available support agents.",
-      duration: 2000,
-    });
     refreshAgentStatus();
   };
 
@@ -358,27 +351,18 @@ export function SupportChat() {
                     </form>
                     <div className="mt-3 flex items-center justify-between px-1">
                       <div className="flex items-center gap-4">
-                        {agentsOnline && (
-                          <button
-                            onClick={requestHumanChat}
-                            className="text-[10px] text-muted-foreground hover:text-primary flex items-center gap-1 transition-colors"
-                          >
-                            <Headphones className="h-3 w-3" />
-                            Talk to a human
-                          </button>
-                        )}
-                        <TransitionLink href="/support/tickets" onClick={() => setIsOpen(false)} className="text-[10px] text-muted-foreground hover:text-primary flex items-center gap-1 transition-colors">
-                          <Ticket className="h-3 w-3" />
-                          Tickets
-                        </TransitionLink>
                         <button
                           onClick={handleRefresh}
                           disabled={refreshing}
                           className="text-[10px] text-muted-foreground hover:text-primary flex items-center gap-1 transition-colors"
                         >
-                          <RefreshCw className={cn("h-3 w-3", refreshing && "animate-spin")} />
-                          {refreshing ? "Checking..." : "Check availability"}
+                          <Headphones className="h-3 w-3" />
+                          {refreshing ? "Checking..." : "Chat with human"}
                         </button>
+                        <TransitionLink href="/support/tickets" onClick={() => setIsOpen(false)} className="text-[10px] text-muted-foreground hover:text-primary flex items-center gap-1 transition-colors">
+                          <Ticket className="h-3 w-3" />
+                          Tickets
+                        </TransitionLink>
                       </div>
                     </div>
                     <p className="mt-2 text-[9px] text-muted-foreground/60 text-center leading-tight">

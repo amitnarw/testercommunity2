@@ -187,7 +187,7 @@ export function BaseSidebar({
             <div className="relative w-10 h-10 shrink-0">
               <Image
                 src="/inTesters-logo.svg"
-                alt="InTesters Logo"
+                alt="inTesters Logo"
                 fill
                 className="object-contain invert dark:invert-0"
                 priority

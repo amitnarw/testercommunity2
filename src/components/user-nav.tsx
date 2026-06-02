@@ -30,6 +30,7 @@ import {
 } from "lucide-react";
 import { TransitionLink } from "./transition-link";
 import { ROUTES } from "@/lib/routes";
+import { hasPermission } from "@/lib/permissions";
 
 interface UserNavProps {
   session?: {
@@ -71,6 +72,10 @@ export function UserNav({ session, onLogout }: UserNavProps) {
 
   const isAdmin = pathname.startsWith("/admin");
   const isPro = pathname.startsWith("/tester");
+
+  const _roleObj = (session as any)?.role || (session as any)?.user?.role;
+  const roleName = typeof _roleObj === "string" ? _roleObj.toLowerCase() : typeof _roleObj === "object" && _roleObj?.name ? _roleObj.name.toLowerCase() : "";
+  const permissions = typeof _roleObj === "object" ? _roleObj?.permissions : undefined;
 
   const getRoleBadge = () => {
     // Handle case where role might be an object with name property
@@ -194,12 +199,15 @@ export function UserNav({ session, onLogout }: UserNavProps) {
               href={ROUTES.ADMIN.SUBMISSIONS}
               icon={FileCheck}
               label="Submissions"
+              className={!hasPermission(roleName, permissions, "feedback", "canReadList") ? "col-span-2" : ""}
             />
-            <BentoItem
-              href={ROUTES.ADMIN.FEEDBACK}
-              icon={MessageSquare}
-              label="Feedback"
-            />
+            {hasPermission(roleName, permissions, "feedback", "canReadList") && (
+              <BentoItem
+                href={ROUTES.ADMIN.FEEDBACK}
+                icon={MessageSquare}
+                label="Feedback"
+              />
+            )}
           </div>
           <div className="space-y-1">
             <ListItem

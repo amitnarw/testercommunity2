@@ -29,7 +29,7 @@ export function Logo({ size = "md", className, onClick }: LogoProps) {
     >
       <Image
         src="/inTesters-logo.svg"
-        alt="InTesters Logo"
+        alt="inTesters Logo"
         fill
         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
         className="object-contain dark:invert"
