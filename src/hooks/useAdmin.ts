@@ -73,6 +73,9 @@ import {
   getUserWalletDetail,
   getUserInvoices,
   updateInvoice,
+  getInvoicePreview,
+  generateDemoPayment,
+  createInvoice,
   getFinancePlans,
   getFinancePaymentMethods,
   getAllAuthors,
@@ -1074,6 +1077,52 @@ export function useUpdateInvoice(options?: UseMutationOptions<any, any, any>) {
       lut_number?: string;
       sac_code?: string;
     }) => updateInvoice(payload),
+    ...options,
+  });
+}
+
+export function useInvoicePreview(userId: string | null, type?: "IND" | "EXP") {
+  return useQuery({
+    queryFn: () => getInvoicePreview(userId!, type),
+    queryKey: ["useInvoicePreview", userId, type],
+    enabled: !!userId,
+  });
+}
+
+export function useGenerateDemoPayment(options?: UseMutationOptions<any, any, any>) {
+  return useMutation({
+    mutationFn: (payload: {
+      userId: string;
+      amount: number;
+      currency?: string;
+      quantity?: number;
+    }) => generateDemoPayment(payload),
+    ...options,
+  });
+}
+
+export function useCreateInvoice(options?: UseMutationOptions<any, any, any>) {
+  return useMutation({
+    mutationFn: (payload: {
+      paymentId: number;
+      userId: string;
+      invoice_number?: string;
+      invoice_type?: string;
+      service_name?: string;
+      sac_code?: string;
+      period?: string;
+      quantity?: number;
+      unit_price?: number;
+      tax_rate?: number;
+      cgst_amount?: number;
+      sgst_amount?: number;
+      igst_amount?: number;
+      due_date?: string;
+      place_of_supply?: string;
+      supply_type?: string;
+      amount_in_words?: string;
+      lut_number?: string;
+    }) => createInvoice(payload),
     ...options,
   });
 }

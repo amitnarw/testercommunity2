@@ -56,7 +56,7 @@ export function TaxInvoice({ invoice }: TaxInvoiceProps) {
   const isDelhi = (billingInfo?.state || "").toLowerCase() === "delhi" || invoice.place_of_supply === "Delhi";
 
   const currency = payment?.currency || "INR";
-  const subtotal = payment?.amount || 0;
+  const subtotal = payment?.amount || (invoice.unit_price || 0) * (invoice.quantity || 1);
   const cgstAmount = invoice.cgst_amount || 0;
   const sgstAmount = invoice.sgst_amount || 0;
   const igstAmount = invoice.igst_amount || 0;
