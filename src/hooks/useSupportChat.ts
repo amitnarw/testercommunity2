@@ -411,7 +411,8 @@ export function useSupportChat(chat: SupportChatAI) {
         setAgentsOnline(false);
         setHasCheckedStatus(true);
         setChatMode("OFFLINE_OPTIONS");
-      });
+      })
+      .finally(() => setRefreshing(false));
   }, [chatMode, requestHumanChat]);
 
   // -- Typing indicator --
@@ -506,18 +507,8 @@ export function useSupportChat(chat: SupportChatAI) {
 
   const refreshAgentStatus = useCallback(() => {
     setRefreshing(true);
-    api.get(API_ROUTES.SUPPORT + "/agent-status")
-      .then((r) => {
-        const online = r?.data?.data?.online || false;
-        setAgentsOnline(online);
-        if (online && chatMode === "OFFLINE_OPTIONS") {
-          requestHumanChat();
-          setChatMode("WAITING");
-        }
-      })
-      .catch(() => setAgentsOnline(false))
-      .finally(() => setRefreshing(false));
-  }, [chatMode, requestHumanChat]);
+    setChatMode("CHECKING");
+  }, []);
 
   const openOfflineOptions = useCallback(() => {
     setChatMode("OFFLINE_OPTIONS");

@@ -7,7 +7,7 @@ import { InvoiceDetail } from "@/lib/types";
 
 const COMPANY = {
   name: "Gamdix Private Limited",
-  brandName: "InTesters",
+  brandName: "inTesters",
   addressLine1: "C/o Spring House Co-working Pvt Ltd",
   addressLine2: "B 1/639 A Janakpuri, Janakpuri B-1",
   city: "New Delhi",
@@ -54,7 +54,6 @@ export function TaxInvoice({ invoice }: TaxInvoiceProps) {
   const isExport = invoice.invoice_type === "EXP";
   const isIndia = billingInfo?.country === "India" || !billingInfo?.country;
   const isDelhi = (billingInfo?.state || "").toLowerCase() === "delhi" || invoice.place_of_supply === "Delhi";
-  const isNewFormat = invoice.invoice_number.startsWith("GXIT");
 
   const currency = payment?.currency || "INR";
   const subtotal = payment?.amount || 0;
@@ -64,10 +63,6 @@ export function TaxInvoice({ invoice }: TaxInvoiceProps) {
   const totalAmount = subtotal + cgstAmount + sgstAmount + igstAmount;
   const quantity = invoice.quantity || (order?.packageCount || 1);
   const unitPrice = invoice.unit_price || Math.round(subtotal / quantity);
-
-  if (!isNewFormat) {
-    return <LegacyInvoice invoice={invoice} />;
-  }
 
   const invoiceDate = invoice.createdAt ? format(new Date(invoice.createdAt), "dd MMM yyyy") : "\u2014";
 
@@ -83,7 +78,7 @@ export function TaxInvoice({ invoice }: TaxInvoiceProps) {
           <div className="flex items-start justify-between">
             <div className="flex items-center gap-4">
               <div className="w-14 h-14 rounded-2xl flex items-center justify-center p-2 shrink-0" style={{ background: `linear-gradient(135deg, ${PRIMARY}, ${PRIMARY_DARK})` }}>
-                <Image src="/inTesters-logo.svg" alt="InTesters" width={36} height={36} className="object-contain brightness-0 invert" />
+                <Image src="/inTesters-logo.svg" alt="inTesters" width={36} height={36} className="object-contain brightness-0 invert" />
               </div>
               <div>
                 <h1 className="text-2xl font-bold tracking-tight text-slate-900">{COMPANY.brandName}</h1>
@@ -340,99 +335,3 @@ export function TaxInvoice({ invoice }: TaxInvoiceProps) {
   );
 }
 
-function LegacyInvoice({ invoice }: { invoice: InvoiceDetail }) {
-  const { payment, user } = invoice;
-  const billingInfo = user?.billingInfo;
-  const currency = payment?.currency || "INR";
-
-  return (
-    <div className="bg-white text-slate-900 rounded-2xl shadow-lg overflow-hidden print:shadow-none print:rounded-none print:bg-white print-card">
-      <div className="relative overflow-hidden" style={{ background: `linear-gradient(135deg, ${PRIMARY}, ${PRIMARY_DARK})` }}>
-        <div className="px-8 pt-8 pb-10 sm:px-12 flex flex-col md:flex-row justify-between gap-8 print-flex">
-          <div className="space-y-4">
-            <div className="flex items-center gap-3">
-              <div className="w-11 h-11 bg-white/15 backdrop-blur rounded-xl flex items-center justify-center p-1.5 overflow-hidden">
-                <Image src="/apple-icon.png" alt="InTesters Logo" width={32} height={32} className="object-contain brightness-0 invert" />
-              </div>
-              <h1 className="text-xl font-bold tracking-tight text-white">{COMPANY.brandName}</h1>
-            </div>
-            <p className="text-white/60 text-xs max-w-[200px]">Professional Android App Testing Community.</p>
-          </div>
-          <div className="text-right flex flex-col justify-end">
-            <h2 className="text-3xl font-black uppercase tracking-tighter text-white/90 mb-1">Invoice</h2>
-            <p className="text-white/60 font-mono text-sm">#{invoice.invoice_number}</p>
-          </div>
-        </div>
-      </div>
-      <div className="p-8 sm:p-10 space-y-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-10 print-grid">
-          <div className="space-y-3">
-            <h3 className="text-[10px] font-bold uppercase tracking-[0.2em]" style={{ color: PRIMARY }}>Bill To</h3>
-            <div className="space-y-1">
-              <p className="font-bold text-lg text-slate-900">{billingInfo?.name || user?.name || "Customer"}</p>
-              <p className="text-slate-500 text-sm">{billingInfo?.email || user?.email}</p>
-              {billingInfo?.address && <p className="text-slate-500 text-sm">{billingInfo.address}</p>}
-              {billingInfo?.city && (
-                <p className="text-slate-500 text-sm">{billingInfo.city}, {billingInfo.state} {billingInfo.zipCode}</p>
-              )}
-              {billingInfo?.country && <p className="text-slate-500 text-sm">{billingInfo.country}</p>}
-            </div>
-          </div>
-          <div className="md:text-right space-y-4">
-            <div>
-              <h3 className="text-[10px] font-bold uppercase tracking-[0.2em] mb-1" style={{ color: PRIMARY }}>Date Issued</h3>
-              <p className="font-bold text-slate-900">{format(new Date(invoice.createdAt), "MMMM dd, yyyy")}</p>
-            </div>
-            <div>
-              <h3 className="text-[10px] font-bold uppercase tracking-[0.2em] mb-1" style={{ color: PRIMARY }}>Payment Method</h3>
-              <p className="font-bold text-slate-900 capitalize">{payment?.method || "Razorpay"}</p>
-            </div>
-            <div>
-              <h3 className="text-[10px] font-bold uppercase tracking-[0.2em] mb-1" style={{ color: PRIMARY }}>Transaction ID</h3>
-              <p className="font-mono text-xs text-slate-400">{payment?.razorpayPaymentId}</p>
-            </div>
-          </div>
-        </div>
-        <div className="overflow-x-auto">
-          <table className="w-full text-left">
-            <thead>
-              <tr className="border-b-2" style={{ borderColor: PRIMARY }}>
-                <th className="py-3 font-semibold text-slate-500 text-xs">Description</th>
-                <th className="py-3 font-semibold text-slate-500 text-xs text-center">Qty</th>
-                <th className="py-3 font-semibold text-slate-500 text-xs text-right">Unit Price</th>
-                <th className="py-3 font-semibold text-slate-500 text-xs text-right">Amount</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr className="border-b border-slate-100">
-                <td className="py-4">
-                  <p className="font-semibold text-slate-900">{invoice.service_name || "Android App Closed Testing Package"}</p>
-                  <p className="text-xs text-slate-400 mt-0.5">Professional Application Testing Services</p>
-                </td>
-                <td className="py-4 text-center font-medium">1</td>
-                <td className="py-4 text-right font-medium">{currency} {((payment?.amount || 0) / 100).toLocaleString()}</td>
-                <td className="py-4 text-right font-bold text-slate-900">{currency} {((payment?.amount || 0) / 100).toLocaleString()}</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        <div className="flex justify-end">
-          <div className="w-full sm:w-64 space-y-2">
-            <div className="flex justify-between text-sm text-slate-500"><span>Subtotal</span><span className="font-medium text-slate-700">{currency} {((payment?.amount || 0) / 100).toLocaleString()}</span></div>
-            <div className="flex justify-between text-sm text-slate-500"><span>Tax (0%)</span><span className="font-medium text-slate-700">0.00</span></div>
-            <div className="flex justify-between text-lg font-black text-slate-900 border-t-2 pt-3" style={{ borderColor: PRIMARY }}>
-              <span>Total</span><span>{currency} {((payment?.amount || 0) / 100).toLocaleString()}</span>
-            </div>
-          </div>
-        </div>
-        <div className="pt-6 text-center border-t border-slate-100">
-          <p className="text-slate-300 text-[10px]">Thank you for choosing InTesters. This is a computer generated invoice.</p>
-          <div className="mt-2 flex justify-center gap-4">
-            <p className="text-[9px] font-bold tracking-[0.2em] uppercase text-slate-300">{COMPANY.website}</p>
-            <p className="text-[9px] font-bold tracking-[0.2em] uppercase text-slate-300">{COMPANY.email}</p>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}

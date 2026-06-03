@@ -35,8 +35,19 @@ import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { TransitionLink } from "./transition-link";
 import { ROUTES } from "@/lib/routes";
+import { hasPermission } from "@/lib/permissions";
 
 import { authClient } from "@/lib/auth-client";
+
+type AdminNavItem = {
+  name: string;
+  href: string;
+  icon?: typeof LayoutDashboard;
+  section?: string;
+  badge?: string;
+  superAdminOnly?: boolean;
+  moduleName?: string;
+};
 
 const mainNavItems = [
   { name: "Home", href: ROUTES.PUBLIC.HOME },
@@ -58,91 +69,116 @@ const proNavItems = [
 ];
 
 // Compact admin nav items for mobile (mirrors sidebar)
-const adminNavItems = [
+const adminNavItems: AdminNavItem[] = [
   // Overview
   {
     name: "Dashboard",
-    href: "/admin/dashboard",
+    href: ROUTES.ADMIN.DASHBOARD,
     icon: LayoutDashboard,
     section: "overview",
+    moduleName: "dashboard",
   },
 
   // Paid Services
   {
     name: "Pro Submissions",
-    href: "/admin/submissions-paid",
+    href: ROUTES.ADMIN.SUBMISSIONS_PAID,
     icon: DollarSign,
     section: "paid",
     badge: "PRO",
+    moduleName: "submissions",
   },
 
   // Free Services
   {
     name: "Community Subs",
-    href: "/admin/submissions-free",
+    href: ROUTES.ADMIN.SUBMISSIONS_FREE,
     icon: Handshake,
     section: "free",
     badge: "FREE",
+    moduleName: "submissions",
   },
 
-  // Finance (super_admin only)
+  // Finance
   {
     name: "Finance",
-    href: "/admin/finance",
+    href: ROUTES.ADMIN.FINANCE,
     icon: Landmark,
     section: "finance",
-    superAdminOnly: true,
+    moduleName: "finance",
   },
 
   // Platform
-  { name: "Users", href: ROUTES.ADMIN.USERS, icon: Users, section: "platform" },
+  { name: "Users", href: ROUTES.ADMIN.USERS, icon: Users, section: "platform", moduleName: "users" },
   {
     name: "Applications",
     href: ROUTES.ADMIN.APPLICATIONS,
     icon: FileCheck,
     section: "platform",
+    moduleName: "tester_applications",
   },
   {
     name: "Suggestions",
     href: ROUTES.ADMIN.SUGGESTIONS,
     icon: Lightbulb,
     section: "platform",
+    moduleName: "suggestions",
   },
   {
     name: "Notifications",
     href: ROUTES.ADMIN.NOTIFICATIONS,
     icon: Bell,
     section: "platform",
+    moduleName: "notifications",
   },
   {
     name: "Promo Codes",
     href: ROUTES.ADMIN.PROMO_CODES,
     icon: Ticket,
     section: "platform",
+    moduleName: "promo_codes",
   },
   {
     name: "Reviews",
     href: ROUTES.ADMIN.REVIEWS,
     icon: Star,
     section: "platform",
+    moduleName: "testimonial",
   },
   {
     name: "User Reviews",
     href: ROUTES.ADMIN.USER_REVIEWS,
     icon: MessageSquare,
     section: "platform",
+    moduleName: "review",
+  },
+  {
+    name: "Feedback",
+    href: ROUTES.ADMIN.FEEDBACK,
+    icon: MessageSquare,
+    section: "platform",
+    moduleName: "feedback",
+  },
+  {
+    name: "Control Room",
+    href: ROUTES.ADMIN.CONTROL_ROOM,
+    icon: Settings,
+    section: "platform",
+    moduleName: "control_room",
   },
   {
     name: "Blog Management",
     href: ROUTES.ADMIN.BLOG_MANAGEMENT,
     icon: BookOpen,
     section: "platform",
+    moduleName: "blogs",
   },
   {
     name: "System Logs",
     href: ROUTES.ADMIN.LOGS,
     icon: Terminal,
     section: "platform",
+    moduleName: "logs",
   },
 
   // Support
@@ -151,6 +187,16 @@ const adminNavItems = [
     href: ROUTES.ADMIN.SUPPORT,
     icon: Headphones,
     section: "support",
+    moduleName: "support",
+  },
+
+  // System
+  {
+    name: "Permission Matrix",
+    href: ROUTES.ADMIN.PERMISSIONS,
+    icon: Settings,
+    section: "system",
+    superAdminOnly: true,
   },
 ];
 
@@ -172,7 +218,15 @@ export default function MobileMenu({
     typeof role === "string" ? role : role?.name
   )?.toLowerCase();
 
-  let navItems: { name: string; href: string; icon?: typeof LayoutDashboard; section?: string; badge?: string; superAdminOnly?: boolean }[] = mainNavItems;
+  const permissions = role?.permissions;
+
+  function isItemVisible(item: AdminNavItem): boolean {
+    if (item.superAdminOnly) return roleName === "super_admin";
+    if (item.moduleName) return hasPermission(roleName, permissions, item.moduleName, "canReadList");
+    return true;
+  }
+
+  let navItems: AdminNavItem[] = mainNavItems;
   let notificationHref = "/notifications";
   let walletHref = "/wallet";
   let isAdmin = false;
@@ -192,7 +246,7 @@ export default function MobileMenu({
     walletHref = ROUTES.AUTHENTICATED.WALLET;
     isAdmin = true;
     showWallet = false;
-  } else if (roleName === "tester" || roleName === "super_admin") {
+  } else if (roleName === "tester") {
     navItems = proNavItems;
     notificationHref = ROUTES.TESTER.NOTIFICATIONS;
     walletHref = ROUTES.TESTER.EARNINGS;
@@ -209,22 +263,29 @@ export default function MobileMenu({
 
   const displayItems = isAuthenticated ? navItems : publicNavItems;
 
-  // Group admin items by section
+  // Group admin items by section with permission-based filtering
   const groupedAdminItems = isAdmin
     ? {
-        overview: displayItems.filter(
-          (item: any) => item.section === "overview",
+        overview: (displayItems as AdminNavItem[]).filter(
+          (item) => item.section === "overview" && isItemVisible(item),
         ),
-        paid: displayItems.filter((item: any) => item.section === "paid"),
-        free: displayItems.filter((item: any) => item.section === "free"),
-        finance: roleName === "super_admin"
-          ? displayItems.filter((item: any) => item.section === "finance")
-          : [],
-        platform: displayItems.filter(
-          (item: any) => item.section === "platform",
+        paid: (displayItems as AdminNavItem[]).filter(
+          (item) => item.section === "paid" && isItemVisible(item),
         ),
-        support: displayItems.filter(
-          (item: any) => item.section === "support",
+        free: (displayItems as AdminNavItem[]).filter(
+          (item) => item.section === "free" && isItemVisible(item),
+        ),
+        finance: (displayItems as AdminNavItem[]).filter(
+          (item) => item.section === "finance" && isItemVisible(item),
+        ),
+        platform: (displayItems as AdminNavItem[]).filter(
+          (item) => item.section === "platform" && isItemVisible(item),
+        ),
+        support: (displayItems as AdminNavItem[]).filter(
+          (item) => item.section === "support" && isItemVisible(item),
+        ),
+        system: (displayItems as AdminNavItem[]).filter(
+          (item) => item.section === "system" && isItemVisible(item),
         ),
       }
     : null;
@@ -276,169 +337,83 @@ export default function MobileMenu({
             {isAdmin && groupedAdminItems ? (
               // Admin menu with sections - compact layout
               <nav className="flex flex-col gap-1 py-2 pr-0 flex-1 overflow-y-auto">
-                {/* Overview Section */}
-                <div className="space-y-0.5">
-                  {groupedAdminItems.overview.map((item: any) => (
-                    <TransitionLink
-                      key={item.name}
-                      href={item.href}
-                      onClick={() => setIsMenuOpen(false)}
-                      className={cn(
-                        "flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors hover:bg-primary/10",
-                        pathname === item.href
-                          ? "text-primary bg-primary/5"
-                          : "text-foreground",
-                      )}
-                    >
-                      {item.icon && <item.icon className="h-4 w-4" />}
-                      {item.name}
-                    </TransitionLink>
-                  ))}
-                </div>
+                {(() => {
+                  type SectionCfg = { key: string; header: string | null; iconColor?: string; hoverClass?: string; activeClass?: string };
+                  const sectionConfigs: SectionCfg[] = [
+                    { key: "overview", header: null },
+                    { key: "paid", header: "Paid Services", iconColor: "text-amber-500", hoverClass: "hover:bg-amber-500/10" },
+                    { key: "free", header: "Free Services", iconColor: "text-blue-500", hoverClass: "hover:bg-blue-500/10" },
+                    { key: "finance", header: "Finance", iconColor: "text-emerald-500", hoverClass: "hover:bg-emerald-500/10" },
+                    { key: "platform", header: "Platform", hoverClass: "hover:bg-muted", activeClass: "text-primary bg-primary/5" },
+                    { key: "support", header: "Support", iconColor: "text-green-500", hoverClass: "hover:bg-green-500/10" },
+                    { key: "system", header: "System", iconColor: "text-purple-500", hoverClass: "hover:bg-purple-500/10" },
+                  ];
 
-                {/* Divider */}
-                <div className="h-px bg-border mx-3 my-1" />
+                  const headerColorMap: Record<string, string> = {
+                    paid: "text-amber-500",
+                    free: "text-blue-500",
+                    finance: "text-emerald-500",
+                    platform: "text-muted-foreground",
+                    support: "text-green-500",
+                    system: "text-purple-500",
+                  };
 
-                {/* Paid Services Section */}
-                <div className="space-y-0.5">
-                  <span className="text-[10px] font-semibold text-amber-500 uppercase tracking-wider px-3">
-                    Paid Services
-                  </span>
-                  {groupedAdminItems.paid.map((item: any) => (
-                    <TransitionLink
-                      key={item.name}
-                      href={item.href}
-                      onClick={() => setIsMenuOpen(false)}
-                      className={cn(
-                        "flex items-center justify-between px-3 py-1.5 rounded-lg text-sm font-medium transition-colors hover:bg-amber-500/10",
-                        "text-foreground",
-                      )}
-                    >
-                      <div className="flex items-center gap-2">
-                        {item.icon && (
-                          <item.icon className="h-4 w-4 text-amber-500" />
-                        )}
-                        {item.name}
-                      </div>
-                      {item.badge && (
-                        <span className="text-[8px] font-bold px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-600">
-                          {item.badge}
-                        </span>
-                      )}
-                    </TransitionLink>
-                  ))}
-                </div>
+                  const visibleSections = sectionConfigs.filter(
+                    (s) => (groupedAdminItems as Record<string, any[]>)[s.key].length > 0,
+                  );
 
-                {/* Divider */}
-                <div className="h-px bg-border mx-3 my-1" />
+                  return visibleSections.map((section, idx) => {
+                    const items = (groupedAdminItems as Record<string, any[]>)[section.key];
+                    const hasBadge = section.key === "paid" || section.key === "free";
 
-                {/* Free Services Section */}
-                <div className="space-y-0.5">
-                  <span className="text-[10px] font-semibold text-blue-500 uppercase tracking-wider px-3">
-                    Free Services
-                  </span>
-                  {groupedAdminItems.free.map((item: any) => (
-                    <TransitionLink
-                      key={item.name}
-                      href={item.href}
-                      onClick={() => setIsMenuOpen(false)}
-                      className={cn(
-                        "flex items-center justify-between px-3 py-1.5 rounded-lg text-sm font-medium transition-colors hover:bg-blue-500/10",
-                        "text-foreground",
-                      )}
-                    >
-                      <div className="flex items-center gap-2">
-                        {item.icon && (
-                          <item.icon className="h-4 w-4 text-blue-500" />
-                        )}
-                        {item.name}
-                      </div>
-                      {item.badge && (
-                        <span className="text-[8px] font-bold px-1.5 py-0.5 rounded bg-blue-500/20 text-blue-600">
-                          {item.badge}
-                        </span>
-                      )}
-                    </TransitionLink>
-                  ))}
-                </div>
-
-                {/* Divider */}
-                <div className="h-px bg-border mx-3 my-1" />
-
-                {/* Finance Section (super_admin only) */}
-                {groupedAdminItems.finance.length > 0 && (
-                  <>
-                    <div className="space-y-0.5">
-                      <span className="text-[10px] font-semibold text-emerald-500 uppercase tracking-wider px-3">
-                        Finance
-                      </span>
-                      {groupedAdminItems.finance.map((item: any) => (
-                        <TransitionLink
-                          key={item.name}
-                          href={item.href}
-                          onClick={() => setIsMenuOpen(false)}
-                          className={cn(
-                            "flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors hover:bg-emerald-500/10",
-                            "text-foreground",
+                    return (
+                      <div key={section.key}>
+                        {idx > 0 && <div className="h-px bg-border mx-3 my-1" />}
+                        <div className="space-y-0.5">
+                          {section.header && (
+                            <span className={`text-[10px] font-semibold ${headerColorMap[section.key]} uppercase tracking-wider px-3`}>
+                              {section.header}
+                            </span>
                           )}
-                        >
-                          {item.icon && <item.icon className="h-4 w-4 text-emerald-500" />}
-                          {item.name}
-                        </TransitionLink>
-                      ))}
-                    </div>
-                    <div className="h-px bg-border mx-3 my-1" />
-                  </>
-                )}
-
-                {/* Platform Section */}
-                <div className="space-y-0.5">
-                  <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider px-3">
-                    Platform
-                  </span>
-                  {groupedAdminItems.platform.map((item: any) => (
-                    <TransitionLink
-                      key={item.name}
-                      href={item.href}
-                      onClick={() => setIsMenuOpen(false)}
-                      className={cn(
-                        "flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors hover:bg-muted",
-                        pathname === item.href
-                          ? "text-primary bg-primary/5"
-                          : "text-foreground",
-                      )}
-                    >
-                      {item.icon && <item.icon className="h-4 w-4" />}
-                      {item.name}
-                    </TransitionLink>
-                  ))}
-                </div>
-
-                {/* Divider */}
-                <div className="h-px bg-border mx-3 my-1" />
-
-                {/* Support Section */}
-                {groupedAdminItems.support.length > 0 && (
-                  <div className="space-y-0.5">
-                    <span className="text-[10px] font-semibold text-green-500 uppercase tracking-wider px-3">
-                      Support
-                    </span>
-                    {groupedAdminItems.support.map((item: any) => (
-                      <TransitionLink
-                        key={item.name}
-                        href={item.href}
-                        onClick={() => setIsMenuOpen(false)}
-                        className={cn(
-                          "flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors hover:bg-green-500/10",
-                          "text-foreground",
-                        )}
-                      >
-                        {item.icon && <item.icon className="h-4 w-4 text-green-500" />}
-                        {item.name}
-                      </TransitionLink>
-                    ))}
-                  </div>
-                )}
+                          {items.map((item: any) => (
+                            <TransitionLink
+                              key={item.name}
+                              href={item.href}
+                              onClick={() => setIsMenuOpen(false)}
+                              className={cn(
+                                hasBadge
+                                  ? `flex items-center justify-between px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${section.hoverClass || "hover:bg-primary/10"} text-foreground`
+                                  : `flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${section.hoverClass || "hover:bg-primary/10"}`,
+                                (() => {
+                                  const isActive = pathname === item.href || pathname.startsWith(item.href + "/");
+                                  return section.activeClass
+                                    ? isActive ? section.activeClass : "text-foreground"
+                                    : isActive ? "text-primary bg-primary/5" : "text-foreground";
+                                })(),
+                              )}
+                            >
+                              <div className="flex items-center gap-2">
+                                {item.icon && (
+                                  <item.icon className={cn("h-4 w-4", section.iconColor)} />
+                                )}
+                                {item.name}
+                              </div>
+                              {item.badge && hasBadge && (
+                                <span className={cn(
+                                  "text-[8px] font-bold px-1.5 py-0.5 rounded",
+                                  section.key === "paid" && "bg-amber-500/20 text-amber-600",
+                                  section.key === "free" && "bg-blue-500/20 text-blue-600",
+                                )}>
+                                  {item.badge}
+                                </span>
+                              )}
+                            </TransitionLink>
+                          ))}
+                        </div>
+                      </div>
+                    );
+                  });
+                })()}
               </nav>
             ) : (
               // Regular menu (non-admin)

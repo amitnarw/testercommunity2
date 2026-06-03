@@ -28,6 +28,7 @@ import {
 import { BaseSidebar, SidebarNavLink } from "@/components/ui/base-sidebar";
 import { authClient } from "@/lib/auth-client";
 import { ROUTES } from "@/lib/routes";
+import { hasPermission } from "@/lib/permissions";
 
 const mainNavLinks = [
   { name: "Community Hub", href: ROUTES.AUTHENTICATED.COMMUNITY_DASHBOARD, icon: Users2 },
@@ -46,8 +47,18 @@ const proNavLinks = [
 ];
 
 // Admin sidebar navigation with sections
+type AdminNavLink = {
+  name: string;
+  href: string;
+  icon: typeof LayoutDashboard;
+  section: string;
+  moduleName?: string;
+  superAdminOnly?: boolean;
+  badge?: string;
+};
+
 // Permissions link (super_admin only)
-const permissionsNavLink = {
+const permissionsNavLink: AdminNavLink = {
   name: "Permission Matrix",
   href: ROUTES.ADMIN.PERMISSIONS,
   icon: Shield,
@@ -55,13 +66,14 @@ const permissionsNavLink = {
   superAdminOnly: true,
 };
 
-const adminNavLinks = [
+const adminNavLinks: AdminNavLink[] = [
   // Overview
   {
     name: "Dashboard",
     href: ROUTES.ADMIN.DASHBOARD,
     icon: LayoutDashboard,
     section: "overview",
+    moduleName: "dashboard",
   },
 
   // Paid Services
@@ -71,6 +83,7 @@ const adminNavLinks = [
     icon: DollarSign,
     section: "paid",
     badge: "PRO",
+    moduleName: "submissions",
   },
 
   // Free Services
@@ -80,72 +93,89 @@ const adminNavLinks = [
     icon: Handshake,
     section: "free",
     badge: "FREE",
+    moduleName: "submissions",
   },
 
-  // Finance (super_admin only)
+  // Finance
   {
     name: "Finance",
     href: ROUTES.ADMIN.FINANCE,
     icon: Landmark,
     section: "finance",
-    superAdminOnly: true,
+    moduleName: "finance",
   },
 
   // Platform
-  { name: "Users", href: ROUTES.ADMIN.USERS, icon: Users, section: "platform" },
+  { name: "Users", href: ROUTES.ADMIN.USERS, icon: Users, section: "platform", moduleName: "users" },
   {
     name: "Applications",
     href: ROUTES.ADMIN.APPLICATIONS,
     icon: FileCheck,
     section: "platform",
+    moduleName: "tester_applications",
   },
   {
     name: "Suggestions",
     href: ROUTES.ADMIN.SUGGESTIONS,
     icon: Lightbulb,
     section: "platform",
+    moduleName: "suggestions",
   },
   {
     name: "Notifications",
     href: ROUTES.ADMIN.NOTIFICATIONS,
     icon: Bell,
     section: "platform",
+    moduleName: "notifications",
   },
   {
     name: "Promo Codes",
     href: ROUTES.ADMIN.PROMO_CODES,
     icon: Ticket,
     section: "platform",
+    moduleName: "promo_codes",
   },
   {
     name: "Reviews",
     href: ROUTES.ADMIN.REVIEWS,
     icon: Star,
     section: "platform",
+    moduleName: "testimonial",
   },
   {
     name: "User Reviews",
     href: ROUTES.ADMIN.USER_REVIEWS,
     icon: MessageSquare,
     section: "platform",
+    moduleName: "review",
+  },
+  {
+    name: "Feedback",
+    href: ROUTES.ADMIN.FEEDBACK,
+    icon: MessageSquare,
+    section: "platform",
+    moduleName: "feedback",
   },
   {
     name: "Control Room",
     href: ROUTES.ADMIN.CONTROL_ROOM,
     icon: Settings,
     section: "platform",
+    moduleName: "control_room",
   },
   {
     name: "Blog Management",
     href: ROUTES.ADMIN.BLOG_MANAGEMENT,
     icon: BookOpen,
     section: "platform",
+    moduleName: "blogs",
   },
   {
     name: "System Logs",
     href: ROUTES.ADMIN.LOGS,
     icon: Terminal,
     section: "platform",
+    moduleName: "logs",
   },
 
   // System (super_admin only)
@@ -157,6 +187,7 @@ const adminNavLinks = [
     href: ROUTES.ADMIN.SUPPORT,
     icon: Headphones,
     section: "support",
+    moduleName: "support",
   },
 ];
 
@@ -192,214 +223,65 @@ export function Sidebar({
     navLinks = proNavLinks;
   }
 
+  const permissions = role?.permissions;
+
+  function isLinkVisible(link: (typeof adminNavLinks)[number]): boolean {
+    if (link.superAdminOnly) return roleName === "super_admin";
+    if (link.moduleName) return hasPermission(roleName, permissions, link.moduleName, "canReadList");
+    return true;
+  }
+
+  const sections = [
+    { key: "overview" as const, label: "Overview" },
+    { key: "paid" as const, label: "Paid", color: "text-amber-500/70" },
+    { key: "free" as const, label: "Free", color: "text-blue-500/70" },
+    { key: "finance" as const, label: "Finance", color: "text-emerald-500/70" },
+    { key: "platform" as const, label: "Platform" },
+    { key: "support" as const, label: "Support", color: "text-green-500/70" },
+    { key: "system" as const, label: "System", color: "text-purple-500/70" },
+  ];
+
   const navContent = isAdminRole ? (
-    roleName === "moderator" ? (
-      <>
-        <div className="mb-1">
-          {!isCollapsed && (
-            <span className="text-[10px] font-semibold text-white/40 dark:text-black/40 uppercase tracking-wider px-3">
-              Content
-            </span>
-          )}
-          {adminNavLinks
-            .filter((l) => l.name === "Blog Management")
-            .map((link) => (
-              <SidebarNavLink
-                key={link.href}
-                href={link.href}
-                icon={link.icon}
-                isCollapsed={isCollapsed}
-                badge={link.badge}
-              >
-                {link.name}
-              </SidebarNavLink>
-            ))}
-        </div>
-      </>
-    ) : (
-      <>
-        <div className="mb-1">
-          {!isCollapsed && (
-            <span className="text-[10px] font-semibold text-white/40 dark:text-black/40 uppercase tracking-wider px-3">
-              Overview
-            </span>
-          )}
-          {adminNavLinks
-            .filter((l) => l.section === "overview")
-            .map((link) => (
-              <SidebarNavLink
-                key={link.href}
-                href={link.href}
-                icon={link.icon}
-                isCollapsed={isCollapsed}
-                badge={link.badge}
-              >
-                {link.name}
-              </SidebarNavLink>
-            ))}
-        </div>
-        {!isCollapsed && (
-          <div className="h-px bg-white/10 dark:bg-black/10 mx-3 my-1" />
-        )}
+    <>
+      {sections.map((section, idx) => {
+        const sectionLinks = adminNavLinks.filter(
+          (l) => l.section === section.key && isLinkVisible(l),
+        );
+        if (sectionLinks.length === 0) return null;
 
-        <div className="mb-1">
-          {!isCollapsed && (
-            <div className="flex items-center gap-2 px-3 mb-1">
-              <span className="text-[10px] font-semibold text-amber-500/70 uppercase tracking-wider">
-                Paid
-              </span>
-            </div>
-          )}
-          {adminNavLinks
-            .filter((l) => l.section === "paid")
-            .map((link) => (
-              <SidebarNavLink
-                key={link.href}
-                href={link.href}
-                icon={link.icon}
-                isCollapsed={isCollapsed}
-                badge={link.badge}
-              >
-                {link.name}
-              </SidebarNavLink>
-            ))}
-        </div>
-        {!isCollapsed && (
-          <div className="h-px bg-white/10 dark:bg-black/10 mx-3 my-1" />
-        )}
+        const isSpecial = section.color !== undefined;
 
-        <div className="mb-1">
-          {!isCollapsed && (
-            <div className="flex items-center gap-2 px-3 mb-1">
-              <span className="text-[10px] font-semibold text-blue-500/70 uppercase tracking-wider">
-                Free
-              </span>
-            </div>
-          )}
-          {adminNavLinks
-            .filter((l) => l.section === "free")
-            .map((link) => (
-              <SidebarNavLink
-                key={link.href}
-                href={link.href}
-                icon={link.icon}
-                isCollapsed={isCollapsed}
-                badge={link.badge}
-              >
-                {link.name}
-              </SidebarNavLink>
-            ))}
-        </div>
-        {!isCollapsed && (
-          <div className="h-px bg-white/10 dark:bg-black/10 mx-3 my-1" />
-        )}
-
-        {/* Finance section - super_admin only */}
-        {roleName === "super_admin" && (
-          <>
-            <div className="mb-1">
-              {!isCollapsed && (
-                <div className="flex items-center gap-2 px-3 mb-1">
-                  <span className="text-[10px] font-semibold text-emerald-500/70 uppercase tracking-wider">
-                    Finance
-                  </span>
-                </div>
-              )}
-              {adminNavLinks
-                .filter((l) => l.section === "finance")
-                .map((link) => (
-                  <SidebarNavLink
-                    key={link.href}
-                    href={link.href}
-                    icon={link.icon}
-                    isCollapsed={isCollapsed}
-                    badge={link.badge}
-                  >
-                    {link.name}
-                  </SidebarNavLink>
-                ))}
-            </div>
-            {!isCollapsed && (
-              <div className="h-px bg-white/10 dark:bg-black/10 mx-3 my-1" />
-            )}
-          </>
-        )}
-
-        <div className="mb-1">
-          {!isCollapsed && (
-            <span className="text-[10px] font-semibold text-white/40 dark:text-black/40 uppercase tracking-wider px-3">
-              Platform
-            </span>
-          )}
-          {adminNavLinks
-            .filter((l) => l.section === "platform")
-            .map((link) => (
-              <SidebarNavLink
-                key={link.href}
-                href={link.href}
-                icon={link.icon}
-                isCollapsed={isCollapsed}
-                badge={link.badge}
-              >
-                {link.name}
-              </SidebarNavLink>
-            ))}
-        </div>
-        {!isCollapsed && (
-          <div className="h-px bg-white/10 dark:bg-black/10 mx-3 my-1" />
-        )}
-
-        <div className="mb-1">
-          {!isCollapsed && (
-            <span className="text-[10px] font-semibold text-green-500/70 uppercase tracking-wider px-3">
-              Support
-            </span>
-          )}
-          {adminNavLinks
-            .filter((l) => l.section === "support")
-            .map((link) => (
-              <SidebarNavLink
-                key={link.href}
-                href={link.href}
-                icon={link.icon}
-                isCollapsed={isCollapsed}
-                badge={link.badge}
-              >
-                {link.name}
-              </SidebarNavLink>
-            ))}
-        </div>
-
-        {/* System section - super_admin only */}
-        {roleName === "super_admin" && (
-          <>
-            {!isCollapsed && (
+        return (
+          <div key={section.key}>
+            {idx > 0 && !isCollapsed && (
               <div className="h-px bg-white/10 dark:bg-black/10 mx-3 my-1" />
             )}
             <div className="mb-1">
               {!isCollapsed && (
-                <span className="text-[10px] font-semibold text-purple-500/70 uppercase tracking-wider px-3">
-                  System
+                <span
+                  className={`text-[10px] font-semibold ${
+                    isSpecial ? section.color : "text-white/40"
+                  } dark:text-black/40 uppercase tracking-wider px-3`}
+                >
+                  {section.label}
                 </span>
               )}
-              {adminNavLinks
-                .filter((l) => l.section === "system")
-                .map((link) => (
-                  <SidebarNavLink
-                    key={link.href}
-                    href={link.href}
-                    icon={link.icon}
-                    isCollapsed={isCollapsed}
-                    badge={link.badge}
-                  >
-                    {link.name}
-                  </SidebarNavLink>
-                ))}
+              {sectionLinks.map((link) => (
+                <SidebarNavLink
+                  key={link.href}
+                  href={link.href}
+                  icon={link.icon}
+                  isCollapsed={isCollapsed}
+                  badge={link.badge}
+                >
+                  {link.name}
+                </SidebarNavLink>
+              ))}
             </div>
-          </>
-        )}
-      </>
-    )
+          </div>
+        );
+      })}
+    </>
   ) : (
     <>
       {navLinks.map((link) => (

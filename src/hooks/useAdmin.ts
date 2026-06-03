@@ -23,6 +23,7 @@ import {
   updateUserWallet,
   deleteUser,
   createUser,
+  convertUserAuthType,
   getAllSuggestions,
   getSuggestionById,
   getSuggestionCounts,
@@ -243,7 +244,7 @@ export function useUpdateFeedbackStatus(
   options?: UseMutationOptions<any, any, any>,
 ) {
   const mutation = useMutation({
-    mutationFn: (payload: { id: number; priority?: string }) =>
+    mutationFn: (payload: { id: number; priority?: string | null }) =>
       updateFeedbackStatus(payload),
     ...options,
   });
@@ -355,6 +356,22 @@ export function useUpdateUserProfile(options?: UseMutationOptions<any, any, any>
   const mutation = useMutation({
     mutationFn: (payload: { id: string; data: any }) =>
       updateUserProfile(payload),
+    ...options,
+  });
+
+  return mutation;
+}
+
+export function useConvertUserAuthType(options?: UseMutationOptions<any, any, any>) {
+  const queryClient = useQueryClient();
+  const mutation = useMutation({
+    mutationFn: (payload: { userId: string; newAuthType: string; newPassword?: string }) =>
+      convertUserAuthType(payload),
+    onSuccess: (data, variables, context) => {
+      queryClient.invalidateQueries({ queryKey: ["useUserById", variables.userId] });
+      queryClient.invalidateQueries({ queryKey: ["useAllUsers"] });
+      options?.onSuccess?.(data, variables, context);
+    },
     ...options,
   });
 

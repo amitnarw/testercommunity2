@@ -1,10 +1,12 @@
 "use client";
 
-import { Suspense } from "react";
+import { Suspense, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { Loader2 } from "lucide-react";
 import { Tabs, TabsList, TabsContent, TabsTrigger } from "@/components/ui/tabs";
 import { authClient } from "@/lib/auth-client";
 import { ROUTES } from "@/lib/routes";
+import { hasPermission } from "@/lib/permissions";
 import { FinanceOverview } from "@/components/admin/finance/finance-dashboard";
 import { OrdersTable } from "@/components/admin/finance/orders-table";
 import { PaymentsTable } from "@/components/admin/finance/payments-table";
@@ -26,14 +28,31 @@ const tabs = [
 function FinancePageContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
-  const { data: session } = authClient.useSession();
+  const { data: session, isPending: sessionLoading } = authClient.useSession();
   const tabFromUrl = searchParams.get("tab") || "overview";
 
   const role = (session as any)?.role;
   const roleName = (typeof role === "string" ? role : role?.name)?.toLowerCase();
+  const permissions = role?.permissions;
 
-  if (roleName !== "super_admin") {
-    router.replace(ROUTES.ADMIN.DASHBOARD);
+  useEffect(() => {
+    const r = (session as any)?.role;
+    const rName = (typeof r === "string" ? r : r?.name)?.toLowerCase();
+    const perms = r?.permissions;
+    if (session && !hasPermission(rName, perms, "finance", "canReadList")) {
+      router.replace(ROUTES.ADMIN.DASHBOARD);
+    }
+  }, [session, router]);
+
+  if (sessionLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-[60vh]">
+        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+      </div>
+    );
+  }
+
+  if (!session || !hasPermission(roleName, permissions, "finance", "canReadList")) {
     return null;
   }
 
@@ -45,7 +64,7 @@ function FinancePageContent() {
       params.set("tab", value);
     }
     const qs = params.toString();
-    router.replace(qs ? `/admin/finance?${qs}` : "/admin/finance", { scroll: false });
+    router.replace(qs ? `${ROUTES.ADMIN.FINANCE}?${qs}` : ROUTES.ADMIN.FINANCE, { scroll: false });
   };
 
   return (

@@ -312,7 +312,7 @@ export async function getFeedbackCounts() {
 
 export async function updateFeedbackStatus(payload: {
   id: number;
-  priority?: string;
+  priority?: string | null;
 }) {
   try {
     const response = await api.post(
@@ -523,6 +523,35 @@ export async function updateUserProfile(payload: { id: string; data: any }) {
     return response?.data?.data;
   } catch (error) {
     console.error("Error updating user profile:", error);
+    if (axios.isAxiosError(error)) {
+      const status = error.response?.status;
+      const responseData = error.response?.data;
+      console.error("Axios error:", status, responseData);
+
+      throw new Error(
+        responseData?.message || error.message || "Unknown Axios error",
+      );
+    } else if (error instanceof Error) {
+      throw new Error(error.message);
+    } else {
+      throw new Error(JSON.stringify(error));
+    }
+  }
+}
+
+export async function convertUserAuthType(payload: {
+  userId: string;
+  newAuthType: string;
+  newPassword?: string;
+}) {
+  try {
+    const response = await api.post(
+      API_ROUTES.ADMIN + `/users/convert-auth-type`,
+      payload,
+    );
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error converting user auth type:", error);
     if (axios.isAxiosError(error)) {
       const status = error.response?.status;
       const responseData = error.response?.data;

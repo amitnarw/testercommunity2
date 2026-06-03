@@ -40,6 +40,7 @@ import {
   Plus,
   CheckCircle2,
   X,
+  ArrowLeftRight,
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -75,6 +76,7 @@ import {
   useUpdateUserProfile,
   useUpdateUserWallet,
   useDeleteUser,
+  useConvertUserAuthType,
   useCreateNotification,
   useUpdateNotification,
   useDeleteNotification,
@@ -236,6 +238,11 @@ export default function AdminUserDetailsPage() {
     totalPoints: 0,
     totalPackages: 0,
   });
+
+  const [isConvertAuthTypeModalOpen, setIsConvertAuthTypeModalOpen] = useState(false);
+  const [targetAuthType, setTargetAuthType] = useState<string>("EMAIL_PASSWORD");
+  const [convertNewPassword, setConvertNewPassword] = useState("");
+  const [convertConfirmPassword, setConvertConfirmPassword] = useState("");
 
   const { data: userInvoices } = useUserInvoices(id);
   const { data: userNotifications, isLoading: isLoadingNotifications } = useUserNotifications(id);
@@ -457,6 +464,30 @@ export default function AdminUserDetailsPage() {
     },
   });
 
+  const convertAuthTypeMutation = useConvertUserAuthType({
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["useUserById", id] });
+      queryClient.invalidateQueries({ queryKey: ["useAllUsers"] });
+      setIsConvertAuthTypeModalOpen(false);
+      setConvertNewPassword("");
+      setConvertConfirmPassword("");
+      setFeedbackModal({
+        open: true,
+        status: "success",
+        title: "Login Method Converted",
+        description: "The user's login method has been updated successfully.",
+        primaryAction: { label: "OK", onClick: () => setFeedbackModal(prev => ({ ...prev, open: false })) },
+      });
+    },
+    onError: (err: any) => {
+      toast({
+        title: "Error",
+        description: err.message || "Failed to convert auth type.",
+        variant: "destructive",
+      });
+    },
+  });
+
   const handleSendNotification = () => {
     if (!notificationData.title || !notificationData.description) return;
     createNotificationMutation.mutate({
@@ -598,6 +629,22 @@ export default function AdminUserDetailsPage() {
                 <span className="hidden sm:block">Edit Profile</span>
               </Button>
 
+              {isSuperAdmin && !isCurrentUser && user.status !== "Banned" && (
+                <Button
+                  variant="outline"
+                  className="px-3"
+                  onClick={() => {
+                    setTargetAuthType(user.authType === "GOOGLE" ? "EMAIL_PASSWORD" : "GOOGLE");
+                    setConvertNewPassword("");
+                    setConvertConfirmPassword("");
+                    setIsConvertAuthTypeModalOpen(true);
+                  }}
+                >
+                  <ArrowLeftRight className="sm:mr-2 !h-3 !w-3 sm:!h-4 sm:!w-4" />
+                  <span className="hidden sm:block">Convert Login Method</span>
+                </Button>
+              )}
+
               {!isCurrentUser && (
                 <Button
                   variant={user.status === "Banned" ? "default" : "outline"}
@@ -675,6 +722,15 @@ export default function AdminUserDetailsPage() {
                   {isTester && (
                     <Badge variant="outline" className={availConfig.color}>
                       {availConfig.label}
+                    </Badge>
+                  )}
+                  {user.authType === "GOOGLE" ? (
+                    <Badge variant="outline" className="border-blue-500 text-blue-600 dark:text-blue-400">
+                      Google
+                    </Badge>
+                  ) : (
+                    <Badge variant="outline" className="border-green-500 text-green-600 dark:text-green-400">
+                      Email & Password
                     </Badge>
                   )}
                 </div>
@@ -2352,6 +2408,97 @@ export default function AdminUserDetailsPage() {
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
               )}
               Save Invoice
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Convert Auth Type Modal */}
+      <Dialog open={isConvertAuthTypeModalOpen} onOpenChange={(open) => { setIsConvertAuthTypeModalOpen(open); if (!open) { setConvertNewPassword(""); setConvertConfirmPassword(""); setTargetAuthType(""); } }}>
+        <DialogContent className="sm:max-w-[480px]">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <ArrowLeftRight className="w-5 h-5" /> Convert Login Method
+            </DialogTitle>
+            <DialogDescription>
+              Change how this user authenticates. All active sessions will be invalidated.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4 py-4">
+            <div className="flex items-center justify-center gap-3 text-sm">
+              <Badge variant="secondary" className="text-xs px-3 py-1">
+                {user.authType === "GOOGLE" ? "Google" : "Email & Password"}
+              </Badge>
+              <ArrowLeftRight className="w-4 h-4 text-muted-foreground" />
+              <Badge variant="secondary" className="text-xs px-3 py-1">
+                {targetAuthType === "GOOGLE" ? "Google" : "Email & Password"}
+              </Badge>
+            </div>
+
+            {targetAuthType === "EMAIL_PASSWORD" ? (
+              <>
+                <div className="space-y-2">
+                  <Label htmlFor="newPassword">New Password</Label>
+                  <Input
+                    id="newPassword"
+                    type="password"
+                    placeholder="Minimum 8 characters"
+                    maxLength={128}
+                    value={convertNewPassword}
+                    onChange={(e) => setConvertNewPassword(e.target.value)}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="confirmPassword">Confirm Password</Label>
+                  <Input
+                    id="confirmPassword"
+                    type="password"
+                    placeholder="Re-enter password"
+                    maxLength={128}
+                    value={convertConfirmPassword}
+                    onChange={(e) => setConvertConfirmPassword(e.target.value)}
+                  />
+                </div>
+                {convertNewPassword && convertConfirmPassword && convertNewPassword !== convertConfirmPassword && (
+                  <p className="text-xs text-red-500">Passwords do not match</p>
+                )}
+              </>
+            ) : (
+              <div className="bg-amber-500/10 border border-amber-500/20 p-3 rounded-md text-xs text-amber-700 dark:text-amber-400">
+                The credential account will be removed and the user's sessions will be invalidated.
+                The user must sign in with Google on their next login to re-link their account.
+              </div>
+            )}
+          </div>
+          <DialogFooter>
+            <Button variant="ghost" onClick={() => setIsConvertAuthTypeModalOpen(false)}>
+              Cancel
+            </Button>
+            <Button
+              onClick={() => {
+                if (targetAuthType === "EMAIL_PASSWORD") {
+                  if (!convertNewPassword || convertNewPassword.length < 8 || convertNewPassword.length > 128) return;
+                  if (convertNewPassword !== convertConfirmPassword) return;
+                  convertAuthTypeMutation.mutate({
+                    userId: id,
+                    newAuthType: "EMAIL_PASSWORD",
+                    newPassword: convertNewPassword,
+                  });
+                } else {
+                  convertAuthTypeMutation.mutate({
+                    userId: id,
+                    newAuthType: "GOOGLE",
+                  });
+                }
+              }}
+              disabled={
+                convertAuthTypeMutation.isPending ||
+                (targetAuthType === "EMAIL_PASSWORD" &&
+                  (!convertNewPassword || convertNewPassword.length < 8 || convertNewPassword.length > 128 || convertNewPassword !== convertConfirmPassword))
+              }
+            >
+              {convertAuthTypeMutation.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              Convert to {targetAuthType === "GOOGLE" ? "Google" : "Email & Password"}
             </Button>
           </DialogFooter>
         </DialogContent>

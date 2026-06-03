@@ -345,7 +345,7 @@ export default function BillingPage() {
         key: order.razorpayKeyId,
         amount: order.amount,
         currency: order.currency,
-        name: paymentConfig?.name || "InTesters",
+        name: paymentConfig?.name || "inTesters",
         description: `Purchase ${order.planName}`,
         image: logoUrl,
         order_id: order.razorpayOrderId,
