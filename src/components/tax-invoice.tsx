@@ -205,13 +205,13 @@ export function TaxInvoice({ invoice }: TaxInvoiceProps) {
               {isExport ? (
                 <>
                   <p className="text-[10px] font-bold uppercase tracking-[0.2em] mb-3" style={{ color: PRIMARY }}>Nature of Export</p>
-                  <p className="text-[15px] font-semibold text-slate-800 leading-snug">Professional Application Testing Services</p>
+                  <p className="text-[15px] font-semibold text-slate-800 leading-snug">Professional App Testing Services</p>
                   <p className="text-sm text-slate-500 mt-1">Zero-Rated Supply (Export under LUT without payment of Integrated Tax)</p>
                 </>
               ) : (
                 <>
                   <p className="text-[10px] font-bold uppercase tracking-[0.2em] mb-3" style={{ color: PRIMARY }}>Nature of Supply</p>
-                  <p className="text-[15px] font-semibold text-slate-800 leading-snug">Professional Application Testing Services</p>
+                  <p className="text-[15px] font-semibold text-slate-800 leading-snug">Professional App Testing Services</p>
                   {billingInfo?.gstin && (
                     <div className="mt-2 flex gap-2 text-sm">
                       <span className="text-slate-400 font-medium">Buyer GSTIN:</span>
@@ -245,8 +245,8 @@ export function TaxInvoice({ invoice }: TaxInvoiceProps) {
               <tr className="border-b border-slate-100">
                 <td className="py-3 text-slate-400 text-center">1</td>
                 <td className="py-3">
-                  <p className="font-semibold text-slate-900">{invoice.service_name || "Android App Closed Testing Package"}</p>
-                  <p className="text-xs text-slate-400 mt-0.5">Professional Application Testing Services</p>
+                  <p className="font-semibold text-slate-900">{invoice.service_name || "Android App Testing Package"}</p>
+                  <p className="text-xs text-slate-400 mt-0.5">Professional App Testing Services</p>
                 </td>
                 <td className="py-3 text-center font-mono text-slate-500 text-xs">{invoice.sac_code || COMPANY.sacCode}</td>
                 <td className="py-3 text-center font-semibold text-slate-800">{quantity}</td>

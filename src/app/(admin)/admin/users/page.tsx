@@ -67,6 +67,7 @@ export default function AdminUsersPage() {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isStatusModalOpen, setIsStatusModalOpen] = useState(false);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [selectedRole, setSelectedRole] = useState("");
   const [banReason, setBanReason] = useState("");
   const [activeTab, setActiveTab] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
@@ -152,6 +153,7 @@ export default function AdminUsersPage() {
 
   const handleEdit = (user: any) => {
     setSelectedUser(user);
+    setSelectedRole(user.role);
     setIsEditModalOpen(true);
   };
 
@@ -1017,8 +1019,8 @@ export default function AdminUsersPage() {
           </DialogHeader>
           <div className="py-4">
             <Select
-              defaultValue={selectedUser?.role}
-              onValueChange={handleRoleUpdate}
+              value={selectedRole}
+              onValueChange={setSelectedRole}
             >
               <SelectTrigger>
                 <SelectValue placeholder="Select a role" />
@@ -1039,7 +1041,7 @@ export default function AdminUsersPage() {
               Cancel
             </Button>
             <Button
-              onClick={() => setIsEditModalOpen(false)}
+              onClick={() => handleRoleUpdate(selectedRole)}
               disabled={updateRoleMutation.isPending}
             >
               {updateRoleMutation.isPending && (

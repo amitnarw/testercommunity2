@@ -118,15 +118,16 @@ function PermissionsMatrixContent() {
         (modulePerm as any)[field as keyof ModulePerm] === true;
       const key = `${activeRoleData.roleId}-${moduleId}-${field}`;
 
-      if (checked === originalValue) {
-        const next = { ...dirtyChanges };
-        delete next[key];
-        setDirtyChanges(next);
-      } else {
-        setDirtyChanges({ ...dirtyChanges, [key]: checked });
-      }
+      setDirtyChanges((prev) => {
+        if (checked === originalValue) {
+          const next = { ...prev };
+          delete next[key];
+          return next;
+        }
+        return { ...prev, [key]: checked };
+      });
     },
-    [activeRoleData, dirtyChanges],
+    [activeRoleData],
   );
 
   const getCurrentValue = useCallback(
@@ -148,6 +149,78 @@ function PermissionsMatrixContent() {
     [activeRoleData, dirtyChanges],
   );
 
+  const getRowState = useCallback(
+    (moduleId: number): boolean | "indeterminate" => {
+      if (!activeRoleData) return false;
+
+      const allChecked = PERM_FIELDS.every((field) =>
+        getCurrentValue(moduleId, field.key),
+      );
+      const noneChecked = PERM_FIELDS.every(
+        (field) => !getCurrentValue(moduleId, field.key),
+      );
+      if (allChecked) return true;
+      if (noneChecked) return false;
+      return "indeterminate";
+    },
+    [activeRoleData, getCurrentValue],
+  );
+
+  const getColumnState = useCallback(
+    (fieldKey: string): boolean | "indeterminate" => {
+      if (!activeRoleData) return false;
+
+      const filteredPerms = activeRoleData.permissions.filter(
+        (p) => p.moduleName !== "permissions",
+      );
+      const allChecked = filteredPerms.every((p) =>
+        getCurrentValue(p.moduleId, fieldKey),
+      );
+      const noneChecked = filteredPerms.every(
+        (p) => !getCurrentValue(p.moduleId, fieldKey),
+      );
+      if (allChecked) return true;
+      if (noneChecked) return false;
+      return "indeterminate";
+    },
+    [activeRoleData, getCurrentValue],
+  );
+
+  const handleRowToggleAll = useCallback(
+    (moduleId: number) => {
+      if (!activeRoleData) return;
+
+      const allChecked = PERM_FIELDS.every((field) =>
+        getCurrentValue(moduleId, field.key),
+      );
+      const newValue = !allChecked;
+
+      for (const field of PERM_FIELDS) {
+        handleToggle(moduleId, field.key, newValue);
+      }
+    },
+    [activeRoleData, getCurrentValue, handleToggle],
+  );
+
+  const handleColumnToggleAll = useCallback(
+    (fieldKey: string) => {
+      if (!activeRoleData) return;
+
+      const filteredPerms = activeRoleData.permissions.filter(
+        (p) => p.moduleName !== "permissions",
+      );
+      const allChecked = filteredPerms.every((p) =>
+        getCurrentValue(p.moduleId, fieldKey),
+      );
+      const newValue = !allChecked;
+
+      for (const p of filteredPerms) {
+        handleToggle(p.moduleId, fieldKey, newValue);
+      }
+    },
+    [activeRoleData, getCurrentValue, handleToggle],
+  );
+
   const handleSave = useCallback(async () => {
     if (!activeRoleData) return;
 
@@ -159,7 +232,8 @@ function PermissionsMatrixContent() {
     });
 
     const changes = Object.entries(dirtyChanges).map(([key, value]) => {
-      const [, roleIdStr, moduleIdStr, field] = key.split("-");
+      const [roleIdStr, moduleIdStr, ...fieldParts] = key.split("-");
+      const field = fieldParts.join("-");
       return {
         roleId: parseInt(roleIdStr),
         moduleId: parseInt(moduleIdStr),
@@ -308,7 +382,7 @@ function PermissionsMatrixContent() {
               <Table>
                 <TableHeader>
                   <TableRow className="bg-secondary/50">
-                    <TableHead className="min-w-[160px] font-semibold">
+                    <TableHead className="min-w-[180px] font-semibold">
                       Module
                     </TableHead>
                     {PERM_FIELDS.map((field) => (
@@ -316,7 +390,16 @@ function PermissionsMatrixContent() {
                         key={field.key}
                         className="text-center min-w-[100px] font-semibold"
                       >
-                        {field.label}
+                        <div className="flex flex-col items-center gap-1">
+                          {field.label}
+                          <Checkbox
+                            checked={getColumnState(field.key)}
+                            onCheckedChange={() =>
+                              handleColumnToggleAll(field.key)
+                            }
+                            disabled={role.roleName === "super_admin"}
+                          />
+                        </div>
                       </TableHead>
                     ))}
                   </TableRow>
@@ -327,7 +410,16 @@ function PermissionsMatrixContent() {
                     .map((modPerm) => (
                       <TableRow key={modPerm.moduleId}>
                         <TableCell className="font-medium capitalize">
-                          {modPerm.moduleName.replace(/_/g, " ")}
+                          <div className="flex items-center gap-2">
+                            <Checkbox
+                              checked={getRowState(modPerm.moduleId)}
+                              onCheckedChange={() =>
+                                handleRowToggleAll(modPerm.moduleId)
+                              }
+                              disabled={role.roleName === "super_admin"}
+                            />
+                            {modPerm.moduleName.replace(/_/g, " ")}
+                          </div>
                         </TableCell>
                         {PERM_FIELDS.map((field) => {
                           const isChecked = getCurrentValue(
