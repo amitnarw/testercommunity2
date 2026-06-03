@@ -23,6 +23,7 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { useUserProfileData } from "@/hooks/useUser";
 import { ROUTES } from "@/lib/routes";
+import { authClient } from "@/lib/auth-client";
 import dynamic from "next/dynamic";
 const NotVerifiedDialog = dynamic(
   () =>
@@ -63,7 +64,6 @@ const LoginForm = () => {
 
   const { mutate, isPending, isSuccess, isError, error } = useLoginUser({
     onSuccess: async () => {
-      await new Promise((r) => setTimeout(r, 50));
       userProfileDataRefetch();
     },
     onError: (err: any) => {
@@ -76,18 +76,8 @@ const LoginForm = () => {
     },
   });
 
-  const {
-    mutate: googleLoginMutate,
-    isPending: googleLoginIsPending,
-    isSuccess: googleLoginIsSuccess,
-    isError: googleLoginIsError,
-    error: googleLoginError,
-  } = useGoogleLoginUser({
-    onSuccess: async () => {
-      await new Promise((r) => setTimeout(r, 50));
-      userProfileDataRefetch();
-    },
-  });
+  const { mutate: googleLoginMutate, isPending: googleLoginIsPending } =
+    useGoogleLoginUser();
 
   const {
     data: userProfileData,
@@ -95,6 +85,14 @@ const LoginForm = () => {
     refetch: userProfileDataRefetch,
     isFetching: userProfileisFetching,
   } = useUserProfileData();
+
+  const { data: sessionData } = authClient.useSession();
+
+  useEffect(() => {
+    if (sessionData?.session) {
+      userProfileDataRefetch();
+    }
+  }, [sessionData?.session, userProfileDataRefetch]);
 
   useEffect(() => {
     if (!userProfileIsSuccess || userProfileisFetching || !userProfileData)

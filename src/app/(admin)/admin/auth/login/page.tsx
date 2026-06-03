@@ -53,8 +53,6 @@ const LoginForm = ({
 
   const { mutate: login, isPending } = useAdminLogin({
     onSuccess: async (data) => {
-      await new Promise((r) => setTimeout(r, 50));
-
       toast({
         title: "Login Successful",
         description: `Welcome back, ${role}!`,

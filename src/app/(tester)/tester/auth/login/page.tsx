@@ -65,7 +65,6 @@ const TesterLoginForm = () => {
 
   const { mutate, isPending, isSuccess, isError, error } = useTesterLogin({
     onSuccess: async () => {
-      await new Promise((r) => setTimeout(r, 50));
       userProfileDataRefetch();
     },
     onError: (err: any) => {
@@ -79,12 +78,7 @@ const TesterLoginForm = () => {
   });
 
   const { mutate: googleLoginMutate, isPending: googleLoginIsPending } =
-    useGoogleTesterLogin({
-      onSuccess: async () => {
-        await new Promise((r) => setTimeout(r, 50));
-        userProfileDataRefetch();
-      },
-    });
+    useGoogleTesterLogin();
 
   const {
     data: userProfileData,
@@ -92,6 +86,14 @@ const TesterLoginForm = () => {
     refetch: userProfileDataRefetch,
     isFetching: userProfileisFetching,
   } = useUserProfileData();
+
+  const { data: sessionData } = authClient.useSession();
+
+  useEffect(() => {
+    if (sessionData?.session) {
+      userProfileDataRefetch();
+    }
+  }, [sessionData?.session, userProfileDataRefetch]);
 
   useEffect(() => {
     if (!userProfileIsSuccess || userProfileisFetching || !userProfileData)
