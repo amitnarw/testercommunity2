@@ -138,8 +138,25 @@ export async function middleware(request: NextRequest) {
   }
 
   // If role is null despite being authenticated, role_cache JWT is corrupt/expired
-  if (isAuthenticated && !role && adminRoutes.some((route) => pathname.startsWith(route)) && !adminAuthRoutes.some((route) => pathname.startsWith(route))) {
-    return NextResponse.redirect(new URL(ROUTES.ADMIN.AUTH.LOGIN, request.url));
+  // Allow auth pages to render to avoid redirect loops.
+  // For non-auth pages, redirect to the role-appropriate login.
+  // Don't clear cookies from middleware — can't match the cookie domain attribute.
+  // The login page's useSession() will fetch fresh role_cache from the backend.
+  if (isAuthenticated && !role) {
+    if (
+      authRoutes.some((route) => pathname.startsWith(route)) ||
+      adminAuthRoutes.some((route) => pathname.startsWith(route)) ||
+      testerAuthRoutes.some((route) => pathname.startsWith(route))
+    ) {
+      return NextResponse.next();
+    }
+    let loginRoute: string = ROUTES.AUTH.LOGIN;
+    if (adminRoutes.some((route) => pathname.startsWith(route))) {
+      loginRoute = ROUTES.ADMIN.AUTH.LOGIN;
+    } else if (testerRoutes.some((route) => pathname.startsWith(route))) {
+      loginRoute = ROUTES.TESTER.AUTH.LOGIN;
+    }
+    return NextResponse.redirect(new URL(loginRoute, request.url));
   }
 
   // Redirect authenticated users away from public auth pages
@@ -155,8 +172,12 @@ export async function middleware(request: NextRequest) {
   // Redirect authenticated admins away from admin login page
   if (
     isAuthenticated &&
+    role &&
     adminAuthRoutes.some((route) => pathname.startsWith(route))
   ) {
+    if (lowerRole === "moderator") {
+      return NextResponse.redirect(new URL(ROUTES.ADMIN.BLOG_MANAGEMENT, request.url));
+    }
     return NextResponse.redirect(new URL(ROUTES.ADMIN.DASHBOARD, request.url));
   }
 
