@@ -66,6 +66,8 @@ export async function adminLogin(payload: {
         response.error.message ?? "Login failed",
       );
     }
+
+    await authClient.getSession();
     return { success: true, data: response };
   } catch (error) {
     console.error("Error admin login via better-auth:", error);

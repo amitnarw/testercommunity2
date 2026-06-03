@@ -190,6 +190,8 @@ export const login = async ({
         response.error.message ?? "Login failed",
       );
     }
+
+    await authClient.getSession();
     return { success: true, data: response };
   } catch (error) {
     console.error("Error logging in user: ", error);
@@ -239,6 +241,8 @@ export const testerLogin = async ({
         response.error.message ?? "Login failed",
       );
     }
+
+    await authClient.getSession();
     return { success: true, data: response };
   } catch (error) {
     console.error("Error logging in tester: ", error);

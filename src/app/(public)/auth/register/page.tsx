@@ -16,6 +16,7 @@ import { useState, useCallback, useEffect, ChangeEvent } from "react";
 import { useUserProfileData } from "@/hooks/useUser";
 import Link from "next/link";
 import { ROUTES } from "@/lib/routes";
+import { authClient } from "@/lib/auth-client";
 
 const signupSchema = z.object({
   firstName: z.string().min(2, "First name is required."),
@@ -53,15 +54,8 @@ export default function RegisterPage() {
 
   const { mutate, isPending, isSuccess, isError, error } = useRegisterUser();
 
-  const {
-    mutate: googleLoginMutate,
-    isPending: googleLoginIsPending,
-  } = useGoogleLoginUser({
-    onSuccess: async () => {
-      await new Promise((r) => setTimeout(r, 50));
-      userProfileDataRefetch();
-    },
-  });
+  const { mutate: googleLoginMutate, isPending: googleLoginIsPending } =
+    useGoogleLoginUser();
 
   const {
     data: userProfileData,
@@ -69,6 +63,14 @@ export default function RegisterPage() {
     refetch: userProfileDataRefetch,
     isFetching: userProfileisFetching,
   } = useUserProfileData();
+
+  const { data: sessionData } = authClient.useSession();
+
+  useEffect(() => {
+    if (sessionData?.session) {
+      userProfileDataRefetch();
+    }
+  }, [sessionData?.session, userProfileDataRefetch]);
 
   useEffect(() => {
     if (!userProfileIsSuccess || userProfileisFetching || !userProfileData)
