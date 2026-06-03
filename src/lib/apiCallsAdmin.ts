@@ -1472,6 +1472,62 @@ export async function updateInvoice(payload: {
   }
 }
 
+export async function getInvoicePreview(userId: string, type?: "IND" | "EXP") {
+  try {
+    const params: any = {};
+    if (type) params.type = type;
+    const response = await api.get(API_ROUTES.ADMIN + `/finance/invoices/preview/${userId}`, { params });
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error fetching invoice preview:", error);
+    throw error;
+  }
+}
+
+export async function generateDemoPayment(payload: {
+  userId: string;
+  amount: number;
+  currency?: string;
+  quantity?: number;
+}) {
+  try {
+    const response = await api.post(API_ROUTES.ADMIN + `/finance/invoices/demo-payment`, payload);
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error generating demo payment:", error);
+    throw error;
+  }
+}
+
+export async function createInvoice(payload: {
+  paymentId: number;
+  userId: string;
+  invoice_number?: string;
+  invoice_type?: string;
+  service_name?: string;
+  sac_code?: string;
+  period?: string;
+  quantity?: number;
+  unit_price?: number;
+  tax_rate?: number;
+  cgst_amount?: number;
+  sgst_amount?: number;
+  igst_amount?: number;
+  due_date?: string;
+  place_of_supply?: string;
+  supply_type?: string;
+  amount_in_words?: string;
+  lut_number?: string;
+}) {
+  try {
+    const response = await api.post(API_ROUTES.ADMIN + `/finance/invoices/create`, payload);
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error creating invoice:", error);
+    throw error;
+  }
+}
+
 export async function getFinanceRefunds(params?: {
   page?: number;
   limit?: number;

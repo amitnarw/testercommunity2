@@ -83,6 +83,9 @@ import {
   useNotificationTypes,
   useUserInvoices,
   useUpdateInvoice,
+  useInvoicePreview,
+  useGenerateDemoPayment,
+  useCreateInvoice,
   useUserNotifications,
 } from "@/hooks/useAdmin";
 import { useQueryClient } from "@tanstack/react-query";
@@ -244,8 +247,20 @@ export default function AdminUserDetailsPage() {
   const [convertNewPassword, setConvertNewPassword] = useState("");
   const [convertConfirmPassword, setConvertConfirmPassword] = useState("");
 
+  const [isAddInvoiceModalOpen, setIsAddInvoiceModalOpen] = useState(false);
+  const [addInvoicePaymentId, setAddInvoicePaymentId] = useState<number | null>(null);
+  const [addInvoicePaymentLabel, setAddInvoicePaymentLabel] = useState("");
+  const [addInvoiceFormData, setAddInvoiceFormData] = useState<any>({});
+
   const { data: userInvoices } = useUserInvoices(id);
   const { data: userNotifications, isLoading: isLoadingNotifications } = useUserNotifications(id);
+  const { data: invoicePreviewData } = useInvoicePreview(isAddInvoiceModalOpen ? id : null);
+
+  useEffect(() => {
+    if (invoicePreviewData) {
+      setAddInvoiceFormData(invoicePreviewData.preview || {});
+    }
+  }, [invoicePreviewData]);
 
   const [isCreatingNotification, setIsCreatingNotification] = useState(false);
   const [createFormData, setCreateFormData] = useState({
@@ -395,6 +410,49 @@ export default function AdminUserDetailsPage() {
       toast({
         title: "Error",
         description: err.message || "Failed to update invoice.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const generateDemoPaymentMutation = useGenerateDemoPayment({
+    onSuccess: (data: any) => {
+      setAddInvoicePaymentId(data.paymentId);
+      setAddInvoicePaymentLabel(`Demo Payment: ${data.razorpayPaymentId}`);
+      setAddInvoiceFormData((prev: any) => ({
+        ...prev,
+        invoice_type: prev.invoice_type || "IND",
+      }));
+      toast({
+        title: "Demo Payment Generated",
+        description: `Payment ID: ${data.razorpayPaymentId}`,
+      });
+    },
+    onError: (err: any) => {
+      toast({
+        title: "Error",
+        description: err.message || "Failed to generate demo payment.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const createInvoiceMutation = useCreateInvoice({
+    onSuccess: (data: any) => {
+      queryClient.invalidateQueries({ queryKey: ["useUserInvoices", id] });
+      setIsAddInvoiceModalOpen(false);
+      setAddInvoicePaymentId(null);
+      setAddInvoicePaymentLabel("");
+      setAddInvoiceFormData({});
+      toast({
+        title: "Invoice Created",
+        description: `Invoice #${data?.invoice_number || ""} created successfully.`,
+      });
+    },
+    onError: (err: any) => {
+      toast({
+        title: "Error",
+        description: err.message || "Failed to create invoice.",
         variant: "destructive",
       });
     },
@@ -1454,9 +1512,21 @@ export default function AdminUserDetailsPage() {
           <div className="mt-10">
             <Card className="border-l-4 border-l-purple-500">
               <CardHeader className="pb-3">
-                <CardTitle className="text-sm font-semibold flex items-center gap-2">
-                  <FileText className="w-4 h-4 text-purple-500" /> Invoices
-                </CardTitle>
+                <div className="flex items-center justify-between">
+                  <CardTitle className="text-sm font-semibold flex items-center gap-2">
+                    <FileText className="w-4 h-4 text-purple-500" /> Invoices
+                  </CardTitle>
+                  <Button size="sm" onClick={() => {
+                    setAddInvoiceFormData({});
+                    setAddInvoicePaymentSource(null);
+                    setAddInvoicePaymentId(null);
+                    setAddInvoicePaymentLabel("");
+                    setAddInvoiceExistingPaymentId(null);
+                    setIsAddInvoiceModalOpen(true);
+                  }}>
+                    <Plus className="w-4 h-4 mr-2" /> Add New Invoice
+                  </Button>
+                </div>
                 <CardDescription>
                   All invoices issued to this user.
                 </CardDescription>
@@ -2499,6 +2569,247 @@ export default function AdminUserDetailsPage() {
             >
               {convertAuthTypeMutation.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               Convert to {targetAuthType === "GOOGLE" ? "Google" : "Email & Password"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Add Invoice Modal */}
+      <Dialog open={isAddInvoiceModalOpen} onOpenChange={(open) => { setIsAddInvoiceModalOpen(open); if (!open) { setAddInvoicePaymentId(null); setAddInvoicePaymentLabel(""); setAddInvoiceFormData({}); } }}>
+        <DialogContent className="sm:max-w-[650px] max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <FileText className="w-5 h-5" /> Add New Invoice
+            </DialogTitle>
+            <DialogDescription>
+              Create a new invoice for {user?.name}. All fields can be edited before saving.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="bg-amber-500/10 border border-amber-500/20 p-3 rounded-md text-xs text-amber-700 dark:text-amber-400 mb-4">
+            Only Super Admins can create invoices. Changes take effect immediately.
+          </div>
+
+          {/* Payment ID */}
+          <div className="border border-border rounded-md p-4 mb-4">
+            <Label className="text-sm font-semibold mb-3 block">Payment ID</Label>
+            <div className="flex items-center gap-3">
+              <Input
+                type="number"
+                min="1"
+                placeholder="Enter payment ID..."
+                value={addInvoicePaymentId ?? ""}
+                onChange={(e) => setAddInvoicePaymentId(e.target.value ? parseInt(e.target.value) : null)}
+                className="flex-1"
+              />
+              <Button
+                size="sm"
+                onClick={() => {
+                  const unitPrice = Math.max(0, Math.round(addInvoiceFormData.unit_price || 0));
+                  const quantity = Math.max(1, Math.round(addInvoiceFormData.quantity || 1));
+                  const amount = unitPrice * quantity;
+                  generateDemoPaymentMutation.mutate({
+                    userId: id,
+                    amount,
+                    quantity,
+                    currency: "INR",
+                  });
+                }}
+                disabled={generateDemoPaymentMutation.isPending || (addInvoiceFormData.unit_price || 0) <= 0}
+              >
+                {generateDemoPaymentMutation.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                Generate Demo
+              </Button>
+            </div>
+            {addInvoicePaymentLabel && (
+              <p className="text-xs mt-2 text-green-600 dark:text-green-400">{addInvoicePaymentLabel}</p>
+            )}
+          </div>
+
+          {/* Invoice Fields */}
+          <div className="space-y-4 py-2">
+            <div className="space-y-2">
+              <Label>Invoice Number</Label>
+              <Input
+                value={addInvoiceFormData.invoice_number || ""}
+                onChange={(e) => setAddInvoiceFormData((prev: any) => ({ ...prev, invoice_number: e.target.value }))}
+                placeholder="Auto-generated if empty"
+              />
+              <p className="text-xs text-amber-600 dark:text-amber-400">
+                Changing the invoice number may generate a new unique one if taken.
+              </p>
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="space-y-2">
+                <Label>Service Name</Label>
+                <Input
+                  value={addInvoiceFormData.service_name || ""}
+                  onChange={(e) => setAddInvoiceFormData((prev: any) => ({ ...prev, service_name: e.target.value }))}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label>SAC Code</Label>
+                <Input
+                  value={addInvoiceFormData.sac_code || ""}
+                  onChange={(e) => setAddInvoiceFormData((prev: any) => ({ ...prev, sac_code: e.target.value }))}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label>Period</Label>
+                <Input
+                  value={addInvoiceFormData.period || ""}
+                  onChange={(e) => setAddInvoiceFormData((prev: any) => ({ ...prev, period: e.target.value }))}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label>Quantity</Label>
+                <Input
+                  type="number"
+                  min="1"
+                  value={addInvoiceFormData.quantity || 1}
+                  onChange={(e) => {
+                    const qty = Math.max(1, parseInt(e.target.value) || 1);
+                    setAddInvoiceFormData((prev: any) => ({
+                      ...prev,
+                      quantity: qty,
+                    }));
+                  }}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label>Unit Price (in paise)</Label>
+                  <Input
+                    type="number"
+                    min="0"
+                    value={addInvoiceFormData.unit_price || 0}
+                    onChange={(e) => {
+                      const price = Math.max(0, parseInt(e.target.value) || 0);
+                      setAddInvoiceFormData((prev: any) => ({
+                        ...prev,
+                        unit_price: price,
+                      }));
+                    }}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label>Tax Rate (%)</Label>
+                <Input
+                  type="number"
+                  min="0"
+                  value={addInvoiceFormData.tax_rate || 0}
+                  disabled
+                  className="bg-muted"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label>CGST Amount</Label>
+                <Input
+                  type="number"
+                  min="0"
+                  value={addInvoiceFormData.cgst_amount || 0}
+                  disabled
+                  className="bg-muted"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label>SGST Amount</Label>
+                <Input
+                  type="number"
+                  min="0"
+                  value={addInvoiceFormData.sgst_amount || 0}
+                  disabled
+                  className="bg-muted"
+                />
+              </div>
+              <div className="space-y-2">
+                <Label>IGST Amount</Label>
+                <Input
+                  type="number"
+                  min="0"
+                  value={addInvoiceFormData.igst_amount || 0}
+                  disabled
+                  className="bg-muted"
+                />
+              </div>
+              <div className="col-span-2">
+                <p className="text-xs text-muted-foreground">
+                  Tax is auto-calculated on save based on unit price, quantity, and invoice type. Edit tax after creation via the Edit Invoice modal.
+                </p>
+              </div>
+              <div className="space-y-2">
+                <Label>Due Date</Label>
+                <Input
+                  type="date"
+                  value={addInvoiceFormData.due_date || ""}
+                  onChange={(e) => setAddInvoiceFormData((prev: any) => ({ ...prev, due_date: e.target.value }))}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label>Place of Supply</Label>
+                <Input
+                  value={addInvoiceFormData.place_of_supply || ""}
+                  onChange={(e) => setAddInvoiceFormData((prev: any) => ({ ...prev, place_of_supply: e.target.value }))}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label>Supply Type</Label>
+                <Input
+                  value={addInvoiceFormData.supply_type || ""}
+                  onChange={(e) => setAddInvoiceFormData((prev: any) => ({ ...prev, supply_type: e.target.value }))}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label>LUT Number</Label>
+                <Input
+                  value={addInvoiceFormData.lut_number || ""}
+                  onChange={(e) => setAddInvoiceFormData((prev: any) => ({ ...prev, lut_number: e.target.value }))}
+                />
+              </div>
+              <div className="space-y-2 col-span-2">
+                <Label>Amount in Words</Label>
+                <Textarea
+                  value={addInvoiceFormData.amount_in_words || ""}
+                  onChange={(e) => setAddInvoiceFormData((prev: any) => ({ ...prev, amount_in_words: e.target.value }))}
+                />
+                <p className="text-xs text-muted-foreground">
+                  Auto-calculated on save based on unit price, quantity, and tax if left empty.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <DialogFooter className="gap-2">
+            <Button variant="ghost" onClick={() => { setIsAddInvoiceModalOpen(false); setAddInvoicePaymentId(null); setAddInvoicePaymentLabel(""); }}>
+              Cancel
+            </Button>
+            <Button
+              onClick={() => {
+                if (!addInvoicePaymentId) return;
+                createInvoiceMutation.mutate({
+                  paymentId: addInvoicePaymentId,
+                  userId: id,
+                  invoice_number: addInvoiceFormData.invoice_number || undefined,
+                  invoice_type: addInvoiceFormData.invoice_type || "IND",
+                  service_name: addInvoiceFormData.service_name || undefined,
+                  sac_code: addInvoiceFormData.sac_code || undefined,
+                  period: addInvoiceFormData.period || undefined,
+                  quantity: addInvoiceFormData.quantity || 1,
+                  unit_price: addInvoiceFormData.unit_price || 0,
+                  tax_rate: addInvoiceFormData.tax_rate || 0,
+                  cgst_amount: addInvoiceFormData.cgst_amount || 0,
+                  sgst_amount: addInvoiceFormData.sgst_amount || 0,
+                  igst_amount: addInvoiceFormData.igst_amount || 0,
+                  due_date: addInvoiceFormData.due_date || undefined,
+                  place_of_supply: addInvoiceFormData.place_of_supply || undefined,
+                  supply_type: addInvoiceFormData.supply_type || undefined,
+                  amount_in_words: addInvoiceFormData.amount_in_words || undefined,
+                  lut_number: addInvoiceFormData.lut_number || undefined,
+                });
+              }}
+              disabled={!addInvoicePaymentId || createInvoiceMutation.isPending}
+            >
+              {createInvoiceMutation.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              Create Invoice
             </Button>
           </DialogFooter>
         </DialogContent>
