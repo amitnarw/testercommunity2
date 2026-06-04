@@ -911,6 +911,8 @@ export default function AdminSubmissionDetailPage({
             isLoading={isLoading}
           />
 
+
+
           {/* Admin Declaration Editor */}
           {project.status === "COMPLETED" && (
             <Accordion type="single" collapsible className="w-full">

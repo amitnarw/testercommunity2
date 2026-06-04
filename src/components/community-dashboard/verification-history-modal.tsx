@@ -69,12 +69,12 @@ export function VerificationHistoryModal({
               {/* Decorative Background Grid */}
               <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px] dark:bg-[linear-gradient(to_right,#52525b18_1px,transparent_1px),linear-gradient(to_bottom,#52525b18_1px,transparent_1px)]"></div>
 
-              <div className="relative w-full h-full max-h-[500px] aspect-[9/16] rounded-xl overflow-hidden shadow-none md:shadow-2xl group">
+              <div className="relative w-full h-full max-h-[500px] rounded-xl overflow-hidden shadow-none md:shadow-2xl group">
                 <SafeImage
                   src={data.proofImageUrl}
                   alt={`Day ${data.dayNumber} Proof`}
                   fill
-                  className="object-contain md:object-cover transition-transform duration-700 group-hover:scale-105"
+                  className="object-contain transition-transform duration-700 group-hover:scale-105"
                 />
               </div>
             </div>
@@ -113,7 +113,7 @@ export function VerificationHistoryModal({
                   className={cn(
                     "flex items-center gap-3 p-4 rounded-xl border",
                     data.status === "VERIFIED"
-                      ? "bg-emerald-500/10 border-emerald-500/20 text-emerald-600 dark:text-emerald-400"
+                      ? "bg-emerald-500 border-emerald-500 text-black"
                       : data.status === "REJECTED"
                         ? "bg-red-500/10 border-red-500/20 text-red-600 dark:text-red-400"
                         : "bg-amber-500/10 border-amber-500/20 text-amber-600 dark:text-amber-400",
@@ -146,7 +146,7 @@ export function VerificationHistoryModal({
                   {!isPaid && (
                     <Badge
                       variant="outline"
-                      className="border-blue-500/30 bg-blue-500/10 text-blue-600 dark:text-blue-400 gap-1"
+                      className="bg-blue-500 text-white gap-1"
                     >
                       <ShieldCheck className="w-3 h-3" />
                       Verified

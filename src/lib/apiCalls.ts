@@ -1179,6 +1179,31 @@ export async function completeHostedApp(payload: { appId: number | string }) {
   }
 }
 
+export async function startHubAppTesting(payload: { appId: number | string }) {
+  try {
+    const response = await api.post(
+      API_ROUTES.HUB + `/start-testing`,
+      payload,
+    );
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error starting hub app testing:", error);
+    if (axios.isAxiosError(error)) {
+      const status = error.response?.status;
+      const responseData = error.response?.data;
+      console.error("Axios error:", status, responseData);
+
+      throw new Error(
+        responseData?.message || error.message || "Unknown Axios error",
+      );
+    } else if (error instanceof Error) {
+      throw new Error(error.message);
+    } else {
+      throw new Error(JSON.stringify(error));
+    }
+  }
+}
+
 // Notifications
 export async function getUserNotifications(): Promise<{
   notifications: NotificationResponse[];
@@ -2078,7 +2103,7 @@ export async function createReview(payload: {
   appId?: number;
 }) {
   try {
-    const response = await api.post(API_ROUTES.REVIEW, { payload });
+    const response = await api.post(API_ROUTES.REVIEW, payload);
     return response?.data?.data;
   } catch (error) {
     console.error("Error creating review:", error);
@@ -2120,7 +2145,7 @@ export async function updateReview(payload: {
   comment?: string;
 }) {
   try {
-    const response = await api.put(API_ROUTES.REVIEW + `/${payload.id}`, { payload });
+    const response = await api.put(API_ROUTES.REVIEW + `/${payload.id}`, payload);
     return response?.data?.data;
   } catch (error) {
     console.error("Error updating review:", error);

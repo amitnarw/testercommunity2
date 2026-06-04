@@ -1,6 +1,6 @@
 "use client";
 
-import { CheckCircle, Users, Loader2, CalendarDays, AlertCircle } from "lucide-react";
+import { CheckCircle, Users, Loader2, CalendarDays, AlertCircle, Star } from "lucide-react";
 import { BackButton } from "@/components/back-button";
 import { ROUTES } from "@/lib/routes";
 import { useToast } from "@/hooks/use-toast";
@@ -32,6 +32,15 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { useState } from "react";
+import { authClient } from "@/lib/auth-client";
+import { useRateApp } from "@/hooks/useTester";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 
 const DailyProgress = ({
   completedDays,
@@ -119,6 +128,33 @@ export default function OngoingProjectView({
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const { toast } = useToast();
+
+  const { data: session } = authClient.useSession();
+  const existingRating = appDetails?.androidApp?.ratings?.find(
+    (r: any) => r.userId === session?.user?.id
+  )?.rating || 0;
+
+  const { mutate: submitRating, isPending: isRatingPending } = useRateApp({
+    onSuccess: () => {
+      toast({
+        title: "Success",
+        description: "Rating saved successfully",
+      });
+      refetch();
+    },
+    onError: (err: any) => {
+      toast({
+        title: "Error",
+        description: err.message || "Failed to save rating",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const handleRateApp = (rating: number) => {
+    if (!appDetails?.androidApp?.id) return;
+    submitRating({ appId: appDetails.androidApp.id, rating });
+  };
 
   const { mutate: submitCheckIn, isPending: isCheckingIn } =
     useSubmitDailyVerification({
@@ -389,6 +425,52 @@ export default function OngoingProjectView({
                     </div>
                   )}
                 </div>
+
+                {!isTestingNotStarted && (
+                  <Card className="mt-8 border border-border/50 shadow-sm rounded-2xl overflow-hidden bg-card">
+                    <CardHeader className="pb-3">
+                      <CardTitle className="text-base flex items-center gap-2">
+                        <Star className="w-5 h-5 text-amber-400 fill-amber-400" />
+                        App Rating
+                      </CardTitle>
+                      <CardDescription className="text-xs">
+                        How would you rate this app? Your rating will be visible directly to the app owner.
+                      </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-1.5">
+                          {[1, 2, 3, 4, 5].map((star) => (
+                            <button
+                              key={star}
+                              type="button"
+                              onClick={() => handleRateApp(star)}
+                              disabled={isRatingPending}
+                              className="p-1 transition-transform hover:scale-110 active:scale-95 disabled:opacity-50"
+                            >
+                              <Star
+                                className={cn(
+                                  "w-8 h-8 transition-colors",
+                                  star <= existingRating
+                                    ? "fill-amber-400 text-amber-400"
+                                    : "fill-muted text-muted-foreground"
+                                )}
+                              />
+                            </button>
+                          ))}
+                        </div>
+                        {existingRating > 0 && (
+                          <span className="ml-2 text-sm font-semibold text-muted-foreground">
+                            {existingRating} / 5
+                          </span>
+                        )}
+                        {isRatingPending && (
+                          <Loader2 className="w-4 h-4 animate-spin text-primary ml-2" />
+                        )}
+                      </div>
+                    </CardContent>
+                  </Card>
+                )}
 
 
               </div>

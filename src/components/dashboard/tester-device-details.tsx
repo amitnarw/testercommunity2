@@ -48,8 +48,7 @@ export function TesterDeviceDetails({
             Tester &amp; Device Details
           </CardTitle>
           <CardDescription className="text-xs sm:text-sm">
-            Comprehensive information about the testers and devices in your
-            project.
+            Comprehensive information about the testers, their devices, and the ratings they gave to your app.
           </CardDescription>
         </CardHeader>
       </Card>
@@ -71,9 +70,12 @@ export function TesterDeviceDetails({
                     {tester.country}
                   </p>
                 </div>
-                <div className="ml-auto flex items-center gap-1">
-                  <Star className="w-4 h-4 text-amber-400 fill-amber-400" />
-                  <span className="font-bold">{tester.rating.toFixed(1)}</span>
+                <div className="ml-auto flex flex-col items-end gap-1">
+                  <div className="flex items-center gap-1">
+                    <Star className="w-4 h-4 text-amber-400 fill-amber-400" />
+                    <span className="font-bold">{tester.rating.toFixed(1)}</span>
+                  </div>
+                  <span className="text-[10px] text-muted-foreground whitespace-nowrap">Rating Given to App</span>
                 </div>
               </CardHeader>
               <CardContent className="p-4 text-sm grid grid-cols-2 gap-2">
@@ -129,7 +131,7 @@ export function TesterDeviceDetails({
                 <TableHead>Screen</TableHead>
                 <TableHead>Language</TableHead>
                 <TableHead>Network</TableHead>
-                <TableHead className="text-right">Rating</TableHead>
+                <TableHead className="text-right">Rating Given to App</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>

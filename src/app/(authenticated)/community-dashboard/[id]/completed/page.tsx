@@ -147,6 +147,7 @@ const TestCompleteSection = ({
 import { use } from "react";
 import { useSingleHubAppDetails } from "@/hooks/useHub";
 import { Loader2 } from "lucide-react";
+import { authClient } from "@/lib/auth-client";
 
 export default function AppTestingCompletedPage({
   params,
@@ -158,7 +159,12 @@ export default function AppTestingCompletedPage({
   const resolvedParams = use(params);
   const { id } = resolvedParams;
 
-  const { data: appDetails, isPending } = useSingleHubAppDetails({ id });
+  const { data: appDetails, isPending, refetch } = useSingleHubAppDetails({ id });
+
+  const { data: session } = authClient.useSession();
+  const existingReview = appDetails?.androidApp?.reviews?.find(
+    (r: any) => r.userId === session?.user?.id
+  );
 
   if (isPending) {
     return (
@@ -218,6 +224,8 @@ export default function AppTestingCompletedPage({
             <ReviewSubmissionForm
               appId={appDetails.androidApp?.id}
               appName={appDetails.androidApp?.appName}
+              existingReview={existingReview}
+              onSuccess={refetch}
             />
           </div>
           <aside className="lg:col-span-1">

@@ -36,6 +36,7 @@ import { AdminAssignedTestersTable } from "@/components/admin/admin-assigned-tes
 import { useToast } from "@/hooks/use-toast";
 import dynamic from "next/dynamic";
 import { SubmittedFeedback } from "@/components/community-dashboard/submitted-feedback";
+import { AdminReviewsList } from "@/components/admin/admin-reviews-list";
 
 const AdminRejectDialog = dynamic(
   () =>
@@ -65,6 +66,13 @@ const AdminManageTestersDialog = dynamic(
     ),
   { ssr: false },
 );
+const AdminStartTestingDialog = dynamic(
+  () =>
+    import("@/components/admin/admin-start-testing-dialog").then(
+      (mod) => mod.AdminStartTestingDialog,
+    ),
+  { ssr: false },
+);
 
 export default function AdminSubmissionDetailPage({
   params,
@@ -80,6 +88,7 @@ export default function AdminSubmissionDetailPage({
   const [showAcceptDialog, setShowAcceptDialog] = useState(false);
   const [showCompleteDialog, setShowCompleteDialog] = useState(false);
   const [showManageTestersDialog, setShowManageTestersDialog] = useState(false);
+  const [showStartTestingDialog, setShowStartTestingDialog] = useState(false);
   const { toast } = useToast();
   const [isUpdatingStatus, setIsUpdatingStatus] = useState(false);
 
@@ -338,6 +347,15 @@ export default function AdminSubmissionDetailPage({
                   >
                     <Users className="w-4 h-4 mr-1.5" />
                     Manage Testers
+                  </Button>
+                )}
+
+                {project.status === "AVAILABLE" && (
+                  <Button
+                    onClick={() => setShowStartTestingDialog(true)}
+                    className="px-6 py-2.5 h-auto bg-blue-600 hover:bg-blue-700 text-white rounded-xl shadow-md font-bold shadow-blue-600/20"
+                  >
+                    <Clock className="w-4 h-4 mr-1.5" /> Start Testing
                   </Button>
                 )}
 
@@ -852,6 +870,13 @@ export default function AdminSubmissionDetailPage({
             isLoading={isLoading}
           />
 
+          {/* App Reviews Section */}
+          <AdminReviewsList
+            reviews={project.androidApp?.reviews}
+            appOwnerId={project.appOwnerId}
+            onRefetch={refetch}
+          />
+
           {/* Developer Instructions Block */}
           {project.instructionsForTester && (
             <DeveloperInstructions
@@ -912,6 +937,14 @@ export default function AdminSubmissionDetailPage({
           }
         />
       )}
+      <AdminStartTestingDialog
+        appId={project.id}
+        open={showStartTestingDialog}
+        onOpenChange={setShowStartTestingDialog}
+        onSuccess={() => refetch()}
+        currentTester={project.currentTester || 0}
+        totalTester={project.totalTester || 0}
+      />
       {/* Fullscreen Image Viewer */}
       {fullscreenImage && (
         <div

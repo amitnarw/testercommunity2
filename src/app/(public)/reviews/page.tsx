@@ -50,6 +50,10 @@ interface PublishedReview {
   androidApp?: {
     id: number;
     appName: string;
+    packageName: string;
+    dashboardAndHubs?: {
+      appOwnerId: string;
+    } | null;
   };
 }
 
@@ -170,14 +174,14 @@ export default function SuccessStoriesPage() {
                         ease: "easeOut",
                       }}
                       whileHover={{ y: -6, scale: 1.01 }}
-                        className={cn(
-                          "break-inside-avoid rounded-3xl p-6 md:p-8 shadow-sm border border-border/50 flex flex-col relative group overflow-hidden transition-all duration-300 will-change-transform",
-                          "bg-background hover:shadow-xl hover:border-primary/20",
-                          index % 4 === 0 &&
-                          "bg-gradient-to-br from-background to-blue-50/50 dark:from-background dark:to-blue-900/10",
-                          index % 4 === 2 &&
-                          "bg-gradient-to-br from-background to-amber-50/50 dark:from-background dark:to-amber-900/10",
-                        )}
+                      className={cn(
+                        "break-inside-avoid rounded-3xl p-6 md:p-8 shadow-sm border border-border/50 flex flex-col relative group overflow-hidden transition-all duration-300 will-change-transform",
+                        "bg-background hover:shadow-xl hover:border-primary/20",
+                        index % 4 === 0 &&
+                        "bg-gradient-to-br from-background to-blue-50/50 dark:from-background dark:to-blue-900/10",
+                        index % 4 === 2 &&
+                        "bg-gradient-to-br from-background to-amber-50/50 dark:from-background dark:to-amber-900/10",
+                      )}
                     >
                       <div className="absolute top-4 right-6 opacity-5 group-hover:opacity-10 transition-opacity">
                         <Quote className="w-16 h-16 text-primary rotate-12" />
@@ -290,11 +294,11 @@ export default function SuccessStoriesPage() {
                       ease: "easeOut",
                     }}
                     whileHover={{ y: -6, scale: 1.01 }}
-                      className={cn(
-                        "break-inside-avoid rounded-3xl p-6 md:p-8 shadow-sm border border-border/50 flex flex-col relative group overflow-hidden transition-all duration-300 will-change-transform",
-                        "bg-background hover:shadow-xl hover:border-primary/20",
-                        "bg-gradient-to-br from-background to-purple-50/50 dark:from-background dark:to-purple-900/10",
-                      )}
+                    className={cn(
+                      "break-inside-avoid rounded-3xl p-6 md:p-8 shadow-sm border border-border/50 flex flex-col relative group overflow-hidden transition-all duration-300 will-change-transform",
+                      "bg-background hover:shadow-xl hover:border-primary/20",
+                      "bg-gradient-to-br from-background to-purple-50/50 dark:from-background dark:to-purple-900/10",
+                    )}
                   >
                     <div className="absolute top-4 right-6 opacity-5 group-hover:opacity-10 transition-opacity">
                       <Quote className="w-16 h-16 text-primary rotate-12" />
@@ -340,22 +344,51 @@ export default function SuccessStoriesPage() {
                           </div>
                         )}
                       </div>
-                      <div className="flex flex-col flex-1 min-w-0">
+                      <div className="flex flex-col gap-0.5 flex-1 min-w-0">
                         <span className="font-bold text-sm text-foreground truncate">
                           {review.user?.name || "Anonymous"}
                         </span>
-                        <div className="flex items-center gap-2">
-                          {review.androidApp && (
-                            <span className="text-xs text-muted-foreground truncate">
-                              Tested {review.androidApp.appName}
-                            </span>
-                          )}
-                          <span className="inline-flex items-center gap-1 text-[10px] font-medium text-primary bg-primary/10 px-1.5 py-0.5 rounded-full">
-                            <ShieldCheck className="w-3 h-3" />
-                            Verified Tester
-                          </span>
+                        <div className="flex flex-col items-start gap-1">
+                          {(() => {
+                            const isOwner = review.user?.id === review.androidApp?.dashboardAndHubs?.appOwnerId;
+                            return (
+                              <>
+                                <span className={cn(
+                                  "inline-flex items-center gap-1 text-[10px] font-medium px-1.5 py-0.5 rounded-full",
+                                  isOwner
+                                    ? "text-green-600 bg-green-500/10 dark:text-green-400 dark:bg-green-500/20"
+                                    : "text-primary bg-primary/10"
+                                )}>
+                                  <ShieldCheck className="w-3 h-3" />
+                                  {isOwner ? "Verified Developer" : "Verified Tester"}
+                                </span>
+                                {review.androidApp && (
+                                  <span className="text-xs text-muted-foreground truncate">
+                                    {isOwner ? "Developed" : "Tested"} {review.androidApp.appName}
+                                  </span>
+                                )}
+                              </>
+                            );
+                          })()}
                         </div>
                       </div>
+
+                      {review.androidApp?.packageName && (
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          asChild
+                          className="rounded-full h-8 w-8 hover:bg-primary/10 hover:text-primary transition-colors shrink-0"
+                        >
+                          <a
+                            href={`https://play.google.com/store/apps/details?id=${review.androidApp.packageName}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            <ExternalLink className="w-4 h-4" />
+                          </a>
+                        </Button>
+                      )}
                     </div>
                   </motion.div>
                 );
