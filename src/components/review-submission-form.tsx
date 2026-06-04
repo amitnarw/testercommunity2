@@ -14,6 +14,7 @@ interface ReviewSubmissionFormProps {
   appName?: string;
   existingReview?: any;
   onSuccess?: () => void;
+  showStatus?: boolean;
 }
 
 export function ReviewSubmissionForm({
@@ -21,6 +22,7 @@ export function ReviewSubmissionForm({
   appName,
   existingReview,
   onSuccess,
+  showStatus = true,
 }: ReviewSubmissionFormProps) {
   const [rating, setRating] = useState(existingReview?.rating || 0);
   const [comment, setComment] = useState(existingReview?.comment || "");
@@ -29,7 +31,7 @@ export function ReviewSubmissionForm({
 
   const createMutation = useCreateReview({
     onSuccess: () => {
-      toast({ title: "Success", description: "Review submitted! It will appear after admin approval." });
+      toast({ title: "Success", description: "Review submitted!" });
       setSubmitted(true);
       onSuccess?.();
     },
@@ -61,7 +63,9 @@ export function ReviewSubmissionForm({
           <CheckCircle2 className="h-5 w-5 text-green-600 dark:text-green-400 shrink-0" />
           <div>
             <p className="font-medium text-sm">Review Submitted</p>
-            <p className="text-xs text-muted-foreground">Your review is pending admin approval before it appears publicly.</p>
+            {showStatus && (
+              <p className="text-xs text-muted-foreground">Your review is pending admin approval before it appears publicly.</p>
+            )}
           </div>
         </CardContent>
       </Card>
@@ -100,13 +104,15 @@ export function ReviewSubmissionForm({
                 />
               ))}
             </div>
-            <span className={cn("text-xs font-medium flex items-center gap-1", cfg.color)}>
-              <StatusIcon className="h-3.5 w-3.5" />
-              {cfg.label}
-            </span>
+            {showStatus && (
+              <span className={cn("text-xs font-medium flex items-center gap-1", cfg.color)}>
+                <StatusIcon className="h-3.5 w-3.5" />
+                {cfg.label}
+              </span>
+            )}
           </div>
           <p className="text-sm text-muted-foreground">"{existingReview.comment}"</p>
-          {existingReview.adminNote && (
+          {existingReview.adminNote && showStatus && (
             <p className="text-xs bg-muted p-2 rounded-md">
               <span className="font-medium">Admin note:</span> {existingReview.adminNote}
             </p>

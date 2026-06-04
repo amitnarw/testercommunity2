@@ -19,6 +19,7 @@ import { DeclarationSummaryCards } from "./declaration-summary-cards";
 import { DeclarationQuestionnaire } from "./declaration-questionnaire";
 import { DeclarationPDFDocument } from "./declaration-pdf-document";
 import { ReportPreparing } from "./report-preparing";
+import { getDefaultAnswer } from "@/lib/declaration-helpers";
 
 const DEFAULT_ANSWERS: DeclarationAnswers = {
   recruitmentMethod: "",
@@ -77,14 +78,49 @@ export function DeclarationReport({
 
   useEffect(() => {
     if (declaration?.answers) {
-      setAnswers({
-        ...DEFAULT_ANSWERS,
-        ...declaration.answers,
-        customQuestions: declaration.answers.customQuestions || [],
-        deletedQuestions: declaration.answers.deletedQuestions || [],
-      });
+      const isFreeApp = stats.appType === "FREE";
+      const needsSeeding =
+        isFreeApp &&
+        !declaration.answers.recruitmentMethod &&
+        !declaration.answers.recruitmentEase &&
+        !declaration.answers.testerEngagement &&
+        !declaration.answers.feedbackSummary &&
+        !declaration.answers.feedbackCollectionMethod &&
+        !declaration.answers.intendedAudience &&
+        !declaration.answers.valueDescription &&
+        !declaration.answers.expectedInstalls &&
+        !declaration.answers.changesMade &&
+        !declaration.answers.readinessRationale;
+
+      if (needsSeeding && stats) {
+        const seededAnswers = {
+          ...DEFAULT_ANSWERS,
+          ...declaration.answers,
+          recruitmentMethod: getDefaultAnswer("recruitmentMethod", stats),
+          recruitmentEase: getDefaultAnswer("recruitmentEase", stats),
+          testerEngagement: getDefaultAnswer("testerEngagement", stats),
+          feedbackSummary: getDefaultAnswer("feedbackSummary", stats),
+          feedbackCollectionMethod: getDefaultAnswer("feedbackCollectionMethod", stats),
+          intendedAudience: getDefaultAnswer("intendedAudience", stats),
+          valueDescription: getDefaultAnswer("valueDescription", stats),
+          expectedInstalls: getDefaultAnswer("expectedInstalls", stats),
+          changesMade: getDefaultAnswer("changesMade", stats),
+          readinessRationale: getDefaultAnswer("readinessRationale", stats),
+          customQuestions: declaration.answers.customQuestions || [],
+          deletedQuestions: declaration.answers.deletedQuestions || [],
+        };
+        setAnswers(seededAnswers);
+        updateDeclaration({ appId, answers: seededAnswers }).catch(console.error);
+      } else {
+        setAnswers({
+          ...DEFAULT_ANSWERS,
+          ...declaration.answers,
+          customQuestions: declaration.answers.customQuestions || [],
+          deletedQuestions: declaration.answers.deletedQuestions || [],
+        });
+      }
     }
-  }, [declaration]);
+  }, [declaration, stats, appId, updateDeclaration]);
 
   const handleAnswersChange = useCallback(
     (newAnswers: DeclarationAnswers) => {

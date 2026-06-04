@@ -14,6 +14,7 @@ import {
   deleteHubAppFeedback,
   submitDailyVerification,
   completeHostedApp,
+  startHubAppTesting,
   validatePromoCode,
   resubmitHubApp,
 } from "@/lib/apiCalls";
@@ -284,6 +285,30 @@ export function useCompleteHostedApp(
     },
     onError: (data) => {
       console.log("App completion failed: " + data);
+    },
+    ...options,
+  });
+
+  return mutation;
+}
+
+export function useStartHubAppTesting(
+  options?: UseMutationOptions<any, any, any>,
+) {
+  const queryClient = useQueryClient();
+
+  const mutation = useMutation({
+    mutationFn: (payload: { appId: number | string }) =>
+      startHubAppTesting(payload),
+    onSuccess: (data) => {
+      console.log("Testing started successfully: " + data);
+      queryClient.invalidateQueries({ queryKey: ["useSingleHubAppDetails"] });
+      queryClient.invalidateQueries({ queryKey: ["useHubSubmittedApp"] });
+      queryClient.invalidateQueries({ queryKey: ["useHubAppsCount"] });
+      queryClient.invalidateQueries({ queryKey: ["useHubApps"] });
+    },
+    onError: (data) => {
+      console.log("Testing start failed: " + data);
     },
     ...options,
   });

@@ -317,6 +317,12 @@ export function SubmissionForm({
 
   const isBalanceInsufficient = cost > (walletData?.totalPoints || 0);
 
+  useEffect(() => {
+    if (!isBalanceInsufficient) {
+      form.clearErrors("total_tester");
+    }
+  }, [isBalanceInsufficient, form]);
+
   const watchedFields = form.watch();
 
   const getPendingRequirements = () => {
@@ -969,7 +975,7 @@ export function SubmissionForm({
                         name="total_tester"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>Number of Testers</FormLabel>
+                            <Label className="text-sm font-medium text-foreground/80">Number of Testers</Label>
                             <FormControl>
                               <ModernSlider id="total_tester" value={field.value} onChange={field.onChange} min={1} max={20} label="" unit="testers" accentColor="primary" />
                             </FormControl>
@@ -982,7 +988,7 @@ export function SubmissionForm({
                         name="total_days"
                         render={({ field }) => (
                           <FormItem>
-                            <FormLabel>Test Duration (Days)</FormLabel>
+                            <Label className="text-sm font-medium text-foreground/80">Test Duration (Days)</Label>
                             <FormControl>
                               <ModernSlider value={field.value} onChange={field.onChange} min={1} max={20} label="" unit="days" accentColor="primary" />
                             </FormControl>

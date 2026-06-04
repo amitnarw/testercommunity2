@@ -42,6 +42,7 @@ interface AdminVerificationReviewProps {
   testerName: string;
   verifications: VerificationData[];
   onSuccess: () => void;
+  isPaid?: boolean;
 }
 
 export function AdminVerificationReview({
@@ -50,6 +51,7 @@ export function AdminVerificationReview({
   testerName,
   verifications,
   onSuccess,
+  isPaid = false,
 }: AdminVerificationReviewProps) {
   const [selectedVerification, setSelectedVerification] =
     useState<VerificationData | null>(null);
@@ -127,14 +129,16 @@ export function AdminVerificationReview({
                   onClick={() => setSelectedVerification(v)}
                 >
                   <div className="flex items-center gap-3">
-                    <div className="h-12 w-12 rounded-lg overflow-hidden relative border shadow-sm shrink-0">
-                      <SafeImage
-                        src={v.proofImageUrl}
-                        alt={`Day ${v.dayNumber}`}
-                        fill
-                        className="object-cover"
-                      />
-                    </div>
+                    {!isPaid && (
+                      <div className="h-12 w-12 rounded-lg overflow-hidden relative border shadow-sm shrink-0">
+                        <SafeImage
+                          src={v.proofImageUrl}
+                          alt={`Day ${v.dayNumber}`}
+                          fill
+                          className="object-cover"
+                        />
+                      </div>
+                    )}
                     <div className="space-y-0.5">
                       <p className="font-bold">Day {v.dayNumber}</p>
                       <div className="flex items-center gap-1.5 text-[10px] text-muted-foreground">
@@ -179,33 +183,59 @@ export function AdminVerificationReview({
           }
         }}
       >
-        <DialogContent className="max-w-[95vw] sm:max-w-5xl p-0 overflow-hidden bg-background rounded-3xl border-none shadow-2xl">
-          <div className="flex flex-col md:flex-row h-[600px] overflow-y-auto">
+        <DialogContent
+          className={cn(
+            "p-0 overflow-hidden bg-background rounded-3xl border-none shadow-2xl block max-h-[90vh] md:max-h-none md:h-auto gap-0",
+            !isPaid ? "max-w-[95vw] sm:max-w-5xl" : "max-w-[95vw] sm:max-w-md"
+          )}
+        >
+          <div
+            className={cn(
+              "flex flex-col h-auto",
+              !isPaid ? "md:flex-row md:h-[600px] overflow-y-auto" : "md:h-auto"
+            )}
+          >
             {/* Left: Image Preview */}
-            <div className="flex-1 relative bg-slate-900 flex items-center justify-center p-4 border-r border-border/10 overflow-hidden min-h-[300px] md:min-h-0">
-              <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]"></div>
-              {selectedVerification && (
-                <SafeImage
-                  src={selectedVerification.proofImageUrl}
-                  alt="Proof"
-                  fill
-                  className="object-contain"
-                />
-              )}
-              {/* Floating Day Badge */}
-              <div className="absolute top-4 left-4 z-10">
-                <Badge className="bg-primary hover:bg-primary text-primary-foreground px-4 py-1 rounded-lg shadow-lg font-black tracking-wider uppercase text-xs">
-                  Day {selectedVerification?.dayNumber}
-                </Badge>
+            {!isPaid && (
+              <div className="flex-1 relative bg-slate-900 flex items-center justify-center p-4 border-r border-border/10 overflow-hidden min-h-[300px] md:min-h-0">
+                <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]"></div>
+                {selectedVerification && (
+                  <SafeImage
+                    src={selectedVerification.proofImageUrl}
+                    alt="Proof"
+                    fill
+                    className="object-contain"
+                  />
+                )}
+                {/* Floating Day Badge */}
+                <div className="absolute top-4 left-4 z-10">
+                  <Badge className="bg-primary hover:bg-primary text-primary-foreground px-4 py-1 rounded-lg shadow-lg font-black tracking-wider uppercase text-xs">
+                    Day {selectedVerification?.dayNumber}
+                  </Badge>
+                </div>
               </div>
-            </div>
+            )}
 
             {/* Right: Review Actions */}
-            <div className="w-full md:w-[380px] flex flex-col bg-card h-full border-l border-border/40">
+            <div
+              className={cn(
+                "w-full flex flex-col bg-card h-full border-l border-border/40",
+                !isPaid ? "md:w-[380px]" : ""
+              )}
+            >
               <DialogHeader className="p-6 pb-4 border-b shrink-0 bg-secondary/10">
                 <DialogTitle className="text-xl font-bold flex items-center gap-2">
-                  <Eye className="w-5 h-5 text-primary" />
-                  Review Proof
+                  {isPaid ? (
+                    <>
+                      <CheckCircle2 className="w-5 h-5 text-primary" />
+                      Day {selectedVerification?.dayNumber} Check-in
+                    </>
+                  ) : (
+                    <>
+                      <Eye className="w-5 h-5 text-primary" />
+                      Review Proof
+                    </>
+                  )}
                 </DialogTitle>
                 <p className="text-[11px] text-muted-foreground uppercase font-bold tracking-widest mt-1">
                   Tester: {testerName}
@@ -345,7 +375,7 @@ export function AdminVerificationReview({
                       Approve
                     </Button>
                     <p className="text-[10px] text-muted-foreground text-center w-full mt-1">
-                      Auto-approved proofs can be manually rejected if needed
+                      This proof is auto-approved. These proofs can be manually rejected if needed
                     </p>
                   </>
                 ) : (

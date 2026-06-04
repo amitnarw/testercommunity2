@@ -28,6 +28,8 @@ import {
   Expand,
   FileText,
   ChevronDown,
+  Loader2,
+  PlayCircle,
 } from "lucide-react";
 import { useState, useEffect, use } from "react";
 import { cn } from "@/lib/utils";
@@ -39,7 +41,7 @@ import AppInfoHeader from "@/components/app-info-header";
 import Confetti from "react-dom-confetti";
 import { useInView } from "react-intersection-observer";
 import { motion } from "framer-motion";
-import { useSingleHubAppDetails, useCompleteHostedApp, useResubmitHubApp, useAppCategories } from "@/hooks/useHub";
+import { useSingleHubAppDetails, useCompleteHostedApp, useResubmitHubApp, useAppCategories, useStartHubAppTesting } from "@/hooks/useHub";
 import { HubSubmittedAppResponse } from "@/lib/types";
 import { TesterRequestsSection } from "@/components/tester-requests-section";
 import { CompleteTestingBanner } from "@/components/community-dashboard/complete-testing-banner";
@@ -52,6 +54,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
 import { EditSubmissionModal } from "@/components/community-dashboard/edit-submission-modal";
+import { StartTestingDialog } from "@/components/community-dashboard/start-testing-dialog";
 
 const FEEDBACK_PER_PAGE = 5;
 
@@ -265,6 +268,7 @@ function SubmissionDetailsPage({
   const [fullscreenImage, setFullscreenImage] = useState<string | null>(null);
   const [isConfettiActive, setConfettiActive] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isStartTestingModalOpen, setIsStartTestingModalOpen] = useState(false);
   const [showDeclaration, setShowDeclaration] = useState(false);
   const { toast } = useToast();
 
@@ -499,6 +503,40 @@ function SubmissionDetailsPage({
             />
           )}
 
+          {appDetails && (
+            <StartTestingDialog
+              appId={appDetails.id}
+              open={isStartTestingModalOpen}
+              onOpenChange={setIsStartTestingModalOpen}
+              onSuccess={() => appDetailsRefetch()}
+              currentTester={appDetails.currentTester || 0}
+              totalTester={appDetails.totalTester || 12}
+            />
+          )}
+
+          {appDetails?.status === "AVAILABLE" && (
+            <div className="bg-gradient-to-r from-blue-50/50 to-indigo-50/50 dark:from-blue-950/10 dark:to-indigo-950/10 border border-blue-100 dark:border-blue-900/30 rounded-2xl p-5 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-sm">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary shrink-0">
+                  <PlayCircle className="w-5 h-5" />
+                </div>
+                <div className="text-left">
+                  <h4 className="font-bold text-sm text-foreground">
+                    Start testing early?
+                  </h4>
+                  <p className="text-xs text-muted-foreground">
+                    You have reached <span className="font-semibold text-primary">{appDetails.currentTester || 0}</span> out of <span className="font-semibold text-primary">{appDetails.totalTester || 12}</span> testers. You can start the 14-day testing period now.
+                  </p>
+                </div>
+              </div>
+              <Button
+                onClick={() => setIsStartTestingModalOpen(true)}
+                className="w-full sm:w-auto px-6 py-3 h-auto bg-primary hover:bg-primary/90 text-primary-foreground font-semibold rounded-2xl shadow-md transition-all shrink-0"
+              >
+                Start Testing Now
+              </Button>
+            </div>
+          )}
 
           {showCompleteTestingBanner && (
             <CompleteTestingBanner
@@ -640,6 +678,11 @@ function SubmissionDetailsPage({
               <ReviewSubmissionForm
                 appId={appDetails?.androidApp?.id}
                 appName={appDetails?.androidApp?.appName}
+                existingReview={appDetails?.androidApp?.reviews?.find(
+                  (r) => r.userId === appDetails.appOwnerId
+                )}
+                onSuccess={() => appDetailsRefetch()}
+                showStatus={false}
               />
             )}
 

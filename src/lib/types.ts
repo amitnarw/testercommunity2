@@ -376,6 +376,21 @@ export interface AppCategory {
   isActive: boolean;
 }
 
+export interface ReviewResponse {
+  id: number;
+  userId: string;
+  rating: number;
+  comment: string;
+  status: "PENDING" | "APPROVED" | "REJECTED";
+  isPublished: boolean;
+  adminNote?: string | null;
+  createdAt: string;
+  user: {
+    name: string;
+    image: string | null;
+  };
+}
+
 export interface AndroidApp {
   id: number;
   createdAt: Date;
@@ -389,6 +404,7 @@ export interface AndroidApp {
   description: string | null;
   appCategoryId: number;
   appCategory: AppCategory;
+  reviews?: ReviewResponse[];
 }
 
 export interface HubSubmittedAppResponse {

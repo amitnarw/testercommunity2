@@ -281,7 +281,6 @@ const styles = StyleSheet.create({
   qaAnswerEmpty: {
     fontSize: 10,
     color: colors.textMuted,
-    fontStyle: "italic",
     marginLeft: 30,
     fontFamily: "Helvetica-Oblique",
   },
@@ -372,7 +371,6 @@ function StatCard({
   return (
     <View style={styles.statCard}>
       <View style={styles.statCardInner}>
-        {dotColor && <View style={[styles.statCardDot, { backgroundColor: dotColor }]} />}
         <Text style={styles.statValue}>{value}</Text>
         <Text style={styles.statLabel}>{label}</Text>
       </View>

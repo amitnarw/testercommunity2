@@ -32,7 +32,7 @@ import { useState } from "react";
 import { unassignTesterFromApp } from "@/lib/apiCalls";
 import { useToast } from "@/hooks/use-toast";
 import { AdminVerificationReview } from "./admin-verification-review";
-import { Eye, CheckCircle2, History, Clock } from "lucide-react";
+import { Eye, CheckCircle2, History, Clock, Star } from "lucide-react";
 
 export interface AdminAssignedTestersTableProps {
   testerRelations: HubSubmittedAppResponse["testerRelations"];
@@ -95,7 +95,7 @@ export function AdminAssignedTestersTable({
   );
 
   return (
-    <section className="space-y-6 bg-card rounded-2xl p-3 sm:p-6 pt-2 sm:pt-8 w-full mt-10 shadow-sm">
+    <section className="space-y-6 bg-card rounded-2xl p-3 sm:p-6 w-full shadow-sm">
       <div className="flex flex-col sm:flex-row items-center justify-between gap-4 relative">
         <div className="space-y-1">
           <h2 className="text-xl sm:text-2xl font-bold">
@@ -129,6 +129,7 @@ export function AdminAssignedTestersTable({
               <TableHead>Device</TableHead>
               <TableHead>Progress</TableHead>
               <TableHead>Today (Day {currentDay})</TableHead>
+              <TableHead>Rating Given</TableHead>
               <TableHead>Status</TableHead>
               <TableHead className="text-right">Actions</TableHead>
             </TableRow>
@@ -186,10 +187,10 @@ export function AdminAssignedTestersTable({
                       >
                         <Smartphone className="w-3 h-3 opacity-70" />
                         {req?.tester?.userDetail?.device_company ||
-                        req?.tester?.userDetail?.device_model
+                          req?.tester?.userDetail?.device_model
                           ? req?.tester?.userDetail?.device_company +
-                            " " +
-                            req?.tester?.userDetail?.device_model
+                          " " +
+                          req?.tester?.userDetail?.device_model
                           : "N/A"}
                       </Badge>
                     </div>
@@ -239,6 +240,18 @@ export function AdminAssignedTestersTable({
                           </Badge>
                         );
                       })()
+                    ) : (
+                      <span className="text-xs text-muted-foreground">-</span>
+                    )}
+                  </TableCell>
+                  <TableCell>
+                    {req.tester?.ratings?.[0]?.rating ? (
+                      <div className="flex items-center gap-1 bg-amber-500/5 text-amber-600 dark:text-amber-500 px-2 py-1 rounded-lg border border-amber-500/10 w-fit">
+                        <Star className="w-3.5 h-3.5 fill-current" />
+                        <span className="font-bold text-xs">
+                          {req.tester.ratings[0].rating}
+                        </span>
+                      </div>
                     ) : (
                       <span className="text-xs text-muted-foreground">-</span>
                     )}
@@ -388,10 +401,10 @@ export function AdminAssignedTestersTable({
                       <Smartphone className="w-3.5 h-3.5 opacity-70 shrink-0" />
                       <span className="text-xs font-semibold truncate">
                         {req?.tester?.userDetail?.device_company ||
-                        req?.tester?.userDetail?.device_model
+                          req?.tester?.userDetail?.device_model
                           ? req?.tester?.userDetail?.device_company +
-                            " " +
-                            req?.tester?.userDetail?.device_model
+                          " " +
+                          req?.tester?.userDetail?.device_model
                           : "N/A"}
                       </span>
                     </div>
@@ -453,6 +466,21 @@ export function AdminAssignedTestersTable({
                       })()}
                     </div>
                   )}
+                  <div className="flex items-center gap-3">
+                    <span className="text-[10px] font-bold text-muted-foreground uppercase opacity-70">
+                      Rating Given:
+                    </span>
+                    {req.tester?.ratings?.[0]?.rating ? (
+                      <div className="flex items-center gap-1 bg-amber-500/5 text-amber-600 dark:text-amber-500 px-2 py-0.5 rounded-lg border border-amber-500/10 w-fit">
+                        <Star className="w-3 h-3 fill-current" />
+                        <span className="font-bold text-[10px]">
+                          {req.tester.ratings[0].rating}
+                        </span>
+                      </div>
+                    ) : (
+                      <span className="text-[10px] text-muted-foreground">-</span>
+                    )}
+                  </div>
                 </div>
               </div>
             </motion.div>
@@ -488,6 +516,7 @@ export function AdminAssignedTestersTable({
             ?.dailyVerifications as any) || []
         }
         onSuccess={onRefetch}
+        isPaid={appType === "PAID"}
       />
     </section>
   );

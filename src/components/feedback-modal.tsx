@@ -174,7 +174,7 @@ export function FeedbackModal({
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.95 }}
               transition={{ type: "spring", stiffness: 300, damping: 25 }}
-              className="relative bg-background rounded-3xl overflow-hidden w-full"
+              className="relative bg-background overflow-hidden w-full"
             >
               {/* Dynamic gradient background */}
               <div
