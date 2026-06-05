@@ -1,8 +1,16 @@
 "use client";
 
 import { useState, Suspense } from "react";
-import { Search, Star, Eye, EyeOff, CheckCircle, XCircle, Trash2 } from "lucide-react";
+import { Search, Star, Eye, EyeOff, CheckCircle, XCircle, Trash2, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -22,6 +30,7 @@ import { useToast } from "@/hooks/use-toast";
 function UserReviewsContent() {
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("ALL");
+  const [deleteId, setDeleteId] = useState<number | null>(null);
   const { toast } = useToast();
 
   const { data: reviews = [], isLoading, refetch } = useAllUserReviews(
@@ -59,9 +68,13 @@ function UserReviewsContent() {
   };
 
   const handleDelete = (id: number) => {
-    if (confirm("Are you sure you want to delete this review?")) {
-      deleteMutation.mutate(id);
-    }
+    setDeleteId(id);
+  };
+
+  const confirmDelete = () => {
+    if (deleteId === null) return;
+    deleteMutation.mutate(deleteId);
+    setDeleteId(null);
   };
 
   const statusBadgeConfig: Record<string, { variant: "default" | "secondary" | "destructive"; className: string }> = {
@@ -239,6 +252,34 @@ function UserReviewsContent() {
           </TableBody>
         </Table>
       </div>
+
+      <Dialog open={deleteId !== null} onOpenChange={(open) => { if (!open) setDeleteId(null); }}>
+        <DialogContent className="sm:max-w-[500px]">
+          <DialogHeader>
+            <DialogTitle className="text-destructive flex items-center gap-2">
+              <Trash2 className="h-5 w-5" /> Delete Review
+            </DialogTitle>
+            <DialogDescription>
+              Are you sure you want to delete this review? This action cannot be undone.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter className="gap-2 sm:gap-0">
+            <Button variant="ghost" onClick={() => setDeleteId(null)}>
+              Cancel
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={confirmDelete}
+              disabled={deleteMutation.isPending}
+            >
+              {deleteMutation.isPending && (
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              )}
+              Delete
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

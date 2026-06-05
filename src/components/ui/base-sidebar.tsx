@@ -51,8 +51,8 @@ export const SidebarNavLink = ({
       : pathname === href || pathname.startsWith(`${href}/`);
 
   const getBadgeStyles = () => {
-    if (badge === "PRO") return "bg-amber-500/30 text-amber-300";
-    if (badge === "FREE") return "bg-blue-500/30 text-blue-300";
+    if (badge === "PRO") return "bg-amber-500/30 text-amber-300 dark:bg-amber-500/10 dark:text-amber-600";
+    if (badge === "FREE") return "bg-blue-500/30 text-blue-300 dark:bg-blue-500/10 dark:text-blue-600";
     return "";
   };
 

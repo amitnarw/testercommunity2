@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { CheckCircle, Clock, XCircle, Search, X } from "lucide-react";
 import { DeviceOSCoverage } from "@/components/dashboard/device-os-coverage";
 import { useState, useEffect } from "react";
-import type { Project } from "@/lib/types";
+import type { Project, HubSubmittedAppResponse } from "@/lib/types";
 import { motion } from "framer-motion";
 import { BackButton } from "@/components/back-button";
 import { ROUTES } from "@/lib/routes";
@@ -13,6 +13,7 @@ import { MediaGallery } from "@/components/media-gallery";
 import AppInfoHeader from "@/components/app-info-header";
 import DeveloperInstructions from "@/components/developerInstructions";
 import { SubmittedFeedback } from "@/components/dashboard/submitted-feedback";
+import { ReviewSubmissionForm } from "@/components/review-submission-form";
 import Confetti from "react-dom-confetti";
 import { useInView } from "react-intersection-observer";
 import InfoBar from "@/components/dashboard/info-bar";
@@ -65,9 +66,13 @@ const getStatusConfig = (status: string) => {
 export default function ProjectDetailsView({
   project,
   showBackButton = true,
+  hubAppData,
+  onReviewSuccess,
 }: {
   project: Project;
   showBackButton?: boolean;
+  hubAppData?: HubSubmittedAppResponse;
+  onReviewSuccess?: () => void;
 }) {
   const [fullscreenImage, setFullscreenImage] = useState<string | null>(null);
   const [isConfettiActive, setConfettiActive] = useState(false);
@@ -136,6 +141,10 @@ export default function ProjectDetailsView({
       ? 0
       : project.feedback.filter((fb) => fb.type === "Praise").length,
   };
+
+  const existingReview = hubAppData?.androidApp?.reviews?.find(
+    (r: any) => r.userId === hubAppData?.appOwnerId
+  );
 
   return (
     <div className="min-h-screen relative">
@@ -214,10 +223,23 @@ export default function ProjectDetailsView({
                 feedbackBreakdown={feedbackBreakdown}
               />
             ) : (
-              <TestCompleteSection
-                app={project}
-                isUnderReviewOrRejected={isUnderReviewOrRejected}
-              />
+              <>
+                <TestCompleteSection
+                  app={project}
+                  isUnderReviewOrRejected={isUnderReviewOrRejected}
+                />
+                {hubAppData?.androidApp?.id && (
+                  <div className="mt-6">
+                    <ReviewSubmissionForm
+                      appId={hubAppData.androidApp.id}
+                      appName={hubAppData.androidApp.appName}
+                      existingReview={existingReview}
+                      onSuccess={onReviewSuccess}
+                      showStatus={false}
+                    />
+                  </div>
+                )}
+              </>
             )}
 
             <div className="w-full mx-auto mt-20 grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">

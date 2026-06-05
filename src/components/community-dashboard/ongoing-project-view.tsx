@@ -472,7 +472,6 @@ export default function OngoingProjectView({
                   </Card>
                 )}
 
-
               </div>
 
               <aside className="lg:col-span-1">

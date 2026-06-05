@@ -12,6 +12,11 @@ import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import {
   Mail,
   Phone,
   Shield,
@@ -41,6 +46,8 @@ import {
   CheckCircle2,
   X,
   ArrowLeftRight,
+  Eye,
+  Pencil,
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -154,6 +161,10 @@ const STATUS_COLORS: Record<string, string> = {
   REMOVED: "bg-red-500/20 text-red-700 dark:bg-red-500/10 dark:text-red-400",
   REJECTED:
     "bg-gray-500/20 text-gray-700 dark:bg-gray-500/10 dark:text-gray-400",
+};
+
+const APP_TYPE_COLORS: Record<string, string> = {
+  PAID: "bg-amber-500/20 text-amber-700 dark:bg-amber-500/10 dark:text-amber-400",
 };
 
 function formatDate(dateStr: string | null) {
@@ -1571,20 +1582,27 @@ export default function AdminUserDetailsPage() {
                               {formatDate(inv.createdAt)}
                             </TableCell>
                             <TableCell className="text-right">
-                              <div className="flex justify-end gap-2">
-                                <Button
-                                  variant="ghost"
-                                  size="sm"
-                                  onClick={() => window.open(`/admin/invoice/${inv.invoice_number}`, "_blank")}
-                                >
-                                  View
-                                </Button>
-                                <Button
-                                  variant="ghost"
-                                  size="sm"
-                                  onClick={() => {
-                                    setSelectedInvoice(inv);
-                                    setInvoiceEditData({
+                              <div className="flex justify-end gap-1">
+                                <Tooltip>
+                                  <TooltipTrigger asChild>
+                                    <Button
+                                      variant="ghost"
+                                      size="icon"
+                                      onClick={() => window.open(`/admin/invoice/${inv.invoice_number}`, "_blank")}
+                                    >
+                                      <Eye className="w-4 h-4" />
+                                    </Button>
+                                  </TooltipTrigger>
+                                  <TooltipContent>View invoice</TooltipContent>
+                                </Tooltip>
+                                <Tooltip>
+                                  <TooltipTrigger asChild>
+                                    <Button
+                                      variant="ghost"
+                                      size="icon"
+                                      onClick={() => {
+                                        setSelectedInvoice(inv);
+                                        setInvoiceEditData({
                                       invoice_number: inv.invoice_number || "",
                                       service_name: inv.service_name || "",
                                       period: inv.period || "",
@@ -1604,8 +1622,11 @@ export default function AdminUserDetailsPage() {
                                     setIsInvoiceModalOpen(true);
                                   }}
                                 >
-                                  Edit
+                                  <Pencil className="w-4 h-4" />
                                 </Button>
+                                  </TooltipTrigger>
+                                  <TooltipContent>Edit invoice</TooltipContent>
+                                </Tooltip>
                               </div>
                             </TableCell>
                           </TableRow>
@@ -1701,6 +1722,7 @@ export default function AdminUserDetailsPage() {
                             <TableHead>Type</TableHead>
                             <TableHead>Status</TableHead>
                             <TableHead>Submitted</TableHead>
+                            <TableHead className="text-right">Actions</TableHead>
                           </TableRow>
                         </TableHeader>
                         <TableBody>
@@ -1710,7 +1732,7 @@ export default function AdminUserDetailsPage() {
                                 {sub.appName || "Unknown"}
                               </TableCell>
                               <TableCell>
-                                <Badge variant="outline">{sub.appType}</Badge>
+                                <Badge variant="outline" className={APP_TYPE_COLORS[sub.appType] || ""}>{sub.appType}</Badge>
                               </TableCell>
                               <TableCell>
                                 <Badge
@@ -1722,6 +1744,23 @@ export default function AdminUserDetailsPage() {
                               </TableCell>
                               <TableCell className="text-muted-foreground text-xs">
                                 {formatDate(sub.createdAt)}
+                              </TableCell>
+                              <TableCell className="text-right">
+                                <Tooltip>
+                                  <TooltipTrigger asChild>
+                                    <Button
+                                      variant="ghost"
+                                      size="icon"
+                                      onClick={() => {
+                                        const baseUrl = sub.appType === "PAID" ? "/admin/submissions-paid" : "/admin/submissions-free";
+                                        window.open(`${baseUrl}/${sub.id}`, "_blank");
+                                      }}
+                                    >
+                                      <Eye className="w-4 h-4" />
+                                    </Button>
+                                  </TooltipTrigger>
+                                  <TooltipContent>View app</TooltipContent>
+                                </Tooltip>
                               </TableCell>
                             </TableRow>
                           ))}

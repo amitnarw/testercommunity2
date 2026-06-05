@@ -24,6 +24,7 @@ import {
   Headphones,
   Landmark,
   Settings,
+  ThumbsUp,
 } from "lucide-react";
 import { BaseSidebar, SidebarNavLink } from "@/components/ui/base-sidebar";
 import { authClient } from "@/lib/auth-client";
@@ -152,7 +153,7 @@ const adminNavLinks: AdminNavLink[] = [
   {
     name: "Feedback",
     href: ROUTES.ADMIN.FEEDBACK,
-    icon: MessageSquare,
+    icon: ThumbsUp,
     section: "platform",
     moduleName: "feedback",
   },
