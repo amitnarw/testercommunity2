@@ -41,9 +41,11 @@ import {
   Pencil,
   Loader2,
   CheckCircle2,
+  Eye,
 } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import {
   Accordion,
   AccordionItem,
@@ -412,7 +414,12 @@ export default function AdminSubmissionDetailPage({
               </CardHeader>
               <CardContent className="p-6 space-y-6 flex-1 flex flex-col">
                 {/* Developer Info injected intelligently */}
-                <div className="flex items-center gap-4 bg-background p-4 rounded-2xl border border-border/50 shadow-sm">
+                <Link
+                  href={`/admin/users/${project.appOwnerId}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-4 bg-background p-4 rounded-2xl border border-border/50 shadow-sm hover:bg-secondary/20 hover:border-primary/30 transition-all duration-200 group cursor-pointer"
+                >
                   <Avatar className="h-14 w-14 border-2 border-background shadow-sm ring-2 ring-primary/10">
                     <AvatarImage
                       src={project.appOwner?.image || ""}
@@ -422,9 +429,9 @@ export default function AdminSubmissionDetailPage({
                       {project.appOwner?.name?.slice(0, 2)?.toUpperCase()}
                     </AvatarFallback>
                   </Avatar>
-                  <div className="flex flex-col min-w-0">
+                  <div className="flex flex-col min-w-0 flex-1">
                     <div className="flex items-center gap-2">
-                      <h3 className="font-bold text-base truncate">
+                      <h3 className="font-bold text-base truncate group-hover:underline">
                         {project.appOwner?.name}
                       </h3>
                       {project.appOwner?.emailVerified && (
@@ -450,7 +457,8 @@ export default function AdminSubmissionDetailPage({
                       </span>
                     </div>
                   </div>
-                </div>
+                  <Eye className="w-5 h-5 text-primary/40 group-hover:text-primary transition-colors shrink-0" />
+                </Link>
 
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-1.5">

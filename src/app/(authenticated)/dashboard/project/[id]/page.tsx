@@ -14,7 +14,7 @@ export default function ProjectPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = use(params);
-  const { data: appData, isPending } = useSingleHubAppDetails({
+  const { data: appData, isPending, refetch: appDataRefetch } = useSingleHubAppDetails({
     id,
     view: "owner",
   });
@@ -139,5 +139,5 @@ export default function ProjectPage({
 
   const project = mapToProject(appData);
 
-  return <ProjectDetailsView project={project} />;
+  return <ProjectDetailsView project={project} hubAppData={appData} onReviewSuccess={appDataRefetch} />;
 }

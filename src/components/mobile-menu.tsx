@@ -22,6 +22,7 @@ import {
   Headphones,
   Landmark,
   Star,
+  ThumbsUp,
 } from "lucide-react";
 import { Button } from "./ui/button";
 import {
@@ -155,7 +156,7 @@ const adminNavItems: AdminNavItem[] = [
   {
     name: "Feedback",
     href: ROUTES.ADMIN.FEEDBACK,
-    icon: MessageSquare,
+    icon: ThumbsUp,
     section: "platform",
     moduleName: "feedback",
   },
@@ -401,8 +402,8 @@ export default function MobileMenu({
                               {item.badge && hasBadge && (
                                 <span className={cn(
                                   "text-[8px] font-bold px-1.5 py-0.5 rounded",
-                                  section.key === "paid" && "bg-amber-500/20 text-amber-600",
-                                  section.key === "free" && "bg-blue-500/20 text-blue-600",
+                                  section.key === "paid" && "bg-amber-500/20 text-amber-600 dark:bg-amber-500/10 dark:text-amber-700",
+                                  section.key === "free" && "bg-blue-500/20 text-blue-600 dark:bg-blue-500/10 dark:text-blue-700",
                                 )}>
                                   {item.badge}
                                 </span>
