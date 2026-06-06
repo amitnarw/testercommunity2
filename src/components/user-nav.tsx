@@ -253,14 +253,14 @@ export function UserNav({ session, onLogout }: UserNavProps) {
       <>
         <div className="grid grid-cols-2 gap-2 mb-2">
           <BentoItem
-            href={ROUTES.AUTHENTICATED.COMMUNITY_DASHBOARD}
+            href={ROUTES.AUTHENTICATED.FREE_TESTING}
             icon={Users2}
-            label="Community"
+            label="Free Testing"
           />
           <BentoItem
-            href={ROUTES.AUTHENTICATED.DASHBOARD}
+            href={ROUTES.AUTHENTICATED.PRO_TESTING}
             icon={LayoutDashboard}
-            label="Developer"
+            label="Pro Testing"
           />
           <BentoItem href={ROUTES.AUTHENTICATED.WALLET} icon={Wallet} label="Wallet" />
           <BentoItem href={ROUTES.AUTHENTICATED.PROFILE} icon={User} label="Profile" />

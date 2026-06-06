@@ -35,10 +35,15 @@ function formatCurrency(amount: number, currency: string): string {
 
 function formatAmountInWords(words: string | null, amount: number, currency: string): string {
   if (words) return words;
-  const value = amount / 100;
-  const cur = currency === "INR" ? "Rupees" : "US Dollars";
-  if (value === 0) return `${cur} Zero Only`;
-  return `${cur} ${Math.round(value).toLocaleString("en-IN")} Only`;
+  const mainAmount = Math.floor(amount / 100);
+  const fractionalAmount = Math.abs(amount % 100);
+  const prefix = currency === "INR" ? "Rupees" : "US Dollars";
+  const fracName = currency === "INR" ? "Paise" : "Cents";
+  if (mainAmount === 0 && fractionalAmount === 0) return `${prefix} Zero Only`;
+  const parts: string[] = [];
+  if (mainAmount > 0) parts.push(`${prefix} ${mainAmount.toLocaleString("en-IN")}`);
+  if (fractionalAmount > 0) parts.push(`${fracName} ${fractionalAmount}`);
+  return parts.join(" and ") + " Only";
 }
 
 interface TaxInvoiceProps {
@@ -56,13 +61,13 @@ export function TaxInvoice({ invoice }: TaxInvoiceProps) {
   const isDelhi = (billingInfo?.state || "").toLowerCase() === "delhi" || invoice.place_of_supply === "Delhi";
 
   const currency = payment?.currency || "INR";
-  const subtotal = payment?.amount || (invoice.unit_price || 0) * (invoice.quantity || 1);
+  const quantity = invoice.quantity || (order?.packageCount || 1);
+  const unitPrice = invoice.unit_price || Math.round((payment?.amount || 0) / quantity);
+  const subtotal = unitPrice * quantity;
   const cgstAmount = invoice.cgst_amount || 0;
   const sgstAmount = invoice.sgst_amount || 0;
   const igstAmount = invoice.igst_amount || 0;
   const totalAmount = subtotal + cgstAmount + sgstAmount + igstAmount;
-  const quantity = invoice.quantity || (order?.packageCount || 1);
-  const unitPrice = invoice.unit_price || Math.round(subtotal / quantity);
 
   const invoiceDate = invoice.createdAt ? format(new Date(invoice.createdAt), "dd MMM yyyy") : "\u2014";
 
@@ -74,8 +79,8 @@ export function TaxInvoice({ invoice }: TaxInvoiceProps) {
         <div className="h-1.5" style={{ background: `linear-gradient(90deg, ${PRIMARY}, ${PRIMARY_DARK})` }} />
 
         {/** HEADER */}
-        <div className="px-10 pt-7 pb-6">
-          <div className="flex items-start justify-between">
+        <div className="px-10 max-[639px]:px-4 pt-7 pb-6">
+          <div className="flex items-start justify-between max-[639px]:flex-col max-[639px]:gap-4">
             <div className="flex items-center gap-4">
               <div className="w-14 h-14 rounded-2xl flex items-center justify-center p-2 shrink-0" style={{ background: `linear-gradient(135deg, ${PRIMARY}, ${PRIMARY_DARK})` }}>
                 <Image src="/inTesters-logo.svg" alt="inTesters" width={36} height={36} className="object-contain brightness-0 invert" />
@@ -108,11 +113,11 @@ export function TaxInvoice({ invoice }: TaxInvoiceProps) {
         </div>
 
         {/** DIVIDER */}
-        <div className="mx-10 h-px bg-slate-100" />
+        <div className="mx-10 max-[639px]:mx-4 h-px bg-slate-100" />
 
         {/** SELLER + INVOICE DETAILS */}
-        <div className="px-10 py-5">
-          <div className="grid grid-cols-2 print-grid-2col gap-8">
+        <div className="px-10 max-[639px]:px-4 py-5">
+          <div className="grid grid-cols-2 max-[639px]:grid-cols-1 print-grid-2col gap-8 max-[639px]:gap-6">
             <div>
               <p className="text-[10px] font-bold uppercase tracking-[0.2em] mb-3" style={{ color: PRIMARY }}>Sold By</p>
               <p className="text-[15px] font-bold text-slate-900 leading-snug">{COMPANY.name}</p>
@@ -172,11 +177,11 @@ export function TaxInvoice({ invoice }: TaxInvoiceProps) {
         </div>
 
         {/** DIVIDER */}
-        <div className="mx-10 h-px bg-slate-100" />
+        <div className="mx-10 max-[639px]:mx-4 h-px bg-slate-100" />
 
         {/** BUYER + NATURE */}
-        <div className="px-10 py-3">
-          <div className="grid grid-cols-2 print-grid-2col gap-8">
+        <div className="px-10 max-[639px]:px-4 py-3">
+          <div className="grid grid-cols-2 max-[639px]:grid-cols-1 print-grid-2col gap-8 max-[639px]:gap-6">
             <div>
               <p className="text-[10px] font-bold uppercase tracking-[0.2em] mb-1.5" style={{ color: PRIMARY }}>Bill To</p>
               <p className="text-[13px] font-bold text-slate-900 leading-snug">{billingInfo?.name || user?.name || "Customer"}</p>
@@ -225,10 +230,10 @@ export function TaxInvoice({ invoice }: TaxInvoiceProps) {
         </div>
 
         {/** DIVIDER */}
-        <div className="mx-10 h-px bg-slate-100" />
+        <div className="mx-10 max-[639px]:mx-4 h-px bg-slate-100" />
 
         {/** ITEMS TABLE */}
-        <div className="px-10 py-5">
+        <div className="px-10 max-[639px]:px-4 py-5">
           <p className="text-[10px] font-bold uppercase tracking-[0.2em] mb-3" style={{ color: PRIMARY }}>Service Details</p>
           <table className="w-full text-sm">
             <thead>
@@ -245,7 +250,7 @@ export function TaxInvoice({ invoice }: TaxInvoiceProps) {
               <tr className="border-b border-slate-100">
                 <td className="py-3 text-slate-400 text-center">1</td>
                 <td className="py-3">
-                  <p className="font-semibold text-slate-900">{invoice.service_name || "Android App Testing Package"}</p>
+                  <p className="font-semibold text-slate-900">App Testing</p>
                   <p className="text-xs text-slate-400 mt-0.5">Professional App Testing Services</p>
                 </td>
                 <td className="py-3 text-center font-mono text-slate-500 text-xs">{invoice.sac_code || COMPANY.sacCode}</td>
@@ -258,11 +263,11 @@ export function TaxInvoice({ invoice }: TaxInvoiceProps) {
         </div>
 
         {/** DIVIDER */}
-        <div className="mx-10 h-px bg-slate-100" />
+        <div className="mx-10 max-[639px]:mx-4 h-px bg-slate-100" />
 
         {/** TOTALS */}
-        <div className="px-10 py-5">
-          <div className="grid grid-cols-2 print-grid-2col gap-8">
+        <div className="px-10 max-[639px]:px-4 py-5">
+          <div className="grid grid-cols-2 max-[639px]:grid-cols-1 print-grid-2col gap-8 max-[639px]:gap-6">
             <div>
               <p className="text-[10px] font-bold uppercase tracking-[0.2em] mb-2" style={{ color: PRIMARY }}>Amount in Words</p>
               <p className="text-sm font-medium text-slate-600 italic">
@@ -305,11 +310,11 @@ export function TaxInvoice({ invoice }: TaxInvoiceProps) {
         </div>
 
         {/** DIVIDER */}
-        <div className="mx-10 h-px bg-slate-100" />
+        <div className="mx-10 max-[639px]:mx-4 h-px bg-slate-100" />
 
         {/** DECLARATION + SIGNATORY */}
-        <div className="px-10 py-5">
-          <div className="grid grid-cols-2 print-grid-2col gap-8">
+        <div className="px-10 max-[639px]:px-4 py-5">
+          <div className="grid grid-cols-2 max-[639px]:grid-cols-1 print-grid-2col gap-8 max-[639px]:gap-6">
             <div>
               <p className="text-[10px] font-bold uppercase tracking-[0.2em] mb-2" style={{ color: PRIMARY }}>Declaration</p>
               <p className="text-xs text-slate-400 leading-relaxed">This is a computer-generated tax invoice. {isExport && "Supply meant for Export under LUT without payment of Integrated Tax. "}E&amp;OE; Subject to {COMPANY.stateName} jurisdiction.</p>

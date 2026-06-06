@@ -48,6 +48,7 @@ import {
   ArrowLeftRight,
   Eye,
   Pencil,
+  Hand,
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -325,6 +326,7 @@ export default function AdminUserDetailsPage() {
         screen_resolution: user.deviceDetails?.screenResolution || "",
         language: user.deviceDetails?.language || "",
         network: user.deviceDetails?.network || "",
+        discovery_source: user.discoverySource || "",
       });
     }
   }, [user]);
@@ -1515,6 +1517,24 @@ export default function AdminUserDetailsPage() {
                 </div>
               </CardContent>
             </Card>
+
+            {/* Discovery Source */}
+            <Card>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-sm font-semibold flex items-center gap-2">
+                  <Hand className="w-4 h-4" /> Discovery Source
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="text-sm">
+                {user.discoverySourceAnswered ? (
+                  <div className="flex items-center gap-2">
+                    <span className="font-medium capitalize">{user.discoverySource?.replace(/_/g, " ") || "—"}</span>
+                  </div>
+                ) : (
+                  <p className="text-muted-foreground text-sm">Not Answered</p>
+                )}
+              </CardContent>
+            </Card>
           </div>
         </div>
 
@@ -2150,6 +2170,37 @@ export default function AdminUserDetailsPage() {
                       );
                     })}
                   </div>
+                </div>
+              </div>
+            </div>
+
+            <Separator />
+
+            {/* Section 6: Discovery Source */}
+            <div>
+              <h4 className="text-base font-bold border-b pb-2 mb-4">Discovery Source</h4>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label>How did this user discover us?</Label>
+                  <Select
+                    value={editProfileData.discovery_source}
+                    onValueChange={(val) => setEditProfileData((prev: any) => ({ ...prev, discovery_source: val }))}
+                  >
+                    <SelectTrigger><SelectValue placeholder="Not answered" /></SelectTrigger>
+                    <SelectContent position="popper">
+                      <SelectItem value="youtube">YouTube</SelectItem>
+                      <SelectItem value="google_search">Google Search</SelectItem>
+                      <SelectItem value="chatgpt">ChatGPT</SelectItem>
+                      <SelectItem value="gemini">Gemini</SelectItem>
+                      <SelectItem value="twitter_x">Twitter / X</SelectItem>
+                      <SelectItem value="reddit">Reddit</SelectItem>
+                      <SelectItem value="friend_colleague">Friend or Colleague</SelectItem>
+                      <SelectItem value="blog_article">Blog or Article</SelectItem>
+                      <SelectItem value="linkedin">LinkedIn</SelectItem>
+                      <SelectItem value="facebook_instagram">Facebook / Instagram</SelectItem>
+                      <SelectItem value="other">Other</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
               </div>
             </div>

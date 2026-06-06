@@ -363,7 +363,7 @@ export const professionalPathSteps: RoadmapStep[] = [
     step: 2,
     title: "Submit & Forget",
     description:
-      "Submit your app through the Developer Dashboard. Provide us with your build and instructions, and we'll handle the rest. Our project managers take over from here.",
+      "Submit your app through Pro Testing. Provide us with your build and instructions, and we'll handle the rest. Our project managers take over from here.",
     badgeText: "Requirement: 1 Package per App",
     details: [
       {
@@ -1443,7 +1443,7 @@ export const generalFaqs: FaqItem[] = [
   {
     question: "How do I get started?",
     answer:
-      "Just sign up for a free account! From there, you can choose your path. You can start testing other apps to earn points via the Community Hub, or you can purchase a package and submit your app for professional testing via the Developer Dashboard.",
+      "Just sign up for a free account! From there, you can choose your path. You can start testing other apps to earn points via Free Testing, or you can purchase a package and submit your app for professional testing via Pro Testing.",
   },
 ];
 
@@ -1472,6 +1472,39 @@ export const communityFaqs: FaqItem[] = [
     question: "Why do developers upgrade from Free to Pro?",
     answer:
       "The #1 reason is time. Free testing requires you to spend 20+ hours testing other apps before you can submit yours. Pro Testing gives you 20+ vetted testers, detailed bug reports, device coverage stats, and Google Play compliance verification — all managed by our team with zero effort from you. Check our pricing page for current rates.",
+  },
+];
+
+export const proFaqs: FaqItem[] = [
+  {
+    question: "How does Pro Testing work?",
+    answer:
+      "It's simple. You submit your app, choose a testing package, and our professional QA team takes over. We assign 20+ vetted testers who test your app across multiple devices and OS versions for 14 days. You receive detailed bug reports, device coverage stats, and analytics — all managed by our team with zero effort from you.",
+  },
+  {
+    question: "Is Pro Testing guaranteed to meet Google Play's 12-tester requirement?",
+    answer:
+      "Yes. Pro Testing is specifically designed to meet and exceed Google Play's 12-tester, 14-day requirement. We guarantee 20+ testers over 14 days, with detailed reports that serve as proof of testing for your Google Play Console listing.",
+  },
+  {
+    question: "How is Pro Testing different from Free Testing?",
+    answer:
+      "Free Testing is a reciprocal community where you test others' apps to earn points. It costs no money but requires your time. Pro Testing is a paid, fully managed service. You get 20+ vetted professional testers, detailed bug reports, device coverage analytics, and Google Play compliance verification — all handled by our team with zero effort from you.",
+  },
+  {
+    question: "What kind of feedback do I get with Pro Testing?",
+    answer:
+      "You'll receive comprehensive, structured bug reports including: screenshots and screen recordings of issues, device and OS version details, crash logs, step-by-step reproduction steps, usability feedback, and performance metrics. Every test cycle includes a full coverage report showing which devices and OS versions were tested.",
+  },
+  {
+    question: "How long does a Pro Testing cycle take?",
+    answer:
+      "The standard Pro Testing cycle is 14 days — exactly matching Google Play's requirement. We manage the entire process end-to-end. You can track progress in real-time through your dashboard.",
+  },
+  {
+    question: "What happens if my app doesn't get enough testers?",
+    answer:
+      "We guarantee 20+ testers for every Pro Testing cycle. If for any reason we fall short, we extend the testing period at no additional cost until the required number of testers is met. This is part of our satisfaction guarantee.",
   },
 ];
 

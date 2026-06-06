@@ -139,13 +139,13 @@ export function AvailableAppsPreview() {
             onMouseEnter={() => setIsDesktopActive(true)}
             onMouseLeave={() => setIsDesktopActive(false)}
           >
-            <p className="font-bold text-primary text-center mb-4">Community Hub Preview</p>
+            <p className="font-bold text-primary text-center mb-4">Free Testing Preview</p>
             <PhoneFrame isActive={isDesktopActive}>
               <FreeCommunityPreview />
             </PhoneFrame>
             <div className="mt-4">
               <Button asChild variant="outline" className="w-full shadow-primary/20 bg-transparent text-white border-none">
-                <AutoTransitionLink href="/community-dashboard">
+                <AutoTransitionLink href="/app/free-testing">
                   Browse All Apps
                 </AutoTransitionLink>
               </Button>
@@ -161,13 +161,13 @@ export function AvailableAppsPreview() {
             transition={{ delay: 0.1, duration: 0.5 }}
             className="p-2 rounded-xl bg-gradient-to-t from-primary/20 to-transparent"
           >
-            <p className="text-[10px] font-bold text-primary text-center mb-1">Community Hub</p>
+            <p className="text-[10px] font-bold text-primary text-center mb-1">Free Testing</p>
             <PhoneFrame isActive={mobileActive === "free"} onClick={handleMobileClick}>
               <FreeCommunityPreview compact />
             </PhoneFrame>
             <div className="mt-1">
               <Button asChild variant="outline" size="sm" className="text-[9px] py-0.5 w-full bg-transparent text-white border-none">
-                <AutoTransitionLink href="/community-dashboard">
+                <AutoTransitionLink href="/app/free-testing">
                   Browse Apps
                 </AutoTransitionLink>
               </Button>

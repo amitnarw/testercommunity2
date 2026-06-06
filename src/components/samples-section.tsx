@@ -15,7 +15,7 @@ import {
 import { cn } from "@/lib/utils";
 
 // Mock preview screenshots - simplified UI representations
-const FreeCommunityPreview = ({ compact = false }: { compact?: boolean }) => (
+export const FreeCommunityPreview = ({ compact = false }: { compact?: boolean }) => (
   <div
     className={cn(
       "w-full h-full bg-background overflow-hidden",
@@ -179,7 +179,7 @@ const FreeCommunityPreview = ({ compact = false }: { compact?: boolean }) => (
   </div>
 );
 
-const PaidDashboardPreview = ({ compact = false }: { compact?: boolean }) => (
+export const PaidDashboardPreview = ({ compact = false }: { compact?: boolean }) => (
   <div
     className={cn(
       "w-full h-full bg-background overflow-hidden",
@@ -414,7 +414,7 @@ const PaidDashboardPreview = ({ compact = false }: { compact?: boolean }) => (
 );
 
 // Modern Browser Window Frame for Desktop
-const BrowserFrame = ({
+export const BrowserFrame = ({
   children,
   isActive,
 }: {
@@ -471,7 +471,7 @@ const BrowserFrame = ({
 );
 
 // Modern Phone Frame for Mobile
-const PhoneFrame = ({
+export const PhoneFrame = ({
   children,
   isActive,
   onClick,
@@ -547,12 +547,12 @@ export function SamplesSection() {
     {
       id: "free" as const,
       label: "For Testers",
-      href: "/samples/free-community-hub",
+      href: "/samples/free-testing",
     },
     {
       id: "paid" as const,
       label: "For Developers",
-      href: "/samples/paid-dashboard",
+      href: "/samples/pro-testing",
     },
   ];
 

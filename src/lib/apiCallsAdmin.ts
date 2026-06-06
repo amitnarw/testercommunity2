@@ -434,6 +434,26 @@ export async function getUserCounts() {
   }
 }
 
+export async function getDiscoverySourceCounts() {
+  try {
+    const response = await api.get(API_ROUTES.ADMIN + `/users/discovery-source`);
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error fetching discovery source counts:", error);
+    if (axios.isAxiosError(error)) {
+      const status = error.response?.status;
+      const responseData = error.response?.data;
+      throw new Error(
+        responseData?.message || error.message || "Unknown error",
+      );
+    } else if (error instanceof Error) {
+      throw new Error(error.message);
+    } else {
+      throw new Error(JSON.stringify(error));
+    }
+  }
+}
+
 export async function updateUserStatus(payload: {
   id: string;
   status: string;

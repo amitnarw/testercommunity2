@@ -3,6 +3,7 @@
 import { usePathname } from "next/navigation";
 import {
   LayoutDashboard,
+  Home,
   Users2,
   Handshake,
   Bell,
@@ -25,6 +26,7 @@ import {
   Landmark,
   Settings,
   ThumbsUp,
+  Zap,
 } from "lucide-react";
 import { BaseSidebar, SidebarNavLink } from "@/components/ui/base-sidebar";
 import { authClient } from "@/lib/auth-client";
@@ -32,8 +34,9 @@ import { ROUTES } from "@/lib/routes";
 import { hasPermission } from "@/lib/permissions";
 
 const mainNavLinks = [
-  { name: "Community Hub", href: ROUTES.AUTHENTICATED.COMMUNITY_DASHBOARD, icon: Users2 },
-  { name: "Developer Dashboard", href: ROUTES.AUTHENTICATED.DASHBOARD, icon: LayoutDashboard },
+  { name: "Dashboard", href: ROUTES.AUTHENTICATED.DASHBOARD, icon: Home },
+  { name: "Free Testing", href: ROUTES.AUTHENTICATED.FREE_TESTING, icon: Users2 },
+  { name: "Pro Testing", href: ROUTES.AUTHENTICATED.PRO_TESTING, icon: Zap, badge: "PRO" },
   { name: "Notifications", href: ROUTES.AUTHENTICATED.NOTIFICATIONS, icon: Bell },
   { name: "Support", href: ROUTES.PUBLIC.SUPPORT, icon: LifeBuoy },
 ];
@@ -89,7 +92,7 @@ const adminNavLinks: AdminNavLink[] = [
 
   // Free Services
   {
-    name: "Community Subs",
+    name: "Free Subs",
     href: ROUTES.ADMIN.SUBMISSIONS_FREE,
     icon: Handshake,
     section: "free",
@@ -219,7 +222,7 @@ export function Sidebar({
   ].includes(roleName);
   const isTesterRole = roleName === "tester" || roleName === "super_admin";
 
-  let navLinks: { name: string; href: string; icon: typeof LayoutDashboard }[] = mainNavLinks;
+  let navLinks: { name: string; href: string; icon: typeof LayoutDashboard; badge?: string }[] = mainNavLinks;
   if (isTesterRole) {
     navLinks = proNavLinks;
   }
@@ -291,6 +294,7 @@ export function Sidebar({
             href={link.href}
             icon={link.icon}
             isCollapsed={isCollapsed}
+            badge={link.badge}
           >
             {link.name}
           </SidebarNavLink>
@@ -348,7 +352,7 @@ export function Sidebar({
   );
 
   // Determine logo link based on role
-  let logoHref: string = ROUTES.AUTHENTICATED.COMMUNITY_DASHBOARD;
+  let logoHref: string = ROUTES.AUTHENTICATED.DASHBOARD;
   if (isAdminRole) {
     logoHref = ROUTES.ADMIN.DASHBOARD;
   } else if (isTesterRole) {

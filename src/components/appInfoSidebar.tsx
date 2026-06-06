@@ -134,7 +134,7 @@ export const AppActionButton = ({
         target="_blank"
         className="flex flex-row gap-2 w-full bg-primary rounded-full items-center justify-center py-2 text-white hover:scale-105 duration-300"
       >
-        Re-open Google Play <SquareArrowOutUpRight size={20} />
+        Open Google Play <SquareArrowOutUpRight size={20} />
       </a>
     );
   }

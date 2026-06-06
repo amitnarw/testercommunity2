@@ -1,7 +1,7 @@
 // Sample data for the sample preview pages (no login required)
 // These simulate real app testing scenarios
 
-// === FREE COMMUNITY HUB SAMPLE ===
+// === FREE TESTING SAMPLE ===
 export const sampleCommunityAppDetails = {
   id: "sample-free-app",
   status: "IN_TESTING",

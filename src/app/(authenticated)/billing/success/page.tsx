@@ -137,7 +137,7 @@ function SuccessContent() {
             </Link>
           </Button>
           <Button size="lg" variant="outline" className="rounded-full h-14 text-lg font-bold" asChild>
-            <Link href={ROUTES.AUTHENTICATED.COMMUNITY_DASHBOARD}>
+            <Link href={ROUTES.AUTHENTICATED.FREE_TESTING}>
               Dashboard
               <ArrowRight className="w-5 h-5 ml-2" />
             </Link>

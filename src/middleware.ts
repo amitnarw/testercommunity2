@@ -89,7 +89,8 @@ export async function middleware(request: NextRequest) {
   const authRoutes = [ROUTES.AUTH.LOGIN, ROUTES.AUTH.REGISTER];
   const authenticatedRoutes = [
     ROUTES.AUTHENTICATED.DASHBOARD,
-    ROUTES.AUTHENTICATED.COMMUNITY_DASHBOARD,
+    ROUTES.AUTHENTICATED.PRO_TESTING,
+    ROUTES.AUTHENTICATED.FREE_TESTING,
     ROUTES.AUTHENTICATED.NOTIFICATIONS,
     ROUTES.AUTHENTICATED.PROFILE,
     ROUTES.AUTHENTICATED.WALLET,
@@ -166,7 +167,7 @@ export async function middleware(request: NextRequest) {
     authRoutes.some((route) => pathname.startsWith(route))
   ) {
     return NextResponse.redirect(
-      new URL(ROUTES.AUTHENTICATED.COMMUNITY_DASHBOARD, request.url),
+      new URL(ROUTES.AUTHENTICATED.DASHBOARD, request.url),
     );
   }
 
@@ -226,7 +227,7 @@ export async function middleware(request: NextRequest) {
       !adminAuthRoutes.some((route) => pathname.startsWith(route))
     ) {
       return NextResponse.redirect(
-        new URL(ROUTES.AUTHENTICATED.COMMUNITY_DASHBOARD, request.url),
+        new URL(ROUTES.AUTHENTICATED.DASHBOARD, request.url),
       );
     }
     if (
@@ -234,7 +235,7 @@ export async function middleware(request: NextRequest) {
       !testerAuthRoutes.some((route) => pathname.startsWith(route))
     ) {
       return NextResponse.redirect(
-        new URL(ROUTES.AUTHENTICATED.COMMUNITY_DASHBOARD, request.url),
+        new URL(ROUTES.AUTHENTICATED.DASHBOARD, request.url),
       );
     }
   }

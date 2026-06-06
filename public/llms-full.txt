@@ -1,0 +1,97 @@
+# inTesters — Full Knowledge base & Platform Documentation
+
+This document serves as the comprehensive knowledge base for the **inTesters** community tester platform. It is formatted to be fully parsed and ingested by AI search engines, Large Language Models (LLMs), and automated scrapers.
+
+---
+
+## 1. About the Google Play 12-Tester / 14-Day Requirement
+
+Since November 13, 2023, Google has mandated a strict pre-launch closed testing phase for all newly registered individual/personal developer accounts before they are permitted to publish apps to production.
+
+### Key Rules
+- **Minimum Tester Count**: At least 12 opted-in testers.
+- **Duration**: 14 consecutive days of active testing.
+- **Physical Device Rule**: Testing must occur on real, physical Android devices (no emulators allowed).
+- **Consecutive Days Rule**: If your active tester count drops below 12 on any given day (due to uninstalls or inactive users), the 14-day clock resets, and you must start the testing period over.
+- **Recommendation**: To avoid resets, developers should aim to recruit a buffer of 15 to 20 testers.
+
+### Google Play Console Closed Testing Setup Steps
+1. Navigate to the **Google Play Console** and select your app.
+2. Go to **Release** > **Testing** > **Closed testing**.
+3. Create a closed testing release track and upload your App Bundle (.aab).
+4. Under the **Testers** tab, select your preferred feedback method (typically a Google Group or Email list). Add the testers' emails or invite the Google Group.
+5. Copy the **Join on Web** or **Join on Android** opt-in URL.
+6. Provide this opt-in link to your testers so they can join the track and download the app directly from the Play Store.
+
+---
+
+## 2. inTesters Dual-Path Solution
+
+inTesters provides two paths to help developers successfully fulfill Google's requirement.
+
+### Path A: Community Path (Free)
+A reciprocal points-based ecosystem for solo developers on a budget:
+- **Earning Points**: Developers sign up and act as testers for other community members. Reviewing, installing, and reporting bugs on other developers' apps awards points.
+- **Spending Points**: Once enough points are earned, developers submit their own apps to the community dashboard. Other members will then join their testing tracks to help them meet the 14-day requirement.
+- **Requirements**: Free path requires active time investment (approximately 20+ hours of testing other apps) to accumulate the necessary points.
+
+### Path B: Professional Path (Paid)
+A fully managed testing service for teams, agencies, and developers who want to skip manual points-grinding:
+- **Zero Effort**: The inTesters team handles the enrollment, device allocation, and daily testing active logs.
+- **Guaranteed Vetted Testers**: We guarantee 20+ vetted testers (exceeding Google's minimum of 12 to provide a healthy safety buffer) testing your app daily.
+- **Professional QA Feedback**: Vetted QA testers provide structured daily bug reports, screenshots, screen recordings, device coverage data, and crash analysis.
+- **Compliance Guarantee**: If the tester count drops below the Google requirement, we extend the testing period for free until your app successfully completes the 14 days.
+
+---
+
+## 3. Pricing & Packages (Professional Path)
+
+Purchased packages are credited to your account and never expire. One package is consumed per app submission.
+
+| Package Name | Price (INR) | Capacity / Details | Target Audience |
+| :--- | :--- | :--- | :--- |
+| **Booster** | ₹699 | 1 Pro testing cycle (1 app) | Solo Developers / Indie devs |
+| **Accelerator** | ₹1,799 | 5 Pro testing cycles (5 apps) | Small Development Teams |
+| **Launchpad** | ₹2,899 | 10 Pro testing cycles (10 apps) | Agencies & App Publishers |
+
+---
+
+## 4. Frequently Asked Questions (FAQ)
+
+### General FAQs
+- **What is inTesters?**
+  inTesters is a platform designed to connect Android app developers with a global community of real testers to meet the Google Play Store's closed testing requirements.
+- **Who is the platform for?**
+  Android app developers (indie devs, teams, agencies) needing pre-launch testers, and testers looking to earn points and discover new apps.
+- **Are real devices used?**
+  Yes, all tests are conducted by real users on physical Android devices. Emulators are strictly prohibited.
+
+### Community Path FAQs
+- **Is the community path truly free?**
+  Yes, it is completely free in terms of cost. However, you must invest time to test other developers' apps to earn points before submitting your own.
+- **Can I purchase points for the community path?**
+  No. Community points must be earned through active participation and valuable feedback to maintain a healthy, reciprocal community.
+- **What kind of feedback do I get?**
+  Feedback from real users on diverse devices, helping you identify usability bottlenecks and device-specific crashes.
+
+### Professional Path FAQs
+- **Are the 12 testers guaranteed?**
+  Yes. We guarantee 20+ active, vetted testers on your app to safeguard against any dropouts.
+- **How long does the professional cycle take?**
+  The standard cycle is 14 continuous days, fully monitored by our team. You can track tester status live in your dashboard.
+- **What reports will I receive?**
+  You receive daily and weekly summary reports, device/OS stats, usability reviews, and step-by-step bug reports with attached screen recordings and logs.
+- **What is the refund policy?**
+  Unused packages are fully refundable within 14 days of purchase.
+
+---
+
+## 5. Contact & Company Information
+
+- **Company Name**: GAMDIX PRIVATE LIMITED
+- **Founding Year**: 2024
+- **Support Email**: support@intesters.com
+- **Website**: https://intesters.com
+- **GitHub**: https://github.com/intesters
+- **Twitter / X**: https://twitter.com/inTesters
+- **LinkedIn**: https://linkedin.com/company/intesters

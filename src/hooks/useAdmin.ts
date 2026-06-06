@@ -16,6 +16,7 @@ import {
   getAllUsers,
   getUserById,
   getUserCounts,
+  getDiscoverySourceCounts,
   getUserNotifications,
   updateUserStatus,
   updateUserRole,
@@ -303,6 +304,16 @@ export function useUserCounts(options?: { enabled?: boolean }) {
   const query = useQuery({
     queryFn: () => getUserCounts(),
     queryKey: ["useUserCounts"],
+    enabled: options?.enabled ?? true,
+  });
+
+  return query;
+}
+
+export function useDiscoverySourceCounts(options?: { enabled?: boolean }) {
+  const query = useQuery({
+    queryFn: () => getDiscoverySourceCounts(),
+    queryKey: ["useDiscoverySourceCounts"],
     enabled: options?.enabled ?? true,
   });
 
@@ -976,7 +987,7 @@ export function useActAsRole(options?: UseMutationOptions<any, any, any>) {
           if (role === "tester") {
             router.push(ROUTES.TESTER.DASHBOARD);
           } else if (role === "user") {
-            router.push(ROUTES.AUTHENTICATED.COMMUNITY_DASHBOARD);
+            router.push(ROUTES.AUTHENTICATED.FREE_TESTING);
           }
         }
       },

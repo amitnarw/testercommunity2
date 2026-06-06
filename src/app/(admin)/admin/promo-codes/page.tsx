@@ -245,7 +245,7 @@ function AdminPromoCodesContent() {
             Promo Codes
           </h2>
           <p className="text-sm text-muted-foreground">
-            Manage discount codes and user usage limits for the Community Hub.
+            Manage discount codes and user usage limits for Free Testing submissions.
           </p>
         </div>
         <Button onClick={onOpenCreate} className="gap-2">
@@ -260,13 +260,13 @@ function AdminPromoCodesContent() {
           </span>
         </div>
         <p className="text-sm sm:text-base font-medium mb-4">
-          Promo codes apply <span className="font-bold">ONLY</span> to Community Hub (Free) submissions, not valid for Developer Dashboard (Paid) submissions.
+          Promo codes apply <span className="font-bold">ONLY</span> to Free Testing submissions, not valid for Pro Testing submissions.
         </p>
 
         <div className="border-t border-primary/20 pt-4">
           <h3 className="text-sm font-bold mb-2">How Promo Codes Work</h3>
           <ul className="space-y-2 text-sm ml-0">
-            <li>Users enter a code (e.g. <span className="font-mono font-bold">WELCOME200</span>) during Community Hub submission</li>
+            <li>Users enter a code (e.g. <span className="font-mono font-bold">WELCOME200</span>) during Free Testing submission</li>
             <li>The code sets a fixed point cost, overriding the original configuration price</li>
             <li>Each code has optional usage limits: total uses and max uses per user</li>
           </ul>
@@ -315,7 +315,7 @@ function AdminPromoCodesContent() {
                       />
                     </FormControl>
                     <FormDescription>
-                      The code users enter during Community Hub submission.
+                      The code users enter during Free Testing submission.
                     </FormDescription>
                     <FormMessage />
                   </FormItem>

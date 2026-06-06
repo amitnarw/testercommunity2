@@ -24,7 +24,7 @@ export function CardDesign1({
   ];
 
   return (
-    <Card className="bg-white dark:bg-[#0a0a0a] border-none shadow-2xl rounded-[2.5rem] overflow-hidden relative h-[220px] flex flex-col justify-between p-6 group transition-all duration-300">
+    <Card className="bg-white dark:bg-[#0a0a0a] border-none shadow-2xl shadow-black/10 rounded-[2.5rem] overflow-hidden relative h-[220px] flex flex-col justify-between p-6 group transition-all duration-300">
       {/* Background Chart with Faded Edges */}
       <div
         className="absolute inset-0 z-0 opacity-20 dark:opacity-40 group-hover:opacity-40 dark:group-hover:opacity-60 transition-opacity duration-500"

@@ -172,7 +172,7 @@ export default function ProjectDetailsView({
       <div className="container px-4 md:px-6">
         {showBackButton && (
           <div className="sticky top-0 z-[50] pt-2 pb-4 pl-0 xl:pl-8 w-1/2">
-            <BackButton href={ROUTES.AUTHENTICATED.DASHBOARD} />
+            <BackButton href={ROUTES.AUTHENTICATED.PRO_TESTING} />
           </div>
         )}
 

@@ -195,7 +195,7 @@ export function TwoPathsSection() {
 
                     <div className="mt-auto relative z-10">
                       <Link
-                        href={ROUTES.AUTHENTICATED.COMMUNITY_DASHBOARD}
+                        href={ROUTES.AUTHENTICATED.FREE_TESTING}
                         className="w-full block"
                       >
                         <Button
@@ -285,7 +285,7 @@ export function TwoPathsSection() {
             </AnimatePresence>
           </div>
 
-          {/* Path 1: Community (Standard Style) - Desktop Only */}
+          {/* Path 1: Free (Standard Style) - Desktop Only */}
           <div className="h-full hidden md:block">
             <motion.div
               variants={itemVariants}
@@ -298,7 +298,7 @@ export function TwoPathsSection() {
                     <Users className="w-6 h-6 text-primary" />
                   </div>
                   <h3 className="text-xl font-medium text-foreground">
-                    The Community Path
+                    The Free Path
                   </h3>
                 </div>
 
@@ -327,12 +327,12 @@ export function TwoPathsSection() {
               </div>
 
               <div className="mt-auto relative z-10">
-                <Link href={ROUTES.AUTHENTICATED.COMMUNITY_DASHBOARD} className="w-full block">
+                <Link href={ROUTES.AUTHENTICATED.FREE_TESTING} className="w-full block">
                   <Button
                     className="w-full py-6 rounded-full font-semibold text-base transition-all duration-300 group-hover:bg-primary group-hover:text-primary-foreground"
                     variant="outline"
                   >
-                    Explore Community Hub
+                    Explore Free Testing
                   </Button>
                 </Link>
               </div>

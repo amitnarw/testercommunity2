@@ -20,6 +20,8 @@ export const ROUTES = {
     REVIEWS: "/reviews",
     BLOG: "/blog",
     SUPPORT: "/support",
+    FREE_TESTING: "/seo/free-testing",
+    PRO_TESTING: "/seo/pro-testing",
   },
 
   // Admin
@@ -73,8 +75,9 @@ export const ROUTES = {
 
   // Authenticated user routes
   AUTHENTICATED: {
-    DASHBOARD: "/dashboard",
-    COMMUNITY_DASHBOARD: "/community-dashboard",
+    DASHBOARD: "/app/dashboard",
+    PRO_TESTING: "/app/pro-testing",
+    FREE_TESTING: "/app/free-testing",
     NOTIFICATIONS: "/notifications",
     PROFILE: "/profile",
     PROFILE_SETUP: "/profile/profile-setup",

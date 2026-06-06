@@ -265,7 +265,7 @@ export function WhatProUnlocks() {
                 ))}
               </div>
 
-              <AutoTransitionLink href={ROUTES.AUTHENTICATED.COMMUNITY_DASHBOARD} className="w-full">
+              <AutoTransitionLink href={ROUTES.AUTHENTICATED.FREE_TESTING} className="w-full">
                 <Button
                   variant="outline"
                   className="w-full py-5 rounded-full font-semibold text-sm"

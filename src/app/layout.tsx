@@ -69,6 +69,7 @@ export const metadata: Metadata = {
 
 import { SupportChat } from "@/components/support/SupportChat";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { TopLoader } from "@/components/top-loader";
 
 export default function RootLayout({
   children,
@@ -96,6 +97,7 @@ export default function RootLayout({
         <SoftwareApplicationJsonLd />
       </head>
       <body className="font-body antialiased bg-background text-foreground">
+        <TopLoader />
         <ThemeProvider
           attribute="class"
           defaultTheme="dark"

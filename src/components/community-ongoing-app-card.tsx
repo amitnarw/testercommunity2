@@ -25,7 +25,7 @@ export function CommunityOngoingAppCard({ app }: CommunityOngoingAppCardProps) {
 
   return (
     <Link
-      href={`/community-dashboard/${app.id}/ongoing`}
+      href={`/app/free-testing/${app.id}/ongoing`}
       className="group block h-full"
     >
       <div

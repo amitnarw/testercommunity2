@@ -14,7 +14,7 @@ export function CommunityAvailableAppCard({
 }: CommunityAvailableAppCardProps) {
   return (
     <Link
-      href={`/community-dashboard/${app.id}`}
+      href={`/app/free-testing/${app.id}`}
       className="group block h-full"
     >
       <div className="relative h-full flex flex-col overflow-hidden rounded-3xl bg-card border border-border/50 hover:border-primary/50 transition-all duration-500 hover:shadow-[0_10px_40px_-15px_rgba(0,0,0,0.2)] dark:hover:shadow-[0_10px_40px_-20px_rgba(255,255,255,0.1)] hover:-translate-y-1">

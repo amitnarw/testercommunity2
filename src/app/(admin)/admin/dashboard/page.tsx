@@ -8,16 +8,10 @@ import {
   CardDescription,
 } from "@/components/ui/card";
 import {
-  Users,
-  FileText,
-  Bug,
-  UserCheck,
   ArrowRight,
   Clock,
-  AlertCircle,
-  TrendingUp,
   Eye,
-  TrendingDown,
+  BarChart3,
 } from "lucide-react";
 import {
   Table,
@@ -35,9 +29,9 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
-import { LineChart, Line, ResponsiveContainer, XAxis, YAxis } from "recharts";
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Cell, LabelList } from "recharts";
 import { cn } from "@/lib/utils";
-import { useDashboardStats } from "@/hooks/useAdmin";
+import { useDashboardStats, useDiscoverySourceCounts } from "@/hooks/useAdmin";
 import { Skeleton } from "@/components/ui/skeleton";
 import { StatusDistributionCard } from "@/components/admin/StatusDistributionCard";
 import dynamic from "next/dynamic";
@@ -85,6 +79,18 @@ const ServiceComparisonChart = dynamic(
   },
 );
 
+const DiscoverySourceCard = dynamic(
+  () =>
+    import("@/components/admin/dashboard/DiscoverySourceCard").then(
+      (mod) => mod.DiscoverySourceCard,
+    ),
+  {
+    ssr: false,
+    loading: () => <Skeleton className="w-full h-[450px] rounded-[2.5rem]" />,
+  },
+);
+
+
 // Status distribution colors, lighter shades of primary blue
 const statusColors: Record<string, string> = {
   COMPLETED: "#3B82F6",
@@ -97,8 +103,11 @@ const statusColors: Record<string, string> = {
   REQUESTED: "#C7D2FE",
 };
 
+type DiscoverySourceItem = { source: string; count: number };
+
 export default function AdminDashboardPage() {
   const { data: stats, isLoading } = useDashboardStats();
+  const { data: discoverySourceData } = useDiscoverySourceCounts();
 
   // Transform status data for pie chart
   const statusDistribution = stats?.submissionsByStatus
@@ -188,6 +197,10 @@ export default function AdminDashboardPage() {
           isLoading={isLoading}
         />
       </div>
+
+      {/* Discovery Source Chart */}
+      <DiscoverySourceCard data={discoverySourceData} isLoading={isLoading} />
+
 
       {/* Pending Approvals Alert */}
       {pendingApprovals.length > 0 && (

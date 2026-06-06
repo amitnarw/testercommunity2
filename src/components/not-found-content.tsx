@@ -105,7 +105,7 @@ export function NotFoundContent() {
               variant="outline"
               className="rounded-full px-6 py-5 text-base"
             >
-              <Link href={ROUTES.AUTHENTICATED.COMMUNITY_DASHBOARD}>Dashboard</Link>
+              <Link href={ROUTES.AUTHENTICATED.FREE_TESTING}>Free Testing</Link>
             </Button>
           )}
         </div>
