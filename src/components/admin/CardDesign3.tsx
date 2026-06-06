@@ -24,7 +24,7 @@ export function CardDesign3({
   return (
     <Card
       className={cn(
-        "bg-white dark:bg-[#0f0f0f] border-none shadow-2xl rounded-[2.5rem] overflow-hidden relative flex items-center px-0 sm:p-3 transition-all duration-300 group",
+        "bg-white dark:bg-[#0f0f0f] border-none shadow-2xl shadow-black/10 rounded-[2.5rem] overflow-hidden relative flex items-center px-0 sm:p-3 transition-all duration-300 group",
         className,
       )}
     >

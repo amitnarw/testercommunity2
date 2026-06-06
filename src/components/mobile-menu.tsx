@@ -23,6 +23,7 @@ import {
   Landmark,
   Star,
   ThumbsUp,
+  Zap,
 } from "lucide-react";
 import { Button } from "./ui/button";
 import {
@@ -52,8 +53,9 @@ type AdminNavItem = {
 
 const mainNavItems = [
   { name: "Home", href: ROUTES.PUBLIC.HOME },
-  { name: "Community", href: ROUTES.AUTHENTICATED.COMMUNITY_DASHBOARD },
   { name: "Dashboard", href: ROUTES.AUTHENTICATED.DASHBOARD },
+  { name: "Free Testing", href: ROUTES.AUTHENTICATED.FREE_TESTING },
+  { name: "Pro Testing", href: ROUTES.AUTHENTICATED.PRO_TESTING },
   { name: "Reviews", href: ROUTES.PUBLIC.REVIEWS },
   { name: "Pricing", href: ROUTES.AUTHENTICATED.BILLING },
   { name: "Support", href: ROUTES.PUBLIC.SUPPORT },
@@ -419,21 +421,37 @@ export default function MobileMenu({
             ) : (
               // Regular menu (non-admin)
               <nav className="flex flex-col items-center text-center justify-center gap-5 flex-1">
-                {displayItems.map((item: any) => (
-                  <TransitionLink
-                    key={item.name}
-                    href={item.href}
-                    onClick={() => setIsMenuOpen(false)}
-                    className={cn(
-                      "text-2xl font-medium transition-colors hover:text-primary w-full",
-                      pathname === item.href
-                        ? "text-primary"
-                        : "text-foreground",
-                    )}
-                  >
-                    {item.name}
-                  </TransitionLink>
-                ))}
+                {displayItems.map((item: any) => {
+                  const isItemActive = pathname === item.href;
+                  const isPro = item.name === "Pro Testing";
+                  return (
+                    <TransitionLink
+                      key={item.name}
+                      href={item.href}
+                      onClick={() => setIsMenuOpen(false)}
+                      className={cn(
+                        "text-2xl font-medium transition-colors hover:text-primary w-full",
+                        isItemActive ? "text-primary" :                         "text-foreground",
+                      )}
+                    >
+                      <span className="inline-flex items-center gap-2">
+                        {isPro && (
+                          <span className="relative inline-flex items-center justify-center h-4 w-4">
+                            {isItemActive ? (
+                              <Zap className="h-4 w-4 animate-gold-shimmer text-amber-500" />
+                            ) : (
+                              <span className="relative inline-flex items-center justify-center">
+                                <span className="absolute inset-[-2px] rounded-full bg-amber-100/70 animate-thunder-bg" />
+                                <Zap className="h-4 w-4 animate-thunder text-amber-400" />
+                              </span>
+                            )}
+                          </span>
+                        )}
+                        <span>{item.name}</span>
+                      </span>
+                    </TransitionLink>
+                  );
+                })}
               </nav>
             )}
 

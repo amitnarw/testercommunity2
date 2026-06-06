@@ -14,7 +14,7 @@ export function CardDesign2({
   const totalSubmissions = stats?.totalSubmissions || 0;
 
   return (
-    <Card className="bg-white dark:bg-[#0a0a0a] border-none shadow-2xl rounded-[2.5rem] overflow-hidden relative h-[220px] p-6 flex flex-col justify-between transition-all duration-300">
+    <Card className="bg-white dark:bg-[#0a0a0a] border-none shadow-2xl shadow-black/10 rounded-[2.5rem] overflow-hidden relative h-[220px] p-6 flex flex-col justify-between transition-all duration-300">
       {/* Primary Bottom Glow */}
       <div className="absolute bottom-[-50px] left-1/2 -translate-x-1/2 w-[200px] h-[150px] bg-primary/20 dark:bg-primary/30 blur-[40px] rounded-full pointer-events-none" />
 

@@ -62,7 +62,7 @@ export function CommunityAppCard({
       </div>
       {!isPreview && (
         <Button asChild className="ml-auto flex-shrink-0">
-          <Link href={`/community-dashboard/${app.id}`}>
+          <Link href={`/app/free-testing/${app.id}`}>
             Test App <ArrowRight className="ml-2 h-4 w-4" />
           </Link>
         </Button>

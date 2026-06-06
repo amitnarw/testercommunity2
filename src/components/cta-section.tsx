@@ -87,7 +87,7 @@ export function CTASection() {
               className="w-full sm:w-auto rounded-full h-12 px-6 border border-white/30 text-base bg-transparent hover:bg-white/10 text-white hover:text-white sm:min-w-[160px] transition-all hover:border-white/60 backdrop-blur-sm"
               asChild
             >
-              <AutoTransitionLink href={ROUTES.AUTHENTICATED.COMMUNITY_DASHBOARD}>Explore Community</AutoTransitionLink>
+              <AutoTransitionLink href={ROUTES.AUTHENTICATED.FREE_TESTING}>Explore Free Testing</AutoTransitionLink>
             </Button>
           </div>
 

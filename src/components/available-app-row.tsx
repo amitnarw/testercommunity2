@@ -53,7 +53,7 @@ export function AvailableAppRow({ app, ...props }: AvailableAppRowProps) {
         className="opacity-0 group-hover:opacity-100 transition-opacity"
         variant="ghost"
       >
-        <Link href={`/community-dashboard/${app.id}`}>
+        <Link href={`/app/free-testing/${app.id}`}>
           Test App <ArrowRight className="ml-2 h-4 w-4" />
         </Link>
       </Button>

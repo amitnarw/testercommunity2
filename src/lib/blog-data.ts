@@ -136,7 +136,7 @@ By treating the 14-day rule as a legitimate QA window rather than a bureaucratic
     content: `
 # Optimizing Your Karma Score for Faster Testing
 
-The Community Hub is built on the principle of mutual support. To ensure the system remains fair and effective, we use a Karma-based points system. Understanding how to earn and spend these points is the key to getting your 20 testers quickly and for free.
+Free Testing is built on the principle of mutual support. To ensure the system remains fair and effective, we use a Karma-based points system. Understanding how to earn and spend these points is the key to getting your 20 testers quickly and for free.
 
 ## The Karma Economy
 
@@ -151,7 +151,7 @@ Every action you take to help another developer earns you Karma Points. These po
 
 ## Managing Your Testing Campaign
 
-When you submit your app to the Community Hub, your 'Karma Score' determines your visibility.
+When you submit your app to Free Testing, your 'Karma Score' determines your visibility.
 
 - **High Karma Priority**: Apps from developers who have helped many others are pinned to the top of the 'Available for Testing' list.
 - **Point Depletion**: As testers join your app, your points are 'escrowed' (held). If a tester completes the 14 days, the points are permanently transferred to them. If they fail to complete the test, the points are returned to your wallet.
@@ -183,7 +183,7 @@ Keep your Karma Score high, provide value to your peers, and the community will 
     content: `
 # Structuring Your Community Campaign for Maximum Conversion
 
-Submitting an app to the Community Hub is essentially a marketing task. You are competing with other developers for the attention and phone storage of testers. To get your 20 testers quickly, you need a high-quality listing.
+Submitting an app to Free Testing is essentially a marketing task. You are competing with other developers for the attention and phone storage of testers. To get your 20 testers quickly, you need a high-quality listing.
 
 ## Components of a Successful Submission
 
@@ -233,9 +233,9 @@ By presenting your app professionally and engaging actively with those who help 
 
 Every developer faces a unique set of constraints regarding time, budget, and project complexity. Deciding how to fulfill Google's 14-day testing requirement involves weighing the benefits of our two primary paths.
 
-## The Community Hub: Peer-to-Peer Support
+## Free Testing: Peer-to-Peer Support
 
-The Community Hub is designed for indie developers and those working on passion projects where budget is the primary constraint.
+Free Testing is designed for indie developers and those working on passion projects where budget is the primary constraint.
 
 ### Strengths
 - **Cost Efficiency**: Entirely free if you are willing to invest time in testing other apps.
@@ -264,7 +264,7 @@ Professional Testing is built for startups, commercial projects, and developers 
 Use the following criteria to make your choice:
 
 1. **What is your launch deadline?** If you need to be in production within 20 days, the Professional path is the only reliable option.
-2. **Do you have an Android device?** If you don't have a physical Android device to test others' apps, you cannot earn points in the Community Hub.
+2. **Do you have an Android device?** If you don't have a physical Android device to test others' apps, you cannot earn points in Free Testing.
 3. **Is this a commercial venture?** For business-critical apps, the comprehensive QA report from the Professional path provides essential validation before launch.
 
 Regardless of the path you choose, our infrastructure is designed to provide the legitimate, high-quality testing data that Google expects.
@@ -454,7 +454,7 @@ By preparing for these specific scenarios, you can ensure that your 14-day effor
   },
   {
     id: "10",
-    title: "User Experience and Conversion in the Community Hub",
+    title: "User Experience and Conversion in Free Testing",
     description:
       "Best practices for optimizing your app's listing within our platform to attract the required 20 testers as quickly as possible.",
     category: "Free Community Testing",
@@ -464,9 +464,9 @@ By preparing for these specific scenarios, you can ensure that your 14-day effor
     publishedAt: "2024-06-02",
     author: { name: "Jordan Smith", role: "Community Manager" },
     content: `
-# User Experience and Conversion in the Community Hub
+# User Experience and Conversion in Free Testing
 
-The Community Hub is a marketplace of opportunities. Every day, dozens of apps are submitted. To ensure your app is selected by testers quickly, you must treat your submission as a high-conversion landing page.
+Free Testing is a marketplace of opportunities. Every day, dozens of apps are submitted. To ensure your app is selected by testers quickly, you must treat your submission as a high-conversion landing page.
 
 ## The First Impression
 
@@ -910,7 +910,7 @@ Instruct your testers on the level of detail you require. A high-quality report 
 
 ## Incentivizing Depth
 
-In the Community Hub, you should actively prompt your testers. 
+In Free Testing, you should actively prompt your testers. 
 - **The Targeted Request**: Instead of "test the app," ask them to "verify the database sync speed over a 3G connection." 
 - **Developer Engagement**: When a tester provides a deep technical insight, publicize it in your campaign comments. This signals to other testers that you value high-level contributions.
 
@@ -1011,8 +1011,8 @@ Google's primary goal—improving the overall quality of apps on the Play Store,
 
 While 12 is easier than 20, keeping a dozen people actively engaged for two straight weeks is still a marketing challenge. Here is a battle-tested strategy:
 
-### 1. Leverage the Community Hub
-The most efficient way to source genuine testers is through peer-to-peer networks like our **Community Hub**. By testing other developers' apps, you earn Karma points. You can then spend these points to invite those same developers to test your app. 
+### 1. Leverage Free Testing
+The most efficient way to source genuine testers is through peer-to-peer networks like our **Free Testing**. By testing other developers' apps, you earn Karma points. You can then spend these points to invite those same developers to test your app. 
 - **Benefit**: Developers make the best testers. They provide actionable UI feedback instead of generic "good app" comments.
 
 ### 2. Aim for 15, Not 12

@@ -111,7 +111,7 @@ export function HowItWorks() {
           className="mt-10 text-center"
         >
           <Button asChild size="lg" className="rounded-full px-8 group">
-            <AutoTransitionLink href="/community-dashboard">
+            <AutoTransitionLink href="/app/free-testing">
               Start Testing
               <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
             </AutoTransitionLink>

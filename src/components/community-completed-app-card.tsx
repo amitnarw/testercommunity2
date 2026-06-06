@@ -13,7 +13,7 @@ export function CommunityCompletedAppCard({
 }: CommunityCompletedAppCardProps) {
   return (
     <Link
-      href={`/community-dashboard/${app.id}/completed`}
+      href={`/app/free-testing/${app.id}/completed`}
       className="group block h-full"
     >
       <div className="relative h-full flex flex-col overflow-hidden rounded-3xl bg-card border border-border/50 hover:border-green-500/50 transition-all duration-500 hover:shadow-[0_10px_40px_-15px_rgba(34,197,94,0.2)] dark:hover:shadow-[0_10px_40px_-20px_rgba(34,197,94,0.1)] hover:-translate-y-1">

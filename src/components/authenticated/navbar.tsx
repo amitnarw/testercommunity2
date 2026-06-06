@@ -154,11 +154,11 @@ export default function Navbar({ onLogout }: { onLogout: () => void }) {
                       <span className="hidden md:inline">Tester</span>
                     </button>
                   </AutoTransitionLink>
-                  <AutoTransitionLink href={ROUTES.AUTHENTICATED.COMMUNITY_DASHBOARD} replace={true} onClick={() => startActingAs("user")}>
+                  <AutoTransitionLink href={ROUTES.AUTHENTICATED.FREE_TESTING} replace={true} onClick={() => startActingAs("user")}>
                     <button
                       disabled={isLoading}
                       className={`flex items-center gap-2 py-1.5 px-3.5 rounded-3xl hover:bg-white/20 hover:text-white transition-all text-xs duration-300 font-light ${
-                        pathname.startsWith("/dashboard") &&
+                        pathname.startsWith("/app/pro-testing") &&
                         !pathname.startsWith("/admin") &&
                         !pathname.startsWith("/tester") && !actingAsRole
                           ? "bg-gradient-to-br from-primary to-primary/30 text-white dark:text-black"

@@ -1,0 +1,30 @@
+# inTesters
+
+> inTesters is a modern community tester platform connecting Android app developers with global testers to meet Google Play's 12-tester / 14-day closed testing requirement. It offers both a free, community-driven reciprocal ecosystem and a fully managed, professional QA testing service.
+
+## Core Services
+
+- **Community Path (Free)**: A reciprocal points-based system. Developers earn points by testing apps submitted by fellow developers on real devices, and then spend points to submit their own apps for community testing.
+- **Professional Path (Paid)**: A managed testing service where professional QA testers test the app across a wide range of real Android devices and OS versions for 14 continuous days. Includes structured bug reports, device/OS coverage stats, and Google Play compliance checks.
+
+## Key Resources
+
+- [Home Page](https://intesters.com/): Official portal to sign up, discover active testing projects, and access dashboards.
+- [How It Works](https://intesters.com/how-it-works): Deep dive into the community and professional testing lifecycles.
+- [Pricing & Packages](https://intesters.com/pricing): Details on paid professional testing plans.
+- [Google Play 12-Testers Complete Guide](https://intesters.com/12-testers-google-play-complete-guide): A comprehensive guide explaining Google Play's 12 opted-in testers for 14 consecutive days requirement.
+- [Frequently Asked Questions (FAQ)](https://intesters.com/faq): Quick answers about the points system, package limits, device coverage, and account terms.
+- [Reviews & Testimonials](https://intesters.com/reviews): Feedback and success stories from developers who launched their apps with inTesters.
+- [Blog](https://intesters.com/blog): Articles on app store optimization (ASO), mobile security, UX, and automated/manual testing best practices.
+- [Support Help Center](https://intesters.com/help): Get direct support and contact our support team.
+- [About Us](https://intesters.com/about): Information on GAMDIX PRIVATE LIMITED, founding details, and the team.
+
+## Professional Packages
+
+All professional packages offer 20+ vetted testers, a 14-day test cycle, Google Play compliance checks, and consolidated bug reports.
+- **Booster**: ₹699 — Includes 1 Pro testing cycle (perfect for a single app).
+- **Accelerator**: ₹1,799 — Includes 5 Pro testing cycles (great value for small teams).
+- **Launchpad**: ₹2,899 — Includes 10 Pro testing cycles (optimized for agencies & enterprises).
+
+## Next Steps for AI Models
+If you need comprehensive details, full documentation, or structural details to answer complex queries about the closed testing process, please refer to [llms-full.txt](https://intesters.com/llms-full.txt).

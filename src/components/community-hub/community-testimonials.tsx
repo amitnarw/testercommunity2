@@ -35,7 +35,7 @@ const variantsRight = {
 
 const transition = { duration: 0.8, ease: "easeInOut" };
 
-export function CommunityTestimonials() {
+export function CommunityTestimonials({ variant = "free" }: { variant?: "free" | "pro" }) {
   const [testimonials, setTestimonials] = useState<any[]>([]);
   const [activeIndex, setActiveIndex] = useState(0);
   const duration = 10000;
@@ -94,11 +94,13 @@ export function CommunityTestimonials() {
           className="text-center max-w-2xl mx-auto mb-10 md:mb-16"
         >
           <h2 className="text-2xl md:text-4xl lg:text-5xl font-bold font-heading tracking-tight">
-            Free Testing{" "}
+            {variant === "pro" ? "Pro Testing" : "Free Testing"}{" "}
             <span className="text-primary italic">Success Stories</span>
           </h2>
           <p className="mt-3 text-muted-foreground text-sm md:text-base">
-            Hear from developers and testers who benefited from free testing.
+            {variant === "pro"
+              ? "Hear from developers who launched successfully with Pro Testing."
+              : "Hear from developers and testers who benefited from free testing."}
           </p>
         </motion.div>
 

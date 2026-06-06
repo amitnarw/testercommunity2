@@ -176,7 +176,7 @@ export function MemberBenefits() {
                   variant="outline"
                   className="w-full sm:w-auto rounded-full px-8"
                 >
-                  <AutoTransitionLink href="/community-dashboard">
+                  <AutoTransitionLink href="/app/free-testing">
                     Preview Free Testing
                   </AutoTransitionLink>
                 </Button>

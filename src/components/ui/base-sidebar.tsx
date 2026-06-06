@@ -28,6 +28,7 @@ export const SidebarNavLink = ({
   children,
   badge,
   activeMatch,
+  className,
 }: {
   href: string;
   icon: React.ElementType;
@@ -35,6 +36,7 @@ export const SidebarNavLink = ({
   children: React.ReactNode;
   badge?: string;
   activeMatch?: (pathname: string, href: string) => boolean;
+  className?: string;
 }) => {
   const pathname = usePathname();
 
@@ -49,6 +51,8 @@ export const SidebarNavLink = ({
         typeof window !== "undefined" &&
         window.location.search.includes(href.split("?")[1])
       : pathname === href || pathname.startsWith(`${href}/`);
+
+  const isPro = badge === "PRO";
 
   const getBadgeStyles = () => {
     if (badge === "PRO") return "bg-amber-500/30 text-amber-300 dark:bg-amber-500/10 dark:text-amber-600";
@@ -66,9 +70,26 @@ export const SidebarNavLink = ({
             "hover:bg-white/20 hover:text-white dark:hover:bg-black/20 dark:hover:text-black",
             isActive &&
               "bg-white text-black shadow-xl dark:bg-black dark:text-white dark:from-black dark:to-black",
+            isPro && !isActive && [
+              "text-amber-300 dark:text-amber-400",
+              "hover:bg-amber-500/10 hover:text-amber-200 dark:hover:bg-amber-500/10",
+            ],
+            isPro && isActive && "!text-black dark:!text-white",
+            className,
           )}
         >
-          <Icon className="h-5 w-5 flex-shrink-0" />
+          {isPro && !isActive ? (
+            <span className="relative inline-flex items-center justify-center h-5 w-5 flex-shrink-0">
+              <span className="absolute inset-0 rounded-full bg-amber-100/80 animate-thunder-bg" />
+              <Icon className="h-5 w-5 relative z-10 animate-thunder text-amber-400" />
+            </span>
+          ) : isPro && isActive ? (
+            <span className="relative inline-flex items-center justify-center h-5 w-5 flex-shrink-0">
+              <Icon className="h-5 w-5 relative z-10 animate-gold-shimmer text-amber-500" />
+            </span>
+          ) : (
+            <Icon className="h-5 w-5 flex-shrink-0" />
+          )}
           {!isCollapsed && (
             <div className="ml-4 flex items-center justify-between w-full overflow-hidden">
               <span className="font-light whitespace-nowrap truncate text-sm">

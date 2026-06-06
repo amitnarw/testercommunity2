@@ -108,7 +108,7 @@ const StatCard = ({
   );
 };
 
-export function CommunityStats() {
+export function CommunityStats({ variant = "free" }: { variant?: "free" | "pro" }) {
   const sectionRef = useRef(null);
   const { scrollYProgress } = useScroll({
     target: sectionRef,
@@ -116,42 +116,81 @@ export function CommunityStats() {
   });
   const rotate = useTransform(scrollYProgress, [0, 1], [0, 360]);
 
-  const stats = [
-    {
-      title: "Active Testers",
-      value: <AnimatedCounter to={500} suffix="+" />,
-      description: "Community testers worldwide",
-      icon: <Users className="w-5 h-5" />,
-      colSpan: "double" as const,
-      className: "bg-gradient-to-br from-primary to-primary/70 text-primary-foreground",
-    },
-    {
-      title: "Points Earned",
-      value: <AnimatedCounter to={45000} suffix="+" />,
-      description: "Earned by the community",
-      icon: <Coins className="w-5 h-5" />,
-    },
-    {
-      title: "Apps Tested",
-      value: <AnimatedCounter to={250} suffix="+" />,
-      description: "Free apps submitted",
-      icon: <Layout className="w-5 h-5" />,
-    },
-    {
-      title: "Countries",
-      value: <AnimatedCounter to={15} suffix="+" />,
-      description: "Represented globally",
-      icon: <Globe className="w-5 h-5" />,
-    },
-    {
-      title: "Average Rating",
-      value: <AnimatedCounter to={47} suffix="/50" />,
-      description: "Feedback quality score",
-      icon: <CheckCircle className="w-5 h-5" />,
-      colSpan: "double" as const,
-      className: "bg-gradient-to-br from-primary to-primary/70 text-primary-foreground",
-    },
-  ];
+  const isPro = variant === "pro";
+
+  const stats = isPro
+    ? [
+        {
+          title: "Apps Tested",
+          value: <AnimatedCounter to={500} suffix="+" />,
+          description: "Professional testing campaigns",
+          icon: <Layout className="w-5 h-5" />,
+          colSpan: "double" as const,
+          className: "bg-gradient-to-br from-primary to-primary/70 text-primary-foreground",
+        },
+        {
+          title: "Vetted Testers",
+          value: <AnimatedCounter to={200} suffix="+" />,
+          description: "Professional QA team members",
+          icon: <Users className="w-5 h-5" />,
+        },
+        {
+          title: "Bug Reports",
+          value: <AnimatedCounter to={10000} suffix="+" />,
+          description: "Issues identified & resolved",
+          icon: <CheckCircle className="w-5 h-5" />,
+        },
+        {
+          title: "Countries",
+          value: <AnimatedCounter to={15} suffix="+" />,
+          description: "Global device coverage",
+          icon: <Globe className="w-5 h-5" />,
+        },
+        {
+          title: "Success Rate",
+          value: <AnimatedCounter to={98} suffix="%" />,
+          description: "Google Play compliance rate",
+          icon: <Smartphone className="w-5 h-5" />,
+          colSpan: "double" as const,
+          className: "bg-gradient-to-br from-primary to-primary/70 text-primary-foreground",
+        },
+      ]
+    : [
+        {
+          title: "Active Testers",
+          value: <AnimatedCounter to={500} suffix="+" />,
+          description: "Free testers worldwide",
+          icon: <Users className="w-5 h-5" />,
+          colSpan: "double" as const,
+          className: "bg-gradient-to-br from-primary to-primary/70 text-primary-foreground",
+        },
+        {
+          title: "Points Earned",
+          value: <AnimatedCounter to={45000} suffix="+" />,
+          description: "Earned by the community",
+          icon: <Coins className="w-5 h-5" />,
+        },
+        {
+          title: "Apps Tested",
+          value: <AnimatedCounter to={250} suffix="+" />,
+          description: "Free apps submitted",
+          icon: <Layout className="w-5 h-5" />,
+        },
+        {
+          title: "Countries",
+          value: <AnimatedCounter to={15} suffix="+" />,
+          description: "Represented globally",
+          icon: <Globe className="w-5 h-5" />,
+        },
+        {
+          title: "Average Rating",
+          value: <AnimatedCounter to={47} suffix="/50" />,
+          description: "Feedback quality score",
+          icon: <CheckCircle className="w-5 h-5" />,
+          colSpan: "double" as const,
+          className: "bg-gradient-to-br from-primary to-primary/70 text-primary-foreground",
+        },
+      ];
 
   return (
     <section
@@ -177,14 +216,15 @@ export function CommunityStats() {
           className="text-center max-w-2xl mx-auto mb-10 md:mb-16"
         >
           <h2 className="text-2xl md:text-4xl lg:text-5xl font-bold tracking-tight font-heading">
-            Free Testing{" "}
+            {isPro ? "Pro Testing" : "Free Testing"}{" "}
             <span className="bg-gradient-to-br from-primary to-accent bg-clip-text text-transparent">
-              Impact
+              {isPro ? "Results" : "Impact"}
             </span>
           </h2>
           <p className="mt-3 text-muted-foreground text-sm md:text-base max-w-xl mx-auto">
-            A growing pool of testers and developers creating a virtuous
-            cycle of quality and innovation — completely free.
+            {isPro
+              ? "Trusted by developers worldwide for reliable, professional app testing with guaranteed results."
+              : "A growing pool of testers and developers creating a virtuous cycle of quality and innovation — completely free."}
           </p>
         </motion.div>
 

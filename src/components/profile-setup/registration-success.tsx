@@ -10,7 +10,7 @@ import { ROUTES } from "@/lib/routes";
 
 export const RegistrationSuccess = ({
   status,
-  dashboardHref = ROUTES.AUTHENTICATED.COMMUNITY_DASHBOARD,
+  dashboardHref = ROUTES.AUTHENTICATED.FREE_TESTING,
 }: {
   status: "EARNED_NOW" | "ALREADY_EARNED" | "INCOMPLETE";
   dashboardHref?: string;

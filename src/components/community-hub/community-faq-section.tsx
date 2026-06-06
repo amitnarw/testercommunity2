@@ -5,10 +5,10 @@ import { Button } from "@/components/ui/button";
 import { ChevronRight } from "lucide-react";
 import { Accordion } from "@/components/ui/accordion";
 import FaqItem from "@/components/faq-item";
-import { communityFaqs } from "@/lib/data";
+import { communityFaqs, proFaqs } from "@/lib/data";
 import { motion } from "framer-motion";
 
-export function CommunityFaqSection() {
+export function CommunityFaqSection({ faqType = "community" }: { faqType?: "community" | "pro" }) {
   return (
     <section data-loc="CommunityFaqSection" id="faq" className="py-16 md:py-32">
       <div className="container mx-auto px-4 md:px-6">
@@ -23,7 +23,7 @@ export function CommunityFaqSection() {
             Frequently Asked Questions
           </h2>
           <p className="mt-3 text-muted-foreground">
-            Everything you need to know about Free Testing.
+            {faqType === "pro" ? "Everything you need to know about Pro Testing." : "Everything you need to know about Free Testing."}
           </p>
         </motion.div>
 
@@ -33,7 +33,7 @@ export function CommunityFaqSection() {
             collapsible
             className="w-full space-y-2"
           >
-            {communityFaqs.map((faq, i) => (
+            {(faqType === "pro" ? proFaqs : communityFaqs).map((faq, i) => (
               <FaqItem
                 key={i}
                 index={i}

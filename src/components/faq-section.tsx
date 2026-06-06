@@ -13,7 +13,7 @@ const faqs = [
   {
     question: "How does the points system work?",
     answer:
-      "Points are our platform's currency. You can either earn them for free by testing apps in the Community Hub, or purchase them directly. You then spend these points to get your own app tested, either by the community or by our professional team.",
+      "Points are our platform's currency. You can either earn them for free by testing apps through Free Testing, or purchase them directly. You then spend these points to get your own app tested, either by the community or by our professional team.",
   },
   {
     question: "Is the Community Path really free?",
