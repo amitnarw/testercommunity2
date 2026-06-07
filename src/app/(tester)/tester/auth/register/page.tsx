@@ -31,7 +31,7 @@ import { LoadingButton } from "@/components/ui/loading-button";
 import { useRouter } from "next/navigation";
 import { InteractiveGridPattern } from "@/components/ui/interactive-grid-pattern";
 import { Separator } from "@/components/ui/separator";
-import { BackButton } from "@/components/back-button";
+import { HomeButton } from "@/components/home-button";
 import Image from "next/image";
 import { TesterAboutYouStep } from "@/components/profile-setup/tester-about-you-step";
 import { DeviceStep } from "@/components/profile-setup/device-step";
@@ -288,7 +288,7 @@ export default function ProfessionalRegisterPage() {
           >
             <div className="relative w-full min-h-screen flex flex-col items-center justify-center px-2 sm:px-6 bg-background">
               <div className="absolute top-2 sm:top-4 right-4 flex items-center gap-4">
-                <BackButton href="/" />
+                <HomeButton href="/" />
                 <Button
                   variant="ghost"
                   size="icon"

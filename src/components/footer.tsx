@@ -3,8 +3,31 @@
 import { useRef } from "react";
 import Link from "next/link";
 import { Button } from "./ui/button";
-import { Github, Twitter, Linkedin } from "lucide-react";
 import Image from "next/image";
+
+const XIcon = ({ className }: { className?: string }) => (
+  <svg viewBox="0 0 24 24" className={className} fill="currentColor">
+    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+  </svg>
+);
+
+const RedditIcon = ({ className }: { className?: string }) => (
+  <svg viewBox="0 0 512 512" className={className} fill="currentColor">
+    <path d="M440.3 203.5c-15 0-28.2 6.2-37.9 15.9-35.7-24.7-83.8-40.6-137.1-42.3L293 52.3l88.2 19.8c0 21.6 17.6 39.2 39.2 39.2 22 0 39.7-18.1 39.7-39.7s-17.6-39.7-39.7-39.7c-15.4 0-28.7 9.3-35.3 22l-97.4-21.6c-4.9-1.3-9.7 2.2-11 7.1L246.3 177c-52.9 2.2-100.5 18.1-136.3 42.8-9.7-10.1-23.4-16.3-38.4-16.3-55.6 0-73.8 74.6-22.9 100.1-1.8 7.9-2.6 16.3-2.6 24.7 0 83.8 94.4 151.7 210.3 151.7 116.4 0 210.8-67.9 210.8-151.7 0-8.4-.9-17.2-3.1-25.1 49.9-25.6 31.5-99.7-23.8-99.7zM129.4 308.9c0-22 17.6-39.7 39.7-39.7 21.6 0 39.2 17.6 39.2 39.7 0 21.6-17.6 39.2-39.2 39.2-22 .1-39.7-17.6-39.7-39.2zm214.3 93.5c-36.4 36.4-139.1 36.4-175.5 0-4-3.5-4-9.7 0-13.7 3.5-3.5 9.7-3.5 13.2 0 27.8 28.5 120 29 149 0 3.5-3.5 9.7-3.5 13.2 0 4.1 4 4.1 10.2.1 13.7zm-.8-54.2c-21.6 0-39.2-17.6-39.2-39.2 0-22 17.6-39.7 39.2-39.7 22 0 39.7 17.6 39.7 39.7-.1 21.5-17.7 39.2-39.7 39.2z" />
+  </svg>
+);
+
+const TelegramIcon = ({ className }: { className?: string }) => (
+  <svg viewBox="0 0 448 512" className={className} fill="currentColor">
+    <path d="M446.7 98.6l-67.6 318.8c-5.1 22.5-18.4 28.1-37.3 17.5l-103-75.9-49.7 47.8c-5.5 5.5-10.1 10.1-20.7 10.1l7.4-104.9 190.9-172.5c8.3-7.4-1.8-11.5-12.9-4.1L117.8 284 16.2 252.2c-22.1-6.9-22.5-22.1 4.6-32.7L418.2 66.4c18.4-6.9 34.5 4.1 28.5 32.2z" />
+  </svg>
+);
+
+const YoutubeIcon = ({ className }: { className?: string }) => (
+  <svg viewBox="0 0 576 512" className={className} fill="currentColor">
+    <path d="M549.655 124.083c-6.281-23.65-24.787-42.276-48.284-48.597C458.781 64 288 64 288 64S117.22 64 74.629 75.486c-23.497 6.322-42.003 24.947-48.284 48.597-11.412 42.867-11.412 132.305-11.412 132.305s0 89.438 11.412 132.305c6.281 23.65 24.787 41.5 48.284 47.821C117.22 448 288 448 288 448s170.78 0 213.371-11.486c23.497-6.321 42.003-24.171 48.284-47.821 11.412-42.867 11.412-132.305 11.412-132.305s0-89.438-11.412-132.305zm-317.51 213.508V175.185l142.739 81.205-142.739 81.201z" />
+  </svg>
+);
 import { useScroll, useTransform, motion } from "framer-motion";
 import { Logo } from "./logo";
 import { ROUTES } from "@/lib/routes";
@@ -70,9 +93,10 @@ export function Footer() {
           {/* Desktop: Content */}
           <div className="hidden lg:flex flex-col gap-6">
             <div className="flex gap-3">
-              <SocialButton icon={<Twitter className="w-5 h-5" />} href="#" />
-              <SocialButton icon={<Github className="w-5 h-5" />} href="#" />
-              <SocialButton icon={<Linkedin className="w-5 h-5" />} href="#" />
+              <SocialButton icon={<XIcon className="w-5 h-5" />} href="https://x.com/inTesters" />
+              <SocialButton icon={<RedditIcon className="w-5 h-5" />} href="https://www.reddit.com/r/inTesters" />
+              <SocialButton icon={<TelegramIcon className="w-5 h-5" />} href="https://t.me/inTesters" />
+              <SocialButton icon={<YoutubeIcon className="w-5 h-5" />} href="https://www.youtube.com/" />
             </div>
 
             <div className="flex flex-col gap-4">
@@ -168,9 +192,10 @@ export function Footer() {
         <div className="lg:hidden flex flex-col gap-6 order-3">
           <div className="flex flex-wrap items-center justify-between gap-4">
             <div className="flex gap-3">
-              <SocialButton icon={<Twitter className="w-5 h-5" />} href="#" />
-              <SocialButton icon={<Github className="w-5 h-5" />} href="#" />
-              <SocialButton icon={<Linkedin className="w-5 h-5" />} href="#" />
+              <SocialButton icon={<XIcon className="w-5 h-5" />} href="https://x.com/inTesters" />
+              <SocialButton icon={<RedditIcon className="w-5 h-5" />} href="https://www.reddit.com/r/inTesters" />
+              <SocialButton icon={<TelegramIcon className="w-5 h-5" />} href="https://t.me/inTesters" />
+              <SocialButton icon={<YoutubeIcon className="w-5 h-5" />} href="https://www.youtube.com/" />
             </div>
             <Link
               href="#"

@@ -10,9 +10,10 @@ export function OrganizationJsonLd() {
     foundingDate: "2024",
     legalName: "GAMDIX PRIVATE LIMITED",
     sameAs: [
-      "https://twitter.com/inTesters",
-      "https://github.com/intesters",
-      "https://linkedin.com/company/intesters",
+      "https://x.com/inTesters",
+      "https://www.reddit.com/r/inTesters",
+      "https://t.me/inTesters",
+      "https://www.youtube.com/",
     ],
     address: {
       "@type": "PostalAddress",

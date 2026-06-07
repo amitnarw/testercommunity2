@@ -123,7 +123,7 @@ function AddAppFormContent() {
           status: "error",
           title: "Failed to Save Draft",
           description: error.message || "Something went wrong while saving your draft. Please try again or contact support if the problem persists.",
-          primaryAction: { label: "Try Again", onClick: () => saveDraft({ appName, testingUrl, logoUrl, categoryId: parseInt(category) || 0, instructions: instructions.trim() || null } as any) },
+          primaryAction: { label: "OK", onClick: () => {} },
         });
       },
     });
@@ -161,7 +161,7 @@ function AddAppFormContent() {
         status: "error",
         title: "Submission Failed",
         description: error.message || "Something went wrong while submitting your app. Please check your details and try again.",
-        primaryAction: { label: "Try Again", onClick: () => submitApp({ appName, testingUrl, logoUrl, categoryId: parseInt(category), instructions: instructions.trim() || null } as any) },
+        primaryAction: { label: "OK", onClick: () => {} },
       });
     },
   });
@@ -332,15 +332,49 @@ function AddAppFormContent() {
 
   // Handle save as draft - calls the API when user clicks Draft button
   const handleSaveDraft = () => {
-    const urlValidationError = validateTestingUrl(testingUrl) || validateLogoUrl(logoUrl);
-    if (urlValidationError) {
-      setFeedbackModal({
-        open: true,
-        status: "error",
-        title: "Invalid URL",
-        description: urlValidationError,
-        primaryAction: { label: "Fix It", onClick: () => setFeedbackModal(prev => ({ ...prev, open: false })) },
-      });
+    // Reset errors
+    setAppNameError("");
+    setTestingUrlError("");
+    setLogoUrlError("");
+    setCategoryError("");
+
+    let firstErrorId = "";
+
+    // Validation checks for draft (backend requires testingUrl, appName, logoUrl, and categoryId)
+    if (!appName.trim()) {
+      setAppNameError("App name is required to save a draft");
+      if (!firstErrorId) firstErrorId = "name";
+    }
+
+    const testingUrlErr = validateTestingUrl(testingUrl);
+    if (testingUrlErr) {
+      setTestingUrlError(testingUrlErr);
+      if (!firstErrorId) firstErrorId = "url";
+    } else if (!testingUrl.trim()) {
+      setTestingUrlError("Testing URL is required to save a draft");
+      if (!firstErrorId) firstErrorId = "url";
+    }
+
+    const logoUrlErr = validateLogoUrl(logoUrl);
+    if (logoUrlErr) {
+      setLogoUrlError(logoUrlErr);
+      if (!firstErrorId) firstErrorId = "logo";
+    } else if (!logoUrl.trim()) {
+      setLogoUrlError("App logo URL is required to save a draft");
+      if (!firstErrorId) firstErrorId = "logo";
+    }
+
+    if (!category) {
+      setCategoryError("Please select a category to save a draft");
+      if (!firstErrorId) firstErrorId = "category";
+    }
+
+    if (firstErrorId) {
+      const element = document.getElementById(firstErrorId);
+      if (element) {
+        element.scrollIntoView({ behavior: "smooth", block: "center" });
+        setTimeout(() => element.focus(), 500);
+      }
       return;
     }
 
@@ -348,10 +382,10 @@ function AddAppFormContent() {
       appName,
       testingUrl,
       logoUrl,
-      categoryId: parseInt(category) || 0,
+      categoryId: parseInt(category),
       instructions: instructions.trim() || null,
       draftId: draftId || undefined,
-    } as any); // Using 'as any' since the exact payload structure depends on your backend
+    } as any);
   };
 
   if (draftId && isLoadingDraft) {

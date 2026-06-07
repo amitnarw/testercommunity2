@@ -7,7 +7,7 @@ import { Separator } from "@/components/ui/separator";
 import { useTheme } from "next-themes";
 import { Eye, EyeOff, Moon, Sun } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { BackButton } from "@/components/back-button";
+import { HomeButton } from "@/components/home-button";
 import { InteractiveGridPattern } from "@/components/ui/interactive-grid-pattern";
 import { cn } from "@/lib/utils";
 import { ChangeEvent, useCallback, useEffect, useState } from "react";
@@ -308,7 +308,7 @@ export default function ProfessionalLoginPage() {
     <div className="min-h-screen w-full lg:grid lg:grid-cols-2">
       <div className="relative w-full h-screen flex flex-col items-center justify-center p-6 bg-background">
         <div className="absolute top-4 right-4 flex items-center gap-4">
-          <BackButton href="/" />
+          <HomeButton href="/" />
           <Button
             variant="ghost"
             size="icon"
