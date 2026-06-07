@@ -92,6 +92,7 @@ Purchased packages are credited to your account and never expire. One package is
 - **Founding Year**: 2024
 - **Support Email**: support@intesters.com
 - **Website**: https://intesters.com
-- **GitHub**: https://github.com/intesters
-- **Twitter / X**: https://twitter.com/inTesters
-- **LinkedIn**: https://linkedin.com/company/intesters
+- **Twitter / X**: https://x.com/inTesters
+- **Reddit**: https://www.reddit.com/r/inTesters
+- **Telegram**: https://t.me/inTesters
+- **YouTube**: https://www.youtube.com/

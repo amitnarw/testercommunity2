@@ -183,8 +183,8 @@ function DashboardContent() {
               </div>
 
               {/* Sparkline card */}
-              <div className="shrink-0 w-full md:w-48 h-20 bg-card/50 rounded-2xl border border-border/40 p-3 flex flex-col justify-between">
-                <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider">
+              <div className="shrink-0 w-full md:w-48 h-20 bg-card/50 rounded-2xl border border-border/40 p-1 flex flex-col justify-between">
+                <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider p-2">
                   7-day activity
                 </p>
                 <div className="h-10 -mx-1 -mb-1">

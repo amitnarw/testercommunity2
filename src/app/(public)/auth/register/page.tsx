@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Eye, EyeOff, Moon, Sun } from "lucide-react";
 import { Logo } from "@/components/logo";
 import { useTheme } from "next-themes";
-import { BackButton } from "@/components/back-button";
+import { HomeButton } from "@/components/home-button";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useRegisterUser, useGoogleLoginUser } from "@/hooks/useAuth";
@@ -132,7 +132,7 @@ export default function RegisterPage() {
     >
       <div className="relative w-full min-h-screen flex flex-col items-center justify-center px-2 sm:px-6 bg-background">
         <div className="absolute top-2 sm:top-4 right-4 flex items-center gap-4">
-          <BackButton href="/" />
+          <HomeButton href="/" />
           <Button
             variant="ghost"
             size="icon"
