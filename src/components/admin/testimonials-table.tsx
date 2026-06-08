@@ -21,6 +21,7 @@ interface Testimonial {
   id: number;
   name: string;
   role: string;
+  title?: string;
   avatar: string;
   dataAiHint?: string;
   comment: string;

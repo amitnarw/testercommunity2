@@ -47,6 +47,7 @@ export const blogPosts: BlogPost[] = [
       "https://images.unsplash.com/photo-1516116216624-53e697320f64?q=80&w=600&auto=format=fit=crop",
     dataAiHint: "code testing",
     tags: ["Automation", "Beginner", "CI/CD"],
+    category: "AUTOMATION",
     views: 0,
   },
   {
@@ -67,6 +68,7 @@ export const blogPosts: BlogPost[] = [
       "https://images.unsplash.com/photo-1587440871875-191322ee64b0?q=80&w=600&auto=format=fit=crop",
     dataAiHint: "ux design",
     tags: ["UI/UX", "Design", "User Research"],
+    category: "UI_UX",
     views: 0,
   },
   {
@@ -87,6 +89,7 @@ export const blogPosts: BlogPost[] = [
       "https://images.unsplash.com/photo-1555949963-ff9fe0c870eb?q=80&w=600&auto=format=fit=crop",
     dataAiHint: "cyber security",
     tags: ["Security", "Mobile", "Checklist"],
+    category: "SECURITY",
     views: 0,
   },
   {
@@ -107,6 +110,7 @@ export const blogPosts: BlogPost[] = [
       "https://images.unsplash.com/photo-1620712943543-bcc4688e7485?q=80&w=600&auto=format=fit=crop",
     dataAiHint: "ai brain network",
     tags: ["AI", "Future Tech", "Automation"],
+    category: "AI",
     views: 0,
   },
   {
@@ -127,6 +131,7 @@ export const blogPosts: BlogPost[] = [
       "https://images.unsplash.com/photo-1573164713988-8665fc963095?q=80&w=600&auto=format=fit=crop",
     dataAiHint: "accessible technology",
     tags: ["Accessibility", "Guide", "Inclusive Design"],
+    category: "GENERAL",
     views: 0,
   },
   {
@@ -147,6 +152,7 @@ export const blogPosts: BlogPost[] = [
       "https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=600&auto=format=fit=crop",
     dataAiHint: "speedometer dashboard",
     tags: ["Performance", "Backend", "DevOps"],
+    category: "DEVOPS",
     views: 0,
   },
   {
@@ -168,6 +174,7 @@ export const blogPosts: BlogPost[] = [
       "https://images.unsplash.com/photo-1526304640581-d334cdbbf45e?q=80&w=600&auto=format=fit=crop",
     dataAiHint: "money graph success",
     tags: ["Google Play", "Testing", "Requirements"],
+    category: "MOBILE",
     views: 0,
   },
   {
@@ -188,6 +195,7 @@ export const blogPosts: BlogPost[] = [
       "https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=600&auto=format=fit=crop",
     dataAiHint: "seo metrics website",
     tags: ["App Marketing", "ASO", "SEO"],
+    category: "GENERAL",
     views: 0,
   },
   {
@@ -208,6 +216,7 @@ export const blogPosts: BlogPost[] = [
       "https://images.unsplash.com/photo-1620712943543-bcc4688e7485?q=80&w=600&auto=format=fit=crop",
     dataAiHint: "network connections",
     tags: ["SEO", "Backlinks", "Marketing"],
+    category: "GENERAL",
     views: 0,
   },
 ];
@@ -215,29 +224,30 @@ export const blogPosts: BlogPost[] = [
 export const communityPathSteps: RoadmapStep[] = [
   {
     step: 1,
-    title: "Join & Contribute",
+    title: "Join & Test Apps",
     description:
-      "Sign up and become a vital part of a global community. Earn points and reputation by testing apps for fellow developers, providing valuable feedback on your real devices.",
+      "Sign up and start testing apps submitted by fellow developers. Browse available apps, request to join, and complete daily check-ins with screenshot proof on your real Android device.",
     badgeText: "Time: 5 Mins • Cost: Free",
     details: [
       {
-        title: "Profile Creation",
+        title: "Profile Setup",
         description:
-          "Quickly set up your profile to showcase your devices and interests.",
+          "Tell us about your device — model, Android version, RAM, screen size, and network — so we can match you with apps.",
       },
       {
-        title: "Points System",
+        title: "Request to Join",
         description:
-          "Earn points for every valid bug you find. More severe bugs earn more points.",
+          "Browse community apps, check the requirements, and request to join. Developers accept your request once they review your profile.",
       },
       {
-        title: "Reputation Building",
+        title: "Daily Check-Ins",
         description:
-          "Quality contributions increase your reputation, unlocking more opportunities.",
+          "Each day, upload a fresh screenshot of the app to verify you're actively testing. Our anti-cheat system validates every image automatically.",
       },
       {
-        title: "Diverse Projects",
-        description: "Access a wide variety of apps and games to test.",
+        title: "Earn Points on Completion",
+        description:
+          "Finish the full testing cycle to earn reward points. The longer and more thorough the test, the more points you earn.",
       },
     ],
   },
@@ -245,85 +255,86 @@ export const communityPathSteps: RoadmapStep[] = [
     step: 2,
     title: "Submit Your App",
     description:
-      "Ready for feedback? Use your earned points to submit your own app. Define your testing goals and let the community put your creation through its paces.",
-    badgeText: "Requirement: Points Earned",
+      "Spend your earned points to submit your own app for community testing. Provide your Play Store link, category, and optional instructions. Your app goes through admin review before testers can see it.",
+    badgeText: "Requirement: Points & App",
     details: [
       {
-        title: "Project Setup",
+        title: "App Submission",
         description:
-          "Easily create a project, upload your build, and write testing instructions.",
+          "Enter your Google Play Store URL, app name, logo, and category. Add optional instructions for testers with login credentials or areas to focus on.",
       },
       {
-        title: "Point Budget",
+        title: "Transparent Cost",
         description:
-          "Allocate your earned points to control the amount of testing you receive.",
+          "Testing costs points based on your chosen tester count and duration: testers x 80 + days x 10. Promo codes can reduce or waive the cost.",
       },
       {
-        title: "Crowdsourced Power",
+        title: "Admin Review",
         description:
-          "Leverage a vast array of devices, OS versions, and user perspectives.",
+          "Every submission is reviewed by our admin team before going live. This ensures quality for testers browsing available projects.",
       },
       {
-        title: "Real-World Conditions",
+        title: "Real Devices Worldwide",
         description:
-          "Get feedback based on real-world usage, not sterile lab environments.",
+          "Your app gets tested on real Android devices across a diverse range of models, OS versions, screen sizes, and languages.",
       },
     ],
   },
   {
     step: 3,
-    title: "Analyze Feedback",
+    title: "Track & Review Feedback",
     description:
-      "Watch as detailed reports from the community flow into your dashboard in real-time. Triage bugs, gain insights, and understand how users truly interact with your app.",
-    badgeText: "Typical: Feedback within 48 hours",
+      "Monitor your testing campaign from your dashboard. Track tester daily verifications, view structured feedback categorized by type, and see which devices your app has been tested on.",
+    badgeText: "Typical: 14-Day Cycle",
     details: [
       {
-        title: "Live Dashboard",
+        title: "Live Campaign Dashboard",
         description:
-          "Track incoming reports, view device stats, and monitor progress.",
+          "See how many testers have joined, their daily check-in progress, and when testing completes — all in real time.",
       },
       {
-        title: "Detailed Reports",
+        title: "Structured Feedback",
         description:
-          "Each report includes steps, screenshots, and device logs for easy debugging.",
+          "Receive categorized feedback: bugs (with LOW/MEDIUM/HIGH/CRITICAL priority), suggestions, and praise — each with optional screenshots or videos.",
       },
       {
-        title: "Direct Communication",
+        title: "Daily Screenshot Proof",
         description:
-          "Collaborate with testers to clarify findings and ask for more details.",
+          "Every tester submits a screenshot each day, verified for authenticity. You can view these to confirm real testing activity.",
       },
       {
-        title: "Video Evidence",
+        title: "Tester Ratings",
         description:
-          "Testers can attach video recordings of the bugs they find.",
+          "Testers can rate your app 1-5 stars alongside their structured feedback, giving you a clear picture of user satisfaction.",
       },
     ],
   },
   {
     step: 4,
-    title: "Iterate & Improve",
+    title: "Complete & Launch",
     description:
-      "Armed with actionable feedback, you can now efficiently squash bugs, refine your UX, and enhance performance. Upload new builds for the community to verify your fixes.",
-    badgeText: "Cycle: Continuous",
+      "Once the testing cycle wraps up, mark your project as complete. Testers receive their earned points, you get a Play Store Declaration report, and you're ready to submit to Google Play.",
+    badgeText: "Cycle: 14 Days • Up to 20 Testers",
     details: [
       {
-        title: "Bug Prioritization",
+        title: "Play Store Declaration",
         description:
-          "Use the detailed feedback to prioritize the most critical fixes.",
+          "Receive an auto-generated declaration report confirming your testing compliance for Google Play Console submission.",
       },
       {
-        title: "Verification Testing",
+        title: "Reward Distribution",
         description:
-          "Submit patched builds to confirm that issues are resolved.",
+          "Complete the project and all testers who finished the full cycle earn their reward points automatically.",
       },
       {
-        title: "Community Recognition",
-        description: "Reward helpful testers with praise and bonus points.",
+        title: "Campaign Summary",
+        description:
+          "View your campaign results at a glance — total testers, completed days, bug count, suggestions, and praise.",
       },
       {
         title: "Ship with Confidence",
         description:
-          "Release updates knowing your app has been vetted by a diverse user base.",
+          "Release your update knowing it's been tested on real devices by real users across diverse configurations.",
       },
     ],
   },
@@ -334,86 +345,86 @@ export const professionalPathSteps: RoadmapStep[] = [
     step: 1,
     title: "Purchase a Package",
     description:
-      "Fast-track your testing by purchasing a test package. This gives you one full, professional test cycle, allowing you to skip community testing entirely.",
-    badgeText: "Time: 2 Mins • Cost: Varies",
+      "Fast-track your testing by purchasing a professional testing package. One package equals one complete test cycle — no need to earn points. Pay securely via Razorpay with regional pricing available.",
+    badgeText: "Time: 2 Mins • Cost: Varies by Plan",
     details: [
       {
-        title: "Flexible Packages",
+        title: "Database-Driven Plans",
         description:
-          "Choose a package that fits your project's budget and scope.",
+          "Choose from active plans stored in our system — each with a set price, regional currency support, and package count (testing cycles).",
       },
       {
         title: "Instant Access",
         description:
-          "No need to earn points; get started with professional testing right away.",
+          "No points needed. Once payment is verified, packages are credited to your wallet immediately and you can submit your app right away.",
       },
       {
-        title: "Secure Payment",
+        title: "Secure Payment via Razorpay",
         description:
-          "All transactions are handled securely through our trusted payment processor.",
+          "All transactions are processed through Razorpay with order verification, receipt generation, and auto-generated invoices with tax calculations.",
       },
       {
         title: "Use Anytime",
         description:
-          "Your purchased packages are yours to use whenever you're ready.",
+          "Your purchased packages stay in your wallet. Submit apps whenever you're ready — one package deducted per submission.",
       },
     ],
   },
   {
     step: 2,
-    title: "Submit & Forget",
+    title: "Submit Your App",
     description:
-      "Submit your app through Pro Testing. Provide us with your build and instructions, and we'll handle the rest. Our project managers take over from here.",
+      "Provide your Play Store link, app name, logo, category, and optional tester instructions. Choose to save as draft or submit — one package is deducted on submission and the app enters admin review.",
     badgeText: "Requirement: 1 Package per App",
     details: [
       {
-        title: "Simple Submission",
+        title: "Simple Submission Form",
         description:
-          "A straightforward form to provide your app and testing requirements.",
+          "Enter your app name, Google Play Store URL, and logo from the Play Console. Select a category and add optional instructions for testers.",
       },
       {
-        title: "Managed Process",
+        title: "Draft or Submit",
         description:
-          "Our team assigns the best-suited professional testers to your project.",
+          "Save your progress as a draft with no package cost, or submit for testing — one package is deducted and your app enters admin review.",
       },
       {
-        title: "Confidentiality",
+        title: "Step-by-Step Guide",
         description:
-          "Your project is handled under strict NDA by our vetted team.",
+          "Follow our 4-step guide to correctly set up Closed Testing in Google Play Console: grant access, enable global reach, submit for Google's review, and activate your test cycle.",
       },
       {
-        title: "Hassle-Free",
+        title: "Dedicated Support",
         description:
-          "Focus on development while we manage the entire 14-day testing cycle.",
+          "Reach our support team via live chat or email for any questions during your test cycle.",
       },
     ],
   },
   {
     step: 3,
-    title: "Receive Pro Reports",
+    title: "Monitor Testing Progress",
     description:
-      "Our professional testers deliver structured, high-quality reports. Expect clear, actionable, and consistent feedback that makes debugging a breeze.",
-    badgeText: "Typical: Daily Summaries",
+      "Track your app's testing campaign from your dashboard. View each tester's daily verification screenshots, read structured feedback, and monitor device and OS coverage across all testers.",
+    badgeText: "Typical: 14-Day Cycle",
     details: [
       {
-        title: "Standardized Reports",
+        title: "Daily Verification Logs",
         description:
-          "All feedback follows a consistent, easy-to-digest format.",
+          "Every tester submits screenshot proof each day. View these in your project dashboard to confirm real, continuous testing activity.",
       },
       {
-        title: "Expert Analysis",
+        title: "Structured Bug Reports",
         description:
-          "Our testers provide insights that go beyond simple bug reports.",
+          "Receive categorized feedback with severity levels: bugs (CRITICAL/HIGH/MEDIUM/LOW), suggestions, and praise — each with optional media attachments.",
       },
       {
-        title: "Consolidated Feedback",
+        title: "Device & OS Coverage",
         description:
-          "Receive daily or weekly summary reports from our project manager.",
+          "See exactly which Android device models, OS versions, screen sizes, RAM configurations, and languages were tested — with visual coverage charts.",
       },
       {
-        title: "Guaranteed Coverage",
+        title: "Complete Transparency",
         description:
-          "We ensure all specified areas of your app are thoroughly tested.",
+          "Track every tester's check-in progress, verification status, and submitted feedback in real time from your project dashboard.",
       },
     ],
   },
@@ -421,27 +432,28 @@ export const professionalPathSteps: RoadmapStep[] = [
     step: 4,
     title: "Launch with Certainty",
     description:
-      "With the 14-day/12-tester requirement met and your app polished by experts, you can submit to the Google Play Store with the highest degree of confidence.",
-    badgeText: "Cycle: Defined & Completed",
+      "With the 14-day testing cycle complete, 12+ verified testers, and your Play Store Declaration report ready, submit to the Google Play Store with full confidence that you meet their closed testing requirements.",
+    badgeText: "Cycle: Verified & Complete",
     details: [
       {
-        title: "Official Confirmation",
-        description: "Receive an official completion report for your records.",
+        title: "Play Store Declaration",
+        description:
+          "Receive an auto-generated declaration report confirming your testing compliance, suitable for your Google Play Console submission.",
       },
       {
-        title: "Peace of Mind",
+        title: "Verified Daily Proof",
         description:
-          "Know that your app has passed a professional-grade QA check.",
+          "Every day of every tester is backed by screenshot verification — no automated or fake testing. Your compliance is fully documented.",
       },
       {
-        title: "Faster Time-to-Market",
+        title: "Satisfaction Guarantee",
         description:
-          "Avoid delays by ensuring testing requirements are met correctly the first time.",
+          "If your first package doesn't meet expectations, contact our support team within 14 days. We'll make it right.",
       },
       {
         title: "Ongoing Support",
         description:
-          "Our team is available for any follow-up questions or re-testing needs.",
+          "Our team is available for any follow-up questions or re-testing needs after your cycle completes.",
       },
     ],
   },

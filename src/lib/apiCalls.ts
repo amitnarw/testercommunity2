@@ -2027,6 +2027,7 @@ export interface PublicBlog {
   imageUrl: string;
   dataAiHint?: string;
   tags: string[];
+  category: string;
   viewCount: number;
   date: string;
   createdAt: string;

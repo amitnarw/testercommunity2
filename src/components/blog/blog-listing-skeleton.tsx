@@ -1,12 +1,11 @@
 "use client";
 
-import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 
 export function BlogListingSkeleton() {
   return (
     <div className="space-y-20">
-      {/* Header Skeleton - immediate render */}
+      {/* Header Skeleton */}
       <div className="max-w-4xl mx-auto text-center mb-16 md:mb-24 space-y-6">
         <div className="h-14 md:h-20 w-3/4 mx-auto bg-muted/60 rounded-2xl" />
         <div className="h-6 md:h-8 w-1/2 mx-auto bg-muted/40 rounded-xl" />
@@ -28,10 +27,13 @@ export function BlogListingSkeleton() {
       </div>
 
       {/* Blog Grid Skeleton */}
-      <div className="min-h-[600px] columns-1 md:columns-2 lg:columns-3 gap-8 space-y-8">
-        {Array.from({ length: 6 }).map((_, idx) => (
-          <SkeletonCard key={idx} index={idx} />
-        ))}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-12">
+        <SkeletonCard />
+        <SkeletonCard />
+        <SkeletonCard />
+        <SkeletonCard />
+        <SkeletonCard />
+        <SkeletonCard />
       </div>
 
       {/* Newsletter Skeleton */}
@@ -50,44 +52,23 @@ export function BlogListingSkeleton() {
   );
 }
 
-function SkeletonCard({ index }: { index: number }) {
-  const isTall = index % 3 === 1;
-
+function SkeletonCard() {
   return (
-    <div className="relative overflow-hidden bg-card/80 border border-border/50 rounded-[2rem]">
-      {/* Image Skeleton */}
-      <div
-        className={cn(
-          "bg-muted/60",
-          isTall ? "aspect-[3/4]" : "aspect-[4/3]"
-        )}
-      />
-
-      {/* Content Skeleton */}
-      <div className="p-6 md:p-8 space-y-4">
-        {/* Meta info */}
-        <div className="flex items-center gap-4">
-          <div className="h-4 w-20 bg-muted/60 rounded" />
-          <div className="h-4 w-16 bg-muted/40 rounded" />
+    <div className="overflow-hidden rounded-2xl bg-card border border-border/40">
+      <div className="aspect-[16/9] bg-muted/60" />
+      <div className="p-5 space-y-3">
+        <div className="flex items-center gap-2">
+          <div className="h-4 w-14 rounded-full bg-muted/40" />
+          <div className="h-3 w-16 bg-muted/30 rounded" />
         </div>
-
-        {/* Title */}
+        <div className="h-5 bg-muted/50 rounded w-3/4" />
         <div className="space-y-2">
-          <div className="h-8 bg-muted/60 rounded-lg w-3/4" />
-          {isTall && <div className="h-8 bg-muted/40 rounded-lg w-1/2" />}
+          <div className="h-3 bg-muted/30 rounded w-full" />
+          <div className="h-3 bg-muted/30 rounded w-4/6" />
         </div>
-
-        {/* Excerpt */}
-        <div className="space-y-2">
-          <div className="h-4 bg-muted/60 rounded w-full" />
-          <div className="h-4 bg-muted/40 rounded w-5/6" />
-          <div className="h-4 bg-muted/40 rounded w-4/6" />
-        </div>
-
-        {/* Author */}
-        <div className="flex items-center gap-3 pt-6 border-t border-border/50">
-          <div className="h-8 w-8 bg-muted/60 rounded-full" />
-          <div className="h-4 w-24 bg-muted/40 rounded" />
+        <div className="flex items-center gap-2 pt-1">
+          <div className="h-6 w-6 rounded-full bg-muted/40" />
+          <div className="h-3 w-20 bg-muted/30 rounded" />
         </div>
       </div>
     </div>

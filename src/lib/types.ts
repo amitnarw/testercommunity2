@@ -1,5 +1,27 @@
 import type { ReactNode } from "react";
 
+export type BlogCategory = "AUTOMATION" | "UI_UX" | "SECURITY" | "AI" | "MOBILE" | "DEVOPS" | "GENERAL";
+
+export const BLOG_CATEGORIES: BlogCategory[] = [
+  "AUTOMATION",
+  "UI_UX",
+  "SECURITY",
+  "AI",
+  "MOBILE",
+  "DEVOPS",
+  "GENERAL",
+];
+
+export const BLOG_CATEGORY_LABELS: Record<BlogCategory, string> = {
+  AUTOMATION: "Automation",
+  UI_UX: "UI/UX",
+  SECURITY: "Security",
+  AI: "AI",
+  MOBILE: "Mobile",
+  DEVOPS: "DevOps",
+  GENERAL: "General",
+};
+
 export type BlogPost = {
   id: number;
   slug: string;
@@ -15,12 +37,14 @@ export type BlogPost = {
   imageUrl: string;
   dataAiHint?: string;
   tags: string[];
+  category: BlogCategory;
   views: number;
 };
 
 export type Testimonial = {
   name: string;
   role: string;
+  title?: string;
   avatar: string;
   dataAiHint?: string;
   comment: string;

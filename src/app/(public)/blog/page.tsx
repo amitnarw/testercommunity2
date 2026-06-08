@@ -1,10 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { motion } from "framer-motion";
 import { BlogListing } from "@/components/blog/blog-listing";
 import { BlogListingSkeleton } from "@/components/blog/blog-listing-skeleton";
-import { getPublicBlogs, PublicBlog } from "@/lib/apiCalls";
+import { getPublicBlogs, getPublicBlogTags, PublicBlog } from "@/lib/apiCalls";
+import type { BlogCategory } from "@/lib/types";
 import { decryptData } from "@/lib/encryptDecryptPayload";
 
 function blogPostToDisplayFormat(post: PublicBlog) {
@@ -23,42 +24,56 @@ function blogPostToDisplayFormat(post: PublicBlog) {
     imageUrl: post.imageUrl,
     dataAiHint: post.dataAiHint,
     tags: post.tags,
+    category: post.category as BlogCategory,
     views: post.viewCount,
   };
 }
 
 export default function BlogPage() {
   const [posts, setPosts] = useState<PublicBlog[]>([]);
+  const [categories, setCategories] = useState<string[]>([]);
+  const [selectedCategory, setSelectedCategory] = useState("All");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    async function fetchBlogs() {
-      try {
-        setLoading(true);
-        console.log("Fetching blogs from API...");
-        const url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/blog/blogs`;
-        console.log("URL:", url);
-        const response = await fetch(url, {
-          credentials: "include",
-        });
-        console.log("Response status:", response.status);
-        const json = await response.json();
-        console.log("Response JSON:", JSON.stringify(json).slice(0, 200));
-
-        // Decrypt the encrypted data
-        const blogs = await decryptData<any[]>(json.data);
-        console.log("Decrypted blogs count:", blogs.length);
-        setPosts(blogs);
-      } catch (err) {
-        console.error("Failed to fetch blogs:", err);
-        setError(err instanceof Error ? err.message : "Failed to load blogs");
-      } finally {
-        setLoading(false);
-      }
+  const fetchBlogs = useCallback(async (category?: string) => {
+    try {
+      setLoading(true);
+      const url = category
+        ? `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/blog/blogs?category=${encodeURIComponent(category)}`
+        : `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/blog/blogs`;
+      const response = await fetch(url, {
+        credentials: "include",
+      });
+      const json = await response.json();
+      const blogs = await decryptData<any[]>(json.data);
+      setPosts(blogs);
+    } catch (err) {
+      console.error("Failed to fetch blogs:", err);
+      setError(err instanceof Error ? err.message : "Failed to load blogs");
+    } finally {
+      setLoading(false);
     }
-    fetchBlogs();
   }, []);
+
+  const fetchCategories = useCallback(async () => {
+    try {
+      const tags = await getPublicBlogTags();
+      setCategories(tags || []);
+    } catch (err) {
+      console.error("Failed to fetch categories:", err);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchBlogs();
+    fetchCategories();
+  }, [fetchBlogs, fetchCategories]);
+
+  const handleCategoryChange = useCallback((category: string) => {
+    setSelectedCategory(category);
+    fetchBlogs(category === "All" ? undefined : category);
+  }, [fetchBlogs]);
 
   if (loading) {
     return (
@@ -127,7 +142,12 @@ export default function BlogPage() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.2 }}
         >
-          <BlogListing posts={displayPosts} />
+          <BlogListing
+            posts={displayPosts}
+            categories={categories}
+            selectedCategory={selectedCategory}
+            onCategoryChange={handleCategoryChange}
+          />
         </motion.div>
       </div>
     </div>

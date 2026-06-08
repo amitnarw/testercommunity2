@@ -1,110 +1,59 @@
 "use client";
 
-import { motion } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
-import { ArrowUpRight, Clock, Calendar, Eye } from "lucide-react";
-import { Badge } from "@/components/ui/badge";
 import type { BlogPost } from "@/lib/types";
-import { cn } from "@/lib/utils";
+import { BLOG_CATEGORY_LABELS } from "@/lib/types";
 
 interface BlogCardProps {
   post: BlogPost;
-  index: number;
 }
 
-export function BlogCard({ post, index }: BlogCardProps) {
-  // Simple logic to vary card styles for visual interest in the masonry grid
-  const isTall = index % 3 === 1; // Every 2nd card is "tall"
-
+export function BlogCard({ post }: BlogCardProps) {
   return (
-    <Link href={`/blog/${post.slug}`} className="block group mb-8">
-      <motion.article
-        whileHover={{ y: -8 }}
-        className="relative flex flex-col h-full bg-card/50 hover:bg-card border border-border/50 hover:border-border transition-colors duration-500 rounded-[2rem] overflow-hidden"
-      >
-        {/* Image Container */}
-        <div
-          className={cn(
-            "relative w-full overflow-hidden bg-muted",
-            isTall ? "aspect-[3/4]" : "aspect-[4/3]"
-          )}
-        >
+    <Link href={`/blog/${post.slug}`} className="block group h-full">
+      <article className="relative flex flex-col h-full overflow-hidden rounded-2xl bg-card border border-border/40 transition-colors duration-300">
+        <div className="relative w-full aspect-[16/9] overflow-hidden bg-muted">
           <Image
             src={post.imageUrl}
             alt={post.title}
             fill
-            className="object-cover transition-transform duration-700 ease-out group-hover:scale-105"
+            className="object-cover transition-transform duration-500 group-hover:scale-[1.02]"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-background/90 via-transparent to-transparent opacity-60" />
-
-          <div className="absolute top-4 left-4">
-            <div className="flex flex-wrap gap-2">
-              {post.tags.slice(0, 1).map((tag) => (
-                <div
-                  key={tag}
-                  className="px-3 py-1 bg-background/50 backdrop-blur-md rounded-full text-xs font-semibold border border-white/10 text-foreground"
-                >
-                  {tag}
-                </div>
-              ))}
-            </div>
-          </div>
         </div>
-
-        {/* Content */}
-        <div className="p-6 md:p-8 flex flex-col flex-1">
-          <div className="flex items-center gap-4 text-xs font-medium text-muted-foreground mb-4 uppercase tracking-wider">
-            <span className="flex items-center gap-1.5">
-              <Calendar className="w-3.5 h-3.5" />
+        <div className="flex flex-col flex-1 p-5">
+          <div className="flex items-center gap-2 mb-3">
+            <span className="px-2.5 py-0.5 bg-accent rounded-full text-[11px] font-semibold text-secondary-foreground uppercase tracking-wide">
+              {BLOG_CATEGORY_LABELS[post.category] || post.category}
+            </span>
+            <time className="text-xs text-muted-foreground">
               {new Date(post.date).toLocaleDateString("en-US", {
                 month: "short",
                 day: "numeric",
               })}
-            </span>
-            <span className="w-1 h-1 rounded-full bg-border" />
-            <span className="flex items-center gap-1.5">
-              <Clock className="w-3.5 h-3.5" />
-              {Math.ceil(post.content.length / 800)} min read
-            </span>
-            {post.views > 0 && (
-              <>
-                <span className="w-1 h-1 rounded-full bg-border" />
-                <span className="flex items-center gap-1.5">
-                  <Eye className="w-3.5 h-3.5" />
-                  {post.views.toLocaleString()}
-                </span>
-              </>
-            )}
+            </time>
           </div>
-
-          <h3 className="text-2xl md:text-3xl font-bold leading-tight mb-4 group-hover:text-primary transition-colors duration-300">
+          <h3 className="text-lg md:text-xl font-semibold leading-snug mb-2 group-hover:text-primary transition-colors duration-300">
             {post.title}
           </h3>
-
-          <p className="text-muted-foreground line-clamp-3 mb-6 text-sm leading-relaxed flex-1">
+          <p className="text-sm leading-relaxed text-muted-foreground line-clamp-2 mb-4 flex-1">
             {post.excerpt}
           </p>
-
-          <div className="flex items-center justify-between pt-6 border-t border-border/50">
-            <div className="flex items-center gap-3">
-              <div className="relative h-8 w-8 rounded-full overflow-hidden ring-2 ring-background">
-                <Image
-                  src={post.author.avatarUrl}
-                  alt={post.author.name}
-                  fill
-                  className="object-cover"
-                />
-              </div>
-              <span className="text-sm font-medium">{post.author.name}</span>
+          <div className="flex items-center gap-2">
+            <div className="relative h-6 w-6 rounded-full overflow-hidden ring-2 ring-background">
+              <Image
+                src={post.author.avatarUrl}
+                alt={post.author.name}
+                fill
+                className="object-cover"
+              />
             </div>
-
-            <div className="flex items-center gap-1 text-sm font-semibold text-primary opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300">
-              Read Article <ArrowUpRight className="w-4 h-4" />
-            </div>
+            <span className="text-xs text-muted-foreground">
+              {post.author.name}
+            </span>
           </div>
         </div>
-      </motion.article>
+      </article>
     </Link>
   );
 }

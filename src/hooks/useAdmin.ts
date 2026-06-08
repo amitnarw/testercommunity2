@@ -792,6 +792,7 @@ export function useCreateTestimonial(options?: UseMutationOptions<any, any, any>
     mutationFn: (payload: {
       name: string;
       role: string;
+      title?: string;
       avatar: string;
       dataAiHint?: string;
       comment: string;
@@ -813,6 +814,7 @@ export function useUpdateTestimonial(options?: UseMutationOptions<any, any, any>
       id: number;
       name?: string;
       role?: string;
+      title?: string;
       avatar?: string;
       dataAiHint?: string;
       comment?: string;

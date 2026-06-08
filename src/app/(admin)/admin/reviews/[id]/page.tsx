@@ -47,6 +47,7 @@ export default function AdminReviewEditPage() {
   const [form, setForm] = useState({
     name: "",
     role: "",
+    title: "",
     avatar: "",
     dataAiHint: "",
     comment: "",
@@ -62,6 +63,7 @@ export default function AdminReviewEditPage() {
       setForm({
         name: testimonial.name || "",
         role: testimonial.role || "",
+        title: testimonial.title || "",
         avatar: testimonial.avatar || "",
         dataAiHint: testimonial.dataAiHint || "",
         comment: testimonial.comment || "",
@@ -247,6 +249,11 @@ export default function AdminReviewEditPage() {
             </div>
 
             <div className="space-y-2">
+              <Label htmlFor="title">Title</Label>
+              <Input id="title" value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} placeholder="An inspiring success story title (optional)" />
+            </div>
+
+            <div className="space-y-2">
               <Label htmlFor="comment">Comment *</Label>
               <Textarea id="comment" rows={4} value={form.comment} onChange={(e) => setForm({ ...form, comment: e.target.value })} placeholder="The testimonial text..." />
             </div>
@@ -272,6 +279,9 @@ export default function AdminReviewEditPage() {
                 <div className="flex-1 min-w-0">
                   <p className="font-bold text-sm text-foreground truncate">{form.name || "Name"}</p>
                   <p className="text-xs text-muted-foreground truncate">{form.role || "Role"}</p>
+                  {form.title && (
+                    <p className="text-sm font-semibold text-foreground mt-1">{form.title}</p>
+                  )}
                   {form.comment && (
                     <p className="text-xs text-muted-foreground mt-1 line-clamp-2">"{form.comment}"</p>
                   )}

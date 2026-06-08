@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Check, Users, Briefcase, Star, Zap } from "lucide-react";
+import { Check, X, Users, Briefcase, Star, Zap } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Badge } from "./ui/badge";
 import { Button } from "./ui/button";
@@ -75,6 +75,15 @@ export function TwoPathsSection() {
       >
         {text}
       </span>
+    </div>
+  );
+
+  const ConItem = ({ text }: { text: string }) => (
+    <div className="flex items-start gap-3">
+      <div className="flex-shrink-0 w-5 h-5 rounded-full flex items-center justify-center mt-0.5 bg-destructive/10">
+        <X className="w-3 h-3 text-destructive" />
+      </div>
+      <span className="text-sm text-muted-foreground/80">{text}</span>
     </div>
   );
 
@@ -184,13 +193,30 @@ export function TwoPathsSection() {
                     </div>
 
                     <div className="flex-1 space-y-4 mb-8 relative z-10">
-                      {[
-                        'Reciprocal "give-to-get" model',
-                        "Earn points for testing other apps",
-                        "Access a diverse pool of real users",
-                      ].map((feature, i) => (
-                        <FeatureItem key={i} text={feature} isPopular={false} />
-                      ))}
+                      <div className="space-y-3">
+                        {[
+                          'Reciprocal "give-to-get" model',
+                          "Earn points for testing other apps",
+                          "Access a diverse pool of real users",
+                        ].map((feature, i) => (
+                          <FeatureItem key={i} text={feature} isPopular={false} />
+                        ))}
+                      </div>
+                      <div className="border-t border-border/50 pt-4 mt-4">
+                        <p className="text-xs font-semibold uppercase tracking-wider text-destructive mb-3">
+                          Limitations
+                        </p>
+                        {[
+                          "You must test other apps first to earn points",
+                          "No guaranteed timeline, depends on community availability",
+                          "Testers are volunteers, not vetted professionals",
+                          "No Google Play compliance support included",
+                        ].map((con, i) => (
+                          <div className="mb-3 last:mb-0" key={i}>
+                            <ConItem text={con} />
+                          </div>
+                        ))}
+                      </div>
                     </div>
 
                     <div className="mt-auto relative z-10">
@@ -258,9 +284,13 @@ export function TwoPathsSection() {
 
                     <div className="flex-1 space-y-4 mb-8 relative z-10">
                       {[
-                        "Guaranteed testing by vetted pros",
-                        "Fast-track your launch",
-                        "Managed process, hassle-free",
+                        "15-20 Days Testing Cycle",
+                        "15-25 Vetted Testers",
+                        "Google Play Production Answers",
+                        "Managed by inTesters Team",
+                        "Detailed Bug Reports",
+                        "Device & OS Coverage Stats",
+                        "Google Play Compliance Check",
                       ].map((feature, i) => (
                         <FeatureItem key={i} text={feature} isPopular={true} />
                       ))}
@@ -317,13 +347,30 @@ export function TwoPathsSection() {
               </div>
 
               <div className="flex-1 space-y-4 mb-8 relative z-10">
-                {[
-                  'Reciprocal "give-to-get" model',
-                  "Earn points for testing other apps",
-                  "Access a diverse pool of real users",
-                ].map((feature, i) => (
-                  <FeatureItem key={i} text={feature} isPopular={false} />
-                ))}
+                <div className="space-y-3">
+                  {[
+                    'Reciprocal "give-to-get" model',
+                    "Earn points for testing other apps",
+                    "Access a diverse pool of real users",
+                  ].map((feature, i) => (
+                    <FeatureItem key={i} text={feature} isPopular={false} />
+                  ))}
+                </div>
+                <div className="border-t border-border/50 pt-4 mt-4">
+                  <p className="text-xs font-semibold uppercase tracking-wider text-destructive mb-3">
+                    Limitations
+                  </p>
+                  {[
+                    "You must test other apps first to earn points",
+                    "No guaranteed timeline, depends on community availability",
+                    "Testers are volunteers, not vetted professionals",
+                    "No Google Play compliance support included",
+                  ].map((con, i) => (
+                    <div className="mb-3 last:mb-0" key={i}>
+                      <ConItem text={con} />
+                    </div>
+                  ))}
+                </div>
               </div>
 
               <div className="mt-auto relative z-10">
@@ -383,9 +430,13 @@ export function TwoPathsSection() {
 
               <div className="flex-1 space-y-4 mb-8 relative z-10">
                 {[
-                  "Guaranteed testing by vetted pros",
-                  "Fast-track your launch",
-                  "Managed process, hassle-free",
+                  "15-20 Days Testing Cycle",
+                  "15-25 Vetted Testers",
+                  "Google Play Production Answers",
+                  "Managed by inTesters Team",
+                  "Detailed Bug Reports",
+                  "Device & OS Coverage Stats",
+                  "Google Play Compliance Check",
                 ].map((feature, i) => (
                   <FeatureItem key={i} text={feature} isPopular={true} />
                 ))}

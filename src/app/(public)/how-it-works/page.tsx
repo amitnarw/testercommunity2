@@ -8,6 +8,7 @@ import { RoadmapStepCard } from "@/components/roadmap-step-card";
 import { ArrowRight, ArrowDown, Rocket, Users, Briefcase } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
+import { ROUTES } from "@/lib/routes";
 import type { RoadmapStep } from "@/lib/types";
 import Confetti from "react-dom-confetti";
 import { useInView } from "react-intersection-observer";
@@ -190,7 +191,7 @@ export default function HowItWorksPage() {
             size="lg"
             className="font-bold text-lg px-8 py-6 rounded-xl hover:shadow-lg hover:shadow-primary/30"
           >
-            <Link href="/auth/register">
+            <Link href={ROUTES.AUTH.REGISTER}>
               Begin Your Journey
               <ArrowRight className="ml-2" />
             </Link>

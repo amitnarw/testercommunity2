@@ -14,6 +14,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -85,6 +86,17 @@ export default function TicketsListPage() {
       case "RESOLVED": return "text-emerald-400 bg-emerald-400/10 border-emerald-400/20";
       case "CLOSED": return "text-gray-400 bg-gray-400/10 border-gray-400/20";
       default: return "text-muted-foreground bg-muted/10 border-muted/20";
+    }
+  };
+
+  const getStatusConfig = (status: string) => {
+    switch (status) {
+      case "OPEN": return { label: "Open", className: "text-blue-400 bg-blue-400/10 border-blue-400/20" };
+      case "IN_PROGRESS": return { label: "In Progress", className: "text-amber-400 bg-amber-400/10 border-amber-400/20" };
+      case "WAITING_AGENT": return { label: "Waiting", className: "text-purple-400 bg-purple-400/10 border-purple-400/20" };
+      case "RESOLVED": return { label: "Resolved", className: "text-emerald-400 bg-emerald-400/10 border-emerald-400/20" };
+      case "CLOSED": return { label: "Closed", className: "text-gray-400 bg-gray-400/10 border-gray-400/20" };
+      default: return { label: status, className: "text-muted-foreground bg-muted/10 border-muted/20" };
     }
   };
 
@@ -201,6 +213,7 @@ export default function TicketsListPage() {
             ) : (
               filteredTickets.map((ticket, index) => {
                 const statusColor = getStatusColor(ticket.status);
+                const statusConfig = getStatusConfig(ticket.status);
 
                 return (
                   <motion.div
@@ -213,12 +226,20 @@ export default function TicketsListPage() {
                     <Card className="group relative border border-border/50 bg-card/50 hover:bg-card transition-all duration-300 rounded-2xl overflow-hidden shadow-sm hover:shadow-md">
                       <div className="flex flex-col sm:flex-row items-start sm:items-center p-4 sm:p-5 gap-3 sm:gap-5">
                         {/* Compact Status Indicator */}
-                        <div className={cn(
-                          "h-9 w-9 sm:h-10 sm:w-10 rounded-xl flex items-center justify-center shrink-0 border border-current/10 transition-transform group-hover:scale-105",
-                          statusColor.split(' ')[0],
-                          statusColor.split(' ')[1]
-                        )}>
-                          {ticket.status === "CLOSED" || ticket.status === "RESOLVED" ? <CheckCircle className="h-4 w-4 sm:h-5 sm:w-5" /> : <Ticket className="h-4 w-4 sm:h-5 sm:w-5" />}
+                        <div className="flex flex-row sm:flex-col items-center gap-1.5 sm:gap-1 shrink-0">
+                          <div className={cn(
+                            "h-9 w-9 sm:h-10 sm:w-10 rounded-xl flex items-center justify-center shrink-0 border border-current/10 transition-transform group-hover:scale-105",
+                            statusColor.split(' ')[0],
+                            statusColor.split(' ')[1]
+                          )}>
+                            {ticket.status === "CLOSED" || ticket.status === "RESOLVED" ? <CheckCircle className="h-4 w-4 sm:h-5 sm:w-5" /> : <Ticket className="h-4 w-4 sm:h-5 sm:w-5" />}
+                          </div>
+                          <Badge variant="outline" className={cn("sm:hidden text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded", statusConfig.className)}>
+                            {statusConfig.label}
+                          </Badge>
+                          <Badge variant="outline" className={cn("hidden sm:inline-flex text-[10px] font-bold uppercase tracking-wider px-1.5 py-0 rounded-sm leading-tight", statusConfig.className)}>
+                            {statusConfig.label}
+                          </Badge>
                         </div>
 
                         <div className="flex-1 min-w-0 w-full">

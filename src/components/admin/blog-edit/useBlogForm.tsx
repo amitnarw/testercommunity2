@@ -115,6 +115,7 @@ export function BlogFormProvider({ children, id }: BlogFormProviderProps) {
       imageUrl: "",
       dataAiHint: "",
       tags: [],
+      category: "GENERAL",
       isActive: false,
       date: "",
     },

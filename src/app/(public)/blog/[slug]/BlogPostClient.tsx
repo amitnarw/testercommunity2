@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { ArticleView } from "@/components/blog/article-view";
 import { useEffect, useState } from "react";
 import { getPublicBlogBySlug, PublicBlog } from "@/lib/apiCalls";
+import type { BlogCategory } from "@/lib/types";
 
 interface BlogPostClientProps {
   slug: string;
@@ -26,6 +27,7 @@ function blogPostToDisplayFormat(post: PublicBlog) {
     imageUrl: post.imageUrl,
     dataAiHint: post.dataAiHint,
     tags: post.tags,
+    category: post.category as BlogCategory,
     views: post.viewCount,
   };
 }

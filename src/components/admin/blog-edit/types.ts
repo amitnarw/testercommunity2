@@ -11,6 +11,7 @@ export const blogSchema = z.object({
   imageUrl: z.string().default(""),
   dataAiHint: z.string().optional(),
   tags: z.array(z.string()).default([]),
+  category: z.enum(["AUTOMATION", "UI_UX", "SECURITY", "AI", "MOBILE", "DEVOPS", "GENERAL"]).default("GENERAL"),
   isActive: z.boolean().default(true),
   date: z.string().optional(),
 });
