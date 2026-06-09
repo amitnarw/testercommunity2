@@ -111,7 +111,7 @@ export default function AddAppGuidePage() {
                   <div className="relative aspect-video">
                     <iframe
                       className="absolute top-0 left-0 w-full h-full"
-                      src="https://www.youtube-nocookie.com/embed/9OZQ_pyWzS4?autoplay=1"
+                      src="https://www.youtube-nocookie.com/embed/jibAmGjSEiE?autoplay=1"
                       title="YouTube video player"
                       frameBorder="0"
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"

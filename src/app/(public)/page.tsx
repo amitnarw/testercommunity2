@@ -66,7 +66,7 @@ export default function Home() {
             </HoverBorderGradient>
             <h1 className="text-[1.85rem] sm:text-[2.75rem] md:text-[3.5rem] lg:text-[4.25rem] font-heading leading-[1.2] md:leading-[1.1] tracking-tight font-bold mb-5 sm:mb-8 text-center mx-auto max-w-[900px]">
               Get{" "}
-              <span className="text-primary italic">12 Testers</span>{" "}
+              <span className="text-primary">12 Testers</span>{" "}
               for{" "}
               <span className="bg-gradient-to-br from-primary to-accent bg-clip-text text-transparent">
                 14 Days

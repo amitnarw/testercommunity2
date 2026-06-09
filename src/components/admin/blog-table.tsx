@@ -16,6 +16,7 @@ import { Button } from "@/components/ui/button";
 import { Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { SafeImage } from "@/components/safe-image";
+import { BLOG_CATEGORY_LABELS } from "@/lib/types";
 
 interface Blog {
   id: number;
@@ -29,6 +30,7 @@ interface Blog {
   imageUrl: string;
   dataAiHint?: string;
   tags: string[];
+  category: string;
   isActive: boolean;
   date: string;
   createdAt: string;
@@ -58,6 +60,7 @@ export function BlogTable({
             <TableHead className="w-16">Image</TableHead>
             <TableHead>Title</TableHead>
             <TableHead>Author</TableHead>
+            <TableHead>Category</TableHead>
             <TableHead>Tags</TableHead>
             <TableHead>Status</TableHead>
             <TableHead className="hidden md:table-cell">Created</TableHead>
@@ -91,7 +94,7 @@ export function BlogTable({
           ) : blogs.length === 0 ? (
             <TableRow>
               <TableCell
-                colSpan={6}
+                colSpan={8}
                 className="text-center py-8 text-muted-foreground"
               >
                 No blog posts found.
@@ -124,6 +127,11 @@ export function BlogTable({
                   {blog.title}
                 </TableCell>
                 <TableCell>{blog.authorName}</TableCell>
+                <TableCell>
+                  <Badge variant="outline" className="text-xs">
+                    {BLOG_CATEGORY_LABELS[blog.category as keyof typeof BLOG_CATEGORY_LABELS] || blog.category}
+                  </Badge>
+                </TableCell>
                 <TableCell>
                   <div className="flex flex-wrap gap-1">
                     {(blog.tags || []).slice(0, 2).map((tag) => (

@@ -1202,6 +1202,7 @@ export async function createBlog(payload: {
   imageUrl?: string;
   dataAiHint?: string;
   tags?: string[];
+  category?: string;
   isActive?: boolean;
   date?: string;
 }) {
@@ -1226,6 +1227,7 @@ export async function updateBlog(payload: {
   imageUrl?: string;
   dataAiHint?: string;
   tags?: string[];
+  category?: string;
   isActive?: boolean;
   date?: string;
 }) {
@@ -1273,6 +1275,7 @@ export async function getTestimonialById(id: number) {
 export async function createTestimonial(payload: {
   name: string;
   role: string;
+  title?: string;
   avatar: string;
   dataAiHint?: string;
   comment: string;
@@ -1295,6 +1298,7 @@ export async function updateTestimonial(payload: {
   id: number;
   name?: string;
   role?: string;
+  title?: string;
   avatar?: string;
   dataAiHint?: string;
   comment?: string;

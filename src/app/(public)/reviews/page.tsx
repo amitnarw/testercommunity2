@@ -24,6 +24,7 @@ interface Testimonial {
   id: number;
   name: string;
   role: string;
+  title?: string;
   avatar: string;
   dataAiHint?: string;
   comment: string;
@@ -211,6 +212,10 @@ export default function SuccessStoriesPage() {
                           />
                         ))}
                       </div>
+
+                      {testimonial.title && (
+                        <h3 className="text-lg font-bold text-foreground mb-2">{testimonial.title}</h3>
+                      )}
 
                       <p
                         className={cn(

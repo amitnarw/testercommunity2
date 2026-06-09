@@ -46,6 +46,10 @@ export function TestimonialsGrid({ testimonials }: TestimonialsGridProps) {
                     ))}
                   </div>
 
+                  {testimonial.title && (
+                    <h3 className="text-lg font-bold text-foreground mb-2">{testimonial.title}</h3>
+                  )}
+
                   <p
                     className={cn(
                       "font-medium leading-relaxed tracking-wide text-gray-700 dark:text-gray-200",

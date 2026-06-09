@@ -85,7 +85,7 @@ export function ArticleView({ post }: ArticleViewProps) {
 
         {/* Article Header */}
         <header className="max-w-4xl mx-auto text-center mb-10 space-y-8">
-          <div className="flex items-center justify-center gap-2">
+          <div className="flex flex-wrap items-center justify-center gap-2">
             {post.tags.map((tag) => (
               <Badge
                 key={tag}

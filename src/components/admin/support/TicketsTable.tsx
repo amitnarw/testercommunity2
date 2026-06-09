@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import { motion } from "framer-motion";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -75,6 +75,14 @@ const typeColors: Record<string, string> = {
   AI_CHAT: "bg-violet-500/20 text-violet-600 dark:text-violet-400",
 };
 
+const STATUS_FILTERS: { label: string; value: Conversation["status"] | "ALL" }[] = [
+  { label: "All", value: "ALL" },
+  { label: "Open", value: "OPEN" },
+  { label: "In Progress", value: "IN_PROGRESS" },
+  { label: "Resolved", value: "RESOLVED" },
+  { label: "Closed", value: "CLOSED" },
+];
+
 export function TicketsTable() {
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [loading, setLoading] = useState(true);
@@ -83,18 +91,23 @@ export function TicketsTable() {
   const [replyText, setReplyText] = useState("");
   const [isSending, setIsSending] = useState(false);
   const [secondsUntilRefresh, setSecondsUntilRefresh] = useState(30);
+  const [statusFilter, setStatusFilter] = useState<Conversation["status"] | "ALL">("ALL");
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  const fetchConversations = () => {
+  const fetchConversations = useCallback(() => {
     setLoading(true);
+    let url = API_ROUTES.ADMIN + "/support/conversations?type=TICKET";
+    if (statusFilter !== "ALL") {
+      url += `&status=${statusFilter}`;
+    }
     api
-      .get(API_ROUTES.ADMIN + "/support/conversations?type=TICKET")
+      .get(url)
       .then((res) => setConversations(res.data?.data || []))
       .catch(console.error)
       .finally(() => setLoading(false));
-  };
+  }, [statusFilter]);
 
-  useEffect(() => { fetchConversations(); }, []);
+  useEffect(() => { fetchConversations(); }, [fetchConversations]);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -107,7 +120,7 @@ export function TicketsTable() {
       });
     }, 1000);
     return () => clearInterval(interval);
-  }, []);
+  }, [fetchConversations]);
 
   const handleRefresh = () => {
     fetchConversations();
@@ -165,11 +178,26 @@ export function TicketsTable() {
 
   return (
     <>
-      <div className="flex items-center justify-end gap-2 mb-3">
-        <span className="text-xs text-muted-foreground font-medium">Auto-refresh in {secondsUntilRefresh}s</span>
-        <Button variant="ghost" size="sm" onClick={handleRefresh} className="h-8 w-8 p-0" title="Refresh now">
-          <RefreshCw className={cn("h-3.5 w-3.5", loading && "animate-spin")} />
-        </Button>
+      <div className="flex flex-wrap items-center justify-between gap-3 mb-3">
+        <div className="flex flex-wrap items-center gap-1.5">
+          {STATUS_FILTERS.map((opt) => (
+            <Button
+              key={opt.value}
+              size="sm"
+              variant={statusFilter === opt.value ? "default" : "outline"}
+              onClick={() => setStatusFilter(opt.value)}
+              className="text-xs h-8"
+            >
+              {opt.label}
+            </Button>
+          ))}
+        </div>
+        <div className="flex items-center gap-2">
+          <span className="text-xs text-muted-foreground font-medium">Auto-refresh in {secondsUntilRefresh}s</span>
+          <Button variant="ghost" size="sm" onClick={handleRefresh} className="h-8 w-8 p-0" title="Refresh now">
+            <RefreshCw className={cn("h-3.5 w-3.5", loading && "animate-spin")} />
+          </Button>
+        </div>
       </div>
       <Card className="border-border/50 grid grid-cols-1">
         <CardContent className="p-0">

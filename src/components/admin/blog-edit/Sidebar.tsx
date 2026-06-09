@@ -9,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useBlogFormContext } from "./useBlogForm";
 import { SidebarPanel } from "./SidebarPanel";
 import { useAllAuthors } from "@/hooks/useAdmin";
+import { BLOG_CATEGORY_LABELS } from "@/lib/types";
 import {
   Globe,
   Lock,
@@ -93,6 +94,38 @@ export function Sidebar({ blog }: SidebarProps) {
             </div>
           )}
         </div>
+      </SidebarPanel>
+
+      {/* Category Panel */}
+      <SidebarPanel
+        title="Category"
+        icon={<Tag className="h-4 w-4" />}
+        defaultOpen={true}
+      >
+        <FormField
+          control={form.control}
+          name="category"
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel className="text-xs">Blog Category</FormLabel>
+              <Select onValueChange={field.onChange} value={field.value}>
+                <FormControl>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select a category" />
+                  </SelectTrigger>
+                </FormControl>
+                <SelectContent>
+                  {(Object.entries(BLOG_CATEGORY_LABELS) as [string, string][]).map(([value, label]) => (
+                    <SelectItem key={value} value={value}>
+                      {label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
       </SidebarPanel>
 
       {/* Author Panel */}
