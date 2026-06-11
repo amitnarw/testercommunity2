@@ -16,7 +16,7 @@ export const metadata: Metadata = {
     siteName: "inTesters",
     images: [
       {
-        url: "/inTesters-logo.svg",
+        url: "/inTesters-logo-light.svg",
         width: 1200,
         height: 630,
         alt: "inTesters Free Testing",
@@ -27,7 +27,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "Free Testing | inTesters",
     description: "Discover and test Android apps with inTesters free testing. Browse available apps, track your testing requests, and participate in ongoing tests to earn points.",
-    images: ["/inTesters-logo.svg"],
+    images: ["/inTesters-logo-light.svg"],
   },
 };
 

@@ -83,7 +83,7 @@ export function TaxInvoice({ invoice }: TaxInvoiceProps) {
           <div className="flex items-start justify-between max-[639px]:flex-col max-[639px]:gap-4">
             <div className="flex items-center gap-4">
               <div className="w-14 h-14 rounded-2xl flex items-center justify-center p-2 shrink-0" style={{ background: `linear-gradient(135deg, ${PRIMARY}, ${PRIMARY_DARK})` }}>
-                <Image src="/inTesters-logo.svg" alt="inTesters" width={36} height={36} className="object-contain brightness-0 invert" />
+                <Image src="/inTesters-logo-dark.svg" alt="inTesters" width={36} height={36} className="object-contain" />
               </div>
               <div>
                 <h1 className="text-2xl font-bold tracking-tight text-slate-900">{COMPANY.brandName}</h1>

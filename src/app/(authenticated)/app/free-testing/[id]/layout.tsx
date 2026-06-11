@@ -16,7 +16,7 @@ export const metadata: Metadata = {
     siteName: "inTesters",
     images: [
       {
-        url: "/inTesters-logo.svg",
+        url: "/inTesters-logo-light.svg",
         width: 1200,
         height: 630,
         alt: "App Testing Details - inTesters",
@@ -27,7 +27,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "App Testing Details | inTesters",
     description: "View detailed information about this app testing opportunity. Join the community to test apps and earn points for your feedback.",
-    images: ["/inTesters-logo.svg"],
+    images: ["/inTesters-logo-light.svg"],
   },
 };
 

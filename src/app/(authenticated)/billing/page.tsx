@@ -81,59 +81,6 @@ const itemVariants = {
   },
 };
 
-// --- Components ---
-
-const CreditBalanceCard = ({
-  isLoading,
-  credits,
-}: {
-  isLoading: boolean;
-  credits: number;
-}) => {
-  const scrollToHistory = () => {
-    const element = document.getElementById("billing-history");
-    if (element) {
-      element.scrollIntoView({ behavior: "smooth" });
-    }
-  };
-
-  return (
-    <motion.div
-      variants={itemVariants}
-      className="relative flex flex-col md:flex-row items-center justify-between gap-3 sm:gap-6 group text-primary-foreground"
-    >
-      <div className="flex items-center gap-6 relative z-10 rounded-3xl bg-gradient-to-br from-primary to-blue-700 p-3 sm:p-6 w-full sm:w-8/12">
-        <div className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center shadow-inner">
-          <Box className="w-8 h-8 text-primary" />
-        </div>
-        <div>
-          <h2 className="text-lg font-medium text-white/90">
-            Available Credits
-          </h2>
-          <div className="flex items-baseline gap-2">
-            {isLoading ? (
-              <Skeleton className="h-10 w-24 bg-white/20" />
-            ) : (
-              <span className="text-4xl md:text-5xl font-bold text-white tracking-tighter">
-                {credits}
-              </span>
-            )}
-            <span className="text-white/80 font-medium">Packages</span>
-          </div>
-        </div>
-      </div>
-
-      <Button
-        variant="secondary"
-        className="hover:opacity-90 rounded-3xl px-6 bg-white text-primary hover:bg-white/90 w-full sm:w-4/12 h-auto sm:h-32 text-sm sm:text-lg shadow-xl"
-        onClick={scrollToHistory}
-      >
-        <span>View Usage History</span>
-      </Button>
-    </motion.div>
-  );
-};
-
 const TransactionHistory = () => {
   const { data: transactions, isPending } = useBillingHistory();
 
@@ -479,18 +426,12 @@ export default function BillingPage() {
             variants={containerVariants}
             className="space-y-16 lg:space-y-24"
           >
-            <section className="mx-auto w-full">
-              <CreditBalanceCard
-                isLoading={walletIsPending}
-                credits={walletData?.totalPackages || 0}
-              />
-            </section>
 
             <section className="relative">
               <div className="text-center mb-12 max-w-2xl mx-auto">
                 <h2 className="text-3xl md:text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-b from-foreground to-foreground/70 mb-4">
                   Simple, Transparent{" "}
-                  <span className="text-primary italic">Pricing</span>
+                  <span className="text-primary">Pricing</span>
                 </h2>
                 <p className="text-lg text-muted-foreground">
                   Choose the package that suits your testing needs. No hidden

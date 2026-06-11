@@ -40,7 +40,7 @@ export const metadata: Metadata = {
     description: "Join the inTesters community to test Android apps and earn points. Get feedback for your apps from real users and launch with confidence.",
     images: [
       {
-        url: "/inTesters-logo.svg",
+        url: "/inTesters-logo-light.svg",
         width: 1200,
         height: 630,
         alt: "inTesters - App Testing Community Platform",
@@ -51,7 +51,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "inTesters | App Testing Community Platform",
     description: "Join the inTesters community to test Android apps and earn points. Get feedback for your apps from real users and launch with confidence.",
-    images: ["/inTesters-logo.svg"],
+    images: ["/inTesters-logo-light.svg"],
     creator: "@inTesters",
   },
   robots: {
