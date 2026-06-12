@@ -207,10 +207,10 @@ export function BaseSidebar({
           <TransitionLink href={logoHref}>
             <div className="relative w-10 h-10 shrink-0">
               <Image
-                src="/inTesters-logo.svg"
+                src="/inTesters-logo-light.svg"
                 alt="inTesters Logo"
                 fill
-                className="object-contain invert dark:invert-0"
+                className="object-contain"
                 priority
               />
             </div>

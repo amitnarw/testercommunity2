@@ -93,7 +93,7 @@ function BlogsTab() {
             Blog Posts
           </h2>
           <p className="text-sm text-muted-foreground">
-            Create and manage blog posts for the inTesters Chronicles.
+            Create and manage blog posts for the inTesters Blog.
           </p>
         </div>
         <Button onClick={() => router.push("/admin/blog-management/new")} className="gap-2">
@@ -442,7 +442,7 @@ function AdminBlogManagementContent() {
           Blog Management
         </h2>
         <p className="text-sm text-muted-foreground">
-          Manage blog posts and authors for the inTesters Chronicles.
+          Manage blog posts and authors for the inTesters Blog.
         </p>
       </div>
 

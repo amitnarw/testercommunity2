@@ -37,7 +37,7 @@ export function ArticleJsonLd({
       name: "inTesters",
       logo: {
         "@type": "ImageObject",
-        url: "https://intesters.com/inTesters-logo.svg",
+        url: "https://intesters.com/inTesters-logo-light.svg",
       },
     },
     mainEntityOfPage: {

@@ -1,7 +1,9 @@
 "use client";
 
+import { useTheme } from "next-themes";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
+import { useEffect, useState } from "react";
 
 type LogoSize = "xs" | "sm" | "md" | "lg" | "xl" | "2xl" | "3xl";
 
@@ -22,19 +24,30 @@ const sizeMap: Record<LogoSize, string> = {
 };
 
 export function Logo({ size = "md", className, onClick }: LogoProps) {
+  const { resolvedTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const src = resolvedTheme === "dark" ? "/inTesters-logo-light.svg" : "/inTesters-logo-dark.svg";
+
   return (
     <div
       className={cn("relative select-none shrink-0", sizeMap[size], className)}
       onClick={onClick}
     >
-      <Image
-        src="/inTesters-logo.svg"
-        alt="inTesters Logo"
-        fill
-        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-        className="object-contain dark:invert"
-        priority
-      />
+      {mounted && (
+        <Image
+          src={src}
+          alt="inTesters Logo"
+          fill
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+          className="object-contain"
+          priority
+        />
+      )}
     </div>
   );
 }

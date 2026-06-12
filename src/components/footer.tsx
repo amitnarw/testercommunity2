@@ -51,7 +51,7 @@ const resourceItems = [
 const legalItems = [
   { name: "Privacy Policy", href: "/privacy" },
   { name: "Terms of Service", href: "/terms" },
-  { name: "Refund Policy", href: "/refund-policy" },
+  { name: "Refund & Cancellation Policy", href: "/refund-policy" },
 ];
 
 export function Footer() {
@@ -96,7 +96,7 @@ export function Footer() {
               <SocialButton icon={<XIcon className="w-5 h-5" />} href="https://x.com/inTesters" />
               <SocialButton icon={<RedditIcon className="w-5 h-5" />} href="https://www.reddit.com/r/inTesters" />
               <SocialButton icon={<TelegramIcon className="w-5 h-5" />} href="https://t.me/inTesters" />
-              <SocialButton icon={<YoutubeIcon className="w-5 h-5" />} href="https://www.youtube.com/" />
+              <SocialButton icon={<YoutubeIcon className="w-5 h-5" />} href="https://www.youtube.com/@intesters" />
             </div>
 
             <div className="flex flex-col gap-4">
@@ -195,7 +195,7 @@ export function Footer() {
               <SocialButton icon={<XIcon className="w-5 h-5" />} href="https://x.com/inTesters" />
               <SocialButton icon={<RedditIcon className="w-5 h-5" />} href="https://www.reddit.com/r/inTesters" />
               <SocialButton icon={<TelegramIcon className="w-5 h-5" />} href="https://t.me/inTesters" />
-              <SocialButton icon={<YoutubeIcon className="w-5 h-5" />} href="https://www.youtube.com/" />
+              <SocialButton icon={<YoutubeIcon className="w-5 h-5" />} href="https://www.youtube.com/@intesters" />
             </div>
             <Link
               href="#"
@@ -243,7 +243,7 @@ function SocialButton({ icon, href }: { icon: React.ReactNode; href: string }) {
       className="w-10 h-10 border-primary/20 hover:bg-primary hover:text-primary-foreground hover:scale-110 transition-all duration-300"
       asChild
     >
-      <Link href={href}>{icon}</Link>
+      <Link href={href} target="_blank" rel="noopener noreferrer">{icon}</Link>
     </Button>
   );
 }

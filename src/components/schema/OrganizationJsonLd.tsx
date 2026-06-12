@@ -5,7 +5,7 @@ export function OrganizationJsonLd() {
     name: "inTesters",
     alternateName: "inTesters Community",
     url: "https://intesters.com",
-    logo: "https://intesters.com/inTesters-logo.svg",
+    logo: "https://intesters.com/inTesters-logo-light.svg",
     description: "App testing community platform where developers get their Android apps tested by real users to meet Google Play's 12-tester requirement.",
     foundingDate: "2024",
     legalName: "GAMDIX PRIVATE LIMITED",

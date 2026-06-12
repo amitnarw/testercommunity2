@@ -129,7 +129,7 @@ export default function BlogPage() {
         >
           <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight mb-6 bg-clip-text text-transparent bg-gradient-to-b from-foreground to-foreground/70">
             The inTesters
-            <span className="block text-primary">Chronicles</span>
+            <span className="block text-primary">Blog</span>
           </h1>
           <p className="text-lg md:text-xl text-muted-foreground leading-relaxed max-w-2xl mx-auto">
             Deep dives into quality assurance, community stories, and the future
