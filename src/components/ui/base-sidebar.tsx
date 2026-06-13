@@ -4,7 +4,7 @@ import Image from "next/image";
 import { TransitionLink } from "@/components/transition-link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { ChevronRight, ChevronLeft, LogOut } from "lucide-react";
+import { ChevronRight, ChevronLeft, ChevronUp, ChevronDown, LogOut } from "lucide-react";
 import {
   Tooltip,
   TooltipContent,
@@ -150,7 +150,8 @@ export function BaseSidebar({
   className,
 }: BaseSidebarProps) {
   const navRef = useRef<HTMLDivElement>(null);
-  const [canScroll, setCanScroll] = useState(false);
+  const [canScrollUp, setCanScrollUp] = useState(false);
+  const [canScrollDown, setCanScrollDown] = useState(false);
 
   // Check if navigation content overflows
   useEffect(() => {
@@ -158,8 +159,9 @@ export function BaseSidebar({
 
     const checkOverflow = () => {
       if (navRef.current) {
-        const { scrollHeight, clientHeight } = navRef.current;
-        setCanScroll(scrollHeight > clientHeight);
+        const { scrollHeight, clientHeight, scrollTop } = navRef.current;
+        setCanScrollUp(scrollTop > 5);
+        setCanScrollDown(scrollTop + clientHeight < scrollHeight - 5);
       }
     };
 
@@ -169,18 +171,13 @@ export function BaseSidebar({
     return () => clearTimeout(timer);
   }, [isCollapsed, showScrollIndicator]);
 
-  // Hide scroll indicator when user scrolls to bottom
+  // Track scroll position for arrow visibility
   const handleScroll = () => {
     if (!showScrollIndicator) return;
-
     if (navRef.current) {
       const { scrollTop, scrollHeight, clientHeight } = navRef.current;
-      // Hide indicator when near bottom (within 20px)
-      if (scrollTop + clientHeight >= scrollHeight - 20) {
-        setCanScroll(false);
-      } else if (scrollHeight > clientHeight) {
-        setCanScroll(true);
-      }
+      setCanScrollUp(scrollTop > 5);
+      setCanScrollDown(scrollTop + clientHeight < scrollHeight - 5);
     }
   };
 
@@ -241,7 +238,7 @@ export function BaseSidebar({
               className={cn(
                 "flex flex-col gap-1 w-full px-2 mt-2 flex-1 overflow-y-auto scrollbar-hide pb-4",
                 showScrollIndicator &&
-                  canScroll &&
+                  (canScrollUp || canScrollDown) &&
                   !isCollapsed &&
                   "seamless-scroll-mask",
               )}
@@ -253,19 +250,40 @@ export function BaseSidebar({
               {navContent}
             </nav>
 
-            {/* Optional scroll indicator */}
+            {/* Scroll arrows - shown when content overflows */}
             <AnimatePresence>
-              {showScrollIndicator && canScroll && !isCollapsed && (
+              {showScrollIndicator && canScrollUp && (
+                <motion.div
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  transition={{ duration: 0.3, ease: "easeOut" }}
+                  className="absolute top-1 inset-x-0 z-20 flex justify-center"
+                >
+                  <button
+                    onClick={() => navRef.current?.scrollBy({ top: -120, behavior: "smooth" })}
+                    className="flex items-center justify-center w-6 h-6 rounded-full bg-white/10 dark:bg-black/10 backdrop-blur-sm border border-white/10 dark:border-black/10 shadow-lg hover:bg-white/20 dark:hover:bg-black/20 transition-colors pointer-events-auto"
+                  >
+                    <ChevronUp className="h-3.5 w-3.5 text-white/70 dark:text-black/70" />
+                  </button>
+                </motion.div>
+              )}
+            </AnimatePresence>
+            <AnimatePresence>
+              {showScrollIndicator && canScrollDown && (
                 <motion.div
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: 10 }}
                   transition={{ duration: 0.3, ease: "easeOut" }}
-                  className="absolute bottom-4 left-0 right-0 pointer-events-none flex justify-center z-20"
+                  className="absolute bottom-1 inset-x-0 z-20 flex justify-center"
                 >
-                  <span className="text-[10px] text-white/70 dark:text-black/70 animate-pulse bg-white/10 dark:bg-black/10 px-2 py-1 rounded-full backdrop-blur-sm border border-white/10 dark:border-black/10 shadow-lg">
-                    Scroll for more
-                  </span>
+                  <button
+                    onClick={() => navRef.current?.scrollBy({ top: 120, behavior: "smooth" })}
+                    className="flex items-center justify-center w-6 h-6 rounded-full bg-white/10 dark:bg-black/10 backdrop-blur-sm border border-white/10 dark:border-black/10 shadow-lg hover:bg-white/20 dark:hover:bg-black/20 transition-colors pointer-events-auto"
+                  >
+                    <ChevronDown className="h-3.5 w-3.5 text-white/70 dark:text-black/70" />
+                  </button>
                 </motion.div>
               )}
             </AnimatePresence>

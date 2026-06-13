@@ -440,7 +440,7 @@ export function PointsFormula() {
                 href="/pricing"
                 className="font-bold text-foreground hover:text-primary transition-colors underline underline-offset-2"
               >
-                Pro starts at {proPriceLabel || "₹699"} →
+                Pro starts at {proPriceLabel || "₹999"} →
               </a>
             </span>
           </div>

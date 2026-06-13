@@ -237,12 +237,12 @@ export function Sidebar({
 
   const sections = [
     { key: "overview" as const, label: "Overview" },
-    { key: "paid" as const, label: "Paid", color: "text-amber-500/70" },
-    { key: "free" as const, label: "Free", color: "text-blue-500/70" },
-    { key: "finance" as const, label: "Finance", color: "text-emerald-500/70" },
+    { key: "paid" as const, label: "Paid", color: "text-amber-500" },
+    { key: "free" as const, label: "Free", color: "text-black/70" },
+    { key: "finance" as const, label: "Finance", color: "text-cyan-300" },
     { key: "platform" as const, label: "Platform" },
-    { key: "support" as const, label: "Support", color: "text-green-500/70" },
-    { key: "system" as const, label: "System", color: "text-purple-500/70" },
+    { key: "support" as const, label: "Support", color: "text-green-400" },
+    { key: "system" as const, label: "System", color: "text-purple-300" },
   ];
 
   const navContent = isAdminRole ? (
@@ -263,9 +263,9 @@ export function Sidebar({
             <div className="mb-1">
               {!isCollapsed && (
                 <span
-                  className={`text-[10px] font-semibold ${
-                    isSpecial ? section.color : "text-white/40"
-                  } dark:text-black/40 uppercase tracking-wider px-3`}
+                  className={`text-[10px] font-semibold uppercase tracking-wider px-3 ${
+                    isSpecial ? section.color : "text-white/70"
+                  }`}
                 >
                   {section.label}
                 </span>

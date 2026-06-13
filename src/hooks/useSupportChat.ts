@@ -78,9 +78,46 @@ export function useSupportChat(chat: SupportChatAI) {
     if (sendMessage) sendMessage({ text });
   }, [sendMessage]);
 
-  // -- Sync displayed messages --
+  // -- Sync displayed messages, with fallback for tool result follow-up text --
   useEffect(() => {
-    setDisplayedMessages(messages);
+    let msgs = messages;
+    if (messages.length > 0) {
+      const last = messages[messages.length - 1];
+      if (last.role === "assistant") {
+        const hasFailedTransfer = last.toolInvocations?.some(
+          (t: any) => t.toolName === "transfer_to_human" && t.state === "result" && t.result?.success === false
+        );
+        const hasSuccessfulTransfer = last.toolInvocations?.some(
+          (t: any) => t.toolName === "transfer_to_human" && t.state === "result" && t.result?.success === true
+        );
+        const hasTransferFollowUp = messages.some(
+          (m: any) => m.id?.startsWith("transfer-followup-")
+        );
+
+        if (hasFailedTransfer && !hasTransferFollowUp) {
+          const toolResult = last.toolInvocations?.find(
+            (t: any) => t.toolName === "transfer_to_human" && t.state === "result"
+          )?.result;
+          msgs = [...messages, {
+            id: "transfer-followup-" + Date.now(),
+            role: "assistant",
+            content: toolResult?.message || "No agents are available right now. I can still help you though."
+          }];
+        }
+
+        if (hasSuccessfulTransfer && !hasTransferFollowUp) {
+          const toolResult = last.toolInvocations?.find(
+            (t: any) => t.toolName === "transfer_to_human" && t.state === "result"
+          )?.result;
+          msgs = [...messages, {
+            id: "transfer-followup-" + Date.now(),
+            role: "assistant",
+            content: toolResult?.message || "A support agent will be with you shortly!"
+          }];
+        }
+      }
+    }
+    setDisplayedMessages(msgs);
   }, [messages]);
 
   // -- transfer_to_human tool detection --
@@ -89,6 +126,12 @@ export function useSupportChat(chat: SupportChatAI) {
       m.toolInvocations?.some((t: any) => t.toolName === "transfer_to_human" && t.state === "result")
     );
     if (transferTool && chatMode === "AI") {
+      const toolResult = transferTool.toolInvocations?.find(
+        (t: any) => t.toolName === "transfer_to_human"
+      )?.result;
+      if (toolResult?.success === false) {
+        return;
+      }
       const context = messages
         .filter((m: any) => m.role === "user" || m.role === "assistant")
         .slice(-10)
@@ -107,7 +150,7 @@ export function useSupportChat(chat: SupportChatAI) {
 
   // -- Greeting on first open --
   useEffect(() => {
-    if (isOpen && messages.length === 0 && !greetingScheduledRef.current && !greetingShownRef.current) {
+    if (isOpen && messages.length === 0 && chatMode === "AI" && !greetingScheduledRef.current && !greetingShownRef.current) {
       greetingScheduledRef.current = true;
       greetingShownRef.current = true;
       setIsWaitingForGreeting(true);
@@ -131,7 +174,7 @@ export function useSupportChat(chat: SupportChatAI) {
         greetingTimeoutRef.current = null;
       }
     };
-  }, [isOpen, messages.length, setMessages]);
+  }, [isOpen, messages.length, chatMode, setMessages]);
 
   // -- open-alex-chat event --
   useEffect(() => {
@@ -190,6 +233,7 @@ export function useSupportChat(chat: SupportChatAI) {
           role: "assistant",
           content: data.message,
         }]);
+        setChatMode("AI");
         clearError();
       }),
       chat_unavailable: on("chat:unavailable", (data: { reason?: string }) => {

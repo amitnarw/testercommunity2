@@ -1343,9 +1343,9 @@ export const transactionHistory = [
     id: "TXN-001",
     date: "2024-08-22",
     type: "Package Purchase",
-    description: "Bought Accelerator Package",
-    amount: "₹1,799",
-    change: "+5 Packages",
+    description: "Bought App Testing Package",
+    amount: "₹999",
+    change: "+1 Package",
     status: "Completed",
     changeType: "positive",
   },
@@ -1393,8 +1393,8 @@ export const transactionHistory = [
     id: "TXN-006",
     date: "2024-08-10",
     type: "Package Purchase",
-    description: "Bought Booster Package",
-    amount: "₹699",
+    description: "Bought App Testing Package",
+    amount: "₹999",
     change: "+1 Package",
     status: "Completed",
     changeType: "positive",
@@ -1412,8 +1412,9 @@ export const transactionHistory = [
 ];
 
 export const professionalPathFeatures: string[] = [
-  "14-Day Testing Cycle",
-  "20+ Vetted Testers",
+  "15-20 Days Testing Cycle",
+  "15-25 Vetted Testers",
+  "Google Play Production Answers",
   "Managed by inTesters Team",
   "Detailed Bug Reports",
   "Device & OS Coverage Stats",
@@ -1422,22 +1423,10 @@ export const professionalPathFeatures: string[] = [
 
 export const pointsPackages: PointsPackage[] = [
   {
-    name: "Booster",
-    price: 699,
+    name: "App Testing",
+    price: 999,
     points: 1,
-    description: "Perfect for a single app.",
-  },
-  {
-    name: "Accelerator",
-    price: 1799,
-    points: 5,
-    description: "Great value for teams.",
-  },
-  {
-    name: "Launchpad",
-    price: 2899,
-    points: 10,
-    description: "For agencies & enterprises.",
+    description: "Single app testing cycle with managed support.",
   },
 ];
 

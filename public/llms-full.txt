@@ -50,9 +50,7 @@ Purchased packages are credited to your account and never expire. One package is
 
 | Package Name | Price (INR) | Capacity / Details | Target Audience |
 | :--- | :--- | :--- | :--- |
-| **Booster** | ₹699 | 1 Pro testing cycle (1 app) | Solo Developers / Indie devs |
-| **Accelerator** | ₹1,799 | 5 Pro testing cycles (5 apps) | Small Development Teams |
-| **Launchpad** | ₹2,899 | 10 Pro testing cycles (10 apps) | Agencies & App Publishers |
+| **App Testing** | ₹999 | 1 Pro testing cycle (1 app) | Solo Developers / Indie devs |
 
 ---
 

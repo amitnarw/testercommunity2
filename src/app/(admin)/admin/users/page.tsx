@@ -5,7 +5,7 @@ import dynamic from "next/dynamic";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Search, CheckCircle, Ban, Loader2, Plus } from "lucide-react";
+import { Search, CheckCircle, Ban, Loader2, Plus, Eye, EyeOff } from "lucide-react";
 import { Tabs, TabsList, TabsContent, TabsTrigger } from "@/components/ui/tabs";
 import {
   Dialog,
@@ -72,6 +72,7 @@ export default function AdminUsersPage() {
   const [activeTab, setActiveTab] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
+  const [showPassword, setShowPassword] = useState(false);
 
   // Fetch users data - pass role filter to API
   const { data: usersData, isLoading } = useAllUsers({
@@ -280,7 +281,7 @@ export default function AdminUsersPage() {
     }
 
     // Remove empty strings for optional enums
-    const nullableFields = ["profile_type", "job_role", "company_size", "position_in_company", "experience_level", "total_published_apps", "platform_development", "publish_frequency", "service_usage", "application_status", "availability", "initial"];
+    const nullableFields = ["profile_type", "job_role", "company_size", "position_in_company", "experience_level", "total_published_apps", "platform_development", "publish_frequency", "service_usage", "application_status", "availability", "initial", "phone", "bio", "country"];
     for (const f of nullableFields) {
       if (payload[f] === "") payload[f] = undefined;
     }
@@ -419,12 +420,24 @@ export default function AdminUsersPage() {
                   <Label>
                     Password <span className="text-destructive">*</span>
                   </Label>
-                  <Input
-                    placeholder="Minimum 8 characters"
-                    type="password"
-                    value={newUser.password}
-                    onChange={(e) => updateField("password", e.target.value)}
-                  />
+                  <div className="relative">
+                    <Input
+                      placeholder="Minimum 8 characters"
+                      type={showPassword ? "text" : "password"}
+                      value={newUser.password}
+                      onChange={(e) => updateField("password", e.target.value)}
+                    />
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      className="absolute right-0 top-0 h-full px-3 text-muted-foreground hover:text-foreground"
+                      onClick={() => setShowPassword(!showPassword)}
+                      aria-label={showPassword ? "Hide password" : "Show password"}
+                    >
+                      {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                    </Button>
+                  </div>
                 </div>
                 <div className="space-y-2">
                   <Label>

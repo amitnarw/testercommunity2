@@ -72,6 +72,36 @@ export function SupportChat() {
     return text;
   };
 
+  const [showCheckingIndicator, setShowCheckingIndicator] = useState(false);
+  const transferToolSeenRef = useRef(false);
+  const checkingTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    const lastMsg = displayedMessages[displayedMessages.length - 1];
+    const hasTransferTool = lastMsg?.role === "assistant" && lastMsg?.toolInvocations?.some(
+      (t: any) => t.toolName === "transfer_to_human"
+    );
+    const hasTransferResult = lastMsg?.role === "assistant" && lastMsg?.toolInvocations?.some(
+      (t: any) => t.toolName === "transfer_to_human" && t.state === "result"
+    );
+    const isReady = chat.status === "ready";
+
+    if (hasTransferTool && !transferToolSeenRef.current) {
+      transferToolSeenRef.current = true;
+      setShowCheckingIndicator(true);
+    }
+
+    if ((hasTransferResult || isReady) && transferToolSeenRef.current) {
+      transferToolSeenRef.current = false;
+      if (checkingTimerRef.current) clearTimeout(checkingTimerRef.current);
+      checkingTimerRef.current = setTimeout(() => setShowCheckingIndicator(false), 1500);
+    }
+
+    return () => {
+      if (checkingTimerRef.current) clearTimeout(checkingTimerRef.current);
+    };
+  }, [displayedMessages, chat.status]);
+
   useEffect(() => {
     const handleResize = () => setWindowWidth(window.innerWidth);
     window.addEventListener("resize", handleResize);
@@ -241,7 +271,7 @@ export function SupportChat() {
                                     ? "bg-primary text-primary-foreground rounded-tr-none"
                                     : "bg-card border rounded-tl-none"
                                 )}>
-                                  <div className="prose prose-sm dark:prose-invert max-w-none">
+                                  <div className={cn("prose prose-sm max-w-none", m.role === "user" ? "prose-invert" : "dark:prose-invert")}>
                                     <ReactMarkdown
                                       remarkPlugins={[remarkGfm]}
                                       components={{
@@ -290,13 +320,25 @@ export function SupportChat() {
                                 }
 
                                 if (toolName === "transfer_to_human") {
+                                  const isError = state === "result" && result && !result.success;
                                   return (
-                                    <div key={toolCallId} className="mt-2 p-3 bg-muted/50 rounded-xl border border-dashed flex items-center gap-3 w-full">
-                                      <Headphones className="h-4 w-4 text-primary" />
+                                    <div key={toolCallId} className={cn(
+                                      "mt-2 p-3 rounded-xl border border-dashed flex items-center gap-3 w-full",
+                                      isError ? "bg-destructive/10 border-destructive/30" : "bg-muted/50"
+                                    )}>
+                                      {state === "call" ? (
+                                        <Loader2 className="h-4 w-4 text-primary animate-spin" />
+                                      ) : isError ? (
+                                        <AlertCircle className="h-4 w-4 text-destructive" />
+                                      ) : (
+                                        <Headphones className="h-4 w-4 text-green-500" />
+                                      )}
                                       <div className="flex-1 overflow-hidden">
                                         <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">Human Support</p>
-                                        <p className="text-xs truncate italic">
-                                          {state === "result" ? "Transferring you to a support agent..." : "Connecting to support..."}
+                                        <p className={cn("text-xs truncate italic", isError && "text-destructive")}>
+                                          {state === "call" ? "Checking agent availability..." :
+                                           isError ? (result?.message || "No agents available right now") :
+                                           "A support agent will be with you shortly"}
                                         </p>
                                       </div>
                                     </div>
@@ -309,6 +351,18 @@ export function SupportChat() {
                           </div>
                         );
                       })}
+
+                      {showCheckingIndicator && (
+                        <div className="flex gap-3 animate-in fade-in duration-300">
+                          <div className="h-8 w-8 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center">
+                            <Bot className="h-4 w-4 text-primary" />
+                          </div>
+                          <div className="bg-card border rounded-2xl rounded-tl-none px-4 py-3 flex items-center gap-2">
+                            <Loader2 className="h-4 w-4 text-primary animate-spin shrink-0" />
+                            <span className="text-sm text-foreground">Checking agent availability...</span>
+                          </div>
+                        </div>
+                      )}
 
                       {(isWaitingForGreeting || (chat.status === "submitted" && (displayedMessages.length === 0 || displayedMessages[displayedMessages.length - 1]?.role === "user"))) && (
                         <div className="flex gap-3 animate-in fade-in duration-300">

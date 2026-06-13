@@ -9,6 +9,7 @@ import {
   DollarSign,
   LifeBuoy,
   Users,
+  Users2,
   FileCheck,
   MessageSquare,
   Lightbulb,
@@ -16,6 +17,7 @@ import {
   Wallet,
   Settings,
   Handshake,
+  Home,
   BookOpen,
   Terminal,
   Ticket,
@@ -51,15 +53,13 @@ type AdminNavItem = {
   moduleName?: string;
 };
 
-const mainNavItems = [
-  { name: "Home", href: ROUTES.PUBLIC.HOME },
-  { name: "Dashboard", href: ROUTES.AUTHENTICATED.DASHBOARD },
-  { name: "Free Testing", href: ROUTES.AUTHENTICATED.FREE_TESTING },
-  { name: "Pro Testing", href: ROUTES.AUTHENTICATED.PRO_TESTING },
-  { name: "Reviews", href: ROUTES.PUBLIC.REVIEWS },
-  { name: "Pricing", href: ROUTES.AUTHENTICATED.BILLING },
-  { name: "Support", href: ROUTES.PUBLIC.SUPPORT },
-  { name: "Blog", href: ROUTES.PUBLIC.BLOG },
+const mainNavItems: AdminNavItem[] = [
+  { name: "Dashboard", href: ROUTES.AUTHENTICATED.DASHBOARD, icon: Home, section: "overview" },
+  { name: "Pro Testing", href: ROUTES.AUTHENTICATED.PRO_TESTING, icon: Zap, section: "paid", badge: "PRO" },
+  { name: "Free Testing", href: ROUTES.AUTHENTICATED.FREE_TESTING, icon: Users2, section: "free", badge: "FREE" },
+  { name: "Notifications", href: ROUTES.AUTHENTICATED.NOTIFICATIONS, icon: Bell, section: "platform" },
+  { name: "Wallet", href: ROUTES.AUTHENTICATED.WALLET, icon: Wallet, section: "platform" },
+  { name: "Support", href: ROUTES.PUBLIC.SUPPORT, icon: LifeBuoy, section: "support" },
 ];
 
 const proNavItems = [
@@ -293,6 +293,17 @@ export default function MobileMenu({
       }
     : null;
 
+  // Group normal user items by section
+  const groupedUserItems = isAuthenticated && !isAdminRole && roleName !== "tester"
+    ? {
+        overview: mainNavItems.filter((item) => item.section === "overview"),
+        paid: mainNavItems.filter((item) => item.section === "paid"),
+        free: mainNavItems.filter((item) => item.section === "free"),
+        platform: mainNavItems.filter((item) => item.section === "platform"),
+        support: mainNavItems.filter((item) => item.section === "support"),
+      }
+    : null;
+
   return (
     <div data-loc="MobileMenu" className="md:hidden">
       <Sheet open={isMenuOpen} onOpenChange={setIsMenuOpen}>
@@ -313,14 +324,14 @@ export default function MobileMenu({
                   <>
                     <button onClick={() => setIsMenuOpen(false)}>
                       <TransitionLink href={notificationHref}>
-                        <Bell className="h-7 w-7" />
+                        <Bell className="h-5 w-5" />
                         <span className="sr-only">Notifications</span>
                       </TransitionLink>
                     </button>
                     {showWallet && (
                       <button onClick={() => setIsMenuOpen(false)}>
                         <TransitionLink href={walletHref}>
-                          <Wallet className="h-7 w-7" />
+                          <Wallet className="h-5 w-5" />
                           <span className="sr-only">Wallet</span>
                         </TransitionLink>
                       </button>
@@ -418,37 +429,109 @@ export default function MobileMenu({
                   });
                 })()}
               </nav>
+            ) : groupedUserItems ? (
+              // Normal user menu with sections - mirrors admin layout
+              <nav className="flex flex-col gap-1 py-2 pr-0 flex-1 overflow-y-auto">
+                {(() => {
+                  type SectionCfg = { key: string; header: string | null; iconColor?: string; hoverClass?: string; activeClass?: string };
+                  const sectionConfigs: SectionCfg[] = [
+                    { key: "overview", header: null },
+                    { key: "paid", header: "Paid Services", iconColor: "text-amber-500", hoverClass: "hover:bg-amber-500/10" },
+                    { key: "free", header: "Free Services", iconColor: "text-blue-500", hoverClass: "hover:bg-blue-500/10" },
+                    { key: "platform", header: "Platform", hoverClass: "hover:bg-muted", activeClass: "text-primary bg-primary/5" },
+                    { key: "support", header: "Support", iconColor: "text-green-500", hoverClass: "hover:bg-green-500/10" },
+                  ];
+
+                  const headerColorMap: Record<string, string> = {
+                    paid: "text-amber-500",
+                    free: "text-blue-500",
+                    platform: "text-muted-foreground",
+                    support: "text-green-500",
+                  };
+
+                  const visibleSections = sectionConfigs.filter(
+                    (s) => (groupedUserItems as Record<string, any[]>)[s.key].length > 0,
+                  );
+
+                  return visibleSections.map((section, idx) => {
+                    const items = (groupedUserItems as Record<string, any[]>)[section.key];
+                    const hasBadge = section.key === "paid" || section.key === "free";
+
+                    return (
+                      <div key={section.key}>
+                        {idx > 0 && <div className="h-px bg-border mx-3 my-1" />}
+                        <div className="space-y-0.5">
+                          {section.header && (
+                            <span className={`text-[10px] font-semibold ${headerColorMap[section.key]} uppercase tracking-wider px-3`}>
+                              {section.header}
+                            </span>
+                          )}
+                          {items.map((item: any) => {
+                            const isActive = pathname === item.href || pathname.startsWith(item.href + "/");
+                            return (
+                              <TransitionLink
+                                key={item.name}
+                                href={item.href}
+                                onClick={() => setIsMenuOpen(false)}
+                                className={cn(
+                                  hasBadge
+                                    ? `flex items-center justify-between px-3 py-1.5 rounded-lg text-lg font-medium transition-colors ${section.hoverClass || "hover:bg-primary/10"} text-foreground`
+                                    : `flex items-center gap-2 px-3 py-1.5 rounded-lg text-lg font-medium transition-colors ${section.hoverClass || "hover:bg-primary/10"}`,
+                                  section.activeClass
+                                    ? isActive ? section.activeClass : "text-foreground"
+                                    : isActive ? "text-primary bg-primary/5" : "text-foreground",
+                                )}
+                              >
+                                <div className="flex items-center gap-2">
+                                  {item.icon && isActive && (
+                                    <item.icon className={cn("h-5 w-5", section.iconColor)} />
+                                  )}
+                                  {item.name}
+                                </div>
+                              {item.badge && hasBadge && (
+                                <span className={cn(
+                                  "text-[8px] font-bold px-1.5 py-0.5 rounded",
+                                  section.key === "paid" && "bg-amber-500/20 text-amber-600 dark:bg-amber-500/10 dark:text-amber-700",
+                                  section.key === "free" && "bg-blue-500/20 text-blue-600 dark:bg-blue-500/10 dark:text-blue-700",
+                                )}>
+                                  {item.badge}
+                                </span>
+                              )}
+                            </TransitionLink>
+                           );
+                          })}
+                         </div>
+                      </div>
+                    );
+                  });
+                })()}
+              </nav>
             ) : (
-              // Regular menu (non-admin)
-              <nav className="flex flex-col items-center text-center justify-center gap-5 flex-1">
+              // Flat layout for testers and public users
+              <nav className="flex flex-col gap-1 py-2 pr-0 flex-1 overflow-y-auto">
                 {displayItems.map((item: any) => {
-                  const isItemActive = pathname === item.href;
-                  const isPro = item.name === "Pro Testing";
+                  const isItemActive = pathname === item.href || pathname.startsWith(item.href + "/");
                   return (
                     <TransitionLink
                       key={item.name}
                       href={item.href}
                       onClick={() => setIsMenuOpen(false)}
                       className={cn(
-                        "text-2xl font-medium transition-colors hover:text-primary w-full",
-                        isItemActive ? "text-primary" :                         "text-foreground",
+                        "flex items-center gap-2 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors hover:bg-primary/10",
+                        isItemActive ? "text-primary bg-primary/5" : "text-foreground",
                       )}
                     >
-                      <span className="inline-flex items-center gap-2">
-                        {isPro && (
-                          <span className="relative inline-flex items-center justify-center h-4 w-4">
-                            {isItemActive ? (
-                              <Zap className="h-4 w-4 animate-gold-shimmer text-amber-500" />
-                            ) : (
-                              <span className="relative inline-flex items-center justify-center">
-                                <span className="absolute inset-[-2px] rounded-full bg-amber-100/70 animate-thunder-bg" />
-                                <Zap className="h-4 w-4 animate-thunder text-amber-400" />
-                              </span>
-                            )}
-                          </span>
-                        )}
-                        <span>{item.name}</span>
-                      </span>
+                      {item.icon && (
+                        <span className="flex items-center justify-center h-4 w-4 shrink-0">
+                          <item.icon className={cn("h-4 w-4", isItemActive ? "text-primary" : "text-muted-foreground")} />
+                        </span>
+                      )}
+                      <span>{item.name}</span>
+                      {item.badge && (
+                        <span className="ml-auto text-[8px] font-bold px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-600 dark:bg-amber-500/10 dark:text-amber-700">
+                          {item.badge}
+                        </span>
+                      )}
                     </TransitionLink>
                   );
                 })}
