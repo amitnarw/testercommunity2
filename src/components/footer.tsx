@@ -28,6 +28,12 @@ const YoutubeIcon = ({ className }: { className?: string }) => (
     <path d="M549.655 124.083c-6.281-23.65-24.787-42.276-48.284-48.597C458.781 64 288 64 288 64S117.22 64 74.629 75.486c-23.497 6.322-42.003 24.947-48.284 48.597-11.412 42.867-11.412 132.305-11.412 132.305s0 89.438 11.412 132.305c6.281 23.65 24.787 41.5 48.284 47.821C117.22 448 288 448 288 448s170.78 0 213.371-11.486c23.497-6.321 42.003-24.171 48.284-47.821 11.412-42.867 11.412-132.305 11.412-132.305s0-89.438-11.412-132.305zm-317.51 213.508V175.185l142.739 81.205-142.739 81.201z" />
   </svg>
 );
+
+const LinkedInIcon = ({ className }: { className?: string }) => (
+  <svg viewBox="0 0 24 24" className={className} fill="currentColor">
+    <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452z" />
+  </svg>
+);
 import { useScroll, useTransform, motion } from "framer-motion";
 import { Logo } from "./logo";
 import { ROUTES } from "@/lib/routes";
@@ -51,7 +57,7 @@ const resourceItems = [
 const legalItems = [
   { name: "Privacy Policy", href: "/privacy" },
   { name: "Terms of Service", href: "/terms" },
-  { name: "Refund & Cancellation Policy", href: "/refund-policy" },
+  { name: "Refund Policy", href: "/refund-policy" },
 ];
 
 export function Footer() {
@@ -97,6 +103,7 @@ export function Footer() {
               <SocialButton icon={<RedditIcon className="w-5 h-5" />} href="https://www.reddit.com/r/inTesters" />
               <SocialButton icon={<TelegramIcon className="w-5 h-5" />} href="https://t.me/inTesters" />
               <SocialButton icon={<YoutubeIcon className="w-5 h-5" />} href="https://www.youtube.com/@intesters" />
+              <SocialButton icon={<LinkedInIcon className="w-5 h-5" />} href="https://www.linkedin.com/showcase/intesters/" />
             </div>
 
             <div className="flex flex-col gap-4">
@@ -196,6 +203,7 @@ export function Footer() {
               <SocialButton icon={<RedditIcon className="w-5 h-5" />} href="https://www.reddit.com/r/inTesters" />
               <SocialButton icon={<TelegramIcon className="w-5 h-5" />} href="https://t.me/inTesters" />
               <SocialButton icon={<YoutubeIcon className="w-5 h-5" />} href="https://www.youtube.com/@intesters" />
+              <SocialButton icon={<LinkedInIcon className="w-5 h-5" />} href="https://www.linkedin.com/showcase/intesters/" />
             </div>
             <Link
               href="#"

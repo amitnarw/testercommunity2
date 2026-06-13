@@ -64,7 +64,6 @@ export function ActivityRow({ transaction }: ActivityRowProps) {
           isPositive ? "text-emerald-500" : "text-rose-500",
         )}
       >
-        {isPositive ? "+" : "–"}
         {transaction.amount}
       </span>
     </div>

@@ -14,19 +14,16 @@ import {
   RefreshCw,
   Activity,
   AlertCircle,
-  Plus,
   Sparkles,
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { AutoTransitionLink } from "@/components/auto-transition-link";
-import { Skeleton } from "@/components/ui/skeleton";
 import { MagicCard } from "@/components/ui/magic-card";
 import { AmbientGlowOrb } from "@/components/dashboard/ambient-glow-orb";
 import { MiniSparkline } from "@/components/dashboard/mini-sparkline";
-import { PremiumAppCard } from "@/components/dashboard/premium-app-card";
 import { NotificationRow } from "@/components/dashboard/notification-row";
 import { ActivityRow } from "@/components/dashboard/activity-row";
 import { EmptyFeed } from "@/components/dashboard/empty-feed";
+import { DiaryTestingSection } from "@/components/dashboard/diary-testing-section";
 import { ROUTES } from "@/lib/routes";
 import type { UserTransaction } from "@/lib/apiCalls";
 import { useHubData, useHubApps, useHubAppsCount } from "@/hooks/useHub";
@@ -142,6 +139,13 @@ function DashboardContent() {
   return (
     <div className="min-h-screen">
       <div className="container mx-auto px-4 md:px-6 max-w-7xl">
+        {/* Title */}
+        <div className="mt-8 mb-2">
+          <h1 className="text-2xl sm:text-4xl font-bold bg-gradient-to-b from-primary to-primary/40 bg-clip-text text-transparent leading-[unset] pb-2 pl-3 sm:pl-6">
+            Dashboard
+          </h1>
+        </div>
+
         {/* ===== 1. HERO WELCOME ===== */}
         <section className="my-8">
           <motion.div
@@ -276,75 +280,15 @@ function DashboardContent() {
           </motion.section>
         )}
 
-        {/* ===== 4+5. PRO + FREE TESTING — UNIFIED ===== */}
-        <section className="mb-8">
-          <motion.div
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.4, delay: 0.15, ease: "easeOut" }}
-            className="rounded-2xl border border-border/30 bg-card/50 overflow-hidden shadow-sm"
-          >
-            <div className="grid grid-cols-1 lg:grid-cols-2">
-              {/* Left: Pro Testing */}
-              <div className="p-5">
-                <SectionHeader
-                  icon={Zap}
-                  label="Pro Testing"
-                  iconColor="text-amber-500"
-                  href={ROUTES.AUTHENTICATED.PRO_TESTING}
-                  count={proActiveCount}
-                />
-                {dashActiveLoading ? (
-                  <div className="grid gap-3">
-                    {[1, 2, 3].map(i => <Skeleton key={i} className="h-36 rounded-2xl" />)}
-                  </div>
-                ) : dashActiveApps && dashActiveApps.length > 0 ? (
-                  <div className="grid gap-3">
-                    {dashActiveApps.slice(0, 3).map((app, i) => (
-                      <PremiumAppCard key={app.id} app={app} type="PAID" index={i} />
-                    ))}
-                  </div>
-                ) : (
-                  <EmptySection
-                    icon={Zap}
-                    label="No active pro testing projects."
-                    buttonLabel="Submit Your First Pro App"
-                    buttonHref="/app/pro-testing/add-app"
-                  />
-                )}
-              </div>
-
-              {/* Right: Free Testing */}
-              <div className="p-5">
-                <SectionHeader
-                  icon={Users2}
-                  label="Free Testing"
-                  iconColor="text-blue-500"
-                  href={ROUTES.AUTHENTICATED.FREE_TESTING}
-                  count={freeActiveCount}
-                />
-                {hubActiveLoading ? (
-                  <div className="grid gap-3">
-                    {[1, 2, 3].map(i => <Skeleton key={i} className="h-36 rounded-2xl" />)}
-                  </div>
-                ) : hubActiveApps && hubActiveApps.length > 0 ? (
-                  <div className="grid gap-3">
-                    {hubActiveApps.slice(0, 3).map((app, i) => (
-                      <PremiumAppCard key={app.id} app={app} type="FREE" index={i} />
-                    ))}
-                  </div>
-                ) : (
-                  <EmptySection
-                    icon={Users2}
-                    label="No active free testing projects."
-                    buttonLabel="Submit Your First Free App"
-                    buttonHref="/app/free-testing/submit"
-                  />
-                )}
-              </div>
-            </div>
-          </motion.div>
-        </section>
+        {/* ===== 4+5. PRO + FREE TESTING — DIARY ===== */}
+        <DiaryTestingSection
+          proApps={dashActiveApps}
+          proLoading={dashActiveLoading}
+          proCount={proActiveCount}
+          freeApps={hubActiveApps}
+          freeLoading={hubActiveLoading}
+          freeCount={freeActiveCount}
+        />
 
         {/* ===== 6. STATS BENTO ===== */}
         <motion.section
@@ -481,63 +425,6 @@ function DashboardContent() {
 }
 
 /* ===== Sub-components ===== */
-
-function SectionHeader({
-  icon: Icon,
-  label,
-  iconColor,
-  href,
-  count,
-}: {
-  icon: typeof Zap;
-  label: string;
-  iconColor: string;
-  href: string;
-  count: number;
-}) {
-  return (
-    <div className="flex items-center justify-between mb-3">
-      <h2 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider flex items-center gap-2">
-        <Icon className={cn("w-3.5 h-3.5", iconColor)} />
-        {label}
-        {count > 0 && (
-          <span className="text-xs font-normal text-muted-foreground/60">({count})</span>
-        )}
-      </h2>
-      <AutoTransitionLink
-        href={href}
-        className="text-xs text-primary hover:underline flex items-center gap-1"
-      >
-        View All <ChevronRight className="w-3 h-3" />
-      </AutoTransitionLink>
-    </div>
-  );
-}
-
-function EmptySection({
-  icon: Icon,
-  label,
-  buttonLabel,
-  buttonHref,
-}: {
-  icon: typeof Zap;
-  label: string;
-  buttonLabel: string;
-  buttonHref: string;
-}) {
-  return (
-    <div className="rounded-2xl border border-dashed border-muted-foreground/30 bg-card/30 p-8 text-center">
-      <Icon className="w-8 h-8 text-muted-foreground/40 mx-auto mb-2" />
-      <p className="text-sm text-muted-foreground mb-3">{label}</p>
-      <Button asChild size="sm" className="rounded-xl">
-        <TransitionLink href={buttonHref}>
-          <Plus className="w-4 h-4 mr-1.5" />
-          {buttonLabel}
-        </TransitionLink>
-      </Button>
-    </div>
-  );
-}
 
 function QuickActionPill({
   href,

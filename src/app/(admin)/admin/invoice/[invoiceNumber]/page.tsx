@@ -78,8 +78,11 @@ export default function AdminInvoicePage() {
           [data-loc="Navbar"],
           [data-loc="Footer"],
           [data-loc="BaseSidebar"],
+          [data-loc="MobileMenu"],
+          .md\\:hidden,
           .print\\:hidden {
             display: none !important;
+            position: static !important;
           }
           .container {
             width: 100% !important;
@@ -91,6 +94,7 @@ export default function AdminInvoicePage() {
             padding: 0 !important;
             margin: 0 !important;
             width: 100% !important;
+            background: transparent !important;
           }
           .print-card {
             break-inside: avoid !important;
