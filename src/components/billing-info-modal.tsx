@@ -116,7 +116,7 @@ export function BillingInfoModal({
           <div className="relative z-10 flex flex-col">
             {/* Header */}
             <div className="p-6 sm:p-8 !pb-0">
-              <div className="flex items-start justify-between gap-4">
+              <div className="flex items-start justify-between gap-4 w-full">
                 <div className="space-y-1">
                   <div className="flex items-center gap-2 mb-2">
                     <span className="px-2.5 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 text-[10px] font-bold tracking-wider uppercase flex items-center gap-1">
@@ -130,7 +130,7 @@ export function BillingInfoModal({
                     We need your information to generate valid tax invoices for your purchases.
                   </DialogDescription>
                 </div>
-                <DialogClose className="rounded-full p-2 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors">
+                <DialogClose className="absolute right-5 top-5 rounded-full p-2 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors">
                   <X className="h-5 w-5 text-zinc-500 dark:text-zinc-400" />
                 </DialogClose>
               </div>
