@@ -199,14 +199,17 @@ export default function AdminSubmissionDetailPage({
   // Analytics Calculations - Overall Cycle
   const totalJoinedCount = project.testerRelations?.length || 0;
   const activeTestersCount =
-    project.testerRelations?.filter((r) => r.status === "IN_PROGRESS")?.length ||
-    0;
+    project.testerRelations?.filter((r) => r.status === "IN_PROGRESS")
+      ?.length || 0;
   const pendingTestersCount =
     project.testerRelations?.filter((r) => r.status === "PENDING")?.length || 0;
   const completedTestersCount =
     project.testerRelations?.filter((r) => r.status === "COMPLETED")?.length ||
     0;
-  const notCompletedCount = Math.max(totalJoinedCount - completedTestersCount, 0);
+  const notCompletedCount = Math.max(
+    totalJoinedCount - completedTestersCount,
+    0,
+  );
 
   const currentDay = project.currentDay || 0;
   const totalDay = project.totalDay || 14;
@@ -215,10 +218,15 @@ export default function AdminSubmissionDetailPage({
   const verifiedTodayCount =
     project.testerRelations?.filter((r) => {
       if (r.status !== "IN_PROGRESS") return false;
-      const todayV = r.dailyVerifications?.find((v) => v.dayNumber === currentDay);
+      const todayV = r.dailyVerifications?.find(
+        (v) => v.dayNumber === currentDay,
+      );
       return todayV?.status === "VERIFIED";
     })?.length || 0;
-  const pendingTodayCount = Math.max(activeTestersCount - verifiedTodayCount, 0);
+  const pendingTodayCount = Math.max(
+    activeTestersCount - verifiedTodayCount,
+    0,
+  );
 
   const progressPercent = Math.min(
     Math.round((currentDay / totalDay) * 100),
@@ -229,16 +237,13 @@ export default function AdminSubmissionDetailPage({
   const lastActivityAt = project.testerRelations
     ?.map((r) => (r.lastActivityAt ? new Date(r.lastActivityAt) : null))
     .filter((d): d is Date => d !== null)
-    .reduce(
-      (max, d) => (max && d > max ? d : max || d),
-      null as Date | null,
-    );
+    .reduce((max, d) => (max && d > max ? d : max || d), null as Date | null);
 
   const averageProgress =
     project.testerRelations
       ?.filter((r) => r.status === "IN_PROGRESS" || r.status === "COMPLETED")
       ?.reduce((acc, r) => acc + (r.daysCompleted || 0), 0) /
-    (activeTestersCount + completedTestersCount) || 0;
+      (activeTestersCount + completedTestersCount) || 0;
 
   const healthIndicator =
     project.status === "IN_TESTING"
@@ -279,22 +284,22 @@ export default function AdminSubmissionDetailPage({
 
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
               <div className="flex items-center gap-5 z-10">
-                <SafeImage
-                  src={project.androidApp?.appLogoUrl}
-                  alt={project.androidApp?.appName}
-                  width={80}
-                  height={80}
-                  className="rounded-2xl shadow-sm border border-border"
-                />
-                <div className="space-y-1">
-                  <div className="flex items-center gap-3">
-                    <h1 className="text-2xl md:text-3xl font-extrabold bg-gradient-to-br from-primary to-accent bg-clip-text text-transparent">
-                      {project.androidApp?.appName || `App #${project.appId}`}
-                    </h1>
-                    <div className="px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-[10px] font-black tracking-[0.2em] uppercase shadow-sm">
-                      {project.appType} <span className="hidden sm:inline">Submission</span>
-                    </div>
+                <div className="flex flex-col items-center gap-1 sm:gap-2">
+                  <div className="px-1 sm:px-3 py-0.5 sm:py-1 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-500 text-[10px] font-black shadow-sm">
+                    {project.appType}{" "}
                   </div>
+                  <SafeImage
+                    src={project.androidApp?.appLogoUrl}
+                    alt={project.androidApp?.appName}
+                    width={80}
+                    height={80}
+                    className="rounded-2xl shadow-sm border border-border"
+                  />
+                </div>
+                <div className="space-y-1">
+                  <h1 className="text-2xl md:text-3xl font-extrabold bg-gradient-to-br from-primary to-accent bg-clip-text text-transparent">
+                    {project.androidApp?.appName || `App #${project.appId}`}
+                  </h1>
                   <div className="flex items-center gap-2">
                     <span className="text-sm font-medium text-muted-foreground mr-1">
                       Status:
@@ -331,7 +336,8 @@ export default function AdminSubmissionDetailPage({
                   <ExternalLink className="w-4 h-4" /> Play Store
                 </a>
 
-                {(project.status === "IN_REVIEW" || project.status === "REJECTED") && (
+                {(project.status === "IN_REVIEW" ||
+                  project.status === "REJECTED") && (
                   <>
                     <Button
                       variant="destructive"
@@ -644,8 +650,9 @@ export default function AdminSubmissionDetailPage({
                   {(activeTestersCount > 0 || completedTestersCount > 0) && (
                     <p className="text-xs text-muted-foreground flex items-center gap-1.5 font-medium">
                       <Activity className="w-3.5 h-3.5" />
-                      Average Tester Progress: {averageProgress.toFixed(1)} /{" "}
-                      {totalDay} Days
+                      Average Tester Progress: {averageProgress.toFixed(
+                        1,
+                      )} / {totalDay} Days
                     </p>
                   )}
                 </div>
@@ -919,21 +926,25 @@ export default function AdminSubmissionDetailPage({
             isLoading={isLoading}
           />
 
-
-
           {/* Admin Declaration Editor */}
           {project.status === "COMPLETED" && (
             <Accordion type="single" collapsible className="w-full">
-              <AccordionItem value="admin-declaration" className="border border-border/50 rounded-3xl bg-card shadow-sm overflow-hidden">
+              <AccordionItem
+                value="admin-declaration"
+                className="border border-border/50 rounded-3xl bg-card shadow-sm overflow-hidden"
+              >
                 <AccordionTrigger className="px-6 py-5 hover:no-underline hover:bg-muted/30 transition-colors">
                   <div className="flex items-center gap-3 flex-1">
                     <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
                       <FileText className="w-5 h-5 text-primary" />
                     </div>
                     <div className="text-left flex-1 min-w-0">
-                      <span className="font-bold text-lg text-foreground">Admin Declaration</span>
+                      <span className="font-bold text-lg text-foreground">
+                        Admin Declaration
+                      </span>
                       <p className="text-xs text-muted-foreground mt-0.5">
-                        Review, edit, and publish the declaration report for this app
+                        Review, edit, and publish the declaration report for
+                        this app
                       </p>
                     </div>
                   </div>

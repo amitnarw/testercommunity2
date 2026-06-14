@@ -5,7 +5,7 @@ import { ROUTES } from '@/lib/routes';
 
 export default function Footer() {
   return (
-    <footer className="bg-secondary/50 overflow-x-hidden">
+    <footer className="bg-secondary/50 overflow-x-hidden print:hidden">
       <hr />
       <div className="container mx-auto px-4 md:px-6 py-4 max-w-full">
         <div className="flex flex-col md:flex-row justify-between items-center text-xs sm:text-sm text-muted-foreground">

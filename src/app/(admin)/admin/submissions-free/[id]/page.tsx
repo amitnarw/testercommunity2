@@ -156,14 +156,17 @@ export default function AdminSubmissionDetailPage({
   // Analytics Calculations - Overall Cycle
   const totalJoinedCount = project.testerRelations?.length || 0;
   const activeTestersCount =
-    project.testerRelations?.filter((r) => r.status === "IN_PROGRESS")?.length ||
-    0;
+    project.testerRelations?.filter((r) => r.status === "IN_PROGRESS")
+      ?.length || 0;
   const pendingTestersCount =
     project.testerRelations?.filter((r) => r.status === "PENDING")?.length || 0;
   const completedTestersCount =
     project.testerRelations?.filter((r) => r.status === "COMPLETED")?.length ||
     0;
-  const notCompletedCount = Math.max(totalJoinedCount - completedTestersCount, 0);
+  const notCompletedCount = Math.max(
+    totalJoinedCount - completedTestersCount,
+    0,
+  );
 
   const currentDay = project.currentDay || 0;
   const totalDay = project.totalDay || 14;
@@ -172,10 +175,15 @@ export default function AdminSubmissionDetailPage({
   const verifiedTodayCount =
     project.testerRelations?.filter((r) => {
       if (r.status !== "IN_PROGRESS") return false;
-      const todayV = r.dailyVerifications?.find((v) => v.dayNumber === currentDay);
+      const todayV = r.dailyVerifications?.find(
+        (v) => v.dayNumber === currentDay,
+      );
       return todayV?.status === "VERIFIED";
     })?.length || 0;
-  const pendingTodayCount = Math.max(activeTestersCount - verifiedTodayCount, 0);
+  const pendingTodayCount = Math.max(
+    activeTestersCount - verifiedTodayCount,
+    0,
+  );
 
   const progressPercent = Math.min(
     Math.round((currentDay / totalDay) * 100),
@@ -186,16 +194,13 @@ export default function AdminSubmissionDetailPage({
   const lastActivityAt = project.testerRelations
     ?.map((r) => (r.lastActivityAt ? new Date(r.lastActivityAt) : null))
     .filter((d): d is Date => d !== null)
-    .reduce(
-      (max, d) => (max && d > max ? d : max || d),
-      null as Date | null,
-    );
+    .reduce((max, d) => (max && d > max ? d : max || d), null as Date | null);
 
   const averageProgress =
     project.testerRelations
       ?.filter((r) => r.status === "IN_PROGRESS" || r.status === "COMPLETED")
       ?.reduce((acc, r) => acc + (r.daysCompleted || 0), 0) /
-    (activeTestersCount + completedTestersCount) || 0;
+      (activeTestersCount + completedTestersCount) || 0;
 
   const healthIndicator =
     project.status === "IN_TESTING"
@@ -236,22 +241,22 @@ export default function AdminSubmissionDetailPage({
 
             <div className="flex flex-col lg:flex-row md:items-center justify-between gap-6">
               <div className="flex items-center gap-5 z-10">
-                <SafeImage
-                  src={project.androidApp?.appLogoUrl}
-                  alt={project.androidApp?.appName}
-                  width={80}
-                  height={80}
-                  className="rounded-2xl shadow-sm border border-border"
-                />
-                <div className="space-y-1.5 min-w-0">
-                  <div className="flex flex-wrap items-center gap-3">
-                    <h1 className="text-2xl md:text-3xl font-extrabold bg-gradient-to-br from-primary to-accent bg-clip-text text-transparent truncate">
-                      {project.androidApp?.appName || `App #${project.appId}`}
-                    </h1>
-                    <div className="px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-[10px] font-black tracking-[0.2em] uppercase shadow-sm">
-                      {project.appType} Submission
-                    </div>
+                <div className="flex flex-col items-center gap-1 sm:gap-2">
+                  <SafeImage
+                    src={project.androidApp?.appLogoUrl}
+                    alt={project.androidApp?.appName}
+                    width={80}
+                    height={80}
+                    className="rounded-2xl shadow-sm border border-border"
+                  />
+                  <div className="px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-[10px] font-black tracking-[0.2em] uppercase shadow-sm">
+                    {project.appType}
                   </div>
+                </div>
+                <div className="space-y-1.5 min-w-0">
+                  <h1 className="text-2xl md:text-3xl font-extrabold bg-gradient-to-br from-primary to-accent bg-clip-text text-transparent truncate">
+                    {project.androidApp?.appName || `App #${project.appId}`}
+                  </h1>
                   <div className="flex flex-col gap-2">
                     <div className="flex items-center gap-2">
                       <span className="text-sm font-medium text-muted-foreground mr-1">
@@ -265,9 +270,9 @@ export default function AdminSubmissionDetailPage({
                         }
                         className={
                           project.status === "ACCEPTED" ||
-                            project.status === "AVAILABLE" ||
-                            project.status === "IN_TESTING" ||
-                            project.status === "COMPLETED"
+                          project.status === "AVAILABLE" ||
+                          project.status === "IN_TESTING" ||
+                          project.status === "COMPLETED"
                             ? "bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 font-bold border-emerald-500/20"
                             : "font-bold"
                         }
@@ -279,17 +284,17 @@ export default function AdminSubmissionDetailPage({
                       project.status === "AVAILABLE" ||
                       project.status === "IN_TESTING" ||
                       project.status === "COMPLETED") && (
-                        <p className="text-sm text-muted-foreground max-w-xl leading-snug">
-                          {project.status === "ACCEPTED" &&
-                            "This application has been approved. It is currently in the queue waiting for setup before becoming available to testers."}
-                          {project.status === "AVAILABLE" &&
-                            "This application is active and listed on the Dashboard. Testers can now join this project."}
-                          {project.status === "IN_TESTING" &&
-                            "Active testing phase. Testers are participating and feedback is being collected."}
-                          {project.status === "COMPLETED" &&
-                            "Testing completed. All required testers have participated and duration fulfilled."}
-                        </p>
-                      )}
+                      <p className="text-sm text-muted-foreground max-w-xl leading-snug">
+                        {project.status === "ACCEPTED" &&
+                          "This application has been approved. It is currently in the queue waiting for setup before becoming available to testers."}
+                        {project.status === "AVAILABLE" &&
+                          "This application is active and listed on the Dashboard. Testers can now join this project."}
+                        {project.status === "IN_TESTING" &&
+                          "Active testing phase. Testers are participating and feedback is being collected."}
+                        {project.status === "COMPLETED" &&
+                          "Testing completed. All required testers have participated and duration fulfilled."}
+                      </p>
+                    )}
                   </div>
                 </div>
               </div>
@@ -305,7 +310,8 @@ export default function AdminSubmissionDetailPage({
                   <ExternalLink className="w-4 h-4" /> Play Store
                 </a>
 
-                {(project.status === "IN_REVIEW" || project.status === "REJECTED") && (
+                {(project.status === "IN_REVIEW" ||
+                  project.status === "REJECTED") && (
                   <>
                     <Button
                       variant="destructive"
@@ -342,7 +348,8 @@ export default function AdminSubmissionDetailPage({
                   </>
                 )}
 
-                {(project.status === "AVAILABLE" || project.status === "IN_TESTING") && (
+                {(project.status === "AVAILABLE" ||
+                  project.status === "IN_TESTING") && (
                   <Button
                     onClick={() => setShowManageTestersDialog(true)}
                     className="px-5 py-2.5 h-auto rounded-xl shadow-sm font-bold"
@@ -532,7 +539,10 @@ export default function AdminSubmissionDetailPage({
                       Cost Points
                     </span>
                     <span className="text-2xl font-black text-blue-600">
-                      {project.costPoints || 0} <span className="text-xs font-bold text-muted-foreground lowercase">Pts</span>
+                      {project.costPoints || 0}{" "}
+                      <span className="text-xs font-bold text-muted-foreground lowercase">
+                        Pts
+                      </span>
                     </span>
                   </div>
                   <div className="p-4 flex flex-col items-center justify-center text-center space-y-1.5 hover:bg-background transition-colors">
@@ -541,7 +551,10 @@ export default function AdminSubmissionDetailPage({
                       Reward Points
                     </span>
                     <span className="text-2xl font-black text-emerald-600">
-                      {project.rewardPoints || 0} <span className="text-xs font-bold text-muted-foreground lowercase">Pts</span>
+                      {project.rewardPoints || 0}{" "}
+                      <span className="text-xs font-bold text-muted-foreground lowercase">
+                        Pts
+                      </span>
                     </span>
                   </div>
                 </div>
@@ -606,8 +619,9 @@ export default function AdminSubmissionDetailPage({
                   {(activeTestersCount > 0 || completedTestersCount > 0) && (
                     <p className="text-xs text-muted-foreground flex items-center gap-1.5 font-medium">
                       <Activity className="w-3.5 h-3.5" />
-                      Average Tester Progress: {averageProgress.toFixed(1)} /{" "}
-                      {totalDay} Days
+                      Average Tester Progress: {averageProgress.toFixed(
+                        1,
+                      )} / {totalDay} Days
                     </p>
                   )}
                 </div>
@@ -815,41 +829,41 @@ export default function AdminSubmissionDetailPage({
 
                   {(project.statusDetails?.image ||
                     project.statusDetails?.video) && (
-                      <div className="space-y-3 pt-2">
-                        <h3 className="text-sm font-bold text-muted-foreground uppercase tracking-wider flex items-center gap-2">
-                          <ShieldAlert className="w-4 h-4" /> Evidence Provided
-                        </h3>
-                        <div className="flex flex-wrap gap-4">
-                          {project.statusDetails?.image && (
-                            <div
-                              className="relative h-48 w-full sm:w-72 rounded-xl overflow-hidden border bg-black/5 cursor-pointer shadow-sm group-hover:shadow-md transition-all"
-                              onClick={() =>
-                                setFullscreenImage(project.statusDetails!.image)
-                              }
-                            >
-                              <SafeImage
-                                src={project.statusDetails.image}
-                                alt="Rejection Image"
-                                fill
-                                className="object-cover"
-                              />
-                              <div className="absolute inset-0 bg-black/0 hover:bg-black/30 transition-colors flex items-center justify-center group">
-                                <Expand className="w-8 h-8 text-white opacity-0 group-hover:opacity-100 transition-all font-bold scale-90 group-hover:scale-100" />
-                              </div>
+                    <div className="space-y-3 pt-2">
+                      <h3 className="text-sm font-bold text-muted-foreground uppercase tracking-wider flex items-center gap-2">
+                        <ShieldAlert className="w-4 h-4" /> Evidence Provided
+                      </h3>
+                      <div className="flex flex-wrap gap-4">
+                        {project.statusDetails?.image && (
+                          <div
+                            className="relative h-48 w-full sm:w-72 rounded-xl overflow-hidden border bg-black/5 cursor-pointer shadow-sm group-hover:shadow-md transition-all"
+                            onClick={() =>
+                              setFullscreenImage(project.statusDetails!.image)
+                            }
+                          >
+                            <SafeImage
+                              src={project.statusDetails.image}
+                              alt="Rejection Image"
+                              fill
+                              className="object-cover"
+                            />
+                            <div className="absolute inset-0 bg-black/0 hover:bg-black/30 transition-colors flex items-center justify-center group">
+                              <Expand className="w-8 h-8 text-white opacity-0 group-hover:opacity-100 transition-all font-bold scale-90 group-hover:scale-100" />
                             </div>
-                          )}
-                          {project.statusDetails?.video && (
-                            <div className="h-48 w-full sm:w-72 rounded-xl overflow-hidden border bg-black relative shadow-sm">
-                              <video
-                                src={project.statusDetails.video}
-                                controls
-                                className="w-full h-full object-contain"
-                              />
-                            </div>
-                          )}
-                        </div>
+                          </div>
+                        )}
+                        {project.statusDetails?.video && (
+                          <div className="h-48 w-full sm:w-72 rounded-xl overflow-hidden border bg-black relative shadow-sm">
+                            <video
+                              src={project.statusDetails.video}
+                              controls
+                              className="w-full h-full object-contain"
+                            />
+                          </div>
+                        )}
                       </div>
-                    )}
+                    </div>
+                  )}
                 </div>
               </CardContent>
             </Card>
@@ -859,17 +873,17 @@ export default function AdminSubmissionDetailPage({
           {(project.status === "AVAILABLE" ||
             project.status === "IN_TESTING" ||
             project.status === "COMPLETED") && (
-              <div className="bg-card rounded-3xl overflow-hidden border border-border/50 shadow-sm">
-                <AdminAssignedTestersTable
-                  testerRelations={project.testerRelations}
-                  appId={project.id}
-                  totalDays={project.totalDay || 14}
-                  currentDay={currentDay}
-                  onRefetch={refetch}
-                  appType="FREE"
-                />
-              </div>
-            )}
+            <div className="bg-card rounded-3xl overflow-hidden border border-border/50 shadow-sm">
+              <AdminAssignedTestersTable
+                testerRelations={project.testerRelations}
+                appId={project.id}
+                totalDays={project.totalDay || 14}
+                currentDay={currentDay}
+                onRefetch={refetch}
+                appType="FREE"
+              />
+            </div>
+          )}
 
           {/* Tester Feedback Section */}
           <SubmittedFeedback
@@ -940,7 +954,9 @@ export default function AdminSubmissionDetailPage({
           currentAssigned={project.currentTester || 0}
           assignedTesterIds={
             project.testerRelations
-              ?.filter((r: any) => r.status !== "PENDING" && r.status !== "REJECTED")
+              ?.filter(
+                (r: any) => r.status !== "PENDING" && r.status !== "REJECTED",
+              )
               ?.map((r: any) => r.testerId) || []
           }
         />

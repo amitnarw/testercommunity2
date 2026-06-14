@@ -111,9 +111,9 @@ export function useUpdateControlRoom(options?: UseMutationOptions<any, any, any>
   const queryClient = useQueryClient();
   const mutation = useMutation({
     mutationFn: (payload: any) => updateControlRoomData(payload),
-    onSuccess: (data, variables, context) => {
+    onSuccess: (data: any, variables: any, _onMutateResult: any, _context: any) => {
       queryClient.invalidateQueries({ queryKey: ["useControlRoomData"] });
-      options?.onSuccess?.(data, variables, context);
+      options?.onSuccess?.(data, variables, _onMutateResult, _context);
     },
     ...options,
   });
@@ -355,10 +355,10 @@ export function useCreateUser(options?: UseMutationOptions<any, any, any>) {
   const queryClient = useQueryClient();
   const mutation = useMutation({
     mutationFn: (payload: any) => createUser(payload),
-    onSuccess: (data, variables, context) => {
+    onSuccess: (data: any, variables: any, _onMutateResult: any, _context: any) => {
       queryClient.invalidateQueries({ queryKey: ["useAllUsers"] });
       queryClient.invalidateQueries({ queryKey: ["useUserCounts"] });
-      options?.onSuccess?.(data, variables, context);
+      options?.onSuccess?.(data, variables, _onMutateResult, _context);
     },
     ...options,
   });
@@ -381,10 +381,10 @@ export function useConvertUserAuthType(options?: UseMutationOptions<any, any, an
   const mutation = useMutation({
     mutationFn: (payload: { userId: string; newAuthType: string; newPassword?: string }) =>
       convertUserAuthType(payload),
-    onSuccess: (data, variables, context) => {
+    onSuccess: (data: any, variables: any, _onMutateResult: any, _context: any) => {
       queryClient.invalidateQueries({ queryKey: ["useUserById", variables.userId] });
       queryClient.invalidateQueries({ queryKey: ["useAllUsers"] });
-      options?.onSuccess?.(data, variables, context);
+      options?.onSuccess?.(data, variables, _onMutateResult, _context);
     },
     ...options,
   });
@@ -1241,9 +1241,9 @@ export function useUpdatePermission(options?: UseMutationOptions<any, any, any>)
         canDelete?: boolean;
       };
     }) => updatePermission(roleId, moduleId, payload),
-    onSuccess: (data, variables, context) => {
+    onSuccess: (data: any, variables: any, _onMutateResult: any, _context: any) => {
       queryClient.invalidateQueries({ queryKey: ["useAllPermissions"] });
-      options?.onSuccess?.(data, variables, context);
+      options?.onSuccess?.(data, variables, _onMutateResult, _context);
     },
     ...options,
   });

@@ -68,6 +68,17 @@ export interface RegisterPayload {
   devices?: string[];
   osVersions?: string[];
   languages?: string;
+  years_of_experience?: string;
+  areas_of_expertise?: string[];
+  device_company?: string;
+  device_model?: string;
+  ram?: string;
+  os?: string;
+  screen_resolution?: string;
+  language?: string;
+  network?: string;
+  country?: string;
+  phone?: string;
 }
 
 export type RegisterResponse = {
@@ -91,7 +102,7 @@ export function useRegisterUser() {
 }
 
 export function useRegisterTester() {
-  const mutation = useMutation<RegisterResponse, Error, RegisterPayload>({
+  const mutation = useMutation<RegisterResponse, Error, Parameters<typeof registerTester>[0]>({
     mutationFn: (payload) => registerTester(payload),
     onSuccess: (data) => {
       console.log("Tester Register success: ", data);
