@@ -15,7 +15,8 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Upload, Save, UserCog } from "lucide-react";
+import { Upload, Save, UserCog, Receipt } from "lucide-react";
+import { BillingInfoModal } from "@/components/billing-info-modal";
 import { useToast } from "@/hooks/use-toast";
 import { Separator } from "@/components/ui/separator";
 import { useUserProfileData } from "@/hooks/useUser";
@@ -43,6 +44,7 @@ export function UserDataForm({ title = "User data", showAdvancedSetup = true }: 
 
   const { toast } = useToast();
   const [avatar, setAvatar] = useState("");
+  const [isBillingModalOpen, setIsBillingModalOpen] = useState(false);
 
   const {
     data: userProfileData,
@@ -227,6 +229,24 @@ export function UserDataForm({ title = "User data", showAdvancedSetup = true }: 
               </div>
             )}
 
+            <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between rounded-lg bg-secondary/50 p-2 sm:p-4">
+              <div className="text-center sm:text-start">
+                <h4 className="font-semibold">Billing Details</h4>
+                <p className="text-xs text-muted-foreground">
+                  View and update your billing information for invoices and purchases.
+                </p>
+              </div>
+              <Button
+                size="sm"
+                variant="outline"
+                type="button"
+                onClick={() => setIsBillingModalOpen(true)}
+                className="w-full sm:w-auto !px-5"
+              >
+                <Receipt className="mr-2 h-4 w-4" /> Manage Billing
+              </Button>
+            </div>
+
             <div className="flex justify-end">
               <Button type="submit" className="w-full sm:w-auto">
                 <Save className="mr-2 h-4 w-4" /> Save Changes
@@ -235,6 +255,7 @@ export function UserDataForm({ title = "User data", showAdvancedSetup = true }: 
           </CardContent>
         </form>
       </div>
+      <BillingInfoModal open={isBillingModalOpen} onOpenChange={setIsBillingModalOpen} />
     </Card>
   );
 }

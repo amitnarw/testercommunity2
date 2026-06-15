@@ -305,7 +305,7 @@ export default function MobileMenu({
     : null;
 
   return (
-    <div data-loc="MobileMenu" className="md:hidden">
+    <div data-loc="MobileMenu" className="md:hidden print:hidden">
       <Sheet open={isMenuOpen} onOpenChange={setIsMenuOpen}>
         <SheetTrigger asChild>
           <Button size="icon" variant="ghost" className="p-2 h-8 w-8">

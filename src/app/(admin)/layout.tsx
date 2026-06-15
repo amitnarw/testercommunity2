@@ -86,7 +86,7 @@ export default function AdminLayout({
           className={`flex flex-col flex-1 transition-all duration-300 md:pl-20`}
         >
           <Navbar onLogout={handleLogout} />
-          <main className="flex-1 bg-secondary/50">{children}</main>
+          <main className="flex-1 bg-secondary/50 print:bg-transparent">{children}</main>
           <Footer />
         </div>
       </div>

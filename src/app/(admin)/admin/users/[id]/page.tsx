@@ -239,13 +239,18 @@ export default function AdminUserDetailsPage() {
     type: 'OTHER',
     url: '',
   });
-  const [feedbackModal, setFeedbackModal] = useState({
+  const [feedbackModal, setFeedbackModal] = useState<{
+    open: boolean;
+    status: "success" | "error" | "warning" | "info" | "loading";
+    title: string;
+    description: string;
+    primaryAction?: { label: string; onClick: () => void };
+    secondaryAction?: { label: string; onClick: () => void };
+  }>({
     open: false,
-    status: "info" as const,
+    status: "info",
     title: '',
     description: '',
-    primaryAction: null,
-    secondaryAction: null,
   })
 
   const [isEconomyEditing, setIsEconomyEditing] = useState(false);
@@ -274,13 +279,6 @@ export default function AdminUserDetailsPage() {
     }
   }, [invoicePreviewData]);
 
-  const [isCreatingNotification, setIsCreatingNotification] = useState(false);
-  const [createFormData, setCreateFormData] = useState({
-    title: '',
-    description: '',
-    type: 'OTHER',
-    url: '',
-  });
   const [editingNotificationId, setEditingNotificationId] = useState<number | null>(null);
   const [editFormData, setEditFormData] = useState({
     title: '',
@@ -570,22 +568,6 @@ export default function AdminUserDetailsPage() {
     });
   };
 
-  const handleCreateNotification = () => {
-    if (!createFormData.title || !createFormData.description) return;
-    createNotificationMutation.mutate({
-      title: createFormData.title,
-      description: createFormData.description,
-      type: createFormData.type || 'OTHER',
-      url: createFormData.url || undefined,
-      userId: id,
-    }, {
-      onSuccess: () => {
-        setIsCreatingNotification(false);
-        setCreateFormData({ title: '', description: '', type: 'OTHER', url: '' });
-      },
-    });
-  };
-
   const handleDeleteNotification = (notifId: number) => {
     setFeedbackModal({
       open: true,
@@ -671,7 +653,7 @@ export default function AdminUserDetailsPage() {
           <BackButton href={ROUTES.ADMIN.USERS} />
         </div>
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-          <div className="flex items-center justify-between gap-4 w-full">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 w-full">
             <div>
               <h2 className="text-2xl sm:text-3xl font-extrabold bg-gradient-to-br from-primary to-primary/10 bg-clip-text text-transparent">
                 User Details
@@ -1022,110 +1004,18 @@ export default function AdminUserDetailsPage() {
                 <CardTitle className="text-sm font-semibold flex items-center gap-2">
                   <Bell className="w-4 h-4 text-purple-500" /> Notifications History
                 </CardTitle>
-                {!isCreatingNotification && (
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => setIsCreatingNotification(true)}
-                    title="New Notification"
-                  >
-                    <Plus className="w-4 h-4" />
+                  <Button size="sm" onClick={() => {
+                    setNotificationData({ title: '', description: '', type: 'OTHER', url: '' });
+                    setIsSendNotificationModalOpen(true);
+                  }}>
+                    <Plus className="w-4 h-4 mr-0 sm:mr-2" /> <span className="hidden sm:inline">Send Notification</span>
                   </Button>
-                )}
               </div>
               <CardDescription>
                 All notifications sent to this user, including wallet updates and admin messages.
               </CardDescription>
             </CardHeader>
             <CardContent>
-              {/* Inline Create Form */}
-              {isCreatingNotification && (
-                <div className="border border-border rounded-lg p-4 mb-4 space-y-3 bg-muted/30">
-                  <h5 className="text-sm font-semibold">New Notification</h5>
-                  <div className="space-y-2">
-                    <Label>Title</Label>
-                    <Input
-                      placeholder="Notification title"
-                      value={createFormData.title}
-                      onChange={(e) =>
-                        setCreateFormData((prev) => ({ ...prev, title: e.target.value }))
-                      }
-                    />
-                  </div>
-                  <div className="space-y-2">
-                    <Label>Description</Label>
-                    <Textarea
-                      placeholder="Notification description"
-                      value={createFormData.description}
-                      onChange={(e) =>
-                        setCreateFormData((prev) => ({ ...prev, description: e.target.value }))
-                      }
-                    />
-                  </div>
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label>Type</Label>
-                      <Select
-                        value={createFormData.type}
-                        onValueChange={(value) =>
-                          setCreateFormData((prev) => ({ ...prev, type: value }))
-                        }
-                      >
-                        <SelectTrigger>
-                          <SelectValue placeholder="Select type" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {(notificationTypes || []).map((type: string) => (
-                            <SelectItem key={type} value={type}>
-                              {type.replace(/_/g, " ")}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
-                    <div className="space-y-2">
-                      <Label>URL (Optional)</Label>
-                      <Input
-                        placeholder="https://"
-                        value={createFormData.url}
-                        onChange={(e) =>
-                          setCreateFormData((prev) => ({ ...prev, url: e.target.value }))
-                        }
-                      />
-                    </div>
-                  </div>
-                  <div className="flex items-center justify-end gap-2 pt-2">
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => {
-                        setIsCreatingNotification(false);
-                        setCreateFormData({ title: '', description: '', type: 'OTHER', url: '' });
-                      }}
-                      title="Cancel"
-                    >
-                      <X className="w-4 h-4" />
-                    </Button>
-                    <Button
-                      size="sm"
-                      onClick={handleCreateNotification}
-                      disabled={
-                        createNotificationMutation.isPending ||
-                        !createFormData.title ||
-                        !createFormData.description
-                      }
-                      title="Send"
-                    >
-                      {createNotificationMutation.isPending ? (
-                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      ) : (
-                        <Send className="w-4 h-4" />
-                      )}
-                    </Button>
-                  </div>
-                </div>
-              )}
-
               {/* Notifications Table */}
               {isLoadingNotifications ? (
                 <div className="flex items-center justify-center py-8">
@@ -1549,13 +1439,11 @@ export default function AdminUserDetailsPage() {
                   </CardTitle>
                   <Button size="sm" onClick={() => {
                     setAddInvoiceFormData({});
-                    setAddInvoicePaymentSource(null);
                     setAddInvoicePaymentId(null);
                     setAddInvoicePaymentLabel("");
-                    setAddInvoiceExistingPaymentId(null);
                     setIsAddInvoiceModalOpen(true);
                   }}>
-                    <Plus className="w-4 h-4 mr-2" /> Add New Invoice
+                    <Plus className="w-4 h-4 mr-0 sm:mr-2" /> <span className="hidden sm:inline">Add New Invoice</span>
                   </Button>
                 </div>
                 <CardDescription>

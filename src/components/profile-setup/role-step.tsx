@@ -17,7 +17,7 @@ import { TesterAboutYouStep } from "./tester-about-you-step";
 
 export const RoleStep = (props: ProfileStepperProps) => {
   const { data: session } = authClient.useSession();
-  const isTester = (session as Record<string, unknown>)?.role?.name === "tester";
+  const isTester = ((session as Record<string, unknown>)?.role as { name?: string } | undefined)?.name === "tester";
 
   if (isTester) {
     return <TesterAboutYouStep {...props} />;
