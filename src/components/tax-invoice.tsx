@@ -137,6 +137,10 @@ export function TaxInvoice({ invoice }: TaxInvoiceProps) {
                   <span className="font-mono font-semibold text-slate-700">{COMPANY.pan}</span>
                 </div>
                 <div className="flex gap-2">
+                  <span className="text-slate-400 font-medium w-14 shrink-0">State</span>
+                  <span className="font-mono font-semibold text-slate-700">{COMPANY.stateName} ({COMPANY.stateCode})</span>
+                </div>
+                <div className="flex gap-2">
                   <span className="text-slate-400 font-medium w-14 shrink-0">Email</span>
                   <span className="text-slate-600">{COMPANY.email}</span>
                 </div>
@@ -192,6 +196,11 @@ export function TaxInvoice({ invoice }: TaxInvoiceProps) {
                   <p>{[billingInfo?.city, billingInfo?.state, billingInfo?.zipCode].filter(Boolean).join(", ")}</p>
                 )}
                 {billingInfo?.country && <p>{billingInfo.country}</p>}
+                {isIndia && (invoice.state_code || billingInfo?.stateCode) && (
+                  <p className="text-xs text-slate-400 mt-0.5">
+                    State Code: {invoice.state_code || billingInfo?.stateCode}
+                  </p>
+                )}
               </div>
               <div className="mt-2 space-y-0.5 text-xs">
                 {billingInfo?.gstin && (

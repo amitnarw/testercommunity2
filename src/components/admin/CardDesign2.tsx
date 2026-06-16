@@ -11,7 +11,8 @@ export function CardDesign2({
   stats: any;
   isLoading?: boolean;
 }) {
-  const totalSubmissions = stats?.totalSubmissions || 0;
+  const freeApps = stats?.submissionsByAppType?.FREE || 0;
+  const paidApps = stats?.submissionsByAppType?.PAID || 0;
 
   return (
     <Card className="bg-white dark:bg-[#0a0a0a] border-none shadow-2xl shadow-black/10 rounded-[2.5rem] overflow-hidden relative h-[220px] p-6 flex flex-col justify-between transition-all duration-300">
@@ -21,26 +22,39 @@ export function CardDesign2({
       <div className="flex justify-between items-start">
         <div>
           <p className="text-foreground/40 text-[10px] tracking-[0.2em] font-bold uppercase mb-1">
-            PLATFORM ACTIVITY
+            APP SUBMISSIONS
           </p>
-          <p className="text-foreground/30 text-[10px]">Active Submissions</p>
-        </div>
-        <div className="p-2 bg-foreground/5 rounded-xl">
-          <TrendingUp className="h-5 w-5 text-primary" />
+          <p className="text-foreground/30 text-[10px]">Free and paid apps listed on the platform</p>
         </div>
       </div>
 
-      <div className="flex flex-col items-start gap-2">
-        <h3 className="text-6xl font-black text-primary leading-none tracking-tighter tabular-nums">
-          {isLoading ? (
-            <Skeleton className="h-16 w-32 bg-muted" />
-          ) : (
-            totalSubmissions
-          )}
-        </h3>
-        <p className="text-foreground/30 text-[10px] ml-1">
-          Increasing day by day
-        </p>
+      <div className="grid grid-cols-2 gap-4 items-end">
+        <div>
+          <p className="text-muted-foreground/50 text-[10px] font-bold uppercase tracking-tight mb-1">
+            Free
+          </p>
+          <h3 className="text-4xl font-black text-foreground leading-none tracking-tighter tabular-nums">
+            {isLoading ? (
+              <Skeleton className="h-10 w-16 bg-muted" />
+            ) : (
+              freeApps
+            )}
+          </h3>
+          <p className="text-foreground/30 text-[10px] mt-1">apps</p>
+        </div>
+        <div>
+          <p className="text-muted-foreground/50 text-[10px] font-bold uppercase tracking-tight mb-1">
+            Paid
+          </p>
+          <h3 className="text-4xl font-black text-primary leading-none tracking-tighter tabular-nums">
+            {isLoading ? (
+              <Skeleton className="h-10 w-16 bg-muted" />
+            ) : (
+              paidApps
+            )}
+          </h3>
+          <p className="text-foreground/30 text-[10px] mt-1">apps</p>
+        </div>
       </div>
     </Card>
   );

@@ -176,9 +176,11 @@ export function ProjectList({
                       </span>
                     </span>
                     <span>
-                      Avg. testers/day:{" "}
+                      Avg tester rating:{" "}
                       <span className="font-bold text-foreground">
-                        {project.avgTestersPerDay.toFixed(1)}
+                        {project.overallRating > 0
+                          ? project.overallRating.toFixed(1)
+                          : "N/A"}
                       </span>
                     </span>
                   </CardFooter>

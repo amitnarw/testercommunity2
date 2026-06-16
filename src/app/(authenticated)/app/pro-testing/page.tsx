@@ -142,7 +142,7 @@ function DashboardPageContent() {
   const pathname = usePathname();
   const router = useRouter();
 
-  const [mainTab, setMainTab] = useState(searchParams.get("tab") || "pending");
+  const [mainTab, setMainTab] = useState(searchParams.get("tab") || "ongoing");
   const [pendingSubTab, setPendingSubTab] = useState(
     (searchParams.get("tab") === "pending"
       ? searchParams.get("subtab")
@@ -321,7 +321,7 @@ function DashboardPageContent() {
         androidVersion: `Android ${app.minimumAndroidVersion}+`,
         pointsCost: app.costPoints || 0,
         crashFreeRate: 100, // Placeholder
-        overallRating: 0, // Placeholder
+        overallRating: app.averageRating || 0,
         feedbackBreakdown: { bugs: 0, suggestions: 0, praise: 0 },
         performanceMetrics: { cpuUsage: 0, memoryUsage: 0, startupTime: 0 },
         deviceCoverage: [],

@@ -4,14 +4,14 @@ import Image from "next/image";
 import { TransitionLink } from "@/components/transition-link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { ChevronRight, ChevronLeft, ChevronUp, ChevronDown, LogOut } from "lucide-react";
+import { ChevronRight, ChevronLeft, LogOut } from "lucide-react";
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
-import { ReactNode, useEffect, useRef, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { ReactNode } from "react";
+
 
 export interface NavItem {
   name: string;
@@ -135,7 +135,7 @@ export interface BaseSidebarProps {
   logoHref: string;
   navContent: ReactNode; // We let the specific sidebar pass in the mapped nav items, section headers, etc.
   bottomContent?: ReactNode; // For Wallet, Profile, etc.
-  showScrollIndicator?: boolean; // Useful for admin panel
+
   className?: string; // Additional classes for the inner container (e.g. background gradients)
 }
 
@@ -146,40 +146,8 @@ export function BaseSidebar({
   logoHref,
   navContent,
   bottomContent,
-  showScrollIndicator = false,
   className,
 }: BaseSidebarProps) {
-  const navRef = useRef<HTMLDivElement>(null);
-  const [canScrollUp, setCanScrollUp] = useState(false);
-  const [canScrollDown, setCanScrollDown] = useState(false);
-
-  // Check if navigation content overflows
-  useEffect(() => {
-    if (!showScrollIndicator) return;
-
-    const checkOverflow = () => {
-      if (navRef.current) {
-        const { scrollHeight, clientHeight, scrollTop } = navRef.current;
-        setCanScrollUp(scrollTop > 5);
-        setCanScrollDown(scrollTop + clientHeight < scrollHeight - 5);
-      }
-    };
-
-    checkOverflow();
-    // Re-check on collapse toggle
-    const timer = setTimeout(checkOverflow, 350);
-    return () => clearTimeout(timer);
-  }, [isCollapsed, showScrollIndicator]);
-
-  // Track scroll position for arrow visibility
-  const handleScroll = () => {
-    if (!showScrollIndicator) return;
-    if (navRef.current) {
-      const { scrollTop, scrollHeight, clientHeight } = navRef.current;
-      setCanScrollUp(scrollTop > 5);
-      setCanScrollDown(scrollTop + clientHeight < scrollHeight - 5);
-    }
-  };
 
   return (
     <div
@@ -233,15 +201,7 @@ export function BaseSidebar({
           {/* Navigation Area */}
           <div className="flex-1 flex flex-col min-h-0 relative w-full overflow-hidden">
             <nav
-              ref={navRef}
-              onScroll={handleScroll}
-              className={cn(
-                "flex flex-col gap-1 w-full px-2 mt-2 flex-1 overflow-y-auto scrollbar-hide pb-4",
-                showScrollIndicator &&
-                  (canScrollUp || canScrollDown) &&
-                  !isCollapsed &&
-                  "seamless-scroll-mask",
-              )}
+              className="flex flex-col gap-1 w-full px-2 mt-2 flex-1 overflow-y-auto scrollbar-hide pb-4"
               style={{
                 scrollbarWidth: "none",
                 msOverflowStyle: "none",
@@ -250,43 +210,6 @@ export function BaseSidebar({
               {navContent}
             </nav>
 
-            {/* Scroll arrows - shown when content overflows */}
-            <AnimatePresence>
-              {showScrollIndicator && canScrollUp && (
-                <motion.div
-                  initial={{ opacity: 0, y: -10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -10 }}
-                  transition={{ duration: 0.3, ease: "easeOut" }}
-                  className="absolute top-1 inset-x-0 z-20 flex justify-center"
-                >
-                  <button
-                    onClick={() => navRef.current?.scrollBy({ top: -120, behavior: "smooth" })}
-                    className="flex items-center justify-center w-6 h-6 rounded-full bg-white/10 dark:bg-black/10 backdrop-blur-sm border border-white/10 dark:border-black/10 shadow-lg hover:bg-white/20 dark:hover:bg-black/20 transition-colors pointer-events-auto"
-                  >
-                    <ChevronUp className="h-3.5 w-3.5 text-white/70 dark:text-black/70" />
-                  </button>
-                </motion.div>
-              )}
-            </AnimatePresence>
-            <AnimatePresence>
-              {showScrollIndicator && canScrollDown && (
-                <motion.div
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: 10 }}
-                  transition={{ duration: 0.3, ease: "easeOut" }}
-                  className="absolute bottom-1 inset-x-0 z-20 flex justify-center"
-                >
-                  <button
-                    onClick={() => navRef.current?.scrollBy({ top: 120, behavior: "smooth" })}
-                    className="flex items-center justify-center w-6 h-6 rounded-full bg-white/10 dark:bg-black/10 backdrop-blur-sm border border-white/10 dark:border-black/10 shadow-lg hover:bg-white/20 dark:hover:bg-black/20 transition-colors pointer-events-auto"
-                  >
-                    <ChevronDown className="h-3.5 w-3.5 text-white/70 dark:text-black/70" />
-                  </button>
-                </motion.div>
-              )}
-            </AnimatePresence>
           </div>
 
           {/* Bottom Section */}

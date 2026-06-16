@@ -1,7 +1,8 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { CheckCircle, Bug, Lightbulb, PartyPopper } from "lucide-react";
+import { CheckCircle, Bug, Info, Lightbulb, PartyPopper } from "lucide-react";
+import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 import { useInView } from "react-intersection-observer";
 import type { Project } from "@/lib/types";
 
@@ -104,13 +105,25 @@ export function TestCompleteSection({
             <p className="text-xs text-muted-foreground">Praise</p>
             <p className="text-4xl font-bold">{feedbackBreakdown.praise}</p>
           </div>
-          <div className="bg-gradient-to-br from-primary to-primary/50 text-primary-foreground p-5 rounded-lg">
-            <p className="text-xs hidden sm:block">Average Rating</p>
-            <p className="text-xs block sm:hidden">Avg. Rating</p>
-            <p className="text-4xl font-bold">
-              {app?.overallRating?.toFixed(1)}
-            </p>
-          </div>
+            <div className="bg-gradient-to-br from-primary to-primary/50 text-primary-foreground p-5 rounded-lg">
+                <div className="flex items-center justify-center gap-1">
+                    <p className="text-xs hidden sm:block">Avg. Tester Rating</p>
+                    <p className="text-xs block sm:hidden">Avg. Tester Rating</p>
+                    <Tooltip>
+                        <TooltipTrigger asChild>
+                            <button className="inline-flex items-center justify-center" type="button">
+                                <Info className="w-3 h-3 cursor-help" />
+                            </button>
+                        </TooltipTrigger>
+                        <TooltipContent side="top" className="max-w-60">
+                            <p>Average rating given by all paid testers who tested this app.</p>
+                        </TooltipContent>
+                    </Tooltip>
+                </div>
+                <p className="text-4xl font-bold">
+                  {app?.overallRating?.toFixed(1)}
+                </p>
+            </div>
         </div>
       </motion.div>
     </motion.div>

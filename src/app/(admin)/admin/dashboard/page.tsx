@@ -57,17 +57,6 @@ const QuickActions = dynamic(
   },
 );
 
-const PlatformStats = dynamic(
-  () =>
-    import("@/components/admin/dashboard/platform-stats").then(
-      (mod) => mod.PlatformStats,
-    ),
-  {
-    ssr: false,
-    loading: () => <Skeleton className="w-full h-24 rounded-xl" />,
-  },
-);
-
 const ServiceComparisonChart = dynamic(
   () =>
     import("@/components/admin/dashboard/service-comparison").then(
@@ -179,9 +168,6 @@ export default function AdminDashboardPage() {
           isLoading={isLoading}
         />
       </div>
-
-      {/* Platform-wide Stats */}
-      <PlatformStats stats={stats} isLoading={isLoading} />
 
       {/* Charts Row 1 - Trend & Distribution */}
       <div className="grid gap-6 grid-cols-1 lg:grid-cols-2">

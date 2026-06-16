@@ -84,7 +84,7 @@ export function useDashboardSummary() {
     if (proInReview > 0 && packagesBalance <= 0) {
       items.push({
         label: "No packages available",
-        description: `${proInReview} pro app${proInReview > 1 ? "s" : ""} in review — purchase packages to proceed when approved.`,
+        description: `${proInReview} pro app${proInReview > 1 ? "s" : ""} in review, purchase packages to proceed when approved.`,
         href: ROUTES.AUTHENTICATED.BILLING,
         severity: "high",
       });
