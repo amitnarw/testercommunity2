@@ -368,7 +368,7 @@ export function Sidebar({
       className="bg-gradient-to-r from-primary to-primary/70 border-white/10" // Unified gradient style
       navContent={navContent}
       bottomContent={bottomContent}
-      showScrollIndicator={isAdminRole} // Admin sidebar has more links, might need scrolling
+
     />
   );
 }

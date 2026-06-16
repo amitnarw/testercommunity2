@@ -100,7 +100,10 @@ export default function ProfessionalSupportPage() {
                     {/* Quick Actions Grid */}
                     <motion.div variants={itemVariants} className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
                         {/* Chat with Alex */}
-                        <div className="group relative rounded-[2.5rem] p-8 bg-card dark:bg-zinc-900/40 border border-border dark:border-white/[0.05] hover:border-primary/50 transition-all cursor-pointer shadow-sm hover:shadow-lg dark:shadow-none overflow-hidden" data-chatbot-trigger>
+                        <div
+                            onClick={() => window.dispatchEvent(new CustomEvent("open-alex-chat"))}
+                            className="group relative rounded-[2.5rem] p-8 bg-card dark:bg-zinc-900/40 border border-border dark:border-white/[0.05] hover:border-primary/50 transition-all cursor-pointer shadow-sm hover:shadow-lg dark:shadow-none overflow-hidden"
+                        >
                             <div className="absolute top-0 right-0 p-8 opacity-50 group-hover:opacity-100 transition-opacity">
                                 <ArrowRight className="w-6 h-6 text-muted-foreground group-hover:text-primary transition-colors" />
                             </div>

@@ -1,6 +1,7 @@
 import { cn } from "@/lib/utils";
 import { motion } from "framer-motion";
-import { Bug, Copy, ExternalLink, Lightbulb, PartyPopper, Star } from "lucide-react";
+import { Bug, Copy, ExternalLink, Info, Lightbulb, PartyPopper, Star } from "lucide-react";
+import { Tooltip, TooltipContent, TooltipTrigger } from "../ui/tooltip";
 import { Button } from "../ui/button";
 import { Project } from "@/lib/types";
 import { copyToClipboard } from "../copy-clipboard";
@@ -72,8 +73,18 @@ export default function InfoBar({project, isUnderReviewOrRejected, feedbackBreak
             </InfoCard>
 
             <section className='flex flex-col items-center rounded-2xl bg-card text-card-foreground p-3 shadow-sm relative overflow-hidden'>
-                <div className="flex items-center gap-3 mb-3">
-                    <h3 className="text-sm text-center w-full">Average Rating</h3>
+                <div className="flex items-center justify-center gap-1.5 mb-3">
+                    <h3 className="text-sm">Avg. Tester Rating</h3>
+                    <Tooltip>
+                        <TooltipTrigger asChild>
+                            <button className="inline-flex items-center justify-center" type="button">
+                                <Info className="w-3.5 h-3.5 text-muted-foreground cursor-help" />
+                            </button>
+                        </TooltipTrigger>
+                        <TooltipContent side="top" className="max-w-60">
+                            <p>Average rating given by all paid testers who tested this app.</p>
+                        </TooltipContent>
+                    </Tooltip>
                 </div>
                 <div className='flex flex-col items-center justify-center h-full w-full'>
                     <Star className="w-5 h-5 text-amber-400/0 fill-amber-400/20 scale-[2] absolute top-2 left-2 rotate-45" />

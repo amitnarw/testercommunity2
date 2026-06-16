@@ -34,6 +34,7 @@ import {
 } from "@/components/ui/select";
 import { useBillingInfo, useBillingInfoSave } from "@/hooks/useBilling";
 import { toast } from "@/hooks/use-toast";
+import { INDIAN_STATES, getIndianStateFromGstin, getIndianStateCode } from "@/lib/indian-states";
 
 interface BillingInfoModalProps {
   open: boolean;
@@ -55,6 +56,7 @@ export function BillingInfoModal({
     address: "",
     city: "",
     state: "",
+    stateCode: "",
     zipCode: "",
     country: "India",
     gstin: "",
@@ -68,6 +70,7 @@ export function BillingInfoModal({
         address: billingInfo.address || "",
         city: billingInfo.city || "",
         state: billingInfo.state || "",
+        stateCode: billingInfo.stateCode || getIndianStateCode(billingInfo.state || "") || "",
         zipCode: billingInfo.zipCode || "",
         country: billingInfo.country || "India",
         gstin: billingInfo.gstin || "",
@@ -88,7 +91,11 @@ export function BillingInfoModal({
     }
 
     try {
-      await saveMutation.mutateAsync(formData);
+      const payload = { ...formData };
+      if (payload.country === "India") {
+        payload.stateCode = payload.stateCode || getIndianStateCode(payload.state) || "";
+      }
+      await saveMutation.mutateAsync(payload);
       toast({
         title: "Success!",
         description: "Your billing information has been securely saved.",
@@ -205,45 +212,24 @@ export function BillingInfoModal({
                   {formData.country === "India" ? (
                     <Select
                       value={formData.state}
-                      onValueChange={(val) => setFormData({ ...formData, state: val })}
+                      onValueChange={(val) => {
+                        const entry = INDIAN_STATES.find((s) => s.name === val);
+                        setFormData({
+                          ...formData,
+                          state: val,
+                          stateCode: entry ? entry.numericCode : "",
+                        });
+                      }}
                     >
                       <SelectTrigger id="state" className="h-12 sm:h-14 rounded-xl sm:rounded-2xl border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/50">
                         <SelectValue placeholder="Select" />
                       </SelectTrigger>
                       <SelectContent className="rounded-xl border-zinc-200 dark:border-zinc-800 max-h-[200px]">
-                        <SelectItem value="Andhra Pradesh">Andhra Pradesh</SelectItem>
-                        <SelectItem value="Arunachal Pradesh">Arunachal Pradesh</SelectItem>
-                        <SelectItem value="Assam">Assam</SelectItem>
-                        <SelectItem value="Bihar">Bihar</SelectItem>
-                        <SelectItem value="Chhattisgarh">Chhattisgarh</SelectItem>
-                        <SelectItem value="Delhi">Delhi</SelectItem>
-                        <SelectItem value="Goa">Goa</SelectItem>
-                        <SelectItem value="Gujarat">Gujarat</SelectItem>
-                        <SelectItem value="Haryana">Haryana</SelectItem>
-                        <SelectItem value="Himachal Pradesh">Himachal Pradesh</SelectItem>
-                        <SelectItem value="Jharkhand">Jharkhand</SelectItem>
-                        <SelectItem value="Jammu and Kashmir">Jammu and Kashmir</SelectItem>
-                        <SelectItem value="Karnataka">Karnataka</SelectItem>
-                        <SelectItem value="Kerala">Kerala</SelectItem>
-                        <SelectItem value="Ladakh">Ladakh</SelectItem>
-                        <SelectItem value="Madhya Pradesh">Madhya Pradesh</SelectItem>
-                        <SelectItem value="Maharashtra">Maharashtra</SelectItem>
-                        <SelectItem value="Manipur">Manipur</SelectItem>
-                        <SelectItem value="Meghalaya">Meghalaya</SelectItem>
-                        <SelectItem value="Mizoram">Mizoram</SelectItem>
-                        <SelectItem value="Nagaland">Nagaland</SelectItem>
-                        <SelectItem value="Odisha">Odisha</SelectItem>
-                        <SelectItem value="Punjab">Punjab</SelectItem>
-                        <SelectItem value="Rajasthan">Rajasthan</SelectItem>
-                        <SelectItem value="Sikkim">Sikkim</SelectItem>
-                        <SelectItem value="Tamil Nadu">Tamil Nadu</SelectItem>
-                        <SelectItem value="Telangana">Telangana</SelectItem>
-                        <SelectItem value="Tripura">Tripura</SelectItem>
-                        <SelectItem value="Uttar Pradesh">Uttar Pradesh</SelectItem>
-                        <SelectItem value="Uttarakhand">Uttarakhand</SelectItem>
-                        <SelectItem value="West Bengal">West Bengal</SelectItem>
-                        <SelectItem value="Chandigarh">Chandigarh</SelectItem>
-                        <SelectItem value="Puducherry">Puducherry</SelectItem>
+                        {INDIAN_STATES.map((s) => (
+                          <SelectItem key={s.numericCode} value={s.name}>
+                            {s.name} ({s.alphaCode} / {s.numericCode})
+                          </SelectItem>
+                        ))}
                       </SelectContent>
                     </Select>
                   ) : (
@@ -374,7 +360,18 @@ export function BillingInfoModal({
                       placeholder={formData.country === "India" ? "22AAAAA0000A1Z5" : "Optional"}
                       className="pl-11 h-12 sm:h-14 rounded-xl sm:rounded-2xl border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/50 focus:ring-primary/20 transition-all"
                       value={formData.gstin}
-                      onChange={(e) => setFormData({ ...formData, gstin: e.target.value })}
+                      onChange={(e) => {
+                        const val = e.target.value;
+                        const updated = { ...formData, gstin: val };
+                        if (val.length >= 2 && !updated.state) {
+                          const result = getIndianStateFromGstin(val);
+                          if (result) {
+                            updated.state = result.name;
+                            updated.stateCode = result.stateCode;
+                          }
+                        }
+                        setFormData(updated);
+                      }}
                     />
                   </div>
                 </div>

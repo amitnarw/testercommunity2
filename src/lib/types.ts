@@ -345,7 +345,7 @@ export interface DashboardDataResponse {
     instructionsForTester: string | null;
     rewardPoints: number | null;
     costPoints: number | null;
-    averageTimeTesting: string | null;
+  averageTimeTesting: string | null;
     status:
       | "IN_REVIEW"
       | "DRAFT"
@@ -454,6 +454,7 @@ export interface HubSubmittedAppResponse {
   rewardPoints: number | null;
   costPoints: number | null;
   averageTimeTesting: string | null;
+  averageRating: number;
   minimumAndroidVersion: number;
   status: AppData["status"];
   statusDetails: {
@@ -978,6 +979,7 @@ export interface BillingInfo {
   address: string;
   city?: string;
   state?: string;
+  stateCode?: string;
   zipCode?: string;
   country: string;
   gstin?: string;
@@ -1000,6 +1002,7 @@ export interface InvoiceDetail {
   cgst_amount: number;
   sgst_amount: number;
   igst_amount: number;
+  state_code: string | null;
   due_date: string | null;
   place_of_supply: string | null;
   supply_type: string | null;
