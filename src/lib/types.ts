@@ -271,10 +271,35 @@ export type ProcessStep = {
   dataAiHint: string;
 };
 
+export type FaqCategory = "general" | "community" | "professional" | "homepage" | "pricing" | "google_play_guide" | "billing";
+
 export type FaqItem = {
   question: string;
   answer: string;
 };
+
+export interface Faq {
+  id: number;
+  title: string;
+  description: string;
+  category: FaqCategory;
+  isActive: boolean;
+  sortOrder: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface CreateFaqPayload {
+  title: string;
+  description: string;
+  category: FaqCategory;
+  isActive: boolean;
+  sortOrder: number;
+}
+
+export interface UpdateFaqPayload extends CreateFaqPayload {
+  id: number;
+}
 
 export type ProjectFeedback = {
   id: number;
@@ -976,6 +1001,7 @@ export interface BillingInfo {
   userId: string;
   name: string;
   email: string;
+  phone?: string;
   address: string;
   city?: string;
   state?: string;

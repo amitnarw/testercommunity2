@@ -1,33 +1,26 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { Accordion } from "@/components/ui/accordion";
 import FaqItem from "./faq-item";
-
-const faqs = [
-  {
-    question:
-      "What's the difference between the Community and Professional Paths?",
-    answer:
-      "The Community Path is a free, reciprocal model where you test other members' apps to earn points, which you then use to get your own app tested. The Professional Path allows you to purchase points to hire our team of vetted, professional testers for a guaranteed, managed testing experience.",
-  },
-  {
-    question: "How does the points system work?",
-    answer:
-      "Points are our platform's currency. You can either earn them for free by testing apps through Free Testing, or purchase them directly. You then spend these points to get your own app tested, either by the community or by our professional team.",
-  },
-  {
-    question: "Is the Community Path really free?",
-    answer:
-      "Yes! It's free in terms of money, but it requires your time and effort to test other apps. It's a 'give-to-get' model that helps everyone meet Google's testing requirements.",
-  },
-  {
-    question: "Why should I choose the Professional Path?",
-    answer:
-      "Choose the Professional Path if you're on a tight deadline, need guaranteed high-quality feedback, or simply don't have the time to test other apps. It's the fastest and most hassle-free way to get your app ready for the Play Store.",
-  },
-];
+import { getPublicFaqs } from "@/lib/apiCalls";
+import type { Faq } from "@/lib/types";
 
 export function FaqSection() {
+  const [faqs, setFaqs] = useState<Faq[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    getPublicFaqs("homepage")
+      .then(setFaqs)
+      .catch(() => setFaqs([]))
+      .finally(() => setLoading(false));
+  }, []);
+
+  if (loading) {
+    return <div className="text-center text-muted-foreground py-8">Loading FAQs...</div>;
+  }
+
   return (
     <Accordion
       data-loc="FaqSection"
@@ -37,10 +30,10 @@ export function FaqSection() {
     >
       {faqs.map((faq, i) => (
         <FaqItem
-          key={i}
+          key={faq.id}
           index={i}
-          question={faq.question}
-          answer={faq.answer}
+          question={faq.title}
+          answer={faq.description}
         />
       ))}
     </Accordion>

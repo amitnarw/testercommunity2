@@ -41,11 +41,13 @@ export const ROUTES = {
     REVIEWS: "/admin/reviews",
     USER_REVIEWS: "/admin/user-reviews",
     BLOG_MANAGEMENT: "/admin/blog-management",
+    GUIDE_MANAGEMENT: "/admin/guide-management",
     LOGS: "/admin/logs",
     SUPPORT: "/admin/support",
     PROFILE: "/admin/profile",
     FEEDBACK: "/admin/feedback",
     PERMISSIONS: "/admin/permissions",
+    FAQS: "/admin/faqs",
     CONTROL_ROOM: "/admin/control-room",
     AUTH: {
       LOGIN: "/admin/auth/login",

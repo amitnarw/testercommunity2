@@ -1,10 +1,9 @@
 import { MetadataRoute } from "next";
 import { blogPosts } from "@/lib/data";
-import { articles } from "@/lib/blog-data";
 
-export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = "https://intesters.com";
+const baseUrl = "https://intesters.com";
 
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const staticPages = [
     { url: baseUrl, changeFrequency: "weekly" as const, priority: 1.0 },
     { url: `${baseUrl}/how-it-works`, changeFrequency: "monthly" as const, priority: 0.9 },
@@ -31,33 +30,37 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${baseUrl}/guides`, changeFrequency: "monthly" as const, priority: 0.7 },
   ];
 
-  // Dynamic Blog Posts
   const blogUrls = blogPosts.map((post) => ({
     url: `${baseUrl}/blog/${post.slug}`,
     changeFrequency: "weekly" as const,
     priority: 0.7,
   }));
 
-  // Guide Categories
-  const uniqueCategories = Array.from(new Set(articles.map((art) => art.category)));
-  const guideCategoryUrls = uniqueCategories.map((cat) => {
-    const categorySlug = cat.toLowerCase().replace(/ & /g, "-").replace(/ /g, "-");
-    return {
-      url: `${baseUrl}/guides/${categorySlug}`,
+  let guideCategoryUrls: MetadataRoute.Sitemap = [];
+  let guideArticleUrls: MetadataRoute.Sitemap = [];
+
+  try {
+    const { getPublicGuideCategories, getPublicGuides } = await import("@/lib/apiCalls");
+    const [categories, guides] = await Promise.all([
+      getPublicGuideCategories(),
+      getPublicGuides(),
+    ]);
+
+    guideCategoryUrls = categories.map((cat) => ({
+      url: `${baseUrl}/guides/${cat.slug}`,
       changeFrequency: "monthly" as const,
       priority: 0.6,
-    };
-  });
+    }));
 
-  // Dynamic Guide Articles
-  const guideArticleUrls = articles.map((article) => {
-    const categorySlug = article.category.toLowerCase().replace(/ & /g, "-").replace(/ /g, "-");
-    return {
-      url: `${baseUrl}/guides/${categorySlug}/${article.slug}`,
+    guideArticleUrls = guides.map((guide) => ({
+      url: `${baseUrl}/guides/${guide.category.slug}/${guide.slug}`,
       changeFrequency: "monthly" as const,
       priority: 0.7,
-    };
-  });
+    }));
+  } catch {
+    guideCategoryUrls = [];
+    guideArticleUrls = [];
+  }
 
   return [
     ...staticPages,

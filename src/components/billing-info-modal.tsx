@@ -5,6 +5,7 @@ import {
   FileText,
   User,
   Mail,
+  Phone,
   MapPin,
   Globe,
   Building2,
@@ -53,6 +54,7 @@ export function BillingInfoModal({
   const [formData, setFormData] = useState({
     name: "",
     email: "",
+    phone: "",
     address: "",
     city: "",
     state: "",
@@ -67,6 +69,7 @@ export function BillingInfoModal({
       setFormData({
         name: billingInfo.name || "",
         email: billingInfo.email || "",
+        phone: billingInfo.phone || "",
         address: billingInfo.address || "",
         city: billingInfo.city || "",
         state: billingInfo.state || "",
@@ -81,7 +84,7 @@ export function BillingInfoModal({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!formData.name || !formData.email || !formData.address || !formData.country) {
+    if (!formData.name || !formData.email || !formData.phone || !formData.address || !formData.country) {
       toast({
         title: "Missing Information",
         description: "Please fill all required fields to proceed.",
@@ -115,14 +118,14 @@ export function BillingInfoModal({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-[95vw] sm:max-w-[550px] p-0 overflow-hidden border-none bg-zinc-50 dark:bg-zinc-950 rounded-[1.5rem] sm:rounded-[2.5rem] shadow-2xl">
-        <div className="relative w-full h-full overflow-y-auto max-h-[90vh] scrollbar-modal rounded-[1.5rem] sm:rounded-[2.5rem]">
+        <div className="relative w-full h-full overflow-y-auto sm:overflow-visible max-h-[90vh] scrollbar-modal rounded-[1.5rem] sm:rounded-[2.5rem]">
           {/* Animated Background Gradient */}
           <div className="absolute top-0 left-0 w-full h-40 bg-gradient-to-b from-primary/20 to-transparent pointer-events-none" />
           <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-[80px] pointer-events-none" />
 
-          <div className="relative z-10 flex flex-col">
+          <div className="relative z-10 flex flex-col sm:scale-90 sm:origin-top transition-transform duration-200">
             {/* Header */}
-            <div className="p-6 sm:p-8 !pb-0">
+            <div className="p-6 sm:p-6 !pt-4 !pb-0">
               <div className="flex items-start justify-between gap-4 w-full">
                 <div className="space-y-1">
                   <div className="flex items-center gap-2 mb-2">
@@ -144,16 +147,16 @@ export function BillingInfoModal({
             </div>
 
             {/* Form Content */}
-            <form onSubmit={handleSubmit} className="p-6 sm:p-8 pt-2 space-y-2">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
+            <form onSubmit={handleSubmit} className="p-6 sm:p-6 pt-2 space-y-2">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="name" className="text-xs font-bold uppercase tracking-widest text-zinc-400 ml-1">Full Name</Label>
+                  <Label htmlFor="name" className="text-xs font-bold uppercase tracking-widest text-zinc-400 ml-1">Full Name <span className="text-red-500">*</span></Label>
                   <div className="relative group">
                     <User className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400 group-focus-within:text-primary transition-colors" />
                     <Input
                       id="name"
                       placeholder="John Doe"
-                      className="pl-11 h-12 sm:h-14 rounded-xl sm:rounded-2xl border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/50 focus:ring-primary/20 transition-all"
+                      className="pl-11 h-12 rounded-xl sm:rounded-2xl border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/50 focus:ring-primary/20 transition-all"
                       value={formData.name}
                       onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                       required
@@ -162,14 +165,14 @@ export function BillingInfoModal({
                 </div>
 
                 <div className="space-y-2">
-                  <Label htmlFor="email" className="text-xs font-bold uppercase tracking-widest text-zinc-400 ml-1">Billing Email</Label>
+                  <Label htmlFor="email" className="text-xs font-bold uppercase tracking-widest text-zinc-400 ml-1">Billing Email <span className="text-red-500">*</span></Label>
                   <div className="relative group">
                     <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400 group-focus-within:text-primary transition-colors" />
                     <Input
                       id="email"
                       type="email"
                       placeholder="john@example.com"
-                      className="pl-11 h-12 sm:h-14 rounded-xl sm:rounded-2xl border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/50 focus:ring-primary/20 transition-all"
+                      className="pl-11 h-12 rounded-xl sm:rounded-2xl border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/50 focus:ring-primary/20 transition-all"
                       value={formData.email}
                       onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                       required
@@ -179,7 +182,24 @@ export function BillingInfoModal({
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="address" className="text-xs font-bold uppercase tracking-widest text-zinc-400 ml-1">Street Address</Label>
+                  <Label htmlFor="phone" className="text-xs font-bold uppercase tracking-widest text-zinc-400 ml-1">Phone Number <span className="text-red-500">*</span></Label>
+                  <div className="relative group">
+                    <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-zinc-400 group-focus-within:text-primary transition-colors" />
+                    <Input
+                      id="phone"
+                      type="tel"
+                      inputMode="numeric"
+                      placeholder="+91 98765 43210"
+                      className="pl-11 h-12 rounded-xl sm:rounded-2xl border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/50 focus:ring-primary/20 transition-all"
+                      value={formData.phone}
+                      onChange={(e) => setFormData({ ...formData, phone: e.target.value.replace(/[^0-9+\-\s]/g, "") })}
+                      required
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="address" className="text-xs font-bold uppercase tracking-widest text-zinc-400 ml-1">Street Address <span className="text-red-500">*</span></Label>
                 <div className="relative group">
                   <MapPin className="absolute left-4 top-4 w-4 h-4 text-zinc-400 group-focus-within:text-primary transition-colors" />
                   <textarea
@@ -193,13 +213,13 @@ export function BillingInfoModal({
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-5">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="city" className="text-xs font-bold uppercase tracking-widest text-zinc-400 ml-1">City</Label>
+                  <Label htmlFor="city" className="text-xs font-bold uppercase tracking-widest text-zinc-400 ml-1">City <span className="text-red-500">*</span></Label>
                   <Input
                     id="city"
                     placeholder="New Delhi"
-                    className="h-12 sm:h-14 rounded-xl sm:rounded-2xl border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/50 focus:ring-primary/20 transition-all"
+                    className="h-12 rounded-xl sm:rounded-2xl border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/50 focus:ring-primary/20 transition-all"
                     value={formData.city}
                     onChange={(e) => setFormData({ ...formData, city: e.target.value })}
                   />
@@ -207,7 +227,7 @@ export function BillingInfoModal({
 
                 <div className="space-y-2">
                   <Label htmlFor="state" className="text-xs font-bold uppercase tracking-widest text-zinc-400 ml-1">
-                    {formData.country === "India" ? "State" : "State / Province"}
+                    {formData.country === "India" ? "State" : "State / Province"} <span className="text-red-500">*</span>
                   </Label>
                   {formData.country === "India" ? (
                     <Select
@@ -221,7 +241,7 @@ export function BillingInfoModal({
                         });
                       }}
                     >
-                      <SelectTrigger id="state" className="h-12 sm:h-14 rounded-xl sm:rounded-2xl border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/50">
+                      <SelectTrigger id="state" className="h-12 rounded-xl sm:rounded-2xl border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/50">
                         <SelectValue placeholder="Select" />
                       </SelectTrigger>
                       <SelectContent className="rounded-xl border-zinc-200 dark:border-zinc-800 max-h-[200px]">
@@ -236,7 +256,7 @@ export function BillingInfoModal({
                     <Input
                       id="state"
                       placeholder="State / Province"
-                      className="h-12 sm:h-14 rounded-xl sm:rounded-2xl border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/50 focus:ring-primary/20 transition-all"
+                      className="h-12 rounded-xl sm:rounded-2xl border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/50 focus:ring-primary/20 transition-all"
                       value={formData.state}
                       onChange={(e) => setFormData({ ...formData, state: e.target.value })}
                     />
@@ -245,26 +265,26 @@ export function BillingInfoModal({
 
                 <div className="space-y-2">
                   <Label htmlFor="zipCode" className="text-xs font-bold uppercase tracking-widest text-zinc-400 ml-1">
-                    {formData.country === "India" ? "PIN Code" : "ZIP Code"}
+                    {formData.country === "India" ? "PIN Code" : "ZIP Code"} <span className="text-red-500">*</span>
                   </Label>
                   <Input
                     id="zipCode"
                     placeholder={formData.country === "India" ? "110058" : "ZIP Code"}
-                    className="h-12 sm:h-14 rounded-xl sm:rounded-2xl border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/50 focus:ring-primary/20 transition-all"
+                    className="h-12 rounded-xl sm:rounded-2xl border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/50 focus:ring-primary/20 transition-all"
                     value={formData.zipCode}
                     onChange={(e) => setFormData({ ...formData, zipCode: e.target.value })}
                   />
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-5">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="country" className="text-xs font-bold uppercase tracking-widest text-zinc-400 ml-1">Country</Label>
+                  <Label htmlFor="country" className="text-xs font-bold uppercase tracking-widest text-zinc-400 ml-1">Country <span className="text-red-500">*</span></Label>
                   <Select
                     value={formData.country}
                     onValueChange={(val) => setFormData({ ...formData, country: val })}
                   >
-                    <SelectTrigger id="country" className="h-12 sm:h-14 rounded-xl sm:rounded-2xl border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/50">
+                    <SelectTrigger id="country" className="h-12 rounded-xl sm:rounded-2xl border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/50">
                       <div className="flex items-center gap-3">
                         <Globe className="w-4 h-4 text-zinc-400" />
                         <SelectValue placeholder="Select" />
@@ -358,7 +378,7 @@ export function BillingInfoModal({
                     <Input
                       id="gstin"
                       placeholder={formData.country === "India" ? "22AAAAA0000A1Z5" : "Optional"}
-                      className="pl-11 h-12 sm:h-14 rounded-xl sm:rounded-2xl border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/50 focus:ring-primary/20 transition-all"
+                      className="pl-11 h-12 rounded-xl sm:rounded-2xl border-zinc-200 dark:border-zinc-800 bg-white dark:bg-zinc-900/50 focus:ring-primary/20 transition-all"
                       value={formData.gstin}
                       onChange={(e) => {
                         const val = e.target.value;

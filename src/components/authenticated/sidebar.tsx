@@ -26,6 +26,7 @@ import {
   Landmark,
   Settings,
   ThumbsUp,
+  FileText,
   Zap,
 } from "lucide-react";
 import { BaseSidebar, SidebarNavLink } from "@/components/ui/base-sidebar";
@@ -173,6 +174,20 @@ const adminNavLinks: AdminNavLink[] = [
     icon: BookOpen,
     section: "platform",
     moduleName: "blogs",
+  },
+  {
+    name: "Guide Management",
+    href: ROUTES.ADMIN.GUIDE_MANAGEMENT,
+    icon: FileText,
+    section: "platform",
+    moduleName: "guides",
+  },
+  {
+    name: "FAQs",
+    href: ROUTES.ADMIN.FAQS,
+    icon: LifeBuoy,
+    section: "platform",
+    moduleName: "faqs",
   },
   {
     name: "System Logs",

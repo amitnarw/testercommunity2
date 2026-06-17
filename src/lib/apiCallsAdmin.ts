@@ -1250,6 +1250,149 @@ export async function deleteBlog(id: number) {
   }
 }
 
+// ==================== GUIDES ====================
+
+export async function getAllAdminGuides() {
+  try {
+    const response = await api.get(API_ROUTES.ADMIN + `/guides`);
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error fetching guides:", error);
+    throw error;
+  }
+}
+
+export async function getAdminGuideById(id: number) {
+  try {
+    const response = await api.get(API_ROUTES.ADMIN + `/guides/${id}`);
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error fetching guide:", error);
+    throw error;
+  }
+}
+
+export async function createAdminGuide(payload: {
+  title: string;
+  slug: string;
+  description: string;
+  content: string;
+  readTime?: string;
+  categoryId: number;
+  publishedAt?: string;
+  isActive?: boolean;
+}) {
+  try {
+    const response = await api.post(API_ROUTES.ADMIN + `/guides`, payload);
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error creating guide:", error);
+    throw error;
+  }
+}
+
+export async function updateAdminGuide(payload: {
+  id: number;
+  title?: string;
+  slug?: string;
+  description?: string;
+  content?: string;
+  readTime?: string;
+  views?: number;
+  categoryId?: number;
+  publishedAt?: string;
+  isActive?: boolean;
+}) {
+  try {
+    const response = await api.post(API_ROUTES.ADMIN + `/guides/update`, payload);
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error updating guide:", error);
+    throw error;
+  }
+}
+
+export async function deleteAdminGuide(id: number) {
+  try {
+    const response = await api.delete(API_ROUTES.ADMIN + `/guides/${id}`);
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error deleting guide:", error);
+    throw error;
+  }
+}
+
+// ==================== GUIDE CATEGORIES ====================
+
+export async function getAllAdminGuideCategories() {
+  try {
+    const response = await api.get(API_ROUTES.ADMIN + `/guide-categories`);
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error fetching guide categories:", error);
+    throw error;
+  }
+}
+
+export async function getAdminGuideCategoryById(id: number) {
+  try {
+    const response = await api.get(API_ROUTES.ADMIN + `/guide-categories/${id}`);
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error fetching guide category:", error);
+    throw error;
+  }
+}
+
+export async function createAdminGuideCategory(payload: {
+  slug: string;
+  title: string;
+  description?: string;
+  iconName?: string;
+  colorKey?: string;
+  bgColorKey?: string;
+  sortOrder?: number;
+  isActive?: boolean;
+}) {
+  try {
+    const response = await api.post(API_ROUTES.ADMIN + `/guide-categories`, payload);
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error creating guide category:", error);
+    throw error;
+  }
+}
+
+export async function updateAdminGuideCategory(payload: {
+  id: number;
+  slug?: string;
+  title?: string;
+  description?: string;
+  iconName?: string;
+  colorKey?: string;
+  bgColorKey?: string;
+  sortOrder?: number;
+  isActive?: boolean;
+}) {
+  try {
+    const response = await api.post(API_ROUTES.ADMIN + `/guide-categories/update`, payload);
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error updating guide category:", error);
+    throw error;
+  }
+}
+
+export async function deleteAdminGuideCategory(id: number) {
+  try {
+    const response = await api.delete(API_ROUTES.ADMIN + `/guide-categories/${id}`);
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error deleting guide category:", error);
+    throw error;
+  }
+}
+
 // ==================== TESTIMONIALS ====================
 
 export async function getAllTestimonials() {
@@ -1718,6 +1861,71 @@ export async function deleteAuthor(id: number) {
     return response?.data?.data;
   } catch (error) {
     console.error("Error deleting author:", error);
+    throw error;
+  }
+}
+
+// ==================== FAQS ====================
+
+export async function getAllFaqs() {
+  try {
+    const response = await api.get(API_ROUTES.ADMIN + `/faqs`);
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error fetching FAQs:", error);
+    throw error;
+  }
+}
+
+export async function getFaqById(id: number) {
+  try {
+    const response = await api.get(API_ROUTES.ADMIN + `/faqs/${id}`);
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error fetching FAQ:", error);
+    throw error;
+  }
+}
+
+export async function createFaq(payload: {
+  title: string;
+  description: string;
+  category: string;
+  isActive: boolean;
+  sortOrder: number;
+}) {
+  try {
+    const response = await api.post(API_ROUTES.ADMIN + `/faqs`, payload);
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error creating FAQ:", error);
+    throw error;
+  }
+}
+
+export async function updateFaq(payload: {
+  id: number;
+  title?: string;
+  description?: string;
+  category?: string;
+  isActive?: boolean;
+  sortOrder?: number;
+}) {
+  try {
+    const response = await api.post(API_ROUTES.ADMIN + `/faqs/update`, payload);
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error updating FAQ:", error);
+    throw error;
+  }
+}
+
+export async function deleteFaq(id: number) {
+  try {
+    const response = await api.delete(API_ROUTES.ADMIN + `/faqs/${id}`);
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error deleting FAQ:", error);
     throw error;
   }
 }

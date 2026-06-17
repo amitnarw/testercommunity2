@@ -15,6 +15,7 @@ const routes = {
   REVIEW: "/api/review",
   SUPPORT: "/api/support",
   DECLARATION: "/api/declaration",
+  FAQ: "/api/faq",
 };
 
 const API_ROUTES = new Proxy(routes, {

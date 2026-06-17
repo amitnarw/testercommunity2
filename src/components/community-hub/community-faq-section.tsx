@@ -1,14 +1,27 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { ChevronRight } from "lucide-react";
 import { Accordion } from "@/components/ui/accordion";
 import FaqItem from "@/components/faq-item";
-import { communityFaqs, proFaqs } from "@/lib/data";
 import { motion } from "framer-motion";
+import { getPublicFaqs } from "@/lib/apiCalls";
+import type { Faq } from "@/lib/types";
 
 export function CommunityFaqSection({ faqType = "community" }: { faqType?: "community" | "pro" }) {
+  const [faqs, setFaqs] = useState<Faq[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const category = faqType === "pro" ? "professional" : "community";
+    getPublicFaqs(category)
+      .then(setFaqs)
+      .catch(() => setFaqs([]))
+      .finally(() => setLoading(false));
+  }, [faqType]);
+
   return (
     <section data-loc="CommunityFaqSection" id="faq" className="py-16 md:py-32">
       <div className="container mx-auto px-4 md:px-6">
@@ -28,28 +41,34 @@ export function CommunityFaqSection({ faqType = "community" }: { faqType?: "comm
         </motion.div>
 
         <div className="mt-12 max-w-3xl mx-auto">
-          <Accordion
-            type="single"
-            collapsible
-            className="w-full space-y-2"
-          >
-            {(faqType === "pro" ? proFaqs : communityFaqs).map((faq, i) => (
-              <FaqItem
-                key={i}
-                index={i}
-                question={faq.question}
-                answer={faq.answer}
-              />
-            ))}
-          </Accordion>
-          <div className="mt-8 text-center">
-            <Button asChild variant="outline" size="lg" className="rounded-full px-8 group">
-              <Link href="/faq">
-                View All FAQs
-                <ChevronRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
-              </Link>
-            </Button>
-          </div>
+          {loading ? (
+            <div className="text-center text-muted-foreground py-8">Loading FAQs...</div>
+          ) : (
+            <>
+              <Accordion
+                type="single"
+                collapsible
+                className="w-full space-y-2"
+              >
+                {faqs.map((faq, i) => (
+                  <FaqItem
+                    key={faq.id}
+                    index={i}
+                    question={faq.title}
+                    answer={faq.description}
+                  />
+                ))}
+              </Accordion>
+              <div className="mt-8 text-center">
+                <Button asChild variant="outline" size="lg" className="rounded-full px-8 group">
+                  <Link href="/faq">
+                    View All FAQs
+                    <ChevronRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+                  </Link>
+                </Button>
+              </div>
+            </>
+          )}
         </div>
       </div>
     </section>

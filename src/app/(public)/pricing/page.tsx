@@ -19,8 +19,8 @@ import {
   Zap,
 } from "lucide-react";
 import Link from "next/link";
-import { pricingFaqs } from "@/lib/data";
 import { usePricingData, useRegionalPricing } from "@/hooks/useUser";
+import { getPublicFaqs } from "@/lib/apiCalls";
 import { PricingResponse } from "@/lib/types";
 import SkeletonPricingSetup from "@/components/unauthenticated/pricing-skeleton";
 import FaqItem from "@/components/faq-item";
@@ -31,14 +31,17 @@ import {
 import { HoverBorderGradient } from "@/components/ui/hover-border-gradient";
 
 import { useState, useEffect } from "react";
+import type { Faq } from "@/lib/types";
 
 export default function PricingPage() {
   const { data: pricingData, isPending: pricingIsPending } = usePricingData();
+  const [pricingFaqs, setPricingFaqs] = useState<Faq[]>([]);
   const { data: regionalPricing } = useRegionalPricing();
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     setMounted(true);
+    getPublicFaqs("pricing").then(setPricingFaqs).catch(() => setPricingFaqs([]));
   }, []);
 
   if (!mounted) {
@@ -127,10 +130,10 @@ export default function PricingPage() {
           <Accordion type="single" collapsible className="w-full space-y-2">
             {pricingFaqs.map((faq, i) => (
               <FaqItem
-                key={`faq-${i}`}
+                key={faq.id}
                 index={i}
-                question={faq.question}
-                answer={faq.answer}
+                question={faq.title}
+                answer={faq.description}
               />
             ))}
           </Accordion>
