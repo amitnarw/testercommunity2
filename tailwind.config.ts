@@ -7,6 +7,14 @@ export default {
     "./src/components/**/*.{js,ts,jsx,tsx,mdx}",
     "./src/app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
+  safelist: [
+    "from-blue-500/10",
+    "from-green-500/10",
+    "from-amber-500/10",
+    "from-violet-500/10",
+    "from-rose-500/10",
+    "from-cyan-500/10",
+  ],
   theme: {
     container: {
       center: true,

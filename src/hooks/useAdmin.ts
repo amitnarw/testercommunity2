@@ -51,6 +51,16 @@ import {
   createBlog,
   updateBlog,
   deleteBlog,
+  getAllAdminGuides,
+  getAdminGuideById,
+  createAdminGuide,
+  updateAdminGuide,
+  deleteAdminGuide,
+  getAllAdminGuideCategories,
+  getAdminGuideCategoryById,
+  createAdminGuideCategory,
+  updateAdminGuideCategory,
+  deleteAdminGuideCategory,
   getAllTestimonials,
   getTestimonialById,
   createTestimonial,
@@ -86,6 +96,11 @@ import {
   deleteAuthor,
   getAllPermissions,
   updatePermission,
+  getAllFaqs,
+  getFaqById,
+  createFaq,
+  updateFaq,
+  deleteFaq,
 } from "@/lib/apiCallsAdmin";
 import { useRouter } from "next/navigation";
 import { ROUTES } from "@/lib/routes";
@@ -765,6 +780,133 @@ export function useDeleteBlog(options?: UseMutationOptions<any, any, any>) {
   return mutation;
 }
 
+// ==================== GUIDES ====================
+
+export function useAllAdminGuides(options?: { enabled?: boolean }) {
+  const query = useQuery({
+    queryFn: () => getAllAdminGuides(),
+    queryKey: ["useAllAdminGuides"],
+    enabled: options?.enabled ?? true,
+  });
+  return query;
+}
+
+export function useAdminGuideById(id: number, options?: { enabled?: boolean }) {
+  const query = useQuery({
+    queryFn: () => getAdminGuideById(id),
+    queryKey: ["useAdminGuideById", id],
+    enabled: options?.enabled ?? true,
+  });
+  return query;
+}
+
+export function useCreateAdminGuide(options?: UseMutationOptions<any, any, any>) {
+  const mutation = useMutation({
+    mutationFn: (payload: {
+      title: string;
+      slug: string;
+      description: string;
+      content: string;
+      readTime?: string;
+      categoryId: number;
+      publishedAt?: string;
+      isActive?: boolean;
+    }) => createAdminGuide(payload),
+    ...options,
+  });
+  return mutation;
+}
+
+export function useUpdateAdminGuide(options?: UseMutationOptions<any, any, any>) {
+  const mutation = useMutation({
+    mutationFn: (payload: {
+      id: number;
+      title?: string;
+      slug?: string;
+      description?: string;
+      content?: string;
+      readTime?: string;
+      views?: number;
+      categoryId?: number;
+      publishedAt?: string;
+      isActive?: boolean;
+    }) => updateAdminGuide(payload),
+    ...options,
+  });
+  return mutation;
+}
+
+export function useDeleteAdminGuide(options?: UseMutationOptions<any, any, any>) {
+  const mutation = useMutation({
+    mutationFn: (id: number) => deleteAdminGuide(id),
+    ...options,
+  });
+  return mutation;
+}
+
+// ==================== GUIDE CATEGORIES ====================
+
+export function useAllAdminGuideCategories(options?: { enabled?: boolean }) {
+  const query = useQuery({
+    queryFn: () => getAllAdminGuideCategories(),
+    queryKey: ["useAllAdminGuideCategories"],
+    enabled: options?.enabled ?? true,
+  });
+  return query;
+}
+
+export function useAdminGuideCategoryById(id: number, options?: { enabled?: boolean }) {
+  const query = useQuery({
+    queryFn: () => getAdminGuideCategoryById(id),
+    queryKey: ["useAdminGuideCategoryById", id],
+    enabled: options?.enabled ?? true,
+  });
+  return query;
+}
+
+export function useCreateAdminGuideCategory(options?: UseMutationOptions<any, any, any>) {
+  const mutation = useMutation({
+    mutationFn: (payload: {
+      slug: string;
+      title: string;
+      description?: string;
+      iconName?: string;
+      colorKey?: string;
+      bgColorKey?: string;
+      sortOrder?: number;
+      isActive?: boolean;
+    }) => createAdminGuideCategory(payload),
+    ...options,
+  });
+  return mutation;
+}
+
+export function useUpdateAdminGuideCategory(options?: UseMutationOptions<any, any, any>) {
+  const mutation = useMutation({
+    mutationFn: (payload: {
+      id: number;
+      slug?: string;
+      title?: string;
+      description?: string;
+      iconName?: string;
+      colorKey?: string;
+      bgColorKey?: string;
+      sortOrder?: number;
+      isActive?: boolean;
+    }) => updateAdminGuideCategory(payload),
+    ...options,
+  });
+  return mutation;
+}
+
+export function useDeleteAdminGuideCategory(options?: UseMutationOptions<any, any, any>) {
+  const mutation = useMutation({
+    mutationFn: (id: number) => deleteAdminGuideCategory(id),
+    ...options,
+  });
+  return mutation;
+}
+
 // ==================== TESTIMONIALS ====================
 
 export function useAllTestimonials(options?: { enabled?: boolean }) {
@@ -1210,6 +1352,73 @@ export function useFinancePaymentMethods() {
   return useQuery({
     queryFn: () => getFinancePaymentMethods(),
     queryKey: ["useFinancePaymentMethods"],
+  });
+}
+
+// ==================== FAQS ====================
+
+export function useAllFaqs(options?: { enabled?: boolean }) {
+  return useQuery({
+    queryFn: () => getAllFaqs(),
+    queryKey: ["useAllFaqs"],
+    enabled: options?.enabled ?? true,
+  });
+}
+
+export function useFaqById(id: number, options?: { enabled?: boolean }) {
+  return useQuery({
+    queryFn: () => getFaqById(id),
+    queryKey: ["useFaqById", id],
+    enabled: options?.enabled ?? (id > 0),
+  });
+}
+
+export function useCreateFaq(options?: UseMutationOptions<any, any, any>) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (payload: {
+      title: string;
+      description: string;
+      category: string;
+      isActive: boolean;
+      sortOrder: number;
+    }) => createFaq(payload),
+    onSuccess: (data: any, variables: any, _onMutateResult: any, _context: any) => {
+      queryClient.invalidateQueries({ queryKey: ["useAllFaqs"] });
+      options?.onSuccess?.(data, variables, _onMutateResult, _context);
+    },
+    ...options,
+  });
+}
+
+export function useUpdateFaq(options?: UseMutationOptions<any, any, any>) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (payload: {
+      id: number;
+      title?: string;
+      description?: string;
+      category?: string;
+      isActive?: boolean;
+      sortOrder?: number;
+    }) => updateFaq(payload),
+    onSuccess: (data: any, variables: any, _onMutateResult: any, _context: any) => {
+      queryClient.invalidateQueries({ queryKey: ["useAllFaqs"] });
+      options?.onSuccess?.(data, variables, _onMutateResult, _context);
+    },
+    ...options,
+  });
+}
+
+export function useDeleteFaq(options?: UseMutationOptions<any, any, any>) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (id: number) => deleteFaq(id),
+    onSuccess: (data: any, variables: any, _onMutateResult: any, _context: any) => {
+      queryClient.invalidateQueries({ queryKey: ["useAllFaqs"] });
+      options?.onSuccess?.(data, variables, _onMutateResult, _context);
+    },
+    ...options,
   });
 }
 

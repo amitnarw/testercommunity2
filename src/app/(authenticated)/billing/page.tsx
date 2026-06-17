@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { ROUTES } from "@/lib/routes";
 import {
@@ -34,6 +34,8 @@ import {
 import { useGetUserWallet, usePricingData, useUserData, useRegionalPricing } from "@/hooks/useUser";
 import { Accordion } from "@/components/ui/accordion";
 import FaqItem from "@/components/faq-item";
+import { getPublicFaqs } from "@/lib/apiCalls";
+import type { Faq } from "@/lib/types";
 import {
   ProfessionalPlanCard,
   EnterprisePlanCard,
@@ -180,30 +182,7 @@ const TransactionHistory = () => {
   );
 };
 
-const FAQSection = () => {
-  const faqs = [
-    {
-      q: "How do the credits work?",
-      a: "Each credit corresponds to one comprehensive testing cycle for your application. One credit is verified against one specific version of your app.",
-    },
-    {
-      q: "Can I upgrade later?",
-      a: "Absolutely. You can purchase additional packages at any time. Your credits never expire as long as your account is active.",
-    },
-    {
-      q: "Is there a refund policy?",
-      a: "We offer a 100% satisfaction guarantee. If you're not happy with the testing results from your first package, contact our support team within 14 days.",
-    },
-    {
-      q: "Enterprise agreements?",
-      a: "Yes! For high-volume needs, we offer custom enterprise plans with volume discounts and dedicated account management. Contact sales for details.",
-    },
-    {
-      q: "Payment methods?",
-      a: "We accept all major credit cards (Visa, Mastercard, Amex), PayPal, and wire transfers for enterprise invoices.",
-    },
-  ];
-
+const FAQSection = ({ faqs }: { faqs: Faq[] }) => {
   return (
     <motion.div variants={itemVariants} className="max-w-3xl mx-auto w-full">
       <div className="text-center mb-12">
@@ -217,7 +196,7 @@ const FAQSection = () => {
 
       <Accordion type="single" collapsible className="w-full space-y-2">
         {faqs.map((faq, i) => (
-          <FaqItem key={i} index={i} question={faq.q} answer={faq.a} />
+          <FaqItem key={faq.id} index={i} question={faq.title} answer={faq.description} />
         ))}
       </Accordion>
     </motion.div>
@@ -250,6 +229,11 @@ export default function BillingPage() {
   const [isBillingModalOpen, setIsBillingModalOpen] = useState(false);
   const [isComplianceModalOpen, setIsComplianceModalOpen] = useState(false);
   const [selectedPlanId, setSelectedPlanId] = useState<string | null>(null);
+  const [billingFaqs, setBillingFaqs] = useState<Faq[]>([]);
+
+  useEffect(() => {
+    getPublicFaqs("billing").then(setBillingFaqs).catch(() => setBillingFaqs([]));
+  }, []);
 
   const handleSubscribe = async (planId: string) => {
     if (!paymentConfig?.isConfigured) {
@@ -523,7 +507,7 @@ export default function BillingPage() {
 
             {/* Section 4: FAQ */}
             <section className="pb-16 pt-8 border-t border-border">
-              <FAQSection />
+              <FAQSection faqs={billingFaqs} />
             </section>
           </motion.div>
         </div>

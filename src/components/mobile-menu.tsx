@@ -25,6 +25,7 @@ import {
   Landmark,
   Star,
   ThumbsUp,
+  FileText,
   Zap,
 } from "lucide-react";
 import { Button } from "./ui/button";
@@ -175,6 +176,13 @@ const adminNavItems: AdminNavItem[] = [
     icon: BookOpen,
     section: "platform",
     moduleName: "blogs",
+  },
+  {
+    name: "Guide Management",
+    href: ROUTES.ADMIN.GUIDE_MANAGEMENT,
+    icon: FileText,
+    section: "platform",
+    moduleName: "guides",
   },
   {
     name: "System Logs",

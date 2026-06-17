@@ -2096,6 +2096,94 @@ export async function getPublicBlogTags(): Promise<string[]> {
   }
 }
 
+// ==================== GUIDES (Public) ====================
+
+export interface PublicGuideCategory {
+  id: number;
+  slug: string;
+  title: string;
+  description: string;
+  iconName: string;
+  colorKey: string;
+  bgColorKey: string;
+  sortOrder: number;
+  isActive: boolean;
+}
+
+export interface PublicGuide {
+  id: number;
+  slug: string;
+  title: string;
+  description: string;
+  content: string;
+  readTime: string;
+  views: number;
+  publishedAt: string;
+  isActive: boolean;
+  categoryId: number;
+  category: PublicGuideCategory;
+}
+
+export async function getPublicGuides(): Promise<PublicGuide[]> {
+  try {
+    const response = await api.get(`${API_ROUTES.BLOG}/guides`);
+    return response?.data?.data || [];
+  } catch (error) {
+    console.error("Error fetching public guides:", error);
+    return [];
+  }
+}
+
+export async function getPublicGuideCategories(): Promise<PublicGuideCategory[]> {
+  try {
+    const response = await api.get(`${API_ROUTES.BLOG}/guides/categories`);
+    return response?.data?.data || [];
+  } catch (error) {
+    console.error("Error fetching guide categories:", error);
+    return [];
+  }
+}
+
+export async function getPublicGuidesByCategory(categorySlug: string): Promise<{ category: PublicGuideCategory; guides: PublicGuide[] } | null> {
+  try {
+    const response = await api.get(`${API_ROUTES.BLOG}/guides/category/${categorySlug}`);
+    return response?.data?.data || null;
+  } catch (error) {
+    console.error("Error fetching guides by category:", error);
+    return null;
+  }
+}
+
+export async function getPublicGuideBySlug(slug: string): Promise<PublicGuide | null> {
+  try {
+    const response = await api.get(`${API_ROUTES.BLOG}/guides/${slug}`);
+    return response?.data?.data || null;
+  } catch (error) {
+    console.error("Error fetching guide by slug:", error);
+    return null;
+  }
+}
+
+export async function searchPublicGuides(query: string): Promise<PublicGuide[]> {
+  try {
+    const response = await api.get(`${API_ROUTES.BLOG}/guides/search`, { params: { q: query } });
+    return response?.data?.data || [];
+  } catch (error) {
+    console.error("Error searching guides:", error);
+    return [];
+  }
+}
+
+export async function getPublicPopularGuides(limit?: number): Promise<PublicGuide[]> {
+  try {
+    const response = await api.get(`${API_ROUTES.BLOG}/guides/popular`, { params: { limit } });
+    return response?.data?.data || [];
+  } catch (error) {
+    console.error("Error fetching popular guides:", error);
+    return [];
+  }
+}
+
 // ==================== REVIEWS (User/Tester) ====================
 
 export async function createReview(payload: {
@@ -2490,6 +2578,17 @@ export const updateAdminDeclaration = async ({
     throw error;
   }
 };
+
+export async function getPublicFaqs(category?: string): Promise<any[]> {
+  try {
+    const params = category ? `?category=${category}` : "";
+    const response = await api.get(`${API_ROUTES.FAQ}/faqs${params}`);
+    return response?.data?.data || [];
+  } catch (error) {
+    console.error("Error fetching FAQs:", error);
+    throw error;
+  }
+}
 
 export const publishAdminDeclaration = async (
   appId: string | number,

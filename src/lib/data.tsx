@@ -5,7 +5,6 @@ import type {
   ProcessStep,
   CommunityApp,
   PointsPackage,
-  FaqItem,
   Notification,
   Project,
   TesterDetails,
@@ -1427,108 +1426,6 @@ export const pointsPackages: PointsPackage[] = [
     price: 999,
     points: 1,
     description: "Single app testing cycle with managed support.",
-  },
-];
-
-export const generalFaqs: FaqItem[] = [
-  {
-    question: "What is inTesters?",
-    answer:
-      "inTesters is a platform designed to help Android developers meet the Google Play Store's requirement of having their app tested by at least 20 people for 14 days. We offer two paths: a free, community-driven approach and a paid, professional service.",
-  },
-  {
-    question: "Who is inTesters for?",
-    answer:
-      "inTesters is for any Android developer, from solo indie devs to large companies, who need to fulfill Google's pre-launch testing requirements quickly and efficiently.",
-  },
-  {
-    question: "How do I get started?",
-    answer:
-      "Just sign up for a free account! From there, you can choose your path. You can start testing other apps to earn points via Free Testing, or you can purchase a package and submit your app for professional testing via Pro Testing.",
-  },
-];
-
-export const communityFaqs: FaqItem[] = [
-  {
-    question: "How does Free Testing work?",
-    answer:
-      "It's a reciprocal ecosystem. You test apps submitted by other developers. For each valid test you complete, you earn points. You must have enough points to submit your own app for free testing by the community.",
-  },
-  {
-    question: "Is Free Testing really free?",
-    answer:
-      "Yes, in terms of money. It requires your time and effort to test other apps, which is how you contribute and earn your own testing credits (points). You cannot buy points for free testing; they must be earned.",
-  },
-  {
-    question: "What kind of feedback can I expect from free testing?",
-    answer:
-      "You'll receive feedback from a diverse range of real users on real devices. This often uncovers usability issues, device-specific bugs, and general feedback that you might not find in a controlled environment.",
-  },
-  {
-    question: "Should I use Free Testing or Pro Testing?",
-    answer:
-      "Free Testing is great if you have time to test other apps and want to save money. Pro Testing is ideal if you need guaranteed results, vetted testers, detailed bug reports, and a fully managed 14-day cycle. Most developers start free and upgrade to Pro when they need faster, more reliable results.",
-  },
-  {
-    question: "Why do developers upgrade from Free to Pro?",
-    answer:
-      "The #1 reason is time. Free testing requires you to spend 20+ hours testing other apps before you can submit yours. Pro Testing gives you 20+ vetted testers, detailed bug reports, device coverage stats, and Google Play compliance verification — all managed by our team with zero effort from you. Check our pricing page for current rates.",
-  },
-];
-
-export const proFaqs: FaqItem[] = [
-  {
-    question: "How does Pro Testing work?",
-    answer:
-      "It's simple. You submit your app, choose a testing package, and our professional QA team takes over. We assign 20+ vetted testers who test your app across multiple devices and OS versions for 14 days. You receive detailed bug reports, device coverage stats, and analytics — all managed by our team with zero effort from you.",
-  },
-  {
-    question: "Is Pro Testing guaranteed to meet Google Play's 12-tester requirement?",
-    answer:
-      "Yes. Pro Testing is specifically designed to meet and exceed Google Play's 12-tester, 14-day requirement. We guarantee 20+ testers over 14 days, with detailed reports that serve as proof of testing for your Google Play Console listing.",
-  },
-  {
-    question: "How is Pro Testing different from Free Testing?",
-    answer:
-      "Free Testing is a reciprocal community where you test others' apps to earn points. It costs no money but requires your time. Pro Testing is a paid, fully managed service. You get 20+ vetted professional testers, detailed bug reports, device coverage analytics, and Google Play compliance verification — all handled by our team with zero effort from you.",
-  },
-  {
-    question: "What kind of feedback do I get with Pro Testing?",
-    answer:
-      "You'll receive comprehensive, structured bug reports including: screenshots and screen recordings of issues, device and OS version details, crash logs, step-by-step reproduction steps, usability feedback, and performance metrics. Every test cycle includes a full coverage report showing which devices and OS versions were tested.",
-  },
-  {
-    question: "How long does a Pro Testing cycle take?",
-    answer:
-      "The standard Pro Testing cycle is 14 days — exactly matching Google Play's requirement. We manage the entire process end-to-end. You can track progress in real-time through your dashboard.",
-  },
-  {
-    question: "What happens if my app doesn't get enough testers?",
-    answer:
-      "We guarantee 20+ testers for every Pro Testing cycle. If for any reason we fall short, we extend the testing period at no additional cost until the required number of testers is met. This is part of our satisfaction guarantee.",
-  },
-];
-
-export const pricingFaqs: FaqItem[] = [
-  {
-    question: "What is a Professional Testing Package?",
-    answer:
-      "A package is what you buy to get one app fully tested by our professional, vetted QA team. It covers one complete testing cycle (14 days, 20+ testers) to meet Google's requirements. This is separate from the community points system.",
-  },
-  {
-    question: "Do my purchased packages expire?",
-    answer:
-      "No, your packages never expire. You can use them whenever you're ready to start a new professional testing cycle for an app.",
-  },
-  {
-    question: "What is the difference between packages and points?",
-    answer:
-      "Packages are purchased for the Professional Path to have our team test your app. Points are earned for free on the Community Path by testing other apps, and are used to have the community test your app. They are two separate systems.",
-  },
-  {
-    question: "Can I get a refund on purchased packages?",
-    answer:
-      "Unused packages are eligible for a refund within 14 days of purchase. Please contact our support team for assistance.",
   },
 ];
 
