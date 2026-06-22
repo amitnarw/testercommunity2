@@ -38,7 +38,7 @@ export function TwoPathsSection() {
             trigger: component.current,
             start: "top top",
             pin: true,
-            scrub: 1,
+            scrub: 0.1,
             snap: 1 / (panels.length - 1),
             end: () => "+=" + slider.current?.offsetWidth,
             onUpdate: (self) => {
@@ -141,7 +141,7 @@ export function TwoPathsSection() {
     <section
       ref={sectionRef}
       data-loc="TwoPathsSection"
-      className="relative py-10 md:py-32 flex flex-col justify-center bg-background"
+      className="relative py-10 md:py-32 bg-background"
     >
       {/* Background Decor */}
       <div className="absolute inset-0 bg-dot-pattern opacity-[0.2] pointer-events-none" />
@@ -206,9 +206,9 @@ export function TwoPathsSection() {
               </button>
             </div>
           </div>
-          <div ref={slider} className="flex w-fit">
-            <div className="panel w-screen flex justify-center px-4">
-              <div className={cn(cardClasses(false), "w-full max-w-[90vw]")}>
+          <div ref={slider} className="flex w-fit will-change-transform">
+            <div className="panel w-screen flex justify-center px-4 will-change-transform">
+              <div className={cn(cardClasses(false), "w-full max-w-[90vw] transform-gpu")}>
                 <div className="mb-8 relative z-10">
                   <div className="flex items-center gap-3 mb-4">
                     <div className="p-2.5 bg-primary/10 rounded-xl">
@@ -250,9 +250,9 @@ export function TwoPathsSection() {
                 </div>
               </div>
             </div>
-            <div className="panel w-screen flex justify-center px-4">
-              <div className={cn(cardClasses(true), "w-full max-w-[90vw]")}>
-                <div className="absolute bottom-0 left-0 -ml-20 -mb-20 w-60 h-60 bg-black/10 rounded-full blur-3xl pointer-events-none" />
+            <div className="panel w-screen flex justify-center px-4 will-change-transform">
+              <div className={cn(cardClasses(true), "w-full max-w-[90vw] transform-gpu")}>
+                <div className="absolute bottom-0 left-0 -ml-20 -mb-20 w-60 h-60 bg-black/10 rounded-full blur-3xl pointer-events-none transform-gpu" />
                 <div className="absolute top-6 right-6 opacity-20 rotate-12">
                   <Star className="w-24 h-24 fill-current text-white" />
                 </div>

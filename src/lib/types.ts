@@ -637,6 +637,7 @@ export interface NotificationResponse {
     | "OTHER";
   url: string | null;
   isActive: boolean;
+  isAdminOnly?: boolean;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -902,19 +903,14 @@ export interface CreateOrderResponse {
   expiresAt?: string;
 }
 
-export interface PaymentVerificationPayload {
-  razorpay_order_id: string;
-  razorpay_payment_id: string;
-  razorpay_signature: string;
-}
-
-export interface PaymentVerificationResponse {
-  success: boolean;
-  orderId: number;
-  paymentId: number;
-  invoiceId: string;
-  packagesAwarded: number;
-  totalPackages: number;
+export interface OrderStatusResponse {
+  status: "CREATED" | "PAID" | "FAILED";
+  invoiceId?: string | null;
+  packagesAwarded?: number | null;
+  paymentId?: number | null;
+  amount?: number;
+  currency?: string;
+  errorReason?: string | null;
 }
 
 export interface PromoCodeResponse {

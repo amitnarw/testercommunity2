@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useTheme } from "next-themes";
 import { usePathname } from "next/navigation";
 import { Button } from "../ui/button";
-import { Sun, Moon, LayoutDashboard, Users, Code2, Clock, AlertTriangle } from "lucide-react";
+import { Sun, Moon, LayoutDashboard, Users, Code2, Clock, AlertTriangle, Bell } from "lucide-react";
 import { UserNav } from "../user-nav";
 import MobileMenu from "../mobile-menu";
 import { authClient } from "@/lib/auth-client";
@@ -15,6 +15,7 @@ import Link from "next/link";
 import { AutoTransitionLink } from "@/components/auto-transition-link";
 import { useTesterProjects } from "@/hooks/useTester";
 import { useActAsRole } from "@/hooks/useAdmin";
+import { useGetUserNotifications } from "@/hooks/useUser";
 
 export default function Navbar({ onLogout }: { onLogout: () => void }) {
   const pathname = usePathname();
@@ -47,6 +48,21 @@ export default function Navbar({ onLogout }: { onLogout: () => void }) {
     } else if (typeof role === "object" && role?.name) {
       return (
         role.name.toLowerCase() === "tester" ||
+        role.name.toLowerCase() === "super_admin"
+      );
+    }
+    return false;
+  })();
+
+  const isAdminUser = (() => {
+    const role = (session as any)?.role;
+    if (typeof role === "string") {
+      return (
+        role.toLowerCase() === "admin" || role.toLowerCase() === "super_admin"
+      );
+    } else if (typeof role === "object" && role?.name) {
+      return (
+        role.name.toLowerCase() === "admin" ||
         role.name.toLowerCase() === "super_admin"
       );
     }
@@ -90,6 +106,14 @@ export default function Navbar({ onLogout }: { onLogout: () => void }) {
 
       return false;
     }).length || 0;
+
+  const { data: notificationData } = useGetUserNotifications({
+    refetchInterval: 30000,
+  });
+
+  const adminNotificationCount =
+    notificationData?.notifications?.filter((n) => n.type === "TEST_COMPLETED")
+      .length ?? 0;
 
   if (!mounted) {
     return (
@@ -169,8 +193,22 @@ export default function Navbar({ onLogout }: { onLogout: () => void }) {
                       <span className="hidden md:inline">User</span>
                     </button>
                   </AutoTransitionLink>
-               </div>
-             )}
+                </div>
+              )}
+            {isAdminUser && (
+              <Link
+                href={ROUTES.ADMIN.NOTIFICATIONS}
+                className="relative flex items-center justify-center h-8 w-8 rounded-full hover:bg-white/10 transition-all mr-1"
+                title="Admin Notifications"
+              >
+                <Bell className="h-4 w-4 text-white/70" />
+                {adminNotificationCount > 0 && (
+                  <span className="absolute -top-0.5 -right-0.5 flex items-center justify-center h-4 min-w-[16px] px-1 rounded-full bg-red-500 text-[10px] font-bold text-white leading-none">
+                    {adminNotificationCount > 99 ? "99+" : adminNotificationCount}
+                  </span>
+                )}
+              </Link>
+            )}
             <div className="flex items-center gap-2">
               {isTester && pendingCount > 0 && (
                 <Link
