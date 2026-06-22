@@ -171,7 +171,7 @@ export function TwoPathsSection() {
       </div>
 
       {/* Mobile - Pinned Section */}
-      <div ref={component} className="block md:hidden bg-background relative z-20 w-full py-10">
+      <div ref={component} className="block md:hidden bg-background relative z-20 w-full py-10 overflow-hidden">
           <div className="flex justify-center mb-8">
             <div className="bg-secondary/50 p-1.5 rounded-full flex items-center relative gap-1 border border-border/50 backdrop-blur-sm">
               <button
