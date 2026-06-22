@@ -29,7 +29,6 @@ import {
   useBillingHistory,
   useCreateOrder,
   usePaymentConfig,
-  useVerifyPayment,
 } from "@/hooks/useBilling";
 import { useGetUserWallet, usePricingData, useUserData, useRegionalPricing } from "@/hooks/useUser";
 import { Accordion } from "@/components/ui/accordion";
@@ -218,7 +217,6 @@ export default function BillingPage() {
   const { data: userData } = useUserData();
 
   const createOrderMutation = useCreateOrder();
-  const verifyPaymentMutation = useVerifyPayment();
 
   const [feedbackModal, setFeedbackModal] = useState<FeedbackModalState>({
     open: false,
@@ -280,40 +278,8 @@ export default function BillingPage() {
         description: `Purchase ${order.planName}`,
         image: logoUrl,
         order_id: order.razorpayOrderId,
-        handler: async function (response: any) {
-          // 3. Verify Payment
-          try {
-            const result = await verifyPaymentMutation.mutateAsync({
-              razorpay_order_id: response.razorpay_order_id,
-              razorpay_payment_id: response.razorpay_payment_id,
-              razorpay_signature: response.razorpay_signature,
-            });
-
-            if (result.success) {
-              window.location.href = `/billing/success?paymentId=${response.razorpay_payment_id}&orderId=${response.razorpay_order_id}&invoiceId=${result.invoiceId}`;
-            }
-          } catch (err) {
-            console.error("Verification error:", err);
-            setFeedbackModal({
-              open: true,
-              status: "error",
-              title: "Verification Failed",
-              description:
-                "Payment was successful but verification failed. Please contact support.",
-              primaryAction: {
-                label: "Try Again",
-                onClick: () => handleSubscribe(planId),
-              },
-              secondaryAction: {
-                label: "Contact Support",
-                onClick: () =>
-                  window.open(
-                    "mailto:support@intesters.com?subject=Billing%20Issue%20-%20Payment%20Verification%20Failed",
-                    "_blank",
-                  ),
-              },
-            });
-          }
+        handler: function (response: any) {
+          window.location.href = `/billing/processing?orderId=${response.razorpay_order_id}`;
         },
         prefill: {
           name: userData?.name || "",
@@ -385,7 +351,7 @@ export default function BillingPage() {
   };
 
   const isProcessing =
-    createOrderMutation.isPending || verifyPaymentMutation.isPending;
+    createOrderMutation.isPending;
 
   return (
     <>

@@ -18,8 +18,7 @@ import {
   PaymentConfigResponse,
   BillingHistoryItem,
   CreateOrderResponse,
-  PaymentVerificationPayload,
-  PaymentVerificationResponse,
+  OrderStatusResponse,
   TesterProjectResponse,
   PromoCodeResponse,
   TesterEarningsResponse,
@@ -1626,22 +1625,18 @@ export async function createOrder(payload: {
   }
 }
 
-export async function verifyPayment(
-  payload: PaymentVerificationPayload,
-): Promise<PaymentVerificationResponse> {
+export async function getOrderStatus(
+  orderId: string,
+): Promise<OrderStatusResponse> {
   try {
-    const response = await api.post(
-      API_ROUTES.BILLING + `/verify-payment`,
-      payload,
+    const response = await api.get(
+      API_ROUTES.BILLING + `/order-status/${orderId}`,
     );
     return response?.data?.data;
   } catch (error) {
-    console.error("Error verifying payment:", error);
+    console.error("Error fetching order status:", error);
     if (axios.isAxiosError(error)) {
-      const status = error.response?.status;
       const responseData = error.response?.data;
-      console.error("Axios error:", status, responseData);
-
       throw new Error(
         responseData?.message || error.message || "Unknown Axios error",
       );

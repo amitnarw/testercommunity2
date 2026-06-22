@@ -131,13 +131,16 @@ export function useDashboardData() {
 }
 
 // Notification
-export function useGetUserNotifications() {
+export function useGetUserNotifications(options?: {
+  refetchInterval?: number;
+}) {
   const query = useQuery<
     { notifications: NotificationResponse[]; totalNotifications: number },
     Error
   >({
     queryFn: () => getUserNotifications(),
     queryKey: ["useGetUserNotifications"],
+    refetchInterval: options?.refetchInterval,
   });
 
   return query;

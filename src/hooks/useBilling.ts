@@ -3,7 +3,7 @@ import {
   getBillingHistory,
   getPaymentConfig,
   getPendingOrders,
-  verifyPayment,
+  getOrderStatus,
   getPromoCodes,
   getBillingInfo,
   saveBillingInfo,
@@ -14,8 +14,7 @@ import {
   BillingHistoryItem,
   CreateOrderResponse,
   PaymentConfigResponse,
-  PaymentVerificationPayload,
-  PaymentVerificationResponse,
+  OrderStatusResponse,
   PromoCodeResponse,
   BillingInfo,
   InvoiceDetail,
@@ -66,19 +65,24 @@ export function useCreateOrder(
   return mutation;
 }
 
-export function useVerifyPayment(
-  options?: UseMutationOptions<
-    PaymentVerificationResponse,
-    Error,
-    PaymentVerificationPayload
-  >,
-) {
-  const mutation = useMutation({
-    mutationFn: (payload: PaymentVerificationPayload) => verifyPayment(payload),
-    ...options,
+export function useOrderStatus(orderId: string | null, pollInterval: number = 2000) {
+  const query = useQuery<OrderStatusResponse, Error>({
+    queryFn: () => getOrderStatus(orderId!),
+    queryKey: ["orderStatus", orderId],
+    enabled: !!orderId?.length,
+    refetchInterval: (query) => {
+      if (!query.state.data || query.state.data.status === 'PAID' || query.state.data.status === 'FAILED') {
+        return false;
+      }
+      return pollInterval;
+    },
+    retry: (failureCount, error) => {
+      if (error?.message?.toLowerCase().includes("not found")) return false;
+      return failureCount < 3;
+    },
   });
 
-  return mutation;
+  return query;
 }
 
 export function usePromoCodes() {
