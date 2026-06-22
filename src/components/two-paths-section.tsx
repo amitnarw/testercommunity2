@@ -8,7 +8,7 @@ import { Button } from "./ui/button";
 import { HoverBorderGradient } from "./ui/hover-border-gradient";
 import { motion } from "framer-motion";
 import { ROUTES } from "@/lib/routes";
-import { useState, useRef, useLayoutEffect } from "react";
+import { useState, useRef, useLayoutEffect, useEffect } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
@@ -25,31 +25,46 @@ export function TwoPathsSection() {
   const lastTabRef = useRef<"community" | "professional">("community");
 
   useLayoutEffect(() => {
-    const panels = gsap.utils.toArray<HTMLDivElement>(".panel", slider.current!);
-    if (panels.length < 2) return;
-
     const ctx = gsap.context(() => {
-      gsap.to(panels, {
-        xPercent: -100 * (panels.length - 1),
-        ease: "none",
-        scrollTrigger: {
-          trigger: component.current,
-          pin: true,
-          scrub: 1,
-          snap: 1 / (panels.length - 1),
-          end: () => "+=" + slider.current?.offsetWidth,
-          onUpdate: (self) => {
-            const next = self.progress > 0.5 ? "professional" : "community";
-            if (next !== lastTabRef.current) {
-              lastTabRef.current = next;
-              setActiveTab(next);
-            }
+      let mm = gsap.matchMedia();
+      mm.add("(max-width: 767px)", () => {
+        const panels = gsap.utils.toArray<HTMLDivElement>(".panel", slider.current!);
+        if (panels.length < 2) return;
+
+        gsap.to(panels, {
+          xPercent: -100 * (panels.length - 1),
+          ease: "none",
+          scrollTrigger: {
+            trigger: component.current,
+            start: "top top",
+            pin: true,
+            scrub: 1,
+            snap: 1 / (panels.length - 1),
+            end: () => "+=" + slider.current?.offsetWidth,
+            onUpdate: (self) => {
+              const next = self.progress > 0.5 ? "professional" : "community";
+              if (next !== lastTabRef.current) {
+                lastTabRef.current = next;
+                setActiveTab(next);
+              }
+            },
           },
-        },
+        });
       });
-    }, component);
+    }, sectionRef);
 
     return () => ctx.revert();
+  }, []);
+
+  useEffect(() => {
+    // Fix GSAP trigger recalculation for dynamic imports
+    const ro = new ResizeObserver(() => {
+      ScrollTrigger.refresh();
+    });
+    if (typeof document !== "undefined") {
+      ro.observe(document.documentElement);
+    }
+    return () => ro.disconnect();
   }, []);
 
   const containerVariants = {
@@ -126,7 +141,7 @@ export function TwoPathsSection() {
     <section
       ref={sectionRef}
       data-loc="TwoPathsSection"
-      className="relative py-10 md:py-32 overflow-hidden flex flex-col justify-center"
+      className="relative py-10 md:py-32 flex flex-col justify-center bg-background"
     >
       {/* Background Decor */}
       <div className="absolute inset-0 bg-dot-pattern opacity-[0.2] pointer-events-none" />
@@ -153,9 +168,10 @@ export function TwoPathsSection() {
             </p>
           </motion.div>
         </motion.div>
+      </div>
 
-        {/* Mobile - Pinned Section */}
-        <div ref={component} className="block md:hidden">
+      {/* Mobile - Pinned Section */}
+      <div ref={component} className="block md:hidden bg-background relative z-20 w-full py-10">
           <div className="flex justify-center mb-8">
             <div className="bg-secondary/50 p-1.5 rounded-full flex items-center relative gap-1 border border-border/50 backdrop-blur-sm">
               <button
@@ -190,9 +206,9 @@ export function TwoPathsSection() {
               </button>
             </div>
           </div>
-          <div ref={slider} className="flex w-fit gap-4">
-            <div className="panel w-[90vw]">
-              <div className={cardClasses(false)}>
+          <div ref={slider} className="flex w-fit">
+            <div className="panel w-screen flex justify-center px-4">
+              <div className={cn(cardClasses(false), "w-full max-w-[90vw]")}>
                 <div className="mb-8 relative z-10">
                   <div className="flex items-center gap-3 mb-4">
                     <div className="p-2.5 bg-primary/10 rounded-xl">
@@ -234,8 +250,8 @@ export function TwoPathsSection() {
                 </div>
               </div>
             </div>
-            <div className="panel w-[90vw]">
-              <div className={cardClasses(true)}>
+            <div className="panel w-screen flex justify-center px-4">
+              <div className={cn(cardClasses(true), "w-full max-w-[90vw]")}>
                 <div className="absolute bottom-0 left-0 -ml-20 -mb-20 w-60 h-60 bg-black/10 rounded-full blur-3xl pointer-events-none" />
                 <div className="absolute top-6 right-6 opacity-20 rotate-12">
                   <Star className="w-24 h-24 fill-current text-white" />
@@ -280,8 +296,9 @@ export function TwoPathsSection() {
           </div>
         </div>
 
-        {/* Desktop Grid */}
-        <motion.div
+        <div className="container relative z-10 mx-auto px-4 md:px-6">
+          {/* Desktop Grid */}
+          <motion.div
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: "-100px" }}

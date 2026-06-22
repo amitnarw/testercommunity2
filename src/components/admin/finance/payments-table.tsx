@@ -9,10 +9,15 @@ import { Skeleton } from "@/components/ui/skeleton";
 import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from "@/components/ui/table";
-import { Search, ArrowLeft, ArrowRight, Eye } from "lucide-react";
-import { useFinancePayments, useUserWalletDetail } from "@/hooks/useAdmin";
+import { Search, ArrowLeft, ArrowRight, Eye, RotateCcw, Loader2 } from "lucide-react";
+import { useFinancePayments, useUserWalletDetail, useInitiateRefund } from "@/hooks/useAdmin";
 import type { FinancePayment, FinancePagination } from "@/lib/types";
 import { UserWalletModal } from "./user-wallet-modal";
+import { formatCurrency } from "@/lib/utils";
+import {
+  Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter, DialogDescription,
+} from "@/components/ui/dialog";
+import { FeedbackModal } from "@/components/feedback-modal";
 
 const statusColors: Record<string, string> = {
   CAPTURED: "bg-green-500/20 text-green-600",
@@ -30,6 +35,37 @@ export function PaymentsTable() {
   const [search, setSearch] = useState("");
   const [searchInput, setSearchInput] = useState("");
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
+  const [refundPayment, setRefundPaymentState] = useState<FinancePayment | null>(null);
+  const [refundAmount, setRefundAmount] = useState<number>(0);
+  const [refundReason, setRefundReason] = useState<string>("");
+  const [feedback, setFeedback] = useState<any>(null);
+
+  const openRefundDialog = (p: FinancePayment) => {
+    setRefundPaymentState(p);
+    setRefundAmount((p.amount - p.amountRefunded) / 100);
+    setRefundReason("Customer requested refund");
+  };
+
+  const refundMutation = useInitiateRefund({
+    onSuccess: () => {
+      setRefundPaymentState(null);
+      setFeedback({ open: true, status: "success", title: "Refunded!", description: "Refund has been processed successfully." });
+    },
+    onError: (err: any) => {
+      setRefundPaymentState(null);
+      setFeedback({ open: true, status: "error", title: "Refund Failed", description: err?.message || "Failed to process refund." });
+    },
+  });
+
+  const handleRefund = () => {
+    if (refundPayment) {
+      refundMutation.mutate({
+        paymentId: refundPayment.razorpayPaymentId,
+        amount: refundAmount,
+        reason: refundReason || undefined,
+      });
+    }
+  };
 
   const { data, isLoading } = useFinancePayments({
     page, limit: 15,
@@ -109,9 +145,9 @@ export function PaymentsTable() {
                       </TableCell>
                       <TableCell>
                         <span className="font-medium">
-                          {p.currency === "INR" ? "₹" : "$"}{(p.amount / 100).toLocaleString()}
+                          {formatCurrency(p.amount, p.currency)}
                         </span>
-                        {p.fee ? <p className="text-xs text-muted-foreground">Fee: ₹{Math.floor(p.fee / 100)}</p> : null}
+                        {p.fee ? <p className="text-xs text-muted-foreground">Fee: {formatCurrency(p.fee, p.currency)}</p> : null}
                       </TableCell>
                       <TableCell>
                         <Badge variant="outline" className="text-xs capitalize">{p.method || "—"}</Badge>
@@ -129,11 +165,23 @@ export function PaymentsTable() {
                       <TableCell className="text-xs font-mono">{p.invoice?.invoice_number || "—"}</TableCell>
                       <TableCell className="text-xs">{new Date(p.createdAt).toLocaleDateString()}</TableCell>
                       <TableCell>
-                        {p.user?.id && (
-                          <Button variant="ghost" size="sm" onClick={() => setSelectedUserId(p.user!.id)}>
-                            <Eye className="h-4 w-4" />
-                          </Button>
-                        )}
+                        <div className="flex items-center gap-1">
+                          {p.user?.id && (
+                            <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => setSelectedUserId(p.user!.id)}>
+                              <Eye className="h-4 w-4" />
+                            </Button>
+                          )}
+                          {p.status === "CAPTURED" && p.refundStatus !== "FULL" && (
+                            <Button
+                              variant="ghost"
+                              size="icon"
+                              className="h-8 w-8 text-rose-600 hover:text-rose-700 hover:bg-rose-500/10"
+                              onClick={() => openRefundDialog(p)}
+                            >
+                              <RotateCcw className="h-4 w-4" />
+                            </Button>
+                          )}
+                        </div>
                       </TableCell>
                     </TableRow>
                   ))}
@@ -159,6 +207,71 @@ export function PaymentsTable() {
           userId={selectedUserId}
           open={!!selectedUserId}
           onClose={() => setSelectedUserId(null)}
+        />
+      )}
+
+      {refundPayment && (
+        <Dialog open={!!refundPayment} onOpenChange={(open) => { if (!open) setRefundPaymentState(null); }}>
+          <DialogContent className="sm:max-w-[480px]">
+            <DialogHeader>
+              <DialogTitle>Refund Payment</DialogTitle>
+              <DialogDescription>
+                Initiate a refund for payment <span className="font-mono text-xs font-semibold">{refundPayment.razorpayPaymentId.slice(0, 15)}...</span>.
+                This will reverse the payment in Razorpay and deduct the matching packages from the customer's wallet.
+              </DialogDescription>
+            </DialogHeader>
+
+            <div className="grid gap-4 py-4">
+              <div className="grid gap-2">
+                <label className="text-sm font-medium">Refund Amount</label>
+                <div className="flex items-center gap-2">
+                  <span className="text-lg">{refundPayment.currency === "INR" ? "₹" : "$"}</span>
+                  <Input
+                    type="number"
+                    step="0.01"
+                    min="0.01"
+                    max={(refundPayment.amount - refundPayment.amountRefunded) / 100}
+                    value={refundAmount}
+                    onChange={(e) => setRefundAmount(parseFloat(e.target.value) || 0)}
+                  />
+                </div>
+                <p className="text-xs text-muted-foreground">
+                  Max refundable: {formatCurrency(refundPayment.amount - refundPayment.amountRefunded, refundPayment.currency)}
+                </p>
+              </div>
+
+              <div className="grid gap-2">
+                <label className="text-sm font-medium">Reason for Refund</label>
+                <Input
+                  value={refundReason}
+                  onChange={(e) => setRefundReason(e.target.value)}
+                  placeholder="Customer requested refund"
+                />
+              </div>
+            </div>
+
+            <DialogFooter className="gap-2 sm:gap-0">
+              <Button variant="ghost" onClick={() => setRefundPaymentState(null)}>Cancel</Button>
+              <Button
+                variant="destructive"
+                onClick={handleRefund}
+                disabled={refundMutation.isPending}
+              >
+                {refundMutation.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                Confirm Refund
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      )}
+
+      {feedback && (
+        <FeedbackModal
+          open={feedback.open}
+          onOpenChange={() => setFeedback(null)}
+          status={feedback.status}
+          title={feedback.title}
+          description={feedback.description}
         />
       )}
     </div>

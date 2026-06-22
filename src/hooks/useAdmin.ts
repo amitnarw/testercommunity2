@@ -76,6 +76,7 @@ import {
   getFinancePayments,
   getFinanceInvoices,
   getFinanceRefunds,
+  initiateRefund,
   getFinanceWithdrawals,
   approveWithdrawal,
   rejectWithdrawal,
@@ -1456,4 +1457,21 @@ export function useUpdatePermission(options?: UseMutationOptions<any, any, any>)
     },
     ...options,
   });
+}
+
+export function useInitiateRefund(options?: UseMutationOptions<any, any, any>) {
+  const queryClient = useQueryClient();
+  const mutation = useMutation({
+    mutationFn: (payload: { paymentId: string; amount?: number; reason?: string }) =>
+      initiateRefund(payload),
+    onSuccess: (data: any, variables: any, _onMutateResult: any, _context: any) => {
+      queryClient.invalidateQueries({ queryKey: ["useFinancePayments"] });
+      queryClient.invalidateQueries({ queryKey: ["useFinanceRefunds"] });
+      queryClient.invalidateQueries({ queryKey: ["useFinanceDashboard"] });
+      options?.onSuccess?.(data, variables, _onMutateResult, _context);
+    },
+    ...options,
+  });
+
+  return mutation;
 }

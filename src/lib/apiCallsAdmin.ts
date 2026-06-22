@@ -1964,3 +1964,18 @@ export async function updatePermission(
     throw error;
   }
 }
+
+export async function initiateRefund(payload: {
+  paymentId: string;
+  amount?: number;
+  reason?: string;
+}) {
+  try {
+    const response = await api.post(API_ROUTES.ADMIN + `/finance/refunds/create`, payload);
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error initiating refund:", error);
+    throw error;
+  }
+}
+

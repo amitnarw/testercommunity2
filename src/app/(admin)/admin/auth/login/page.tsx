@@ -18,7 +18,6 @@ import {
   EyeOff,
 } from "lucide-react";
 import { BackButton } from "@/components/back-button";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { cn } from "@/lib/utils";
 import { Label } from "@/components/ui/label";
 import { useAdminLogin } from "@/hooks/useAdmin";
@@ -32,11 +31,7 @@ const adminSigninSchema = z.object({
   password: z.string().min(8, "Password must be at least 8 characters."),
 });
 
-const LoginForm = ({
-  role,
-}: {
-  role: "Super Admin" | "Admin" | "Moderator" | "Support";
-}) => {
+const LoginForm = () => {
   const router = useRouter();
   const { toast } = useToast();
   const [showPassword, setShowPassword] = React.useState(false);
@@ -55,7 +50,7 @@ const LoginForm = ({
     onSuccess: async (data) => {
       toast({
         title: "Login Successful",
-        description: `Welcome back, ${role}!`,
+        description: "Welcome back!",
       });
     },
     onError: (error: any) => {
@@ -89,8 +84,8 @@ const LoginForm = ({
     }
 
     setErrors({});
-    login({ email: result.data.email, password: result.data.password, role, rememberMe });
-  }, [emailValue, passwordValue, login, role, rememberMe]);
+    login({ email: result.data.email, password: result.data.password, rememberMe });
+  }, [emailValue, passwordValue, login, rememberMe]);
 
   React.useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -111,7 +106,7 @@ const LoginForm = ({
     >
       <div className="space-y-1">
         <Label
-          htmlFor={`${role}-email`}
+          htmlFor="admin-email"
           className="text-xs font-bold text-foreground/80 ml-1"
         >
           Email
@@ -119,7 +114,7 @@ const LoginForm = ({
         <div className="relative">
           <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
-            id={`${role}-email`}
+            id="admin-email"
             type="email"
             value={emailValue}
             onChange={(e) => {
@@ -139,7 +134,7 @@ const LoginForm = ({
       </div>
       <div className="space-y-1">
         <Label
-          htmlFor={`${role}-password`}
+          htmlFor="admin-password"
           className="text-xs font-bold text-foreground/80 ml-1"
         >
           Password
@@ -147,7 +142,7 @@ const LoginForm = ({
         <div className="relative">
           <Lock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input
-            id={`${role}-password`}
+            id="admin-password"
             type={showPassword ? "text" : "password"}
             value={passwordValue}
             onChange={(e) => {
@@ -277,47 +272,7 @@ export default function AdminLoginPage() {
 
           {/* Card - Optimized Padding */}
           <div className="bg-card border border-border/60 rounded-[2rem] p-6 shadow-xl shadow-primary/5">
-            <Tabs defaultValue="super-admin" className="w-full">
-              <TabsList className="grid w-full grid-cols-4 h-10 bg-muted/40 p-1 rounded-xl mb-6 border border-border/10">
-                <TabsTrigger
-                  value="super-admin"
-                  className="rounded-lg text-[10px] font-bold data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm transition-all"
-                >
-                  Super
-                </TabsTrigger>
-                <TabsTrigger
-                  value="admin"
-                  className="rounded-lg text-[10px] font-bold data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm transition-all"
-                >
-                  Admin
-                </TabsTrigger>
-                <TabsTrigger
-                  value="moderator"
-                  className="rounded-lg text-[10px] font-bold data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm transition-all"
-                >
-                  Mod
-                </TabsTrigger>
-                <TabsTrigger
-                  value="support"
-                  className="rounded-lg text-[10px] font-bold data-[state=active]:bg-background data-[state=active]:text-primary data-[state=active]:shadow-sm transition-all"
-                >
-                  Support
-                </TabsTrigger>
-              </TabsList>
-
-              <TabsContent value="super-admin" className="mt-0 outline-none">
-                <LoginForm role="Super Admin" />
-              </TabsContent>
-              <TabsContent value="admin" className="mt-0 outline-none">
-                <LoginForm role="Admin" />
-              </TabsContent>
-              <TabsContent value="moderator" className="mt-0 outline-none">
-                <LoginForm role="Moderator" />
-              </TabsContent>
-              <TabsContent value="support" className="mt-0 outline-none">
-                <LoginForm role="Support" />
-              </TabsContent>
-            </Tabs>
+            <LoginForm />
           </div>
 
           {/* Footer Info - Combined/Compact */}

@@ -11,6 +11,7 @@ import {
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { useFinanceRefunds } from "@/hooks/useAdmin";
 import type { FinanceRefund, FinancePagination } from "@/lib/types";
+import { formatCurrency } from "@/lib/utils";
 
 const statusColors: Record<string, string> = {
   PROCESSED: "bg-green-500/20 text-green-600",
@@ -72,7 +73,7 @@ export function RefundsTable() {
                         </div>
                       </TableCell>
                       <TableCell>
-                        <span className="font-medium">₹{(r.amount / 100).toLocaleString()}</span>
+                        <span className="font-medium">{formatCurrency(r.amount, r.currency)}</span>
                       </TableCell>
                       <TableCell>
                         <Badge className={`text-xs ${statusColors[r.status] || "bg-gray-500/20 text-gray-600"}`}>{r.status}</Badge>
