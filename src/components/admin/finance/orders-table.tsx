@@ -14,6 +14,7 @@ import { useFinanceOrders } from "@/hooks/useAdmin";
 import type { FinanceOrder, FinancePagination } from "@/lib/types";
 import Link from "next/link";
 import { ROUTES } from "@/lib/routes";
+import { formatCurrency } from "@/lib/utils";
 
 const statusColors: Record<string, string> = {
   PAID: "bg-green-500/20 text-green-600",
@@ -105,7 +106,7 @@ export function OrdersTable() {
                       <TableCell>{order.plan?.name || "—"}</TableCell>
                       <TableCell>
                         <span className="font-medium">
-                          {order.currency === "INR" ? "₹" : "$"}{(order.amount / 100).toLocaleString()}
+                          {formatCurrency(order.amount, order.currency)}
                         </span>
                       </TableCell>
                       <TableCell>

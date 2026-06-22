@@ -14,6 +14,7 @@ import { useFinanceInvoices } from "@/hooks/useAdmin";
 import type { FinanceInvoice, FinancePagination } from "@/lib/types";
 import Link from "next/link";
 import { ROUTES } from "@/lib/routes";
+import { formatCurrency } from "@/lib/utils";
 
 export function InvoicesList() {
   const [page, setPage] = useState(1);
@@ -76,8 +77,7 @@ export function InvoicesList() {
                       <TableCell className="text-sm">{inv.service_name}</TableCell>
                       <TableCell>
                         <span className="font-medium">
-                          {inv.payment?.currency === "INR" ? "₹" : "$"}
-                          {inv.payment ? (inv.payment.amount / 100).toLocaleString() : "—"}
+                          {inv.payment ? formatCurrency(inv.payment.amount, inv.payment.currency) : "—"}
                         </span>
                       </TableCell>
                       <TableCell>

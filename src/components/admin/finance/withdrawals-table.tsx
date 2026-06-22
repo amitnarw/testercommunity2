@@ -14,6 +14,7 @@ import { Search, ArrowLeft, ArrowRight, CheckCircle, XCircle } from "lucide-reac
 import { useFinanceWithdrawals, useApproveWithdrawal, useRejectWithdrawal } from "@/hooks/useAdmin";
 import { useQueryClient } from "@tanstack/react-query";
 import type { FinanceWithdrawal, FinancePagination } from "@/lib/types";
+import { formatCurrency } from "@/lib/utils";
 
 const statusColors: Record<string, string> = {
   PENDING: "bg-amber-500/20 text-amber-600",
@@ -115,7 +116,7 @@ export function WithdrawalsTable() {
                           <p className="text-xs text-muted-foreground">{w.user?.email}</p>
                         </div>
                       </TableCell>
-                      <TableCell className="font-semibold">{w.currency === "USD" ? "$" : "₹"}{w.amount.toLocaleString()}</TableCell>
+                      <TableCell className="font-semibold">{formatCurrency(w.amount, w.currency, { isSmallestUnit: false })}</TableCell>
                       <TableCell className="text-sm">{w.currency}</TableCell>
                       <TableCell>
                         <Badge className={`text-xs ${statusColors[w.status] || "bg-gray-500/20 text-gray-600"}`}>{w.status}</Badge>
