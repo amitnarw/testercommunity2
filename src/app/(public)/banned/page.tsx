@@ -37,7 +37,7 @@ function BannedPageContent() {
 
           <div className="space-y-3">
             <Button asChild className="w-full rounded-xl">
-              <Link href="mailto:support@intesters.com">
+              <Link href="mailto:intesters@nexmail.in">
                 <Mail className="w-4 h-4 mr-2" />
                 Contact Support
               </Link>

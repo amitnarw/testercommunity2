@@ -88,7 +88,7 @@ export default function ProjectPage({
       androidVersion: `Android ${app.minimumAndroidVersion || 0}+`,
       pointsCost: app.costPoints || 0,
       crashFreeRate: 100,
-      overallRating: 0,
+      overallRating: app.averageRating || 0,
       feedbackBreakdown: { bugs: 0, suggestions: 0, praise: 0 },
       performanceMetrics: { cpuUsage: 0, memoryUsage: 0, startupTime: 0 },
       deviceCoverage: Array.from(deviceMap.entries()).map(

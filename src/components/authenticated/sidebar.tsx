@@ -228,13 +228,7 @@ export function Sidebar({
     typeof role === "string" ? role : role?.name
   )?.toLowerCase();
 
-  const isAdminRole = [
-    "admin",
-    "super_admin",
-    "super admin",
-    "moderator",
-    "support",
-  ].includes(roleName);
+  const isAdminRole = role?.isAdmin === true;
   const isTesterRole = roleName === "tester" || roleName === "super_admin";
 
   let navLinks: { name: string; href: string; icon: typeof LayoutDashboard; badge?: string }[] = mainNavLinks;

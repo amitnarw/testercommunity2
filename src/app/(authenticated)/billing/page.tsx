@@ -313,7 +313,7 @@ export default function BillingPage() {
             label: "Contact Support",
             onClick: () =>
               window.open(
-                "mailto:support@intesters.com?subject=Billing%20Issue%20-%20Payment%20Failed",
+                "mailto:intesters@nexmail.in?subject=Billing%20Issue%20-%20Payment%20Failed",
                 "_blank",
               ),
           },
@@ -459,7 +459,7 @@ export default function BillingPage() {
                   <Button
                     onClick={() =>
                       window.open(
-                        "mailto:support@intesters.com?subject=Billing%20Support%20Request",
+                        "mailto:intesters@nexmail.in?subject=Billing%20Support%20Request",
                         "_blank",
                       )
                     }

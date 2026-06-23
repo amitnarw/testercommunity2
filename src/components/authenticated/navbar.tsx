@@ -56,17 +56,7 @@ export default function Navbar({ onLogout }: { onLogout: () => void }) {
 
   const isAdminUser = (() => {
     const role = (session as any)?.role;
-    if (typeof role === "string") {
-      return (
-        role.toLowerCase() === "admin" || role.toLowerCase() === "super_admin"
-      );
-    } else if (typeof role === "object" && role?.name) {
-      return (
-        role.name.toLowerCase() === "admin" ||
-        role.name.toLowerCase() === "super_admin"
-      );
-    }
-    return false;
+    return role?.isAdmin === true;
   })();
 
   const { data: projects } = useTesterProjects();

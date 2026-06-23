@@ -151,6 +151,9 @@ function AdminSubmissionsFreeContent() {
             <TabsTrigger value="DRAFT">
               Draft ({countsData?.DRAFT || 0})
             </TabsTrigger>
+            <TabsTrigger value="COMPLETED">
+              Completed ({countsData?.COMPLETED || 0})
+            </TabsTrigger>
           </TabsList>
         </div>
 

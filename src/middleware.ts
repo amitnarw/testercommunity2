@@ -5,6 +5,7 @@ import { ROUTES } from "@/lib/routes";
 
 interface RoleInfo {
   name: string;
+  isAdmin?: boolean;
   permissions: Array<{
     moduleId: number;
     canReadList: boolean;
@@ -57,9 +58,11 @@ async function validateSession(
         new TextEncoder().encode(secret),
       );
       const roleData = (payload as any).role;
-      role = typeof roleData === "string"
-        ? { name: roleData, permissions: [] }
-        : roleData || null;
+      if (typeof roleData === "string") {
+        role = { name: roleData, isAdmin: false, permissions: [] } as RoleInfo;
+      } else if (roleData && typeof roleData === "object") {
+        role = roleData as RoleInfo;
+      }
       banned = (payload as any).banned === true;
       ban_reason = (payload as any).ban_reason || null;
     } catch (err) {
@@ -131,7 +134,7 @@ export async function middleware(request: NextRequest) {
   const roleName = typeof role === "string" ? role : role?.name;
   const lowerRole = roleName?.toLowerCase() || "";
   const isSuperAdmin = lowerRole === "super_admin";
-  const isAdmin = ["admin", "moderator", "support"].includes(lowerRole);
+  const isAdmin = role?.isAdmin === true;
   const isTester = lowerRole === "tester";
   const isUser = lowerRole === "user";
 
@@ -177,10 +180,9 @@ export async function middleware(request: NextRequest) {
     role &&
     adminAuthRoutes.some((route) => pathname.startsWith(route))
   ) {
-    if (lowerRole === "moderator") {
-      return NextResponse.redirect(new URL(ROUTES.ADMIN.BLOG_MANAGEMENT, request.url));
+    if (isAdmin) {
+      return NextResponse.redirect(new URL(ROUTES.ADMIN.DASHBOARD, request.url));
     }
-    return NextResponse.redirect(new URL(ROUTES.ADMIN.DASHBOARD, request.url));
   }
 
   // Redirect authenticated testers away from tester auth pages

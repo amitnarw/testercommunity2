@@ -12,6 +12,7 @@ import {
   Clock,
   Eye,
   BarChart3,
+  CheckCircle2,
 } from "lucide-react";
 import {
   Table,
@@ -132,6 +133,8 @@ export default function AdminDashboardPage() {
   const pendingApprovals =
     stats?.recentSubmissions?.filter((s: any) => s.status === "IN_REVIEW") ||
     [];
+  const testingCycleCompleted =
+    stats?.testingCycleCompletedApps?.slice(0, 3) || [];
   const recentProSubmissions =
     stats?.recentSubmissions
       ?.filter((s: any) => s.appType === "PAID")
@@ -234,6 +237,81 @@ export default function AdminDashboardPage() {
                               item.appType === "PAID" ? "default" : "secondary"
                             }
                             className={`text-xs ${item.appType === "PAID" ? "bg-amber-500/20 text-amber-600 dark:text-amber-400 hover:bg-amber-500/30" : "bg-blue-500/20 text-blue-600 dark:text-blue-400 hover:bg-blue-500/30"}`}
+                          >
+                            {item.appType === "PAID" ? "PRO" : "FREE"}
+                          </Badge>
+                        </TableCell>
+                        <TableCell className="hidden sm:table-cell text-sm">
+                          {item.ownerName}
+                        </TableCell>
+                        <TableCell className="text-right">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            className="h-7 text-xs"
+                            asChild
+                          >
+                            <Link href={item.appType === "PAID" ? `/admin/submissions-paid/${item.id}` : `/admin/submissions-free/${item.id}`}>
+                              Review
+                            </Link>
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Testing Cycle Completed */}
+      {testingCycleCompleted.length > 0 && (
+        <Card className="border-green-500/50 bg-green-500/5 bg-white/70 dark:bg-black/70 backdrop-blur-md shadow-lg hover:shadow-xl transition-all duration-300">
+          <CardHeader className="pb-2 p-6">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+              <div className="flex items-center gap-2">
+                <CheckCircle2 className="h-5 w-5 text-green-500" />
+                <CardTitle className="text-base">
+                  Testing Cycle Completed ({stats?.testingCycleCompletedCount || 0})
+                </CardTitle>
+              </div>
+              <Button variant="outline" size="sm" asChild>
+                <Link href="/admin/submissions-paid?tab=COMPLETED">
+                  View All <ArrowRight className="ml-2 h-4 w-4" />
+                </Link>
+              </Button>
+            </div>
+          </CardHeader>
+          <CardContent className="p-6">
+            <div className="overflow-x-auto -mx-4 sm:mx-0 grid grid-cols-1">
+              <div className="min-w-[400px] px-4 sm:px-0">
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead className="text-sm">App Name</TableHead>
+                      <TableHead className="text-sm">Type</TableHead>
+                      <TableHead className="hidden sm:table-cell text-sm">
+                        Submitted By
+                      </TableHead>
+                      <TableHead className="text-right text-sm">
+                        Action
+                      </TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {testingCycleCompleted.map((item: any) => (
+                      <TableRow key={item.id}>
+                        <TableCell className="font-medium text-sm">
+                          {item.appName}
+                        </TableCell>
+                        <TableCell>
+                          <Badge
+                            variant={
+                              item.appType === "PAID" ? "default" : "secondary"
+                            }
+                            className={`text-xs ${item.appType === "PAID" ? "bg-green-500/20 text-green-600 dark:text-green-400 hover:bg-green-500/30" : "bg-blue-500/20 text-blue-600 dark:text-blue-400 hover:bg-blue-500/30"}`}
                           >
                             {item.appType === "PAID" ? "PRO" : "FREE"}
                           </Badge>

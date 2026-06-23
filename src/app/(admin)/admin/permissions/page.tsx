@@ -1,8 +1,18 @@
 "use client";
 
 import { useState, useCallback, Suspense } from "react";
-import { Shield, Loader2, Save, Info } from "lucide-react";
+import {
+  Shield,
+  Loader2,
+  Save,
+  Info,
+  Plus,
+  Pencil,
+  Trash2,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -19,10 +29,33 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from "@/components/ui/dialog";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 import { FeedbackModal } from "@/components/feedback-modal";
+import { toast } from "@/hooks/use-toast";
+import { authClient } from "@/lib/auth-client";
 import {
   useAllPermissions,
   useUpdatePermission,
+  useCreateRole,
+  useUpdateRole,
+  useDeleteRole,
 } from "@/hooks/useAdmin";
 
 type ModulePerm = {
@@ -38,6 +71,7 @@ type ModulePerm = {
 type RolePerm = {
   roleId: number;
   roleName: string;
+  isAdmin?: boolean;
   permissions: ModulePerm[];
 };
 
@@ -45,6 +79,15 @@ type PermissionData = {
   modules: { id: number; name: string }[];
   matrix: RolePerm[];
 };
+
+const PROTECTED_ROLES = [
+  "super_admin",
+  "admin",
+  "moderator",
+  "support",
+  "user",
+  "tester",
+];
 
 const PERM_FIELDS = [
   { key: "canReadList" as const, label: "Read List" },
@@ -76,7 +119,8 @@ function PermissionsMatrixContent() {
         status: "error",
         title: "Save Failed",
         description:
-          err?.message || "Failed to save permission changes. Please try again.",
+          err?.message ||
+          "Failed to save permission changes. Please try again.",
         primaryAction: {
           label: "Try Again",
           onClick: () => setFeedbackModal(null),
@@ -84,6 +128,10 @@ function PermissionsMatrixContent() {
       });
     },
   });
+
+  const { data: session } = authClient.useSession();
+  const sessionRoleName = (session as any)?.role?.name;
+  const isSuperAdmin = sessionRoleName === "super_admin";
 
   const [feedbackModal, setFeedbackModal] = useState<{
     open: boolean;
@@ -95,9 +143,79 @@ function PermissionsMatrixContent() {
   } | null>(null);
 
   const [activeRole, setActiveRole] = useState<string>("");
-  const [dirtyChanges, setDirtyChanges] = useState<
-    Record<string, boolean>
-  >({});
+  const [dirtyChanges, setDirtyChanges] = useState<Record<string, boolean>>({});
+
+  const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
+  const [newRoleName, setNewRoleName] = useState("");
+  const [newRoleIsAdmin, setNewRoleIsAdmin] = useState(false);
+
+  const [renamingRole, setRenamingRole] = useState<{
+    id: number;
+    name: string;
+    isAdmin?: boolean;
+  } | null>(null);
+  const [renameInput, setRenameInput] = useState("");
+  const [editingRoleIsAdmin, setEditingRoleIsAdmin] = useState(false);
+
+  const [deletingRole, setDeletingRole] = useState<{
+    id: number;
+    name: string;
+  } | null>(null);
+
+  const createRoleMutation = useCreateRole({
+    onSuccess: (newRole: any) => {
+      setIsCreateDialogOpen(false);
+      setNewRoleName("");
+      setNewRoleIsAdmin(false);
+      setActiveRole(newRole?.name || "");
+      setDirtyChanges({});
+      toast({ title: "Success", description: "Role created successfully" });
+    },
+    onError: (err: any) => {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: err?.message || "Failed to create role",
+      });
+    },
+  });
+
+  const updateRoleMutation = useUpdateRole({
+    onSuccess: (updated: any) => {
+      setRenamingRole(null);
+      setRenameInput("");
+      setActiveRole(updated?.name || activeRole);
+      toast({ title: "Success", description: "Role renamed successfully" });
+    },
+    onError: (err: any) => {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: err?.message || "Failed to rename role",
+      });
+    },
+  });
+
+  const deleteRoleMutation = useDeleteRole({
+    onSuccess: (result: any) => {
+      setDeletingRole(null);
+      const count = result?.reassignedUsers ?? 0;
+      toast({
+        title: "Role Deleted",
+        description:
+          count > 0
+            ? `Role deleted. ${count} user(s) reassigned to the 'user' role.`
+            : "Role deleted successfully.",
+      });
+    },
+    onError: (err: any) => {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: err?.message || "Failed to delete role",
+      });
+    },
+  });
 
   const permData = data as PermissionData | undefined;
 
@@ -296,8 +414,14 @@ function PermissionsMatrixContent() {
     );
   }
 
-  if (!activeRole && permData.matrix.length > 0) {
-    setActiveRole(permData.matrix[0].roleName);
+  if (permData.matrix.length > 0) {
+    const activeRoleExists = permData.matrix.some(
+      (r) => r.roleName === activeRole,
+    );
+    if (!activeRole || !activeRoleExists) {
+      setActiveRole(permData.matrix[0].roleName);
+      setDirtyChanges({});
+    }
   }
 
   return (
@@ -306,9 +430,7 @@ function PermissionsMatrixContent() {
         <FeedbackModal
           open={feedbackModal.open}
           onOpenChange={(open) => {
-            setFeedbackModal((prev) =>
-              prev ? { ...prev, open } : null,
-            );
+            setFeedbackModal((prev) => (prev ? { ...prev, open } : null));
           }}
           status={feedbackModal.status}
           title={feedbackModal.title}
@@ -327,23 +449,33 @@ function PermissionsMatrixContent() {
             Manage role-based permissions across all system modules.
           </p>
         </div>
-        <Button
-          onClick={handleSave}
-          disabled={!hasChanges || updateMutation.isPending}
-          className="gap-2"
-        >
-          {updateMutation.isPending ? (
-            <Loader2 className="h-4 w-4 animate-spin" />
-          ) : (
-            <Save className="h-4 w-4" />
+        <div className="flex flex-col gap-2">
+          <Button
+            onClick={handleSave}
+            disabled={!hasChanges || updateMutation.isPending}
+            className="gap-2"
+          >
+            {updateMutation.isPending ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              <Save className="h-4 w-4" />
+            )}
+            {updateMutation.isPending ? "Saving..." : "Save Changes"}
+            {hasChanges && !updateMutation.isPending && (
+              <span className="ml-1 text-xs bg-white/20 px-1.5 py-0.5 rounded-full">
+                {Object.keys(dirtyChanges).length}
+              </span>
+            )}
+          </Button>
+          {isSuperAdmin && (
+            <Button
+              onClick={() => setIsCreateDialogOpen(true)}
+              className="gap-2"
+            >
+              <Plus className="h-4 w-4" /> Create Role
+            </Button>
           )}
-          {updateMutation.isPending ? "Saving..." : "Save Changes"}
-          {hasChanges && !updateMutation.isPending && (
-            <span className="ml-1 text-xs bg-white/20 px-1.5 py-0.5 rounded-full">
-              {Object.keys(dirtyChanges).length}
-            </span>
-          )}
-        </Button>
+        </div>
       </div>
 
       <div className="bg-amber-500/10 border border-amber-500/20 rounded-xl px-4 py-3 flex items-start gap-3">
@@ -361,24 +493,52 @@ function PermissionsMatrixContent() {
           setActiveRole(val);
           setDirtyChanges({});
         }}
+        className="w-full grid grid-cols-1"
       >
-        <div className="overflow-x-auto">
-          <TabsList className="mb-6">
-            {permData.matrix.map((role) => (
-              <TabsTrigger
-                key={role.roleId}
-                value={role.roleName}
-                className="capitalize"
-              >
-                {role.roleName.replace(/_/g, " ")}
-              </TabsTrigger>
-            ))}
-          </TabsList>
-        </div>
+        <TabsList className="w-full md:w-auto flex gap-1 mb-6">
+          {permData.matrix.map((role) => (
+            <TabsTrigger
+              key={role.roleId}
+              value={role.roleName}
+              className="capitalize"
+            >
+              {role.roleName.replace(/_/g, " ")}
+            </TabsTrigger>
+          ))}
+        </TabsList>
 
         {permData.matrix.map((role) => (
           <TabsContent key={role.roleId} value={role.roleName}>
-            <div className="overflow-x-auto rounded-xl border">
+            {isSuperAdmin && !PROTECTED_ROLES.includes(role.roleName) && (
+              <div className="flex items-center gap-2 mb-4">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="gap-2"
+                  onClick={() => {
+                    setRenamingRole({ id: role.roleId, name: role.roleName, isAdmin: role.isAdmin });
+                    setRenameInput(role.roleName.replace(/_/g, " "));
+                    setEditingRoleIsAdmin(role.isAdmin ?? false);
+                  }}
+                >
+                  <Pencil className="h-3.5 w-3.5" /> Rename
+                </Button>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  className="gap-2 text-destructive border-destructive/50 hover:bg-destructive/10"
+                  onClick={() =>
+                    setDeletingRole({
+                      id: role.roleId,
+                      name: role.roleName,
+                    })
+                  }
+                >
+                  <Trash2 className="h-3.5 w-3.5" /> Delete
+                </Button>
+              </div>
+            )}
+            <div className="overflow-x-auto rounded-xl border grid">
               <Table>
                 <TableHeader>
                   <TableRow className="bg-secondary/50">
@@ -426,13 +586,12 @@ function PermissionsMatrixContent() {
                             modPerm.moduleId,
                             field.key,
                           );
-                          const isDirty = `${role.roleId}-${modPerm.moduleId}-${field.key}` in dirtyChanges;
+                          const isDirty =
+                            `${role.roleId}-${modPerm.moduleId}-${field.key}` in
+                            dirtyChanges;
 
                           return (
-                            <TableCell
-                              key={field.key}
-                              className="text-center"
-                            >
+                            <TableCell key={field.key} className="text-center">
                               <TooltipProvider>
                                 <Tooltip>
                                   <TooltipTrigger asChild>
@@ -477,6 +636,186 @@ function PermissionsMatrixContent() {
           </TabsContent>
         ))}
       </Tabs>
+
+      {isSuperAdmin && (
+        <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
+          <DialogContent className="sm:max-w-[425px]">
+            <DialogHeader>
+              <DialogTitle>Create New Role</DialogTitle>
+              <DialogDescription>
+                Enter a name for the new role. Spaces will be replaced with
+                underscores, and the name will be lowercased.
+              </DialogDescription>
+            </DialogHeader>
+            <div className="space-y-4 py-4">
+              <div className="space-y-2">
+                <Label htmlFor="role-name">Role Name</Label>
+                <Input
+                  id="role-name"
+                  placeholder="e.g. Billing Manager"
+                  value={newRoleName}
+                  onChange={(e) => setNewRoleName(e.target.value)}
+                />
+              </div>
+              <div className="flex items-center gap-2">
+                <Checkbox
+                  id="role-is-admin"
+                  checked={newRoleIsAdmin}
+                  onCheckedChange={(checked) => setNewRoleIsAdmin(checked === true)}
+                />
+                <Label htmlFor="role-is-admin" className="text-sm font-normal">
+                  Admin role (grants access to admin dashboard)
+                </Label>
+              </div>
+              <div className="text-xs text-muted-foreground space-y-1">
+                <p>Rules:</p>
+                <ul className="list-disc list-inside space-y-0.5">
+                  <li key="rule-case">
+                    Lowercase letters, numbers, and underscores only
+                  </li>
+                  <li key="rule-start">Must start with a letter</li>
+                  <li key="rule-underscore">
+                    No leading, trailing, or consecutive underscores
+                  </li>
+                  <li key="rule-length">2 to 50 characters</li>
+                </ul>
+              </div>
+            </div>
+            <DialogFooter>
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setIsCreateDialogOpen(false);
+                  setNewRoleName("");
+                  setNewRoleIsAdmin(false);
+                }}
+              >
+                Cancel
+              </Button>
+              <Button
+                onClick={() =>
+                  newRoleName.trim() &&
+                  createRoleMutation.mutate({ name: newRoleName, isAdmin: newRoleIsAdmin })
+                }
+                disabled={!newRoleName.trim() || createRoleMutation.isPending}
+              >
+                {createRoleMutation.isPending && (
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                )}
+                Create Role
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      )}
+
+      {isSuperAdmin && (
+        <Dialog
+          open={!!renamingRole}
+          onOpenChange={(open) => {
+            if (!open) setRenamingRole(null);
+          }}
+        >
+          <DialogContent className="sm:max-w-[425px]">
+            <DialogHeader>
+              <DialogTitle>Rename Role</DialogTitle>
+              <DialogDescription>
+                Enter a new name for{" "}
+                <span className="font-medium capitalize">
+                  {renamingRole?.name.replace(/_/g, " ")}
+                </span>
+                .
+              </DialogDescription>
+            </DialogHeader>
+            <div className="space-y-4 py-4">
+              <div className="space-y-2">
+                <Label htmlFor="rename-role">Role Name</Label>
+                <Input
+                  id="rename-role"
+                  placeholder="New role name"
+                  value={renameInput}
+                  onChange={(e) => setRenameInput(e.target.value)}
+                />
+              </div>
+              <div className="flex items-center gap-2">
+                <Checkbox
+                  id="rename-role-is-admin"
+                  checked={editingRoleIsAdmin}
+                  onCheckedChange={(checked) => setEditingRoleIsAdmin(checked === true)}
+                />
+                <Label htmlFor="rename-role-is-admin" className="text-sm font-normal">
+                  Admin role (grants access to admin dashboard)
+                </Label>
+              </div>
+            </div>
+            <DialogFooter>
+              <Button variant="outline" onClick={() => setRenamingRole(null)}>
+                Cancel
+              </Button>
+              <Button
+                onClick={() =>
+                  renameInput.trim() &&
+                  renamingRole &&
+                  updateRoleMutation.mutate({
+                    roleId: renamingRole.id,
+                    name: renameInput,
+                    isAdmin: editingRoleIsAdmin,
+                  })
+                }
+                disabled={!renameInput.trim() || updateRoleMutation.isPending}
+              >
+                {updateRoleMutation.isPending && (
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                )}
+                Rename
+              </Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      )}
+
+      {isSuperAdmin && (
+        <AlertDialog
+          open={!!deletingRole}
+          onOpenChange={(open) => {
+            if (!open) setDeletingRole(null);
+          }}
+        >
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Delete Role</AlertDialogTitle>
+              <AlertDialogDescription>
+                You are about to delete the role{" "}
+                <span className="font-medium capitalize">
+                  {deletingRole?.name.replace(/_/g, " ")}
+                </span>
+                . Any users currently assigned to this role will be reassigned
+                to the default &quot;user&quot; role.
+                {deletingRole && (
+                  <span className="block mt-2 text-amber-600 dark:text-amber-400 font-medium">
+                    This action cannot be undone.
+                  </span>
+                )}
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction
+                className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                onClick={() =>
+                  deletingRole && deleteRoleMutation.mutate(deletingRole.id)
+                }
+                disabled={deleteRoleMutation.isPending}
+              >
+                {deleteRoleMutation.isPending && (
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                )}
+                Delete Role
+              </AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+      )}
     </div>
   );
 }

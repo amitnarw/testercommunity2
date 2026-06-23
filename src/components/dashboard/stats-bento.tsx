@@ -11,7 +11,7 @@ export function StatsBento({ summary }: { summary: any }) {
       transition={{ duration: 0.4, delay: 0.2, ease: "easeOut" }}
       className="mb-8"
     >
-      <div className="bg-[#f8f9fa] dark:bg-card/20 rounded-[2.5rem] flex flex-col">
+      <div className="rounded-[2.5rem] flex flex-col">
         <div className="mb-6">
           <h2 className="text-xl font-bold tracking-tight text-foreground">Metrics</h2>
           <p className="text-xs text-muted-foreground mt-1">Platform metrics overview</p>

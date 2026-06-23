@@ -49,7 +49,28 @@ import {
   Eye,
   Pencil,
   Hand,
+  AlertTriangle,
+  GripVertical,
+  ExternalLink,
 } from "lucide-react";
+import {
+  DndContext,
+  closestCenter,
+  PointerSensor,
+  KeyboardSensor,
+  useSensor,
+  useSensors,
+  type DragEndEvent,
+} from "@dnd-kit/core";
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  verticalListSortingStrategy,
+  useSortable,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
+import type { ImmediateAttentionItem } from "@/types/iar";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   Table,
@@ -95,6 +116,12 @@ import {
   useGenerateDemoPayment,
   useCreateInvoice,
   useUserNotifications,
+  useUserImmediateAttention,
+  useCreateImmediateAttention,
+  useUpdateImmediateAttention,
+  useDeleteImmediateAttention,
+  useReorderImmediateAttention,
+  useAllRoles,
 } from "@/hooks/useAdmin";
 import { useQueryClient } from "@tanstack/react-query";
 import { Separator } from "@/components/ui/separator";
@@ -225,6 +252,7 @@ export default function AdminUserDetailsPage() {
   const { data: session } = authClient.useSession();
 
   const { data: user, isLoading, isError } = useUserById(id);
+  const { data: rolesData } = useAllRoles();
 
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isStatusModalOpen, setIsStatusModalOpen] = useState(false);
@@ -252,6 +280,77 @@ export default function AdminUserDetailsPage() {
     title: '',
     description: '',
   })
+
+  // IAR state
+  const [isCreateIarModalOpen, setIsCreateIarModalOpen] = useState(false);
+  const [iarFormData, setIarFormData] = useState({
+    title: '',
+    description: '',
+    url: '',
+    color: '#ef4444',
+  });
+  const [editingIarId, setEditingIarId] = useState<number | null>(null);
+  const [editIarFormData, setEditIarFormData] = useState({
+    title: '',
+    description: '',
+    url: '',
+    color: '#ef4444',
+    isActive: true,
+  });
+
+  const { data: iarItems, isLoading: iarLoading } = useUserImmediateAttention(id);
+  const createIarMutation = useCreateImmediateAttention({
+    onSuccess: () => {
+      setIsCreateIarModalOpen(false);
+      setIarFormData({ title: '', description: '', url: '', color: '#ef4444' });
+      toast({ title: "IAR Item Created", description: "Immediate attention item added successfully." });
+    },
+    onError: (err: any) => {
+      toast({ title: "Error", description: err.message || "Failed to create IAR item.", variant: "destructive" });
+    },
+  });
+  const updateIarMutation = useUpdateImmediateAttention({
+    onSuccess: () => {
+      setEditingIarId(null);
+      toast({ title: "IAR Item Updated" });
+    },
+    onError: (err: any) => {
+      toast({ title: "Error", description: err.message || "Failed to update IAR item.", variant: "destructive" });
+    },
+  });
+  const deleteIarMutation = useDeleteImmediateAttention({
+    onSuccess: () => {
+      toast({ title: "IAR Item Deleted" });
+    },
+    onError: (err: any) => {
+      toast({ title: "Error", description: err.message || "Failed to delete IAR item.", variant: "destructive" });
+    },
+  });
+
+  const reorderIarMutation = useReorderImmediateAttention({
+    onError: (err: any) => {
+      toast({ title: "Error", description: err.message || "Failed to reorder IAR items.", variant: "destructive" });
+    },
+  });
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
+    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),
+  );
+
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+    if (!over || active.id === over.id || !iarItems) return;
+
+    const itemsList = iarItems as ImmediateAttentionItem[];
+    const oldIndex = itemsList.findIndex((i: any) => i.id.toString() === active.id);
+    const newIndex = itemsList.findIndex((i: any) => i.id.toString() === over.id);
+    if (oldIndex === -1 || newIndex === -1) return;
+
+    const newOrder = arrayMove(itemsList, oldIndex, newIndex);
+    const items = newOrder.map((item: any, idx: number) => ({ id: item.id, sortOrder: idx }));
+    reorderIarMutation.mutate({ userId: id, items });
+  };
 
   const [isEconomyEditing, setIsEconomyEditing] = useState(false);
   const [walletEditData, setWalletEditData] = useState({
@@ -568,6 +667,23 @@ export default function AdminUserDetailsPage() {
     });
   };
 
+  const handleDeleteIar = (iarId: number) => {
+    setFeedbackModal({
+      open: true,
+      status: 'warning',
+      title: 'Delete IAR Item?',
+      description: 'This action cannot be undone. The IAR item will be permanently removed.',
+      primaryAction: {
+        label: 'Delete',
+        onClick: () => deleteIarMutation.mutate({ id: iarId, userId: id }),
+      },
+      secondaryAction: {
+        label: 'Cancel',
+        onClick: () => setFeedbackModal(prev => ({ ...prev, open: false })),
+      },
+    });
+  };
+
   const handleDeleteNotification = (notifId: number) => {
     setFeedbackModal({
       open: true,
@@ -640,7 +756,7 @@ export default function AdminUserDetailsPage() {
       tester: "Tester",
       user: "User",
     };
-    return roleDisplayNames[roleName] || roleName;
+    return roleDisplayNames[roleName] || roleName.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
   };
 
   const availConfig =
@@ -1218,6 +1334,94 @@ export default function AdminUserDetailsPage() {
           </Card>
         </div>
 
+        {/* Immediate Attention Required */}
+        <div className="mt-8">
+          <Card className="border-l-4 border-l-red-500">
+            <CardHeader className="pb-3">
+              <div className="flex items-center justify-between">
+                <CardTitle className="text-sm font-semibold flex items-center gap-2">
+                  <AlertTriangle className="w-4 h-4 text-red-500" /> Immediate Attention Required
+                </CardTitle>
+                <Button size="sm" onClick={() => {
+                  setIarFormData({ title: '', description: '', url: '', color: '#ef4444' });
+                  setIsCreateIarModalOpen(true);
+                }}>
+                  <Plus className="w-4 h-4 mr-0 sm:mr-2" /> <span className="hidden sm:inline">Add IAR</span>
+                </Button>
+              </div>
+              <CardDescription>
+                Admin-managed urgent cards shown to this user on their dashboard.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              {iarLoading ? (
+                <div className="flex items-center justify-center py-8">
+                  <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+                </div>
+              ) : iarItems && iarItems.length > 0 ? (
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead className="w-10"></TableHead>
+                      <TableHead>Title</TableHead>
+                      <TableHead className="max-w-xs">Description</TableHead>
+                      <TableHead>URL</TableHead>
+                      <TableHead>Color</TableHead>
+                      <TableHead>Status</TableHead>
+                      <TableHead className="w-[80px]">Actions</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
+                    <SortableContext items={iarItems.map((i: any) => i.id.toString())} strategy={verticalListSortingStrategy}>
+                      <TableBody>
+                        {iarItems.map((item: any) => (
+                          <IarTableRow
+                            key={item.id}
+                            item={item}
+                            isEditing={editingIarId === item.id}
+                            editFormData={editIarFormData}
+                            updatePending={updateIarMutation.isPending}
+                            onFormChange={(key: string, value: any) =>
+                              setEditIarFormData((prev) => ({ ...prev, [key]: value }))
+                            }
+                            onSave={() => {
+                              const payload: any = { id: item.id, userId: id };
+                              if (editIarFormData.title !== item.title) payload.title = editIarFormData.title;
+                              if (editIarFormData.description !== item.description) payload.description = editIarFormData.description;
+                              if (editIarFormData.url !== (item.url || '')) payload.url = editIarFormData.url || null;
+                              if (editIarFormData.color !== item.color) payload.color = editIarFormData.color;
+                              if (editIarFormData.isActive !== item.isActive) payload.isActive = editIarFormData.isActive;
+                              updateIarMutation.mutate(payload);
+                            }}
+                            onCancel={() => setEditingIarId(null)}
+                            onStartEdit={() => {
+                              setEditingIarId(item.id);
+                              setEditIarFormData({
+                                title: item.title,
+                                description: item.description,
+                                url: item.url || '',
+                                color: item.color || '#ef4444',
+                                isActive: item.isActive,
+                              });
+                            }}
+                            onDelete={() => handleDeleteIar(item.id)}
+                            onToggleStatus={() => updateIarMutation.mutate({ id: item.id, userId: id, isActive: !item.isActive })}
+                          />
+                        ))}
+                      </TableBody>
+                    </SortableContext>
+                  </DndContext>
+                </Table>
+              ) : (
+                <div className="py-8 text-center text-sm text-muted-foreground">
+                  <AlertTriangle className="h-8 w-8 mx-auto mb-2 opacity-30" />
+                  <p>No immediate attention items for this user.</p>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+        </div>
+
         {/* MIDDLE: 2-Column Profile Detail Cards */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mt-10">
           <div className="space-y-6">
@@ -1711,16 +1915,16 @@ export default function AdminUserDetailsPage() {
                       <SelectValue placeholder="Select a role" />
                     </SelectTrigger>
                     <SelectContent position="popper">
-                      <SelectItem value="user">User</SelectItem>
-                      <SelectItem value="tester">Tester</SelectItem>
-                      <SelectItem value="support">Support</SelectItem>
-                      <SelectItem value="moderator">Moderator</SelectItem>
-                      <SelectItem value="admin" disabled={!isSuperAdmin}>
-                        Admin {!isSuperAdmin && "(Super Admin only)"}
-                      </SelectItem>
-                      {isSuperAdmin && (
-                        <SelectItem value="super_admin">Super Admin</SelectItem>
-                      )}
+                      {(rolesData || []).map((role: { name: string; isProtected: boolean }) => {
+                        const isElevated = role.name === "admin" || role.name === "super_admin";
+                        const disabled = isElevated && !isSuperAdmin;
+                        return (
+                          <SelectItem key={role.name} value={role.name} disabled={disabled}>
+                            {role.name.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase())}
+                            {disabled && " (Super Admin only)"}
+                          </SelectItem>
+                        );
+                      })}
                     </SelectContent>
                   </Select>
                 </div>
@@ -2290,6 +2494,85 @@ export default function AdminUserDetailsPage() {
         </DialogContent>
       </Dialog>
 
+      {/* Create Immediate Attention Required Modal */}
+      <Dialog open={isCreateIarModalOpen} onOpenChange={setIsCreateIarModalOpen}>
+        <DialogContent className="sm:max-w-[500px]">
+          <DialogHeader>
+            <DialogTitle>Add Immediate Attention Required</DialogTitle>
+            <DialogDescription>
+              Create an urgent card that will appear on {user.name}'s dashboard.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="grid gap-2">
+              <Label htmlFor="iar-title">Title</Label>
+              <Input
+                id="iar-title"
+                placeholder="Card title"
+                value={iarFormData.title}
+                onChange={(e) => setIarFormData({ ...iarFormData, title: e.target.value })}
+              />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="iar-description">Description</Label>
+              <Textarea
+                id="iar-description"
+                placeholder="Card description"
+                value={iarFormData.description}
+                onChange={(e) => setIarFormData({ ...iarFormData, description: e.target.value })}
+              />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="iar-url">URL (Optional)</Label>
+              <Input
+                id="iar-url"
+                placeholder="https://example.com"
+                value={iarFormData.url}
+                onChange={(e) => setIarFormData({ ...iarFormData, url: e.target.value })}
+              />
+              {iarFormData.url && !/^https?:\/\/.+/.test(iarFormData.url) && (
+                <p className="text-xs text-red-500">URL must start with http:// or https://</p>
+              )}
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="iar-color">Card Color</Label>
+              <div className="flex items-center gap-3">
+                <Input
+                  id="iar-color"
+                  type="color"
+                  value={iarFormData.color}
+                  onChange={(e) => setIarFormData({ ...iarFormData, color: e.target.value })}
+                  className="w-14 h-10 p-1 cursor-pointer"
+                />
+                <span className="text-xs text-muted-foreground">{iarFormData.color}</span>
+              </div>
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="ghost" onClick={() => setIsCreateIarModalOpen(false)}>Cancel</Button>
+            <Button
+              onClick={() => {
+                if (iarFormData.url && !/^https?:\/\/.+/.test(iarFormData.url)) {
+                  toast({ title: "Validation Error", description: "URL must start with http:// or https://", variant: "destructive" });
+                  return;
+                }
+                createIarMutation.mutate({
+                  userId: id,
+                  title: iarFormData.title,
+                  description: iarFormData.description,
+                  url: iarFormData.url || undefined,
+                  color: iarFormData.color,
+                });
+              }}
+              disabled={createIarMutation.isPending || !iarFormData.title || !iarFormData.description}
+            >
+              {createIarMutation.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              Create IAR Item
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
       {/* Edit Invoice Modal */}
       <Dialog open={isInvoiceModalOpen} onOpenChange={(open) => { setIsInvoiceModalOpen(open); if (!open) setSelectedInvoice(null); }}>
         <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
@@ -2803,5 +3086,148 @@ export default function AdminUserDetailsPage() {
         secondaryAction={feedbackModal.secondaryAction}
       />
     </>
+  );
+}
+
+function IarTableRow({
+  item,
+  isEditing,
+  editFormData,
+  onFormChange,
+  onSave,
+  onCancel,
+  onStartEdit,
+  onDelete,
+  onToggleStatus,
+  updatePending,
+}: {
+  item: ImmediateAttentionItem;
+  isEditing: boolean;
+  editFormData: { title: string; description: string; url: string; color: string; isActive: boolean };
+  onFormChange: (key: string, value: any) => void;
+  onSave: () => void;
+  onCancel: () => void;
+  onStartEdit: () => void;
+  onDelete: () => void;
+  onToggleStatus: () => void;
+  updatePending: boolean;
+}) {
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+    id: item.id.toString(),
+  });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : undefined,
+  };
+
+  return (
+    <TableRow ref={setNodeRef} style={style} className={isDragging ? "relative z-50" : ""}>
+      {isEditing ? (
+        <>
+          <TableCell>
+            <div className="flex items-center gap-1">
+              <Button variant="ghost" size="sm" className="h-6 w-6 p-0 cursor-default">
+                <GripVertical className="h-3.5 w-3.5 opacity-30" />
+              </Button>
+            </div>
+          </TableCell>
+          <TableCell>
+            <Input
+              value={editFormData.title}
+              onChange={(e) => onFormChange("title", e.target.value)}
+            />
+          </TableCell>
+          <TableCell>
+            <Textarea
+              className="min-h-[60px]"
+              value={editFormData.description}
+              onChange={(e) => onFormChange("description", e.target.value)}
+            />
+          </TableCell>
+          <TableCell>
+            <Input
+              value={editFormData.url}
+              onChange={(e) => onFormChange("url", e.target.value)}
+              placeholder="https://"
+            />
+          </TableCell>
+          <TableCell>
+            <Input
+              type="color"
+              value={editFormData.color}
+              onChange={(e) => onFormChange("color", e.target.value)}
+              className="w-12 h-9 p-1 cursor-pointer"
+            />
+          </TableCell>
+          <TableCell>
+            <Button
+              variant="ghost"
+              size="sm"
+              className={`text-xs ${editFormData.isActive ? "text-green-600 dark:text-green-400" : "text-muted-foreground"}`}
+              onClick={() => onFormChange("isActive", !editFormData.isActive)}
+            >
+              <span className={`h-1.5 w-1.5 rounded-full mr-1.5 ${editFormData.isActive ? "bg-green-500" : "bg-muted-foreground"}`} />
+              {editFormData.isActive ? "Active" : "Inactive"}
+            </Button>
+          </TableCell>
+          <TableCell>
+            <div className="flex items-center gap-1">
+              <Button variant="ghost" size="sm" className="h-8 w-8 p-0" onClick={onSave} disabled={updatePending} title="Save">
+                {updatePending ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <CheckCircle2 className="h-3.5 w-3.5" />}
+              </Button>
+              <Button variant="ghost" size="sm" className="h-8 w-8 p-0" onClick={onCancel} title="Cancel">
+                <X className="h-3.5 w-3.5" />
+              </Button>
+            </div>
+          </TableCell>
+        </>
+      ) : (
+        <>
+          <TableCell>
+            <div className="flex items-center gap-1">
+              <Button variant="ghost" size="sm" className="h-6 w-6 p-0 cursor-grab" {...attributes} {...listeners}>
+                <GripVertical className="h-3.5 w-3.5 text-muted-foreground" />
+              </Button>
+            </div>
+          </TableCell>
+          <TableCell className="font-medium">{item.title}</TableCell>
+          <TableCell className="max-w-xs truncate" title={item.description}>{item.description}</TableCell>
+          <TableCell>
+            {item.url ? (
+              <a href={item.url} target="_blank" rel="noopener noreferrer" className="text-xs text-blue-500 hover:underline truncate block max-w-[120px]">{item.url}</a>
+            ) : (
+              <span className="text-xs text-muted-foreground">—</span>
+            )}
+          </TableCell>
+          <TableCell>
+            <div className="flex items-center gap-2">
+              <div className="w-5 h-5 rounded border border-border" style={{ backgroundColor: item.color }} />
+              <span className="text-xs text-muted-foreground">{item.color}</span>
+            </div>
+          </TableCell>
+          <TableCell>
+            <button className={`inline-flex items-center gap-1.5 text-xs cursor-pointer hover:opacity-80 ${item.isActive ? "text-green-600 dark:text-green-400" : "text-muted-foreground"}`}
+              onClick={onToggleStatus}
+              title="Toggle status"
+            >
+              <span className={`h-1.5 w-1.5 rounded-full ${item.isActive ? "bg-green-500" : "bg-muted-foreground"}`} />
+              {item.isActive ? "Active" : "Inactive"}
+            </button>
+          </TableCell>
+          <TableCell>
+            <div className="flex items-center gap-1">
+              <Button variant="ghost" size="sm" className="h-8 w-8 p-0" onClick={onStartEdit}>
+                <Edit className="h-3.5 w-3.5" />
+              </Button>
+              <Button variant="ghost" size="sm" className="h-8 w-8 p-0 text-red-500 hover:text-red-600" onClick={onDelete}>
+                <Trash2 className="h-3.5 w-3.5" />
+              </Button>
+            </div>
+          </TableCell>
+        </>
+      )}
+    </TableRow>
   );
 }

@@ -3,6 +3,7 @@ import API_ROUTES from "./apiRoutes";
 import { ControlRoomResponse } from "./types";
 import api from "./axios";
 import { authClient } from "./auth-client";
+import type { ImmediateAttentionItem } from "@/types/iar";
 import { AuthError } from "./apiCalls";
 
 export async function getControlRoomData(): Promise<ControlRoomResponse> {
@@ -1932,6 +1933,16 @@ export async function deleteFaq(id: number) {
 
 // ==================== PERMISSION MATRIX ====================
 
+export async function getAllRoles() {
+  try {
+    const response = await api.get(API_ROUTES.ADMIN + "/roles");
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error fetching roles:", error);
+    throw error;
+  }
+}
+
 export async function getAllPermissions() {
   try {
     const response = await api.get(API_ROUTES.ADMIN + "/permissions");
@@ -1965,6 +1976,39 @@ export async function updatePermission(
   }
 }
 
+export async function createRole(payload: { name: string; isAdmin?: boolean }) {
+  try {
+    const response = await api.post(API_ROUTES.ADMIN + "/roles", payload);
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error creating role:", error);
+    throw error;
+  }
+}
+
+export async function updateRole(roleId: number, payload: { name: string; isAdmin?: boolean }) {
+  try {
+    const response = await api.put(
+      API_ROUTES.ADMIN + `/roles/${roleId}`,
+      payload,
+    );
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error updating role:", error);
+    throw error;
+  }
+}
+
+export async function deleteRole(roleId: number) {
+  try {
+    const response = await api.delete(API_ROUTES.ADMIN + `/roles/${roleId}`);
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error deleting role:", error);
+    throw error;
+  }
+}
+
 export async function initiateRefund(payload: {
   paymentId: string;
   amount?: number;
@@ -1975,6 +2019,81 @@ export async function initiateRefund(payload: {
     return response?.data?.data;
   } catch (error) {
     console.error("Error initiating refund:", error);
+    throw error;
+  }
+}
+
+// ==================== IMMEDIATE ATTENTION REQUIRED (IAR) ====================
+
+export async function getUserImmediateAttention(userId: string): Promise<ImmediateAttentionItem[]> {
+  try {
+    const response = await api.get(API_ROUTES.ADMIN + `/users/${userId}/immediate-attention`);
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error fetching IAR items:", error);
+    throw error;
+  }
+}
+
+export async function createImmediateAttention(payload: {
+  userId: string;
+  title: string;
+  description: string;
+  url?: string;
+  color?: string;
+}): Promise<ImmediateAttentionItem> {
+  try {
+    const response = await api.post(API_ROUTES.ADMIN + `/users/immediate-attention`, payload);
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error creating IAR item:", error);
+    throw error;
+  }
+}
+
+export async function updateImmediateAttention(payload: {
+  id: number;
+  title?: string;
+  description?: string;
+  url?: string;
+  color?: string;
+  isActive?: boolean;
+}): Promise<ImmediateAttentionItem> {
+  try {
+    const response = await api.post(
+      API_ROUTES.ADMIN + `/users/immediate-attention/update`,
+      payload,
+    );
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error updating IAR item:", error);
+    throw error;
+  }
+}
+
+export async function reorderImmediateAttention(payload: {
+  items: { id: number; sortOrder: number }[];
+}) {
+  try {
+    const response = await api.post(
+      API_ROUTES.ADMIN + `/users/immediate-attention/reorder`,
+      payload,
+    );
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error reordering IAR items:", error);
+    throw error;
+  }
+}
+
+export async function deleteImmediateAttention(id: number) {
+  try {
+    const response = await api.delete(
+      API_ROUTES.ADMIN + `/users/immediate-attention/${id}`,
+    );
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error deleting IAR item:", error);
     throw error;
   }
 }
