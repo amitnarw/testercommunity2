@@ -10,6 +10,47 @@ import PageTransition from "@/components/page-transition";
 import { authClient } from "@/lib/auth-client";
 import { ROUTES } from "@/lib/routes";
 
+const MODULE_ROUTE_MAP: Record<string, string> = {
+  dashboard: ROUTES.ADMIN.DASHBOARD,
+  submissions: ROUTES.ADMIN.SUBMISSIONS,
+  users: ROUTES.ADMIN.USERS,
+  feedback: ROUTES.ADMIN.FEEDBACK,
+  finance: ROUTES.ADMIN.FINANCE,
+  suggestions: ROUTES.ADMIN.SUGGESTIONS,
+  notifications: ROUTES.ADMIN.NOTIFICATIONS,
+  promo_codes: ROUTES.ADMIN.PROMO_CODES,
+  blogs: ROUTES.ADMIN.BLOG_MANAGEMENT,
+  guides: ROUTES.ADMIN.GUIDE_MANAGEMENT,
+  testimonial: ROUTES.ADMIN.REVIEWS,
+  review: ROUTES.ADMIN.USER_REVIEWS,
+  logs: ROUTES.ADMIN.LOGS,
+  support: ROUTES.ADMIN.SUPPORT,
+  permissions: ROUTES.ADMIN.PERMISSIONS,
+  faqs: ROUTES.ADMIN.FAQS,
+  control_room: ROUTES.ADMIN.CONTROL_ROOM,
+  tester_applications: ROUTES.ADMIN.APPLICATIONS,
+  guide_categories: ROUTES.ADMIN.GUIDE_MANAGEMENT,
+  authors: ROUTES.ADMIN.BLOG_MANAGEMENT,
+  verification: ROUTES.ADMIN.APPLICATIONS,
+  iar: ROUTES.ADMIN.USERS,
+};
+
+function getModuleFromPath(pathname: string): string | null {
+  const segments = pathname.replace(/\/$/, "").split("/");
+  // /admin/dashboard -> "dashboard"
+  // /admin/users/123 -> "users"
+  // /admin/submissions-paid -> "submissions-paid" -> map to "submissions"
+  const sub = segments[2];
+  if (!sub) return null;
+  if (sub === "submissions-paid" || sub === "submissions-free") return "submissions";
+  if (sub === "blog-management") return "blogs";
+  if (sub === "guide-management") return "guides";
+  if (sub === "user-reviews") return "review";
+  if (sub === "promo-codes") return "promo_codes";
+  if (sub === "control-room") return "control_room";
+  return sub;
+}
+
 export default function AdminLayout({
   children,
 }: Readonly<{
@@ -26,27 +67,36 @@ export default function AdminLayout({
 
     if (session) {
       const roleField = (session as any)?.role;
-      const roleName =
-        typeof roleField === "string" ? roleField : roleField?.name;
-      const lowerRole = roleName?.toLowerCase() || "";
-      const isAdminRole = [
-        "admin",
-        "super_admin",
-        "super admin",
-        "moderator",
-        "support",
-      ].includes(lowerRole);
+      const isAdminRole = roleField?.isAdmin === true;
+      const permissions = roleField?.permissions || [];
 
       if (isLoginPage) {
         if (isAdminRole) {
-          if (lowerRole === "moderator") {
-            router.replace(ROUTES.ADMIN.BLOG_MANAGEMENT);
-          } else {
-            router.replace(ROUTES.ADMIN.DASHBOARD);
-          }
+          // Redirect to the first module the user has permission to access
+          const firstPermitted = permissions.find((p: any) => p.canReadList);
+          const target = firstPermitted
+            ? MODULE_ROUTE_MAP[firstPermitted.moduleName] || ROUTES.ADMIN.DASHBOARD
+            : ROUTES.ADMIN.DASHBOARD;
+          router.replace(target);
         }
       } else if (!isAdminRole) {
         router.replace(ROUTES.ADMIN.AUTH.LOGIN);
+      } else {
+        // Check if user has permission for the current page
+        const currentModule = getModuleFromPath(pathname);
+        if (currentModule) {
+          const hasAccess = permissions.some(
+            (p: any) => p.moduleName === currentModule && p.canReadList,
+          );
+          if (!hasAccess) {
+            const firstPermitted = permissions.find((p: any) => p.canReadList);
+            if (firstPermitted) {
+              router.replace(MODULE_ROUTE_MAP[firstPermitted.moduleName] || ROUTES.ADMIN.DASHBOARD);
+            } else {
+              router.replace(ROUTES.ADMIN.AUTH.LOGIN);
+            }
+          }
+        }
       }
       return;
     }
@@ -54,7 +104,7 @@ export default function AdminLayout({
     if (!isLoginPage) {
       router.replace(ROUTES.ADMIN.AUTH.LOGIN);
     }
-  }, [session, isPending, isLoginPage, router]);
+  }, [session, isPending, isLoginPage, router, pathname]);
 
   const handleLogout = async () => {
     await authClient.signOut({

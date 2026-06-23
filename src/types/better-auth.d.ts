@@ -6,6 +6,7 @@ declare module "better-auth" {
   interface Session {
     role?: {
       name: string;
+      isAdmin?: boolean;
       permissions: {
         moduleId: number;
         canReadList: boolean;

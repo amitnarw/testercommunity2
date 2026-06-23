@@ -2,6 +2,7 @@ import axios from "axios";
 import API_ROUTES from "./apiRoutes";
 import { authClient } from "./auth-client";
 import { ROUTES } from "./routes";
+import type { ImmediateAttentionItem } from "@/types/iar";
 import {
   AppCategoriesResponse,
   AppData,
@@ -2598,3 +2599,15 @@ export const publishAdminDeclaration = async (
     throw error;
   }
 };
+
+// ==================== IMMEDIATE ATTENTION REQUIRED (IAR) ====================
+
+export async function getUserImmediateAttention(): Promise<ImmediateAttentionItem[]> {
+  try {
+    const response = await api.get(API_ROUTES.USER + `/get-immediate-attention`);
+    return response?.data?.data || [];
+  } catch (error) {
+    console.error("Error fetching IAR items:", error);
+    throw error;
+  }
+}

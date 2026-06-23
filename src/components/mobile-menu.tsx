@@ -243,13 +243,7 @@ export default function MobileMenu({
   let isAdmin = false;
   let showWallet = true;
 
-  const isAdminRole = [
-    "admin",
-    "super_admin",
-    "super admin",
-    "moderator",
-    "support",
-  ].includes(roleName);
+  const isAdminRole = role?.isAdmin === true;
 
   if (isAdminRole) {
     navItems = adminNavItems;

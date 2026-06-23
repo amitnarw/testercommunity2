@@ -452,7 +452,7 @@ function SubmissionDetailsPage({
                       variant="outline"
                       className="border-destructive/20 hover:bg-destructive/5 text-destructive rounded-xl h-12 px-8 text-base bg-background/50"
                       onClick={() =>
-                        (window.location.href = "mailto:support@intesters.com")
+                        (window.location.href = "mailto:intesters@nexmail.in")
                       }
                     >
                       Contact Support

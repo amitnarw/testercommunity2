@@ -39,6 +39,7 @@ import {
   useUpdateUserRole,
   useDeleteUser,
   useCreateUser,
+  useAllRoles,
 } from "@/hooks/useAdmin";
 import { useQueryClient } from "@tanstack/react-query";
 import { toast } from "@/hooks/use-toast";
@@ -59,6 +60,66 @@ const UserTable = dynamic(
 
 const ITEMS_PER_PAGE = 5;
 
+const BUILTIN_ROLES = [
+  "super_admin",
+  "admin",
+  "moderator",
+  "support",
+  "tester",
+  "user",
+];
+
+const ROLE_LABELS: Record<string, string> = {
+  all: "All",
+  super_admin: "Super Admins",
+  admin: "Admins",
+  moderator: "Moderators",
+  support: "Support",
+  tester: "Testers",
+  user: "Users",
+  Banned: "Banned",
+};
+
+function buildTabList(countsData: Record<string, number> | undefined) {
+  const tabs: { key: string; label: string; count: number }[] = [];
+
+  // All
+  tabs.push({ key: "all", label: "All", count: countsData?.All ?? 0 });
+
+  // Built-in roles in order
+  for (const role of BUILTIN_ROLES) {
+    const count = countsData?.[role] ?? 0;
+    tabs.push({
+      key: role,
+      label: ROLE_LABELS[role] || role.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase()),
+      count,
+    });
+  }
+
+  // Custom roles (from countsData, not in built-in, All, or Banned)
+  if (countsData) {
+    const customRoles = Object.keys(countsData)
+      .filter((k) => k !== "All" && k !== "Banned" && !BUILTIN_ROLES.includes(k))
+      .sort();
+    for (const role of customRoles) {
+      tabs.push({
+        key: role,
+        label: role.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase()),
+        count: countsData[role] ?? 0,
+      });
+    }
+  }
+
+  // Banned
+  tabs.push({
+    key: "Banned",
+    label: "Banned",
+    count: countsData?.Banned ?? 0,
+  });
+
+  return tabs;
+}
+
 export default function AdminUsersPage() {
   const queryClient = useQueryClient();
   const { data: session } = authClient.useSession();
@@ -76,12 +137,15 @@ export default function AdminUsersPage() {
 
   // Fetch users data - pass role filter to API
   const { data: usersData, isLoading } = useAllUsers({
-    role: activeTab === "all" ? undefined : activeTab,
+    role: activeTab === "all" || activeTab === "Banned" ? undefined : activeTab,
+    status: activeTab === "Banned" ? "Banned" : undefined,
     search: searchQuery || undefined,
   });
 
   // Fetch counts
   const { data: countsData } = useUserCounts();
+
+  const { data: rolesData } = useAllRoles();
 
   // Mutations
   const updateStatusMutation = useUpdateUserStatus({
@@ -331,25 +395,11 @@ export default function AdminUsersPage() {
             />
           </div>
           <TabsList className="w-full md:w-auto flex gap-1 overflow-x-auto h-auto">
-            <TabsTrigger value="all">All ({countsData?.All || 0})</TabsTrigger>
-            <TabsTrigger value="super_admin">
-              Super Admins ({countsData?.super_admin || 0})
-            </TabsTrigger>
-            <TabsTrigger value="admin">
-              Admins ({countsData?.admin || 0})
-            </TabsTrigger>
-            <TabsTrigger value="moderator">
-              Moderators ({countsData?.moderator || 0})
-            </TabsTrigger>
-            <TabsTrigger value="support">
-              Support ({countsData?.support || 0})
-            </TabsTrigger>
-            <TabsTrigger value="tester">
-              Testers ({countsData?.tester || 0})
-            </TabsTrigger>
-            <TabsTrigger value="user">
-              Users ({countsData?.user || 0})
-            </TabsTrigger>
+            {buildTabList(countsData).map((tab) => (
+              <TabsTrigger key={tab.key} value={tab.key}>
+                {tab.label} ({tab.count})
+              </TabsTrigger>
+            ))}
           </TabsList>
         </div>
         <TabsContent value={activeTab} className="mt-4 grid grid-cols-1">
@@ -451,22 +501,16 @@ export default function AdminUsersPage() {
                       <SelectValue placeholder="Select role" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="user">User</SelectItem>
-                      <SelectItem value="tester">Tester</SelectItem>
-                      <SelectItem value="support">Support</SelectItem>
-                      <SelectItem value="moderator">Moderator</SelectItem>
-                      <SelectItem
-                        value="admin"
-                        disabled={!isSuperAdmin}
-                      >
-                        Admin {!isSuperAdmin && "(Super Admin only)"}
-                      </SelectItem>
-                      <SelectItem
-                        value="super_admin"
-                        disabled={!isSuperAdmin}
-                      >
-                        Super Admin {!isSuperAdmin && "(Super Admin only)"}
-                      </SelectItem>
+                      {(rolesData || []).map((role: { name: string; isProtected: boolean }) => {
+                        const isElevated = role.name === "admin" || role.name === "super_admin";
+                        const disabled = isElevated && !isSuperAdmin;
+                        return (
+                          <SelectItem key={role.name} value={role.name} disabled={disabled}>
+                            {role.name.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase())}
+                            {disabled && " (Super Admin only)"}
+                          </SelectItem>
+                        );
+                      })}
                     </SelectContent>
                   </Select>
                 </div>
@@ -1039,13 +1083,16 @@ export default function AdminUsersPage() {
                 <SelectValue placeholder="Select a role" />
               </SelectTrigger>
               <SelectContent position="popper">
-                <SelectItem value="user">User</SelectItem>
-                <SelectItem value="tester">Tester</SelectItem>
-                <SelectItem value="support">Support</SelectItem>
-                <SelectItem value="moderator">Moderator</SelectItem>
-                <SelectItem value="admin" disabled={!isSuperAdmin}>
-                  Admin {!isSuperAdmin && "(Super Admin only)"}
-                </SelectItem>
+                {(rolesData || []).map((role: { name: string; isProtected: boolean }) => {
+                  const isElevated = role.name === "admin" || role.name === "super_admin";
+                  const disabled = isElevated && !isSuperAdmin;
+                  return (
+                    <SelectItem key={role.name} value={role.name} disabled={disabled}>
+                      {role.name.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase())}
+                      {disabled && " (Super Admin only)"}
+                    </SelectItem>
+                  );
+                })}
               </SelectContent>
             </Select>
           </div>

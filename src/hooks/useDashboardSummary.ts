@@ -4,7 +4,7 @@ import { useMemo } from "react";
 import { isToday, isYesterday, format } from "date-fns";
 import { useHubData, useHubApps, useHubAppsCount } from "@/hooks/useHub";
 import { useDashboardApps, useDashboardAppsCount } from "@/hooks/useDashboard";
-import { useGetUserWallet, useGetUserTransactions, useGetUserNotifications, useDashboardData } from "@/hooks/useUser";
+import { useGetUserWallet, useGetUserTransactions, useGetUserNotifications, useGetUserImmediateAttention, useDashboardData } from "@/hooks/useUser";
 import { ROUTES } from "@/lib/routes";
 import type { UserTransaction } from "@/lib/apiCalls";
 
@@ -37,6 +37,7 @@ export function useDashboardSummary() {
   const { data: wallet } = useGetUserWallet();
   const { data: notificationsData } = useGetUserNotifications();
   const { data: transactionsData } = useGetUserTransactions({ limit: 5 });
+  const { data: immediateAttentionData } = useGetUserImmediateAttention();
 
   const freeInReview = hubAppsCount?.IN_REVIEW || 0;
   const freeDrafts = hubAppsCount?.DRAFT || 0;
@@ -128,5 +129,6 @@ export function useDashboardSummary() {
     groupedTransactions,
     actionItems,
     greeting,
+    immediateAttentionItems: immediateAttentionData || [],
   };
 }

@@ -22,7 +22,7 @@ export function OrganizationJsonLd() {
     contactPoint: {
       "@type": "ContactPoint",
       contactType: "support",
-      email: "support@intesters.com",
+      email: "intesters@nexmail.in",
     },
   };
 

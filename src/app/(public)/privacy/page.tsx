@@ -188,10 +188,10 @@ export default function PrivacyPage() {
             <p className="mt-4">
               To exercise these rights, please contact us at{" "}
               <a
-                href="mailto:contact@intesters.com"
+                href="mailto:intesters@nexmail.in"
                 className="text-primary hover:underline"
               >
-                contact@intesters.com
+                intesters@nexmail.in
               </a>
               . We will respond to your request within the applicable legal
               timeframe.
@@ -262,10 +262,10 @@ export default function PrivacyPage() {
               <p>
                 Email:{" "}
                 <a
-                  href="mailto:contact@intesters.com"
+                  href="mailto:intesters@nexmail.in"
                   className="text-primary hover:underline"
                 >
-                  contact@intesters.com
+                  intesters@nexmail.in
                 </a>
               </p>
             </div>

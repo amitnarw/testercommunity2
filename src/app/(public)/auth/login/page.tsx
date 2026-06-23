@@ -101,7 +101,7 @@ const LoginForm = () => {
     if (userProfileData.initial) {
       router.replace(ROUTES.AUTHENTICATED.PROFILE_SETUP);
     } else {
-      router.replace(ROUTES.AUTHENTICATED.FREE_TESTING);
+      router.replace(ROUTES.AUTHENTICATED.DASHBOARD);
     }
   }, [userProfileIsSuccess, userProfileisFetching, userProfileData, router]);
 

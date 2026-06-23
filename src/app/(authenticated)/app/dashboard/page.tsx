@@ -7,6 +7,7 @@ import { useDashboardSummary } from "@/hooks/useDashboardSummary";
 import { DashboardHero } from "@/components/dashboard/dashboard-hero";
 import { QuickActions } from "@/components/dashboard/quick-actions";
 import { ActionRequiredSection } from "@/components/dashboard/action-required-section";
+import { ImmediateAttentionSection } from "@/components/dashboard/immediate-attention-section";
 import { DiaryTestingSection } from "@/components/dashboard/diary-testing-section";
 import { StatsBento } from "@/components/dashboard/stats-bento";
 import { NotificationsCard } from "@/components/dashboard/notifications-card";
@@ -28,6 +29,8 @@ function DashboardContent() {
           totalActive={summary.totalActive}
           totalUnread={summary.totalUnread}
         />
+
+        <ImmediateAttentionSection items={summary.immediateAttentionItems} />
 
         <QuickActions />
 

@@ -20,7 +20,6 @@ export function StatusBadge({ status }: { status: string }) {
 }
 
 export function RoleBadge({ role }: { role: string }) {
-  // Helper function to format role name for display
   const formatRoleName = (roleName: string): string => {
     const roleDisplayNames: Record<string, string> = {
       super_admin: "Super Admin",
@@ -30,7 +29,7 @@ export function RoleBadge({ role }: { role: string }) {
       tester: "Tester",
       user: "User",
     };
-    return roleDisplayNames[roleName] || roleName;
+    return roleDisplayNames[roleName] || roleName.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
   };
 
   const getRoleStyles = () => {

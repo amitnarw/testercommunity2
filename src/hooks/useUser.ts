@@ -1,3 +1,4 @@
+import type { ImmediateAttentionItem } from "@/types/iar";
 import {
   doSessionLogoutAll,
   doSessionLogoutSingle,
@@ -6,6 +7,7 @@ import {
   getDasboardData,
   getEarnPoints,
   getUserData,
+  getUserImmediateAttention,
   getUserNotifications,
   getUserProfileData,
   getUserWallet,
@@ -235,4 +237,12 @@ export function useGetUserTransactions(params?: {
   });
 
   return query;
+}
+
+export function useGetUserImmediateAttention(options?: { enabled?: boolean }) {
+  return useQuery<ImmediateAttentionItem[]>({
+    queryFn: () => getUserImmediateAttention(),
+    queryKey: ["useGetUserImmediateAttention"],
+    enabled: options?.enabled ?? true,
+  });
 }

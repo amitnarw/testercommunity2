@@ -48,7 +48,7 @@ export default function RefundPolicyPage() {
               <AlertCircle className="w-5 h-5 text-primary shrink-0 mt-1" />
               <div>
                 <p className="font-semibold text-foreground my-0">Required Proof:</p>
-                <p className="my-0">You must forward the official Google rejection email to <a href="mailto:support@intesters.com" className="text-primary hover:underline font-medium">support@intesters.com</a>. Requests submitted without this documentation will not qualify under this guarantee.</p>
+                <p className="my-0">You must forward the official Google rejection email to <a href="mailto:intesters@nexmail.in" className="text-primary hover:underline font-medium">intesters@nexmail.in</a>. Requests submitted without this documentation will not qualify under this guarantee.</p>
               </div>
             </div>
             <p className="mt-2 text-sm">
@@ -94,7 +94,7 @@ export default function RefundPolicyPage() {
                   <strong>Date & Time:</strong> The recording must clearly show the current system date and time to verify the 24-hour non-assignment window.
                 </li>
                 <li>
-                  <strong>Submission:</strong> The video must be sent to <a href="mailto:support@intesters.com" className="text-primary hover:underline font-medium">support@intesters.com</a>.
+                  <strong>Submission:</strong> The video must be sent to <a href="mailto:intesters@nexmail.in" className="text-primary hover:underline font-medium">intesters@nexmail.in</a>.
                 </li>
               </ul>
               <div className="flex gap-4 items-start bg-primary/5 p-4 rounded-lg border border-primary/10 mt-4">
@@ -114,7 +114,7 @@ export default function RefundPolicyPage() {
               5. How to Request a Refund
             </h2>
             <p className="mb-4">
-              To initiate a refund request, email our support team at <a href="mailto:support@intesters.com" className="text-primary hover:underline font-medium">support@intesters.com</a> with the following information:
+              To initiate a refund request, email our support team at <a href="mailto:intesters@nexmail.in" className="text-primary hover:underline font-medium">intesters@nexmail.in</a> with the following information:
             </p>
             <ul className="list-disc pl-6 space-y-1">
               <li>Your registered email address or account details.</li>
@@ -188,7 +188,7 @@ export default function RefundPolicyPage() {
               Both options are only available <strong>before 1 hour of submitting your app for testing</strong>, or before any paid tester has been added to the testing, whichever comes first.
             </p>
             <p className="mt-2">
-              To request either option, email our support team at <a href="mailto:support@intesters.com" className="text-primary hover:underline font-medium">support@intesters.com</a> before the cutoff time.
+              To request either option, email our support team at <a href="mailto:intesters@nexmail.in" className="text-primary hover:underline font-medium">intesters@nexmail.in</a> before the cutoff time.
             </p>
           </section>
 
@@ -224,8 +224,8 @@ export default function RefundPolicyPage() {
               </p>
               <div className="flex items-center gap-2 text-primary font-medium">
                 <Mail className="w-4 h-4" />
-                <a href="mailto:support@intesters.com" className="hover:underline">
-                  support@intesters.com
+                <a href="mailto:intesters@nexmail.in" className="hover:underline">
+                  intesters@nexmail.in
                 </a>
               </div>
               <p className="text-sm mt-4 italic">

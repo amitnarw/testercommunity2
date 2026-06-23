@@ -187,7 +187,7 @@ export default function TermsPage() {
             <div className="mt-4 p-4 bg-muted/50 rounded-lg border">
               <p className="font-semibold text-foreground">inTesters Support</p>
               <p className="text-muted-foreground">
-                Email: contact@intesters.com
+                Email: intesters@nexmail.in
               </p>
             </div>
           </section>

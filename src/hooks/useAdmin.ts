@@ -1,3 +1,4 @@
+import type { ImmediateAttentionItem } from "@/types/iar";
 import {
   adminLogin,
   getControlRoomData,
@@ -95,13 +96,22 @@ import {
   createAuthor,
   updateAuthor,
   deleteAuthor,
+  getAllRoles,
   getAllPermissions,
   updatePermission,
+  createRole,
+  updateRole,
+  deleteRole,
   getAllFaqs,
   getFaqById,
   createFaq,
   updateFaq,
   deleteFaq,
+  getUserImmediateAttention,
+  createImmediateAttention,
+  updateImmediateAttention,
+  reorderImmediateAttention,
+  deleteImmediateAttention,
 } from "@/lib/apiCallsAdmin";
 import { useRouter } from "next/navigation";
 import { ROUTES } from "@/lib/routes";
@@ -1425,6 +1435,14 @@ export function useDeleteFaq(options?: UseMutationOptions<any, any, any>) {
 
 // ==================== PERMISSIONS ====================
 
+export function useAllRoles(options?: { enabled?: boolean }) {
+  return useQuery({
+    queryFn: () => getAllRoles(),
+    queryKey: ["useAllRoles"],
+    enabled: options?.enabled ?? true,
+  });
+}
+
 export function useAllPermissions(options?: { enabled?: boolean }) {
   return useQuery({
     queryFn: () => getAllPermissions(),
@@ -1459,6 +1477,43 @@ export function useUpdatePermission(options?: UseMutationOptions<any, any, any>)
   });
 }
 
+export function useCreateRole(options?: UseMutationOptions<any, any, any>) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (payload: { name: string; isAdmin?: boolean }) => createRole(payload),
+    ...options,
+    onSuccess: (data: any, variables: any, _onMutateResult: any, _context: any) => {
+      queryClient.invalidateQueries({ queryKey: ["useAllPermissions"] });
+      options?.onSuccess?.(data, variables, _onMutateResult, _context);
+    },
+  });
+}
+
+export function useUpdateRole(options?: UseMutationOptions<any, any, any>) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ roleId, name, isAdmin }: { roleId: number; name: string; isAdmin?: boolean }) =>
+      updateRole(roleId, { name, isAdmin }),
+    ...options,
+    onSuccess: (data: any, variables: any, _onMutateResult: any, _context: any) => {
+      queryClient.invalidateQueries({ queryKey: ["useAllPermissions"] });
+      options?.onSuccess?.(data, variables, _onMutateResult, _context);
+    },
+  });
+}
+
+export function useDeleteRole(options?: UseMutationOptions<any, any, any>) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (roleId: number) => deleteRole(roleId),
+    ...options,
+    onSuccess: (data: any, variables: any, _onMutateResult: any, _context: any) => {
+      queryClient.invalidateQueries({ queryKey: ["useAllPermissions"] });
+      options?.onSuccess?.(data, variables, _onMutateResult, _context);
+    },
+  });
+}
+
 export function useInitiateRefund(options?: UseMutationOptions<any, any, any>) {
   const queryClient = useQueryClient();
   const mutation = useMutation({
@@ -1474,4 +1529,90 @@ export function useInitiateRefund(options?: UseMutationOptions<any, any, any>) {
   });
 
   return mutation;
+}
+
+// ==================== IMMEDIATE ATTENTION REQUIRED (IAR) ====================
+
+interface CreateIarPayload {
+  userId: string;
+  title: string;
+  description: string;
+  url?: string;
+  color?: string;
+}
+
+interface UpdateIarPayload {
+  id: number;
+  userId: string;
+  title?: string;
+  description?: string;
+  url?: string;
+  color?: string;
+  isActive?: boolean;
+}
+
+interface ReorderIarPayload {
+  userId: string;
+  items: { id: number; sortOrder: number }[];
+}
+
+interface DeleteIarPayload {
+  id: number;
+  userId: string;
+}
+
+export function useUserImmediateAttention(userId: string, options?: { enabled?: boolean }) {
+  return useQuery<ImmediateAttentionItem[]>({
+    queryFn: () => getUserImmediateAttention(userId),
+    queryKey: ["useUserImmediateAttention", userId],
+    enabled: options?.enabled ?? true,
+  });
+}
+
+export function useCreateImmediateAttention(options?: UseMutationOptions<ImmediateAttentionItem, Error, CreateIarPayload>) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (payload: CreateIarPayload) => createImmediateAttention(payload),
+    ...options,
+    onSuccess: (data, variables, ...rest) => {
+      queryClient.invalidateQueries({ queryKey: ["useUserImmediateAttention", variables.userId] });
+      options?.onSuccess?.(data, variables, ...rest);
+    },
+  });
+}
+
+export function useUpdateImmediateAttention(options?: UseMutationOptions<ImmediateAttentionItem, Error, UpdateIarPayload>) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (payload: UpdateIarPayload) => updateImmediateAttention(payload),
+    ...options,
+    onSuccess: (data, variables, ...rest) => {
+      queryClient.invalidateQueries({ queryKey: ["useUserImmediateAttention", variables.userId] });
+      options?.onSuccess?.(data, variables, ...rest);
+    },
+  });
+}
+
+export function useReorderImmediateAttention(options?: UseMutationOptions<null, Error, ReorderIarPayload>) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (payload: ReorderIarPayload) => reorderImmediateAttention(payload),
+    ...options,
+    onSuccess: (_data, variables, ...rest) => {
+      queryClient.invalidateQueries({ queryKey: ["useUserImmediateAttention", variables.userId] });
+      options?.onSuccess?.(_data, variables, ...rest);
+    },
+  });
+}
+
+export function useDeleteImmediateAttention(options?: UseMutationOptions<null, Error, DeleteIarPayload>) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (payload: DeleteIarPayload) => deleteImmediateAttention(payload.id),
+    ...options,
+    onSuccess: (_data, variables, ...rest) => {
+      queryClient.invalidateQueries({ queryKey: ["useUserImmediateAttention", variables.userId] });
+      options?.onSuccess?.(_data, variables, ...rest);
+    },
+  });
 }
