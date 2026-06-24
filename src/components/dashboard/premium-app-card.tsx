@@ -38,17 +38,17 @@ export function PremiumAppCard({ app, type, index }: PremiumAppCardProps) {
       transition={{ duration: 0.3, delay: index * 0.08, ease: "easeOut" }}
     >
       <AutoTransitionLink href={detailHref} className="block">
-        <div className="relative group p-3 -mx-3 flex items-center gap-4 rounded-xl hover:bg-white/[0.04] transition-colors border-b border-white/[0.08] last:border-0">
+        <div className="relative group p-3 -mx-3 flex items-center gap-4 rounded-xl hover:bg-slate-100/60 dark:hover:bg-white/[0.04] transition-colors border-b border-slate-100 dark:border-white/[0.08] last:border-0">
           {/* Logo */}
           <SafeImage
             src={appLogo}
             alt={appName}
             width={44}
             height={44}
-            className="rounded-lg shrink-0 w-11 h-11 object-cover ring-1 ring-white/10"
+            className="rounded-lg shrink-0 w-11 h-11 object-cover ring-1 ring-slate-200/50 dark:ring-white/10"
             fallbackIcon={
-              <div className="w-11 h-11 rounded-lg bg-white/5 flex items-center justify-center ring-1 ring-white/10">
-                <Activity className="w-5 h-5 text-white/40" />
+              <div className="w-11 h-11 rounded-lg bg-slate-100 dark:bg-white/5 flex items-center justify-center ring-1 ring-slate-200/50 dark:ring-white/10">
+                <Activity className="w-5 h-5 text-slate-400 dark:text-white/40" />
               </div>
             }
           />
@@ -56,18 +56,18 @@ export function PremiumAppCard({ app, type, index }: PremiumAppCardProps) {
           {/* Details */}
           <div className="min-w-0 flex-1 py-1">
             <div className="flex items-center gap-2 mb-1">
-              <p className="text-[15px] font-semibold text-white/90 truncate leading-tight">
+              <p className="text-[15px] font-semibold text-slate-800 dark:text-white/90 truncate leading-tight">
                 {appName}
               </p>
             </div>
             
-            <div className="flex items-center gap-3 text-[13px] text-white/50 leading-none">
+            <div className="flex items-center gap-3 text-[13px] text-slate-505 dark:text-white/50 leading-none">
               <span className={cn("font-medium", statusColor)}>
                 {remaining > 0 ? `${remaining}d left` : "Final day"}
               </span>
-              <span className="w-1 h-1 rounded-full bg-white/20" />
+              <span className="w-1 h-1 rounded-full bg-slate-300 dark:bg-white/20" />
               <span>
-                <strong className="text-white/80 font-medium">{currentTester}</strong>/{totalTester} testers
+                <strong className="text-slate-700 dark:text-white/80 font-medium">{currentTester}</strong>/{totalTester} testers
               </span>
             </div>
           </div>

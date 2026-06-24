@@ -28,8 +28,8 @@ export function DiaryTestingSection({
     <section className="mb-20">
       <div className="relative rounded-[2.5rem] flex flex-col md:flex-row gap-4 items-stretch justify-center overflow-hidden">
         {/* Left Card: Free Testing */}
-        <div className="bg-[#222222] rounded-[32px] p-8 md:p-10 pb-14 md:pb-10 flex-1 relative text-white z-0">
-          <h2 className="text-2xl md:text-4xl font-extrabold text-white leading-[1.1] tracking-tight mb-8">
+        <div className="bg-gradient-to-br from-slate-50 via-white to-slate-50 dark:from-card dark:via-card/50 dark:to-card rounded-[32px] p-8 md:p-10 pb-14 md:pb-10 flex-1 relative border border-slate-200/60 dark:border-border/10 shadow-[0_8px_30px_rgb(0,0,0,0.04)] text-slate-800 dark:text-foreground z-0">
+          <h2 className="text-2xl md:text-4xl font-extrabold text-slate-900 dark:text-foreground leading-[1.1] tracking-tight mb-8">
             Free Testing
           </h2>
 
@@ -43,12 +43,12 @@ export function DiaryTestingSection({
             </div>
           ) : (
             <>
-              <p className="text-sm lg:text-base text-white/50 mb-8 max-w-md leading-relaxed">
+              <p className="text-sm lg:text-base text-slate-500 dark:text-white/50 mb-8 max-w-md leading-relaxed">
                 Test your app with the community at no cost. But will be always
                 Free Forever!!!
               </p>
 
-              <h3 className="text-xl font-bold mb-4">Limitations</h3>
+              <h3 className="text-xl font-bold mb-4 text-slate-800 dark:text-foreground">Limitations</h3>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-3">
                 {[
@@ -62,7 +62,7 @@ export function DiaryTestingSection({
                     <div className="w-5 h-5 rounded-full bg-red-500/10 border border-red-500/20 flex items-center justify-center shrink-0 mt-0.5">
                       <X className="w-3 h-3 text-red-400 stroke-[3]" />
                     </div>
-                    <span className="text-sm text-white/60 font-medium leading-snug">
+                    <span className="text-sm text-slate-600 dark:text-white/60 font-medium leading-snug">
                       {f}
                     </span>
                   </div>
@@ -73,7 +73,7 @@ export function DiaryTestingSection({
               <div className="mt-8 md:hidden">
                 <Button
                   asChild
-                  className="w-full rounded-full bg-white text-black hover:bg-white/90 font-semibold h-12"
+                  className="w-full rounded-full bg-slate-900 text-white hover:bg-slate-800 dark:bg-white dark:text-black dark:hover:bg-white/90 font-semibold h-12"
                 >
                   <TransitionLink href="/app/free-testing/submit">
                     Submit Free App
@@ -84,37 +84,18 @@ export function DiaryTestingSection({
           )}
         </div>
 
-        {/* Center Rings (Desktop) */}
-        <div className="absolute inset-y-0 left-1/2 -translate-x-1/2 flex-col items-center justify-center gap-8 py-10 z-10 hidden md:flex pointer-events-none">
-          {[0, 1, 2, 3, 4].map((i) => (
-            <BinderRing key={i} />
-          ))}
-        </div>
-
         {/* Right Card: Pro Testing */}
-        <div className="absolute inset-0 bg-[#222222] rounded-[32px] p-8 md:p-10 pt-14 md:pt-10 flex-1 relative text-white z-0 flex flex-col items-center justify-start text-center">
-          {/* Mobile Rings positioned exactly over the gap (anchored to top of this card) */}
-          <div className="absolute left-0 right-0 -top-2 -translate-y-1/2 flex items-center justify-center gap-10 z-10 md:hidden pointer-events-none">
-            {[0, 1, 2, 3, 4].map((i) => (
-              <div
-                key={i}
-                className="w-[24px] h-[72px] relative flex items-center justify-center"
-              >
-                <BinderRing className="rotate-90 shrink-0" />
-              </div>
-            ))}
-          </div>
-
+        <div className="bg-gradient-to-br from-slate-50 via-white to-slate-50 dark:from-card dark:via-card/50 dark:to-card rounded-[32px] p-8 md:p-10 pt-14 md:pt-10 flex-1 relative border border-slate-200/60 dark:border-border/10 shadow-[0_8px_30px_rgb(0,0,0,0.04)] text-slate-800 dark:text-foreground z-0 flex flex-col items-center justify-start text-center">
           {proLoading ? (
             <div className="w-full text-left">
-              <h2 className="text-2xl md:text-4xl font-extrabold text-white leading-[1.1] tracking-tight mb-8 text-center">
+              <h2 className="text-2xl md:text-4xl font-extrabold text-slate-900 dark:text-foreground leading-[1.1] tracking-tight mb-8 text-center">
                 Pro Testing
               </h2>
               <LoadingCards />
             </div>
           ) : proApps && proApps.length > 0 ? (
             <div className="w-full text-left pl-0 sm:pl-5">
-              <h2 className="text-2xl md:text-4xl font-extrabold text-white leading-[1.1] tracking-tight mb-4">
+              <h2 className="text-2xl md:text-4xl font-extrabold text-slate-900 dark:text-foreground leading-[1.1] tracking-tight mb-4">
                 Pro Testing
               </h2>
               <div className="space-y-3">
@@ -130,7 +111,7 @@ export function DiaryTestingSection({
             </div>
           ) : (
             <>
-              <h2 className="text-2xl md:text-4xl font-extrabold text-white leading-[1.1] tracking-tight mb-8">
+              <h2 className="text-2xl md:text-4xl font-extrabold text-slate-900 dark:text-foreground leading-[1.1] tracking-tight mb-8">
                 Pro Testing
               </h2>
 
@@ -138,7 +119,7 @@ export function DiaryTestingSection({
 
               <Button
                 asChild
-                className="w-full max-w-[280px] rounded-full bg-[#4a72ff] hover:bg-[#395ce6] text-white font-semibold text-base lg:text-lg h-14 mb-6 transition-all hover:scale-105 shadow-xl shadow-blue-500/20"
+                className="w-full max-w-[280px] rounded-full bg-primary hover:bg-primary/90 text-primary-foreground font-semibold text-base lg:text-lg h-14 mb-6 transition-all hover:scale-105 shadow-lg shadow-primary/20"
               >
                 <TransitionLink
                   href={ROUTES.AUTHENTICATED.BILLING}
@@ -148,7 +129,7 @@ export function DiaryTestingSection({
                 </TransitionLink>
               </Button>
 
-              <p className="text-sm text-white/50 max-w-xs leading-relaxed">
+              <p className="text-sm text-slate-500 dark:text-white/50 max-w-xs leading-relaxed">
                 Get matched with 20+ vetted testers and meet Google Play&apos;s
                 12-tester requirement in days.
               </p>
@@ -157,22 +138,6 @@ export function DiaryTestingSection({
         </div>
       </div>
     </section>
-  );
-}
-
-function BinderRing({ className }: { className?: string } = {}) {
-  return (
-    <div className={`relative w-[72px] h-[24px] ${className || ""}`}>
-      {/* The metal ring itself */}
-      <div className="absolute inset-0 rounded-full bg-gradient-to-b from-[#8aacd8] via-[#6b8fc7] to-[#5a7eb8] shadow-[0_4px_6px_rgba(0,0,0,0.3)] border-b-2 border-[#4a6b98]">
-        {/* Highlight */}
-        <div className="absolute top-[2px] left-3 right-3 h-1.5 rounded-full bg-white/20" />
-      </div>
-      {/* Left hole over black card */}
-      <div className="absolute left-1.5 top-1/2 -translate-y-1/2 w-4 h-4 rounded-full bg-background shadow-[inset_0_2px_4px_rgba(0,0,0,0.6)] z-20" />
-      {/* Right hole over black card */}
-      <div className="absolute right-1.5 top-1/2 -translate-y-1/2 w-4 h-4 rounded-full bg-background shadow-[inset_0_2px_4px_rgba(0,0,0,0.6)] z-20" />
-    </div>
   );
 }
 
@@ -196,11 +161,11 @@ function ProPricingDisplay() {
 
   return (
     <div className="mb-8 flex items-baseline justify-center gap-2">
-      <span className="text-4xl lg:text-5xl font-extrabold text-white tracking-tighter">
+      <span className="text-4xl lg:text-5xl font-extrabold text-slate-900 dark:text-foreground tracking-tighter">
         {displaySymbol}
         {displayPrice}.00
       </span>
-      <span className="text-xl lg:text-3xl font-bold text-white/30">
+      <span className="text-xl lg:text-3xl font-bold text-slate-400 dark:text-muted-foreground/30">
         {regionalPricing?.currency_code || "USD"}
       </span>
     </div>
@@ -211,7 +176,7 @@ function LoadingCards() {
   return (
     <div className="space-y-2 w-full">
       {[1, 2, 3].map((i) => (
-        <Skeleton key={i} className="h-16 rounded-2xl bg-white/[0.04] w-full" />
+        <Skeleton key={i} className="h-16 rounded-2xl bg-slate-200/50 dark:bg-white/[0.04] w-full" />
       ))}
     </div>
   );
