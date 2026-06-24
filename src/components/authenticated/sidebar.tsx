@@ -229,10 +229,14 @@ export function Sidebar({
   )?.toLowerCase();
 
   const isAdminRole = role?.isAdmin === true;
-  const isTesterRole = roleName === "tester" || roleName === "super_admin";
+  const actingAs = (session as any)?.actingAsRole;
+  const isTesterRole = roleName === "tester" && actingAs !== "user";
+  const effectiveIsAdmin = isAdminRole && !actingAs;
+  const effectiveIsTester = actingAs === "tester" || (!actingAs && roleName === "tester");
+  const effectiveIsUser = actingAs === "user" || (!actingAs && roleName === "user");
 
   let navLinks: { name: string; href: string; icon: typeof LayoutDashboard; badge?: string }[] = mainNavLinks;
-  if (isTesterRole) {
+  if (effectiveIsTester) {
     navLinks = proNavLinks;
   }
 
@@ -254,7 +258,7 @@ export function Sidebar({
     { key: "system" as const, label: "System", color: "text-purple-300" },
   ];
 
-  const navContent = isAdminRole ? (
+  const navContent = effectiveIsAdmin ? (
     <>
       {sections.map((section, idx) => {
         const sectionLinks = adminNavLinks.filter(
@@ -314,7 +318,7 @@ export function Sidebar({
   const bottomContent = (
     <div className="flex flex-col gap-1 w-full">
       {/* Wallet for regular users */}
-      {!isAdminRole && !isTesterRole && (
+      {effectiveIsUser && (
         <SidebarNavLink
           href={ROUTES.AUTHENTICATED.WALLET}
           icon={Wallet}
@@ -325,7 +329,7 @@ export function Sidebar({
       )}
 
       {/* Earnings for testers */}
-      {isTesterRole && (
+      {effectiveIsTester && (
         <SidebarNavLink
           href={ROUTES.TESTER.EARNINGS}
           icon={DollarSign}
@@ -336,7 +340,7 @@ export function Sidebar({
       )}
 
       {/* Profile links based on role */}
-      {isAdminRole ? (
+      {effectiveIsAdmin ? (
         <SidebarNavLink
           href={ROUTES.ADMIN.PROFILE}
           icon={User}
@@ -344,7 +348,7 @@ export function Sidebar({
         >
           Profile
         </SidebarNavLink>
-      ) : isTesterRole ? (
+      ) : effectiveIsTester ? (
         <SidebarNavLink
           href={ROUTES.TESTER.PROFILE}
           icon={User}
@@ -362,9 +366,9 @@ export function Sidebar({
 
   // Determine logo link based on role
   let logoHref: string = ROUTES.AUTHENTICATED.DASHBOARD;
-  if (isAdminRole) {
+  if (effectiveIsAdmin) {
     logoHref = ROUTES.ADMIN.DASHBOARD;
-  } else if (isTesterRole) {
+  } else if (effectiveIsTester) {
     logoHref = ROUTES.TESTER.DASHBOARD;
   }
 

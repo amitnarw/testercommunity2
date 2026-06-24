@@ -17,5 +17,6 @@ declare module "better-auth" {
         module: { name: string };
       }[];
     };
+    actingAsRole?: string | null;
   }
 }
