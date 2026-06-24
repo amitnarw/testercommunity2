@@ -6,7 +6,7 @@ import { ROUTES } from "@/lib/routes";
 interface RoleInfo {
   name: string;
   isAdmin?: boolean;
-  permissions: Array<{
+  permissions?: Array<{
     moduleId: number;
     canReadList: boolean;
     canReadSingle: boolean;
