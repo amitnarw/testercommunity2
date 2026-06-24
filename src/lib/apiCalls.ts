@@ -191,17 +191,6 @@ export const login = async ({
       );
     }
 
-    const sessionResult = await authClient.getSession();
-    const session = sessionResult?.data;
-    const role = (session as any)?.role;
-    if (!role || role?.isAdmin === true) {
-      await authClient.signOut();
-      throw new AuthError(
-        "ACCESS_DENIED",
-        "Admin accounts must use the admin login page.",
-      );
-    }
-
     return { success: true, data: response };
   } catch (error) {
     console.error("Error logging in user: ", error);
@@ -249,17 +238,6 @@ export const testerLogin = async ({
       throw new AuthError(
         response.error.code ?? "LOGIN_FAILED",
         response.error.message ?? "Login failed",
-      );
-    }
-
-    const sessionResult = await authClient.getSession();
-    const session = sessionResult?.data;
-    const role = (session as any)?.role;
-    if (!role || (role?.name !== "tester" && role?.name !== "super_admin")) {
-      await authClient.signOut();
-      throw new AuthError(
-        "ACCESS_DENIED",
-        "You do not have tester access. Please use the appropriate login page.",
       );
     }
 

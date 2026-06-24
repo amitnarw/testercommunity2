@@ -68,17 +68,6 @@ export async function adminLogin(payload: {
       );
     }
 
-    const sessionResult = await authClient.getSession();
-    const session = sessionResult?.data;
-    const role = (session as any)?.role;
-    if (!role || role?.isAdmin !== true) {
-      await authClient.signOut();
-      throw new AuthError(
-        "ACCESS_DENIED",
-        "You do not have admin privileges. Please use the appropriate login page.",
-      );
-    }
-
     return { success: true, data: response };
   } catch (error) {
     console.error("Error admin login via better-auth:", error);
