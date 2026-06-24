@@ -311,6 +311,7 @@ export type ProjectFeedback = {
   date: string;
   screenshot?: string | null;
   videoUrl?: string | null;
+  testerId?: string;
 };
 
 export type TesterDetails = {
@@ -336,6 +337,7 @@ export type SubmittedFeedback = {
   tester: string;
   severity: "Critical" | "High" | "Medium" | "Low" | "N/A";
   videoUrl?: string | null;
+  testerId?: string;
 };
 
 export interface ControlRoomResponse {

@@ -598,6 +598,7 @@ const FeedbackListItem = ({
   onImageClick,
   isCompleted,
   currentUserId,
+  isPrivileged,
 }: {
   fb: HubSubmittedAppResponse["feedback"][0];
   onSave: (data: {
@@ -614,6 +615,7 @@ const FeedbackListItem = ({
   onImageClick: (url: string) => void;
   isCompleted: boolean;
   currentUserId: string | null;
+  isPrivileged: boolean;
 }) => (
   <Card
     className={`bg-gradient-to-tl ${
@@ -676,20 +678,29 @@ const FeedbackListItem = ({
         </div>
       </div>
       <p className="text-sm text-muted-foreground mt-1">{fb?.message}</p>
-      {fb?.media && (
-        <div
-          className="mt-3 cursor-pointer h-14 w-14 relative"
-          onClick={() => fb.media?.src && onImageClick(fb.media.src)}
-        >
-          <SafeImage
-            src={fb.media?.src || ""}
-            alt="Feedback screenshot"
-            layout="fill"
-            objectFit="cover"
-            className="rounded-sm border object-cover"
-          />
+      <div className="flex flex-row justify-between w-full mt-3 items-end">
+        <div className="flex flex-row gap-2">
+          {fb?.media && (
+            <div
+              className="cursor-pointer h-14 w-14 relative"
+              onClick={() => fb.media?.src && onImageClick(fb.media.src)}
+            >
+              <SafeImage
+                src={fb.media?.src || ""}
+                alt="Feedback screenshot"
+                layout="fill"
+                objectFit="cover"
+                className="rounded-sm border object-cover"
+              />
+            </div>
+          )}
         </div>
-      )}
+        {isPrivileged && fb.tester && (
+          <span className="text-xs text-muted-foreground pr-3">
+            by {fb.tester.name}
+          </span>
+        )}
+      </div>
     </div>
   </Card>
 );
@@ -701,6 +712,7 @@ const FeedbackGridItem = ({
   onImageClick,
   isCompleted,
   currentUserId,
+  isPrivileged,
 }: {
   fb: HubSubmittedAppResponse["feedback"][number];
   onSave: (data: {
@@ -717,6 +729,7 @@ const FeedbackGridItem = ({
   onImageClick: (url: string) => void;
   isCompleted: boolean;
   currentUserId: string | null;
+  isPrivileged: boolean;
 }) => (
   <Card
     className={`bg-gradient-to-bl ${
@@ -746,7 +759,7 @@ const FeedbackGridItem = ({
         {fb?.message}
       </p>
     </CardContent>
-    <CardFooter className="p-0 flex items-center justify-between">
+    <CardFooter className="p-0 flex flex-col items-start gap-1 mt-3">
       {fb?.media ? (
         <div className="grid grid-cols-4 gap-1">
           <div
@@ -764,6 +777,11 @@ const FeedbackGridItem = ({
         </div>
       ) : (
         <div />
+      )}
+      {isPrivileged && fb.tester && (
+        <p className="text-xs text-muted-foreground pt-2 text-end w-full">
+          by {fb.tester.name}
+        </p>
       )}
       <div
         className={`flex items-center gap-1 ${
@@ -919,9 +937,11 @@ export function SubmittedFeedback({
     }
   };
 
-  const description = isCompleted
-    ? "Here is a summary of the feedback you submitted."
-    : "Here is the feedback you've submitted so far.";
+  const description = isPrivileged
+    ? "Here is a summary of all feedback submitted by testers."
+    : isCompleted
+      ? "Here is a summary of the feedback you submitted."
+      : "Here is the feedback you've submitted so far.";
 
   return (
     <>
@@ -1008,6 +1028,7 @@ export function SubmittedFeedback({
                     onImageClick={setFullscreenImage}
                     isCompleted={isCompleted || isLocked}
                     currentUserId={currentUserId}
+                    isPrivileged={isPrivileged}
                   />
                 ))}
               </div>
@@ -1022,6 +1043,7 @@ export function SubmittedFeedback({
                     onImageClick={setFullscreenImage}
                     isCompleted={isCompleted || isLocked}
                     currentUserId={currentUserId}
+                    isPrivileged={isPrivileged}
                   />
                 ))}
               </div>

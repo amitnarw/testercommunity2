@@ -41,7 +41,7 @@ function QuickActionPill({
     <TransitionLink
       href={href}
       className={cn(
-        "inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#222222] text-white border border-white/5 transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5 hover:bg-[#2a2a2a] group"
+        "inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-slate-50 dark:bg-card text-slate-805 dark:text-foreground border border-slate-200/60 dark:border-border/10 transition-all duration-300 hover:shadow-sm hover:-translate-y-0.5 hover:bg-white dark:hover:bg-muted/30 hover:border-slate-300 dark:hover:border-border/30 group"
       )}
     >
       <span className="text-sm font-semibold">{label}</span>

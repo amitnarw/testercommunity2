@@ -58,6 +58,9 @@ import {
   AlertDialogTrigger,
 } from "../ui/alert-dialog";
 import { Edit } from "lucide-react";
+import { authClient } from "@/lib/auth-client";
+import { addHubAppFeedback, updateHubAppFeedback } from "@/lib/apiCalls";
+import { useDeleteHubAppFeedback } from "@/hooks/useHub";
 
 const getSeverityBadge = (severity: string) => {
   switch (severity) {
@@ -271,6 +274,7 @@ const FeedbackListItem = ({
   onSave,
   onDelete,
   isTester,
+  currentUserId,
 }: {
   fb: SubmittedFeedbackType;
   onImageClick: (url: string) => void;
@@ -278,76 +282,221 @@ const FeedbackListItem = ({
   onSave: (data: any) => void;
   onDelete: (id: number) => void;
   isTester?: boolean;
-}) => (
-  <Card
-    className={`bg-gradient-to-tl ${
-      fb.type === "Bug"
-        ? "from-red-500/20"
-        : fb.type === "Suggestion"
-          ? "from-yellow-500/20"
-          : "from-green-500/20"
-    } ${
-      fb.type === "Bug"
-        ? "to-red-500/5"
-        : fb.type === "Suggestion"
-          ? "to-yellow-500/5"
-          : "to-green-500/5"
-    } p-2 sm:p-4 pt-2 pr-2 shadow-none border-0 relative overflow-hidden`}
-  >
-    <div className="flex items-start flex-col gap-0">
-      <div className="absolute scale-[2.5] rotate-45 top-2 left-2 opacity-5 dark:opacity-10">
-        <FeedbackIcon type={fb.type} />
-      </div>
-      <div className="flex flex-row items-center justify-between w-full pl-3">
-        <div className="flex items-center gap-3">
-          <p className="font-semibold">{fb.type}</p>
-          {getSeverityBadge(fb.severity)}
+  currentUserId: string | null;
+}) => {
+  const isOwnFeedback = currentUserId !== null && fb.testerId === currentUserId;
+
+  return (
+    <Card
+      className={`bg-gradient-to-tl ${
+        fb.type === "Bug"
+          ? "from-red-500/20"
+          : fb.type === "Suggestion"
+            ? "from-yellow-500/20"
+            : "from-green-500/20"
+      } ${
+        fb.type === "Bug"
+          ? "to-red-500/5"
+          : fb.type === "Suggestion"
+            ? "to-yellow-500/5"
+            : "to-green-500/5"
+      } p-2 sm:p-4 pt-2 pr-2 shadow-none border-0 relative overflow-hidden pl-5`}
+    >
+      <div className="flex items-start flex-col gap-0">
+        <div className="absolute scale-[2.5] rotate-45 top-2 left-1 opacity-5 dark:opacity-10">
+          <FeedbackIcon type={fb.type} />
         </div>
-        {isTester && (
-          <div className="flex items-center gap-1">
-            <FeedbackFormModal feedback={fb} onSave={onSave}>
-              <button className="hover:bg-white/50 p-2 rounded-md duration-300">
-                <Edit className="w-4 h-4" />
-              </button>
-            </FeedbackFormModal>
-            <AlertDialog>
-              <AlertDialogTrigger asChild>
-                <button className="hover:bg-red-200 p-2 rounded-md duration-300 text-red-500">
-                  <Trash2 className="w-4 h-4" />
-                </button>
-              </AlertDialogTrigger>
-              <AlertDialogContent className="w-[90vw] rounded-2xl bg-background border-0">
-                <AlertDialogHeader>
-                  <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-                  <AlertDialogDescription>
-                    This action cannot be undone. This will permanently delete
-                    your feedback.
-                  </AlertDialogDescription>
-                </AlertDialogHeader>
-                <AlertDialogFooter>
-                  <AlertDialogCancel className="bg-background">
-                    Cancel
-                  </AlertDialogCancel>
-                  <AlertDialogAction
-                    className="bg-gradient-to-br from-red-500 to-red-500/40 dark:from-red-500/80 dark:to-red-500/20 hover:bg-red-500/50 !shadow-red-500/50"
-                    onClick={() => onDelete(fb.id)}
-                  >
-                    Delete
-                  </AlertDialogAction>
-                </AlertDialogFooter>
-              </AlertDialogContent>
-            </AlertDialog>
+        <div className="flex flex-row items-center justify-between w-full pl-3">
+          <div className="flex items-center gap-3">
+            <p className="font-semibold">{fb.type}</p>
+            {fb.type === "Bug" && getSeverityBadge(fb.severity)}
+            {isOwnFeedback ? (
+              <Badge variant="outline" className="bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 font-medium border-emerald-500/20 text-[10px] h-4 py-0 px-1.5">
+                My Feedback
+              </Badge>
+            ) : currentUserId !== null ? (
+              <Badge variant="outline" className="bg-muted text-muted-foreground font-medium border-border text-[10px] h-4 py-0 px-1.5">
+                Other Tester
+              </Badge>
+            ) : null}
           </div>
-        )}
+          {isTester && isOwnFeedback && (
+            <div className="flex items-center gap-1">
+              <FeedbackFormModal feedback={fb} onSave={onSave}>
+                <button className="hover:bg-white/50 p-2 rounded-md duration-300">
+                  <Edit className="w-4 h-4" />
+                </button>
+              </FeedbackFormModal>
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <button className="hover:bg-red-200 p-2 rounded-md duration-300 text-red-500">
+                    <Trash2 className="w-4 h-4" />
+                  </button>
+                </AlertDialogTrigger>
+                <AlertDialogContent className="w-[90vw] rounded-2xl bg-[#fafafa] dark:bg-[#151515] border border-border/40 shadow-2xl">
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                    <AlertDialogDescription>
+                      This action cannot be undone. This will permanently delete
+                      your feedback.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel className="bg-background">
+                      Cancel
+                    </AlertDialogCancel>
+                    <AlertDialogAction
+                      className="bg-gradient-to-br from-red-500 to-red-500/40 dark:from-red-500/80 dark:to-red-500/20 hover:bg-red-500/50 !shadow-red-500/50"
+                      onClick={() => onDelete(fb.id)}
+                    >
+                      Delete
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+            </div>
+          )}
+        </div>
+        <p className="text-xs sm:text-sm text-muted-foreground mt-1 pl-3">
+          {fb.comment}
+        </p>
+        <div className="flex flex-row justify-between w-full mt-3 items-end">
+          <div className="flex flex-row gap-2 pl-3">
+            {fb.screenshot && (
+              <div
+                className="cursor-pointer h-14 w-10 relative"
+                onClick={() => onImageClick(fb.screenshot!)}
+              >
+                <SafeImage
+                  src={fb.screenshot}
+                  alt="Feedback screenshot"
+                  fill
+                  className="rounded-sm border object-cover"
+                />
+              </div>
+            )}
+            {fb.videoUrl && fb.screenshot && (
+              <div
+                className="cursor-pointer h-14 w-20 relative"
+                onClick={() => onVideoClick(fb.videoUrl!)}
+              >
+                <SafeImage
+                  src={fb.screenshot}
+                  alt="Feedback screenshot"
+                  fill
+                  className="rounded-sm border object-cover w-full h-full"
+                />
+                <CirclePlay
+                  className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-white shadow-lg backdrop-blur-sm rounded-full p-1"
+                  size={30}
+                />
+              </div>
+            )}
+          </div>
+          <span className="text-xs text-muted-foreground pr-3 font-semibold">
+            by {isOwnFeedback ? "You" : fb.tester}
+          </span>
+        </div>
       </div>
-      <p className="text-xs sm:text-sm text-muted-foreground mt-1 pl-3">
-        {fb.comment}
-      </p>
-      <div className="flex flex-row justify-between w-full mt-3 items-end">
-        <div className="flex flex-row gap-2 pl-3">
+    </Card>
+  );
+};
+
+const FeedbackGridItem = ({
+  fb,
+  onImageClick,
+  onVideoClick,
+  onSave,
+  onDelete,
+  isTester,
+  currentUserId,
+}: {
+  fb: SubmittedFeedbackType;
+  onImageClick: (url: string) => void;
+  onVideoClick: (url: string) => void;
+  onSave: (data: any) => void;
+  onDelete: (id: number) => void;
+  isTester?: boolean;
+  currentUserId: string | null;
+}) => {
+  const isOwnFeedback = currentUserId !== null && fb.testerId === currentUserId;
+
+  return (
+    <Card
+      className={`bg-gradient-to-bl ${
+        fb.type === "Bug"
+          ? "from-red-500/20"
+          : fb.type === "Suggestion"
+            ? "from-yellow-500/20"
+            : "from-green-500/20"
+      } ${
+        fb.type === "Bug"
+          ? "to-red-500/10"
+          : fb.type === "Suggestion"
+            ? "to-yellow-500/10"
+            : "to-green-500/10"
+      } p-2 sm:p-4 shadow-none border-0 h-full flex flex-col relative overflow-hidden`}
+    >
+      <CardHeader className="p-0 flex-row items-center justify-between">
+        <div className="flex items-center gap-3">
+          <div className="p-3 rounded-full absolute opacity-10 scale-[3] -right-1 -top-1 -rotate-45">
+            <FeedbackIcon type={fb.type} />
+          </div>
+          <CardTitle className="text-base">{fb.type}</CardTitle>
+          {isOwnFeedback ? (
+            <Badge variant="outline" className="bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 font-medium border-emerald-500/20 text-[10px] h-4 py-0 px-1.5">
+              My Feedback
+            </Badge>
+          ) : currentUserId !== null ? (
+            <Badge variant="outline" className="bg-muted text-muted-foreground font-medium border-border text-[10px] h-4 py-0 px-1.5">
+              Other Tester
+            </Badge>
+          ) : null}
+        </div>
+        <div className="flex items-center gap-1">
+          {fb.type === "Bug" && getSeverityBadge(fb.severity)}
+          {isTester && isOwnFeedback && (
+            <>
+              <FeedbackFormModal feedback={fb} onSave={onSave}>
+                <button className="hover:bg-white/50 p-1 rounded-md duration-300">
+                  <Edit className="w-3 h-3" />
+                </button>
+              </FeedbackFormModal>
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <button className="hover:bg-red-200 p-1 rounded-md duration-300 text-red-500">
+                    <Trash2 className="w-3 h-3" />
+                  </button>
+                </AlertDialogTrigger>
+                <AlertDialogContent className="w-[90vw] rounded-2xl bg-background border-0">
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+                    <AlertDialogDescription>
+                      This action cannot be undone.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                    <AlertDialogAction onClick={() => onDelete(fb.id)}>
+                      Delete
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+            </>
+          )}
+        </div>
+      </CardHeader>
+      <CardContent className="p-0 pt-2 flex-grow">
+        <p className="text-xs sm:text-sm text-muted-foreground line-clamp-3">
+          {fb.comment}
+        </p>
+      </CardContent>
+      <CardFooter className="p-0 flex flex-col items-start gap-1 mt-3">
+        <div className="flex flex-row gap-1">
           {fb.screenshot && (
             <div
-              className="cursor-pointer h-14 w-10 relative"
+              className="cursor-pointer h-10 w-8 relative"
               onClick={() => onImageClick(fb.screenshot!)}
             >
               <SafeImage
@@ -360,152 +509,40 @@ const FeedbackListItem = ({
           )}
           {fb.videoUrl && fb.screenshot && (
             <div
-              className="cursor-pointer h-14 w-20 relative"
+              className="cursor-pointer h-10 w-16 relative"
               onClick={() => onVideoClick(fb.videoUrl!)}
             >
               <SafeImage
                 src={fb.screenshot}
-                alt="Feedback screenshot"
+                alt="Feedback video thumbnail"
                 fill
                 className="rounded-sm border object-cover w-full h-full"
               />
               <CirclePlay
                 className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-white shadow-lg backdrop-blur-sm rounded-full p-1"
-                size={30}
+                size={24}
               />
             </div>
           )}
         </div>
-        <span className="text-xs text-muted-foreground pr-3">
-          by {fb.tester}
-        </span>
-      </div>
-    </div>
-  </Card>
-);
-
-const FeedbackGridItem = ({
-  fb,
-  onImageClick,
-  onVideoClick,
-  onSave,
-  onDelete,
-  isTester,
-}: {
-  fb: SubmittedFeedbackType;
-  onImageClick: (url: string) => void;
-  onVideoClick: (url: string) => void;
-  onSave: (data: any) => void;
-  onDelete: (id: number) => void;
-  isTester?: boolean;
-}) => (
-  <Card
-    className={`bg-gradient-to-bl ${
-      fb.type === "Bug"
-        ? "from-red-500/20"
-        : fb.type === "Suggestion"
-          ? "from-yellow-500/20"
-          : "from-green-500/20"
-    } ${
-      fb.type === "Bug"
-        ? "to-red-500/10"
-        : fb.type === "Suggestion"
-          ? "to-yellow-500/10"
-          : "to-green-500/10"
-    } p-2 sm:p-4 shadow-none border-0 h-full flex flex-col relative overflow-hidden`}
-  >
-    <CardHeader className="p-0 flex-row items-center justify-between">
-      <div className="flex items-center gap-3">
-        <div className="p-3 rounded-full absolute opacity-10 scale-[3] -right-1 -top-1 -rotate-45">
-          <FeedbackIcon type={fb.type} />
-        </div>
-        <CardTitle className="text-base">{fb.type}</CardTitle>
-      </div>
-      <div className="flex items-center gap-1">
-        {getSeverityBadge(fb.severity)}
-        {isTester && (
-          <>
-            <FeedbackFormModal feedback={fb} onSave={onSave}>
-              <button className="hover:bg-white/50 p-1 rounded-md duration-300">
-                <Edit className="w-3 h-3" />
-              </button>
-            </FeedbackFormModal>
-            <AlertDialog>
-              <AlertDialogTrigger asChild>
-                <button className="hover:bg-red-200 p-1 rounded-md duration-300 text-red-500">
-                  <Trash2 className="w-3 h-3" />
-                </button>
-              </AlertDialogTrigger>
-              <AlertDialogContent className="w-[90vw] rounded-2xl bg-background border-0">
-                <AlertDialogHeader>
-                  <AlertDialogTitle>Are you sure?</AlertDialogTitle>
-                  <AlertDialogDescription>
-                    This action cannot be undone.
-                  </AlertDialogDescription>
-                </AlertDialogHeader>
-                <AlertDialogFooter>
-                  <AlertDialogCancel>Cancel</AlertDialogCancel>
-                  <AlertDialogAction onClick={() => onDelete(fb.id)}>
-                    Delete
-                  </AlertDialogAction>
-                </AlertDialogFooter>
-              </AlertDialogContent>
-            </AlertDialog>
-          </>
-        )}
-      </div>
-    </CardHeader>
-    <CardContent className="p-0 pt-2 flex-grow">
-      <p className="text-xs sm:text-sm text-muted-foreground line-clamp-3">
-        {fb.comment}
-      </p>
-    </CardContent>
-    <CardFooter className="p-0 flex flex-col items-start gap-1 mt-3">
-      <div className="flex flex-row gap-1">
-        {fb.screenshot && (
-          <div
-            className="cursor-pointer h-10 w-8 relative"
-            onClick={() => onImageClick(fb.screenshot!)}
-          >
-            <SafeImage
-              src={fb.screenshot}
-              alt="Feedback screenshot"
-              fill
-              className="rounded-sm border object-cover"
-            />
-          </div>
-        )}
-        {fb.videoUrl && fb.screenshot && (
-          <div
-            className="cursor-pointer h-10 w-16 relative"
-            onClick={() => onVideoClick(fb.videoUrl!)}
-          >
-            <SafeImage
-              src={fb.screenshot}
-              alt="Feedback video thumbnail"
-              fill
-              className="rounded-sm border object-cover w-full h-full"
-            />
-            <CirclePlay
-              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-white shadow-lg backdrop-blur-sm rounded-full p-1"
-              size={24}
-            />
-          </div>
-        )}
-      </div>
-      <p className="text-xs text-muted-foreground pt-2 text-end w-full">
-        by {fb.tester}
-      </p>
-    </CardFooter>
-  </Card>
-);
+        <p className="text-xs text-muted-foreground pt-2 text-end w-full font-semibold">
+          by {isOwnFeedback ? "You" : fb.tester}
+        </p>
+      </CardFooter>
+    </Card>
+  );
+};
 
 export function SubmittedFeedback({
   isTester = false,
   feedbacks = [],
+  hubId,
+  refetch,
 }: {
   isTester?: boolean;
   feedbacks?: SubmittedFeedbackType[];
+  hubId?: string;
+  refetch?: () => void;
 }) {
   const [viewMode, setViewMode] = useState<"grid" | "list">("list");
   const [currentPage, setCurrentPage] = useState(1);
@@ -524,6 +561,12 @@ export function SubmittedFeedback({
     setSubmittedFeedback(feedbacks);
   }, [feedbacks]);
 
+  const { data: session } = authClient.useSession();
+  const currentUserId = session?.user?.id || null;
+  const userRole = (session as any)?.role?.name || (session as any)?.role;
+  const isTesterUser = userRole?.toUpperCase() === "TESTER";
+  const finalIsTester = isTesterUser || isTester;
+
   const FEEDBACK_PER_PAGE = viewMode === "list" ? 4 : 6;
 
   useEffect(() => {
@@ -540,30 +583,47 @@ export function SubmittedFeedback({
     setCurrentPage(page);
   };
 
-  const handleSaveFeedback = (data: Partial<SubmittedFeedbackType>) => {
-    if (data.id) {
-      setSubmittedFeedback((prev) =>
-        prev.map((fb) =>
-          fb.id === data.id
-            ? ({ ...fb, ...data } as SubmittedFeedbackType)
-            : fb,
-        ),
-      );
-    } else {
-      const newFeedback: SubmittedFeedbackType = {
-        id: Date.now(),
-        type: data.type!,
-        comment: data.comment!,
-        screenshot: data.screenshot || null,
-        tester: "You",
-        severity: data.severity || "N/A",
-      };
-      setSubmittedFeedback((prev) => [newFeedback, ...prev]);
+  const handleSaveFeedback = async (data: Partial<SubmittedFeedbackType>) => {
+    try {
+      const backendType = data.type ? (data.type.toUpperCase() as any) : "BUG";
+      const backendPriority = data.severity && data.severity !== "N/A"
+        ? (data.severity.toUpperCase() as any)
+        : null;
+
+      if (data.id) {
+        await updateHubAppFeedback({
+          id: data.id,
+          message: data.comment || "",
+          type: backendType,
+          priority: backendPriority,
+          image: data.screenshot || null,
+          video: data.videoUrl || null,
+        });
+      } else {
+        await addHubAppFeedback({
+          hub_id: hubId || "",
+          message: data.comment || "",
+          type: backendType,
+          priority: backendPriority,
+          image: data.screenshot || undefined,
+          video: data.videoUrl || undefined,
+        });
+      }
+      if (refetch) refetch();
+    } catch (error) {
+      console.error("Error saving feedback:", error);
     }
   };
 
-  const handleDeleteFeedback = (id: number) => {
-    setSubmittedFeedback((prev) => prev.filter((fb) => fb.id !== id));
+  const { mutateAsync: deleteFeedback } = useDeleteHubAppFeedback();
+
+  const handleDeleteFeedback = async (id: number) => {
+    try {
+      await deleteFeedback(id);
+      if (refetch) refetch();
+    } catch (error) {
+      console.error("Error deleting feedback:", error);
+    }
   };
 
   return (
@@ -574,7 +634,7 @@ export function SubmittedFeedback({
             <div>
               <h2 className="text-xl sm:text-2xl font-bold">Feedbacks</h2>
               <p className="text-sm sm:text-base text-muted-foreground">
-                {isTester
+                {finalIsTester
                   ? "Feedback you've submitted."
                   : "Feedback from testers."}
               </p>
@@ -596,7 +656,7 @@ export function SubmittedFeedback({
                   <LayoutGrid className="w-4 h-4" />
                 </Button>
               </div>
-              {isTester && (
+              {finalIsTester && (
                 <FeedbackFormModal onSave={handleSaveFeedback}>
                   <Button className="relative overflow-hidden">
                     <PlusCircle className="absolute sm:static mr-2 h-4 w-4 scale-[2.5] top-1 left-1 text-white/20 sm:text-white sm:scale-100" />{" "}
@@ -619,7 +679,8 @@ export function SubmittedFeedback({
                       onVideoClick={setFullscreenVideo}
                       onSave={handleSaveFeedback}
                       onDelete={handleDeleteFeedback}
-                      isTester={isTester}
+                      isTester={finalIsTester}
+                      currentUserId={currentUserId}
                     />
                   ))}
                 </div>
@@ -633,7 +694,8 @@ export function SubmittedFeedback({
                       onVideoClick={setFullscreenVideo}
                       onSave={handleSaveFeedback}
                       onDelete={handleDeleteFeedback}
-                      isTester={isTester}
+                      isTester={finalIsTester}
+                      currentUserId={currentUserId}
                     />
                   ))}
                 </div>
@@ -647,7 +709,7 @@ export function SubmittedFeedback({
           ) : (
             <div className="text-center py-12 text-muted-foreground bg-secondary/50 rounded-lg">
               <p className="mb-2">No feedback submitted for this app yet.</p>
-              {isTester && (
+              {finalIsTester && (
                 <FeedbackFormModal onSave={handleSaveFeedback}>
                   <Button variant="outline">
                     <PlusCircle className="mr-2 h-4 w-4" /> Submit Your First

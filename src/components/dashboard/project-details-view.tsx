@@ -261,7 +261,10 @@ export default function ProjectDetailsView({
                     tester: fb.tester,
                     severity: fb.severity as any,
                     videoUrl: fb.videoUrl || null,
+                    testerId: fb.testerId,
                   }))}
+                  hubId={project.id.toString()}
+                  refetch={onReviewSuccess}
                 />
               </motion.div>
 
