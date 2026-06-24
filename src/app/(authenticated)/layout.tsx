@@ -18,6 +18,19 @@ export default function AuthenticatedLayout({
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(true);
   const router = useRouter();
   const pathname = usePathname();
+  const { data: session, isPending } = authClient.useSession();
+
+  useEffect(() => {
+    if (isPending) return;
+
+    const roleField = (session as any)?.role;
+    const roleName = roleField?.name?.toLowerCase();
+
+    // Block non-super-admin admins from user pages
+    if (roleField?.isAdmin === true && roleName !== "super_admin") {
+      router.replace(ROUTES.ADMIN.DASHBOARD);
+    }
+  }, [session, isPending, router]);
 
   const handleLogout = async () => {
     await authClient.signOut({

@@ -174,7 +174,7 @@ export async function middleware(request: NextRequest) {
     );
   }
 
-  // Redirect authenticated admins away from admin login page
+  // Redirect authenticated users away from admin login page to their dashboard
   if (
     isAuthenticated &&
     role &&
@@ -183,15 +183,25 @@ export async function middleware(request: NextRequest) {
     if (isAdmin) {
       return NextResponse.redirect(new URL(ROUTES.ADMIN.DASHBOARD, request.url));
     }
+    if (isTester) {
+      return NextResponse.redirect(new URL(ROUTES.TESTER.DASHBOARD, request.url));
+    }
+    return NextResponse.redirect(new URL(ROUTES.AUTHENTICATED.DASHBOARD, request.url));
   }
 
-  // Redirect authenticated testers away from tester auth pages
+  // Redirect authenticated users away from tester auth pages to their dashboard
   if (
-    isTester &&
     isAuthenticated &&
+    role &&
     testerAuthRoutes.some((route) => pathname.startsWith(route))
   ) {
-    return NextResponse.redirect(new URL(ROUTES.TESTER.DASHBOARD, request.url));
+    if (isTester) {
+      return NextResponse.redirect(new URL(ROUTES.TESTER.DASHBOARD, request.url));
+    }
+    if (isAdmin) {
+      return NextResponse.redirect(new URL(ROUTES.ADMIN.DASHBOARD, request.url));
+    }
+    return NextResponse.redirect(new URL(ROUTES.AUTHENTICATED.DASHBOARD, request.url));
   }
 
   // Redirect unauthenticated users to public login
@@ -258,7 +268,17 @@ export async function middleware(request: NextRequest) {
       return NextResponse.next();
     }
 
-    // Normal admin block for tester routes
+    // Block admins from user routes (unless acting as user)
+    if (
+      authenticatedRoutes.some((route) => pathname.startsWith(route)) &&
+      !isActingAsUser
+    ) {
+      return NextResponse.redirect(
+        new URL(ROUTES.ADMIN.DASHBOARD, request.url),
+      );
+    }
+
+    // Block admins from tester routes (unless acting as tester)
     if (
       testerRoutes.some((route) => pathname.startsWith(route)) &&
       !testerAuthRoutes.some((route) => pathname.startsWith(route))

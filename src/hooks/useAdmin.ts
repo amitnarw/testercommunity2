@@ -115,6 +115,7 @@ import {
 } from "@/lib/apiCallsAdmin";
 import { useRouter } from "next/navigation";
 import { ROUTES } from "@/lib/routes";
+import { authClient } from "@/lib/auth-client";
 import { useState, useEffect, useCallback } from "react";
 import {
   useMutation,
@@ -1104,46 +1105,21 @@ export function useDeleteUserReview(
 
 export function useActAsRole(options?: UseMutationOptions<any, any, any>) {
   const router = useRouter();
-  const [actingAsRole, setActingAsRole] = useState<"tester" | "user" | null>(null);
-
-  // Check for acting_as_role cookie on mount
-  useEffect(() => {
-    const checkCookie = async () => {
-      try {
-        // Read cookie directly since httpOnly cookie can't be accessed from JS
-        const cookies = document.cookie.split("; ");
-        const actingCookie = cookies.find((c) => c.startsWith("acting_as_role="));
-        if (actingCookie) {
-          const role = actingCookie.split("=")[1];
-          if (role === "tester" || role === "user") {
-            setActingAsRole(role);
-          }
-        }
-      } catch (e) {
-        console.error("Error reading acting_as_role cookie:", e);
-      }
-    };
-    checkCookie();
-  }, []);
+  const { data: session } = authClient.useSession();
+  const actingAsRole = ((session as any)?.actingAsRole as "tester" | "user" | null) ?? null;
 
     const mutation = useMutation({
       mutationFn: async (role: "tester" | "user" | null) => {
         const result = await actAsRole(role);
         return result;
       },
-      onSuccess: (data, role) => {
+      onSuccess: (_data, role) => {
         if (!role) {
-          // Clearing - go to admin dashboard
-          setActingAsRole(null);
           router.push(ROUTES.ADMIN.DASHBOARD);
-        } else {
-          setActingAsRole(role);
-          // Redirect to the respective dashboard after acting as
-          if (role === "tester") {
-            router.push(ROUTES.TESTER.DASHBOARD);
-          } else if (role === "user") {
-            router.push(ROUTES.AUTHENTICATED.FREE_TESTING);
-          }
+        } else if (role === "tester") {
+          router.push(ROUTES.TESTER.DASHBOARD);
+        } else if (role === "user") {
+          router.push(ROUTES.AUTHENTICATED.FREE_TESTING);
         }
       },
       ...options,

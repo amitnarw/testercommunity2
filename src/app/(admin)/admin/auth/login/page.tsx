@@ -69,7 +69,10 @@ const LoginForm = () => {
   React.useEffect(() => {
     if (isSessionPending || !session) return;
 
-    router.replace(ROUTES.ADMIN.DASHBOARD);
+    const role = (session as any)?.role;
+    if (role?.isAdmin === true) {
+      router.replace(ROUTES.ADMIN.DASHBOARD);
+    }
   }, [session, isSessionPending, router]);
 
   const handleLogin = React.useCallback(() => {
@@ -277,10 +280,6 @@ export default function AdminLoginPage() {
 
           {/* Footer Info - Combined/Compact */}
           <div className="flex flex-col items-center gap-3">
-            <div className="flex items-center gap-1.5 text-[9px] font-black text-muted-foreground uppercase tracking-[0.2em] bg-muted/40 px-3 py-1.5 rounded-full border border-border/30">
-              <Shield className="h-3 w-3 text-primary" />
-              Secure Access Protocol
-            </div>
 
             <div className="flex justify-center gap-4 text-[10px] font-bold text-muted-foreground/60">
               <p className="flex items-center gap-1">

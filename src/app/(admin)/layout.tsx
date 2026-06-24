@@ -68,32 +68,36 @@ export default function AdminLayout({
     if (session) {
       const roleField = (session as any)?.role;
       const isAdminRole = roleField?.isAdmin === true;
+      const roleName = roleField?.name;
+      const isSuperAdmin = roleName === "super_admin";
       const permissions = roleField?.permissions || [];
 
       if (isLoginPage) {
-        if (isAdminRole) {
+        if (isSuperAdmin) {
+          router.replace(ROUTES.ADMIN.DASHBOARD);
+        } else if (isAdminRole) {
           // Redirect to the first module the user has permission to access
           const firstPermitted = permissions.find((p: any) => p.canReadList);
           const target = firstPermitted
-            ? MODULE_ROUTE_MAP[firstPermitted.moduleName] || ROUTES.ADMIN.DASHBOARD
+            ? MODULE_ROUTE_MAP[firstPermitted.module?.name] || ROUTES.ADMIN.DASHBOARD
             : ROUTES.ADMIN.DASHBOARD;
           router.replace(target);
         }
-      } else if (!isAdminRole) {
+      } else if (!isAdminRole && !isSuperAdmin) {
         router.replace(ROUTES.ADMIN.AUTH.LOGIN);
-      } else {
-        // Check if user has permission for the current page
+      } else if (!isSuperAdmin) {
+        // Check if user has permission for the current page (skip for super_admin)
         const currentModule = getModuleFromPath(pathname);
         if (currentModule) {
           const hasAccess = permissions.some(
-            (p: any) => p.moduleName === currentModule && p.canReadList,
+            (p: any) => p.module?.name === currentModule && p.canReadList,
           );
           if (!hasAccess) {
             const firstPermitted = permissions.find((p: any) => p.canReadList);
             if (firstPermitted) {
-              router.replace(MODULE_ROUTE_MAP[firstPermitted.moduleName] || ROUTES.ADMIN.DASHBOARD);
+              router.replace(MODULE_ROUTE_MAP[firstPermitted.module?.name] || ROUTES.ADMIN.DASHBOARD);
             } else {
-              router.replace(ROUTES.ADMIN.AUTH.LOGIN);
+              router.replace(ROUTES.ADMIN.DASHBOARD);
             }
           }
         }
