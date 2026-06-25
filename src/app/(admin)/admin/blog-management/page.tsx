@@ -52,6 +52,8 @@ type AuthorFormValues = z.infer<typeof authorSchema>;
 function BlogsTab() {
   const router = useRouter();
   const [searchQuery, setSearchQuery] = useState("");
+  const [deleteModal, setDeleteModal] = useState<{ open: boolean }>({ open: false });
+  const [deletingBlogId, setDeletingBlogId] = useState<number | null>(null);
   const { toast } = useToast();
 
   const { data: blogs = [], isLoading, refetch } = useAllBlogs();
@@ -74,9 +76,8 @@ function BlogsTab() {
   };
 
   const onDelete = (id: number) => {
-    if (confirm("Are you sure you want to delete this blog post?")) {
-      deleteMutation.mutate(id);
-    }
+    setDeletingBlogId(id);
+    setDeleteModal({ open: true });
   };
 
   const filteredBlogs = blogs.filter(
@@ -117,6 +118,27 @@ function BlogsTab() {
         onEdit={onEdit}
         onDelete={onDelete}
       />
+
+      {deleteModal.open && (
+        <FeedbackModal
+          status="warning"
+          title="Delete Blog Post?"
+          description="Are you sure you want to delete this blog post? This action cannot be undone."
+          open={deleteModal.open}
+          onOpenChange={(open) => setDeleteModal({ open })}
+          primaryAction={{
+            label: deleteMutation.isPending ? "Deleting..." : "Delete",
+            onClick: () => {
+              setDeleteModal({ open: false });
+              if (deletingBlogId) deleteMutation.mutate(deletingBlogId);
+            },
+          }}
+          secondaryAction={{
+            label: "Cancel",
+            onClick: () => setDeleteModal({ open: false }),
+          }}
+        />
+      )}
     </div>
   );
 }
@@ -125,6 +147,8 @@ function AuthorsTab() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingAuthor, setEditingAuthor] = useState<AuthorFormValues | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
+  const [deleteModal, setDeleteModal] = useState<{ open: boolean }>({ open: false });
+  const [deletingAuthorId, setDeletingAuthorId] = useState<number | null>(null);
   const [feedbackModal, setFeedbackModal] = useState<{
     open: boolean;
     status: "success" | "error" | "warning" | "info";
@@ -258,9 +282,8 @@ function AuthorsTab() {
   };
 
   const onDelete = (id: number) => {
-    if (confirm("Are you sure you want to delete this author?")) {
-      deleteMutation.mutate(id);
-    }
+    setDeletingAuthorId(id);
+    setDeleteModal({ open: true });
   };
 
   const onSubmit = (values: AuthorFormValues) => {
@@ -290,6 +313,28 @@ function AuthorsTab() {
           secondaryAction={feedbackModal.secondaryAction}
         />
       )}
+
+      {deleteModal.open && (
+        <FeedbackModal
+          status="warning"
+          title="Delete Author?"
+          description="Are you sure you want to delete this author? This action cannot be undone."
+          open={deleteModal.open}
+          onOpenChange={(open) => setDeleteModal({ open })}
+          primaryAction={{
+            label: deleteMutation.isPending ? "Deleting..." : "Delete",
+            onClick: () => {
+              setDeleteModal({ open: false });
+              if (deletingAuthorId) deleteMutation.mutate(deletingAuthorId);
+            },
+          }}
+          secondaryAction={{
+            label: "Cancel",
+            onClick: () => setDeleteModal({ open: false }),
+          }}
+        />
+      )}
+
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
           <h2 className="text-2xl sm:text-3xl font-bold bg-gradient-to-b from-primary to-primary/40 bg-clip-text text-transparent leading-[unset]">
