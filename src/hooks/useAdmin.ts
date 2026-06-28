@@ -112,6 +112,8 @@ import {
   updateImmediateAttention,
   reorderImmediateAttention,
   deleteImmediateAttention,
+  giftPointsAndPackages,
+  getTesterActivity,
 } from "@/lib/apiCallsAdmin";
 import { useRouter } from "next/navigation";
 import { ROUTES } from "@/lib/routes";
@@ -1507,6 +1509,16 @@ export function useInitiateRefund(options?: UseMutationOptions<any, any, any>) {
   return mutation;
 }
 
+// ==================== TESTER ACTIVITY ====================
+
+export function useTesterActivity(params?: { testerId?: string; date?: string }) {
+  return useQuery({
+    queryFn: () => getTesterActivity(params),
+    queryKey: ["useTesterActivity", params],
+    enabled: true,
+  });
+}
+
 // ==================== IMMEDIATE ATTENTION REQUIRED (IAR) ====================
 
 interface CreateIarPayload {
@@ -1588,6 +1600,22 @@ export function useDeleteImmediateAttention(options?: UseMutationOptions<null, E
     ...options,
     onSuccess: (_data, variables, ...rest) => {
       queryClient.invalidateQueries({ queryKey: ["useUserImmediateAttention", variables.userId] });
+      options?.onSuccess?.(_data, variables, ...rest);
+    },
+  });
+}
+
+export function useGiftPointsAndPackages(options?: UseMutationOptions<any, any, any>) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (payload: {
+      id: string;
+      points?: number;
+      packages?: number;
+    }) => giftPointsAndPackages(payload),
+    ...options,
+    onSuccess: (_data, variables, ...rest) => {
+      queryClient.invalidateQueries({ queryKey: ["useUserById", variables.id] });
       options?.onSuccess?.(_data, variables, ...rest);
     },
   });

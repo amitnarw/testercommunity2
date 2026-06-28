@@ -185,21 +185,21 @@ export default function Navbar({ onLogout }: { onLogout: () => void }) {
                   </AutoTransitionLink>
                 </div>
               )}
-            {isAdminUser && (
-              <Link
-                href={ROUTES.ADMIN.NOTIFICATIONS}
-                className="relative flex items-center justify-center h-8 w-8 rounded-full hover:bg-white/10 transition-all mr-1"
-                title="Admin Notifications"
-              >
-                <Bell className="h-4 w-4 text-white/70" />
-                {adminNotificationCount > 0 && (
-                  <span className="absolute -top-0.5 -right-0.5 flex items-center justify-center h-4 min-w-[16px] px-1 rounded-full bg-red-500 text-[10px] font-bold text-white leading-none">
-                    {adminNotificationCount > 99 ? "99+" : adminNotificationCount}
-                  </span>
-                )}
-              </Link>
-            )}
             <div className="flex items-center gap-2">
+              {isAdminUser && (
+                <Link
+                  href={ROUTES.ADMIN.NOTIFICATIONS}
+                  className="relative flex items-center justify-center h-8 w-8 rounded-full hover:bg-white/10 dark:hover:bg-white/10 hover:bg-black/5 transition-all"
+                  title="Admin Notifications"
+                >
+                  <Bell className="h-4 w-4 text-foreground/70 dark:text-white/70" />
+                  {adminNotificationCount > 0 && (
+                    <span className="absolute -top-0.5 -right-0.5 flex items-center justify-center h-4 min-w-[16px] px-1 rounded-full bg-red-500 text-[10px] font-bold text-white leading-none">
+                      {adminNotificationCount > 99 ? "99+" : adminNotificationCount}
+                    </span>
+                  )}
+                </Link>
+              )}
               {isTester && pendingCount > 0 && (
                 <Link
                   href={ROUTES.TESTER.DASHBOARD}

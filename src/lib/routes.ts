@@ -49,6 +49,7 @@ export const ROUTES = {
     PERMISSIONS: "/admin/permissions",
     FAQS: "/admin/faqs",
     CONTROL_ROOM: "/admin/control-room",
+    TESTER_ACTIVITY: "/admin/tester-activity",
     AUTH: {
       LOGIN: "/admin/auth/login",
     },

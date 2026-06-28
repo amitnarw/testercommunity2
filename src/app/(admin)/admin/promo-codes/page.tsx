@@ -39,7 +39,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 
 const promoSchema = z.z.object({
   id: z.number().optional(),
-  code: z.string().min(1, "Code is required").max(50),
+  code: z.string().min(3, "Code must be at least 3 characters").max(20, "Code must be at most 20 characters").regex(/^[A-Z0-9]+$/, "Code must be alphanumeric"),
   discountType: z.string().default("FIXED"),
   discountValue: z.coerce.number().min(0),
   isActive: z.boolean().default(true),
@@ -311,6 +311,7 @@ function AdminPromoCodesContent() {
                         placeholder="WELCOME200"
                         {...field}
                         value={field.value ?? ""}
+                        onChange={(e) => field.onChange(e.target.value.replace(/[^A-Za-z0-9]/g, '').toUpperCase())}
                         className="uppercase"
                       />
                     </FormControl>

@@ -38,6 +38,12 @@ export function useSupportChat(chat: SupportChatAI) {
   const [refreshing, setRefreshing] = useState(false);
   const [closeReason, setCloseReason] = useState<string | null>(null);
   const [reconnecting, setReconnecting] = useState(false);
+  const [agentDisconnected, setAgentDisconnected] = useState(false);
+  const [agentDisconnectSeconds, setAgentDisconnectSeconds] = useState(0);
+  const agentDisconnectTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  const humanChatIdRef = useRef<number | null>(null);
+  const chatModeRef = useRef<ChatMode>("AI");
 
   const { data: session } = authClient.useSession();
 
@@ -176,6 +182,10 @@ export function useSupportChat(chat: SupportChatAI) {
     };
   }, [isOpen, messages.length, chatMode, setMessages]);
 
+  // -- Keep refs in sync with state for use in socket closures --
+  useEffect(() => { humanChatIdRef.current = humanChatId; }, [humanChatId]);
+  useEffect(() => { chatModeRef.current = chatMode; }, [chatMode]);
+
   // -- open-alex-chat event --
   useEffect(() => {
     const handleOpenChat = () => setIsOpen(true);
@@ -273,8 +283,16 @@ export function useSupportChat(chat: SupportChatAI) {
           return;
         }
 
+        // Clear agent disconnect state
+        setAgentDisconnected(false);
+        setAgentDisconnectSeconds(0);
+        if (agentDisconnectTimerRef.current) {
+          clearInterval(agentDisconnectTimerRef.current);
+          agentDisconnectTimerRef.current = null;
+        }
+
         setCloseReason(reason);
-        lastChatIdRef.current = data.chatId || humanChatId;
+        lastChatIdRef.current = data.chatId || humanChatIdRef.current;
         setHumanMessages((prev) => [...prev, {
           id: "closed-" + data.chatId,
           senderType: "SYSTEM",
@@ -328,6 +346,47 @@ export function useSupportChat(chat: SupportChatAI) {
         setTicketSubmitted(true);
         clearError();
       }),
+      agent_disconnected: on("agent:disconnected", (data: { chatId: number; remainingSeconds: number }) => {
+        if (chatModeRef.current !== "HUMAN" || data.chatId !== humanChatIdRef.current) return;
+        setAgentDisconnected(true);
+        setAgentDisconnectSeconds(data.remainingSeconds);
+        setHumanMessages((prev) => [...prev, {
+          id: "agent-disconnected-" + Date.now(),
+          senderType: "SYSTEM",
+          senderName: "System",
+          message: `Support agent disconnected. Waiting up to ${data.remainingSeconds} seconds for them to reconnect...`,
+          createdAt: new Date().toISOString(),
+        }]);
+        if (agentDisconnectTimerRef.current) clearInterval(agentDisconnectTimerRef.current);
+        agentDisconnectTimerRef.current = setInterval(() => {
+          setAgentDisconnectSeconds((prev) => {
+            if (prev <= 1) {
+              if (agentDisconnectTimerRef.current) {
+                clearInterval(agentDisconnectTimerRef.current);
+                agentDisconnectTimerRef.current = null;
+              }
+              return 0;
+            }
+            return prev - 1;
+          });
+        }, 1000);
+      }),
+      agent_reconnected: on("agent:reconnected", (data: { chatId: number }) => {
+        if (chatModeRef.current !== "HUMAN" || data.chatId !== humanChatIdRef.current) return;
+        setAgentDisconnected(false);
+        setAgentDisconnectSeconds(0);
+        if (agentDisconnectTimerRef.current) {
+          clearInterval(agentDisconnectTimerRef.current);
+          agentDisconnectTimerRef.current = null;
+        }
+        setHumanMessages((prev) => [...prev, {
+          id: "agent-reconnected-" + Date.now(),
+          senderType: "SYSTEM",
+          senderName: "System",
+          message: "Support agent reconnected. You can continue chatting.",
+          createdAt: new Date().toISOString(),
+        }]);
+      }),
     };
 
     return () => {
@@ -342,6 +401,10 @@ export function useSupportChat(chat: SupportChatAI) {
       if (typingTimerRef.current) {
         clearTimeout(typingTimerRef.current);
         typingTimerRef.current = null;
+      }
+      if (agentDisconnectTimerRef.current) {
+        clearInterval(agentDisconnectTimerRef.current);
+        agentDisconnectTimerRef.current = null;
       }
       // Only remove OUR specific handlers, others on the shared socket are untouched
       s.off("connect", h.connect);
@@ -359,6 +422,8 @@ export function useSupportChat(chat: SupportChatAI) {
       s.off("chat:position_updated", h.chat_position_updated);
       s.off("agent:status_changed", h.agent_status_changed);
       s.off("chat:saved_as_ticket", h.chat_saved_as_ticket);
+      s.off("agent:disconnected", h.agent_disconnected);
+      s.off("agent:reconnected", h.agent_reconnected);
       socketInitialized.current = false;
     };
   }, [session, clearError, showError, setMessages]);
@@ -531,6 +596,12 @@ export function useSupportChat(chat: SupportChatAI) {
     setTicketSubmitted(false);
     setUserChoseAlex(false);
     setHasCheckedStatus(false);
+    setAgentDisconnected(false);
+    setAgentDisconnectSeconds(0);
+    if (agentDisconnectTimerRef.current) {
+      clearInterval(agentDisconnectTimerRef.current);
+      agentDisconnectTimerRef.current = null;
+    }
     lastChatIdRef.current = null; // Fix #1: Reset ref
     setIsOpen(false);
   }, [chatMode, humanChatId, setMessages]);
@@ -565,6 +636,12 @@ export function useSupportChat(chat: SupportChatAI) {
     setQueuePosition(0);
     setCloseReason(null);
     setAgentTyping(false);
+    setAgentDisconnected(false);
+    setAgentDisconnectSeconds(0);
+    if (agentDisconnectTimerRef.current) {
+      clearInterval(agentDisconnectTimerRef.current);
+      agentDisconnectTimerRef.current = null;
+    }
     lastChatIdRef.current = null; // Fix #1: Reset ref
     if (typingTimerRef.current) {
       clearTimeout(typingTimerRef.current);
@@ -645,6 +722,10 @@ export function useSupportChat(chat: SupportChatAI) {
 
     // Reconnecting
     reconnecting,
+
+    // Agent offline grace period
+    agentDisconnected,
+    agentDisconnectSeconds,
 
     // Actions
     requestHumanChat,

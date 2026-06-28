@@ -52,6 +52,7 @@ import {
   AlertTriangle,
   GripVertical,
   ExternalLink,
+  Gift,
 } from "lucide-react";
 import {
   DndContext,
@@ -121,6 +122,7 @@ import {
   useUpdateImmediateAttention,
   useDeleteImmediateAttention,
   useReorderImmediateAttention,
+  useGiftPointsAndPackages,
   useAllRoles,
 } from "@/hooks/useAdmin";
 import { useQueryClient } from "@tanstack/react-query";
@@ -260,6 +262,12 @@ export default function AdminUserDetailsPage() {
   const [roleSelection, setRoleSelection] = useState<string>("");
   const [statusSelection, setStatusSelection] = useState<string>("");
   const [banReason, setBanReason] = useState("");
+  const [isGiftModalOpen, setIsGiftModalOpen] = useState(false);
+  const [giftData, setGiftData] = useState({
+    points: 0,
+    packages: 0,
+  });
+
   const [isSendNotificationModalOpen, setIsSendNotificationModalOpen] = useState(false);
   const [notificationData, setNotificationData] = useState({
     title: '',
@@ -586,6 +594,24 @@ export default function AdminUserDetailsPage() {
     },
   });
 
+  const giftMutation = useGiftPointsAndPackages({
+    onSuccess: () => {
+      setIsGiftModalOpen(false);
+      setGiftData({ points: 0, packages: 0 });
+      toast({
+        title: "Gift Sent!",
+        description: "Points and packages have been gifted successfully.",
+      });
+    },
+    onError: (err: any) => {
+      toast({
+        title: "Error",
+        description: err.message || "Failed to gift points and packages.",
+        variant: "destructive",
+      });
+    },
+  });
+
   const createNotificationMutation = useCreateNotification({
     onSuccess: () => {
       setIsSendNotificationModalOpen(false);
@@ -784,6 +810,19 @@ export default function AdminUserDetailsPage() {
                 <Send className="sm:mr-2 !h-3 !w-3 sm:!h-4 sm:!w-4" />
                 <span className="hidden sm:block">Send Notification</span>
               </Button>
+              {user.role === "user" && (
+                <Button
+                  variant="outline"
+                  className="px-3"
+                  onClick={() => {
+                    setGiftData({ points: 0, packages: 0 });
+                    setIsGiftModalOpen(true);
+                  }}
+                >
+                  <Gift className="sm:mr-2 !h-3 !w-3 sm:!h-4 sm:!w-4" />
+                  <span className="hidden sm:block">Gift Points & Packages</span>
+                </Button>
+              )}
               <Button
                 variant="outline"
                 className="px-3"
@@ -2489,6 +2528,73 @@ export default function AdminUserDetailsPage() {
             >
               {createNotificationMutation.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
               Send Notification
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Gift Points & Packages Modal */}
+      <Dialog open={isGiftModalOpen} onOpenChange={setIsGiftModalOpen}>
+        <DialogContent className="sm:max-w-[500px]">
+          <DialogHeader>
+            <DialogTitle>Gift Points & Packages to {user.name}</DialogTitle>
+            <DialogDescription>
+              Gift points and/or packages to this user. The amounts will be added to their existing balances.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="grid gap-4 py-4">
+            <div className="grid gap-2">
+              <Label htmlFor="gift-points">Points</Label>
+              <Input
+                id="gift-points"
+                type="number"
+                min="0"
+                placeholder="0"
+                value={giftData.points || ""}
+                onChange={(e) =>
+                  setGiftData((prev) => ({
+                    ...prev,
+                    points: Math.max(0, parseInt(e.target.value) || 0),
+                  }))
+                }
+              />
+            </div>
+            <div className="grid gap-2">
+              <Label htmlFor="gift-packages">Packages</Label>
+              <Input
+                id="gift-packages"
+                type="number"
+                min="0"
+                placeholder="0"
+                value={giftData.packages || ""}
+                onChange={(e) =>
+                  setGiftData((prev) => ({
+                    ...prev,
+                    packages: Math.max(0, parseInt(e.target.value) || 0),
+                  }))
+                }
+              />
+            </div>
+          </div>
+          <DialogFooter>
+            <Button variant="ghost" onClick={() => setIsGiftModalOpen(false)}>
+              Cancel
+            </Button>
+            <Button
+              onClick={() =>
+                giftMutation.mutate({
+                  id,
+                  points: giftData.points || undefined,
+                  packages: giftData.packages || undefined,
+                })
+              }
+              disabled={
+                giftMutation.isPending ||
+                (giftData.points <= 0 && giftData.packages <= 0)
+              }
+            >
+              {giftMutation.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              Gift
             </Button>
           </DialogFooter>
         </DialogContent>

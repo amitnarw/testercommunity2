@@ -120,6 +120,13 @@ const adminNavLinks: AdminNavLink[] = [
     moduleName: "tester_applications",
   },
   {
+    name: "Tester Activity",
+    href: ROUTES.ADMIN.TESTER_ACTIVITY,
+    icon: Activity,
+    section: "platform",
+    moduleName: "tester_activity",
+  },
+  {
     name: "Suggestions",
     href: ROUTES.ADMIN.SUGGESTIONS,
     icon: Lightbulb,

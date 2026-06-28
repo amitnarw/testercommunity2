@@ -93,7 +93,7 @@ const statusColors: Record<string, string> = {
   REQUESTED: "#C7D2FE",
 };
 
-type DiscoverySourceItem = { source: string; count: number };
+type DiscoverySourceItem = { source: string; count: number; isOther?: boolean; breakdown?: { source: string; count: number }[] };
 
 export default function AdminDashboardPage() {
   const { data: stats, isLoading } = useDashboardStats();

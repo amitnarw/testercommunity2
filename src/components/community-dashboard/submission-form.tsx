@@ -103,7 +103,7 @@ const submissionSchema = z.object({
     .min(1, "Please specify the minimum Android version."),
   total_tester: z.coerce.number().min(1).max(20),
   total_days: z.coerce.number().min(1).max(20),
-  promo_code: z.string().optional(),
+  promo_code: z.string().regex(/^[A-Z0-9]+$/, "Promo code must be alphanumeric").optional().or(z.literal("")),
 });
 
 type SubmissionFormData = z.infer<typeof submissionSchema>;
@@ -1120,12 +1120,12 @@ export function SubmissionForm({
                                   placeholder="Have a promo code?"
                                   value={promoCodeInput}
                                   onChange={(e) =>
-                                    setPromoCodeInput(e.target.value)
+                                    setPromoCodeInput(e.target.value.replace(/[^A-Za-z0-9]/g, '').toUpperCase())
                                   }
                                   disabled={
                                     !!appliedPromo || isValidatingPromo
                                   }
-                                  className="max-w-[200px] h-9 bg-black/20 border-white/10 text-white placeholder:text-white/40 focus-visible:ring-1 focus-visible:ring-white/20"
+                                  className="uppercase max-w-[200px] h-9 bg-black/20 border-white/10 text-white placeholder:text-white/40 focus-visible:ring-1 focus-visible:ring-white/20"
                                 />
                                 <AnimatePresence mode="wait">
                                   {isValidatingPromo ? (
