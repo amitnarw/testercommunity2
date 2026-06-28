@@ -612,6 +612,26 @@ export async function deleteUser(id: string) {
   }
 }
 
+export async function getTesterActivity(params?: { testerId?: string; date?: string }) {
+  try {
+    const response = await api.get(API_ROUTES.ADMIN + `/tester-activity`, { params });
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error fetching tester activity:", error);
+    if (axios.isAxiosError(error)) {
+      const status = error.response?.status;
+      const responseData = error.response?.data;
+      throw new Error(
+        responseData?.message || error.message || "Unknown Axios error",
+      );
+    } else if (error instanceof Error) {
+      throw new Error(error.message);
+    } else {
+      throw new Error(JSON.stringify(error));
+    }
+  }
+}
+
 export async function createUser(payload: any) {
   try {
     const response = await api.post(API_ROUTES.ADMIN + `/users`, payload);
@@ -2094,6 +2114,34 @@ export async function deleteImmediateAttention(id: number) {
   } catch (error) {
     console.error("Error deleting IAR item:", error);
     throw error;
+  }
+}
+
+export async function giftPointsAndPackages(payload: {
+  id: string;
+  points?: number;
+  packages?: number;
+}) {
+  try {
+    const response = await api.post(
+      API_ROUTES.ADMIN + `/users/gift-points-packages`,
+      payload,
+    );
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error gifting points and packages:", error);
+    if (axios.isAxiosError(error)) {
+      const status = error.response?.status;
+      const responseData = error.response?.data;
+      console.error("Axios error:", status, responseData);
+      throw new Error(
+        responseData?.message || error.message || "Unknown Axios error",
+      );
+    } else if (error instanceof Error) {
+      throw new Error(error.message);
+    } else {
+      throw new Error(JSON.stringify(error));
+    }
   }
 }
 

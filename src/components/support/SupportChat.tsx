@@ -53,6 +53,8 @@ export function SupportChat() {
     isOpen, setIsOpen,
     saveAsTicket,
     reconnecting,
+    agentDisconnected,
+    agentDisconnectSeconds,
   } = useSupportChat(chat);
 
   const handleRefresh = () => {
@@ -539,6 +541,12 @@ export function SupportChat() {
                       <span>Reconnecting to support chat...</span>
                     </div>
                   )}
+                  {agentDisconnected && (
+                    <div className="flex items-center gap-2 px-4 py-2.5 bg-amber-500/10 border-b border-amber-500/20 text-amber-700 dark:text-amber-400 text-xs">
+                      <AlertCircle className="h-3.5 w-3.5 animate-pulse flex-shrink-0" />
+                      <span>Support agent disconnected. Reconnecting in {agentDisconnectSeconds}s...</span>
+                    </div>
+                  )}
                   <ScrollArea ref={humanScrollRef} className="flex-1 p-4 bg-background/50">
                     <div className="space-y-4 pb-4">
                       {humanMessages.map((m: any, i: number) => (
@@ -610,11 +618,12 @@ export function SupportChat() {
                           emitHumanTyping();
                         }}
                         onBlur={() => { if (!humanInput.trim()) emitHumanStopTyping(); }}
-                        placeholder="Type your message..."
+                        placeholder={agentDisconnected ? "Waiting for agent..." : "Type your message..."}
                         autoFocus
-                        className="flex-1 bg-muted/50 border-none focus:ring-1 focus:ring-primary/30 rounded-xl px-4 py-2.5 text-sm outline-none transition-all"
+                        disabled={agentDisconnected}
+                        className="flex-1 bg-muted/50 border-none focus:ring-1 focus:ring-primary/30 rounded-xl px-4 py-2.5 text-sm outline-none transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                       />
-                      <Button type="submit" size="icon" disabled={!humanInput.trim() || sendingMessage} className="rounded-xl shadow-md hover:shadow-lg active:scale-95 transition-all">
+                      <Button type="submit" size="icon" disabled={!humanInput.trim() || sendingMessage || agentDisconnected} className="rounded-xl shadow-md hover:shadow-lg active:scale-95 transition-all">
                         {sendingMessage ? (
                           <Loader2 className="h-4 w-4 animate-spin" />
                         ) : (

@@ -28,6 +28,7 @@ const MODULE_ROUTE_MAP: Record<string, string> = {
   permissions: ROUTES.ADMIN.PERMISSIONS,
   faqs: ROUTES.ADMIN.FAQS,
   control_room: ROUTES.ADMIN.CONTROL_ROOM,
+  tester_activity: ROUTES.ADMIN.TESTER_ACTIVITY,
   tester_applications: ROUTES.ADMIN.APPLICATIONS,
   guide_categories: ROUTES.ADMIN.GUIDE_MANAGEMENT,
   authors: ROUTES.ADMIN.BLOG_MANAGEMENT,

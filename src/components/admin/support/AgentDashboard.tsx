@@ -549,7 +549,7 @@ export function AgentDashboard() {
                 {disconnectedChats.has(activeChat.id) && (
                   <div className="flex items-center gap-2 px-4 py-2 bg-yellow-500/10 border-b border-yellow-500/20 text-yellow-700 dark:text-yellow-400 text-xs">
                     <AlertCircle className="h-3.5 w-3.5 animate-pulse" />
-                    <span>User disconnected — waiting 30s before resolving...</span>
+                    <span>User disconnected, waiting 30s before resolving...</span>
                   </div>
                 )}
 
