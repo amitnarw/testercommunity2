@@ -33,25 +33,26 @@ export function TopBar({ blogSlug, onPreviewClick, onDelete }: TopBarProps) {
 
   const handleSaveDraft = () => {
     const values = form.getValues();
+    const hasTitle = values.title.trim();
+    const hasContent = values.content.trim();
 
-    if (!values.title) {
+    if (!hasTitle && !hasContent) {
       setFeedbackModal({
         open: true,
         status: "warning",
-        title: "Title Required",
-        description: "Please add a title before saving as draft.",
+        title: "Title or Content Required",
+        description: "Please add a title or article content before saving as draft.",
       });
       return;
     }
 
     const draftValues = {
       ...values,
-      slug: values.slug || values.title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, ""),
-      excerpt: values.excerpt || "No excerpt provided",
-      content: values.content || "",
-      authorName: values.authorName || "Anonymous",
-      authorAvatarUrl: values.authorAvatarUrl || "/avatar-placeholder.svg",
-      imageUrl: values.imageUrl || "/blog-placeholder.svg",
+      slug: "", // backend generates unique slug
+      excerpt: values.excerpt || "",
+      authorName: values.authorName || "",
+      authorAvatarUrl: values.authorAvatarUrl || "",
+      imageUrl: values.imageUrl || "",
     };
 
     onSaveDraft(draftValues, (slug) => {
@@ -72,26 +73,38 @@ export function TopBar({ blogSlug, onPreviewClick, onDelete }: TopBarProps) {
     });
   };
 
-  const handlePublish = () => {
-    const values = form.getValues();
-    const errors: string[] = [];
+  const handlePublish = async () => {
+    const isValid = await form.trigger();
+    if (!isValid) {
+      const fieldLabels: Record<string, string> = {
+        title: "Title",
+        slug: "Slug",
+        excerpt: "Excerpt",
+        content: "Content",
+        authorName: "Author name",
+        authorAvatarUrl: "Author avatar URL",
+        imageUrl: "Featured image URL",
+      };
+      const fieldOrder = ["title", "slug", "excerpt", "content", "authorName", "authorAvatarUrl", "imageUrl"];
+      const errors = form.formState.errors;
+      const missingFields = fieldOrder.filter((key) => errors[key]?.message);
 
-    if (!values.title) errors.push("Title is required");
-    if (!values.slug) errors.push("Slug is required");
-    if (!values.excerpt) errors.push("Excerpt is required");
-    if (!values.content) errors.push("Content is required");
-    if (!values.authorName) errors.push("Author name is required");
-
-    if (errors.length > 0) {
-      setFeedbackModal({
-        open: true,
-        status: "warning",
-        title: "Missing Required Fields",
-        description: errors.join("\n"),
-      });
+      if (missingFields.length > 0) {
+        const labels = missingFields.map((f) => fieldLabels[f]);
+        const list = labels.length > 1
+          ? `${labels.slice(0, -1).join(", ")} and ${labels[labels.length - 1]}`
+          : labels[0];
+        setFeedbackModal({
+          open: true,
+          status: "warning",
+          title: "Missing Required Fields",
+          description: `Please fill in the following required fields: ${list}.`,
+        });
+      }
       return;
     }
 
+    const values = form.getValues();
     onPublish(values, (slug) => {
       setFeedbackModal({
         open: true,

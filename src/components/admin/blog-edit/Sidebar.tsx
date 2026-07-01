@@ -183,6 +183,21 @@ export function Sidebar({ blog }: SidebarProps) {
             </Avatar>
           </div>
         )}
+        <div className="mt-2">
+          <FormField
+            control={form.control}
+            name="authorAvatarUrl"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="text-xs">Author Avatar URL</FormLabel>
+                <FormControl>
+                  <Input placeholder="https://...avatar.jpg" {...field} value={field.value ?? ""} className="text-sm" />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
       </SidebarPanel>
 
       {/* Slug Panel */}
