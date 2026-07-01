@@ -1227,6 +1227,7 @@ export async function createBlog(payload: {
   date?: string;
 }) {
   try {
+    console.log("[createBlog] sending payload:", JSON.stringify(payload, null, 2));
     const response = await api.post(API_ROUTES.ADMIN + `/blogs`, payload);
     return response?.data?.data;
   } catch (error) {
@@ -1252,6 +1253,7 @@ export async function updateBlog(payload: {
   date?: string;
 }) {
   try {
+    console.log("[updateBlog] sending payload:", JSON.stringify(payload, null, 2));
     const response = await api.post(API_ROUTES.ADMIN + `/blogs/update`, payload);
     return response?.data?.data;
   } catch (error) {
