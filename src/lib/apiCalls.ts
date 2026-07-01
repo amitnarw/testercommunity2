@@ -2057,6 +2057,9 @@ export async function getPublicBlogBySlug(
     const response = await api.get(`${API_ROUTES.BLOG}/blogs/${slug}`);
     return response?.data?.data || null;
   } catch (error) {
+    if (axios.isAxiosError(error) && error.response?.status === 404) {
+      return null;
+    }
     console.error("Error fetching blog by slug:", error);
     if (axios.isAxiosError(error)) {
       const responseData = error.response?.data;

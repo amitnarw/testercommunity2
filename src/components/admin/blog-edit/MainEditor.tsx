@@ -93,10 +93,17 @@ export function MainEditor() {
               <div className="flex flex-col items-center justify-center border-2 border-dashed border-border rounded-lg py-12">
                 <ImageOff className="h-12 w-12 text-muted-foreground mb-3" />
                 <p className="text-sm text-muted-foreground mb-4">No featured image selected</p>
-                <Input
-                  placeholder="Image URL (https://...)"
-                  {...form.register("imageUrl")}
-                  className="max-w-md"
+                <FormField
+                  control={form.control}
+                  name="imageUrl"
+                  render={({ field }) => (
+                    <FormItem className="max-w-md w-full px-4">
+                      <FormControl>
+                        <Input placeholder="Image URL (https://...)" {...field} value={field.value ?? ""} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
                 />
               </div>
               <FormField
