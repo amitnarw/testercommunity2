@@ -48,11 +48,12 @@ export function TopBar({ blogSlug, onPreviewClick, onDelete }: TopBarProps) {
 
     const draftValues = {
       ...values,
-      slug: "", // backend generates unique slug
+      slug: "",
       excerpt: values.excerpt || "",
       authorName: values.authorName || "",
       authorAvatarUrl: values.authorAvatarUrl || "",
       imageUrl: values.imageUrl || "",
+      isActive: false,
     };
 
     onSaveDraft(draftValues, (slug) => {
