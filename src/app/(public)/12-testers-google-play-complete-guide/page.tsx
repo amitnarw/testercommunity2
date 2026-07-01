@@ -7,6 +7,8 @@ import {
 import GuidePageClient from "./page.client";
 import { serverGetPublicFaqs } from "@/lib/serverApi";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title:
     "Google Play 12 Testers Requirement: Complete Guide (2026) | inTesters",

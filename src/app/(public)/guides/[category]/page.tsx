@@ -3,6 +3,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { getPublicGuidesByCategory } from "@/lib/apiCalls";
 import GuideCategoryContent from "@/components/guides/GuideCategoryContent";
 
+export const dynamic = "force-dynamic";
 export const revalidate = 300;
 
 export async function generateStaticParams() {

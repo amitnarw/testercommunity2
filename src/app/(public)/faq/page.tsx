@@ -12,6 +12,8 @@ import FaqItem from "@/components/faq-item";
 import { FAQPageJsonLd } from "@/components/schema";
 import { serverGetPublicFaqs } from "@/lib/serverApi";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "FAQ | inTesters",
   description: "Frequently asked questions about inTesters app testing platform. Learn about community testing, professional testing packages, pricing, and how to meet Google Play's 12-tester requirement.",

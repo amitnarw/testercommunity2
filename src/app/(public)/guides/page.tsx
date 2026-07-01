@@ -4,6 +4,7 @@ import { getPublicGuideCategories, getPublicPopularGuides, getPublicGuides } fro
 import type { PublicGuideCategory, PublicGuide } from "@/lib/apiCalls";
 import GuidesPageContent from "@/components/guides/GuidesPageContent";
 
+export const dynamic = "force-dynamic";
 export const revalidate = 300;
 
 async function GuidesPageLoader() {
