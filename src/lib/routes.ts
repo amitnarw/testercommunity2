@@ -20,7 +20,7 @@ export const ROUTES = {
     REVIEWS: "/reviews",
     BLOG: "/blog",
     SUPPORT: "/support",
-    FREE_TESTING: "/seo/free-testing",
+    HANDSHAKE_TESTING: "/seo/handshake-testing",
     PRO_TESTING: "/seo/pro-testing",
   },
 
@@ -33,6 +33,7 @@ export const ROUTES = {
     USERS: "/admin/users",
     SUBMISSIONS_PAID: "/admin/submissions-paid",
     SUBMISSIONS_FREE: "/admin/submissions-free",
+    HANDSHAKE_SUBSCRIPTIONS: "/admin/handshake-subscriptions",
     SUBMISSIONS: "/admin/submissions",
     APPLICATIONS: "/admin/applications",
     SUGGESTIONS: "/admin/suggestions",
@@ -80,7 +81,7 @@ export const ROUTES = {
   AUTHENTICATED: {
     DASHBOARD: "/app/dashboard",
     PRO_TESTING: "/app/pro-testing",
-    FREE_TESTING: "/app/free-testing",
+    HANDSHAKE_TESTING: "/app/handshake-testing",
     NOTIFICATIONS: "/notifications",
     PROFILE: "/profile",
     PROFILE_SETUP: "/profile/profile-setup",

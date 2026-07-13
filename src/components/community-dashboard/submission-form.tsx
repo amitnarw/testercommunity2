@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useForm, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import Link from "next/link";
 import * as z from "zod";
 import { motion, AnimatePresence } from "framer-motion";
 import { useInView } from "react-intersection-observer";
@@ -59,6 +60,8 @@ import {
 } from "@/components/ui/tooltip";
 import { useAppCategories, useValidatePromoCode } from "@/hooks/useHub";
 import { useGetUserWallet } from "@/hooks/useUser";
+import { useQuery } from "@tanstack/react-query";
+import { getMyHandshakeSubscription } from "@/lib/apiCalls";
 import SkeletonSubmitAppBottom from "@/components/community-dashboard/submit-app-bottom-skeleton";
 
 const minimum_android_versions = [
@@ -205,6 +208,7 @@ interface SubmissionFormProps {
   isSuccess?: boolean;
   isError?: boolean;
   mode?: "create" | "edit";
+  variant?: "free" | "handshake";
   onCancel?: () => void;
 }
 
@@ -215,8 +219,10 @@ export function SubmissionForm({
   isSuccess,
   isError,
   mode = "create",
+  variant = "handshake",
   onCancel,
 }: SubmissionFormProps) {
+  const isHandshake = variant === "handshake";
   const [activeStep, setActiveStep] = useState(formSteps[0].id);
   const [isErrorModalOpen, setIsErrorModalOpen] = useState(false);
   const [isVideoExpanded, setIsVideoExpanded] = useState(false);
@@ -264,6 +270,17 @@ export function SubmissionForm({
       setCost(calculatedCost);
     }
   }, [testers, duration, appliedPromo]);
+
+  const { data: handshakeSub, isLoading: handshakeSubLoading } = useQuery({
+    queryKey: ["myHandshakeSubscription"],
+    queryFn: () => getMyHandshakeSubscription(),
+    enabled: isHandshake,
+    retry: false,
+  });
+  const hasActiveSubscription =
+    !!handshakeSub &&
+    (handshakeSub.status === "ACTIVE" ||
+      handshakeSub.status === "AUTHENTICATED");
 
   const { ref: rulesRef, inView: rulesInView } = useInView({ threshold: 0.5 });
   const { ref: connectRef, inView: connectInView } = useInView({ threshold: 0.5 });
@@ -315,7 +332,9 @@ export function SubmissionForm({
   const { data: walletData, isPending: walletIsPending } = useGetUserWallet();
   const { data: appCategoriesData } = useAppCategories();
 
-  const isBalanceInsufficient = cost > (walletData?.totalPoints || 0);
+  const isBalanceInsufficient = isHandshake
+    ? !hasActiveSubscription
+    : cost > (walletData?.totalPoints || 0);
 
   useEffect(() => {
     if (!isBalanceInsufficient) {
@@ -370,12 +389,16 @@ export function SubmissionForm({
       if (!hasChanges) requirements.push("At least one change");
     }
 
-    if (mode === "create" && isBalanceInsufficient) requirements.push("Sufficient Balance");
+    if (!isHandshake && mode === "create" && isBalanceInsufficient)
+      requirements.push("Sufficient Balance");
+    if (isHandshake && mode === "create" && !hasActiveSubscription)
+      requirements.push("Active Handshake subscription");
     return requirements;
   };
 
   const pendingRequirements = getPendingRequirements();
-  const isSubmitDisabled = isPending;
+  const isSubmitDisabled =
+    isPending || (isHandshake && !hasActiveSubscription);
 
   const onInvalid = (errors: any) => {
     const errorFields = Object.keys(errors);
@@ -392,7 +415,18 @@ export function SubmissionForm({
   };
 
   const handleFormSubmit = (data: SubmissionFormData) => {
-    if (mode === "create" && isBalanceInsufficient) {
+    if (isHandshake && !hasActiveSubscription) {
+      form.setError("total_tester", {
+        message: "An active Handshake subscription is required to publish an app.",
+      });
+      const element = document.getElementById("total_tester");
+      if (element) {
+        element.scrollIntoView({ behavior: "smooth", block: "center" });
+      }
+      return;
+    }
+
+    if (!isHandshake && mode === "create" && isBalanceInsufficient) {
       form.setError("total_tester", { message: "Insufficient balance in your wallet." });
       const element = document.getElementById("total_tester");
       if (element) {
@@ -423,11 +457,18 @@ export function SubmissionForm({
       }
     }
 
-    onSubmit({
-      ...data,
-      points_cost: cost,
-      promo_code: appliedPromo?.code,
-    });
+    if (isHandshake) {
+      onSubmit({
+        ...data,
+        appType: "HANDSHAKE",
+      });
+    } else {
+      onSubmit({
+        ...data,
+        points_cost: cost,
+        promo_code: appliedPromo?.code,
+      });
+    }
   };
 
   const TooltipWithClick = ({ id, content }: { id: string; content: string }) => {
@@ -709,29 +750,29 @@ export function SubmissionForm({
                       <div className="flex flex-col gap-6 items-start">
                         <div className="flex-1 space-y-4 text-muted-foreground">
                           <p>
-                            Points are the currency for our community testing. Here is how it works:
+                            Handshake testing is a barter system. You test another developer's app and they test yours. Here is how it works:
                           </p>
                           <div className="space-y-4">
                             <div className="p-4 rounded-lg bg-secondary/50 border border-border/40">
                               <p className="font-semibold text-foreground mb-2 flex items-center gap-2">
                                 <span className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center text-xs font-bold text-primary">1</span>
-                                What are points?
+                                What is a handshake?
                               </p>
-                              <p className="text-sm">Points represent your budget for testing. When you submit an app, points are deducted based on how many testers you need and how long your test runs. Community members will earn points when they test your apps.</p>
+                              <p className="text-sm">When you request to test an app, you offer one of your own published apps in return. Both of you join each other's tests. No points are involved.</p>
                             </div>
                             <div className="p-4 rounded-lg bg-secondary/50 border border-border/40">
                               <p className="font-semibold text-foreground mb-2 flex items-center gap-2">
                                 <span className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center text-xs font-bold text-primary">2</span>
-                                How cost is calculated
+                                Subscription required
                               </p>
-                              <p className="text-sm">The total cost depends on two things. First, how many testers you want. Second, how many days your test should run. More testers and longer tests mean higher costs. The formula is simple. Multiply testers by 80. Multiply days by 10. Add both numbers together to get your total cost.</p>
+                              <p className="text-sm">A monthly subscription of ₹99 unlocks publishing and joining handshake tests. Your level rises as you complete successful handshakes, unlocking more simultaneous test slots.</p>
                             </div>
                             <div className="p-4 rounded-lg bg-secondary/50 border border-border/40">
                               <p className="font-semibold text-foreground mb-2 flex items-center gap-2">
                                 <span className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center text-xs font-bold text-primary">3</span>
-                                Checking your balance
+                                Slots and levels
                               </p>
-                              <p className="text-sm">You can see your current point balance on your dashboard. If you do not have enough points, you can still submit but it will be reviewed once you earn more points from testing other apps.</p>
+                              <p className="text-sm">Each level grants more active handshake slots. Complete two successful handshakes to level up. Skipping your half of a test can temporarily block you from new handshakes.</p>
                             </div>
                           </div>
                         </div>
@@ -999,7 +1040,44 @@ export function SubmissionForm({
                     </>
                   )}
 
-                  {mode === "create" && (
+                  {mode === "create" && isHandshake && (
+                    <div className="mt-8">
+                      <div className="rounded-3xl p-6 border border-border/60 bg-secondary/40 flex flex-col sm:flex-row items-center justify-between gap-4">
+                        <div className="flex items-center gap-3">
+                          <div className={cn(
+                            "p-2.5 rounded-full",
+                            hasActiveSubscription ? "bg-emerald-500/15 text-emerald-500" : "bg-amber-500/15 text-amber-500",
+                          )}>
+                            {hasActiveSubscription ? <CheckCircle2 className="w-6 h-6" /> : <AlertCircle className="w-6 h-6" />}
+                          </div>
+                          <div>
+                            <p className="font-semibold text-foreground">
+                              {handshakeSubLoading
+                                ? "Checking subscription..."
+                                : hasActiveSubscription
+                                  ? "Handshake subscription active"
+                                  : "Handshake subscription required"}
+                            </p>
+                            <p className="text-sm text-muted-foreground">
+                              {hasActiveSubscription
+                                ? "You can publish handshake apps anytime."
+                                : "Subscribe for ₹99/month to publish and join handshake tests."}
+                            </p>
+                          </div>
+                        </div>
+                        {!hasActiveSubscription && (
+                          <Link
+                            href="/pricing"
+                            className="shrink-0 inline-flex items-center justify-center rounded-xl bg-primary px-5 h-11 text-sm font-semibold text-primary-foreground hover:opacity-90"
+                          >
+                            Subscribe
+                          </Link>
+                        )}
+                      </div>
+                    </div>
+                  )}
+
+                  {mode === "create" && !isHandshake && (
                     walletIsPending ? <SkeletonSubmitAppBottom /> : (
                       <div className="mt-8 flex justify-center">
                         {/* Premium Card Design */}

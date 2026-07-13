@@ -129,7 +129,7 @@ export default function HistoryPage() {
         {/* Header with back button */}
         <header className="mb-8 relative">
           <div className="sticky top-0 z-[50] pt-2 sm:pt-3 pb-4 pl-0 w-1/2">
-            <BackButton href="/app/free-testing" />
+            <BackButton href="/app/handshake-testing" />
           </div>
 
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mt-4">

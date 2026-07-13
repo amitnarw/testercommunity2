@@ -57,7 +57,7 @@ type AdminNavItem = {
 const mainNavItems: AdminNavItem[] = [
   { name: "Dashboard", href: ROUTES.AUTHENTICATED.DASHBOARD, icon: Home, section: "overview" },
   { name: "Pro Testing", href: ROUTES.AUTHENTICATED.PRO_TESTING, icon: Zap, section: "paid", badge: "PRO" },
-  { name: "Free Testing", href: ROUTES.AUTHENTICATED.FREE_TESTING, icon: Users2, section: "free", badge: "FREE" },
+  { name: "Handshake Testing", href: ROUTES.AUTHENTICATED.HANDSHAKE_TESTING, icon: Users2, section: "free", badge: "FREE" },
   { name: "Notifications", href: ROUTES.AUTHENTICATED.NOTIFICATIONS, icon: Bell, section: "platform" },
   { name: "Wallet", href: ROUTES.AUTHENTICATED.WALLET, icon: Wallet, section: "platform" },
   { name: "Support", href: ROUTES.PUBLIC.SUPPORT, icon: LifeBuoy, section: "support" },
@@ -101,6 +101,14 @@ const adminNavItems: AdminNavItem[] = [
     section: "free",
     badge: "FREE",
     moduleName: "submissions",
+  },
+  {
+    name: "Handshake Subs",
+    href: ROUTES.ADMIN.HANDSHAKE_SUBSCRIPTIONS,
+    icon: Handshake,
+    section: "free",
+    badge: "HANDSHAKE",
+    moduleName: "subscription",
   },
 
   // Finance

@@ -500,7 +500,7 @@ export function AdminAssignedTestersTable({
           <strong className="text-primary mr-1">Admin Note:</strong>
           {appType === "PAID"
             ? "In Paid Testing, the platform is responsible for providing testers. Once you approve the app, manually assign the requested number of testers to begin."
-            : "In Free Testing, the app owner manages their own community. Testers apply directly to the app, and the owner is notified to approve/reject them. You are only overseeing the process."}
+            : "In Handshake Testing, the app owner manages their own community. Testers apply directly to the app, and the owner is notified to approve/reject them. You are only overseeing the process."}
         </p>
       </div>
 

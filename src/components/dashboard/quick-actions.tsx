@@ -19,7 +19,7 @@ export function QuickActions() {
         label="Submit Pro App"
       />
       <QuickActionPill
-        href="/app/free-testing/submit"
+        href="/app/handshake-testing/submit"
         label="Submit Free App"
       />
       <QuickActionPill

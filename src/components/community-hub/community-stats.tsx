@@ -216,7 +216,7 @@ export function CommunityStats({ variant = "free" }: { variant?: "free" | "pro" 
           className="text-center max-w-2xl mx-auto mb-10 md:mb-16"
         >
           <h2 className="text-2xl md:text-4xl lg:text-5xl font-bold tracking-tight font-heading">
-            {isPro ? "Pro Testing" : "Free Testing"}{" "}
+            {isPro ? "Pro Testing" : "Handshake Testing"}{" "}
             <span className="bg-gradient-to-br from-primary to-accent bg-clip-text text-transparent">
               {isPro ? "Results" : "Impact"}
             </span>

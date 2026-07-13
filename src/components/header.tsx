@@ -27,7 +27,7 @@ const visitorNavItems = [
 
 const authenticatedNavItems = [
   { name: "Home", href: ROUTES.PUBLIC.HOME },
-  { name: "Free Testing", href: ROUTES.AUTHENTICATED.FREE_TESTING },
+  { name: "Handshake Testing", href: ROUTES.AUTHENTICATED.HANDSHAKE_TESTING },
   { name: "Pro Testing", href: ROUTES.AUTHENTICATED.PRO_TESTING },
   { name: "Reviews", href: ROUTES.PUBLIC.REVIEWS },
   { name: "Pricing", href: ROUTES.PUBLIC.PRICING },

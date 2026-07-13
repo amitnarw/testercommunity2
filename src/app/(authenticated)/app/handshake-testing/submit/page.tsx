@@ -37,7 +37,7 @@ export default function SubmitAppPage() {
   if (addHubAppIsSuccess) {
     return (
       <SubmissionSuccess
-        onReturn={() => router.push(ROUTES.AUTHENTICATED.FREE_TESTING)}
+        onReturn={() => router.push(ROUTES.AUTHENTICATED.HANDSHAKE_TESTING)}
         onSubmitAnother={() => {
           addHubAppReset();
           window.scrollTo(0, 0);
@@ -61,7 +61,7 @@ export default function SubmitAppPage() {
     <div className="bg-brand-background min-h-screen">
       <PageHeader
         title="Submit"
-        backHref={ROUTES.AUTHENTICATED.FREE_TESTING}
+        backHref={ROUTES.AUTHENTICATED.HANDSHAKE_TESTING}
         className="w-1/2 px-5 sm:px-10"
       />
 
@@ -71,6 +71,7 @@ export default function SubmitAppPage() {
           isPending={addHubAppIsPending}
           isSuccess={addHubAppIsSuccess}
           isError={addHubAppIsError}
+          variant="handshake"
         />
       </div>
     </div>

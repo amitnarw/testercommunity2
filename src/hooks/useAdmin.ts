@@ -1121,7 +1121,7 @@ export function useActAsRole(options?: UseMutationOptions<any, any, any>) {
         } else if (role === "tester") {
           router.push(ROUTES.TESTER.DASHBOARD);
         } else if (role === "user") {
-          router.push(ROUTES.AUTHENTICATED.FREE_TESTING);
+          router.push(ROUTES.AUTHENTICATED.HANDSHAKE_TESTING);
         }
       },
       ...options,

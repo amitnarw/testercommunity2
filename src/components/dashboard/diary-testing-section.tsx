@@ -27,10 +27,10 @@ export function DiaryTestingSection({
   return (
     <section className="mb-20">
       <div className="relative rounded-[2.5rem] flex flex-col md:flex-row gap-4 items-stretch justify-center overflow-hidden">
-        {/* Left Card: Free Testing */}
+        {/* Left Card: Handshake Testing */}
         <div className="bg-gradient-to-br from-slate-50 via-white to-slate-50 dark:from-card dark:via-card/50 dark:to-card rounded-[32px] p-8 md:p-10 pb-14 md:pb-10 flex-1 relative border border-slate-200/60 dark:border-border/10 shadow-[0_8px_30px_rgb(0,0,0,0.04)] text-slate-800 dark:text-foreground z-0">
           <h2 className="text-2xl md:text-4xl font-extrabold text-slate-900 dark:text-foreground leading-[1.1] tracking-tight mb-8">
-            Free Testing
+            Handshake Testing
           </h2>
 
           {freeLoading ? (
@@ -75,7 +75,7 @@ export function DiaryTestingSection({
                   asChild
                   className="w-full rounded-full bg-slate-900 text-white hover:bg-slate-800 dark:bg-white dark:text-black dark:hover:bg-white/90 font-semibold h-12"
                 >
-                  <TransitionLink href="/app/free-testing/submit">
+                  <TransitionLink href="/app/handshake-testing/submit">
                     Submit Free App
                   </TransitionLink>
                 </Button>

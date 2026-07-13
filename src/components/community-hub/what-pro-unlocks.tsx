@@ -160,7 +160,7 @@ export function WhatProUnlocks() {
             Plan
           </h2>
           <p className="mt-3 text-muted-foreground text-sm md:text-base max-w-xl mx-auto">
-            Free testing works, but it costs you time. Here&apos;s what Pro
+            Handshake Testing works, but it costs you time. Here&apos;s what Pro
             Testing gives you that the free plan can&apos;t.
           </p>
         </motion.div>
@@ -239,7 +239,7 @@ export function WhatProUnlocks() {
                   <div className="p-2.5 bg-secondary rounded-xl">
                     <Users className="w-5 h-5 text-muted-foreground" />
                   </div>
-                  <h3 className="text-lg font-bold">Free Testing</h3>
+                  <h3 className="text-lg font-bold">Handshake Testing</h3>
                 </div>
                 <div className="flex items-baseline mt-3">
                   <span className="text-3xl font-bold tracking-tight">{displaySymbol}0</span>
@@ -265,7 +265,7 @@ export function WhatProUnlocks() {
                 ))}
               </div>
 
-              <AutoTransitionLink href={ROUTES.AUTHENTICATED.FREE_TESTING} className="w-full">
+              <AutoTransitionLink href={ROUTES.AUTHENTICATED.HANDSHAKE_TESTING} className="w-full">
                 <Button
                   variant="outline"
                   className="w-full py-5 rounded-full font-semibold text-sm"

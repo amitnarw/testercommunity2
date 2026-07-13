@@ -11,7 +11,7 @@ const steps = [
     number: "01",
     title: "Find Apps to Test",
     description:
-      "Browse available apps in the free testing hub. Filter by category, testing duration, or number of testers to find the perfect match.",
+      "Browse available apps in the Handshake Testing hub. Filter by category, testing duration, or number of testers to find the perfect match.",
     icon: Search,
   },
   {
@@ -66,7 +66,7 @@ export function HowItWorks() {
         >
           <h2 className="text-2xl md:text-4xl lg:text-5xl font-bold font-heading tracking-tight">
             How{" "}
-            <span className="text-primary italic">Free Testing</span> Works
+            <span className="text-primary italic">Handshake Testing</span> Works
           </h2>
           <p className="mt-3 text-muted-foreground text-sm md:text-base max-w-xl mx-auto">
             A simple three-step process. Test apps to earn points, then use those
@@ -111,7 +111,7 @@ export function HowItWorks() {
           className="mt-10 text-center"
         >
           <Button asChild size="lg" className="rounded-full px-8 group">
-            <AutoTransitionLink href="/app/free-testing">
+            <AutoTransitionLink href="/app/handshake-testing">
               Start Testing
               <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
             </AutoTransitionLink>

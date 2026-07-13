@@ -215,7 +215,7 @@ export function TwoPathsSection() {
                       <Users className="w-6 h-6 text-primary" />
                     </div>
                     <h3 className="text-xl font-medium text-foreground">
-                      Free Testing Path
+                      Handshake Testing Path
                     </h3>
                   </div>
                   <div className="mt-4 flex items-baseline">
@@ -242,9 +242,9 @@ export function TwoPathsSection() {
                   </div>
                 </div>
                 <div className="mt-auto relative z-10">
-                  <Link href={ROUTES.AUTHENTICATED.FREE_TESTING} className="w-full block">
+                  <Link href={ROUTES.AUTHENTICATED.HANDSHAKE_TESTING} className="w-full block">
                     <Button className="w-full py-6 rounded-full font-semibold text-base transition-all duration-300" variant="outline">
-                      Explore Free Testing
+                      Explore Handshake Testing
                     </Button>
                   </Link>
                 </div>
@@ -345,9 +345,9 @@ export function TwoPathsSection() {
                 </div>
               </div>
               <div className="mt-auto relative z-10">
-                <Link href={ROUTES.AUTHENTICATED.FREE_TESTING} className="w-full block">
+                <Link href={ROUTES.AUTHENTICATED.HANDSHAKE_TESTING} className="w-full block">
                   <Button className="w-full py-6 rounded-full font-semibold text-base transition-all duration-300" variant="outline">
-                    Explore Free Testing
+                    Explore Handshake Testing
                   </Button>
                 </Link>
               </div>

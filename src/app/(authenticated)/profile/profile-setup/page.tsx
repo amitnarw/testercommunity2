@@ -2,5 +2,5 @@ import { ProfileSetupView } from "@/components/profile-setup/profile-setup-view"
 import { ROUTES } from "@/lib/routes";
 
 export default function ProfileSetupPage() {
-  return <ProfileSetupView backHref="/profile" dashboardHref={ROUTES.AUTHENTICATED.FREE_TESTING} />;
+  return <ProfileSetupView backHref="/profile" dashboardHref={ROUTES.AUTHENTICATED.HANDSHAKE_TESTING} />;
 }

@@ -35,7 +35,7 @@ import { PageHeader } from "@/components/page-header";
 import { useHubSubmittedApp, useHubSubmittedAppsCount } from "@/hooks/useHub";
 import { Skeleton } from "@/components/ui/skeleton";
 
-// Helper to filter out paid apps from displaying in the Free Testing
+// Helper to filter out paid apps from displaying in the Handshake Testing
 const filterFreeApps = (apps: HubSubmittedAppResponse[] | undefined) => {
   if (!apps) return [];
   return apps.filter((app) => app.appType !== "PAID");
@@ -136,7 +136,7 @@ const ProjectCard = ({ project }: { project: HubSubmittedAppResponse }) => {
       className="group h-full"
     >
       <Link
-        href={`/app/free-testing/my-submissions/${project.id}`}
+        href={`/app/handshake-testing/my-submissions/${project.id}`}
         className="block h-full"
       >
         <Card className="h-full border-0 bg-background/40 hover:bg-background/60 backdrop-blur-md shadow-sm hover:shadow-xl hover:shadow-primary/5 transition-all duration-300 rounded-[1.5rem] overflow-hidden relative ring-1 ring-border/50 hover:ring-primary/20 flex flex-col">
@@ -315,7 +315,7 @@ const EmptyState = () => (
         className="h-11 px-8 rounded-full bg-primary text-primary-foreground font-semibold shadow-lg shadow-primary/25 hover:shadow-primary/40 hover:scale-105 transition-all duration-300"
       >
         <Link
-          href="/app/free-testing/submit"
+          href="/app/handshake-testing/submit"
           className="flex items-center gap-2"
         >
           <span>Submit App</span>
@@ -551,13 +551,13 @@ function MySubmissionsContent() {
           <main className="space-y-4">
             <PageHeader
               title="MySubmissions"
-              backHref="/app/free-testing"
+              backHref="/app/handshake-testing"
               className="w-1/2 px-0"
             />
             <div className="flex flex-row items-center justify-end gap-4 w-full">
               <Button
                 className="bg-gradient-to-b from-primary to-primary/40 text-primary-foreground px-3 h-8 sm:p-auto sm:h-10"
-                onClick={() => openPage("/app/free-testing/submit")}
+                onClick={() => openPage("/app/handshake-testing/submit")}
               >
                 <PlusCircle className="h-4 w-4 absolute sm:static top-0 sm:top-auto left-0 sm:left-auto scale-[2] sm:scale-100 text-white/20 sm:text-white" />
                 <span>Submit New App</span>
