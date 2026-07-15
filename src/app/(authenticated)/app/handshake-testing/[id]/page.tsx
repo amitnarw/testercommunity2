@@ -37,6 +37,7 @@ import {
 } from "@/hooks/useHub";
 import { ExpandableText } from "@/components/expandable-text";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { OfferAppModal } from "@/components/handshake/offer-app-modal";
 
 const confettiConfig = {
   angle: 90,
@@ -57,6 +58,7 @@ function AppTestingPageClient({ id }: { id: string }) {
   const [fullscreenImage, setFullscreenImage] = useState<string | null>(null);
   const [showSuccessModal, setShowSuccessModal] = useState(false);
   const [showErrorModal, setShowErrorModal] = useState(false);
+  const [showOfferModal, setShowOfferModal] = useState(false);
   const [fireConfetti, setFireConfetti] = useState(false);
 
   const { data: appDetails, isPending: appDetailsIsPending } =
@@ -80,13 +82,17 @@ function AppTestingPageClient({ id }: { id: string }) {
   }, [isError]);
 
   const handleSubmit = () => {
+    if (appDetails?.appType === "HANDSHAKE") {
+      setShowOfferModal(true);
+      return;
+    }
     mutate({ hub_id: id });
   };
 
   const handleSuccessConfirm = () => {
     setShowSuccessModal(false);
     setFireConfetti(false);
-    router.push(ROUTES.AUTHENTICATED.FREE_TESTING);
+    router.push(ROUTES.AUTHENTICATED.HANDSHAKE_TESTING);
   };
 
   const handleErrorRetry = () => {
@@ -101,7 +107,7 @@ function AppTestingPageClient({ id }: { id: string }) {
 
   const handleErrorGoBack = () => {
     setShowErrorModal(false);
-    router.push("/app/free-testing");
+    router.push("/app/handshake-testing");
   };
 
   if (appDetailsIsPending) {
@@ -181,7 +187,7 @@ function AppTestingPageClient({ id }: { id: string }) {
     <div className="bg-[#f8fafc] dark:bg-[#0f151e] text-foreground min-h-screen pb-10">
       <div className="container mx-auto px-4 md:px-6">
         <div className="sticky top-0 z-[50] pt-2 pb-4 pl-0 xl:pl-8 w-1/2">
-          <BackButton href={ROUTES.AUTHENTICATED.FREE_TESTING} />
+          <BackButton href={ROUTES.AUTHENTICATED.HANDSHAKE_TESTING} />
         </div>
 
         <main className="max-w-7xl mx-auto grid lg:grid-cols-3 gap-12 mt-8">
@@ -195,6 +201,46 @@ function AppTestingPageClient({ id }: { id: string }) {
                 className="text-muted-foreground text-md sm:text-lg leading-relaxed"
               />
             </section>
+
+            {appDetails?.handshake && (
+              <section className="rounded-2xl border border-primary/20 bg-primary/5 p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center gap-4">
+                <div className="relative h-14 w-14 flex-shrink-0 overflow-hidden rounded-xl bg-muted">
+                  {appDetails.handshake.partnerApp?.appLogoUrl && (
+                    <SafeImage
+                      src={appDetails.handshake.partnerApp.appLogoUrl}
+                      alt={appDetails.handshake.partnerApp?.appName || "Partner app"}
+                      fill
+                      className="object-cover"
+                    />
+                  )}
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-xs font-semibold uppercase tracking-wider text-primary">
+                    Your Handshake Partner
+                  </p>
+                  <p className="font-medium truncate">
+                    {appDetails.handshake.partnerApp?.appName ||
+                      "Unknown app"}
+                  </p>
+                  <p className="text-sm text-muted-foreground">
+                    You are testing each other&apos;s apps. Both must complete
+                    all days for this handshake to count.
+                  </p>
+                </div>
+                {appDetails.handshake.isBlocked ? (
+                  <div className="shrink-0 rounded-lg bg-red-500/10 border border-red-500/30 px-3 py-2 text-red-600 text-sm font-medium">
+                    Blocked until{" "}
+                    {new Date(
+                      appDetails.handshake.blockedUntil || Date.now(),
+                    ).toLocaleDateString()}
+                  </div>
+                ) : (
+                  <div className="shrink-0 rounded-lg bg-emerald-500/10 border border-emerald-500/30 px-3 py-2 text-emerald-600 text-sm font-medium">
+                    Active
+                  </div>
+                )}
+              </section>
+            )}
 
             <div className="lg:hidden">
               <AppActionButton
@@ -629,6 +675,17 @@ function AppTestingPageClient({ id }: { id: string }) {
           </div>
         </DialogContent>
       </Dialog>
+
+      <OfferAppModal
+        open={showOfferModal}
+        onOpenChange={setShowOfferModal}
+        hubId={id}
+        hubAppName={appDetails?.androidApp?.appName}
+        onSuccess={() => {
+          setShowSuccessModal(true);
+          setTimeout(() => setFireConfetti(true), 300);
+        }}
+      />
     </div>
   );
 }

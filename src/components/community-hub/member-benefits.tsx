@@ -176,8 +176,8 @@ export function MemberBenefits() {
                   variant="outline"
                   className="w-full sm:w-auto rounded-full px-8"
                 >
-                  <AutoTransitionLink href="/app/free-testing">
-                    Preview Free Testing
+                  <AutoTransitionLink href="/app/handshake-testing">
+                    Preview Handshake Testing
                   </AutoTransitionLink>
                 </Button>
               </div>

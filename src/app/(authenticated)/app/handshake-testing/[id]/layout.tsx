@@ -5,14 +5,14 @@ export const metadata: Metadata = {
   description: "View detailed information about this app testing opportunity. Join the community to test apps and earn points for your feedback.",
   keywords: "app testing details, Android app testing, beta testing, user testing, app feedback, inTesters",
   alternates: {
-    canonical: "/app/free-testing/[id]",
+    canonical: "/app/handshake-testing/[id]",
   },
   openGraph: {
     title: "App Testing Details | inTesters",
     description: "View detailed information about this app testing opportunity. Join the community to test apps and earn points for your feedback.",
     type: "website",
     locale: "en_US",
-    url: "/app/free-testing/[id]",
+    url: "/app/handshake-testing/[id]",
     siteName: "inTesters",
     images: [
       {

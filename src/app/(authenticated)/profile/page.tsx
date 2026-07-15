@@ -35,7 +35,7 @@ export default function ProfilePage() {
     >
       <PageHeader
         title="Profile"
-        backHref={ROUTES.AUTHENTICATED.FREE_TESTING}
+        backHref={ROUTES.AUTHENTICATED.HANDSHAKE_TESTING}
         className="w-1/2 lg:w-full"
       />
       <div className="mx-auto space-y-12">

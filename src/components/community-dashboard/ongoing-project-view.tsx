@@ -260,7 +260,7 @@ export default function OngoingProjectView({
       <div className="container mx-auto px-4 md:px-6">
         {showBackButton && (
           <div className="sticky top-0 z-[50] pt-2 sm:pt-3 pb-4 pl-0 xl:pl-8 w-1/2">
-            <BackButton href={ROUTES.AUTHENTICATED.FREE_TESTING} />
+            <BackButton href={ROUTES.AUTHENTICATED.HANDSHAKE_TESTING} />
           </div>
         )}
 

@@ -92,7 +92,7 @@ function FreeTestingCTASection() {
             Ready to Start
             <br className="hidden md:block" />
             <span className="relative inline-block">
-              Free Testing?
+              Handshake Testing?
               <svg
                 className="absolute w-full h-3 -bottom-1 left-0 text-white/30"
                 viewBox="0 0 100 10"
@@ -137,8 +137,8 @@ function FreeTestingCTASection() {
               className="w-full sm:w-auto rounded-full h-12 px-6 border border-white/30 text-base bg-transparent hover:bg-white/10 text-white hover:text-white sm:min-w-[160px] transition-all hover:border-white/60 backdrop-blur-sm"
               asChild
             >
-              <AutoTransitionLink href={ROUTES.AUTHENTICATED.FREE_TESTING}>
-                Explore Free Testing
+              <AutoTransitionLink href={ROUTES.AUTHENTICATED.HANDSHAKE_TESTING}>
+                Explore Handshake Testing
               </AutoTransitionLink>
             </Button>
           </div>

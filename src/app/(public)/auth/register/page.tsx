@@ -79,7 +79,7 @@ export default function RegisterPage() {
     if (userProfileData.initial) {
       router.replace(ROUTES.AUTHENTICATED.PROFILE_SETUP);
     } else {
-      router.replace(ROUTES.AUTHENTICATED.FREE_TESTING);
+      router.replace(ROUTES.AUTHENTICATED.HANDSHAKE_TESTING);
     }
   }, [userProfileIsSuccess, userProfileisFetching, userProfileData, router]);
 

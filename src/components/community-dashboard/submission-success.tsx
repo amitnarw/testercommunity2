@@ -74,7 +74,7 @@ export function SubmissionSuccess({
             transition={{ delay: 0.3 }}
             className="text-muted-foreground mb-8 max-w-sm"
           >
-            Your app has been successfully submitted to Free Testing. We
+            Your app has been successfully submitted to Handshake Testing. We
             will review it shortly to ensure it meets our quality standards.
           </motion.p>
 

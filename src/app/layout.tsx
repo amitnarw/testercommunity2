@@ -1,4 +1,5 @@
 import "./globals.css";
+import Script from "next/script";
 import { Toaster } from "@/components/ui/toaster";
 import { ThemeProvider } from "@/components/theme-provider";
 import QueryProvider from "@/lib/query-provider";
@@ -95,6 +96,22 @@ export default function RootLayout({
         <OrganizationJsonLd />
         <WebSiteJsonLd />
         <SoftwareApplicationJsonLd />
+        <Script
+          strategy="afterInteractive"
+          src="https://www.googletagmanager.com/gtag/js?id=AW-18307984456"
+        />
+        <Script
+          id="google-tag"
+          strategy="afterInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', 'AW-18307984456');
+            `,
+          }}
+        />
       </head>
       <body className="font-body antialiased bg-background text-foreground">
         <TopLoader />

@@ -28,7 +28,7 @@ export function PremiumAppCard({ app, type, index }: PremiumAppCardProps) {
   const isOnTrack = testerProgress >= dayProgress;
   const statusColor = isBehind ? "text-red-400" : isOnTrack ? "text-green-400" : "text-amber-400";
 
-  const detailHref = type === "PAID" ? "/app/pro-testing" : "/app/free-testing";
+  const detailHref = type === "PAID" ? "/app/pro-testing" : "/app/handshake-testing";
 
   return (
     <motion.div

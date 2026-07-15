@@ -168,7 +168,7 @@ export default function Navbar({ onLogout }: { onLogout: () => void }) {
                       <span className="hidden md:inline">Tester</span>
                     </button>
                   </AutoTransitionLink>
-                  <AutoTransitionLink href={ROUTES.AUTHENTICATED.FREE_TESTING} replace={true} onClick={() => startActingAs("user")}>
+                  <AutoTransitionLink href={ROUTES.AUTHENTICATED.HANDSHAKE_TESTING} replace={true} onClick={() => startActingAs("user")}>
                     <button
                       disabled={isLoading}
                       className={`flex items-center gap-2 py-1.5 px-3.5 rounded-3xl hover:bg-white/20 hover:text-white transition-all text-xs duration-300 font-light ${

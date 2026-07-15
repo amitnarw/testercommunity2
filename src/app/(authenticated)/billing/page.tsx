@@ -39,6 +39,7 @@ import {
   ProfessionalPlanCard,
   EnterprisePlanCard,
 } from "@/components/pricing-cards";
+import { HandshakePlanCard } from "@/components/handshake/plan-card";
 import Script from "next/script";
 import { Loader2 } from "lucide-react";
 
@@ -431,6 +432,22 @@ export default function BillingPage() {
                   />
                 </div>
               )}
+            </section>
+
+            {/* Section 2.5: Handshake Subscription */}
+            <section className="mx-auto w-full">
+              <div className="text-center mb-12 max-w-2xl mx-auto">
+                <h2 className="text-3xl md:text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-b from-foreground to-foreground/70 mb-4">
+                  Handshake <span className="text-primary">Subscription</span>
+                </h2>
+                <p className="text-lg text-muted-foreground">
+                  Barter-based testing. You test another developer&apos;s app,
+                  they test yours — funded by a simple monthly subscription.
+                </p>
+              </div>
+              <div className="max-w-md mx-auto">
+                <HandshakePlanCard />
+              </div>
             </section>
 
             {/* Section 3: History */}

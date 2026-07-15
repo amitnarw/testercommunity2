@@ -79,8 +79,8 @@ export function CommunityHero() {
             </Button>
             <span className="hidden sm:block text-muted-foreground/30">|</span>
             <Button variant="link" asChild className="text-muted-foreground">
-              <AutoTransitionLink href="/app/free-testing">
-                Browse Free Testing <ArrowRight className="w-4 h-4 ml-1" />
+              <AutoTransitionLink href="/app/handshake-testing">
+                Browse Handshake Testing <ArrowRight className="w-4 h-4 ml-1" />
               </AutoTransitionLink>
             </Button>
           </motion.div>

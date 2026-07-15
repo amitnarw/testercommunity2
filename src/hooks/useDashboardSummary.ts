@@ -77,7 +77,7 @@ export function useDashboardSummary() {
       items.push({
         label: `${totalRejected} app${totalRejected > 1 ? "s" : ""} rejected`,
         description: "Review rejection reasons and resubmit.",
-        href: ROUTES.AUTHENTICATED.FREE_TESTING,
+        href: ROUTES.AUTHENTICATED.HANDSHAKE_TESTING,
         severity: "medium",
       });
     }
@@ -97,7 +97,7 @@ export function useDashboardSummary() {
         items.push({
           label: `"${a.androidApp?.appName || "Untitled"}" expires in ${remaining} day${remaining !== 1 ? "s" : ""}`,
           description: `${a.currentTester || 0}/${a.totalTester || 12} testers`,
-          href: a.appType === "PAID" ? ROUTES.AUTHENTICATED.PRO_TESTING : ROUTES.AUTHENTICATED.FREE_TESTING,
+          href: a.appType === "PAID" ? ROUTES.AUTHENTICATED.PRO_TESTING : ROUTES.AUTHENTICATED.HANDSHAKE_TESTING,
           severity: remaining <= 1 ? "high" : "medium",
         });
       }

@@ -23,31 +23,55 @@ export const ProfessionalPlanCard = ({
   plan,
   actionButton,
   regionalPricing,
+  accent = "primary",
+  accentIcon,
+  description,
 }: {
   plan: PricingResponse;
   actionButton: React.ReactNode;
   regionalPricing?: RegionalPricingResponse;
+  accent?: "primary" | "emerald";
+  accentIcon?: React.ReactNode;
+  description?: string;
 }) => {
   const displayPrice = regionalPricing
     ? regionalPricing.amount / 100
     : plan.price;
   const displaySymbol = regionalPricing?.currency_symbol || "₹";
   const displayCurrency = regionalPricing?.currency_code || "INR";
+
+  const isSubscription = plan.billingType === "SUBSCRIPTION";
+  const priceSuffix = isSubscription
+    ? "/month"
+    : `/ one-time (${displayCurrency})`;
+
+  const isEmerald = accent === "emerald";
+  const cardClasses = isEmerald
+    ? "bg-emerald-600 text-white shadow-emerald-600/30"
+    : "bg-primary text-primary-foreground shadow-primary/30";
+  const badgeClasses = isEmerald
+    ? "bg-white text-emerald-600 hover:bg-white/90"
+    : "bg-white text-primary hover:bg-white/90";
+  const mutedText = isEmerald ? "text-white/80" : "text-primary-foreground/80";
+  const mutedTextStrong = isEmerald
+    ? "text-white/90"
+    : "text-primary-foreground/90";
+
   return (
     <motion.div
       variants={itemVariants}
       whileHover={{ y: -8, scale: 1.03 }}
-      className="relative flex flex-col p-8 sm:p-10 rounded-3xl h-full transition-all duration-300 bg-primary text-primary-foreground shadow-2xl shadow-primary/30"
+      className={`relative flex flex-col p-8 sm:p-10 rounded-3xl h-full transition-all duration-300 shadow-2xl ${cardClasses}`}
     >
       {/* Decorative elements */}
       <div className="absolute bottom-0 left-0 -ml-20 -mb-20 w-60 h-60 bg-black/10 rounded-full blur-3xl pointer-events-none" />
       <div className="absolute top-6 right-6 opacity-20 rotate-12">
-        <Star className="w-24 h-24 fill-current text-white" />
+        {accentIcon ?? <Star className="w-24 h-24 fill-current text-white" />}
       </div>
 
-      <div className="mb-8 relative z-10 flex-col flex h-full">
+      <div className="relative z-10 flex-col flex h-full">
         <div>
-          <Badge className="bg-white text-primary hover:bg-white/90 border-0 mb-3 px-4 py-1.5 uppercase tracking-widest text-xs font-bold w-fit shadow-md">
+          <Badge className={`${badgeClasses} border-0 mb-3 px-4 py-1.5 uppercase tracking-widest text-xs font-bold w-fit shadow-md`}>
             {plan.name}
           </Badge>
           <div className="mt-4 flex items-baseline">
@@ -58,13 +82,15 @@ export const ProfessionalPlanCard = ({
                 maximumFractionDigits: 2,
               })}
             </span>
-            <span className="ml-2 text-sm font-medium text-primary-foreground/80">
-              / one-time ({displayCurrency})
+            <span className={`ml-2 text-sm font-medium ${mutedText}`}>
+              {priceSuffix}
             </span>
           </div>
-          <p className="mt-4 text-sm leading-relaxed text-primary-foreground/90">
-            Includes {plan.package} full testing{" "}
-            {plan.package > 1 ? "cycles" : "cycle"}
+          <p className={`mt-4 text-sm leading-relaxed ${mutedTextStrong}`}>
+            {description ??
+              `Includes ${plan.package} full testing ${
+                plan.package > 1 ? "cycles" : "cycle"
+              }`}
           </p>
         </div>
 
@@ -74,7 +100,7 @@ export const ProfessionalPlanCard = ({
               <div className="flex-shrink-0 w-5 h-5 rounded-full flex items-center justify-center mt-0.5 bg-white/20">
                 <Check className="w-3 h-3 text-white" />
               </div>
-              <span className="text-sm text-primary-foreground/90">
+              <span className={`text-sm ${mutedTextStrong}`}>
                 {feature}
               </span>
             </div>
