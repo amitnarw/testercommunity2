@@ -221,7 +221,7 @@ export function GlobalImpactSection() {
               <AnimatedCounter to={communityApps} suffix="+" />
             </p>
             <p className="text-muted-foreground mt-1 text-[10px]">
-              Free apps submitted by users.
+              Handshake apps submitted by developers.
             </p>
           </StatCard>
           <StatCard

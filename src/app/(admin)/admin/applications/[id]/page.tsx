@@ -267,7 +267,7 @@ export default function AdminApplicationDetailPage() {
                   <p>
                     {application.date
                       ? new Date(application.date).toLocaleDateString()
-                      : "—"}
+                      : ", "}
                   </p>
                 </div>
               </div>

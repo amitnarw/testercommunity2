@@ -238,7 +238,7 @@ export default function AdminDashboardPage() {
                             }
                             className={`text-xs ${item.appType === "PAID" ? "bg-amber-500/20 text-amber-600 dark:text-amber-400 hover:bg-amber-500/30" : "bg-blue-500/20 text-blue-600 dark:text-blue-400 hover:bg-blue-500/30"}`}
                           >
-                            {item.appType === "PAID" ? "PRO" : "FREE"}
+                            {item.appType === "PAID" ? "PRO" : "HANDSHAKE"}
                           </Badge>
                         </TableCell>
                         <TableCell className="hidden sm:table-cell text-sm">
@@ -313,7 +313,7 @@ export default function AdminDashboardPage() {
                             }
                             className={`text-xs ${item.appType === "PAID" ? "bg-green-500/20 text-green-600 dark:text-green-400 hover:bg-green-500/30" : "bg-blue-500/20 text-blue-600 dark:text-blue-400 hover:bg-blue-500/30"}`}
                           >
-                            {item.appType === "PAID" ? "PRO" : "FREE"}
+                            {item.appType === "PAID" ? "PRO" : "HANDSHAKE"}
                           </Badge>
                         </TableCell>
                         <TableCell className="hidden sm:table-cell text-sm">
@@ -439,16 +439,16 @@ export default function AdminDashboardPage() {
           </CardContent>
         </Card>
 
-        {/* Community Testing Card */}
+        {/* Handshake Testing Card */}
         <Card className="border-blue-500/20 bg-white/70 dark:bg-black/70 backdrop-blur-md shadow-lg hover:shadow-xl transition-all duration-300">
           <CardHeader className="pb-2 p-6">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
               <div className="flex items-center gap-3">
                 <div>
                   <div className="flex items-center gap-2">
-                    <CardTitle className="text-lg">Community Testing</CardTitle>
+                    <CardTitle className="text-lg">Handshake Testing</CardTitle>
                     <Badge className="bg-blue-500/20 text-blue-600 dark:text-blue-400 text-xs">
-                      FREE
+                      HANDSHAKE
                     </Badge>
                   </div>
                 </div>

@@ -200,7 +200,7 @@ export function HandshakePlanCard() {
     <ProfessionalPlanCard
       accent="emerald"
       accentIcon={<Handshake className="w-24 h-24 text-white" />}
-      description="Monthly barter subscription — publish your app and test others in return."
+      description="Monthly barter subscription ,  publish your app and test others in return."
       plan={{
         id: dbPlan?.id ?? "handshake",
         name: dbPlan?.name ?? "Handshake",

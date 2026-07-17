@@ -9,23 +9,23 @@ import { AutoTransitionLink } from "@/components/auto-transition-link";
 const steps = [
   {
     number: "01",
-    title: "Find Apps to Test",
+    title: "Subscribe & Publish",
     description:
-      "Browse available apps in the Handshake Testing hub. Filter by category, testing duration, or number of testers to find the perfect match.",
+      "Subscribe for ₹99/month and publish your apps on the Handshake Testing hub. Each app gets a slot limit based on your level (starts at 12).",
     icon: Search,
   },
   {
     number: "02",
-    title: "Complete Daily Check-ins",
+    title: "Barter 1:1 Requests",
     description:
-      "Once accepted, test the app daily for the required period. Submit screenshot proof to verify your activity.",
+      "Browse other developers' apps and send a handshake request. When they accept, you both agree: you test their app and they test yours ,  a true barter system.",
     icon: CalendarCheck,
   },
   {
     number: "03",
-    title: "Earn Points & Submit",
+    title: "Complete & Level Up",
     description:
-      "Earn 80 points per tester + 10 points per day. Use your accumulated points to submit your own app for testing.",
+      "After 14 days both sides submit their test reports. Each completed handshake earns you +1 slot ,  level up to unlock more testers (start at 12, up to 20).",
     icon: Coins,
   },
 ];
@@ -66,11 +66,11 @@ export function HowItWorks() {
         >
           <h2 className="text-2xl md:text-4xl lg:text-5xl font-bold font-heading tracking-tight">
             How{" "}
-            <span className="text-primary italic">Handshake Testing</span> Works
+            <span className="text-emerald-600 italic">Handshake Testing</span> Works
           </h2>
           <p className="mt-3 text-muted-foreground text-sm md:text-base max-w-xl mx-auto">
-            A simple three-step process. Test apps to earn points, then use those
-            points to get your own app tested — completely free.
+            A simple three-step process. Subscribe, publish your app, and barter
+            with other developers ,  test each other&apos;s apps and level up.
           </p>
         </motion.div>
 
@@ -88,10 +88,10 @@ export function HowItWorks() {
               className="relative p-6 lg:p-8 rounded-2xl bg-card border border-border/50 shadow-md hover:shadow-lg transition-shadow duration-300 group"
             >
               <div className="flex items-start justify-between mb-4">
-                <span className="text-4xl lg:text-5xl font-bold text-primary/20 group-hover:text-primary/30 transition-colors">
+                <span className="text-4xl lg:text-5xl font-bold text-emerald-600/20 group-hover:text-emerald-600/30 transition-colors">
                   {step.number}
                 </span>
-                <div className="p-2.5 rounded-xl bg-primary/10 text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
+                <div className="p-2.5 rounded-xl bg-emerald-500/10 text-emerald-600 group-hover:bg-emerald-600 group-hover:text-white transition-colors">
                   <step.icon className="w-5 h-5 lg:w-6 lg:h-5" />
                 </div>
               </div>

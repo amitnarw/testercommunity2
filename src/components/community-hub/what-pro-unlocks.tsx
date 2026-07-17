@@ -9,39 +9,18 @@ import {
   FileText,
   Smartphone,
   CheckCircle,
-  X,
   Star,
   TrendingUp,
+  Handshake,
   Users,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { AutoTransitionLink } from "@/components/auto-transition-link";
+import { ProfessionalPlanCard, EnterprisePlanCard } from "@/components/pricing-cards";
+import { HoverBorderGradient } from "@/components/ui/hover-border-gradient";
 import { ROUTES } from "@/lib/routes";
 import { usePricingData, useRegionalPricing } from "@/hooks/useUser";
-
-const freeLimitations = [
-  {
-    icon: Clock,
-    text: "20+ hours of your time testing others first",
-  },
-  {
-    icon: Users,
-    text: "Variable results, depends on community availability",
-  },
-  {
-    icon: FileText,
-    text: "No structured bug reports or coverage stats",
-  },
-  {
-    icon: Smartphone,
-    text: "No guaranteed device & OS coverage",
-  },
-  {
-    icon: ShieldCheck,
-    text: "Self-managed, you handle everything",
-  },
-];
 
 const proFeatures = [
   {
@@ -74,15 +53,6 @@ const proFeatures = [
     text: "Guaranteed 14-day testing cycle",
     highlight: false,
   },
-];
-
-const enterpriseFeatures = [
-  "Everything in Pro Testing",
-  "Volume discounts on packages",
-  "Dedicated account manager",
-  "Custom integrations & SLA",
-  "Priority support",
-  "Custom reporting",
 ];
 
 const containerVariants = {
@@ -156,12 +126,12 @@ export function WhatProUnlocks() {
           </div>
           <h2 className="text-2xl md:text-4xl lg:text-5xl font-bold font-heading tracking-tight">
             What You&apos;re{" "}
-            <span className="text-orange-500 italic">Missing</span> on the Free
-            Plan
+            <span className="text-orange-500 italic">Missing</span> with Handshake
+            Testing
           </h2>
           <p className="mt-3 text-muted-foreground text-sm md:text-base max-w-xl mx-auto">
-            Handshake Testing works, but it costs you time. Here&apos;s what Pro
-            Testing gives you that the free plan can&apos;t.
+            Handshake Testing works, but it demands your time and effort. Here&apos;s what Pro
+            Testing gives you that barter testing can&apos;t.
           </p>
         </motion.div>
 
@@ -192,7 +162,7 @@ export function WhatProUnlocks() {
             </div>
             <p className="text-sm text-muted-foreground">
               <span className="font-bold text-foreground">87% of developers</span>{" "}
-              who started free eventually upgraded to Pro
+              who started with Handshake eventually upgraded to Pro
             </p>
           </div>
         </motion.div>
@@ -231,54 +201,50 @@ export function WhatProUnlocks() {
           variants={containerVariants}
           className="grid md:grid-cols-3 gap-4 lg:gap-6 max-w-6xl mx-auto items-stretch"
         >
-          {/* FREE PLAN */}
+          {/* HANDSHAKE PLAN */}
           <motion.div variants={itemVariants}>
-            <div className="relative h-full flex flex-col p-6 md:p-8 rounded-3xl border bg-card text-card-foreground">
-              <div className="mb-6">
-                <div className="flex items-center gap-3 mb-3">
-                  <div className="p-2.5 bg-secondary rounded-xl">
-                    <Users className="w-5 h-5 text-muted-foreground" />
-                  </div>
-                  <h3 className="text-lg font-bold">Handshake Testing</h3>
+            <ProfessionalPlanCard
+              accent="emerald"
+              accentIcon={<Handshake className="w-24 h-24 text-white" />}
+              description="Monthly barter subscription ,  publish your app and test others in return."
+              plan={{
+                id: "handshake",
+                name: "Handshake",
+                price: 99,
+                package: 1,
+                features: [
+                  "Publish and join handshake tests",
+                  "Gamified levels with more test slots",
+                  "No per-tester points required",
+                  "Barter-based, you test theirs, they test yours",
+                ],
+                billingType: "SUBSCRIPTION",
+                isActive: true,
+                createdAt: new Date(),
+                updatedAt: new Date(),
+              }}
+              actionButton={
+                <div className="w-full">
+                  <AutoTransitionLink href={ROUTES.AUTHENTICATED.HANDSHAKE_TESTING} className="flex items-center justify-center w-full">
+                    <HoverBorderGradient
+                      as="div"
+                      containerClassName="w-full"
+                      className="bg-white text-emerald-600 flex justify-center items-center space-x-2 w-full py-4 font-bold cursor-pointer"
+                    >
+                      <Handshake className="w-4 h-4 mr-2" />
+                      <span className="font-semibold">Explore Handshake Testing</span>
+                    </HoverBorderGradient>
+                  </AutoTransitionLink>
                 </div>
-                <div className="flex items-baseline mt-3">
-                  <span className="text-3xl font-bold tracking-tight">{displaySymbol}0</span>
-                  <span className="ml-2 text-sm text-muted-foreground">
-                    / forever
-                  </span>
-                </div>
-                <p className="mt-2 text-xs text-muted-foreground">
-                  Your time is the currency
-                </p>
-              </div>
-
-              <div className="flex-1 space-y-3 mb-6">
-                {freeLimitations.map((item, i) => (
-                  <div key={i} className="flex items-start gap-3">
-                    <div className="flex-shrink-0 w-5 h-5 rounded-full flex items-center justify-center mt-0.5 bg-red-500/10">
-                      <X className="w-3 h-3 text-red-500" />
-                    </div>
-                    <span className="text-sm text-muted-foreground">
-                      {item.text}
-                    </span>
-                  </div>
-                ))}
-              </div>
-
-              <AutoTransitionLink href={ROUTES.AUTHENTICATED.HANDSHAKE_TESTING} className="w-full">
-                <Button
-                  variant="outline"
-                  className="w-full py-5 rounded-full font-semibold text-sm"
-                >
-                  Continue Free
-                </Button>
-              </AutoTransitionLink>
-            </div>
+              }
+            />
           </motion.div>
 
-          {/* PRO PLAN — HIGHLIGHTED */}
+          {/* PRO PLAN ,  HIGHLIGHTED */}
           <motion.div variants={itemVariants}>
-            <div className="relative h-full flex flex-col p-6 md:p-8 rounded-3xl bg-primary text-primary-foreground shadow-2xl shadow-primary/30 md:scale-105 md:-my-2 mt-2 sm:mt-0">
+            <motion.div
+              whileHover={{ y: -8, scale: 1.03 }}
+              className="relative h-full flex flex-col p-8 sm:p-10 rounded-3xl bg-primary text-primary-foreground shadow-2xl shadow-primary/30 md:scale-105 md:-my-2">
               {/* Recommended Badge */}
               <div className="absolute -top-4 left-0 right-0 flex justify-center z-10">
                 <Badge className="bg-black dark:bg-white text-white dark:text-black hover:bg-black/60 px-4 py-1.5 text-xs font-bold uppercase tracking-widest shadow-lg border-0">
@@ -301,7 +267,7 @@ export function WhatProUnlocks() {
                 </div>
                 <div className="flex items-baseline mt-3">
                   <span className="text-3xl font-bold tracking-tight">
-                    From {priceLabel}
+                    {priceLabel}
                   </span>
                   <span className="ml-2 text-sm text-primary-foreground/80">
                     / per cycle
@@ -309,7 +275,7 @@ export function WhatProUnlocks() {
                 </div>
                 {perTesterLabel && (
                   <p className="mt-2 text-xs text-primary-foreground/70">
-                    Less than {perTesterLabel}/tester, your time is worth more
+                    Less than {perTesterLabel}/tester ,  skip the barter
                   </p>
                 )}
               </div>
@@ -340,51 +306,23 @@ export function WhatProUnlocks() {
                   Upgrade to Pro
                 </Button>
               </AutoTransitionLink>
-            </div>
+            </motion.div>
           </motion.div>
 
           {/* ENTERPRISE */}
           <motion.div variants={itemVariants}>
-            <div className="relative h-full flex flex-col p-6 md:p-8 rounded-3xl border bg-card text-card-foreground">
-              <div className="mb-6">
-                <div className="flex items-center gap-3 mb-3">
-                  <div className="p-2.5 bg-secondary rounded-xl">
-                    <ShieldCheck className="w-5 h-5 text-muted-foreground" />
-                  </div>
-                  <h3 className="text-lg font-bold">Enterprise</h3>
-                </div>
-                <div className="flex items-baseline mt-3">
-                  <span className="text-3xl font-bold tracking-tight">
-                    Custom
-                  </span>
-                </div>
-                <p className="mt-2 text-xs text-muted-foreground">
-                  For agencies & high-volume teams
-                </p>
-              </div>
-
-              <div className="flex-1 space-y-3 mb-6">
-                {enterpriseFeatures.map((feature, i) => (
-                  <div key={i} className="flex items-start gap-3">
-                    <div className="flex-shrink-0 w-5 h-5 rounded-full flex items-center justify-center mt-0.5 bg-primary/10">
-                      <CheckCircle className="w-3 h-3 text-primary" />
-                    </div>
-                    <span className="text-sm text-muted-foreground">
-                      {feature}
-                    </span>
-                  </div>
-                ))}
-              </div>
-
-              <AutoTransitionLink href="/contact-us" className="w-full">
-                <Button
-                  variant="outline"
-                  className="w-full py-5 rounded-full font-semibold text-sm"
-                >
-                  Contact Sales
-                </Button>
-              </AutoTransitionLink>
-            </div>
+            <EnterprisePlanCard
+              actionButton={
+                <AutoTransitionLink href="/contact-us" className="w-full">
+                  <Button
+                    variant="outline"
+                    className="w-full py-5 rounded-full font-semibold text-sm bg-gradient-to-r from-[#8364E8] to-[#D397FA] text-white border-0 hover:opacity-90"
+                  >
+                    Contact Sales
+                  </Button>
+                </AutoTransitionLink>
+              }
+            />
           </motion.div>
         </motion.div>
       </div>

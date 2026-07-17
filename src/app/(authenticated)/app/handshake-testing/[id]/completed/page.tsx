@@ -76,7 +76,7 @@ const TestCompleteSection = ({
 
       <motion.div
         variants={itemVariants}
-        className="bg-gradient-to-br from-primary to-primary/40 p-6 rounded-2xl flex flex-col justify-center items-center text-center overflow-hidden"
+        className="bg-gradient-to-br from-emerald-600 to-emerald-700 p-6 rounded-2xl flex flex-col justify-center items-center text-center overflow-hidden"
       >
         <p className="text-xs sm:text-sm text-white/80">Points Earned</p>
         <p className="text-6xl sm:text-7xl font-bold text-white">
@@ -105,11 +105,11 @@ const TestCompleteSection = ({
             }}
           />
         </div>
-        <h3 className="text-xl sm:text-2xl font-semibold mb-3 bg-gradient-to-b from-primary to-primary/50 text-transparent bg-clip-text">
+        <h3 className="text-xl sm:text-2xl font-semibold mb-3 bg-gradient-to-b from-emerald-600 to-emerald-700 text-transparent bg-clip-text">
           Feedback Summary
         </h3>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center">
-          <div className="bg-gradient-to-br from-primary to-primary/50 text-primary-foreground p-5 rounded-lg">
+          <div className="bg-gradient-to-br from-emerald-600 to-emerald-700 text-emerald-600-foreground p-5 rounded-lg">
             <p className="text-xs">Total Testers</p>
             <p className="text-4xl font-bold">
               {feedbackBreakdown?.totalTesters}
@@ -169,7 +169,7 @@ export default function AppTestingCompletedPage({
   if (isPending) {
     return (
       <div className="flex bg-[#f8fafc] dark:bg-[#0f151e] min-h-screen items-center justify-center">
-        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+        <Loader2 className="w-8 h-8 animate-spin text-emerald-600" />
       </div>
     );
   }

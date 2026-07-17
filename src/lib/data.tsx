@@ -97,7 +97,7 @@ export const blogPosts: BlogPost[] = [
     title: "The Future involves AI: How Machine Learning is Changing QA",
     excerpt:
       "Explore the revolutionary impact of AI on software testing, from predictive analysis to automated test generation.",
-    content: `<p>Artificial Intelligence is no longer just a buzzword—it's actively reshaping how we approach Quality Assurance. In this deep dive, we look at tools and methodologies that are leveraging ML algorithms.</p><p>Topics:</p><ul><li>Self-healing test scripts</li><li>Visual regression testing with AI</li><li>Predictive bug analysis</li><li>The role of the human tester in an AI world</li></ul>`,
+    content: `<p>Artificial Intelligence is no longer just a buzzword, it's actively reshaping how we approach Quality Assurance. In this deep dive, we look at tools and methodologies that are leveraging ML algorithms.</p><p>Topics:</p><ul><li>Self-healing test scripts</li><li>Visual regression testing with AI</li><li>Predictive bug analysis</li><li>The role of the human tester in an AI world</li></ul>`,
     author: {
       name: "Sarah Connor",
       avatarUrl:
@@ -161,7 +161,7 @@ export const blogPosts: BlogPost[] = [
       "The 2024 Update: Navigating Google Play's 12 Testers for 14 Days Requirement",
     excerpt:
       "Google has quietly updated their testing requirements for new individual developers. Here is everything you need to know about testing with 12 testers instead of 20.",
-    content: `<p>If you are an independent app developer preparing to launch on the Google Play Store, you are likely aware of the stringent testing requirements introduced for personal developer accounts created after November 2023. Initially, this policy mandated exactly 20 testers opting into a closed test for 14 continuous days.</p><p>However, in late 2024, developer forums and Google's official documentation reflected a significant, much-welcomed update: <strong>The requirement has been reduced from 20 testers to 12 testers.</strong></p><h3>What Exactly Has Changed?</h3><p>Google's primary goal—improving the overall quality of apps on the Play Store—remains unchanged. The adjustment to 12 testers acknowledges that gathering a dedicated cohort of 20 people was often an insurmountable hurdle for solo developers without a massive social network.</p>`,
+    content: `<p>If you are an independent app developer preparing to launch on the Google Play Store, you are likely aware of the stringent testing requirements introduced for personal developer accounts created after November 2023. Initially, this policy mandated exactly 20 testers opting into a closed test for 14 continuous days.</p><p>However, in late 2024, developer forums and Google's official documentation reflected a significant, much-welcomed update: <strong>The requirement has been reduced from 20 testers to 12 testers.</strong></p><h3>What Exactly Has Changed?</h3><p>Google's primary goal, improving the overall quality of apps on the Play Store, remains unchanged. The adjustment to 12 testers acknowledges that gathering a dedicated cohort of 20 people was often an insurmountable hurdle for solo developers without a massive social network.</p>`,
     author: {
       name: "Alex Narwal",
       avatarUrl:
@@ -231,7 +231,7 @@ export const communityPathSteps: RoadmapStep[] = [
       {
         title: "Profile Setup",
         description:
-          "Tell us about your device — model, Android version, RAM, screen size, and network — so we can match you with apps.",
+          "Tell us about your device ,  model, Android version, RAM, screen size, and network ,  so we can match you with apps.",
       },
       {
         title: "Request to Join",
@@ -254,7 +254,7 @@ export const communityPathSteps: RoadmapStep[] = [
     step: 2,
     title: "Submit Your App",
     description:
-      "Spend your earned points to submit your own app for community testing. Provide your Play Store link, category, and optional instructions. Your app goes through admin review before testers can see it.",
+      "Subscribe and publish your app on the Handshake Testing hub. Provide your Play Store link, category, and testing instructions. Your app goes through admin review before testers can request handshakes.",
     badgeText: "Requirement: Points & App",
     details: [
       {
@@ -289,12 +289,12 @@ export const communityPathSteps: RoadmapStep[] = [
       {
         title: "Live Campaign Dashboard",
         description:
-          "See how many testers have joined, their daily check-in progress, and when testing completes — all in real time.",
+          "See how many testers have joined, their daily check-in progress, and when testing completes ,  all in real time.",
       },
       {
         title: "Structured Feedback",
         description:
-          "Receive categorized feedback: bugs (with LOW/MEDIUM/HIGH/CRITICAL priority), suggestions, and praise — each with optional screenshots or videos.",
+          "Receive categorized feedback: bugs (with LOW/MEDIUM/HIGH/CRITICAL priority), suggestions, and praise ,  each with optional screenshots or videos.",
       },
       {
         title: "Daily Screenshot Proof",
@@ -328,7 +328,7 @@ export const communityPathSteps: RoadmapStep[] = [
       {
         title: "Campaign Summary",
         description:
-          "View your campaign results at a glance — total testers, completed days, bug count, suggestions, and praise.",
+          "View your campaign results at a glance ,  total testers, completed days, bug count, suggestions, and praise.",
       },
       {
         title: "Ship with Confidence",
@@ -344,13 +344,13 @@ export const professionalPathSteps: RoadmapStep[] = [
     step: 1,
     title: "Purchase a Package",
     description:
-      "Fast-track your testing by purchasing a professional testing package. One package equals one complete test cycle — no need to earn points. Pay securely via Razorpay with regional pricing available.",
+      "Fast-track your testing by purchasing a professional testing package. One package equals one complete test cycle ,  no handshake partner required. Pay securely via Razorpay with regional pricing available.",
     badgeText: "Time: 2 Mins • Cost: Varies by Plan",
     details: [
       {
         title: "Database-Driven Plans",
         description:
-          "Choose from active plans stored in our system — each with a set price, regional currency support, and package count (testing cycles).",
+          "Choose from active plans stored in our system ,  each with a set price, regional currency support, and package count (testing cycles).",
       },
       {
         title: "Instant Access",
@@ -365,7 +365,7 @@ export const professionalPathSteps: RoadmapStep[] = [
       {
         title: "Use Anytime",
         description:
-          "Your purchased packages stay in your wallet. Submit apps whenever you're ready — one package deducted per submission.",
+          "Your purchased packages stay in your wallet. Submit apps whenever you're ready ,  one package deducted per submission.",
       },
     ],
   },
@@ -373,7 +373,7 @@ export const professionalPathSteps: RoadmapStep[] = [
     step: 2,
     title: "Submit Your App",
     description:
-      "Provide your Play Store link, app name, logo, category, and optional tester instructions. Choose to save as draft or submit — one package is deducted on submission and the app enters admin review.",
+      "Provide your Play Store link, app name, logo, category, and optional tester instructions. Choose to save as draft or submit ,  one package is deducted on submission and the app enters admin review.",
     badgeText: "Requirement: 1 Package per App",
     details: [
       {
@@ -384,7 +384,7 @@ export const professionalPathSteps: RoadmapStep[] = [
       {
         title: "Draft or Submit",
         description:
-          "Save your progress as a draft with no package cost, or submit for testing — one package is deducted and your app enters admin review.",
+          "Save your progress as a draft with no package cost, or submit for testing ,  one package is deducted and your app enters admin review.",
       },
       {
         title: "Step-by-Step Guide",
@@ -413,12 +413,12 @@ export const professionalPathSteps: RoadmapStep[] = [
       {
         title: "Structured Bug Reports",
         description:
-          "Receive categorized feedback with severity levels: bugs (CRITICAL/HIGH/MEDIUM/LOW), suggestions, and praise — each with optional media attachments.",
+          "Receive categorized feedback with severity levels: bugs (CRITICAL/HIGH/MEDIUM/LOW), suggestions, and praise ,  each with optional media attachments.",
       },
       {
         title: "Device & OS Coverage",
         description:
-          "See exactly which Android device models, OS versions, screen sizes, RAM configurations, and languages were tested — with visual coverage charts.",
+          "See exactly which Android device models, OS versions, screen sizes, RAM configurations, and languages were tested ,  with visual coverage charts.",
       },
       {
         title: "Complete Transparency",
@@ -442,7 +442,7 @@ export const professionalPathSteps: RoadmapStep[] = [
       {
         title: "Verified Daily Proof",
         description:
-          "Every day of every tester is backed by screenshot verification — no automated or fake testing. Your compliance is fully documented.",
+          "Every day of every tester is backed by screenshot verification ,  no automated or fake testing. Your compliance is fully documented.",
       },
       {
         title: "Satisfaction Guarantee",
@@ -1603,7 +1603,7 @@ export const projects: Project[] = [
     avgTestersPerDay: 1.2,
     startedFrom: "22 Aug 2024",
     description:
-      "Canva makes design and video editing amazingly simple (and fun)! Create stunning designs with your photos and videos—even if you’re not a design expert!",
+      "Canva makes design and video editing amazingly simple (and fun)! Create stunning designs with your photos and videos, even if you’re not a design expert!",
     testingInstructions:
       "Please focus on the new video export feature. Try exporting a short video with animations and text overlays. Report any issues with export quality or speed.",
     androidVersion: "11+",
@@ -1647,7 +1647,7 @@ export const projects: Project[] = [
     avgTestersPerDay: 1.0,
     startedFrom: "15 Jul 2024",
     description:
-      "Figma is the all-in-one design platform for teams. Brainstorm, design, and build better products—from start to finish.",
+      "Figma is the all-in-one design platform for teams. Brainstorm, design, and build better products, from start to finish.",
     testingInstructions:
       "Test the prototyping links. Create a simple prototype with a few screens and share the link. Verify that it opens correctly on different devices.",
     androidVersion: "10+",

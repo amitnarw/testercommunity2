@@ -34,7 +34,7 @@ import { BackButton } from "@/components/back-button";
 
 const categorySlugMap: Record<string, string> = {
   "google-play-guidelines": "Google Play Guidelines",
-  "free-community-testing": "Free Community Testing",
+  "handshake-testing": "Handshake Testing",
   "paid-professional-testing": "Paid Professional Testing",
   "wallet-account": "Wallet & Account",
 };

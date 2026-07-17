@@ -1,5 +1,5 @@
 /**
- * Centralized route constants — single source of truth for all route paths.
+ * Centralized route constants ,  single source of truth for all route paths.
  * Import from here instead of hardcoding route strings.
  */
 export const ROUTES = {
@@ -51,6 +51,7 @@ export const ROUTES = {
     FAQS: "/admin/faqs",
     CONTROL_ROOM: "/admin/control-room",
     TESTER_ACTIVITY: "/admin/tester-activity",
+    MAIL: "/admin/mail",
     AUTH: {
       LOGIN: "/admin/auth/login",
     },

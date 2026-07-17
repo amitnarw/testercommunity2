@@ -159,7 +159,7 @@ export function PricingComparisonSection() {
             "Real Android phones only, no emulators",
             "Testers stay active for the full 14 days",
             "Real feedback to improve your app",
-            "Free community testing available too",
+            "Handshake testing available too",
             "~99% success rate on first try",
           ].map((benefit, i) => (
             <div key={i} className="flex items-start gap-3">

@@ -568,9 +568,8 @@ export default function AdminSubmissionDetailPage({
                       Handshake Testing Campaign
                     </h4>
                     <p className="text-sm text-muted-foreground max-w-[250px] mt-1 mx-auto leading-relaxed">
-                      This is a free community testing project. No direct
-                      financial transactions are attached to this specific
-                      submission.
+                      This is a handshake testing project managed through the
+                      subscription-based barter system.
                     </p>
                   </div>
                 </div>

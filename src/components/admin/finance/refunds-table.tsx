@@ -78,10 +78,10 @@ export function RefundsTable() {
                       <TableCell>
                         <Badge className={`text-xs ${statusColors[r.status] || "bg-gray-500/20 text-gray-600"}`}>{r.status}</Badge>
                       </TableCell>
-                      <TableCell className="text-xs max-w-[200px] truncate">{r.reason || "—"}</TableCell>
+                      <TableCell className="text-xs max-w-[200px] truncate">{r.reason || ", "}</TableCell>
                       <TableCell className="text-xs capitalize">{r.speed || "normal"}</TableCell>
                       <TableCell className="text-xs">{new Date(r.createdAt).toLocaleDateString()}</TableCell>
-                      <TableCell className="text-xs">{r.processedAt ? new Date(r.processedAt).toLocaleDateString() : "—"}</TableCell>
+                      <TableCell className="text-xs">{r.processedAt ? new Date(r.processedAt).toLocaleDateString() : ", "}</TableCell>
                     </TableRow>
                   ))}
                 </TableBody>

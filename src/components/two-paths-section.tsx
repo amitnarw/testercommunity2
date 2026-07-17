@@ -1,11 +1,13 @@
 "use client";
 
 import Link from "next/link";
-import { Check, X, Users, Briefcase, Star, Zap } from "lucide-react";
+import { Check, Briefcase, Star, Zap, Handshake } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Badge } from "./ui/badge";
 import { Button } from "./ui/button";
 import { HoverBorderGradient } from "./ui/hover-border-gradient";
+import { AutoTransitionLink } from "./auto-transition-link";
+import { ProfessionalPlanCard } from "./pricing-cards";
 import { motion } from "framer-motion";
 import { ROUTES } from "@/lib/routes";
 import { useState, useRef, useLayoutEffect, useEffect } from "react";
@@ -128,14 +130,6 @@ export function TwoPathsSection() {
     </div>
   );
 
-  const ConItem = ({ text }: { text: string }) => (
-    <div className="flex items-start gap-3">
-      <div className="flex-shrink-0 w-5 h-5 rounded-full flex items-center justify-center mt-0.5 bg-destructive/10">
-        <X className="w-3 h-3 text-destructive" />
-      </div>
-      <span className="text-sm text-muted-foreground/80">{text}</span>
-    </div>
-  );
 
   return (
     <section
@@ -208,46 +202,42 @@ export function TwoPathsSection() {
           </div>
           <div ref={slider} className="flex w-fit will-change-transform">
             <div className="panel w-screen flex justify-center px-4 will-change-transform">
-              <div className={cn(cardClasses(false), "w-full max-w-[90vw] transform-gpu")}>
-                <div className="mb-8 relative z-10">
-                  <div className="flex items-center gap-3 mb-4">
-                    <div className="p-2.5 bg-primary/10 rounded-xl">
-                      <Users className="w-6 h-6 text-primary" />
+              <div className="w-full max-w-[90vw] transform-gpu">
+                <ProfessionalPlanCard
+                  accent="emerald"
+                  accentIcon={<Handshake className="w-24 h-24 text-white" />}
+                  description="Monthly barter subscription ,  publish your app and test others in return."
+                  plan={{
+                    id: "handshake",
+                    name: "Handshake",
+                    price: 99,
+                    package: 1,
+                    features: [
+                      "Publish and join handshake tests",
+                      "Gamified levels with more test slots",
+                      "No per-tester points required",
+                      "Barter-based, you test theirs, they test yours",
+                    ],
+                    billingType: "SUBSCRIPTION",
+                    isActive: true,
+                    createdAt: new Date(),
+                    updatedAt: new Date(),
+                  }}
+                  actionButton={
+                    <div className="w-full">
+                      <AutoTransitionLink href={ROUTES.AUTHENTICATED.HANDSHAKE_TESTING} className="flex items-center justify-center w-full">
+                        <HoverBorderGradient
+                          as="div"
+                          containerClassName="w-full"
+                          className="bg-white text-emerald-600 flex justify-center items-center space-x-2 w-full py-4 font-bold cursor-pointer"
+                        >
+                          <Handshake className="w-4 h-4 mr-2" />
+                          <span className="font-semibold">Explore Handshake Testing</span>
+                        </HoverBorderGradient>
+                      </AutoTransitionLink>
                     </div>
-                    <h3 className="text-xl font-medium text-foreground">
-                      Handshake Testing Path
-                    </h3>
-                  </div>
-                  <div className="mt-4 flex items-baseline">
-                    <span className="text-4xl font-bold tracking-tight">Free</span>
-                    <span className="ml-2 text-sm font-medium text-muted-foreground">/ forever</span>
-                  </div>
-                  <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
-                    Test apps, earn points, and get your app tested by the community.
-                  </p>
-                </div>
-                <div className="flex-1 space-y-4 mb-8 relative z-10">
-                  <div className="space-y-3">
-                    {['Reciprocal "give-to-get" model', "Earn points for testing other apps", "Access a diverse pool of real users"].map((feature, i) => (
-                      <FeatureItem key={i} text={feature} isPopular={false} />
-                    ))}
-                  </div>
-                  <div className="border-t border-border/50 pt-4 mt-4">
-                    <p className="text-xs font-semibold uppercase tracking-wider text-destructive mb-3">Limitations</p>
-                    {["You must test other apps first to earn points", "No guaranteed timeline, depends on community availability", "Testers are volunteers, not vetted professionals", "No Google Play compliance support included"].map((con, i) => (
-                      <div className="mb-3 last:mb-0" key={i}>
-                        <ConItem text={con} />
-                      </div>
-                    ))}
-                  </div>
-                </div>
-                <div className="mt-auto relative z-10">
-                  <Link href={ROUTES.AUTHENTICATED.HANDSHAKE_TESTING} className="w-full block">
-                    <Button className="w-full py-6 rounded-full font-semibold text-base transition-all duration-300" variant="outline">
-                      Explore Handshake Testing
-                    </Button>
-                  </Link>
-                </div>
+                  }
+                />
               </div>
             </div>
             <div className="panel w-screen flex justify-center px-4 will-change-transform">
@@ -305,53 +295,43 @@ export function TwoPathsSection() {
           variants={containerVariants}
           className="hidden md:grid md:grid-cols-2 gap-8 lg:gap-12 max-w-5xl mx-auto items-stretch"
         >
-          {/* Path 1: Free (Standard Style) - Desktop Only */}
+          {/* Path 1: Handshake - Desktop Only */}
           <div className="h-full">
-            <motion.div
-              variants={itemVariants}
-              whileHover={{ y: -8, scale: 1.02 }}
-              className={cardClasses(false)}
-            >
-              <div className="mb-8 relative z-10">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="p-2.5 bg-primary/10 rounded-xl">
-                    <Users className="w-6 h-6 text-primary" />
-                  </div>
-                  <h3 className="text-xl font-medium text-foreground">
-                    The Free Path
-                  </h3>
+            <ProfessionalPlanCard
+              accent="emerald"
+              accentIcon={<Handshake className="w-24 h-24 text-white" />}
+              description="Monthly barter subscription ,  publish your app and test others in return."
+              plan={{
+                id: "handshake",
+                name: "Handshake",
+                price: 99,
+                package: 1,
+                features: [
+                  "Publish and join handshake tests",
+                  "Gamified levels with more test slots",
+                  "No per-tester points required",
+                  "Barter-based, you test theirs, they test yours",
+                ],
+                billingType: "SUBSCRIPTION",
+                isActive: true,
+                createdAt: new Date(),
+                updatedAt: new Date(),
+              }}
+              actionButton={
+                <div className="w-full">
+                  <AutoTransitionLink href={ROUTES.AUTHENTICATED.HANDSHAKE_TESTING} className="flex items-center justify-center w-full">
+                    <HoverBorderGradient
+                      as="div"
+                      containerClassName="w-full"
+                      className="bg-white text-emerald-600 flex justify-center items-center space-x-2 w-full py-4 font-bold cursor-pointer"
+                    >
+                      <Handshake className="w-4 h-4 mr-2" />
+                      <span className="font-semibold">Explore Handshake Testing</span>
+                    </HoverBorderGradient>
+                  </AutoTransitionLink>
                 </div>
-                <div className="mt-4 flex items-baseline">
-                  <span className="text-4xl font-bold tracking-tight">Free</span>
-                  <span className="ml-2 text-sm font-medium text-muted-foreground">/ forever</span>
-                </div>
-                <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
-                  Test apps, earn points, and get your app tested by the community.
-                </p>
-              </div>
-              <div className="flex-1 space-y-4 mb-8 relative z-10">
-                <div className="space-y-3">
-                  {['Reciprocal "give-to-get" model', "Earn points for testing other apps", "Access a diverse pool of real users"].map((feature, i) => (
-                    <FeatureItem key={i} text={feature} isPopular={false} />
-                  ))}
-                </div>
-                <div className="border-t border-border/50 pt-4 mt-4">
-                  <p className="text-xs font-semibold uppercase tracking-wider text-destructive mb-3">Limitations</p>
-                  {["You must test other apps first to earn points", "No guaranteed timeline, depends on community availability", "Testers are volunteers, not vetted professionals", "No Google Play compliance support included"].map((con, i) => (
-                    <div className="mb-3 last:mb-0" key={i}>
-                      <ConItem text={con} />
-                    </div>
-                  ))}
-                </div>
-              </div>
-              <div className="mt-auto relative z-10">
-                <Link href={ROUTES.AUTHENTICATED.HANDSHAKE_TESTING} className="w-full block">
-                  <Button className="w-full py-6 rounded-full font-semibold text-base transition-all duration-300" variant="outline">
-                    Explore Handshake Testing
-                  </Button>
-                </Link>
-              </div>
-            </motion.div>
+              }
+            />
           </div>
 
           {/* Path 2: Professional (Popular Style) - Desktop Only */}

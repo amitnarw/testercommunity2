@@ -58,7 +58,7 @@ export function FinanceOverview() {
       <div className="grid gap-4 grid-cols-2 md:grid-cols-4">
         <StatCard
           title="Total Revenue"
-          value={dashboard ? formatCurrency(Math.floor(dashboard.totalRevenue / 100)) : "—"}
+          value={dashboard ? formatCurrency(Math.floor(dashboard.totalRevenue / 100)) : ", "}
           subtitle="from captured payments"
           icon={TrendingUp}
           color="border-emerald-500"
@@ -66,7 +66,7 @@ export function FinanceOverview() {
         />
         <StatCard
           title="Total Orders"
-          value={dashboard?.totalOrders ?? "—"}
+          value={dashboard?.totalOrders ?? ", "}
           subtitle={`${dashboard?.paidOrders ?? 0} paid`}
           icon={ShoppingCart}
           color="border-blue-500"
@@ -74,7 +74,7 @@ export function FinanceOverview() {
         />
         <StatCard
           title="Packages Sold"
-          value={dashboard?.packagesSold ?? "—"}
+          value={dashboard?.packagesSold ?? ", "}
           subtitle={`${dashboard?.paidOrders ?? 0} purchases`}
           icon={Package}
           color="border-violet-500"
@@ -82,7 +82,7 @@ export function FinanceOverview() {
         />
         <StatCard
           title="Tester Earnings"
-          value={dashboard ? `₹${(dashboard.testerEarnings || 0).toLocaleString()}` : "—"}
+          value={dashboard ? `₹${(dashboard.testerEarnings || 0).toLocaleString()}` : ", "}
           subtitle="pending withdrawals"
           icon={Wallet}
           color="border-amber-500"
@@ -98,7 +98,7 @@ export function FinanceOverview() {
         />
         <StatCard
           title="Pending Withdrawals"
-          value={dashboard?.pendingWithdrawalsCount ?? "—"}
+          value={dashboard?.pendingWithdrawalsCount ?? ", "}
           subtitle={dashboard ? `₹${(dashboard.pendingWithdrawalsAmount || 0).toLocaleString()}` : ""}
           icon={DollarSign}
           color="border-orange-500"
@@ -106,7 +106,7 @@ export function FinanceOverview() {
         />
         <StatCard
           title="Total Invoices"
-          value={dashboard?.totalInvoices ?? "—"}
+          value={dashboard?.totalInvoices ?? ", "}
           subtitle={`${dashboard?.totalRefunds ?? 0} refunds`}
           icon={FileText}
           color="border-rose-500"
@@ -114,7 +114,7 @@ export function FinanceOverview() {
         />
         <StatCard
           title="Payments"
-          value={dashboard?.totalPayments ?? "—"}
+          value={dashboard?.totalPayments ?? ", "}
           subtitle={`${dashboard?.capturedPayments ?? 0} captured`}
           icon={CreditCard}
           color="border-indigo-500"

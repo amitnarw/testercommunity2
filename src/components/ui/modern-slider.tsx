@@ -1,8 +1,33 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useRef } from "react";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
+
+const accentMap: Record<string, { text: string; bg: string; border: string; from: string; to: string; shadowClass: string; dot: string; markerFill: string; markerEmpty: string }> = {
+  primary: {
+    text: "text-primary",
+    bg: "bg-primary",
+    border: "border-primary",
+    from: "from-primary",
+    to: "to-accent",
+    shadowClass: "shadow-primary/30",
+    dot: "bg-primary",
+    markerFill: "bg-primary",
+    markerEmpty: "bg-border",
+  },
+  emerald: {
+    text: "text-emerald-600",
+    bg: "bg-emerald-500",
+    border: "border-emerald-500",
+    from: "from-emerald-500",
+    to: "to-emerald-400",
+    shadowClass: "shadow-emerald-500/30",
+    dot: "bg-emerald-500",
+    markerFill: "bg-emerald-500",
+    markerEmpty: "bg-border",
+  },
+};
 
 interface ModernSliderProps {
   id?: string;
@@ -12,7 +37,7 @@ interface ModernSliderProps {
   max: number;
   label: string;
   unit?: string;
-  accentColor?: string;
+  accentColor?: "primary" | "emerald";
 }
 
 export function ModernSlider({
@@ -25,6 +50,7 @@ export function ModernSlider({
   unit = "",
   accentColor = "primary",
 }: ModernSliderProps) {
+  const accent = accentMap[accentColor] ?? accentMap.primary;
   const progress = ((value - min) / (max - min)) * 100;
   const sliderRef = useRef<HTMLDivElement>(null);
 
@@ -68,10 +94,7 @@ export function ModernSlider({
             key={value}
             initial={{ y: -10, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
-            className={cn(
-              "text-3xl font-bold",
-              accentColor === "primary" ? "text-primary" : "text-green-500",
-            )}
+            className={cn("text-3xl font-bold", accent.text)}
           >
             {value}
           </motion.span>
@@ -94,7 +117,7 @@ export function ModernSlider({
                 key={i}
                 className={cn(
                   "w-1 h-1 rounded-full transition-colors duration-200",
-                  i <= value - min ? "bg-primary" : "bg-border",
+                  i <= value - min ? accent.markerFill : accent.markerEmpty,
                 )}
               />
             ))}
@@ -103,21 +126,21 @@ export function ModernSlider({
 
         {/* Filled track */}
         <motion.div
-          className="absolute h-2 rounded-full bg-gradient-to-r from-primary to-accent shadow-[0_0_10px_hsl(var(--primary)/0.4)]"
+          className={cn("absolute h-2 rounded-full bg-gradient-to-r", accent.from, accent.to)}
           style={{ width: `${progress}%` }}
           layout
         />
 
         {/* Thumb */}
         <motion.div
-          className="absolute w-6 h-6 rounded-full bg-background border-[3px] border-primary shadow-lg shadow-primary/30 cursor-grab active:cursor-grabbing"
+          className={cn("absolute w-6 h-6 rounded-full bg-background border-[3px] shadow-lg cursor-grab active:cursor-grabbing", accent.border, `shadow-lg ${accent.shadowClass}`)}
           style={{ left: `calc(${progress}% - 12px)` }}
           layout
           whileHover={{ scale: 1.15 }}
           whileTap={{ scale: 1.05 }}
         >
           {/* Inner dot */}
-          <div className="absolute inset-[3px] rounded-full bg-primary" />
+          <div className={cn("absolute inset-[3px] rounded-full", accent.dot)} />
         </motion.div>
       </div>
 

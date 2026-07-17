@@ -24,6 +24,7 @@ import {
   MessageSquare,
   Headphones,
   Landmark,
+  Mail,
   Settings,
   ThumbsUp,
   FileText,
@@ -33,6 +34,7 @@ import { BaseSidebar, SidebarNavLink } from "@/components/ui/base-sidebar";
 import { authClient } from "@/lib/auth-client";
 import { ROUTES } from "@/lib/routes";
 import { hasPermission } from "@/lib/permissions";
+import { useMailUnreadCount } from "@/hooks/useAdmin";
 
 const mainNavLinks = [
   { name: "Dashboard", href: ROUTES.AUTHENTICATED.DASHBOARD, icon: Home },
@@ -91,13 +93,13 @@ const adminNavLinks: AdminNavLink[] = [
     moduleName: "submissions",
   },
 
-  // Free Services
+  // Handshake Services
   {
-    name: "Free Subs",
+    name: "Handshake Apps",
     href: ROUTES.ADMIN.SUBMISSIONS_FREE,
     icon: Handshake,
     section: "free",
-    badge: "FREE",
+    badge: "HANDSHAKE",
     moduleName: "submissions",
   },
 
@@ -209,6 +211,13 @@ const adminNavLinks: AdminNavLink[] = [
 
   // Support
   {
+    name: "Mail",
+    href: ROUTES.ADMIN.MAIL,
+    icon: Mail,
+    section: "support",
+    moduleName: "mail",
+  },
+  {
     name: "Support",
     href: ROUTES.ADMIN.SUPPORT,
     icon: Headphones,
@@ -248,6 +257,15 @@ export function Sidebar({
   }
 
   const permissions = role?.permissions;
+  const { data: unreadCount = 0 } = useMailUnreadCount();
+
+  const mailLinkIndex = adminNavLinks.findIndex((l) => l.name === "Mail");
+  if (mailLinkIndex >= 0) {
+    adminNavLinks[mailLinkIndex] = {
+      ...adminNavLinks[mailLinkIndex],
+      badge: unreadCount > 0 ? String(unreadCount) : undefined,
+    };
+  }
 
   function isLinkVisible(link: (typeof adminNavLinks)[number]): boolean {
     if (link.superAdminOnly) return roleName === "super_admin";
@@ -258,7 +276,7 @@ export function Sidebar({
   const sections = [
     { key: "overview" as const, label: "Overview" },
     { key: "paid" as const, label: "Paid", color: "text-amber-500" },
-    { key: "free" as const, label: "Free", color: "text-black/70" },
+    { key: "free" as const, label: "Handshake", color: "text-black/70" },
     { key: "finance" as const, label: "Finance", color: "text-cyan-300" },
     { key: "platform" as const, label: "Platform" },
     { key: "support" as const, label: "Support", color: "text-green-400" },

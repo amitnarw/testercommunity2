@@ -66,7 +66,7 @@ export function DeclarationSummaryCards({
     },
     {
       label: "Test Type",
-      value: stats.appType === "PAID" ? "Paid" : "Community",
+      value: stats.appType === "PAID" ? "Paid" : "Handshake",
     },
   ];
 

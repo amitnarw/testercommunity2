@@ -124,14 +124,14 @@ const PaginatedAppList = ({
           </div>
         ) : (
           <div className="flex flex-col items-center justify-center py-20 text-center bg-card/50 rounded-3xl border border-dashed border-muted-foreground/20 relative overflow-hidden group">
-            <div className="absolute inset-0 bg-gradient-to-b from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+            <div className="absolute inset-0 bg-gradient-to-b from-emerald-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
             <motion.div
               initial={{ scale: 0.8, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
-              className="p-6 bg-primary/10 rounded-full mb-6 relative z-10 ring-8 ring-primary/5"
+              className="p-6 bg-emerald-500/10 rounded-full mb-6 relative z-10 ring-8 ring-primary/5"
             >
-              <Icon className="w-10 h-10 text-primary" />
+              <Icon className="w-10 h-10 text-emerald-600" />
             </motion.div>
             <h3 className="text-xl font-bold mb-2 relative z-10">
               {emptyTitle}
@@ -572,7 +572,7 @@ function CommunityDashboardContent() {
       <div className="container mx-auto px-4 md:px-6">
         <header className="mb-12">
           <div className="mb-6">
-            <h1 className="text-2xl sm:text-4xl font-bold bg-gradient-to-b from-primary to-primary/40 bg-clip-text text-transparent leading-[unset] pb-2">
+            <h1 className="text-2xl sm:text-4xl font-bold bg-gradient-to-b from-emerald-600 to-emerald-700 bg-clip-text text-transparent leading-[unset] pb-2">
               Handshake Testing
             </h1>
             <p className="text-sm sm:text-base text-muted-foreground max-w-xl">
@@ -618,7 +618,7 @@ function CommunityDashboardContent() {
             </BentoCard>
 
             <div className="flex flex-row gap-2 col-span-2">
-              <BentoCard className="bg-gradient-to-br from-primary to-primary/40 text-primary-foreground relative overflow-hidden w-5/12 sm:w-1/2">
+              <BentoCard className="bg-gradient-to-br from-emerald-600 to-emerald-700 text-white relative overflow-hidden w-5/12 sm:w-1/2">
                 <CardTitle className="text-sm font-medium flex items-center gap-2">
                   <Star className="absolute top-5 left-5 scale-[6] text-white/20 rotate-45 w-4 h-4" />{" "}
                   My Points
@@ -659,7 +659,7 @@ function CommunityDashboardContent() {
 
             <BentoCard className="flex !flex-row sm:!flex-col gap-2 col-span-2 lg:col-span-1 !p-2.5 sm:!p-4">
               <Button
-                className="w-full justify-start h-full bg-gradient-to-b from-primary to-primary/40 text-primary-foreground p-2 sm:p-auto"
+                className="w-full justify-start h-full bg-gradient-to-b from-emerald-600 to-emerald-700 text-white p-2 sm:p-auto"
                 onClick={() => openPage("/app/handshake-testing/submit")}
               >
                 <PlusCircle className="absolute sm:static left-0 top-0 scale-[2] text-white/20 sm:left-auto sm:top-auto sm:scale-[1] sm:text-white mr-2 h-4 w-4" />
@@ -682,8 +682,8 @@ function CommunityDashboardContent() {
         </header>
 
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-8">
-          <div className="rounded-xl border border-primary/30 bg-primary/5 p-3 text-center">
-            <p className="text-2xl font-bold text-primary">
+          <div className="rounded-xl border border-emerald-500/30 bg-emerald-500/5 p-3 text-center">
+            <p className="text-2xl font-bold text-emerald-600">
               {handshakeStats?.handshakeLevel ?? 1}
             </p>
             <p className="text-xs text-muted-foreground">Handshake Level</p>
@@ -724,12 +724,12 @@ function CommunityDashboardContent() {
               <div className="flex gap-2 flex-row items-center justify-end w-full md:w-auto">
                 <Button
                   onClick={() => openPage("/app/handshake-testing/history")}
-                  className="group relative h-10 pl-4 pr-2 rounded-full bg-background border border-border hover:border-primary/50 hover:bg-muted/50 transition-all duration-300 overflow-hidden shadow-sm hover:shadow-md hover:shadow-primary/5"
+                  className="group relative h-10 pl-4 pr-2 rounded-full bg-background border border-border hover:border-primary/50 hover:bg-muted/50 transition-all duration-300 overflow-hidden shadow-sm hover:shadow-md hover:shadow-emerald-500/5"
                 >
-                  <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                  <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
                   <div className="relative flex items-center gap-2.5">
-                    <span className="flex items-center justify-center w-5 h-5 rounded-full bg-primary/10 text-primary group-hover:scale-110 transition-transform duration-300">
+                    <span className="flex items-center justify-center w-5 h-5 rounded-full bg-emerald-500/10 text-emerald-600 group-hover:scale-110 transition-transform duration-300">
                       <History className="w-3 h-3" />
                     </span>
 
@@ -737,7 +737,7 @@ function CommunityDashboardContent() {
                       History
                     </span>
 
-                    <div className="w-6 h-6 flex items-center justify-center rounded-full text-muted-foreground/50 group-hover:bg-primary group-hover:text-primary-foreground group-hover:translate-x-0.5 transition-all duration-300 ml-0.5">
+                    <div className="w-6 h-6 flex items-center justify-center rounded-full text-muted-foreground/50 group-hover:bg-emerald-500 group-hover:text-white group-hover:translate-x-0.5 transition-all duration-300 ml-0.5">
                       <ChevronRight className="w-3.5 h-3.5" />
                     </div>
                   </div>
@@ -817,7 +817,7 @@ function CommunityDashboardContent() {
               <div className="mb-6">
                 <p className="text-sm text-muted-foreground">
                   These are the apps you're currently testing or waiting to
-                  start. Complete daily tasks to earn points!
+                  start. Complete daily tasks to fulfill your handshake commitment!
                 </p>
               </div>
               <SubTabUI

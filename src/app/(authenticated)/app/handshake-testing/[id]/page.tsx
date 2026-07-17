@@ -193,7 +193,7 @@ function AppTestingPageClient({ id }: { id: string }) {
         <main className="max-w-7xl mx-auto grid lg:grid-cols-3 gap-12 mt-8">
           <div className="lg:col-span-2 space-y-12 overflow-hidden">
             <section>
-              <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-br from-primary to-accent bg-clip-text text-transparent pb-2">
+              <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-br from-emerald-500 to-emerald-400 bg-clip-text text-transparent pb-2">
                 {appDetails?.androidApp?.appName}
               </h1>
               <ExpandableText
@@ -203,7 +203,7 @@ function AppTestingPageClient({ id }: { id: string }) {
             </section>
 
             {appDetails?.handshake && (
-              <section className="rounded-2xl border border-primary/20 bg-primary/5 p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center gap-4">
+              <section className="rounded-2xl border border-emerald-500/20 bg-primary/5 p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center gap-4">
                 <div className="relative h-14 w-14 flex-shrink-0 overflow-hidden rounded-xl bg-muted">
                   {appDetails.handshake.partnerApp?.appLogoUrl && (
                     <SafeImage
@@ -215,7 +215,7 @@ function AppTestingPageClient({ id }: { id: string }) {
                   )}
                 </div>
                 <div className="flex-1 min-w-0">
-                  <p className="text-xs font-semibold uppercase tracking-wider text-primary">
+                  <p className="text-xs font-semibold uppercase tracking-wider text-emerald-600">
                     Your Handshake Partner
                   </p>
                   <p className="font-medium truncate">
@@ -406,7 +406,7 @@ function AppTestingPageClient({ id }: { id: string }) {
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <Card className="p-4 bg-gradient-to-br from-secondary to-secondary/50 hover:shadow-lg transition-shadow">
                   <div className="flex items-center gap-3 mb-2">
-                    <div className="p-2 bg-primary/10 rounded-lg text-primary">
+                    <div className="p-2 bg-emerald-500/10 rounded-lg text-emerald-600">
                       <CheckCircle className="w-5 h-5" />
                     </div>
                     <h3 className="font-semibold">Complete the Full Cycle</h3>
@@ -418,7 +418,7 @@ function AppTestingPageClient({ id }: { id: string }) {
                 </Card>
                 <Card className="p-4 bg-gradient-to-br from-secondary to-secondary/50 hover:shadow-lg transition-shadow">
                   <div className="flex items-center gap-3 mb-2">
-                    <div className="p-2 bg-primary/10 rounded-lg text-primary">
+                    <div className="p-2 bg-emerald-500/10 rounded-lg text-emerald-600">
                       <RefreshCw className="w-5 h-5" />
                     </div>
                     <h3 className="font-semibold">No Skipping Days</h3>
@@ -428,9 +428,9 @@ function AppTestingPageClient({ id }: { id: string }) {
                     will reset to Day 1. Consistency is key!
                   </p>
                 </Card>
-                <Card className="p-4 bg-gradient-to-br from-primary/10 to-primary/5 hover:shadow-lg transition-shadow border-primary/20">
+                <Card className="p-4 bg-gradient-to-br from-emerald-500/10 to-emerald-600/5 hover:shadow-lg transition-shadow border-emerald-500/20">
                   <div className="flex items-center gap-3 mb-2">
-                    <div className="p-2 bg-primary/20 rounded-lg text-primary">
+                    <div className="p-2 bg-emerald-500/20 rounded-lg text-emerald-600">
                       <Users className="w-5 h-5" />
                     </div>
                     <h3 className="font-semibold">Join the Google Group</h3>
@@ -441,7 +441,7 @@ function AppTestingPageClient({ id }: { id: string }) {
                 </Card>
                 <Card className="p-4 bg-gradient-to-br from-secondary to-secondary/50 hover:shadow-lg transition-shadow">
                   <div className="flex items-center gap-3 mb-2">
-                    <div className="p-2 bg-primary/10 rounded-lg text-primary">
+                    <div className="p-2 bg-emerald-500/10 rounded-lg text-emerald-600">
                       <Trophy className="w-5 h-5" />
                     </div>
                     <h3 className="font-semibold">Provide Quality Feedback</h3>
@@ -460,12 +460,12 @@ function AppTestingPageClient({ id }: { id: string }) {
                   <span className="text-2xl font-bold whitespace-nowrap">
                     Developer's Instructions
                   </span>
-                  <span className="bg-gradient-to-b from-primary to-primary/50 text-white font-bold rounded-lg px-4 py-0.5 text-xl hidden sm:inline">
+                  <span className="bg-gradient-to-b from-emerald-500 to-emerald-600/50 text-white font-bold rounded-lg px-4 py-0.5 text-xl hidden sm:inline">
                     Important
                   </span>
                 </h2>
-                <div className="prose prose-base dark:prose-invert leading-relaxed text-white dark:text-black bg-sidebar p-3 sm:p-6 rounded-lg border-primary border-l-4 shadow-xl shadow-gray-300 dark:shadow-gray-700 text-sm sm:text-base">
-                  <span className="bg-gradient-to-b from-primary to-primary/50 text-white font-bold rounded-md px-4 py-0.5 text-lg inline sm:hidden">
+                <div className="prose prose-base dark:prose-invert leading-relaxed text-white dark:text-black bg-sidebar p-3 sm:p-6 rounded-lg border-emerald-500/30 border-l-4 shadow-xl shadow-gray-300 dark:shadow-gray-700 text-sm sm:text-base">
+                  <span className="bg-gradient-to-b from-emerald-500 to-emerald-600/50 text-white font-bold rounded-md px-4 py-0.5 text-lg inline sm:hidden">
                     Important
                   </span>
                   <p className="mt-2 sm:mt-0">
@@ -481,7 +481,7 @@ function AppTestingPageClient({ id }: { id: string }) {
               </h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                 <div className="bg-secondary p-4 rounded-lg flex items-start gap-3">
-                  <Compass className="w-6 h-6 text-primary flex-shrink-0 mt-1" />
+                  <Compass className="w-6 h-6 text-emerald-600 flex-shrink-0 mt-1" />
                   <div>
                     <h4 className="font-semibold">Explore Freely</h4>
                     <p className="text-muted-foreground">
@@ -491,7 +491,7 @@ function AppTestingPageClient({ id }: { id: string }) {
                   </div>
                 </div>
                 <div className="bg-secondary p-4 rounded-lg flex items-start gap-3">
-                  <Smile className="w-6 h-6 text-primary flex-shrink-0 mt-1" />
+                  <Smile className="w-6 h-6 text-emerald-600 flex-shrink-0 mt-1" />
                   <div>
                     <h4 className="font-semibold">Note Your Feelings</h4>
                     <p className="text-muted-foreground">
@@ -501,7 +501,7 @@ function AppTestingPageClient({ id }: { id: string }) {
                   </div>
                 </div>
                 <div className="bg-secondary p-4 rounded-lg flex items-start gap-3">
-                  <PenTool className="w-6 h-6 text-primary flex-shrink-0 mt-1" />
+                  <PenTool className="w-6 h-6 text-emerald-600 flex-shrink-0 mt-1" />
                   <div>
                     <h4 className="font-semibold">Be Specific</h4>
                     <p className="text-muted-foreground">
@@ -510,8 +510,8 @@ function AppTestingPageClient({ id }: { id: string }) {
                     </p>
                   </div>
                 </div>
-                <div className="bg-gradient-to-br from-primary/20 to-accent/20 p-4 rounded-lg flex items-start gap-3">
-                  <Users className="w-6 h-6 text-primary flex-shrink-0 mt-1" />
+                <div className="bg-gradient-to-br from-emerald-500/20 to-emerald-400/20 p-4 rounded-lg flex items-start gap-3">
+                  <Users className="w-6 h-6 text-emerald-600 flex-shrink-0 mt-1" />
                   <div>
                     <h4 className="font-semibold">Google Group Access</h4>
                     <p className="text-muted-foreground">
@@ -520,7 +520,7 @@ function AppTestingPageClient({ id }: { id: string }) {
                   </div>
                 </div>
                 <div className="bg-secondary p-4 rounded-lg flex items-start gap-3">
-                  <ThumbsUp className="w-6 h-6 text-primary flex-shrink-0 mt-1" />
+                  <ThumbsUp className="w-6 h-6 text-emerald-600 flex-shrink-0 mt-1" />
                   <div>
                     <h4 className="font-semibold">Be Constructive</h4>
                     <p className="text-muted-foreground">

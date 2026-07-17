@@ -198,7 +198,7 @@ const APP_TYPE_COLORS: Record<string, string> = {
 };
 
 function formatDate(dateStr: string | null) {
-  if (!dateStr) return "—";
+  if (!dateStr) return ", ";
   return new Date(dateStr).toLocaleDateString("en-IN", {
     year: "numeric",
     month: "short",
@@ -1474,15 +1474,15 @@ export default function AdminUserDetailsPage() {
               <CardContent className="space-y-3 text-sm">
                 <div className="flex items-center gap-3">
                   <Briefcase className="w-4 h-4 text-muted-foreground shrink-0" />
-                  <span>{formatProfileType(user.profileType) || "—"}</span>
+                  <span>{formatProfileType(user.profileType) || ", "}</span>
                 </div>
                 <div className="flex items-center gap-3">
                   <Shield className="w-4 h-4 text-muted-foreground shrink-0" />
-                  <span>{formatEnum(user.jobRole) || "—"}</span>
+                  <span>{formatEnum(user.jobRole) || ", "}</span>
                 </div>
                 <div className="flex items-center gap-3">
                   <Activity className="w-4 h-4 text-muted-foreground shrink-0" />
-                  <span>{formatExperience(user.experience) || "—"}</span>
+                  <span>{formatExperience(user.experience) || ", "}</span>
                 </div>
               </CardContent>
             </Card>
@@ -1506,19 +1506,19 @@ export default function AdminUserDetailsPage() {
                 </div>
                 <div className="flex items-center gap-3">
                   <Phone className="w-4 h-4 text-muted-foreground shrink-0" />
-                  <span>{user.phone || "—"}</span>
+                  <span>{user.phone || ", "}</span>
                 </div>
                 <div className="flex items-center gap-3">
                   <Globe className="w-4 h-4 text-muted-foreground shrink-0" />
-                  <span>{user.country || "—"}</span>
+                  <span>{user.country || ", "}</span>
                 </div>
                 <div className="flex items-center gap-3">
                   <Lightbulb className="w-4 h-4 text-muted-foreground shrink-0" />
-                  <span className="capitalize">{formatEnum(user.serviceUsage) || "—"}</span>
+                  <span className="capitalize">{formatEnum(user.serviceUsage) || ", "}</span>
                 </div>
                 <div className="flex items-center gap-3">
                   <MessageSquare className="w-4 h-4 text-muted-foreground shrink-0" />
-                  <span className="capitalize">{formatCommunicationMethods(user.communicationMethods) || "—"}</span>
+                  <span className="capitalize">{formatCommunicationMethods(user.communicationMethods) || ", "}</span>
                 </div>
               </CardContent>
             </Card>
@@ -1562,23 +1562,23 @@ export default function AdminUserDetailsPage() {
               <CardContent className="space-y-3 text-sm">
                 <div className="flex items-center gap-3">
                   <Building2 className="w-4 h-4 text-muted-foreground shrink-0" />
-                  <span>{user.companyName || "—"}</span>
+                  <span>{user.companyName || ", "}</span>
                 </div>
                 <div className="flex items-center gap-3">
                   <Globe className="w-4 h-4 text-muted-foreground shrink-0" />
                   {user.companyWebsite ? (
                     <a href={user.companyWebsite} target="_blank" rel="noreferrer" className="hover:underline truncate">{user.companyWebsite}</a>
                   ) : (
-                    <span>—</span>
+                    <span>, </span>
                   )}
                 </div>
                 <div className="flex items-center gap-3">
                   <Briefcase className="w-4 h-4 text-muted-foreground shrink-0" />
-                  <span>{user.companySize ? `${formatCompanySize(user.companySize)} employees` : "—"}</span>
+                  <span>{user.companySize ? `${formatCompanySize(user.companySize)} employees` : ", "}</span>
                 </div>
                 <div className="flex items-center gap-3">
                   <Shield className="w-4 h-4 text-muted-foreground shrink-0" />
-                  <span>{formatEnum(user.positionInCompany) || "—"}</span>
+                  <span>{formatEnum(user.positionInCompany) || ", "}</span>
                 </div>
               </CardContent>
             </Card>
@@ -1593,15 +1593,15 @@ export default function AdminUserDetailsPage() {
               <CardContent className="space-y-3 text-sm">
                 <div className="flex items-center gap-3">
                   <FolderGit className="w-4 h-4 text-muted-foreground shrink-0" />
-                  <span>{user.totalPublishedApps ? `${formatPublishedApps(user.totalPublishedApps)} published apps` : "—"}</span>
+                  <span>{user.totalPublishedApps ? `${formatPublishedApps(user.totalPublishedApps)} published apps` : ", "}</span>
                 </div>
                 <div className="flex items-center gap-3">
                   <Smartphone className="w-4 h-4 text-muted-foreground shrink-0" />
-                  <span className="capitalize">{formatEnum(user.platformDevelopment) || "—"}</span>
+                  <span className="capitalize">{formatEnum(user.platformDevelopment) || ", "}</span>
                 </div>
                 <div className="flex items-center gap-3">
                   <Activity className="w-4 h-4 text-muted-foreground shrink-0" />
-                  <span className="capitalize">{formatEnum(user.publishFrequency) || "—"}</span>
+                  <span className="capitalize">{formatEnum(user.publishFrequency) || ", "}</span>
                 </div>
               </CardContent>
             </Card>
@@ -1617,34 +1617,34 @@ export default function AdminUserDetailsPage() {
                 <div className="grid grid-cols-2 gap-y-3 gap-x-4">
                   <div>
                     <p className="text-muted-foreground text-xs">Brand</p>
-                    <p className="font-medium">{user.deviceDetails?.company || "—"}</p>
+                    <p className="font-medium">{user.deviceDetails?.company || ", "}</p>
                   </div>
                   <div>
                     <p className="text-muted-foreground text-xs">Model</p>
-                    <p className="font-medium">{user.deviceDetails?.model || "—"}</p>
+                    <p className="font-medium">{user.deviceDetails?.model || ", "}</p>
                   </div>
                   <div>
                     <p className="text-muted-foreground text-xs">OS</p>
-                    <p className="font-medium">{user.deviceDetails?.os || "—"}</p>
+                    <p className="font-medium">{user.deviceDetails?.os || ", "}</p>
                   </div>
                   <div>
                     <p className="text-muted-foreground text-xs">RAM</p>
-                    <p className="font-medium">{user.deviceDetails?.ram || "—"}</p>
+                    <p className="font-medium">{user.deviceDetails?.ram || ", "}</p>
                   </div>
                   <div>
                     <p className="text-muted-foreground text-xs">Resolution</p>
-                    <p className="font-medium">{user.deviceDetails?.screenResolution || "—"}</p>
+                    <p className="font-medium">{user.deviceDetails?.screenResolution || ", "}</p>
                   </div>
                   <div>
                     <p className="text-muted-foreground text-xs">Language</p>
                     <p className="font-medium flex items-center gap-1">
-                      <Languages className="w-3 h-3" /> {user.deviceDetails?.language || "—"}
+                      <Languages className="w-3 h-3" /> {user.deviceDetails?.language || ", "}
                     </p>
                   </div>
                   <div>
                     <p className="text-muted-foreground text-xs">Network</p>
                     <p className="font-medium flex items-center gap-1">
-                      <Wifi className="w-3 h-3" /> {user.deviceDetails?.network || "—"}
+                      <Wifi className="w-3 h-3" /> {user.deviceDetails?.network || ", "}
                     </p>
                   </div>
                 </div>
@@ -1661,7 +1661,7 @@ export default function AdminUserDetailsPage() {
               <CardContent className="text-sm">
                 {user.discoverySourceAnswered ? (
                   <div className="flex items-center gap-2">
-                    <span className="font-medium capitalize">{user.discoverySource?.replace(/_/g, " ") || "—"}</span>
+                    <span className="font-medium capitalize">{user.discoverySource?.replace(/_/g, " ") || ", "}</span>
                   </div>
                 ) : (
                   <p className="text-muted-foreground text-sm">Not Answered</p>
@@ -3304,7 +3304,7 @@ function IarTableRow({
             {item.url ? (
               <a href={item.url} target="_blank" rel="noopener noreferrer" className="text-xs text-blue-500 hover:underline truncate block max-w-[120px]">{item.url}</a>
             ) : (
-              <span className="text-xs text-muted-foreground">—</span>
+              <span className="text-xs text-muted-foreground">, </span>
             )}
           </TableCell>
           <TableCell>

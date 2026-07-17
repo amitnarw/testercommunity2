@@ -439,7 +439,7 @@ export default function AdminUsersPage() {
           </DialogHeader>
 
           <div className="space-y-2">
-            {/* Account Essentials — always visible */}
+            {/* Account Essentials ,  always visible */}
             <div className="space-y-4 border rounded-lg p-4 bg-muted/30">
               <h3 className="text-sm font-semibold text-foreground">
                 Account Essentials

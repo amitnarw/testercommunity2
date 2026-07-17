@@ -256,7 +256,7 @@ export function WalletCard({
                 className="text-xs sm:text-sm font-semibold tracking-wide text-white/90"
                 style={embossedStyle}
               >
-                {session?.user?.name || "—"}
+                {session?.user?.name || ", "}
               </p>
             </div>
 

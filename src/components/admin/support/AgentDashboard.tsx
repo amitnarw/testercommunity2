@@ -147,7 +147,7 @@ export function AgentDashboard() {
     }
   }, [activeChatId]);
 
-  // Socket listeners — cleanup removes only our handlers (not other components')
+  // Socket listeners ,  cleanup removes only our handlers (not other components')
   useEffect(() => {
     const s = connectSupportSocket();
 

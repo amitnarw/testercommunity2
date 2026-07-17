@@ -57,7 +57,7 @@ type AdminNavItem = {
 const mainNavItems: AdminNavItem[] = [
   { name: "Dashboard", href: ROUTES.AUTHENTICATED.DASHBOARD, icon: Home, section: "overview" },
   { name: "Pro Testing", href: ROUTES.AUTHENTICATED.PRO_TESTING, icon: Zap, section: "paid", badge: "PRO" },
-  { name: "Handshake Testing", href: ROUTES.AUTHENTICATED.HANDSHAKE_TESTING, icon: Users2, section: "free", badge: "FREE" },
+  { name: "Handshake Testing", href: ROUTES.AUTHENTICATED.HANDSHAKE_TESTING, icon: Users2, section: "handshake", badge: "HANDSHAKE" },
   { name: "Notifications", href: ROUTES.AUTHENTICATED.NOTIFICATIONS, icon: Bell, section: "platform" },
   { name: "Wallet", href: ROUTES.AUTHENTICATED.WALLET, icon: Wallet, section: "platform" },
   { name: "Support", href: ROUTES.PUBLIC.SUPPORT, icon: LifeBuoy, section: "support" },
@@ -93,13 +93,13 @@ const adminNavItems: AdminNavItem[] = [
     moduleName: "submissions",
   },
 
-  // Free Services
+  // Handshake Services
   {
-    name: "Community Subs",
+    name: "Handshake Apps",
     href: ROUTES.ADMIN.SUBMISSIONS_FREE,
     icon: Handshake,
     section: "free",
-    badge: "FREE",
+    badge: "HANDSHAKE",
     moduleName: "submissions",
   },
   {
@@ -366,7 +366,7 @@ export default function MobileMenu({
                   const sectionConfigs: SectionCfg[] = [
                     { key: "overview", header: null },
                     { key: "paid", header: "Paid Services", iconColor: "text-amber-500", hoverClass: "hover:bg-amber-500/10" },
-                    { key: "free", header: "Free Services", iconColor: "text-blue-500", hoverClass: "hover:bg-blue-500/10" },
+                    { key: "free", header: "Handshake", iconColor: "text-blue-500", hoverClass: "hover:bg-blue-500/10" },
                     { key: "finance", header: "Finance", iconColor: "text-emerald-500", hoverClass: "hover:bg-emerald-500/10" },
                     { key: "platform", header: "Platform", hoverClass: "hover:bg-muted", activeClass: "text-primary bg-primary/5" },
                     { key: "support", header: "Support", iconColor: "text-green-500", hoverClass: "hover:bg-green-500/10" },
@@ -447,7 +447,7 @@ export default function MobileMenu({
                   const sectionConfigs: SectionCfg[] = [
                     { key: "overview", header: null },
                     { key: "paid", header: "Paid Services", iconColor: "text-amber-500", hoverClass: "hover:bg-amber-500/10" },
-                    { key: "free", header: "Free Services", iconColor: "text-blue-500", hoverClass: "hover:bg-blue-500/10" },
+                    { key: "free", header: "Handshake", iconColor: "text-blue-500", hoverClass: "hover:bg-blue-500/10" },
                     { key: "platform", header: "Platform", hoverClass: "hover:bg-muted", activeClass: "text-primary bg-primary/5" },
                     { key: "support", header: "Support", iconColor: "text-green-500", hoverClass: "hover:bg-green-500/10" },
                   ];

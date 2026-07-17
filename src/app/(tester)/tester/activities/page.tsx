@@ -254,7 +254,7 @@ export default function ProfessionalActivitiesPage() {
                           activity.actionType}
                       </TableCell>
                       <TableCell className="text-sm text-muted-foreground">
-                        {activity.appName ?? "—"}
+                        {activity.appName ?? ", "}
                       </TableCell>
                       <TableCell>
                         <Badge

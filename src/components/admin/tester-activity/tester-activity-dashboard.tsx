@@ -122,14 +122,14 @@ export function TesterActivityDashboard({ date, onTesterSelect, onDateChange }: 
 
       {/* Stat Cards */}
       <div className="grid gap-4 grid-cols-2 md:grid-cols-4">
-        <StatCard title="Total Testers" value={activity?.totalTesters ?? "—"} icon={Users} color="#3B82F6" isLoading={isLoading} />
-        <StatCard title="Active Today" value={activity?.activeTestersToday ?? "—"} subtitle="with verified check-in" icon={UserCheck} color="#10B981" isLoading={isLoading} />
-        <StatCard title="Tests Completed Today" value={activity?.testsCompletedToday ?? "—"} icon={CheckCircle2} color="#8B5CF6" isLoading={isLoading} />
-        <StatCard title="Remaining Tests" value={activity?.testsRemainingToday ?? "—"} subtitle="still in progress" icon={Clock} color="#F59E0B" isLoading={isLoading} />
-        <StatCard title="Total Completed" value={activity?.totalCompletedTests ?? "—"} icon={CheckCircle2} color="#10B981" isLoading={isLoading} />
-        <StatCard title="In Progress" value={activity?.totalInProgressTests ?? "—"} icon={Activity} color="#3B82F6" isLoading={isLoading} />
-        <StatCard title="Dropped / Removed" value={activity?.totalDroppedRemovedTests ?? "—"} icon={AlertTriangle} color="#EF4444" isLoading={isLoading} />
-        <StatCard title="Total Tests Joined" value={activity?.totalTestsJoined ?? "—"} subtitle="across all apps" icon={Users} color="#6366F1" isLoading={isLoading} />
+        <StatCard title="Total Testers" value={activity?.totalTesters ?? ", "} icon={Users} color="#3B82F6" isLoading={isLoading} />
+        <StatCard title="Active Today" value={activity?.activeTestersToday ?? ", "} subtitle="with verified check-in" icon={UserCheck} color="#10B981" isLoading={isLoading} />
+        <StatCard title="Tests Completed Today" value={activity?.testsCompletedToday ?? ", "} icon={CheckCircle2} color="#8B5CF6" isLoading={isLoading} />
+        <StatCard title="Remaining Tests" value={activity?.testsRemainingToday ?? ", "} subtitle="still in progress" icon={Clock} color="#F59E0B" isLoading={isLoading} />
+        <StatCard title="Total Completed" value={activity?.totalCompletedTests ?? ", "} icon={CheckCircle2} color="#10B981" isLoading={isLoading} />
+        <StatCard title="In Progress" value={activity?.totalInProgressTests ?? ", "} icon={Activity} color="#3B82F6" isLoading={isLoading} />
+        <StatCard title="Dropped / Removed" value={activity?.totalDroppedRemovedTests ?? ", "} icon={AlertTriangle} color="#EF4444" isLoading={isLoading} />
+        <StatCard title="Total Tests Joined" value={activity?.totalTestsJoined ?? ", "} subtitle="across all apps" icon={Users} color="#6366F1" isLoading={isLoading} />
       </div>
 
       {/* Charts */}

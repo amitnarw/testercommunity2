@@ -126,7 +126,7 @@ export function PricingTable() {
       <Dialog open={!!editItem} onOpenChange={(open) => { if (!open) setEditItem(null); }}>
         <DialogContent className="sm:max-w-[480px]">
           <DialogHeader>
-            <DialogTitle>Edit Pricing — {editItem?.country_name}</DialogTitle>
+            <DialogTitle>Edit Pricing ,  {editItem?.country_name}</DialogTitle>
             <DialogDescription>
               Update the pricing for {editItem?.country_name} ({editItem?.country_code}).
               The amount is in the base currency unit and will be converted to the smallest unit (paise/cents) automatically.

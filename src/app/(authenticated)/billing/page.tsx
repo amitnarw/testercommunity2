@@ -442,7 +442,7 @@ export default function BillingPage() {
                 </h2>
                 <p className="text-lg text-muted-foreground">
                   Barter-based testing. You test another developer&apos;s app,
-                  they test yours — funded by a simple monthly subscription.
+                  they test yours, funded by a simple monthly subscription.
                 </p>
               </div>
               <div className="max-w-md mx-auto">

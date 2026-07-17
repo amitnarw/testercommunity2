@@ -202,11 +202,11 @@ const TestCompleteSection = ({
         variants={itemVariants}
         className="flex flex-col sm:flex-row gap-1 items-center justify-center rounded-2xl overflow-hidden "
       >
-        <div className="bg-gradient-to-tl from-primary/20 to-primary text-primary-foreground p-2 sm:p-5 h-full w-full flex flex-col items-center justify-center gap-1">
+        <div className="bg-gradient-to-tl from-emerald-500/20 to-emerald-600 text-white p-2 sm:p-5 h-full w-full flex flex-col items-center justify-center gap-1">
           <p className="text-xs">Total Testers</p>
           <p className="text-4xl sm:text-5xl font-bold">{app?.currentTester}</p>
         </div>
-        <div className="bg-gradient-to-tr from-primary/20 to-primary text-primary-foreground p-2 sm:p-5 h-full w-full flex flex-col items-center justify-center gap-1">
+        <div className="bg-gradient-to-tr from-emerald-500/20 to-emerald-600 text-white p-2 sm:p-5 h-full w-full flex flex-col items-center justify-center gap-1">
           <p className="text-xs">Total Days</p>
           <p className="text-4xl sm:text-5xl font-bold">
             {isUnderReviewOrRejected ? 0 : app?.totalDay}
@@ -218,7 +218,7 @@ const TestCompleteSection = ({
         variants={itemVariants}
         className="bg-card p-3 pt-2 rounded-2xl flex flex-col justify-between relative overflow-hidden col-span-2"
       >
-        <h3 className="text-lg sm:text-xl font-semibold mb-1 bg-gradient-to-b from-primary to-primary/50 text-transparent bg-clip-text text-center">
+        <h3 className="text-lg sm:text-xl font-semibold mb-1 bg-gradient-to-b from-emerald-500 to-emerald-600/50 text-transparent bg-clip-text text-center">
           Feedback Breakdown
         </h3>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center">
@@ -459,7 +459,7 @@ function SubmissionDetailsPage({
                     </Button>
                     <Button
                       onClick={() => setIsEditModalOpen(true)}
-                      className="rounded-xl h-12 px-8 text-base shadow-lg shadow-primary/20"
+                      className="rounded-xl h-12 px-8 text-base shadow-lg shadow-emerald-500/20"
                     >
                       Edit and Resubmit
                     </Button>
@@ -517,7 +517,7 @@ function SubmissionDetailsPage({
           {appDetails?.status === "AVAILABLE" && (
             <div className="bg-gradient-to-r from-blue-50/50 to-indigo-50/50 dark:from-blue-950/10 dark:to-indigo-950/10 border border-blue-100 dark:border-blue-900/30 rounded-2xl p-5 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-sm">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary shrink-0">
+                <div className="w-10 h-10 rounded-xl bg-emerald-500/10 flex items-center justify-center text-emerald-600 shrink-0">
                   <PlayCircle className="w-5 h-5" />
                 </div>
                 <div className="text-left">
@@ -525,13 +525,13 @@ function SubmissionDetailsPage({
                     Start testing early?
                   </h4>
                   <p className="text-xs text-muted-foreground">
-                    You have reached <span className="font-semibold text-primary">{appDetails.currentTester || 0}</span> out of <span className="font-semibold text-primary">{appDetails.totalTester || 12}</span> testers. You can start the 14-day testing period now.
+                    You have reached <span className="font-semibold text-emerald-600">{appDetails.currentTester || 0}</span> out of <span className="font-semibold text-emerald-600">{appDetails.totalTester || 12}</span> testers. You can start the 14-day testing period now.
                   </p>
                 </div>
               </div>
               <Button
                 onClick={() => setIsStartTestingModalOpen(true)}
-                className="w-full sm:w-auto px-6 py-3 h-auto bg-primary hover:bg-primary/90 text-primary-foreground font-semibold rounded-2xl shadow-md transition-all shrink-0"
+                className="w-full sm:w-auto px-6 py-3 h-auto bg-emerald-500 hover:bg-emerald-500/90 text-white font-semibold rounded-2xl shadow-md transition-all shrink-0"
               >
                 Start Testing Now
               </Button>
@@ -563,7 +563,7 @@ function SubmissionDetailsPage({
                 )}
               >
                 <div className="flex flex-row gap-1 items-center justify-center rounded-2xl overflow-hidden">
-                  <div className="bg-gradient-to-tl from-primary/20 to-primary text-primary-foreground p-5 h-full w-full flex flex-col justify-center gap-1">
+                  <div className="bg-gradient-to-tl from-emerald-500/20 to-emerald-600 text-white p-5 h-full w-full flex flex-col justify-center gap-1">
                     <p className="text-xs">Testers</p>
                     <p className="text-4xl sm:text-5xl font-bold">
                       {appDetails?.currentTester}
@@ -572,7 +572,7 @@ function SubmissionDetailsPage({
                       </span>
                     </p>
                   </div>
-                  <div className="bg-gradient-to-tr from-primary/20 to-primary text-primary-foreground p-5 h-full w-full flex flex-col justify-center gap-1">
+                  <div className="bg-gradient-to-tr from-emerald-500/20 to-emerald-600 text-white p-5 h-full w-full flex flex-col justify-center gap-1">
                     <p className="text-xs">Days</p>
                     <p className="text-4xl sm:text-5xl font-bold">
                       {isUnderReviewOrRejected ? 0 : appDetails?.currentDay}
@@ -693,8 +693,8 @@ function SubmissionDetailsPage({
                   className="w-full flex items-center justify-between text-left"
                 >
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
-                      <FileText className="w-5 h-5 text-primary" />
+                    <div className="w-10 h-10 rounded-xl bg-emerald-500/10 flex items-center justify-center">
+                      <FileText className="w-5 h-5 text-emerald-600" />
                     </div>
                     <div>
                       <h3 className="font-semibold">Declaration Report</h3>
@@ -925,13 +925,13 @@ function SubmissionDetailsPage({
                   transition={{ duration: 0.5 }}
                   className="flex flex-col items-center justify-center py-16 px-4 text-center border-2 border-dashed border-muted-foreground/20 rounded-3xl bg-muted/50 dark:bg-muted/10 relative overflow-hidden"
                 >
-                  <div className="absolute top-0 right-0 p-12 bg-primary/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none" />
-                  <div className="absolute bottom-0 left-0 p-12 bg-primary/5 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2 pointer-events-none" />
+                  <div className="absolute top-0 right-0 p-12 bg-emerald-500/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none" />
+                  <div className="absolute bottom-0 left-0 p-12 bg-emerald-500/5 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2 pointer-events-none" />
 
                   <div className="relative mb-6 group">
-                    <div className="absolute inset-0 bg-primary/20 rounded-full blur-xl group-hover:bg-primary/30 transition-all duration-500"></div>
+                    <div className="absolute inset-0 bg-emerald-500/20 rounded-full blur-xl group-hover:bg-emerald-500/30 transition-all duration-500"></div>
                     <div className="relative bg-card/80 backdrop-blur-sm p-6 rounded-2xl shadow-sm border border-border/50 ring-1 ring-black/5 dark:ring-white/5">
-                      <ClipboardList className="w-10 h-10 text-primary" />
+                      <ClipboardList className="w-10 h-10 text-emerald-600" />
                     </div>
                     <motion.div
                       animate={{ y: [0, -5, 0] }}
@@ -967,10 +967,10 @@ function SubmissionDetailsPage({
                     here soon.
                   </p>
 
-                  <div className="flex items-center gap-3 text-sm font-medium text-primary bg-primary/10 border border-primary/20 px-4 py-2 rounded-full shadow-sm">
+                  <div className="flex items-center gap-3 text-sm font-medium text-emerald-600 bg-emerald-500/10 border border-emerald-500/20 px-4 py-2 rounded-full shadow-sm">
                     <span className="relative flex h-2.5 w-2.5">
-                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
-                      <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-primary"></span>
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-500 opacity-75"></span>
+                      <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
                     </span>
                     Monitoring for submissions...
                   </div>

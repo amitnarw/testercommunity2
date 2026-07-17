@@ -547,7 +547,7 @@ export function SamplesSection() {
     {
       id: "free" as const,
       label: "For Testers",
-      href: "/samples/free-testing",
+      href: "/samples/handshake-testing",
     },
     {
       id: "paid" as const,

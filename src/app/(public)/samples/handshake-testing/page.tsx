@@ -8,7 +8,7 @@ import { useTheme } from "next-themes";
 import OngoingProjectView from "@/components/community-dashboard/ongoing-project-view";
 import { Badge } from "@/components/ui/badge";
 
-export default function SampleFreeTestingPage() {
+export default function SampleHandshakeTestingPage() {
   const { setTheme, theme } = useTheme();
   const appDetails = sampleCommunityAppDetails;
 
@@ -21,7 +21,7 @@ export default function SampleFreeTestingPage() {
             <h1 className="text-lg sm:text-xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
               Handshake Testing
             </h1>
-            <Badge>FREE</Badge>
+            <Badge>HANDSHAKE</Badge>
             <Button
               variant="ghost"
               size="icon"

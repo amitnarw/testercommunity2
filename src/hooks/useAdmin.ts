@@ -114,6 +114,13 @@ import {
   deleteImmediateAttention,
   giftPointsAndPackages,
   getTesterActivity,
+  getAdminMails,
+  getMailThread,
+  sendMailReply,
+  markMailRead,
+  archiveMail,
+  getMailUnreadCount,
+  assignMail,
 } from "@/lib/apiCallsAdmin";
 import { useRouter } from "next/navigation";
 import { ROUTES } from "@/lib/routes";
@@ -1173,6 +1180,7 @@ export function useFinancePayments(params?: {
   status?: string;
   method?: string;
   search?: string;
+  paymentType?: string;
 }) {
   return useQuery({
     queryFn: () => getFinancePayments(params),
@@ -1617,6 +1625,83 @@ export function useGiftPointsAndPackages(options?: UseMutationOptions<any, any, 
     onSuccess: (_data, variables, ...rest) => {
       queryClient.invalidateQueries({ queryKey: ["useUserById", variables.id] });
       options?.onSuccess?.(_data, variables, ...rest);
+    },
+  });
+}
+
+// ==================== MAIL ====================
+
+export function useAdminMails(params?: { status?: string; search?: string; page?: string }) {
+  return useQuery({
+    queryFn: () => getAdminMails(params),
+    queryKey: ["useAdminMails", params],
+  });
+}
+
+export function useMailThread(id: number | null) {
+  return useQuery({
+    queryFn: () => getMailThread(id!),
+    queryKey: ["useMailThread", id],
+    enabled: id !== null,
+  });
+}
+
+export function useMailUnreadCount() {
+  return useQuery({
+    queryFn: () => getMailUnreadCount(),
+    queryKey: ["useMailUnreadCount"],
+    refetchInterval: 30000,
+  });
+}
+
+export function useSendMailReply(options?: UseMutationOptions<any, any, any>) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (payload: { mailId: number; fromAddress: string; body: string }) =>
+      sendMailReply(payload.mailId, payload.fromAddress, payload.body),
+    ...options,
+    onSuccess: (_data, variables, ...rest) => {
+      queryClient.invalidateQueries({ queryKey: ["useAdminMails"] });
+      queryClient.invalidateQueries({ queryKey: ["useMailThread", variables.mailId] });
+      queryClient.invalidateQueries({ queryKey: ["useMailUnreadCount"] });
+      options?.onSuccess?.(_data, variables, ...rest);
+    },
+  });
+}
+
+export function useMarkMailRead(options?: UseMutationOptions<any, any, any>) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (id: number) => markMailRead(id),
+    ...options,
+    onSuccess: (_data, variables, ...rest) => {
+      queryClient.invalidateQueries({ queryKey: ["useAdminMails"] });
+      queryClient.invalidateQueries({ queryKey: ["useMailUnreadCount"] });
+      options?.onSuccess?.(_data, variables, ...rest);
+    },
+  });
+}
+
+export function useArchiveMail(options?: UseMutationOptions<any, any, any>) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (id: number) => archiveMail(id),
+    ...options,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["useAdminMails"] });
+      queryClient.invalidateQueries({ queryKey: ["useMailUnreadCount"] });
+    },
+  });
+}
+
+export function useAssignMail(options?: UseMutationOptions<any, any, any>) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (payload: { id: number; assignedTo: string | null }) =>
+      assignMail(payload.id, payload.assignedTo),
+    ...options,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["useAdminMails"] });
     },
   });
 }

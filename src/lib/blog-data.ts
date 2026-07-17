@@ -127,7 +127,7 @@ By treating the 14-day rule as a legitimate QA window rather than a bureaucratic
     title: "Optimizing Your Karma Score for Faster Testing",
     description:
       "Learn the mechanics of our community credit system and how to position your app at the top of the testing queue.",
-    category: "Free Community Testing",
+    category: "Handshake Testing",
     slug: "how-to-earn-points",
     readTime: "10 min read",
     views: "7.1k",
@@ -136,7 +136,7 @@ By treating the 14-day rule as a legitimate QA window rather than a bureaucratic
     content: `
 # Optimizing Your Karma Score for Faster Testing
 
-Free Testing is built on the principle of mutual support. To ensure the system remains fair and effective, we use a Karma-based points system. Understanding how to earn and spend these points is the key to getting your 20 testers quickly and for free.
+Handshake Testing is built on the principle of mutual support. You test a fellow developer's app and they test yours ,  a true barter system. Understanding how the level and slot system works is the key to getting your 12+ testers quickly.
 
 ## The Karma Economy
 
@@ -151,7 +151,7 @@ Every action you take to help another developer earns you Karma Points. These po
 
 ## Managing Your Testing Campaign
 
-When you submit your app to Free Testing, your 'Karma Score' determines your visibility.
+When you submit your app to Handshake Testing, your listing quality determines your visibility.
 
 - **High Karma Priority**: Apps from developers who have helped many others are pinned to the top of the 'Available for Testing' list.
 - **Point Depletion**: As testers join your app, your points are 'escrowed' (held). If a tester completes the 14 days, the points are permanently transferred to them. If they fail to complete the test, the points are returned to your wallet.
@@ -162,9 +162,9 @@ To maintain the quality of the community, we enforce strict guidelines:
 - **No Instant Uninstalls**: Our system tracks app usage. If you earn points by installing and immediately deleting an app, your account will be flagged, and points will be revoked.
 - **Detailed Feedback**: "Good app" is not considered helpful feedback. Aim for constructive comments like "The navigation drawer overlaps with the status bar on my Pixel 7."
 
-## Why the Community Path?
+## Why the Handshake Path?
 
-Beyond being free, the community path allows you to see how other developers handle the Play Console requirements. You can learn from their UI designs, their onboarding flows, and the types of bugs they encounter. It is a collaborative learning environment that prepares you for professional app development.
+Beyond being a barter system, the handshake path allows you to see how other developers handle the Play Console requirements. You can learn from their UI designs, their onboarding flows, and the types of bugs they encounter. It is a collaborative learning environment that prepares you for professional app development.
 
 Keep your Karma Score high, provide value to your peers, and the community will ensure your app reaches its 20-tester goal in record time.
     `,
@@ -174,7 +174,7 @@ Keep your Karma Score high, provide value to your peers, and the community will 
     title: "Structuring Your Community Campaign for Maximum Conversion",
     description:
       "Tips on writing compelling app descriptions and setting realistic goals to attract high-quality testers.",
-    category: "Free Community Testing",
+    category: "Handshake Testing",
     slug: "submit-app-community-testing",
     readTime: "11 min read",
     views: "4.2k",
@@ -183,7 +183,7 @@ Keep your Karma Score high, provide value to your peers, and the community will 
     content: `
 # Structuring Your Community Campaign for Maximum Conversion
 
-Submitting an app to Free Testing is essentially a marketing task. You are competing with other developers for the attention and phone storage of testers. To get your 20 testers quickly, you need a high-quality listing.
+Submitting an app to Handshake Testing is essentially a marketing task. You are competing with other developers for handshake partners. To get your 12+ testers quickly, you need a high-quality listing.
 
 ## Components of a Successful Submission
 
@@ -219,7 +219,7 @@ By presenting your app professionally and engaging actively with those who help 
   },
   {
     id: "5",
-    title: "Choosing Between Professional and Community Testing Paths",
+    title: "Choosing Between Handshake and Professional Testing Paths",
     description:
       "A detailed comparison of testing methodologies to help you determine the most efficient launch strategy for your project.",
     category: "Paid Professional Testing",
@@ -229,16 +229,16 @@ By presenting your app professionally and engaging actively with those who help 
     publishedAt: "2024-05-20",
     author: { name: "Sarah Chen", role: "QA Lead" },
     content: `
-# Choosing Between Professional and Community Testing Paths
+# Choosing Between Professional and Handshake Testing Paths
 
 Every developer faces a unique set of constraints regarding time, budget, and project complexity. Deciding how to fulfill Google's 14-day testing requirement involves weighing the benefits of our two primary paths.
 
-## Free Testing: Peer-to-Peer Support
+## Handshake Testing: 1:1 Barter
 
-Free Testing is designed for indie developers and those working on passion projects where budget is the primary constraint.
+Handshake Testing is designed for indie developers and those willing to test a partner's app in exchange for having their own app tested.
 
 ### Strengths
-- **Cost Efficiency**: Entirely free if you are willing to invest time in testing other apps.
+- **Cost Efficiency**: ₹99/month subscription, no per-test costs.
 - **Diverse Insights**: Feedback comes from other developers who often spot issues that non-technical users might miss.
 - **Learning Experience**: Exposure to other apps provides valuable competitive intelligence and design inspiration.
 
@@ -264,7 +264,7 @@ Professional Testing is built for startups, commercial projects, and developers 
 Use the following criteria to make your choice:
 
 1. **What is your launch deadline?** If you need to be in production within 20 days, the Professional path is the only reliable option.
-2. **Do you have an Android device?** If you don't have a physical Android device to test others' apps, you cannot earn points in Free Testing.
+ 2. **Do you have an Android device?** If you don't have a physical Android device to test your partner's app, handshake testing won't work for you.
 3. **Is this a commercial venture?** For business-critical apps, the comprehensive QA report from the Professional path provides essential validation before launch.
 
 Regardless of the path you choose, our infrastructure is designed to provide the legitimate, high-quality testing data that Google expects.
@@ -327,7 +327,7 @@ This managed approach ensures that by the end of the testing period, you have mo
     content: `
 # Financial Management: Wallet, Points, and Security
 
-Your account wallet is the central repository for all your platform assets. This includes both your Karma Points for community testing and your purchased slots for professional services. Professional management of these assets is vital for long-term project planning.
+Your account wallet is the central repository for all your platform assets. This includes your handshake subscription status and your purchased Pro testing slots. Professional management of these assets is vital for long-term project planning.
 
 ## Understanding Your Assets
 
@@ -454,19 +454,19 @@ By preparing for these specific scenarios, you can ensure that your 14-day effor
   },
   {
     id: "10",
-    title: "User Experience and Conversion in Free Testing",
+    title: "User Experience and Conversion in Handshake Testing",
     description:
       "Best practices for optimizing your app's listing within our platform to attract the required 20 testers as quickly as possible.",
-    category: "Free Community Testing",
+    category: "Handshake Testing",
     slug: "get-tested-faster-community",
     readTime: "9 min read",
     views: "3.5k",
     publishedAt: "2024-06-02",
     author: { name: "Jordan Smith", role: "Community Manager" },
     content: `
-# User Experience and Conversion in Free Testing
+# User Experience and Conversion in Handshake Testing
 
-Free Testing is a marketplace of opportunities. Every day, dozens of apps are submitted. To ensure your app is selected by testers quickly, you must treat your submission as a high-conversion landing page.
+Handshake Testing is a marketplace of opportunities. Every day, dozens of apps are submitted. To ensure your app gets many requests, you must treat your submission as a high-conversion landing page.
 
 ## The First Impression
 
@@ -503,7 +503,7 @@ By optimizing your presentation and remaining an active member of the community,
     title: "Managing Tester Inactivity and Campaign Health",
     description:
       "Technical strategies for identifying and replacing inactive testers to protect your 14-day compliance window.",
-    category: "Free Community Testing",
+    category: "Handshake Testing",
     slug: "managing-inactive-testers",
     readTime: "8 min read",
     views: "2.1k",
@@ -889,7 +889,7 @@ This final transition represents the shift from development to a live commercial
     title: "Maximizing Qualitative Feedback in Peer-Review Testing",
     description:
       "Advanced techniques for eliciting high-value technical feedback from community testers to improve app stability and user experience.",
-    category: "Free Community Testing",
+    category: "Handshake Testing",
     slug: "get-valuable-tester-feedback",
     readTime: "11 min read",
     views: "2.1k",
@@ -910,7 +910,7 @@ Instruct your testers on the level of detail you require. A high-quality report 
 
 ## Incentivizing Depth
 
-In Free Testing, you should actively prompt your testers. 
+In Handshake Testing, you should actively prompt your handshake partners. 
 - **The Targeted Request**: Instead of "test the app," ask them to "verify the database sync speed over a 3G connection." 
 - **Developer Engagement**: When a tester provides a deep technical insight, publicize it in your campaign comments. This signals to other testers that you value high-level contributions.
 
@@ -1000,7 +1000,7 @@ However, in late 2024, developer forums and Google's official documentation refl
 
 ## What Exactly Has Changed?
 
-Google's primary goal—improving the overall quality of apps on the Play Store, remains unchanged. The adjustment to 12 testers acknowledges that gathering a dedicated cohort of 20 people was often an insurmountable hurdle for solo developers without a massive social network.
+Google's primary goal, improving the overall quality of apps on the Play Store, remains unchanged. The adjustment to 12 testers acknowledges that gathering a dedicated cohort of 20 people was often an insurmountable hurdle for solo developers without a massive social network.
 
 **The New Core Policy:**
 - **Tester Count**: You need a minimum of **12 unique testers**.
@@ -1011,8 +1011,8 @@ Google's primary goal—improving the overall quality of apps on the Play Store,
 
 While 12 is easier than 20, keeping a dozen people actively engaged for two straight weeks is still a marketing challenge. Here is a battle-tested strategy:
 
-### 1. Leverage Free Testing
-The most efficient way to source genuine testers is through peer-to-peer networks like our **Free Testing**. By testing other developers' apps, you earn Karma points. You can then spend these points to invite those same developers to test your app. 
+### 1. Use Handshake Testing
+The most efficient way to source genuine testers is through handshake barter networks like our **Handshake Testing**. Subscribe for ₹99/month, publish your app, and send handshake requests to other developers. You test theirs, they test yours. 
 - **Benefit**: Developers make the best testers. They provide actionable UI feedback instead of generic "good app" comments.
 
 ### 2. Aim for 15, Not 12
