@@ -1119,6 +1119,16 @@ export async function getHandshakeSubscriptionStatus(id: string) {
   }
 }
 
+export async function syncSubscriptionPayments() {
+  try {
+    const response = await api.post(API_ROUTES.SUBSCRIPTION + `/sync-payments`);
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error syncing subscription payments:", error);
+    throw error;
+  }
+}
+
 export async function getHandshakePlan(): Promise<PricingResponse | null> {
   try {
     const response = await api.get(API_ROUTES.SUBSCRIPTION + `/plan`);

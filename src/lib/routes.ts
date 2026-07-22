@@ -88,6 +88,7 @@ export const ROUTES = {
     PROFILE_SETUP: "/profile/profile-setup",
     WALLET: "/wallet",
     BILLING: "/billing",
+    SUBSCRIPTION_MANAGE: "/billing/subscription/manage",
     SETTINGS: "/settings",
   },
 } as const;

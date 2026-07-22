@@ -4,7 +4,6 @@ import { usePathname } from "next/navigation";
 import {
   LayoutDashboard,
   Home,
-  Users2,
   Handshake,
   Bell,
   Briefcase,
@@ -36,9 +35,9 @@ import { ROUTES } from "@/lib/routes";
 import { hasPermission } from "@/lib/permissions";
 import { useMailUnreadCount } from "@/hooks/useAdmin";
 
-const mainNavLinks = [
+const baseMainNavLinks = [
   { name: "Dashboard", href: ROUTES.AUTHENTICATED.DASHBOARD, icon: Home },
-  { name: "Handshake Testing", href: ROUTES.AUTHENTICATED.HANDSHAKE_TESTING, icon: Users2 },
+  { name: "Handshake Testing", href: ROUTES.AUTHENTICATED.HANDSHAKE_TESTING, icon: Handshake },
   { name: "Pro Testing", href: ROUTES.AUTHENTICATED.PRO_TESTING, icon: Zap, badge: "PRO" },
   { name: "Notifications", href: ROUTES.AUTHENTICATED.NOTIFICATIONS, icon: Bell },
   { name: "Support", href: ROUTES.PUBLIC.SUPPORT, icon: LifeBuoy },
@@ -47,7 +46,7 @@ const mainNavLinks = [
 const proNavLinks = [
   { name: "Dashboard", href: ROUTES.TESTER.DASHBOARD, icon: LayoutDashboard },
   { name: "Projects", href: ROUTES.TESTER.PROJECTS, icon: Briefcase },
-  { name: "Community Tasks", href: ROUTES.TESTER.COMMUNITY_TASKS, icon: Users2 },
+  { name: "Community Tasks", href: ROUTES.TESTER.COMMUNITY_TASKS, icon: Handshake },
   { name: "Activities", href: ROUTES.TESTER.ACTIVITIES, icon: Activity },
   { name: "Notifications", href: ROUTES.TESTER.NOTIFICATIONS, icon: Bell },
   { name: "Support", href: ROUTES.TESTER.SUPPORT, icon: LifeBuoy },
@@ -101,6 +100,14 @@ const adminNavLinks: AdminNavLink[] = [
     section: "free",
     badge: "HANDSHAKE",
     moduleName: "submissions",
+  },
+  {
+    name: "Handshake Subs",
+    href: ROUTES.ADMIN.HANDSHAKE_SUBSCRIPTIONS,
+    icon: Handshake,
+    section: "free",
+    badge: "HANDSHAKE",
+    moduleName: "subscription",
   },
 
   // Finance
@@ -251,13 +258,15 @@ export function Sidebar({
   const effectiveIsTester = actingAs === "tester" || (!actingAs && roleName === "tester");
   const effectiveIsUser = actingAs === "user" || (!actingAs && roleName === "user");
 
+  const mainNavLinks = baseMainNavLinks;
+
   let navLinks: { name: string; href: string; icon: typeof LayoutDashboard; badge?: string }[] = mainNavLinks;
   if (effectiveIsTester) {
     navLinks = proNavLinks;
   }
 
   const permissions = role?.permissions;
-  const { data: unreadCount = 0 } = useMailUnreadCount();
+  const { data: unreadCount = 0 } = useMailUnreadCount({ enabled: effectiveIsAdmin });
 
   const mailLinkIndex = adminNavLinks.findIndex((l) => l.name === "Mail");
   if (mailLinkIndex >= 0) {

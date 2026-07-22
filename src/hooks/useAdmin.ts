@@ -1646,11 +1646,12 @@ export function useMailThread(id: number | null) {
   });
 }
 
-export function useMailUnreadCount() {
+export function useMailUnreadCount(options?: { enabled?: boolean }) {
   return useQuery({
     queryFn: () => getMailUnreadCount(),
     queryKey: ["useMailUnreadCount"],
     refetchInterval: 30000,
+    enabled: options?.enabled !== false,
   });
 }
 

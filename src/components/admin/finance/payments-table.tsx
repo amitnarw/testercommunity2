@@ -96,8 +96,8 @@ export function PaymentsTable() {
             </div>
             <select className="h-10 rounded-md border border-input bg-background px-3 py-2 text-sm" value={paymentType} onChange={(e) => { setPaymentType(e.target.value); setPage(1); }}>
               <option value="">All Types</option>
-              <option value="PRO">Pro Testing</option>
-              <option value="HANDSHAKE">Handshake</option>
+              <option value="ONE_TIME">One-Time</option>
+              <option value="SUBSCRIPTION">Subscription</option>
             </select>
             <select className="h-10 rounded-md border border-input bg-background px-3 py-2 text-sm" value={status} onChange={(e) => { setStatus(e.target.value); setPage(1); }}>
               <option value="">All Statuses</option>
@@ -178,7 +178,7 @@ export function PaymentsTable() {
                               <Eye className="h-4 w-4" />
                             </Button>
                           )}
-                          {p.status === "CAPTURED" && p.refundStatus !== "FULL" && (
+                          {p.status === "CAPTURED" && p.refundStatus !== "FULL" && p.paymentType !== "SUBSCRIPTION" && (
                             <Button
                               variant="ghost"
                               size="icon"

@@ -9,13 +9,6 @@ import {
   DollarSign,
   LifeBuoy,
   Users,
-  Users2,
-  FileCheck,
-  MessageSquare,
-  Lightbulb,
-  Activity,
-  Wallet,
-  Settings,
   Handshake,
   Home,
   BookOpen,
@@ -27,6 +20,12 @@ import {
   ThumbsUp,
   FileText,
   Zap,
+  Wallet,
+  Activity,
+  FileCheck,
+  Lightbulb,
+  MessageSquare,
+  Settings,
 } from "lucide-react";
 import { Button } from "./ui/button";
 import {
@@ -41,7 +40,6 @@ import { cn } from "@/lib/utils";
 import { TransitionLink } from "./transition-link";
 import { ROUTES } from "@/lib/routes";
 import { hasPermission } from "@/lib/permissions";
-
 import { authClient } from "@/lib/auth-client";
 
 type AdminNavItem = {
@@ -54,10 +52,10 @@ type AdminNavItem = {
   moduleName?: string;
 };
 
-const mainNavItems: AdminNavItem[] = [
+const baseMainNavItems: AdminNavItem[] = [
   { name: "Dashboard", href: ROUTES.AUTHENTICATED.DASHBOARD, icon: Home, section: "overview" },
   { name: "Pro Testing", href: ROUTES.AUTHENTICATED.PRO_TESTING, icon: Zap, section: "paid", badge: "PRO" },
-  { name: "Handshake Testing", href: ROUTES.AUTHENTICATED.HANDSHAKE_TESTING, icon: Users2, section: "handshake", badge: "HANDSHAKE" },
+  { name: "Handshake Testing", href: ROUTES.AUTHENTICATED.HANDSHAKE_TESTING, icon: Handshake, section: "handshake", badge: "HANDSHAKE" },
   { name: "Notifications", href: ROUTES.AUTHENTICATED.NOTIFICATIONS, icon: Bell, section: "platform" },
   { name: "Wallet", href: ROUTES.AUTHENTICATED.WALLET, icon: Wallet, section: "platform" },
   { name: "Support", href: ROUTES.PUBLIC.SUPPORT, icon: LifeBuoy, section: "support" },
@@ -232,6 +230,8 @@ export default function MobileMenu({
 }) {
   const pathname = usePathname();
   const { data: session } = authClient.useSession();
+
+  const mainNavItems = baseMainNavItems;
   const role = (session as any)?.role;
   const roleName = (
     typeof role === "string" ? role : role?.name

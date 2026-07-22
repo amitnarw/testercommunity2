@@ -49,7 +49,7 @@ export function TransactionList({
         </div>
 
         <div className="flex gap-2 overflow-x-auto pb-4 mb-2 no-scrollbar px-1">
-          {["All", "Purchase", "Earned", "Spent"].map((tab) => (
+          {["All", "Purchase", "Earned", "Spent", "Refund", "Subscription"].map((tab) => (
             <button
               key={tab}
               onClick={() => setFilter(tab)}

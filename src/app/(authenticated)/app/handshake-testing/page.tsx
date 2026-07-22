@@ -22,6 +22,7 @@ import {
   ChevronRight,
   Calendar,
   Ban,
+  Handshake,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -46,6 +47,9 @@ import { DiscoverySourceModal } from "@/components/discovery-source-modal";
 import { AppCardSkeleton } from "@/components/app-card-skeleton";
 import { format } from "date-fns";
 import { Skeleton } from "@/components/ui/skeleton";
+import { ROUTES } from "@/lib/routes";
+import { getMyHandshakeSubscription } from "@/lib/apiCalls";
+import { useQuery } from "@tanstack/react-query";
 
 // Helper to filter out paid apps from displaying in the Handshake Testing
 const filterFreeApps = (apps: HubSubmittedAppResponse[] | undefined) => {
@@ -394,6 +398,15 @@ function CommunityDashboardContent() {
 
   const { data: userProfileData, refetch: refetchProfile } = useUserProfileData();
 
+  const { data: handshakeSub } = useQuery({
+    queryKey: ["myHandshakeSubscription"],
+    queryFn: () => getMyHandshakeSubscription(),
+    retry: false,
+  });
+  const hasActiveSubscription =
+    !!handshakeSub &&
+    (handshakeSub.status === "ACTIVE" || handshakeSub.status === "AUTHENTICATED");
+
   useEffect(() => {
     refetchProfile();
   }, [refetchProfile]);
@@ -579,6 +592,15 @@ function CommunityDashboardContent() {
               Offer your app, test a peer&apos;s app, and level up. A monthly
               subscription unlocks publishing and joining handshake tests.
             </p>
+            {hasActiveSubscription && (
+              <Link
+                href={ROUTES.AUTHENTICATED.SUBSCRIPTION_MANAGE}
+                className="inline-flex items-center gap-1.5 text-xs text-primary hover:text-primary/80 font-medium transition-colors mt-2"
+              >
+                <Handshake className="w-3.5 h-3.5" />
+                Manage Subscription
+              </Link>
+            )}
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
             <BentoCard className="col-span-2">
