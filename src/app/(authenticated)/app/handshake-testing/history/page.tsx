@@ -1,13 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import { Trophy, Search, Calendar, Star } from "lucide-react";
+import { Trophy, Search, Calendar, Handshake } from "lucide-react";
 import { CommunityCompletedAppCard } from "@/components/community-completed-app-card";
 import { BackButton } from "@/components/back-button";
 import { AppPagination } from "@/components/app-pagination";
 import { motion } from "framer-motion";
 import type { HubSubmittedAppResponse } from "@/lib/types";
-import { useHubApps } from "@/hooks/useHub";
+import { useHubApps, useHubStats } from "@/hooks/useHub";
 import { useTransitionRouter } from "@/context/transition-context";
 import { AppCardSkeleton } from "@/components/app-card-skeleton";
 import { Input } from "@/components/ui/input";
@@ -120,8 +120,7 @@ export default function HistoryPage() {
     type: "COMPLETED",
   });
 
-  const totalPoints =
-    hubAppsData?.reduce((sum, app) => sum + (app.rewardPoints || 0), 0) || 0;
+  const { data: handshakeStats } = useHubStats();
 
   return (
     <div data-loc="HistoryPage" className="min-h-screen mb-8">
@@ -154,11 +153,11 @@ export default function HistoryPage() {
               </div>
               <div className="bg-gradient-to-br from-emerald-500/10 to-emerald-600/5 rounded-2xl p-4 border border-emerald-500/20 min-w-[120px]">
                 <div className="flex items-center gap-2 text-emerald-600 dark:text-white/80 text-xs mb-1">
-                  <Star className="w-3.5 h-3.5" />
-                  <span>Total Earned</span>
+                  <Handshake className="w-3.5 h-3.5" />
+                  <span>Handshake Level</span>
                 </div>
                 <p className="text-2xl font-bold text-emerald-600 dark:text-white">
-                  {totalPoints} pts
+                  {handshakeStats?.handshakeLevel ?? 1}
                 </p>
               </div>
             </div>

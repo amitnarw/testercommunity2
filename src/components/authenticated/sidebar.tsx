@@ -37,7 +37,7 @@ import { useMailUnreadCount } from "@/hooks/useAdmin";
 
 const baseMainNavLinks = [
   { name: "Dashboard", href: ROUTES.AUTHENTICATED.DASHBOARD, icon: Home },
-  { name: "Handshake Testing", href: ROUTES.AUTHENTICATED.HANDSHAKE_TESTING, icon: Handshake },
+  { name: "Handshake Testing", href: ROUTES.AUTHENTICATED.HANDSHAKE_TESTING, icon: Handshake, badge: "BETA" },
   { name: "Pro Testing", href: ROUTES.AUTHENTICATED.PRO_TESTING, icon: Zap, badge: "PRO" },
   { name: "Notifications", href: ROUTES.AUTHENTICATED.NOTIFICATIONS, icon: Bell },
   { name: "Support", href: ROUTES.PUBLIC.SUPPORT, icon: LifeBuoy },
@@ -101,15 +101,6 @@ const adminNavLinks: AdminNavLink[] = [
     badge: "HANDSHAKE",
     moduleName: "submissions",
   },
-  {
-    name: "Handshake Subs",
-    href: ROUTES.ADMIN.HANDSHAKE_SUBSCRIPTIONS,
-    icon: Handshake,
-    section: "free",
-    badge: "HANDSHAKE",
-    moduleName: "subscription",
-  },
-
   // Finance
   {
     name: "Finance",

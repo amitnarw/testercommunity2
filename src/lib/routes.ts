@@ -33,7 +33,6 @@ export const ROUTES = {
     USERS: "/admin/users",
     SUBMISSIONS_PAID: "/admin/submissions-paid",
     SUBMISSIONS_FREE: "/admin/submissions-free",
-    HANDSHAKE_SUBSCRIPTIONS: "/admin/handshake-subscriptions",
     SUBMISSIONS: "/admin/submissions",
     APPLICATIONS: "/admin/applications",
     SUGGESTIONS: "/admin/suggestions",

@@ -264,16 +264,9 @@ const RejectedRequestCard = ({ app }: { app: HubSubmittedAppResponse }) => (
         </div>
 
         {/* Footer Meta Data */}
-        <div className="mt-auto pt-3 border-t border-destructive/10 dark:border-red-900/20 flex items-center justify-between text-xs text-muted-foreground/80 dark:text-zinc-500">
-          <div className="flex items-center gap-1.5" title="Missed Reward">
-            <Star className="w-3.5 h-3.5 text-orange-400/70 dark:text-orange-400/60 fill-orange-400/20" />
-            <span className="font-medium line-through opacity-70">
-              {app?.rewardPoints} pts
-            </span>
-          </div>
-
+        <div className="mt-auto pt-3 border-t border-destructive/10 dark:border-red-900/20 flex items-center gap-3 text-xs text-muted-foreground/80 dark:text-zinc-500">
           <div
-            className="flex items-center gap-1.5 text-muted-foreground dark:text-zinc-500"
+            className="flex items-center gap-1.5"
             title="Date Rejected"
           >
             <Calendar className="w-3.5 h-3.5" />
@@ -585,9 +578,14 @@ function CommunityDashboardContent() {
       <div className="container mx-auto px-4 md:px-6">
         <header className="mb-12">
           <div className="mb-6">
-            <h1 className="text-2xl sm:text-4xl font-bold bg-gradient-to-b from-emerald-600 to-emerald-700 bg-clip-text text-transparent leading-[unset] pb-2">
-              Handshake Testing
-            </h1>
+            <div className="flex items-center gap-3 flex-wrap">
+              <h1 className="text-2xl sm:text-4xl font-bold bg-gradient-to-b from-emerald-600 to-emerald-700 bg-clip-text text-transparent leading-[unset] pb-2">
+                Handshake Testing
+              </h1>
+              <Badge className="bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border-emerald-300 dark:border-emerald-700 px-3 py-1 text-xs font-bold uppercase tracking-wider">
+                Beta
+              </Badge>
+            </div>
             <p className="text-sm sm:text-base text-muted-foreground max-w-xl">
               Offer your app, test a peer&apos;s app, and level up. A monthly
               subscription unlocks publishing and joining handshake tests.
@@ -642,15 +640,15 @@ function CommunityDashboardContent() {
             <div className="flex flex-row gap-2 col-span-2">
               <BentoCard className="bg-gradient-to-br from-emerald-600 to-emerald-700 text-white relative overflow-hidden w-5/12 sm:w-1/2">
                 <CardTitle className="text-sm font-medium flex items-center gap-2">
-                  <Star className="absolute top-5 left-5 scale-[6] text-white/20 rotate-45 w-4 h-4" />{" "}
-                  My Points
+                  <Handshake className="absolute top-5 left-5 scale-[6] text-white/20 rotate-45 w-4 h-4" />{" "}
+                  Handshake Level
                 </CardTitle>
-                {hubIsPending ? (
-                  <Skeleton className="h-12 w-32 mx-auto my-auto" />
-                ) : (
+                {handshakeStats ? (
                   <p className="text-3xl sm:text-5xl font-bold text-center my-auto">
-                    {hubData?.wallet || 0}
+                    {handshakeStats.handshakeLevel}
                   </p>
+                ) : (
+                  <Skeleton className="h-12 w-32 mx-auto my-auto" />
                 )}
               </BentoCard>
 
@@ -682,11 +680,11 @@ function CommunityDashboardContent() {
             <BentoCard className="flex !flex-row sm:!flex-col gap-2 col-span-2 lg:col-span-1 !p-2.5 sm:!p-4">
               <Button
                 className="w-full justify-start h-full bg-gradient-to-b from-emerald-600 to-emerald-700 text-white p-2 sm:p-auto"
-                onClick={() => openPage("/app/handshake-testing/submit")}
+                onClick={() => openPage(hasActiveSubscription ? "/app/handshake-testing/submit" : "/pricing")}
               >
                 <PlusCircle className="absolute sm:static left-0 top-0 scale-[2] text-white/20 sm:left-auto sm:top-auto sm:scale-[1] sm:text-white mr-2 h-4 w-4" />
                 <p className="text-center sm:text-start w-full">
-                  Submit New App
+                  {hasActiveSubscription ? "Submit New App" : "Subscribe to Submit"}
                 </p>
               </Button>
               <Button
@@ -703,32 +701,7 @@ function CommunityDashboardContent() {
           </div>
         </header>
 
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-8">
-          <div className="rounded-xl border border-emerald-500/30 bg-emerald-500/5 p-3 text-center">
-            <p className="text-2xl font-bold text-emerald-600">
-              {handshakeStats?.handshakeLevel ?? 1}
-            </p>
-            <p className="text-xs text-muted-foreground">Handshake Level</p>
-          </div>
-          <div className="rounded-xl border border-border/60 bg-secondary/30 p-3 text-center">
-            <p className="text-2xl font-bold">
-              {handshakeStats?.availableSlots ?? 0}
-            </p>
-            <p className="text-xs text-muted-foreground">Free Slots</p>
-          </div>
-          <div className="rounded-xl border border-border/60 bg-secondary/30 p-3 text-center">
-            <p className="text-2xl font-bold">
-              {handshakeStats?.activeHandshakes ?? 0}
-            </p>
-            <p className="text-xs text-muted-foreground">Active Handshakes</p>
-          </div>
-          <div className="rounded-xl border border-border/60 bg-secondary/30 p-3 text-center">
-            <p className="text-2xl font-bold">
-              {handshakeStats?.handshakeCompletedCount ?? 0}
-            </p>
-            <p className="text-xs text-muted-foreground">Completed</p>
-          </div>
-        </div>
+
 
         <main>
           <Tabs
@@ -771,7 +744,7 @@ function CommunityDashboardContent() {
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end" className="rounded-xl">
-                    {["Most Recent", "Most Rewarding", "Time to Test"].map(
+                    {["Most Recent", "Most Active", "Time to Test"].map(
                       (cat) => (
                         <DropdownMenuItem
                           key={cat}

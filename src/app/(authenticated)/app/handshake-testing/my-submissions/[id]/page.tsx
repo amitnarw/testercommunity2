@@ -246,9 +246,9 @@ const TestCompleteSection = ({
             <p className="text-4xl font-bold">{feedbackBreakdown.praise}</p>
           </div>
           <div className="bg-secondary p-1.5 pt-3 rounded-lg flex flex-col gap-2 items-center justify-center">
-            <p className="text-xs">Points Cost</p>
+            <p className="text-xs">Test Days</p>
             <p className="text-3xl font-bold bg-card rounded-lg w-full h-full flex items-center justify-center">
-              {isUnderReviewOrRejected ? 0 : app?.costPoints}
+              {app?.totalDay || 14}
             </p>
           </div>
         </div>
@@ -621,35 +621,14 @@ function SubmissionDetailsPage({
                   </div>
                 </div>
 
-                <div className="grid grid-cols-3 gap-2 sm:gap-4 w-full">
+                <div className="grid grid-cols-2 gap-2 sm:gap-4 w-full">
                   <div className="bg-card p-3 pt-4 rounded-2xl flex flex-col justify-center h-full min-w-0 flex-1">
                     <p className="text-xs sm:text-sm mb-2 text-muted-foreground font-medium">
-                      Points Cost
-                    </p>
-                    <div className="bg-secondary/50 rounded-xl p-3 h-full flex flex-col items-center justify-center">
-                      <p className="text-xl sm:text-2xl font-black text-blue-600">
-                        {isUnderReviewOrRejected ? 0 : appDetails?.costPoints}
-                      </p>
-                      {appDetails?.costPoints &&
-                        appDetails.costPoints < 1000 && (
-                          <Badge
-                            variant="outline"
-                            className="mt-1 bg-blue-500/10 text-[10px] text-blue-600 border-blue-500/20 py-0"
-                          >
-                            Coupon Applied
-                          </Badge>
-                        )}
-                    </div>
-                  </div>
-                  <div className="bg-card p-3 pt-4 rounded-2xl flex flex-col justify-center h-full min-w-0 flex-1">
-                    <p className="text-xs sm:text-sm mb-2 text-muted-foreground font-medium">
-                      Reward
+                      Test Duration
                     </p>
                     <div className="bg-secondary/50 rounded-xl p-3 h-full flex items-center justify-center">
-                      <p className="text-xl sm:text-2xl font-black text-amber-600">
-                        {isUnderReviewOrRejected
-                          ? 0
-                          : appDetails?.rewardPoints || 0}
+                      <p className="text-xl sm:text-2xl font-black">
+                        {isUnderReviewOrRejected ? "N/A" : `${appDetails?.totalDay || 14} Days`}
                       </p>
                     </div>
                   </div>

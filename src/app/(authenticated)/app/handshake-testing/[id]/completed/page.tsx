@@ -1,7 +1,7 @@
 "use client";
 
 import { notFound } from "next/navigation";
-import { CheckCircle, Bug, Lightbulb, PartyPopper } from "lucide-react";
+import { CheckCircle, Bug, Lightbulb, PartyPopper, Handshake } from "lucide-react";
 import { BackButton } from "@/components/back-button";
 import { AppActionButton, AppInfoSidebar } from "@/components/appInfoSidebar";
 import { SubmittedFeedback } from "@/components/community-dashboard/submitted-feedback";
@@ -78,10 +78,8 @@ const TestCompleteSection = ({
         variants={itemVariants}
         className="bg-gradient-to-br from-emerald-600 to-emerald-700 p-6 rounded-2xl flex flex-col justify-center items-center text-center overflow-hidden"
       >
-        <p className="text-xs sm:text-sm text-white/80">Points Earned</p>
-        <p className="text-6xl sm:text-7xl font-bold text-white">
-          {app.points.toLocaleString()}
-        </p>
+        <Handshake className="w-10 h-10 text-white/80 mb-2" />
+        <p className="text-xs sm:text-sm text-white/80">Handshake Completed</p>
       </motion.div>
 
       <motion.div
@@ -185,7 +183,6 @@ export default function AppTestingCompletedPage({
     icon: appDetails.androidApp?.appLogoUrl || "",
     shortDescription: appDetails.androidApp?.description || "",
     category: appDetails.androidApp?.appCategory?.name || "General",
-    points: appDetails.rewardPoints || 0,
     androidVersion: appDetails.minimumAndroidVersion?.toString() || "8.0",
     estimatedTime: `${appDetails.totalDay || 14} Days`,
     playStoreUrl: `https://play.google.com/store/apps/details?id=${appDetails.androidApp?.packageName}`,

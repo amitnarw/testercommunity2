@@ -413,7 +413,7 @@ function AppTestingPageClient({ id }: { id: string }) {
                   </div>
                   <p className="text-xs text-muted-foreground">
                     You must keep the app installed for the entire 14-day
-                    period. Points are awarded only after successful completion.
+                    period. Level progress counts only after successful completion.
                   </p>
                 </Card>
                 <Card className="p-4 bg-gradient-to-br from-secondary to-secondary/50 hover:shadow-lg transition-shadow">

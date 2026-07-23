@@ -55,7 +55,7 @@ type AdminNavItem = {
 const baseMainNavItems: AdminNavItem[] = [
   { name: "Dashboard", href: ROUTES.AUTHENTICATED.DASHBOARD, icon: Home, section: "overview" },
   { name: "Pro Testing", href: ROUTES.AUTHENTICATED.PRO_TESTING, icon: Zap, section: "paid", badge: "PRO" },
-  { name: "Handshake Testing", href: ROUTES.AUTHENTICATED.HANDSHAKE_TESTING, icon: Handshake, section: "handshake", badge: "HANDSHAKE" },
+  { name: "Handshake Testing", href: ROUTES.AUTHENTICATED.HANDSHAKE_TESTING, icon: Handshake, section: "handshake", badge: "BETA" },
   { name: "Notifications", href: ROUTES.AUTHENTICATED.NOTIFICATIONS, icon: Bell, section: "platform" },
   { name: "Wallet", href: ROUTES.AUTHENTICATED.WALLET, icon: Wallet, section: "platform" },
   { name: "Support", href: ROUTES.PUBLIC.SUPPORT, icon: LifeBuoy, section: "support" },
@@ -100,15 +100,6 @@ const adminNavItems: AdminNavItem[] = [
     badge: "HANDSHAKE",
     moduleName: "submissions",
   },
-  {
-    name: "Handshake Subs",
-    href: ROUTES.ADMIN.HANDSHAKE_SUBSCRIPTIONS,
-    icon: Handshake,
-    section: "free",
-    badge: "HANDSHAKE",
-    moduleName: "subscription",
-  },
-
   // Finance
   {
     name: "Finance",
@@ -427,6 +418,7 @@ export default function MobileMenu({
                                   "text-[8px] font-bold px-1.5 py-0.5 rounded",
                                   section.key === "paid" && "bg-amber-500/20 text-amber-600 dark:bg-amber-500/10 dark:text-amber-700",
                                   section.key === "free" && "bg-blue-500/20 text-blue-600 dark:bg-blue-500/10 dark:text-blue-700",
+                                  item.badge === "BETA" && "bg-emerald-500/20 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-700",
                                 )}>
                                   {item.badge}
                                 </span>
@@ -438,8 +430,8 @@ export default function MobileMenu({
                     );
                   });
                 })()}
-              </nav>
-            ) : groupedUserItems ? (
+                </nav>
+              ) : groupedUserItems ? (
               // Normal user menu with sections - mirrors admin layout
               <nav className="flex flex-col gap-1 py-2 pr-0 flex-1 overflow-y-auto">
                 {(() => {
@@ -498,11 +490,12 @@ export default function MobileMenu({
                                   )}
                                   {item.name}
                                 </div>
-                              {item.badge && hasBadge && (
+                                {item.badge && hasBadge && (
                                 <span className={cn(
                                   "text-[8px] font-bold px-1.5 py-0.5 rounded",
                                   section.key === "paid" && "bg-amber-500/20 text-amber-600 dark:bg-amber-500/10 dark:text-amber-700",
                                   section.key === "free" && "bg-blue-500/20 text-blue-600 dark:bg-blue-500/10 dark:text-blue-700",
+                                  item.badge === "BETA" && "bg-emerald-500/20 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-700",
                                 )}>
                                   {item.badge}
                                 </span>
