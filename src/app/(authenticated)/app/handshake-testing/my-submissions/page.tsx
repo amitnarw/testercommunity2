@@ -35,7 +35,7 @@ import { PageHeader } from "@/components/page-header";
 import { useHubSubmittedApp, useHubSubmittedAppsCount } from "@/hooks/useHub";
 import { Skeleton } from "@/components/ui/skeleton";
 
-// Helper to filter out paid apps from displaying in the Free Testing
+// Helper to filter out paid apps from displaying in the Handshake Testing
 const filterFreeApps = (apps: HubSubmittedAppResponse[] | undefined) => {
   if (!apps) return [];
   return apps.filter((app) => app.appType !== "PAID");
@@ -58,8 +58,8 @@ const getStatusConfig = (status: HubSubmittedAppResponse["status"]) => {
       return {
         icon: <Clock className="w-3.5 h-3.5" />,
         label: "Available",
-        color: "text-primary",
-        bgColor: "bg-primary/10",
+        color: "text-emerald-600",
+        bgColor: "bg-emerald-500/10",
         borderColor: "border-primary/20",
         description: "Your app is available for testing.",
       };
@@ -136,10 +136,10 @@ const ProjectCard = ({ project }: { project: HubSubmittedAppResponse }) => {
       className="group h-full"
     >
       <Link
-        href={`/app/free-testing/my-submissions/${project.id}`}
+        href={`/app/handshake-testing/my-submissions/${project.id}`}
         className="block h-full"
       >
-        <Card className="h-full border-0 bg-background/40 hover:bg-background/60 backdrop-blur-md shadow-sm hover:shadow-xl hover:shadow-primary/5 transition-all duration-300 rounded-[1.5rem] overflow-hidden relative ring-1 ring-border/50 hover:ring-primary/20 flex flex-col">
+        <Card className="h-full border-0 bg-background/40 hover:bg-background/60 backdrop-blur-md shadow-sm hover:shadow-xl hover:shadow-emerald-500/5 transition-all duration-300 rounded-[1.5rem] overflow-hidden relative ring-1 ring-border/50 hover:ring-primary/20 flex flex-col">
           {/* Status color glowing accent */}
           <div
             className={cn(
@@ -181,7 +181,7 @@ const ProjectCard = ({ project }: { project: HubSubmittedAppResponse }) => {
             </div>
 
             <div className="mt-4">
-              <h3 className="font-bold text-lg leading-tight text-foreground group-hover:text-primary transition-colors line-clamp-1">
+              <h3 className="font-bold text-lg leading-tight text-foreground group-hover:text-emerald-600 transition-colors line-clamp-1">
                 {project?.androidApp?.appName}
               </h3>
               <p className="text-xs font-mono text-muted-foreground mt-1 truncate opacity-70">
@@ -199,29 +199,10 @@ const ProjectCard = ({ project }: { project: HubSubmittedAppResponse }) => {
           <CardFooter className="p-0 mt-auto relative z-10">
             <div className="w-full bg-secondary/30 backdrop-blur-sm border-t border-border/40 p-4">
               <div className="flex items-center justify-between text-xs">
-                <div className="flex flex-col items-start gap-0.5">
-                  <div className="flex items-center gap-1.5 text-foreground/80 font-medium">
-                    <div className="p-1.5 rounded-full bg-blue-500/10 text-blue-500">
-                      <Star className="w-3.5 h-3.5 fill-blue-500/20" />
-                    </div>
-                    <span>{project?.costPoints ?? 0} Pts</span>
-                    {project?.costPoints != null && project.costPoints > 0 && project.costPoints < 1000 && (
-                      <Badge variant="outline" className="px-1 h-3.5 text-[8px] bg-blue-500/10 text-blue-600 border-blue-500/20">COUPON</Badge>
-                    )}
-                  </div>
-                  <div className="flex items-center gap-1 text-[10px] text-muted-foreground ml-7">
-                    <span>Reward: {project?.rewardPoints || 0} Pts</span>
-                  </div>
-                </div>
-
-                <div className="h-4 w-px bg-border/60" />
-
                 <div className="flex items-center gap-1.5 text-muted-foreground">
                   <Clock className="w-3.5 h-3.5" />
                   <span>{project?.totalDay ?? 0} Days</span>
                 </div>
-
-                <div className="h-4 w-px bg-border/60" />
 
                 <div className="flex items-center gap-1.5 text-muted-foreground">
                   <div className="flex -space-x-2">
@@ -231,7 +212,7 @@ const ProjectCard = ({ project }: { project: HubSubmittedAppResponse }) => {
                           key={i}
                           className="w-5 h-5 rounded-full bg-muted border-2 border-background flex items-center justify-center text-[8px] overflow-hidden"
                         >
-                          <div className="w-full h-full bg-gradient-to-tr from-primary/20 to-primary/5" />
+                          <div className="w-full h-full bg-gradient-to-tr from-emerald-500/20 to-emerald-600/5" />
                         </div>
                       ),
                     )}
@@ -253,7 +234,7 @@ const EmptyState = () => (
   <div className="col-span-full flex flex-col items-center justify-center py-24 relative overflow-hidden rounded-[2.5rem] bg-gradient-to-b from-muted/30 via-transparent to-transparent border border-white/5 dark:border-white/5">
     {/* Ambient Background Glow */}
     <div className="absolute inset-0 overflow-hidden pointer-events-none">
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-primary/5 rounded-full blur-[120px] opacity-50" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-emerald-500/5 rounded-full blur-[120px] opacity-50" />
       <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent opacity-50" />
     </div>
 
@@ -275,8 +256,8 @@ const EmptyState = () => (
       >
         {/* Main Card Element */}
         <div className="w-20 h-20 bg-gradient-to-br from-background via-muted to-muted/50 rounded-3xl shadow-2xl flex items-center justify-center border border-white/40 dark:border-white/10 relative z-10 backdrop-blur-md">
-          <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-primary/10 to-transparent opacity-50" />
-          <FileClock className="w-10 h-10 text-primary drop-shadow-[0_0_15px_rgba(var(--primary-rgb),0.5)]" />
+          <div className="absolute inset-0 rounded-3xl bg-gradient-to-br from-emerald-500/10 to-transparent opacity-50" />
+          <FileClock className="w-10 h-10 text-emerald-600 drop-shadow-[0_0_15px_rgba(16,185,129,0.5)]" />
         </div>
 
         {/* Floating Abstract Elements */}
@@ -312,10 +293,10 @@ const EmptyState = () => (
 
       <Button
         asChild
-        className="h-11 px-8 rounded-full bg-primary text-primary-foreground font-semibold shadow-lg shadow-primary/25 hover:shadow-primary/40 hover:scale-105 transition-all duration-300"
+        className="h-11 px-8 rounded-full bg-emerald-500 text-white font-semibold shadow-lg shadow-emerald-500/25 hover:shadow-emerald-500/40 hover:scale-105 transition-all duration-300"
       >
         <Link
-          href="/app/free-testing/submit"
+          href="/app/handshake-testing/submit"
           className="flex items-center gap-2"
         >
           <span>Submit App</span>
@@ -551,13 +532,13 @@ function MySubmissionsContent() {
           <main className="space-y-4">
             <PageHeader
               title="MySubmissions"
-              backHref="/app/free-testing"
+              backHref="/app/handshake-testing"
               className="w-1/2 px-0"
             />
             <div className="flex flex-row items-center justify-end gap-4 w-full">
               <Button
-                className="bg-gradient-to-b from-primary to-primary/40 text-primary-foreground px-3 h-8 sm:p-auto sm:h-10"
-                onClick={() => openPage("/app/free-testing/submit")}
+                className="bg-gradient-to-b from-emerald-500 to-emerald-600/40 text-white px-3 h-8 sm:p-auto sm:h-10"
+                onClick={() => openPage("/app/handshake-testing/submit")}
               >
                 <PlusCircle className="h-4 w-4 absolute sm:static top-0 sm:top-auto left-0 sm:left-auto scale-[2] sm:scale-100 text-white/20 sm:text-white" />
                 <span>Submit New App</span>

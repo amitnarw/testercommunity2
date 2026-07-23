@@ -143,7 +143,7 @@ function ProSamplesSection() {
             className="text-muted-foreground text-sm md:text-base leading-relaxed max-w-xl mx-auto"
           >
             Want to see what you&apos;re getting before committing? Explore the
-            Pro Testing dashboard with live sample data — no signup required.
+            Pro Testing dashboard with live sample data ,  no signup required.
           </motion.p>
         </div>
 

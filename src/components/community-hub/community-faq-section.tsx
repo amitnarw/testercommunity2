@@ -36,7 +36,7 @@ export function CommunityFaqSection({ faqType = "community" }: { faqType?: "comm
             Frequently Asked Questions
           </h2>
           <p className="mt-3 text-muted-foreground">
-            {faqType === "pro" ? "Everything you need to know about Pro Testing." : "Everything you need to know about Free Testing."}
+            {faqType === "pro" ? "Everything you need to know about Pro Testing." : "Everything you need to know about Handshake Testing."}
           </p>
         </motion.div>
 

@@ -16,14 +16,14 @@ export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "FAQ | inTesters",
-  description: "Frequently asked questions about inTesters app testing platform. Learn about community testing, professional testing packages, pricing, and how to meet Google Play's 12-tester requirement.",
-  keywords: "inTesters FAQ, app testing questions, Google Play 12 testers, community testing, professional testing, Android app testing help",
+  description: "Frequently asked questions about inTesters app testing platform. Learn about handshake testing (barter), professional testing packages, pricing, and how to meet Google Play's 12-tester requirement.",
+  keywords: "inTesters FAQ, app testing questions, Google Play 12 testers, handshake testing, professional testing, Android app testing help",
   alternates: {
     canonical: "/faq",
   },
   openGraph: {
     title: "FAQ | inTesters",
-    description: "Frequently asked questions about inTesters app testing platform. Learn about community testing, professional testing packages, and the 12-tester requirement.",
+    description: "Frequently asked questions about inTesters app testing platform. Learn about handshake testing, professional testing packages, and the 12-tester requirement.",
     url: "/faq",
     siteName: "inTesters",
   },
@@ -76,7 +76,7 @@ export default async function FaqPage() {
             ))}
           </Accordion>
 
-          <h2 className="text-2xl font-bold mb-6 mt-12">Community Path</h2>
+          <h2 className="text-2xl font-bold mb-6 mt-12">Handshake Path</h2>
           <Accordion type="single" collapsible className="w-full space-y-2">
             {communityFaqs.map((faq, i) => (
               <FaqItem

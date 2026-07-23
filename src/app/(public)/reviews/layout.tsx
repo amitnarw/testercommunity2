@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Reviews & Success Stories | inTesters",
   description: "Read reviews and success stories from developers and testers who have used inTesters to launch their Android apps successfully.",
-  keywords: "inTesters reviews, success stories, app testing testimonials, developer reviews, tester experiences, Android app launch, community testing",
+  keywords: "inTesters reviews, success stories, app testing testimonials, developer reviews, tester experiences, Android app launch, handshake testing",
   alternates: {
     canonical: "/reviews",
   },

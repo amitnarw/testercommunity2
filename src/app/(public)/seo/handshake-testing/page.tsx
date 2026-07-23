@@ -61,9 +61,9 @@ const CommunityFaqSection = dynamic(() =>
   ),
 );
 
-function FreeTestingCTASection() {
+function HandshakeTestingCTASection() {
   return (
-    <section className="w-full relative overflow-hidden bg-primary text-primary-foreground select-none flex flex-col items-center justify-center min-h-screen">
+    <section className="w-full relative overflow-hidden bg-gradient-to-br from-emerald-600 to-emerald-700 text-white select-none flex flex-col items-center justify-center min-h-screen">
       <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-[0.12] mix-blend-overlay pointer-events-none" />
 
       <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
@@ -84,7 +84,7 @@ function FreeTestingCTASection() {
           <div className="inline-flex items-center gap-2 px-4 py-1.5 md:px-5 md:py-2 rounded-full bg-white/10 text-white font-medium mb-1 border border-white/20 backdrop-blur-md shadow-lg shadow-black/5 hover:bg-white/20 transition-colors cursor-default">
             <Users className="w-3.5 h-3.5 text-yellow-300 fill-yellow-300" />
             <span className="text-xs md:text-sm tracking-wide uppercase font-bold">
-              Join 500+ Free Testers
+              Join 500+ Handshake Testers
             </span>
           </div>
 
@@ -92,7 +92,7 @@ function FreeTestingCTASection() {
             Ready to Start
             <br className="hidden md:block" />
             <span className="relative inline-block">
-              Free Testing?
+              Handshake Testing?
               <svg
                 className="absolute w-full h-3 -bottom-1 left-0 text-white/30"
                 viewBox="0 0 100 10"
@@ -108,9 +108,9 @@ function FreeTestingCTASection() {
             </span>
           </h2>
 
-          <p className="text-base md:text-xl text-blue-50/90 max-w-xl mx-auto leading-relaxed font-light">
-            Start earning points today by testing apps. Use those points to get
-            your own app tested, completely free.
+          <p className="text-base md:text-xl text-emerald-50/90 max-w-xl mx-auto leading-relaxed font-light">
+            Subscribe for ₹99/month and join a 1:1 barter network. Publish your
+            app, send handshake requests, and test each other&apos;s apps.
           </p>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-6 md:mt-8">
@@ -118,7 +118,7 @@ function FreeTestingCTASection() {
               <AnimatedRoundedButton
                 backgroundColor="white"
                 animatedBackgroundColor="black"
-                normalTextColor="hsl(var(--primary))"
+                normalTextColor="#059669"
                 hoverTextColor="white"
                 className="w-full"
                 paddingX="6"
@@ -126,7 +126,7 @@ function FreeTestingCTASection() {
                 borderRadius="9999px"
               >
                 <div className="flex items-center justify-center gap-2.5 font-bold text-base">
-                  <span>Start Earning Points</span>
+                  <span>Start Handshake Testing</span>
                 </div>
               </AnimatedRoundedButton>
             </AutoTransitionLink>
@@ -137,8 +137,8 @@ function FreeTestingCTASection() {
               className="w-full sm:w-auto rounded-full h-12 px-6 border border-white/30 text-base bg-transparent hover:bg-white/10 text-white hover:text-white sm:min-w-[160px] transition-all hover:border-white/60 backdrop-blur-sm"
               asChild
             >
-              <AutoTransitionLink href={ROUTES.AUTHENTICATED.FREE_TESTING}>
-                Explore Free Testing
+              <AutoTransitionLink href={ROUTES.AUTHENTICATED.HANDSHAKE_TESTING}>
+                Explore Handshake Testing
               </AutoTransitionLink>
             </Button>
           </div>
@@ -148,7 +148,7 @@ function FreeTestingCTASection() {
   );
 }
 
-export default function FreeTestingPage() {
+export default function HandshakeTestingPage() {
   return (
     <>
       <CommunityHero />
@@ -160,7 +160,7 @@ export default function FreeTestingPage() {
       <CommunityTestimonials />
       <ScrollingRibbon />
       <CommunityFaqSection />
-      <FreeTestingCTASection />
+      <HandshakeTestingCTASection />
       <ScrollToTopButton />
     </>
   );

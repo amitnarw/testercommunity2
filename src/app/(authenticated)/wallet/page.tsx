@@ -1,8 +1,10 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Plus, FileText, FileClock } from "lucide-react";
+import { Plus, FileText, FileClock, Handshake } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
 import { ROUTES } from "@/lib/routes";
+import { getMyHandshakeSubscription } from "@/lib/apiCalls";
 import { useWalletData } from "@/hooks/useWalletData";
 import { WalletCard } from "@/components/wallet/wallet-card";
 import { ActionButton } from "@/components/wallet/action-button";
@@ -55,6 +57,16 @@ export default function WalletPage() {
     setIsBillingModalOpen,
   } = useWalletData();
 
+  const { data: handshakeSub } = useQuery({
+    queryKey: ["myHandshakeSubscription"],
+    queryFn: () => getMyHandshakeSubscription(),
+    retry: false,
+  });
+
+  const hasActiveSubscription =
+    !!handshakeSub &&
+    (handshakeSub.status === "ACTIVE" || handshakeSub.status === "AUTHENTICATED");
+
   return (
     <div data-loc="WalletPage" className="min-h-screen w-full relative">
       <main className="container mx-auto px-4 md:px-8 py-6 md:py-10 max-w-7xl">
@@ -94,6 +106,13 @@ export default function WalletPage() {
                   href={ROUTES.AUTHENTICATED.BILLING}
                   primary
                 />
+                {hasActiveSubscription && (
+                  <ActionButton
+                    icon={Handshake}
+                    label="Subscription"
+                    href={ROUTES.AUTHENTICATED.SUBSCRIPTION_MANAGE}
+                  />
+                )}
                 <ActionButton
                   icon={FileClock}
                   label="Invoices"

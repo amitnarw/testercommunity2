@@ -28,7 +28,7 @@ import {
   AlertTriangle,
 } from "lucide-react";
 
-// Fixed plan price — single Professional plan at ₹999
+// Fixed plan price ,  single Professional plan at ₹999
 const PLAN_PRICE_INR = 999;
 
 interface AdminAcceptDialogProps {

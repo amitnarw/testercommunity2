@@ -89,7 +89,7 @@ export function CardDesign3({
             </div>
             <div className="space-y-1">
               <p className="text-foreground/40 text-[9px] font-bold uppercase tracking-tight">
-                Free Apps Completed
+                Handshake Apps Completed
               </p>
               <div className="flex items-baseline gap-1">
                 <p className="text-2xl font-bold text-foreground tabular-nums">

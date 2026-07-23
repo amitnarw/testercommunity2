@@ -12,9 +12,9 @@ interface AppTypeBadgeProps {
 }
 
 /**
- * A consistent badge component for displaying app type (PAID/FREE) across admin pages.
+ * A consistent badge component for displaying app type (PAID/HANDSHAKE) across admin pages.
  * - PAID (Professional): Amber/Gold color scheme
- * - FREE (Community): Blue color scheme
+ * - HANDSHAKE: Blue color scheme
  */
 export function AppTypeBadge({ 
   appType, 
@@ -47,7 +47,7 @@ export function AppTypeBadge({
           ? <DollarSign className="w-3 h-3 mr-1" /> 
           : <Users2 className="w-3 h-3 mr-1" />
       )}
-      {isPaid ? "PRO" : "FREE"}
+      {isPaid ? "PRO" : "HANDSHAKE"}
     </Badge>
   );
 }

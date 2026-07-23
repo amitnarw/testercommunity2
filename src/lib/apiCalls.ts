@@ -948,6 +948,35 @@ export async function getHubAppsCount(): Promise<SubmittedAppsCount> {
   }
 }
 
+export interface HandshakeStats {
+  totalApps: number;
+  totalTesters: number;
+  averageRating: number;
+  activeHandshakes: number;
+  availableSlots: number;
+  handshakeLevel: number;
+  handshakeCompletedCount: number;
+}
+
+export async function getHubStats(): Promise<HandshakeStats> {
+  try {
+    const response = await api.get(API_ROUTES.HUB + "/get-hub-stats");
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error fetching hub stats:", error);
+    if (axios.isAxiosError(error)) {
+      const responseData = error.response?.data;
+      throw new Error(
+        responseData?.message || error.message || "Unknown Axios error",
+      );
+    } else if (error instanceof Error) {
+      throw new Error(error.message);
+    } else {
+      throw new Error(JSON.stringify(error));
+    }
+  }
+}
+
 export async function getSingleHubAppDetails(
   id: string,
   view?: string,
@@ -976,7 +1005,10 @@ export async function getSingleHubAppDetails(
   }
 }
 
-export async function addHubAppTestingRequest(payload: { hub_id: string }) {
+export async function addHubAppTestingRequest(payload: {
+  hub_id: string;
+  offered_app_id?: string | number;
+}) {
   try {
     const response = await api.post(
       API_ROUTES.HUB + `/add-hub-testing-request`,
@@ -990,6 +1022,164 @@ export async function addHubAppTestingRequest(payload: { hub_id: string }) {
       const responseData = error.response?.data;
       console.error("Axios error:", status, responseData);
 
+      throw new Error(
+        responseData?.message || error.message || "Unknown Axios error",
+      );
+    } else if (error instanceof Error) {
+      throw new Error(error.message);
+    } else {
+      throw new Error(JSON.stringify(error));
+    }
+  }
+}
+
+export async function createHandshakeSubscription() {
+  try {
+    const response = await api.post(
+      API_ROUTES.SUBSCRIPTION + `/create`,
+      {},
+    );
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error creating handshake subscription:", error);
+    if (axios.isAxiosError(error)) {
+      const responseData = error.response?.data;
+      const err = new Error(
+        responseData?.message || error.message || "Unknown Axios error",
+      );
+      (err as unknown as { billingInfoMissing?: boolean }).billingInfoMissing =
+        responseData?.billingInfoMissing;
+      throw err;
+    } else if (error instanceof Error) {
+      throw new Error(error.message);
+    } else {
+      throw new Error(JSON.stringify(error));
+    }
+  }
+}
+
+export async function getMyHandshakeSubscription() {
+  try {
+    const response = await api.get(API_ROUTES.SUBSCRIPTION + `/my`);
+    return response?.data?.data?.subscription;
+  } catch (error) {
+    console.error("Error fetching handshake subscription:", error);
+    if (axios.isAxiosError(error)) {
+      const responseData = error.response?.data;
+      throw new Error(
+        responseData?.message || error.message || "Unknown Axios error",
+      );
+    } else if (error instanceof Error) {
+      throw new Error(error.message);
+    } else {
+      throw new Error(JSON.stringify(error));
+    }
+  }
+}
+
+export async function cancelHandshakeSubscription(id: string) {
+  try {
+    const response = await api.post(API_ROUTES.SUBSCRIPTION + `/cancel`, {
+      subscriptionId: id,
+    });
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error cancelling handshake subscription:", error);
+    if (axios.isAxiosError(error)) {
+      const responseData = error.response?.data;
+      throw new Error(
+        responseData?.message || error.message || "Unknown Axios error",
+      );
+    } else if (error instanceof Error) {
+      throw new Error(error.message);
+    } else {
+      throw new Error(JSON.stringify(error));
+    }
+  }
+}
+
+export async function getHandshakeSubscriptionStatus(id: string) {
+  try {
+    const response = await api.get(
+      API_ROUTES.SUBSCRIPTION + `/status/${id}`,
+    );
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error fetching handshake subscription status:", error);
+    if (axios.isAxiosError(error)) {
+      const responseData = error.response?.data;
+      throw new Error(
+        responseData?.message || error.message || "Unknown Axios error",
+      );
+    } else if (error instanceof Error) {
+      throw new Error(error.message);
+    } else {
+      throw new Error(JSON.stringify(error));
+    }
+  }
+}
+
+export async function syncSubscriptionPayments() {
+  try {
+    const response = await api.post(API_ROUTES.SUBSCRIPTION + `/sync-payments`);
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error syncing subscription payments:", error);
+    throw error;
+  }
+}
+
+export async function getHandshakePlan(): Promise<PricingResponse | null> {
+  try {
+    const response = await api.get(API_ROUTES.SUBSCRIPTION + `/plan`);
+    return response?.data?.data?.plan ?? null;
+  } catch (error) {
+    console.error("Error fetching handshake plan:", error);
+    return null;
+  }
+}
+
+export async function getHandshakeSubscriptionsAdmin(params?: {
+  page?: number;
+  limit?: number;
+  status?: string;
+}) {
+  try {
+    const search = new URLSearchParams();
+    if (params?.page) search.set("page", String(params.page));
+    if (params?.limit) search.set("limit", String(params.limit));
+    if (params?.status) search.set("status", params.status);
+    const query = search.toString();
+    const response = await api.get(
+      API_ROUTES.SUBSCRIPTION + `/admin/list${query ? `?${query}` : ""}`,
+    );
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error fetching admin handshake subscriptions:", error);
+    if (axios.isAxiosError(error)) {
+      const responseData = error.response?.data;
+      throw new Error(
+        responseData?.message || error.message || "Unknown Axios error",
+      );
+    } else if (error instanceof Error) {
+      throw new Error(error.message);
+    } else {
+      throw new Error(JSON.stringify(error));
+    }
+  }
+}
+
+export async function cancelHandshakeSubscriptionAdmin(id: string) {
+  try {
+    const response = await api.post(
+      API_ROUTES.SUBSCRIPTION + `/admin/cancel/${id}`,
+      {},
+    );
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error cancelling admin handshake subscription:", error);
+    if (axios.isAxiosError(error)) {
+      const responseData = error.response?.data;
       throw new Error(
         responseData?.message || error.message || "Unknown Axios error",
       );

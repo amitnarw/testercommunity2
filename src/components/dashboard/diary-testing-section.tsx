@@ -1,6 +1,18 @@
 "use client";
 
-import { ArrowRight, X } from "lucide-react";
+import { motion } from "framer-motion";
+import {
+  ArrowRight,
+  BadgeCheck,
+  Briefcase,
+  CalendarDays,
+  CheckCircle,
+  FileText,
+  LineChart,
+  ShieldCheck,
+  UserCheck,
+  X,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { TransitionLink } from "@/components/transition-link";
 import { ROUTES } from "@/lib/routes";
@@ -8,6 +20,17 @@ import { usePricingData, useRegionalPricing } from "@/hooks/useUser";
 import { PremiumAppCard } from "@/components/dashboard/premium-app-card";
 import { Skeleton } from "@/components/ui/skeleton";
 import type { HubSubmittedAppResponse } from "@/lib/types";
+
+const pills = [
+  { icon: Briefcase, title: "15-20 Professional Testers" },
+  { icon: CalendarDays, title: "15-20 Days Testing Period" },
+  { icon: UserCheck, title: "Dedicated Testing Manager for Your App" },
+  { icon: LineChart, title: "Live Dashboard to Track Progress" },
+  { icon: BadgeCheck, title: "Real Human Testers Certified by Google Play Academy" },
+  { icon: FileText, title: "Google Play Production Access Answers Provided" },
+  { icon: ShieldCheck, title: "Guaranteed Production Approval" },
+  { icon: CheckCircle, title: "End-to-End Managed Testing" },
+];
 
 export function DiaryTestingSection({
   proApps,
@@ -27,10 +50,10 @@ export function DiaryTestingSection({
   return (
     <section className="mb-20">
       <div className="relative rounded-[2.5rem] flex flex-col md:flex-row gap-4 items-stretch justify-center overflow-hidden">
-        {/* Left Card: Free Testing */}
+        {/* Left Card: Handshake Testing */}
         <div className="bg-gradient-to-br from-slate-50 via-white to-slate-50 dark:from-card dark:via-card/50 dark:to-card rounded-[32px] p-8 md:p-10 pb-14 md:pb-10 flex-1 relative border border-slate-200/60 dark:border-border/10 shadow-[0_8px_30px_rgb(0,0,0,0.04)] text-slate-800 dark:text-foreground z-0">
           <h2 className="text-2xl md:text-4xl font-extrabold text-slate-900 dark:text-foreground leading-[1.1] tracking-tight mb-8">
-            Free Testing
+            Handshake Testing
           </h2>
 
           {freeLoading ? (
@@ -75,7 +98,7 @@ export function DiaryTestingSection({
                   asChild
                   className="w-full rounded-full bg-slate-900 text-white hover:bg-slate-800 dark:bg-white dark:text-black dark:hover:bg-white/90 font-semibold h-12"
                 >
-                  <TransitionLink href="/app/free-testing/submit">
+                  <TransitionLink href="/app/handshake-testing/submit">
                     Submit Free App
                   </TransitionLink>
                 </Button>
@@ -137,6 +160,48 @@ export function DiaryTestingSection({
           )}
         </div>
       </div>
+
+      <motion.div
+        initial={{ opacity: 0, y: 16 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, delay: 0.15, ease: "easeOut" }}
+        className="mt-8"
+      >
+        <h2 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2 flex items-center gap-2">
+          Pro Testing Features
+        </h2>
+
+        <div
+          className="relative w-full overflow-hidden rounded-2xl py-1.5
+          [mask-image:linear-gradient(to_right,transparent,#000_8%,#000_92%,transparent)]
+          [-webkit-mask-image:linear-gradient(to_right,transparent,#000_8%,#000_92%,transparent)]"
+        >
+          <div className="group flex gap-2 [--gap:0.5rem]">
+            {Array(2)
+              .fill(0)
+              .map((_, repeatIdx) => (
+                <div
+                  key={repeatIdx}
+                  className="flex shrink-0 gap-2 [--gap:0.5rem] [--duration:40s] animate-marquee group-hover:[animation-play-state:paused]"
+                >
+                  {pills.map((pill) => (
+                    <div
+                      key={pill.title}
+                      className="flex flex-row items-center gap-2 shrink-0 rounded-full pl-2 pr-3.5 py-1.5 bg-card dark:bg-white/[0.03] border border-border/60 dark:border-white/10 shadow-[0_2px_10px_rgb(0,0,0,0.05)]"
+                    >
+                      <div className="w-5 h-5 rounded-full bg-gradient-to-br from-primary to-primary/70 flex items-center justify-center shrink-0">
+                        <pill.icon className="w-3 h-3 text-primary-foreground" />
+                      </div>
+                      <span className="text-xs font-medium text-foreground whitespace-nowrap">
+                        {pill.title}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              ))}
+          </div>
+        </div>
+      </motion.div>
     </section>
   );
 }

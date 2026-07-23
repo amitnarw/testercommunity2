@@ -97,7 +97,7 @@ const StatCard = ({
             {description}
           </p>
         </div>
-        <div className="hidden sm:flex items-center justify-center w-10 h-10 rounded-xl bg-primary/10 text-primary">
+        <div className="hidden sm:flex items-center justify-center w-10 h-10 rounded-xl bg-emerald-500/10 text-emerald-600">
           {icon}
         </div>
       </div>
@@ -162,7 +162,7 @@ export function CommunityStats({ variant = "free" }: { variant?: "free" | "pro" 
           description: "Free testers worldwide",
           icon: <Users className="w-5 h-5" />,
           colSpan: "double" as const,
-          className: "bg-gradient-to-br from-primary to-primary/70 text-primary-foreground",
+          className: "bg-gradient-to-br from-emerald-600 to-emerald-700 text-white",
         },
         {
           title: "Points Earned",
@@ -188,7 +188,7 @@ export function CommunityStats({ variant = "free" }: { variant?: "free" | "pro" 
           description: "Feedback quality score",
           icon: <CheckCircle className="w-5 h-5" />,
           colSpan: "double" as const,
-          className: "bg-gradient-to-br from-primary to-primary/70 text-primary-foreground",
+          className: "bg-gradient-to-br from-emerald-600 to-emerald-700 text-white",
         },
       ];
 
@@ -204,7 +204,7 @@ export function CommunityStats({ variant = "free" }: { variant?: "free" | "pro" 
         className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-0 w-[400px] h-[400px] md:w-[600px] md:h-[600px]"
         style={{ rotate }}
       >
-        <Globe className="w-full h-full text-primary/[0.08]" strokeWidth={0.5} />
+        <Globe className="w-full h-full text-emerald-600/[0.08]" strokeWidth={0.5} />
       </motion.div>
 
       <div className="container mx-auto px-4 md:px-6 relative z-10">
@@ -216,15 +216,18 @@ export function CommunityStats({ variant = "free" }: { variant?: "free" | "pro" 
           className="text-center max-w-2xl mx-auto mb-10 md:mb-16"
         >
           <h2 className="text-2xl md:text-4xl lg:text-5xl font-bold tracking-tight font-heading">
-            {isPro ? "Pro Testing" : "Free Testing"}{" "}
-            <span className="bg-gradient-to-br from-primary to-accent bg-clip-text text-transparent">
+            {isPro ? "Pro Testing" : "Handshake Testing"}{" "}
+            <span className={cn(
+              "bg-clip-text text-transparent",
+              isPro ? "bg-gradient-to-br from-primary to-accent" : "bg-gradient-to-br from-emerald-500 to-emerald-300",
+            )}>
               {isPro ? "Results" : "Impact"}
             </span>
           </h2>
           <p className="mt-3 text-muted-foreground text-sm md:text-base max-w-xl mx-auto">
             {isPro
               ? "Trusted by developers worldwide for reliable, professional app testing with guaranteed results."
-              : "A growing pool of testers and developers creating a virtuous cycle of quality and innovation — completely free."}
+              : "A growing pool of developers bartering app testing ,  building quality apps together through mutual handshake testing."}
           </p>
         </motion.div>
 

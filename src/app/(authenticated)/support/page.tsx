@@ -36,13 +36,13 @@ const categories = [
     href: "/support/google-play-guidelines",
   },
   {
-    id: "free-community-testing",
+    id: "handshake-testing",
     icon: Globe,
-    title: "Community Testing",
-    description: "Master the Karma system and tester pool.",
+    title: "Handshake Testing",
+    description: "Learn the barter system, levels, and slots.",
     textColor: "text-green-500",
     bgColor: "green-500/10",
-    href: "/support/free-community-testing",
+    href: "/support/handshake-testing",
   },
   {
     id: "paid-professional-testing",

@@ -28,21 +28,23 @@ export function CommunityHero() {
             as="button"
             className="dark:bg-black text-[10px] sm:text-xs bg-white text-black dark:text-white flex items-center space-x-2"
           >
-            <Coins className="w-4 h-4 mr-2 text-primary" />
-            <span>Test Apps for Free — No Credit Card Needed</span>
+            <Coins className="w-4 h-4 mr-2 text-emerald-500" />
+            <span>Subscribe & Start Barter Testing ,  Just ₹99/mo</span>
           </HoverBorderGradient>
 
           <h1 className="text-[1.85rem] sm:text-[2.75rem] md:text-[3.5rem] lg:text-[4.25rem] font-heading leading-[1.2] md:leading-[1.1] tracking-tight font-bold mb-5 sm:mb-8 text-center mx-auto max-w-[900px]">
             Guaranteed{" "}
-            <span className="bg-gradient-to-br from-primary to-accent bg-clip-text text-transparent">
+            <span className="bg-gradient-to-br from-emerald-500 to-emerald-300 bg-clip-text text-transparent">
               12 Testers
             </span>{" "}
-            within 12 Hours for <span className="text-primary italic">Free</span>
+            within 12 Hours with
+            <span className="text-emerald-600 italic"> Handshake</span>
           </h1>
 
           <p className="text-sm sm:text-base md:text-lg font-body max-w-xs sm:max-w-md md:max-w-lg lg:max-w-[700px] mx-auto mb-8 text-muted-foreground">
-            Join a reciprocal community where you test apps to earn points, then
-            use those points to get your own app tested, completely free.
+            Subscribe for ₹99/month and enter a 1:1 barter network. Publish your
+            app, send requests to other developers, and test each other&apos;s apps.
+            Level up to unlock up to 20 testers per app.
           </p>
 
           <div className="mt-5 inline-block p-4">
@@ -51,11 +53,11 @@ export function CommunityHero() {
                 asChild
                 size="lg"
                 variant="default"
-                className="group text-sm sm:text-base px-4 sm:px-6 sm:pr-3 py-6 sm:py-7 rounded-full shadow-lg shadow-primary/30"
+                className="group text-sm sm:text-base px-4 sm:px-6 sm:pr-3 py-6 sm:py-7 rounded-full shadow-lg shadow-emerald-500/30"
               >
                 <AutoTransitionLink href="/auth/register">
                   <span className="relative z-10 font-bold">
-                    Start Earning Points
+                    Start Handshake Testing
                   </span>
                   <div className="relative inline-flex items-center justify-center w-8 h-8 rounded-full bg-primary-foreground/20 group-hover:bg-black dark:group-hover:bg-white transition-all duration-500 group-hover:scale-[2] ml-3 sm:ml-4">
                     <ChevronRight className="w-4 h-4 text-primary-foreground group-hover:text-white dark:group-hover:text-black transition-colors duration-300" />
@@ -79,8 +81,8 @@ export function CommunityHero() {
             </Button>
             <span className="hidden sm:block text-muted-foreground/30">|</span>
             <Button variant="link" asChild className="text-muted-foreground">
-              <AutoTransitionLink href="/app/free-testing">
-                Browse Free Testing <ArrowRight className="w-4 h-4 ml-1" />
+              <AutoTransitionLink href="/app/handshake-testing">
+                Browse Handshake Testing <ArrowRight className="w-4 h-4 ml-1" />
               </AutoTransitionLink>
             </Button>
           </motion.div>

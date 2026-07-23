@@ -2,14 +2,14 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "How It Works | inTesters",
-  description: "Learn how inTesters works. Choose between the free community testing path or professional testing packages to get your Android app tested by real users.",
-  keywords: "how inTesters works, app testing process, community testing, professional testing, Android app testing, beta testing, user testing",
+  description: "Learn how inTesters works. Choose between handshake testing (subscription-based barter) or professional testing packages to get your Android app tested by real users.",
+  keywords: "how inTesters works, app testing process, handshake testing, professional testing, Android app testing, beta testing, user testing",
   alternates: {
     canonical: "/how-it-works",
   },
   openGraph: {
     title: "How It Works | inTesters",
-    description: "Learn how inTesters works. Choose between the free community testing path or professional testing packages to get your Android app tested by real users.",
+    description: "Learn how inTesters works. Choose between handshake testing (subscription-based barter) or professional testing packages to get your Android app tested by real users.",
     type: "website",
     locale: "en_US",
     url: "/how-it-works",
@@ -26,7 +26,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "How It Works | inTesters",
-    description: "Learn how inTesters works. Choose between the free community testing path or professional testing packages to get your Android app tested by real users.",
+    description: "Learn how inTesters works. Choose between handshake testing (subscription-based barter) or professional testing packages to get your Android app tested by real users.",
     images: ["/dark-mac.png"],
   },
 };

@@ -41,9 +41,9 @@ const categoryMap: Record<
     icon: Shield,
     glow: "bg-blue-500/10",
   },
-  "free-community-testing": {
-    title: "Community Testing",
-    description: "Master the Karma system and tester pool.",
+  "handshake-testing": {
+    title: "Handshake Testing",
+    description: "Learn the barter system, levels, and slots.",
     color: "text-green-500",
     icon: Globe,
     glow: "bg-green-500/10",
@@ -90,7 +90,7 @@ export default function CategoryPage() {
   // In `lib/blog-data.ts`, categories might be slightly different.
   const articleCategoryMap: Record<string, string> = {
     "google-play-guidelines": "Google Play Guidelines",
-    "free-community-testing": "Free Community Testing",
+    "handshake-testing": "Handshake Testing",
     "paid-professional-testing": "Paid Professional Testing",
     "wallet-account": "Wallet & Account",
   };

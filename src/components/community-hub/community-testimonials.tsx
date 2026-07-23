@@ -94,13 +94,13 @@ export function CommunityTestimonials({ variant = "free" }: { variant?: "free" |
           className="text-center max-w-2xl mx-auto mb-10 md:mb-16"
         >
           <h2 className="text-2xl md:text-4xl lg:text-5xl font-bold font-heading tracking-tight">
-            {variant === "pro" ? "Pro Testing" : "Free Testing"}{" "}
-            <span className="text-primary italic">Success Stories</span>
+            {variant === "pro" ? "Pro Testing" : "Handshake Testing"}{" "}
+            <span className="text-emerald-600 italic">Success Stories</span>
           </h2>
           <p className="mt-3 text-muted-foreground text-sm md:text-base">
             {variant === "pro"
               ? "Hear from developers who launched successfully with Pro Testing."
-              : "Hear from developers and testers who benefited from free testing."}
+              : "Hear from developers and testers who benefited from Handshake Testing."}
           </p>
         </motion.div>
 
@@ -291,14 +291,14 @@ export function CommunityTestimonials({ variant = "free" }: { variant?: "free" |
             variant="secondary"
             size="icon"
             onClick={handlePrev}
-            className="rounded-full hover:bg-primary/10 hover:text-primary transition-colors"
+            className="rounded-full hover:bg-emerald-500/10 hover:text-emerald-600 transition-colors"
           >
             <ChevronRight className="w-5 h-5 rotate-180" />
           </Button>
           <div className="flex-1 h-1.5 rounded-full bg-secondary max-w-[200px] overflow-hidden relative">
             <motion.div
               key={activeIndex}
-              className="absolute inset-y-0 left-0 bg-primary"
+              className="absolute inset-y-0 left-0 bg-emerald-500"
               initial={{ width: 0 }}
               animate={{ width: "100%" }}
               transition={{ duration: duration / 1000, ease: "linear" }}
@@ -308,7 +308,7 @@ export function CommunityTestimonials({ variant = "free" }: { variant?: "free" |
             variant="secondary"
             size="icon"
             onClick={handleNext}
-            className="rounded-full hover:bg-primary/10 hover:text-primary transition-colors"
+            className="rounded-full hover:bg-emerald-500/10 hover:text-emerald-600 transition-colors"
           >
             <ChevronRight className="w-5 h-5" />
           </Button>

@@ -52,7 +52,7 @@ import { format } from "date-fns";
 
 const faqCategories = [
   { value: "general", label: "General" },
-  { value: "community", label: "Community / Free Testing" },
+  { value: "community", label: "Community / Handshake Testing" },
   { value: "professional", label: "Professional / Pro Testing" },
   { value: "homepage", label: "Homepage" },
   { value: "pricing", label: "Pricing" },

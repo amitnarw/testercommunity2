@@ -24,14 +24,14 @@ export function CardDesign2({
           <p className="text-foreground/40 text-[10px] tracking-[0.2em] font-bold uppercase mb-1">
             APP SUBMISSIONS
           </p>
-          <p className="text-foreground/30 text-[10px]">Free and paid apps listed on the platform</p>
+          <p className="text-foreground/30 text-[10px]">Handshake and paid apps listed on the platform</p>
         </div>
       </div>
 
       <div className="grid grid-cols-2 gap-4 items-end">
         <div>
           <p className="text-muted-foreground/50 text-[10px] font-bold uppercase tracking-tight mb-1">
-            Free
+            Handshake
           </p>
           <h3 className="text-4xl font-black text-foreground leading-none tracking-tighter tabular-nums">
             {isLoading ? (

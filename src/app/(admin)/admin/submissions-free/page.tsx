@@ -104,10 +104,10 @@ function AdminSubmissionsFreeContent() {
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between space-y-2">
         <div>
           <h2 className="text-2xl sm:text-3xl font-bold bg-gradient-to-b from-primary to-primary/40 bg-clip-text text-transparent leading-[unset]">
-            Free Submissions
+            Handshake Submissions
           </h2>
           <p className="text-sm sm:text-md text-muted-foreground">
-            Review, approve, or reject community (free) app submissions.
+            Review, approve, or reject handshake app submissions.
           </p>
         </div>
       </div>

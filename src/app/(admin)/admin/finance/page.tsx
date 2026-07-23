@@ -14,6 +14,7 @@ import { InvoicesList } from "@/components/admin/finance/invoices-list";
 import { RefundsTable } from "@/components/admin/finance/refunds-table";
 import { WithdrawalsTable } from "@/components/admin/finance/withdrawals-table";
 import { PricingTable } from "@/components/admin/finance/pricing-table";
+import { HandshakeSubscriptionsTable } from "@/components/admin/finance/handshake-subscriptions-table";
 
 const tabs = [
   { id: "overview", label: "Overview" },
@@ -23,6 +24,7 @@ const tabs = [
   { id: "refunds", label: "Refunds" },
   { id: "withdrawals", label: "Withdrawals" },
   { id: "pricing", label: "Pricing" },
+  { id: "subscriptions", label: "Subscriptions" },
 ];
 
 function FinancePageContent() {
@@ -104,6 +106,7 @@ function FinancePageContent() {
             {tab.id === "refunds" && <RefundsTable />}
             {tab.id === "withdrawals" && <WithdrawalsTable />}
             {tab.id === "pricing" && <PricingTable />}
+            {tab.id === "subscriptions" && <HandshakeSubscriptionsTable />}
           </TabsContent>
         ))}
       </Tabs>

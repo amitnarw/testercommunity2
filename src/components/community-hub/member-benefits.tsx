@@ -8,43 +8,43 @@ import { AutoTransitionLink } from "@/components/auto-transition-link";
 const benefits = [
   {
     icon: Coins,
-    title: "Earn Points",
-    description: "Get rewarded for every valid test you complete",
+    title: "Subscription Access",
+    description: "Just ₹99/month for unlimited handshake requests",
     color: "text-green-500",
     bg: "bg-green-500/10",
   },
   {
     icon: Zap,
-    title: "Priority Access",
-    description: "Be first in line when new apps are posted",
+    title: "1:1 Barter Testing",
+    description: "You test my app, I test yours ,  fair for both sides",
     color: "text-yellow-500",
     bg: "bg-yellow-500/10",
   },
   {
     icon: Star,
-    title: "Build Reputation",
-    description: "Earn badges and climb the leaderboard",
+    title: "Level Up System",
+    description: "Start at 12 slots, unlock up to 20 as you level up",
     color: "text-purple-500",
     bg: "bg-purple-500/10",
   },
   {
     icon: Users,
-    title: "Join Community",
-    description: "Connect with 500+ testers worldwide",
+    title: "Real Developers",
+    description: "Network with 500+ fellow app developers",
     color: "text-blue-500",
     bg: "bg-blue-500/10",
   },
   {
     icon: CheckCircle,
-    title: "Real Feedback",
-    description: "Meaningful insights from real users",
-    color: "text-primary",
-    bg: "bg-primary/10",
+    title: "12+ Tester Guarantee",
+    description: "Meet Google Play requirements through mutual testing",
+    color: "text-emerald-600",
+    bg: "bg-emerald-500/10",
   },
   {
     icon: ShieldCheck,
-    title: "Risk Free",
-    description: "No money required, just your time",
+    title: "No Hidden Costs",
+    description: "One subscription price, no per-test fees",
     color: "text-orange-500",
     bg: "bg-orange-500/10",
   },
@@ -82,7 +82,7 @@ export function MemberBenefits() {
     >
       {/* Background */}
       <div className="absolute inset-0 bg-dot-pattern opacity-[0.1] pointer-events-none" />
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-primary/5 to-transparent pointer-events-none" />
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-emerald-500/5 to-transparent pointer-events-none" />
 
       <div className="container mx-auto px-4 md:px-6 relative z-10">
         {/* Header */}
@@ -95,11 +95,11 @@ export function MemberBenefits() {
         >
           <h2 className="text-2xl md:text-4xl lg:text-5xl font-bold font-heading tracking-tight">
             Everything You Need to{" "}
-            <span className="text-primary italic">Get Started</span>
+            <span className="text-emerald-600 italic">Get Started</span>
           </h2>
           <p className="mt-3 text-muted-foreground text-sm md:text-base max-w-xl mx-auto">
-            Join thousands of testers and developers on the most rewarding free
-            testing platform.
+            Join hundreds of developers on the most rewarding handshake
+            testing platform ,  powered by subscription, not points.
           </p>
         </motion.div>
 
@@ -144,30 +144,30 @@ export function MemberBenefits() {
         >
           <div className="relative p-8 md:p-10 rounded-3xl overflow-hidden">
             {/* Glow effects */}
-            <div className="absolute -top-1/2 left-1/2 -translate-x-1/2 w-[200%] h-[200%] bg-gradient-to-r from-primary/20 via-transparent to-primary/20 blur-[80px] -rotate-12 pointer-events-none" />
+            <div className="absolute -top-1/2 left-1/2 -translate-x-1/2 w-[200%] h-[200%] bg-gradient-to-r from-emerald-500/20 via-transparent to-emerald-500/20 blur-[80px] -rotate-12 pointer-events-none" />
 
             <div className="relative text-center">
-              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 text-primary text-xs font-bold uppercase tracking-wider mb-4">
+              <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-500/10 text-emerald-600 text-xs font-bold uppercase tracking-wider mb-4">
                 <Star className="w-3.5 h-3.5 fill-yellow-400 text-yellow-400" />
-                <span>Free to Join</span>
+                <span>Handshake Testing</span>
               </div>
 
               <h3 className="text-xl md:text-2xl font-bold font-heading mb-3">
-                Ready to Start Earning Points?
+                Ready to Start Handshake Testing?
               </h3>
               <p className="text-sm text-muted-foreground mb-6 max-w-md mx-auto">
-                No credit card required. Simply sign up, test apps, and earn
-                points to get your own app tested.
+                Subscribe for ₹99/month, publish your app, and start sending
+                handshake requests to other developers.
               </p>
 
               <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
                 <Button
                   asChild
                   size="lg"
-                  className="w-full sm:w-auto rounded-full px-8 shadow-lg shadow-primary/30 group"
+                  className="w-full sm:w-auto rounded-full px-8 shadow-lg shadow-emerald-500/30 group"
                 >
                   <AutoTransitionLink href="/auth/register">
-                    <span className="font-bold">Get Started Free</span>
+                    <span className="font-bold">Subscribe Now</span>
                   </AutoTransitionLink>
                 </Button>
                 <Button
@@ -176,8 +176,8 @@ export function MemberBenefits() {
                   variant="outline"
                   className="w-full sm:w-auto rounded-full px-8"
                 >
-                  <AutoTransitionLink href="/app/free-testing">
-                    Preview Free Testing
+                  <AutoTransitionLink href="/app/handshake-testing">
+                    Browse Handshake Testing
                   </AutoTransitionLink>
                 </Button>
               </div>
@@ -185,7 +185,7 @@ export function MemberBenefits() {
               {/* Pro Upsell */}
               <div className="mt-4 text-center">
                 <AutoTransitionLink href="/pricing">
-                  <span className="text-xs text-muted-foreground hover:text-primary transition-colors cursor-pointer">
+                  <span className="text-xs text-muted-foreground hover:text-emerald-600 transition-colors cursor-pointer">
                     Want guaranteed results?{" "}
                     <span className="font-bold underline underline-offset-2">
                       See Pro Plans →
@@ -202,7 +202,7 @@ export function MemberBenefits() {
                 </div>
                 <div className="flex items-center gap-1.5">
                   <CheckCircle className="w-3.5 h-3.5 text-green-500" />
-                  <span>45,000+ Points Earned</span>
+                  <span>500+ Apps Listed</span>
                 </div>
                 <div className="flex items-center gap-1.5">
                   <CheckCircle className="w-3.5 h-3.5 text-green-500" />

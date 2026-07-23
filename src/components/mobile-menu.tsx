@@ -9,13 +9,6 @@ import {
   DollarSign,
   LifeBuoy,
   Users,
-  Users2,
-  FileCheck,
-  MessageSquare,
-  Lightbulb,
-  Activity,
-  Wallet,
-  Settings,
   Handshake,
   Home,
   BookOpen,
@@ -27,6 +20,12 @@ import {
   ThumbsUp,
   FileText,
   Zap,
+  Wallet,
+  Activity,
+  FileCheck,
+  Lightbulb,
+  MessageSquare,
+  Settings,
 } from "lucide-react";
 import { Button } from "./ui/button";
 import {
@@ -41,7 +40,6 @@ import { cn } from "@/lib/utils";
 import { TransitionLink } from "./transition-link";
 import { ROUTES } from "@/lib/routes";
 import { hasPermission } from "@/lib/permissions";
-
 import { authClient } from "@/lib/auth-client";
 
 type AdminNavItem = {
@@ -54,10 +52,10 @@ type AdminNavItem = {
   moduleName?: string;
 };
 
-const mainNavItems: AdminNavItem[] = [
+const baseMainNavItems: AdminNavItem[] = [
   { name: "Dashboard", href: ROUTES.AUTHENTICATED.DASHBOARD, icon: Home, section: "overview" },
   { name: "Pro Testing", href: ROUTES.AUTHENTICATED.PRO_TESTING, icon: Zap, section: "paid", badge: "PRO" },
-  { name: "Free Testing", href: ROUTES.AUTHENTICATED.FREE_TESTING, icon: Users2, section: "free", badge: "FREE" },
+  { name: "Handshake Testing", href: ROUTES.AUTHENTICATED.HANDSHAKE_TESTING, icon: Handshake, section: "handshake", badge: "BETA" },
   { name: "Notifications", href: ROUTES.AUTHENTICATED.NOTIFICATIONS, icon: Bell, section: "platform" },
   { name: "Wallet", href: ROUTES.AUTHENTICATED.WALLET, icon: Wallet, section: "platform" },
   { name: "Support", href: ROUTES.PUBLIC.SUPPORT, icon: LifeBuoy, section: "support" },
@@ -93,16 +91,15 @@ const adminNavItems: AdminNavItem[] = [
     moduleName: "submissions",
   },
 
-  // Free Services
+  // Handshake Services
   {
-    name: "Community Subs",
+    name: "Handshake Apps",
     href: ROUTES.ADMIN.SUBMISSIONS_FREE,
     icon: Handshake,
     section: "free",
-    badge: "FREE",
+    badge: "HANDSHAKE",
     moduleName: "submissions",
   },
-
   // Finance
   {
     name: "Finance",
@@ -224,6 +221,8 @@ export default function MobileMenu({
 }) {
   const pathname = usePathname();
   const { data: session } = authClient.useSession();
+
+  const mainNavItems = baseMainNavItems;
   const role = (session as any)?.role;
   const roleName = (
     typeof role === "string" ? role : role?.name
@@ -358,7 +357,7 @@ export default function MobileMenu({
                   const sectionConfigs: SectionCfg[] = [
                     { key: "overview", header: null },
                     { key: "paid", header: "Paid Services", iconColor: "text-amber-500", hoverClass: "hover:bg-amber-500/10" },
-                    { key: "free", header: "Free Services", iconColor: "text-blue-500", hoverClass: "hover:bg-blue-500/10" },
+                    { key: "free", header: "Handshake", iconColor: "text-blue-500", hoverClass: "hover:bg-blue-500/10" },
                     { key: "finance", header: "Finance", iconColor: "text-emerald-500", hoverClass: "hover:bg-emerald-500/10" },
                     { key: "platform", header: "Platform", hoverClass: "hover:bg-muted", activeClass: "text-primary bg-primary/5" },
                     { key: "support", header: "Support", iconColor: "text-green-500", hoverClass: "hover:bg-green-500/10" },
@@ -419,6 +418,7 @@ export default function MobileMenu({
                                   "text-[8px] font-bold px-1.5 py-0.5 rounded",
                                   section.key === "paid" && "bg-amber-500/20 text-amber-600 dark:bg-amber-500/10 dark:text-amber-700",
                                   section.key === "free" && "bg-blue-500/20 text-blue-600 dark:bg-blue-500/10 dark:text-blue-700",
+                                  item.badge === "BETA" && "bg-emerald-500/20 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-700",
                                 )}>
                                   {item.badge}
                                 </span>
@@ -430,8 +430,8 @@ export default function MobileMenu({
                     );
                   });
                 })()}
-              </nav>
-            ) : groupedUserItems ? (
+                </nav>
+              ) : groupedUserItems ? (
               // Normal user menu with sections - mirrors admin layout
               <nav className="flex flex-col gap-1 py-2 pr-0 flex-1 overflow-y-auto">
                 {(() => {
@@ -439,7 +439,7 @@ export default function MobileMenu({
                   const sectionConfigs: SectionCfg[] = [
                     { key: "overview", header: null },
                     { key: "paid", header: "Paid Services", iconColor: "text-amber-500", hoverClass: "hover:bg-amber-500/10" },
-                    { key: "free", header: "Free Services", iconColor: "text-blue-500", hoverClass: "hover:bg-blue-500/10" },
+                    { key: "free", header: "Handshake", iconColor: "text-blue-500", hoverClass: "hover:bg-blue-500/10" },
                     { key: "platform", header: "Platform", hoverClass: "hover:bg-muted", activeClass: "text-primary bg-primary/5" },
                     { key: "support", header: "Support", iconColor: "text-green-500", hoverClass: "hover:bg-green-500/10" },
                   ];
@@ -490,11 +490,12 @@ export default function MobileMenu({
                                   )}
                                   {item.name}
                                 </div>
-                              {item.badge && hasBadge && (
+                                {item.badge && hasBadge && (
                                 <span className={cn(
                                   "text-[8px] font-bold px-1.5 py-0.5 rounded",
                                   section.key === "paid" && "bg-amber-500/20 text-amber-600 dark:bg-amber-500/10 dark:text-amber-700",
                                   section.key === "free" && "bg-blue-500/20 text-blue-600 dark:bg-blue-500/10 dark:text-blue-700",
+                                  item.badge === "BETA" && "bg-emerald-500/20 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-700",
                                 )}>
                                   {item.badge}
                                 </span>

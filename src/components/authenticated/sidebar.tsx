@@ -4,7 +4,6 @@ import { usePathname } from "next/navigation";
 import {
   LayoutDashboard,
   Home,
-  Users2,
   Handshake,
   Bell,
   Briefcase,
@@ -24,6 +23,7 @@ import {
   MessageSquare,
   Headphones,
   Landmark,
+  Mail,
   Settings,
   ThumbsUp,
   FileText,
@@ -33,10 +33,11 @@ import { BaseSidebar, SidebarNavLink } from "@/components/ui/base-sidebar";
 import { authClient } from "@/lib/auth-client";
 import { ROUTES } from "@/lib/routes";
 import { hasPermission } from "@/lib/permissions";
+import { useMailUnreadCount } from "@/hooks/useAdmin";
 
-const mainNavLinks = [
+const baseMainNavLinks = [
   { name: "Dashboard", href: ROUTES.AUTHENTICATED.DASHBOARD, icon: Home },
-  { name: "Free Testing", href: ROUTES.AUTHENTICATED.FREE_TESTING, icon: Users2 },
+  { name: "Handshake Testing", href: ROUTES.AUTHENTICATED.HANDSHAKE_TESTING, icon: Handshake, badge: "BETA" },
   { name: "Pro Testing", href: ROUTES.AUTHENTICATED.PRO_TESTING, icon: Zap, badge: "PRO" },
   { name: "Notifications", href: ROUTES.AUTHENTICATED.NOTIFICATIONS, icon: Bell },
   { name: "Support", href: ROUTES.PUBLIC.SUPPORT, icon: LifeBuoy },
@@ -45,7 +46,7 @@ const mainNavLinks = [
 const proNavLinks = [
   { name: "Dashboard", href: ROUTES.TESTER.DASHBOARD, icon: LayoutDashboard },
   { name: "Projects", href: ROUTES.TESTER.PROJECTS, icon: Briefcase },
-  { name: "Community Tasks", href: ROUTES.TESTER.COMMUNITY_TASKS, icon: Users2 },
+  { name: "Community Tasks", href: ROUTES.TESTER.COMMUNITY_TASKS, icon: Handshake },
   { name: "Activities", href: ROUTES.TESTER.ACTIVITIES, icon: Activity },
   { name: "Notifications", href: ROUTES.TESTER.NOTIFICATIONS, icon: Bell },
   { name: "Support", href: ROUTES.TESTER.SUPPORT, icon: LifeBuoy },
@@ -91,16 +92,15 @@ const adminNavLinks: AdminNavLink[] = [
     moduleName: "submissions",
   },
 
-  // Free Services
+  // Handshake Services
   {
-    name: "Free Subs",
+    name: "Handshake Apps",
     href: ROUTES.ADMIN.SUBMISSIONS_FREE,
     icon: Handshake,
     section: "free",
-    badge: "FREE",
+    badge: "HANDSHAKE",
     moduleName: "submissions",
   },
-
   // Finance
   {
     name: "Finance",
@@ -209,6 +209,13 @@ const adminNavLinks: AdminNavLink[] = [
 
   // Support
   {
+    name: "Mail",
+    href: ROUTES.ADMIN.MAIL,
+    icon: Mail,
+    section: "support",
+    moduleName: "mail",
+  },
+  {
     name: "Support",
     href: ROUTES.ADMIN.SUPPORT,
     icon: Headphones,
@@ -242,12 +249,23 @@ export function Sidebar({
   const effectiveIsTester = actingAs === "tester" || (!actingAs && roleName === "tester");
   const effectiveIsUser = actingAs === "user" || (!actingAs && roleName === "user");
 
+  const mainNavLinks = baseMainNavLinks;
+
   let navLinks: { name: string; href: string; icon: typeof LayoutDashboard; badge?: string }[] = mainNavLinks;
   if (effectiveIsTester) {
     navLinks = proNavLinks;
   }
 
   const permissions = role?.permissions;
+  const { data: unreadCount = 0 } = useMailUnreadCount({ enabled: effectiveIsAdmin });
+
+  const mailLinkIndex = adminNavLinks.findIndex((l) => l.name === "Mail");
+  if (mailLinkIndex >= 0) {
+    adminNavLinks[mailLinkIndex] = {
+      ...adminNavLinks[mailLinkIndex],
+      badge: unreadCount > 0 ? String(unreadCount) : undefined,
+    };
+  }
 
   function isLinkVisible(link: (typeof adminNavLinks)[number]): boolean {
     if (link.superAdminOnly) return roleName === "super_admin";
@@ -258,7 +276,7 @@ export function Sidebar({
   const sections = [
     { key: "overview" as const, label: "Overview" },
     { key: "paid" as const, label: "Paid", color: "text-amber-500" },
-    { key: "free" as const, label: "Free", color: "text-black/70" },
+    { key: "free" as const, label: "Handshake", color: "text-black/70" },
     { key: "finance" as const, label: "Finance", color: "text-cyan-300" },
     { key: "platform" as const, label: "Platform" },
     { key: "support" as const, label: "Support", color: "text-green-400" },

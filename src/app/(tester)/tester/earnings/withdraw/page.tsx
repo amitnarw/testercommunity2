@@ -460,13 +460,13 @@ export default function WithdrawFundsPage() {
                         {formatINR(w.amount)}
                       </TableCell>
                       <TableCell className="text-xs text-muted-foreground max-w-[180px] truncate">
-                        {w.note ?? "—"}
+                        {w.note ?? ", "}
                       </TableCell>
                       <TableCell>
                         <WithdrawalStatusBadge status={w.status} />
                       </TableCell>
                       <TableCell className="text-xs text-muted-foreground">
-                        {w.processedAt ? formatDate(w.processedAt) : "—"}
+                        {w.processedAt ? formatDate(w.processedAt) : ", "}
                       </TableCell>
                     </TableRow>
                   ))

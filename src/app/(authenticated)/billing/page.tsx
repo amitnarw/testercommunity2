@@ -11,6 +11,8 @@ import {
   ShieldCheck,
   Star,
   FileClock,
+  Handshake,
+  ArrowRight,
 } from "lucide-react";
 import { format } from "date-fns";
 import Link from "next/link";
@@ -31,6 +33,8 @@ import {
   usePaymentConfig,
 } from "@/hooks/useBilling";
 import { useGetUserWallet, usePricingData, useUserData, useRegionalPricing } from "@/hooks/useUser";
+import { useQuery } from "@tanstack/react-query";
+import { getMyHandshakeSubscription } from "@/lib/apiCalls";
 import { Accordion } from "@/components/ui/accordion";
 import FaqItem from "@/components/faq-item";
 import { getPublicFaqs } from "@/lib/apiCalls";
@@ -39,6 +43,7 @@ import {
   ProfessionalPlanCard,
   EnterprisePlanCard,
 } from "@/components/pricing-cards";
+import { HandshakePlanCard } from "@/components/handshake/plan-card";
 import Script from "next/script";
 import { Loader2 } from "lucide-react";
 
@@ -84,6 +89,11 @@ const itemVariants = {
 
 const TransactionHistory = () => {
   const { data: transactions, isPending } = useBillingHistory();
+  const [billingFilter, setBillingFilter] = useState("All");
+  const filteredTransactions = billingFilter === "All"
+    ? transactions
+    : (transactions || []).filter((t) => t.type === billingFilter);
+  const displayTransactions = filteredTransactions || [];
 
   return (
     <motion.div
@@ -105,7 +115,25 @@ const TransactionHistory = () => {
         </div>
       </div>
 
-      <div className="flex-1 p-2 max-h-[400px] overflow-y-auto">
+      <div className="px-4 pt-4 pb-2">
+        <div className="flex gap-2 overflow-x-auto no-scrollbar">
+          {["All", "ONE_TIME", "SUBSCRIPTION"].map((tab) => (
+            <button
+              key={tab}
+              onClick={() => setBillingFilter(tab)}
+              className={`px-4 py-1.5 rounded-full text-xs font-medium transition-all whitespace-nowrap ${
+                billingFilter === tab
+                  ? "bg-primary text-primary-foreground shadow-md shadow-primary/20"
+                  : "bg-secondary/50 text-muted-foreground hover:bg-secondary hover:text-foreground"
+              }`}
+            >
+              {tab === "All" ? "All" : tab === "ONE_TIME" ? "One-Time" : "Subscription"}
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="flex-1 p-2 max-h-[360px] overflow-y-auto">
         {isPending ? (
           [1, 2, 3].map((i) => (
             <div key={i} className="p-4 flex gap-4">
@@ -116,13 +144,13 @@ const TransactionHistory = () => {
               </div>
             </div>
           ))
-        ) : transactions && transactions.length > 0 ? (
-          transactions.map((t, i) => (
+        ) : displayTransactions.length > 0 ? (
+          displayTransactions.map((t, i) => (
             <div
               key={t.id}
               className={cn(
                 "flex items-center justify-between p-4 rounded-xl hover:bg-muted/50 transition-all duration-200 group cursor-pointer",
-                i !== transactions.length - 1 && "mb-1",
+                i !== displayTransactions.length - 1 && "mb-1",
               )}
             >
               <div className="flex items-center gap-4">
@@ -133,7 +161,7 @@ const TransactionHistory = () => {
                   <p className="font-medium text-foreground">{t.plan}</p>
                   <p className="text-sm text-muted-foreground">
                     {format(new Date(t.date), "MMM dd, yyyy")} •{" "}
-                    {t.razorpayOrderId}
+                    {t.razorpayOrderId || t.razorpayPaymentId || `#${t.id}`}
                   </p>
                 </div>
               </div>
@@ -173,7 +201,7 @@ const TransactionHistory = () => {
         ) : (
           <div className="flex flex-col items-center justify-center h-40 text-muted-foreground text-sm">
             <FileClock className="w-8 h-8 mb-2 opacity-50" />
-            <p>No transaction history found</p>
+            <p>No {billingFilter === "SUBSCRIPTION" ? "subscription" : billingFilter === "ONE_TIME" ? "one-time" : ""} transactions found</p>
           </div>
         )}
       </div>
@@ -215,6 +243,15 @@ export default function BillingPage() {
   const { refetch: refetchHistory } = useBillingHistory();
   const { data: paymentConfig } = usePaymentConfig();
   const { data: userData } = useUserData();
+
+  const { data: handshakeSub } = useQuery({
+    queryKey: ["myHandshakeSubscription"],
+    queryFn: () => getMyHandshakeSubscription(),
+    retry: false,
+  });
+  const hasActiveSubscription =
+    !!handshakeSub &&
+    (handshakeSub.status === "ACTIVE" || handshakeSub.status === "AUTHENTICATED");
 
   const createOrderMutation = useCreateOrder();
 
@@ -362,14 +399,14 @@ export default function BillingPage() {
       />
       <div
         data-loc="BillingPage"
-        className="min-h-screen w-full relative text-foreground transition-colors duration-300 max-w-5xl mx-auto"
+        className="min-h-screen w-full relative text-foreground transition-colors duration-300 max-w-7xl mx-auto"
       >
         <PageHeader
           title="Billing"
           backHref={ROUTES.AUTHENTICATED.WALLET}
           className="w-1/2 px-4 md:px-6"
         />
-        <div className="relative z-10 container mx-auto px-4 md:px-6 py-8 space-y-16">
+        <div className="relative z-10 container mx-auto py-8 space-y-16">
           <motion.div
             initial="hidden"
             animate="visible"
@@ -378,7 +415,7 @@ export default function BillingPage() {
           >
 
             <section className="relative">
-              <div className="text-center mb-12 max-w-2xl mx-auto">
+              <div className="text-center mb-12 mx-auto">
                 <h2 className="text-3xl md:text-4xl font-bold bg-clip-text text-transparent bg-gradient-to-b from-foreground to-foreground/70 mb-4">
                   Simple, Transparent{" "}
                   <span className="text-primary">Pricing</span>
@@ -395,7 +432,8 @@ export default function BillingPage() {
                   <Skeleton className="h-[520px] w-full rounded-3xl bg-muted" />
                 </div>
               ) : (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-stretch">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-stretch">
+                  <HandshakePlanCard />
                   {pricingData?.map((plan) => (
                     <ProfessionalPlanCard
                       key={plan.id}
@@ -429,6 +467,18 @@ export default function BillingPage() {
                       </Button>
                     }
                   />
+                </div>
+              )}
+              {hasActiveSubscription && (
+                <div className="flex justify-center mt-6">
+                  <Link
+                    href={ROUTES.AUTHENTICATED.SUBSCRIPTION_MANAGE}
+                    className="inline-flex items-center gap-2 text-sm text-primary hover:text-primary/80 font-medium transition-colors"
+                  >
+                    <Handshake className="w-4 h-4" />
+                    Manage Subscription
+                    <ArrowRight className="w-3 h-3" />
+                  </Link>
                 </div>
               )}
             </section>

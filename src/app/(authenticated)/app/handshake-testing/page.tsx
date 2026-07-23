@@ -22,6 +22,7 @@ import {
   ChevronRight,
   Calendar,
   Ban,
+  Handshake,
 } from "lucide-react";
 import {
   DropdownMenu,
@@ -40,14 +41,17 @@ import { SafeImage } from "@/components/safe-image";
 import { Badge } from "@/components/ui/badge";
 import type { HubSubmittedAppResponse } from "@/lib/types";
 import SubTabUI from "@/components/sub-tab-ui";
-import { useHubApps, useHubAppsCount, useHubData } from "@/hooks/useHub";
+import { useHubApps, useHubAppsCount, useHubData, useHubStats } from "@/hooks/useHub";
 import { useUserProfileData } from "@/hooks/useUser";
 import { DiscoverySourceModal } from "@/components/discovery-source-modal";
 import { AppCardSkeleton } from "@/components/app-card-skeleton";
 import { format } from "date-fns";
 import { Skeleton } from "@/components/ui/skeleton";
+import { ROUTES } from "@/lib/routes";
+import { getMyHandshakeSubscription } from "@/lib/apiCalls";
+import { useQuery } from "@tanstack/react-query";
 
-// Helper to filter out paid apps from displaying in the Free Testing
+// Helper to filter out paid apps from displaying in the Handshake Testing
 const filterFreeApps = (apps: HubSubmittedAppResponse[] | undefined) => {
   if (!apps) return [];
   return apps.filter((app) => app.appType !== "PAID");
@@ -124,14 +128,14 @@ const PaginatedAppList = ({
           </div>
         ) : (
           <div className="flex flex-col items-center justify-center py-20 text-center bg-card/50 rounded-3xl border border-dashed border-muted-foreground/20 relative overflow-hidden group">
-            <div className="absolute inset-0 bg-gradient-to-b from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+            <div className="absolute inset-0 bg-gradient-to-b from-emerald-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
             <motion.div
               initial={{ scale: 0.8, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
-              className="p-6 bg-primary/10 rounded-full mb-6 relative z-10 ring-8 ring-primary/5"
+              className="p-6 bg-emerald-500/10 rounded-full mb-6 relative z-10 ring-8 ring-primary/5"
             >
-              <Icon className="w-10 h-10 text-primary" />
+              <Icon className="w-10 h-10 text-emerald-600" />
             </motion.div>
             <h3 className="text-xl font-bold mb-2 relative z-10">
               {emptyTitle}
@@ -152,7 +156,7 @@ const PaginatedAppList = ({
 };
 
 const RequestedAppCard = ({ app }: { app: HubSubmittedAppResponse }) => (
-  <Link href={`/app/free-testing/${app.id}`} className="group block h-full">
+  <Link href={`/app/handshake-testing/${app.id}`} className="group block h-full">
     <div className="relative h-full flex flex-col overflow-hidden rounded-3xl bg-card border border-border/50 hover:border-orange-500/50 transition-all duration-500 hover:shadow-[0_10px_40px_-15px_rgba(249,115,22,0.2)] dark:hover:shadow-[0_10px_40px_-20px_rgba(249,115,22,0.1)] hover:-translate-y-1">
       {/* Decorative Gradient Blob */}
       <div className="absolute top-0 right-0 w-32 h-32 bg-orange-500/5 rounded-full blur-3xl -mr-10 -mt-10 transition-all duration-500 group-hover:bg-orange-500/10" />
@@ -206,7 +210,7 @@ const RequestedAppCard = ({ app }: { app: HubSubmittedAppResponse }) => (
 );
 
 const RejectedRequestCard = ({ app }: { app: HubSubmittedAppResponse }) => (
-  <Link href={`/app/free-testing/${app.id}`} className="group block h-full">
+  <Link href={`/app/handshake-testing/${app.id}`} className="group block h-full">
     <div className="relative h-full flex flex-col overflow-hidden rounded-3xl bg-gradient-to-br from-destructive/20 to-white/5 border border-destructive/20 hover:border-destructive/50 dark:border-red-900/50 dark:hover:border-red-500/50 transition-all duration-500 hover:shadow-[0_10px_40px_-15px_rgba(239,68,68,0.2)] dark:hover:shadow-[0_10px_40px_-20px_rgba(239,68,68,0.3)] hover:-translate-y-1">
       <div className="p-5 flex-grow flex flex-col relative z-10">
         {/* Header Section */}
@@ -260,16 +264,9 @@ const RejectedRequestCard = ({ app }: { app: HubSubmittedAppResponse }) => (
         </div>
 
         {/* Footer Meta Data */}
-        <div className="mt-auto pt-3 border-t border-destructive/10 dark:border-red-900/20 flex items-center justify-between text-xs text-muted-foreground/80 dark:text-zinc-500">
-          <div className="flex items-center gap-1.5" title="Missed Reward">
-            <Star className="w-3.5 h-3.5 text-orange-400/70 dark:text-orange-400/60 fill-orange-400/20" />
-            <span className="font-medium line-through opacity-70">
-              {app?.rewardPoints} pts
-            </span>
-          </div>
-
+        <div className="mt-auto pt-3 border-t border-destructive/10 dark:border-red-900/20 flex items-center gap-3 text-xs text-muted-foreground/80 dark:text-zinc-500">
           <div
-            className="flex items-center gap-1.5 text-muted-foreground dark:text-zinc-500"
+            className="flex items-center gap-1.5"
             title="Date Rejected"
           >
             <Calendar className="w-3.5 h-3.5" />
@@ -300,7 +297,7 @@ const ApprovedAppCard = ({ app }: { app: HubSubmittedAppResponse }) => {
 
   return (
     <Link
-      href={`/app/free-testing/${app.id}/ongoing`}
+      href={`/app/handshake-testing/${app.id}/ongoing`}
       className="group block h-full"
     >
       <div className="relative h-full flex flex-col overflow-hidden rounded-3xl bg-card border border-amber-500/30 hover:border-amber-500/50 transition-all duration-500 hover:shadow-[0_10px_40px_-15px_rgba(245,158,11,0.2)] dark:hover:shadow-[0_10px_40px_-20px_rgba(245,158,11,0.1)] hover:-translate-y-1">
@@ -393,6 +390,15 @@ function CommunityDashboardContent() {
   const [showDiscoveryModal, setShowDiscoveryModal] = useState(false);
 
   const { data: userProfileData, refetch: refetchProfile } = useUserProfileData();
+
+  const { data: handshakeSub } = useQuery({
+    queryKey: ["myHandshakeSubscription"],
+    queryFn: () => getMyHandshakeSubscription(),
+    retry: false,
+  });
+  const hasActiveSubscription =
+    !!handshakeSub &&
+    (handshakeSub.status === "ACTIVE" || handshakeSub.status === "AUTHENTICATED");
 
   useEffect(() => {
     refetchProfile();
@@ -553,6 +559,7 @@ function CommunityDashboardContent() {
   ];
 
   const { data: hubData, isPending: hubIsPending } = useHubData();
+  const { data: handshakeStats } = useHubStats();
 
   const appsSubmitted = hubData?.appsSubmitted || 0;
   const testersEngaged = hubData?.testersEngaged || 0;
@@ -571,13 +578,27 @@ function CommunityDashboardContent() {
       <div className="container mx-auto px-4 md:px-6">
         <header className="mb-12">
           <div className="mb-6">
-            <h1 className="text-2xl sm:text-4xl font-bold bg-gradient-to-b from-primary to-primary/40 bg-clip-text text-transparent leading-[unset] pb-2">
-              Free Testing
-            </h1>
+            <div className="flex items-center gap-3 flex-wrap">
+              <h1 className="text-2xl sm:text-4xl font-bold bg-gradient-to-b from-emerald-600 to-emerald-700 bg-clip-text text-transparent leading-[unset] pb-2">
+                Handshake Testing
+              </h1>
+              <Badge className="bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border-emerald-300 dark:border-emerald-700 px-3 py-1 text-xs font-bold uppercase tracking-wider">
+                Beta
+              </Badge>
+            </div>
             <p className="text-sm sm:text-base text-muted-foreground max-w-xl">
-              Test apps, earn points, and help fellow developers build better
-              products.
+              Offer your app, test a peer&apos;s app, and level up. A monthly
+              subscription unlocks publishing and joining handshake tests.
             </p>
+            {hasActiveSubscription && (
+              <Link
+                href={ROUTES.AUTHENTICATED.SUBSCRIPTION_MANAGE}
+                className="inline-flex items-center gap-1.5 text-xs text-primary hover:text-primary/80 font-medium transition-colors mt-2"
+              >
+                <Handshake className="w-3.5 h-3.5" />
+                Manage Subscription
+              </Link>
+            )}
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
             <BentoCard className="col-span-2">
@@ -617,17 +638,17 @@ function CommunityDashboardContent() {
             </BentoCard>
 
             <div className="flex flex-row gap-2 col-span-2">
-              <BentoCard className="bg-gradient-to-br from-primary to-primary/40 text-primary-foreground relative overflow-hidden w-5/12 sm:w-1/2">
+              <BentoCard className="bg-gradient-to-br from-emerald-600 to-emerald-700 text-white relative overflow-hidden w-5/12 sm:w-1/2">
                 <CardTitle className="text-sm font-medium flex items-center gap-2">
-                  <Star className="absolute top-5 left-5 scale-[6] text-white/20 rotate-45 w-4 h-4" />{" "}
-                  My Points
+                  <Handshake className="absolute top-5 left-5 scale-[6] text-white/20 rotate-45 w-4 h-4" />{" "}
+                  Handshake Level
                 </CardTitle>
-                {hubIsPending ? (
-                  <Skeleton className="h-12 w-32 mx-auto my-auto" />
-                ) : (
+                {handshakeStats ? (
                   <p className="text-3xl sm:text-5xl font-bold text-center my-auto">
-                    {hubData?.wallet || 0}
+                    {handshakeStats.handshakeLevel}
                   </p>
+                ) : (
+                  <Skeleton className="h-12 w-32 mx-auto my-auto" />
                 )}
               </BentoCard>
 
@@ -658,18 +679,18 @@ function CommunityDashboardContent() {
 
             <BentoCard className="flex !flex-row sm:!flex-col gap-2 col-span-2 lg:col-span-1 !p-2.5 sm:!p-4">
               <Button
-                className="w-full justify-start h-full bg-gradient-to-b from-primary to-primary/40 text-primary-foreground p-2 sm:p-auto"
-                onClick={() => openPage("/app/free-testing/submit")}
+                className="w-full justify-start h-full bg-gradient-to-b from-emerald-600 to-emerald-700 text-white p-2 sm:p-auto"
+                onClick={() => openPage(hasActiveSubscription ? "/app/handshake-testing/submit" : "/pricing")}
               >
                 <PlusCircle className="absolute sm:static left-0 top-0 scale-[2] text-white/20 sm:left-auto sm:top-auto sm:scale-[1] sm:text-white mr-2 h-4 w-4" />
                 <p className="text-center sm:text-start w-full">
-                  Submit New App
+                  {hasActiveSubscription ? "Submit New App" : "Subscribe to Submit"}
                 </p>
               </Button>
               <Button
                 variant="outline"
                 className="w-full justify-start h-full p-2 sm:p-auto"
-                onClick={() => openPage("/app/free-testing/my-submissions")}
+                onClick={() => openPage("/app/handshake-testing/my-submissions")}
               >
                 <LayoutPanelLeft className="absolute sm:static left-0 top-0 scale-[2] text-black/10 dark:text-white/15 sm:left-auto sm:top-auto sm:scale-[1] sm:text-black dark:sm:text-white mr-2 h-4 w-4" />
                 <p className="text-center sm:text-start w-full">
@@ -679,6 +700,8 @@ function CommunityDashboardContent() {
             </BentoCard>
           </div>
         </header>
+
+
 
         <main>
           <Tabs
@@ -695,13 +718,13 @@ function CommunityDashboardContent() {
               </div>
               <div className="flex gap-2 flex-row items-center justify-end w-full md:w-auto">
                 <Button
-                  onClick={() => openPage("/app/free-testing/history")}
-                  className="group relative h-10 pl-4 pr-2 rounded-full bg-background border border-border hover:border-primary/50 hover:bg-muted/50 transition-all duration-300 overflow-hidden shadow-sm hover:shadow-md hover:shadow-primary/5"
+                  onClick={() => openPage("/app/handshake-testing/history")}
+                  className="group relative h-10 pl-4 pr-2 rounded-full bg-background border border-border hover:border-primary/50 hover:bg-muted/50 transition-all duration-300 overflow-hidden shadow-sm hover:shadow-md hover:shadow-emerald-500/5"
                 >
-                  <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                  <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
 
                   <div className="relative flex items-center gap-2.5">
-                    <span className="flex items-center justify-center w-5 h-5 rounded-full bg-primary/10 text-primary group-hover:scale-110 transition-transform duration-300">
+                    <span className="flex items-center justify-center w-5 h-5 rounded-full bg-emerald-500/10 text-emerald-600 group-hover:scale-110 transition-transform duration-300">
                       <History className="w-3 h-3" />
                     </span>
 
@@ -709,7 +732,7 @@ function CommunityDashboardContent() {
                       History
                     </span>
 
-                    <div className="w-6 h-6 flex items-center justify-center rounded-full text-muted-foreground/50 group-hover:bg-primary group-hover:text-primary-foreground group-hover:translate-x-0.5 transition-all duration-300 ml-0.5">
+                    <div className="w-6 h-6 flex items-center justify-center rounded-full text-muted-foreground/50 group-hover:bg-emerald-500 group-hover:text-white group-hover:translate-x-0.5 transition-all duration-300 ml-0.5">
                       <ChevronRight className="w-3.5 h-3.5" />
                     </div>
                   </div>
@@ -721,7 +744,7 @@ function CommunityDashboardContent() {
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end" className="rounded-xl">
-                    {["Most Recent", "Most Rewarding", "Time to Test"].map(
+                    {["Most Recent", "Most Active", "Time to Test"].map(
                       (cat) => (
                         <DropdownMenuItem
                           key={cat}
@@ -789,7 +812,7 @@ function CommunityDashboardContent() {
               <div className="mb-6">
                 <p className="text-sm text-muted-foreground">
                   These are the apps you're currently testing or waiting to
-                  start. Complete daily tasks to earn points!
+                  start. Complete daily tasks to fulfill your handshake commitment!
                 </p>
               </div>
               <SubTabUI

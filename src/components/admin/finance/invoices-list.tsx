@@ -77,12 +77,12 @@ export function InvoicesList() {
                       <TableCell className="text-sm">{inv.service_name}</TableCell>
                       <TableCell>
                         <span className="font-medium">
-                          {inv.payment ? formatCurrency(inv.payment.amount, inv.payment.currency) : "—"}
+                          {inv.payment ? formatCurrency(inv.payment.amount, inv.payment.currency) : ", "}
                         </span>
                       </TableCell>
                       <TableCell>
                         <Badge variant="outline" className={`text-xs ${inv.payment?.status === "CAPTURED" ? "border-green-500/30 text-green-600" : ""}`}>
-                          {inv.payment?.status || "—"}
+                          {inv.payment?.status || ", "}
                         </Badge>
                       </TableCell>
                       <TableCell className="text-xs">{new Date(inv.createdAt).toLocaleDateString()}</TableCell>

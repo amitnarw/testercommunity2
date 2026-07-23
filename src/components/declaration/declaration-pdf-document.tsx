@@ -443,7 +443,7 @@ function DocFooter({ appName }: { appName: string }) {
 }
 
 function renderStars(rating: number | null): string {
-  if (rating === null) return "—";
+  if (rating === null) return ", ";
   const full = Math.floor(rating);
   const half = rating - full >= 0.5;
   let stars = "★".repeat(full);
@@ -512,12 +512,12 @@ export function DeclarationPDFDocument({
         <View style={styles.coverMetaGrid}>
           <View style={styles.coverMetaItem}>
             <Text style={styles.coverMetaLabel}>Category</Text>
-            <Text style={styles.coverMetaValue}>{category || "—"}</Text>
+            <Text style={styles.coverMetaValue}>{category || ", "}</Text>
           </View>
           <View style={styles.coverMetaItem}>
             <Text style={styles.coverMetaLabel}>Testing Type</Text>
             <Text style={styles.coverMetaValue}>
-              {stats.appType === "PAID" ? "Paid Professional Testing" : "Community Testing"}
+              {stats.appType === "PAID" ? "Paid Professional Testing" : "Handshake Testing"}
             </Text>
           </View>
           <View style={styles.coverMetaItem}>

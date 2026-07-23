@@ -1,13 +1,13 @@
 "use client";
 
 import { useState } from "react";
-import { Trophy, Search, Calendar, Star } from "lucide-react";
+import { Trophy, Search, Calendar, Handshake } from "lucide-react";
 import { CommunityCompletedAppCard } from "@/components/community-completed-app-card";
 import { BackButton } from "@/components/back-button";
 import { AppPagination } from "@/components/app-pagination";
 import { motion } from "framer-motion";
 import type { HubSubmittedAppResponse } from "@/lib/types";
-import { useHubApps } from "@/hooks/useHub";
+import { useHubApps, useHubStats } from "@/hooks/useHub";
 import { useTransitionRouter } from "@/context/transition-context";
 import { AppCardSkeleton } from "@/components/app-card-skeleton";
 import { Input } from "@/components/ui/input";
@@ -84,14 +84,14 @@ const PaginatedCompletedList = ({
           </div>
         ) : (
           <div className="flex flex-col items-center justify-center py-20 text-center bg-card/50 rounded-3xl border border-dashed border-muted-foreground/20 relative overflow-hidden group">
-            <div className="absolute inset-0 bg-gradient-to-b from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+            <div className="absolute inset-0 bg-gradient-to-b from-emerald-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
             <motion.div
               initial={{ scale: 0.8, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
-              className="p-6 bg-primary/10 rounded-full mb-6 relative z-10 ring-8 ring-primary/5"
+              className="p-6 bg-emerald-500/10 rounded-full mb-6 relative z-10 ring-8 ring-emerald-500/5"
             >
-              <Trophy className="w-10 h-10 text-primary" />
+              <Trophy className="w-10 h-10 text-emerald-600" />
             </motion.div>
             <h3 className="text-xl font-bold mb-2 relative z-10">
               {searchQuery ? "No Results Found" : "No Completed Tests Yet"}
@@ -120,8 +120,7 @@ export default function HistoryPage() {
     type: "COMPLETED",
   });
 
-  const totalPoints =
-    hubAppsData?.reduce((sum, app) => sum + (app.rewardPoints || 0), 0) || 0;
+  const { data: handshakeStats } = useHubStats();
 
   return (
     <div data-loc="HistoryPage" className="min-h-screen mb-8">
@@ -129,12 +128,12 @@ export default function HistoryPage() {
         {/* Header with back button */}
         <header className="mb-8 relative">
           <div className="sticky top-0 z-[50] pt-2 sm:pt-3 pb-4 pl-0 w-1/2">
-            <BackButton href="/app/free-testing" />
+            <BackButton href="/app/handshake-testing" />
           </div>
 
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mt-4">
             <div>
-              <h1 className="text-2xl sm:text-4xl font-bold bg-gradient-to-b from-primary to-primary/40 bg-clip-text text-transparent leading-[unset] pb-2">
+              <h1 className="text-2xl sm:text-4xl font-bold bg-gradient-to-b from-emerald-500 to-emerald-600/40 bg-clip-text text-transparent leading-[unset] pb-2">
                 Test History
               </h1>
               <p className="text-sm sm:text-base text-muted-foreground max-w-xl">
@@ -152,13 +151,13 @@ export default function HistoryPage() {
                 </div>
                 <p className="text-2xl font-bold">{hubAppsData?.length || 0}</p>
               </div>
-              <div className="bg-gradient-to-br from-primary/10 to-primary/5 rounded-2xl p-4 border border-primary/20 min-w-[120px]">
-                <div className="flex items-center gap-2 text-primary dark:text-primary-foreground/80 text-xs mb-1">
-                  <Star className="w-3.5 h-3.5" />
-                  <span>Total Earned</span>
+              <div className="bg-gradient-to-br from-emerald-500/10 to-emerald-600/5 rounded-2xl p-4 border border-emerald-500/20 min-w-[120px]">
+                <div className="flex items-center gap-2 text-emerald-600 dark:text-white/80 text-xs mb-1">
+                  <Handshake className="w-3.5 h-3.5" />
+                  <span>Handshake Level</span>
                 </div>
-                <p className="text-2xl font-bold text-primary dark:text-primary-foreground">
-                  {totalPoints} pts
+                <p className="text-2xl font-bold text-emerald-600 dark:text-white">
+                  {handshakeStats?.handshakeLevel ?? 1}
                 </p>
               </div>
             </div>

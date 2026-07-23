@@ -8,7 +8,7 @@ import { useTheme } from "next-themes";
 import OngoingProjectView from "@/components/community-dashboard/ongoing-project-view";
 import { Badge } from "@/components/ui/badge";
 
-export default function SampleFreeTestingPage() {
+export default function SampleHandshakeTestingPage() {
   const { setTheme, theme } = useTheme();
   const appDetails = sampleCommunityAppDetails;
 
@@ -19,9 +19,9 @@ export default function SampleFreeTestingPage() {
         <div className="container mx-auto px-4 md:px-6 py-3 flex flex-col sm:flex-row items-center justify-between gap-1 sm:gap-2">
           <div className="flex items-center justify-between sm:justify-center gap-2 w-full">
             <h1 className="text-lg sm:text-xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-              Free Testing
+              Handshake Testing
             </h1>
-            <Badge>FREE</Badge>
+            <Badge>HANDSHAKE</Badge>
             <Button
               variant="ghost"
               size="icon"

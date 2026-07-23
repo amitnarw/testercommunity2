@@ -10,6 +10,7 @@ const routes = {
   HUB: "/api/hub",
   R2: "/api/r2",
   BILLING: "/api/billing",
+  SUBSCRIPTION: "/api/subscription",
   TESTER: "/api/tester",
   BLOG: "/api/blog",
   REVIEW: "/api/review",

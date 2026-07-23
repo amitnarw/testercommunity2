@@ -207,7 +207,7 @@ export function TesterDetailActivity({ testerId, date, onBack }: Props) {
                       <TableCell className="font-medium">{app.appName}</TableCell>
                       <TableCell>
                         <Badge variant={app.appType === "PAID" ? "default" : "secondary"} className="text-xs">
-                          {app.appType === "PAID" ? "PRO" : "FREE"}
+                          {app.appType === "PAID" ? "PRO" : "HANDSHAKE"}
                         </Badge>
                       </TableCell>
                       <TableCell>

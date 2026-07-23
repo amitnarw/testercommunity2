@@ -28,6 +28,7 @@ import {
   ProfessionalPlanCard,
   EnterprisePlanCard,
 } from "@/components/pricing-cards";
+import { HandshakePlanCard } from "@/components/handshake/plan-card";
 import { HoverBorderGradient } from "@/components/ui/hover-border-gradient";
 
 import { useState, useEffect } from "react";
@@ -72,11 +73,12 @@ export default function PricingPage() {
         </section>
 
         {/* Plan Cards */}
-        <section className="mt-20 max-w-4xl mx-auto">
+        <section className="mt-20 max-w-6xl mx-auto">
           {pricingIsPending ? (
             <SkeletonPricingSetup />
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-stretch">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 items-stretch">
+              <HandshakePlanCard />
               {pricingData?.map((plan) => (
                 <ProfessionalPlanCard
                   key={plan.id}

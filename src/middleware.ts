@@ -93,7 +93,7 @@ export async function middleware(request: NextRequest) {
   const authenticatedRoutes = [
     ROUTES.AUTHENTICATED.DASHBOARD,
     ROUTES.AUTHENTICATED.PRO_TESTING,
-    ROUTES.AUTHENTICATED.FREE_TESTING,
+    ROUTES.AUTHENTICATED.HANDSHAKE_TESTING,
     ROUTES.AUTHENTICATED.NOTIFICATIONS,
     ROUTES.AUTHENTICATED.PROFILE,
     ROUTES.AUTHENTICATED.WALLET,
@@ -106,13 +106,18 @@ export async function middleware(request: NextRequest) {
     ROUTES.TESTER.AUTH.REGISTER,
   ];
   const testerRoutes = [ROUTES.TESTER.ROOT];
+  const seoPages = [
+    ROUTES.PUBLIC.HANDSHAKE_TESTING,
+    ROUTES.PUBLIC.PRO_TESTING,
+  ];
 
   const needsAuthCheck =
     authRoutes.some((route) => pathname.startsWith(route)) ||
     authenticatedRoutes.some((route) => pathname.startsWith(route)) ||
     adminRoutes.some((route) => pathname.startsWith(route)) ||
     testerAuthRoutes.some((route) => pathname.startsWith(route)) ||
-    testerRoutes.some((route) => pathname.startsWith(route));
+    testerRoutes.some((route) => pathname.startsWith(route)) ||
+    seoPages.some((route) => pathname.startsWith(route));
 
   if (!needsAuthCheck) {
     return NextResponse.next();
@@ -145,7 +150,7 @@ export async function middleware(request: NextRequest) {
   // If role is null despite being authenticated, role_cache JWT is corrupt/expired
   // Allow auth pages to render to avoid redirect loops.
   // For non-auth pages, redirect to the role-appropriate login.
-  // Don't clear cookies from middleware — can't match the cookie domain attribute.
+  // Don't clear cookies from middleware, can't match the cookie domain attribute.
   // The login page's useSession() will fetch fresh role_cache from the backend.
   if (isAuthenticated && !role) {
     if (
@@ -162,6 +167,13 @@ export async function middleware(request: NextRequest) {
       loginRoute = ROUTES.TESTER.AUTH.LOGIN;
     }
     return NextResponse.redirect(new URL(loginRoute, request.url));
+  }
+
+  // Redirect authenticated users from SEO landing pages to app dashboard
+  if (isAuthenticated && seoPages.some((route) => pathname.startsWith(route))) {
+    return NextResponse.redirect(
+      new URL(ROUTES.AUTHENTICATED.DASHBOARD, request.url),
+    );
   }
 
   // Redirect authenticated users away from public auth pages

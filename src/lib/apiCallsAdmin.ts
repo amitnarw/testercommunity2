@@ -1600,6 +1600,7 @@ export async function getFinancePayments(params?: {
   status?: string;
   method?: string;
   search?: string;
+  paymentType?: string;
 }) {
   try {
     const response = await api.get(API_ROUTES.ADMIN + `/finance/payments`, { params });
@@ -2144,6 +2145,89 @@ export async function giftPointsAndPackages(payload: {
     } else {
       throw new Error(JSON.stringify(error));
     }
+  }
+}
+
+// ==================== MAIL ====================
+
+export async function getAdminMails(params?: { status?: string; toAddress?: string; search?: string; page?: string; limit?: string }) {
+  try {
+    const response = await api.get(API_ROUTES.ADMIN + "/mail", { params });
+    return response?.data?.data;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      throw new Error(error.response?.data?.message || error.message);
+    }
+    throw error;
+  }
+}
+
+export async function getMailThread(id: number) {
+  try {
+    const response = await api.get(API_ROUTES.ADMIN + `/mail/${id}`);
+    return response?.data?.data;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      throw new Error(error.response?.data?.message || error.message);
+    }
+    throw error;
+  }
+}
+
+export async function sendMailReply(mailId: number, fromAddress: string, body: string) {
+  try {
+    const response = await api.post(API_ROUTES.ADMIN + `/mail/${mailId}/reply`, { mailId, fromAddress, body });
+    return response?.data?.data;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      throw new Error(error.response?.data?.message || error.message);
+    }
+    throw error;
+  }
+}
+
+export async function markMailRead(id: number) {
+  try {
+    const response = await api.post(API_ROUTES.ADMIN + `/mail/${id}/read`);
+    return response?.data?.data;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      throw new Error(error.response?.data?.message || error.message);
+    }
+    throw error;
+  }
+}
+
+export async function archiveMail(id: number) {
+  try {
+    const response = await api.post(API_ROUTES.ADMIN + `/mail/${id}/archive`);
+    return response?.data?.data;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      throw new Error(error.response?.data?.message || error.message);
+    }
+    throw error;
+  }
+}
+
+export async function getMailUnreadCount() {
+  try {
+    const response = await api.get(API_ROUTES.ADMIN + "/mail/unread-count");
+    return response?.data?.data?.count ?? 0;
+  } catch (error) {
+    return 0;
+  }
+}
+
+export async function assignMail(id: number, assignedTo: string | null) {
+  try {
+    const response = await api.post(API_ROUTES.ADMIN + `/mail/${id}/assign`, { assignedTo });
+    return response?.data?.data;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      throw new Error(error.response?.data?.message || error.message);
+    }
+    throw error;
   }
 }
 

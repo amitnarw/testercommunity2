@@ -88,7 +88,9 @@ export function TopBar({ blogSlug, onPreviewClick, onDelete }: TopBarProps) {
       };
       const fieldOrder = ["title", "slug", "excerpt", "content", "authorName", "authorAvatarUrl", "imageUrl"];
       const errors = form.formState.errors;
-      const missingFields = fieldOrder.filter((key) => errors[key]?.message);
+      const missingFields = fieldOrder.filter(
+        (key) => (errors as Record<string, any>)[key]?.message,
+      );
 
       if (missingFields.length > 0) {
         const labels = missingFields.map((f) => fieldLabels[f]);

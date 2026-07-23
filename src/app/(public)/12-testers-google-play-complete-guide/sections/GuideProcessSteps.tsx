@@ -298,7 +298,7 @@ export function GuideProcessSteps() {
 
           {/* ═════ Mobile Content ═════ */}
           <div className="flex md:hidden w-full">
-            {/* Left rail — sticky so the number indicator stays in viewport */}
+            {/* Left rail ,  sticky so the number indicator stays in viewport */}
             <div className="sticky top-24 self-start w-10 shrink-0 flex flex-col items-center">
               {/* Vertical line behind everything */}
               <div className="absolute top-0 bottom-0 left-1/2 -translate-x-1/2 w-px bg-border/40" />
@@ -322,7 +322,7 @@ export function GuideProcessSteps() {
                 );
               })}
 
-              {/* Active step number — the animated swapping indicator */}
+              {/* Active step number ,  the animated swapping indicator */}
               <div className="relative z-10">
                 <AnimatePresence mode="wait">
                   <motion.div

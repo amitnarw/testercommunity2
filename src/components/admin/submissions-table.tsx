@@ -165,7 +165,7 @@ export function SubmissionsTable({
                       {submission.promoCode.code}
                     </Badge>
                   ) : (
-                    <span className="text-muted-foreground">—</span>
+                    <span className="text-muted-foreground">, </span>
                   )}
                 </TableCell>
                 <TableCell className="text-right">

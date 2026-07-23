@@ -7,6 +7,7 @@ import {
   getHubApps,
   getHubAppsCount,
   getHubData,
+  getHubStats,
   getHubSubmittedApp,
   getSingleHubAppDetails,
   getSubmittedAppsCount,
@@ -127,6 +128,15 @@ export function useHubAppsCount() {
   return query;
 }
 
+export function useHubStats() {
+  const query = useQuery({
+    queryFn: () => getHubStats(),
+    queryKey: ["useHubStats"],
+  });
+
+  return query;
+}
+
 export function useSingleHubAppDetails({
   id,
   view,
@@ -149,7 +159,7 @@ export function useAddHubAppTestingRequest(
   const queryClient = useQueryClient();
 
   const mutation = useMutation({
-    mutationFn: (payload: { hub_id: string }) =>
+    mutationFn: (payload: { hub_id: string; offered_app_id?: string | number }) =>
       addHubAppTestingRequest(payload),
     onSuccess: (data) => {
       console.log("Hub app testing request added successfully: " + data);
