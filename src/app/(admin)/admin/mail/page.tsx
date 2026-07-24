@@ -15,6 +15,12 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import {
   Mail,
   MailOpen,
   Archive,
@@ -22,8 +28,9 @@ import {
   Loader2,
   Send,
   ArrowLeft,
+  Plus,
 } from "lucide-react";
-import { useAdminMails, useMailThread, useSendMailReply, useMarkMailRead, useArchiveMail, useMailUnreadCount } from "@/hooks/useAdmin";
+import { useAdminMails, useMailThread, useSendMailReply, useMarkMailRead, useArchiveMail, useSendNewEmail } from "@/hooks/useAdmin";
 import { useMailSocket } from "@/hooks/useMailSocket";
 import { useQueryClient } from "@tanstack/react-query";
 
@@ -56,6 +63,13 @@ export default function AdminMailPage() {
   const [replyFrom, setReplyFrom] = useState(FROM_OPTIONS[0]);
   const [replyBody, setReplyBody] = useState("");
   const [sending, setSending] = useState(false);
+  const [showCompose, setShowCompose] = useState(false);
+  const [composeTo, setComposeTo] = useState("");
+  const [composeFrom, setComposeFrom] = useState(FROM_OPTIONS[0]);
+  const [composeSubject, setComposeSubject] = useState("");
+  const [composeBody, setComposeBody] = useState("");
+  const [composeSending, setComposeSending] = useState(false);
+  const [composeError, setComposeError] = useState("");
 
   useMailSocket();
 
@@ -68,6 +82,7 @@ export default function AdminMailPage() {
   const markReadMutation = useMarkMailRead();
   const archiveMutation = useArchiveMail();
   const sendReplyMutation = useSendMailReply();
+  const sendNewEmailMutation = useSendNewEmail();
 
   const replyEndRef = useRef<HTMLDivElement>(null);
 
@@ -109,6 +124,33 @@ export default function AdminMailPage() {
     }
   };
 
+  const handleSendNewEmail = async () => {
+    if (!composeTo.trim() || !composeSubject.trim() || !composeBody.trim() || !composeFrom) return;
+    setComposeSending(true);
+    setComposeError("");
+    try {
+      const result = await sendNewEmailMutation.mutateAsync({
+        toEmail: composeTo,
+        fromAddress: composeFrom,
+        subject: composeSubject,
+        body: composeBody,
+      });
+      if (result?.emailDeliveryFailed) {
+        setComposeError("Message saved but email delivery failed. Recipient may not receive it.");
+      } else {
+        setShowCompose(false);
+        setComposeTo("");
+        setComposeSubject("");
+        setComposeBody("");
+        setComposeError("");
+      }
+    } catch (err: any) {
+      setComposeError(err?.message || "Failed to send email");
+    } finally {
+      setComposeSending(false);
+    }
+  };
+
   return (
     <div className="p-4 sm:p-8 max-w-7xl mx-auto">
       <div className="flex items-center justify-between flex-wrap gap-3 mb-6">
@@ -119,6 +161,10 @@ export default function AdminMailPage() {
           </p>
         </div>
         <div className="flex items-center gap-2">
+          <Button size="sm" variant="default" onClick={() => setShowCompose(true)}>
+            <Plus className="w-3.5 h-3.5 mr-1.5" />
+            Compose
+          </Button>
           {STATUS_TABS.map((tab) => (
             <Button
               key={tab}
@@ -178,7 +224,7 @@ export default function AdminMailPage() {
                           ) : (
                             <MailOpen className="w-4 h-4 text-muted-foreground shrink-0" />
                           )}
-                          <span className="truncate">{mail.fromName || mail.fromEmail}</span>
+                          <span className="truncate">{FROM_OPTIONS.includes(mail.fromEmail) ? mail.toAddress : (mail.fromName || mail.fromEmail)}</span>
                         </div>
                         <div className="flex items-center gap-2 shrink-0">
                           <Badge variant="outline" className="text-[10px] px-1.5 py-0">
@@ -218,7 +264,7 @@ export default function AdminMailPage() {
                       {thread.subject}
                     </p>
                     <p className="text-xs text-muted-foreground">
-                      {thread.fromName || thread.fromEmail}
+                      {FROM_OPTIONS.includes(thread.fromEmail) ? thread.toAddress : (thread.fromName || thread.fromEmail)}
                     </p>
                   </div>
                 </div>
@@ -260,10 +306,11 @@ export default function AdminMailPage() {
                           {formatRelativeTime(msg.createdAt)}
                         </span>
                       </div>
-                      <div
-                        className="text-sm whitespace-pre-wrap break-words"
-                        dangerouslySetInnerHTML={{ __html: msg.body }}
-                      />
+                      {msg.direction === "INBOUND" ? (
+                        <div className="text-sm whitespace-pre-wrap break-words">{msg.body}</div>
+                      ) : (
+                        <div className="text-sm whitespace-pre-wrap break-words" dangerouslySetInnerHTML={{ __html: msg.body }} />
+                      )}
                     </div>
                   </div>
                 ))}
@@ -316,6 +363,65 @@ export default function AdminMailPage() {
           )}
         </div>
       </div>
+
+      <Dialog open={showCompose} onOpenChange={(open) => { setShowCompose(open); if (!open) { setComposeTo(""); setComposeSubject(""); setComposeBody(""); setComposeError(""); } }}>
+        <DialogContent className="sm:max-w-lg">
+          <DialogHeader>
+            <DialogTitle>Compose New Email</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-3">
+            <Input
+              placeholder="To: email@example.com"
+              value={composeTo}
+              onChange={(e) => setComposeTo(e.target.value)}
+            />
+            <Select value={composeFrom} onValueChange={setComposeFrom}>
+              <SelectTrigger className="w-full">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {FROM_OPTIONS.map((addr) => (
+                  <SelectItem key={addr} value={addr} className="text-xs">
+                    {addr}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <Input
+              placeholder="Subject"
+              value={composeSubject}
+              onChange={(e) => setComposeSubject(e.target.value)}
+            />
+            <Textarea
+              placeholder="Write your message..."
+              value={composeBody}
+              onChange={(e) => setComposeBody(e.target.value)}
+              rows={8}
+              className="text-sm resize-none"
+            />
+            {composeError && (
+              <p className="text-sm text-destructive">{composeError}</p>
+            )}
+            <div className="flex justify-end gap-2">
+              <Button variant="outline" size="sm" onClick={() => setShowCompose(false)}>
+                Cancel
+              </Button>
+              <Button
+                size="sm"
+                onClick={handleSendNewEmail}
+                disabled={!composeTo.trim() || !composeSubject.trim() || !composeBody.trim() || composeSending}
+              >
+                {composeSending ? (
+                  <Loader2 className="w-4 h-4 animate-spin mr-1" />
+                ) : (
+                  <Send className="w-4 h-4 mr-1" />
+                )}
+                Send
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

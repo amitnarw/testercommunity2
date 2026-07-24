@@ -2231,3 +2231,15 @@ export async function assignMail(id: number, assignedTo: string | null) {
   }
 }
 
+
+export async function sendNewEmail(toEmail: string, fromAddress: string, subject: string, body: string) {
+  try {
+    const response = await api.post(API_ROUTES.ADMIN + "/mail/send", { toEmail, fromAddress, subject, body });
+    return response?.data?.data;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      throw new Error(error.response?.data?.message || error.message);
+    }
+    throw error;
+  }
+}
