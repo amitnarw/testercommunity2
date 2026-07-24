@@ -121,6 +121,7 @@ import {
   archiveMail,
   getMailUnreadCount,
   assignMail,
+  sendNewEmail,
 } from "@/lib/apiCallsAdmin";
 import { useRouter } from "next/navigation";
 import { ROUTES } from "@/lib/routes";
@@ -1703,6 +1704,19 @@ export function useAssignMail(options?: UseMutationOptions<any, any, any>) {
     ...options,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["useAdminMails"] });
+    },
+  });
+}
+
+export function useSendNewEmail(options?: UseMutationOptions<any, any, any>) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (payload: { toEmail: string; fromAddress: string; subject: string; body: string }) =>
+      sendNewEmail(payload.toEmail, payload.fromAddress, payload.subject, payload.body),
+    ...options,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["useAdminMails"] });
+      queryClient.invalidateQueries({ queryKey: ["useMailUnreadCount"] });
     },
   });
 }
