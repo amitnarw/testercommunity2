@@ -17,7 +17,7 @@ export function EmptyFeed({
   className,
 }: EmptyFeedProps) {
   return (
-    <div className={cn("flex flex-col items-center py-8 text-center", className)}>
+    <div className={cn("flex flex-col items-center py-4 md:py-8 text-center", className)}>
       <div className="rounded-2xl bg-muted/50 p-4 mb-3">
         <Icon className="w-8 h-8 text-muted-foreground/40" />
       </div>

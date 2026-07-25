@@ -119,6 +119,7 @@ import {
   sendMailReply,
   markMailRead,
   archiveMail,
+  deleteMail,
   getMailUnreadCount,
   assignMail,
   sendNewEmail,
@@ -1632,7 +1633,7 @@ export function useGiftPointsAndPackages(options?: UseMutationOptions<any, any, 
 
 // ==================== MAIL ====================
 
-export function useAdminMails(params?: { status?: string; search?: string; page?: string }) {
+export function useAdminMails(params?: { status?: string; search?: string; page?: string; limit?: string }) {
   return useQuery({
     queryFn: () => getAdminMails(params),
     queryKey: ["useAdminMails", params],
@@ -1688,6 +1689,18 @@ export function useArchiveMail(options?: UseMutationOptions<any, any, any>) {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (id: number) => archiveMail(id),
+    ...options,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["useAdminMails"] });
+      queryClient.invalidateQueries({ queryKey: ["useMailUnreadCount"] });
+    },
+  });
+}
+
+export function useDeleteMail(options?: UseMutationOptions<any, any, any>) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (id: number) => deleteMail(id),
     ...options,
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["useAdminMails"] });

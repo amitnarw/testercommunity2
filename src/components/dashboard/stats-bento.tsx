@@ -24,7 +24,7 @@ export function StatsBento({ summary }: { summary: any }) {
             <div className="bg-gradient-to-br from-slate-50 via-white to-slate-50 dark:from-card dark:via-card/50 dark:to-card rounded-[2rem] flex flex-col justify-between overflow-hidden h-full border border-slate-200/60 dark:border-border/10 shadow-[0_8px_30px_rgb(0,0,0,0.04)] transition-all duration-300 relative">
               
               <div className="p-6 flex flex-col h-full relative z-20 pointer-events-none">
-                <div className="absolute top-0 right-0 p-32 bg-primary/5 blur-[100px] rounded-full pointer-events-none"></div>
+                <div className="absolute top-0 right-0 p-16 md:p-32 bg-primary/5 blur-[50px] md:blur-[100px] rounded-full pointer-events-none"></div>
                 
                 <div className="flex items-center justify-between mb-2 z-10">
                   <StatLabel>Wallet Balance</StatLabel>

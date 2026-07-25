@@ -79,12 +79,12 @@
   }
 
   html {
-    overflow-x: visible;
+    overflow-x: hidden;
     scroll-behavior: smooth;
   }
 
   body {
-    @apply bg-background text-foreground overflow-x-visible;
+    @apply bg-background text-foreground overflow-x-hidden;
   }
 
   /* Refined Premium Global Scrollbar - Floating Thumb */

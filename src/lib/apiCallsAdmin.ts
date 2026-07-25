@@ -2210,6 +2210,18 @@ export async function archiveMail(id: number) {
   }
 }
 
+export async function deleteMail(id: number) {
+  try {
+    const response = await api.delete(API_ROUTES.ADMIN + `/mail/${id}`);
+    return response?.data?.data;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      throw new Error(error.response?.data?.message || error.message);
+    }
+    throw error;
+  }
+}
+
 export async function getMailUnreadCount() {
   try {
     const response = await api.get(API_ROUTES.ADMIN + "/mail/unread-count");
