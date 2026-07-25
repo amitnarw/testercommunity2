@@ -108,7 +108,7 @@ export function DiaryTestingSection({
         </div>
 
         {/* Right Card: Pro Testing */}
-        <div className="bg-gradient-to-br from-slate-50 via-white to-slate-50 dark:from-card dark:via-card/50 dark:to-card rounded-[32px] p-8 md:p-10 pt-14 md:pt-10 flex-1 relative border border-slate-200/60 dark:border-border/10 shadow-[0_8px_30px_rgb(0,0,0,0.04)] text-slate-800 dark:text-foreground z-0 flex flex-col items-center justify-start text-center">
+        <div className="bg-gradient-to-br from-slate-50 via-white to-slate-50 dark:from-card dark:via-card/50 dark:to-card rounded-[32px] p-8 md:p-10 pt-14 md:pt-10 flex-1 relative border border-slate-200/60 dark:border-border/10 shadow-[0_8px_30px_rgb(0,0,0,0.04)] text-slate-800 dark:text-foreground z-0 flex flex-col items-start sm:items-center justify-start text-left sm:text-center">
           {proLoading ? (
             <div className="w-full text-left">
               <h2 className="text-2xl md:text-4xl font-extrabold text-slate-900 dark:text-foreground leading-[1.1] tracking-tight mb-8 text-center">

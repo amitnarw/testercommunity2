@@ -139,10 +139,10 @@ export default function Navbar({ onLogout }: { onLogout: () => void }) {
   return (
     <header className="sticky top-0 z-40 bg-brand-background md:pl-20 py-2 overflow-x-hidden print:hidden">
       <div className="container mx-auto px-4 md:px-6 max-w-full">
-        <div className="flex items-center justify-end gap-2">
-          <div className="flex flex-row justify-end gap-2 w-auto">
+        <div className="flex items-center justify-end gap-1.5 md:gap-2 overflow-x-hidden">
+          <div className="flex flex-row justify-end gap-1.5 md:gap-2 w-auto shrink-0">
             {isSuperAdmin && (
-               <div className="flex items-center gap-1 bg-sidebar rounded-3xl p-1 border border-white/10 mr-auto sm:mr-0">
+               <div className="hidden sm:flex items-center gap-1 bg-sidebar rounded-3xl p-1 border border-white/10 mr-auto sm:mr-0">
                  <AutoTransitionLink href={ROUTES.ADMIN.DASHBOARD}>
                     <button
                       className={`flex items-center gap-2 py-1.5 px-3.5 rounded-3xl hover:bg-white/20 hover:text-white transition-all text-xs duration-300 font-light ${
@@ -203,7 +203,7 @@ export default function Navbar({ onLogout }: { onLogout: () => void }) {
               {isTester && pendingCount > 0 && (
                 <Link
                   href={ROUTES.TESTER.DASHBOARD}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-orange-500/10 text-orange-600 dark:text-orange-400 border border-orange-200 dark:border-orange-500/20 mr-1 animate-pulse hover:animate-none transition-all"
+                  className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-orange-500/10 text-orange-600 dark:text-orange-400 border border-orange-200 dark:border-orange-500/20 mr-1 animate-pulse hover:animate-none transition-all"
                 >
                   <Clock className="w-3.5 h-3.5" />
                   <span className="text-[10px] font-bold">

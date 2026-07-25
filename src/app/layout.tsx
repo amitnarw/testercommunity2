@@ -5,7 +5,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 import QueryProvider from "@/lib/query-provider";
 import { TransitionProvider } from "@/context/transition-context";
 import TransitionOverlay from "@/components/transition-overlay";
-import { Metadata } from "next";
+import { Metadata, Viewport } from "next";
 
 import {
   OrganizationJsonLd,
@@ -71,6 +71,12 @@ export const metadata: Metadata = {
 import { SupportChat } from "@/components/support/SupportChat";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { TopLoader } from "@/components/top-loader";
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
+};
 
 export default function RootLayout({
   children,

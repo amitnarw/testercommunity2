@@ -31,7 +31,7 @@ export function ActionRequiredSection({ actionItems }: ActionRequiredSectionProp
         <AlertTriangle className="w-3.5 h-3.5 text-amber-500" />
         Action Required
       </h2>
-      <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-none -mx-4 px-4 md:mx-0 md:px-0">
+      <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide -mx-4 px-4 md:mx-0 md:px-0">
         {actionItems.map((item, i) => (
           <AutoTransitionLink
             key={i}
