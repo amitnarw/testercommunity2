@@ -121,8 +121,13 @@ import {
   archiveMail,
   deleteMail,
   getMailUnreadCount,
+  getMailCounts,
   assignMail,
   sendNewEmail,
+  getMailSenders,
+  createMailSender,
+  updateMailSender,
+  deleteMailSender,
 } from "@/lib/apiCallsAdmin";
 import { useRouter } from "next/navigation";
 import { ROUTES } from "@/lib/routes";
@@ -1657,6 +1662,14 @@ export function useMailUnreadCount(options?: { enabled?: boolean }) {
   });
 }
 
+export function useMailCounts() {
+  return useQuery({
+    queryFn: () => getMailCounts(),
+    queryKey: ["useMailCounts"],
+    refetchInterval: 30000,
+  });
+}
+
 export function useSendMailReply(options?: UseMutationOptions<any, any, any>) {
   const queryClient = useQueryClient();
   return useMutation({
@@ -1667,6 +1680,7 @@ export function useSendMailReply(options?: UseMutationOptions<any, any, any>) {
       queryClient.invalidateQueries({ queryKey: ["useAdminMails"] });
       queryClient.invalidateQueries({ queryKey: ["useMailThread", variables.mailId] });
       queryClient.invalidateQueries({ queryKey: ["useMailUnreadCount"] });
+      queryClient.invalidateQueries({ queryKey: ["useMailCounts"] });
       options?.onSuccess?.(_data, variables, ...rest);
     },
   });
@@ -1680,6 +1694,7 @@ export function useMarkMailRead(options?: UseMutationOptions<any, any, any>) {
     onSuccess: (_data, variables, ...rest) => {
       queryClient.invalidateQueries({ queryKey: ["useAdminMails"] });
       queryClient.invalidateQueries({ queryKey: ["useMailUnreadCount"] });
+      queryClient.invalidateQueries({ queryKey: ["useMailCounts"] });
       options?.onSuccess?.(_data, variables, ...rest);
     },
   });
@@ -1693,6 +1708,7 @@ export function useArchiveMail(options?: UseMutationOptions<any, any, any>) {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["useAdminMails"] });
       queryClient.invalidateQueries({ queryKey: ["useMailUnreadCount"] });
+      queryClient.invalidateQueries({ queryKey: ["useMailCounts"] });
     },
   });
 }
@@ -1705,6 +1721,7 @@ export function useDeleteMail(options?: UseMutationOptions<any, any, any>) {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["useAdminMails"] });
       queryClient.invalidateQueries({ queryKey: ["useMailUnreadCount"] });
+      queryClient.invalidateQueries({ queryKey: ["useMailCounts"] });
     },
   });
 }
@@ -1730,6 +1747,53 @@ export function useSendNewEmail(options?: UseMutationOptions<any, any, any>) {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["useAdminMails"] });
       queryClient.invalidateQueries({ queryKey: ["useMailUnreadCount"] });
+      queryClient.invalidateQueries({ queryKey: ["useMailCounts"] });
+    },
+  });
+}
+
+export function useMailSenders() {
+  return useQuery({
+    queryFn: () => getMailSenders(),
+    queryKey: ["useMailSenders"],
+    staleTime: 60000,
+  });
+}
+
+export function useCreateMailSender(options?: UseMutationOptions<any, any, any>) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (payload: { email: string }) =>
+      createMailSender(payload.email),
+    ...options,
+    onSuccess: (...args) => {
+      queryClient.invalidateQueries({ queryKey: ["useMailSenders"] });
+      options?.onSuccess?.(...args);
+    },
+  });
+}
+
+export function useUpdateMailSender(options?: UseMutationOptions<any, any, any>) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (payload: { id: number; data: { email?: string; label?: string; isActive?: boolean } }) =>
+      updateMailSender(payload.id, payload.data),
+    ...options,
+    onSuccess: (...args) => {
+      queryClient.invalidateQueries({ queryKey: ["useMailSenders"] });
+      options?.onSuccess?.(...args);
+    },
+  });
+}
+
+export function useDeleteMailSender(options?: UseMutationOptions<any, any, any>) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (id: number) => deleteMailSender(id),
+    ...options,
+    onSuccess: (...args) => {
+      queryClient.invalidateQueries({ queryKey: ["useMailSenders"] });
+      options?.onSuccess?.(...args);
     },
   });
 }

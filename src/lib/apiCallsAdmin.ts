@@ -2231,6 +2231,15 @@ export async function getMailUnreadCount() {
   }
 }
 
+export async function getMailCounts() {
+  try {
+    const response = await api.get(API_ROUTES.ADMIN + "/mail/counts");
+    return response?.data?.data ?? { all: 0, read: 0, unread: 0, sent: 0 };
+  } catch (error) {
+    return { all: 0, read: 0, unread: 0, sent: 0 };
+  }
+}
+
 export async function assignMail(id: number, assignedTo: string | null) {
   try {
     const response = await api.post(API_ROUTES.ADMIN + `/mail/${id}/assign`, { assignedTo });
@@ -2247,6 +2256,54 @@ export async function assignMail(id: number, assignedTo: string | null) {
 export async function sendNewEmail(toEmail: string, fromAddress: string, subject: string, body: string) {
   try {
     const response = await api.post(API_ROUTES.ADMIN + "/mail/send", { toEmail, fromAddress, subject, body });
+    return response?.data?.data;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      throw new Error(error.response?.data?.message || error.message);
+    }
+    throw error;
+  }
+}
+
+export async function getMailSenders() {
+  try {
+    const response = await api.get(API_ROUTES.ADMIN + "/mail/senders");
+    return response?.data?.data;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      throw new Error(error.response?.data?.message || error.message);
+    }
+    throw error;
+  }
+}
+
+export async function createMailSender(email: string) {
+  try {
+    const response = await api.post(API_ROUTES.ADMIN + "/mail/senders", { email });
+    return response?.data?.data;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      throw new Error(error.response?.data?.message || error.message);
+    }
+    throw error;
+  }
+}
+
+export async function updateMailSender(id: number, data: { email?: string; label?: string; isActive?: boolean }) {
+  try {
+    const response = await api.put(API_ROUTES.ADMIN + `/mail/senders/${id}`, data);
+    return response?.data?.data;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      throw new Error(error.response?.data?.message || error.message);
+    }
+    throw error;
+  }
+}
+
+export async function deleteMailSender(id: number) {
+  try {
+    const response = await api.delete(API_ROUTES.ADMIN + `/mail/senders/${id}`);
     return response?.data?.data;
   } catch (error) {
     if (axios.isAxiosError(error)) {

@@ -13,7 +13,7 @@ export function useMailSocket() {
     let socket: Socket | null = null;
 
     try {
-      socket = io(SOCKET_URL, {
+      socket = io(`${SOCKET_URL}/mail`, {
         path: "/socket.io",
         transports: ["websocket", "polling"],
         withCredentials: true,
@@ -26,11 +26,13 @@ export function useMailSocket() {
       socket.on("mail:new", () => {
         queryClient.invalidateQueries({ queryKey: ["useAdminMails"] });
         queryClient.invalidateQueries({ queryKey: ["useMailUnreadCount"] });
+        queryClient.invalidateQueries({ queryKey: ["useMailCounts"] });
       });
 
       socket.on("mail:updated", () => {
         queryClient.invalidateQueries({ queryKey: ["useAdminMails"] });
         queryClient.invalidateQueries({ queryKey: ["useMailUnreadCount"] });
+        queryClient.invalidateQueries({ queryKey: ["useMailCounts"] });
       });
     } catch (err) {
       console.error("Mail socket connection error:", err);

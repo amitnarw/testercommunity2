@@ -1,18 +1,13 @@
 "use client";
 
 import { useState, useRef, useEffect, useMemo } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import { SearchableSelect } from "@/components/ui/searchable-select";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { AppPagination } from "@/components/app-pagination";
 import {
@@ -38,6 +33,7 @@ import {
   Clock,
   User,
   Mail as MailIcon,
+  Plus,
 } from "lucide-react";
 import {
   useAdminMails,
@@ -46,10 +42,14 @@ import {
   useMarkMailRead,
   useDeleteMail,
   useSendNewEmail,
+  useMailCounts,
+  useMailSenders,
+  useCreateMailSender,
+  useDeleteMailSender,
 } from "@/hooks/useAdmin";
 import { useMailSocket } from "@/hooks/useMailSocket";
 
-const FROM_OPTIONS = [
+const FALLBACK_SENDERS = [
   "support@system.intesters.com",
   "pro-support@system.intesters.com",
   "pro-billing@system.intesters.com",
@@ -165,19 +165,42 @@ export default function AdminMailPage() {
   const [tabRead, setTabRead] = useState<"All" | "Read" | "Unread" | "Sent">("All");
   const [page, setPage] = useState(1);
   const [selectedMailId, setSelectedMailId] = useState<number | null>(null);
-  const [replyFrom, setReplyFrom] = useState(FROM_OPTIONS[0]);
+  const [replyFrom, setReplyFrom] = useState("");
   const [replyBody, setReplyBody] = useState("");
   const [sending, setSending] = useState(false);
   const [showCompose, setShowCompose] = useState(false);
   const [composeMinimized, setComposeMinimized] = useState(false);
   const [composeTo, setComposeTo] = useState("");
-  const [composeFrom, setComposeFrom] = useState(FROM_OPTIONS[0]);
+  const [composeFrom, setComposeFrom] = useState("");
   const [composeSubject, setComposeSubject] = useState("");
   const [composeBody, setComposeBody] = useState("");
   const [composeSending, setComposeSending] = useState(false);
   const [composeError, setComposeError] = useState("");
+  const [showSenderDialog, setShowSenderDialog] = useState(false);
+  const [newSenderEmail, setNewSenderEmail] = useState("");
+  const [senderDialogError, setSenderDialogError] = useState("");
 
   useMailSocket();
+
+  const { data: sendersData, isLoading: sendersLoading } = useMailSenders();
+  const createSenderMutation = useCreateMailSender();
+  const deleteSenderMutation = useDeleteMailSender();
+
+  const senderEmails = useMemo(() => {
+    if (sendersData && sendersData.length > 0) {
+      return sendersData.filter((s: any) => s.isActive).map((s: any) => s.email);
+    }
+    return FALLBACK_SENDERS;
+  }, [sendersData]);
+
+  useEffect(() => {
+    if (senderEmails.length > 0 && !replyFrom) {
+      setReplyFrom(senderEmails[0]);
+    }
+    if (senderEmails.length > 0 && !composeFrom) {
+      setComposeFrom(senderEmails[0]);
+    }
+  }, [senderEmails, replyFrom, composeFrom]);
 
   const apiStatus = tabRead === "All" ? undefined : tabRead === "Read" ? "READ" : tabRead === "Sent" ? "REPLIED" : "UNREAD";
   const { data, isPending, isError, error, refetch } = useAdminMails({
@@ -185,6 +208,7 @@ export default function AdminMailPage() {
     page: String(page),
     limit: String(PAGE_SIZE),
   });
+  const { data: mailCounts } = useMailCounts();
 
   const { data: thread, refetch: refetchThread } = useMailThread(selectedMailId);
   const markReadMutation = useMarkMailRead();
@@ -281,6 +305,24 @@ export default function AdminMailPage() {
     }
   };
 
+  const handleCreateSender = async () => {
+    if (!newSenderEmail.trim() || !newSenderEmail.includes("@")) return;
+    setSenderDialogError("");
+    try {
+      await createSenderMutation.mutateAsync({
+        email: newSenderEmail.trim(),
+      });
+      setNewSenderEmail("");
+      setShowSenderDialog(false);
+    } catch (err: any) {
+      setSenderDialogError(err?.message || "Failed to add sender");
+    }
+  };
+
+  const handleDeleteSender = (id: number) => {
+    deleteSenderMutation.mutate(id);
+  };
+
   return (
     <div className="flex h-[calc(100vh-7rem)] overflow-hidden">
       <div className="flex-1 flex flex-col min-w-0">
@@ -296,6 +338,7 @@ export default function AdminMailPage() {
             sending={sending}
             handleSendReply={handleSendReply}
             replyEndRef={replyEndRef}
+            senderEmails={senderEmails}
           />
         ) : (
           <>
@@ -303,10 +346,10 @@ export default function AdminMailPage() {
             <div className="shrink-0 flex items-center justify-between px-2 sm:px-6 py-1.5 border-b">
               <Tabs value={tabRead} onValueChange={(val) => { setTabRead(val as "All" | "Read" | "Unread" | "Sent"); setPage(1); }}>
                 <TabsList>
-                  <TabsTrigger value="All">All</TabsTrigger>
-                  <TabsTrigger value="Read">Read</TabsTrigger>
-                  <TabsTrigger value="Unread">Unread</TabsTrigger>
-                  <TabsTrigger value="Sent">Sent</TabsTrigger>
+                  <TabsTrigger value="All" className="gap-1.5">All{mailCounts?.all !== undefined && <Badge variant="secondary" className="h-4.5 min-w-[18px] px-1 text-[10px] leading-none font-semibold">{mailCounts.all}</Badge>}</TabsTrigger>
+                  <TabsTrigger value="Read" className="gap-1.5">Read{mailCounts?.read !== undefined && <Badge variant="secondary" className="h-4.5 min-w-[18px] px-1 text-[10px] leading-none font-semibold">{mailCounts.read}</Badge>}</TabsTrigger>
+                  <TabsTrigger value="Unread" className="gap-1.5">Unread{mailCounts?.unread !== undefined && <Badge variant="secondary" className="h-4.5 min-w-[18px] px-1 text-[10px] leading-none font-semibold">{mailCounts.unread}</Badge>}</TabsTrigger>
+                  <TabsTrigger value="Sent" className="gap-1.5">Sent{mailCounts?.sent !== undefined && <Badge variant="secondary" className="h-4.5 min-w-[18px] px-1 text-[10px] leading-none font-semibold">{mailCounts.sent}</Badge>}</TabsTrigger>
                 </TabsList>
               </Tabs>
               <Button
@@ -356,6 +399,8 @@ export default function AdminMailPage() {
                         key={mail.id}
                         mail={mail}
                         onOpen={() => handleSelectMail(mail.id, mail.status)}
+                        showDirection={tabRead === "All"}
+                        senderEmails={senderEmails}
                       />
                     ))}
                   </div>
@@ -374,101 +419,30 @@ export default function AdminMailPage() {
       </div>
 
       {/* ── Compose Floating Panel ── */}
-      {showCompose && (
-        <div
-          className={`fixed bottom-0 right-4 md:right-8 z-50 ${
-            composeMinimized ? "w-72" : "w-[540px] max-w-[calc(100vw-2rem)]"
-          }`}
-        >
-          <div className="bg-background border rounded-t-lg shadow-2xl flex flex-col">
-            <div className="flex items-center justify-between px-4 py-2.5 bg-foreground text-background rounded-t-lg">
-              <span className="text-sm font-medium">New Message</span>
-              <div className="flex items-center gap-1">
-                <button
-                  onClick={() => setComposeMinimized(!composeMinimized)}
-                  className="p-1 hover:bg-white/10 rounded transition-colors"
-                >
-                  <Minimize2 className="w-4 h-4" />
-                </button>
-                <button
-                  onClick={() => {
-                    setShowCompose(false);
-                    setComposeMinimized(false);
-                    setComposeTo("");
-                    setComposeSubject("");
-                    setComposeBody("");
-                    setComposeError("");
-                  }}
-                  className="p-1 hover:bg-white/10 rounded transition-colors"
-                >
-                  <X className="w-4 h-4" />
-                </button>
-              </div>
-            </div>
-
-            {!composeMinimized && (
-              <>
-                <div className="px-4 py-2">
-                  <div className="flex items-center gap-2 border-b py-1.5">
-                    <label className="text-xs text-muted-foreground w-10 shrink-0">To</label>
-                    <Input
-                      value={composeTo}
-                      onChange={(e) => setComposeTo(e.target.value)}
-                      className="border-0 p-0 h-auto text-sm focus-visible:ring-0 shadow-none"
-                      placeholder="email@example.com"
-                    />
-                  </div>
-                  <div className="flex items-center gap-2 border-b py-1.5">
-                    <label className="text-xs text-muted-foreground w-10 shrink-0">From</label>
-                    <Select value={composeFrom} onValueChange={setComposeFrom}>
-                      <SelectTrigger className="border-0 p-0 h-auto text-sm w-auto gap-1 shadow-none focus:ring-0">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {FROM_OPTIONS.map((addr) => (
-                          <SelectItem key={addr} value={addr} className="text-xs">{addr}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div className="flex items-center gap-2 border-b py-1.5">
-                    <label className="text-xs text-muted-foreground w-10 shrink-0">Subject</label>
-                    <Input
-                      value={composeSubject}
-                      onChange={(e) => setComposeSubject(e.target.value)}
-                      className="border-0 p-0 h-auto text-sm focus-visible:ring-0 shadow-none"
-                      placeholder="Subject"
-                    />
-                  </div>
-                </div>
-                <div className="px-4 pb-2 flex-1">
-                  <Textarea
-                    placeholder="Write your message..."
-                    value={composeBody}
-                    onChange={(e) => setComposeBody(e.target.value)}
-                    rows={10}
-                    className="border-0 focus-visible:ring-0 resize-none text-sm p-0"
-                  />
-                </div>
-                {composeError && (
-                  <p className="px-4 pb-2 text-sm text-destructive">{composeError}</p>
-                )}
-                <div className="flex items-center justify-between px-4 py-3 border-t">
-                  <Button
-                    className="rounded-full px-6"
-                    onClick={handleSendNewEmail}
-                    disabled={!composeTo.trim() || !composeSubject.trim() || !composeBody.trim() || composeSending}
+      <AnimatePresence>
+        {showCompose && (
+          <motion.div
+            key="compose-panel"
+            initial={{ y: 24, opacity: 0, scale: 0.96 }}
+            animate={{ y: 0, opacity: 1, scale: 1 }}
+            exit={{ y: 24, opacity: 0, scale: 0.96 }}
+            transition={{ type: "spring", stiffness: 350, damping: 28 }}
+            className={`fixed bottom-0 right-4 md:right-8 z-50 ${
+              composeMinimized ? "w-72" : "w-[540px] max-w-[calc(100vw-2rem)]"
+            }`}
+          >
+            <div className="bg-background/90 backdrop-blur-xl border border-border/60 rounded-2xl shadow-2xl shadow-primary/5 flex flex-col overflow-hidden">
+              {/* Header */}
+              <div className="flex items-center justify-between px-4 py-2.5 bg-gradient-to-r from-primary to-primary/80 text-primary-foreground">
+                <span className="text-sm font-semibold tracking-tight">New Email</span>
+                <div className="flex items-center gap-0.5">
+                  <button
+                    onClick={() => setComposeMinimized(!composeMinimized)}
+                    className="p-1.5 hover:bg-white/20 rounded-lg transition-all duration-200"
                   >
-                    {composeSending ? (
-                      <Loader2 className="w-4 h-4 animate-spin mr-1.5" />
-                    ) : (
-                      <Send className="w-4 h-4 mr-1.5" />
-                    )}
-                    Send
-                  </Button>
-                  <Button
-                    variant="ghost"
-                    size="icon"
+                    <Minimize2 className="w-3.5 h-3.5" />
+                  </button>
+                  <button
                     onClick={() => {
                       setShowCompose(false);
                       setComposeMinimized(false);
@@ -477,15 +451,131 @@ export default function AdminMailPage() {
                       setComposeBody("");
                       setComposeError("");
                     }}
+                    className="p-1.5 hover:bg-white/20 rounded-lg transition-all duration-200"
                   >
-                    <Trash2 className="w-4 h-4" />
-                  </Button>
+                    <X className="w-3.5 h-3.5" />
+                  </button>
                 </div>
-              </>
-            )}
-          </div>
-        </div>
-      )}
+              </div>
+
+              <AnimatePresence initial={false}>
+                {!composeMinimized && (
+                  <motion.div
+                    key="compose-body"
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: "auto", opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    transition={{ type: "spring", stiffness: 400, damping: 30 }}
+                    className="overflow-hidden"
+                  >
+                    {/* Fields */}
+                    <div className="px-4 pt-3 pb-1 space-y-3">
+                      <div className="space-y-1.5">
+                        <label className="text-xs font-medium text-muted-foreground">To</label>
+                        <Input
+                          value={composeTo}
+                          onChange={(e) => setComposeTo(e.target.value)}
+                          placeholder="recipient@example.com"
+                        />
+                      </div>
+                      <div className="space-y-1.5">
+                        <label className="text-xs font-medium text-muted-foreground">From</label>
+                        <div className="flex gap-2 items-center">
+                          <div className="max-w-[340px]">
+                            <SearchableSelect
+                              value={composeFrom}
+                              onValueChange={setComposeFrom}
+                              className="w-[300px]"
+                            >
+                              {senderEmails.map((addr: string) => (
+                                <button
+                                  key={addr}
+                                  type="button"
+                                  value={addr}
+                                  data-email={addr}
+                                  className="cursor-pointer px-2 py-1.5 text-sm hover:bg-accent rounded-sm w-full text-left"
+                                >
+                                  {addr}
+                                </button>
+                              ))}
+                            </SearchableSelect>
+                          </div>
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="icon"
+                            className="shrink-0"
+                            onClick={() => setShowSenderDialog(true)}
+                            title="Manage sender addresses"
+                          >
+                            <Plus className="w-4 h-4" />
+                          </Button>
+                        </div>
+                      </div>
+                      <div className="space-y-1.5">
+                        <label className="text-xs font-medium text-muted-foreground">Subject</label>
+                        <Input
+                          value={composeSubject}
+                          onChange={(e) => setComposeSubject(e.target.value)}
+                          placeholder="What's this about?"
+                        />
+                      </div>
+                    </div>
+
+                    {/* Body */}
+                    <div className="px-4 pb-2">
+                      <Textarea
+                        placeholder="Write your email..."
+                        value={composeBody}
+                        onChange={(e) => setComposeBody(e.target.value)}
+                        rows={10}
+                        className="resize-none"
+                      />
+                    </div>
+
+                    {/* Error */}
+                    {composeError && (
+                      <div className="mx-4 mb-2 bg-red-500/10 p-2.5 rounded-lg border-l-4 border-red-500 text-xs text-destructive">
+                        {composeError}
+                      </div>
+                    )}
+
+                    {/* Footer */}
+                    <div className="flex items-center justify-between px-4 py-3 border-t">
+                      <Button
+                        className="rounded-xl px-5 gap-2 shadow-lg shadow-primary/30 hover:shadow-xl hover:shadow-primary/50 transition-all duration-300"
+                        onClick={handleSendNewEmail}
+                        disabled={!composeTo.trim() || !composeSubject.trim() || !composeBody.trim() || composeSending}
+                      >
+                        {composeSending ? (
+                          <Loader2 className="w-4 h-4 animate-spin" />
+                        ) : (
+                          <Send className="w-4 h-4" />
+                        )}
+                        Send
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        onClick={() => {
+                          setShowCompose(false);
+                          setComposeMinimized(false);
+                          setComposeTo("");
+                          setComposeSubject("");
+                          setComposeBody("");
+                          setComposeError("");
+                        }}
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </Button>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* ── Delete Confirmation Dialog ── */}
       <AlertDialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
@@ -509,6 +599,73 @@ export default function AdminMailPage() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      {/* ── Sender Address Management Dialog ── */}
+      <AlertDialog open={showSenderDialog} onOpenChange={setShowSenderDialog}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Manage Sender Addresses</AlertDialogTitle>
+            <AlertDialogDescription>
+              Add or remove email addresses available in the From dropdown.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <div className="space-y-3 py-2">
+            <div className="space-y-2 max-h-48 overflow-y-auto">
+              {sendersData && sendersData.length > 0 ? (
+                sendersData.map((sender: any) => (
+                  <div key={sender.id} className="flex items-center justify-between gap-2 px-3 py-2 rounded-md border">
+                <div className="min-w-0">
+                    <p className="text-sm truncate">{sender.email}</p>
+                  </div>
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      className="shrink-0 text-destructive hover:text-destructive hover:bg-destructive/10 h-7 w-7"
+                      onClick={() => handleDeleteSender(sender.id)}
+                      disabled={deleteSenderMutation.isPending}
+                    >
+                      <Trash2 className="w-3.5 h-3.5" />
+                    </Button>
+                  </div>
+                ))
+              ) : (
+                <p className="text-sm text-muted-foreground text-center py-2">
+                  {sendersLoading ? "Loading..." : "No sender addresses configured"}
+                </p>
+              )}
+            </div>
+                <div className="border-t pt-3 space-y-2">
+              <Input
+                value={newSenderEmail}
+                onChange={(e) => setNewSenderEmail(e.target.value)}
+                placeholder="new@system.intesters.com"
+                className="text-sm"
+              />
+              {senderDialogError && (
+                <p className="text-sm text-destructive">{senderDialogError}</p>
+              )}
+              <Button
+                size="sm"
+                onClick={handleCreateSender}
+                disabled={!newSenderEmail.trim() || !newSenderEmail.includes("@") || createSenderMutation.isPending}
+                className="w-full"
+              >
+                {createSenderMutation.isPending ? (
+                  <Loader2 className="w-4 h-4 animate-spin mr-1.5" />
+                ) : (
+                  <Plus className="w-4 h-4 mr-1.5" />
+                )}
+                Add Sender
+              </Button>
+            </div>
+          </div>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={() => { setNewSenderEmail(""); setSenderDialogError(""); }}>
+              Close
+            </AlertDialogCancel>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
@@ -519,11 +676,15 @@ export default function AdminMailPage() {
 function MailRow({
   mail,
   onOpen,
+  showDirection = false,
+  senderEmails,
 }: {
   mail: any;
   onOpen: () => void;
+  showDirection?: boolean;
+  senderEmails: string[];
 }) {
-  const isOutbound = FROM_OPTIONS.includes(mail.fromEmail);
+  const isOutbound = senderEmails.includes(mail.fromEmail);
   const displayName = isOutbound
     ? mail.toAddress
     : mail.fromName || mail.fromEmail;
@@ -600,6 +761,17 @@ function MailRow({
         {formatRowDate(mail.lastMessageAt)}
       </span>
 
+      {/* Direction badge */}
+      {showDirection && (
+        <span className={`text-[10px] font-medium px-1.5 py-0.5 rounded shrink-0 mr-1 ${
+          isOutbound
+            ? "bg-sky-100 text-sky-700 dark:bg-sky-900/40 dark:text-sky-300"
+            : "bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300"
+        }`}>
+          {isOutbound ? "Sent" : "Received"}
+        </span>
+      )}
+
       {/* Unread indicator */}
       <div className="w-3 shrink-0 ml-1 flex justify-end">
         {isUnread && (
@@ -624,6 +796,7 @@ function ThreadView({
   sending,
   handleSendReply,
   replyEndRef,
+  senderEmails,
 }: {
   thread: any;
   onBack: () => void;
@@ -635,6 +808,7 @@ function ThreadView({
   sending: boolean;
   handleSendReply: () => void;
   replyEndRef: React.RefObject<HTMLDivElement | null>;
+  senderEmails: string[];
 }) {
   if (!thread) {
     return (
@@ -732,18 +906,24 @@ function ThreadView({
           <div className="border rounded-lg">
             <div className="px-3 py-2 border-b flex items-center gap-2">
               <Reply className="w-4 h-4 text-muted-foreground shrink-0" />
-              <Select value={replyFrom} onValueChange={setReplyFrom}>
-                <SelectTrigger className="border-0 p-0 h-auto text-xs w-auto gap-1 shadow-none focus:ring-0">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  {FROM_OPTIONS.map((addr) => (
-                    <SelectItem key={addr} value={addr} className="text-xs">
-                      {addr}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <SearchableSelect
+                value={replyFrom}
+                onValueChange={setReplyFrom}
+                triggerClassName="border-0 p-0 h-auto text-xs shadow-none focus:ring-0 focus-visible:ring-0 w-auto gap-1"
+                className="w-[260px]"
+              >
+                {senderEmails.map((addr: string) => (
+                  <button
+                    key={addr}
+                    type="button"
+                    value={addr}
+                    data-email={addr}
+                    className="cursor-pointer px-2 py-1.5 text-xs hover:bg-accent rounded-sm w-full text-left"
+                  >
+                    {addr}
+                  </button>
+                ))}
+              </SearchableSelect>
             </div>
             <Textarea
               placeholder="Write your reply..."

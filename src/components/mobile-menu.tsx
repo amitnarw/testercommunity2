@@ -26,6 +26,7 @@ import {
   Lightbulb,
   MessageSquare,
   Settings,
+  Mail,
 } from "lucide-react";
 import { Button } from "./ui/button";
 import {
@@ -41,6 +42,7 @@ import { TransitionLink } from "./transition-link";
 import { ROUTES } from "@/lib/routes";
 import { hasPermission } from "@/lib/permissions";
 import { authClient } from "@/lib/auth-client";
+import { useMailUnreadCount } from "@/hooks/useAdmin";
 
 type AdminNavItem = {
   name: string;
@@ -55,7 +57,7 @@ type AdminNavItem = {
 const baseMainNavItems: AdminNavItem[] = [
   { name: "Dashboard", href: ROUTES.AUTHENTICATED.DASHBOARD, icon: Home, section: "overview" },
   { name: "Pro Testing", href: ROUTES.AUTHENTICATED.PRO_TESTING, icon: Zap, section: "paid", badge: "PRO" },
-  { name: "Handshake Testing", href: ROUTES.AUTHENTICATED.HANDSHAKE_TESTING, icon: Handshake, section: "handshake", badge: "BETA" },
+  { name: "Handshake Testing", href: ROUTES.AUTHENTICATED.HANDSHAKE_TESTING, icon: Handshake, section: "free", badge: "BETA" },
   { name: "Notifications", href: ROUTES.AUTHENTICATED.NOTIFICATIONS, icon: Bell, section: "platform" },
   { name: "Wallet", href: ROUTES.AUTHENTICATED.WALLET, icon: Wallet, section: "platform" },
   { name: "Support", href: ROUTES.PUBLIC.SUPPORT, icon: LifeBuoy, section: "support" },
@@ -191,6 +193,13 @@ const adminNavItems: AdminNavItem[] = [
 
   // Support
   {
+    name: "Mail",
+    href: ROUTES.ADMIN.MAIL,
+    icon: Mail,
+    section: "support",
+    moduleName: "mail",
+  },
+  {
     name: "Support",
     href: ROUTES.ADMIN.SUPPORT,
     icon: Headphones,
@@ -229,6 +238,16 @@ export default function MobileMenu({
   )?.toLowerCase();
 
   const permissions = role?.permissions;
+  const isAdminRole = role?.isAdmin === true;
+  const { data: unreadCount = 0 } = useMailUnreadCount({ enabled: isAdminRole });
+
+  const mailLinkIndex = adminNavItems.findIndex((l) => l.name === "Mail");
+  if (mailLinkIndex >= 0) {
+    adminNavItems[mailLinkIndex] = {
+      ...adminNavItems[mailLinkIndex],
+      badge: unreadCount > 0 ? String(unreadCount) : undefined,
+    };
+  }
 
   function isItemVisible(item: AdminNavItem): boolean {
     if (item.superAdminOnly) return roleName === "super_admin";
@@ -241,8 +260,6 @@ export default function MobileMenu({
   let walletHref = "/wallet";
   let isAdmin = false;
   let showWallet = true;
-
-  const isAdminRole = role?.isAdmin === true;
 
   if (isAdminRole) {
     navItems = adminNavItems;
@@ -379,7 +396,7 @@ export default function MobileMenu({
 
                   return visibleSections.map((section, idx) => {
                     const items = (groupedAdminItems as Record<string, any[]>)[section.key];
-                    const hasBadge = section.key === "paid" || section.key === "free";
+                    const hasBadge = section.key === "paid" || section.key === "free" || section.key === "support";
 
                     return (
                       <div key={section.key}>
@@ -418,6 +435,7 @@ export default function MobileMenu({
                                   "text-[8px] font-bold px-1.5 py-0.5 rounded",
                                   section.key === "paid" && "bg-amber-500/20 text-amber-600 dark:bg-amber-500/10 dark:text-amber-700",
                                   section.key === "free" && "bg-blue-500/20 text-blue-600 dark:bg-blue-500/10 dark:text-blue-700",
+                                  section.key === "support" && "bg-green-500/20 text-green-600 dark:bg-green-500/10 dark:text-green-700",
                                   item.badge === "BETA" && "bg-emerald-500/20 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-700",
                                 )}>
                                   {item.badge}
