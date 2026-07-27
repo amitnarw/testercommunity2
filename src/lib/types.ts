@@ -348,12 +348,12 @@ export interface ControlRoomResponse {
   pointsWithdrawalLimit?: number | null | undefined;
   pointsWithdrawalThreshold?: number | null | undefined;
   humanChatEnabled?: boolean | undefined;
-  communitySize?: number | null | undefined;
+  countriesSupported?: number | null | undefined;
   bugsFound?: number | null | undefined;
   proAppsTested?: number | null | undefined;
-  communityApps?: number | null | undefined;
+  platformUptime?: number | null | undefined;
   uniqueDevices?: number | null | undefined;
-  communityPoints?: number | null | undefined;
+  fastTurnaround?: number | null | undefined;
   alexSystemPrompt?: string | null | undefined;
 }
 

@@ -215,6 +215,7 @@ export function HandshakePlanCard() {
   return (
     <>
       <ProfessionalPlanCard
+        comingSoon
         accent="emerald"
         accentIcon={<Handshake className="w-24 h-24 text-white" />}
         description="Monthly barter subscription ,  publish your app and test others in return."

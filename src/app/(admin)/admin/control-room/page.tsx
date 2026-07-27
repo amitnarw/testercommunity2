@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { Loader2, Save, Users, Bug, Rocket, Layout, Smartphone, Coins, Zap, Banknote, MessageSquare, Bot } from "lucide-react";
+import { Loader2, Save, Globe, Bug, Rocket, Shield, Smartphone, Clock, Zap, Banknote, MessageSquare, Bot } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -16,12 +16,12 @@ export default function AdminControlRoomPage() {
   const updateMutation = useUpdateControlRoom();
 
   const [formValues, setFormValues] = useState({
-    communitySize: 100,
+    countriesSupported: 10,
     bugsFound: 554,
-    proAppsTested: 55,
-    communityApps: 106,
+    proAppsTested: 4200,
+    platformUptime: 99,
     uniqueDevices: 350,
-    communityPoints: 25000,
+    fastTurnaround: 48,
     profileSurveyPoints: 200,
     pointsWithdrawalLimit: 2000,
     pointsWithdrawalThreshold: 20000,
@@ -43,12 +43,12 @@ export default function AdminControlRoomPage() {
   useEffect(() => {
     if (controlRoom) {
       setFormValues({
-        communitySize: controlRoom.communitySize ?? 100,
+        countriesSupported: controlRoom.countriesSupported ?? 10,
         bugsFound: controlRoom.bugsFound ?? 554,
         proAppsTested: controlRoom.proAppsTested ?? 55,
-        communityApps: controlRoom.communityApps ?? 106,
+        platformUptime: controlRoom.platformUptime ?? 99,
         uniqueDevices: controlRoom.uniqueDevices ?? 350,
-        communityPoints: controlRoom.communityPoints ?? 25000,
+        fastTurnaround: controlRoom.fastTurnaround ?? 48,
         profileSurveyPoints: controlRoom.profileSurveyPoints ?? 200,
         pointsWithdrawalLimit: controlRoom.pointsWithdrawalLimit ?? 2000,
         pointsWithdrawalThreshold: controlRoom.pointsWithdrawalThreshold ?? 20000,
@@ -78,12 +78,12 @@ export default function AdminControlRoomPage() {
   const handleSaveStats = () => {
     updateMutation.mutate(
       {
-        communitySize: formValues.communitySize,
+        countriesSupported: formValues.countriesSupported,
         bugsFound: formValues.bugsFound,
         proAppsTested: formValues.proAppsTested,
-        communityApps: formValues.communityApps,
+        platformUptime: formValues.platformUptime,
         uniqueDevices: formValues.uniqueDevices,
-        communityPoints: formValues.communityPoints,
+        fastTurnaround: formValues.fastTurnaround,
       },
       {
         onSuccess: () =>
@@ -182,15 +182,15 @@ export default function AdminControlRoomPage() {
           <CardContent>
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               <div className="space-y-2">
-                <Label htmlFor="communitySize" className="flex items-center gap-2">
-                  <Users className="h-4 w-4 text-muted-foreground" />
-                  Thriving Community
+                <Label htmlFor="countriesSupported" className="flex items-center gap-2">
+                  <Globe className="h-4 w-4 text-muted-foreground" />
+                  Countries Supported
                 </Label>
                 <Input
-                  id="communitySize"
+                  id="countriesSupported"
                   type="number"
-                  value={formValues.communitySize}
-                  onChange={(e) => handleChange("communitySize", parseInt(e.target.value) || 0)}
+                  value={formValues.countriesSupported}
+                  onChange={(e) => handleChange("countriesSupported", parseInt(e.target.value) || 0)}
                 />
               </div>
               <div className="space-y-2">
@@ -218,15 +218,15 @@ export default function AdminControlRoomPage() {
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="communityApps" className="flex items-center gap-2">
-                  <Layout className="h-4 w-4 text-muted-foreground" />
-                  Community Apps
+                <Label htmlFor="platformUptime" className="flex items-center gap-2">
+                  <Shield className="h-4 w-4 text-muted-foreground" />
+                  Platform Uptime
                 </Label>
                 <Input
-                  id="communityApps"
+                  id="platformUptime"
                   type="number"
-                  value={formValues.communityApps}
-                  onChange={(e) => handleChange("communityApps", parseInt(e.target.value) || 0)}
+                  value={formValues.platformUptime}
+                  onChange={(e) => handleChange("platformUptime", parseInt(e.target.value) || 0)}
                 />
               </div>
               <div className="space-y-2">
@@ -242,15 +242,15 @@ export default function AdminControlRoomPage() {
                 />
               </div>
               <div className="space-y-2">
-                <Label htmlFor="communityPoints" className="flex items-center gap-2">
-                  <Coins className="h-4 w-4 text-muted-foreground" />
-                  Community Points
+                <Label htmlFor="fastTurnaround" className="flex items-center gap-2">
+                  <Clock className="h-4 w-4 text-muted-foreground" />
+                  Fast Turnaround
                 </Label>
                 <Input
-                  id="communityPoints"
+                  id="fastTurnaround"
                   type="number"
-                  value={formValues.communityPoints}
-                  onChange={(e) => handleChange("communityPoints", parseInt(e.target.value) || 0)}
+                  value={formValues.fastTurnaround}
+                  onChange={(e) => handleChange("fastTurnaround", parseInt(e.target.value) || 0)}
                 />
               </div>
             </div>

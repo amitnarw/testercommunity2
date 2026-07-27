@@ -87,10 +87,10 @@ export default function ContactPage() {
                     <span className="font-semibold">Email Us</span>
                   </div>
                   <a
-                    href="mailto:intesters@nexmail.in"
+                    href="mailto:support@system.intesters.com"
                     className="text-lg md:text-xl font-bold text-primary hover:underline underline-offset-4 break-all"
                   >
-                    intesters@nexmail.in
+                    support@system.intesters.com
                   </a>
                 </div>
               </div>

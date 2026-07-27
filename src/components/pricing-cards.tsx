@@ -26,6 +26,7 @@ export const ProfessionalPlanCard = ({
   accent = "primary",
   accentIcon,
   description,
+  comingSoon,
 }: {
   plan: PricingResponse;
   actionButton: React.ReactNode;
@@ -33,6 +34,7 @@ export const ProfessionalPlanCard = ({
   accent?: "primary" | "emerald";
   accentIcon?: React.ReactNode;
   description?: string;
+  comingSoon?: boolean;
 }) => {
   const displayPrice = regionalPricing
     ? regionalPricing.amount / 100
@@ -77,13 +79,13 @@ export const ProfessionalPlanCard = ({
           <div className="mt-4 flex items-baseline">
             <span className="text-5xl font-bold tracking-tight">
               {displaySymbol}
-              {displayPrice.toLocaleString(undefined, {
+              {comingSoon ? "xx" : displayPrice.toLocaleString(undefined, {
                 minimumFractionDigits: 0,
                 maximumFractionDigits: 2,
               })}
             </span>
             <span className={`ml-2 text-sm font-medium ${mutedText}`}>
-              {priceSuffix}
+              {comingSoon ? "/month" : priceSuffix}
             </span>
           </div>
           <p className={`mt-4 text-sm leading-relaxed ${mutedTextStrong}`}>
@@ -108,7 +110,16 @@ export const ProfessionalPlanCard = ({
         </div>
 
         <div className="mt-auto relative z-10">
-          <div className="flex justify-center w-full">{actionButton}</div>
+          <div className="flex justify-center w-full">
+            {comingSoon ? (
+              <button
+                disabled
+                className="bg-white/20 text-white cursor-not-allowed flex justify-center items-center space-x-2 w-full py-4 rounded-xl font-semibold text-sm"
+              >
+                Coming Soon
+              </button>
+            ) : actionButton}
+          </div>
         </div>
       </div>
     </motion.div>

@@ -79,7 +79,7 @@ function ProcessingContent() {
               <Button
                 variant="outline"
                 className="rounded-full"
-                onClick={() => (window.location.href = "mailto:intesters@nexmail.in")}
+                onClick={() => (window.location.href = "mailto:support@system.intesters.com")}
               >
                 Contact Support
               </Button>
@@ -156,7 +156,7 @@ function ProcessingContent() {
                 <Button
                   variant="outline"
                   className="rounded-full"
-                  onClick={() => (window.location.href = "mailto:intesters@nexmail.in")}
+                  onClick={() => (window.location.href = "mailto:support@system.intesters.com")}
                 >
                   Contact Support
                 </Button>
