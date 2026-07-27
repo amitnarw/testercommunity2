@@ -140,10 +140,10 @@ export default function AcceptableUsePage() {
               If you have any questions about this Acceptable Use Policy, please
               contact us at{" "}
               <a
-                href="mailto:intesters@nexmail.in"
+                href="mailto:support@system.intesters.com"
                 className="text-primary hover:underline"
               >
-                intesters@nexmail.in
+                support@system.intesters.com
               </a>
               .
             </p>

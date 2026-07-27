@@ -194,10 +194,10 @@ export default function AdminMailPage() {
   }, [sendersData]);
 
   useEffect(() => {
-    if (senderEmails.length > 0 && !replyFrom) {
+    if (senderEmails.length > 0 && (!replyFrom || !senderEmails.includes(replyFrom))) {
       setReplyFrom(senderEmails[0]);
     }
-    if (senderEmails.length > 0 && !composeFrom) {
+    if (senderEmails.length > 0 && (!composeFrom || !senderEmails.includes(composeFrom))) {
       setComposeFrom(senderEmails[0]);
     }
   }, [senderEmails, replyFrom, composeFrom]);
@@ -312,6 +312,7 @@ export default function AdminMailPage() {
       await createSenderMutation.mutateAsync({
         email: newSenderEmail.trim(),
       });
+      setComposeFrom(newSenderEmail.trim());
       setNewSenderEmail("");
       setShowSenderDialog(false);
     } catch (err: any) {

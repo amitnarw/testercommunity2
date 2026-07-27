@@ -18,7 +18,7 @@ const COMPANY = {
   gstin: "07AAKCG5039N1Z4",
   pan: "AAKCG5039N",
   sacCode: "998313",
-  email: "contact@gamdix.in",
+  email: "pro-billing@system.intesters.com",
   website: "www.intesters.com",
   stateCode: "07",
   stateName: "Delhi",

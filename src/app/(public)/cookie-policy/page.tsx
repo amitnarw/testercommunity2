@@ -142,10 +142,10 @@ export default function CookiePolicyPage() {
               If you require more information about our cookie usage, please
               contact us at{" "}
               <a
-                href="mailto:intesters@nexmail.in"
+                href="mailto:support@system.intesters.com"
                 className="text-primary hover:underline"
               >
-                intesters@nexmail.in
+                support@system.intesters.com
               </a>
               .
             </p>

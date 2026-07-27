@@ -204,6 +204,7 @@ export function TwoPathsSection() {
             <div className="panel w-screen flex justify-center px-4 will-change-transform">
               <div className="w-full max-w-[90vw] transform-gpu">
                 <ProfessionalPlanCard
+                  comingSoon
                   accent="emerald"
                   accentIcon={<Handshake className="w-24 h-24 text-white" />}
                   description="Monthly barter subscription ,  publish your app and test others in return."
@@ -261,7 +262,7 @@ export function TwoPathsSection() {
                     </h3>
                   </div>
                   <div className="mt-4 flex items-baseline">
-                    <span className="text-4xl font-bold tracking-tight">Paid</span>
+<span className="text-4xl font-bold tracking-tight">₹999</span>
                     <span className="ml-2 text-sm font-medium text-primary-foreground/80">/ per project</span>
                   </div>
                   <p className="mt-4 text-sm leading-relaxed text-primary-foreground/90">
@@ -298,6 +299,7 @@ export function TwoPathsSection() {
           {/* Path 1: Handshake - Desktop Only */}
           <div className="h-full">
             <ProfessionalPlanCard
+              comingSoon
               accent="emerald"
               accentIcon={<Handshake className="w-24 h-24 text-white" />}
               description="Monthly barter subscription ,  publish your app and test others in return."
@@ -361,7 +363,7 @@ export function TwoPathsSection() {
                   </h3>
                 </div>
                 <div className="mt-4 flex items-baseline">
-                  <span className="text-4xl font-bold tracking-tight">Paid</span>
+                  <span className="text-4xl font-bold tracking-tight">₹999</span>
                   <span className="ml-2 text-sm font-medium text-primary-foreground/80">/ per project</span>
                 </div>
                 <p className="mt-4 text-sm leading-relaxed text-primary-foreground/90">

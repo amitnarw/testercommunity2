@@ -13,9 +13,9 @@ import {
   Users,
   Bug,
   Smartphone,
-  Coins,
+  Clock,
+  Shield,
   Rocket,
-  Layout,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useRegionalPricing } from "@/hooks/useUser";
@@ -119,12 +119,12 @@ export function GlobalImpactSection() {
   const sectionRef = useRef(null);
   const { data: regionalPricing } = useRegionalPricing();
   const [stats, setStats] = useState<{
-    communitySize?: number;
+    countriesSupported?: number;
     bugsFound?: number;
     proAppsTested?: number;
-    communityApps?: number;
+    platformUptime?: number;
     uniqueDevices?: number;
-    communityPoints?: number;
+    fastTurnaround?: number;
   } | null>(null);
   const { scrollYProgress } = useScroll({
     target: sectionRef,
@@ -140,12 +140,12 @@ export function GlobalImpactSection() {
     ? `${regionalPricing.currency_symbol}${Math.round(regionalPricing.amount / 100)}`
     : "₹999";
 
-  const communitySize = stats?.communitySize ?? 100;
+  const countriesSupported = stats?.countriesSupported ?? 10;
   const bugsFound = stats?.bugsFound ?? 554;
-  const proAppsTested = stats?.proAppsTested ?? 55;
-  const communityApps = stats?.communityApps ?? 106;
+  const proAppsTested = stats?.proAppsTested ?? 4200;
+  const platformUptime = stats?.platformUptime ?? 99;
   const uniqueDevices = stats?.uniqueDevices ?? 350;
-  const communityPoints = stats?.communityPoints ?? 25000;
+  const fastTurnaround = stats?.fastTurnaround ?? 48;
 
   return (
     <section
@@ -180,16 +180,16 @@ export function GlobalImpactSection() {
 
         <div className="mt-16 grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-4 w-full max-w-6xl">
           <StatCard
-            title="Thriving Community"
-            icon={<Users className="w-4 h-4" />}
+            title="Countries Supported"
+            icon={<Globe className="w-4 h-4" />}
             className="col-span-2 lg:col-span-2 bg-gradient-to-br from-primary to-primary/50 text-primary-foreground"
           >
             <div className="relative z-10 h-full flex flex-col justify-center">
               <p className="text-2xl sm:text-3xl font-bold">
-                <AnimatedCounter to={communitySize} suffix="+" />
+                <AnimatedCounter to={countriesSupported} suffix="+" />
               </p>
               <p className="text-primary-foreground/80 mt-1 text-xs">
-                Vetted testers across 12+ countries.
+                Developers and testers worldwide.
               </p>
             </div>
           </StatCard>
@@ -214,14 +214,14 @@ export function GlobalImpactSection() {
             </p>
           </StatCard>
           <StatCard
-            title="Community Apps"
-            icon={<Layout className="w-4 h-4" />}
+            title="Platform Uptime"
+            icon={<Shield className="w-4 h-4" />}
           >
             <p className="text-2xl sm:text-3xl font-bold">
-              <AnimatedCounter to={communityApps} suffix="+" />
+              <AnimatedCounter to={platformUptime} suffix="%" />
             </p>
             <p className="text-muted-foreground mt-1 text-[10px]">
-              Handshake apps submitted by developers.
+              Reliable platform availability.
             </p>
           </StatCard>
           <StatCard
@@ -236,15 +236,15 @@ export function GlobalImpactSection() {
             </p>
           </StatCard>
           <StatCard
-            title="Community Points"
-            icon={<Coins className="w-4 h-4" />}
+            title="Fast Turnaround"
+            icon={<Clock className="w-4 h-4" />}
             className="col-span-2 lg:col-span-2 bg-gradient-to-br from-primary to-primary/50 text-primary-foreground"
           >
             <p className="text-2xl sm:text-3xl font-bold">
-              <AnimatedCounter to={communityPoints} suffix="+" />
+              <AnimatedCounter to={fastTurnaround} suffix="hr" />
             </p>
             <p className="text-primary-foreground/80 mt-1 text-xs">
-              Points earned by community.
+              Average testing turnaround time.
             </p>
           </StatCard>
         </div>
