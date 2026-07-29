@@ -204,20 +204,23 @@ export function TwoPathsSection() {
             <div className="panel w-screen flex justify-center px-4 will-change-transform">
               <div className="w-full max-w-[90vw] transform-gpu">
                 <ProfessionalPlanCard
-                  comingSoon
                   accent="emerald"
+                  customPriceLabel="FREE"
                   accentIcon={<Handshake className="w-24 h-24 text-white" />}
                   description="Monthly barter subscription ,  publish your app and test others in return."
                   plan={{
                     id: "handshake",
-                    name: "Handshake",
+                    name: "Handshake Testing",
                     price: 99,
                     package: 1,
                     features: [
-                      "Publish and join handshake tests",
-                      "Gamified levels with more test slots",
-                      "No per-tester points required",
-                      "Barter-based, you test theirs, they test yours",
+                      "12+ Testers in 24 Hours",
+                      "Mutual Peer Testing",
+                      "16-Day Testing Period",
+                      "Daily Testing Proof Verification",
+                      "Verified Developer Community",
+                      "Smart Campaign Dashboard",
+                      "Fair & Reliable Ecosystem",
                     ],
                     billingType: "SUBSCRIPTION",
                     isActive: true,
@@ -233,7 +236,7 @@ export function TwoPathsSection() {
                           className="bg-white text-emerald-600 flex justify-center items-center space-x-2 w-full py-4 font-bold cursor-pointer"
                         >
                           <Handshake className="w-4 h-4 mr-2" />
-                          <span className="font-semibold">Explore Handshake Testing</span>
+                          <span className="font-semibold">Get Started</span>
                         </HoverBorderGradient>
                       </AutoTransitionLink>
                     </div>
@@ -242,7 +245,7 @@ export function TwoPathsSection() {
               </div>
             </div>
             <div className="panel w-screen flex justify-center px-4 will-change-transform">
-              <div className={cn(cardClasses(true), "w-full max-w-[90vw] transform-gpu")}>
+            <div className={cn(cardClasses(true), "w-full max-w-[90vw] transform-gpu")}>
                 <div className="absolute bottom-0 left-0 -ml-20 -mb-20 w-60 h-60 bg-black/10 rounded-full blur-3xl pointer-events-none transform-gpu" />
                 <div className="absolute top-6 right-6 opacity-20 rotate-12">
                   <Star className="w-24 h-24 fill-current text-white" />
@@ -258,11 +261,11 @@ export function TwoPathsSection() {
                       <Briefcase className="w-6 h-6 text-white" />
                     </div>
                     <h3 className="text-xl font-medium text-white">
-                      The Professional Path
+                      Pro Testing
                     </h3>
                   </div>
                   <div className="mt-4 flex items-baseline">
-<span className="text-4xl font-bold tracking-tight">₹999</span>
+                    <span className="text-4xl font-bold tracking-tight">₹999</span>
                     <span className="ml-2 text-sm font-medium text-primary-foreground/80">/ per project</span>
                   </div>
                   <p className="mt-4 text-sm leading-relaxed text-primary-foreground/90">
@@ -278,7 +281,7 @@ export function TwoPathsSection() {
                   <Link href={ROUTES.PUBLIC.PRICING} className="w-full block">
                     <HoverBorderGradient containerClassName="w-full" className="bg-white text-primary flex items-center justify-center space-x-2 w-full py-4 font-bold">
                       <Zap className="w-4 h-4 mr-2 fill-current" />
-                      <span className="font-semibold">View Packages</span>
+                      <span className="font-semibold">Get Started</span>
                     </HoverBorderGradient>
                   </Link>
                 </div>
@@ -299,20 +302,23 @@ export function TwoPathsSection() {
           {/* Path 1: Handshake - Desktop Only */}
           <div className="h-full">
             <ProfessionalPlanCard
-              comingSoon
               accent="emerald"
+              customPriceLabel="FREE"
               accentIcon={<Handshake className="w-24 h-24 text-white" />}
               description="Monthly barter subscription ,  publish your app and test others in return."
               plan={{
                 id: "handshake",
-                name: "Handshake",
+                name: "Handshake Testing",
                 price: 99,
                 package: 1,
                 features: [
-                  "Publish and join handshake tests",
-                  "Gamified levels with more test slots",
-                  "No per-tester points required",
-                  "Barter-based, you test theirs, they test yours",
+                  "12+ Testers in 24 Hours",
+                  "Mutual Peer Testing",
+                  "16-Day Testing Period",
+                  "Daily Testing Proof Verification",
+                  "Verified Developer Community",
+                  "Smart Campaign Dashboard",
+                  "Fair & Reliable Ecosystem",
                 ],
                 billingType: "SUBSCRIPTION",
                 isActive: true,
@@ -328,7 +334,7 @@ export function TwoPathsSection() {
                       className="bg-white text-emerald-600 flex justify-center items-center space-x-2 w-full py-4 font-bold cursor-pointer"
                     >
                       <Handshake className="w-4 h-4 mr-2" />
-                      <span className="font-semibold">Explore Handshake Testing</span>
+                      <span className="font-semibold">Get Started</span>
                     </HoverBorderGradient>
                   </AutoTransitionLink>
                 </div>
@@ -338,52 +344,52 @@ export function TwoPathsSection() {
 
           {/* Path 2: Professional (Popular Style) - Desktop Only */}
           <div className="h-full">
-            <motion.div
-              variants={itemVariants}
-              whileHover={{ y: -8, scale: 1.05 }}
-              className={cardClasses(true)}
-            >
-              <>
-                <div className="absolute top-6 right-6 opacity-20 rotate-12">
-                  <Star className="w-24 h-24 fill-current text-white" />
-                </div>
-                <div className="absolute -top-4 left-0 right-0 flex justify-center z-10">
-                  <Badge className="bg-black dark:bg-white text-white dark:text-black hover:bg-black/60 px-4 py-1.5 text-xs font-bold uppercase tracking-widest shadow-lg border-0">
-                    Recommended
-                  </Badge>
-                </div>
-              </>
-              <div className="mb-8 relative z-10">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="p-2.5 bg-white/20 rounded-xl">
-                    <Briefcase className="w-6 h-6 text-white" />
+              <motion.div
+                variants={itemVariants}
+                whileHover={{ y: -8, scale: 1.05 }}
+                className={cardClasses(true)}
+              >
+                <>
+                  <div className="absolute top-6 right-6 opacity-20 rotate-12">
+                    <Star className="w-24 h-24 fill-current text-white" />
                   </div>
-                  <h3 className="text-xl font-medium text-white">
-                    The Professional Path
-                  </h3>
+                  <div className="absolute -top-4 left-0 right-0 flex justify-center z-10">
+                    <Badge className="bg-black dark:bg-white text-white dark:text-black hover:bg-black/60 px-4 py-1.5 text-xs font-bold uppercase tracking-widest shadow-lg border-0">
+                      Recommended
+                    </Badge>
+                  </div>
+                </>
+                <div className="mb-8 relative z-10">
+                  <div className="flex items-center gap-3 mb-4">
+                    <div className="p-2.5 bg-white/20 rounded-xl">
+                      <Briefcase className="w-6 h-6 text-white" />
+                    </div>
+                    <h3 className="text-xl font-medium text-white">
+                      Pro Testing
+                    </h3>
+                  </div>
+                  <div className="mt-4 flex items-baseline">
+                    <span className="text-4xl font-bold tracking-tight">₹999</span>
+                    <span className="ml-2 text-sm font-medium text-primary-foreground/80">/ per project</span>
+                  </div>
+                  <p className="mt-4 text-sm leading-relaxed text-primary-foreground/90">
+                    Hire our professional testers for guaranteed, high-quality results.
+                  </p>
                 </div>
-                <div className="mt-4 flex items-baseline">
-                  <span className="text-4xl font-bold tracking-tight">₹999</span>
-                  <span className="ml-2 text-sm font-medium text-primary-foreground/80">/ per project</span>
+                <div className="flex-1 space-y-4 mb-8 relative z-10">
+                  {["15-20 Days Testing Cycle", "15-25 Vetted Testers", "Google Play Production Answers", "Managed by inTesters Team", "Detailed Bug Reports", "Device & OS Coverage Stats", "Google Play Compliance Check"].map((feature, i) => (
+                    <FeatureItem key={i} text={feature} isPopular={true} />
+                  ))}
                 </div>
-                <p className="mt-4 text-sm leading-relaxed text-primary-foreground/90">
-                  Hire our professional testers for guaranteed, high-quality results.
-                </p>
-              </div>
-              <div className="flex-1 space-y-4 mb-8 relative z-10">
-                {["15-20 Days Testing Cycle", "15-25 Vetted Testers", "Google Play Production Answers", "Managed by inTesters Team", "Detailed Bug Reports", "Device & OS Coverage Stats", "Google Play Compliance Check"].map((feature, i) => (
-                  <FeatureItem key={i} text={feature} isPopular={true} />
-                ))}
-              </div>
-              <div className="mt-auto relative z-10">
-                <Link href={ROUTES.PUBLIC.PRICING} className="w-full block">
-                  <HoverBorderGradient containerClassName="w-full" className="bg-white text-primary flex items-center justify-center space-x-2 w-full py-4 font-bold">
-                    <Zap className="w-4 h-4 mr-2 fill-current" />
-                    <span className="font-semibold">View Packages</span>
-                  </HoverBorderGradient>
-                </Link>
-              </div>
-            </motion.div>
+                <div className="mt-auto relative z-10">
+                  <Link href={ROUTES.PUBLIC.PRICING} className="w-full block">
+                    <HoverBorderGradient containerClassName="w-full" className="bg-white text-primary flex items-center justify-center space-x-2 w-full py-4 font-bold">
+                      <Zap className="w-4 h-4 mr-2 fill-current" />
+                      <span className="font-semibold">Get Started</span>
+                    </HoverBorderGradient>
+                  </Link>
+                </div>
+              </motion.div>
           </div>
         </motion.div>
       </div>

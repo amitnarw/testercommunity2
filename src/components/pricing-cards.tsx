@@ -27,6 +27,7 @@ export const ProfessionalPlanCard = ({
   accentIcon,
   description,
   comingSoon,
+  customPriceLabel,
 }: {
   plan: PricingResponse;
   actionButton: React.ReactNode;
@@ -35,6 +36,7 @@ export const ProfessionalPlanCard = ({
   accentIcon?: React.ReactNode;
   description?: string;
   comingSoon?: boolean;
+  customPriceLabel?: string;
 }) => {
   const displayPrice = regionalPricing
     ? regionalPricing.amount / 100
@@ -77,16 +79,27 @@ export const ProfessionalPlanCard = ({
             {plan.name}
           </Badge>
           <div className="mt-4 flex items-baseline">
-            <span className="text-5xl font-bold tracking-tight">
-              {displaySymbol}
-              {comingSoon ? "xx" : displayPrice.toLocaleString(undefined, {
-                minimumFractionDigits: 0,
-                maximumFractionDigits: 2,
-              })}
-            </span>
-            <span className={`ml-2 text-sm font-medium ${mutedText}`}>
-              {comingSoon ? "/month" : priceSuffix}
-            </span>
+            {customPriceLabel ? (
+              <span className="text-5xl font-bold tracking-tight">{customPriceLabel}</span>
+            ) : comingSoon ? (
+              <>
+                <span className="text-5xl font-bold tracking-tight">xx</span>
+                <span className={`ml-2 text-sm font-medium ${mutedText}`}>/month</span>
+              </>
+            ) : (
+              <>
+                <span className="text-5xl font-bold tracking-tight">
+                  {displaySymbol}
+                  {displayPrice.toLocaleString(undefined, {
+                    minimumFractionDigits: 0,
+                    maximumFractionDigits: 2,
+                  })}
+                </span>
+                <span className={`ml-2 text-sm font-medium ${mutedText}`}>
+                  {priceSuffix}
+                </span>
+              </>
+            )}
           </div>
           <p className={`mt-4 text-sm leading-relaxed ${mutedTextStrong}`}>
             {description ??
