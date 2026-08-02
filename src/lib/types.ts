@@ -354,6 +354,12 @@ export interface ControlRoomResponse {
   platformUptime?: number | null | undefined;
   uniqueDevices?: number | null | undefined;
   fastTurnaround?: number | null | undefined;
+  landingHeading?: string | null | undefined;
+  landingSubheading?: string | null | undefined;
+  landingStatTitles?: Array<{ id: string; title: string }> | null | undefined;
+  landingStatDescriptions?: Array<{ id: string; description: string }> | null | undefined;
+  landingStatValues?: Array<{ id: string; value: string }> | null | undefined;
+  landingStatIcons?: Array<{ id: string; icon: string }> | null | undefined;
   alexSystemPrompt?: string | null | undefined;
 }
 
@@ -668,14 +674,26 @@ export interface UserWallerResponse {
   createdAt: Date;
 }
 
+export type PlanAccent = "primary" | "emerald" | "blue" | "amber" | "purple";
+
 export interface PricingResponse {
   id: string;
   name: string;
   price: number;
   package: number;
   features: string[];
-  billingType?: string;
-  isActive: true;
+  description?: string;
+  badgeText?: string;
+  accent?: PlanAccent;
+  gradientFrom?: string;
+  gradientTo?: string;
+  customPriceLabel?: string;
+  isPopular?: boolean;
+  sequence?: number;
+  billingType?: "ONE_TIME" | "SUBSCRIPTION" | "CUSTOM";
+  isActive: boolean;
+  ctaLabel?: string | null;
+  ctaHref?: string | null;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -1225,7 +1243,18 @@ export interface FinancePlan {
   price: number;
   package: number;
   features: any;
+  description?: string | null;
+  badgeText?: string | null;
+  accent?: PlanAccent;
+  gradientFrom?: string | null;
+  gradientTo?: string | null;
+  customPriceLabel?: string | null;
+  isPopular?: boolean;
+  sequence?: number;
+  billingType?: string;
   isActive: boolean;
+  ctaLabel?: string | null;
+  ctaHref?: string | null;
   createdAt: string;
   updatedAt: string;
 }

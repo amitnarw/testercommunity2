@@ -131,7 +131,7 @@ export default function AdminLayout({
 
   return (
     <PageTransition>
-      <div className="relative flex min-h-screen">
+      <div className="relative flex flex-col min-h-screen">
         <Sidebar
           onLogout={handleLogout}
           isCollapsed={isSidebarCollapsed}

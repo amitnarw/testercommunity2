@@ -9,18 +9,10 @@ import {
   FileText,
   Smartphone,
   CheckCircle,
-  Star,
   TrendingUp,
-  Handshake,
   Users,
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { AutoTransitionLink } from "@/components/auto-transition-link";
-import { ProfessionalPlanCard, EnterprisePlanCard } from "@/components/pricing-cards";
-import { HoverBorderGradient } from "@/components/ui/hover-border-gradient";
-import { ROUTES } from "@/lib/routes";
-import { usePricingData, useRegionalPricing } from "@/hooks/useUser";
+import { PricingCardsGrid } from "@/components/pricing-cards-grid";
 
 const proFeatures = [
   {
@@ -80,27 +72,6 @@ const itemVariants = {
 };
 
 export function WhatProUnlocks() {
-  const { data: pricingPlans } = usePricingData();
-  const { data: regionalPricing } = useRegionalPricing();
-
-  const cheapestPlan = pricingPlans?.length
-    ? pricingPlans.reduce((min, p) => (p.price < min.price ? p : min), pricingPlans[0])
-    : null;
-
-  const displaySymbol = regionalPricing?.currency_symbol || "₹";
-  const displayPrice = regionalPricing
-    ? Math.round(regionalPricing.amount / 100)
-    : cheapestPlan
-      ? cheapestPlan.price
-      : null;
-
-  const priceLabel = displayPrice !== null
-    ? `${displaySymbol}${displayPrice.toLocaleString()}`
-    : "Loading...";
-  const perTesterLabel = displayPrice !== null && cheapestPlan
-    ? `${displaySymbol}${Math.round(displayPrice / (cheapestPlan.package * 20)).toLocaleString()}`
-    : null;
-
   return (
     <section
       data-loc="WhatProUnlocks"
@@ -193,137 +164,15 @@ export function WhatProUnlocks() {
           </div>
         </motion.div>
 
-        {/* Comparison Grid */}
+        {/* Pricing Cards */}
         <motion.div
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: "-100px" }}
           variants={containerVariants}
-          className="grid md:grid-cols-3 gap-4 lg:gap-6 max-w-6xl mx-auto items-stretch"
+          className="max-w-6xl mx-auto"
         >
-          {/* HANDSHAKE PLAN */}
-          <motion.div variants={itemVariants}>
-            <ProfessionalPlanCard
-              accent="emerald"
-              accentIcon={<Handshake className="w-24 h-24 text-white" />}
-              description="Monthly barter subscription ,  publish your app and test others in return."
-              plan={{
-                id: "handshake",
-                name: "Handshake",
-                price: 99,
-                package: 1,
-                features: [
-                  "Publish and join handshake tests",
-                  "Gamified levels with more test slots",
-                  "No per-tester points required",
-                  "Barter-based, you test theirs, they test yours",
-                ],
-                billingType: "SUBSCRIPTION",
-                isActive: true,
-                createdAt: new Date(),
-                updatedAt: new Date(),
-              }}
-              actionButton={
-                <div className="w-full">
-                  <AutoTransitionLink href={ROUTES.AUTHENTICATED.HANDSHAKE_TESTING} className="flex items-center justify-center w-full">
-                    <HoverBorderGradient
-                      as="div"
-                      containerClassName="w-full"
-                      className="bg-white text-emerald-600 flex justify-center items-center space-x-2 w-full py-4 font-bold cursor-pointer"
-                    >
-                      <Handshake className="w-4 h-4 mr-2" />
-                      <span className="font-semibold">Explore Handshake Testing</span>
-                    </HoverBorderGradient>
-                  </AutoTransitionLink>
-                </div>
-              }
-            />
-          </motion.div>
-
-          {/* PRO PLAN ,  HIGHLIGHTED */}
-          <motion.div variants={itemVariants}>
-            <motion.div
-              whileHover={{ y: -8, scale: 1.03 }}
-              className="relative h-full flex flex-col p-8 sm:p-10 rounded-3xl bg-primary text-primary-foreground shadow-2xl shadow-primary/30 md:scale-105 md:-my-2">
-              {/* Recommended Badge */}
-              <div className="absolute -top-4 left-0 right-0 flex justify-center z-10">
-                <Badge className="bg-black dark:bg-white text-white dark:text-black hover:bg-black/60 px-4 py-1.5 text-xs font-bold uppercase tracking-widest shadow-lg border-0">
-                  Most Popular
-                </Badge>
-              </div>
-
-              {/* Decorative */}
-              <div className="absolute top-6 right-6 opacity-15 rotate-12">
-                <Star className="w-20 h-20 fill-current text-white" />
-              </div>
-              <div className="absolute bottom-0 left-0 -ml-16 -mb-16 w-48 h-48 bg-black/10 rounded-full blur-3xl pointer-events-none" />
-
-              <div className="mb-6 relative z-10">
-                <div className="flex items-center gap-3 mb-3">
-                  <div className="p-2.5 bg-white/20 rounded-xl">
-                    <Zap className="w-5 h-5 text-white" />
-                  </div>
-                  <h3 className="text-lg font-bold text-white">Pro Testing</h3>
-                </div>
-                <div className="flex items-baseline mt-3">
-                  <span className="text-3xl font-bold tracking-tight">
-                    {priceLabel}
-                  </span>
-                  <span className="ml-2 text-sm text-primary-foreground/80">
-                    / per cycle
-                  </span>
-                </div>
-                {perTesterLabel && (
-                  <p className="mt-2 text-xs text-primary-foreground/70">
-                    Less than {perTesterLabel}/tester ,  skip the barter
-                  </p>
-                )}
-              </div>
-
-              <div className="flex-1 space-y-3 mb-6 relative z-10">
-                {proFeatures.map((item, i) => (
-                  <div key={i} className="flex items-start gap-3">
-                    <div className="flex-shrink-0 w-5 h-5 rounded-full flex items-center justify-center mt-0.5 bg-white/20">
-                      <CheckCircle className="w-3 h-3 text-white" />
-                    </div>
-                    <span
-                      className={cn(
-                        "text-sm",
-                        item.highlight
-                          ? "text-white font-medium"
-                          : "text-primary-foreground/90",
-                      )}
-                    >
-                      {item.text}
-                    </span>
-                  </div>
-                ))}
-              </div>
-
-              <AutoTransitionLink href={ROUTES.PUBLIC.PRICING} className="w-full relative z-10">
-                <Button className="w-full py-5 rounded-full font-bold text-sm bg-white text-primary hover:bg-white/90 shadow-lg">
-                  <Zap className="w-4 h-4 mr-2 fill-current" />
-                  Upgrade to Pro
-                </Button>
-              </AutoTransitionLink>
-            </motion.div>
-          </motion.div>
-
-          {/* ENTERPRISE */}
-          <motion.div variants={itemVariants}>
-            <EnterprisePlanCard
-              actionButton={
-                <AutoTransitionLink href="/contact-us" className="w-full">
-                  <Button
-                    variant="outline"
-                    className="w-full py-5 rounded-full font-semibold text-sm bg-gradient-to-r from-[#8364E8] to-[#D397FA] text-white border-0 hover:opacity-90"
-                  >
-                    Contact Sales
-                  </Button>
-                </AutoTransitionLink>
-              }
-            />
-          </motion.div>
+          <PricingCardsGrid variant="what-pro" />
         </motion.div>
       </div>
     </section>

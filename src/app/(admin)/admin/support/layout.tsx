@@ -10,15 +10,18 @@ const SUPPORT_TABS = [
   { value: "stats", label: "Support Stats", route: ROUTES.ADMIN.SUPPORT },
   { value: "tickets", label: "Tickets", route: "/admin/support/tickets" },
   { value: "live-chat", label: "Live Chat", route: "/admin/support/live-chat" },
+  { value: "app-chats", label: "App Chats", route: "/admin/support/app-chats" },
 ];
 
 const StatsContent = lazy(() => import("./page"));
 const TicketsContent = lazy(() => import("./tickets/page"));
 const LiveChatContent = lazy(() => import("./live-chat/page"));
+const AppChatsContent = lazy(() => import("./app-chats/page"));
 
 function getTabFromPathname(pathname: string): string {
   if (pathname === "/admin/support/tickets") return "tickets";
   if (pathname === "/admin/support/live-chat") return "live-chat";
+  if (pathname === "/admin/support/app-chats") return "app-chats";
   return "stats";
 }
 
@@ -104,6 +107,11 @@ export default function SupportLayout() {
       <div style={{ display: activeTab === "live-chat" ? "contents" : "none" }}>
         <Suspense fallback={<LiveChatSkeleton />}>
           <LiveChatContent />
+        </Suspense>
+      </div>
+      <div style={{ display: activeTab === "app-chats" ? "contents" : "none" }}>
+        <Suspense fallback={<TabSkeleton />}>
+          <AppChatsContent />
         </Suspense>
       </div>
     </div>

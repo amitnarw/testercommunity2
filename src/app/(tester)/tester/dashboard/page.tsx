@@ -280,7 +280,7 @@ export default function TesterDashboardPage() {
           {/* Action Required Section */}
           {pendingActionProjects.length > 0 && (
             <Card className="border-orange-500/50 dark:border-orange-500/30 bg-orange-50/50 dark:bg-orange-500/5 shadow-sm">
-              <CardHeader className="flex flex-row items-center justify-between pb-2">
+              <CardHeader className="flex flex-row items-center justify-between p-3 pb-2 sm:p-6">
                 <div>
                   <CardTitle className="text-orange-600 dark:text-orange-400 flex items-center gap-2">
                     Action Required Today
@@ -291,7 +291,7 @@ export default function TesterDashboardPage() {
                   </CardDescription>
                 </div>
               </CardHeader>
-              <CardContent>
+              <CardContent className="p-3 sm:p-6">
                 <div className="space-y-3 mt-2">
                   {pendingActionProjects.slice(0, 3).map((project) => {
                     const currentDayToSubmit = project.daysCompleted + 1;
@@ -312,29 +312,31 @@ export default function TesterDashboardPage() {
                             {project.appName?.charAt(0)}
                           </AvatarFallback>
                         </Avatar>
-                        <div className="flex-1 min-w-0">
-                          <p className="font-medium text-sm truncate">
-                            {project.appName}
-                          </p>
-                          <p className="text-xs text-muted-foreground">
-                            {isRejected ? (
-                              <span className="text-red-500 font-medium">
-                                Verification Rejected - Please re-upload
-                              </span>
-                            ) : (
-                              <span className="text-orange-600 dark:text-orange-400">
-                                Day {currentDayToSubmit} check-in pending
-                              </span>
-                            )}
-                          </p>
+                        <div className="flex flex-col sm:flex-row w-full gap-2">
+                          <div className="flex-1 min-w-0">
+                            <p className="font-medium text-sm truncate">
+                              {project.appName}
+                            </p>
+                            <p className="text-xs text-muted-foreground">
+                              {isRejected ? (
+                                <span className="text-red-500 font-medium">
+                                  Verification Rejected - Please re-upload
+                                </span>
+                              ) : (
+                                <span className="text-orange-600 dark:text-orange-400">
+                                  Day {currentDayToSubmit} check-in pending
+                                </span>
+                              )}
+                            </p>
+                          </div>
+                          <Button
+                            size="sm"
+                            variant={isRejected ? "destructive" : "default"}
+                            className="shrink-0 h-8"
+                          >
+                            {isRejected ? "Re-upload" : "Submit"}
+                          </Button>
                         </div>
-                        <Button
-                          size="sm"
-                          variant={isRejected ? "destructive" : "default"}
-                          className="shrink-0 h-8"
-                        >
-                          {isRejected ? "Re-upload" : "Submit"}
-                        </Button>
                       </Link>
                     );
                   })}
@@ -375,8 +377,8 @@ export default function TesterDashboardPage() {
                     const progress =
                       project.totalDay > 0
                         ? Math.round(
-                          (project.daysCompleted / project.totalDay) * 100,
-                        )
+                            (project.daysCompleted / project.totalDay) * 100,
+                          )
                         : 0;
                     return (
                       <Link
@@ -465,12 +467,12 @@ export default function TesterDashboardPage() {
                         <p className="text-[10px] text-muted-foreground">
                           {project.completedAt
                             ? new Date(project.completedAt).toLocaleDateString(
-                              "en-IN",
-                              {
-                                month: "short",
-                                day: "numeric",
-                              },
-                            )
+                                "en-IN",
+                                {
+                                  month: "short",
+                                  day: "numeric",
+                                },
+                              )
                             : ""}
                         </p>
                       </div>

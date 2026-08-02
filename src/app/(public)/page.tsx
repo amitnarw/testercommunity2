@@ -51,9 +51,12 @@ export default function Home() {
       {/* Hero Section */}
       <section
         data-loc="HomePage-HeroSection"
-        className="relative w-full py-12 sm:py-16 md:py-20 lg:py-24"
+        className="relative w-full py-12 sm:py-16 md:py-20 lg:py-24 bg-gradient-to-b from-white dark:from-black/0 to-secondary/50 dark:to-secondary/50"
       >
-        <div className="absolute inset-0 bg-dot-pattern z-0"></div>
+        <div className="absolute inset-0 [mask-image:linear-gradient(to_bottom,black_70%,transparent_100%)]">
+          <div className="absolute inset-0 z-0 h-full w-full items-center px-5 py-24 [background:radial-gradient(125%_125%_at_50%_-20%,transparent_40%,hsl(var(--primary))_100%)]"></div>
+          <div className="absolute inset-0 bg-dot-pattern z-[1]"></div>
+        </div>
         <div className="container mx-auto px-4 md:px-6 text-center relative z-10">
           <div className="max-w-4xl mx-auto">
             <HoverBorderGradient

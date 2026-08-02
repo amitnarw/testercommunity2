@@ -41,7 +41,7 @@ export function TesterDeviceDetails({
   };
 
   return (
-    <div className="mt-14 bg-card sm:bg-card/0 p-3 rounded-xl">
+    <div className="mt-14 mb-5 bg-card sm:bg-card/0 p-3 rounded-xl">
       <Card className="bg-card/0 border-0 shadow-none">
         <CardHeader className="p-0">
           <CardTitle className="text-xl sm:text-2xl">

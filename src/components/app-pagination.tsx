@@ -13,72 +13,110 @@ interface AppPaginationProps {
   currentPage: number;
   totalPages: number;
   onPageChange: (page: number) => void;
+  isFetching?: boolean;
 }
 
 export function AppPagination({
   currentPage,
   totalPages,
   onPageChange,
+  isFetching = false,
 }: AppPaginationProps) {
   const getPaginationRange = () => {
-    const range: (number | string)[] = [];
-    if (totalPages <= 3) {
-      for (let i = 1; i <= totalPages; i++) {
-        range.push(i);
-      }
-    } else {
-      if (currentPage > 2) {
-        range.push(1);
-        if (currentPage > 3) range.push("...");
-      }
-
-      let start = Math.max(1, currentPage - 1);
-      let end = Math.min(totalPages, currentPage + 1);
-
-      if (currentPage === 1) end = 3;
-      if (currentPage === totalPages) start = totalPages - 2;
-
-      for (let i = start; i <= end; i++) {
-        range.push(i);
-      }
-
-      if (currentPage < totalPages - 1) {
-        if (currentPage < totalPages - 2) range.push("...");
-        range.push(totalPages);
-      }
+    if (totalPages <= 7) {
+      return Array.from({ length: totalPages }, (_, i) => i + 1);
     }
-    return range.slice(0, 3);
+
+    const pages = new Set<number>();
+    pages.add(1);
+    pages.add(totalPages);
+
+    const start = Math.max(1, currentPage - 1);
+    const end = Math.min(totalPages, currentPage + 1);
+    for (let i = start; i <= end; i++) {
+      pages.add(i);
+    }
+
+    if (currentPage <= 3) {
+      pages.add(2);
+      pages.add(3);
+      pages.add(4);
+    }
+    if (currentPage >= totalPages - 2) {
+      pages.add(totalPages - 3);
+      pages.add(totalPages - 2);
+      pages.add(totalPages - 1);
+    }
+
+    const sorted = Array.from(pages).sort((a, b) => a - b);
+
+    const range: (number | string)[] = [];
+    let prev = 0;
+    for (const page of sorted) {
+      if (prev !== 0) {
+        if (page - prev === 2) {
+          range.push(prev + 1);
+        } else if (page - prev > 2) {
+          range.push("...");
+        }
+      }
+      range.push(page);
+      prev = page;
+    }
+    return range;
   };
 
   if (totalPages <= 1) {
     return null;
   }
 
+  const range = getPaginationRange();
+
   return (
     <Pagination data-loc="AppPagination" className="mt-8">
       <PaginationContent>
-        <PaginationItem>
+        {/* Mobile: compact prev / page indicator / next */}
+        <PaginationItem className="flex md:hidden">
           <Button
             variant="ghost"
             size="icon"
             onClick={() => onPageChange(currentPage - 1)}
-            disabled={currentPage === 1}
-            className="md:hidden"
+            disabled={currentPage === 1 || isFetching}
+            aria-label="Previous page"
           >
             <ChevronLeft className="h-4 w-4" />
           </Button>
+        </PaginationItem>
+        <PaginationItem className="flex md:hidden">
+          <span className="flex h-9 min-w-[3.75rem] items-center justify-center rounded-xl border border-input bg-background px-3 text-sm font-medium text-muted-foreground">
+            {currentPage} / {totalPages}
+          </span>
+        </PaginationItem>
+        <PaginationItem className="flex md:hidden">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => onPageChange(currentPage + 1)}
+            disabled={currentPage === totalPages || isFetching}
+            aria-label="Next page"
+          >
+            <ChevronRight className="h-4 w-4" />
+          </Button>
+        </PaginationItem>
+
+        {/* Desktop: full navigation */}
+        <PaginationItem className="hidden md:flex">
           <Button
             variant="ghost"
             onClick={() => onPageChange(currentPage - 1)}
-            disabled={currentPage === 1}
-            className="hidden md:flex"
+            disabled={currentPage === 1 || isFetching}
           >
             <ChevronLeft className="mr-2 h-4 w-4" />
             Previous
           </Button>
         </PaginationItem>
-        {getPaginationRange().map((page, index) => (
-          <PaginationItem key={index}>
+        {range.map((page, index) => (
+          <PaginationItem key={index} className="hidden md:flex">
             {typeof page === "number" ? (
               <PaginationLink
                 href="#"
@@ -92,25 +130,17 @@ export function AppPagination({
                 {page}
               </PaginationLink>
             ) : (
-              <span className="px-4 py-2">...</span>
+              <span className="flex h-9 items-center justify-center px-1 text-muted-foreground">
+                ...
+              </span>
             )}
           </PaginationItem>
         ))}
-        <PaginationItem>
-          <Button
-            variant="ghost"
-            size="icon"
-            onClick={() => onPageChange(currentPage + 1)}
-            disabled={currentPage === totalPages}
-            className="md:hidden"
-          >
-            <ChevronRight className="h-4 w-4" />
-          </Button>
+        <PaginationItem className="hidden md:flex">
           <Button
             variant="ghost"
             onClick={() => onPageChange(currentPage + 1)}
-            disabled={currentPage === totalPages}
-            className="hidden md:flex"
+            disabled={currentPage === totalPages || isFetching}
           >
             Next
             <ChevronRight className="ml-2 h-4 w-4" />

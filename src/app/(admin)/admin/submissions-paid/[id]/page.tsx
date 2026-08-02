@@ -42,6 +42,7 @@ import {
   Loader2,
   CheckCircle2,
   Eye,
+  Trash2,
 } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import { useRouter } from "next/navigation";
@@ -54,8 +55,12 @@ import {
 } from "@/components/ui/accordion";
 import { BackButton } from "@/components/back-button";
 import { useSingleHubAppDetails } from "@/hooks/useHub";
-import { useUpdateProjectStatus } from "@/hooks/useAdmin";
+import { useUpdateProjectStatus, useDeletePaidSubmission } from "@/hooks/useAdmin";
 import { toast } from "@/hooks/use-toast";
+import { useAppChatUnreadCount } from "@/hooks/useAppChatUnreadCount";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
+import * as VisuallyHidden from "@radix-ui/react-visually-hidden";
+import { SupportChat } from "@/components/support/SupportChat";
 import { SafeImage } from "@/components/safe-image";
 import { ExpandableText } from "@/components/expandable-text";
 import DeveloperInstructions from "@/components/developerInstructions";
@@ -104,6 +109,13 @@ const AdminAssignedTestersTable = dynamic(
     ),
   { ssr: false },
 );
+const AdminEditSubmissionDialog = dynamic(
+  () =>
+    import("@/components/admin/admin-edit-submission-dialog").then(
+      (mod) => mod.AdminEditSubmissionDialog,
+    ),
+  { ssr: false },
+);
 const AdminDeclarationEditor = dynamic(
   () =>
     import("@/components/admin/admin-declaration-editor").then(
@@ -127,7 +139,10 @@ export default function AdminSubmissionDetailPage({
   const [showManageTestersDialog, setShowManageTestersDialog] = useState(false);
   const [showStartTestingDialog, setShowStartTestingDialog] = useState(false);
   const [showCompleteDialog, setShowCompleteDialog] = useState(false);
+  const [showEditDialog, setShowEditDialog] = useState(false);
+  const [showChatDialog, setShowChatDialog] = useState(false);
   const [isUpdatingStatus, setIsUpdatingStatus] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
 
   const { mutate: updateStatus } = useUpdateProjectStatus({
     onSuccess: () => {
@@ -144,6 +159,17 @@ export default function AdminSubmissionDetailPage({
     onSettled: () => setIsUpdatingStatus(false),
   });
 
+  const { mutate: deleteSubmission } = useDeletePaidSubmission({
+    onSuccess: () => {
+      toast({ title: "Deleted", description: "Submission deleted successfully." });
+      router.push("/admin/submissions-paid");
+    },
+    onError: (err: any) => {
+      toast({ title: "Error", description: err?.message || "Failed to delete.", variant: "destructive" });
+    },
+    onSettled: () => setIsDeleting(false),
+  });
+
   const handleMoveToReview = () => {
     if (!window.confirm("Move this app back to IN_REVIEW status?")) return;
     setIsUpdatingStatus(true);
@@ -156,6 +182,8 @@ export default function AdminSubmissionDetailPage({
     error,
     refetch,
   } = useSingleHubAppDetails({ id });
+
+  const { count: unreadCount, reset: resetUnread, markRead } = useAppChatUnreadCount(project?.id ?? null, "admin", showChatDialog);
 
   const handleAdminComplete = () => {
     setShowCompleteDialog(true);
@@ -279,11 +307,11 @@ export default function AdminSubmissionDetailPage({
 
         <main className="max-w-7xl mx-auto flex flex-col gap-8 mt-2">
           {/* Header Action Card - THE MOST CRITICAL BUTTONS & APP STATUS */}
-          <div className="bg-card border border-border/60 shadow-xl shadow-black/5 rounded-3xl p-3 sm:p-6 md:p-8 flex flex-col gap-6 relative overflow-hidden">
+          <div className="bg-card border border-border/60 shadow-xl shadow-black/5 rounded-3xl p-3 sm:p-6 md:p-8 flex flex-col gap-6 relative">
             <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-3xl -z-10 -translate-y-1/2 translate-x-1/2" />
 
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
-              <div className="flex items-center gap-5 z-10">
+              <div className="flex items-center gap-5 z-10 w-full md:w-1/2">
                 <div className="flex flex-col items-center gap-1 sm:gap-2">
                   <div className="px-1 sm:px-3 py-0.5 sm:py-1 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-500 text-[10px] font-black shadow-sm">
                     {project.appType}{" "}
@@ -326,7 +354,7 @@ export default function AdminSubmissionDetailPage({
               </div>
 
               {/* Action Buttons Zone */}
-              <div className="flex flex-wrap items-center gap-3 w-full md:w-auto z-10 shrink-0">
+              <div className="flex flex-wrap items-center gap-3 w-full md:w-1/2 z-10 shrink-0">
                 <a
                   href={visitUrl}
                   target="_blank"
@@ -335,6 +363,58 @@ export default function AdminSubmissionDetailPage({
                 >
                   <ExternalLink className="w-4 h-4" /> Play Store
                 </a>
+
+                <span className="relative inline-flex">
+                  <Button
+                    variant="outline"
+                    onClick={() => setShowChatDialog(true)}
+                    className="px-5 py-2.5 h-auto rounded-xl shadow-sm font-bold border-primary/20 hover:border-primary/50 text-primary bg-primary/5"
+                  >
+                    <MessageSquare className="w-4 h-4 mr-1.5" />
+                    Chat
+                  </Button>
+                  {unreadCount > 0 && (
+                    <span className="pointer-events-none absolute -top-1.5 -right-1.5 min-w-5 h-5 px-1 rounded-full bg-destructive text-destructive-foreground text-[10px] font-bold flex items-center justify-center z-10 ring-2 ring-card">
+                      {unreadCount > 9 ? "9+" : unreadCount}
+                    </span>
+                  )}
+                </span>
+
+                <Button
+                  variant="outline"
+                  onClick={() => setShowEditDialog(true)}
+                  className="px-5 py-2.5 h-auto rounded-xl shadow-sm font-bold border-blue-500/30 hover:border-blue-500/60 text-blue-600 bg-blue-500/5"
+                >
+                  <Pencil className="w-4 h-4 mr-1.5" /> Edit
+                </Button>
+
+                <Button
+                  variant="destructive"
+                  onClick={() => {
+                    const confirmed = window.confirm(
+                      "Are you sure you want to permanently delete this submission? This will remove all associated data (feedback, tester relations, verifications, etc.) and cannot be undone.",
+                    );
+                    if (!confirmed) return;
+                    const reason = window.prompt(
+                      'Type "DELETE" to confirm permanent deletion of this submission:',
+                    );
+                    if (reason !== "DELETE") {
+                      toast({ title: "Cancelled", description: "Deletion requires typing DELETE to confirm." });
+                      return;
+                    }
+                    setIsDeleting(true);
+                    deleteSubmission(project.id);
+                  }}
+                  disabled={isDeleting}
+                  className="px-5 py-2.5 h-auto rounded-xl shadow-sm font-bold"
+                >
+                  {isDeleting ? (
+                    <Loader2 className="w-4 h-4 mr-1.5 animate-spin" />
+                  ) : (
+                    <Trash2 className="w-4 h-4 mr-1.5" />
+                  )}
+                  Delete
+                </Button>
 
                 {(project.status === "IN_REVIEW" ||
                   project.status === "REJECTED") && (
@@ -967,6 +1047,12 @@ export default function AdminSubmissionDetailPage({
       </div>
 
       {/* Modals */}
+      <AdminEditSubmissionDialog
+        project={project}
+        open={showEditDialog}
+        onOpenChange={setShowEditDialog}
+        onSuccess={() => refetch()}
+      />
       <AdminRejectDialog
         appId={project.id}
         open={showRejectDialog}
@@ -1018,6 +1104,40 @@ export default function AdminSubmissionDetailPage({
         onOpenChange={setShowCompleteDialog}
         onSuccess={() => refetch()}
       />
+
+      {/* App Chat Dialog */}
+      <Dialog
+        open={showChatDialog}
+        onOpenChange={(val) => {
+          setShowChatDialog(val);
+          if (val) {
+            resetUnread();
+          } else {
+            markRead();
+          }
+        }}
+      >
+        <DialogContent className="max-w-2xl h-[80vh] flex flex-col p-0 gap-0 overflow-hidden rounded-2xl">
+          <VisuallyHidden.Root asChild>
+            <DialogTitle>Testing Manager Chat</DialogTitle>
+          </VisuallyHidden.Root>
+          <SupportChat
+            mode="direct"
+            directChatId={project?.id ?? null}
+            title="Testing Manager"
+            open={showChatDialog}
+            onOpenChange={(val) => {
+              setShowChatDialog(val);
+              if (val) {
+                resetUnread();
+              } else {
+                markRead();
+              }
+            }}
+            senderType="AGENT"
+          />
+        </DialogContent>
+      </Dialog>
 
       {/* Fullscreen Image Viewer */}
       {fullscreenImage && (

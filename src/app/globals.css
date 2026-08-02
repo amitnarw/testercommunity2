@@ -73,18 +73,25 @@
   }
 }
 
+[role="tabpanel"][hidden] {
+  display: none !important;
+}
+
 @layer base {
   * {
     @apply border-border;
   }
 
   html {
-    overflow-x: hidden;
     scroll-behavior: smooth;
   }
 
+:root {
+  --navbar-h: 64px;
+}
+
   body {
-    @apply bg-background text-foreground overflow-x-hidden;
+    @apply bg-background text-foreground;
   }
 
   /* Refined Premium Global Scrollbar - Floating Thumb */

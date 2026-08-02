@@ -25,6 +25,7 @@ import {
 } from "@/lib/apiCalls";
 import { PricingResponse } from "@/lib/types";
 import { authClient } from "@/lib/auth-client";
+import { ROUTES } from "@/lib/routes";
 
 declare global {
   interface Window {
@@ -54,7 +55,19 @@ const HANDSHAKE_FEATURES = [
   "Barter-based, you test theirs, they test yours",
 ];
 
-export function HandshakePlanCard() {
+export function HandshakePlanCard({
+  mode = "redirect",
+  onSubscribeError,
+  onCheckoutRequired,
+  redirectHref,
+  redirectLabel,
+}: {
+  mode?: "billing" | "redirect";
+  onSubscribeError?: (error: any) => void;
+  onCheckoutRequired?: () => void;
+  redirectHref?: string;
+  redirectLabel?: string | null;
+}) {
   const queryClient = useQueryClient();
   const { data: session } = authClient.useSession();
   const isAuthed = !!session;
@@ -73,7 +86,7 @@ export function HandshakePlanCard() {
     enabled: isAuthed,
   });
 
-  const { data: dbPlan } = useQuery<PricingResponse | null>({
+  const { data: dbPlan, isPending: planPending } = useQuery<PricingResponse | null>({
     queryKey: ["handshakePlan"],
     queryFn: () => getHandshakePlan(),
     retry: false,
@@ -115,13 +128,19 @@ export function HandshakePlanCard() {
       rzp.open();
     } catch (e: any) {
       if (e?.billingInfoMissing) {
-        setError("Please add your billing information before subscribing.");
+        if (onCheckoutRequired) {
+          onCheckoutRequired();
+        } else {
+          setError("Please add your billing information before subscribing.");
+        }
+      } else if (onSubscribeError) {
+        onSubscribeError(e);
       } else {
         setError(e?.message || "Failed to start subscription. Please try again.");
       }
       setProcessing(false);
     }
-  }, [router]);
+  }, [router, onCheckoutRequired, onSubscribeError]);
 
   const handleCancel = async () => {
     if (!sub?.id) return;
@@ -212,21 +231,72 @@ export function HandshakePlanCard() {
     );
   }
 
-  return (
-    <>
+  if (!planPending && !dbPlan) {
+    return null;
+  }
+
+  if (mode === "redirect") {
+    return (
       <ProfessionalPlanCard
-        comingSoon
-        accent="emerald"
+        accent={dbPlan?.accent ?? "emerald"}
         accentIcon={<Handshake className="w-24 h-24 text-white" />}
-        description="Monthly barter subscription ,  publish your app and test others in return."
+        description={dbPlan?.description}
+        customPriceLabel={dbPlan?.customPriceLabel}
         plan={{
           id: dbPlan?.id ?? "handshake",
           name: dbPlan?.name ?? "Handshake",
           price: dbPlan?.price ?? 99,
           package: dbPlan?.package ?? 1,
           features: dbPlan?.features ?? HANDSHAKE_FEATURES,
+          badgeText: dbPlan?.badgeText,
+          gradientFrom: dbPlan?.gradientFrom,
+          gradientTo: dbPlan?.gradientTo,
+          isPopular: dbPlan?.isPopular,
           billingType: dbPlan?.billingType ?? "SUBSCRIPTION",
-          isActive: true,
+          isActive: dbPlan?.isActive ?? true,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        }}
+        actionButton={
+          <div className="w-full">
+            <Link
+              href={redirectHref ?? ROUTES.PUBLIC.PRICING}
+              className="w-full block"
+            >
+              <HoverBorderGradient
+                as="div"
+                containerClassName="w-full"
+                className="bg-white text-emerald-600 flex justify-center items-center space-x-2 w-full py-4 font-bold cursor-pointer"
+              >
+                <Zap className="w-4 h-4 mr-2 fill-current" />
+                <span className="font-semibold">{redirectLabel ?? "Get Started"}</span>
+              </HoverBorderGradient>
+            </Link>
+          </div>
+        }
+      />
+    );
+  }
+
+  return (
+    <>
+      <ProfessionalPlanCard
+        accent={dbPlan?.accent ?? "emerald"}
+        accentIcon={<Handshake className="w-24 h-24 text-white" />}
+        description={dbPlan?.description}
+        customPriceLabel={dbPlan?.customPriceLabel}
+        plan={{
+          id: dbPlan?.id ?? "handshake",
+          name: dbPlan?.name ?? "Handshake",
+          price: dbPlan?.price ?? 99,
+          package: dbPlan?.package ?? 1,
+          features: dbPlan?.features ?? HANDSHAKE_FEATURES,
+          badgeText: dbPlan?.badgeText,
+          gradientFrom: dbPlan?.gradientFrom,
+          gradientTo: dbPlan?.gradientTo,
+          isPopular: dbPlan?.isPopular,
+          billingType: dbPlan?.billingType ?? "SUBSCRIPTION",
+          isActive: dbPlan?.isActive ?? true,
           createdAt: new Date(),
           updatedAt: new Date(),
         }}

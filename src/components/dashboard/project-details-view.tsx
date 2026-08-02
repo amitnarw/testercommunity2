@@ -21,6 +21,7 @@ import { TesterDeviceDetails } from "@/components/dashboard/tester-device-detail
 import { TestCompleteSection } from "@/components/dashboard/test-complete-section";
 import { RejectedProjectSection } from "@/components/dashboard/rejected-project-section";
 import { DeclarationReportAccordion } from "@/components/declaration/declaration-report-accordion";
+import { AppTestingChatSection } from "@/components/app-testing-chat/AppTestingChatSection";
 
 const getStatusConfig = (status: string) => {
   switch (status) {
@@ -272,6 +273,11 @@ export default function ProjectDetailsView({
                 variants={itemVariants}
                 className="lg:col-span-1 space-y-8"
               >
+                <AppTestingChatSection
+                  dashboardAndHubId={project.id}
+                  appName={project.name}
+                  appStatus={hubAppData?.status}
+                />
                 <DeviceOSCoverage osData={osData} deviceData={deviceData} />
 
                 <MediaGallery screenshots={screenshots} videos={videos} />

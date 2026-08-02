@@ -27,7 +27,7 @@ export function EarnPointsButton() {
   }
 
   return (
-    <Link href="/profile/profile-setup" className="relative group mr-1 md:mr-2">
+    <Link href="/profile/profile-setup" className="absolute right-24 sm:right-28 group mr-1 md:mr-2">
       <motion.div
         className="relative flex items-center justify-center gap-1 md:gap-2 px-2 py-1 md:px-3 md:py-1.5 rounded-xl bg-gradient-to-b from-amber-50 to-amber-100 dark:from-amber-950/40 dark:to-amber-900/40 border border-amber-200 dark:border-amber-700/50 shadow-[0_2px_8px_-2px_rgba(251,191,36,0.3)] overflow-hidden"
         whileHover={{ scale: 1.05 }}

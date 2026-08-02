@@ -16,9 +16,46 @@ import { cn } from "@/lib/utils";
 import { usePathname } from "next/navigation";
 import { TransitionLink } from "@/components/transition-link";
 import { useSupportChat } from "@/hooks/useSupportChat";
+import { useDirectChat } from "@/hooks/useDirectChat";
 
-export function SupportChat() {
-  const pathname = usePathname();
+export type ChatMode = "ai" | "direct";
+
+interface SupportChatProps {
+  mode?: ChatMode;
+  directChatId?: number | null;
+  title?: string;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
+  hidden?: boolean;
+  senderType?: "USER" | "AGENT";
+}
+
+export function SupportChat({
+  mode = "ai",
+  directChatId,
+  title,
+  open,
+  onOpenChange,
+  hidden = false,
+  senderType = "USER",
+}: SupportChatProps) {
+  if (mode === "direct") {
+    return (
+      <DirectChatWindow
+        directChatId={directChatId}
+        title={title}
+        open={open}
+        onOpenChange={onOpenChange}
+        hidden={hidden}
+        senderType={senderType}
+      />
+    );
+  }
+  return <SupportWidget />;
+}
+
+function SupportWidget() {
+const pathname = usePathname();
   const router = useRouter();
   const [windowWidth, setWindowWidth] = useState(typeof window !== "undefined" ? window.innerWidth : 1200);
   const [localInput, setLocalInput] = useState("");
@@ -28,8 +65,8 @@ export function SupportChat() {
   const inputRef = useRef<HTMLInputElement>(null);
 
   const isSupportPath = pathname?.startsWith(ROUTES.PUBLIC.SUPPORT) ||
-                       pathname?.startsWith("/help") ||
-                       pathname?.startsWith(ROUTES.TESTER.SUPPORT);
+                        pathname?.startsWith("/help") ||
+                        pathname?.startsWith(ROUTES.TESTER.SUPPORT);
 
   const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || "";
 
@@ -641,6 +678,170 @@ export function SupportChat() {
           )}
         </AnimatePresence>
       </motion.div>
+    </div>
+  );
+}
+
+interface DirectChatWindowProps {
+  directChatId?: number | null;
+  title?: string;
+  open?: boolean;
+  onOpenChange?: (open: boolean) => void;
+  hidden?: boolean;
+  senderType?: "USER" | "AGENT";
+}
+
+function DirectChatWindow({
+  directChatId,
+  title = "Testing Manager",
+  open,
+  onOpenChange,
+  hidden = false,
+  senderType = "USER",
+}: DirectChatWindowProps) {
+  const [humanInput, setHumanInput] = useState("");
+  const humanScrollRef = useRef<HTMLDivElement>(null);
+  const directChat = useDirectChat(directChatId ?? null, !!open && !hidden, senderType);
+
+  useEffect(() => {
+    requestAnimationFrame(() => {
+      if (humanScrollRef.current) {
+        const el = humanScrollRef.current.querySelector('[data-radix-scroll-area-viewport]');
+        if (el) el.scrollTop = el.scrollHeight;
+      }
+    });
+  }, [directChat.messages, directChat.loading]);
+
+  const handleHumanSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!humanInput.trim()) return;
+    directChat.emitStopTyping();
+    directChat.sendMessage(humanInput.trim());
+    setHumanInput("");
+  };
+
+  const messages = directChat.messages;
+
+  return (
+    <div className="flex flex-col h-full w-full overflow-hidden">
+      {/* Header */}
+      <header className="flex items-center justify-between p-4 border-b bg-primary text-primary-foreground flex-shrink-0">
+        <div className="flex items-center gap-3">
+          <div className="h-10 w-10 rounded-full bg-white/20 flex items-center justify-center border border-white/10">
+            <Headphones className="h-6 w-6 text-primary-foreground" />
+          </div>
+          <div>
+            <h3 className="font-bold text-sm">{title}</h3>
+            <p className="text-[10px] text-primary-foreground/80 flex items-center gap-1.5">
+              <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
+              Live Agent
+            </p>
+          </div>
+        </div>
+        <div className="flex items-center gap-1">
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={() => onOpenChange?.(false)}
+            className="h-8 w-8 rounded-full hover:bg-white/10 text-primary-foreground"
+          >
+            <X className="h-5 w-5" />
+          </Button>
+        </div>
+      </header>
+
+      {directChat.loading ? (
+        <div className="flex-1 flex items-center justify-center bg-background/50">
+          <Loader2 className="w-6 h-6 animate-spin text-muted-foreground" />
+        </div>
+      ) : (
+        <>
+          <ScrollArea ref={humanScrollRef} className="flex-1 p-4 bg-background/50">
+            <div className="space-y-4 pb-4">
+              {messages.map((m, i) => (
+                <div key={m.id || i} className={cn("flex gap-3", m.senderType === "USER" ? "flex-row-reverse" : "flex-row")}>
+                  <div className={cn(
+                    "h-8 w-8 rounded-full flex items-center justify-center flex-shrink-0 border",
+                    m.senderType === "AGENT" ? "bg-primary/10 border-primary/20" : m.senderType === "SYSTEM" ? "bg-muted border-dashed" : "bg-muted"
+                  )}>
+                    {m.senderType === "AGENT" ? (
+                      <Headphones className="h-4 w-4 text-primary" />
+                    ) : m.senderType === "SYSTEM" ? (
+                      <Bot className="h-4 w-4 text-muted-foreground" />
+                    ) : (
+                      <User className="h-4 w-4 text-muted-foreground" />
+                    )}
+                  </div>
+                  <div className={cn("flex flex-col max-w-[80%] min-w-0 gap-1", m.senderType === "USER" ? "items-end" : "items-start")}>
+                    <div className={cn(
+                      "px-4 py-2.5 rounded-2xl text-sm shadow-sm leading-relaxed break-words",
+                      m.senderType === "USER"
+                        ? "bg-primary text-primary-foreground rounded-tr-none"
+                        : m.senderType === "SYSTEM"
+                        ? "bg-muted/30 border border-dashed rounded-tl-none text-muted-foreground italic text-xs"
+                        : "bg-card border rounded-tl-none"
+                    )}>
+                      {m.senderType === "SYSTEM" ? (
+                        m.message
+                      ) : (
+                        <LinkifyText text={m.message} />
+                      )}
+                    </div>
+                    <span className="text-[10px] text-muted-foreground">
+                      {m.createdAt ? new Date(m.createdAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) : ""}
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </ScrollArea>
+          {directChat.agentTyping && (
+            <div className="flex gap-3 animate-in fade-in duration-300 px-4 py-2">
+              <div className="h-8 w-8 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center flex-shrink-0">
+                <User className="h-4 w-4 text-primary" />
+              </div>
+              <div className="bg-muted/30 px-4 py-3 rounded-2xl rounded-tl-none border">
+                <div className="flex gap-1">
+                  <span className="w-1.5 h-1.5 rounded-full bg-primary/40 animate-bounce [animation-delay:-0.3s]" />
+                  <span className="w-1.5 h-1.5 rounded-full bg-primary/40 animate-bounce [animation-delay:-0.15s]" />
+                  <span className="w-1.5 h-1.5 rounded-full bg-primary/40 animate-bounce" />
+                </div>
+              </div>
+            </div>
+          )}
+          <footer className="p-4 border-t bg-card/80 backdrop-blur-sm">
+            {directChat.error && (
+              <div className="mb-3 px-3 py-2 bg-destructive/10 border border-destructive/20 rounded-xl flex items-center gap-2 text-xs text-destructive">
+                <AlertCircle className="h-3.5 w-3.5 flex-shrink-0" />
+                <span className="flex-1">{directChat.error}</span>
+              </div>
+            )}
+            <form onSubmit={handleHumanSubmit} className="relative flex items-center gap-2">
+              <input
+                value={humanInput}
+                onChange={(e) => {
+                  setHumanInput(e.target.value);
+                  directChat.emitTyping();
+                }}
+                onBlur={() => { if (!humanInput.trim()) directChat.emitStopTyping(); }}
+                placeholder="Type your message..."
+                autoFocus
+                className="flex-1 bg-muted/50 border-none focus:ring-1 focus:ring-primary/30 rounded-xl px-4 py-2.5 text-sm outline-none transition-all"
+              />
+              <Button type="submit" size="icon" disabled={!humanInput.trim() || directChat.sending} className="rounded-xl shadow-md hover:shadow-lg active:scale-95 transition-all">
+                {directChat.sending ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  <Send className="h-4 w-4" />
+                )}
+              </Button>
+            </form>
+            <p className="mt-2 text-[9px] text-muted-foreground/60 text-center leading-tight">
+              This conversation is saved and will be available to your Testing Manager.
+            </p>
+          </footer>
+        </>
+      )}
     </div>
   );
 }
