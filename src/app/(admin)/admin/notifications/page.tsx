@@ -1,6 +1,7 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { Suspense, useState, useEffect, useCallback } from 'react';
+import { useRouter, useSearchParams, usePathname } from 'next/navigation';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
@@ -17,6 +18,7 @@ import { AppPagination } from '@/components/app-pagination';
 import { useQueryClient } from '@tanstack/react-query';
 import { FeedbackModal } from '@/components/feedback-modal';
 import { cn } from '@/lib/utils';
+import { NotificationsPageSkeleton } from '@/components/notifications/notification-table-skeleton';
 
 // Notification Type Badge Component
 function NotificationTypeBadge({ type }: { type: string }) {
@@ -66,7 +68,7 @@ function NotificationTypeBadge({ type }: { type: string }) {
     );
 }
 
-export default function AdminNotificationsPage() {
+function AdminNotificationsPageContent() {
     const queryClient = useQueryClient();
     const [filter, setFilter] = useState('All');
     const [searchQuery, setSearchQuery] = useState("");
@@ -88,12 +90,55 @@ export default function AdminNotificationsPage() {
         primaryAction?: { label: string; onClick: () => void };
         secondaryAction?: { label: string; onClick: () => void };
     }>({ open: false, status: 'info', title: '', description: '' });
-    const [currentPage, setCurrentPage] = useState(1);
-    const NOTIFICATIONS_PER_PAGE = 10;
+    const router = useRouter();
+    const searchParams = useSearchParams();
+    const pathname = usePathname();
+
+    // Read initial page from URL (supports browser back/forward)
+    const getPageFromUrl = () => {
+      const p = parseInt(searchParams.get("page") || "1", 10);
+      return Math.max(1, isNaN(p) ? 1 : p);
+    };
+
+    const [currentPage, setCurrentPageState] = useState(getPageFromUrl);
+    const PAGE_SIZE = 20;
+    const [debouncedSearch, setDebouncedSearch] = useState("");
+
+    // Sync currentPage from URL when browser back/forward navigates
+    useEffect(() => {
+      const p = parseInt(searchParams.get("page") || "1", 10);
+      const safe = Math.max(1, isNaN(p) ? 1 : p);
+      if (safe !== currentPage) setCurrentPageState(safe);
+    }, [searchParams]);
+
+    // Set page + update URL
+    const setCurrentPage = useCallback(
+      (page: number) => {
+        setCurrentPageState(page);
+        const sp = new URLSearchParams(searchParams.toString());
+        if (page === 1) sp.delete("page");
+        else sp.set("page", String(page));
+        const qs = sp.toString();
+        router.replace(qs ? `${pathname}?${qs}` : pathname, { scroll: false });
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      },
+      [searchParams, router, pathname],
+    );
+
+    // Debounce search input before hitting the server
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setDebouncedSearch(searchQuery);
+        }, 300);
+        return () => clearTimeout(timer);
+    }, [searchQuery]);
 
     // Fetch notifications
-    const { data: notificationsData, isLoading, error } = useAllNotifications({
+    const { data: notificationsData, isLoading, isFetching, error } = useAllNotifications({
         type: filter === 'All' ? undefined : filter,
+        page: currentPage,
+        limit: PAGE_SIZE,
+        search: debouncedSearch,
     });
 
     // Fetch counts
@@ -103,7 +148,11 @@ export default function AdminNotificationsPage() {
     const { data: notificationTypes, isLoading: isLoadingTypes } = useNotificationTypes();
 
     // Fetch users for single user targeting
-    const { data: usersData, isLoading: isLoadingUsers } = useAllUsers();
+    const shouldLoadUsers = isBroadcastModalOpen && targetType === 'single';
+    const { data: usersData, isLoading: isLoadingUsers } = useAllUsers(
+      { role: 'TESTER' },
+      { enabled: shouldLoadUsers }
+    );
 
     // Mutations
     const deleteMutation = useDeleteNotification({
@@ -158,30 +207,29 @@ export default function AdminNotificationsPage() {
         },
     });
 
-    const notifications = notificationsData || [];
+    const notifications = isFetching ? [] : (notificationsData?.items || []);
 
-    // Filter by search query
-    const filteredNotifications = notifications.filter((n: any) => {
-        if (!searchQuery) return true;
-        const query = searchQuery.toLowerCase();
-        const title = n.title?.toLowerCase() || "";
-        const description = n.description?.toLowerCase() || "";
-        return title.includes(query) || description.includes(query);
-    });
-
-    const totalPages = Math.ceil(filteredNotifications.length / NOTIFICATIONS_PER_PAGE);
-    const paginatedNotifications = filteredNotifications.slice(
-        (currentPage - 1) * NOTIFICATIONS_PER_PAGE,
-        currentPage * NOTIFICATIONS_PER_PAGE
-    );
+    const totalPages = notificationsData?.totalPages || 1;
+    const paginatedNotifications = notifications;
 
     const handleDelete = (id: number) => {
         setDeleteModalState({ open: true, notificationId: id });
     };
 
     useEffect(() => {
-        setCurrentPage(1);
-    }, [searchQuery, filter]);
+        setCurrentPageState(1);
+        const sp = new URLSearchParams(searchParams.toString());
+        sp.delete("page");
+        const qs = sp.toString();
+        router.replace(qs ? `${pathname}?${qs}` : pathname, { scroll: false });
+    }, [searchQuery, filter, searchParams, router, pathname]);
+
+    // If the current page no longer exists (e.g. deleted the last row on the last page), snap back
+    useEffect(() => {
+        if (currentPage > 1 && totalPages > 0 && currentPage > totalPages) {
+            setCurrentPage(totalPages);
+        }
+    }, [currentPage, totalPages, setCurrentPage]);
 
     const handleBroadcast = () => {
         if (!broadcastData.title || !broadcastData.description) {
@@ -274,14 +322,14 @@ export default function AdminNotificationsPage() {
                 </CardHeader>
                 <CardContent className="p-2 sm:p-6">
                     {isLoading ? (
-                        <div className="flex items-center justify-center py-8">
-                            <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
-                        </div>
+                        <NotificationsPageSkeleton />
+                    ) : isFetching ? (
+                        <NotificationsPageSkeleton />
                     ) : error ? (
                         <div className="text-center py-8 text-destructive">
                             Error loading notifications. Please try again.
                         </div>
-                    ) : filteredNotifications.length === 0 ? (
+                    ) : notifications.length === 0 ? (
                         <div className="text-center py-8 text-muted-foreground">
                             No notifications found.
                         </div>
@@ -304,7 +352,7 @@ export default function AdminNotificationsPage() {
                             <TableBody>
                                 {paginatedNotifications.map((notification: any, index: number) => (
                                     <TableRow key={notification.id}>
-                                        <TableCell className="text-muted-foreground">{(currentPage - 1) * NOTIFICATIONS_PER_PAGE + index + 1}</TableCell>
+                                        <TableCell className="text-muted-foreground">{(currentPage - 1) * PAGE_SIZE + index + 1}</TableCell>
                                         <TableCell>
                                             <div className="flex flex-col">
                                                 <span className="font-medium">{notification.title}</span>
@@ -376,11 +424,12 @@ export default function AdminNotificationsPage() {
                             </TableBody>
                         </Table>
                     )}
-                    {filteredNotifications.length > 0 && totalPages > 1 && (
+                    {notifications.length > 0 && totalPages > 1 && (
                         <AppPagination
                             currentPage={currentPage}
                             totalPages={totalPages}
                             onPageChange={setCurrentPage}
+                            isFetching={isFetching}
                         />
                     )}
                 </CardContent>
@@ -535,5 +584,13 @@ export default function AdminNotificationsPage() {
                 secondaryAction={feedbackModal.secondaryAction}
             />
         </div>
+    );
+}
+
+export default function AdminNotificationsPage() {
+    return (
+        <Suspense fallback={null}>
+            <AdminNotificationsPageContent />
+        </Suspense>
     );
 }

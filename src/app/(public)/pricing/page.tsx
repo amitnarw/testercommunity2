@@ -1,43 +1,18 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Accordion } from "@/components/ui/accordion";
 import {
-  CheckCircle,
   HelpCircle,
-  Phone,
-  ArrowRight,
-  ShieldCheck,
-  Zap,
 } from "lucide-react";
-import Link from "next/link";
-import { usePricingData, useRegionalPricing } from "@/hooks/useUser";
 import { getPublicFaqs } from "@/lib/apiCalls";
-import { PricingResponse } from "@/lib/types";
-import SkeletonPricingSetup from "@/components/unauthenticated/pricing-skeleton";
 import FaqItem from "@/components/faq-item";
-import {
-  ProfessionalPlanCard,
-  EnterprisePlanCard,
-} from "@/components/pricing-cards";
-import { HandshakePlanCard } from "@/components/handshake/plan-card";
-import { HoverBorderGradient } from "@/components/ui/hover-border-gradient";
+import { PricingCardsGrid } from "@/components/pricing-cards-grid";
 
 import { useState, useEffect } from "react";
 import type { Faq } from "@/lib/types";
 
 export default function PricingPage() {
-  const { data: pricingData, isPending: pricingIsPending } = usePricingData();
   const [pricingFaqs, setPricingFaqs] = useState<Faq[]>([]);
-  const { data: regionalPricing } = useRegionalPricing();
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -50,7 +25,8 @@ export default function PricingPage() {
       <div data-loc="PricingPage" className="bg-background text-foreground">
         <div className="container mx-auto px-4 md:px-6 py-20">
           <section className="mt-20 max-w-4xl mx-auto">
-            <SkeletonPricingSetup />
+            <div className="h-12 w-3/4 mx-auto bg-muted rounded-lg animate-pulse" />
+            <div className="h-96 mt-8 bg-muted rounded-3xl animate-pulse" />
           </section>
         </div>
       </div>
@@ -73,49 +49,8 @@ export default function PricingPage() {
         </section>
 
         {/* Plan Cards */}
-        <section className="mt-20 max-w-6xl mx-auto">
-          {pricingIsPending ? (
-            <SkeletonPricingSetup />
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 items-stretch">
-              <HandshakePlanCard />
-              {pricingData?.map((plan) => (
-                <ProfessionalPlanCard
-                  key={plan.id}
-                  plan={plan}
-                  regionalPricing={regionalPricing}
-                  actionButton={
-                    <Link
-                      href="/auth/login"
-                      className="flex items-center justify-center w-full"
-                    >
-                      <HoverBorderGradient
-                        as="div"
-                        containerClassName="w-full"
-                        className="bg-white text-primary flex justify-center items-center space-x-2 w-full py-4 font-bold cursor-pointer"
-                      >
-                        <Zap className="w-4 h-4 mr-2 fill-current" />
-                        <span className="font-semibold">Get Started</span>
-                      </HoverBorderGradient>
-                    </Link>
-                  }
-                />
-              ))}
-              <EnterprisePlanCard
-                actionButton={
-                  <Button
-                    asChild
-                    size="lg"
-                    className="w-full relative z-10 rounded-full bg-gradient-to-r from-[#8364E8] to-[#D397FA] text-white hover:opacity-90 font-bold px-10 h-14 text-lg shadow-xl border-0"
-                  >
-                    <Link href="/help">
-                      <Phone className="mr-2 w-4 h-4" /> Contact Sales
-                    </Link>
-                  </Button>
-                }
-              />
-            </div>
-          )}
+        <section className="mt-20 max-w-7xl w-full mx-auto">
+          <PricingCardsGrid variant="pricing" className="w-full" />
         </section>
 
         {/* FAQ */}

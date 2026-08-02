@@ -70,7 +70,7 @@ function BlogEditContent({ id }: { id: string }) {
   }
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen lg:pr-80">
       <TopBar blogSlug={blog?.slug} onPreviewClick={() => setShowPreview(true)} onDelete={!isNew ? onDelete : undefined} />
       <PreviewModal open={showPreview} onOpenChange={setShowPreview} />
       <div className="flex flex-col lg:flex-row">

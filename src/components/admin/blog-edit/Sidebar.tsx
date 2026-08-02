@@ -51,7 +51,7 @@ export function Sidebar({ blog }: SidebarProps) {
   };
 
   return (
-    <div className="w-full lg:w-80 lg:border-l lg:border-t-0 border-t border-border bg-muted/10 lg:sticky lg:top-16 lg:max-h-[calc(100vh-4rem)] lg:overflow-y-auto lg:self-start p-4 space-y-4">
+    <div className="bg-brand-background w-full lg:w-80 lg:border-l lg:border-t-0 border-t border-border lg:fixed lg:right-0 lg:top-[calc(var(--navbar-h)+1rem)] lg:h-[calc(100vh-var(--navbar-h)-1rem)] lg:overflow-y-auto p-4 py-10 space-y-4">
       {/* Status Panel */}
       <SidebarPanel
         title="Status & Visibility"

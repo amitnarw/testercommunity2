@@ -17,6 +17,7 @@ const routes = {
   SUPPORT: "/api/support",
   DECLARATION: "/api/declaration",
   FAQ: "/api/faq",
+  APP_CHAT: "/api/app-chat",
 };
 
 const API_ROUTES = new Proxy(routes, {

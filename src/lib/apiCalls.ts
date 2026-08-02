@@ -1048,7 +1048,7 @@ export async function createHandshakeSubscription() {
         responseData?.message || error.message || "Unknown Axios error",
       );
       (err as unknown as { billingInfoMissing?: boolean }).billingInfoMissing =
-        responseData?.billingInfoMissing;
+        responseData?.data?.billingInfoMissing || responseData?.billingInfoMissing;
       throw err;
     } else if (error instanceof Error) {
       throw new Error(error.message);
@@ -2799,6 +2799,58 @@ export async function getUserImmediateAttention(): Promise<ImmediateAttentionIte
     return response?.data?.data || [];
   } catch (error) {
     console.error("Error fetching IAR items:", error);
+    throw error;
+  }
+}
+
+// ==================== APP CHAT ====================
+
+export async function getOrCreateAppChat(dashboardAndHubId: number) {
+  try {
+    const response = await api.post(API_ROUTES.APP_CHAT + `/get-or-create`, { dashboardAndHubId });
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error getting or creating app chat:", error);
+    throw error;
+  }
+}
+
+export async function getAppChatMessages(conversationId: number, params?: { before?: string; limit?: number }) {
+  try {
+    const response = await api.get(API_ROUTES.APP_CHAT + `/messages/${conversationId}`, { params });
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error fetching app chat messages:", error);
+    throw error;
+  }
+}
+
+export async function sendAppChatMessage(chatId: number, message: string) {
+  try {
+    const response = await api.post(API_ROUTES.APP_CHAT + `/send`, { chatId, message });
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error sending app chat message:", error);
+    throw error;
+  }
+}
+
+export async function getAppChatsAdmin(params?: { status?: string; page?: number; limit?: number }) {
+  try {
+    const response = await api.get(API_ROUTES.APP_CHAT + `/admin/list`, { params });
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error fetching admin app chats:", error);
+    throw error;
+  }
+}
+
+export async function deleteAppChatAdmin(chatId: number) {
+  try {
+    const response = await api.post(API_ROUTES.APP_CHAT + `/admin/delete/${chatId}`);
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error deleting app chat:", error);
     throw error;
   }
 }

@@ -804,7 +804,12 @@ export async function deleteSuggestion(id: number) {
 
 // ==================== NOTIFICATIONS ====================
 
-export async function getAllNotifications(params?: { type?: string }) {
+export async function getAllNotifications(params?: {
+  type?: string;
+  page?: number;
+  limit?: number;
+  search?: string;
+}) {
   try {
     const response = await api.get(API_ROUTES.ADMIN + `/notifications`, {
       params,
@@ -1815,6 +1820,48 @@ export async function getFinancePlans() {
   }
 }
 
+export async function createFinancePlan(payload: any) {
+  try {
+    const response = await api.post(API_ROUTES.ADMIN + `/finance/plans`, payload);
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error creating finance plan:", error);
+    throw error;
+  }
+}
+
+export async function updateFinancePlan(id: string, payload: any) {
+  try {
+    const response = await api.put(API_ROUTES.ADMIN + `/finance/plans/${id}`, payload);
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error updating finance plan:", error);
+    throw error;
+  }
+}
+
+export async function reorderFinancePlans(orderedIds: string[]) {
+  try {
+    const response = await api.put(API_ROUTES.ADMIN + `/finance/plans/reorder`, { orderedIds });
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error reordering finance plans:", error);
+    throw error;
+  }
+}
+
+export async function deleteFinancePlan(id: string, confirmCancelSubscribers?: boolean) {
+  try {
+    const response = await api.delete(API_ROUTES.ADMIN + `/finance/plans/${id}`, {
+      params: confirmCancelSubscribers ? { confirmCancelSubscribers: 1 } : undefined,
+    });
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error deleting finance plan:", error);
+    throw error;
+  }
+}
+
 export async function getFinancePaymentMethods() {
   try {
     const response = await api.get(API_ROUTES.ADMIN + `/finance/payment-methods`);
@@ -2304,6 +2351,30 @@ export async function updateMailSender(id: number, data: { email?: string; label
 export async function deleteMailSender(id: number) {
   try {
     const response = await api.delete(API_ROUTES.ADMIN + `/mail/senders/${id}`);
+    return response?.data?.data;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      throw new Error(error.response?.data?.message || error.message);
+    }
+    throw error;
+  }
+}
+
+export async function updatePaidSubmission(id: number, payload: Record<string, unknown>) {
+  try {
+    const response = await api.patch(API_ROUTES.ADMIN + `/submission-paid/${id}`, { payload });
+    return response?.data?.data;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      throw new Error(error.response?.data?.message || error.message);
+    }
+    throw error;
+  }
+}
+
+export async function deletePaidSubmission(id: number) {
+  try {
+    const response = await api.delete(API_ROUTES.ADMIN + `/submission-paid/${id}`);
     return response?.data?.data;
   } catch (error) {
     if (axios.isAxiosError(error)) {

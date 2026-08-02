@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useEffect } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Loader2 } from "lucide-react";
 import { Tabs, TabsList, TabsContent, TabsTrigger } from "@/components/ui/tabs";
@@ -15,6 +15,7 @@ import { RefundsTable } from "@/components/admin/finance/refunds-table";
 import { WithdrawalsTable } from "@/components/admin/finance/withdrawals-table";
 import { PricingTable } from "@/components/admin/finance/pricing-table";
 import { HandshakeSubscriptionsTable } from "@/components/admin/finance/handshake-subscriptions-table";
+import { PlansTable } from "@/components/admin/finance/plans-table";
 
 const tabs = [
   { id: "overview", label: "Overview" },
@@ -24,6 +25,7 @@ const tabs = [
   { id: "refunds", label: "Refunds" },
   { id: "withdrawals", label: "Withdrawals" },
   { id: "pricing", label: "Pricing" },
+  { id: "plans", label: "Plans" },
   { id: "subscriptions", label: "Subscriptions" },
 ];
 
@@ -37,6 +39,12 @@ function FinancePageContent() {
   const roleName = (typeof role === "string" ? role : role?.name)?.toLowerCase();
   const permissions = role?.permissions;
 
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   useEffect(() => {
     const r = (session as any)?.role;
     const rName = (typeof r === "string" ? r : r?.name)?.toLowerCase();
@@ -46,17 +54,7 @@ function FinancePageContent() {
     }
   }, [session, router]);
 
-  if (sessionLoading) {
-    return (
-      <div className="flex items-center justify-center min-h-[60vh]">
-        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
-      </div>
-    );
-  }
-
-  if (!session || !hasPermission(roleName, permissions, "finance", "canReadList")) {
-    return null;
-  }
+  const ready = mounted && !sessionLoading && !!session && hasPermission(roleName, permissions, "finance", "canReadList");
 
   const onTabChange = (value: string) => {
     const params = new URLSearchParams(searchParams.toString());
@@ -82,34 +80,41 @@ function FinancePageContent() {
         </div>
       </div>
 
-      <Tabs
-        value={tabFromUrl}
-        className="w-full grid grid-cols-1"
-        onValueChange={onTabChange}
-      >
-        <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-          <TabsList className="w-full md:w-auto flex gap-1 overflow-x-auto h-auto">
-            {tabs.map((tab) => (
-              <TabsTrigger key={tab.id} value={tab.id}>
-                {tab.label}
-              </TabsTrigger>
-            ))}
-          </TabsList>
+      {!ready ? (
+        <div className="flex items-center justify-center min-h-[60vh]">
+          <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
         </div>
+      ) : (
+        <Tabs
+          value={tabFromUrl}
+          className="w-full grid grid-cols-1"
+          onValueChange={onTabChange}
+        >
+          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+            <TabsList className="w-full md:w-auto flex gap-1 overflow-x-auto h-auto">
+              {tabs.map((tab) => (
+                <TabsTrigger key={tab.id} value={tab.id}>
+                  {tab.label}
+                </TabsTrigger>
+              ))}
+            </TabsList>
+          </div>
 
-        {tabs.map((tab) => (
-          <TabsContent key={tab.id} value={tab.id} className="mt-4 grid grid-cols-1">
-            {tab.id === "overview" && <FinanceOverview />}
-            {tab.id === "orders" && <OrdersTable />}
-            {tab.id === "payments" && <PaymentsTable />}
-            {tab.id === "invoices" && <InvoicesList />}
-            {tab.id === "refunds" && <RefundsTable />}
-            {tab.id === "withdrawals" && <WithdrawalsTable />}
-            {tab.id === "pricing" && <PricingTable />}
-            {tab.id === "subscriptions" && <HandshakeSubscriptionsTable />}
-          </TabsContent>
-        ))}
-      </Tabs>
+          {tabs.map((tab) => (
+            <TabsContent key={tab.id} value={tab.id} className="mt-4 grid grid-cols-1">
+              {tab.id === "overview" && <FinanceOverview />}
+              {tab.id === "orders" && <OrdersTable />}
+              {tab.id === "payments" && <PaymentsTable />}
+              {tab.id === "invoices" && <InvoicesList />}
+              {tab.id === "refunds" && <RefundsTable />}
+              {tab.id === "withdrawals" && <WithdrawalsTable />}
+              {tab.id === "pricing" && <PricingTable />}
+              {tab.id === "plans" && <PlansTable />}
+              {tab.id === "subscriptions" && <HandshakeSubscriptionsTable />}
+            </TabsContent>
+          ))}
+        </Tabs>
+      )}
     </div>
   );
 }

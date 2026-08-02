@@ -222,9 +222,22 @@ export function TesterActivityDashboard({ date, onTesterSelect, onDateChange }: 
                   <div className="flex-1 min-w-0">
                     <p className="font-medium text-sm truncate">{tester.name}</p>
                     <p className="text-xs text-muted-foreground truncate">{tester.email}</p>
-                    <p className="text-xs text-muted-foreground">
-                      {tester.tests ?? 0} tests · {tester.activeTests ?? 0} active
-                    </p>
+                    <div className="mt-1.5 flex flex-wrap items-center gap-1.5">
+                      <span className="inline-flex items-center gap-1 rounded-full bg-blue-500/10 px-2 py-0.5 text-xs">
+                        <Activity className="h-3 w-3 text-blue-500" />
+                        <span className="font-semibold text-blue-700 dark:text-blue-300">
+                          {tester.activeTests ?? 0}
+                        </span>
+                        <span className="text-blue-700/80 dark:text-blue-300/80">Active</span>
+                      </span>
+                      <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500/10 px-2 py-0.5 text-xs">
+                        <CheckCircle2 className="h-3 w-3 text-emerald-500" />
+                        <span className="font-semibold text-emerald-700 dark:text-emerald-300">
+                          {tester.completedTests ?? 0}
+                        </span>
+                        <span className="text-emerald-700/80 dark:text-emerald-300/80">Tested</span>
+                      </span>
+                    </div>
                   </div>
                 </button>
               ))}

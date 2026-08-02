@@ -90,6 +90,10 @@ import {
   generateDemoPayment,
   createInvoice,
   getFinancePlans,
+  createFinancePlan,
+  updateFinancePlan,
+  reorderFinancePlans,
+  deleteFinancePlan,
   getFinancePaymentMethods,
   getAllAuthors,
   getAuthorById,
@@ -128,6 +132,8 @@ import {
   createMailSender,
   updateMailSender,
   deleteMailSender,
+  updatePaidSubmission,
+  deletePaidSubmission,
 } from "@/lib/apiCallsAdmin";
 import { useRouter } from "next/navigation";
 import { ROUTES } from "@/lib/routes";
@@ -527,13 +533,14 @@ export function useDeleteSuggestion(
 // ==================== NOTIFICATIONS ====================
 
 export function useAllNotifications(
-  params?: { type?: string },
+  params?: { type?: string; page?: number; limit?: number; search?: string },
   options?: { enabled?: boolean },
 ) {
   const query = useQuery({
     queryFn: () => getAllNotifications(params),
     queryKey: ["useAllNotifications", params],
     enabled: options?.enabled ?? true,
+    placeholderData: undefined,
   });
 
   return query;
@@ -1352,6 +1359,34 @@ export function useFinancePlans() {
   });
 }
 
+export function useCreateFinancePlan(options?: UseMutationOptions<any, any, any>) {
+  return useMutation({
+    mutationFn: (payload) => createFinancePlan(payload),
+    ...options,
+  });
+}
+
+export function useUpdateFinancePlan(options?: UseMutationOptions<any, any, { id: string; payload: any }>) {
+  return useMutation({
+    mutationFn: ({ id, payload }) => updateFinancePlan(id, payload),
+    ...options,
+  });
+}
+
+export function useReorderFinancePlans(options?: UseMutationOptions<any, any, { orderedIds: string[] }>) {
+  return useMutation({
+    mutationFn: ({ orderedIds }) => reorderFinancePlans(orderedIds),
+    ...options,
+  });
+}
+
+export function useDeleteFinancePlan(options?: UseMutationOptions<any, any, { id: string; confirmCancelSubscribers?: boolean }>) {
+  return useMutation({
+    mutationFn: ({ id, confirmCancelSubscribers }) => deleteFinancePlan(id, confirmCancelSubscribers),
+    ...options,
+  });
+}
+
 export function useFinancePaymentMethods() {
   return useQuery({
     queryFn: () => getFinancePaymentMethods(),
@@ -1793,6 +1828,31 @@ export function useDeleteMailSender(options?: UseMutationOptions<any, any, any>)
     ...options,
     onSuccess: (...args) => {
       queryClient.invalidateQueries({ queryKey: ["useMailSenders"] });
+      options?.onSuccess?.(...args);
+    },
+  });
+}
+
+export function useUpdatePaidSubmission(options?: UseMutationOptions<any, any, any>) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (payload: { id: number; data: Record<string, unknown> }) =>
+      updatePaidSubmission(payload.id, payload.data),
+    ...options,
+    onSuccess: (...args) => {
+      queryClient.invalidateQueries({ queryKey: ["useSingleHubAppDetails"] });
+      options?.onSuccess?.(...args);
+    },
+  });
+}
+
+export function useDeletePaidSubmission(options?: UseMutationOptions<any, any, any>) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (id: number) => deletePaidSubmission(id),
+    ...options,
+    onSuccess: (...args) => {
+      queryClient.invalidateQueries({ queryKey: ["useSubmittedApps"] });
       options?.onSuccess?.(...args);
     },
   });

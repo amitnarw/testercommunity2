@@ -1,11 +1,10 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { motion } from "framer-motion";
 import { ROUTES } from "@/lib/routes";
 import {
   Check,
-  Zap,
   FileText,
   Box,
   ShieldCheck,
@@ -21,7 +20,6 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { PageHeader } from "@/components/page-header";
-import { HoverBorderGradient } from "@/components/ui/hover-border-gradient";
 import { Skeleton } from "@/components/ui/skeleton";
 import { FeedbackModal } from "@/components/feedback-modal";
 import { BillingInfoModal } from "@/components/billing-info-modal";
@@ -34,18 +32,13 @@ import {
 } from "@/hooks/useBilling";
 import { useGetUserWallet, usePricingData, useUserData, useRegionalPricing } from "@/hooks/useUser";
 import { useQuery } from "@tanstack/react-query";
-import { getMyHandshakeSubscription } from "@/lib/apiCalls";
+import { getMyHandshakeSubscription, getHandshakePlan } from "@/lib/apiCalls";
 import { Accordion } from "@/components/ui/accordion";
 import FaqItem from "@/components/faq-item";
 import { getPublicFaqs } from "@/lib/apiCalls";
 import type { Faq } from "@/lib/types";
-import {
-  ProfessionalPlanCard,
-  EnterprisePlanCard,
-} from "@/components/pricing-cards";
-import { HandshakePlanCard } from "@/components/handshake/plan-card";
+import { PricingCardsGrid } from "@/components/pricing-cards-grid";
 import Script from "next/script";
-import { Loader2 } from "lucide-react";
 
 type FeedbackModalState = {
   open: boolean;
@@ -249,6 +242,11 @@ export default function BillingPage() {
     queryFn: () => getMyHandshakeSubscription(),
     retry: false,
   });
+  const { data: handshakePlan } = useQuery({
+    queryKey: ["handshakePlan"],
+    queryFn: () => getHandshakePlan(),
+    retry: false,
+  });
   const hasActiveSubscription =
     !!handshakeSub &&
     (handshakeSub.status === "ACTIVE" || handshakeSub.status === "AUTHENTICATED");
@@ -390,6 +388,24 @@ export default function BillingPage() {
   const isProcessing =
     createOrderMutation.isPending;
 
+  const handleHandshakeCheckoutRequired = useCallback(() => {
+    setIsComplianceModalOpen(true);
+  }, []);
+
+  const handleHandshakeSubscribeError = useCallback((e: any) => {
+    setFeedbackModal({
+      open: true,
+      status: "error",
+      title: "Error",
+      description:
+        e?.message || "Failed to start subscription. Please try again.",
+      primaryAction: {
+        label: "Close",
+        onClick: () => setFeedbackModal((prev) => ({ ...prev, open: false })),
+      },
+    });
+  }, []);
+
   return (
     <>
       <Script
@@ -427,47 +443,19 @@ export default function BillingPage() {
               </div>
 
               {pricingIsPending ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                  <Skeleton className="h-[520px] w-full rounded-3xl bg-muted" />
-                  <Skeleton className="h-[520px] w-full rounded-3xl bg-muted" />
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-stretch">
+                  {[1, 2, 3].map((i) => (
+                    <Skeleton key={i} className="h-[520px] w-full rounded-3xl bg-muted" />
+                  ))}
                 </div>
               ) : (
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-stretch">
-                  <HandshakePlanCard />
-                  {pricingData?.map((plan) => (
-                    <ProfessionalPlanCard
-                      key={plan.id}
-                      plan={plan}
-                      regionalPricing={regionalPricing}
-                      actionButton={
-                        <HoverBorderGradient
-                          containerClassName="w-full"
-                          className="bg-white text-primary flex items-center justify-center space-x-2 w-full py-4 font-bold cursor-pointer"
-                          onClick={() => handleSubscribe(plan.id)}
-                        >
-                          {isProcessing ? (
-                            <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                          ) : (
-                            <Zap className="w-4 h-4 mr-2 fill-current" />
-                          )}
-                          <span className="font-semibold">
-                            {isProcessing ? "Processing..." : "Get Started"}
-                          </span>
-                        </HoverBorderGradient>
-                      }
-                    />
-                  ))}
-                  <EnterprisePlanCard
-                    actionButton={
-                      <Button
-                        size="lg"
-                        className="w-full relative z-10 rounded-full bg-gradient-to-r from-[#8364E8] to-[#D397FA] text-white hover:opacity-90 font-bold px-10 h-14 text-lg shadow-xl border-0"
-                      >
-                        Contact Sales
-                      </Button>
-                    }
-                  />
-                </div>
+                <PricingCardsGrid
+                  variant="billing"
+                  mode="billing"
+                  onSubscribe={handleSubscribe}
+                  onHandshakeSubscribeError={handleHandshakeSubscribeError}
+                  onCheckoutRequired={handleHandshakeCheckoutRequired}
+                />
               )}
               {hasActiveSubscription && (
                 <div className="flex justify-center mt-6">
