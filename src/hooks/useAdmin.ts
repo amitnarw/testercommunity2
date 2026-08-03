@@ -90,6 +90,10 @@ import {
   generateDemoPayment,
   createInvoice,
   getFinancePlans,
+  createFinancePlan,
+  updateFinancePlan,
+  reorderFinancePlans,
+  deleteFinancePlan,
   getFinancePaymentMethods,
   getAllAuthors,
   getAuthorById,
@@ -114,6 +118,22 @@ import {
   deleteImmediateAttention,
   giftPointsAndPackages,
   getTesterActivity,
+  getAdminMails,
+  getMailThread,
+  sendMailReply,
+  markMailRead,
+  archiveMail,
+  deleteMail,
+  getMailUnreadCount,
+  getMailCounts,
+  assignMail,
+  sendNewEmail,
+  getMailSenders,
+  createMailSender,
+  updateMailSender,
+  deleteMailSender,
+  updatePaidSubmission,
+  deletePaidSubmission,
 } from "@/lib/apiCallsAdmin";
 import { useRouter } from "next/navigation";
 import { ROUTES } from "@/lib/routes";
@@ -513,13 +533,14 @@ export function useDeleteSuggestion(
 // ==================== NOTIFICATIONS ====================
 
 export function useAllNotifications(
-  params?: { type?: string },
+  params?: { type?: string; page?: number; limit?: number; search?: string },
   options?: { enabled?: boolean },
 ) {
   const query = useQuery({
     queryFn: () => getAllNotifications(params),
     queryKey: ["useAllNotifications", params],
     enabled: options?.enabled ?? true,
+    placeholderData: undefined,
   });
 
   return query;
@@ -1173,6 +1194,7 @@ export function useFinancePayments(params?: {
   status?: string;
   method?: string;
   search?: string;
+  paymentType?: string;
 }) {
   return useQuery({
     queryFn: () => getFinancePayments(params),
@@ -1334,6 +1356,34 @@ export function useFinancePlans() {
   return useQuery({
     queryFn: () => getFinancePlans(),
     queryKey: ["useFinancePlans"],
+  });
+}
+
+export function useCreateFinancePlan(options?: UseMutationOptions<any, any, any>) {
+  return useMutation({
+    mutationFn: (payload) => createFinancePlan(payload),
+    ...options,
+  });
+}
+
+export function useUpdateFinancePlan(options?: UseMutationOptions<any, any, { id: string; payload: any }>) {
+  return useMutation({
+    mutationFn: ({ id, payload }) => updateFinancePlan(id, payload),
+    ...options,
+  });
+}
+
+export function useReorderFinancePlans(options?: UseMutationOptions<any, any, { orderedIds: string[] }>) {
+  return useMutation({
+    mutationFn: ({ orderedIds }) => reorderFinancePlans(orderedIds),
+    ...options,
+  });
+}
+
+export function useDeleteFinancePlan(options?: UseMutationOptions<any, any, { id: string; confirmCancelSubscribers?: boolean }>) {
+  return useMutation({
+    mutationFn: ({ id, confirmCancelSubscribers }) => deleteFinancePlan(id, confirmCancelSubscribers),
+    ...options,
   });
 }
 
@@ -1617,6 +1667,193 @@ export function useGiftPointsAndPackages(options?: UseMutationOptions<any, any, 
     onSuccess: (_data, variables, ...rest) => {
       queryClient.invalidateQueries({ queryKey: ["useUserById", variables.id] });
       options?.onSuccess?.(_data, variables, ...rest);
+    },
+  });
+}
+
+// ==================== MAIL ====================
+
+export function useAdminMails(params?: { status?: string; search?: string; page?: string; limit?: string }) {
+  return useQuery({
+    queryFn: () => getAdminMails(params),
+    queryKey: ["useAdminMails", params],
+  });
+}
+
+export function useMailThread(id: number | null) {
+  return useQuery({
+    queryFn: () => getMailThread(id!),
+    queryKey: ["useMailThread", id],
+    enabled: id !== null,
+  });
+}
+
+export function useMailUnreadCount(options?: { enabled?: boolean }) {
+  return useQuery({
+    queryFn: () => getMailUnreadCount(),
+    queryKey: ["useMailUnreadCount"],
+    refetchInterval: 30000,
+    enabled: options?.enabled !== false,
+  });
+}
+
+export function useMailCounts() {
+  return useQuery({
+    queryFn: () => getMailCounts(),
+    queryKey: ["useMailCounts"],
+    refetchInterval: 30000,
+  });
+}
+
+export function useSendMailReply(options?: UseMutationOptions<any, any, any>) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (payload: { mailId: number; fromAddress: string; body: string }) =>
+      sendMailReply(payload.mailId, payload.fromAddress, payload.body),
+    ...options,
+    onSuccess: (_data, variables, ...rest) => {
+      queryClient.invalidateQueries({ queryKey: ["useAdminMails"] });
+      queryClient.invalidateQueries({ queryKey: ["useMailThread", variables.mailId] });
+      queryClient.invalidateQueries({ queryKey: ["useMailUnreadCount"] });
+      queryClient.invalidateQueries({ queryKey: ["useMailCounts"] });
+      options?.onSuccess?.(_data, variables, ...rest);
+    },
+  });
+}
+
+export function useMarkMailRead(options?: UseMutationOptions<any, any, any>) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (id: number) => markMailRead(id),
+    ...options,
+    onSuccess: (_data, variables, ...rest) => {
+      queryClient.invalidateQueries({ queryKey: ["useAdminMails"] });
+      queryClient.invalidateQueries({ queryKey: ["useMailUnreadCount"] });
+      queryClient.invalidateQueries({ queryKey: ["useMailCounts"] });
+      options?.onSuccess?.(_data, variables, ...rest);
+    },
+  });
+}
+
+export function useArchiveMail(options?: UseMutationOptions<any, any, any>) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (id: number) => archiveMail(id),
+    ...options,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["useAdminMails"] });
+      queryClient.invalidateQueries({ queryKey: ["useMailUnreadCount"] });
+      queryClient.invalidateQueries({ queryKey: ["useMailCounts"] });
+    },
+  });
+}
+
+export function useDeleteMail(options?: UseMutationOptions<any, any, any>) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (id: number) => deleteMail(id),
+    ...options,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["useAdminMails"] });
+      queryClient.invalidateQueries({ queryKey: ["useMailUnreadCount"] });
+      queryClient.invalidateQueries({ queryKey: ["useMailCounts"] });
+    },
+  });
+}
+
+export function useAssignMail(options?: UseMutationOptions<any, any, any>) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (payload: { id: number; assignedTo: string | null }) =>
+      assignMail(payload.id, payload.assignedTo),
+    ...options,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["useAdminMails"] });
+    },
+  });
+}
+
+export function useSendNewEmail(options?: UseMutationOptions<any, any, any>) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (payload: { toEmail: string; fromAddress: string; subject: string; body: string }) =>
+      sendNewEmail(payload.toEmail, payload.fromAddress, payload.subject, payload.body),
+    ...options,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["useAdminMails"] });
+      queryClient.invalidateQueries({ queryKey: ["useMailUnreadCount"] });
+      queryClient.invalidateQueries({ queryKey: ["useMailCounts"] });
+    },
+  });
+}
+
+export function useMailSenders() {
+  return useQuery({
+    queryFn: () => getMailSenders(),
+    queryKey: ["useMailSenders"],
+    staleTime: 60000,
+  });
+}
+
+export function useCreateMailSender(options?: UseMutationOptions<any, any, any>) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (payload: { email: string }) =>
+      createMailSender(payload.email),
+    ...options,
+    onSuccess: (...args) => {
+      queryClient.invalidateQueries({ queryKey: ["useMailSenders"] });
+      options?.onSuccess?.(...args);
+    },
+  });
+}
+
+export function useUpdateMailSender(options?: UseMutationOptions<any, any, any>) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (payload: { id: number; data: { email?: string; label?: string; isActive?: boolean } }) =>
+      updateMailSender(payload.id, payload.data),
+    ...options,
+    onSuccess: (...args) => {
+      queryClient.invalidateQueries({ queryKey: ["useMailSenders"] });
+      options?.onSuccess?.(...args);
+    },
+  });
+}
+
+export function useDeleteMailSender(options?: UseMutationOptions<any, any, any>) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (id: number) => deleteMailSender(id),
+    ...options,
+    onSuccess: (...args) => {
+      queryClient.invalidateQueries({ queryKey: ["useMailSenders"] });
+      options?.onSuccess?.(...args);
+    },
+  });
+}
+
+export function useUpdatePaidSubmission(options?: UseMutationOptions<any, any, any>) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (payload: { id: number; data: Record<string, unknown> }) =>
+      updatePaidSubmission(payload.id, payload.data),
+    ...options,
+    onSuccess: (...args) => {
+      queryClient.invalidateQueries({ queryKey: ["useSingleHubAppDetails"] });
+      options?.onSuccess?.(...args);
+    },
+  });
+}
+
+export function useDeletePaidSubmission(options?: UseMutationOptions<any, any, any>) {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (id: number) => deletePaidSubmission(id),
+    ...options,
+    onSuccess: (...args) => {
+      queryClient.invalidateQueries({ queryKey: ["useSubmittedApps"] });
+      options?.onSuccess?.(...args);
     },
   });
 }

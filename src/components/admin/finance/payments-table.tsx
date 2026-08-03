@@ -32,6 +32,7 @@ export function PaymentsTable() {
   const [page, setPage] = useState(1);
   const [status, setStatus] = useState("");
   const [method, setMethod] = useState("");
+  const [paymentType, setPaymentType] = useState("");
   const [search, setSearch] = useState("");
   const [searchInput, setSearchInput] = useState("");
   const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
@@ -72,6 +73,7 @@ export function PaymentsTable() {
     status: status || undefined,
     method: method || undefined,
     search: search || undefined,
+    paymentType: paymentType || undefined,
   });
 
   const payments: FinancePayment[] = data?.payments || [];
@@ -92,6 +94,11 @@ export function PaymentsTable() {
                 onKeyDown={(e) => e.key === "Enter" && (setSearch(searchInput), setPage(1))}
               />
             </div>
+            <select className="h-10 rounded-md border border-input bg-background px-3 py-2 text-sm" value={paymentType} onChange={(e) => { setPaymentType(e.target.value); setPage(1); }}>
+              <option value="">All Types</option>
+              <option value="ONE_TIME">One-Time</option>
+              <option value="SUBSCRIPTION">Subscription</option>
+            </select>
             <select className="h-10 rounded-md border border-input bg-background px-3 py-2 text-sm" value={status} onChange={(e) => { setStatus(e.target.value); setPage(1); }}>
               <option value="">All Statuses</option>
               <option value="PENDING">Pending</option>
@@ -150,7 +157,7 @@ export function PaymentsTable() {
                         {p.fee ? <p className="text-xs text-muted-foreground">Fee: {formatCurrency(p.fee, p.currency)}</p> : null}
                       </TableCell>
                       <TableCell>
-                        <Badge variant="outline" className="text-xs capitalize">{p.method || "—"}</Badge>
+                        <Badge variant="outline" className="text-xs capitalize">{p.method || ", "}</Badge>
                       </TableCell>
                       <TableCell>
                         <Badge className={`text-xs ${statusColors[p.status] || "bg-gray-500/20 text-gray-600"}`}>{p.status}</Badge>
@@ -160,9 +167,9 @@ export function PaymentsTable() {
                           <Badge className={`text-xs ${p.refundStatus === "FULL" ? "bg-red-500/20 text-red-600" : "bg-orange-500/20 text-orange-600"}`}>
                             {p.refundStatus}
                           </Badge>
-                        ) : "—"}
+                        ) : ", "}
                       </TableCell>
-                      <TableCell className="text-xs font-mono">{p.invoice?.invoice_number || "—"}</TableCell>
+                      <TableCell className="text-xs font-mono">{p.invoice?.invoice_number || ", "}</TableCell>
                       <TableCell className="text-xs">{new Date(p.createdAt).toLocaleDateString()}</TableCell>
                       <TableCell>
                         <div className="flex items-center gap-1">
@@ -171,7 +178,7 @@ export function PaymentsTable() {
                               <Eye className="h-4 w-4" />
                             </Button>
                           )}
-                          {p.status === "CAPTURED" && p.refundStatus !== "FULL" && (
+                          {p.status === "CAPTURED" && p.refundStatus !== "FULL" && p.paymentType !== "SUBSCRIPTION" && (
                             <Button
                               variant="ghost"
                               size="icon"

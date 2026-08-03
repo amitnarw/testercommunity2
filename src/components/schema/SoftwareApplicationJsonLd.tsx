@@ -12,7 +12,7 @@ export function SoftwareApplicationJsonLd() {
         "@type": "Offer",
         price: "0",
         priceCurrency: "USD",
-        description: "Free community testing",
+        description: "Handshake testing",
       },
     ],
   };

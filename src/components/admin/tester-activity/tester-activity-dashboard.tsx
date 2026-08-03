@@ -122,14 +122,14 @@ export function TesterActivityDashboard({ date, onTesterSelect, onDateChange }: 
 
       {/* Stat Cards */}
       <div className="grid gap-4 grid-cols-2 md:grid-cols-4">
-        <StatCard title="Total Testers" value={activity?.totalTesters ?? "—"} icon={Users} color="#3B82F6" isLoading={isLoading} />
-        <StatCard title="Active Today" value={activity?.activeTestersToday ?? "—"} subtitle="with verified check-in" icon={UserCheck} color="#10B981" isLoading={isLoading} />
-        <StatCard title="Tests Completed Today" value={activity?.testsCompletedToday ?? "—"} icon={CheckCircle2} color="#8B5CF6" isLoading={isLoading} />
-        <StatCard title="Remaining Tests" value={activity?.testsRemainingToday ?? "—"} subtitle="still in progress" icon={Clock} color="#F59E0B" isLoading={isLoading} />
-        <StatCard title="Total Completed" value={activity?.totalCompletedTests ?? "—"} icon={CheckCircle2} color="#10B981" isLoading={isLoading} />
-        <StatCard title="In Progress" value={activity?.totalInProgressTests ?? "—"} icon={Activity} color="#3B82F6" isLoading={isLoading} />
-        <StatCard title="Dropped / Removed" value={activity?.totalDroppedRemovedTests ?? "—"} icon={AlertTriangle} color="#EF4444" isLoading={isLoading} />
-        <StatCard title="Total Tests Joined" value={activity?.totalTestsJoined ?? "—"} subtitle="across all apps" icon={Users} color="#6366F1" isLoading={isLoading} />
+        <StatCard title="Total Testers" value={activity?.totalTesters ?? ", "} icon={Users} color="#3B82F6" isLoading={isLoading} />
+        <StatCard title="Active Today" value={activity?.activeTestersToday ?? ", "} subtitle="with verified check-in" icon={UserCheck} color="#10B981" isLoading={isLoading} />
+        <StatCard title="Tests Completed Today" value={activity?.testsCompletedToday ?? ", "} icon={CheckCircle2} color="#8B5CF6" isLoading={isLoading} />
+        <StatCard title="Remaining Tests" value={activity?.testsRemainingToday ?? ", "} subtitle="still in progress" icon={Clock} color="#F59E0B" isLoading={isLoading} />
+        <StatCard title="Total Completed" value={activity?.totalCompletedTests ?? ", "} icon={CheckCircle2} color="#10B981" isLoading={isLoading} />
+        <StatCard title="In Progress" value={activity?.totalInProgressTests ?? ", "} icon={Activity} color="#3B82F6" isLoading={isLoading} />
+        <StatCard title="Dropped / Removed" value={activity?.totalDroppedRemovedTests ?? ", "} icon={AlertTriangle} color="#EF4444" isLoading={isLoading} />
+        <StatCard title="Total Tests Joined" value={activity?.totalTestsJoined ?? ", "} subtitle="across all apps" icon={Users} color="#6366F1" isLoading={isLoading} />
       </div>
 
       {/* Charts */}
@@ -222,9 +222,22 @@ export function TesterActivityDashboard({ date, onTesterSelect, onDateChange }: 
                   <div className="flex-1 min-w-0">
                     <p className="font-medium text-sm truncate">{tester.name}</p>
                     <p className="text-xs text-muted-foreground truncate">{tester.email}</p>
-                    <p className="text-xs text-muted-foreground">
-                      {tester.tests ?? 0} tests · {tester.activeTests ?? 0} active
-                    </p>
+                    <div className="mt-1.5 flex flex-wrap items-center gap-1.5">
+                      <span className="inline-flex items-center gap-1 rounded-full bg-blue-500/10 px-2 py-0.5 text-xs">
+                        <Activity className="h-3 w-3 text-blue-500" />
+                        <span className="font-semibold text-blue-700 dark:text-blue-300">
+                          {tester.activeTests ?? 0}
+                        </span>
+                        <span className="text-blue-700/80 dark:text-blue-300/80">Active</span>
+                      </span>
+                      <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500/10 px-2 py-0.5 text-xs">
+                        <CheckCircle2 className="h-3 w-3 text-emerald-500" />
+                        <span className="font-semibold text-emerald-700 dark:text-emerald-300">
+                          {tester.completedTests ?? 0}
+                        </span>
+                        <span className="text-emerald-700/80 dark:text-emerald-300/80">Tested</span>
+                      </span>
+                    </div>
                   </div>
                 </button>
               ))}

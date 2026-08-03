@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useTheme } from "next-themes";
 import { usePathname } from "next/navigation";
 import { Button } from "../ui/button";
@@ -24,10 +24,32 @@ export default function Navbar({ onLogout }: { onLogout: () => void }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
   const { actingAsRole, startActingAs, stopActingAs, isLoading } = useActAsRole();
+  const navbarRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  useEffect(() => {
+    const updateNavbarHeight = () => {
+      if (navbarRef.current) {
+        const height = navbarRef.current.offsetHeight;
+        document.documentElement.style.setProperty('--navbar-h', `${height}px`);
+      }
+    };
+
+    updateNavbarHeight();
+
+    let observer: ResizeObserver | null = null;
+    if (typeof window !== 'undefined' && 'ResizeObserver' in window && navbarRef.current) {
+      observer = new ResizeObserver(updateNavbarHeight);
+      observer.observe(navbarRef.current);
+    }
+
+    return () => {
+      if (observer) observer.disconnect();
+    };
+  }, [pathname]);
 
   const isSuperAdmin = (() => {
     const role = (session as any)?.role;
@@ -105,10 +127,10 @@ export default function Navbar({ onLogout }: { onLogout: () => void }) {
     notificationData?.notifications?.filter((n) => n.type === "TEST_COMPLETED")
       .length ?? 0;
 
-  if (!mounted) {
-    return (
-      <header className="sticky top-0 z-40 bg-brand-background md:pl-20 py-2 overflow-x-hidden print:hidden">
-        <div className="container mx-auto px-4 md:px-6 max-w-full">
+  return (
+    <header ref={navbarRef} className="sticky top-0 z-40 bg-brand-background md:pl-20 py-2 overflow-x-hidden print:hidden">
+      <div className="container mx-auto px-4 md:px-6 max-w-full">
+        {!mounted ? (
           <div className="flex items-center justify-end gap-2">
             <EarnPointsButton />
             <Button
@@ -131,19 +153,12 @@ export default function Navbar({ onLogout }: { onLogout: () => void }) {
               isAuthenticated={!!session}
             />
           </div>
-        </div>
-      </header>
-    );
-  }
-
-  return (
-    <header className="sticky top-0 z-40 bg-brand-background md:pl-20 py-2 overflow-x-hidden print:hidden">
-      <div className="container mx-auto px-4 md:px-6 max-w-full">
-        <div className="flex items-center justify-end gap-2">
-          <div className="flex flex-row justify-end gap-2 w-auto">
-            {isSuperAdmin && (
-               <div className="flex items-center gap-1 bg-sidebar rounded-3xl p-1 border border-white/10 mr-auto sm:mr-0">
-                 <AutoTransitionLink href={ROUTES.ADMIN.DASHBOARD}>
+        ) : (
+          <div className="flex items-center justify-end gap-1.5 md:gap-2 overflow-x-hidden">
+            <div className="flex flex-row justify-end gap-1.5 md:gap-2 w-auto shrink-0">
+              {isSuperAdmin && (
+                <div className="hidden sm:flex items-center gap-1 bg-sidebar rounded-3xl p-1 border border-white/10 mr-auto sm:mr-0">
+                  <AutoTransitionLink href={ROUTES.ADMIN.DASHBOARD}>
                     <button
                       className={`flex items-center gap-2 py-1.5 px-3.5 rounded-3xl hover:bg-white/20 hover:text-white transition-all text-xs duration-300 font-light ${
                         pathname.startsWith("/admin") && !actingAsRole
@@ -185,59 +200,60 @@ export default function Navbar({ onLogout }: { onLogout: () => void }) {
                   </AutoTransitionLink>
                 </div>
               )}
-            <div className="flex items-center gap-2">
-              {isAdminUser && (
-                <Link
-                  href={ROUTES.ADMIN.NOTIFICATIONS}
-                  className="relative flex items-center justify-center h-8 w-8 rounded-full hover:bg-white/10 dark:hover:bg-white/10 hover:bg-black/5 transition-all"
-                  title="Admin Notifications"
-                >
-                  <Bell className="h-4 w-4 text-foreground/70 dark:text-white/70" />
-                  {adminNotificationCount > 0 && (
-                    <span className="absolute -top-0.5 -right-0.5 flex items-center justify-center h-4 min-w-[16px] px-1 rounded-full bg-red-500 text-[10px] font-bold text-white leading-none">
-                      {adminNotificationCount > 99 ? "99+" : adminNotificationCount}
+              <div className="flex items-center gap-2">
+                {isAdminUser && (
+                  <Link
+                    href={ROUTES.ADMIN.NOTIFICATIONS}
+                    className="relative flex items-center justify-center h-8 w-8 rounded-full hover:bg-white/10 dark:hover:bg-white/10 hover:bg-black/5 transition-all"
+                    title="Admin Notifications"
+                  >
+                    <Bell className="h-4 w-4 text-foreground/70 dark:text-white/70" />
+                    {adminNotificationCount > 0 && (
+                      <span className="absolute -top-0.5 -right-0.5 flex items-center justify-center h-4 min-w-[16px] px-1 rounded-full bg-red-500 text-[10px] font-bold text-white leading-none">
+                        {adminNotificationCount > 99 ? "99+" : adminNotificationCount}
+                      </span>
+                    )}
+                  </Link>
+                )}
+                {isTester && pendingCount > 0 && (
+                  <Link
+                    href={ROUTES.TESTER.DASHBOARD}
+                    className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-orange-500/10 text-orange-600 dark:text-orange-400 border border-orange-200 dark:border-orange-500/20 mr-1 animate-pulse hover:animate-none transition-all"
+                  >
+                    <Clock className="w-3.5 h-3.5" />
+                    <span className="text-[10px] font-bold">
+                      {pendingCount} Pending
                     </span>
-                  )}
-                </Link>
-              )}
-              {isTester && pendingCount > 0 && (
-                <Link
-                  href={ROUTES.TESTER.DASHBOARD}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-orange-500/10 text-orange-600 dark:text-orange-400 border border-orange-200 dark:border-orange-500/20 mr-1 animate-pulse hover:animate-none transition-all"
+                  </Link>
+                )}
+                <EarnPointsButton />
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+                  className="p-2 h-8 w-8"
                 >
-                  <Clock className="w-3.5 h-3.5" />
-                  <span className="text-[10px] font-bold">
-                    {pendingCount} Pending
-                  </span>
-                </Link>
-              )}
-              <EarnPointsButton />
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-                className="p-2 h-8 w-8"
-              >
-                <Sun className="h-6 w-6 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
-                <Moon className="absolute h-6 w-6 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
-                <span className="sr-only">Toggle theme</span>
-              </Button>
-              <div className="hidden md:block">
-                {isPending ? (
-                  <Skeleton className="h-9 w-16 my-2 rounded-full" />
-                ) : session ? (
-                  <UserNav session={session} onLogout={onLogout} />
-                ) : null}
+                  <Sun className="h-6 w-6 rotate-0 scale-100 transition-all dark:-rotate-90 dark:scale-0" />
+                  <Moon className="absolute h-6 w-6 rotate-90 scale-0 transition-all dark:rotate-0 dark:scale-100" />
+                  <span className="sr-only">Toggle theme</span>
+                </Button>
+                <div className="hidden md:block">
+                  {isPending ? (
+                    <Skeleton className="h-9 w-16 my-2 rounded-full" />
+                  ) : session ? (
+                    <UserNav session={session} onLogout={onLogout} />
+                  ) : null}
+                </div>
               </div>
+              <MobileMenu
+                isMenuOpen={isMenuOpen}
+                setIsMenuOpen={setIsMenuOpen}
+                onLogout={onLogout}
+                isAuthenticated={!!session}
+              />
             </div>
-            <MobileMenu
-              isMenuOpen={isMenuOpen}
-              setIsMenuOpen={setIsMenuOpen}
-              onLogout={onLogout}
-              isAuthenticated={!!session}
-            />
           </div>
-        </div>
+        )}
       </div>
     </header>
   );

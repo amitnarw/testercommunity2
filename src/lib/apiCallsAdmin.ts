@@ -804,7 +804,12 @@ export async function deleteSuggestion(id: number) {
 
 // ==================== NOTIFICATIONS ====================
 
-export async function getAllNotifications(params?: { type?: string }) {
+export async function getAllNotifications(params?: {
+  type?: string;
+  page?: number;
+  limit?: number;
+  search?: string;
+}) {
   try {
     const response = await api.get(API_ROUTES.ADMIN + `/notifications`, {
       params,
@@ -1600,6 +1605,7 @@ export async function getFinancePayments(params?: {
   status?: string;
   method?: string;
   search?: string;
+  paymentType?: string;
 }) {
   try {
     const response = await api.get(API_ROUTES.ADMIN + `/finance/payments`, { params });
@@ -1810,6 +1816,48 @@ export async function getFinancePlans() {
     return response?.data?.data;
   } catch (error) {
     console.error("Error fetching finance plans:", error);
+    throw error;
+  }
+}
+
+export async function createFinancePlan(payload: any) {
+  try {
+    const response = await api.post(API_ROUTES.ADMIN + `/finance/plans`, payload);
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error creating finance plan:", error);
+    throw error;
+  }
+}
+
+export async function updateFinancePlan(id: string, payload: any) {
+  try {
+    const response = await api.put(API_ROUTES.ADMIN + `/finance/plans/${id}`, payload);
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error updating finance plan:", error);
+    throw error;
+  }
+}
+
+export async function reorderFinancePlans(orderedIds: string[]) {
+  try {
+    const response = await api.put(API_ROUTES.ADMIN + `/finance/plans/reorder`, { orderedIds });
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error reordering finance plans:", error);
+    throw error;
+  }
+}
+
+export async function deleteFinancePlan(id: string, confirmCancelSubscribers?: boolean) {
+  try {
+    const response = await api.delete(API_ROUTES.ADMIN + `/finance/plans/${id}`, {
+      params: confirmCancelSubscribers ? { confirmCancelSubscribers: 1 } : undefined,
+    });
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error deleting finance plan:", error);
     throw error;
   }
 }
@@ -2147,3 +2195,191 @@ export async function giftPointsAndPackages(payload: {
   }
 }
 
+// ==================== MAIL ====================
+
+export async function getAdminMails(params?: { status?: string; toAddress?: string; search?: string; page?: string; limit?: string }) {
+  try {
+    const response = await api.get(API_ROUTES.ADMIN + "/mail", { params });
+    return response?.data?.data;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      throw new Error(error.response?.data?.message || error.message);
+    }
+    throw error;
+  }
+}
+
+export async function getMailThread(id: number) {
+  try {
+    const response = await api.get(API_ROUTES.ADMIN + `/mail/${id}`);
+    return response?.data?.data;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      throw new Error(error.response?.data?.message || error.message);
+    }
+    throw error;
+  }
+}
+
+export async function sendMailReply(mailId: number, fromAddress: string, body: string) {
+  try {
+    const response = await api.post(API_ROUTES.ADMIN + `/mail/${mailId}/reply`, { mailId, fromAddress, body });
+    return response?.data?.data;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      throw new Error(error.response?.data?.message || error.message);
+    }
+    throw error;
+  }
+}
+
+export async function markMailRead(id: number) {
+  try {
+    const response = await api.post(API_ROUTES.ADMIN + `/mail/${id}/read`);
+    return response?.data?.data;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      throw new Error(error.response?.data?.message || error.message);
+    }
+    throw error;
+  }
+}
+
+export async function archiveMail(id: number) {
+  try {
+    const response = await api.post(API_ROUTES.ADMIN + `/mail/${id}/archive`);
+    return response?.data?.data;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      throw new Error(error.response?.data?.message || error.message);
+    }
+    throw error;
+  }
+}
+
+export async function deleteMail(id: number) {
+  try {
+    const response = await api.delete(API_ROUTES.ADMIN + `/mail/${id}`);
+    return response?.data?.data;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      throw new Error(error.response?.data?.message || error.message);
+    }
+    throw error;
+  }
+}
+
+export async function getMailUnreadCount() {
+  try {
+    const response = await api.get(API_ROUTES.ADMIN + "/mail/unread-count");
+    return response?.data?.data?.count ?? 0;
+  } catch (error) {
+    return 0;
+  }
+}
+
+export async function getMailCounts() {
+  try {
+    const response = await api.get(API_ROUTES.ADMIN + "/mail/counts");
+    return response?.data?.data ?? { all: 0, read: 0, unread: 0, sent: 0 };
+  } catch (error) {
+    return { all: 0, read: 0, unread: 0, sent: 0 };
+  }
+}
+
+export async function assignMail(id: number, assignedTo: string | null) {
+  try {
+    const response = await api.post(API_ROUTES.ADMIN + `/mail/${id}/assign`, { assignedTo });
+    return response?.data?.data;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      throw new Error(error.response?.data?.message || error.message);
+    }
+    throw error;
+  }
+}
+
+
+export async function sendNewEmail(toEmail: string, fromAddress: string, subject: string, body: string) {
+  try {
+    const response = await api.post(API_ROUTES.ADMIN + "/mail/send", { toEmail, fromAddress, subject, body });
+    return response?.data?.data;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      throw new Error(error.response?.data?.message || error.message);
+    }
+    throw error;
+  }
+}
+
+export async function getMailSenders() {
+  try {
+    const response = await api.get(API_ROUTES.ADMIN + "/mail/senders");
+    return response?.data?.data;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      throw new Error(error.response?.data?.message || error.message);
+    }
+    throw error;
+  }
+}
+
+export async function createMailSender(email: string) {
+  try {
+    const response = await api.post(API_ROUTES.ADMIN + "/mail/senders", { email });
+    return response?.data?.data;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      throw new Error(error.response?.data?.message || error.message);
+    }
+    throw error;
+  }
+}
+
+export async function updateMailSender(id: number, data: { email?: string; label?: string; isActive?: boolean }) {
+  try {
+    const response = await api.put(API_ROUTES.ADMIN + `/mail/senders/${id}`, data);
+    return response?.data?.data;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      throw new Error(error.response?.data?.message || error.message);
+    }
+    throw error;
+  }
+}
+
+export async function deleteMailSender(id: number) {
+  try {
+    const response = await api.delete(API_ROUTES.ADMIN + `/mail/senders/${id}`);
+    return response?.data?.data;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      throw new Error(error.response?.data?.message || error.message);
+    }
+    throw error;
+  }
+}
+
+export async function updatePaidSubmission(id: number, payload: Record<string, unknown>) {
+  try {
+    const response = await api.patch(API_ROUTES.ADMIN + `/submission-paid/${id}`, { payload });
+    return response?.data?.data;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      throw new Error(error.response?.data?.message || error.message);
+    }
+    throw error;
+  }
+}
+
+export async function deletePaidSubmission(id: number) {
+  try {
+    const response = await api.delete(API_ROUTES.ADMIN + `/submission-paid/${id}`);
+    return response?.data?.data;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      throw new Error(error.response?.data?.message || error.message);
+    }
+    throw error;
+  }
+}

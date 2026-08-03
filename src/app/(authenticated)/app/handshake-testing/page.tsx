@@ -5,55 +5,24 @@ import { useSearchParams, usePathname, useRouter } from "next/navigation";
 import { CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import {
-  ArrowUpDown,
   PlusCircle,
-  Star,
   LayoutPanelLeft,
   Activity,
-  XCircle,
-  Gamepad2,
-  History,
-  AlertCircle,
-  Search,
-  Clock,
-  Smartphone,
-  ClipboardList,
-  FlaskConical,
-  ChevronRight,
-  Calendar,
-  Ban,
+  Handshake,
 } from "lucide-react";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 import { Tabs, TabsContent } from "@/components/ui/tabs";
 import { CustomTabsList } from "@/components/custom-tabs-list";
-import { CommunityAvailableAppCard } from "@/components/community-available-app-card";
-import { CommunityOngoingAppCard } from "@/components/community-ongoing-app-card";
 import Link from "next/link";
-import { AppPagination } from "@/components/app-pagination";
 import { motion } from "framer-motion";
-import { SafeImage } from "@/components/safe-image";
 import { Badge } from "@/components/ui/badge";
-import type { HubSubmittedAppResponse } from "@/lib/types";
-import SubTabUI from "@/components/sub-tab-ui";
-import { useHubApps, useHubAppsCount, useHubData, useHubStats } from "@/hooks/useHub";
+import { useHubAppsCount, useHubData, useHubStats } from "@/hooks/useHub";
 import { useUserProfileData } from "@/hooks/useUser";
 import { DiscoverySourceModal } from "@/components/discovery-source-modal";
 import { AppCardSkeleton } from "@/components/app-card-skeleton";
-import { format } from "date-fns";
-import { Skeleton } from "@/components/ui/skeleton";
+import { ROUTES } from "@/lib/routes";
+import { getMyHandshakeSubscription } from "@/lib/apiCalls";
+import { useQuery } from "@tanstack/react-query";
 
-// Helper to filter out paid apps from displaying in the Handshake Testing
-const filterFreeApps = (apps: HubSubmittedAppResponse[] | undefined) => {
-  if (!apps) return [];
-  return apps.filter((app) => app.appType !== "PAID");
-};
-
-const APPS_PER_PAGE = 6;
 
 const BentoCard = ({
   children,
@@ -69,320 +38,6 @@ const BentoCard = ({
   </div>
 );
 
-const PaginatedAppList = ({
-  apps,
-  emptyMessage,
-  emptyTitle = "No Apps Found",
-  emptyIcon: Icon = Search,
-  card: CardComponent,
-  isLoading,
-}: {
-  apps: HubSubmittedAppResponse[];
-  emptyMessage: string;
-  emptyTitle?: string;
-  emptyIcon?: React.ElementType;
-  card: React.FC<{ app: HubSubmittedAppResponse }>;
-  isLoading?: boolean;
-}) => {
-  if (isLoading) {
-    return (
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.5 }}
-        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-      >
-        {Array.from({ length: 6 }).map((_, i) => (
-          <AppCardSkeleton key={i} />
-        ))}
-      </motion.div>
-    );
-  }
-  const [currentPage, setCurrentPage] = useState(1);
-  const totalPages = Math.ceil(apps.length / APPS_PER_PAGE);
-  const startIndex = (currentPage - 1) * APPS_PER_PAGE;
-  const endIndex = startIndex + APPS_PER_PAGE;
-  const currentApps = apps.slice(startIndex, endIndex);
-
-  const handlePageChange = (page: number) => {
-    if (page < 1 || page > totalPages) return;
-    setCurrentPage(page);
-  };
-
-  return (
-    <>
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.3 }}
-      >
-        {currentApps.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {currentApps.map((app) => (
-              <CardComponent key={app.id} app={app} />
-            ))}
-          </div>
-        ) : (
-          <div className="flex flex-col items-center justify-center py-20 text-center bg-card/50 rounded-3xl border border-dashed border-muted-foreground/20 relative overflow-hidden group">
-            <div className="absolute inset-0 bg-gradient-to-b from-primary/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-            <motion.div
-              initial={{ scale: 0.8, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
-              className="p-6 bg-primary/10 rounded-full mb-6 relative z-10 ring-8 ring-primary/5"
-            >
-              <Icon className="w-10 h-10 text-primary" />
-            </motion.div>
-            <h3 className="text-xl font-bold mb-2 relative z-10">
-              {emptyTitle}
-            </h3>
-            <p className="text-muted-foreground max-w-sm relative z-10 px-4">
-              {emptyMessage}
-            </p>
-          </div>
-        )}
-      </motion.div>
-      <AppPagination
-        currentPage={currentPage}
-        totalPages={totalPages}
-        onPageChange={handlePageChange}
-      />
-    </>
-  );
-};
-
-const RequestedAppCard = ({ app }: { app: HubSubmittedAppResponse }) => (
-  <Link href={`/app/handshake-testing/${app.id}`} className="group block h-full">
-    <div className="relative h-full flex flex-col overflow-hidden rounded-3xl bg-card border border-border/50 hover:border-orange-500/50 transition-all duration-500 hover:shadow-[0_10px_40px_-15px_rgba(249,115,22,0.2)] dark:hover:shadow-[0_10px_40px_-20px_rgba(249,115,22,0.1)] hover:-translate-y-1">
-      {/* Decorative Gradient Blob */}
-      <div className="absolute top-0 right-0 w-32 h-32 bg-orange-500/5 rounded-full blur-3xl -mr-10 -mt-10 transition-all duration-500 group-hover:bg-orange-500/10" />
-
-      <div className="p-5 flex-grow flex flex-col relative z-10">
-        {/* Header */}
-        <div className="flex justify-between items-start mb-5">
-          <div className="relative">
-            <div className="absolute inset-0 bg-orange-500/20 blur-xl rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-            <SafeImage
-              src={app?.androidApp?.appLogoUrl}
-              alt={app?.androidApp?.appName}
-              width={72}
-              height={72}
-              className="relative z-10 rounded-2xl border border-border/40 shadow-sm object-cover bg-background"
-              data-ai-hint={app?.androidApp?.appName}
-            />
-          </div>
-          <Badge
-            variant="outline"
-            className="rounded-full px-3 py-0.5 bg-orange-500/10 text-orange-600 dark:text-orange-400 border-orange-200 dark:border-orange-800"
-          >
-            Requested
-          </Badge>
-        </div>
-
-        {/* Content */}
-        <div className="mb-4">
-          <h3 className="text-xl font-bold text-card-foreground group-hover:text-orange-600 dark:group-hover:text-orange-400 transition-colors duration-300 line-clamp-1 mb-2">
-            {app?.androidApp?.appName}
-          </h3>
-          <p className="text-sm text-muted-foreground/80 line-clamp-2 leading-relaxed">
-            {app?.androidApp?.description}
-          </p>
-        </div>
-
-        {/* Meta Tags */}
-        <div className="flex flex-wrap gap-2 mt-auto">
-          <div className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground bg-secondary/40 px-2.5 py-1.5 rounded-md border border-transparent group-hover:border-orange-500/10 transition-colors">
-            <Smartphone className="w-3.5 h-3.5" />
-            <span>Android {app?.minimumAndroidVersion}+</span>
-          </div>
-          <div className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground bg-secondary/40 px-2.5 py-1.5 rounded-md border border-transparent group-hover:border-orange-500/10 transition-colors">
-            <History className="w-3.5 h-3.5" />
-            <span>Pending Review</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  </Link>
-);
-
-const RejectedRequestCard = ({ app }: { app: HubSubmittedAppResponse }) => (
-  <Link href={`/app/handshake-testing/${app.id}`} className="group block h-full">
-    <div className="relative h-full flex flex-col overflow-hidden rounded-3xl bg-gradient-to-br from-destructive/20 to-white/5 border border-destructive/20 hover:border-destructive/50 dark:border-red-900/50 dark:hover:border-red-500/50 transition-all duration-500 hover:shadow-[0_10px_40px_-15px_rgba(239,68,68,0.2)] dark:hover:shadow-[0_10px_40px_-20px_rgba(239,68,68,0.3)] hover:-translate-y-1">
-      <div className="p-5 flex-grow flex flex-col relative z-10">
-        {/* Header Section */}
-        <div className="flex justify-between items-start mb-4">
-          <div className="flex gap-4 items-start">
-            <div className="relative shrink-0">
-              <div className="absolute inset-0 bg-destructive/20 dark:bg-red-900/30 blur-xl rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-              <SafeImage
-                src={app?.androidApp?.appLogoUrl}
-                alt={app?.androidApp?.appName}
-                width={60}
-                height={60}
-                className="relative z-10 rounded-2xl border border-destructive/20 dark:border-red-900/50 shadow-sm object-cover bg-background"
-                data-ai-hint={app?.androidApp?.appName}
-              />
-              <div className="absolute -bottom-1.5 -right-1.5 z-20 bg-background dark:bg-zinc-950 rounded-full p-0.5 border border-border dark:border-zinc-800">
-                <div className="bg-destructive dark:bg-red-600 text-destructive-foreground rounded-full p-0.5">
-                  <XCircle className="w-3 h-3" />
-                </div>
-              </div>
-            </div>
-            <div>
-              <h3 className="font-bold text-lg text-card-foreground group-hover:text-destructive dark:group-hover:text-red-400 transition-colors duration-300 line-clamp-1">
-                {app?.androidApp?.appName}
-              </h3>
-              <p className="text-xs text-muted-foreground dark:text-zinc-400 line-clamp-1 mt-0.5">
-                {app?.androidApp?.appCategory?.name || "App"}
-              </p>
-            </div>
-          </div>
-          <div className="flex flex-col items-end gap-1">
-            <Badge
-              variant="destructive"
-              className="rounded-full px-2.5 py-0.5 bg-destructive/10 dark:bg-red-950/50 text-destructive dark:text-red-400 border-destructive/20 dark:border-red-900/50 font-medium text-[10px] uppercase tracking-wider"
-            >
-              Rejected
-            </Badge>
-          </div>
-        </div>
-
-        {/* Rejection Reason Box */}
-        <div className="mt-1 mb-4 p-3.5 rounded-xl bg-gradient-to-br from-destructive/5 to-destructive/10 dark:from-red-950/30 dark:to-red-900/10 border border-destructive/10 dark:border-red-900/30 group-hover:border-destructive/20 dark:group-hover:border-red-800/50 transition-colors">
-          <h4 className="text-destructive dark:text-red-400 font-semibold text-xs mb-1.5 flex items-center gap-1.5 uppercase tracking-wide">
-            <Ban className="w-3.5 h-3.5" />
-            {app?.statusDetails?.title || "Rejection Reason"}
-          </h4>
-          <p className="text-sm text-destructive/80 dark:text-red-300/80 line-clamp-3 leading-relaxed">
-            {app?.statusDetails?.description ||
-              "Your application was not approved. Please review the requirements and try again."}
-          </p>
-        </div>
-
-        {/* Footer Meta Data */}
-        <div className="mt-auto pt-3 border-t border-destructive/10 dark:border-red-900/20 flex items-center justify-between text-xs text-muted-foreground/80 dark:text-zinc-500">
-          <div className="flex items-center gap-1.5" title="Missed Reward">
-            <Star className="w-3.5 h-3.5 text-orange-400/70 dark:text-orange-400/60 fill-orange-400/20" />
-            <span className="font-medium line-through opacity-70">
-              {app?.rewardPoints} pts
-            </span>
-          </div>
-
-          <div
-            className="flex items-center gap-1.5 text-muted-foreground dark:text-zinc-500"
-            title="Date Rejected"
-          >
-            <Calendar className="w-3.5 h-3.5" />
-            <span>
-              {app?.updatedAt ? format(new Date(app.updatedAt), "MMM d") : ""}
-            </span>
-          </div>
-
-          <div
-            className="flex items-center gap-1.5 bg-secondary/30 dark:bg-zinc-800/50 px-2 py-1 rounded-md"
-            title="Required Android Version"
-          >
-            <Smartphone className="w-3.5 h-3.5" />
-            <span>{app?.minimumAndroidVersion}+</span>
-          </div>
-        </div>
-      </div>
-    </div>
-  </Link>
-);
-
-// Card for apps where tester is approved but testing hasn't started (waiting for min testers)
-const ApprovedAppCard = ({ app }: { app: HubSubmittedAppResponse }) => {
-  const testerProgressPercentage = Math.min(
-    ((app?.currentTester || 0) / (app?.totalTester || 1)) * 100,
-    100,
-  );
-
-  return (
-    <Link
-      href={`/app/handshake-testing/${app.id}/ongoing`}
-      className="group block h-full"
-    >
-      <div className="relative h-full flex flex-col overflow-hidden rounded-3xl bg-card border border-amber-500/30 hover:border-amber-500/50 transition-all duration-500 hover:shadow-[0_10px_40px_-15px_rgba(245,158,11,0.2)] dark:hover:shadow-[0_10px_40px_-20px_rgba(245,158,11,0.1)] hover:-translate-y-1">
-        {/* Decorative Gradient Blob */}
-        <div className="absolute top-0 right-0 w-32 h-32 bg-amber-500/5 rounded-full blur-3xl -mr-10 -mt-10 transition-all duration-500 group-hover:bg-amber-500/10" />
-
-        <div className="p-5 flex-grow flex flex-col relative z-10">
-          {/* Header */}
-          <div className="flex justify-between items-start mb-5">
-            <div className="relative">
-              <div className="absolute inset-0 bg-amber-500/20 blur-xl rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-              <SafeImage
-                src={app?.androidApp?.appLogoUrl}
-                alt={app?.androidApp?.appName}
-                width={72}
-                height={72}
-                className="relative z-10 rounded-2xl border border-border/40 shadow-sm object-cover bg-background"
-                data-ai-hint={app?.androidApp?.appName}
-              />
-            </div>
-            <Badge
-              variant="outline"
-              className="rounded-full px-3 py-0.5 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800 flex items-center gap-1.5"
-            >
-              <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-500 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-              </span>
-              Approved
-            </Badge>
-          </div>
-
-          {/* Content */}
-          <div className="mb-4">
-            <h3 className="text-xl font-bold text-card-foreground group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors duration-300 line-clamp-1 mb-2">
-              {app?.androidApp?.appName}
-            </h3>
-            <p className="text-sm text-muted-foreground/80 line-clamp-2 leading-relaxed">
-              {app?.androidApp?.description}
-            </p>
-          </div>
-
-          {/* Meta Tags */}
-          <div className="flex flex-wrap gap-2 mb-4 mt-auto">
-            <div className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground bg-secondary/40 px-2.5 py-1.5 rounded-md border border-transparent group-hover:border-amber-500/10 transition-colors">
-              <Smartphone className="w-3.5 h-3.5" />
-              <span>Android {app?.minimumAndroidVersion}+</span>
-            </div>
-            <div className="flex items-center gap-1.5 text-xs font-medium text-amber-600 dark:text-amber-400 bg-amber-500/10 px-2.5 py-1.5 rounded-md border border-amber-500/20">
-              <Clock className="w-3.5 h-3.5" />
-              <span>Waiting to Start</span>
-            </div>
-          </div>
-        </div>
-
-        {/* Footer - Testers Progress */}
-        <div className="relative p-4 pt-0 mt-auto z-10">
-          <div className="flex flex-col gap-3 p-4 bg-amber-500/5 rounded-2xl border border-amber-500/10 group-hover:border-amber-500/20 transition-colors duration-300">
-            <div className="w-full">
-              <div className="flex justify-between items-center text-xs text-muted-foreground mb-2 font-medium">
-                <span>Testers Joining</span>
-                <span className="text-amber-600 dark:text-amber-400">
-                  {app?.currentTester || 0}/{app?.totalTester || 0}
-                </span>
-              </div>
-              <div className="h-2 bg-amber-100 dark:bg-amber-950/50 rounded-full overflow-hidden">
-                <div
-                  className="h-full bg-amber-500 rounded-full transition-all duration-500"
-                  style={{ width: `${testerProgressPercentage}%` }}
-                />
-              </div>
-            </div>
-            <p className="text-xs text-amber-600/80 dark:text-amber-400/80 text-center">
-              Testing will begin once all testers have joined
-            </p>
-          </div>
-        </div>
-      </div>
-    </Link>
-  );
-};
-
 function CommunityDashboardContent() {
   const searchParams = useSearchParams();
   const pathname = usePathname();
@@ -393,6 +48,15 @@ function CommunityDashboardContent() {
   const [showDiscoveryModal, setShowDiscoveryModal] = useState(false);
 
   const { data: userProfileData, refetch: refetchProfile } = useUserProfileData();
+
+  const { data: handshakeSub } = useQuery({
+    queryKey: ["myHandshakeSubscription"],
+    queryFn: () => getMyHandshakeSubscription(),
+    retry: false,
+  });
+  const hasActiveSubscription =
+    !!handshakeSub &&
+    (handshakeSub.status === "ACTIVE" || handshakeSub.status === "AUTHENTICATED");
 
   useEffect(() => {
     refetchProfile();
@@ -483,12 +147,6 @@ function CommunityDashboardContent() {
   };
   const backendType = getBackendType();
 
-  const { data: hubAppsDataRaw, isPending: hubAppsIsPending } = useHubApps({
-    type: backendType,
-  });
-
-  const hubAppsData = filterFreeApps(hubAppsDataRaw);
-
   const { data: hubDataCount, isPending: hubDataCountIsPending } =
     useHubAppsCount();
 
@@ -507,21 +165,21 @@ function CommunityDashboardContent() {
       label: "Available",
       value: "available",
       count: hubDataCount?.["AVAILABLE"] || 0,
-      icon: Search,
+      icon: Activity,
       description: "Browse & apply for testing",
     },
     {
       label: "Requests",
       value: "requests",
       count: requestsCount,
-      icon: ClipboardList,
+      icon: Activity,
       description: "App approvals & rejections",
     },
     {
       label: "Running",
       value: "running",
       count: runningCount,
-      icon: FlaskConical,
+      icon: Activity,
       description: "Active tests & approved apps",
     },
   ];
@@ -565,290 +223,186 @@ function CommunityDashboardContent() {
 
   return (
     <div data-loc="CommunityDashboardPage" className="min-h-screen mb-8">
-      <DiscoverySourceModal
-        open={showDiscoveryModal}
-        onComplete={() => setShowDiscoveryModal(false)}
-      />
-      <div className="container mx-auto px-4 md:px-6">
-        <header className="mb-12">
-          <div className="mb-6">
-            <h1 className="text-2xl sm:text-4xl font-bold bg-gradient-to-b from-primary to-primary/40 bg-clip-text text-transparent leading-[unset] pb-2">
-              Handshake Testing
-            </h1>
-            <p className="text-sm sm:text-base text-muted-foreground max-w-xl">
-              Offer your app, test a peer&apos;s app, and level up. A monthly
-              subscription unlocks publishing and joining handshake tests.
-            </p>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
-            <BentoCard className="col-span-2">
-              <CardTitle className="text-sm font-medium flex items-center gap-2 text-muted-foreground">
-                <Activity className="w-4 h-4" /> Performance
-              </CardTitle>
-              <div className="grid grid-cols-3 gap-2 w-full mt-2">
-                <div className="text-center bg-secondary p-2 rounded-lg">
-                  {hubIsPending ? (
-                    <Skeleton className="h-8 w-16 mx-auto mb-1" />
-                  ) : (
-                    <p className="text-2xl font-bold">{appsSubmitted}</p>
-                  )}
-                  <p className="text-xs text-muted-foreground">
-                    Apps Submitted
-                  </p>
-                </div>
-                <div className="text-center bg-secondary p-2 rounded-lg">
-                  {hubIsPending ? (
-                    <Skeleton className="h-8 w-16 mx-auto mb-1" />
-                  ) : (
-                    <p className="text-2xl font-bold">{testersEngaged}</p>
-                  )}
-                  <p className="text-xs text-muted-foreground">
-                    Testers Engaged
-                  </p>
-                </div>
-                <div className="text-center bg-secondary p-2 rounded-lg">
-                  {hubIsPending ? (
-                    <Skeleton className="h-8 w-16 mx-auto mb-1" />
-                  ) : (
-                    <p className="text-2xl font-bold">{testsCompleted}</p>
-                  )}
-                  <p className="text-xs text-muted-foreground">Tests Done</p>
-                </div>
+      {/* Blurred background content */}
+      <div className="blur-sm pointer-events-none select-none">
+        <DiscoverySourceModal
+          open={showDiscoveryModal}
+          onComplete={() => setShowDiscoveryModal(false)}
+        />
+        <div className="container mx-auto px-4 md:px-6">
+          <header className="mb-12">
+            <div className="mb-6">
+              <div className="flex items-center gap-3 flex-wrap">
+                <h1 className="text-2xl sm:text-4xl font-bold bg-gradient-to-b from-emerald-600 to-emerald-700 bg-clip-text text-transparent leading-[unset] pb-2">
+                  Handshake Testing
+                </h1>
+                <Badge className="bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border-emerald-300 dark:border-emerald-700 px-3 py-1 text-xs font-bold uppercase tracking-wider">
+                  Beta
+                </Badge>
               </div>
-            </BentoCard>
-
-            <div className="flex flex-row gap-2 col-span-2">
-              <BentoCard className="bg-gradient-to-br from-primary to-primary/40 text-primary-foreground relative overflow-hidden w-5/12 sm:w-1/2">
-                <CardTitle className="text-sm font-medium flex items-center gap-2">
-                  <Star className="absolute top-5 left-5 scale-[6] text-white/20 rotate-45 w-4 h-4" />{" "}
-                  My Points
-                </CardTitle>
-                {hubIsPending ? (
-                  <Skeleton className="h-12 w-32 mx-auto my-auto" />
-                ) : (
-                  <p className="text-3xl sm:text-5xl font-bold text-center my-auto">
-                    {hubData?.wallet || 0}
-                  </p>
-                )}
-              </BentoCard>
-
-              <BentoCard className="w-7/12 sm:w-1/2 !p-2.5 sm:!p-4">
-                <CardTitle className="text-sm font-medium flex items-center gap-2 text-muted-foreground">
-                  My Testing
-                </CardTitle>
-                <div className="grid grid-rows-2 grid-cols-1 sm:grid-cols-2 sm:grid-rows-1 gap-2 w-full mt-2 h-full">
-                  <div className="text-center bg-secondary px-4 rounded-lg flex flex-row sm:flex-col items-center justify-between sm:justify-center">
-                    <p className="text-xs text-muted-foreground">Running</p>
-                    {hubDataCountIsPending ? (
-                      <Skeleton className="h-8 w-12 sm:mx-auto" />
-                    ) : (
-                      <p className="text-2xl font-bold">{runningCount}</p>
-                    )}
-                  </div>
-                  <div className="text-center bg-secondary px-4 rounded-lg flex flex-row sm:flex-col items-center justify-between sm:justify-center">
-                    <p className="text-xs text-muted-foreground">Requests</p>
-                    {hubDataCountIsPending ? (
-                      <Skeleton className="h-8 w-12 sm:mx-auto" />
-                    ) : (
-                      <p className="text-2xl font-bold">{requestsCount}</p>
-                    )}
-                  </div>
-                </div>
-              </BentoCard>
-            </div>
-
-            <BentoCard className="flex !flex-row sm:!flex-col gap-2 col-span-2 lg:col-span-1 !p-2.5 sm:!p-4">
-              <Button
-                className="w-full justify-start h-full bg-gradient-to-b from-primary to-primary/40 text-primary-foreground p-2 sm:p-auto"
-                onClick={() => openPage("/app/handshake-testing/submit")}
-              >
-                <PlusCircle className="absolute sm:static left-0 top-0 scale-[2] text-white/20 sm:left-auto sm:top-auto sm:scale-[1] sm:text-white mr-2 h-4 w-4" />
-                <p className="text-center sm:text-start w-full">
-                  Submit New App
-                </p>
-              </Button>
-              <Button
-                variant="outline"
-                className="w-full justify-start h-full p-2 sm:p-auto"
-                onClick={() => openPage("/app/handshake-testing/my-submissions")}
-              >
-                <LayoutPanelLeft className="absolute sm:static left-0 top-0 scale-[2] text-black/10 dark:text-white/15 sm:left-auto sm:top-auto sm:scale-[1] sm:text-black dark:sm:text-white mr-2 h-4 w-4" />
-                <p className="text-center sm:text-start w-full">
-                  My Submissions
-                </p>
-              </Button>
-            </BentoCard>
-          </div>
-        </header>
-
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-8">
-          <div className="rounded-xl border border-primary/30 bg-primary/5 p-3 text-center">
-            <p className="text-2xl font-bold text-primary">
-              {handshakeStats?.handshakeLevel ?? 1}
-            </p>
-            <p className="text-xs text-muted-foreground">Handshake Level</p>
-          </div>
-          <div className="rounded-xl border border-border/60 bg-secondary/30 p-3 text-center">
-            <p className="text-2xl font-bold">
-              {handshakeStats?.availableSlots ?? 0}
-            </p>
-            <p className="text-xs text-muted-foreground">Free Slots</p>
-          </div>
-          <div className="rounded-xl border border-border/60 bg-secondary/30 p-3 text-center">
-            <p className="text-2xl font-bold">
-              {handshakeStats?.activeHandshakes ?? 0}
-            </p>
-            <p className="text-xs text-muted-foreground">Active Handshakes</p>
-          </div>
-          <div className="rounded-xl border border-border/60 bg-secondary/30 p-3 text-center">
-            <p className="text-2xl font-bold">
-              {handshakeStats?.handshakeCompletedCount ?? 0}
-            </p>
-            <p className="text-xs text-muted-foreground">Completed</p>
-          </div>
-        </div>
-
-        <main>
-          <Tabs
-            value={selectedTab}
-            onValueChange={handleMainTabChange}
-            className="w-full"
-          >
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
-              <div>
-                <h2 className="text-2xl font-bold">Available Apps</h2>
-                <p className="text-muted-foreground">
-                  Browse apps that need testing from the community.
-                </p>
-              </div>
-              <div className="flex gap-2 flex-row items-center justify-end w-full md:w-auto">
-                <Button
-                  onClick={() => openPage("/app/handshake-testing/history")}
-                  className="group relative h-10 pl-4 pr-2 rounded-full bg-background border border-border hover:border-primary/50 hover:bg-muted/50 transition-all duration-300 overflow-hidden shadow-sm hover:shadow-md hover:shadow-primary/5"
+              <p className="text-sm sm:text-base text-muted-foreground max-w-xl">
+                Offer your app, test a peer&apos;s app, and level up. A monthly
+                subscription unlocks publishing and joining handshake tests.
+              </p>
+              {hasActiveSubscription && (
+                <Link
+                  href={ROUTES.AUTHENTICATED.SUBSCRIPTION_MANAGE}
+                  className="inline-flex items-center gap-1.5 text-xs text-primary hover:text-primary/80 font-medium transition-colors mt-2"
                 >
-                  <div className="absolute inset-0 bg-gradient-to-r from-primary/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                  <Handshake className="w-3.5 h-3.5" />
+                  Manage Subscription
+                </Link>
+              )}
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+              <BentoCard className="col-span-2">
+                <CardTitle className="text-sm font-medium flex items-center gap-2 text-muted-foreground">
+                  <Activity className="w-4 h-4" /> Performance
+                </CardTitle>
+                <div className="grid grid-cols-3 gap-2 w-full mt-2">
+                  <div className="text-center bg-secondary p-2 rounded-lg">
+                    <p className="text-2xl font-bold">{appsSubmitted}</p>
+                    <p className="text-xs text-muted-foreground">
+                      Apps Submitted
+                    </p>
+                  </div>
+                  <div className="text-center bg-secondary p-2 rounded-lg">
+                    <p className="text-2xl font-bold">{testersEngaged}</p>
+                    <p className="text-xs text-muted-foreground">
+                      Testers Engaged
+                    </p>
+                  </div>
+                  <div className="text-center bg-secondary p-2 rounded-lg">
+                    <p className="text-2xl font-bold">{testsCompleted}</p>
+                    <p className="text-xs text-muted-foreground">Tests Done</p>
+                  </div>
+                </div>
+              </BentoCard>
 
-                  <div className="relative flex items-center gap-2.5">
-                    <span className="flex items-center justify-center w-5 h-5 rounded-full bg-primary/10 text-primary group-hover:scale-110 transition-transform duration-300">
-                      <History className="w-3 h-3" />
-                    </span>
+              <div className="flex flex-row gap-2 col-span-2">
+                <BentoCard className="bg-gradient-to-br from-emerald-600 to-emerald-700 text-white relative overflow-hidden w-5/12 sm:w-1/2">
+                  <CardTitle className="text-sm font-medium flex items-center gap-2">
+                    <Handshake className="absolute top-5 left-5 scale-[6] text-white/20 rotate-45 w-4 h-4" />{" "}
+                    Handshake Level
+                  </CardTitle>
+                  <p className="text-3xl sm:text-5xl font-bold text-center my-auto">
+                    {handshakeStats?.handshakeLevel}
+                  </p>
+                </BentoCard>
 
-                    <span className="text-sm font-medium text-muted-foreground group-hover:text-foreground transition-colors">
-                      History
-                    </span>
-
-                    <div className="w-6 h-6 flex items-center justify-center rounded-full text-muted-foreground/50 group-hover:bg-primary group-hover:text-primary-foreground group-hover:translate-x-0.5 transition-all duration-300 ml-0.5">
-                      <ChevronRight className="w-3.5 h-3.5" />
+                <BentoCard className="w-7/12 sm:w-1/2 !p-2.5 sm:!p-4">
+                  <CardTitle className="text-sm font-medium flex items-center gap-2 text-muted-foreground">
+                    My Testing
+                  </CardTitle>
+                  <div className="grid grid-rows-2 grid-cols-1 sm:grid-cols-2 sm:grid-rows-1 gap-2 w-full mt-2 h-full">
+                    <div className="text-center bg-secondary px-4 rounded-lg flex flex-row sm:flex-col items-center justify-between sm:justify-center">
+                      <p className="text-xs text-muted-foreground">Running</p>
+                      <p className="text-2xl font-bold">{runningCount}</p>
+                    </div>
+                    <div className="text-center bg-secondary px-4 rounded-lg flex flex-row sm:flex-col items-center justify-between sm:justify-center">
+                      <p className="text-xs text-muted-foreground">Requests</p>
+                      <p className="text-2xl font-bold">{requestsCount}</p>
                     </div>
                   </div>
+                </BentoCard>
+              </div>
+
+              <BentoCard className="flex !flex-row sm:!flex-col gap-2 col-span-2 lg:col-span-1 !p-2.5 sm:!p-4">
+                <Button
+                  className="w-full justify-start h-full bg-gradient-to-b from-emerald-600 to-emerald-700 text-white p-2 sm:p-auto"
+                >
+                  <PlusCircle className="absolute sm:static left-0 top-0 scale-[2] text-white/20 sm:left-auto sm:top-auto sm:scale-[1] sm:text-white mr-2 h-4 w-4" />
+                  <p className="text-center sm:text-start w-full">
+                    Submit New App
+                  </p>
                 </Button>
-                <DropdownMenu>
-                  <DropdownMenuTrigger asChild>
-                    <Button variant="outline" className="gap-2 rounded-xl">
-                      <ArrowUpDown className="h-4 w-4" /> Sort
-                    </Button>
-                  </DropdownMenuTrigger>
-                  <DropdownMenuContent align="end" className="rounded-xl">
-                    {["Most Recent", "Most Rewarding", "Time to Test"].map(
-                      (cat) => (
-                        <DropdownMenuItem
-                          key={cat}
-                          onClick={() => setSort(cat)}
-                        >
-                          {cat}
-                        </DropdownMenuItem>
-                      ),
-                    )}
-                  </DropdownMenuContent>
-                </DropdownMenu>
-              </div>
+                <Button
+                  variant="outline"
+                  className="w-full justify-start h-full p-2 sm:p-auto"
+                >
+                  <LayoutPanelLeft className="absolute sm:static left-0 top-0 scale-[2] text-black/10 dark:text-white/15 sm:left-auto sm:top-auto sm:scale-[1] sm:text-black dark:sm:text-white mr-2 h-4 w-4" />
+                  <p className="text-center sm:text-start w-full">
+                    My Submissions
+                  </p>
+                </Button>
+              </BentoCard>
             </div>
-            <CustomTabsList
-              tabs={tabs}
-              activeTab={selectedTab}
-              className="sticky top-0 z-30 backdrop-blur-xl py-2 -mx-4 px-4 md:mx-0 md:px-0 mb-6"
-            />
-            <TabsContent value="available">
-              <PaginatedAppList
-                apps={hubAppsData || []}
-                emptyTitle="No Available Apps"
-                emptyMessage="No available apps for testing right now. Check back soon!"
-                emptyIcon={Gamepad2}
-                card={CommunityAvailableAppCard}
-                isLoading={hubAppsIsPending}
-              />
-            </TabsContent>
-            <TabsContent value="requests" className="mt-6">
-              <div className="mb-6">
-                <p className="text-sm text-muted-foreground mb-4">
-                  Track your test requests here. Apps you've applied for will
-                  show up as "Awaiting Approval" until the developer reviews
-                  your request.
-                </p>
-              </div>
-              <SubTabUI
-                tabs={requestTabs}
-                onTabChange={handleRequestsSubTabChange}
-                activeTab={requestsSubTab}
-              />
+          </header>
 
-              {requestsSubTab === "pending" && (
-                <PaginatedAppList
-                  apps={hubAppsData || []}
-                  emptyTitle="No Pending Requests"
-                  emptyMessage="You haven't applied to test any apps yet. Browse available apps to get started!"
-                  emptyIcon={Clock}
-                  card={RequestedAppCard}
-                  isLoading={hubAppsIsPending}
-                />
-              )}
-              {requestsSubTab === "rejected" && (
-                <PaginatedAppList
-                  apps={hubAppsData || []}
-                  emptyTitle="No Rejected Requests"
-                  emptyMessage="None of your requests have been declined. Keep applying to test more apps!"
-                  emptyIcon={AlertCircle}
-                  card={RejectedRequestCard}
-                  isLoading={hubAppsIsPending}
-                />
-              )}
-            </TabsContent>
-            <TabsContent value="running" className="mt-6">
-              <div className="mb-6">
-                <p className="text-sm text-muted-foreground">
-                  These are the apps you're currently testing or waiting to
-                  start. Complete daily tasks to earn points!
-                </p>
+          <main>
+            <Tabs value={selectedTab} className="w-full">
+              <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
+                <div>
+                  <h2 className="text-2xl font-bold">Available Apps</h2>
+                  <p className="text-muted-foreground">
+                    Browse apps that need testing from the community.
+                  </p>
+                </div>
               </div>
-              <SubTabUI
-                tabs={runningSubTabs}
-                onTabChange={handleRunningSubTabChange}
-                activeTab={runningSubTab}
+              <CustomTabsList
+                tabs={tabs}
+                activeTab={selectedTab}
+                className="sticky top-0 z-30 backdrop-blur-xl py-2 -mx-4 px-4 md:mx-0 md:px-0 mb-6"
               />
+              <TabsContent value="available">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {Array.from({ length: 6 }).map((_, i) => (
+                    <AppCardSkeleton key={i} />
+                  ))}
+                </div>
+              </TabsContent>
+            </Tabs>
+          </main>
+        </div>
+      </div>
 
-              {runningSubTab === "in-progress" && (
-                <PaginatedAppList
-                  apps={hubAppsData || []}
-                  emptyTitle="No Tests in Progress"
-                  emptyMessage="You're not testing any apps right now. Apply for testing from the Available tab!"
-                  emptyIcon={FlaskConical}
-                  card={CommunityOngoingAppCard}
-                  isLoading={hubAppsIsPending}
-                />
-              )}
-              {runningSubTab === "waiting-to-start" && (
-                <PaginatedAppList
-                  apps={hubAppsData || []}
-                  emptyTitle="No Apps Waiting to Start"
-                  emptyMessage="You don't have any approved apps waiting for other testers to join. Apps appear here once the developer accepts your request!"
-                  emptyIcon={Clock}
-                  card={ApprovedAppCard}
-                  isLoading={hubAppsIsPending}
-                />
-              )}
-            </TabsContent>
-          </Tabs>
-        </main>
+      {/* Coming Soon Overlay */}
+      <div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-background/80 backdrop-blur-sm overflow-hidden">
+        <div className="relative z-10 flex flex-col items-center justify-center text-center p-4">
+          <div className="flex items-center justify-center gap-1 sm:gap-2 md:gap-3 mb-6">
+            {"COMING SOON".split("").map((char, i) => (
+              <motion.span
+                key={i}
+                className={`inline-block text-3xl sm:text-5xl md:text-7xl font-black text-primary ${char === " " ? "w-2 sm:w-4 md:w-6" : ""}`}
+                animate={{
+                  y: [0, i % 2 === 0 ? -12 : 10, 0],
+                }}
+                transition={{
+                  duration: 3 + (i % 3) * 0.5,
+                  ease: "easeInOut",
+                  repeat: Infinity,
+                  repeatType: "reverse",
+                  delay: i * 0.1,
+                }}
+              >
+                {char === " " ? "\u00A0" : char}
+              </motion.span>
+            ))}
+          </div>
+
+          <motion.p
+            className="text-sm sm:text-base text-muted-foreground max-w-md mb-10"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.8, duration: 0.5 }}
+          >
+            Handshake Testing is currently under development. We&apos;re working hard
+            to bring you the best peer-to-peer testing experience. Stay tuned!
+          </motion.p>
+
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 1, duration: 0.5 }}
+          >
+            <Button
+              asChild
+              className="rounded-full px-6 py-5 text-base bg-gradient-to-br from-primary to-primary/20"
+            >
+              <Link href="/">Go Home</Link>
+            </Button>
+          </motion.div>
+        </div>
       </div>
     </div>
   );

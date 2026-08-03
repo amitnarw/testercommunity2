@@ -32,7 +32,7 @@ export default function PublicClientLayout({
   }
 
   return (
-    <div className="relative flex flex-col min-h-screen bg-background">
+    <div className="relative flex flex-col min-h-screen bg-background overflow-x-hidden">
       <Header
         session={session}
         isDashboardPage={false}

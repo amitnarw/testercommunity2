@@ -18,8 +18,8 @@ export function QuickActions({ stats }: { stats: any }) {
       countBadgeColor: "bg-amber-500/20 text-amber-600",
     },
     {
-      title: "Free Apps (Community)",
-      description: "Community submissions awaiting review",
+      title: "Handshake Apps",
+      description: "Handshake submissions awaiting review",
       icon: Clock,
       href: "/admin/submissions-free",
       color: "text-blue-500",

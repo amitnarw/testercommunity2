@@ -103,7 +103,7 @@ export function OrdersTable() {
                           <p className="text-xs text-muted-foreground">{order.user?.email}</p>
                         </div>
                       </TableCell>
-                      <TableCell>{order.plan?.name || "—"}</TableCell>
+                      <TableCell>{order.plan?.name || ", "}</TableCell>
                       <TableCell>
                         <span className="font-medium">
                           {formatCurrency(order.amount, order.currency)}
@@ -114,7 +114,7 @@ export function OrdersTable() {
                           {order.status}
                         </Badge>
                       </TableCell>
-                      <TableCell className="text-xs font-mono">{order.invoiceId || "—"}</TableCell>
+                      <TableCell className="text-xs font-mono">{order.invoiceId || ", "}</TableCell>
                       <TableCell className="text-xs">{new Date(order.createdAt).toLocaleDateString()}</TableCell>
                       <TableCell>
                         {order.invoiceId && (

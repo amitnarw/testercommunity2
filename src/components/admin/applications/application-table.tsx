@@ -145,7 +145,7 @@ export const ApplicationTable = ({
               <TableCell className="hidden md:table-cell">
                 {app.date
                   ? new Date(app.date).toLocaleDateString()
-                  : "—"}
+                  : ", "}
               </TableCell>
               <TableCell>
                 {app.experience ? (
@@ -153,7 +153,7 @@ export const ApplicationTable = ({
                     {app.experience.replace(/_/g, " ").toLowerCase()}
                   </span>
                 ) : (
-                  <span className="text-muted-foreground">—</span>
+                  <span className="text-muted-foreground">, </span>
                 )}
               </TableCell>
               <TableCell>
@@ -166,7 +166,7 @@ export const ApplicationTable = ({
                     ))}
                   </div>
                 ) : (
-                  <span className="text-muted-foreground">—</span>
+                  <span className="text-muted-foreground">, </span>
                 )}
               </TableCell>
               <TableCell className="text-right">

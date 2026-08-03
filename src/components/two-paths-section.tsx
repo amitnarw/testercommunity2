@@ -1,13 +1,16 @@
 "use client";
 
 import Link from "next/link";
-import { Check, X, Users, Briefcase, Star, Zap } from "lucide-react";
+import { Zap, Handshake } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { Badge } from "./ui/badge";
-import { Button } from "./ui/button";
 import { HoverBorderGradient } from "./ui/hover-border-gradient";
+import { ProfessionalPlanCard } from "./pricing-cards";
+import { HandshakePlanCard } from "./handshake/plan-card";
 import { motion } from "framer-motion";
 import { ROUTES } from "@/lib/routes";
+import { useQuery } from "@tanstack/react-query";
+import { getHandshakePlan, getAllPricingPlans } from "@/lib/apiCalls";
+import { PricingResponse } from "@/lib/types";
 import { useState, useRef, useLayoutEffect, useEffect } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
@@ -23,6 +26,24 @@ export function TwoPathsSection() {
   const component = useRef<HTMLDivElement>(null);
   const slider = useRef<HTMLDivElement>(null);
   const lastTabRef = useRef<"community" | "professional">("community");
+
+  const { data: handshakePlan } = useQuery<PricingResponse | null>({
+    queryKey: ["handshakePlan"],
+    queryFn: () => getHandshakePlan(),
+    retry: false,
+  });
+
+  const { data: proPlans } = useQuery<PricingResponse[]>({
+    queryKey: ["pricingPlansTwoPaths"],
+    queryFn: () => getAllPricingPlans(),
+    retry: false,
+  });
+
+  const proPlan =
+    proPlans?.find((p) => p.isPopular) ?? proPlans?.[0] ?? null;
+
+  const hasHandshake = !!handshakePlan;
+  const hasPro = !!proPlan;
 
   useLayoutEffect(() => {
     const ctx = gsap.context(() => {
@@ -90,52 +111,31 @@ export function TwoPathsSection() {
     },
   };
 
-  // Common card components based on PricingCard design
-  const cardClasses = (isPopular: boolean) =>
-    cn(
-      "relative flex flex-col p-6 sm:p-8 rounded-3xl h-full transition-all duration-300",
-      isPopular
-        ? "bg-primary text-primary-foreground shadow-2xl shadow-primary/30"
-        : "border text-card-foreground hover:shadow-xl",
-    );
+  const ProCard = () =>
+    proPlan ? (
+      <ProfessionalPlanCard
+        plan={proPlan}
+        ctaLabel={proPlan.ctaLabel}
+        ctaHref={proPlan.ctaHref}
+        actionButton={
+          <div className="w-full">
+            <Link href={ROUTES.PUBLIC.PRICING} className="w-full block">
+              <HoverBorderGradient
+                containerClassName="w-full"
+                className="bg-white text-primary flex items-center justify-center space-x-2 w-full py-4 font-bold cursor-pointer"
+              >
+                <Zap className="w-4 h-4 mr-2 fill-current" />
+                <span className="font-semibold">Get Started</span>
+              </HoverBorderGradient>
+            </Link>
+          </div>
+        }
+      />
+    ) : null;
 
-  const FeatureItem = ({
-    text,
-    isPopular,
-  }: {
-    text: string;
-    isPopular: boolean;
-  }) => (
-    <div className="flex items-start gap-3">
-      <div
-        className={cn(
-          "flex-shrink-0 w-5 h-5 rounded-full flex items-center justify-center mt-0.5",
-          isPopular ? "bg-white/20" : "bg-primary/10",
-        )}
-      >
-        <Check
-          className={cn("w-3 h-3", isPopular ? "text-white" : "text-primary")}
-        />
-      </div>
-      <span
-        className={cn(
-          "text-sm",
-          isPopular ? "text-primary-foreground/90" : "text-muted-foreground",
-        )}
-      >
-        {text}
-      </span>
-    </div>
-  );
-
-  const ConItem = ({ text }: { text: string }) => (
-    <div className="flex items-start gap-3">
-      <div className="flex-shrink-0 w-5 h-5 rounded-full flex items-center justify-center mt-0.5 bg-destructive/10">
-        <X className="w-3 h-3 text-destructive" />
-      </div>
-      <span className="text-sm text-muted-foreground/80">{text}</span>
-    </div>
-  );
+  if (!hasHandshake && !hasPro) {
+    return null;
+  }
 
   return (
     <section
@@ -174,125 +174,57 @@ export function TwoPathsSection() {
       <div ref={component} className="block md:hidden bg-background relative z-20 w-full py-10 overflow-hidden">
           <div className="flex justify-center mb-8">
             <div className="bg-secondary/50 p-1.5 rounded-full flex items-center relative gap-1 border border-border/50 backdrop-blur-sm">
-              <button
-                onClick={() => {
-                  setActiveTab("community");
-                  const st = ScrollTrigger.getAll().find(s => s.trigger === component.current);
-                  if (st) window.scrollTo({ top: st.start, behavior: "smooth" });
-                }}
-                className={cn(
-                  "px-8 py-2.5 rounded-full text-sm font-semibold transition-all duration-300 relative z-10",
-                  activeTab === "community"
-                    ? "bg-background text-foreground shadow-sm"
-                    : "text-muted-foreground hover:text-foreground",
-                )}
-              >
-                Free
-              </button>
-              <button
-                onClick={() => {
-                  setActiveTab("professional");
-                  const st = ScrollTrigger.getAll().find(s => s.trigger === component.current);
-                  if (st) window.scrollTo({ top: st.end - 50, behavior: "smooth" });
-                }}
-                className={cn(
-                  "px-8 py-2.5 rounded-full text-sm font-semibold transition-all duration-300 relative z-10",
-                  activeTab === "professional"
-                    ? "bg-background text-foreground shadow-sm"
-                    : "text-muted-foreground hover:text-foreground",
-                )}
-              >
-                Paid
-              </button>
+              {hasHandshake && (
+                <button
+                  onClick={() => {
+                    setActiveTab("community");
+                    const st = ScrollTrigger.getAll().find(s => s.trigger === component.current);
+                    if (st) window.scrollTo({ top: st.start, behavior: "smooth" });
+                  }}
+                  className={cn(
+                    "px-8 py-2.5 rounded-full text-sm font-semibold transition-all duration-300 relative z-10",
+                    activeTab === "community"
+                      ? "bg-background text-foreground shadow-sm"
+                      : "text-muted-foreground hover:text-foreground",
+                  )}
+                >
+                  Handshake
+                </button>
+              )}
+              {hasPro && (
+                <button
+                  onClick={() => {
+                    setActiveTab("professional");
+                    const st = ScrollTrigger.getAll().find(s => s.trigger === component.current);
+                    if (st) window.scrollTo({ top: st.end - 50, behavior: "smooth" });
+                  }}
+                  className={cn(
+                    "px-8 py-2.5 rounded-full text-sm font-semibold transition-all duration-300 relative z-10",
+                    activeTab === "professional"
+                      ? "bg-background text-foreground shadow-sm"
+                      : "text-muted-foreground hover:text-foreground",
+                  )}
+                >
+                  Pro
+                </button>
+              )}
             </div>
           </div>
           <div ref={slider} className="flex w-fit will-change-transform">
-            <div className="panel w-screen flex justify-center px-4 will-change-transform">
-              <div className={cn(cardClasses(false), "w-full max-w-[90vw] transform-gpu")}>
-                <div className="mb-8 relative z-10">
-                  <div className="flex items-center gap-3 mb-4">
-                    <div className="p-2.5 bg-primary/10 rounded-xl">
-                      <Users className="w-6 h-6 text-primary" />
-                    </div>
-                    <h3 className="text-xl font-medium text-foreground">
-                      Handshake Testing Path
-                    </h3>
-                  </div>
-                  <div className="mt-4 flex items-baseline">
-                    <span className="text-4xl font-bold tracking-tight">Free</span>
-                    <span className="ml-2 text-sm font-medium text-muted-foreground">/ forever</span>
-                  </div>
-                  <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
-                    Test apps, earn points, and get your app tested by the community.
-                  </p>
-                </div>
-                <div className="flex-1 space-y-4 mb-8 relative z-10">
-                  <div className="space-y-3">
-                    {['Reciprocal "give-to-get" model', "Earn points for testing other apps", "Access a diverse pool of real users"].map((feature, i) => (
-                      <FeatureItem key={i} text={feature} isPopular={false} />
-                    ))}
-                  </div>
-                  <div className="border-t border-border/50 pt-4 mt-4">
-                    <p className="text-xs font-semibold uppercase tracking-wider text-destructive mb-3">Limitations</p>
-                    {["You must test other apps first to earn points", "No guaranteed timeline, depends on community availability", "Testers are volunteers, not vetted professionals", "No Google Play compliance support included"].map((con, i) => (
-                      <div className="mb-3 last:mb-0" key={i}>
-                        <ConItem text={con} />
-                      </div>
-                    ))}
-                  </div>
-                </div>
-                <div className="mt-auto relative z-10">
-                  <Link href={ROUTES.AUTHENTICATED.HANDSHAKE_TESTING} className="w-full block">
-                    <Button className="w-full py-6 rounded-full font-semibold text-base transition-all duration-300" variant="outline">
-                      Explore Handshake Testing
-                    </Button>
-                  </Link>
+            {hasHandshake && (
+              <div className="panel w-screen flex justify-center px-4 will-change-transform">
+                <div className="w-full max-w-[90vw] transform-gpu">
+                  <HandshakePlanCard />
                 </div>
               </div>
-            </div>
-            <div className="panel w-screen flex justify-center px-4 will-change-transform">
-              <div className={cn(cardClasses(true), "w-full max-w-[90vw] transform-gpu")}>
-                <div className="absolute bottom-0 left-0 -ml-20 -mb-20 w-60 h-60 bg-black/10 rounded-full blur-3xl pointer-events-none transform-gpu" />
-                <div className="absolute top-6 right-6 opacity-20 rotate-12">
-                  <Star className="w-24 h-24 fill-current text-white" />
-                </div>
-                <div className="absolute -top-4 left-0 right-0 flex justify-center z-10">
-                  <Badge className="bg-black dark:bg-white text-white dark:text-black hover:bg-black/60 px-4 py-1.5 text-xs font-bold uppercase tracking-widest shadow-lg border-0">
-                    Recommended
-                  </Badge>
-                </div>
-                <div className="mb-8 relative z-10">
-                  <div className="flex items-center gap-3 mb-4">
-                    <div className="p-2.5 bg-white/20 rounded-xl">
-                      <Briefcase className="w-6 h-6 text-white" />
-                    </div>
-                    <h3 className="text-xl font-medium text-white">
-                      The Professional Path
-                    </h3>
-                  </div>
-                  <div className="mt-4 flex items-baseline">
-                    <span className="text-4xl font-bold tracking-tight">Paid</span>
-                    <span className="ml-2 text-sm font-medium text-primary-foreground/80">/ per project</span>
-                  </div>
-                  <p className="mt-4 text-sm leading-relaxed text-primary-foreground/90">
-                    Hire our professional testers for guaranteed, high-quality results.
-                  </p>
-                </div>
-                <div className="flex-1 space-y-4 mb-8 relative z-10">
-                  {["15-20 Days Testing Cycle", "15-25 Vetted Testers", "Google Play Production Answers", "Managed by inTesters Team", "Detailed Bug Reports", "Device & OS Coverage Stats", "Google Play Compliance Check"].map((feature, i) => (
-                    <FeatureItem key={i} text={feature} isPopular={true} />
-                  ))}
-                </div>
-                <div className="mt-auto relative z-10">
-                  <Link href={ROUTES.PUBLIC.PRICING} className="w-full block">
-                    <HoverBorderGradient containerClassName="w-full" className="bg-white text-primary flex items-center justify-center space-x-2 w-full py-4 font-bold">
-                      <Zap className="w-4 h-4 mr-2 fill-current" />
-                      <span className="font-semibold">View Packages</span>
-                    </HoverBorderGradient>
-                  </Link>
+            )}
+            {hasPro && (
+              <div className="panel w-screen flex justify-center px-4 will-change-transform">
+                <div className="w-full max-w-[90vw] transform-gpu">
+                  <ProCard />
                 </div>
               </div>
-            </div>
+            )}
           </div>
         </div>
 
@@ -303,106 +235,22 @@ export function TwoPathsSection() {
           whileInView="visible"
           viewport={{ once: true, margin: "-100px" }}
           variants={containerVariants}
-          className="hidden md:grid md:grid-cols-2 gap-8 lg:gap-12 max-w-5xl mx-auto items-stretch"
+          className={cn(
+            "hidden md:grid gap-8 lg:gap-12 max-w-5xl mx-auto items-stretch",
+            hasHandshake && hasPro ? "md:grid-cols-2" : "md:grid-cols-1 max-w-md",
+          )}
         >
-          {/* Path 1: Free (Standard Style) - Desktop Only */}
-          <div className="h-full">
-            <motion.div
-              variants={itemVariants}
-              whileHover={{ y: -8, scale: 1.02 }}
-              className={cardClasses(false)}
-            >
-              <div className="mb-8 relative z-10">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="p-2.5 bg-primary/10 rounded-xl">
-                    <Users className="w-6 h-6 text-primary" />
-                  </div>
-                  <h3 className="text-xl font-medium text-foreground">
-                    The Free Path
-                  </h3>
-                </div>
-                <div className="mt-4 flex items-baseline">
-                  <span className="text-4xl font-bold tracking-tight">Free</span>
-                  <span className="ml-2 text-sm font-medium text-muted-foreground">/ forever</span>
-                </div>
-                <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
-                  Test apps, earn points, and get your app tested by the community.
-                </p>
-              </div>
-              <div className="flex-1 space-y-4 mb-8 relative z-10">
-                <div className="space-y-3">
-                  {['Reciprocal "give-to-get" model', "Earn points for testing other apps", "Access a diverse pool of real users"].map((feature, i) => (
-                    <FeatureItem key={i} text={feature} isPopular={false} />
-                  ))}
-                </div>
-                <div className="border-t border-border/50 pt-4 mt-4">
-                  <p className="text-xs font-semibold uppercase tracking-wider text-destructive mb-3">Limitations</p>
-                  {["You must test other apps first to earn points", "No guaranteed timeline, depends on community availability", "Testers are volunteers, not vetted professionals", "No Google Play compliance support included"].map((con, i) => (
-                    <div className="mb-3 last:mb-0" key={i}>
-                      <ConItem text={con} />
-                    </div>
-                  ))}
-                </div>
-              </div>
-              <div className="mt-auto relative z-10">
-                <Link href={ROUTES.AUTHENTICATED.HANDSHAKE_TESTING} className="w-full block">
-                  <Button className="w-full py-6 rounded-full font-semibold text-base transition-all duration-300" variant="outline">
-                    Explore Handshake Testing
-                  </Button>
-                </Link>
-              </div>
-            </motion.div>
-          </div>
+          {hasHandshake && (
+            <div className="h-full">
+              <HandshakePlanCard />
+            </div>
+          )}
 
-          {/* Path 2: Professional (Popular Style) - Desktop Only */}
-          <div className="h-full">
-            <motion.div
-              variants={itemVariants}
-              whileHover={{ y: -8, scale: 1.05 }}
-              className={cardClasses(true)}
-            >
-              <>
-                <div className="absolute top-6 right-6 opacity-20 rotate-12">
-                  <Star className="w-24 h-24 fill-current text-white" />
-                </div>
-                <div className="absolute -top-4 left-0 right-0 flex justify-center z-10">
-                  <Badge className="bg-black dark:bg-white text-white dark:text-black hover:bg-black/60 px-4 py-1.5 text-xs font-bold uppercase tracking-widest shadow-lg border-0">
-                    Recommended
-                  </Badge>
-                </div>
-              </>
-              <div className="mb-8 relative z-10">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="p-2.5 bg-white/20 rounded-xl">
-                    <Briefcase className="w-6 h-6 text-white" />
-                  </div>
-                  <h3 className="text-xl font-medium text-white">
-                    The Professional Path
-                  </h3>
-                </div>
-                <div className="mt-4 flex items-baseline">
-                  <span className="text-4xl font-bold tracking-tight">Paid</span>
-                  <span className="ml-2 text-sm font-medium text-primary-foreground/80">/ per project</span>
-                </div>
-                <p className="mt-4 text-sm leading-relaxed text-primary-foreground/90">
-                  Hire our professional testers for guaranteed, high-quality results.
-                </p>
-              </div>
-              <div className="flex-1 space-y-4 mb-8 relative z-10">
-                {["15-20 Days Testing Cycle", "15-25 Vetted Testers", "Google Play Production Answers", "Managed by inTesters Team", "Detailed Bug Reports", "Device & OS Coverage Stats", "Google Play Compliance Check"].map((feature, i) => (
-                  <FeatureItem key={i} text={feature} isPopular={true} />
-                ))}
-              </div>
-              <div className="mt-auto relative z-10">
-                <Link href={ROUTES.PUBLIC.PRICING} className="w-full block">
-                  <HoverBorderGradient containerClassName="w-full" className="bg-white text-primary flex items-center justify-center space-x-2 w-full py-4 font-bold">
-                    <Zap className="w-4 h-4 mr-2 fill-current" />
-                    <span className="font-semibold">View Packages</span>
-                  </HoverBorderGradient>
-                </Link>
-              </div>
-            </motion.div>
-          </div>
+          {hasPro && (
+            <div className="h-full">
+              <ProCard />
+            </div>
+          )}
         </motion.div>
       </div>
     </section>

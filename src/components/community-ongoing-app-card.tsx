@@ -32,7 +32,7 @@ export function CommunityOngoingAppCard({ app }: CommunityOngoingAppCardProps) {
         className={`relative h-full flex flex-col overflow-hidden rounded-3xl bg-card border transition-all duration-500 hover:-translate-y-1 ${
           isTestingNotStarted
             ? "border-amber-500/30 hover:border-amber-500/50 hover:shadow-[0_10px_40px_-15px_rgba(245,158,11,0.2)] dark:hover:shadow-[0_10px_40px_-20px_rgba(245,158,11,0.1)]"
-            : "border-border/50 hover:border-blue-500/50 hover:shadow-[0_10px_40px_-15px_rgba(59,130,246,0.2)] dark:hover:shadow-[0_10px_40px_-20px_rgba(59,130,246,0.1)]"
+            : "border-border/50 hover:border-emerald-500/50 hover:shadow-[0_10px_40px_-15px_rgba(59,130,246,0.2)] dark:hover:shadow-[0_10px_40px_-20px_rgba(59,130,246,0.1)]"
         }`}
       >
         {/* Decorative Gradient Blob */}
@@ -40,7 +40,7 @@ export function CommunityOngoingAppCard({ app }: CommunityOngoingAppCardProps) {
           className={`absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl -mr-10 -mt-10 transition-all duration-500 ${
             isTestingNotStarted
               ? "bg-amber-500/5 group-hover:bg-amber-500/10"
-              : "bg-blue-500/5 group-hover:bg-blue-500/10"
+              : "bg-emerald-500/5 group-hover:bg-emerald-500/10"
           }`}
         />
 
@@ -50,7 +50,7 @@ export function CommunityOngoingAppCard({ app }: CommunityOngoingAppCardProps) {
             <div className="relative">
               <div
                 className={`absolute inset-0 blur-xl rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 ${
-                  isTestingNotStarted ? "bg-amber-500/20" : "bg-blue-500/20"
+                  isTestingNotStarted ? "bg-amber-500/20" : "bg-emerald-500/20"
                 }`}
               />
               <SafeImage
@@ -76,7 +76,7 @@ export function CommunityOngoingAppCard({ app }: CommunityOngoingAppCardProps) {
             ) : (
               <Badge
                 variant="outline"
-                className="rounded-full px-3 py-0.5 bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-200 dark:border-blue-800"
+                className="rounded-full px-3 py-0.5 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-200 dark:border-emerald-800"
               >
                 Ongoing
               </Badge>
@@ -89,7 +89,7 @@ export function CommunityOngoingAppCard({ app }: CommunityOngoingAppCardProps) {
               className={`text-xl font-bold text-card-foreground transition-colors duration-300 line-clamp-1 mb-2 ${
                 isTestingNotStarted
                   ? "group-hover:text-amber-600 dark:group-hover:text-amber-400"
-                  : "group-hover:text-blue-600 dark:group-hover:text-blue-400"
+                  : "group-hover:text-emerald-600 dark:group-hover:text-emerald-400"
               }`}
             >
               {app?.androidApp?.appName}
@@ -105,7 +105,7 @@ export function CommunityOngoingAppCard({ app }: CommunityOngoingAppCardProps) {
               className={`flex items-center gap-1.5 text-xs font-medium text-muted-foreground bg-secondary/40 px-2.5 py-1.5 rounded-md border border-transparent transition-colors ${
                 isTestingNotStarted
                   ? "group-hover:border-amber-500/10"
-                  : "group-hover:border-blue-500/10"
+                  : "group-hover:border-emerald-500/10"
               }`}
             >
               <Smartphone className="w-3.5 h-3.5" />
@@ -119,7 +119,7 @@ export function CommunityOngoingAppCard({ app }: CommunityOngoingAppCardProps) {
                 </span>
               </div>
             ) : (
-              <div className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground bg-secondary/40 px-2.5 py-1.5 rounded-md border border-transparent group-hover:border-blue-500/10 transition-colors">
+              <div className="flex items-center gap-1.5 text-xs font-medium text-muted-foreground bg-secondary/40 px-2.5 py-1.5 rounded-md border border-transparent group-hover:border-emerald-500/10 transition-colors">
                 <Timer className="w-3.5 h-3.5" />
                 <span>
                   {daysCompleted}/{totalDays} Days
@@ -135,7 +135,7 @@ export function CommunityOngoingAppCard({ app }: CommunityOngoingAppCardProps) {
             className={`flex flex-col gap-3 p-4 bg-secondary/30 rounded-2xl border transition-colors duration-300 ${
               isTestingNotStarted
                 ? "border-amber-500/10 group-hover:border-amber-500/20"
-                : "border-border/40 group-hover:border-blue-500/20"
+                : "border-border/40 group-hover:border-emerald-500/20"
             }`}
           >
             <div className="w-full">
@@ -147,7 +147,7 @@ export function CommunityOngoingAppCard({ app }: CommunityOngoingAppCardProps) {
                   className={
                     isTestingNotStarted
                       ? "text-amber-600 dark:text-amber-400"
-                      : "text-blue-600 dark:text-blue-400"
+                      : "text-emerald-600 dark:text-emerald-400"
                   }
                 >
                   {isTestingNotStarted
@@ -164,10 +164,10 @@ export function CommunityOngoingAppCard({ app }: CommunityOngoingAppCardProps) {
                 className={
                   isTestingNotStarted
                     ? "h-2 bg-amber-100 dark:bg-amber-950/50"
-                    : "h-2 bg-blue-100 dark:bg-blue-950/50"
+                    : "h-2 bg-blue-100 dark:bg-emerald-950/50"
                 }
                 indicatorClassName={
-                  isTestingNotStarted ? "bg-amber-500" : "bg-blue-500"
+                  isTestingNotStarted ? "bg-amber-500" : "bg-emerald-500"
                 }
               />
             </div>
@@ -176,7 +176,7 @@ export function CommunityOngoingAppCard({ app }: CommunityOngoingAppCardProps) {
               className={`flex items-center justify-center gap-2 text-sm font-semibold mt-1 ${
                 isTestingNotStarted
                   ? "text-amber-600 dark:text-amber-400"
-                  : "text-blue-600 dark:text-blue-400"
+                  : "text-emerald-600 dark:text-emerald-400"
               }`}
             >
               {isTestingNotStarted ? (

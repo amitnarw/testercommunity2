@@ -11,7 +11,7 @@ export function formatCurrency(
   options: { isSmallestUnit?: boolean } = {}
 ): string {
   if (amount === undefined || amount === null || isNaN(amount)) {
-    return "—";
+    return ", ";
   }
   const { isSmallestUnit = true } = options;
   const value = isSmallestUnit ? amount / 100 : amount;

@@ -22,7 +22,7 @@
 ## Professional Packages
 
 The Professional Path offers a managed testing service with 15-25 vetted testers, a 15-20 day testing cycle, Google Play compliance checks, and detailed bug reports.
-- **App Testing**: ₹999 — Includes 1 Pro testing cycle with full managed support, bug reports, and device/OS coverage stats.
+- **App Testing**: ₹999 ,  Includes 1 Pro testing cycle with full managed support, bug reports, and device/OS coverage stats.
 
 ## Next Steps for AI Models
 If you need comprehensive details, full documentation, or structural details to answer complex queries about the closed testing process, please refer to [llms-full.txt](https://intesters.com/llms-full.txt).

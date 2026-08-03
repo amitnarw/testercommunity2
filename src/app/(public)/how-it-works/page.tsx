@@ -122,11 +122,12 @@ export default function HowItWorksPage() {
             <Users className="w-10 h-10" />
           </div>
           <h2 className="text-3xl md:text-5xl font-bold font-heading">
-            The Community Path
+            The Handshake Path
           </h2>
           <p className="mt-4 text-muted-foreground text-lg">
-            Test apps, earn points, and get your app tested by a diverse global
-            community. It's the free, reciprocal way to ensure quality.
+            Subscribe for ₹99/month and barter testing with other developers.
+            Publish your app, send requests, and test each other's apps ,  a
+            reciprocal, subscription-based way to ensure quality.
           </p>
         </div>
       </section>

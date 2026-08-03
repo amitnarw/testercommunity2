@@ -53,7 +53,7 @@ function DashboardContent() {
           transition={{ duration: 0.4, delay: 0.25, ease: "easeOut" }}
           className="mb-8"
         >
-          <div className="grid gap-4 lg:grid-cols-2">
+          <div className="grid gap-4 lg:grid-cols-2 overflow-hidden">
             <NotificationsCard
               notifications={summary.notifications}
               totalUnread={summary.totalUnread}

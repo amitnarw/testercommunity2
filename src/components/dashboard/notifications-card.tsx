@@ -15,7 +15,7 @@ interface NotificationsCardProps {
 
 export function NotificationsCard({ notifications, totalUnread }: NotificationsCardProps) {
   return (
-    <div className="rounded-[2.5rem] border border-border/30 bg-card/50 p-5">
+    <div className="rounded-[2.5rem] border border-border/30 bg-card/50 p-5 overflow-hidden">
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
           <StatLabel>Notifications</StatLabel>

@@ -125,8 +125,8 @@ export function OfferAppModal({
                     className={cn(
                       "w-full flex items-center gap-3 rounded-xl border p-3 text-left transition-all",
                       isSelected
-                        ? "border-primary bg-primary/10"
-                        : "border-border/60 bg-secondary/30 hover:border-primary/40",
+                        ? "border-emerald-500/30 bg-emerald-500/10"
+                        : "border-border/60 bg-secondary/30 hover:border-emerald-500/40",
                     )}
                   >
                     <div className="relative h-12 w-12 flex-shrink-0 overflow-hidden rounded-lg bg-muted">
@@ -148,7 +148,7 @@ export function OfferAppModal({
                       </p>
                     </div>
                     {isSelected && (
-                      <Check className="w-5 h-5 text-primary flex-shrink-0" />
+                      <Check className="w-5 h-5 text-emerald-600 flex-shrink-0" />
                     )}
                   </button>
                 );

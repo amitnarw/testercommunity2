@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { Loader2, Save, Users, Bug, Rocket, Layout, Smartphone, Coins, Zap, Banknote, MessageSquare, Bot } from "lucide-react";
+import { Loader2, Save, Zap, Banknote, MessageSquare, Bot } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -10,24 +10,45 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { FeedbackModal } from "@/components/feedback-modal";
 import { useControlRoomData, useUpdateControlRoom } from "@/hooks/useAdmin";
+import { IconPickerModal } from "@/components/admin/icon-picker-modal";
+import { resolveIcon } from "@/lib/lucideIconCatalog";
+
+ interface StatCardDef {
+   id: string;
+   iconName: string;
+   title: string;
+   description: string;
+   value: string;
+ }
+
+  const LANDING_STAT_DEFINITIONS: StatCardDef[] = [
+   { id: "countriesSupported", iconName: "Globe",       title: "Countries Supported",      description: "Developers and testers worldwide.",  value: "10+" },
+   { id: "bugsFound",          iconName: "Bug",          title: "Bugs Squashed",          description: "Critical & minor bugs found.",       value: "554+" },
+   { id: "proAppsTested",      iconName: "Rocket",       title: "Pro Apps Tested",        description: "Paid apps fully tested.",            value: "4200+" },
+   { id: "platformUptime",     iconName: "Shield",       title: "Platform Uptime",        description: "Reliable platform availability.",    value: "99%" },
+   { id: "uniqueDevices",      iconName: "Smartphone",   title: "Unique Devices",         description: "Diverse Android models.",            value: "350+" },
+   { id: "fastTurnaround",     iconName: "Clock",        title: "Fast Turnaround",      description: "Average testing turnaround time.",   value: "48hr" },
+ ];
 
 export default function AdminControlRoomPage() {
   const { data: controlRoom, isLoading } = useControlRoomData();
   const updateMutation = useUpdateControlRoom();
 
   const [formValues, setFormValues] = useState({
-    communitySize: 100,
-    bugsFound: 554,
-    proAppsTested: 55,
-    communityApps: 106,
-    uniqueDevices: 350,
-    communityPoints: 25000,
+    landingHeading: "",
+    landingSubheading: "",
+    landingStatTitles: [] as Array<{ id: string; title: string }>,
+    landingStatDescriptions: [] as Array<{ id: string; description: string }>,
+    landingStatValues: [] as Array<{ id: string; value: string }>,
     profileSurveyPoints: 200,
     pointsWithdrawalLimit: 2000,
     pointsWithdrawalThreshold: 20000,
     humanChatEnabled: true,
     alexSystemPrompt: "",
   });
+
+  // Unified, editable view of the 6 stat cards (resolved: DB value overrides default).
+  const [statCards, setStatCards] = useState<StatCardDef[]>([...LANDING_STAT_DEFINITIONS]);
 
   const [feedbackModal, setFeedbackModal] = useState<{
     open: boolean;
@@ -40,27 +61,70 @@ export default function AdminControlRoomPage() {
 
   const [toggleSaved, setToggleSaved] = useState(false);
 
+  const [iconPickerCard, setIconPickerCard] = useState<string | null>(null);
+
   useEffect(() => {
     if (controlRoom) {
       setFormValues({
-        communitySize: controlRoom.communitySize ?? 100,
-        bugsFound: controlRoom.bugsFound ?? 554,
-        proAppsTested: controlRoom.proAppsTested ?? 55,
-        communityApps: controlRoom.communityApps ?? 106,
-        uniqueDevices: controlRoom.uniqueDevices ?? 350,
-        communityPoints: controlRoom.communityPoints ?? 25000,
+        landingHeading: controlRoom.landingHeading ?? "",
+        landingSubheading: controlRoom.landingSubheading ?? "",
+        landingStatTitles: controlRoom.landingStatTitles ?? [],
+        landingStatDescriptions: controlRoom.landingStatDescriptions ?? [],
+        landingStatValues: controlRoom.landingStatValues ?? [],
         profileSurveyPoints: controlRoom.profileSurveyPoints ?? 200,
         pointsWithdrawalLimit: controlRoom.pointsWithdrawalLimit ?? 2000,
         pointsWithdrawalThreshold: controlRoom.pointsWithdrawalThreshold ?? 20000,
         humanChatEnabled: controlRoom.humanChatEnabled ?? true,
         alexSystemPrompt: controlRoom.alexSystemPrompt ?? "",
       });
+
+      // Resolve the 6 editable cards: DB overrides defaults by id (canonical order preserved).
+      const titles = controlRoom.landingStatTitles ?? [];
+      const descriptions = controlRoom.landingStatDescriptions ?? [];
+      const values = controlRoom.landingStatValues ?? [];
+      const icons = controlRoom.landingStatIcons ?? [];
+      setStatCards(
+        LANDING_STAT_DEFINITIONS.map((card) => {
+          const t = titles.find((x) => x.id === card.id);
+          const d = descriptions.find((x) => x.id === card.id);
+          const v = values.find((x) => x.id === card.id);
+          const ic = icons.find((x) => x.id === card.id);
+          return {
+            ...card,
+            title: (typeof t?.title === "string" && t.title.trim() !== "") || typeof t?.title === "number"
+              ? String(t.title)
+              : card.title,
+            description:
+              (typeof d?.description === "string" && d.description.trim() !== "") || typeof d?.description === "number"
+                ? String(d.description)
+                : card.description,
+            value:
+              typeof v?.value === "string" && v.value.trim() !== ""
+                ? v.value
+                : card.value,
+            iconName:
+              typeof ic?.icon === "string" && ic.icon.trim() !== ""
+                ? ic.icon
+                : card.iconName,
+          };
+        }),
+      );
     }
   }, [controlRoom]);
 
-  const handleChange = (field: string, value: string | number | boolean) => {
-    setFormValues((prev) => ({ ...prev, [field]: value }));
-  };
+   const handleChange = (field: string, value: string | number | boolean) => {
+     setFormValues((prev) => ({ ...prev, [field]: value }));
+   };
+
+   // Update one field of a stat card by its id; adds a new entry when editing (so blanks can be restored to defaults).
+    const updateStatCard = (id: string, field: "title" | "description" | "value" | "iconName", next: string) => {
+      setStatCards((prev) =>
+        prev.map((card) =>
+          card.id === id ? { ...card, [field]: next } : card,
+        ),
+      );
+    };
+
 
   const showFeedback = useCallback(
     (status: "success" | "error", title: string, description: string) => {
@@ -75,24 +139,24 @@ export default function AdminControlRoomPage() {
     [],
   );
 
-  const handleSaveStats = () => {
-    updateMutation.mutate(
-      {
-        communitySize: formValues.communitySize,
-        bugsFound: formValues.bugsFound,
-        proAppsTested: formValues.proAppsTested,
-        communityApps: formValues.communityApps,
-        uniqueDevices: formValues.uniqueDevices,
-        communityPoints: formValues.communityPoints,
-      },
-      {
-        onSuccess: () =>
-          showFeedback("success", "Landing Page Stats Saved", "Impact section values updated."),
-        onError: (err: any) =>
-          showFeedback("error", "Landing Page Stats Update Failed", err?.message || "Something went wrong."),
-      },
-    );
-  };
+   const handleSaveStats = () => {
+      updateMutation.mutate(
+        {
+          landingHeading: formValues.landingHeading,
+          landingSubheading: formValues.landingSubheading,
+          landingStatTitles: statCards.map((c) => ({ id: c.id, title: c.title })),
+          landingStatDescriptions: statCards.map((c) => ({ id: c.id, description: c.description })),
+          landingStatValues: statCards.map((c) => ({ id: c.id, value: c.value })),
+          landingStatIcons: statCards.map((c) => ({ id: c.id, icon: c.iconName })),
+        },
+        {
+          onSuccess: () =>
+            showFeedback("success", "Landing Page Stats Saved", "Impact section values updated."),
+          onError: (err: any) =>
+            showFeedback("error", "Landing Page Stats Update Failed", err?.message || "Something went wrong."),
+        },
+      );
+    };
 
   const handleSavePoints = () => {
     updateMutation.mutate(
@@ -159,6 +223,18 @@ export default function AdminControlRoomPage() {
         />
       )}
 
+      {iconPickerCard && (
+        <IconPickerModal
+          open={true}
+          onOpenChange={(open) => { if (!open) setIconPickerCard(null); }}
+          value={statCards.find((c) => c.id === iconPickerCard)?.iconName ?? ""}
+          onSelect={(name) => {
+            updateStatCard(iconPickerCard, "iconName", name);
+            setIconPickerCard(null);
+          }}
+        />
+      )}
+
       <div>
         <h2 className="text-2xl sm:text-3xl font-bold bg-gradient-to-b from-primary to-primary/40 bg-clip-text text-transparent leading-[unset]">
           Control Room
@@ -175,96 +251,112 @@ export default function AdminControlRoomPage() {
               <Zap className="h-5 w-5 text-primary" />
               Landing Page Stats
             </CardTitle>
-            <CardDescription>
-              These values appear on the homepage under the &ldquo;From Local to Global Ripples&rdquo; impact section.
-            </CardDescription>
+             <CardDescription>
+               These values appear on the homepage under the Global Impact Section.
+             </CardDescription>
           </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+           <CardContent className="space-y-8">
               <div className="space-y-2">
-                <Label htmlFor="communitySize" className="flex items-center gap-2">
-                  <Users className="h-4 w-4 text-muted-foreground" />
-                  Thriving Community
-                </Label>
+                <Label htmlFor="landingHeading">Section Heading</Label>
                 <Input
-                  id="communitySize"
-                  type="number"
-                  value={formValues.communitySize}
-                  onChange={(e) => handleChange("communitySize", parseInt(e.target.value) || 0)}
+                  id="landingHeading"
+                  maxLength={300}
+                  value={formValues.landingHeading}
+                  onChange={(e) => handleChange("landingHeading", e.target.value)}
                 />
+                <p className="text-xs text-muted-foreground">
+                  The main heading displayed at the top of the Global Impact Section on the homepage.
+                </p>
               </div>
+
               <div className="space-y-2">
-                <Label htmlFor="bugsFound" className="flex items-center gap-2">
-                  <Bug className="h-4 w-4 text-muted-foreground" />
-                  Bugs Squashed
-                </Label>
-                <Input
-                  id="bugsFound"
-                  type="number"
-                  value={formValues.bugsFound}
-                  onChange={(e) => handleChange("bugsFound", parseInt(e.target.value) || 0)}
+                <Label htmlFor="landingSubheading">Section Subheading</Label>
+                <Textarea
+                  id="landingSubheading"
+                  maxLength={300}
+                  rows={3}
+                  value={formValues.landingSubheading}
+                  onChange={(e) => handleChange("landingSubheading", e.target.value)}
                 />
+                <p className="text-xs text-muted-foreground">
+                  The supporting description text displayed below the heading.
+                </p>
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="proAppsTested" className="flex items-center gap-2">
-                  <Rocket className="h-4 w-4 text-muted-foreground" />
-                  Pro Apps Tested
-                </Label>
-                <Input
-                  id="proAppsTested"
-                  type="number"
-                  value={formValues.proAppsTested}
-                  onChange={(e) => handleChange("proAppsTested", parseInt(e.target.value) || 0)}
-                />
+
+              <div className="space-y-4">
+                <div className="space-y-1">
+                  <Label className="text-sm font-medium text-muted-foreground">Stat Cards</Label>
+                  <p className="text-xs text-muted-foreground">
+                    Edit the heading, description, and numeric value for each stat card shown on the homepage.
+                  </p>
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {statCards.map((card) => {
+                    const Icon = resolveIcon(card.iconName);
+                    return (
+                      <div key={card.id} className="border rounded-lg p-4 space-y-3">
+                        <div className="flex items-center gap-2 font-medium">
+                          <Button
+                            type="button"
+                            variant="ghost"
+                            size="icon"
+                            className="h-7 w-7"
+                            onClick={() => setIconPickerCard(card.id)}
+                            title="Change icon"
+                          >
+                            <Icon className="h-4 w-4 text-muted-foreground" />
+                          </Button>
+                          {card.title}
+                        </div>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                          <div className="space-y-1.5">
+                             <Label htmlFor={`value-${card.id}`} className="text-xs">Value</Label>
+                             <Input
+                               id={`value-${card.id}`}
+                               type="text"
+                               value={card.value}
+                               onChange={(e) =>
+                                 updateStatCard(card.id, "value", e.target.value)
+                               }
+                             />
+                           </div>
+                          <div className="space-y-1.5">
+                            <Label htmlFor={`title-${card.id}`} className="text-xs">Title</Label>
+                            <Input
+                              id={`title-${card.id}`}
+                              maxLength={80}
+                              value={card.title}
+                              onChange={(e) => updateStatCard(card.id, "title", e.target.value)}
+                            />
+                          </div>
+                          <div className="sm:col-span-2 space-y-1.5">
+                            <Label htmlFor={`desc-${card.id}`} className="text-xs">Description</Label>
+                            <Textarea
+                              id={`desc-${card.id}`}
+                              maxLength={120}
+                              rows={2}
+                              value={card.description}
+                              onChange={(e) => updateStatCard(card.id, "description", e.target.value)}
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="communityApps" className="flex items-center gap-2">
-                  <Layout className="h-4 w-4 text-muted-foreground" />
-                  Community Apps
-                </Label>
-                <Input
-                  id="communityApps"
-                  type="number"
-                  value={formValues.communityApps}
-                  onChange={(e) => handleChange("communityApps", parseInt(e.target.value) || 0)}
-                />
+
+              <div className="flex justify-end pt-4 border-t mt-4">
+                <Button onClick={handleSaveStats} disabled={updateMutation.isPending} size="sm" className="gap-2">
+                  {updateMutation.isPending ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : (
+                    <Save className="h-4 w-4" />
+                  )}
+                  Save Section
+                </Button>
               </div>
-              <div className="space-y-2">
-                <Label htmlFor="uniqueDevices" className="flex items-center gap-2">
-                  <Smartphone className="h-4 w-4 text-muted-foreground" />
-                  Unique Devices
-                </Label>
-                <Input
-                  id="uniqueDevices"
-                  type="number"
-                  value={formValues.uniqueDevices}
-                  onChange={(e) => handleChange("uniqueDevices", parseInt(e.target.value) || 0)}
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="communityPoints" className="flex items-center gap-2">
-                  <Coins className="h-4 w-4 text-muted-foreground" />
-                  Community Points
-                </Label>
-                <Input
-                  id="communityPoints"
-                  type="number"
-                  value={formValues.communityPoints}
-                  onChange={(e) => handleChange("communityPoints", parseInt(e.target.value) || 0)}
-                />
-              </div>
-            </div>
-            <div className="flex justify-end pt-4 border-t mt-4">
-              <Button onClick={handleSaveStats} disabled={updateMutation.isPending} size="sm" className="gap-2">
-                {updateMutation.isPending ? (
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                ) : (
-                  <Save className="h-4 w-4" />
-                )}
-                Save Section
-              </Button>
-            </div>
-          </CardContent>
+            </CardContent>
         </Card>
 
         <Card>

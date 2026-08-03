@@ -438,7 +438,7 @@ function AddAppFormContent() {
           </h1>
           <p className="text-muted-foreground text-md sm:text-lg leading-relaxed">
             Join hundreds of developers who have improved their apps with
-            professional community testing
+            professional testing services
           </p>
 
           {/* Step indicator */}

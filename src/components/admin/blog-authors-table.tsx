@@ -92,7 +92,7 @@ export function BlogAuthorsTable({
                 </TableCell>
                 <TableCell className="font-medium">{author.name}</TableCell>
                 <TableCell className="max-w-[300px] truncate text-muted-foreground">
-                  {author.bio || "—"}
+                  {author.bio || ", "}
                 </TableCell>
                 <TableCell className="hidden md:table-cell text-muted-foreground">
                   {format(new Date(author.createdAt), "MMM dd, yyyy")}

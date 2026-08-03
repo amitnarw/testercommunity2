@@ -618,7 +618,7 @@ function PermissionsMatrixContent() {
                                   </TooltipTrigger>
                                   <TooltipContent side="bottom">
                                     <p>
-                                      {modPerm.moduleName.replace(/_/g, " ")} —{" "}
+                                      {modPerm.moduleName.replace(/_/g, " ")} , {" "}
                                       {field.label}
                                       {isDirty ? " (unsaved)" : ""}
                                     </p>

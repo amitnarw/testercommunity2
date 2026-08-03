@@ -91,13 +91,13 @@ export function UserWalletModal({ userId, open, onClose }: Props) {
                         </TableCell>
                         <TableCell>
                           <span className={t.status === "CREDIT" ? "text-green-600" : t.status === "DEBIT" ? "text-red-600" : ""}>
-                            {t.points !== null && t.points !== 0 ? `${t.status === "CREDIT" ? "+" : ""}${t.points}` : "—"}
+                            {t.points !== null && t.points !== 0 ? `${t.status === "CREDIT" ? "+" : ""}${t.points}` : ", "}
                           </span>
                         </TableCell>
                         <TableCell>
-                          {t.package !== null && t.package !== 0 ? `${t.status === "CREDIT" ? "+" : ""}${t.package}` : "—"}
+                          {t.package !== null && t.package !== 0 ? `${t.status === "CREDIT" ? "+" : ""}${t.package}` : ", "}
                         </TableCell>
-                        <TableCell className="text-xs capitalize">{t.action?.replace(/_/g, " ") || "—"}</TableCell>
+                        <TableCell className="text-xs capitalize">{t.action?.replace(/_/g, " ") || ", "}</TableCell>
                         <TableCell className="text-xs">{new Date(t.createdAt).toLocaleDateString()}</TableCell>
                       </TableRow>
                     ))}
@@ -126,7 +126,7 @@ export function UserWalletModal({ userId, open, onClose }: Props) {
                           <TableCell>
                             <Badge className={`text-xs ${withdrawalStatusColors[w.status] || ""}`}>{w.status}</Badge>
                           </TableCell>
-                          <TableCell className="text-xs">{w.note || "—"}</TableCell>
+                          <TableCell className="text-xs">{w.note || ", "}</TableCell>
                           <TableCell className="text-xs">{new Date(w.requestedAt).toLocaleDateString()}</TableCell>
                         </TableRow>
                       ))}

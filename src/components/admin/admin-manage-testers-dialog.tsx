@@ -263,7 +263,7 @@ export function AdminManageTestersDialog({
                         </span>
                       </div>
 
-                      {/* Content — stacked on mobile, grid on desktop */}
+                      {/* Content ,  stacked on mobile, grid on desktop */}
                       <div className="flex-1 min-w-0">
                         {/* Top row: name + view details */}
                         <div className="flex items-center justify-between gap-2">
@@ -292,7 +292,7 @@ export function AdminManageTestersDialog({
                           </Link>
                         </div>
 
-                        {/* Bottom row: stats — always visible */}
+                        {/* Bottom row: stats ,  always visible */}
                         <div className="flex items-center gap-2 sm:gap-3 mt-1.5 flex-wrap">
                           <div className="flex items-center gap-1">
                             <Activity className="w-3 h-3 text-blue-500" />

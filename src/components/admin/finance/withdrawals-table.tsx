@@ -121,7 +121,7 @@ export function WithdrawalsTable() {
                       <TableCell>
                         <Badge className={`text-xs ${statusColors[w.status] || "bg-gray-500/20 text-gray-600"}`}>{w.status}</Badge>
                       </TableCell>
-                      <TableCell className="text-xs max-w-[150px] truncate">{w.note || "—"}</TableCell>
+                      <TableCell className="text-xs max-w-[150px] truncate">{w.note || ", "}</TableCell>
                       <TableCell className="text-xs">{new Date(w.requestedAt).toLocaleDateString()}</TableCell>
                       <TableCell>
                         <div className="flex gap-1">

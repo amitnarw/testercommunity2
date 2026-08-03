@@ -37,11 +37,11 @@ export function HowItWorksProcessCard({
             <p className="text-muted-foreground mb-6 flex-grow">{description}</p>
             
             <div className="space-y-4">
-                {/* Community Path Details */}
+                {/* Handshake Path Details */}
                 <div className="bg-secondary/50 p-4 rounded-lg">
                     <div className="flex items-center gap-3 mb-2">
                         <Users className="w-5 h-5 text-primary"/>
-                        <h4 className="font-semibold">Community Path</h4>
+                        <h4 className="font-semibold">Handshake Path</h4>
                     </div>
                     <p className="text-sm text-muted-foreground">{communityDetails}</p>
                 </div>

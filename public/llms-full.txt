@@ -1,4 +1,4 @@
-# inTesters — Full Knowledge base & Platform Documentation
+# inTesters ,  Full Knowledge base & Platform Documentation
 
 This document serves as the comprehensive knowledge base for the **inTesters** community tester platform. It is formatted to be fully parsed and ingested by AI search engines, Large Language Models (LLMs), and automated scrapers.
 
@@ -88,7 +88,7 @@ Purchased packages are credited to your account and never expire. One package is
 
 - **Company Name**: GAMDIX PRIVATE LIMITED
 - **Founding Year**: 2024
-- **Support Email**: intesters@nexmail.in
+- **Support Email**: support@system.intesters.com
 - **Website**: https://intesters.com
 - **Twitter / X**: https://x.com/inTesters
 - **Reddit**: https://www.reddit.com/r/inTesters

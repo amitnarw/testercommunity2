@@ -18,7 +18,7 @@ const COMPANY = {
   gstin: "07AAKCG5039N1Z4",
   pan: "AAKCG5039N",
   sacCode: "998313",
-  email: "contact@gamdix.in",
+  email: "pro-billing@system.intesters.com",
   website: "www.intesters.com",
   stateCode: "07",
   stateName: "Delhi",
@@ -110,9 +110,19 @@ export function TaxInvoice({ invoice }: TaxInvoiceProps) {
                 <div className="mt-1.5 flex items-center gap-2 flex-wrap justify-end">
                   <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">No.</span>
                   <span className="font-mono text-sm font-bold text-slate-700 bg-slate-50 px-2.5 py-1 rounded-md border border-slate-200">{invoice.invoice_number}</span>
-                  <span className="px-3 py-1 rounded-lg text-xs font-extrabold uppercase tracking-widest text-white bg-emerald-500">
-                    Paid
-                  </span>
+                  {payment?.refundStatus === "FULL" ? (
+                    <span className="px-3 py-1 rounded-lg text-xs font-extrabold uppercase tracking-widest text-white bg-rose-500">
+                      Refunded
+                    </span>
+                  ) : payment?.refundStatus === "PARTIAL" ? (
+                    <span className="px-3 py-1 rounded-lg text-xs font-extrabold uppercase tracking-widest text-white bg-amber-500">
+                      Partially Refunded
+                    </span>
+                  ) : (
+                    <span className="px-3 py-1 rounded-lg text-xs font-extrabold uppercase tracking-widest text-white bg-emerald-500">
+                      Paid
+                    </span>
+                  )}
                   {isExport && (
                     <span className="px-3 py-1 rounded-md text-xs font-bold uppercase tracking-wider text-white" style={{ backgroundColor: PRIMARY }}>
                       Export
@@ -332,6 +342,51 @@ export function TaxInvoice({ invoice }: TaxInvoiceProps) {
             </div>
           </div>
         </div>
+
+        {payment?.refunds && payment.refunds.length > 0 && (
+          <>
+            {/** DIVIDER */}
+            <div className="mx-10 max-[639px]:mx-4 h-px bg-slate-100" />
+
+            {/** REFUND DETAILS */}
+            <div className="px-10 max-[639px]:px-4 py-3">
+              <p className="text-[10px] font-bold uppercase tracking-[0.2em] mb-2" style={{ color: PRIMARY }}>Refund Details</p>
+              <table className="w-full text-xs">
+                <thead>
+                  <tr className="border-b-2" style={{ borderColor: "#f43f5e" }}>
+                    <th className="pb-1.5 text-left font-semibold text-slate-500 text-[10px]">Date</th>
+                    <th className="pb-1.5 text-right font-semibold text-slate-500 text-[10px]">Amount</th>
+                    <th className="pb-1.5 text-left font-semibold text-slate-500 text-[10px]">Reason</th>
+                    <th className="pb-1.5 text-left font-semibold text-slate-500 text-[10px]">Refund ID</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {payment.refunds.map((refund, idx) => (
+                    <tr key={refund.id} className={idx < (payment.refunds?.length ?? 0) - 1 ? "border-b border-slate-100" : ""}>
+                      <td className="py-1.5 text-slate-700">
+                        {format(new Date(refund.createdAt), "dd MMM yyyy")}
+                      </td>
+                      <td className="py-1.5 text-right font-semibold text-rose-600">
+                        {formatCurrency(refund.amount, payment.currency)}
+                      </td>
+                      <td className="py-1.5 text-slate-500">
+                        {refund.reason || "\u2014"}
+                      </td>
+                      <td className="py-1.5 font-mono text-[10px] text-slate-400">
+                        {refund.razorpayRefundId}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              {payment?.refundStatus === "PARTIAL" && (
+                <p className="mt-2 text-xs text-slate-500 italic">
+                  Amount Refunded: {formatCurrency(payment.refunds?.reduce((s, r) => s + r.amount, 0) ?? 0, payment?.currency || "INR")} of {formatCurrency(payment?.amount ?? 0, payment?.currency || "INR")}
+                </p>
+              )}
+            </div>
+          </>
+        )}
 
         {/** DECLARATION + SIGNATORY */}
         <div className="px-10 max-[639px]:px-4 py-3 print:mt-auto">

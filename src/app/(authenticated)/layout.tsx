@@ -44,16 +44,16 @@ export default function AuthenticatedLayout({
 
   return (
     <PageTransition>
-      <div className="relative flex flex-col min-h-screen">
+      <div className="relative flex flex-col min-h-screen overflow-x-hidden">
         <div className="flex flex-1">
           <Sidebar
             onLogout={handleLogout}
             isCollapsed={isSidebarCollapsed}
             setIsCollapsed={setIsSidebarCollapsed}
           />
-          <div className="flex flex-col flex-1 md:pl-20">
+          <div className="flex flex-col flex-1 min-w-0 md:pl-20">
             <Navbar onLogout={handleLogout} />
-            <main className="flex-1 bg-secondary/50 print:bg-transparent">{children}</main>
+            <main className="flex-1 bg-secondary/50 overflow-x-hidden print:bg-transparent">{children}</main>
             <Footer />
           </div>
         </div>

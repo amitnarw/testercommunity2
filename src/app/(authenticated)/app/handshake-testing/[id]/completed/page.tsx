@@ -1,7 +1,7 @@
 "use client";
 
 import { notFound } from "next/navigation";
-import { CheckCircle, Bug, Lightbulb, PartyPopper } from "lucide-react";
+import { CheckCircle, Bug, Lightbulb, PartyPopper, Handshake } from "lucide-react";
 import { BackButton } from "@/components/back-button";
 import { AppActionButton, AppInfoSidebar } from "@/components/appInfoSidebar";
 import { SubmittedFeedback } from "@/components/community-dashboard/submitted-feedback";
@@ -76,12 +76,10 @@ const TestCompleteSection = ({
 
       <motion.div
         variants={itemVariants}
-        className="bg-gradient-to-br from-primary to-primary/40 p-6 rounded-2xl flex flex-col justify-center items-center text-center overflow-hidden"
+        className="bg-gradient-to-br from-emerald-600 to-emerald-700 p-6 rounded-2xl flex flex-col justify-center items-center text-center overflow-hidden"
       >
-        <p className="text-xs sm:text-sm text-white/80">Points Earned</p>
-        <p className="text-6xl sm:text-7xl font-bold text-white">
-          {app.points.toLocaleString()}
-        </p>
+        <Handshake className="w-10 h-10 text-white/80 mb-2" />
+        <p className="text-xs sm:text-sm text-white/80">Handshake Completed</p>
       </motion.div>
 
       <motion.div
@@ -105,11 +103,11 @@ const TestCompleteSection = ({
             }}
           />
         </div>
-        <h3 className="text-xl sm:text-2xl font-semibold mb-3 bg-gradient-to-b from-primary to-primary/50 text-transparent bg-clip-text">
+        <h3 className="text-xl sm:text-2xl font-semibold mb-3 bg-gradient-to-b from-emerald-600 to-emerald-700 text-transparent bg-clip-text">
           Feedback Summary
         </h3>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center">
-          <div className="bg-gradient-to-br from-primary to-primary/50 text-primary-foreground p-5 rounded-lg">
+          <div className="bg-gradient-to-br from-emerald-600 to-emerald-700 text-emerald-600-foreground p-5 rounded-lg">
             <p className="text-xs">Total Testers</p>
             <p className="text-4xl font-bold">
               {feedbackBreakdown?.totalTesters}
@@ -169,7 +167,7 @@ export default function AppTestingCompletedPage({
   if (isPending) {
     return (
       <div className="flex bg-[#f8fafc] dark:bg-[#0f151e] min-h-screen items-center justify-center">
-        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+        <Loader2 className="w-8 h-8 animate-spin text-emerald-600" />
       </div>
     );
   }
@@ -185,7 +183,6 @@ export default function AppTestingCompletedPage({
     icon: appDetails.androidApp?.appLogoUrl || "",
     shortDescription: appDetails.androidApp?.description || "",
     category: appDetails.androidApp?.appCategory?.name || "General",
-    points: appDetails.rewardPoints || 0,
     androidVersion: appDetails.minimumAndroidVersion?.toString() || "8.0",
     estimatedTime: `${appDetails.totalDay || 14} Days`,
     playStoreUrl: `https://play.google.com/store/apps/details?id=${appDetails.androidApp?.packageName}`,

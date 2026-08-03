@@ -2,14 +2,14 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "App Testing Details | inTesters",
-  description: "View detailed information about this app testing opportunity. Join the community to test apps and earn points for your feedback.",
+  description: "View detailed information about this handshake testing opportunity. Join the barter network and test each other's apps.",
   keywords: "app testing details, Android app testing, beta testing, user testing, app feedback, inTesters",
   alternates: {
     canonical: "/app/handshake-testing/[id]",
   },
   openGraph: {
     title: "App Testing Details | inTesters",
-    description: "View detailed information about this app testing opportunity. Join the community to test apps and earn points for your feedback.",
+    description: "View detailed information about this handshake testing opportunity. Join the barter network and test each other's apps.",
     type: "website",
     locale: "en_US",
     url: "/app/handshake-testing/[id]",
@@ -26,7 +26,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "App Testing Details | inTesters",
-    description: "View detailed information about this app testing opportunity. Join the community to test apps and earn points for your feedback.",
+    description: "View detailed information about this handshake testing opportunity. Join the barter network and test each other's apps.",
     images: ["/inTesters-logo-light.svg"],
   },
 };

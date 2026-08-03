@@ -602,7 +602,7 @@ export function SubmissionForm({
                           Quick Walkthrough <span className="text-sm font-medium text-black">(2-min watch)</span>
                         </h3>
                         <p className="text-white/80 text-sm text-center sm:text-start">
-                          Watch a short video on how to submit your app for community testing.
+                          Watch a short video on how to submit your app for handshake testing.
                         </p>
                       </div>
                       <Button size="lg" variant="outline" type="button">
@@ -1068,7 +1068,7 @@ export function SubmissionForm({
                         {!hasActiveSubscription && (
                           <Link
                             href="/pricing"
-                            className="shrink-0 inline-flex items-center justify-center rounded-xl bg-primary px-5 h-11 text-sm font-semibold text-primary-foreground hover:opacity-90"
+                             className="shrink-0 inline-flex items-center justify-center rounded-xl bg-emerald-600 px-5 h-11 text-sm font-semibold text-white hover:bg-emerald-700"
                           >
                             Subscribe
                           </Link>

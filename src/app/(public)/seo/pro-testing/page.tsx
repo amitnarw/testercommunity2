@@ -14,8 +14,7 @@ import { Button } from "@/components/ui/button";
 import { ROUTES } from "@/lib/routes";
 import { HoverBorderGradient } from "@/components/ui/hover-border-gradient";
 import { MagneticButton } from "@/components/magnetic-button";
-import { ProfessionalPlanCard, EnterprisePlanCard } from "@/components/pricing-cards";
-import { usePricingData, useRegionalPricing } from "@/hooks/useUser";
+import { PricingCardsGrid } from "@/components/pricing-cards-grid";
 import {
   BrowserFrame,
   PhoneFrame,
@@ -143,7 +142,7 @@ function ProSamplesSection() {
             className="text-muted-foreground text-sm md:text-base leading-relaxed max-w-xl mx-auto"
           >
             Want to see what you&apos;re getting before committing? Explore the
-            Pro Testing dashboard with live sample data — no signup required.
+            Pro Testing dashboard with live sample data ,  no signup required.
           </motion.p>
         </div>
 
@@ -223,13 +222,6 @@ function ProSamplesSection() {
 }
 
 function ProPricingSection() {
-  const { data: pricingPlans } = usePricingData();
-  const { data: regionalPricing } = useRegionalPricing();
-
-  const entryPlan = pricingPlans?.length
-    ? pricingPlans.reduce((min, p) => (p.price < min.price ? p : min), pricingPlans[0])
-    : null;
-
   return (
     <section className="py-16 md:py-32 relative overflow-hidden">
       <div className="absolute inset-0 bg-dot-pattern opacity-[0.08] pointer-events-none" />
@@ -254,35 +246,7 @@ function ProPricingSection() {
           </p>
         </motion.div>
 
-        <div className="grid md:grid-cols-2 gap-6 lg:gap-8 max-w-3xl mx-auto items-stretch">
-          {entryPlan && (
-            <ProfessionalPlanCard
-              plan={entryPlan}
-              regionalPricing={regionalPricing}
-              actionButton={
-                <AutoTransitionLink href="/app/pro-testing/add-app" className="w-full">
-                  <Button className="w-full py-5 rounded-full font-bold text-sm bg-white text-primary hover:bg-white/90 shadow-lg">
-                    <Zap className="w-4 h-4 mr-2 fill-current" />
-                    Submit Your App
-                  </Button>
-                </AutoTransitionLink>
-              }
-            />
-          )}
-
-          <EnterprisePlanCard
-            actionButton={
-              <AutoTransitionLink href="/contact-us" className="w-full">
-                <Button
-                  variant="outline"
-                  className="w-full py-5 rounded-full font-semibold text-sm bg-gradient-to-r from-[#8364E8] to-[#D397FA] text-white border-0 hover:opacity-90"
-                >
-                  Contact Sales
-                </Button>
-              </AutoTransitionLink>
-            }
-          />
-        </div>
+        <PricingCardsGrid variant="seo" />
 
         <motion.div
           initial={{ opacity: 0, y: 15 }}

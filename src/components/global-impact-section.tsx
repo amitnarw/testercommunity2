@@ -8,31 +8,30 @@ import {
   useTransform,
   type HTMLMotionProps,
 } from "framer-motion";
-import {
-  Globe,
-  Users,
-  Bug,
-  Smartphone,
-  Coins,
-  Rocket,
-  Layout,
-} from "lucide-react";
+import { Globe } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useRegionalPricing } from "@/hooks/useUser";
 import { getPublicStats } from "@/lib/apiCalls";
+import { resolveIcon } from "@/lib/lucideIconCatalog";
 
 const AnimatedCounter = ({
   to,
   suffix = "",
   prefix = "",
+  displayValue,
 }: {
-  to: number;
+  to?: number;
   suffix?: string;
   prefix?: string;
+  displayValue?: string;
 }) => {
   const [count, setCount] = useState(0);
   const ref = useRef<HTMLSpanElement>(null);
   const isInView = useInView(ref, { once: true, margin: "0px" });
+
+  const match = displayValue?.match(/^(-?\d+(?:\.\d+)?)(.*)$/);
+  const target = match ? parseInt(match[1], 10) : (to ?? 0);
+  const trailing = match ? match[2] : suffix;
+  const isPlainText = displayValue !== undefined && !match;
 
   useEffect(() => {
     if (isInView) {
@@ -44,7 +43,7 @@ const AnimatedCounter = ({
       const animate = () => {
         frame++;
         const progress = Math.min(frame / totalFrames, 1);
-        const current = Math.round(from + (to - from) * progress);
+        const current = Math.round(from + (target - from) * progress);
         setCount(current);
 
         if (frame < totalFrames) {
@@ -58,13 +57,14 @@ const AnimatedCounter = ({
         if (rafId) cancelAnimationFrame(rafId);
       };
     }
-  }, [isInView, to]);
+  }, [isInView, target]);
 
   return (
     <span ref={ref}>
       {prefix}
-      {count.toLocaleString()}
-      {suffix}
+      {isPlainText
+        ? displayValue
+        : `${count.toLocaleString()}${trailing}`}
     </span>
   );
 };
@@ -115,17 +115,41 @@ const StatCard = ({
   );
 };
 
+ interface LandingStatCard {
+   id: string;
+   iconName: string;
+   title: string;
+   description: string;
+   value: string;
+   className?: string;
+   descriptionClassName: string;
+ }
+
+  const LANDING_STAT_CARDS: LandingStatCard[] = [
+   { id: "countriesSupported", iconName: "Globe", title: "Countries Supported", description: "Developers and testers worldwide.", value: "10+", className: "col-span-2 lg:col-span-2 bg-gradient-to-br from-primary to-primary/50 text-primary-foreground", descriptionClassName: "text-primary-foreground/80 mt-1 text-xs" },
+   { id: "bugsFound", iconName: "Bug", title: "Bugs Squashed", description: "Critical & minor bugs found.", value: "554+", className: undefined, descriptionClassName: "text-muted-foreground mt-1 text-[10px]" },
+   { id: "proAppsTested", iconName: "Rocket", title: "Pro Apps Tested", description: "Paid apps fully tested.", value: "4200+", className: "bg-gradient-to-br from-primary to-primary/50 text-primary-foreground", descriptionClassName: "text-primary-foreground/80 mt-1 text-[10px]" },
+   { id: "platformUptime", iconName: "Shield", title: "Platform Uptime", description: "Reliable platform availability.", value: "99%", className: undefined, descriptionClassName: "text-muted-foreground mt-1 text-[10px]" },
+   { id: "uniqueDevices", iconName: "Smartphone", title: "Unique Devices", description: "Diverse Android models.", value: "350+", className: undefined, descriptionClassName: "text-muted-foreground mt-1 text-[10px]" },
+   { id: "fastTurnaround", iconName: "Clock", title: "Fast Turnaround", description: "Average testing turnaround time.", value: "48hr", className: "col-span-2 lg:col-span-2 bg-gradient-to-br from-primary to-primary/50 text-primary-foreground", descriptionClassName: "text-primary-foreground/80 mt-1 text-xs" },
+ ];
+
 export function GlobalImpactSection() {
   const sectionRef = useRef(null);
-  const { data: regionalPricing } = useRegionalPricing();
-  const [stats, setStats] = useState<{
-    communitySize?: number;
-    bugsFound?: number;
-    proAppsTested?: number;
-    communityApps?: number;
-    uniqueDevices?: number;
-    communityPoints?: number;
-  } | null>(null);
+   const [stats, setStats] = useState<{
+     countriesSupported?: number;
+     bugsFound?: number;
+     proAppsTested?: number;
+     platformUptime?: number;
+     uniqueDevices?: number;
+     fastTurnaround?: number;
+     landingHeading?: string;
+     landingSubheading?: string;
+     landingStatTitles?: Array<{ id: string; title: string }>;
+     landingStatDescriptions?: Array<{ id: string; description: string }>;
+      landingStatValues?: Array<{ id: string; value: string }>;
+      landingStatIcons?: Array<{ id: string; icon: string }>;
+   } | null>(null);
   const { scrollYProgress } = useScroll({
     target: sectionRef,
     offset: ["start end", "end start"],
@@ -136,16 +160,34 @@ export function GlobalImpactSection() {
     getPublicStats().then(setStats);
   }, []);
 
-  const displayPrice = regionalPricing
-    ? `${regionalPricing.currency_symbol}${Math.round(regionalPricing.amount / 100)}`
-    : "₹999";
+   const landingHeading =
+     (stats?.landingHeading?.trim() || "") ||
+     "The No.1 Google Play Testing Service";
+   const landingSubheading =
+     (stats?.landingSubheading?.trim() || "") ||
+     "inTesters is the Most Trusted and Reliable Google Play Closed Testing Service, loved by more than 1000+ Developers across 180+ countries.";
 
-  const communitySize = stats?.communitySize ?? 100;
-  const bugsFound = stats?.bugsFound ?? 554;
-  const proAppsTested = stats?.proAppsTested ?? 55;
-  const communityApps = stats?.communityApps ?? 106;
-  const uniqueDevices = stats?.uniqueDevices ?? 350;
-  const communityPoints = stats?.communityPoints ?? 25000;
+    const resolvedCards = LANDING_STAT_CARDS.map((card) => {
+      const t = stats?.landingStatTitles?.find((x) => x.id === card.id);
+      const d = stats?.landingStatDescriptions?.find((x) => x.id === card.id);
+      const v = stats?.landingStatValues?.find((x) => x.id === card.id);
+      const ic = stats?.landingStatIcons?.find((x) => x.id === card.id);
+      const value =
+        typeof v?.value === "string" && v.value.trim() !== ""
+          ? v.value
+          : card.value;
+      const title =
+        typeof t?.title === "string" && t.title.trim() !== "" ? t.title : card.title;
+      const description =
+        typeof d?.description === "string" && d.description.trim() !== ""
+          ? d.description
+          : card.description;
+      const iconName =
+        typeof ic?.icon === "string" && ic.icon.trim() !== ""
+          ? ic.icon
+          : card.iconName;
+      return { ...card, title, description, value, iconName };
+    });
 
   return (
     <section
@@ -164,89 +206,35 @@ export function GlobalImpactSection() {
 
       <div className="container mx-auto px-4 md:px-6 relative z-10 flex flex-col items-center justify-center lg:w-[80%] lg:mx-auto">
         <div className="text-center max-w-3xl mx-auto">
-          <h2 className="text-3xl md:text-5xl font-bold mt-4">
-            From Local{" "}
-            <span className="bg-gradient-to-br from-primary to-accent bg-clip-text text-transparent">
-              {displayPrice}
-            </span>{" "}
-            to Global Ripples
-          </h2>
-          <p className="mt-4 text-muted-foreground text-lg">
-            Our platform empowers developers and testers worldwide, creating a
-            virtuous cycle of quality and innovation. Here&apos;s a look at our
-            collective impact.
-          </p>
+            <h2 className="text-3xl md:text-5xl font-bold mt-4">
+              {landingHeading}
+            </h2>
+            <p className="mt-4 text-muted-foreground text-lg">
+              {landingSubheading}
+            </p>
         </div>
 
         <div className="mt-16 grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-4 w-full max-w-6xl">
-          <StatCard
-            title="Thriving Community"
-            icon={<Users className="w-4 h-4" />}
-            className="col-span-2 lg:col-span-2 bg-gradient-to-br from-primary to-primary/50 text-primary-foreground"
-          >
-            <div className="relative z-10 h-full flex flex-col justify-center">
-              <p className="text-2xl sm:text-3xl font-bold">
-                <AnimatedCounter to={communitySize} suffix="+" />
-              </p>
-              <p className="text-primary-foreground/80 mt-1 text-xs">
-                Vetted testers across 12+ countries.
-              </p>
-            </div>
-          </StatCard>
-          <StatCard title="Bugs Squashed" icon={<Bug className="w-4 h-4" />}>
-            <p className="text-2xl sm:text-3xl font-bold">
-              <AnimatedCounter to={bugsFound} suffix="+" />
-            </p>
-            <p className="text-muted-foreground mt-1 text-[10px]">
-              Critical & minor bugs found.
-            </p>
-          </StatCard>
-          <StatCard
-            title="Pro Apps Tested"
-            icon={<Rocket className="w-4 h-4" />}
-            className="bg-gradient-to-br from-primary to-primary/50 text-primary-foreground"
-          >
-            <p className="text-2xl sm:text-3xl font-bold">
-              <AnimatedCounter to={proAppsTested} suffix="+" />
-            </p>
-            <p className="text-primary-foreground/80 mt-1 text-[10px]">
-              Paid apps fully tested.
-            </p>
-          </StatCard>
-          <StatCard
-            title="Community Apps"
-            icon={<Layout className="w-4 h-4" />}
-          >
-            <p className="text-2xl sm:text-3xl font-bold">
-              <AnimatedCounter to={communityApps} suffix="+" />
-            </p>
-            <p className="text-muted-foreground mt-1 text-[10px]">
-              Free apps submitted by users.
-            </p>
-          </StatCard>
-          <StatCard
-            title="Unique Devices"
-            icon={<Smartphone className="w-4 h-4" />}
-          >
-            <p className="text-2xl sm:text-3xl font-bold">
-              <AnimatedCounter to={uniqueDevices} suffix="+" />
-            </p>
-            <p className="text-muted-foreground mt-1 text-[10px]">
-              Diverse Android models.
-            </p>
-          </StatCard>
-          <StatCard
-            title="Community Points"
-            icon={<Coins className="w-4 h-4" />}
-            className="col-span-2 lg:col-span-2 bg-gradient-to-br from-primary to-primary/50 text-primary-foreground"
-          >
-            <p className="text-2xl sm:text-3xl font-bold">
-              <AnimatedCounter to={communityPoints} suffix="+" />
-            </p>
-            <p className="text-primary-foreground/80 mt-1 text-xs">
-              Points earned by community.
-            </p>
-          </StatCard>
+          {resolvedCards.map((card) => {
+            const Icon = resolveIcon(card.iconName);
+            return (
+              <StatCard
+                key={card.id}
+                title={card.title}
+                icon={<Icon className="w-4 h-4" />}
+                className={card.className}
+              >
+                <div className="relative z-10 h-full flex flex-col justify-center">
+                  <p className="text-2xl sm:text-3xl font-bold">
+                    <AnimatedCounter displayValue={card.value} />
+                  </p>
+                  <p className={card.descriptionClassName}>
+                    {card.description}
+                  </p>
+                </div>
+              </StatCard>
+            );
+          })}
         </div>
       </div>
     </section>
