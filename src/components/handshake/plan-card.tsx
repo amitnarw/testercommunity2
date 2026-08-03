@@ -213,22 +213,7 @@ export function HandshakePlanCard({
       </div>
     );
   } else {
-    actionButton = (
-      <HoverBorderGradient
-        as="button"
-        onClick={handleSubscribe}
-        disabled={processing}
-        containerClassName="w-full"
-        className="bg-white text-emerald-600 flex justify-center items-center space-x-2 w-full py-4 font-bold cursor-pointer"
-      >
-        {processing ? (
-          <Loader2 className="w-4 h-4 mr-1 animate-spin" />
-        ) : (
-          <Zap className="w-4 h-4 mr-2 fill-current" />
-        )}
-        <span className="font-semibold">Subscribe</span>
-      </HoverBorderGradient>
-    );
+    actionButton = null;
   }
 
   if (!planPending && !dbPlan) {
