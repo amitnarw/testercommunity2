@@ -398,28 +398,6 @@ export const getUserProfileData =
     }
   };
 
-export const saveInitialProfileData = async () => {
-  try {
-    await api.get(API_ROUTES.USER + "/initial-user-profile");
-    return true;
-  } catch (error) {
-    console.error("Error saving intial value of user-detail:", error);
-    if (axios.isAxiosError(error)) {
-      const status = error.response?.status;
-      const responseData = error.response?.data;
-      console.error("Axios error:", status, responseData);
-
-      throw new Error(
-        responseData?.message || error.message || "Unknown Axios error",
-      );
-    } else if (error instanceof Error) {
-      throw new Error(error.message);
-    } else {
-      throw new Error(JSON.stringify(error));
-    }
-  }
-};
-
 export const saveDiscoverySource = async (discovery_source: string) => {
   try {
     await api.put(API_ROUTES.USER + "/discovery-source", {
@@ -1653,31 +1631,6 @@ export async function doSessionLogoutAll() {
     return response?.data?.data;
   } catch (error) {
     console.error("Error while logging out all sessions:", error);
-    if (axios.isAxiosError(error)) {
-      const status = error.response?.status;
-      const responseData = error.response?.data;
-      console.error("Axios error:", status, responseData);
-
-      throw new Error(
-        responseData?.message || error.message || "Unknown Axios error",
-      );
-    } else if (error instanceof Error) {
-      throw new Error(error.message);
-    } else {
-      throw new Error(JSON.stringify(error));
-    }
-  }
-}
-
-export async function getEarnPoints(): Promise<{
-  surveyPoints: number;
-  surveyDone: boolean;
-}> {
-  try {
-    const response = await api.get(API_ROUTES.USER + `/get-earn-points`);
-    return response?.data?.data;
-  } catch (error) {
-    console.error("Error fetching all sessions:", error);
     if (axios.isAxiosError(error)) {
       const status = error.response?.status;
       const responseData = error.response?.data;

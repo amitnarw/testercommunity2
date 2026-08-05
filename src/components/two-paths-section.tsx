@@ -236,7 +236,7 @@ export function TwoPathsSection() {
           viewport={{ once: true, margin: "-100px" }}
           variants={containerVariants}
           className={cn(
-            "hidden md:grid gap-8 lg:gap-12 max-w-5xl mx-auto items-stretch",
+            "hidden md:grid gap-5 max-w-4xl mx-auto items-stretch",
             hasHandshake && hasPro ? "md:grid-cols-2" : "md:grid-cols-1 max-w-md",
           )}
         >

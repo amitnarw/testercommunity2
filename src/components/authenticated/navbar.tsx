@@ -9,7 +9,6 @@ import { UserNav } from "../user-nav";
 import MobileMenu from "../mobile-menu";
 import { authClient } from "@/lib/auth-client";
 import { ROUTES } from "@/lib/routes";
-import { EarnPointsButton } from "../earn-points-button";
 import { Skeleton } from "../ui/skeleton";
 import Link from "next/link";
 import { AutoTransitionLink } from "@/components/auto-transition-link";
@@ -132,7 +131,6 @@ export default function Navbar({ onLogout }: { onLogout: () => void }) {
       <div className="container mx-auto px-4 md:px-6 max-w-full">
         {!mounted ? (
           <div className="flex items-center justify-end gap-2">
-            <EarnPointsButton />
             <Button
               variant="ghost"
               size="icon"
@@ -226,7 +224,6 @@ export default function Navbar({ onLogout }: { onLogout: () => void }) {
                     </span>
                   </Link>
                 )}
-                <EarnPointsButton />
                 <Button
                   variant="ghost"
                   size="icon"

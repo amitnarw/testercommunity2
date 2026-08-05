@@ -23,11 +23,8 @@ import { Progress } from "@/components/ui/progress";
 import {
   useProfileDataSave,
   useUserProfileData,
-  useUserProfileInitial,
-  useEarnPoints,
 } from "@/hooks/useUser";
 import SkeletonProfileSetup from "@/components/profile-setup/loading-skeleton";
-import { useRouter } from "next/navigation";
 import { LoadingButton } from "@/components/ui/loading-button";
 import { toast } from "@/hooks/use-toast";
 import { PageHeader } from "@/components/page-header";
@@ -110,7 +107,6 @@ export function ProfileSetupView({
   backHref,
   dashboardHref,
 }: ProfileSetupViewProps) {
-  const router = useRouter();
   const { data: session } = authClient.useSession();
   const isTester = (session as any)?.role?.name === "tester";
 
@@ -124,17 +120,12 @@ export function ProfileSetupView({
   const activeStepOriginalIndices = isTester ? [0, 3, 5] : [0, 1, 2, 3, 4];
 
   const [isSubmitted, setIsSubmitted] = useState(false);
-  const [submissionStatus, setSubmissionStatus] = useState<
-    "EARNED_NOW" | "ALREADY_EARNED" | "INCOMPLETE"
-  >("INCOMPLETE");
   const [profileData, setProfileData] = useState<
     Partial<UserProfileDataAttributes>
   >({});
   const [currentStep, setCurrentStep] = useState(0);
   const [previousStep, setPreviousStep] = useState(0);
   const delta = currentStep - previousStep;
-
-  const [skipClicked, setSkipClicked] = useState(false);
 
   const {
     data: userProfileData,
@@ -153,13 +144,6 @@ export function ProfileSetupView({
       setProfileData(userProfileData);
     }
   }, [userProfileIsPending, userProfileData]);
-
-  useEffect(() => {
-    if (skipClicked) {
-      router.push(dashboardHref);
-    }
-  }, [skipClicked]);
-  useUserProfileInitial({ enabled: !!skipClicked });
 
   const next = () => {
     if (currentStep < activeStepsMeta.length - 1) {
@@ -185,22 +169,12 @@ export function ProfileSetupView({
   const progress = ((currentStep + 1) / activeStepsMeta.length) * 100;
 
   const {
-    data: earnPointsData,
-    isPending: earnPointsIsPending,
-    isError: earnPointsIsError,
-    error: earnPointsError,
-  } = useEarnPoints();
-
-  const {
     mutate,
     isPending: profileDataIsPending,
     isSuccess: profileDataIsSuccess,
     isError: profileDataIsError,
-    reset: profileDataReset,
   } = useProfileDataSave({
-    onSuccess: (data) => {
-      const status = data?.status || "INCOMPLETE";
-      setSubmissionStatus(status);
+    onSuccess: () => {
       setIsSubmitted(true);
     },
     onError: (data) => {
@@ -232,10 +206,8 @@ export function ProfileSetupView({
     }
   };
 
-  if (earnPointsIsPending || userProfileIsPending)
-    return <SkeletonProfileSetup />;
-  if (earnPointsIsError || userProfileIsError)
-    return <p>{earnPointsError?.message || userProfileError?.message}</p>;
+  if (userProfileIsPending) return <SkeletonProfileSetup />;
+  if (userProfileIsError) return <p>{userProfileError?.message}</p>;
 
   return (
     <div
@@ -252,34 +224,15 @@ export function ProfileSetupView({
       )}
       <div className="w-full max-w-4xl h-auto min-h-[70vh] bg-card rounded-2xl shadow-2xl shadow-primary/10 border border-dashed flex flex-col">
         {isSubmitted ? (
-          <RegistrationSuccess
-            status={submissionStatus}
-            dashboardHref={dashboardHref}
-          />
+          <RegistrationSuccess dashboardHref={dashboardHref} />
         ) : (
           <div className="flex flex-col md:flex-row flex-1 relative">
-            {userProfileData?.initial && (
-              <div className="absolute -top-4 right-5 flex items-center gap-2">
-                <Button
-                  variant="secondary"
-                  size="sm"
-                  className="text-xs sm:text-sm p-2 sm:px-4 h-auto"
-                  onClick={() => setSkipClicked(true)}
-                >
-                  Skip for now
-                </Button>
-              </div>
-            )}
             {/* Sidebar */}
             <aside className="hidden md:flex flex-col w-1/3 bg-secondary/50 p-8 justify-between border-r rounded-l-xl">
               <div>
                 <h2 className="text-xl font-bold">Complete Your Profile</h2>
                 <p className="text-muted-foreground mt-2 text-xs">
-                  This survey is optional, but you'll get a{" "}
-                  <span className="text-primary font-bold">
-                    {earnPointsData?.surveyPoints ?? 200} point bonus
-                  </span>{" "}
-                  for completing it!
+                  Optional profile details to help personalize your experience.
                 </p>
               </div>
               <nav className="space-y-2">
@@ -374,11 +327,7 @@ export function ProfileSetupView({
                     {stepsMeta[currentStep].title}
                   </p>
                   <p className="text-xs text-muted-foreground mt-1">
-                    Optional Survey - Get{" "}
-                    <span className="text-primary font-semibold">
-                      {earnPointsData?.surveyPoints ?? 200} points
-                    </span>{" "}
-                    for completion!
+                    Optional profile details
                   </p>
                 </div>
               </div>
