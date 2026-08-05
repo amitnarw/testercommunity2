@@ -53,7 +53,10 @@ export function PricingCardsGrid({
     retry: false,
   });
 
-  const proPlan = proPlans?.find((p) => p.isPopular) ?? proPlans?.[0] ?? null;
+  const proPlan =
+    proPlans?.find((p) => p.id !== "handshake" && p.isPopular) ??
+    proPlans?.find((p) => p.id !== "handshake") ??
+    null;
   const enterprisePlan = proPlans?.find((p) => p.billingType === "CUSTOM") ?? null;
 
   const includeEnterprise = variant !== "what-pro";

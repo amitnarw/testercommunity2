@@ -6,7 +6,6 @@ import { cn } from "@/lib/utils";
 import { HoverBorderGradient } from "./ui/hover-border-gradient";
 import { ProfessionalPlanCard } from "./pricing-cards";
 import { HandshakePlanCard } from "./handshake/plan-card";
-import { motion } from "framer-motion";
 import { ROUTES } from "@/lib/routes";
 import { useQuery } from "@tanstack/react-query";
 import { getHandshakePlan, getAllPricingPlans } from "@/lib/apiCalls";
@@ -40,7 +39,9 @@ export function TwoPathsSection() {
   });
 
   const proPlan =
-    proPlans?.find((p) => p.isPopular) ?? proPlans?.[0] ?? null;
+    proPlans?.find((p) => p.id !== "handshake" && p.isPopular) ??
+    proPlans?.find((p) => p.id !== "handshake") ??
+    null;
 
   const hasHandshake = !!handshakePlan;
   const hasPro = !!proPlan;
@@ -88,29 +89,6 @@ export function TwoPathsSection() {
     return () => ro.disconnect();
   }, []);
 
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.2,
-      },
-    },
-  };
-
-  const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        type: "spring",
-        stiffness: 100,
-        damping: 20,
-      },
-    },
-  };
-
   const ProCard = () =>
     proPlan ? (
       <ProfessionalPlanCard
@@ -148,26 +126,16 @@ export function TwoPathsSection() {
       <div className="absolute inset-0 bg-gradient-to-b from-background via-transparent to-background pointer-events-none" />
 
       <div className="container relative z-10 mx-auto px-4 md:px-6">
-        <motion.div
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-100px" }}
-          variants={containerVariants}
-          className="text-center max-w-3xl mx-auto mb-10 md:mb-20"
-        >
-          <motion.div variants={itemVariants}>
-            <h2 className="text-3xl md:text-4xl font-bold tracking-tight mb-4 md:mb-6 bg-clip-text text-transparent bg-gradient-to-b from-foreground to-foreground/70 pb-2">
-              Two Paths to Get{" "}
-              <span className="text-primary italic">Your App</span> Tested
-            </h2>
-          </motion.div>
-          <motion.div variants={itemVariants}>
-            <p className="text-muted-foreground leading-relaxed max-w-2xl mx-auto text-sm md:text-base">
-              Whether you want to contribute to a community or need guaranteed
-              professional results, we have a solution that fits your needs.
-            </p>
-          </motion.div>
-        </motion.div>
+        <div className="text-center max-w-3xl mx-auto mb-10 md:mb-20">
+          <h2 className="text-3xl md:text-4xl font-bold tracking-tight mb-4 md:mb-6 bg-clip-text text-transparent bg-gradient-to-b from-foreground to-foreground/70 pb-2">
+            Two Paths to Get{" "}
+            <span className="text-primary italic">Your App</span> Tested
+          </h2>
+          <p className="text-muted-foreground leading-relaxed max-w-2xl mx-auto text-sm md:text-base">
+            Whether you want to contribute to a community or need guaranteed
+            professional results, we have a solution that fits your needs.
+          </p>
+        </div>
       </div>
 
       {/* Mobile - Pinned Section */}
@@ -230,29 +198,25 @@ export function TwoPathsSection() {
 
         <div className="container relative z-10 mx-auto px-4 md:px-6">
           {/* Desktop Grid */}
-          <motion.div
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-100px" }}
-          variants={containerVariants}
-          className={cn(
-            "hidden md:grid gap-5 max-w-4xl mx-auto items-stretch",
-            hasHandshake && hasPro ? "md:grid-cols-2" : "md:grid-cols-1 max-w-md",
-          )}
-        >
-          {hasHandshake && (
-            <div className="h-full">
-              <HandshakePlanCard />
-            </div>
-          )}
+          <div
+            className={cn(
+              "hidden md:grid gap-5 max-w-4xl mx-auto items-stretch",
+              hasHandshake && hasPro ? "md:grid-cols-2" : "md:grid-cols-1 max-w-md",
+            )}
+          >
+            {hasHandshake && (
+              <div className="h-full">
+                <HandshakePlanCard />
+              </div>
+            )}
 
-          {hasPro && (
-            <div className="h-full">
-              <ProCard />
-            </div>
-          )}
-        </motion.div>
-      </div>
+            {hasPro && (
+              <div className="h-full">
+                <ProCard />
+              </div>
+            )}
+          </div>
+        </div>
     </section>
   );
 }

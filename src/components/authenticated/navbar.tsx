@@ -15,6 +15,7 @@ import { AutoTransitionLink } from "@/components/auto-transition-link";
 import { useTesterProjects } from "@/hooks/useTester";
 import { useActAsRole } from "@/hooks/useAdmin";
 import { useGetUserNotifications } from "@/hooks/useUser";
+import { cn } from "@/lib/utils";
 
 export default function Navbar({ onLogout }: { onLogout: () => void }) {
   const pathname = usePathname();
@@ -22,11 +23,21 @@ export default function Navbar({ onLogout }: { onLogout: () => void }) {
   const { theme, setTheme } = useTheme();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const { actingAsRole, startActingAs, stopActingAs, isLoading } = useActAsRole();
   const navbarRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
     setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 0);
+    };
+    handleScroll();
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   useEffect(() => {
@@ -127,7 +138,7 @@ export default function Navbar({ onLogout }: { onLogout: () => void }) {
       .length ?? 0;
 
   return (
-    <header ref={navbarRef} className="sticky top-0 z-40 bg-brand-background md:pl-20 py-2 overflow-x-hidden print:hidden">
+    <header ref={navbarRef} className={cn("sticky top-0 z-40 md:pl-20 py-2 overflow-x-hidden print:hidden transition-colors duration-300", scrolled ? "bg-gradient-to-b from-brand-background/95 to-brand-background/30 backdrop-blur-md" : "bg-brand-background")}>
       <div className="container mx-auto px-4 md:px-6 max-w-full">
         {!mounted ? (
           <div className="flex items-center justify-end gap-2">
