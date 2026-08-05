@@ -44,20 +44,27 @@ export default function AuthenticatedLayout({
 
   return (
     <PageTransition>
-      <div className="relative flex flex-col min-h-screen overflow-x-hidden">
-        <div className="flex flex-1">
-          <Sidebar
-            onLogout={handleLogout}
-            isCollapsed={isSidebarCollapsed}
-            setIsCollapsed={setIsSidebarCollapsed}
-          />
-          <div className="flex flex-col flex-1 min-w-0 md:pl-20">
-            <Navbar onLogout={handleLogout} />
-            <main className="flex-1 bg-secondary/50 overflow-x-hidden print:bg-transparent">{children}</main>
-            <Footer />
+      <>
+        <div className="relative flex flex-col min-h-screen">
+          <div className="flex flex-1">
+            <Sidebar
+              onLogout={handleLogout}
+              isCollapsed={isSidebarCollapsed}
+              setIsCollapsed={setIsSidebarCollapsed}
+            />
+            <div className="flex flex-col flex-1 min-w-0 md:pl-20">
+              <Navbar onLogout={handleLogout} />
+              <main className="flex-1 bg-secondary/50 overflow-x-hidden print:bg-transparent">{children}</main>
+              <Footer />
+            </div>
           </div>
         </div>
-      </div>
+        {/* Bottom edge fade — at the bottom of the viewport */}
+        <div
+          aria-hidden="true"
+          className="fixed left-0 right-0 bottom-0 h-6 bg-gradient-to-t from-background/80 to-transparent pointer-events-none z-30 print:hidden"
+        />
+      </>
     </PageTransition>
   );
 }

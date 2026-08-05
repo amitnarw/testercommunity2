@@ -5,7 +5,6 @@ import {
   getAllPricingPlans,
   getAllSessions,
   getDasboardData,
-  getEarnPoints,
   getUserData,
   getUserImmediateAttention,
   getUserNotifications,
@@ -13,7 +12,6 @@ import {
   getUserWallet,
   getUserTransactions,
   saveDiscoverySource,
-  saveInitialProfileData,
   saveProfileData,
   saveUserData,
   UserTransactionsResponse,
@@ -74,16 +72,6 @@ export function useUserProfileData() {
     enabled: false,
     retry: false,
     staleTime: 0,
-  });
-
-  return query;
-}
-
-export function useUserProfileInitial(options?: { enabled?: boolean }) {
-  const query = useQuery({
-    queryFn: () => saveInitialProfileData(),
-    queryKey: ["useUserProfileInitial"],
-    enabled: options?.enabled ?? true,
   });
 
   return query;
@@ -208,21 +196,6 @@ export function useSessionLogoutAll(
   });
 
   return mutation;
-}
-
-export function useEarnPoints() {
-  const query = useQuery<
-    {
-      surveyPoints: number;
-      surveyDone: boolean;
-    },
-    Error
-  >({
-    queryFn: () => getEarnPoints(),
-    queryKey: ["useEarnPoints"],
-  });
-
-  return query;
 }
 
 // User Transactions

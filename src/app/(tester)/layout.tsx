@@ -116,7 +116,7 @@ export default function ProfessionalLayout({
 
   return (
     <PageTransition>
-      <div className="relative flex min-h-screen overflow-x-hidden">
+      <div className="relative flex min-h-screen">
         <Sidebar
           onLogout={handleLogout}
           isCollapsed={isSidebarCollapsed}

@@ -40,7 +40,6 @@ export default function AdminControlRoomPage() {
     landingStatTitles: [] as Array<{ id: string; title: string }>,
     landingStatDescriptions: [] as Array<{ id: string; description: string }>,
     landingStatValues: [] as Array<{ id: string; value: string }>,
-    profileSurveyPoints: 200,
     pointsWithdrawalLimit: 2000,
     pointsWithdrawalThreshold: 20000,
     humanChatEnabled: true,
@@ -71,7 +70,6 @@ export default function AdminControlRoomPage() {
         landingStatTitles: controlRoom.landingStatTitles ?? [],
         landingStatDescriptions: controlRoom.landingStatDescriptions ?? [],
         landingStatValues: controlRoom.landingStatValues ?? [],
-        profileSurveyPoints: controlRoom.profileSurveyPoints ?? 200,
         pointsWithdrawalLimit: controlRoom.pointsWithdrawalLimit ?? 2000,
         pointsWithdrawalThreshold: controlRoom.pointsWithdrawalThreshold ?? 20000,
         humanChatEnabled: controlRoom.humanChatEnabled ?? true,
@@ -161,7 +159,6 @@ export default function AdminControlRoomPage() {
   const handleSavePoints = () => {
     updateMutation.mutate(
       {
-        profileSurveyPoints: formValues.profileSurveyPoints,
         pointsWithdrawalLimit: formValues.pointsWithdrawalLimit,
         pointsWithdrawalThreshold: formValues.pointsWithdrawalThreshold,
       },
@@ -370,16 +367,7 @@ export default function AdminControlRoomPage() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-              <div className="space-y-2">
-                <Label htmlFor="profileSurveyPoints">Profile Survey Points</Label>
-                <Input
-                  id="profileSurveyPoints"
-                  type="number"
-                  value={formValues.profileSurveyPoints}
-                  onChange={(e) => handleChange("profileSurveyPoints", parseInt(e.target.value) || 0)}
-                />
-              </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
               <div className="space-y-2">
                 <Label htmlFor="pointsWithdrawalLimit">Withdrawal Limit</Label>
                 <Input

@@ -13,7 +13,6 @@ import { useRegisterUser, useGoogleLoginUser } from "@/hooks/useAuth";
 import { BackgroundBeams } from "@/components/ui/background-beams";
 import { LoadingButton } from "@/components/ui/loading-button";
 import { useState, useCallback, useEffect, ChangeEvent } from "react";
-import { useUserProfileData } from "@/hooks/useUser";
 import Link from "next/link";
 import { ROUTES } from "@/lib/routes";
 import { authClient } from "@/lib/auth-client";
@@ -57,31 +56,13 @@ export default function RegisterPage() {
   const { mutate: googleLoginMutate, isPending: googleLoginIsPending } =
     useGoogleLoginUser();
 
-  const {
-    data: userProfileData,
-    isSuccess: userProfileIsSuccess,
-    refetch: userProfileDataRefetch,
-    isFetching: userProfileisFetching,
-  } = useUserProfileData();
-
   const { data: sessionData } = authClient.useSession();
 
   useEffect(() => {
     if (sessionData?.session) {
-      userProfileDataRefetch();
-    }
-  }, [sessionData?.session, userProfileDataRefetch]);
-
-  useEffect(() => {
-    if (!userProfileIsSuccess || userProfileisFetching || !userProfileData)
-      return;
-
-    if (userProfileData.initial) {
-      router.replace(ROUTES.AUTHENTICATED.PROFILE_SETUP);
-    } else {
       router.replace(ROUTES.AUTHENTICATED.HANDSHAKE_TESTING);
     }
-  }, [userProfileIsSuccess, userProfileisFetching, userProfileData, router]);
+  }, [sessionData?.session, router]);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;

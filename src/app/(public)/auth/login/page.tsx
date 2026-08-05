@@ -21,7 +21,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
-import { useUserProfileData } from "@/hooks/useUser";
 import { ROUTES } from "@/lib/routes";
 import { authClient } from "@/lib/auth-client";
 import dynamic from "next/dynamic";
@@ -64,7 +63,7 @@ const LoginForm = () => {
 
   const { mutate, isPending, isSuccess, isError, error } = useLoginUser({
     onSuccess: async () => {
-      userProfileDataRefetch();
+      router.replace(ROUTES.AUTHENTICATED.DASHBOARD);
     },
     onError: (err: any) => {
       if (err.code === "EMAIL_NOT_VERIFIED") {
@@ -79,31 +78,13 @@ const LoginForm = () => {
   const { mutate: googleLoginMutate, isPending: googleLoginIsPending } =
     useGoogleLoginUser();
 
-  const {
-    data: userProfileData,
-    isSuccess: userProfileIsSuccess,
-    refetch: userProfileDataRefetch,
-    isFetching: userProfileisFetching,
-  } = useUserProfileData();
-
   const { data: sessionData } = authClient.useSession();
 
   useEffect(() => {
     if (sessionData?.session) {
-      userProfileDataRefetch();
-    }
-  }, [sessionData?.session, userProfileDataRefetch]);
-
-  useEffect(() => {
-    if (!userProfileIsSuccess || userProfileisFetching || !userProfileData)
-      return;
-
-    if (userProfileData.initial) {
-      router.replace(ROUTES.AUTHENTICATED.PROFILE_SETUP);
-    } else {
       router.replace(ROUTES.AUTHENTICATED.DASHBOARD);
     }
-  }, [userProfileIsSuccess, userProfileisFetching, userProfileData, router]);
+  }, [sessionData?.session, router]);
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
