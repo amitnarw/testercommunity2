@@ -200,6 +200,8 @@ export type UserDataAttributes = {
   email: string;
   emailVerified: string;
   image: string;
+  isActive?: boolean;
+  deactivatedAt?: string | null;
 
   createdAt: string;
   updatedAt: string;
@@ -688,9 +690,11 @@ export interface PricingResponse {
   gradientFrom?: string;
   gradientTo?: string;
   customPriceLabel?: string;
+  customPriceSuffix?: string | null;
   isPopular?: boolean;
   sequence?: number;
-  billingType?: "ONE_TIME" | "SUBSCRIPTION" | "CUSTOM";
+  billingType?: "ONE_TIME" | "SUBSCRIPTION" | "CUSTOM" | "NONE";
+  buttonAction?: "BUY" | "REDIRECT" | "NONE";
   isActive: boolean;
   ctaLabel?: string | null;
   ctaHref?: string | null;
@@ -1249,9 +1253,11 @@ export interface FinancePlan {
   gradientFrom?: string | null;
   gradientTo?: string | null;
   customPriceLabel?: string | null;
+  customPriceSuffix?: string | null;
   isPopular?: boolean;
   sequence?: number;
-  billingType?: string;
+  billingType?: "ONE_TIME" | "SUBSCRIPTION" | "CUSTOM" | "NONE";
+  buttonAction?: "BUY" | "REDIRECT" | "NONE";
   isActive: boolean;
   ctaLabel?: string | null;
   ctaHref?: string | null;

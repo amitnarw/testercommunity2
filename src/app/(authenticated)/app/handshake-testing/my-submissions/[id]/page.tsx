@@ -55,6 +55,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useToast } from "@/hooks/use-toast";
 import { EditSubmissionModal } from "@/components/community-dashboard/edit-submission-modal";
 import { StartTestingDialog } from "@/components/community-dashboard/start-testing-dialog";
+import { AppTestingChatSection } from "@/components/app-testing-chat/AppTestingChatSection";
 
 const FEEDBACK_PER_PAGE = 5;
 
@@ -549,6 +550,12 @@ function SubmissionDetailsPage({
               onComplete={handleCompleteTest}
             />
           )}
+
+          <AppTestingChatSection
+            dashboardAndHubId={appDetails.id}
+            appName={appDetails?.androidApp?.appName || "Your App"}
+            appStatus={appDetails?.status}
+          />
 
           <div
             className={`relative flex flex-col gap-10 ${

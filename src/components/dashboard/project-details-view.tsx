@@ -201,6 +201,12 @@ export default function ProjectDetailsView({
             />
           )}
 
+          <AppTestingChatSection
+            dashboardAndHubId={project.id}
+            appName={project.name}
+            appStatus={hubAppData?.status}
+          />
+
           <div
             className={`relative z-10 ${
               isUnderReviewOrRejected ? "blur-md pointer-events-none" : ""
@@ -273,11 +279,6 @@ export default function ProjectDetailsView({
                 variants={itemVariants}
                 className="lg:col-span-1 space-y-8"
               >
-                <AppTestingChatSection
-                  dashboardAndHubId={project.id}
-                  appName={project.name}
-                  appStatus={hubAppData?.status}
-                />
                 <DeviceOSCoverage osData={osData} deviceData={deviceData} />
 
                 <MediaGallery screenshots={screenshots} videos={videos} />

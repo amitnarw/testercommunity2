@@ -13,7 +13,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { Button } from "@/components/ui/button";
-import { Trash2 } from "lucide-react";
+import { Trash2, Eye } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { SafeImage } from "@/components/safe-image";
 import { BLOG_CATEGORY_LABELS } from "@/lib/types";
@@ -32,6 +32,7 @@ interface Blog {
   tags: string[];
   category: string;
   isActive: boolean;
+  viewCount: number;
   date: string;
   createdAt: string;
   updatedAt: string;
@@ -63,6 +64,7 @@ export function BlogTable({
             <TableHead>Category</TableHead>
             <TableHead>Tags</TableHead>
             <TableHead>Status</TableHead>
+            <TableHead>Views</TableHead>
             <TableHead className="hidden md:table-cell">Created</TableHead>
             <TableHead className="text-right">Actions</TableHead>
           </TableRow>
@@ -86,6 +88,9 @@ export function BlogTable({
                 <TableCell className="hidden md:table-cell">
                   <Skeleton className="h-4 w-24" />
                 </TableCell>
+                <TableCell>
+                  <Skeleton className="h-4 w-16" />
+                </TableCell>
                 <TableCell className="text-right">
                   <Skeleton className="h-8 w-20 ml-auto" />
                 </TableCell>
@@ -94,7 +99,7 @@ export function BlogTable({
           ) : blogs.length === 0 ? (
             <TableRow>
               <TableCell
-                colSpan={8}
+                colSpan={9}
                 className="text-center py-8 text-muted-foreground"
               >
                 No blog posts found.
@@ -123,7 +128,7 @@ export function BlogTable({
                     </div>
                   )}
                 </TableCell>
-                <TableCell className="font-medium max-w-[300px] truncate">
+                <TableCell className="font-medium max-w-[400px]">
                   {blog.title}
                 </TableCell>
                 <TableCell>{blog.authorName}</TableCell>
@@ -157,6 +162,12 @@ export function BlogTable({
                   >
                     {blog.isActive ? "Active" : "Draft"}
                   </Badge>
+                </TableCell>
+                <TableCell className="text-muted-foreground whitespace-nowrap">
+                  <span className="inline-flex items-center gap-1.5">
+                    <Eye className="h-3.5 w-3.5" />
+                    {(blog.viewCount ?? 0).toLocaleString()}
+                  </span>
                 </TableCell>
                 <TableCell className="hidden md:table-cell text-muted-foreground">
                   {format(new Date(blog.createdAt), "MMM dd, yyyy")}

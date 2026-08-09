@@ -33,7 +33,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Collapsible, CollapsibleContent, CollapsibleTrigger } from "@/components/ui/collapsible";
 import {
   DndContext,
   closestCenter,
@@ -55,9 +54,7 @@ import {
   GripVertical,
   Plus,
   Loader2,
-  CheckCircle2,
   AlertCircle,
-  ChevronDown,
 } from "lucide-react";
 import {
   useFinancePlans,
@@ -90,8 +87,10 @@ type PlanFormState = {
   gradientFrom: string;
   gradientTo: string;
   customPriceLabel: string;
+  customPriceSuffix: string;
   isPopular: boolean;
-  billingType: "ONE_TIME" | "SUBSCRIPTION";
+  billingType: "ONE_TIME" | "SUBSCRIPTION" | "CUSTOM" | "NONE";
+  buttonAction: "BUY" | "REDIRECT" | "NONE";
   isActive: boolean;
   ctaLabel: string;
   ctaHref: string;
@@ -108,8 +107,10 @@ const emptyForm = (): PlanFormState => ({
   gradientFrom: "",
   gradientTo: "",
   customPriceLabel: "",
+  customPriceSuffix: "",
   isPopular: false,
   billingType: "ONE_TIME",
+  buttonAction: "BUY",
   isActive: true,
   ctaLabel: "",
   ctaHref: "",
@@ -129,8 +130,14 @@ function fromPlan(p: FinancePlan): PlanFormState {
     gradientFrom: p.gradientFrom ?? "",
     gradientTo: p.gradientTo ?? "",
     customPriceLabel: p.customPriceLabel ?? "",
+    customPriceSuffix: p.customPriceSuffix ?? "",
     isPopular: !!p.isPopular,
-    billingType: p.billingType === "SUBSCRIPTION" ? "SUBSCRIPTION" : "ONE_TIME",
+    billingType:
+      p.billingType === "SUBSCRIPTION" || p.billingType === "CUSTOM" || p.billingType === "NONE"
+        ? p.billingType
+        : "ONE_TIME",
+    buttonAction:
+      p.buttonAction === "REDIRECT" || p.buttonAction === "NONE" ? p.buttonAction : "BUY",
     isActive: p.isActive ?? true,
     ctaLabel: p.ctaLabel ?? "",
     ctaHref: p.ctaHref ?? "",
@@ -203,10 +210,37 @@ function SortableRow({
           className={`text-xs ${
             plan.billingType === "SUBSCRIPTION"
               ? "bg-blue-500/20 text-blue-600 dark:text-blue-400"
-              : "bg-emerald-500/20 text-emerald-600 dark:text-emerald-400"
+              : plan.billingType === "CUSTOM"
+                ? "bg-purple-500/20 text-purple-600 dark:text-purple-400"
+                : plan.billingType === "NONE"
+                  ? "bg-zinc-500/20 text-zinc-600 dark:text-zinc-400"
+                  : "bg-emerald-500/20 text-emerald-600 dark:text-emerald-400"
           }`}
         >
-          {plan.billingType === "SUBSCRIPTION" ? "Subscription" : "One-Time"}
+          {plan.billingType === "SUBSCRIPTION"
+            ? "Subscription"
+            : plan.billingType === "CUSTOM"
+              ? "Custom"
+              : plan.billingType === "NONE"
+                ? "None"
+                : "One-Time"}
+        </Badge>
+      </TableCell>
+      <TableCell>
+        <Badge
+          className={`text-xs ${
+            plan.buttonAction === "REDIRECT"
+              ? "bg-emerald-500/20 text-emerald-600 dark:text-emerald-400"
+              : plan.buttonAction === "NONE"
+                ? "bg-zinc-500/20 text-zinc-600 dark:text-zinc-400"
+                : "bg-blue-500/20 text-blue-600 dark:text-blue-400"
+          }`}
+        >
+          {plan.buttonAction === "REDIRECT"
+            ? "Redirect"
+            : plan.buttonAction === "NONE"
+              ? "None"
+              : "Buy"}
         </Badge>
       </TableCell>
       <TableCell>
@@ -241,6 +275,66 @@ function SortableRow({
         </div>
       </TableCell>
     </TableRow>
+  );
+}
+
+function SortableFeatureRow({
+  id,
+  index,
+  value,
+  onChange,
+  onRemove,
+  removable,
+}: {
+  id: string;
+  index: number;
+  value: string;
+  onChange: (v: string) => void;
+  onRemove: () => void;
+  removable: boolean;
+}) {
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } =
+    useSortable({ id });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+  };
+
+  return (
+    <div
+      ref={setNodeRef}
+      style={style}
+      className={`flex items-center gap-2 rounded-lg ${isDragging ? "opacity-50" : ""}`}
+    >
+      <Button
+        type="button"
+        variant="ghost"
+        size="icon"
+        className="h-9 w-8 shrink-0 cursor-grab active:cursor-grabbing"
+        {...attributes}
+        {...listeners}
+        aria-label={`Reorder feature ${index + 1}`}
+      >
+        <GripVertical className="h-4 w-4 text-muted-foreground" />
+      </Button>
+      <Input
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        placeholder={`Feature ${index + 1}`}
+      />
+      <Button
+        type="button"
+        variant="ghost"
+        size="icon"
+        className="h-9 w-8 shrink-0"
+        disabled={!removable}
+        onClick={onRemove}
+        aria-label={`Remove feature ${index + 1}`}
+      >
+        <Trash2 className="h-4 w-4 text-red-500" />
+      </Button>
+    </div>
   );
 }
 
@@ -290,6 +384,9 @@ export function PlansTable() {
   const reorderMutation = useReorderFinancePlans({
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["useFinancePlans"] });
+      queryClient.invalidateQueries({ queryKey: ["pricingPlansGrid"] });
+      queryClient.invalidateQueries({ queryKey: ["handshakePlan"] });
+      queryClient.invalidateQueries({ queryKey: ["usePricingData"] });
       setSavingOrder(false);
     },
     onError: () => {
@@ -321,6 +418,7 @@ export function PlansTable() {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [form, setForm] = useState<PlanFormState>(emptyForm());
   const [formError, setFormError] = useState<string | null>(null);
+  const [priceSuffixOpen, setPriceSuffixOpen] = useState(false);
 
   const [deleteTarget, setDeleteTarget] = useState<FinancePlan | null>(null);
   const [deleteConfirmOpen, setDeleteConfirmOpen] = useState(false);
@@ -336,16 +434,21 @@ export function PlansTable() {
 
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 6 } }));
 
+  const featureSensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
+  );
+
   const list: FinancePlan[] = useMemo(() => {
     const arr = Array.isArray(plans) ? plans : [];
     return [...arr].sort(
-      (a, b) => (a.sortOrder ?? 0) - (b.sortOrder ?? 0),
+      (a, b) => (a.sequence ?? 0) - (b.sequence ?? 0),
     );
   }, [plans]);
 
   const openCreate = () => {
     setEditingId(null);
     setForm(emptyForm());
+    setPriceSuffixOpen(false);
     setFormError(null);
     setEditorOpen(true);
   };
@@ -353,6 +456,7 @@ export function PlansTable() {
   const openEdit = (plan: FinancePlan) => {
     setEditingId(plan.id);
     setForm(fromPlan(plan));
+    setPriceSuffixOpen(!!(plan.customPriceSuffix ?? "").trim());
     setFormError(null);
     setEditorOpen(true);
   };
@@ -398,8 +502,10 @@ export function PlansTable() {
       gradientFrom: form.gradientFrom.trim() || null,
       gradientTo: form.gradientTo.trim() || null,
       customPriceLabel: form.customPriceLabel.trim() || null,
+      customPriceSuffix: form.customPriceSuffix.trim() || null,
       isPopular: form.isPopular,
       billingType: form.billingType,
+      buttonAction: form.buttonAction,
       isActive: form.isActive,
       ctaLabel: form.ctaLabel.trim() || null,
       ctaHref: form.ctaHref.trim() || null,
@@ -533,6 +639,7 @@ export function PlansTable() {
                         <TableHead>Accent</TableHead>
                         <TableHead>Price</TableHead>
                         <TableHead>Type</TableHead>
+                        <TableHead>Button</TableHead>
                         <TableHead>Popular</TableHead>
                         <TableHead>Status</TableHead>
                         <TableHead className="text-right">Actions</TableHead>
@@ -619,6 +726,41 @@ export function PlansTable() {
               />
             </div>
 
+            {form.billingType !== "NONE" && (
+              <div className="grid gap-2">
+                {priceSuffixOpen ? (
+                  <>
+                    <Label>Custom Price Suffix</Label>
+                    <Input
+                      value={form.customPriceSuffix}
+                      onChange={(e) => updateForm({ customPriceSuffix: e.target.value })}
+                      placeholder="e.g. / per cycle (shown after the price)"
+                    />
+                    <button
+                      type="button"
+                      className="text-xs text-muted-foreground hover:text-foreground underline w-fit"
+                      onClick={() => {
+                        updateForm({ customPriceSuffix: "" });
+                        setPriceSuffixOpen(false);
+                      }}
+                    >
+                      Remove custom suffix
+                    </button>
+                  </>
+                ) : (
+                  <button
+                    type="button"
+                    className="text-xs text-muted-foreground hover:text-foreground underline w-fit"
+                    onClick={() => {
+                      setPriceSuffixOpen(true);
+                    }}
+                  >
+                    + Add custom price suffix
+                  </button>
+                )}
+              </div>
+            )}
+
             <div className="grid gap-2">
               <Label>Description</Label>
               <Textarea
@@ -630,43 +772,57 @@ export function PlansTable() {
             </div>
 
             <div className="grid gap-2">
-              <Label>Features</Label>
-              <div className="space-y-2">
-                {form.features.map((feature, i) => (
-                  <div key={i} className="flex gap-2">
-                    <Input
-                      value={feature}
-                      onChange={(e) => {
-                        const next = [...form.features];
-                        next[i] = e.target.value;
-                        updateForm({ features: next });
-                      }}
-                      placeholder={`Feature ${i + 1}`}
-                    />
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => {
-                        if (form.features.length === 1) return;
-                        updateForm({
-                          features: form.features.filter((_, idx) => idx !== i),
-                        });
-                      }}
-                    >
-                      <Trash2 className="h-4 w-4 text-red-500" />
-                    </Button>
-                  </div>
-                ))}
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  onClick={() => updateForm({ features: [...form.features, ""] })}
-                >
-                  <Plus className="h-4 w-4 mr-2" /> Add Feature
-                </Button>
+              <div className="flex items-center justify-between">
+                <Label>Features</Label>
+                <span className="text-xs text-muted-foreground">Drag handle to reorder</span>
               </div>
+              <DndContext
+                sensors={featureSensors}
+                collisionDetection={closestCenter}
+                onDragEnd={({ active, over }) => {
+                  if (!over || active.id === over.id) return;
+                  const oldIndex = Number(String(active.id).replace("feature-", ""));
+                  const newIndex = Number(String(over.id).replace("feature-", ""));
+                  if (Number.isNaN(oldIndex) || Number.isNaN(newIndex)) return;
+                  updateForm({ features: arrayMove(form.features, oldIndex, newIndex) });
+                }}
+              >
+                <SortableContext
+                  items={form.features.map((_, i) => `feature-${i}`)}
+                  strategy={verticalListSortingStrategy}
+                >
+                  <div className="space-y-2">
+                    {form.features.map((feature, i) => (
+                      <SortableFeatureRow
+                        key={i}
+                        id={`feature-${i}`}
+                        index={i}
+                        value={feature}
+                        removable={form.features.length > 1}
+                        onChange={(v) => {
+                          const next = [...form.features];
+                          next[i] = v;
+                          updateForm({ features: next });
+                        }}
+                        onRemove={() => {
+                          if (form.features.length === 1) return;
+                          updateForm({
+                            features: form.features.filter((_, idx) => idx !== i),
+                          });
+                        }}
+                      />
+                    ))}
+                  </div>
+                </SortableContext>
+              </DndContext>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => updateForm({ features: [...form.features, ""] })}
+              >
+                <Plus className="h-4 w-4 mr-2" /> Add Feature
+              </Button>
             </div>
 
             <div className="grid grid-cols-2 gap-4">
@@ -699,7 +855,9 @@ export function PlansTable() {
                 <Select
                   value={form.billingType}
                   onValueChange={(v) =>
-                    updateForm({ billingType: v as "ONE_TIME" | "SUBSCRIPTION" })
+                    updateForm({
+                      billingType: v as "ONE_TIME" | "SUBSCRIPTION" | "CUSTOM" | "NONE",
+                    })
                   }
                 >
                   <SelectTrigger>
@@ -708,10 +866,77 @@ export function PlansTable() {
                   <SelectContent>
                     <SelectItem value="ONE_TIME">One-Time</SelectItem>
                     <SelectItem value="SUBSCRIPTION">Subscription</SelectItem>
+                    <SelectItem value="CUSTOM">Custom (Enterprise)</SelectItem>
+                    <SelectItem value="NONE">None</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="grid gap-2">
+                <Label>Button Action</Label>
+                <Select
+                  value={form.buttonAction}
+                  onValueChange={(v) =>
+                    updateForm({
+                      buttonAction: v as "BUY" | "REDIRECT" | "NONE",
+                    })
+                  }
+                >
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="BUY">Buy via Razorpay</SelectItem>
+                    <SelectItem value="REDIRECT">Redirect to URL</SelectItem>
+                    <SelectItem value="NONE">None (no button)</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
             </div>
+
+            {form.buttonAction !== "NONE" && (
+              <div className="grid gap-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="grid gap-2">
+                    <Label>CTA Label</Label>
+                    <Input
+                      value={form.ctaLabel}
+                      onChange={(e) => updateForm({ ctaLabel: e.target.value })}
+                      placeholder={
+                        form.buttonAction === "REDIRECT"
+                          ? "e.g. Learn More, Get in Touch"
+                          : "e.g. Subscribe, Get Started, Contact Sales"
+                      }
+                    />
+                    <p className="text-xs text-muted-foreground">
+                      {form.buttonAction === "REDIRECT"
+                        ? "Left blank, the card shows &quot;Learn More&quot;."
+                        : "Left blank, the card shows the default buy text."}
+                    </p>
+                  </div>
+                  <div className="grid gap-2">
+                    <Label>
+                      {form.buttonAction === "REDIRECT" ? "Destination URL" : "CTA Link"}
+                    </Label>
+                    <Input
+                      value={form.ctaHref}
+                      onChange={(e) => updateForm({ ctaHref: e.target.value })}
+                      placeholder="e.g. /pricing, /help, https://example.com"
+                    />
+                    <p className="text-xs text-muted-foreground">
+                      {form.buttonAction === "REDIRECT"
+                        ? "Where the button navigates — internal route or full link."
+                        : "Fallback for public pages where Razorpay isn't available."}
+                    </p>
+                  </div>
+                </div>
+                {form.buttonAction === "REDIRECT" && !form.ctaHref.trim() && (
+                  <div className="flex items-center gap-2 text-xs text-amber-600 bg-amber-500/10 rounded-lg px-3 py-2">
+                    <AlertCircle className="h-4 w-4 shrink-0" />
+                    Add a destination URL — without it the button falls back to /pricing.
+                  </div>
+                )}
+              </div>
+            )}
 
             <div className="grid grid-cols-2 gap-4">
               <div className="grid gap-2">
@@ -780,31 +1005,6 @@ export function PlansTable() {
                 <Label htmlFor="isActive">Active</Label>
               </div>
             </div>
-
-            <Collapsible>
-              <CollapsibleTrigger className="flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground cursor-pointer">
-                <ChevronDown className="h-4 w-4" />
-                <span>Advanced — Call-to-Action</span>
-              </CollapsibleTrigger>
-              <CollapsibleContent className="mt-3 grid grid-cols-2 gap-4">
-                <div className="grid gap-2">
-                  <Label>CTA Label</Label>
-                  <Input
-                    value={form.ctaLabel}
-                    onChange={(e) => updateForm({ ctaLabel: e.target.value })}
-                    placeholder="e.g. Subscribe, Get Started, Contact Sales"
-                  />
-                </div>
-                <div className="grid gap-2">
-                  <Label>CTA Link</Label>
-                  <Input
-                    value={form.ctaHref}
-                    onChange={(e) => updateForm({ ctaHref: e.target.value })}
-                    placeholder="e.g. /pricing, /help, https://example.com"
-                  />
-                </div>
-              </CollapsibleContent>
-            </Collapsible>
 
             {formError && (
               <div className="flex items-center gap-2 text-sm text-red-500 bg-red-500/10 rounded-lg px-3 py-2">

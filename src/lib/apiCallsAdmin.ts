@@ -1256,6 +1256,7 @@ export async function updateBlog(payload: {
   category?: string;
   isActive?: boolean;
   date?: string;
+  viewCount?: number;
 }) {
   try {
     console.log("[updateBlog] sending payload:", JSON.stringify(payload, null, 2));

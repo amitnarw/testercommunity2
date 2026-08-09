@@ -1,17 +1,15 @@
 "use client";
 
 import React from "react";
-import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Zap } from "lucide-react";
 import { HoverBorderGradient } from "./ui/hover-border-gradient";
 import { ProfessionalPlanCard } from "./pricing-cards";
 import { HandshakePlanCard } from "./handshake/plan-card";
-import { EnterprisePlanCard } from "./pricing-cards";
 import { PricingResponse } from "@/lib/types";
 import { ROUTES } from "@/lib/routes";
 import { useQuery } from "@tanstack/react-query";
-import { getAllPricingPlans, getHandshakePlan } from "@/lib/apiCalls";
+import { getAllPricingPlans } from "@/lib/apiCalls";
 
 type PricingVariant = "home" | "pricing" | "billing" | "what-pro" | "seo";
 type PricingMode = "billing" | "redirect";
@@ -41,32 +39,20 @@ export function PricingCardsGrid({
 }) {
   const pathname = usePathname();
 
-  const { data: handshakePlan } = useQuery<PricingResponse | null>({
-    queryKey: ["handshakePlan"],
-    queryFn: () => getHandshakePlan(),
-    retry: false,
-  });
-
-  const { data: proPlans } = useQuery<PricingResponse[]>({
+  const { data: allPlans } = useQuery<PricingResponse[]>({
     queryKey: ["pricingPlansGrid"],
     queryFn: () => getAllPricingPlans(),
     retry: false,
   });
 
-  const proPlan =
-    proPlans?.find((p) => p.id !== "handshake" && p.isPopular) ??
-    proPlans?.find((p) => p.id !== "handshake") ??
-    null;
-  const enterprisePlan = proPlans?.find((p) => p.billingType === "CUSTOM") ?? null;
-
   const includeEnterprise = variant !== "what-pro";
-  const allPlans = [handshakePlan, proPlan, ...(includeEnterprise ? [enterprisePlan] : [])].filter(
-    (p): p is PricingResponse => !!p && p.isActive,
-  );
 
-  const sortedPlans = [...allPlans].sort(
-    (a, b) => (a.sequence ?? 0) - (b.sequence ?? 0),
-  );
+  const sortedPlans = React.useMemo(() => {
+    const arr = Array.isArray(allPlans) ? allPlans : [];
+    return [...arr]
+      .filter((p) => p.isActive && (includeEnterprise ? true : p.billingType !== "CUSTOM"))
+      .sort((a, b) => (a.sequence ?? 0) - (b.sequence ?? 0));
+  }, [allPlans, includeEnterprise]);
 
   if (sortedPlans.length === 0) return null;
 
@@ -98,18 +84,31 @@ export function PricingCardsGrid({
             <HandshakePlanCard
               key="handshake"
               mode="redirect"
-              redirectHref={resolveRedirectHref(handshakePlan?.ctaHref)}
-              redirectLabel={handshakePlan?.ctaLabel}
+              redirectHref={resolveRedirectHref(plan.ctaHref)}
+              redirectLabel={plan.ctaLabel}
             />
           );
         }
 
-        if (plan.billingType === "CUSTOM") {
+        const action = plan.buttonAction ?? "BUY";
+        const ctaLabel = plan.ctaLabel ?? (action === "REDIRECT" ? "Learn More" : "Get Started");
+
+        if (action === "NONE") {
           return (
-            <EnterprisePlanCard
+            <ProfessionalPlanCard
               key={plan.id}
-              ctaLabel={plan.ctaLabel}
-              ctaHref={plan.ctaHref}
+              plan={plan}
+            />
+          );
+        }
+
+        if (action === "REDIRECT") {
+          return (
+            <ProfessionalPlanCard
+              key={plan.id}
+              plan={plan}
+              ctaLabel={ctaLabel}
+              ctaHref={resolveRedirectHref(plan.ctaHref)}
             />
           );
         }
@@ -128,7 +127,7 @@ export function PricingCardsGrid({
                     className="bg-white text-primary flex items-center justify-center space-x-2 w-full py-4 font-bold cursor-pointer"
                   >
                     <Zap className="w-4 h-4 mr-2 fill-current" />
-                    <span className="font-semibold">{plan.ctaLabel ?? "Get Started"}</span>
+                    <span className="font-semibold">{ctaLabel}</span>
                   </HoverBorderGradient>
                 </div>
               }
@@ -140,21 +139,8 @@ export function PricingCardsGrid({
           <ProfessionalPlanCard
             key={plan.id}
             plan={plan}
-            ctaLabel={plan.ctaLabel ?? "Get Started"}
+            ctaLabel={ctaLabel}
             ctaHref={resolveRedirectHref(plan.ctaHref)}
-            actionButton={
-              <div className="w-full">
-                <Link href={resolveRedirectHref(plan.ctaHref)} className="w-full block">
-                  <HoverBorderGradient
-                    containerClassName="w-full"
-                    className="bg-white text-primary flex items-center justify-center space-x-2 w-full py-4 font-bold cursor-pointer"
-                  >
-                    <Zap className="w-4 h-4 mr-2 fill-current" />
-                    <span className="font-semibold">Get Started</span>
-                  </HoverBorderGradient>
-                </Link>
-              </div>
-            }
           />
         );
       })}

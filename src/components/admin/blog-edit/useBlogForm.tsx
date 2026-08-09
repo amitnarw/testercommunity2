@@ -126,7 +126,8 @@ export function BlogFormProvider({ children, id }: BlogFormProviderProps) {
       setIsSaving(true);
       const publishedValues = { ...values, isActive: true };
       if (isNew) {
-        createMutation.mutate(publishedValues, {
+        const { viewCount: _viewCount, ...createValues } = publishedValues;
+        createMutation.mutate(createValues, {
           onSuccess: (data: any) => {
             refetchAll();
             setIsSaving(false);
@@ -152,7 +153,8 @@ export function BlogFormProvider({ children, id }: BlogFormProviderProps) {
       setIsSaving(true);
       const draftValues = { ...values, isActive: false };
       if (isNew) {
-        createMutation.mutate(draftValues, {
+        const { viewCount: _viewCount, ...createValues } = draftValues;
+        createMutation.mutate(createValues, {
           onSuccess: (data: any) => {
             refetchAll();
             setIsSaving(false);

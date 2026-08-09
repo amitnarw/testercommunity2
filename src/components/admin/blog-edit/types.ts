@@ -14,6 +14,7 @@ export const blogPublishSchema = z.object({
   category: z.enum(["AUTOMATION", "UI_UX", "SECURITY", "AI", "MOBILE", "DEVOPS", "GENERAL"]).default("GENERAL"),
   isActive: z.boolean().default(true),
   date: z.string().optional(),
+  viewCount: z.coerce.number().int().min(0).optional(),
 });
 
 export const blogDraftSchema = z.object({
@@ -30,6 +31,7 @@ export const blogDraftSchema = z.object({
   category: z.enum(["AUTOMATION", "UI_UX", "SECURITY", "AI", "MOBILE", "DEVOPS", "GENERAL"]).default("GENERAL"),
   isActive: z.boolean().default(false),
   date: z.string().optional(),
+  viewCount: z.coerce.number().int().min(0).optional(),
 })
   .refine(
     (data) => data.title.trim() || data.content.trim(),

@@ -72,6 +72,12 @@ const LoginForm = () => {
       if (err.code === "ACCOUNT_BANNED") {
         router.push(`/banned?error_description=${encodeURIComponent(err.message)}`);
       }
+      if (err.code === "ACCOUNT_INACTIVE") {
+        const deactivatedUrl = loginValues?.email
+          ? `${ROUTES.AUTH.DEACTIVATED}?email=${encodeURIComponent(loginValues.email)}`
+          : ROUTES.AUTH.DEACTIVATED;
+        router.replace(deactivatedUrl);
+      }
     },
   });
 

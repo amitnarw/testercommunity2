@@ -141,9 +141,13 @@ export function TesterActivityDashboard({ date, onTesterSelect, onDateChange }: 
           <CardContent className="p-6 pt-2">
             {isLoading ? (
               <Skeleton className="h-[250px] w-full bg-white/20" />
+            ) : !activity?.dailyCheckinsTrend || activity.dailyCheckinsTrend.length === 0 || activity.dailyCheckinsTrend.every((d: { count: number }) => d.count === 0) ? (
+              <div className="flex items-center justify-center h-[250px]">
+                <p className="text-sm text-muted-foreground">No data</p>
+              </div>
             ) : (
               <ResponsiveContainer width="100%" height={250}>
-                <AreaChart data={activity?.dailyCheckinsTrend || []}>
+                <AreaChart data={activity.dailyCheckinsTrend}>
                   <defs>
                     <linearGradient id="checkinGradient" x1="0" y1="0" x2="0" y2="1">
                       <stop offset="5%" stopColor="#3B82F6" stopOpacity={0.3} />
@@ -168,6 +172,10 @@ export function TesterActivityDashboard({ date, onTesterSelect, onDateChange }: 
           <CardContent className="p-6 pt-2">
             {isLoading ? (
               <Skeleton className="h-[250px] w-full bg-white/20" />
+            ) : !statusData || statusData.length === 0 ? (
+              <div className="flex items-center justify-center h-[250px]">
+                <p className="text-sm text-muted-foreground">No data</p>
+              </div>
             ) : (
               <ResponsiveContainer width="100%" height={250}>
                 <BarChart data={statusData} layout="vertical">

@@ -8,6 +8,9 @@ import {
   register,
   registerTester,
   resendEmailVerification,
+  toggleMyActiveStatus,
+  reactivateAccount,
+  checkEmailStatus,
   // updateProfile
 } from "@/lib/apiCalls";
 import {
@@ -217,4 +220,30 @@ export function useGoogleTesterLogin(
   });
 
   return mutation;
+}
+
+export function useToggleMyActiveStatus(
+  options?: UseMutationOptions<any, any, any>,
+) {
+  return useMutation({
+    mutationFn: (isActive: boolean) => toggleMyActiveStatus(isActive),
+    ...options,
+  });
+}
+
+export function useReactivateAccount(
+  options?: UseMutationOptions<any, any, { email: string; password: string }>,
+) {
+  return useMutation({
+    mutationFn: (payload) => reactivateAccount(payload),
+    ...options,
+  });
+}
+
+export function useCheckEmailStatus(email?: string) {
+  return useQuery({
+    queryKey: ["checkEmailStatus", email ?? ""],
+    queryFn: () => checkEmailStatus(email ?? ""),
+    enabled: !!email,
+  });
 }

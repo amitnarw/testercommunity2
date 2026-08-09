@@ -398,6 +398,85 @@ export const getUserProfileData =
     }
   };
 
+export const toggleMyActiveStatus = async (isActive: boolean) => {
+  try {
+    const response = await api.post(API_ROUTES.USER + "/me/status", {
+      isActive,
+    });
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error toggling account status:", error);
+    if (axios.isAxiosError(error)) {
+      const status = error.response?.status;
+      const responseData = error.response?.data;
+      console.error("Axios error:", status, responseData);
+
+      throw new Error(
+        responseData?.message || error.message || "Unknown Axios error",
+      );
+    } else if (error instanceof Error) {
+      throw new Error(error.message);
+    } else {
+      throw new Error(JSON.stringify(error));
+    }
+  }
+};
+
+export const reactivateAccount = async ({
+  email,
+  password,
+}: {
+  email: string;
+  password: string;
+}) => {
+  try {
+    const response = await api.post(API_ROUTES.USER + "/reactivate", {
+      email,
+      password,
+    });
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error reactivating account:", error);
+    if (axios.isAxiosError(error)) {
+      const status = error.response?.status;
+      const responseData = error.response?.data;
+      console.error("Axios error:", status, responseData);
+
+      throw new Error(
+        responseData?.message || error.message || "Unknown Axios error",
+      );
+    } else if (error instanceof Error) {
+      throw new Error(error.message);
+    } else {
+      throw new Error(JSON.stringify(error));
+    }
+  }
+};
+
+export const checkEmailStatus = async (email: string) => {
+  try {
+    const response = await api.get(
+      API_ROUTES.USER + `/check-email-status?email=${encodeURIComponent(email)}`,
+    );
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error checking email status:", error);
+    if (axios.isAxiosError(error)) {
+      const status = error.response?.status;
+      const responseData = error.response?.data;
+      console.error("Axios error:", status, responseData);
+
+      throw new Error(
+        responseData?.message || error.message || "Unknown Axios error",
+      );
+    } else if (error instanceof Error) {
+      throw new Error(error.message);
+    } else {
+      throw new Error(JSON.stringify(error));
+    }
+  }
+};
+
 export const saveDiscoverySource = async (discovery_source: string) => {
   try {
     await api.put(API_ROUTES.USER + "/discovery-source", {

@@ -2,7 +2,7 @@
 
 import React from "react";
 import { motion } from "framer-motion";
-import { Check, Star, ShieldCheck, Zap } from "lucide-react";
+import { Check, Star, Zap } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { PricingResponse, RegionalPricingResponse, PlanAccent } from "@/lib/types";
 import Link from "next/link";
@@ -110,9 +110,15 @@ export const ProfessionalPlanCard = ({
   const displayCurrency = regionalPricing?.currency_code || "INR";
 
   const isSubscription = plan.billingType === "SUBSCRIPTION";
-  const priceSuffix = isSubscription
-    ? "/month"
-    : `/ one-time (${displayCurrency})`;
+  const hasNoCta = plan.billingType === "NONE";
+  const customSuffix = (plan.customPriceSuffix ?? "").trim();
+  const priceSuffix = hasNoCta
+    ? ""
+    : customSuffix.length > 0
+      ? ` ${customSuffix}`
+      : isSubscription
+        ? "/month"
+        : `/ one-time (${displayCurrency})`;
 
   const hasCta = ctaLabel && ctaHref && ctaLabel.trim().length > 0 && ctaHref.trim().length > 0;
 
@@ -193,92 +199,12 @@ export const ProfessionalPlanCard = ({
 
         <div className="mt-auto relative z-10">
           <div className="flex justify-center w-full">
-            {hasCta ? (
+            {hasNoCta ? null : hasCta ? (
               <div className="w-full">
                 <Link href={ctaHref} className="w-full block">
                   <HoverBorderGradient
                     containerClassName="w-full"
                     className="bg-white text-primary flex items-center justify-center space-x-2 w-full py-4 font-bold cursor-pointer"
-                  >
-                    <Zap className="w-4 h-4 mr-2 fill-current" />
-                    <span className="font-semibold">{ctaLabel}</span>
-                  </HoverBorderGradient>
-                </Link>
-              </div>
-            ) : actionButton ? (
-              actionButton
-            ) : null}
-          </div>
-        </div>
-      </div>
-    </motion.div>
-  );
-};
-
-export const EnterprisePlanCard = ({
-  actionButton,
-  ctaLabel,
-  ctaHref,
-}: {
-  actionButton?: React.ReactNode;
-  ctaLabel?: string | null;
-  ctaHref?: string | null;
-}) => {
-  const hasCta = ctaLabel && ctaHref && ctaLabel.trim().length > 0 && ctaHref.trim().length > 0;
-
-  return (
-    <motion.div
-      variants={itemVariants}
-      whileHover={{ y: -8, scale: 1.03 }}
-      className="relative flex flex-col rounded-3xl h-full transition-all duration-300 shadow-xl overflow-hidden p-[2px] bg-gradient-to-br from-[#8364E8] to-[#D397FA] group"
-    >
-      <div className="flex flex-col h-full bg-card rounded-[22px] p-8 sm:p-10 relative z-10">
-        <div className="absolute top-0 right-0 -mr-16 -mt-16 w-56 h-56 bg-[#8364E8]/10 rounded-full blur-3xl pointer-events-none group-hover:scale-110 transition-transform duration-700" />
-        <div className="absolute bottom-0 left-0 -ml-16 -mb-16 w-56 h-56 bg-[#D397FA]/10 rounded-full blur-3xl pointer-events-none group-hover:scale-110 transition-transform duration-700" />
-
-        <div className="mb-8 relative z-10">
-          <Badge className="bg-gradient-to-r from-[#8364E8] to-[#D397FA] text-white hover:opacity-90 border-0 mb-3 px-4 py-1.5 uppercase tracking-widest text-xs font-bold w-fit shadow-md">
-            Enterprise
-          </Badge>
-          <div className="mt-4 flex items-baseline">
-            <span className="text-5xl font-bold tracking-tight text-[#8364E8]">
-              Custom
-            </span>
-          </div>
-          <p className="mt-4 text-sm leading-relaxed text-muted-foreground font-medium">
-            Unlimited Testing Cycles
-          </p>
-        </div>
-
-        <div className="flex-1 space-y-4 mb-8 relative z-10">
-          {[
-            "Everything in Professional",
-            "Volume Discounts",
-            "Dedicated Account Manager",
-            "Custom Integrations",
-            "Priority Support & SLA",
-            "Custom Reporting",
-          ].map((feature, i) => (
-            <div
-              key={i}
-              className="flex items-start gap-3 text-muted-foreground"
-            >
-              <div className="flex-shrink-0 w-5 h-5 rounded-full flex items-center justify-center mt-0.5 bg-[#8364E8]/10">
-                <ShieldCheck className="w-4 h-4 text-[#8364E8]" />
-              </div>
-              <span className="text-sm">{feature}</span>
-            </div>
-          ))}
-        </div>
-
-        <div className="mt-auto relative z-10">
-          <div className="flex justify-center w-full">
-            {hasCta ? (
-              <div className="w-full">
-                <Link href={ctaHref} className="w-full block">
-                  <HoverBorderGradient
-                    containerClassName="w-full"
-                    className="bg-gradient-to-r from-[#8364E8] to-[#D397FA] text-white hover:opacity-90 flex items-center justify-center space-x-2 w-full py-4 font-bold cursor-pointer"
                   >
                     <Zap className="w-4 h-4 mr-2 fill-current" />
                     <span className="font-semibold">{ctaLabel}</span>
