@@ -4,23 +4,35 @@ import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ChartTooltip, ChartContainer } from "@/components/ui/chart";
 import { AreaChart, Area, ResponsiveContainer } from "recharts";
+import type { FinanceDashboardData } from "@/lib/types";
 
 export function CardDesign1({
-  stats,
+  financeDashboard,
   isLoading,
 }: {
-  stats: any;
+  financeDashboard: FinanceDashboardData | undefined;
   isLoading?: boolean;
 }) {
-  const totalUsers = stats?.totalUsers || 0;
+  const formatCurrency = (amount: number) => {
+    return new Intl.NumberFormat("en-IN", {
+      style: "currency",
+      currency: "INR",
+      maximumFractionDigits: 0,
+    }).format(amount);
+  };
+
+  const totalRevenue = financeDashboard?.totalRevenue || 0;
+  const formattedRevenue = financeDashboard
+    ? formatCurrency(Math.floor(totalRevenue / 100))
+    : "—";
   const data = [
-    { time: "00:00", value: totalUsers * 0.4 },
-    { time: "04:00", value: totalUsers * 0.5 },
-    { time: "08:00", value: totalUsers * 0.45 },
-    { time: "12:00", value: totalUsers * 0.7 },
-    { time: "16:00", value: totalUsers * 0.6 },
-    { time: "20:00", value: totalUsers * 0.9 },
-    { time: "23:59", value: totalUsers },
+    { time: "00:00", value: totalRevenue * 0.4 },
+    { time: "04:00", value: totalRevenue * 0.5 },
+    { time: "08:00", value: totalRevenue * 0.45 },
+    { time: "12:00", value: totalRevenue * 0.7 },
+    { time: "16:00", value: totalRevenue * 0.6 },
+    { time: "20:00", value: totalRevenue * 0.9 },
+    { time: "23:59", value: totalRevenue },
   ];
 
   return (
@@ -63,7 +75,7 @@ export function CardDesign1({
                   return (
                     <div className="bg-popover border border-border p-2 rounded-lg shadow-xl">
                       <p className="text-primary text-xs font-bold">
-                        {Math.round(Number(payload[0].value || 0))} Users
+                        {formatCurrency(Math.floor(Number(payload[0].value || 0) / 100))}
                       </p>
                     </div>
                   );
@@ -92,25 +104,25 @@ export function CardDesign1({
 
       <div className="relative z-10">
         <p className="text-foreground/40 text-[10px] tracking-[0.2em] font-bold uppercase">
-          COMMUNITY SIZE
+          LIFETIME EARNINGS
         </p>
       </div>
 
       <div className="relative z-10 flex items-end justify-between">
         <div>
           <p className="text-primary text-[10px] font-bold mb-1">
-            Total Lifetime
+            Total Revenue
           </p>
           <h3 className="text-5xl font-bold text-foreground tracking-tighter tabular-nums">
             {isLoading ? (
               <Skeleton className="h-12 w-20 bg-muted" />
             ) : (
-              totalUsers
+              formattedRevenue
             )}
           </h3>
         </div>
         <div className="bg-primary/10 text-primary text-[10px] font-bold px-4 py-1 rounded-full mb-1">
-          Daily
+          Lifetime
         </div>
       </div>
     </Card>

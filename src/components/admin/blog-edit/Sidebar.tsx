@@ -20,6 +20,7 @@ import {
   Calendar,
   X,
   Plus,
+  Eye,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { format } from "date-fns";
@@ -30,11 +31,12 @@ interface SidebarProps {
     id?: number;
     createdAt?: string | null;
     updatedAt?: string | null;
+    viewCount?: number;
   };
 }
 
 export function Sidebar({ blog }: SidebarProps) {
-  const { form, currentTags, removeTag } = useBlogFormContext();
+  const { form, currentTags, removeTag, isNew } = useBlogFormContext();
   const [tagInput, setTagInput] = useState("");
   const watchIsActive = form.watch("isActive");
   const watchAuthorAvatarUrl = form.watch("authorAvatarUrl");
@@ -95,6 +97,40 @@ export function Sidebar({ blog }: SidebarProps) {
           )}
         </div>
       </SidebarPanel>
+
+      {/* Engagement Panel */}
+      {!isNew && (
+        <SidebarPanel
+          title="Engagement"
+          icon={<Eye className="h-4 w-4" />}
+          defaultOpen={true}
+        >
+          <FormField
+            control={form.control}
+            name="viewCount"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel className="text-xs">View Count</FormLabel>
+                <FormControl>
+                  <Input
+                    type="number"
+                    min={0}
+                    step={1}
+                    {...field}
+                    value={field.value ?? 0}
+                    onChange={(e) => field.onChange(Number(e.target.value))}
+                    className="font-mono text-sm"
+                  />
+                </FormControl>
+                <FormDescription className="text-xs">
+                  Total views for this post. Saving overwrites the current value.
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </SidebarPanel>
+      )}
 
       {/* Category Panel */}
       <SidebarPanel

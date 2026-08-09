@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Zap, Handshake } from "lucide-react";
+import { Zap } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { HoverBorderGradient } from "./ui/hover-border-gradient";
 import { ProfessionalPlanCard } from "./pricing-cards";
@@ -47,8 +47,9 @@ export function TwoPathsSection() {
   const hasPro = !!proPlan;
 
   useLayoutEffect(() => {
+    if (!hasHandshake || !hasPro) return;
     const ctx = gsap.context(() => {
-      let mm = gsap.matchMedia();
+      const mm = gsap.matchMedia();
       mm.add("(max-width: 767px)", () => {
         const panels = gsap.utils.toArray<HTMLDivElement>(".panel", slider.current!);
         if (panels.length < 2) return;
@@ -76,7 +77,7 @@ export function TwoPathsSection() {
     }, sectionRef);
 
     return () => ctx.revert();
-  }, []);
+  }, [hasHandshake, hasPro]);
 
   useEffect(() => {
     // Fix GSAP trigger recalculation for dynamic imports

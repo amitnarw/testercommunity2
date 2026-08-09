@@ -9,6 +9,7 @@ export const ROUTES = {
     REGISTER: "/auth/register",
     REGISTER_CHECK_EMAIL: "/auth/register/check-email",
     VERIFICATION: "/auth/verification",
+    DEACTIVATED: "/auth/deactivated",
   },
 
   // Public

@@ -32,7 +32,7 @@ import {
 } from "@/components/ui/chart";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Cell, LabelList } from "recharts";
 import { cn } from "@/lib/utils";
-import { useDashboardStats, useDiscoverySourceCounts } from "@/hooks/useAdmin";
+import { useDashboardStats, useDiscoverySourceCounts, useFinanceDashboard } from "@/hooks/useAdmin";
 import { Skeleton } from "@/components/ui/skeleton";
 import { StatusDistributionCard } from "@/components/admin/StatusDistributionCard";
 import dynamic from "next/dynamic";
@@ -98,6 +98,7 @@ type DiscoverySourceItem = { source: string; count: number; isOther?: boolean; b
 export default function AdminDashboardPage() {
   const { data: stats, isLoading } = useDashboardStats();
   const { data: discoverySourceData } = useDiscoverySourceCounts();
+  const { data: financeDashboard } = useFinanceDashboard();
 
   // Transform status data for pie chart
   const statusDistribution = stats?.submissionsByStatus
@@ -163,7 +164,10 @@ export default function AdminDashboardPage() {
 
       {/* Exact Image Cards */}
       <div className="grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
-        <CardDesign1 stats={stats} isLoading={isLoading} />
+        <CardDesign1
+          financeDashboard={financeDashboard}
+          isLoading={isLoading}
+        />
         <CardDesign2 stats={stats} isLoading={isLoading} />
         <CardDesign3
           stats={stats}

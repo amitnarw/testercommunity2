@@ -9,6 +9,12 @@ import { authClient } from "@/lib/auth-client";
 import { motion, AnimatePresence } from "framer-motion";
 import PageTransition from "@/components/page-transition";
 import { ROUTES } from "@/lib/routes";
+import { useUserData } from "@/hooks/useUser";
+import { useToggleMyActiveStatus } from "@/hooks/useAuth";
+import { useQueryClient } from "@tanstack/react-query";
+import { Logo } from "@/components/logo";
+import { Button } from "@/components/ui/button";
+import { Power } from "lucide-react";
 
 export default function AuthenticatedLayout({
   children,
@@ -19,6 +25,19 @@ export default function AuthenticatedLayout({
   const router = useRouter();
   const pathname = usePathname();
   const { data: session, isPending } = authClient.useSession();
+  const { data: userData } = useUserData({ enabled: !!session });
+  const queryClient = useQueryClient();
+  const [reactivating, setReactivating] = useState(false);
+
+  const { mutate: toggleStatus } = useToggleMyActiveStatus({
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["getUserData"] });
+      setReactivating(false);
+    },
+    onError: () => {
+      setReactivating(false);
+    },
+  });
 
   useEffect(() => {
     if (isPending) return;
@@ -41,6 +60,37 @@ export default function AuthenticatedLayout({
       },
     });
   };
+
+  if (userData?.isActive === false) {
+    return (
+      <div className="fixed inset-0 z-[9999] flex flex-col items-center justify-center text-center p-6 bg-background">
+        <Logo className="w-20 h-20 mb-6" />
+        <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-red-500 flex items-center gap-2">
+          <Power className="w-7 h-7" />
+          Account Deactivated
+        </h1>
+        <p className="mt-3 max-w-md text-muted-foreground">
+          Your account is currently deactivated. Your data has been kept and
+          you can reactivate anytime to regain access.
+        </p>
+        <div className="mt-8 flex flex-col sm:flex-row gap-3">
+          <Button
+            size="lg"
+            disabled={reactivating}
+            onClick={() => {
+              setReactivating(true);
+              toggleStatus(true);
+            }}
+          >
+            {reactivating ? "Reactivating..." : "Reactivate Account"}
+          </Button>
+          <Button size="lg" variant="outline" onClick={handleLogout}>
+            Sign Out
+          </Button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <PageTransition>

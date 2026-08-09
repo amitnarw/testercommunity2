@@ -127,12 +127,16 @@ export function FinanceOverview() {
           <CardHeader className="pb-2 p-6">
             <CardTitle className="text-base">Monthly Revenue Trend</CardTitle>
           </CardHeader>
-          <CardContent className="p-6 pt-2">
+          <CardContent className="pt-2">
             {isLoading ? (
               <Skeleton className="h-[250px] w-full bg-white/20" />
+            ) : !dashboard?.monthlyRevenue || dashboard.monthlyRevenue.length === 0 ? (
+              <div className="flex items-center justify-center h-[250px]">
+                <p className="text-sm text-muted-foreground">No data</p>
+              </div>
             ) : (
               <ResponsiveContainer width="100%" height={250}>
-                <AreaChart data={dashboard?.monthlyRevenue || []}>
+                <AreaChart data={dashboard.monthlyRevenue}>
                   <defs>
                     <linearGradient id="revenueGradient" x1="0" y1="0" x2="0" y2="1">
                       <stop offset="5%" stopColor="#10b981" stopOpacity={0.3} />
@@ -164,7 +168,7 @@ export function FinanceOverview() {
                 <Skeleton className="h-5 w-full bg-white/20" />
                 <Skeleton className="h-5 w-full bg-white/20" />
               </div>
-            ) : dashboard?.ordersByStatus ? (
+            ) : dashboard?.ordersByStatus && Object.keys(dashboard.ordersByStatus).length > 0 ? (
               <div className="space-y-3">
                 {Object.entries(dashboard.ordersByStatus).map(([status, count]) => {
                   const colorMap: Record<string, string> = {

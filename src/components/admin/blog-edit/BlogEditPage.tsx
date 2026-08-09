@@ -36,6 +36,7 @@ function BlogEditContent({ id }: { id: string }) {
         tags: blog.tags || [],
         isActive: blog.isActive ?? true,
         date: blog.date ? new Date(blog.date).toISOString().split("T")[0] : "",
+        viewCount: blog.viewCount ?? 0,
       });
     }
   }, [blog, isNew, form]);

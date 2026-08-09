@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useTheme } from "next-themes";
 import { PageHeader } from "@/components/page-header";
 import { ROUTES } from "@/lib/routes";
@@ -20,13 +20,14 @@ import {
   Zap,
   Shield,
   FileText,
-  Trash2,
+  Power,
   Download,
   AlertTriangle,
   ExternalLink,
 } from "lucide-react";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
@@ -35,8 +36,22 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Slider } from "@/components/ui/slider";
+import {
+  AlertDialog,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 import { useTransitionContext } from "@/context/transition-context";
+import { useUserData } from "@/hooks/useUser";
+import { useToggleMyActiveStatus } from "@/hooks/useAuth";
+import { useQueryClient } from "@tanstack/react-query";
+import { toast } from "@/hooks/use-toast";
+import { authClient } from "@/lib/auth-client";
+import { useRouter } from "next/navigation";
 
 interface SettingsViewProps {
   backHref?: string;
@@ -53,6 +68,55 @@ export function SettingsView({ backHref = ROUTES.AUTHENTICATED.PROFILE }: Settin
   const [enableTransitions, setEnableTransitions] = useState(true);
   const [transitionDuration, setTransitionDuration] = useState(400);
   const [mounted, setMounted] = useState(false);
+
+  const router = useRouter();
+  const queryClient = useQueryClient();
+  const { data: userData } = useUserData();
+  const [deactivateDialogOpen, setDeactivateDialogOpen] = useState(false);
+  const [confirmEmail, setConfirmEmail] = useState("");
+  const [deactivating, setDeactivating] = useState(false);
+
+  const isActive = userData?.isActive ?? true;
+  const accountEmail = userData?.email ?? "";
+
+  const { mutate: toggleStatus } = useToggleMyActiveStatus({
+    onSuccess: async () => {
+      queryClient.invalidateQueries({ queryKey: ["getUserData"] });
+      setDeactivateDialogOpen(false);
+      setConfirmEmail("");
+      setDeactivating(false);
+      toast({
+        title: "Account deactivated",
+        description:
+          "Your account has been deactivated. You can reactivate from the login screen anytime.",
+      });
+      await authClient.signOut({
+        fetchOptions: {
+          onSuccess: () => {
+            router.replace(ROUTES.AUTH.LOGIN);
+          },
+        },
+      });
+    },
+    onError: (err: any) => {
+      setDeactivating(false);
+      toast({
+        title: "Error",
+        description: err?.message ?? "Failed to deactivate account.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const handleDeactivate = useCallback(() => {
+    if (
+      confirmEmail.trim().toLowerCase() !== accountEmail.trim().toLowerCase()
+    ) {
+      return;
+    }
+    setDeactivating(true);
+    toggleStatus(false);
+  }, [confirmEmail, accountEmail, toggleStatus]);
 
   useEffect(() => {
     setMounted(true);
@@ -343,35 +407,102 @@ export function SettingsView({ backHref = ROUTES.AUTHENTICATED.PROFILE }: Settin
           </CardContent>
         </Card>
 
-        {/* Danger Zone */}
+        {/* Account Status */}
         <Card className="rounded-2xl shadow-sm border-red-500/20 bg-red-500/5">
           <CardHeader>
             <CardTitle className="text-xl flex items-center gap-2 text-red-500">
-              <AlertTriangle className="w-5 h-5" />
-              Danger Zone
+              <Power className="w-5 h-5" />
+              Account Status
             </CardTitle>
             <CardDescription>
-              Irreversible actions related to your account.
+              Deactivate your account to pause access and cancel your Handshake
+              subscription. Your data is kept and can be reactivated anytime.
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 rounded-lg border border-red-200 dark:border-red-900/50 bg-background p-4">
               <div>
                 <h4 className="font-medium text-red-600 dark:text-red-400">
-                  Delete Account
+                  Account Active
                 </h4>
                 <p className="text-sm text-muted-foreground">
-                  Permanently delete your account and all associated data. This
-                  action cannot be undone.
+                  {isActive
+                    ? "Your account is active. Turn off to deactivate it."
+                    : "Your account is currently deactivated."}
                 </p>
               </div>
-              <Button variant="destructive" className="shrink-0">
-                <Trash2 className="mr-2 h-4 w-4" />
-                Delete Account
-              </Button>
+              <Switch
+                checked={isActive}
+                disabled={deactivating}
+                onCheckedChange={(checked) => {
+                  if (!checked) {
+                    setConfirmEmail("");
+                    setDeactivateDialogOpen(true);
+                  } else {
+                    setDeactivating(true);
+                    toggleStatus(true);
+                  }
+                }}
+                aria-label="Toggle account active status"
+              />
             </div>
           </CardContent>
         </Card>
+
+        <AlertDialog
+          open={deactivateDialogOpen}
+          onOpenChange={(open) => {
+            if (!deactivating) {
+              setDeactivateDialogOpen(open);
+              if (!open) setConfirmEmail("");
+            }
+          }}
+        >
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle className="flex items-center gap-2 text-red-500">
+                <AlertTriangle className="w-5 h-5" />
+                Deactivate account?
+              </AlertDialogTitle>
+              <AlertDialogDescription>
+                This will cancel any active Handshake subscription and sign you
+                out. Your account and data are kept and can be reactivated from
+                the login screen anytime. Type{" "}
+                <span className="font-medium text-foreground">
+                  {accountEmail}
+                </span>{" "}
+                to confirm.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+            <Input
+              type="email"
+              placeholder="Enter your email to confirm"
+              value={confirmEmail}
+              onChange={(e) => setConfirmEmail(e.target.value)}
+              className="mt-2"
+            />
+            <AlertDialogFooter>
+              <Button
+                variant="outline"
+                onClick={() => setDeactivateDialogOpen(false)}
+                disabled={deactivating}
+              >
+                Cancel
+              </Button>
+              <Button
+                variant="destructive"
+                onClick={handleDeactivate}
+                disabled={
+                  deactivating ||
+                  confirmEmail.trim().toLowerCase() !==
+                    accountEmail.trim().toLowerCase()
+                }
+              >
+                {deactivating ? "Deactivating..." : "Deactivate Account"}
+              </Button>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
       </div>
     </div>
   );
