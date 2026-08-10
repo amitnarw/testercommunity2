@@ -2,14 +2,14 @@ import type { Metadata } from "next";
 
 // Home page specific metadata
 export const metadata: Metadata = {
-  title: "12 Testers for 14 Days - Google Play Production Access",
+  title: "Professional Android App Testing & Google Play Testing",
   description: "Get your Android app tested by real users in just 14 days. Try our subscription-based Handshake Testing (barter model), or upgrade to Pro for guaranteed, professional results. Built for Google's 12-Tester Requirement.",
   keywords: "Android app testing, launch Android app, app testing community, Google Play requirements, 12 tester requirement, beta testing, user testing, app feedback",
   alternates: {
     canonical: "/",
   },
   openGraph: {
-    title: "12 Testers for 14 Days - Google Play Production Access",
+    title: "Professional Android App Testing & Google Play Testing",
     description: "Get your Android app tested by real users in just 14 days. Try our subscription-based Handshake Testing (barter model), or upgrade to Pro for guaranteed, professional results. Built for Google's 12-Tester Requirement.",
     type: "website",
     locale: "en_US",
@@ -26,7 +26,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "12 Testers for 14 Days - Google Play Production Access",
+    title: "Professional Android App Testing & Google Play Testing",
     description: "Get your Android app tested by real users in just 14 days. Try our subscription-based Handshake Testing (barter model), or upgrade to Pro for guaranteed, professional results. Built for Google's 12-Tester Requirement.",
     images: ["/dark-mac.png"],
   },
