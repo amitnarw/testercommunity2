@@ -161,11 +161,11 @@ export function GlobalImpactSection() {
   }, []);
 
    const landingHeading =
-     (stats?.landingHeading?.trim() || "") ||
-     "The No.1 Google Play Testing Service";
-   const landingSubheading =
-     (stats?.landingSubheading?.trim() || "") ||
-     "inTesters is the Most Trusted and Reliable Google Play Closed Testing Service, loved by more than 1000+ Developers across 180+ countries.";
+      (stats?.landingHeading?.trim() || "") ||
+      "Closing Your Loop on Closed Testing, End to End";
+    const landingSubheading =
+      (stats?.landingSubheading?.trim() || "") ||
+      "From your first build to your Play Store submission, we run the cycle: 14 days, real devices, real activity, and the data Google actually asks for.";
 
     const resolvedCards = LANDING_STAT_CARDS.map((card) => {
       const t = stats?.landingStatTitles?.find((x) => x.id === card.id);
