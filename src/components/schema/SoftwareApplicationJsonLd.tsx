@@ -5,7 +5,7 @@ export function SoftwareApplicationJsonLd() {
     name: "inTesters",
     applicationCategory: "DeveloperApplication",
     operatingSystem: "Android, Web",
-    description: "Platform for Android app testing and meeting Google Play's 12-tester closed testing requirement.",
+    description: "Platform for Android app testing and meeting Google Play's 12-tester production access requirement.",
     url: "https://intesters.com",
     offers: [
       {

@@ -69,7 +69,7 @@ export default function Home() {
             </HoverBorderGradient>
             <h1 className="text-[1.85rem] sm:text-[2.75rem] md:text-[3.5rem] lg:text-[4.25rem] font-heading leading-[1.2] md:leading-[1.1] tracking-tight font-bold mb-5 sm:mb-8 text-center mx-auto max-w-[900px]">
               Move Your Build From{" "}
-              <span className="text-primary">Closed Track to Live</span>{" "}
+              <span className="text-primary">Production Access Guarantee</span>{" "}
                in 14 Days{" "}
               <br className="hidden md:block" />
             </h1>
@@ -98,7 +98,7 @@ export default function Home() {
 
             <div className="w-full max-w-[700px] overflow-hidden m-auto mt-12 sm:mt-20 md:mt-40">
               <Image
-                src={"/dark-mac.png"}
+                src={"/1786377703935.png"}
                 alt="App Testing Platform"
                 width={"900"}
                 height={"600"}
@@ -107,7 +107,7 @@ export default function Home() {
                 className="w-full h-auto hidden dark:block"
               ></Image>
               <Image
-                src={"/light-mac.png"}
+                src={"/1786377703935.png"}
                 alt="App Testing Platform"
                 width={"900"}
                 height={"600"}
