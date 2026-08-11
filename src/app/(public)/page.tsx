@@ -68,13 +68,13 @@ export default function Home() {
               <span>Built for Google's 12-Tester Requirement.</span>
             </HoverBorderGradient>
             <h1 className="text-[1.85rem] sm:text-[2.75rem] md:text-[3.5rem] lg:text-[4.25rem] font-heading leading-[1.2] md:leading-[1.1] tracking-tight font-bold mb-5 sm:mb-8 text-center mx-auto max-w-[900px]">
-              Launch Your{" "}
-              <span className="text-primary">Android App</span>{" "}
-               on Google Play Faster{" "}
+              From Build to{" "}
+              <span className="text-primary">Production Access</span>{" "}
+              in 14 Days{" "}
               <br className="hidden md:block" />
             </h1>
             <p className="text-sm sm:text-base md:text-lg font-body max-w-xs sm:max-w-md md:max-w-lg lg:max-w-[700px] mx-auto mb-8 text-muted-foreground">
-              Get professional testers for your Android app, complete the required testing period, gather real user feedback, and prepare your app for Google Play production.
+              Real users, real devices, real days. The test cycle Google's review team actually wants to see.
             </p>
             <div className="mt-5 inline-block p-4">
               <MagneticButton>
@@ -98,7 +98,7 @@ export default function Home() {
 
             <div className="w-full max-w-[700px] overflow-hidden m-auto mt-12 sm:mt-20 md:mt-40">
               <Image
-                src={"/dark-mac.png"}
+                src={"/1786377703935.png"}
                 alt="App Testing Platform"
                 width={"900"}
                 height={"600"}
@@ -107,7 +107,7 @@ export default function Home() {
                 className="w-full h-auto hidden dark:block"
               ></Image>
               <Image
-                src={"/light-mac.png"}
+                src={"/1786377703935.png"}
                 alt="App Testing Platform"
                 width={"900"}
                 height={"600"}

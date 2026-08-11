@@ -90,7 +90,7 @@ export const ContactStep = ({
         </div>
       </div>
       <div>
-        <Label>Why are you using our service?</Label>
+        <Label>What is your main testing goal?</Label>
         <RadioGroup
           value={profileData?.service_usage || ""}
           onValueChange={(value) =>

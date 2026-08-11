@@ -369,7 +369,7 @@ const ProjectsStep = ({ profileData, setProfileData }: ProfileStepperProps) => (
 const ContactStep = ({ profileData, setProfileData }: ProfileStepperProps) => (
   <div className="space-y-6">
     <div>
-      <Label>Why are you using our service?</Label>
+      <Label>What is your main testing goal?</Label>
       <div className="grid grid-cols-2 gap-4">
         {Object.values(UserTestingServiceReason).map((item) => (
           <div

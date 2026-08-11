@@ -33,7 +33,7 @@ export function CTASection() {
           <div className="inline-flex items-center gap-2 px-4 py-1.5 md:px-5 md:py-2 rounded-full bg-white/10 text-white font-medium mb-1 border border-white/20 backdrop-blur-md shadow-lg shadow-black/5 hover:bg-white/20 transition-colors cursor-default">
             <Sparkles className="w-3.5 h-3.5 text-yellow-300 fill-yellow-300" />
             <span className="text-xs md:text-sm tracking-wide uppercase font-bold">
-              Join 1000+ Developers
+               Built for Android Teams Worldwide
             </span>
           </div>
 
