@@ -39,12 +39,11 @@ export default function PricingPage() {
         {/* Hero */}
         <section className="text-center max-w-3xl mx-auto">
           <h1 className="text-4xl md:text-6xl font-bold">
-            Simple, Transparent{" "}
+            Simple, Honest{" "}
             <span className="text-primary italic">Pricing</span>
           </h1>
           <p className="mt-4 text-lg text-muted-foreground">
-            One clear plan for professional testing, or talk to us for a custom
-            enterprise solution. No hidden fees, ever.
+            Pay for what you test, nothing you don't. No hidden fees, ever.
           </p>
         </section>
 
@@ -56,7 +55,6 @@ export default function PricingPage() {
         {/* FAQ */}
         <section className="mt-28 max-w-4xl mx-auto">
           <div className="text-center mb-12">
-            <HelpCircle className="w-12 h-12 text-primary mx-auto mb-4" />
             <h2 className="text-3xl md:text-4xl font-bold">
               Pricing Explained
             </h2>

@@ -68,13 +68,13 @@ export default function Home() {
               <span>Built for Google's 12-Tester Requirement.</span>
             </HoverBorderGradient>
             <h1 className="text-[1.85rem] sm:text-[2.75rem] md:text-[3.5rem] lg:text-[4.25rem] font-heading leading-[1.2] md:leading-[1.1] tracking-tight font-bold mb-5 sm:mb-8 text-center mx-auto max-w-[900px]">
-              Move Your Build From{" "}
-              <span className="text-primary">Production Access Guarantee</span>{" "}
-               in 14 Days{" "}
+              From Build to{" "}
+              <span className="text-primary">Production Access</span>{" "}
+              in 14 Days{" "}
               <br className="hidden md:block" />
             </h1>
             <p className="text-sm sm:text-base md:text-lg font-body max-w-xs sm:max-w-md md:max-w-lg lg:max-w-[700px] mx-auto mb-8 text-muted-foreground">
-              Real users, real devices, real days — running the test cycle Google's review team actually wants to see.
+              Real users, real devices, real days. The test cycle Google's review team actually wants to see.
             </p>
             <div className="mt-5 inline-block p-4">
               <MagneticButton>
