@@ -13,6 +13,7 @@ import {
   Home,
   BookOpen,
   Terminal,
+  Award,
   Ticket,
   Headphones,
   Landmark,
@@ -27,6 +28,7 @@ import {
   MessageSquare,
   Settings,
   Mail,
+  ShieldCheck,
 } from "lucide-react";
 import { Button } from "./ui/button";
 import {
@@ -57,8 +59,8 @@ type AdminNavItem = {
 const baseMainNavItems: AdminNavItem[] = [
   { name: "Dashboard", href: ROUTES.AUTHENTICATED.DASHBOARD, icon: Home, section: "overview" },
   { name: "Pro Testing", href: ROUTES.AUTHENTICATED.PRO_TESTING, icon: Zap, section: "paid", badge: "PRO" },
-  { name: "Handshake Testing", href: ROUTES.AUTHENTICATED.HANDSHAKE_TESTING, icon: Handshake, section: "free", badge: "BETA" },
-  { name: "Notifications", href: ROUTES.AUTHENTICATED.NOTIFICATIONS, icon: Bell, section: "platform" },
+{ name: "Handshake Testing", href: ROUTES.AUTHENTICATED.HANDSHAKE_TESTING, icon: Handshake, section: "free", badge: "FREE" },
+{ name: "Notifications", href: ROUTES.AUTHENTICATED.NOTIFICATIONS, icon: Bell, section: "platform" },
   { name: "Wallet", href: ROUTES.AUTHENTICATED.WALLET, icon: Wallet, section: "platform" },
   { name: "Support", href: ROUTES.PUBLIC.SUPPORT, icon: LifeBuoy, section: "support" },
 ];
@@ -101,6 +103,28 @@ const adminNavItems: AdminNavItem[] = [
     section: "free",
     badge: "HANDSHAKE",
     moduleName: "submissions",
+  },
+  // P4: mirror the desktop sidebar additions (were unreachable on mobile).
+  {
+    name: "Handshake Monitoring",
+    href: ROUTES.ADMIN.HANDSHAKE_MONITORING,
+    icon: Activity,
+    section: "free",
+    moduleName: "submissions",
+  },
+  {
+    name: "Pro Tester Queue",
+    href: ROUTES.ADMIN.HANDSHAKE_ADDONS,
+    icon: ShieldCheck,
+    section: "free",
+    moduleName: "submissions",
+  },
+  {
+    name: "Elite Badges",
+    href: ROUTES.ADMIN.ELITE_BADGES,
+    icon: Award,
+    section: "free",
+    moduleName: "users",
   },
   // Finance
   {
@@ -436,7 +460,6 @@ export default function MobileMenu({
                                   section.key === "paid" && "bg-amber-500/20 text-amber-600 dark:bg-amber-500/10 dark:text-amber-700",
                                   section.key === "free" && "bg-blue-500/20 text-blue-600 dark:bg-blue-500/10 dark:text-blue-700",
                                   section.key === "support" && "bg-green-500/20 text-green-600 dark:bg-green-500/10 dark:text-green-700",
-                                  item.badge === "BETA" && "bg-emerald-500/20 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-700",
                                 )}>
                                   {item.badge}
                                 </span>
@@ -513,7 +536,6 @@ export default function MobileMenu({
                                   "text-[8px] font-bold px-1.5 py-0.5 rounded",
                                   section.key === "paid" && "bg-amber-500/20 text-amber-600 dark:bg-amber-500/10 dark:text-amber-700",
                                   section.key === "free" && "bg-blue-500/20 text-blue-600 dark:bg-blue-500/10 dark:text-blue-700",
-                                  item.badge === "BETA" && "bg-emerald-500/20 text-emerald-600 dark:bg-emerald-500/10 dark:text-emerald-700",
                                 )}>
                                   {item.badge}
                                 </span>

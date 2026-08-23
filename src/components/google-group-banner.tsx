@@ -67,7 +67,7 @@ export const GoogleGroupBanner = ({
             </p>
           </div>
 
-          <div className="grid gap-4">
+          <div className="grid gap-2">
             <div className="flex items-start gap-3 bg-background/50 backdrop-blur-sm p-4 rounded-2xl border border-amber-500/10 transition-colors hover:bg-background/80">
               <div className="mt-1 flex-shrink-0 w-6 h-6 rounded-full bg-amber-500/20 flex items-center justify-center text-amber-600 dark:text-amber-500 font-bold text-xs">1</div>
               <div className="space-y-2 flex-1">

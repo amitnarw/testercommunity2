@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useRef } from "react";
 import { motion, useInView } from "framer-motion";
@@ -100,10 +100,10 @@ const statItems = [
     labelColor: "text-muted-foreground",
   },
   {
-    title: "Community Points",
-    value: 25000,
+    title: "Handshakes Completed",
+    value: 1200,
     suffix: "+",
-    label: "Earned by the community",
+    label: "Mutual testing partnerships",
     icon: <Coins className="w-4 h-4" />,
     accent: "from-primary to-primary/50",
     span: "col-span-2",

@@ -8,8 +8,8 @@ import { AutoTransitionLink } from "@/components/auto-transition-link";
 const benefits = [
   {
     icon: Coins,
-    title: "Subscription Access",
-    description: "Just ₹99/month for unlimited handshake requests",
+    title: "Free Forever",
+    description: "No subscription, no fees — handshake testing is free",
     color: "text-green-500",
     bg: "bg-green-500/10",
   },
@@ -44,7 +44,7 @@ const benefits = [
   {
     icon: ShieldCheck,
     title: "No Hidden Costs",
-    description: "One subscription price, no per-test fees",
+    description: "Barter-based and free — no subscription, no per-test fees",
     color: "text-orange-500",
     bg: "bg-orange-500/10",
   },
@@ -99,7 +99,7 @@ export function MemberBenefits() {
           </h2>
           <p className="mt-3 text-muted-foreground text-sm md:text-base max-w-xl mx-auto">
             Join hundreds of developers on the most rewarding handshake
-            testing platform ,  powered by subscription, not points.
+            testing platform ,  free for everyone, powered by barter.
           </p>
         </motion.div>
 
@@ -156,8 +156,8 @@ export function MemberBenefits() {
                 Ready to Start Handshake Testing?
               </h3>
               <p className="text-sm text-muted-foreground mb-6 max-w-md mx-auto">
-                Subscribe for ₹99/month, publish your app, and start sending
-                handshake requests to other developers.
+                Publish your app for free and start sending handshake
+                requests to other developers ,  no subscription needed.
               </p>
 
               <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -167,7 +167,7 @@ export function MemberBenefits() {
                   className="w-full sm:w-auto rounded-full px-8 shadow-lg shadow-emerald-500/30 group"
                 >
                   <AutoTransitionLink href="/auth/register">
-                    <span className="font-bold">Subscribe Now</span>
+                    <span className="font-bold">Get Started Free</span>
                   </AutoTransitionLink>
                 </Button>
                 <Button

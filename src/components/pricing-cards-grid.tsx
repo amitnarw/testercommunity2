@@ -5,7 +5,6 @@ import { usePathname } from "next/navigation";
 import { Zap } from "lucide-react";
 import { HoverBorderGradient } from "./ui/hover-border-gradient";
 import { ProfessionalPlanCard } from "./pricing-cards";
-import { HandshakePlanCard } from "./handshake/plan-card";
 import { PricingResponse } from "@/lib/types";
 import { ROUTES } from "@/lib/routes";
 import { useQuery } from "@tanstack/react-query";
@@ -27,15 +26,11 @@ export function PricingCardsGrid({
   className = "",
   mode = "redirect",
   onSubscribe,
-  onHandshakeSubscribeError,
-  onCheckoutRequired,
 }: {
   variant?: PricingVariant;
   className?: string;
   mode?: PricingMode;
   onSubscribe?: (planId: string) => void;
-  onHandshakeSubscribeError?: (error: any) => void;
-  onCheckoutRequired?: () => void;
 }) {
   const pathname = usePathname();
 
@@ -51,6 +46,7 @@ export function PricingCardsGrid({
     const arr = Array.isArray(allPlans) ? allPlans : [];
     return [...arr]
       .filter((p) => p.isActive && (includeEnterprise ? true : p.billingType !== "CUSTOM"))
+      .filter((p) => p.id !== "handshake")
       .sort((a, b) => (a.sequence ?? 0) - (b.sequence ?? 0));
   }, [allPlans, includeEnterprise]);
 
@@ -69,27 +65,6 @@ export function PricingCardsGrid({
       className={`grid ${style.cols} gap-4 items-stretch mx-auto ${style.maxW} ${className}`}
     >
       {sortedPlans.map((plan) => {
-        if (plan.id === "handshake") {
-          if (mode === "billing") {
-            return (
-              <HandshakePlanCard
-                key="handshake"
-                mode="billing"
-                onSubscribeError={onHandshakeSubscribeError}
-                onCheckoutRequired={onCheckoutRequired}
-              />
-            );
-          }
-          return (
-            <HandshakePlanCard
-              key="handshake"
-              mode="redirect"
-              redirectHref={resolveRedirectHref(plan.ctaHref)}
-              redirectLabel={plan.ctaLabel}
-            />
-          );
-        }
-
         const action = plan.buttonAction ?? "BUY";
         const ctaLabel = plan.ctaLabel ?? (action === "REDIRECT" ? "Learn More" : "Get Started");
 

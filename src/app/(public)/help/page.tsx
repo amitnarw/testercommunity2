@@ -25,7 +25,7 @@ const helpOptions = [
   {
     icon: <DollarSign className="w-6 h-6" />,
     title: "Billing & Plans",
-    description: "Invoices, subscriptions, and points.",
+    description: "Invoices, packages, and payments.",
     contact: "support@system.intesters.com",
     color: "text-green-500",
     bg: "bg-green-500/10",

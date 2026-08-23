@@ -744,7 +744,7 @@ function MailRow({
         {snippet && (
           <>
             <span className="text-muted-foreground/50 text-[13px] shrink-0">
-              —
+              , 
             </span>
             <span className="truncate text-[13px] text-muted-foreground/80 font-normal">
               {snippet}

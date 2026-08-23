@@ -26,7 +26,7 @@ const FaqItem = ({
         onPointerDown={(e) => {
           e.currentTarget.focus({ preventScroll: true });
         }}
-        className="text-md sm:text-lg font-medium py-4 sm:py-6 hover:no-underline hover:text-primary transition-colors text-start">
+        className="text-md sm:text-lg font-medium py-4 sm:py-6 hover:no-underline hover:text-primary transition-colors text-start outline-none">
         {question}
       </AccordionTrigger>
       <AccordionContent className="text-sm sm:text-base text-muted-foreground pb-6 leading-relaxed">

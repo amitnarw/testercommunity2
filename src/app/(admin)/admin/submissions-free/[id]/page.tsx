@@ -21,7 +21,6 @@ import {
   Activity,
   CheckCircle2,
   Pencil,
-  Star,
   Loader2,
   Eye,
 } from "lucide-react";
@@ -75,6 +74,13 @@ const AdminStartTestingDialog = dynamic(
     ),
   { ssr: false },
 );
+const AdminEditSubmissionDialog = dynamic(
+  () =>
+    import("@/components/admin/admin-edit-submission-dialog").then(
+      (mod) => mod.AdminEditSubmissionDialog,
+    ),
+  { ssr: false },
+);
 
 export default function AdminSubmissionDetailPage({
   params,
@@ -91,6 +97,7 @@ export default function AdminSubmissionDetailPage({
   const [showCompleteDialog, setShowCompleteDialog] = useState(false);
   const [showManageTestersDialog, setShowManageTestersDialog] = useState(false);
   const [showStartTestingDialog, setShowStartTestingDialog] = useState(false);
+  const [showEditDialog, setShowEditDialog] = useState(false);
   const { toast } = useToast();
   const [isUpdatingStatus, setIsUpdatingStatus] = useState(false);
 
@@ -300,7 +307,7 @@ export default function AdminSubmissionDetailPage({
               </div>
 
               {/* Action Buttons Zone */}
-              <div className="flex flex-wrap items-center gap-3 w-full md:w-auto z-10 shrink-0">
+              <div className="flex flex-wrap items-center justify-end gap-3 w-full z-10">
                 <a
                   href={visitUrl}
                   target="_blank"
@@ -309,6 +316,18 @@ export default function AdminSubmissionDetailPage({
                 >
                   <ExternalLink className="w-4 h-4" /> Play Store
                 </a>
+
+                {/* F-8: the edit endpoint hard-rejects FREE campaigns ,  hide
+                    the button instead of letting every save fail with 400. */}
+                {project.appType !== "FREE" && (
+                  <Button
+                    variant="outline"
+                    onClick={() => setShowEditDialog(true)}
+                    className="px-5 py-2.5 h-auto rounded-xl shadow-sm font-bold border-blue-500/30 hover:border-blue-500/60 text-blue-600 bg-blue-500/5"
+                  >
+                    <Pencil className="w-4 h-4 mr-1.5" /> Edit
+                  </Button>
+                )}
 
                 {(project.status === "IN_REVIEW" ||
                   project.status === "REJECTED") && (
@@ -531,33 +550,7 @@ export default function AdminSubmissionDetailPage({
                   </div>
                 </div>
 
-                {/* Rewards & Payments Row */}
-                <div className="grid grid-cols-2 divide-x border-b border-border/50 bg-secondary/20">
-                  <div className="p-4 flex flex-col items-center justify-center text-center space-y-1.5 hover:bg-background transition-colors">
-                    <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider flex items-center gap-1">
-                      <Activity className="w-3.5 h-3.5 text-primary" />
-                      Cost Points
-                    </span>
-                    <span className="text-2xl font-black text-blue-600">
-                      {project.costPoints || 0}{" "}
-                      <span className="text-xs font-bold text-muted-foreground lowercase">
-                        Pts
-                      </span>
-                    </span>
-                  </div>
-                  <div className="p-4 flex flex-col items-center justify-center text-center space-y-1.5 hover:bg-background transition-colors">
-                    <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider flex items-center gap-1">
-                      <Star className="w-3.5 h-3.5 text-primary" />
-                      Reward Points
-                    </span>
-                    <span className="text-2xl font-black text-emerald-600">
-                      {project.rewardPoints || 0}{" "}
-                      <span className="text-xs font-bold text-muted-foreground lowercase">
-                        Pts
-                      </span>
-                    </span>
-                  </div>
-                </div>
+                {/* S9: Cost/Reward Points row removed with the points economy */}
 
                 <div className="p-6 bg-card flex flex-col items-center justify-center text-center gap-3">
                   <div className="p-4 bg-emerald-500/10 rounded-full">
@@ -569,7 +562,7 @@ export default function AdminSubmissionDetailPage({
                     </h4>
                     <p className="text-sm text-muted-foreground max-w-[250px] mt-1 mx-auto leading-relaxed">
                       This is a handshake testing project managed through the
-                      subscription-based barter system.
+                      free barter system.
                     </p>
                   </div>
                 </div>
@@ -909,6 +902,12 @@ export default function AdminSubmissionDetailPage({
       </div>
 
       {/* Modals */}
+      <AdminEditSubmissionDialog
+        project={project}
+        open={showEditDialog}
+        onOpenChange={setShowEditDialog}
+        onSuccess={() => refetch()}
+      />
       <AdminRejectDialog
         appId={project.id}
         open={showRejectDialog}
@@ -932,8 +931,6 @@ export default function AdminSubmissionDetailPage({
           totalTester: project.totalTester,
           totalDay: project.totalDay,
           minimumAndroidVersion: project.minimumAndroidVersion,
-          costPoints: project.costPoints || 0,
-          rewardPoints: project.rewardPoints || 0,
         }}
         isReview={project.status === "IN_REVIEW"}
       />
@@ -967,6 +964,7 @@ export default function AdminSubmissionDetailPage({
         onSuccess={() => refetch()}
         currentTester={project.currentTester || 0}
         totalTester={project.totalTester || 0}
+        appType={project.appType}
       />
       {/* Fullscreen Image Viewer */}
       {fullscreenImage && (

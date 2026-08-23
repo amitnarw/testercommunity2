@@ -16,26 +16,30 @@ export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "FAQ | inTesters",
-  description: "Frequently asked questions about inTesters app testing platform. Learn about handshake testing (barter), professional testing packages, pricing, and how to meet Google Play's 12-tester requirement.",
-  keywords: "inTesters FAQ, app testing questions, Google Play 12 testers, handshake testing, professional testing, Android app testing help",
+  description:
+    "Frequently asked questions about inTesters app testing platform. Learn about handshake testing (barter), professional testing packages, pricing, and how to meet Google Play's 12-tester requirement.",
+  keywords:
+    "inTesters FAQ, app testing questions, Google Play 12 testers, handshake testing, professional testing, Android app testing help",
   alternates: {
     canonical: "/faq",
   },
   openGraph: {
     title: "FAQ | inTesters",
-    description: "Frequently asked questions about inTesters app testing platform. Learn about handshake testing, professional testing packages, and the 12-tester requirement.",
+    description:
+      "Frequently asked questions about inTesters app testing platform. Learn about handshake testing, professional testing packages, and the 12-tester requirement.",
     url: "/faq",
     siteName: "inTesters",
   },
 };
 
 export default async function FaqPage() {
-  const [generalFaqs, googlePlayFaqs, communityFaqs, proFaqs] = await Promise.all([
-    serverGetPublicFaqs("general"),
-    serverGetPublicFaqs("google_play_guide"),
-    serverGetPublicFaqs("community"),
-    serverGetPublicFaqs("professional"),
-  ]);
+  const [generalFaqs, googlePlayFaqs, communityFaqs, proFaqs] =
+    await Promise.all([
+      serverGetPublicFaqs("general"),
+      serverGetPublicFaqs("google_play_guide"),
+      serverGetPublicFaqs("community"),
+      serverGetPublicFaqs("professional"),
+    ]);
 
   const allFaqItems = [
     ...generalFaqs,
@@ -115,16 +119,18 @@ export default async function FaqPage() {
           </Accordion>
         </div>
 
-        <div className="mt-20 text-center bg-secondary/50 p-10 rounded-2xl">
-          <LifeBuoy className="w-12 h-12 text-primary mx-auto mb-4" />
-          <h3 className="text-2xl font-bold">Still have questions?</h3>
-          <p className="text-muted-foreground mt-2 max-w-lg mx-auto">
+        <div className="mt-20 text-center bg-gradient-to-b from-primary via-primary/80 to-primary p-10 rounded-2xl text-white">
+          <div className="flex flex-row gap-2 items-center justify-center">
+            <LifeBuoy className="w-8 h-8 bg-white rounded-xl p-1 text-primary" />
+            <h3 className="text-2xl font-bold">Still have questions?</h3>
+          </div>
+          <p className="mt-2 max-w-lg mx-auto">
             Can&apos;t find the answer you&apos;re looking for? Don&apos;t
             worry, our support team is here to help you with any questions you
             might have.
           </p>
           <div className="mt-6">
-            <Button asChild>
+            <Button asChild className="bg-white text-primary">
               <Link href="/help">
                 Contact Support <ArrowRight className="ml-2" />
               </Link>

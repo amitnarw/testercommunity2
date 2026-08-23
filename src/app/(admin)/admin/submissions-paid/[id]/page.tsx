@@ -1086,6 +1086,7 @@ export default function AdminSubmissionDetailPage({
         open={showStartTestingDialog}
         onOpenChange={setShowStartTestingDialog}
         onSuccess={() => refetch()}
+        appType={project.appType}
       />
       <AdminManageTestersDialog
         appId={project.id}
@@ -1124,7 +1125,7 @@ export default function AdminSubmissionDetailPage({
           <SupportChat
             mode="direct"
             directChatId={project?.id ?? null}
-            title="Testing Manager"
+            title={project.appOwner?.name ? `Chat with ${project.appOwner.name}` : "Chat with App Owner"}
             open={showChatDialog}
             onOpenChange={(val) => {
               setShowChatDialog(val);
@@ -1135,6 +1136,7 @@ export default function AdminSubmissionDetailPage({
               }
             }}
             senderType="AGENT"
+            viewerType="ADMIN"
           />
         </DialogContent>
       </Dialog>

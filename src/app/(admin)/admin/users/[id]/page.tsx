@@ -32,6 +32,7 @@ import {
   XCircle,
   Trash2,
   Ban,
+  PowerOff,
   Briefcase,
   Building2,
   FolderGit,
@@ -103,6 +104,7 @@ import {
   useUserById,
   useUpdateUserRole,
   useUpdateUserStatus,
+  useUpdateUserActiveStatus,
   useUpdateUserProfile,
   useUpdateUserWallet,
   useDeleteUser,
@@ -131,10 +133,7 @@ import { authClient } from "@/lib/auth-client";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import {
-  RadioGroup,
-  RadioGroupItem,
-} from "@/components/ui/radio-group";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
   UserProfileType,
@@ -222,12 +221,18 @@ function formatExperience(exp: string | null) {
 
 function formatEnum(label: string | null) {
   if (!label) return null;
-  return label.replace(/_/g, " ").toLowerCase().replace(/\b\w/g, (c) => c.toUpperCase());
+  return label
+    .replace(/_/g, " ")
+    .toLowerCase()
+    .replace(/\b\w/g, (c) => c.toUpperCase());
 }
 
 function formatProfileType(val: string | null) {
   if (!val) return null;
-  return val.replace(/_/g, " ").toLowerCase().replace(/\b\w/g, (c) => c.toUpperCase());
+  return val
+    .replace(/_/g, " ")
+    .toLowerCase()
+    .replace(/\b\w/g, (c) => c.toUpperCase());
 }
 
 function formatCompanySize(val: string | null) {
@@ -258,22 +263,25 @@ export default function AdminUserDetailsPage() {
 
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isStatusModalOpen, setIsStatusModalOpen] = useState(false);
+  const [isActiveStatusModalOpen, setIsActiveStatusModalOpen] = useState(false);
+  const [pendingIsActive, setPendingIsActive] = useState<boolean | null>(null);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [roleSelection, setRoleSelection] = useState<string>("");
   const [statusSelection, setStatusSelection] = useState<string>("");
   const [banReason, setBanReason] = useState("");
   const [isGiftModalOpen, setIsGiftModalOpen] = useState(false);
+  // S9: packages-only gifting
   const [giftData, setGiftData] = useState({
-    points: 0,
     packages: 0,
   });
 
-  const [isSendNotificationModalOpen, setIsSendNotificationModalOpen] = useState(false);
+  const [isSendNotificationModalOpen, setIsSendNotificationModalOpen] =
+    useState(false);
   const [notificationData, setNotificationData] = useState({
-    title: '',
-    description: '',
-    type: 'OTHER',
-    url: '',
+    title: "",
+    description: "",
+    type: "OTHER",
+    url: "",
   });
   const [feedbackModal, setFeedbackModal] = useState<{
     open: boolean;
@@ -285,36 +293,44 @@ export default function AdminUserDetailsPage() {
   }>({
     open: false,
     status: "info",
-    title: '',
-    description: '',
-  })
+    title: "",
+    description: "",
+  });
 
   // IAR state
   const [isCreateIarModalOpen, setIsCreateIarModalOpen] = useState(false);
   const [iarFormData, setIarFormData] = useState({
-    title: '',
-    description: '',
-    url: '',
-    color: '#ef4444',
+    title: "",
+    description: "",
+    url: "",
+    color: "#ef4444",
   });
   const [editingIarId, setEditingIarId] = useState<number | null>(null);
   const [editIarFormData, setEditIarFormData] = useState({
-    title: '',
-    description: '',
-    url: '',
-    color: '#ef4444',
+    title: "",
+    description: "",
+    url: "",
+    color: "#ef4444",
     isActive: true,
   });
 
-  const { data: iarItems, isLoading: iarLoading } = useUserImmediateAttention(id);
+  const { data: iarItems, isLoading: iarLoading } =
+    useUserImmediateAttention(id);
   const createIarMutation = useCreateImmediateAttention({
     onSuccess: () => {
       setIsCreateIarModalOpen(false);
-      setIarFormData({ title: '', description: '', url: '', color: '#ef4444' });
-      toast({ title: "IAR Item Created", description: "Immediate attention item added successfully." });
+      setIarFormData({ title: "", description: "", url: "", color: "#ef4444" });
+      toast({
+        title: "IAR Item Created",
+        description: "Immediate attention item added successfully.",
+      });
     },
     onError: (err: any) => {
-      toast({ title: "Error", description: err.message || "Failed to create IAR item.", variant: "destructive" });
+      toast({
+        title: "Error",
+        description: err.message || "Failed to create IAR item.",
+        variant: "destructive",
+      });
     },
   });
   const updateIarMutation = useUpdateImmediateAttention({
@@ -323,7 +339,11 @@ export default function AdminUserDetailsPage() {
       toast({ title: "IAR Item Updated" });
     },
     onError: (err: any) => {
-      toast({ title: "Error", description: err.message || "Failed to update IAR item.", variant: "destructive" });
+      toast({
+        title: "Error",
+        description: err.message || "Failed to update IAR item.",
+        variant: "destructive",
+      });
     },
   });
   const deleteIarMutation = useDeleteImmediateAttention({
@@ -331,19 +351,29 @@ export default function AdminUserDetailsPage() {
       toast({ title: "IAR Item Deleted" });
     },
     onError: (err: any) => {
-      toast({ title: "Error", description: err.message || "Failed to delete IAR item.", variant: "destructive" });
+      toast({
+        title: "Error",
+        description: err.message || "Failed to delete IAR item.",
+        variant: "destructive",
+      });
     },
   });
 
   const reorderIarMutation = useReorderImmediateAttention({
     onError: (err: any) => {
-      toast({ title: "Error", description: err.message || "Failed to reorder IAR items.", variant: "destructive" });
+      toast({
+        title: "Error",
+        description: err.message || "Failed to reorder IAR items.",
+        variant: "destructive",
+      });
     },
   });
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
-    useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates }),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    }),
   );
 
   const handleDragEnd = (event: DragEndEvent) => {
@@ -351,34 +381,48 @@ export default function AdminUserDetailsPage() {
     if (!over || active.id === over.id || !iarItems) return;
 
     const itemsList = iarItems as ImmediateAttentionItem[];
-    const oldIndex = itemsList.findIndex((i: any) => i.id.toString() === active.id);
-    const newIndex = itemsList.findIndex((i: any) => i.id.toString() === over.id);
+    const oldIndex = itemsList.findIndex(
+      (i: any) => i.id.toString() === active.id,
+    );
+    const newIndex = itemsList.findIndex(
+      (i: any) => i.id.toString() === over.id,
+    );
     if (oldIndex === -1 || newIndex === -1) return;
 
     const newOrder = arrayMove(itemsList, oldIndex, newIndex);
-    const items = newOrder.map((item: any, idx: number) => ({ id: item.id, sortOrder: idx }));
+    const items = newOrder.map((item: any, idx: number) => ({
+      id: item.id,
+      sortOrder: idx,
+    }));
     reorderIarMutation.mutate({ userId: id, items });
   };
 
   const [isEconomyEditing, setIsEconomyEditing] = useState(false);
+  // S9: wallet editing is packages-only.
   const [walletEditData, setWalletEditData] = useState({
-    totalPoints: 0,
     totalPackages: 0,
   });
 
-  const [isConvertAuthTypeModalOpen, setIsConvertAuthTypeModalOpen] = useState(false);
-  const [targetAuthType, setTargetAuthType] = useState<string>("EMAIL_PASSWORD");
+  const [isConvertAuthTypeModalOpen, setIsConvertAuthTypeModalOpen] =
+    useState(false);
+  const [targetAuthType, setTargetAuthType] =
+    useState<string>("EMAIL_PASSWORD");
   const [convertNewPassword, setConvertNewPassword] = useState("");
   const [convertConfirmPassword, setConvertConfirmPassword] = useState("");
 
   const [isAddInvoiceModalOpen, setIsAddInvoiceModalOpen] = useState(false);
-  const [addInvoicePaymentId, setAddInvoicePaymentId] = useState<number | null>(null);
+  const [addInvoicePaymentId, setAddInvoicePaymentId] = useState<number | null>(
+    null,
+  );
   const [addInvoicePaymentLabel, setAddInvoicePaymentLabel] = useState("");
   const [addInvoiceFormData, setAddInvoiceFormData] = useState<any>({});
 
   const { data: userInvoices } = useUserInvoices(id);
-  const { data: userNotifications, isLoading: isLoadingNotifications } = useUserNotifications(id);
-  const { data: invoicePreviewData } = useInvoicePreview(isAddInvoiceModalOpen ? id : null);
+  const { data: userNotifications, isLoading: isLoadingNotifications } =
+    useUserNotifications(id);
+  const { data: invoicePreviewData } = useInvoicePreview(
+    isAddInvoiceModalOpen ? id : null,
+  );
 
   useEffect(() => {
     if (invoicePreviewData) {
@@ -386,11 +430,13 @@ export default function AdminUserDetailsPage() {
     }
   }, [invoicePreviewData]);
 
-  const [editingNotificationId, setEditingNotificationId] = useState<number | null>(null);
+  const [editingNotificationId, setEditingNotificationId] = useState<
+    number | null
+  >(null);
   const [editFormData, setEditFormData] = useState({
-    title: '',
-    description: '',
-    url: '',
+    title: "",
+    description: "",
+    url: "",
     isActive: true,
   });
 
@@ -406,7 +452,6 @@ export default function AdminUserDetailsPage() {
       setStatusSelection(user.status);
       setBanReason(user.banReason || "");
       setWalletEditData({
-        totalPoints: user.wallet?.totalPoints || 0,
         totalPackages: user.wallet?.totalPackages || 0,
       });
       setEditProfileData({
@@ -474,6 +519,37 @@ export default function AdminUserDetailsPage() {
     },
   });
 
+  const updateActiveStatusMutation = useUpdateUserActiveStatus({
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["useUserById", id] });
+      queryClient.invalidateQueries({ queryKey: ["useAllUsers"] });
+      queryClient.invalidateQueries({ queryKey: ["useUserCounts"] });
+      setIsActiveStatusModalOpen(false);
+      toast({
+        title: pendingIsActive ? "Account Reactivated" : "Account Deactivated",
+        description: pendingIsActive
+          ? "The user can now log in again."
+          : "New logins are blocked until the account is reactivated.",
+      });
+    },
+    onError: (err: any) => {
+      toast({
+        title: "Error",
+        description: err.message || "Failed to update account active status.",
+        variant: "destructive",
+      });
+    },
+  });
+
+  const confirmActiveStatusChange = () => {
+    if (user && pendingIsActive !== null) {
+      updateActiveStatusMutation.mutate({
+        id: user.id,
+        isActive: pendingIsActive,
+      });
+    }
+  };
+
   const deleteUserMutation = useDeleteUser({
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["useAllUsers"] });
@@ -512,7 +588,8 @@ export default function AdminUserDetailsPage() {
     },
   });
 
-  const { data: notificationTypes, isLoading: isLoadingTypes } = useNotificationTypes();
+  const { data: notificationTypes, isLoading: isLoadingTypes } =
+    useNotificationTypes();
 
   const updateInvoiceMutation = useUpdateInvoice({
     onSuccess: () => {
@@ -597,16 +674,16 @@ export default function AdminUserDetailsPage() {
   const giftMutation = useGiftPointsAndPackages({
     onSuccess: () => {
       setIsGiftModalOpen(false);
-      setGiftData({ points: 0, packages: 0 });
+      setGiftData({ packages: 0 });
       toast({
         title: "Gift Sent!",
-        description: "Points and packages have been gifted successfully.",
+        description: "Packages have been gifted successfully.",
       });
     },
     onError: (err: any) => {
       toast({
         title: "Error",
-        description: err.message || "Failed to gift points and packages.",
+        description: err.message || "Failed to gift packages.",
         variant: "destructive",
       });
     },
@@ -615,23 +692,35 @@ export default function AdminUserDetailsPage() {
   const createNotificationMutation = useCreateNotification({
     onSuccess: () => {
       setIsSendNotificationModalOpen(false);
-      setNotificationData({ title: '', description: '', type: 'OTHER', url: '' });
+      setNotificationData({
+        title: "",
+        description: "",
+        type: "OTHER",
+        url: "",
+      });
       queryClient.invalidateQueries({ queryKey: ["useUserNotifications", id] });
       setFeedbackModal({
         open: true,
-        status: 'success',
-        title: 'Notification Sent!',
-        description: 'The notification has been sent to the user successfully.',
-        primaryAction: { label: 'OK', onClick: () => setFeedbackModal(prev => ({ ...prev, open: false })) },
+        status: "success",
+        title: "Notification Sent!",
+        description: "The notification has been sent to the user successfully.",
+        primaryAction: {
+          label: "OK",
+          onClick: () => setFeedbackModal((prev) => ({ ...prev, open: false })),
+        },
       });
     },
     onError: (error: any) => {
       setFeedbackModal({
         open: true,
-        status: 'error',
-        title: 'Failed to Send',
-        description: error?.message || 'Something went wrong. Please try again.',
-        primaryAction: { label: 'OK', onClick: () => setFeedbackModal(prev => ({ ...prev, open: false })) },
+        status: "error",
+        title: "Failed to Send",
+        description:
+          error?.message || "Something went wrong. Please try again.",
+        primaryAction: {
+          label: "OK",
+          onClick: () => setFeedbackModal((prev) => ({ ...prev, open: false })),
+        },
       });
     },
   });
@@ -643,18 +732,26 @@ export default function AdminUserDetailsPage() {
       toast({ title: "Notification Updated" });
     },
     onError: (err: any) => {
-      toast({ title: "Error", description: err.message || "Failed to update notification.", variant: "destructive" });
+      toast({
+        title: "Error",
+        description: err.message || "Failed to update notification.",
+        variant: "destructive",
+      });
     },
   });
 
   const deleteNotificationMutation = useDeleteNotification({
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["useUserNotifications", id] });
-      setFeedbackModal(prev => ({ ...prev, open: false }));
+      setFeedbackModal((prev) => ({ ...prev, open: false }));
       toast({ title: "Notification Deleted" });
     },
     onError: (err: any) => {
-      toast({ title: "Error", description: err.message || "Failed to delete notification.", variant: "destructive" });
+      toast({
+        title: "Error",
+        description: err.message || "Failed to delete notification.",
+        variant: "destructive",
+      });
     },
   });
 
@@ -670,7 +767,10 @@ export default function AdminUserDetailsPage() {
         status: "success",
         title: "Login Method Converted",
         description: "The user's login method has been updated successfully.",
-        primaryAction: { label: "OK", onClick: () => setFeedbackModal(prev => ({ ...prev, open: false })) },
+        primaryAction: {
+          label: "OK",
+          onClick: () => setFeedbackModal((prev) => ({ ...prev, open: false })),
+        },
       });
     },
     onError: (err: any) => {
@@ -687,7 +787,7 @@ export default function AdminUserDetailsPage() {
     createNotificationMutation.mutate({
       title: notificationData.title,
       description: notificationData.description,
-      type: notificationData.type || 'OTHER',
+      type: notificationData.type || "OTHER",
       url: notificationData.url || undefined,
       userId: id,
     });
@@ -696,16 +796,17 @@ export default function AdminUserDetailsPage() {
   const handleDeleteIar = (iarId: number) => {
     setFeedbackModal({
       open: true,
-      status: 'warning',
-      title: 'Delete IAR Item?',
-      description: 'This action cannot be undone. The IAR item will be permanently removed.',
+      status: "warning",
+      title: "Delete IAR Item?",
+      description:
+        "This action cannot be undone. The IAR item will be permanently removed.",
       primaryAction: {
-        label: 'Delete',
+        label: "Delete",
         onClick: () => deleteIarMutation.mutate({ id: iarId, userId: id }),
       },
       secondaryAction: {
-        label: 'Cancel',
-        onClick: () => setFeedbackModal(prev => ({ ...prev, open: false })),
+        label: "Cancel",
+        onClick: () => setFeedbackModal((prev) => ({ ...prev, open: false })),
       },
     });
   };
@@ -713,16 +814,17 @@ export default function AdminUserDetailsPage() {
   const handleDeleteNotification = (notifId: number) => {
     setFeedbackModal({
       open: true,
-      status: 'warning',
-      title: 'Delete Notification?',
-      description: 'This action cannot be undone. The notification will be permanently removed.',
+      status: "warning",
+      title: "Delete Notification?",
+      description:
+        "This action cannot be undone. The notification will be permanently removed.",
       primaryAction: {
-        label: 'Delete',
+        label: "Delete",
         onClick: () => deleteNotificationMutation.mutate(notifId),
       },
       secondaryAction: {
-        label: 'Cancel',
-        onClick: () => setFeedbackModal(prev => ({ ...prev, open: false })),
+        label: "Cancel",
+        onClick: () => setFeedbackModal((prev) => ({ ...prev, open: false })),
       },
     });
   };
@@ -766,7 +868,9 @@ export default function AdminUserDetailsPage() {
   const isTester = user.role === "tester";
   const isSuperAdmin = (() => {
     const role = (session as any)?.role;
-    const roleName = (typeof role === "string" ? role : role?.name)?.toLowerCase();
+    const roleName = (
+      typeof role === "string" ? role : role?.name
+    )?.toLowerCase();
     return roleName === "super_admin" || roleName === "super admin";
   })();
   const isCurrentUser = session?.user?.id === user.id;
@@ -782,7 +886,10 @@ export default function AdminUserDetailsPage() {
       tester: "Tester",
       user: "User",
     };
-    return roleDisplayNames[roleName] || roleName.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
+    return (
+      roleDisplayNames[roleName] ||
+      roleName.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase())
+    );
   };
 
   const availConfig =
@@ -791,17 +898,16 @@ export default function AdminUserDetailsPage() {
   return (
     <>
       <div className="container mx-auto px-4 md:px-6 mb-8">
-        <div className="sticky top-0 z-[50] pt-2 sm:pt-3 pb-4 w-1/2">
+        <div className="sticky top-0 z-[50] pt-2 sm:pt-3 pb-4 w-1/2 flex flex-row gap-4">
           <BackButton href={ROUTES.ADMIN.USERS} />
+          <h2 className="text-2xl sm:text-3xl font-extrabold bg-gradient-to-br from-primary to-primary/10 bg-clip-text text-transparent">
+            <span className="hidden sm:block">User Details</span>
+            <span className="block sm:hidden">Details</span>
+          </h2>
         </div>
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4 w-full">
-            <div>
-              <h2 className="text-2xl sm:text-3xl font-extrabold bg-gradient-to-br from-primary to-primary/10 bg-clip-text text-transparent">
-                User Details
-              </h2>
-            </div>
-            <div className="flex gap-2 sm:gap-4">
+            <div className="flex flex-wrap gap-2 sm:gap-4 w-full">
               <Button
                 variant="outline"
                 className="px-3"
@@ -815,12 +921,14 @@ export default function AdminUserDetailsPage() {
                   variant="outline"
                   className="px-3"
                   onClick={() => {
-                    setGiftData({ points: 0, packages: 0 });
+                    setGiftData({ packages: 0 });
                     setIsGiftModalOpen(true);
                   }}
                 >
                   <Gift className="sm:mr-2 !h-3 !w-3 sm:!h-4 sm:!w-4" />
-                  <span className="hidden sm:block">Gift Points & Packages</span>
+                  <span className="hidden sm:block">
+                    Gift Packages
+                  </span>
                 </Button>
               )}
               <Button
@@ -842,7 +950,9 @@ export default function AdminUserDetailsPage() {
                   variant="outline"
                   className="px-3"
                   onClick={() => {
-                    setTargetAuthType(user.authType === "GOOGLE" ? "EMAIL_PASSWORD" : "GOOGLE");
+                    setTargetAuthType(
+                      user.authType === "GOOGLE" ? "EMAIL_PASSWORD" : "GOOGLE",
+                    );
                     setConvertNewPassword("");
                     setConvertConfirmPassword("");
                     setIsConvertAuthTypeModalOpen(true);
@@ -853,24 +963,59 @@ export default function AdminUserDetailsPage() {
                 </Button>
               )}
 
-              {!isCurrentUser && (
+              {!isCurrentUser && user.status === "Deactivated" && (
                 <Button
-                  variant={user.status === "Banned" ? "default" : "outline"}
-                  className="px-3"
-                  onClick={() => setIsStatusModalOpen(true)}
+                  variant="default"
+                  className="px-3 bg-green-600 hover:bg-green-700"
+                  onClick={() => {
+                    setPendingIsActive(true);
+                    setIsActiveStatusModalOpen(true);
+                  }}
                 >
-                  {user.status === "Banned" ? (
-                    <span className="flex items-center gap-1.5 sm:gap-2">
-                      <CheckCircle className="!h-3 !w-3 sm:!h-4 sm:!w-4 text-green-500" />
-                      <span className="hidden sm:block">Activate User</span>
-                    </span>
-                  ) : (
-                    <span className="flex items-center gap-1.5 sm:gap-2">
-                      <Ban className="!h-3 !w-3 sm:!h-4 sm:!w-4 text-red-500" />
-                      <span className="hidden sm:block">Ban User</span>
-                    </span>
-                  )}
+                  <span className="flex items-center gap-1.5 sm:gap-2">
+                    <CheckCircle className="!h-3 !w-3 sm:!h-4 sm:!w-4 text-green-500" />
+                    <span className="hidden sm:block">Reactivate Account</span>
+                  </span>
                 </Button>
+              )}
+
+              {!isCurrentUser && user.status !== "Deactivated" && (
+                <>
+                  {user.status !== "Banned" && (
+                    <Button
+                      variant="outline"
+                      className="px-3 border-amber-500/50 text-amber-600 hover:bg-amber-500/10 dark:text-amber-400"
+                      onClick={() => {
+                        setPendingIsActive(false);
+                        setIsActiveStatusModalOpen(true);
+                      }}
+                    >
+                      <span className="flex items-center gap-1.5 sm:gap-2">
+                        <PowerOff className="!h-3 !w-3 sm:!h-4 sm:!w-4" />
+                        <span className="hidden sm:block">
+                          Deactivate Account
+                        </span>
+                      </span>
+                    </Button>
+                  )}
+                  <Button
+                    variant={user.status === "Banned" ? "default" : "outline"}
+                    className="px-3"
+                    onClick={() => setIsStatusModalOpen(true)}
+                  >
+                    {user.status === "Banned" ? (
+                      <span className="flex items-center gap-1.5 sm:gap-2">
+                        <CheckCircle className="!h-3 !w-3 sm:!h-4 sm:!w-4 text-green-500" />
+                        <span className="hidden sm:block">Activate User</span>
+                      </span>
+                    ) : (
+                      <span className="flex items-center gap-1.5 sm:gap-2">
+                        <Ban className="!h-3 !w-3 sm:!h-4 sm:!w-4 text-red-500" />
+                        <span className="hidden sm:block">Ban User</span>
+                      </span>
+                    )}
+                  </Button>
+                </>
               )}
 
               {!isCurrentUser && !isTargetSuperAdmin && (
@@ -915,29 +1060,44 @@ export default function AdminUserDetailsPage() {
                   <Badge variant="secondary">{formatRoleName(user.role)}</Badge>
                   <Badge
                     variant={
-                      user.status === "Banned" || user.status === "Inactive"
+                      user.status === "Banned" ||
+                      user.status === "Deactivated" ||
+                      user.status === "Inactive"
                         ? "destructive"
                         : "secondary"
                     }
                     className={
                       user.status === "Active"
                         ? "bg-green-500/20 text-green-700 dark:bg-green-500/10 dark:text-green-400"
-                        : ""
+                        : user.status === "Deactivated"
+                          ? "bg-amber-500/20 text-amber-700 border-amber-500/40 dark:bg-amber-500/10 dark:text-amber-400"
+                          : ""
                     }
                   >
                     {user.status}
                   </Badge>
+                  {user.status === "Deactivated" && user.deactivatedAt && (
+                    <span className="text-xs text-muted-foreground w-full">
+                      Deactivated on {formatDate(user.deactivatedAt)}
+                    </span>
+                  )}
                   {isTester && (
                     <Badge variant="outline" className={availConfig.color}>
                       {availConfig.label}
                     </Badge>
                   )}
                   {user.authType === "GOOGLE" ? (
-                    <Badge variant="outline" className="border-blue-500 text-blue-600 dark:text-blue-400">
+                    <Badge
+                      variant="outline"
+                      className="border-blue-500 text-blue-600 dark:text-blue-400"
+                    >
                       Google
                     </Badge>
                   ) : (
-                    <Badge variant="outline" className="border-green-500 text-green-600 dark:text-green-400">
+                    <Badge
+                      variant="outline"
+                      className="border-green-500 text-green-600 dark:text-green-400"
+                    >
                       Email & Password
                     </Badge>
                   )}
@@ -955,7 +1115,8 @@ export default function AdminUserDetailsPage() {
               <CardHeader className="pb-3">
                 <div className="flex items-center justify-between">
                   <CardTitle className="text-sm font-semibold flex items-center gap-2">
-                    <Wallet className="w-4 h-4 text-emerald-500" /> Account Economy
+                    <Wallet className="w-4 h-4 text-emerald-500" /> Account
+                    Economy
                   </CardTitle>
                   {isSuperAdmin && !isEconomyEditing && (
                     <Button
@@ -963,7 +1124,6 @@ export default function AdminUserDetailsPage() {
                       size="sm"
                       onClick={() => {
                         setWalletEditData({
-                          totalPoints: user.wallet?.totalPoints || 0,
                           totalPackages: user.wallet?.totalPackages || 0,
                         });
                         setIsEconomyEditing(true);
@@ -984,27 +1144,12 @@ export default function AdminUserDetailsPage() {
                   <h4 className="text-xs font-semibold text-muted-foreground tracking-wide mb-3 uppercase">
                     Current Balances
                   </h4>
-                  <div className="grid grid-cols-2 gap-4">
+                  {/* S9: Total Points removed — packages only */}
+                  <div className="grid grid-cols-1 gap-4">
                     <div className="space-y-1.5">
-                      <p className="text-xs text-muted-foreground">Total Points</p>
-                      {isEconomyEditing ? (
-                        <Input
-                          type="number"
-                          min="0"
-                          value={walletEditData.totalPoints}
-                          onChange={(e) =>
-                            setWalletEditData((prev) => ({
-                              ...prev,
-                              totalPoints: Math.max(0, parseInt(e.target.value) || 0),
-                            }))
-                          }
-                        />
-                      ) : (
-                        <p className="text-2xl font-bold">{user.wallet?.totalPoints || 0}</p>
-                      )}
-                    </div>
-                    <div className="space-y-1.5">
-                      <p className="text-xs text-muted-foreground">Total Packages</p>
+                      <p className="text-xs text-muted-foreground">
+                        Total Packages
+                      </p>
                       {isEconomyEditing ? (
                         <Input
                           type="number"
@@ -1013,12 +1158,17 @@ export default function AdminUserDetailsPage() {
                           onChange={(e) =>
                             setWalletEditData((prev) => ({
                               ...prev,
-                              totalPackages: Math.max(0, parseInt(e.target.value) || 0),
+                              totalPackages: Math.max(
+                                0,
+                                parseInt(e.target.value) || 0,
+                              ),
                             }))
                           }
                         />
                       ) : (
-                        <p className="text-2xl font-bold">{user.wallet?.totalPackages || 0}</p>
+                        <p className="text-2xl font-bold">
+                          {user.wallet?.totalPackages || 0}
+                        </p>
                       )}
                     </div>
                   </div>
@@ -1028,27 +1178,36 @@ export default function AdminUserDetailsPage() {
                   <h4 className="text-xs font-semibold text-muted-foreground tracking-wide mb-3 uppercase">
                     Lifetime History
                   </h4>
-                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                  {/* S9: Points Earned/Spent removed — money + packages remain */}
+                  <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-1.5">
-                      <p className="text-xs text-muted-foreground">Points Earned</p>
+                      <p className="text-xs text-muted-foreground">
+                        Money Earned
+                      </p>
                       <p className="text-lg font-bold text-green-600 dark:text-green-400">
-                        {user.walletStats?.pointsEarned || 0}
+                        ₹{user.walletStats?.moneyEarned ?? 0}
                       </p>
                     </div>
                     <div className="space-y-1.5">
-                      <p className="text-xs text-muted-foreground">Points Spent</p>
+                      <p className="text-xs text-muted-foreground">
+                        Money Spent
+                      </p>
                       <p className="text-lg font-bold text-red-600 dark:text-red-400">
-                        {user.walletStats?.pointsSpent || 0}
+                        ₹{user.walletStats?.moneySpent ?? 0}
                       </p>
                     </div>
                     <div className="space-y-1.5">
-                      <p className="text-xs text-muted-foreground">Packages Purchased</p>
+                      <p className="text-xs text-muted-foreground">
+                        Packages Purchased
+                      </p>
                       <p className="text-lg font-bold text-blue-600 dark:text-blue-400">
                         {user.walletStats?.packagesPurchased || 0}
                       </p>
                     </div>
                     <div className="space-y-1.5">
-                      <p className="text-xs text-muted-foreground">Packages Used</p>
+                      <p className="text-xs text-muted-foreground">
+                        Packages Used
+                      </p>
                       <p className="text-lg font-bold text-orange-600 dark:text-orange-400">
                         {user.walletStats?.packagesUsed || 0}
                       </p>
@@ -1067,7 +1226,6 @@ export default function AdminUserDetailsPage() {
                       onClick={() =>
                         updateWalletMutation.mutate({
                           id: user.id,
-                          totalPoints: walletEditData.totalPoints,
                           totalPackages: walletEditData.totalPackages,
                         })
                       }
@@ -1104,25 +1262,35 @@ export default function AdminUserDetailsPage() {
                   </h4>
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-1.5">
-                      <p className="text-xs text-muted-foreground">Tests Participated In</p>
-                      <p className="text-2xl font-bold">{user.stats?.totalTests || 0}</p>
+                      <p className="text-xs text-muted-foreground">
+                        Tests Participated In
+                      </p>
+                      <p className="text-2xl font-bold">
+                        {user.stats?.totalTests || 0}
+                      </p>
                     </div>
                     {isTester && (
                       <>
                         <div className="space-y-1.5">
-                          <p className="text-xs text-muted-foreground">Active Tests</p>
+                          <p className="text-xs text-muted-foreground">
+                            Active Tests
+                          </p>
                           <p className="text-2xl font-bold text-blue-600 dark:text-blue-400">
                             {user.stats?.activeTests || 0}
                           </p>
                         </div>
                         <div className="space-y-1.5">
-                          <p className="text-xs text-muted-foreground">Completed Tests</p>
+                          <p className="text-xs text-muted-foreground">
+                            Completed Tests
+                          </p>
                           <p className="text-2xl font-bold text-green-600 dark:text-green-400">
                             {user.stats?.completedTests || 0}
                           </p>
                         </div>
                         <div className="space-y-1.5">
-                          <p className="text-xs text-muted-foreground">Dropped Tests</p>
+                          <p className="text-xs text-muted-foreground">
+                            Dropped Tests
+                          </p>
                           <p className="text-2xl font-bold text-red-600 dark:text-red-400">
                             {user.stats?.droppedTests || 0}
                           </p>
@@ -1137,12 +1305,20 @@ export default function AdminUserDetailsPage() {
                   </h4>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div className="space-y-1.5">
-                      <p className="text-xs text-muted-foreground">Feedback Reports Submitted</p>
-                      <p className="text-2xl font-bold">{user.stats?.totalFeedbacks || 0}</p>
+                      <p className="text-xs text-muted-foreground">
+                        Feedback Reports Submitted
+                      </p>
+                      <p className="text-2xl font-bold">
+                        {user.stats?.totalFeedbacks || 0}
+                      </p>
                     </div>
                     <div className="space-y-1.5">
-                      <p className="text-xs text-muted-foreground">Apps Submitted for Testing</p>
-                      <p className="text-2xl font-bold">{user.stats?.totalSubmissions || 0}</p>
+                      <p className="text-xs text-muted-foreground">
+                        Apps Submitted for Testing
+                      </p>
+                      <p className="text-2xl font-bold">
+                        {user.stats?.totalSubmissions || 0}
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -1157,17 +1333,28 @@ export default function AdminUserDetailsPage() {
             <CardHeader className="pb-3">
               <div className="flex items-center justify-between">
                 <CardTitle className="text-sm font-semibold flex items-center gap-2">
-                  <Bell className="w-4 h-4 text-purple-500" /> Notifications History
+                  <Bell className="w-4 h-4 text-purple-500" /> Notifications
+                  History
                 </CardTitle>
-                  <Button size="sm" onClick={() => {
-                    setNotificationData({ title: '', description: '', type: 'OTHER', url: '' });
+                <Button
+                  size="sm"
+                  onClick={() => {
+                    setNotificationData({
+                      title: "",
+                      description: "",
+                      type: "OTHER",
+                      url: "",
+                    });
                     setIsSendNotificationModalOpen(true);
-                  }}>
-                    <Plus className="w-4 h-4 mr-0 sm:mr-2" /> <span className="hidden sm:inline">Send Notification</span>
-                  </Button>
+                  }}
+                >
+                  <Plus className="w-4 h-4 mr-0 sm:mr-2" />{" "}
+                  <span className="hidden sm:inline">Send Notification</span>
+                </Button>
               </div>
               <CardDescription>
-                All notifications sent to this user, including wallet updates and admin messages.
+                All notifications sent to this user, including wallet updates
+                and admin messages.
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -1197,7 +1384,10 @@ export default function AdminUserDetailsPage() {
                               <Input
                                 value={editFormData.title}
                                 onChange={(e) =>
-                                  setEditFormData((prev) => ({ ...prev, title: e.target.value }))
+                                  setEditFormData((prev) => ({
+                                    ...prev,
+                                    title: e.target.value,
+                                  }))
                                 }
                               />
                             </TableCell>
@@ -1262,7 +1452,9 @@ export default function AdminUserDetailsPage() {
                                       url: editFormData.url || undefined,
                                     })
                                   }
-                                  disabled={updateNotificationMutation.isPending}
+                                  disabled={
+                                    updateNotificationMutation.isPending
+                                  }
                                   title="Save"
                                 >
                                   {updateNotificationMutation.isPending ? (
@@ -1285,7 +1477,9 @@ export default function AdminUserDetailsPage() {
                           </>
                         ) : (
                           <>
-                            <TableCell className="font-medium">{notif.title}</TableCell>
+                            <TableCell className="font-medium">
+                              {notif.title}
+                            </TableCell>
                             <TableCell
                               className="max-w-xs truncate"
                               title={notif.description}
@@ -1308,7 +1502,7 @@ export default function AdminUserDetailsPage() {
                                   setEditFormData({
                                     title: notif.title,
                                     description: notif.description,
-                                    url: notif.url || '',
+                                    url: notif.url || "",
                                     isActive: !notif.isActive,
                                   });
                                   updateNotificationMutation.mutate({
@@ -1320,7 +1514,9 @@ export default function AdminUserDetailsPage() {
                               >
                                 <span
                                   className={`h-1.5 w-1.5 rounded-full ${
-                                    notif.isActive ? "bg-green-500" : "bg-muted-foreground"
+                                    notif.isActive
+                                      ? "bg-green-500"
+                                      : "bg-muted-foreground"
                                   }`}
                                 />
                                 {notif.isActive ? "Active" : "Inactive"}
@@ -1340,7 +1536,7 @@ export default function AdminUserDetailsPage() {
                                     setEditFormData({
                                       title: notif.title,
                                       description: notif.description,
-                                      url: notif.url || '',
+                                      url: notif.url || "",
                                       isActive: notif.isActive,
                                     });
                                   }}
@@ -1351,7 +1547,9 @@ export default function AdminUserDetailsPage() {
                                   variant="ghost"
                                   size="sm"
                                   className="h-8 w-8 p-0 text-red-500 hover:text-red-600"
-                                  onClick={() => handleDeleteNotification(notif.id)}
+                                  onClick={() =>
+                                    handleDeleteNotification(notif.id)
+                                  }
                                 >
                                   <Trash2 className="h-3.5 w-3.5" />
                                 </Button>
@@ -1379,17 +1577,28 @@ export default function AdminUserDetailsPage() {
             <CardHeader className="pb-3">
               <div className="flex items-center justify-between">
                 <CardTitle className="text-sm font-semibold flex items-center gap-2">
-                  <AlertTriangle className="w-4 h-4 text-red-500" /> Immediate Attention Required
+                  <AlertTriangle className="w-4 h-4 text-red-500" /> Immediate
+                  Attention Required
                 </CardTitle>
-                <Button size="sm" onClick={() => {
-                  setIarFormData({ title: '', description: '', url: '', color: '#ef4444' });
-                  setIsCreateIarModalOpen(true);
-                }}>
-                  <Plus className="w-4 h-4 mr-0 sm:mr-2" /> <span className="hidden sm:inline">Add IAR</span>
+                <Button
+                  size="sm"
+                  onClick={() => {
+                    setIarFormData({
+                      title: "",
+                      description: "",
+                      url: "",
+                      color: "#ef4444",
+                    });
+                    setIsCreateIarModalOpen(true);
+                  }}
+                >
+                  <Plus className="w-4 h-4 mr-0 sm:mr-2" />{" "}
+                  <span className="hidden sm:inline">Add IAR</span>
                 </Button>
               </div>
               <CardDescription>
-                Admin-managed urgent cards shown to this user on their dashboard.
+                Admin-managed urgent cards shown to this user on their
+                dashboard.
               </CardDescription>
             </CardHeader>
             <CardContent>
@@ -1410,8 +1619,15 @@ export default function AdminUserDetailsPage() {
                       <TableHead className="w-[80px]">Actions</TableHead>
                     </TableRow>
                   </TableHeader>
-                  <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
-                    <SortableContext items={iarItems.map((i: any) => i.id.toString())} strategy={verticalListSortingStrategy}>
+                  <DndContext
+                    sensors={sensors}
+                    collisionDetection={closestCenter}
+                    onDragEnd={handleDragEnd}
+                  >
+                    <SortableContext
+                      items={iarItems.map((i: any) => i.id.toString())}
+                      strategy={verticalListSortingStrategy}
+                    >
                       <TableBody>
                         {iarItems.map((item: any) => (
                           <IarTableRow
@@ -1421,15 +1637,26 @@ export default function AdminUserDetailsPage() {
                             editFormData={editIarFormData}
                             updatePending={updateIarMutation.isPending}
                             onFormChange={(key: string, value: any) =>
-                              setEditIarFormData((prev) => ({ ...prev, [key]: value }))
+                              setEditIarFormData((prev) => ({
+                                ...prev,
+                                [key]: value,
+                              }))
                             }
                             onSave={() => {
                               const payload: any = { id: item.id, userId: id };
-                              if (editIarFormData.title !== item.title) payload.title = editIarFormData.title;
-                              if (editIarFormData.description !== item.description) payload.description = editIarFormData.description;
-                              if (editIarFormData.url !== (item.url || '')) payload.url = editIarFormData.url || null;
-                              if (editIarFormData.color !== item.color) payload.color = editIarFormData.color;
-                              if (editIarFormData.isActive !== item.isActive) payload.isActive = editIarFormData.isActive;
+                              if (editIarFormData.title !== item.title)
+                                payload.title = editIarFormData.title;
+                              if (
+                                editIarFormData.description !== item.description
+                              )
+                                payload.description =
+                                  editIarFormData.description;
+                              if (editIarFormData.url !== (item.url || ""))
+                                payload.url = editIarFormData.url || null;
+                              if (editIarFormData.color !== item.color)
+                                payload.color = editIarFormData.color;
+                              if (editIarFormData.isActive !== item.isActive)
+                                payload.isActive = editIarFormData.isActive;
                               updateIarMutation.mutate(payload);
                             }}
                             onCancel={() => setEditingIarId(null)}
@@ -1438,13 +1665,19 @@ export default function AdminUserDetailsPage() {
                               setEditIarFormData({
                                 title: item.title,
                                 description: item.description,
-                                url: item.url || '',
-                                color: item.color || '#ef4444',
+                                url: item.url || "",
+                                color: item.color || "#ef4444",
                                 isActive: item.isActive,
                               });
                             }}
                             onDelete={() => handleDeleteIar(item.id)}
-                            onToggleStatus={() => updateIarMutation.mutate({ id: item.id, userId: id, isActive: !item.isActive })}
+                            onToggleStatus={() =>
+                              updateIarMutation.mutate({
+                                id: item.id,
+                                userId: id,
+                                isActive: !item.isActive,
+                              })
+                            }
                           />
                         ))}
                       </TableBody>
@@ -1514,11 +1747,16 @@ export default function AdminUserDetailsPage() {
                 </div>
                 <div className="flex items-center gap-3">
                   <Lightbulb className="w-4 h-4 text-muted-foreground shrink-0" />
-                  <span className="capitalize">{formatEnum(user.serviceUsage) || ", "}</span>
+                  <span className="capitalize">
+                    {formatEnum(user.serviceUsage) || ", "}
+                  </span>
                 </div>
                 <div className="flex items-center gap-3">
                   <MessageSquare className="w-4 h-4 text-muted-foreground shrink-0" />
-                  <span className="capitalize">{formatCommunicationMethods(user.communicationMethods) || ", "}</span>
+                  <span className="capitalize">
+                    {formatCommunicationMethods(user.communicationMethods) ||
+                      ", "}
+                  </span>
                 </div>
               </CardContent>
             </Card>
@@ -1532,18 +1770,16 @@ export default function AdminUserDetailsPage() {
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-3 text-sm">
-                  <div className="flex items-center gap-3">
-                    <Wallet className="w-4 h-4 text-muted-foreground shrink-0" />
-                    <div>
-                      <p className="font-medium">{user.wallet.totalPoints || 0} points</p>
-                      <p className="text-xs text-muted-foreground">Available Points</p>
-                    </div>
-                  </div>
+                  {/* S9: Available Points removed — packages only */}
                   <div className="flex items-center gap-3">
                     <Briefcase className="w-4 h-4 text-muted-foreground shrink-0" />
                     <div>
-                      <p className="font-medium">{user.wallet.totalPackages || 0} packages</p>
-                      <p className="text-xs text-muted-foreground">Available Packages</p>
+                      <p className="font-medium">
+                        {user.wallet.totalPackages || 0} packages
+                      </p>
+                      <p className="text-xs text-muted-foreground">
+                        Available Packages
+                      </p>
                     </div>
                   </div>
                 </CardContent>
@@ -1567,14 +1803,25 @@ export default function AdminUserDetailsPage() {
                 <div className="flex items-center gap-3">
                   <Globe className="w-4 h-4 text-muted-foreground shrink-0" />
                   {user.companyWebsite ? (
-                    <a href={user.companyWebsite} target="_blank" rel="noreferrer" className="hover:underline truncate">{user.companyWebsite}</a>
+                    <a
+                      href={user.companyWebsite}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="hover:underline truncate"
+                    >
+                      {user.companyWebsite}
+                    </a>
                   ) : (
                     <span>, </span>
                   )}
                 </div>
                 <div className="flex items-center gap-3">
                   <Briefcase className="w-4 h-4 text-muted-foreground shrink-0" />
-                  <span>{user.companySize ? `${formatCompanySize(user.companySize)} employees` : ", "}</span>
+                  <span>
+                    {user.companySize
+                      ? `${formatCompanySize(user.companySize)} employees`
+                      : ", "}
+                  </span>
                 </div>
                 <div className="flex items-center gap-3">
                   <Shield className="w-4 h-4 text-muted-foreground shrink-0" />
@@ -1593,15 +1840,23 @@ export default function AdminUserDetailsPage() {
               <CardContent className="space-y-3 text-sm">
                 <div className="flex items-center gap-3">
                   <FolderGit className="w-4 h-4 text-muted-foreground shrink-0" />
-                  <span>{user.totalPublishedApps ? `${formatPublishedApps(user.totalPublishedApps)} published apps` : ", "}</span>
+                  <span>
+                    {user.totalPublishedApps
+                      ? `${formatPublishedApps(user.totalPublishedApps)} published apps`
+                      : ", "}
+                  </span>
                 </div>
                 <div className="flex items-center gap-3">
                   <Smartphone className="w-4 h-4 text-muted-foreground shrink-0" />
-                  <span className="capitalize">{formatEnum(user.platformDevelopment) || ", "}</span>
+                  <span className="capitalize">
+                    {formatEnum(user.platformDevelopment) || ", "}
+                  </span>
                 </div>
                 <div className="flex items-center gap-3">
                   <Activity className="w-4 h-4 text-muted-foreground shrink-0" />
-                  <span className="capitalize">{formatEnum(user.publishFrequency) || ", "}</span>
+                  <span className="capitalize">
+                    {formatEnum(user.publishFrequency) || ", "}
+                  </span>
                 </div>
               </CardContent>
             </Card>
@@ -1617,34 +1872,46 @@ export default function AdminUserDetailsPage() {
                 <div className="grid grid-cols-2 gap-y-3 gap-x-4">
                   <div>
                     <p className="text-muted-foreground text-xs">Brand</p>
-                    <p className="font-medium">{user.deviceDetails?.company || ", "}</p>
+                    <p className="font-medium">
+                      {user.deviceDetails?.company || ", "}
+                    </p>
                   </div>
                   <div>
                     <p className="text-muted-foreground text-xs">Model</p>
-                    <p className="font-medium">{user.deviceDetails?.model || ", "}</p>
+                    <p className="font-medium">
+                      {user.deviceDetails?.model || ", "}
+                    </p>
                   </div>
                   <div>
                     <p className="text-muted-foreground text-xs">OS</p>
-                    <p className="font-medium">{user.deviceDetails?.os || ", "}</p>
+                    <p className="font-medium">
+                      {user.deviceDetails?.os || ", "}
+                    </p>
                   </div>
                   <div>
                     <p className="text-muted-foreground text-xs">RAM</p>
-                    <p className="font-medium">{user.deviceDetails?.ram || ", "}</p>
+                    <p className="font-medium">
+                      {user.deviceDetails?.ram || ", "}
+                    </p>
                   </div>
                   <div>
                     <p className="text-muted-foreground text-xs">Resolution</p>
-                    <p className="font-medium">{user.deviceDetails?.screenResolution || ", "}</p>
+                    <p className="font-medium">
+                      {user.deviceDetails?.screenResolution || ", "}
+                    </p>
                   </div>
                   <div>
                     <p className="text-muted-foreground text-xs">Language</p>
                     <p className="font-medium flex items-center gap-1">
-                      <Languages className="w-3 h-3" /> {user.deviceDetails?.language || ", "}
+                      <Languages className="w-3 h-3" />{" "}
+                      {user.deviceDetails?.language || ", "}
                     </p>
                   </div>
                   <div>
                     <p className="text-muted-foreground text-xs">Network</p>
                     <p className="font-medium flex items-center gap-1">
-                      <Wifi className="w-3 h-3" /> {user.deviceDetails?.network || ", "}
+                      <Wifi className="w-3 h-3" />{" "}
+                      {user.deviceDetails?.network || ", "}
                     </p>
                   </div>
                 </div>
@@ -1661,7 +1928,9 @@ export default function AdminUserDetailsPage() {
               <CardContent className="text-sm">
                 {user.discoverySourceAnswered ? (
                   <div className="flex items-center gap-2">
-                    <span className="font-medium capitalize">{user.discoverySource?.replace(/_/g, " ") || ", "}</span>
+                    <span className="font-medium capitalize">
+                      {user.discoverySource?.replace(/_/g, " ") || ", "}
+                    </span>
                   </div>
                 ) : (
                   <p className="text-muted-foreground text-sm">Not Answered</p>
@@ -1680,13 +1949,17 @@ export default function AdminUserDetailsPage() {
                   <CardTitle className="text-sm font-semibold flex items-center gap-2">
                     <FileText className="w-4 h-4 text-purple-500" /> Invoices
                   </CardTitle>
-                  <Button size="sm" onClick={() => {
-                    setAddInvoiceFormData({});
-                    setAddInvoicePaymentId(null);
-                    setAddInvoicePaymentLabel("");
-                    setIsAddInvoiceModalOpen(true);
-                  }}>
-                    <Plus className="w-4 h-4 mr-0 sm:mr-2" /> <span className="hidden sm:inline">Add New Invoice</span>
+                  <Button
+                    size="sm"
+                    onClick={() => {
+                      setAddInvoiceFormData({});
+                      setAddInvoicePaymentId(null);
+                      setAddInvoicePaymentLabel("");
+                      setIsAddInvoiceModalOpen(true);
+                    }}
+                  >
+                    <Plus className="w-4 h-4 mr-0 sm:mr-2" />{" "}
+                    <span className="hidden sm:inline">Add New Invoice</span>
                   </Button>
                 </div>
                 <CardDescription>
@@ -1715,7 +1988,10 @@ export default function AdminUserDetailsPage() {
                             </TableCell>
                             <TableCell>{inv.service_name}</TableCell>
                             <TableCell>
-                              {inv.payment?.currency || "INR"} {((inv.payment?.amount || 0) / 100).toLocaleString("en-IN")}
+                              {inv.payment?.currency || "INR"}{" "}
+                              {(
+                                (inv.payment?.amount || 0) / 100
+                              ).toLocaleString("en-IN")}
                             </TableCell>
                             <TableCell>
                               <Badge
@@ -1739,7 +2015,12 @@ export default function AdminUserDetailsPage() {
                                     <Button
                                       variant="ghost"
                                       size="icon"
-                                      onClick={() => window.open(`/admin/invoice/${inv.invoice_number}`, "_blank")}
+                                      onClick={() =>
+                                        window.open(
+                                          `/admin/invoice/${inv.invoice_number}`,
+                                          "_blank",
+                                        )
+                                      }
                                     >
                                       <Eye className="w-4 h-4" />
                                     </Button>
@@ -1754,27 +2035,32 @@ export default function AdminUserDetailsPage() {
                                       onClick={() => {
                                         setSelectedInvoice(inv);
                                         setInvoiceEditData({
-                                      invoice_number: inv.invoice_number || "",
-                                      service_name: inv.service_name || "",
-                                      period: inv.period || "",
-                                      quantity: inv.quantity || 1,
-                                      unit_price: inv.unit_price || 0,
-                                      tax_rate: inv.tax_rate || 0,
-                                      cgst_amount: inv.cgst_amount || 0,
-                                      sgst_amount: inv.sgst_amount || 0,
-                                      igst_amount: inv.igst_amount || 0,
-                                      due_date: inv.due_date ? inv.due_date.split("T")[0] : "",
-                                      place_of_supply: inv.place_of_supply || "",
-                                      supply_type: inv.supply_type || "",
-                                      amount_in_words: inv.amount_in_words || "",
-                                      lut_number: inv.lut_number || "",
-                                      sac_code: inv.sac_code || "",
-                                    });
-                                    setIsInvoiceModalOpen(true);
-                                  }}
-                                >
-                                  <Pencil className="w-4 h-4" />
-                                </Button>
+                                          invoice_number:
+                                            inv.invoice_number || "",
+                                          service_name: inv.service_name || "",
+                                          period: inv.period || "",
+                                          quantity: inv.quantity || 1,
+                                          unit_price: inv.unit_price || 0,
+                                          tax_rate: inv.tax_rate || 0,
+                                          cgst_amount: inv.cgst_amount || 0,
+                                          sgst_amount: inv.sgst_amount || 0,
+                                          igst_amount: inv.igst_amount || 0,
+                                          due_date: inv.due_date
+                                            ? inv.due_date.split("T")[0]
+                                            : "",
+                                          place_of_supply:
+                                            inv.place_of_supply || "",
+                                          supply_type: inv.supply_type || "",
+                                          amount_in_words:
+                                            inv.amount_in_words || "",
+                                          lut_number: inv.lut_number || "",
+                                          sac_code: inv.sac_code || "",
+                                        });
+                                        setIsInvoiceModalOpen(true);
+                                      }}
+                                    >
+                                      <Pencil className="w-4 h-4" />
+                                    </Button>
                                   </TooltipTrigger>
                                   <TooltipContent>Edit invoice</TooltipContent>
                                 </Tooltip>
@@ -1812,120 +2098,129 @@ export default function AdminUserDetailsPage() {
                     <Table>
                       <TableHeader>
                         <TableRow>
-                            <TableHead>App Name</TableHead>
-                            <TableHead>Status</TableHead>
-                            <TableHead>Days</TableHead>
-                            <TableHead>Joined</TableHead>
-                            <TableHead>Last Activity</TableHead>
+                          <TableHead>App Name</TableHead>
+                          <TableHead>Status</TableHead>
+                          <TableHead>Days</TableHead>
+                          <TableHead>Joined</TableHead>
+                          <TableHead>Last Activity</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {user.recentTests.map((test: any) => (
+                          <TableRow key={test.id}>
+                            <TableCell className="font-medium">
+                              {test.appName || "Unknown App"}
+                            </TableCell>
+                            <TableCell>
+                              <Badge
+                                variant="outline"
+                                className={STATUS_COLORS[test.status] || ""}
+                              >
+                                {test.status?.replace("_", " ")}
+                              </Badge>
+                            </TableCell>
+                            <TableCell>{test.daysCompleted || 0}</TableCell>
+                            <TableCell className="text-muted-foreground text-xs">
+                              {formatDate(test.joinedAt)}
+                            </TableCell>
+                            <TableCell className="text-muted-foreground text-xs">
+                              {formatDate(test.lastActivityAt)}
+                            </TableCell>
                           </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                          {user.recentTests.map((test: any) => (
-                            <TableRow key={test.id}>
-                              <TableCell className="font-medium">
-                                {test.appName || "Unknown App"}
-                              </TableCell>
-                              <TableCell>
-                                <Badge
-                                  variant="outline"
-                                  className={STATUS_COLORS[test.status] || ""}
-                                >
-                                  {test.status?.replace("_", " ")}
-                                </Badge>
-                              </TableCell>
-                              <TableCell>{test.daysCompleted || 0}</TableCell>
-                              <TableCell className="text-muted-foreground text-xs">
-                                {formatDate(test.joinedAt)}
-                              </TableCell>
-                              <TableCell className="text-muted-foreground text-xs">
-                                {formatDate(test.lastActivityAt)}
-                              </TableCell>
-                            </TableRow>
-                          ))}
-                        </TableBody>
-                      </Table>
-                    </div>
-                  ) : (
-                    <p className="text-muted-foreground text-sm py-4 text-center">
-                      No testing history yet.
-                    </p>
-                  )}
-                </CardContent>
-              </Card>
-            )}
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </div>
+                ) : (
+                  <p className="text-muted-foreground text-sm py-4 text-center">
+                    No testing history yet.
+                  </p>
+                )}
+              </CardContent>
+            </Card>
+          )}
 
-            {/* Submissions (Non-Tester) */}
-            {!isTester && (
-              <Card>
-                <CardHeader>
-                  <CardTitle>Recent Submissions</CardTitle>
-                  <CardDescription>
-                    Apps submitted by this user.
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  {user.recentSubmissions?.length > 0 ? (
-                    <div className="overflow-x-auto">
-                      <Table>
-                        <TableHeader>
-                          <TableRow>
-                            <TableHead>App Name</TableHead>
-                            <TableHead>Type</TableHead>
-                            <TableHead>Status</TableHead>
-                            <TableHead>Submitted</TableHead>
-                            <TableHead className="text-right">Actions</TableHead>
+          {/* Submissions (Non-Tester) */}
+          {!isTester && (
+            <Card>
+              <CardHeader>
+                <CardTitle>Recent Submissions</CardTitle>
+                <CardDescription>Apps submitted by this user.</CardDescription>
+              </CardHeader>
+              <CardContent>
+                {user.recentSubmissions?.length > 0 ? (
+                  <div className="overflow-x-auto">
+                    <Table>
+                      <TableHeader>
+                        <TableRow>
+                          <TableHead>App Name</TableHead>
+                          <TableHead>Type</TableHead>
+                          <TableHead>Status</TableHead>
+                          <TableHead>Submitted</TableHead>
+                          <TableHead className="text-right">Actions</TableHead>
+                        </TableRow>
+                      </TableHeader>
+                      <TableBody>
+                        {user.recentSubmissions.map((sub: any) => (
+                          <TableRow key={sub.id}>
+                            <TableCell className="font-medium">
+                              {sub.appName || "Unknown"}
+                            </TableCell>
+                            <TableCell>
+                              <Badge
+                                variant="outline"
+                                className={APP_TYPE_COLORS[sub.appType] || ""}
+                              >
+                                {sub.appType}
+                              </Badge>
+                            </TableCell>
+                            <TableCell>
+                              <Badge
+                                variant="outline"
+                                className={STATUS_COLORS[sub.status] || ""}
+                              >
+                                {sub.status?.replace("_", " ")}
+                              </Badge>
+                            </TableCell>
+                            <TableCell className="text-muted-foreground text-xs">
+                              {formatDate(sub.createdAt)}
+                            </TableCell>
+                            <TableCell className="text-right">
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <Button
+                                    variant="ghost"
+                                    size="icon"
+                                    onClick={() => {
+                                      const baseUrl =
+                                        sub.appType === "PAID"
+                                          ? "/admin/submissions-paid"
+                                          : "/admin/submissions-free";
+                                      window.open(
+                                        `${baseUrl}/${sub.id}`,
+                                        "_blank",
+                                      );
+                                    }}
+                                  >
+                                    <Eye className="w-4 h-4" />
+                                  </Button>
+                                </TooltipTrigger>
+                                <TooltipContent>View app</TooltipContent>
+                              </Tooltip>
+                            </TableCell>
                           </TableRow>
-                        </TableHeader>
-                        <TableBody>
-                          {user.recentSubmissions.map((sub: any) => (
-                            <TableRow key={sub.id}>
-                              <TableCell className="font-medium">
-                                {sub.appName || "Unknown"}
-                              </TableCell>
-                              <TableCell>
-                                <Badge variant="outline" className={APP_TYPE_COLORS[sub.appType] || ""}>{sub.appType}</Badge>
-                              </TableCell>
-                              <TableCell>
-                                <Badge
-                                  variant="outline"
-                                  className={STATUS_COLORS[sub.status] || ""}
-                                >
-                                  {sub.status?.replace("_", " ")}
-                                </Badge>
-                              </TableCell>
-                              <TableCell className="text-muted-foreground text-xs">
-                                {formatDate(sub.createdAt)}
-                              </TableCell>
-                              <TableCell className="text-right">
-                                <Tooltip>
-                                  <TooltipTrigger asChild>
-                                    <Button
-                                      variant="ghost"
-                                      size="icon"
-                                      onClick={() => {
-                                        const baseUrl = sub.appType === "PAID" ? "/admin/submissions-paid" : "/admin/submissions-free";
-                                        window.open(`${baseUrl}/${sub.id}`, "_blank");
-                                      }}
-                                    >
-                                      <Eye className="w-4 h-4" />
-                                    </Button>
-                                  </TooltipTrigger>
-                                  <TooltipContent>View app</TooltipContent>
-                                </Tooltip>
-                              </TableCell>
-                            </TableRow>
-                          ))}
-                        </TableBody>
-                      </Table>
-                    </div>
-                  ) : (
-                    <p className="text-muted-foreground text-sm py-4 text-center">
-                      No submissions yet.
-                    </p>
-                  )}
-                </CardContent>
-              </Card>
-            )}
+                        ))}
+                      </TableBody>
+                    </Table>
+                  </div>
+                ) : (
+                  <p className="text-muted-foreground text-sm py-4 text-center">
+                    No submissions yet.
+                  </p>
+                )}
+              </CardContent>
+            </Card>
+          )}
         </div>
       </div>
 
@@ -1939,10 +2234,11 @@ export default function AdminUserDetailsPage() {
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-6 py-4">
-
             {/* Role & Status */}
             <div>
-              <h4 className="text-base font-bold border-b pb-2 mb-4">Role & Status</h4>
+              <h4 className="text-base font-bold border-b pb-2 mb-4">
+                Role & Status
+              </h4>
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label>Role</Label>
@@ -1954,16 +2250,26 @@ export default function AdminUserDetailsPage() {
                       <SelectValue placeholder="Select a role" />
                     </SelectTrigger>
                     <SelectContent position="popper">
-                      {(rolesData || []).map((role: { name: string; isProtected: boolean }) => {
-                        const isElevated = role.name === "admin" || role.name === "super_admin";
-                        const disabled = isElevated && !isSuperAdmin;
-                        return (
-                          <SelectItem key={role.name} value={role.name} disabled={disabled}>
-                            {role.name.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase())}
-                            {disabled && " (Super Admin only)"}
-                          </SelectItem>
-                        );
-                      })}
+                      {(rolesData || []).map(
+                        (role: { name: string; isProtected: boolean }) => {
+                          const isElevated =
+                            role.name === "admin" ||
+                            role.name === "super_admin";
+                          const disabled = isElevated && !isSuperAdmin;
+                          return (
+                            <SelectItem
+                              key={role.name}
+                              value={role.name}
+                              disabled={disabled}
+                            >
+                              {role.name
+                                .replace(/_/g, " ")
+                                .replace(/\b\w/g, (c) => c.toUpperCase())}
+                              {disabled && " (Super Admin only)"}
+                            </SelectItem>
+                          );
+                        },
+                      )}
                     </SelectContent>
                   </Select>
                 </div>
@@ -1990,18 +2296,29 @@ export default function AdminUserDetailsPage() {
 
             {/* Section 1: Role & Professional Info */}
             <div>
-              <h4 className="text-base font-bold border-b pb-2 mb-4">Role & Professional Info</h4>
+              <h4 className="text-base font-bold border-b pb-2 mb-4">
+                Role & Professional Info
+              </h4>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label>Profile Type</Label>
                   <Select
                     value={editProfileData.profile_type}
-                    onValueChange={(val) => setEditProfileData((prev: any) => ({ ...prev, profile_type: val }))}
+                    onValueChange={(val) =>
+                      setEditProfileData((prev: any) => ({
+                        ...prev,
+                        profile_type: val,
+                      }))
+                    }
                   >
-                    <SelectTrigger><SelectValue placeholder="Select type" /></SelectTrigger>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select type" />
+                    </SelectTrigger>
                     <SelectContent>
                       {Object.values(UserProfileType).map((t) => (
-                        <SelectItem key={t} value={t}>{t.replace(/_/g, " ").toLowerCase()}</SelectItem>
+                        <SelectItem key={t} value={t}>
+                          {t.replace(/_/g, " ").toLowerCase()}
+                        </SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
@@ -2010,12 +2327,21 @@ export default function AdminUserDetailsPage() {
                   <Label>Job Role</Label>
                   <Select
                     value={editProfileData.job_role}
-                    onValueChange={(val) => setEditProfileData((prev: any) => ({ ...prev, job_role: val }))}
+                    onValueChange={(val) =>
+                      setEditProfileData((prev: any) => ({
+                        ...prev,
+                        job_role: val,
+                      }))
+                    }
                   >
-                    <SelectTrigger><SelectValue placeholder="Select role" /></SelectTrigger>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select role" />
+                    </SelectTrigger>
                     <SelectContent>
                       {Object.values(UserJobRole).map((r) => (
-                        <SelectItem key={r} value={r}>{r.replace(/_/g, " ").toLowerCase()}</SelectItem>
+                        <SelectItem key={r} value={r}>
+                          {r.replace(/_/g, " ").toLowerCase()}
+                        </SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
@@ -2024,12 +2350,21 @@ export default function AdminUserDetailsPage() {
                   <Label>Experience Level</Label>
                   <Select
                     value={editProfileData.experience_level}
-                    onValueChange={(val) => setEditProfileData((prev: any) => ({ ...prev, experience_level: val }))}
+                    onValueChange={(val) =>
+                      setEditProfileData((prev: any) => ({
+                        ...prev,
+                        experience_level: val,
+                      }))
+                    }
                   >
-                    <SelectTrigger><SelectValue placeholder="Select level" /></SelectTrigger>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select level" />
+                    </SelectTrigger>
                     <SelectContent>
                       {Object.values(UserExperienceLevel).map((l) => (
-                        <SelectItem key={l} value={l}>{l.replace(/_/g, " ").toLowerCase()}</SelectItem>
+                        <SelectItem key={l} value={l}>
+                          {l.replace(/_/g, " ").toLowerCase()}
+                        </SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
@@ -2041,32 +2376,56 @@ export default function AdminUserDetailsPage() {
 
             {/* Section 2: Company Information */}
             <div>
-              <h4 className="text-base font-bold border-b pb-2 mb-4">Company Information</h4>
+              <h4 className="text-base font-bold border-b pb-2 mb-4">
+                Company Information
+              </h4>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label>Company Name</Label>
                   <Input
                     value={editProfileData.company_name}
-                    onChange={(e) => setEditProfileData((prev: any) => ({ ...prev, company_name: e.target.value }))}
+                    onChange={(e) =>
+                      setEditProfileData((prev: any) => ({
+                        ...prev,
+                        company_name: e.target.value,
+                      }))
+                    }
                   />
                 </div>
                 <div className="space-y-2">
                   <Label>Company Website</Label>
                   <Input
                     value={editProfileData.company_website}
-                    onChange={(e) => setEditProfileData((prev: any) => ({ ...prev, company_website: e.target.value }))}
+                    onChange={(e) =>
+                      setEditProfileData((prev: any) => ({
+                        ...prev,
+                        company_website: e.target.value,
+                      }))
+                    }
                   />
                 </div>
                 <div className="space-y-2">
                   <Label>Company Size</Label>
                   <Select
                     value={editProfileData.company_size}
-                    onValueChange={(val) => setEditProfileData((prev: any) => ({ ...prev, company_size: val }))}
+                    onValueChange={(val) =>
+                      setEditProfileData((prev: any) => ({
+                        ...prev,
+                        company_size: val,
+                      }))
+                    }
                   >
-                    <SelectTrigger><SelectValue placeholder="Select size" /></SelectTrigger>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select size" />
+                    </SelectTrigger>
                     <SelectContent>
                       {Object.values(UserCompanySize).map((s) => (
-                        <SelectItem key={s} value={s}>{s.replace("SIZE_", "").replace(/_/g, "-").toLowerCase()}</SelectItem>
+                        <SelectItem key={s} value={s}>
+                          {s
+                            .replace("SIZE_", "")
+                            .replace(/_/g, "-")
+                            .toLowerCase()}
+                        </SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
@@ -2075,12 +2434,21 @@ export default function AdminUserDetailsPage() {
                   <Label>Position in Company</Label>
                   <Select
                     value={editProfileData.position_in_company}
-                    onValueChange={(val) => setEditProfileData((prev: any) => ({ ...prev, position_in_company: val }))}
+                    onValueChange={(val) =>
+                      setEditProfileData((prev: any) => ({
+                        ...prev,
+                        position_in_company: val,
+                      }))
+                    }
                   >
-                    <SelectTrigger><SelectValue placeholder="Select position" /></SelectTrigger>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select position" />
+                    </SelectTrigger>
                     <SelectContent>
                       {Object.values(UserCompanyPosition).map((p) => (
-                        <SelectItem key={p} value={p}>{p.replace(/_/g, " ").toLowerCase()}</SelectItem>
+                        <SelectItem key={p} value={p}>
+                          {p.replace(/_/g, " ").toLowerCase()}
+                        </SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
@@ -2092,18 +2460,32 @@ export default function AdminUserDetailsPage() {
 
             {/* Section 3: Project Information */}
             <div>
-              <h4 className="text-base font-bold border-b pb-2 mb-4">Project Information</h4>
+              <h4 className="text-base font-bold border-b pb-2 mb-4">
+                Project Information
+              </h4>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label>Total Published Apps</Label>
                   <Select
                     value={editProfileData.total_published_apps}
-                    onValueChange={(val) => setEditProfileData((prev: any) => ({ ...prev, total_published_apps: val }))}
+                    onValueChange={(val) =>
+                      setEditProfileData((prev: any) => ({
+                        ...prev,
+                        total_published_apps: val,
+                      }))
+                    }
                   >
-                    <SelectTrigger><SelectValue placeholder="Select" /></SelectTrigger>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select" />
+                    </SelectTrigger>
                     <SelectContent>
                       {Object.values(UserTotalPublishedApps).map((a) => (
-                        <SelectItem key={a} value={a}>{a.replace("PUB_", "").replace(/_/g, "-").toLowerCase()}</SelectItem>
+                        <SelectItem key={a} value={a}>
+                          {a
+                            .replace("PUB_", "")
+                            .replace(/_/g, "-")
+                            .toLowerCase()}
+                        </SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
@@ -2112,12 +2494,21 @@ export default function AdminUserDetailsPage() {
                   <Label>Development Platform</Label>
                   <Select
                     value={editProfileData.platform_development}
-                    onValueChange={(val) => setEditProfileData((prev: any) => ({ ...prev, platform_development: val }))}
+                    onValueChange={(val) =>
+                      setEditProfileData((prev: any) => ({
+                        ...prev,
+                        platform_development: val,
+                      }))
+                    }
                   >
-                    <SelectTrigger><SelectValue placeholder="Select platform" /></SelectTrigger>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select platform" />
+                    </SelectTrigger>
                     <SelectContent>
                       {Object.values(UserDevelopmentPlatform).map((p) => (
-                        <SelectItem key={p} value={p}>{p.replace(/_/g, " ").toLowerCase()}</SelectItem>
+                        <SelectItem key={p} value={p}>
+                          {p.replace(/_/g, " ").toLowerCase()}
+                        </SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
@@ -2126,12 +2517,21 @@ export default function AdminUserDetailsPage() {
                   <Label>Publish Frequency</Label>
                   <Select
                     value={editProfileData.publish_frequency}
-                    onValueChange={(val) => setEditProfileData((prev: any) => ({ ...prev, publish_frequency: val }))}
+                    onValueChange={(val) =>
+                      setEditProfileData((prev: any) => ({
+                        ...prev,
+                        publish_frequency: val,
+                      }))
+                    }
                   >
-                    <SelectTrigger><SelectValue placeholder="Select frequency" /></SelectTrigger>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select frequency" />
+                    </SelectTrigger>
                     <SelectContent>
                       {Object.values(UserPublishFrequency).map((f) => (
-                        <SelectItem key={f} value={f}>{f.replace(/_/g, " ").toLowerCase()}</SelectItem>
+                        <SelectItem key={f} value={f}>
+                          {f.replace(/_/g, " ").toLowerCase()}
+                        </SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
@@ -2143,32 +2543,60 @@ export default function AdminUserDetailsPage() {
 
             {/* Section 4: Device Information */}
             <div>
-              <h4 className="text-base font-bold border-b pb-2 mb-4">Device Information</h4>
+              <h4 className="text-base font-bold border-b pb-2 mb-4">
+                Device Information
+              </h4>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label>Device Company</Label>
                   <Input
                     value={editProfileData.device_company}
-                    onChange={(e) => setEditProfileData((prev: any) => ({ ...prev, device_company: e.target.value }))}
+                    onChange={(e) =>
+                      setEditProfileData((prev: any) => ({
+                        ...prev,
+                        device_company: e.target.value,
+                      }))
+                    }
                   />
                 </div>
                 <div className="space-y-2">
                   <Label>Device Model</Label>
                   <Input
                     value={editProfileData.device_model}
-                    onChange={(e) => setEditProfileData((prev: any) => ({ ...prev, device_model: e.target.value }))}
+                    onChange={(e) =>
+                      setEditProfileData((prev: any) => ({
+                        ...prev,
+                        device_model: e.target.value,
+                      }))
+                    }
                   />
                 </div>
                 <div className="space-y-2">
                   <Label>RAM</Label>
                   <Select
                     value={editProfileData.ram}
-                    onValueChange={(val) => setEditProfileData((prev: any) => ({ ...prev, ram: val }))}
+                    onValueChange={(val) =>
+                      setEditProfileData((prev: any) => ({ ...prev, ram: val }))
+                    }
                   >
-                    <SelectTrigger><SelectValue placeholder="Select RAM" /></SelectTrigger>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select RAM" />
+                    </SelectTrigger>
                     <SelectContent>
-                      {["2GB","3GB","4GB","6GB","8GB","12GB","16GB","18GB","24GB"].map((r) => (
-                        <SelectItem key={r} value={r}>{r}</SelectItem>
+                      {[
+                        "2GB",
+                        "3GB",
+                        "4GB",
+                        "6GB",
+                        "8GB",
+                        "12GB",
+                        "16GB",
+                        "18GB",
+                        "24GB",
+                      ].map((r) => (
+                        <SelectItem key={r} value={r}>
+                          {r}
+                        </SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
@@ -2177,12 +2605,26 @@ export default function AdminUserDetailsPage() {
                   <Label>Operating System</Label>
                   <Select
                     value={editProfileData.os}
-                    onValueChange={(val) => setEditProfileData((prev: any) => ({ ...prev, os: val }))}
+                    onValueChange={(val) =>
+                      setEditProfileData((prev: any) => ({ ...prev, os: val }))
+                    }
                   >
-                    <SelectTrigger><SelectValue placeholder="Select OS" /></SelectTrigger>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select OS" />
+                    </SelectTrigger>
                     <SelectContent>
-                      {["Android 16","Android 15","Android 14","Android 13","Android 12","Android 11","Android 10 or older"].map((o) => (
-                        <SelectItem key={o} value={o}>{o}</SelectItem>
+                      {[
+                        "Android 16",
+                        "Android 15",
+                        "Android 14",
+                        "Android 13",
+                        "Android 12",
+                        "Android 11",
+                        "Android 10 or older",
+                      ].map((o) => (
+                        <SelectItem key={o} value={o}>
+                          {o}
+                        </SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
@@ -2191,12 +2633,28 @@ export default function AdminUserDetailsPage() {
                   <Label>Screen Resolution</Label>
                   <Select
                     value={editProfileData.screen_resolution}
-                    onValueChange={(val) => setEditProfileData((prev: any) => ({ ...prev, screen_resolution: val }))}
+                    onValueChange={(val) =>
+                      setEditProfileData((prev: any) => ({
+                        ...prev,
+                        screen_resolution: val,
+                      }))
+                    }
                   >
-                    <SelectTrigger><SelectValue placeholder="Select resolution" /></SelectTrigger>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select resolution" />
+                    </SelectTrigger>
                     <SelectContent>
-                      {["HD+ (720p)","FHD+ (1080p)","QHD+ (2K)","UHD (4K)","UHD (8K)","Other"].map((r) => (
-                        <SelectItem key={r} value={r}>{r}</SelectItem>
+                      {[
+                        "HD+ (720p)",
+                        "FHD+ (1080p)",
+                        "QHD+ (2K)",
+                        "UHD (4K)",
+                        "UHD (8K)",
+                        "Other",
+                      ].map((r) => (
+                        <SelectItem key={r} value={r}>
+                          {r}
+                        </SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
@@ -2205,12 +2663,35 @@ export default function AdminUserDetailsPage() {
                   <Label>Language</Label>
                   <Select
                     value={editProfileData.language}
-                    onValueChange={(val) => setEditProfileData((prev: any) => ({ ...prev, language: val }))}
+                    onValueChange={(val) =>
+                      setEditProfileData((prev: any) => ({
+                        ...prev,
+                        language: val,
+                      }))
+                    }
                   >
-                    <SelectTrigger><SelectValue placeholder="Select language" /></SelectTrigger>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select language" />
+                    </SelectTrigger>
                     <SelectContent>
-                      {["English (US)","English (UK)","Spanish","Mandarin Chinese","Hindi","Arabic","Portuguese","Bengali","Russian","Japanese","German","French","Other"].map((l) => (
-                        <SelectItem key={l} value={l}>{l}</SelectItem>
+                      {[
+                        "English (US)",
+                        "English (UK)",
+                        "Spanish",
+                        "Mandarin Chinese",
+                        "Hindi",
+                        "Arabic",
+                        "Portuguese",
+                        "Bengali",
+                        "Russian",
+                        "Japanese",
+                        "German",
+                        "French",
+                        "Other",
+                      ].map((l) => (
+                        <SelectItem key={l} value={l}>
+                          {l}
+                        </SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
@@ -2219,9 +2700,16 @@ export default function AdminUserDetailsPage() {
                   <Label>Primary Network</Label>
                   <Select
                     value={editProfileData.network}
-                    onValueChange={(val) => setEditProfileData((prev: any) => ({ ...prev, network: val }))}
+                    onValueChange={(val) =>
+                      setEditProfileData((prev: any) => ({
+                        ...prev,
+                        network: val,
+                      }))
+                    }
                   >
-                    <SelectTrigger><SelectValue placeholder="Select network" /></SelectTrigger>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select network" />
+                    </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="WiFi">WiFi</SelectItem>
                       <SelectItem value="Cellular">Cellular</SelectItem>
@@ -2235,18 +2723,29 @@ export default function AdminUserDetailsPage() {
 
             {/* Section 5: Contact & Communication */}
             <div>
-              <h4 className="text-base font-bold border-b pb-2 mb-4">Contact & Communication</h4>
+              <h4 className="text-base font-bold border-b pb-2 mb-4">
+                Contact & Communication
+              </h4>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label>Country</Label>
                   <Select
                     value={editProfileData.country}
-                    onValueChange={(val) => setEditProfileData((prev: any) => ({ ...prev, country: val }))}
+                    onValueChange={(val) =>
+                      setEditProfileData((prev: any) => ({
+                        ...prev,
+                        country: val,
+                      }))
+                    }
                   >
-                    <SelectTrigger><SelectValue placeholder="Select country" /></SelectTrigger>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select country" />
+                    </SelectTrigger>
                     <SelectContent>
                       {countries.map((c) => (
-                        <SelectItem key={c.code} value={c.name}>{c.name}</SelectItem>
+                        <SelectItem key={c.code} value={c.name}>
+                          {c.name}
+                        </SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
@@ -2255,19 +2754,33 @@ export default function AdminUserDetailsPage() {
                   <Label>Phone</Label>
                   <Input
                     value={editProfileData.phone}
-                    onChange={(e) => setEditProfileData((prev: any) => ({ ...prev, phone: e.target.value }))}
+                    onChange={(e) =>
+                      setEditProfileData((prev: any) => ({
+                        ...prev,
+                        phone: e.target.value,
+                      }))
+                    }
                   />
                 </div>
                 <div className="space-y-2">
                   <Label>Service Usage Reason</Label>
                   <Select
                     value={editProfileData.service_usage}
-                    onValueChange={(val) => setEditProfileData((prev: any) => ({ ...prev, service_usage: val }))}
+                    onValueChange={(val) =>
+                      setEditProfileData((prev: any) => ({
+                        ...prev,
+                        service_usage: val,
+                      }))
+                    }
                   >
-                    <SelectTrigger><SelectValue placeholder="Select reason" /></SelectTrigger>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select reason" />
+                    </SelectTrigger>
                     <SelectContent>
                       {Object.values(UserTestingServiceReason).map((r) => (
-                        <SelectItem key={r} value={r}>{r.replace(/_/g, " ").toLowerCase()}</SelectItem>
+                        <SelectItem key={r} value={r}>
+                          {r.replace(/_/g, " ").toLowerCase()}
+                        </SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
@@ -2276,7 +2789,9 @@ export default function AdminUserDetailsPage() {
                   <Label>Communication Methods</Label>
                   <div className="flex flex-wrap gap-3">
                     {Object.values(UserCommunicationMethod).map((m) => {
-                      const checked = (editProfileData.communication_methods || []).includes(m);
+                      const checked = (
+                        editProfileData.communication_methods || []
+                      ).includes(m);
                       return (
                         <div key={m} className="flex items-center gap-2">
                           <Checkbox
@@ -2284,7 +2799,8 @@ export default function AdminUserDetailsPage() {
                             checked={checked}
                             onCheckedChange={(c) => {
                               setEditProfileData((prev: any) => {
-                                const current = prev.communication_methods || [];
+                                const current =
+                                  prev.communication_methods || [];
                                 return {
                                   ...prev,
                                   communication_methods: c
@@ -2294,7 +2810,10 @@ export default function AdminUserDetailsPage() {
                               });
                             }}
                           />
-                          <Label htmlFor={`edit-comm-${m}`} className="text-sm font-normal cursor-pointer">
+                          <Label
+                            htmlFor={`edit-comm-${m}`}
+                            className="text-sm font-normal cursor-pointer"
+                          >
                             {m.toLowerCase()}
                           </Label>
                         </div>
@@ -2309,41 +2828,62 @@ export default function AdminUserDetailsPage() {
 
             {/* Section 6: Discovery Source */}
             <div>
-              <h4 className="text-base font-bold border-b pb-2 mb-4">Discovery Source</h4>
+              <h4 className="text-base font-bold border-b pb-2 mb-4">
+                Discovery Source
+              </h4>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label>How did this user discover us?</Label>
                   <Select
                     value={editProfileData.discovery_source}
-                    onValueChange={(val) => setEditProfileData((prev: any) => ({ ...prev, discovery_source: val }))}
+                    onValueChange={(val) =>
+                      setEditProfileData((prev: any) => ({
+                        ...prev,
+                        discovery_source: val,
+                      }))
+                    }
                   >
-                    <SelectTrigger><SelectValue placeholder="Not answered" /></SelectTrigger>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Not answered" />
+                    </SelectTrigger>
                     <SelectContent position="popper">
                       <SelectItem value="youtube">YouTube</SelectItem>
-                      <SelectItem value="google_search">Google Search</SelectItem>
+                      <SelectItem value="google_search">
+                        Google Search
+                      </SelectItem>
                       <SelectItem value="chatgpt">ChatGPT</SelectItem>
                       <SelectItem value="gemini">Gemini</SelectItem>
                       <SelectItem value="twitter_x">Twitter / X</SelectItem>
                       <SelectItem value="reddit">Reddit</SelectItem>
-                      <SelectItem value="friend_colleague">Friend or Colleague</SelectItem>
-                      <SelectItem value="blog_article">Blog or Article</SelectItem>
+                      <SelectItem value="friend_colleague">
+                        Friend or Colleague
+                      </SelectItem>
+                      <SelectItem value="blog_article">
+                        Blog or Article
+                      </SelectItem>
                       <SelectItem value="linkedin">LinkedIn</SelectItem>
-                      <SelectItem value="facebook_instagram">Facebook / Instagram</SelectItem>
+                      <SelectItem value="facebook_instagram">
+                        Facebook / Instagram
+                      </SelectItem>
                       <SelectItem value="other">Other</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
               </div>
             </div>
-
           </div>
           <DialogFooter className="gap-2">
-            <Button variant="ghost" onClick={() => setIsEditModalOpen(false)}>Cancel</Button>
+            <Button variant="ghost" onClick={() => setIsEditModalOpen(false)}>
+              Cancel
+            </Button>
             <Button
               onClick={handleSaveChanges}
-              disabled={updateProfileMutation.isPending || updateRoleMutation.isPending}
+              disabled={
+                updateProfileMutation.isPending || updateRoleMutation.isPending
+              }
             >
-              {(updateProfileMutation.isPending || updateRoleMutation.isPending) && (
+              {(updateProfileMutation.isPending ||
+                updateRoleMutation.isPending) && (
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
               )}
               Save Changes
@@ -2392,7 +2932,9 @@ export default function AdminUserDetailsPage() {
             {user.status === "Banned" ? (
               <Button
                 variant="default"
-                onClick={() => updateStatusMutation.mutate({ id: user.id, status: "Active" })}
+                onClick={() =>
+                  updateStatusMutation.mutate({ id: user.id, status: "Active" })
+                }
                 disabled={updateStatusMutation.isPending}
                 className="bg-green-600 hover:bg-green-700"
               >
@@ -2404,13 +2946,84 @@ export default function AdminUserDetailsPage() {
             ) : (
               <Button
                 variant="destructive"
-                onClick={() => updateStatusMutation.mutate({ id: user.id, status: "Banned", banReason: "Banned by admin" })}
+                onClick={() =>
+                  updateStatusMutation.mutate({
+                    id: user.id,
+                    status: "Banned",
+                    banReason: "Banned by admin",
+                  })
+                }
                 disabled={updateStatusMutation.isPending}
               >
                 {updateStatusMutation.isPending && (
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                 )}
                 Ban Account
+              </Button>
+            )}
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Deactivate / Reactivate Account Modal */}
+      <Dialog
+        open={isActiveStatusModalOpen}
+        onOpenChange={setIsActiveStatusModalOpen}
+      >
+        <DialogContent className="sm:max-w-[500px]">
+          <DialogHeader>
+            <DialogTitle>
+              {pendingIsActive ? "Reactivate" : "Deactivate"} {user?.name}
+            </DialogTitle>
+            <DialogDescription>
+              {pendingIsActive
+                ? "This will restore the user's account so they can log in again."
+                : "This will soft-deactivate the account and block new logins. The user can reactivate from the login page, or you can reactivate them here later."}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="py-4 space-y-4">
+            <div className="bg-secondary/20 p-4 rounded-lg border border-border/50 text-sm">
+              <p className="font-medium mb-1">
+                Current Status: {user?.status}
+                {user?.status === "Deactivated" && user.deactivatedAt
+                  ? ` (since ${formatDate(user.deactivatedAt)})`
+                  : ""}
+              </p>
+              <p className="opacity-70 text-xs text-muted-foreground">
+                Note: This is different from banning, deactivated users keep
+                their data and can self-reactivate.
+              </p>
+            </div>
+          </div>
+          <DialogFooter className="gap-2 sm:gap-0">
+            <Button
+              variant="ghost"
+              onClick={() => setIsActiveStatusModalOpen(false)}
+            >
+              Cancel
+            </Button>
+            {pendingIsActive ? (
+              <Button
+                variant="default"
+                onClick={confirmActiveStatusChange}
+                disabled={updateActiveStatusMutation.isPending}
+                className="bg-green-600 hover:bg-green-700"
+              >
+                {updateActiveStatusMutation.isPending && (
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                )}
+                Reactivate Account
+              </Button>
+            ) : (
+              <Button
+                variant="destructive"
+                onClick={confirmActiveStatusChange}
+                disabled={updateActiveStatusMutation.isPending}
+              >
+                {updateActiveStatusMutation.isPending && (
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                )}
+                Deactivate Account
               </Button>
             )}
           </DialogFooter>
@@ -2457,7 +3070,10 @@ export default function AdminUserDetailsPage() {
       </Dialog>
 
       {/* Send Notification Modal */}
-      <Dialog open={isSendNotificationModalOpen} onOpenChange={setIsSendNotificationModalOpen}>
+      <Dialog
+        open={isSendNotificationModalOpen}
+        onOpenChange={setIsSendNotificationModalOpen}
+      >
         <DialogContent className="sm:max-w-[500px] max-h-[90vh] overflow-hidden flex flex-col">
           <DialogHeader>
             <DialogTitle>Send Notification to {user.name}</DialogTitle>
@@ -2472,7 +3088,12 @@ export default function AdminUserDetailsPage() {
                 id="notif-title"
                 placeholder="Notification title"
                 value={notificationData.title}
-                onChange={(e) => setNotificationData({ ...notificationData, title: e.target.value })}
+                onChange={(e) =>
+                  setNotificationData({
+                    ...notificationData,
+                    title: e.target.value,
+                  })
+                }
               />
             </div>
             <div className="grid gap-2">
@@ -2481,7 +3102,12 @@ export default function AdminUserDetailsPage() {
                 id="notif-description"
                 placeholder="Notification description"
                 value={notificationData.description}
-                onChange={(e) => setNotificationData({ ...notificationData, description: e.target.value })}
+                onChange={(e) =>
+                  setNotificationData({
+                    ...notificationData,
+                    description: e.target.value,
+                  })
+                }
               />
             </div>
             <div className="grid gap-2">
@@ -2493,7 +3119,9 @@ export default function AdminUserDetailsPage() {
               ) : (
                 <Select
                   value={notificationData.type}
-                  onValueChange={(value) => setNotificationData({ ...notificationData, type: value })}
+                  onValueChange={(value) =>
+                    setNotificationData({ ...notificationData, type: value })
+                  }
                 >
                   <SelectTrigger>
                     <SelectValue placeholder="Select type" />
@@ -2501,7 +3129,7 @@ export default function AdminUserDetailsPage() {
                   <SelectContent>
                     {(notificationTypes || []).map((type: string) => (
                       <SelectItem key={type} value={type}>
-                        {type.replace(/_/g, ' ')}
+                        {type.replace(/_/g, " ")}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -2514,51 +3142,50 @@ export default function AdminUserDetailsPage() {
                 id="notif-url"
                 placeholder="https://example.com"
                 value={notificationData.url}
-                onChange={(e) => setNotificationData({ ...notificationData, url: e.target.value })}
+                onChange={(e) =>
+                  setNotificationData({
+                    ...notificationData,
+                    url: e.target.value,
+                  })
+                }
               />
             </div>
           </div>
           <DialogFooter className="shrink-0">
-            <Button variant="ghost" onClick={() => setIsSendNotificationModalOpen(false)}>
+            <Button
+              variant="ghost"
+              onClick={() => setIsSendNotificationModalOpen(false)}
+            >
               Cancel
             </Button>
             <Button
               onClick={handleSendNotification}
-              disabled={createNotificationMutation.isPending || !notificationData.title || !notificationData.description}
+              disabled={
+                createNotificationMutation.isPending ||
+                !notificationData.title ||
+                !notificationData.description
+              }
             >
-              {createNotificationMutation.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              {createNotificationMutation.isPending && (
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              )}
               Send Notification
             </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
 
-      {/* Gift Points & Packages Modal */}
+      {/* Gift Packages Modal (S9: points gifting removed) */}
       <Dialog open={isGiftModalOpen} onOpenChange={setIsGiftModalOpen}>
         <DialogContent className="sm:max-w-[500px]">
           <DialogHeader>
-            <DialogTitle>Gift Points & Packages to {user.name}</DialogTitle>
+            <DialogTitle>Gift Packages to {user.name}</DialogTitle>
             <DialogDescription>
-              Gift points and/or packages to this user. The amounts will be added to their existing balances.
+              Gift packages to this user. The amount will be added to their
+              existing balance.
             </DialogDescription>
           </DialogHeader>
           <div className="grid gap-4 py-4">
-            <div className="grid gap-2">
-              <Label htmlFor="gift-points">Points</Label>
-              <Input
-                id="gift-points"
-                type="number"
-                min="0"
-                placeholder="0"
-                value={giftData.points || ""}
-                onChange={(e) =>
-                  setGiftData((prev) => ({
-                    ...prev,
-                    points: Math.max(0, parseInt(e.target.value) || 0),
-                  }))
-                }
-              />
-            </div>
             <div className="grid gap-2">
               <Label htmlFor="gift-packages">Packages</Label>
               <Input
@@ -2584,16 +3211,16 @@ export default function AdminUserDetailsPage() {
               onClick={() =>
                 giftMutation.mutate({
                   id,
-                  points: giftData.points || undefined,
-                  packages: giftData.packages || undefined,
+                  packages: giftData.packages || 0,
                 })
               }
               disabled={
-                giftMutation.isPending ||
-                (giftData.points <= 0 && giftData.packages <= 0)
+                giftMutation.isPending || giftData.packages <= 0
               }
             >
-              {giftMutation.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              {giftMutation.isPending && (
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              )}
               Gift
             </Button>
           </DialogFooter>
@@ -2601,7 +3228,10 @@ export default function AdminUserDetailsPage() {
       </Dialog>
 
       {/* Create Immediate Attention Required Modal */}
-      <Dialog open={isCreateIarModalOpen} onOpenChange={setIsCreateIarModalOpen}>
+      <Dialog
+        open={isCreateIarModalOpen}
+        onOpenChange={setIsCreateIarModalOpen}
+      >
         <DialogContent className="sm:max-w-[500px]">
           <DialogHeader>
             <DialogTitle>Add Immediate Attention Required</DialogTitle>
@@ -2616,7 +3246,9 @@ export default function AdminUserDetailsPage() {
                 id="iar-title"
                 placeholder="Card title"
                 value={iarFormData.title}
-                onChange={(e) => setIarFormData({ ...iarFormData, title: e.target.value })}
+                onChange={(e) =>
+                  setIarFormData({ ...iarFormData, title: e.target.value })
+                }
               />
             </div>
             <div className="grid gap-2">
@@ -2625,7 +3257,12 @@ export default function AdminUserDetailsPage() {
                 id="iar-description"
                 placeholder="Card description"
                 value={iarFormData.description}
-                onChange={(e) => setIarFormData({ ...iarFormData, description: e.target.value })}
+                onChange={(e) =>
+                  setIarFormData({
+                    ...iarFormData,
+                    description: e.target.value,
+                  })
+                }
               />
             </div>
             <div className="grid gap-2">
@@ -2634,10 +3271,14 @@ export default function AdminUserDetailsPage() {
                 id="iar-url"
                 placeholder="https://example.com"
                 value={iarFormData.url}
-                onChange={(e) => setIarFormData({ ...iarFormData, url: e.target.value })}
+                onChange={(e) =>
+                  setIarFormData({ ...iarFormData, url: e.target.value })
+                }
               />
               {iarFormData.url && !/^https?:\/\/.+/.test(iarFormData.url) && (
-                <p className="text-xs text-red-500">URL must start with http:// or https://</p>
+                <p className="text-xs text-red-500">
+                  URL must start with http:// or https://
+                </p>
               )}
             </div>
             <div className="grid gap-2">
@@ -2647,19 +3288,35 @@ export default function AdminUserDetailsPage() {
                   id="iar-color"
                   type="color"
                   value={iarFormData.color}
-                  onChange={(e) => setIarFormData({ ...iarFormData, color: e.target.value })}
+                  onChange={(e) =>
+                    setIarFormData({ ...iarFormData, color: e.target.value })
+                  }
                   className="w-14 h-10 p-1 cursor-pointer"
                 />
-                <span className="text-xs text-muted-foreground">{iarFormData.color}</span>
+                <span className="text-xs text-muted-foreground">
+                  {iarFormData.color}
+                </span>
               </div>
             </div>
           </div>
           <DialogFooter>
-            <Button variant="ghost" onClick={() => setIsCreateIarModalOpen(false)}>Cancel</Button>
+            <Button
+              variant="ghost"
+              onClick={() => setIsCreateIarModalOpen(false)}
+            >
+              Cancel
+            </Button>
             <Button
               onClick={() => {
-                if (iarFormData.url && !/^https?:\/\/.+/.test(iarFormData.url)) {
-                  toast({ title: "Validation Error", description: "URL must start with http:// or https://", variant: "destructive" });
+                if (
+                  iarFormData.url &&
+                  !/^https?:\/\/.+/.test(iarFormData.url)
+                ) {
+                  toast({
+                    title: "Validation Error",
+                    description: "URL must start with http:// or https://",
+                    variant: "destructive",
+                  });
                   return;
                 }
                 createIarMutation.mutate({
@@ -2670,9 +3327,15 @@ export default function AdminUserDetailsPage() {
                   color: iarFormData.color,
                 });
               }}
-              disabled={createIarMutation.isPending || !iarFormData.title || !iarFormData.description}
+              disabled={
+                createIarMutation.isPending ||
+                !iarFormData.title ||
+                !iarFormData.description
+              }
             >
-              {createIarMutation.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              {createIarMutation.isPending && (
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              )}
               Create IAR Item
             </Button>
           </DialogFooter>
@@ -2680,7 +3343,13 @@ export default function AdminUserDetailsPage() {
       </Dialog>
 
       {/* Edit Invoice Modal */}
-      <Dialog open={isInvoiceModalOpen} onOpenChange={(open) => { setIsInvoiceModalOpen(open); if (!open) setSelectedInvoice(null); }}>
+      <Dialog
+        open={isInvoiceModalOpen}
+        onOpenChange={(open) => {
+          setIsInvoiceModalOpen(open);
+          if (!open) setSelectedInvoice(null);
+        }}
+      >
         <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
@@ -2691,14 +3360,20 @@ export default function AdminUserDetailsPage() {
             </DialogDescription>
           </DialogHeader>
           <div className="bg-amber-500/10 border border-amber-500/20 p-3 rounded-md text-xs text-amber-700 dark:text-amber-400 mb-4">
-            Only Super Admins can modify invoices. Changes take effect immediately.
+            Only Super Admins can modify invoices. Changes take effect
+            immediately.
           </div>
           <div className="space-y-4 py-4">
             <div className="space-y-2">
               <Label>Invoice Number</Label>
               <Input
                 value={invoiceEditData.invoice_number || ""}
-                onChange={(e) => setInvoiceEditData((prev: any) => ({ ...prev, invoice_number: e.target.value }))}
+                onChange={(e) =>
+                  setInvoiceEditData((prev: any) => ({
+                    ...prev,
+                    invoice_number: e.target.value,
+                  }))
+                }
               />
               <p className="text-xs text-amber-600 dark:text-amber-400">
                 Changing the invoice number breaks existing links.
@@ -2709,21 +3384,36 @@ export default function AdminUserDetailsPage() {
                 <Label>Service Name</Label>
                 <Input
                   value={invoiceEditData.service_name || ""}
-                  onChange={(e) => setInvoiceEditData((prev: any) => ({ ...prev, service_name: e.target.value }))}
+                  onChange={(e) =>
+                    setInvoiceEditData((prev: any) => ({
+                      ...prev,
+                      service_name: e.target.value,
+                    }))
+                  }
                 />
               </div>
               <div className="space-y-2">
                 <Label>SAC Code</Label>
                 <Input
                   value={invoiceEditData.sac_code || ""}
-                  onChange={(e) => setInvoiceEditData((prev: any) => ({ ...prev, sac_code: e.target.value }))}
+                  onChange={(e) =>
+                    setInvoiceEditData((prev: any) => ({
+                      ...prev,
+                      sac_code: e.target.value,
+                    }))
+                  }
                 />
               </div>
               <div className="space-y-2">
                 <Label>Period</Label>
                 <Input
                   value={invoiceEditData.period || ""}
-                  onChange={(e) => setInvoiceEditData((prev: any) => ({ ...prev, period: e.target.value }))}
+                  onChange={(e) =>
+                    setInvoiceEditData((prev: any) => ({
+                      ...prev,
+                      period: e.target.value,
+                    }))
+                  }
                 />
               </div>
               <div className="space-y-2">
@@ -2732,7 +3422,12 @@ export default function AdminUserDetailsPage() {
                   type="number"
                   min="1"
                   value={invoiceEditData.quantity || 1}
-                  onChange={(e) => setInvoiceEditData((prev: any) => ({ ...prev, quantity: Math.max(1, parseInt(e.target.value) || 1) }))}
+                  onChange={(e) =>
+                    setInvoiceEditData((prev: any) => ({
+                      ...prev,
+                      quantity: Math.max(1, parseInt(e.target.value) || 1),
+                    }))
+                  }
                 />
               </div>
               <div className="space-y-2">
@@ -2741,7 +3436,12 @@ export default function AdminUserDetailsPage() {
                   type="number"
                   min="0"
                   value={invoiceEditData.unit_price || 0}
-                  onChange={(e) => setInvoiceEditData((prev: any) => ({ ...prev, unit_price: Math.max(0, parseInt(e.target.value) || 0) }))}
+                  onChange={(e) =>
+                    setInvoiceEditData((prev: any) => ({
+                      ...prev,
+                      unit_price: Math.max(0, parseInt(e.target.value) || 0),
+                    }))
+                  }
                 />
               </div>
               <div className="space-y-2">
@@ -2750,7 +3450,12 @@ export default function AdminUserDetailsPage() {
                   type="number"
                   min="0"
                   value={invoiceEditData.tax_rate || 0}
-                  onChange={(e) => setInvoiceEditData((prev: any) => ({ ...prev, tax_rate: Math.max(0, parseInt(e.target.value) || 0) }))}
+                  onChange={(e) =>
+                    setInvoiceEditData((prev: any) => ({
+                      ...prev,
+                      tax_rate: Math.max(0, parseInt(e.target.value) || 0),
+                    }))
+                  }
                 />
               </div>
               <div className="space-y-2">
@@ -2759,7 +3464,12 @@ export default function AdminUserDetailsPage() {
                   type="number"
                   min="0"
                   value={invoiceEditData.cgst_amount || 0}
-                  onChange={(e) => setInvoiceEditData((prev: any) => ({ ...prev, cgst_amount: Math.max(0, parseInt(e.target.value) || 0) }))}
+                  onChange={(e) =>
+                    setInvoiceEditData((prev: any) => ({
+                      ...prev,
+                      cgst_amount: Math.max(0, parseInt(e.target.value) || 0),
+                    }))
+                  }
                 />
               </div>
               <div className="space-y-2">
@@ -2768,7 +3478,12 @@ export default function AdminUserDetailsPage() {
                   type="number"
                   min="0"
                   value={invoiceEditData.sgst_amount || 0}
-                  onChange={(e) => setInvoiceEditData((prev: any) => ({ ...prev, sgst_amount: Math.max(0, parseInt(e.target.value) || 0) }))}
+                  onChange={(e) =>
+                    setInvoiceEditData((prev: any) => ({
+                      ...prev,
+                      sgst_amount: Math.max(0, parseInt(e.target.value) || 0),
+                    }))
+                  }
                 />
               </div>
               <div className="space-y-2">
@@ -2777,7 +3492,12 @@ export default function AdminUserDetailsPage() {
                   type="number"
                   min="0"
                   value={invoiceEditData.igst_amount || 0}
-                  onChange={(e) => setInvoiceEditData((prev: any) => ({ ...prev, igst_amount: Math.max(0, parseInt(e.target.value) || 0) }))}
+                  onChange={(e) =>
+                    setInvoiceEditData((prev: any) => ({
+                      ...prev,
+                      igst_amount: Math.max(0, parseInt(e.target.value) || 0),
+                    }))
+                  }
                 />
               </div>
               <div className="space-y-2">
@@ -2785,41 +3505,72 @@ export default function AdminUserDetailsPage() {
                 <Input
                   type="date"
                   value={invoiceEditData.due_date || ""}
-                  onChange={(e) => setInvoiceEditData((prev: any) => ({ ...prev, due_date: e.target.value }))}
+                  onChange={(e) =>
+                    setInvoiceEditData((prev: any) => ({
+                      ...prev,
+                      due_date: e.target.value,
+                    }))
+                  }
                 />
               </div>
               <div className="space-y-2">
                 <Label>Place of Supply</Label>
                 <Input
                   value={invoiceEditData.place_of_supply || ""}
-                  onChange={(e) => setInvoiceEditData((prev: any) => ({ ...prev, place_of_supply: e.target.value }))}
+                  onChange={(e) =>
+                    setInvoiceEditData((prev: any) => ({
+                      ...prev,
+                      place_of_supply: e.target.value,
+                    }))
+                  }
                 />
               </div>
               <div className="space-y-2">
                 <Label>Supply Type</Label>
                 <Input
                   value={invoiceEditData.supply_type || ""}
-                  onChange={(e) => setInvoiceEditData((prev: any) => ({ ...prev, supply_type: e.target.value }))}
+                  onChange={(e) =>
+                    setInvoiceEditData((prev: any) => ({
+                      ...prev,
+                      supply_type: e.target.value,
+                    }))
+                  }
                 />
               </div>
               <div className="space-y-2">
                 <Label>LUT Number</Label>
                 <Input
                   value={invoiceEditData.lut_number || ""}
-                  onChange={(e) => setInvoiceEditData((prev: any) => ({ ...prev, lut_number: e.target.value }))}
+                  onChange={(e) =>
+                    setInvoiceEditData((prev: any) => ({
+                      ...prev,
+                      lut_number: e.target.value,
+                    }))
+                  }
                 />
               </div>
               <div className="space-y-2 col-span-2">
                 <Label>Amount in Words</Label>
                 <Textarea
                   value={invoiceEditData.amount_in_words || ""}
-                  onChange={(e) => setInvoiceEditData((prev: any) => ({ ...prev, amount_in_words: e.target.value }))}
+                  onChange={(e) =>
+                    setInvoiceEditData((prev: any) => ({
+                      ...prev,
+                      amount_in_words: e.target.value,
+                    }))
+                  }
                 />
               </div>
             </div>
           </div>
           <DialogFooter className="gap-2">
-            <Button variant="ghost" onClick={() => { setIsInvoiceModalOpen(false); setSelectedInvoice(null); }}>
+            <Button
+              variant="ghost"
+              onClick={() => {
+                setIsInvoiceModalOpen(false);
+                setSelectedInvoice(null);
+              }}
+            >
               Cancel
             </Button>
             <Button
@@ -2827,10 +3578,21 @@ export default function AdminUserDetailsPage() {
                 if (!selectedInvoice) return;
                 const payload: any = { id: selectedInvoice.id };
                 const fields = [
-                  "invoice_number", "service_name", "period", "quantity", "unit_price",
-                  "tax_rate", "cgst_amount", "sgst_amount", "igst_amount",
-                  "due_date", "place_of_supply", "supply_type",
-                  "amount_in_words", "lut_number", "sac_code",
+                  "invoice_number",
+                  "service_name",
+                  "period",
+                  "quantity",
+                  "unit_price",
+                  "tax_rate",
+                  "cgst_amount",
+                  "sgst_amount",
+                  "igst_amount",
+                  "due_date",
+                  "place_of_supply",
+                  "supply_type",
+                  "amount_in_words",
+                  "lut_number",
+                  "sac_code",
                 ];
                 for (const f of fields) {
                   if (invoiceEditData[f] !== undefined) {
@@ -2851,14 +3613,25 @@ export default function AdminUserDetailsPage() {
       </Dialog>
 
       {/* Convert Auth Type Modal */}
-      <Dialog open={isConvertAuthTypeModalOpen} onOpenChange={(open) => { setIsConvertAuthTypeModalOpen(open); if (!open) { setConvertNewPassword(""); setConvertConfirmPassword(""); setTargetAuthType(""); } }}>
+      <Dialog
+        open={isConvertAuthTypeModalOpen}
+        onOpenChange={(open) => {
+          setIsConvertAuthTypeModalOpen(open);
+          if (!open) {
+            setConvertNewPassword("");
+            setConvertConfirmPassword("");
+            setTargetAuthType("");
+          }
+        }}
+      >
         <DialogContent className="sm:max-w-[480px]">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <ArrowLeftRight className="w-5 h-5" /> Convert Login Method
             </DialogTitle>
             <DialogDescription>
-              Change how this user authenticates. All active sessions will be invalidated.
+              Change how this user authenticates. All active sessions will be
+              invalidated.
             </DialogDescription>
           </DialogHeader>
           <div className="space-y-4 py-4">
@@ -2896,25 +3669,38 @@ export default function AdminUserDetailsPage() {
                     onChange={(e) => setConvertConfirmPassword(e.target.value)}
                   />
                 </div>
-                {convertNewPassword && convertConfirmPassword && convertNewPassword !== convertConfirmPassword && (
-                  <p className="text-xs text-red-500">Passwords do not match</p>
-                )}
+                {convertNewPassword &&
+                  convertConfirmPassword &&
+                  convertNewPassword !== convertConfirmPassword && (
+                    <p className="text-xs text-red-500">
+                      Passwords do not match
+                    </p>
+                  )}
               </>
             ) : (
               <div className="bg-amber-500/10 border border-amber-500/20 p-3 rounded-md text-xs text-amber-700 dark:text-amber-400">
-                The credential account will be removed and the user's sessions will be invalidated.
-                The user must sign in with Google on their next login to re-link their account.
+                The credential account will be removed and the user's sessions
+                will be invalidated. The user must sign in with Google on their
+                next login to re-link their account.
               </div>
             )}
           </div>
           <DialogFooter>
-            <Button variant="ghost" onClick={() => setIsConvertAuthTypeModalOpen(false)}>
+            <Button
+              variant="ghost"
+              onClick={() => setIsConvertAuthTypeModalOpen(false)}
+            >
               Cancel
             </Button>
             <Button
               onClick={() => {
                 if (targetAuthType === "EMAIL_PASSWORD") {
-                  if (!convertNewPassword || convertNewPassword.length < 8 || convertNewPassword.length > 128) return;
+                  if (
+                    !convertNewPassword ||
+                    convertNewPassword.length < 8 ||
+                    convertNewPassword.length > 128
+                  )
+                    return;
                   if (convertNewPassword !== convertConfirmPassword) return;
                   convertAuthTypeMutation.mutate({
                     userId: id,
@@ -2931,49 +3717,79 @@ export default function AdminUserDetailsPage() {
               disabled={
                 convertAuthTypeMutation.isPending ||
                 (targetAuthType === "EMAIL_PASSWORD" &&
-                  (!convertNewPassword || convertNewPassword.length < 8 || convertNewPassword.length > 128 || convertNewPassword !== convertConfirmPassword))
+                  (!convertNewPassword ||
+                    convertNewPassword.length < 8 ||
+                    convertNewPassword.length > 128 ||
+                    convertNewPassword !== convertConfirmPassword))
               }
             >
-              {convertAuthTypeMutation.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-              Convert to {targetAuthType === "GOOGLE" ? "Google" : "Email & Password"}
+              {convertAuthTypeMutation.isPending && (
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              )}
+              Convert to{" "}
+              {targetAuthType === "GOOGLE" ? "Google" : "Email & Password"}
             </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>
 
       {/* Add Invoice Modal */}
-      <Dialog open={isAddInvoiceModalOpen} onOpenChange={(open) => { setIsAddInvoiceModalOpen(open); if (!open) { setAddInvoicePaymentId(null); setAddInvoicePaymentLabel(""); setAddInvoiceFormData({}); } }}>
+      <Dialog
+        open={isAddInvoiceModalOpen}
+        onOpenChange={(open) => {
+          setIsAddInvoiceModalOpen(open);
+          if (!open) {
+            setAddInvoicePaymentId(null);
+            setAddInvoicePaymentLabel("");
+            setAddInvoiceFormData({});
+          }
+        }}
+      >
         <DialogContent className="sm:max-w-[650px] max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2">
               <FileText className="w-5 h-5" /> Add New Invoice
             </DialogTitle>
             <DialogDescription>
-              Create a new invoice for {user?.name}. All fields can be edited before saving.
+              Create a new invoice for {user?.name}. All fields can be edited
+              before saving.
             </DialogDescription>
           </DialogHeader>
 
           <div className="bg-amber-500/10 border border-amber-500/20 p-3 rounded-md text-xs text-amber-700 dark:text-amber-400 mb-4">
-            Only Super Admins can create invoices. Changes take effect immediately.
+            Only Super Admins can create invoices. Changes take effect
+            immediately.
           </div>
 
           {/* Payment ID */}
           <div className="border border-border rounded-md p-4 mb-4">
-            <Label className="text-sm font-semibold mb-3 block">Payment ID</Label>
+            <Label className="text-sm font-semibold mb-3 block">
+              Payment ID
+            </Label>
             <div className="flex items-center gap-3">
               <Input
                 type="number"
                 min="1"
                 placeholder="Enter payment ID..."
                 value={addInvoicePaymentId ?? ""}
-                onChange={(e) => setAddInvoicePaymentId(e.target.value ? parseInt(e.target.value) : null)}
+                onChange={(e) =>
+                  setAddInvoicePaymentId(
+                    e.target.value ? parseInt(e.target.value) : null,
+                  )
+                }
                 className="flex-1"
               />
               <Button
                 size="sm"
                 onClick={() => {
-                  const unitPrice = Math.max(0, Math.round(addInvoiceFormData.unit_price || 0));
-                  const quantity = Math.max(1, Math.round(addInvoiceFormData.quantity || 1));
+                  const unitPrice = Math.max(
+                    0,
+                    Math.round(addInvoiceFormData.unit_price || 0),
+                  );
+                  const quantity = Math.max(
+                    1,
+                    Math.round(addInvoiceFormData.quantity || 1),
+                  );
                   const amount = unitPrice * quantity;
                   generateDemoPaymentMutation.mutate({
                     userId: id,
@@ -2982,14 +3798,21 @@ export default function AdminUserDetailsPage() {
                     currency: "INR",
                   });
                 }}
-                disabled={generateDemoPaymentMutation.isPending || (addInvoiceFormData.unit_price || 0) <= 0}
+                disabled={
+                  generateDemoPaymentMutation.isPending ||
+                  (addInvoiceFormData.unit_price || 0) <= 0
+                }
               >
-                {generateDemoPaymentMutation.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+                {generateDemoPaymentMutation.isPending && (
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                )}
                 Generate Demo
               </Button>
             </div>
             {addInvoicePaymentLabel && (
-              <p className="text-xs mt-2 text-green-600 dark:text-green-400">{addInvoicePaymentLabel}</p>
+              <p className="text-xs mt-2 text-green-600 dark:text-green-400">
+                {addInvoicePaymentLabel}
+              </p>
             )}
           </div>
 
@@ -2999,11 +3822,17 @@ export default function AdminUserDetailsPage() {
               <Label>Invoice Number</Label>
               <Input
                 value={addInvoiceFormData.invoice_number || ""}
-                onChange={(e) => setAddInvoiceFormData((prev: any) => ({ ...prev, invoice_number: e.target.value }))}
+                onChange={(e) =>
+                  setAddInvoiceFormData((prev: any) => ({
+                    ...prev,
+                    invoice_number: e.target.value,
+                  }))
+                }
                 placeholder="Auto-generated if empty"
               />
               <p className="text-xs text-amber-600 dark:text-amber-400">
-                Changing the invoice number may generate a new unique one if taken.
+                Changing the invoice number may generate a new unique one if
+                taken.
               </p>
             </div>
             <div className="grid grid-cols-2 gap-4">
@@ -3011,21 +3840,36 @@ export default function AdminUserDetailsPage() {
                 <Label>Service Name</Label>
                 <Input
                   value={addInvoiceFormData.service_name || ""}
-                  onChange={(e) => setAddInvoiceFormData((prev: any) => ({ ...prev, service_name: e.target.value }))}
+                  onChange={(e) =>
+                    setAddInvoiceFormData((prev: any) => ({
+                      ...prev,
+                      service_name: e.target.value,
+                    }))
+                  }
                 />
               </div>
               <div className="space-y-2">
                 <Label>SAC Code</Label>
                 <Input
                   value={addInvoiceFormData.sac_code || ""}
-                  onChange={(e) => setAddInvoiceFormData((prev: any) => ({ ...prev, sac_code: e.target.value }))}
+                  onChange={(e) =>
+                    setAddInvoiceFormData((prev: any) => ({
+                      ...prev,
+                      sac_code: e.target.value,
+                    }))
+                  }
                 />
               </div>
               <div className="space-y-2">
                 <Label>Period</Label>
                 <Input
                   value={addInvoiceFormData.period || ""}
-                  onChange={(e) => setAddInvoiceFormData((prev: any) => ({ ...prev, period: e.target.value }))}
+                  onChange={(e) =>
+                    setAddInvoiceFormData((prev: any) => ({
+                      ...prev,
+                      period: e.target.value,
+                    }))
+                  }
                 />
               </div>
               <div className="space-y-2">
@@ -3041,21 +3885,21 @@ export default function AdminUserDetailsPage() {
                       quantity: qty,
                     }));
                   }}
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label>Unit Price (in paise)</Label>
-                  <Input
-                    type="number"
-                    min="0"
-                    value={addInvoiceFormData.unit_price || 0}
-                    onChange={(e) => {
-                      const price = Math.max(0, parseInt(e.target.value) || 0);
-                      setAddInvoiceFormData((prev: any) => ({
-                        ...prev,
-                        unit_price: price,
-                      }));
-                    }}
+                />
+              </div>
+              <div className="space-y-2">
+                <Label>Unit Price (in paise)</Label>
+                <Input
+                  type="number"
+                  min="0"
+                  value={addInvoiceFormData.unit_price || 0}
+                  onChange={(e) => {
+                    const price = Math.max(0, parseInt(e.target.value) || 0);
+                    setAddInvoiceFormData((prev: any) => ({
+                      ...prev,
+                      unit_price: price,
+                    }));
+                  }}
                 />
               </div>
               <div className="space-y-2">
@@ -3100,7 +3944,9 @@ export default function AdminUserDetailsPage() {
               </div>
               <div className="col-span-2">
                 <p className="text-xs text-muted-foreground">
-                  Tax is auto-calculated on save based on unit price, quantity, and invoice type. Edit tax after creation via the Edit Invoice modal.
+                  Tax is auto-calculated on save based on unit price, quantity,
+                  and invoice type. Edit tax after creation via the Edit Invoice
+                  modal.
                 </p>
               </div>
               <div className="space-y-2">
@@ -3108,45 +3954,78 @@ export default function AdminUserDetailsPage() {
                 <Input
                   type="date"
                   value={addInvoiceFormData.due_date || ""}
-                  onChange={(e) => setAddInvoiceFormData((prev: any) => ({ ...prev, due_date: e.target.value }))}
+                  onChange={(e) =>
+                    setAddInvoiceFormData((prev: any) => ({
+                      ...prev,
+                      due_date: e.target.value,
+                    }))
+                  }
                 />
               </div>
               <div className="space-y-2">
                 <Label>Place of Supply</Label>
                 <Input
                   value={addInvoiceFormData.place_of_supply || ""}
-                  onChange={(e) => setAddInvoiceFormData((prev: any) => ({ ...prev, place_of_supply: e.target.value }))}
+                  onChange={(e) =>
+                    setAddInvoiceFormData((prev: any) => ({
+                      ...prev,
+                      place_of_supply: e.target.value,
+                    }))
+                  }
                 />
               </div>
               <div className="space-y-2">
                 <Label>Supply Type</Label>
                 <Input
                   value={addInvoiceFormData.supply_type || ""}
-                  onChange={(e) => setAddInvoiceFormData((prev: any) => ({ ...prev, supply_type: e.target.value }))}
+                  onChange={(e) =>
+                    setAddInvoiceFormData((prev: any) => ({
+                      ...prev,
+                      supply_type: e.target.value,
+                    }))
+                  }
                 />
               </div>
               <div className="space-y-2">
                 <Label>LUT Number</Label>
                 <Input
                   value={addInvoiceFormData.lut_number || ""}
-                  onChange={(e) => setAddInvoiceFormData((prev: any) => ({ ...prev, lut_number: e.target.value }))}
+                  onChange={(e) =>
+                    setAddInvoiceFormData((prev: any) => ({
+                      ...prev,
+                      lut_number: e.target.value,
+                    }))
+                  }
                 />
               </div>
               <div className="space-y-2 col-span-2">
                 <Label>Amount in Words</Label>
                 <Textarea
                   value={addInvoiceFormData.amount_in_words || ""}
-                  onChange={(e) => setAddInvoiceFormData((prev: any) => ({ ...prev, amount_in_words: e.target.value }))}
+                  onChange={(e) =>
+                    setAddInvoiceFormData((prev: any) => ({
+                      ...prev,
+                      amount_in_words: e.target.value,
+                    }))
+                  }
                 />
                 <p className="text-xs text-muted-foreground">
-                  Auto-calculated on save based on unit price, quantity, and tax if left empty.
+                  Auto-calculated on save based on unit price, quantity, and tax
+                  if left empty.
                 </p>
               </div>
             </div>
           </div>
 
           <DialogFooter className="gap-2">
-            <Button variant="ghost" onClick={() => { setIsAddInvoiceModalOpen(false); setAddInvoicePaymentId(null); setAddInvoicePaymentLabel(""); }}>
+            <Button
+              variant="ghost"
+              onClick={() => {
+                setIsAddInvoiceModalOpen(false);
+                setAddInvoicePaymentId(null);
+                setAddInvoicePaymentLabel("");
+              }}
+            >
               Cancel
             </Button>
             <Button
@@ -3155,7 +4034,8 @@ export default function AdminUserDetailsPage() {
                 createInvoiceMutation.mutate({
                   paymentId: addInvoicePaymentId,
                   userId: id,
-                  invoice_number: addInvoiceFormData.invoice_number || undefined,
+                  invoice_number:
+                    addInvoiceFormData.invoice_number || undefined,
                   invoice_type: addInvoiceFormData.invoice_type || "IND",
                   service_name: addInvoiceFormData.service_name || undefined,
                   sac_code: addInvoiceFormData.sac_code || undefined,
@@ -3167,15 +4047,19 @@ export default function AdminUserDetailsPage() {
                   sgst_amount: addInvoiceFormData.sgst_amount || 0,
                   igst_amount: addInvoiceFormData.igst_amount || 0,
                   due_date: addInvoiceFormData.due_date || undefined,
-                  place_of_supply: addInvoiceFormData.place_of_supply || undefined,
+                  place_of_supply:
+                    addInvoiceFormData.place_of_supply || undefined,
                   supply_type: addInvoiceFormData.supply_type || undefined,
-                  amount_in_words: addInvoiceFormData.amount_in_words || undefined,
+                  amount_in_words:
+                    addInvoiceFormData.amount_in_words || undefined,
                   lut_number: addInvoiceFormData.lut_number || undefined,
                 });
               }}
               disabled={!addInvoicePaymentId || createInvoiceMutation.isPending}
             >
-              {createInvoiceMutation.isPending && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
+              {createInvoiceMutation.isPending && (
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              )}
               Create Invoice
             </Button>
           </DialogFooter>
@@ -3184,7 +4068,7 @@ export default function AdminUserDetailsPage() {
 
       <FeedbackModal
         open={feedbackModal.open}
-        onOpenChange={(open) => setFeedbackModal(prev => ({ ...prev, open }))}
+        onOpenChange={(open) => setFeedbackModal((prev) => ({ ...prev, open }))}
         status={feedbackModal.status}
         title={feedbackModal.title}
         description={feedbackModal.description}
@@ -3209,7 +4093,13 @@ function IarTableRow({
 }: {
   item: ImmediateAttentionItem;
   isEditing: boolean;
-  editFormData: { title: string; description: string; url: string; color: string; isActive: boolean };
+  editFormData: {
+    title: string;
+    description: string;
+    url: string;
+    color: string;
+    isActive: boolean;
+  };
   onFormChange: (key: string, value: any) => void;
   onSave: () => void;
   onCancel: () => void;
@@ -3218,7 +4108,14 @@ function IarTableRow({
   onToggleStatus: () => void;
   updatePending: boolean;
 }) {
-  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({
     id: item.id.toString(),
   });
 
@@ -3229,12 +4126,20 @@ function IarTableRow({
   };
 
   return (
-    <TableRow ref={setNodeRef} style={style} className={isDragging ? "relative z-50" : ""}>
+    <TableRow
+      ref={setNodeRef}
+      style={style}
+      className={isDragging ? "relative z-50" : ""}
+    >
       {isEditing ? (
         <>
           <TableCell>
             <div className="flex items-center gap-1">
-              <Button variant="ghost" size="sm" className="h-6 w-6 p-0 cursor-default">
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-6 w-6 p-0 cursor-default"
+              >
                 <GripVertical className="h-3.5 w-3.5 opacity-30" />
               </Button>
             </div>
@@ -3274,16 +4179,35 @@ function IarTableRow({
               className={`text-xs ${editFormData.isActive ? "text-green-600 dark:text-green-400" : "text-muted-foreground"}`}
               onClick={() => onFormChange("isActive", !editFormData.isActive)}
             >
-              <span className={`h-1.5 w-1.5 rounded-full mr-1.5 ${editFormData.isActive ? "bg-green-500" : "bg-muted-foreground"}`} />
+              <span
+                className={`h-1.5 w-1.5 rounded-full mr-1.5 ${editFormData.isActive ? "bg-green-500" : "bg-muted-foreground"}`}
+              />
               {editFormData.isActive ? "Active" : "Inactive"}
             </Button>
           </TableCell>
           <TableCell>
             <div className="flex items-center gap-1">
-              <Button variant="ghost" size="sm" className="h-8 w-8 p-0" onClick={onSave} disabled={updatePending} title="Save">
-                {updatePending ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <CheckCircle2 className="h-3.5 w-3.5" />}
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-8 w-8 p-0"
+                onClick={onSave}
+                disabled={updatePending}
+                title="Save"
+              >
+                {updatePending ? (
+                  <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                ) : (
+                  <CheckCircle2 className="h-3.5 w-3.5" />
+                )}
               </Button>
-              <Button variant="ghost" size="sm" className="h-8 w-8 p-0" onClick={onCancel} title="Cancel">
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-8 w-8 p-0"
+                onClick={onCancel}
+                title="Cancel"
+              >
                 <X className="h-3.5 w-3.5" />
               </Button>
             </div>
@@ -3293,41 +4217,74 @@ function IarTableRow({
         <>
           <TableCell>
             <div className="flex items-center gap-1">
-              <Button variant="ghost" size="sm" className="h-6 w-6 p-0 cursor-grab" {...attributes} {...listeners}>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-6 w-6 p-0 cursor-grab"
+                {...attributes}
+                {...listeners}
+              >
                 <GripVertical className="h-3.5 w-3.5 text-muted-foreground" />
               </Button>
             </div>
           </TableCell>
           <TableCell className="font-medium">{item.title}</TableCell>
-          <TableCell className="max-w-xs truncate" title={item.description}>{item.description}</TableCell>
+          <TableCell className="max-w-xs truncate" title={item.description}>
+            {item.description}
+          </TableCell>
           <TableCell>
             {item.url ? (
-              <a href={item.url} target="_blank" rel="noopener noreferrer" className="text-xs text-blue-500 hover:underline truncate block max-w-[120px]">{item.url}</a>
+              <a
+                href={item.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-xs text-blue-500 hover:underline truncate block max-w-[120px]"
+              >
+                {item.url}
+              </a>
             ) : (
               <span className="text-xs text-muted-foreground">, </span>
             )}
           </TableCell>
           <TableCell>
             <div className="flex items-center gap-2">
-              <div className="w-5 h-5 rounded border border-border" style={{ backgroundColor: item.color }} />
-              <span className="text-xs text-muted-foreground">{item.color}</span>
+              <div
+                className="w-5 h-5 rounded border border-border"
+                style={{ backgroundColor: item.color }}
+              />
+              <span className="text-xs text-muted-foreground">
+                {item.color}
+              </span>
             </div>
           </TableCell>
           <TableCell>
-            <button className={`inline-flex items-center gap-1.5 text-xs cursor-pointer hover:opacity-80 ${item.isActive ? "text-green-600 dark:text-green-400" : "text-muted-foreground"}`}
+            <button
+              className={`inline-flex items-center gap-1.5 text-xs cursor-pointer hover:opacity-80 ${item.isActive ? "text-green-600 dark:text-green-400" : "text-muted-foreground"}`}
               onClick={onToggleStatus}
               title="Toggle status"
             >
-              <span className={`h-1.5 w-1.5 rounded-full ${item.isActive ? "bg-green-500" : "bg-muted-foreground"}`} />
+              <span
+                className={`h-1.5 w-1.5 rounded-full ${item.isActive ? "bg-green-500" : "bg-muted-foreground"}`}
+              />
               {item.isActive ? "Active" : "Inactive"}
             </button>
           </TableCell>
           <TableCell>
             <div className="flex items-center gap-1">
-              <Button variant="ghost" size="sm" className="h-8 w-8 p-0" onClick={onStartEdit}>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-8 w-8 p-0"
+                onClick={onStartEdit}
+              >
                 <Edit className="h-3.5 w-3.5" />
               </Button>
-              <Button variant="ghost" size="sm" className="h-8 w-8 p-0 text-red-500 hover:text-red-600" onClick={onDelete}>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="h-8 w-8 p-0 text-red-500 hover:text-red-600"
+                onClick={onDelete}
+              >
                 <Trash2 className="h-3.5 w-3.5" />
               </Button>
             </div>

@@ -49,7 +49,8 @@ export function TesterDetailActivity({ testerId, date, onBack }: Props) {
       { label: "Remaining Tests", value: s.remainingTests, icon: XCircle, color: "#EF4444" },
       { label: "Dropped", value: s.appsDropped, icon: XCircle, color: "#6B7280" },
       { label: "Total Feedback", value: s.totalFeedback, icon: MessageSquare, color: "#14B8A6" },
-      { label: "Points Earned", value: s.totalPointsEarned, icon: Award, color: "#F97316" },
+      // S9: Points Earned removed — money earnings only.
+      { label: "Earnings", value: `₹${s.totalEarnings ?? 0}`, icon: Award, color: "#F97316" },
     ];
   }, [activity]);
 

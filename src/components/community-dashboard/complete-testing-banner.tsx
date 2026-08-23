@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState } from "react";
 import { motion } from "framer-motion";
@@ -256,7 +256,7 @@ export function CompleteTestingBanner({
 
               <div className="bg-background dark:bg-secondary/30 rounded-xl p-4 text-sm text-muted-foreground leading-relaxed border border-border/50">
                 {hasMinimumTesters
-                  ? "Requirements are fulfilled. All testers will be notified about the completion. You can manually check and verify the testers' participation; they will receive their points only after your verification."
+                  ? "Requirements are fulfilled. All testers will be notified about the completion. You can manually check and verify the testers' participation; their completion will be recorded once you verify."
                   : "By clicking confirm, all current testers will be notified, and no new testers will be able to join."}
               </div>
             </div>

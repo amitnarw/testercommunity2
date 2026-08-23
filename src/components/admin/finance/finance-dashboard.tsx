@@ -89,9 +89,9 @@ export function FinanceOverview() {
           isLoading={isLoading}
         />
         <StatCard
-          title="Points Distributed"
-          value={(dashboard?.pointsDistributed ?? 0).toLocaleString()}
-          subtitle="total points awarded"
+          title="Packages Sold"
+          value={(dashboard?.packagesSold ?? 0).toLocaleString()}
+          subtitle="packages in wallets"
           icon={Users}
           color="border-cyan-500"
           isLoading={isLoading}

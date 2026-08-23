@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState, useRef } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -47,14 +47,14 @@ const referralData = {
       },
       date: "2024-08-15",
       status: "Completed",
-      reward: "500 Pts",
+      reward: "1 Package",
     },
     {
       id: 2,
       user: { name: "Bob Williams", avatar: "https://i.pravatar.cc/150?u=bob" },
       date: "2024-08-12",
       status: "Pending",
-      reward: "500 Pts",
+      reward: "1 Package",
     },
     {
       id: 3,
@@ -64,7 +64,7 @@ const referralData = {
       },
       date: "2024-08-10",
       status: "Completed",
-      reward: "500 Pts",
+      reward: "1 Package",
     },
     {
       id: 4,
@@ -74,7 +74,7 @@ const referralData = {
       },
       date: "2024-08-05",
       status: "Completed",
-      reward: "500 Pts",
+      reward: "1 Package",
     },
   ],
 };
@@ -247,13 +247,13 @@ export default function ReferralPage() {
             />
             <StatCard
               title="Total Earnings"
-              value={`${referralData.totalEarnings.toLocaleString()} Pts`}
+              value={`${referralData.totalEarnings.toLocaleString()} pkgs`}
               icon={IndianRupee}
               className="bg-gradient-to-br from-primary to-primary/40 border-primary/20 text-white"
             />
             <StatCard
               title="Pending Rewards"
-              value={`${referralData.pendingRewards.toLocaleString()} Pts`}
+              value={`${referralData.pendingRewards.toLocaleString()} pkgs`}
               icon={Clock}
             />
           </motion.div>

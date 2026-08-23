@@ -1,6 +1,6 @@
 "use client";
 
-import { RefreshCw, ChevronRight, Activity } from "lucide-react";
+import { ChevronRight, Activity } from "lucide-react";
 import { AutoTransitionLink } from "@/components/auto-transition-link";
 import { ActivityRow } from "@/components/dashboard/activity-row";
 import { EmptyFeed } from "@/components/dashboard/empty-feed";
@@ -14,7 +14,7 @@ interface ActivityCardProps {
 
 export function ActivityCard({ groupedTransactions }: ActivityCardProps) {
   return (
-    <div className="rounded-[2.5rem] border border-border/30 bg-card/50 p-5 overflow-hidden">
+    <div className="rounded-[2.5rem] border border-border/30 bg-card p-6 overflow-hidden">
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
           <StatLabel>Recent Activity</StatLabel>
@@ -28,13 +28,20 @@ export function ActivityCard({ groupedTransactions }: ActivityCardProps) {
       </div>
       <div className="space-y-2">
         {groupedTransactions.length > 0 ? (
-          groupedTransactions.map((group) => (
+          groupedTransactions.map((group, gi) => (
             <div key={group.label}>
-              <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider mb-1 px-2.5">
+              <p className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider mb-1 px-2">
                 {group.label}
               </p>
-              {group.items.map((t) => (
-                <ActivityRow key={t.id} transaction={t} />
+              {group.items.map((t, i) => (
+                <ActivityRow
+                  key={t.id}
+                  transaction={t}
+                  isLast={
+                    gi === groupedTransactions.length - 1 &&
+                    i === group.items.length - 1
+                  }
+                />
               ))}
             </div>
           ))

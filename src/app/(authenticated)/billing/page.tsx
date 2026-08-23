@@ -32,7 +32,6 @@ import {
 } from "@/hooks/useBilling";
 import { useGetUserWallet, usePricingData, useUserData, useRegionalPricing } from "@/hooks/useUser";
 import { useQuery } from "@tanstack/react-query";
-import { getMyHandshakeSubscription, getHandshakePlan } from "@/lib/apiCalls";
 import { Accordion } from "@/components/ui/accordion";
 import FaqItem from "@/components/faq-item";
 import { getPublicFaqs } from "@/lib/apiCalls";
@@ -110,7 +109,7 @@ const TransactionHistory = () => {
 
       <div className="px-4 pt-4 pb-2">
         <div className="flex gap-2 overflow-x-auto no-scrollbar">
-          {["All", "ONE_TIME", "SUBSCRIPTION"].map((tab) => (
+          {["All", "ONE_TIME"].map((tab) => (
             <button
               key={tab}
               onClick={() => setBillingFilter(tab)}
@@ -194,7 +193,7 @@ const TransactionHistory = () => {
         ) : (
           <div className="flex flex-col items-center justify-center h-40 text-muted-foreground text-sm">
             <FileClock className="w-8 h-8 mb-2 opacity-50" />
-            <p>No {billingFilter === "SUBSCRIPTION" ? "subscription" : billingFilter === "ONE_TIME" ? "one-time" : ""} transactions found</p>
+            <p>No {billingFilter === "ONE_TIME" ? "one-time" : ""} transactions found</p>
           </div>
         )}
       </div>
@@ -236,20 +235,6 @@ export default function BillingPage() {
   const { refetch: refetchHistory } = useBillingHistory();
   const { data: paymentConfig } = usePaymentConfig();
   const { data: userData } = useUserData();
-
-  const { data: handshakeSub } = useQuery({
-    queryKey: ["myHandshakeSubscription"],
-    queryFn: () => getMyHandshakeSubscription(),
-    retry: false,
-  });
-  const { data: handshakePlan } = useQuery({
-    queryKey: ["handshakePlan"],
-    queryFn: () => getHandshakePlan(),
-    retry: false,
-  });
-  const hasActiveSubscription =
-    !!handshakeSub &&
-    (handshakeSub.status === "ACTIVE" || handshakeSub.status === "AUTHENTICATED");
 
   const createOrderMutation = useCreateOrder();
 
@@ -388,17 +373,13 @@ export default function BillingPage() {
   const isProcessing =
     createOrderMutation.isPending;
 
-  const handleHandshakeCheckoutRequired = useCallback(() => {
-    setIsComplianceModalOpen(true);
-  }, []);
-
-  const handleHandshakeSubscribeError = useCallback((e: any) => {
+  const handleSubscribeError = useCallback((e: any) => {
     setFeedbackModal({
       open: true,
       status: "error",
       title: "Error",
       description:
-        e?.message || "Failed to start subscription. Please try again.",
+        e?.message || "Failed to start checkout. Please try again.",
       primaryAction: {
         label: "Close",
         onClick: () => setFeedbackModal((prev) => ({ ...prev, open: false })),
@@ -453,21 +434,7 @@ export default function BillingPage() {
                   variant="billing"
                   mode="billing"
                   onSubscribe={handleSubscribe}
-                  onHandshakeSubscribeError={handleHandshakeSubscribeError}
-                  onCheckoutRequired={handleHandshakeCheckoutRequired}
                 />
-              )}
-              {hasActiveSubscription && (
-                <div className="flex justify-center mt-6">
-                  <Link
-                    href={ROUTES.AUTHENTICATED.SUBSCRIPTION_MANAGE}
-                    className="inline-flex items-center gap-2 text-sm text-primary hover:text-primary/80 font-medium transition-colors"
-                  >
-                    <Handshake className="w-4 h-4" />
-                    Manage Subscription
-                    <ArrowRight className="w-3 h-3" />
-                  </Link>
-                </div>
               )}
             </section>
 

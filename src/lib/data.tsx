@@ -1,4 +1,4 @@
-import type {
+﻿import type {
   BlogPost,
   RoadmapStep,
   UserProfileData,
@@ -226,7 +226,7 @@ export const communityPathSteps: RoadmapStep[] = [
     title: "Join & Test Apps",
     description:
       "Sign up and start testing apps submitted by fellow developers. Browse available apps, request to join, and complete daily check-ins with screenshot proof on your real Android device.",
-    badgeText: "Time: 5 Mins • Cost: Free",
+    badgeText: "Time: 5 Mins â€¢ Cost: Free",
     details: [
       {
         title: "Profile Setup",
@@ -244,9 +244,9 @@ export const communityPathSteps: RoadmapStep[] = [
           "Each day, upload a fresh screenshot of the app to verify you're actively testing. Our anti-cheat system validates every image automatically.",
       },
       {
-        title: "Earn Points on Completion",
+        title: "Earn Recognition on Completion",
         description:
-          "Finish the full testing cycle to earn reward points. The longer and more thorough the test, the more points you earn.",
+          "Finish the full testing cycle to build your handshake level. Higher levels unlock more simultaneous test slots.",
       },
     ],
   },
@@ -254,8 +254,8 @@ export const communityPathSteps: RoadmapStep[] = [
     step: 2,
     title: "Submit Your App",
     description:
-      "Subscribe and publish your app on the Handshake Testing hub. Provide your Play Store link, category, and testing instructions. Your app goes through admin review before testers can request handshakes.",
-    badgeText: "Requirement: Points & App",
+      "Publish your app on the Handshake Testing hub for free. Provide your Play Store link, category, and testing instructions. Your app goes through admin review before testers can request handshakes.",
+    badgeText: "Requirement: Published App",
     details: [
       {
         title: "App Submission",
@@ -263,9 +263,9 @@ export const communityPathSteps: RoadmapStep[] = [
           "Enter your Google Play Store URL, app name, logo, and category. Add optional instructions for testers with login credentials or areas to focus on.",
       },
       {
-        title: "Transparent Cost",
+        title: "Free Barter Model",
         description:
-          "Testing costs points based on your chosen tester count and duration: testers x 80 + days x 10. Promo codes can reduce or waive the cost.",
+          "Handshake testing costs nothing , you pay by testing other developers' apps in return. No subscription and no points involved.",
       },
       {
         title: "Admin Review",
@@ -312,8 +312,8 @@ export const communityPathSteps: RoadmapStep[] = [
     step: 4,
     title: "Complete & Launch",
     description:
-      "Once the testing cycle wraps up, mark your project as complete. Testers receive their earned points, you get a Play Store Declaration report, and you're ready to submit to Google Play.",
-    badgeText: "Cycle: 14 Days • Up to 20 Testers",
+      "Once the testing cycle wraps up, mark your project as complete. You get a Play Store Declaration report, and you're ready to submit to Google Play.",
+    badgeText: "Cycle: 14 Days â€¢ Up to 20 Testers",
     details: [
       {
         title: "Play Store Declaration",
@@ -323,7 +323,7 @@ export const communityPathSteps: RoadmapStep[] = [
       {
         title: "Reward Distribution",
         description:
-          "Complete the project and all testers who finished the full cycle earn their reward points automatically.",
+          "Complete the project — testers who finished the full cycle get level credit automatically.",
       },
       {
         title: "Campaign Summary",
@@ -345,7 +345,7 @@ export const professionalPathSteps: RoadmapStep[] = [
     title: "Purchase a Package",
     description:
       "Fast-track your testing by purchasing a professional testing package. One package equals one complete test cycle ,  no handshake partner required. Pay securely via Razorpay with regional pricing available.",
-    badgeText: "Time: 2 Mins • Cost: Varies by Plan",
+    badgeText: "Time: 2 Mins â€¢ Cost: Varies by Plan",
     details: [
       {
         title: "Database-Driven Plans",
@@ -496,7 +496,6 @@ export const communityApps: CommunityApp[] = [
     category: "Productivity",
     shortDescription:
       "The #1 to-do list and task manager to organize your work and life.",
-    points: 100,
     androidVersion: "10+",
     estimatedTime: "15-20 min",
     playStoreUrl: "https://play.google.com/store/apps/details?id=com.todoist",
@@ -526,7 +525,6 @@ export const communityApps: CommunityApp[] = [
     category: "Games",
     shortDescription:
       "Fast-paced 3v3 multiplayer and battle royale made for mobile!",
-    points: 75,
     androidVersion: "9+",
     estimatedTime: "20-30 min",
     playStoreUrl:
@@ -557,7 +555,6 @@ export const communityApps: CommunityApp[] = [
     category: "Weather",
     shortDescription:
       "Live weather radar & forecast, severe weather alerts, and more.",
-    points: 50,
     androidVersion: "11+",
     estimatedTime: "5-10 min",
     playStoreUrl:
@@ -589,7 +586,6 @@ export const communityApps: CommunityApp[] = [
     category: "Social",
     shortDescription:
       "Dive into anything. News, trends, and communities on every topic.",
-    points: 120,
     androidVersion: "11+",
     estimatedTime: "25-35 min",
     playStoreUrl:
@@ -619,7 +615,6 @@ export const communityApps: CommunityApp[] = [
     category: "Games",
     shortDescription:
       "An endless runner game. DASH as fast as you can! DODGE the oncoming trains!",
-    points: 80,
     androidVersion: "8+",
     estimatedTime: "10-15 min",
     playStoreUrl:
@@ -649,7 +644,6 @@ export const communityApps: CommunityApp[] = [
     category: "Productivity",
     shortDescription:
       "Write, plan, and get organized. Your connected workspace for docs, wikis, and projects.",
-    points: 150,
     androidVersion: "12+",
     estimatedTime: "20-25 min",
     playStoreUrl: "https://play.google.com/store/apps/details?id=notion.id",
@@ -677,8 +671,7 @@ export const communityApps: CommunityApp[] = [
     dataAiHint: "green bird cartoon",
     category: "Education",
     shortDescription:
-      "Learn a new language with the world’s most-downloaded education app!",
-    points: 40,
+      "Learn a new language with the worldâ€™s most-downloaded education app!",
     androidVersion: "7+",
     estimatedTime: "5-10 min",
     playStoreUrl: "https://play.google.com/store/apps/details?id=com.duolingo",
@@ -707,7 +700,6 @@ export const communityApps: CommunityApp[] = [
     category: "Music",
     shortDescription:
       "Listen to music, podcasts & more. Find your favorite songs.",
-    points: 90,
     androidVersion: "10+",
     estimatedTime: "15-20 min",
     playStoreUrl:
@@ -737,7 +729,6 @@ export const communityApps: CommunityApp[] = [
     category: "Entertainment",
     shortDescription:
       "Looking for the most talked about TV shows and movies from the around the world?",
-    points: 110,
     androidVersion: "8+",
     estimatedTime: "15-20 min",
     playStoreUrl:
@@ -768,7 +759,6 @@ export const communityApps: CommunityApp[] = [
     category: "Games",
     shortDescription:
       "Explore infinite worlds and build everything from the simplest of homes to the grandest of castles.",
-    points: 150,
     androidVersion: "9+",
     estimatedTime: "30-40 min",
     playStoreUrl:
@@ -798,7 +788,6 @@ export const communityApps: CommunityApp[] = [
     category: "Social",
     shortDescription:
       "TikTok is THE destination for mobile videos. On TikTok, short-form videos are exciting, spontaneous, and genuine.",
-    points: 95,
     androidVersion: "10+",
     estimatedTime: "10-15 min",
     playStoreUrl:
@@ -828,7 +817,6 @@ export const communityApps: CommunityApp[] = [
     category: "Shopping",
     shortDescription:
       "Amazon Shopping offers a wide range of products at great prices.",
-    points: 60,
     androidVersion: "9+",
     estimatedTime: "10-15 min",
     playStoreUrl:
@@ -859,7 +847,6 @@ export const communityApps: CommunityApp[] = [
     category: "Productivity",
     shortDescription:
       "Do more on the go with Microsoft OneDrive. Get to and share your documents, photos, and other files from your Android device.",
-    points: 90,
     androidVersion: "10+",
     estimatedTime: "10-15 min",
     playStoreUrl:
@@ -890,7 +877,6 @@ export const communityApps: CommunityApp[] = [
     category: "Games",
     shortDescription:
       "Join millions of players worldwide as you build your village, raise a clan, and compete in epic Clan Wars!",
-    points: 100,
     androidVersion: "9+",
     estimatedTime: "20-30 min",
     playStoreUrl:
@@ -920,7 +906,6 @@ export const communityApps: CommunityApp[] = [
     category: "Photos & Video",
     shortDescription:
       "Google Photos is the home for all your photos and videos, automatically organized and easy to share.",
-    points: 85,
     androidVersion: "10+",
     estimatedTime: "10-15 min",
     playStoreUrl:
@@ -950,8 +935,7 @@ export const communityApps: CommunityApp[] = [
     dataAiHint: "black app icon",
     category: "Travel & Local",
     shortDescription:
-      "We’re committed to your safety at Uber. We’ve established a Door-to-Door Safety Standard to help you feel safe every time you ride.",
-    points: 70,
+      "Weâ€™re committed to your safety at Uber. Weâ€™ve established a Door-to-Door Safety Standard to help you feel safe every time you ride.",
     androidVersion: "9+",
     estimatedTime: "5-10 min",
     playStoreUrl: "https://play.google.com/store/apps/details?id=com.ubercab",
@@ -980,7 +964,6 @@ export const communityApps: CommunityApp[] = [
     category: "Social",
     shortDescription:
       "Connect with your professional network, build your career, and find your next job.",
-    points: 110,
     androidVersion: "10+",
     estimatedTime: "15-20 min",
     playStoreUrl:
@@ -1011,7 +994,6 @@ export const communityApps: CommunityApp[] = [
     category: "Business",
     shortDescription:
       "Work from anywhere with a single app that combines team chat, phone, whiteboard, meetings, and more.",
-    points: 90,
     androidVersion: "9+",
     estimatedTime: "10-15 min",
     playStoreUrl:
@@ -1041,7 +1023,6 @@ export const communityApps: CommunityApp[] = [
     category: "Communication",
     shortDescription:
       "Discord is where you can make a home for your communities and friends. Where you can stay close and have fun over text, voice, and video.",
-    points: 130,
     androidVersion: "10+",
     estimatedTime: "20-25 min",
     playStoreUrl: "https://play.google.com/store/apps/details?id=com.discord",
@@ -1070,7 +1051,6 @@ export const communityApps: CommunityApp[] = [
     category: "Lifestyle",
     shortDescription:
       "Pinterest is the place to explore inspiration. You can: Discover new ideas, save what inspires you, shop to make them yours, share what you love.",
-    points: 75,
     androidVersion: "10+",
     estimatedTime: "10-15 min",
     playStoreUrl: "https://play.google.com/store/apps/details?id=com.pinterest",
@@ -1098,7 +1078,6 @@ export const communityApps: CommunityApp[] = [
     dataAiHint: "pink abstract logo",
     category: "Travel & Local",
     shortDescription: "Book places to stay and things to do.",
-    points: 100,
     androidVersion: "9+",
     estimatedTime: "15-20 min",
     playStoreUrl:
@@ -1130,7 +1109,6 @@ export const communityApps: CommunityApp[] = [
     category: "Productivity",
     shortDescription:
       "Do more on the go with Microsoft OneDrive. Get to and share your documents, photos, and other files from your Android device.",
-    points: 90,
     androidVersion: "10+",
     estimatedTime: "10-15 min",
     playStoreUrl:
@@ -1161,7 +1139,6 @@ export const communityApps: CommunityApp[] = [
     category: "Books & Reference",
     shortDescription:
       "The home of storytelling. Find your next great listen. Audiobooks, podcasts, and exclusive Originals.",
-    points: 80,
     androidVersion: "9+",
     estimatedTime: "10-15 min",
     playStoreUrl:
@@ -1191,7 +1168,6 @@ export const communityApps: CommunityApp[] = [
     category: "Travel & Local",
     shortDescription:
       "Navigate your world faster and easier with Google Maps. Over 220 countries and territories mapped and hundreds of millions of businesses and places on the map.",
-    points: 90,
     androidVersion: "9+",
     estimatedTime: "10-15 min",
     playStoreUrl:
@@ -1222,7 +1198,6 @@ export const communityApps: CommunityApp[] = [
     category: "Entertainment",
     shortDescription:
       "Twitch is where millions of people come together live every day to chat, interact, and make their own entertainment together.",
-    points: 115,
     androidVersion: "10+",
     estimatedTime: "15-20 min",
     playStoreUrl:
@@ -1252,7 +1227,6 @@ export const communityApps: CommunityApp[] = [
     category: "Music & Audio",
     shortDescription:
       "Shazam will identify any song in seconds. Discover, artists, lyrics, videos & playlists, all for free.",
-    points: 50,
     androidVersion: "9+",
     estimatedTime: "5-10 min",
     playStoreUrl:
@@ -1281,8 +1255,7 @@ export const communityApps: CommunityApp[] = [
     dataAiHint: "paper airplane icon",
     category: "Communication",
     shortDescription:
-      "Telegram is a messaging app with a focus on speed and security, it’s super-fast, simple and free.",
-    points: 95,
+      "Telegram is a messaging app with a focus on speed and security, itâ€™s super-fast, simple and free.",
     androidVersion: "8+",
     estimatedTime: "10-15 min",
     playStoreUrl:
@@ -1313,7 +1286,6 @@ export const communityApps: CommunityApp[] = [
     category: "Communication",
     shortDescription:
       "Millions of people use Signal every day for free and instantaneous communication anywhere in the world.",
-    points: 80,
     androidVersion: "9+",
     estimatedTime: "10-15 min",
     playStoreUrl:
@@ -1343,7 +1315,7 @@ export const transactionHistory = [
     date: "2024-08-22",
     type: "Package Purchase",
     description: "Bought App Testing Package",
-    amount: "₹999",
+    amount: "â‚¹999",
     change: "+1 Package",
     status: "Completed",
     changeType: "positive",
@@ -1351,10 +1323,10 @@ export const transactionHistory = [
   {
     id: "TXN-002",
     date: "2024-08-20",
-    type: "Points Earned",
+    type: "Earning",
     description: 'Completed test for "QuantumLeap CRM"',
-    amount: "+150 Points",
-    change: "+150 Points",
+    amount: "+₹150",
+    change: "+₹150",
     status: "Completed",
     changeType: "positive",
   },
@@ -1371,20 +1343,20 @@ export const transactionHistory = [
   {
     id: "TXN-004",
     date: "2024-08-15",
-    type: "Points Spent",
+    type: "Submission",
     description: 'Submitted "Starlight Editor" to community',
-    amount: "-1200 Points",
-    change: "-1200 Points",
+    amount: "-₹1200",
+    change: "-₹1200",
     status: "Completed",
     changeType: "negative",
   },
   {
     id: "TXN-005",
     date: "2024-08-12",
-    type: "Points Earned",
+    type: "Earning",
     description: 'Completed test for "Helios Platform"',
-    amount: "+100 Points",
-    change: "+100 Points",
+    amount: "+₹100",
+    change: "+₹100",
     status: "Completed",
     changeType: "positive",
   },
@@ -1393,7 +1365,7 @@ export const transactionHistory = [
     date: "2024-08-10",
     type: "Package Purchase",
     description: "Bought App Testing Package",
-    amount: "₹999",
+    amount: "â‚¹999",
     change: "+1 Package",
     status: "Completed",
     changeType: "positive",
@@ -1401,10 +1373,10 @@ export const transactionHistory = [
   {
     id: "TXN-007",
     date: "2024-08-05",
-    type: "Points Earned",
+    type: "Earning",
     description: 'High-quality bug report on "Nexus Browser"',
-    amount: "+50 Points",
-    change: "+50 Points",
+    amount: "+₹50",
+    change: "+₹50",
     status: "Completed",
     changeType: "positive",
   },
@@ -1467,10 +1439,11 @@ export const notifications: Notification[] = Array.from(
         description = 'A critical bug has been reported for "Slack".';
         break;
       case "POINTS_AWARDED":
-        title = `You've earned ${i % 2 === 0 ? 100 : 75} points!`;
+        // S9: points no longer exist — mock now reflects a completed test.
+        title = "Test cycle credited!";
         description = `Thanks for your feedback on "${
           i % 2 === 0 ? "Todoist" : "Brawl Stars"
-        }". Your points have been added.`;
+        }". Your handshake level progress has been updated.`;
         break;
     }
 
@@ -1554,7 +1527,7 @@ const generateTesters = (count: number): TesterDetails[] => {
     { c: "USA", s: "California" },
     { c: "India", s: "Maharashtra" },
     { c: "Germany", s: "Berlin" },
-    { c: "Brazil", s: "São Paulo" },
+    { c: "Brazil", s: "SÃ£o Paulo" },
     { c: "Nigeria", s: "Lagos" },
   ];
   const languages = ["en-US", "en-GB", "es-ES", "hi-IN", "pt-BR"];
@@ -1603,7 +1576,7 @@ export const projects: Project[] = [
     avgTestersPerDay: 1.2,
     startedFrom: "22 Aug 2024",
     description:
-      "Canva makes design and video editing amazingly simple (and fun)! Create stunning designs with your photos and videos, even if you’re not a design expert!",
+      "Canva makes design and video editing amazingly simple (and fun)! Create stunning designs with your photos and videos, even if youâ€™re not a design expert!",
     testingInstructions:
       "Please focus on the new video export feature. Try exporting a short video with animations and text overlays. Report any issues with export quality or speed.",
     androidVersion: "11+",
@@ -1624,9 +1597,9 @@ export const projects: Project[] = [
       { version: "Android 12", testers: 2 },
     ],
     topGeographies: [
-      { country: "USA", testers: 4, flag: "🇺🇸" },
-      { country: "India", testers: 3, flag: "🇮🇳" },
-      { country: "Germany", testers: 2, flag: "🇩🇪" },
+      { country: "USA", testers: 4, flag: "ðŸ‡ºðŸ‡¸" },
+      { country: "India", testers: 3, flag: "ðŸ‡®ðŸ‡³" },
+      { country: "Germany", testers: 2, flag: "ðŸ‡©ðŸ‡ª" },
     ],
     feedback: generateFeedback("Canva"),
     chartData: generateChartData(20),
@@ -1668,9 +1641,9 @@ export const projects: Project[] = [
       { version: "Android 12", testers: 1 },
     ],
     topGeographies: [
-      { country: "Brazil", testers: 5, flag: "🇧🇷" },
-      { country: "USA", testers: 3, flag: "🇺🇸" },
-      { country: "Nigeria", testers: 2, flag: "🇳🇬" },
+      { country: "Brazil", testers: 5, flag: "ðŸ‡§ðŸ‡·" },
+      { country: "USA", testers: 3, flag: "ðŸ‡ºðŸ‡¸" },
+      { country: "Nigeria", testers: 2, flag: "ðŸ‡³ðŸ‡¬" },
     ],
     feedback: generateFeedback("Figma"),
     chartData: generateChartData(15),
@@ -1712,9 +1685,9 @@ export const projects: Project[] = [
       { version: "Android 13", testers: 10 },
     ],
     topGeographies: [
-      { country: "UK", testers: 8, flag: "🇬🇧" },
-      { country: "Canada", testers: 7, flag: "🇨🇦" },
-      { country: "Australia", testers: 5, flag: "🇦🇺" },
+      { country: "UK", testers: 8, flag: "ðŸ‡¬ðŸ‡§" },
+      { country: "Canada", testers: 7, flag: "ðŸ‡¨ðŸ‡¦" },
+      { country: "Australia", testers: 5, flag: "ðŸ‡¦ðŸ‡º" },
     ],
     feedback: generateFeedback("Slack"),
     chartData: generateChartData(5),
@@ -1814,8 +1787,8 @@ export const projects: Project[] = [
     ],
     osCoverage: [{ version: "Android 14", testers: 15 }],
     topGeographies: [
-      { country: "USA", testers: 10, flag: "🇺🇸" },
-      { country: "Germany", testers: 5, flag: "🇩🇪" },
+      { country: "USA", testers: 10, flag: "ðŸ‡ºðŸ‡¸" },
+      { country: "Germany", testers: 5, flag: "ðŸ‡©ðŸ‡ª" },
     ],
     feedback: generateFeedback("Google Wallet"),
     chartData: generateChartData(12),
@@ -1857,9 +1830,9 @@ export const projects: Project[] = [
       { version: "Android 11", testers: 7 },
     ],
     topGeographies: [
-      { country: "USA", testers: 8, flag: "🇺🇸" },
-      { country: "Japan", testers: 7, flag: "🇯🇵" },
-      { country: "South Korea", testers: 5, flag: "🇰🇷" },
+      { country: "USA", testers: 8, flag: "ðŸ‡ºðŸ‡¸" },
+      { country: "Japan", testers: 7, flag: "ðŸ‡¯ðŸ‡µ" },
+      { country: "South Korea", testers: 5, flag: "ðŸ‡°ðŸ‡·" },
     ],
     feedback: generateFeedback("Trello"),
     chartData: generateChartData(40),
@@ -1949,16 +1922,16 @@ export const projects: Project[] = [
         { version: "Android 13", testers: Math.floor(testersStarted / 2) },
       ],
       topGeographies: [
-        { country: "USA", testers: Math.floor(testersStarted / 2), flag: "🇺🇸" },
+        { country: "USA", testers: Math.floor(testersStarted / 2), flag: "ðŸ‡ºðŸ‡¸" },
         {
           country: "India",
           testers: Math.floor(testersStarted / 4),
-          flag: "🇮🇳",
+          flag: "ðŸ‡®ðŸ‡³",
         },
         {
           country: "Germany",
           testers: Math.floor(testersStarted / 4),
-          flag: "🇩🇪",
+          flag: "ðŸ‡©ðŸ‡ª",
         },
       ],
       feedback: generateFeedback(baseApp.name),
@@ -1971,3 +1944,4 @@ export const projects: Project[] = [
     };
   }),
 ];
+

@@ -7,7 +7,7 @@ import { useUserWalletDetail } from "@/hooks/useAdmin";
 import {
   Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
 } from "@/components/ui/table";
-import { Wallet, TrendingUp, TrendingDown, Package, DollarSign } from "lucide-react";
+import { Wallet, Package, DollarSign } from "lucide-react";
 
 interface Props {
   userId: string;
@@ -50,17 +50,13 @@ export function UserWalletModal({ userId, open, onClose }: Props) {
           </div>
         ) : data ? (
           <div className="space-y-6">
-            <div className="grid grid-cols-3 gap-4">
+            <div className="grid grid-cols-2 gap-4">
               <div className="bg-secondary/30 rounded-xl p-4 text-center">
                 <Package className="h-5 w-5 mx-auto mb-1 text-blue-500" />
                 <p className="text-2xl font-bold">{data.wallet.totalPackages}</p>
                 <p className="text-xs text-muted-foreground">Packages</p>
               </div>
-              <div className="bg-secondary/30 rounded-xl p-4 text-center">
-                <TrendingUp className="h-5 w-5 mx-auto mb-1 text-green-500" />
-                <p className="text-2xl font-bold">{data.wallet.totalPoints}</p>
-                <p className="text-xs text-muted-foreground">Points</p>
-              </div>
+              {/* S9: Points card removed — money balance only */}
               <div className="bg-secondary/30 rounded-xl p-4 text-center">
                 <DollarSign className="h-5 w-5 mx-auto mb-1 text-amber-500" />
                 <p className="text-2xl font-bold">₹{data.wallet.balanceMoney}</p>
@@ -71,29 +67,33 @@ export function UserWalletModal({ userId, open, onClose }: Props) {
             <div>
               <h4 className="text-sm font-semibold mb-2">Recent Transactions ({data.transactions.length})</h4>
               <div className="overflow-x-auto max-h-[200px] overflow-y-auto">
-                <Table>
-                  <TableHeader>
-                    <TableRow>
-                      <TableHead>Type</TableHead>
-                      <TableHead>Points</TableHead>
-                      <TableHead>Package</TableHead>
-                      <TableHead>Action</TableHead>
-                      <TableHead>Date</TableHead>
-                    </TableRow>
-                  </TableHeader>
-                  <TableBody>
-                    {data.transactions.slice(0, 20).map((t: any) => (
-                      <TableRow key={t.id}>
-                        <TableCell>
-                          <Badge className={`text-xs ${transactionTypeColors[t.transactionType] || "bg-gray-500/20 text-gray-600"}`}>
-                            {t.transactionType}
-                          </Badge>
-                        </TableCell>
-                        <TableCell>
-                          <span className={t.status === "CREDIT" ? "text-green-600" : t.status === "DEBIT" ? "text-red-600" : ""}>
-                            {t.points !== null && t.points !== 0 ? `${t.status === "CREDIT" ? "+" : ""}${t.points}` : ", "}
-                          </span>
-                        </TableCell>
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Type</TableHead>
+                        <TableHead>Amount</TableHead>
+                        <TableHead>Package</TableHead>
+                        <TableHead>Action</TableHead>
+                        <TableHead>Date</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {data.transactions.slice(0, 20).map((t: any) => (
+                        <TableRow key={t.id}>
+                          <TableCell>
+                            <Badge className={`text-xs ${transactionTypeColors[t.transactionType] || "bg-gray-500/20 text-gray-600"}`}>
+                              {t.transactionType}
+                            </Badge>
+                          </TableCell>
+                          {/* S9: generic amount column (was Points); legacy
+                              points rows render without the ₹ prefix */}
+                          <TableCell>
+                            <span className={t.status === "CREDIT" ? "text-green-600" : t.status === "DEBIT" ? "text-red-600" : ""}>
+                              {t.amount !== null && t.amount !== 0
+                                ? `${t.status === "CREDIT" ? "+" : ""}${t.isLegacyPoints ? `${t.amount} legacy pts` : `₹${t.amount}`}`
+                                : ", "}
+                            </span>
+                          </TableCell>
                         <TableCell>
                           {t.package !== null && t.package !== 0 ? `${t.status === "CREDIT" ? "+" : ""}${t.package}` : ", "}
                         </TableCell>

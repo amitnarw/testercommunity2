@@ -8,9 +8,8 @@ const routes = {
   ADMIN: "/api/admin",
   DASHBOARD: "/api/dashboard",
   HUB: "/api/hub",
-  R2: "/api/r2",
+  R2: "/api/R2",
   BILLING: "/api/billing",
-  SUBSCRIPTION: "/api/subscription",
   TESTER: "/api/tester",
   BLOG: "/api/blog",
   REVIEW: "/api/review",
@@ -18,6 +17,12 @@ const routes = {
   DECLARATION: "/api/declaration",
   FAQ: "/api/faq",
   APP_CHAT: "/api/app-chat",
+  HANDSHAKE_REQUESTS: "/api/handshake-requests",
+  ELITE_BADGE: "/api/elite-badge",
+  PENALTY: "/api/penalty",
+  ADDONS: "/api/addons",
+  LEVEL: "/api/level",
+  ADMIN_HANDSHAKE_MONITORING: "/api/admin/handshake-monitoring",
 };
 
 const API_ROUTES = new Proxy(routes, {

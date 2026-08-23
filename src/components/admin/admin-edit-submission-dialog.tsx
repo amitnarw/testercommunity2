@@ -121,7 +121,7 @@ export function AdminEditSubmissionDialog({
               Edit Submission
             </DialogTitle>
             <DialogDescription className="text-blue-600/70 text-xs sm:text-sm">
-              Update any field of this paid submission. Only changed fields will be saved.
+              Update any field of this submission. Only changed fields will be saved.
             </DialogDescription>
           </DialogHeader>
         </div>

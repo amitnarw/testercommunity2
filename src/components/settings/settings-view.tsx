@@ -465,7 +465,7 @@ export function SettingsView({ backHref = ROUTES.AUTHENTICATED.PROFILE }: Settin
                 Deactivate account?
               </AlertDialogTitle>
               <AlertDialogDescription>
-                This will cancel any active Handshake subscription and sign you
+                This will deactivate your Handshake Testing access and sign you
                 out. Your account and data are kept and can be reactivated from
                 the login screen anytime. Type{" "}
                 <span className="font-medium text-foreground">

@@ -28,6 +28,7 @@ import {
   ThumbsUp,
   FileText,
   Zap,
+  ShieldCheck,
 } from "lucide-react";
 import { BaseSidebar, SidebarNavLink } from "@/components/ui/base-sidebar";
 import { authClient } from "@/lib/auth-client";
@@ -37,7 +38,7 @@ import { useMailUnreadCount } from "@/hooks/useAdmin";
 
 const baseMainNavLinks = [
   { name: "Dashboard", href: ROUTES.AUTHENTICATED.DASHBOARD, icon: Home },
-  { name: "Handshake Testing", href: ROUTES.AUTHENTICATED.HANDSHAKE_TESTING, icon: Handshake, badge: "BETA" },
+  { name: "Handshake Testing", href: ROUTES.AUTHENTICATED.HANDSHAKE_TESTING, icon: Handshake, badge: "FREE" },
   { name: "Pro Testing", href: ROUTES.AUTHENTICATED.PRO_TESTING, icon: Zap, badge: "PRO" },
   { name: "Notifications", href: ROUTES.AUTHENTICATED.NOTIFICATIONS, icon: Bell },
   { name: "Support", href: ROUTES.PUBLIC.SUPPORT, icon: LifeBuoy },
@@ -100,6 +101,29 @@ const adminNavLinks: AdminNavLink[] = [
     section: "free",
     badge: "HANDSHAKE",
     moduleName: "submissions",
+  },
+  // P4: these three pages existed but were unreachable from navigation ,
+  // admins had to hand-type URLs.
+  {
+    name: "Handshake Monitoring",
+    href: ROUTES.ADMIN.HANDSHAKE_MONITORING,
+    icon: Activity,
+    section: "free",
+    moduleName: "submissions",
+  },
+  {
+    name: "Pro Tester Queue",
+    href: ROUTES.ADMIN.HANDSHAKE_ADDONS,
+    icon: ShieldCheck,
+    section: "free",
+    moduleName: "submissions",
+  },
+  {
+    name: "Elite Badges",
+    href: ROUTES.ADMIN.ELITE_BADGES,
+    icon: Star,
+    section: "free",
+    moduleName: "users",
   },
   // Finance
   {

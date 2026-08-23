@@ -109,7 +109,7 @@ function HandshakeTestingCTASection() {
           </h2>
 
           <p className="text-base md:text-xl text-emerald-50/90 max-w-xl mx-auto leading-relaxed font-light">
-            Subscribe for ₹99/month and join a 1:1 barter network. Publish your
+            Join a free 1:1 barter network. Publish your
             app, send handshake requests, and test each other&apos;s apps.
           </p>
 
@@ -152,7 +152,8 @@ export default function HandshakeTestingPage() {
   return (
     <>
       <CommunityHero />
-      <CommunityStats />
+      {/* S8-A4: handshake variant — barter metrics, no points */}
+      <CommunityStats variant="handshake" />
       <HowItWorks />
       <PointsFormula />
       <MemberBenefits />

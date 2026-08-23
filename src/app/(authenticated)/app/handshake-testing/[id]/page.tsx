@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { notFound, useParams, useRouter } from "next/navigation";
+import Link from "next/link";
 import { SafeImage } from "@/components/safe-image";
 import { cn } from "@/lib/utils";
 import { Card } from "@/components/ui/card";
@@ -38,6 +39,8 @@ import {
 import { ExpandableText } from "@/components/expandable-text";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { OfferAppModal } from "@/components/handshake/offer-app-modal";
+import { AddonsSection } from "@/components/handshake/addons-section";
+import { PendingHandshakeCard, RequestSentCard } from "@/components/handshake/pending-handshake-card";
 
 const confettiConfig = {
   angle: 90,
@@ -66,6 +69,19 @@ function AppTestingPageClient({ id }: { id: string }) {
 
   const { mutate, isPending, isSuccess, isError, error, reset } =
     useAddHubAppTestingRequest();
+
+  // S11-B4: derive pending v2 handshake-request states from the backend
+  // enrichment so we can replace the generic "Request to Join Testing" CTA
+  // with an Accept/Reject card (owner's pending request) or a "Request sent"
+  // state (viewer's own pending request).
+  const pendingIncoming = appDetails?.handshake?.pendingIncomingRequest ?? null;
+  const myPending = appDetails?.handshake?.myPendingOutgoingRequest ?? null;
+  const hideCtaForPending = !!(pendingIncoming || myPending);
+  // S11-B5: viewer always owns the offered app in their pending request, so
+  // route the "Your app" link to my-submissions/{id}.
+  const myPendingHref = myPending
+    ? `/app/handshake-testing/my-submissions/${myPending.offeredApp.id}`
+    : null;
 
   useEffect(() => {
     if (isSuccess) {
@@ -97,6 +113,13 @@ function AppTestingPageClient({ id }: { id: string }) {
 
   const handleErrorRetry = () => {
     setShowErrorModal(false);
+    // P5: retry through the same appType-aware path as handleSubmit ,  for
+    // HANDSHAKE campaigns this re-opens the offer modal instead of firing
+    // the legacy join mutation that never applies to them.
+    if (appDetails?.appType === "HANDSHAKE") {
+      setShowOfferModal(true);
+      return;
+    }
     mutate({ hub_id: id });
   };
 
@@ -183,6 +206,53 @@ function AppTestingPageClient({ id }: { id: string }) {
     notFound();
   }
 
+  // S8-G6 (spec): while a penalty is active the user may only access the
+  // Penalty page and Add-ons. The layout lets detail routes through; here we
+  // lock the page down to an Add-ons-only view.
+  if (appDetails.handshake?.isBlocked) {
+    return (
+      <div className="bg-[#f8fafc] dark:bg-[#0f151e] text-foreground min-h-screen pb-10">
+        <div className="container mx-auto px-4 md:px-6">
+          <div className="sticky top-0 z-[50] pt-2 pb-4 pl-0 xl:pl-8 w-1/2">
+            <BackButton href={ROUTES.AUTHENTICATED.HANDSHAKE_PENALTY} />
+          </div>
+
+          <main className="max-w-3xl mx-auto mt-8 space-y-6">
+            <section className="rounded-2xl border border-red-500/30 bg-red-500/10 p-5 flex items-start gap-3">
+              <AlertTriangle className="w-6 h-6 text-red-600 flex-shrink-0 mt-0.5" />
+              <div>
+                <h1 className="text-lg font-bold text-red-700 dark:text-red-500">
+                  Penalty mode — limited access
+                </h1>
+                <p className="text-sm text-muted-foreground mt-1">
+                  You have active penalty tasks. Until they are resolved, only
+                  this Add-ons page and your{" "}
+                  <Link
+                    href={ROUTES.AUTHENTICATED.HANDSHAKE_PENALTY}
+                    className="font-semibold text-red-600 hover:underline"
+                  >
+                    Penalty page
+                  </Link>{" "}
+                  are available.
+                </p>
+                <Button asChild size="sm" className="mt-3">
+                  <Link href={ROUTES.AUTHENTICATED.HANDSHAKE_PENALTY}>
+                    Go to Penalty page
+                  </Link>
+                </Button>
+              </div>
+            </section>
+
+            <section>
+              <h2 className="text-xl font-bold mb-4">Add-ons</h2>
+              <AddonsSection campaignId={appDetails.id} />
+            </section>
+          </main>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="bg-[#f8fafc] dark:bg-[#0f151e] text-foreground min-h-screen pb-10">
       <div className="container mx-auto px-4 md:px-6">
@@ -202,7 +272,7 @@ function AppTestingPageClient({ id }: { id: string }) {
               />
             </section>
 
-            {appDetails?.handshake && (
+            {appDetails?.handshake?.partnerApp && (
               <section className="rounded-2xl border border-emerald-500/20 bg-primary/5 p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center gap-4">
                 <div className="relative h-14 w-14 flex-shrink-0 overflow-hidden rounded-xl bg-muted">
                   {appDetails.handshake.partnerApp?.appLogoUrl && (
@@ -228,12 +298,14 @@ function AppTestingPageClient({ id }: { id: string }) {
                   </p>
                 </div>
                 {appDetails.handshake.isBlocked ? (
-                  <div className="shrink-0 rounded-lg bg-red-500/10 border border-red-500/30 px-3 py-2 text-red-600 text-sm font-medium">
-                    Blocked until{" "}
-                    {new Date(
-                      appDetails.handshake.blockedUntil || Date.now(),
-                    ).toLocaleDateString()}
-                  </div>
+                  <Link
+                    href="/app/handshake-testing/penalty"
+                    className="shrink-0 rounded-lg bg-red-500/10 border border-red-500/30 px-3 py-2 text-red-600 text-sm font-medium hover:bg-red-500/20 transition-colors"
+                  >
+                    {appDetails.handshake.penaltyCount > 0
+                      ? `${appDetails.handshake.penaltyCount} penalty ${appDetails.handshake.penaltyCount === 1 ? "task" : "tasks"} ,  resolve`
+                      : "Penalty required ,  view details"}
+                  </Link>
                 ) : (
                   <div className="shrink-0 rounded-lg bg-emerald-500/10 border border-emerald-500/30 px-3 py-2 text-emerald-600 text-sm font-medium">
                     Active
@@ -242,7 +314,29 @@ function AppTestingPageClient({ id }: { id: string }) {
               </section>
             )}
 
-            <div className="lg:hidden">
+            <div className="lg:hidden space-y-3">
+              {/* S11-B4: pending-state CTA (owner request → Accept/Reject; or own
+                  pending request → "Request sent"). Hides the generic button
+                  below in either case to avoid dead-end 409s. */}
+              {pendingIncoming && appDetails?.handshake && (
+                <PendingHandshakeCard
+                  requestId={pendingIncoming.id}
+                  fromUser={pendingIncoming.fromUser}
+                  message={pendingIncoming.message}
+                  expiresAt={pendingIncoming.expiresAt}
+                  yourAppName={
+                    (appDetails.handshake as any)?.partnerApp?.appName
+                  }
+                />
+              )}
+              {myPending && (
+                <RequestSentCard
+                  requestId={myPending.id}
+                  expiresAt={myPending.expiresAt}
+                  offeredApp={myPending.offeredApp}
+                  offeredAppHref={myPendingHref}
+                />
+              )}
               <AppActionButton
                 app={appDetails}
                 handleRequestToJoin={handleSubmit}
@@ -251,6 +345,7 @@ function AppTestingPageClient({ id }: { id: string }) {
                 isError={isError}
                 error={error}
                 reset={reset}
+                hideButton={hideCtaForPending}
               />
             </div>
 
@@ -306,12 +401,12 @@ function AppTestingPageClient({ id }: { id: string }) {
                   {appDetails?.testerRelations?.[0]?.statusDetails?.image && (
                     <div
                       className="flex w-full lg:w-[400px] relative h-[300px] lg:h-auto lg:min-h-full group/image cursor-pointer overflow-hidden border-t lg:border-t-0 lg:border-l border-destructive/10"
-                      onClick={() =>
-                        setFullscreenImage(
+                      onClick={() => {
+                        const img =
                           appDetails?.testerRelations?.[0]?.statusDetails
-                            ?.image!,
-                        )
-                      }
+                            ?.image;
+                        if (img) setFullscreenImage(img);
+                      }}
                     >
                       <SafeImage
                         src={
@@ -388,7 +483,26 @@ function AppTestingPageClient({ id }: { id: string }) {
             </section>
 
             {/* Sidebar for mobile, shown in flow */}
-            <div className="block lg:hidden">
+            <div className="block lg:hidden space-y-3">
+              {pendingIncoming && appDetails?.handshake && (
+                <PendingHandshakeCard
+                  requestId={pendingIncoming.id}
+                  fromUser={pendingIncoming.fromUser}
+                  message={pendingIncoming.message}
+                  expiresAt={pendingIncoming.expiresAt}
+                  yourAppName={
+                    (appDetails.handshake as any)?.partnerApp?.appName
+                  }
+                />
+              )}
+              {myPending && (
+                <RequestSentCard
+                  requestId={myPending.id}
+                  expiresAt={myPending.expiresAt}
+                  offeredApp={myPending.offeredApp}
+                  offeredAppHref={myPendingHref}
+                />
+              )}
               <AppInfoSidebar
                 app={appDetails}
                 handleRequestToJoin={handleSubmit}
@@ -398,6 +512,7 @@ function AppTestingPageClient({ id }: { id: string }) {
                 error={error}
                 reset={reset}
                 buttonClassName="hidden lg:block"
+                hideButton={hideCtaForPending}
               />
             </div>
 
@@ -412,8 +527,9 @@ function AppTestingPageClient({ id }: { id: string }) {
                     <h3 className="font-semibold">Complete the Full Cycle</h3>
                   </div>
                   <p className="text-xs text-muted-foreground">
-                    You must keep the app installed for the entire 14-day
-                    period. Level progress counts only after successful completion.
+                    You must keep the app installed for the entire testing
+                    period ({appDetails?.totalDay || 16} days). Level progress
+                    counts only after successful completion.
                   </p>
                 </Card>
                 <Card className="p-4 bg-gradient-to-br from-secondary to-secondary/50 hover:shadow-lg transition-shadow">
@@ -424,8 +540,9 @@ function AppTestingPageClient({ id }: { id: string }) {
                     <h3 className="font-semibold">No Skipping Days</h3>
                   </div>
                   <p className="text-xs text-muted-foreground">
-                    If you uninstall the app or fail to engage, your progress
-                    will reset to Day 1. Consistency is key!
+                    If you miss a day of testing, the staged penalty applies:
+                    missed days convert to tasks and after 3 misses your
+                    campaign is removed. Consistency is key!
                   </p>
                 </Card>
                 <Card className="p-4 bg-gradient-to-br from-emerald-500/10 to-emerald-600/5 hover:shadow-lg transition-shadow border-emerald-500/20">
@@ -447,8 +564,9 @@ function AppTestingPageClient({ id }: { id: string }) {
                     <h3 className="font-semibold">Provide Quality Feedback</h3>
                   </div>
                   <p className="text-xs text-muted-foreground">
-                    Once ongoing, you can submit feedback via the 'Ongoing
-                    Tests' tab. Quality feedback helps everyone.
+                    Once ongoing, you can submit feedback via the
+                    &apos;Ongoing Tests&apos; tab. Quality feedback helps
+                    everyone.
                   </p>
                 </Card>
               </div>
@@ -458,7 +576,7 @@ function AppTestingPageClient({ id }: { id: string }) {
               <section>
                 <h2 className="mb-4 flex flex-row items-center justify-between gap-2 sm:justify-start">
                   <span className="text-2xl font-bold whitespace-nowrap">
-                    Developer's Instructions
+                    Developer&apos;s Instructions
                   </span>
                   <span className="bg-gradient-to-b from-emerald-500 to-emerald-600/50 text-white font-bold rounded-lg px-4 py-0.5 text-xl hidden sm:inline">
                     Important
@@ -515,7 +633,7 @@ function AppTestingPageClient({ id }: { id: string }) {
                   <div>
                     <h4 className="font-semibold">Google Group Access</h4>
                     <p className="text-muted-foreground">
-                      Membership in the appstestlab Google Group is mandatory. Without it, the Google Play Store will show "App not available".
+                      Membership in the appstestlab Google Group is mandatory. Without it, the Google Play Store will show &quot;App not available&quot;.
                     </p>
                   </div>
                 </div>
@@ -532,7 +650,26 @@ function AppTestingPageClient({ id }: { id: string }) {
               </div>
             </section>
           </div>
-          <aside className="lg:col-span-1 hidden lg:block">
+          <aside className="lg:col-span-1 hidden lg:block space-y-3">
+            {pendingIncoming && appDetails?.handshake && (
+              <PendingHandshakeCard
+                requestId={pendingIncoming.id}
+                fromUser={pendingIncoming.fromUser}
+                message={pendingIncoming.message}
+                expiresAt={pendingIncoming.expiresAt}
+                yourAppName={
+                  (appDetails.handshake as any)?.partnerApp?.appName
+                }
+              />
+            )}
+            {myPending && (
+              <RequestSentCard
+                requestId={myPending.id}
+                expiresAt={myPending.expiresAt}
+                offeredApp={myPending.offeredApp}
+                offeredAppHref={myPendingHref}
+              />
+            )}
             <AppInfoSidebar
               app={appDetails}
               handleRequestToJoin={handleSubmit}
@@ -541,6 +678,7 @@ function AppTestingPageClient({ id }: { id: string }) {
               isError={isError}
               error={error}
               reset={reset}
+              hideButton={hideCtaForPending}
             />
           </aside>
         </main>
@@ -681,6 +819,8 @@ function AppTestingPageClient({ id }: { id: string }) {
         onOpenChange={setShowOfferModal}
         hubId={id}
         hubAppName={appDetails?.androidApp?.appName}
+        hubOwnerId={appDetails?.appOwnerId}
+        hubOwnerName={appDetails?.appOwner?.name}
         onSuccess={() => {
           setShowSuccessModal(true);
           setTimeout(() => setFireConfetti(true), 300);

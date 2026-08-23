@@ -1,4 +1,4 @@
-// Sample data for the sample preview pages (no login required)
+﻿// Sample data for the sample preview pages (no login required)
 // These simulate real app testing scenarios
 
 // === Handshake Testing SAMPLE ===
@@ -7,7 +7,6 @@ export const sampleCommunityAppDetails = {
   status: "IN_TESTING",
   totalDay: 14,
   currentDay: 6,
-  rewardPoints: 150,
   minimumAndroidVersion: "10",
   averageTimeTesting: "15-20 min",
   instructionsForTester:
@@ -230,7 +229,7 @@ export const samplePaidProjectDetails = {
   startedFrom: "15 Jan 2026",
   overallRating: 4.3,
   androidVersion: "12.0",
-  pointsCost: 100,
+  pointsCost: 0,
   crashFreeRate: 99.8,
   performanceMetrics: {
     avgStartupTime: "1.2s",
@@ -410,8 +409,8 @@ export const samplePaidProjectDetails = {
     },
   ],
   topGeographies: [
-    { country: "United States", testers: 4, flag: "🇺🇸" },
-    { country: "Germany", testers: 5, flag: "🇩🇪" },
-    { country: "Japan", testers: 3, flag: "🇯🇵" },
+    { country: "United States", testers: 4, flag: "ðŸ‡ºðŸ‡¸" },
+    { country: "Germany", testers: 5, flag: "ðŸ‡©ðŸ‡ª" },
+    { country: "Japan", testers: 3, flag: "ðŸ‡¯ðŸ‡µ" },
   ],
 };

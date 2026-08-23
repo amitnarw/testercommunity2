@@ -55,7 +55,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useToast } from "@/hooks/use-toast";
 import { EditSubmissionModal } from "@/components/community-dashboard/edit-submission-modal";
 import { StartTestingDialog } from "@/components/community-dashboard/start-testing-dialog";
-import { AppTestingChatSection } from "@/components/app-testing-chat/AppTestingChatSection";
 
 const FEEDBACK_PER_PAGE = 5;
 
@@ -173,12 +172,18 @@ const TestCompleteSection = ({
     visible: { opacity: 1, y: 0, transition: { type: "spring" } },
   };
 
-  // Mock data for feedback breakdown, as it's not in the app object
+  // P3.4: real feedback breakdown computed from actual feedback rows
+  // (case-insensitive type match), replacing hardcoded mock numbers.
+  const allFeedback = app?.feedback ?? [];
   const feedbackBreakdown = {
-    bugs: 3,
-    suggestions: 2,
-    praise: 1,
-    totalTesters: 15,
+    bugs: allFeedback.filter((fb) => (fb.type || "").toUpperCase() === "BUG")
+      .length,
+    suggestions: allFeedback.filter(
+      (fb) => (fb.type || "").toUpperCase() === "SUGGESTION",
+    ).length,
+    praise: allFeedback.filter((fb) => (fb.type || "").toUpperCase() === "PRAISE")
+      .length,
+    totalTesters: app?.currentTester ?? 0,
   };
 
   return (
@@ -249,7 +254,7 @@ const TestCompleteSection = ({
           <div className="bg-secondary p-1.5 pt-3 rounded-lg flex flex-col gap-2 items-center justify-center">
             <p className="text-xs">Test Days</p>
             <p className="text-3xl font-bold bg-card rounded-lg w-full h-full flex items-center justify-center">
-              {app?.totalDay || 14}
+              {app?.totalDay || 16}
             </p>
           </div>
         </div>
@@ -311,15 +316,20 @@ function SubmissionDetailsPage({
 
   // Current day and total days for the test
   const currentDay = appDetails?.currentDay || 0;
-  const totalDays = appDetails?.totalDay || 14;
-  const requiredTesters = 12; // Google Play requirement
+  const totalDays = appDetails?.totalDay || 16;
+  // P3.4: use the campaign's own capacity instead of a hardcoded 12 ,
+  // an L9 owner with 20 slots previously never saw the completion banner.
+  const requiredTesters = appDetails?.totalTester || 12;
 
   // Show complete testing banner conditions:
-  // 1. Status is IN_TESTING or AVAILABLE (ongoing test)
+  // 1. Status is in an ongoing-testing state
   // 2. Current day >= total days (last day or past)
-  // 3. Either: minimum testers met (12+) OR past last day
+  // 3. Either: minimum testers met OR past last day
   const isOngoingStatus =
-    appDetails?.status === "IN_TESTING" || appDetails?.status === "AVAILABLE";
+    appDetails?.status === "IN_TESTING" ||
+    appDetails?.status === "AVAILABLE" ||
+    appDetails?.status === "WAITING_FOR_PARTNERS" ||
+    appDetails?.status === "TESTING_ACTIVE";
   const isLastDayOrPast = currentDay >= totalDays;
   const hasMinimumTesters = completedTestersCount >= requiredTesters;
   const showCompleteTestingBanner =
@@ -360,18 +370,18 @@ function SubmissionDetailsPage({
   const feedbackBreakdown = {
     bugs: isUnderReviewOrRejected
       ? 0
-      : appDetails?.feedback.filter((fb) => fb.type === "BUG").length,
+      : appDetails?.feedback.filter((fb) => (fb.type || "").toUpperCase() === "BUG").length,
     suggestions: isUnderReviewOrRejected
       ? 0
-      : appDetails?.feedback.filter((fb) => fb.type === "SUGGESTION").length,
+      : appDetails?.feedback.filter((fb) => (fb.type || "").toUpperCase() === "SUGGESTION").length,
     praise: isUnderReviewOrRejected
       ? 0
-      : appDetails?.feedback.filter((fb) => fb.type === "PRAISE").length,
+      : appDetails?.feedback.filter((fb) => (fb.type || "").toUpperCase() === "PRAISE").length,
     totalTesters: isUnderReviewOrRejected ? 0 : appDetails?.currentTester,
   };
 
   return (
-    <div className="bg-[#f8fafc] dark:bg-[#0f151e] text-foreground min-h-screen relative mb-8 overflow-x-hidden overflow-y-hidden">
+    <div className="bg-[#f8fafc] dark:bg-[#0f151e] text-foreground min-h-screen relative mb-8 overflow-x-hidden">
       <div
         ref={confettiTriggerRef}
         className="absolute top-0 left-1/2 -translate-x-1/2"
@@ -526,7 +536,7 @@ function SubmissionDetailsPage({
                     Start testing early?
                   </h4>
                   <p className="text-xs text-muted-foreground">
-                    You have reached <span className="font-semibold text-emerald-600">{appDetails.currentTester || 0}</span> out of <span className="font-semibold text-emerald-600">{appDetails.totalTester || 12}</span> testers. You can start the 14-day testing period now.
+                    You have reached <span className="font-semibold text-emerald-600">{appDetails.currentTester || 0}</span> out of <span className="font-semibold text-emerald-600">{appDetails.totalTester || 12}</span> testers. You can start the {appDetails.totalDay || 16}-day testing period now.
                   </p>
                 </div>
               </div>
@@ -550,12 +560,6 @@ function SubmissionDetailsPage({
               onComplete={handleCompleteTest}
             />
           )}
-
-          <AppTestingChatSection
-            dashboardAndHubId={appDetails.id}
-            appName={appDetails?.androidApp?.appName || "Your App"}
-            appStatus={appDetails?.status}
-          />
 
           <div
             className={`relative flex flex-col gap-10 ${

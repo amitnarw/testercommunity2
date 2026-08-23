@@ -125,9 +125,9 @@ export default function HowItWorksPage() {
             The Handshake Path
           </h2>
           <p className="mt-4 text-muted-foreground text-lg">
-            Subscribe for ₹99/month and barter testing with other developers.
-            Publish your app, send requests, and test each other's apps ,  a
-            reciprocal, subscription-based way to ensure quality.
+            Barter testing with other developers for free. Publish your app,
+            send requests, and test each other's apps ,  a reciprocal
+            handshake system that ensures quality.
           </p>
         </div>
       </section>

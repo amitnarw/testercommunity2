@@ -36,6 +36,7 @@ import {
   useAllUsers,
   useUserCounts,
   useUpdateUserStatus,
+  useUpdateUserActiveStatus,
   useUpdateUserRole,
   useDeleteUser,
   useCreateUser,
@@ -78,7 +79,10 @@ const ROLE_LABELS: Record<string, string> = {
   tester: "Testers",
   user: "Users",
   Banned: "Banned",
+  Deactivated: "Deactivated",
 };
+
+const NON_ROLE_KEYS = ["All", "Banned", "Deactivated"];
 
 function buildTabList(countsData: Record<string, number> | undefined) {
   const tabs: { key: string; label: string; count: number }[] = [];
@@ -99,7 +103,9 @@ function buildTabList(countsData: Record<string, number> | undefined) {
   // Custom roles (from countsData, not in built-in, All, or Banned)
   if (countsData) {
     const customRoles = Object.keys(countsData)
-      .filter((k) => k !== "All" && k !== "Banned" && !BUILTIN_ROLES.includes(k))
+      .filter(
+        (k) => k !== "All" && !NON_ROLE_KEYS.includes(k) && !BUILTIN_ROLES.includes(k),
+      )
       .sort();
     for (const role of customRoles) {
       tabs.push({
@@ -117,6 +123,13 @@ function buildTabList(countsData: Record<string, number> | undefined) {
     count: countsData?.Banned ?? 0,
   });
 
+  // Deactivated (soft-deactivated accounts that block login)
+  tabs.push({
+    key: "Deactivated",
+    label: "Deactivated",
+    count: countsData?.Deactivated ?? 0,
+  });
+
   return tabs;
 }
 
@@ -127,6 +140,8 @@ export default function AdminUsersPage() {
   const [selectedUser, setSelectedUser] = useState<any>(null);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [isStatusModalOpen, setIsStatusModalOpen] = useState(false);
+  const [isActiveStatusModalOpen, setIsActiveStatusModalOpen] = useState(false);
+  const [pendingIsActive, setPendingIsActive] = useState<boolean | null>(null);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
   const [selectedRole, setSelectedRole] = useState("");
   const [banReason, setBanReason] = useState("");
@@ -137,8 +152,16 @@ export default function AdminUsersPage() {
 
   // Fetch users data - pass role filter to API
   const { data: usersData, isLoading } = useAllUsers({
-    role: activeTab === "all" || activeTab === "Banned" ? undefined : activeTab,
-    status: activeTab === "Banned" ? "Banned" : undefined,
+    role:
+      activeTab === "all" || activeTab === "Banned" || activeTab === "Deactivated"
+        ? undefined
+        : activeTab,
+    status:
+      activeTab === "Banned"
+        ? "Banned"
+        : activeTab === "Deactivated"
+          ? "Deactivated"
+          : undefined,
     search: searchQuery || undefined,
   });
 
@@ -164,6 +187,25 @@ export default function AdminUsersPage() {
         variant: "destructive",
         title: "Error",
         description: error.message || "Failed to update status",
+      });
+    },
+  });
+
+  const updateActiveStatusMutation = useUpdateUserActiveStatus({
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["useAllUsers"] });
+      queryClient.invalidateQueries({ queryKey: ["useUserCounts"] });
+      setIsActiveStatusModalOpen(false);
+      toast({
+        title: "Success",
+        description: "Account active status updated successfully",
+      });
+    },
+    onError: (error: any) => {
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: error.message || "Failed to update account status",
       });
     },
   });
@@ -226,6 +268,21 @@ export default function AdminUsersPage() {
     setSelectedUser(user);
     setBanReason(user.banReason || "");
     setIsStatusModalOpen(true);
+  };
+
+  const handleActiveStatusChange = (user: any) => {
+    setSelectedUser(user);
+    setPendingIsActive(user.isActive === false);
+    setIsActiveStatusModalOpen(true);
+  };
+
+  const confirmActiveStatusChange = () => {
+    if (selectedUser && pendingIsActive !== null) {
+      updateActiveStatusMutation.mutate({
+        id: selectedUser.id,
+        isActive: pendingIsActive,
+      });
+    }
   };
 
   const handleDelete = (user: any) => {
@@ -410,6 +467,7 @@ export default function AdminUsersPage() {
                   users={paginatedUsers}
                   onEdit={handleEdit}
                   onStatusChange={handleStatusChange}
+                  onActiveStatusChange={handleActiveStatusChange}
                   onDelete={handleDelete}
                   isLoading={isLoading}
                   currentUserId={session?.user?.id}
@@ -1173,6 +1231,67 @@ export default function AdminUsersPage() {
             <Button variant="ghost" onClick={() => setIsStatusModalOpen(false)}>
               Cancel
             </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Deactivate / Reactivate Account Modal */}
+      <Dialog
+        open={isActiveStatusModalOpen}
+        onOpenChange={setIsActiveStatusModalOpen}
+      >
+        <DialogContent className="sm:max-w-[500px]">
+          <DialogHeader>
+            <DialogTitle>
+              {pendingIsActive ? "Reactivate" : "Deactivate"}{" "}
+              {selectedUser?.name}
+            </DialogTitle>
+            <DialogDescription>
+              {pendingIsActive
+                ? "This will restore the user's account so they can log in again."
+                : "This will soft-deactivate the account and block new logins. The user can reactivate from the login page, or you can reactivate them here later."}
+            </DialogDescription>
+          </DialogHeader>
+          <div className="bg-secondary/20 p-4 rounded-lg border border-border/50 text-sm">
+            <p className="font-medium mb-1">
+              Current Status: {selectedUser?.status}
+            </p>
+            <p className="opacity-70 text-xs text-muted-foreground">
+              Note: This is different from banning, deactivated users keep
+              their data and can self-reactivate.
+            </p>
+          </div>
+          <DialogFooter className="gap-2 sm:gap-0">
+            <Button
+              variant="ghost"
+              onClick={() => setIsActiveStatusModalOpen(false)}
+            >
+              Cancel
+            </Button>
+            {pendingIsActive ? (
+              <Button
+                variant="default"
+                onClick={confirmActiveStatusChange}
+                disabled={updateActiveStatusMutation.isPending}
+                className="bg-green-600 hover:bg-green-700"
+              >
+                {updateActiveStatusMutation.isPending && (
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                )}
+                Reactivate Account
+              </Button>
+            ) : (
+              <Button
+                variant="destructive"
+                onClick={confirmActiveStatusChange}
+                disabled={updateActiveStatusMutation.isPending}
+              >
+                {updateActiveStatusMutation.isPending && (
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                )}
+                Deactivate Account
+              </Button>
+            )}
           </DialogFooter>
         </DialogContent>
       </Dialog>

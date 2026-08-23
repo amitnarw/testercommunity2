@@ -19,7 +19,7 @@ export const metadata: Metadata = {
     default: "inTesters | App Testing Community Platform",
     template: "%s | inTesters",
   },
-  description: "Join the inTesters community for handshake testing. Test each other's apps through our subscription-based barter system and launch with confidence.",
+  description: "Join the inTesters community for handshake testing. Test each other's apps through our free barter system and launch with confidence.",
   keywords: "app testing, Android testing, beta testing, user testing, app feedback, handshake testing, inTesters",
   authors: [{ name: "inTesters Team" }],
   creator: "inTesters",
@@ -38,7 +38,7 @@ export const metadata: Metadata = {
     url: "/",
     siteName: "inTesters",
     title: "inTesters | App Testing Community Platform",
-    description: "Join the inTesters community for handshake testing. Test each other's apps through our subscription-based barter system and launch with confidence.",
+    description: "Join the inTesters community for handshake testing. Test each other's apps through our free barter system and launch with confidence.",
     images: [
       {
         url: "/inTesters-logo-light.svg",
@@ -51,7 +51,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "inTesters | App Testing Community Platform",
-    description: "Join the inTesters community for handshake testing. Test each other's apps through our subscription-based barter system and launch with confidence.",
+    description: "Join the inTesters community for handshake testing. Test each other's apps through our free barter system and launch with confidence.",
     images: ["/inTesters-logo-light.svg"],
     creator: "@inTesters",
   },

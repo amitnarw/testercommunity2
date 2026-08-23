@@ -129,6 +129,7 @@ export async function acceptApp(payload: {
   totalTester?: number;
   totalDay?: number;
   minimumAndroidVersion?: number;
+  /** S9: PAID apps only — per-tester money payout (stored as rewardMoney). */
   rewardPoints?: number;
 }) {
   try {
@@ -483,6 +484,34 @@ export async function updateUserStatus(payload: {
   }
 }
 
+export async function updateUserActiveStatus(payload: {
+  id: string;
+  isActive: boolean;
+}) {
+  try {
+    const response = await api.post(
+      API_ROUTES.ADMIN + `/users/update-active-status`,
+      payload,
+    );
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error updating user active status:", error);
+    if (axios.isAxiosError(error)) {
+      const status = error.response?.status;
+      const responseData = error.response?.data;
+      console.error("Axios error:", status, responseData);
+
+      throw new Error(
+        responseData?.message || error.message || "Unknown Axios error",
+      );
+    } else if (error instanceof Error) {
+      throw new Error(error.message);
+    } else {
+      throw new Error(JSON.stringify(error));
+    }
+  }
+}
+
 export async function updateUserRole(payload: { id: string; role: string }) {
   try {
     const response = await api.post(
@@ -510,7 +539,6 @@ export async function updateUserRole(payload: { id: string; role: string }) {
 
 export async function updateUserWallet(payload: {
   id: string;
-  totalPoints: number;
   totalPackages: number;
 }) {
   try {
@@ -2170,8 +2198,7 @@ export async function deleteImmediateAttention(id: number) {
 
 export async function giftPointsAndPackages(payload: {
   id: string;
-  points?: number;
-  packages?: number;
+  packages: number;
 }) {
   try {
     const response = await api.post(

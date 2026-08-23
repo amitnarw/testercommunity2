@@ -47,8 +47,6 @@ interface AdminAcceptDialogProps {
     totalDay?: number;
     minimumAndroidVersion?: number;
     rewardMoney?: number;
-    costPoints?: number;
-    rewardPoints?: number;
   };
   isReview?: boolean;
 }
@@ -104,8 +102,9 @@ export function AdminAcceptDialog({
   const [minimumAndroidVersion, setMinimumAndroidVersion] = useState<string>(
     getVersionString(initialData?.minimumAndroidVersion),
   );
+  // S9: the reward field is the per-tester MONEY payout (PAID apps only).
   const [rewardPoints, setRewardPoints] = useState<string>(
-    initialData?.rewardMoney?.toString() || initialData?.rewardPoints?.toString() || "",
+    initialData?.rewardMoney?.toString() || "",
   );
 
   useEffect(() => {
@@ -115,10 +114,7 @@ export function AdminAcceptDialog({
       setMinimumAndroidVersion(
         getVersionString(initialData?.minimumAndroidVersion),
       );
-      // Try rewardMoney (PAID) then rewardPoints (FREE)
-      const initialReward =
-        initialData?.rewardMoney || initialData?.rewardPoints;
-      setRewardPoints(initialReward?.toString() || "");
+      setRewardPoints(initialData?.rewardMoney?.toString() || "");
     }
   }, [open, initialData]);
 
@@ -141,7 +137,14 @@ export function AdminAcceptDialog({
   });
 
   const handleApprove = () => {
-    if (!totalTester || !totalDay || !minimumAndroidVersion || !rewardPoints) {
+    // S9: payout is only required for PAID apps.
+    const needsPayout = appType === "PAID";
+    if (
+      !totalTester ||
+      !totalDay ||
+      !minimumAndroidVersion ||
+      (needsPayout && !rewardPoints)
+    ) {
       toast({
         variant: "destructive",
         title: "Validation Error",
@@ -155,8 +158,8 @@ export function AdminAcceptDialog({
       totalTester: Number(totalTester),
       totalDay: Number(totalDay),
       minimumAndroidVersion: parseFloat(minimumAndroidVersion),
-      rewardPoints: Number(rewardPoints),
     };
+    if (needsPayout) payload.rewardPoints = Number(rewardPoints);
 
     acceptApp(payload);
   };
@@ -211,30 +214,21 @@ export function AdminAcceptDialog({
                       {initialData.minimumAndroidVersion ? `v${initialData.minimumAndroidVersion}` : "Any"}
                     </span>
                   </div>
-                  <div className="flex items-center gap-1.5 ml-auto">
-                    <span className="text-[10px] text-muted-foreground font-medium">Paid:</span>
-                    <span className="text-xs font-bold text-blue-600">
-                      {appType === "FREE"
-                        ? `${initialData.costPoints || 0} Pts`
-                        : `₹${(paymentInfo?.amountPaid || PLAN_PRICE_INR).toLocaleString("en-IN")}`}
-                    </span>
-                  </div>
-                </div>
-              )}
-
-              {appType === "FREE" && (
-                <div className="bg-amber-500/5 px-4 py-2.5 rounded-xl border border-amber-500/10 flex flex-wrap items-center gap-x-6 gap-y-2">
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-amber-600/80 dark:text-amber-400/80 shrink-0">
-                    Calculated Summary:
-                  </span>
-                  <div className="flex items-center gap-1.5">
-                    <span className="text-[10px] text-muted-foreground font-medium">Testers:</span>
-                    <span className="text-xs font-bold">{testers}</span>
-                  </div>
-                  <div className="flex items-center gap-1.5 align-baseline">
-                    <span className="text-[10px] text-muted-foreground font-medium">Reward/Tester:</span>
-                    <span className="text-xs font-bold text-emerald-600">{payoutPerTester} Pts</span>
-                  </div>
+                  {appType === "HANDSHAKE" ? (
+                    <div className="flex items-center gap-1.5 ml-auto">
+                      <span className="text-[10px] text-muted-foreground font-medium">Type:</span>
+                      <span className="text-xs font-bold text-emerald-600">
+                        Free (Handshake)
+                      </span>
+                    </div>
+                  ) : (
+                    <div className="flex items-center gap-1.5 ml-auto">
+                      <span className="text-[10px] text-muted-foreground font-medium">Paid:</span>
+                      <span className="text-xs font-bold text-blue-600">
+                        {`₹${(paymentInfo?.amountPaid || PLAN_PRICE_INR).toLocaleString("en-IN")}`}
+                      </span>
+                    </div>
+                  )}
                 </div>
               )}
             </div>
@@ -298,23 +292,27 @@ export function AdminAcceptDialog({
                 </SelectContent>
               </Select>
             </div>
-            <div className="space-y-2">
-              <Label
-                htmlFor="reward"
-                className="text-xs font-bold uppercase tracking-wider text-muted-foreground"
-              >
-                {appType === "PAID" ? "Payout per Tester (₹)" : "Reward for Testers (Points)"}
-              </Label>
-              <Input
-                id="reward"
-                type="number"
-                placeholder={appType === "PAID" ? "e.g. 30" : "e.g. 100"}
-                value={rewardPoints}
-                onChange={(e) => setRewardPoints(e.target.value)}
-                min="0"
-                className="h-11"
-              />
-            </div>
+            {appType !== "HANDSHAKE" && (
+              <div className="space-y-2">
+                <Label
+                  htmlFor="reward"
+                  className="text-xs font-bold uppercase tracking-wider text-muted-foreground"
+                >
+                  {/* S9: money payout only (PAID apps) */}
+                  Payout per Tester (₹)
+                </Label>
+                <Input
+                  id="reward"
+                  type="number"
+                  placeholder="e.g. 30"
+                  value={rewardPoints}
+                  onChange={(e) => setRewardPoints(e.target.value)}
+                  min="0"
+                  className="h-11"
+                  disabled={appType !== "PAID"}
+                />
+              </div>
+            )}
           </div>
 
           {appType === "PAID" && (

@@ -29,7 +29,7 @@ export function CommunityHero() {
             className="dark:bg-black text-[10px] sm:text-xs bg-white text-black dark:text-white flex items-center space-x-2"
           >
             <Coins className="w-4 h-4 mr-2 text-emerald-500" />
-            <span>Subscribe & Start Barter Testing ,  Just ₹99/mo</span>
+            <span>Start Barter Testing , Free</span>
           </HoverBorderGradient>
 
           <h1 className="text-[1.85rem] sm:text-[2.75rem] md:text-[3.5rem] lg:text-[4.25rem] font-heading leading-[1.2] md:leading-[1.1] tracking-tight font-bold mb-5 sm:mb-8 text-center mx-auto max-w-[900px]">
@@ -42,7 +42,7 @@ export function CommunityHero() {
           </h1>
 
           <p className="text-sm sm:text-base md:text-lg font-body max-w-xs sm:max-w-md md:max-w-lg lg:max-w-[700px] mx-auto mb-8 text-muted-foreground">
-            Subscribe for ₹99/month and enter a 1:1 barter network. Publish your
+            Enter a free 1:1 barter network. Publish your
             app, send requests to other developers, and test each other&apos;s apps.
             Level up to unlock up to 20 testers per app.
           </p>

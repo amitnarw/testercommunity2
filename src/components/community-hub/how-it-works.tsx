@@ -9,9 +9,9 @@ import { AutoTransitionLink } from "@/components/auto-transition-link";
 const steps = [
   {
     number: "01",
-    title: "Subscribe & Publish",
+    title: "Publish Your App",
     description:
-      "Subscribe for ₹99/month and publish your apps on the Handshake Testing hub. Each app gets a slot limit based on your level (starts at 12).",
+      "Publish your apps on the Handshake Testing hub for free. Each app gets a slot limit based on your level (starts at 12).",
     icon: Search,
   },
   {
@@ -25,7 +25,7 @@ const steps = [
     number: "03",
     title: "Complete & Level Up",
     description:
-      "After 14 days both sides submit their test reports. Each completed handshake earns you +1 slot ,  level up to unlock more testers (start at 12, up to 20).",
+      "After the testing period both sides submit their test reports. Level up by completing handshakes to unlock more testers (start at 12, up to 20).",
     icon: Coins,
   },
 ];
@@ -69,7 +69,7 @@ export function HowItWorks() {
             <span className="text-emerald-600 italic">Handshake Testing</span> Works
           </h2>
           <p className="mt-3 text-muted-foreground text-sm md:text-base max-w-xl mx-auto">
-            A simple three-step process. Subscribe, publish your app, and barter
+            A simple three-step process. Publish your app, and barter
             with other developers ,  test each other&apos;s apps and level up.
           </p>
         </motion.div>

@@ -312,12 +312,22 @@ export const AppInfoSidebar = ({
             <p className="text-lg font-semibold text-primary text-start">
               REWARD
             </p>
-            <div className="text-3xl font-bold text-foreground flex items-center gap-2 justify-start mt-1">
-              {app?.appType === "PAID"
-                ? `₹${app?.rewardMoney || 0}`
-                : `${app?.rewardPoints || 0} Points`}
-              <Star className="w-7 h-7 text-primary/0 fill-primary/20 scale-[4] sm:scale-[6] absolute bottom-8 right-2 sm:right-6 rotate-90" />
-            </div>
+            {/* S8-A2: handshake testing is a barter system — no points, no
+                money. Show a handshake badge instead of "0 Points". */}
+            {app?.appType === "HANDSHAKE" ? (
+              <div className="text-xl sm:text-2xl font-bold text-foreground flex items-center gap-2 justify-start mt-1">
+                <span aria-hidden>🤝</span> Barter
+              </div>
+            ) : app?.appType === "PAID" ? (
+              <div className="text-3xl font-bold text-foreground flex items-center gap-2 justify-start mt-1">
+                {`₹${app?.rewardMoney || 0}`}
+                <Star className="w-7 h-7 text-primary/0 fill-primary/20 scale-[4] sm:scale-[6] absolute bottom-8 right-2 sm:right-6 rotate-90" />
+              </div>
+            ) : (
+              <div className="text-xl sm:text-2xl font-bold text-foreground flex items-center gap-2 justify-start mt-1">
+                <span aria-hidden>✅</span> Free Testing
+              </div>
+            )}
           </div>
         </CardFooter>
       </Card>

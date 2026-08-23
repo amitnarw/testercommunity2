@@ -29,7 +29,6 @@ import { CustomTabsList } from "@/components/custom-tabs-list";
 import { AppPagination } from "@/components/app-pagination";
 import { motion, AnimatePresence } from "framer-motion";
 import SubTabUI from "@/components/sub-tab-ui";
-import Confetti from "react-dom-confetti";
 import { useTransitionRouter } from "@/context/transition-context";
 import { PageHeader } from "@/components/page-header";
 import { useHubSubmittedApp, useHubSubmittedAppsCount } from "@/hooks/useHub";
@@ -293,7 +292,7 @@ const EmptyState = () => (
 
       <Button
         asChild
-        className="h-11 px-8 rounded-full bg-emerald-500 text-white font-semibold shadow-lg shadow-emerald-500/25 hover:shadow-emerald-500/40 hover:scale-105 transition-all duration-300"
+        className="h-11 px-8 rounded-full bg-gradient-to-b from-emerald-600/80 to-emerald-700/80 text-white font-semibold shadow-lg shadow-emerald-500/25 hover:shadow-emerald-500/40 hover:scale-105 transition-all duration-300"
       >
         <Link
           href="/app/handshake-testing/submit"
@@ -513,31 +512,18 @@ function MySubmissionsContent() {
 
   return (
     <>
-      <Confetti
-        active={true}
-        config={{
-          angle: 90,
-          spread: 360,
-          startVelocity: 30,
-          elementCount: 150,
-          dragFriction: 0.1,
-          duration: 4000,
-          stagger: 3,
-          width: "10px",
-          height: "10px",
-        }}
-      />
       <div className="min-h-screen mb-12">
         <div className="container mx-auto px-4 md:px-6">
           <main className="space-y-4">
             <PageHeader
-              title="MySubmissions"
+              title="My Submissions"
               backHref="/app/handshake-testing"
-              className="w-1/2 px-0"
+              className="w-1/2 px-0 whitespace-nowrap"
+              titleClassName="text-emerald-600"
             />
             <div className="flex flex-row items-center justify-end gap-4 w-full">
               <Button
-                className="bg-gradient-to-b from-emerald-500 to-emerald-600/40 text-white px-3 h-8 sm:p-auto sm:h-10"
+                className="bg-gradient-to-b from-emerald-600 to-emerald-700 text-white px-3 h-8 sm:p-auto sm:h-10"
                 onClick={() => openPage("/app/handshake-testing/submit")}
               >
                 <PlusCircle className="h-4 w-4 absolute sm:static top-0 sm:top-auto left-0 sm:left-auto scale-[2] sm:scale-100 text-white/20 sm:text-white" />

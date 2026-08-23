@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState, Suspense } from "react";
 import { Plus, Search, Loader2 } from "lucide-react";
@@ -339,7 +339,7 @@ function AdminPromoCodesContent() {
                           </SelectTrigger>
                         </FormControl>
                         <SelectContent>
-                          <SelectItem value="FIXED">Fixed Points</SelectItem>
+                          <SelectItem value="FIXED">Fixed Value</SelectItem>
                           <SelectItem value="PERCENTAGE">Percentage</SelectItem>
                         </SelectContent>
                       </Select>
@@ -459,7 +459,7 @@ function AdminPromoCodesContent() {
                 <div className="space-y-1">
                   <p className="text-muted-foreground">Discount Type</p>
                   <p className="font-medium">
-                    {selectedPromo.discountType === "PERCENTAGE" ? "Percentage" : "Fixed Points"}
+                    {selectedPromo.discountType === "PERCENTAGE" ? "Percentage" : "Fixed Value"}
                   </p>
                 </div>
                 <div className="space-y-1">
@@ -482,12 +482,12 @@ function AdminPromoCodesContent() {
                 <div className="space-y-1">
                   <p className="text-muted-foreground">Usage Limit</p>
                   <p className="font-medium">
-                    {selectedPromo.usedCount} / {selectedPromo.maxUses || "∞"}
+                    {selectedPromo.usedCount} / {selectedPromo.maxUses || "âˆž"}
                   </p>
                 </div>
                 <div className="space-y-1">
                   <p className="text-muted-foreground">Per User Limit</p>
-                  <p className="font-medium">{selectedPromo.maxPerUser || "∞"}</p>
+                  <p className="font-medium">{selectedPromo.maxPerUser || "âˆž"}</p>
                 </div>
                 <div className="space-y-1">
                   <p className="text-muted-foreground">Created</p>
@@ -529,7 +529,7 @@ function AdminPromoCodesContent() {
                               {app.androidApp?.appName || `App #${app.appId}`}
                             </p>
                             <p className="text-xs text-muted-foreground">
-                              {app.appOwner?.name || app.appOwnerId} •{" "}
+                              {app.appOwner?.name || app.appOwnerId} â€¢{" "}
                               {format(new Date(app.createdAt), "MMM dd, yyyy")}
                             </p>
                           </div>

@@ -180,7 +180,8 @@ export default function TesterDashboardPage() {
   const completedProjects =
     projects?.filter((p) => p.testerStatus === "COMPLETED") || [];
 
-  const totalPoints = walletData?.totalPoints || 0;
+  // S9: wallet balance is money now (points removed).
+  const totalEarnings = walletData?.balanceMoney || 0;
 
   const totalFeedback =
     projects?.reduce((acc, p) => acc + (p.feedbackCount || 0), 0) || 0;
@@ -230,9 +231,9 @@ export default function TesterDashboardPage() {
                     <Loader2 className="w-6 h-6 animate-spin" />
                   ) : (
                     <>
-                      {totalPoints.toLocaleString()}{" "}
+                      ₹{totalEarnings.toLocaleString("en-IN")}{" "}
                       <span className="text-base font-normal text-white/80">
-                        Pts
+                        earned
                       </span>
                     </>
                   )}
@@ -439,7 +440,8 @@ export default function TesterDashboardPage() {
               </CardHeader>
               <CardContent className="space-y-3">
                 {completedProjects.slice(0, 5).map((project) => {
-                  const earnings = (project.rewardPoints || 0) * 5;
+                  // S9: money payout only (rewardMoney).
+                  const earnings = project.rewardMoney || 0;
                   return (
                     <Link
                       key={project.id}

@@ -1006,13 +1006,18 @@ export async function getHubAppsCount(): Promise<SubmittedAppsCount> {
 }
 
 export interface HandshakeStats {
-  totalApps: number;
-  totalTesters: number;
-  averageRating: number;
-  activeHandshakes: number;
-  availableSlots: number;
+  // Matches backend getHubStats response (P5: previously phantom fields
+  // totalApps/totalTesters/averageRating that the backend never sent).
+  wallet: number;
+  appsSubmitted: number;
+  testersEngaged: number;
+  testsCompleted: number;
+  availableApps: number;
+  statusCounts: { status: string; _count: { _all: number } }[];
   handshakeLevel: number;
   handshakeCompletedCount: number;
+  availableSlots: number;
+  activeHandshakes: number;
 }
 
 export async function getHubStats(): Promise<HandshakeStats> {
@@ -1091,160 +1096,454 @@ export async function addHubAppTestingRequest(payload: {
 }
 
 export async function createHandshakeSubscription() {
+  // @deprecated Subscription system removed (Spec §2.1). Throws for any caller.
+  throw new Error("createHandshakeSubscription is no longer supported");
+}
+
+// ============================================================
+// Handshake Testing v2 ,  Spec §3-49
+// ============================================================
+
+import type {
+  HandshakeRequest,
+  HandshakeRequestListResponse,
+  SendHandshakeRequestInput,
+  SendHandshakeRequestResponse,
+  MyPenaltiesResponse,
+  PenaltyTask,
+  AddOn,
+  AddOnPurchase,
+  PurchaseAddonResponse,
+  ProfessionalTesterAssignment,
+  LevelConfigEntry,
+  MyLevelResponse,
+  LeaderboardEntry,
+  EliteBadgeInfo,
+  HandshakeMonitoringOverview,
+  WaitingCampaign,
+  PenalizedUser,
+  MissedDayRecord,
+} from "@/lib/types";
+
+// =============== Handshake Requests ===============
+
+export async function sendHandshakeRequest(
+  payload: SendHandshakeRequestInput,
+): Promise<SendHandshakeRequestResponse> {
   try {
     const response = await api.post(
-      API_ROUTES.SUBSCRIPTION + `/create`,
-      {},
+      `${API_ROUTES.HANDSHAKE_REQUESTS}/send`,
+      payload,
     );
     return response?.data?.data;
   } catch (error) {
-    console.error("Error creating handshake subscription:", error);
-    if (axios.isAxiosError(error)) {
-      const responseData = error.response?.data;
-      const err = new Error(
-        responseData?.message || error.message || "Unknown Axios error",
-      );
-      (err as unknown as { billingInfoMissing?: boolean }).billingInfoMissing =
-        responseData?.data?.billingInfoMissing || responseData?.billingInfoMissing;
-      throw err;
-    } else if (error instanceof Error) {
-      throw new Error(error.message);
-    } else {
-      throw new Error(JSON.stringify(error));
-    }
-  }
-}
-
-export async function getMyHandshakeSubscription() {
-  try {
-    const response = await api.get(API_ROUTES.SUBSCRIPTION + `/my`);
-    return response?.data?.data?.subscription;
-  } catch (error) {
-    console.error("Error fetching handshake subscription:", error);
+    console.error("Error sending handshake request:", error);
     if (axios.isAxiosError(error)) {
       const responseData = error.response?.data;
       throw new Error(
         responseData?.message || error.message || "Unknown Axios error",
       );
-    } else if (error instanceof Error) {
-      throw new Error(error.message);
-    } else {
-      throw new Error(JSON.stringify(error));
     }
-  }
-}
-
-export async function cancelHandshakeSubscription(id: string) {
-  try {
-    const response = await api.post(API_ROUTES.SUBSCRIPTION + `/cancel`, {
-      subscriptionId: id,
-    });
-    return response?.data?.data;
-  } catch (error) {
-    console.error("Error cancelling handshake subscription:", error);
-    if (axios.isAxiosError(error)) {
-      const responseData = error.response?.data;
-      throw new Error(
-        responseData?.message || error.message || "Unknown Axios error",
-      );
-    } else if (error instanceof Error) {
-      throw new Error(error.message);
-    } else {
-      throw new Error(JSON.stringify(error));
-    }
-  }
-}
-
-export async function getHandshakeSubscriptionStatus(id: string) {
-  try {
-    const response = await api.get(
-      API_ROUTES.SUBSCRIPTION + `/status/${id}`,
-    );
-    return response?.data?.data;
-  } catch (error) {
-    console.error("Error fetching handshake subscription status:", error);
-    if (axios.isAxiosError(error)) {
-      const responseData = error.response?.data;
-      throw new Error(
-        responseData?.message || error.message || "Unknown Axios error",
-      );
-    } else if (error instanceof Error) {
-      throw new Error(error.message);
-    } else {
-      throw new Error(JSON.stringify(error));
-    }
-  }
-}
-
-export async function syncSubscriptionPayments() {
-  try {
-    const response = await api.post(API_ROUTES.SUBSCRIPTION + `/sync-payments`);
-    return response?.data?.data;
-  } catch (error) {
-    console.error("Error syncing subscription payments:", error);
     throw error;
   }
 }
 
-export async function getHandshakePlan(): Promise<PricingResponse | null> {
-  try {
-    const response = await api.get(API_ROUTES.SUBSCRIPTION + `/plan`);
-    return response?.data?.data?.plan ?? null;
-  } catch (error) {
-    console.error("Error fetching handshake plan:", error);
-    return null;
+// P3.3: shared axios-error -> friendly Error extraction so accept/reject/
+// cancel failures surface the backend message (expiry, slot-full, 423
+// penalty block...) instead of failing silently in the UI.
+async function rethrowWithBackendMessage(
+  error: unknown,
+  fallback: string,
+): Promise<never> {
+  console.error(fallback, error);
+  if (axios.isAxiosError(error)) {
+    const responseData = error.response?.data;
+    throw new Error(responseData?.message || error.message || fallback);
   }
+  if (error instanceof Error) throw error;
+  throw new Error(fallback);
 }
 
-export async function getHandshakeSubscriptionsAdmin(params?: {
-  page?: number;
-  limit?: number;
-  status?: string;
-}) {
-  try {
-    const search = new URLSearchParams();
-    if (params?.page) search.set("page", String(params.page));
-    if (params?.limit) search.set("limit", String(params.limit));
-    if (params?.status) search.set("status", params.status);
-    const query = search.toString();
-    const response = await api.get(
-      API_ROUTES.SUBSCRIPTION + `/admin/list${query ? `?${query}` : ""}`,
-    );
-    return response?.data?.data;
-  } catch (error) {
-    console.error("Error fetching admin handshake subscriptions:", error);
-    if (axios.isAxiosError(error)) {
-      const responseData = error.response?.data;
-      throw new Error(
-        responseData?.message || error.message || "Unknown Axios error",
-      );
-    } else if (error instanceof Error) {
-      throw new Error(error.message);
-    } else {
-      throw new Error(JSON.stringify(error));
-    }
-  }
-}
-
-export async function cancelHandshakeSubscriptionAdmin(id: string) {
+export async function acceptHandshakeRequest(id: number) {
   try {
     const response = await api.post(
-      API_ROUTES.SUBSCRIPTION + `/admin/cancel/${id}`,
+      `${API_ROUTES.HANDSHAKE_REQUESTS}/${id}/accept`,
       {},
     );
     return response?.data?.data;
   } catch (error) {
-    console.error("Error cancelling admin handshake subscription:", error);
-    if (axios.isAxiosError(error)) {
-      const responseData = error.response?.data;
-      throw new Error(
-        responseData?.message || error.message || "Unknown Axios error",
-      );
-    } else if (error instanceof Error) {
-      throw new Error(error.message);
-    } else {
-      throw new Error(JSON.stringify(error));
-    }
+    await rethrowWithBackendMessage(error, "Error accepting handshake request");
+  }
+}
+
+export async function rejectHandshakeRequest(id: number, reason: string) {
+  try {
+    const response = await api.post(
+      `${API_ROUTES.HANDSHAKE_REQUESTS}/${id}/reject`,
+      { reason },
+    );
+    return response?.data?.data;
+  } catch (error) {
+    await rethrowWithBackendMessage(error, "Error rejecting handshake request");
+  }
+}
+
+export async function cancelHandshakeRequest(id: number) {
+  try {
+    const response = await api.post(
+      `${API_ROUTES.HANDSHAKE_REQUESTS}/${id}/cancel`,
+      {},
+    );
+    return response?.data?.data;
+  } catch (error) {
+    await rethrowWithBackendMessage(error, "Error cancelling handshake request");
+  }
+}
+
+export async function listHandshakeRequests(params: {
+  direction: "incoming" | "outgoing";
+  status?: string;
+  page?: number;
+  limit?: number;
+}): Promise<HandshakeRequestListResponse> {
+  try {
+    const search = new URLSearchParams();
+    search.set("direction", params.direction);
+    if (params.status) search.set("status", params.status);
+    if (params.page) search.set("page", String(params.page));
+    if (params.limit) search.set("limit", String(params.limit));
+    const response = await api.get(
+      `${API_ROUTES.HANDSHAKE_REQUESTS}?${search.toString()}`,
+    );
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error listing handshake requests:", error);
+    throw error;
+  }
+}
+
+// =============== Elite Badge ===============
+
+export async function awardEliteBadge(userId: string, reason?: string) {
+  try {
+    const response = await api.post(
+      `${API_ROUTES.ELITE_BADGE}/admin/award`,
+      { userId, reason },
+    );
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error awarding elite badge:", error);
+    throw error;
+  }
+}
+
+export async function revokeEliteBadge(userId: string, reason?: string) {
+  try {
+    const response = await api.post(
+      `${API_ROUTES.ELITE_BADGE}/admin/revoke`,
+      { userId, reason },
+    );
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error revoking elite badge:", error);
+    throw error;
+  }
+}
+
+export async function getUserEliteBadge(
+  userId: string,
+): Promise<EliteBadgeInfo> {
+  try {
+    const response = await api.get(
+      `${API_ROUTES.ELITE_BADGE}/user/${userId}`,
+    );
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error fetching elite badge:", error);
+    throw error;
+  }
+}
+
+// =============== Penalty ===============
+
+export async function getMyPenalties(): Promise<MyPenaltiesResponse> {
+  try {
+    const response = await api.get(`${API_ROUTES.PENALTY}/me`);
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error fetching my penalties:", error);
+    throw error;
+  }
+}
+
+export async function submitPenaltyProof(
+  taskId: number,
+  proofImageUrl: string,
+) {
+  try {
+    const response = await api.post(
+      `${API_ROUTES.PENALTY}/${taskId}/submit`,
+      { proofImageUrl },
+    );
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error submitting penalty proof:", error);
+    throw error;
+  }
+}
+
+export async function verifyPenaltyTask(
+  taskId: number,
+  approved: boolean,
+  rejectionReason?: string,
+) {
+  try {
+    const response = await api.post(
+      `${API_ROUTES.PENALTY}/${taskId}/verify`,
+      { approved, rejectionReason },
+    );
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error verifying penalty task:", error);
+    throw error;
+  }
+}
+
+export async function listAllPenalties(params?: {
+  status?: string;
+  userId?: string;
+  page?: number;
+  limit?: number;
+}) {
+  try {
+    const search = new URLSearchParams();
+    if (params?.status) search.set("status", params.status);
+    if (params?.userId) search.set("userId", params.userId);
+    if (params?.page) search.set("page", String(params.page));
+    if (params?.limit) search.set("limit", String(params.limit));
+    const query = search.toString();
+    const response = await api.get(
+      `${API_ROUTES.PENALTY}/admin/all${query ? `?${query}` : ""}`,
+    );
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error listing all penalties:", error);
+    throw error;
+  }
+}
+
+// =============== Add-ons ===============
+
+export async function getAddonCatalog(): Promise<AddOn[]> {
+  try {
+    const response = await api.get(`${API_ROUTES.ADDONS}/catalog`);
+    return response?.data?.data ?? [];
+  } catch (error) {
+    console.error("Error fetching addon catalog:", error);
+    return [];
+  }
+}
+
+export async function purchaseAddon(
+  addOnId: number,
+  campaignId: number,
+): Promise<PurchaseAddonResponse> {
+  try {
+    const response = await api.post(
+      `${API_ROUTES.ADDONS}/purchase`,
+      { addOnId, campaignId },
+    );
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error purchasing addon:", error);
+    throw error;
+  }
+}
+
+export async function assignProfessionalTester(payload: {
+  campaignId: number;
+  feeINR?: number;
+}) {
+  try {
+    const response = await api.post(
+      `${API_ROUTES.ADDONS}/admin/professional-tester/assign`,
+      payload,
+    );
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error assigning professional tester:", error);
+    throw error;
+  }
+}
+
+export async function fillProfessionalTester(
+  assignmentId: number,
+  professionalUserId: string,
+) {
+  try {
+    const response = await api.post(
+      `${API_ROUTES.ADDONS}/admin/professional-tester/${assignmentId}/fill`,
+      { professionalUserId },
+    );
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error filling professional tester:", error);
+    throw error;
+  }
+}
+
+export async function cancelProfessionalTester(assignmentId: number) {
+  try {
+    const response = await api.post(
+      `${API_ROUTES.ADDONS}/admin/professional-tester/${assignmentId}/cancel`,
+      {},
+    );
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error cancelling professional tester:", error);
+    throw error;
+  }
+}
+
+export async function listProfessionalAssignments(params?: {
+  campaignId?: number;
+  status?: string;
+}): Promise<{ items: ProfessionalTesterAssignment[] }> {
+  try {
+    const search = new URLSearchParams();
+    if (params?.campaignId)
+      search.set("campaignId", String(params.campaignId));
+    if (params?.status) search.set("status", params.status);
+    const query = search.toString();
+    const response = await api.get(
+      `${API_ROUTES.ADDONS}/admin/assignments${query ? `?${query}` : ""}`,
+    );
+    return response?.data?.data ?? { items: [] };
+  } catch (error) {
+    console.error("Error listing professional assignments:", error);
+    return { items: [] };
+  }
+}
+
+// =============== Level ===============
+
+export async function getMyLevel(): Promise<MyLevelResponse> {
+  try {
+    const response = await api.get(`${API_ROUTES.LEVEL}/me`);
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error fetching my level:", error);
+    throw error;
+  }
+}
+
+export async function getLeaderboard(
+  limit = 50,
+): Promise<{ items: LeaderboardEntry[] }> {
+  try {
+    const response = await api.get(
+      `${API_ROUTES.LEVEL}/leaderboard?limit=${limit}`,
+    );
+    return response?.data?.data ?? { items: [] };
+  } catch (error) {
+    console.error("Error fetching leaderboard:", error);
+    return { items: [] };
+  }
+}
+
+export async function getLevelConfig(): Promise<{ items: LevelConfigEntry[] }> {
+  try {
+    const response = await api.get(`${API_ROUTES.LEVEL}/config`);
+    return response?.data?.data ?? { items: [] };
+  } catch (error) {
+    console.error("Error fetching level config:", error);
+    return { items: [] };
+  }
+}
+
+// =============== Admin Handshake Monitoring ===============
+
+export async function getMonitoringOverview(): Promise<HandshakeMonitoringOverview> {
+  try {
+    const response = await api.get(
+      `${API_ROUTES.ADMIN_HANDSHAKE_MONITORING}/overview`,
+    );
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error fetching monitoring overview:", error);
+    throw error;
+  }
+}
+
+export async function getWaitingCampaigns(): Promise<{ items: WaitingCampaign[] }> {
+  try {
+    const response = await api.get(
+      `${API_ROUTES.ADMIN_HANDSHAKE_MONITORING}/waiting`,
+    );
+    return response?.data?.data ?? { items: [] };
+  } catch (error) {
+    console.error("Error fetching waiting campaigns:", error);
+    return { items: [] };
+  }
+}
+
+export async function getPenalizedUsers(): Promise<{ items: PenalizedUser[] }> {
+  try {
+    const response = await api.get(
+      `${API_ROUTES.ADMIN_HANDSHAKE_MONITORING}/penalized`,
+    );
+    return response?.data?.data ?? { items: [] };
+  } catch (error) {
+    console.error("Error fetching penalized users:", error);
+    return { items: [] };
+  }
+}
+
+export async function getRecentMissedDays(
+  limit = 100,
+): Promise<{ items: MissedDayRecord[] }> {
+  try {
+    const response = await api.get(
+      `${API_ROUTES.ADMIN_HANDSHAKE_MONITORING}/missed-days?limit=${limit}`,
+    );
+    return response?.data?.data ?? { items: [] };
+  } catch (error) {
+    console.error("Error fetching missed days:", error);
+    return { items: [] };
+  }
+}
+
+export async function adminReplaceTester(payload: {
+  testerRelationId: number;
+  reason?: string;
+}) {
+  try {
+    const response = await api.post(
+      `${API_ROUTES.ADMIN_HANDSHAKE_MONITORING}/replace-tester`,
+      payload,
+    );
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error replacing tester:", error);
+    throw error;
+  }
+}
+
+export async function adminForceHandshake(payload: {
+  userAId: string;
+  userBId: string;
+  appAId: number;
+  appBId: number;
+}) {
+  try {
+    const response = await api.post(
+      `${API_ROUTES.ADMIN_HANDSHAKE_MONITORING}/force-handshake`,
+      payload,
+    );
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error forcing handshake:", error);
+    throw error;
   }
 }
 
@@ -1510,7 +1809,6 @@ export interface UserTransaction {
   changeType: "positive" | "negative";
   transactionType: string;
   action: string | null;
-  points: number | null;
   package: number | null;
   /** null for legacy rows created before the paymentMethod column was added */
   paymentMethod: "POINTS" | "PACKAGE" | "PROMO_FREE" | null;
@@ -1568,8 +1866,7 @@ export async function createUploadUrl(payload: {
   contentType: string;
   size: number;
   type: string;
-}) {
-  try {
+}) {  try {
     const response = await api.post(
       API_ROUTES.R2 + `/create-upload-url`,
       payload,
@@ -1629,6 +1926,50 @@ export async function uploadFileToR2(
       throw new Error(JSON.stringify(error));
     }
   }
+}
+
+/**
+ * P3.1: server-side multipart upload to R2 (POST /api/r2/upload).
+ * Uses raw fetch (NOT the shared axios instance ,  its request interceptor
+ * would encrypt the FormData and its response interceptor is what normally
+ * decrypts `data`), so the JWE response envelope is decrypted here via
+ * decryptData. Returns { url, key }.
+ */
+export async function uploadFileDirectlyToR2(
+  file: File,
+  type?: string,
+): Promise<{ url: string; key: string }> {
+  const fd = new FormData();
+  fd.append("file", file);
+  if (type) fd.append("type", type);
+
+  const res = await fetch(`${API_ROUTES.R2}/upload`, {
+    method: "POST",
+    body: fd,
+    credentials: "include",
+  });
+
+  let json: any = null;
+  try {
+    json = await res.json();
+  } catch {
+    throw new Error(`Upload failed (HTTP ${res.status})`);
+  }
+
+  if (!res.ok && !json?.data) {
+    throw new Error(json?.message || `Upload failed (HTTP ${res.status})`);
+  }
+
+  // sendSuccess encrypts `data` into a JWE string; decrypt it.
+  let payload = json?.data;
+  if (payload && typeof payload === "string") {
+    const { decryptData } = await import("./encryptDecryptPayload");
+    payload = await decryptData(payload);
+  }
+  if (!payload?.url) {
+    throw new Error(json?.message || "Upload failed");
+  }
+  return { url: payload.url as string, key: payload.key as string };
 }
 
 // Misc

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { Clock, Coins, Trophy, Sparkles, Timer, Eye } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -167,7 +167,7 @@ function TestingCompletedBanner({ appName }: { appName: string }) {
                 <div className="flex items-center gap-2 text-xs">
                   <Coins className="h-4 w-4 text-primary" />
                   <span className="text-slate-600 dark:text-slate-400">
-                    Points credited automatically after approval
+                    Level credit after successful completion
                   </span>
                 </div>
               </div>

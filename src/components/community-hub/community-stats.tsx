@@ -108,7 +108,11 @@ const StatCard = ({
   );
 };
 
-export function CommunityStats({ variant = "free" }: { variant?: "free" | "pro" }) {
+export function CommunityStats({
+  variant = "free",
+}: {
+  variant?: "free" | "pro" | "handshake";
+}) {
   const sectionRef = useRef(null);
   const { scrollYProgress } = useScroll({
     target: sectionRef,
@@ -117,7 +121,10 @@ export function CommunityStats({ variant = "free" }: { variant?: "free" | "pro" 
   const rotate = useTransform(scrollYProgress, [0, 1], [0, 360]);
 
   const isPro = variant === "pro";
+  const isHandshake = variant === "handshake";
 
+  // S8-A4: the handshake variant must not mention points — the platform has
+  // no points system. Barter metrics replace the old "Points Earned" card.
   const stats = isPro
     ? [
         {
@@ -159,15 +166,17 @@ export function CommunityStats({ variant = "free" }: { variant?: "free" | "pro" 
         {
           title: "Active Testers",
           value: <AnimatedCounter to={500} suffix="+" />,
-          description: "Free testers worldwide",
+          description: isHandshake
+            ? "Handshake testers worldwide"
+            : "Free testers worldwide",
           icon: <Users className="w-5 h-5" />,
           colSpan: "double" as const,
           className: "bg-gradient-to-br from-emerald-600 to-emerald-700 text-white",
         },
         {
-          title: "Points Earned",
-          value: <AnimatedCounter to={45000} suffix="+" />,
-          description: "Earned by the community",
+          title: "Handshakes",
+          value: <AnimatedCounter to={1200} suffix="+" />,
+          description: "Mutual testing partnerships formed",
           icon: <Coins className="w-5 h-5" />,
         },
         {

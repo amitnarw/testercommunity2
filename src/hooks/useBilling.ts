@@ -9,14 +9,12 @@ import {
   saveBillingInfo,
   getInvoice,
   getMyInvoices,
-  getHandshakeSubscriptionStatus,
 } from "@/lib/apiCalls";
 import {
   BillingHistoryItem,
   CreateOrderResponse,
   PaymentConfigResponse,
   OrderStatusResponse,
-  SubscriptionStatusResponse,
   PromoCodeResponse,
   BillingInfo,
   InvoiceDetail,
@@ -84,27 +82,6 @@ export function useOrderStatus(orderId: string | null, pollInterval: number = 20
     },
   });
 
-  return query;
-}
-
-export function useSubscriptionStatus(subscriptionId: string | null, pollInterval: number | false = 2000) {
-  const query = useQuery<SubscriptionStatusResponse, Error>({
-    queryFn: () => getHandshakeSubscriptionStatus(subscriptionId!),
-    queryKey: ["subscriptionStatus", subscriptionId],
-    enabled: !!subscriptionId?.length,
-    refetchInterval: pollInterval === false ? false : (query) => {
-      if (!query.state.data) return pollInterval;
-      const s = query.state.data.status;
-      if (s === "ACTIVE" || s === "AUTHENTICATED" || s === "CANCELLED" || s === "HALTED" || s === "COMPLETED") {
-        return false;
-      }
-      return pollInterval as number;
-    },
-    retry: (failureCount, error) => {
-      if (error?.message?.toLowerCase().includes("not found")) return false;
-      return failureCount < 3;
-    },
-  });
   return query;
 }
 

@@ -17,45 +17,14 @@ interface NotificationRowProps {
   notification: NotificationResponse;
 }
 
-const config: Record<
-  string,
-  { icon: typeof Bell; color: string; bg: string }
-> = {
-  NEW_TEST: {
-    icon: Gift,
-    color: "text-amber-500",
-    bg: "bg-amber-500/10",
-  },
-  FEEDBACK_RECEIVED: {
-    icon: MessageSquare,
-    color: "text-blue-500",
-    bg: "bg-blue-500/10",
-  },
-  TEST_COMPLETED: {
-    icon: CheckCircle2,
-    color: "text-green-500",
-    bg: "bg-green-500/10",
-  },
-  BUG_REPORT: {
-    icon: Bug,
-    color: "text-red-500",
-    bg: "bg-red-500/10",
-  },
-  POINTS_AWARDED: {
-    icon: Star,
-    color: "text-amber-500",
-    bg: "bg-amber-500/10",
-  },
-  APP_SUBMISSION: {
-    icon: ArrowUpRight,
-    color: "text-indigo-500",
-    bg: "bg-indigo-500/10",
-  },
-  OTHER: {
-    icon: Bell,
-    color: "text-muted-foreground",
-    bg: "bg-muted",
-  },
+const config: Record<string, { icon: typeof Bell; color: string }> = {
+  NEW_TEST: { icon: Gift, color: "text-amber-500" },
+  FEEDBACK_RECEIVED: { icon: MessageSquare, color: "text-blue-500" },
+  TEST_COMPLETED: { icon: CheckCircle2, color: "text-green-500" },
+  BUG_REPORT: { icon: Bug, color: "text-red-500" },
+  POINTS_AWARDED: { icon: Star, color: "text-amber-500" },
+  APP_SUBMISSION: { icon: ArrowUpRight, color: "text-indigo-500" },
+  OTHER: { icon: Bell, color: "text-muted-foreground" },
 };
 
 export function NotificationRow({ notification }: NotificationRowProps) {
@@ -66,11 +35,12 @@ export function NotificationRow({ notification }: NotificationRowProps) {
   return (
     <div
       className={cn(
-        "relative flex items-start gap-3 p-2.5 rounded-xl transition-all duration-200",
-        isUnread ? "bg-card/80" : "hover:bg-muted/40",
+        "relative flex items-start gap-3 px-2 py-3 rounded-xl transition-colors",
+        "hover:bg-slate-100/60 dark:hover:bg-white/[0.04]",
+        isUnread && "bg-slate-50 dark:bg-white/[0.03]",
       )}
     >
-      <div className={cn("rounded-xl p-2.5 shrink-0", c.bg)}>
+      <div className="rounded-xl p-2.5 shrink-0 bg-slate-100 dark:bg-white/5 ring-1 ring-slate-200/50 dark:ring-white/10">
         <Icon className={cn("w-4 h-4", c.color)} />
       </div>
       <div className="min-w-0 flex-1">
@@ -78,7 +48,9 @@ export function NotificationRow({ notification }: NotificationRowProps) {
           <p
             className={cn(
               "text-sm truncate",
-              isUnread ? "font-semibold text-foreground" : "font-medium text-foreground/80",
+              isUnread
+                ? "font-semibold text-slate-800 dark:text-white"
+                : "font-medium text-slate-800 dark:text-white/80",
             )}
           >
             {notification.title}
@@ -90,7 +62,7 @@ export function NotificationRow({ notification }: NotificationRowProps) {
         <p className="text-xs text-muted-foreground line-clamp-1 mt-0.5">
           {notification.description}
         </p>
-        <p className="text-[10px] text-muted-foreground/50 mt-0.5">
+        <p className="text-[11px] text-muted-foreground/60 mt-0.5">
           {formatDistanceToNow(new Date(notification.createdAt), {
             addSuffix: true,
           })}

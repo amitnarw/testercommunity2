@@ -184,7 +184,7 @@ export default function AppTestingCompletedPage({
     shortDescription: appDetails.androidApp?.description || "",
     category: appDetails.androidApp?.appCategory?.name || "General",
     androidVersion: appDetails.minimumAndroidVersion?.toString() || "8.0",
-    estimatedTime: `${appDetails.totalDay || 14} Days`,
+    estimatedTime: `${appDetails.totalDay || 16} Days`,
     playStoreUrl: `https://play.google.com/store/apps/details?id=${appDetails.androidApp?.packageName}`,
     screenshots: [
       { url: appDetails.androidApp?.appScreenshotUrl1, alt: "Screenshot 1" },
