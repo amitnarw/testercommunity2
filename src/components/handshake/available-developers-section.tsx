@@ -49,9 +49,9 @@ export function AvailableDevelopersSection({ apps, isLoading }: AvailableDevelop
 
   if (profileFetching && !currentUserId) {
     return (
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
-        {Array.from({ length: 8 }).map((_, i) => (
-          <div key={i} className="h-56 rounded-2xl bg-muted animate-pulse" />
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-3 md:gap-4">
+        {Array.from({ length: 6 }).map((_, i) => (
+          <div key={i} className="h-64 rounded-2xl bg-muted animate-pulse" />
         ))}
       </div>
     );
@@ -92,9 +92,9 @@ export function AvailableDevelopersSection({ apps, isLoading }: AvailableDevelop
 
   if (isLoading) {
     return (
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
-        {Array.from({ length: 8 }).map((_, i) => (
-          <div key={i} className="h-56 rounded-2xl bg-muted animate-pulse" />
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-3 md:gap-4">
+        {Array.from({ length: 6 }).map((_, i) => (
+          <div key={i} className="h-64 rounded-2xl bg-muted animate-pulse" />
         ))}
       </div>
     );
@@ -109,7 +109,7 @@ export function AvailableDevelopersSection({ apps, isLoading }: AvailableDevelop
   }
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 gap-3 md:gap-4">
       {apps.map((app) => {
         const owner = app.appOwner as unknown as {
           name?: string;

@@ -491,6 +491,42 @@ export interface AndroidApp {
   reviews?: ReviewResponse[];
 }
 
+/** S12: partner half of an active handshake, resolved via HandshakeLink. */
+export interface HandshakePairInfo {
+  linkId: number;
+  linkStatus: "ACTIVE" | "COMPLETED" | "CANCELLED";
+  partnerRelation: {
+    id: number;
+    status:
+      | "PENDING"
+      | "IN_PROGRESS"
+      | "COMPLETED"
+      | "DROPPED"
+      | "REMOVED"
+      | "REJECTED"
+      | "MISSED"
+      | "PENALIZED"
+      | "REPLACED";
+    daysCompleted: number;
+    tester: {
+      id: string;
+      name: string;
+      image: string | null;
+      handshakeLevel?: number;
+      eliteBadge?: boolean;
+    };
+    campaign: {
+      id: number;
+      status: AppData["status"];
+      currentDay: number;
+      totalDay: number;
+      testingStartDate: string | null;
+      testingStartEligibleAt: string | null;
+      androidApp: { appName: string; appLogoUrl: string } | null;
+    } | null;
+  } | null;
+}
+
 export interface HubSubmittedAppResponse {
   androidApp: AndroidApp;
   id: number;
@@ -547,6 +583,11 @@ export interface HubSubmittedAppResponse {
   totalTester: number;
   currentDay: number;
   totalDay: number;
+  /** S12: lifecycle dates returned by getHubApps (full-scalar include). */
+  testingStartDate?: string | null;
+  testingEndDate?: string | null;
+  testingStartEligibleAt?: string | null;
+  waitingPeriodStartedAt?: string | null;
   instructionsForTester: string | null;
   averageTimeTesting: string | null;
   averageRating: number;
@@ -637,6 +678,8 @@ export interface HubSubmittedAppResponse {
       video: string;
     } | null;
     daysCompleted: number;
+    /** S8-G1: true once a day was missed in the current cycle (level credit at risk). */
+    hadMissSinceStart?: boolean;
     lastActivityAt?: string | Date;
     dailyVerifications?: {
       id: number;
@@ -647,6 +690,8 @@ export interface HubSubmittedAppResponse {
       metaData?: any;
       rejectionReason?: string;
     }[];
+    /** S12: populated by getHubApps for handshake relations with a live link. */
+    handshakePair?: HandshakePairInfo | null;
   }[];
   paymentInfo?: {
     amountPaid: number;

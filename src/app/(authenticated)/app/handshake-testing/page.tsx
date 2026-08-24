@@ -69,6 +69,7 @@ function CommunityDashboardContent() {
       | "incoming"
       | "outgoing",
   );
+  const [showOutgoingHistory, setShowOutgoingHistory] = useState(false);
 
   useEffect(() => {
     const tab = searchParams.get("tab");
@@ -339,6 +340,10 @@ function CommunityDashboardContent() {
                 <OutgoingRequestsSection
                   items={outgoing?.items ?? []}
                   isLoading={outgoingLoading}
+                  showHistory={showOutgoingHistory}
+                  onToggleHistory={() =>
+                    setShowOutgoingHistory((v) => !v)
+                  }
                 />
               )}
             </TabsContent>

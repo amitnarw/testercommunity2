@@ -21,6 +21,10 @@ function useInvalidateHandshakeQueries() {
     queryClient.invalidateQueries({ queryKey: ["useSingleHubAppDetails"] });
     queryClient.invalidateQueries({ queryKey: ["useHubSubmittedApp"] });
     queryClient.invalidateQueries({ queryKey: ["my-level"] });
+    // S12: accept/reject/cancel change campaign lifecycle + slot counts, so
+    // the hub tabs (Available/Running) and their badges must refresh too.
+    queryClient.invalidateQueries({ queryKey: ["useHubApps"] });
+    queryClient.invalidateQueries({ queryKey: ["useHubAppsCount"] });
   };
 }
 

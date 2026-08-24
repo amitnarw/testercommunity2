@@ -40,7 +40,8 @@ import { ExpandableText } from "@/components/expandable-text";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { OfferAppModal } from "@/components/handshake/offer-app-modal";
 import { AddonsSection } from "@/components/handshake/addons-section";
-import { PendingHandshakeCard, RequestSentCard } from "@/components/handshake/pending-handshake-card";
+import { PendingHandshakeCard, RequestSentCard, ActiveHandshakeCard, OwnCampaignCard } from "@/components/handshake/pending-handshake-card";
+import { authClient } from "@/lib/auth-client";
 
 const confettiConfig = {
   angle: 90,
@@ -82,6 +83,17 @@ function AppTestingPageClient({ id }: { id: string }) {
   const myPendingHref = myPending
     ? `/app/handshake-testing/my-submissions/${myPending.offeredApp.id}`
     : null;
+
+  // The viewer is already an active tester on this campaign (partnerApp is
+  // only attached when an ACTIVE HandshakeLink exists) or is the campaign's
+  // owner — in both cases the generic join CTA must go away.
+  const { data: session } = authClient.useSession();
+  const currentUserId = session?.user?.id;
+  const activeHandshake =
+    !!appDetails?.handshake?.partnerApp && !appDetails?.handshake?.isBlocked;
+  const isOwner =
+    !!currentUserId && !!appDetails && appDetails.appOwnerId === currentUserId;
+  const hideCta = hideCtaForPending || activeHandshake || isOwner;
 
   useEffect(() => {
     if (isSuccess) {
@@ -205,6 +217,22 @@ function AppTestingPageClient({ id }: { id: string }) {
   if (!appDetails) {
     notFound();
   }
+
+  // Replaces the generic join CTA in all render spots when the viewer is
+  // already an active tester (or the owner) on this campaign.
+  const ctaReplacement = (
+    <>
+      {activeHandshake && (
+        <ActiveHandshakeCard
+          campaignId={appDetails.id}
+          status={appDetails.status}
+          currentDay={appDetails.currentDay}
+          totalDay={appDetails.totalDay}
+        />
+      )}
+      {isOwner && <OwnCampaignCard campaignId={appDetails.id} />}
+    </>
+  );
 
   // S8-G6 (spec): while a penalty is active the user may only access the
   // Penalty page and Add-ons. The layout lets detail routes through; here we
@@ -337,6 +365,7 @@ function AppTestingPageClient({ id }: { id: string }) {
                   offeredAppHref={myPendingHref}
                 />
               )}
+              {ctaReplacement}
               <AppActionButton
                 app={appDetails}
                 handleRequestToJoin={handleSubmit}
@@ -345,7 +374,7 @@ function AppTestingPageClient({ id }: { id: string }) {
                 isError={isError}
                 error={error}
                 reset={reset}
-                hideButton={hideCtaForPending}
+                hideButton={hideCta}
               />
             </div>
 
@@ -430,58 +459,6 @@ function AppTestingPageClient({ id }: { id: string }) {
               </motion.section>
             )}
 
-            <section>
-              <h2 className="text-2xl font-bold mb-4">Screenshots</h2>
-              <div className="w-full">
-                <div className="flex flex-row gap-2 overflow-x-auto pb-4 -mb-4">
-                  {appDetails?.androidApp?.appScreenshotUrl1 && (
-                    <div
-                      className="overflow-hidden rounded-xl flex-shrink-0 w-40 sm:w-60 relative group cursor-pointer"
-                      onClick={() => {
-                        setFullscreenImage(
-                          appDetails?.androidApp?.appScreenshotUrl1,
-                        );
-                      }}
-                    >
-                      <SafeImage
-                        src={appDetails?.androidApp?.appScreenshotUrl1}
-                        alt="App Screenshot 1"
-                        width={400}
-                        height={800}
-                        className="object-cover h-full w-full group-hover:scale-105 transition-transform duration-300 bg-muted/20"
-                        data-ai-hint={appDetails?.androidApp?.appScreenshotUrl1}
-                      />
-                      <div className="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                        <Expand className="w-8 h-8 text-white" />
-                      </div>
-                    </div>
-                  )}
-                  {appDetails?.androidApp?.appScreenshotUrl2 && (
-                    <div
-                      className="overflow-hidden rounded-xl flex-shrink-0 w-40 sm:w-60 relative group cursor-pointer"
-                      onClick={() => {
-                        setFullscreenImage(
-                          appDetails?.androidApp?.appScreenshotUrl2,
-                        );
-                      }}
-                    >
-                      <SafeImage
-                        src={appDetails?.androidApp?.appScreenshotUrl2}
-                        alt="App Screenshot 2"
-                        width={400}
-                        height={800}
-                        className="object-cover h-full w-full group-hover:scale-105 transition-transform duration-300 bg-muted/20"
-                        data-ai-hint={appDetails?.androidApp?.appScreenshotUrl2}
-                      />
-                      <div className="absolute inset-0 bg-black/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                        <Expand className="w-8 h-8 text-white" />
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </div>
-            </section>
-
             {/* Sidebar for mobile, shown in flow */}
             <div className="block lg:hidden space-y-3">
               {pendingIncoming && appDetails?.handshake && (
@@ -503,6 +480,7 @@ function AppTestingPageClient({ id }: { id: string }) {
                   offeredAppHref={myPendingHref}
                 />
               )}
+              {ctaReplacement}
               <AppInfoSidebar
                 app={appDetails}
                 handleRequestToJoin={handleSubmit}
@@ -512,7 +490,7 @@ function AppTestingPageClient({ id }: { id: string }) {
                 error={error}
                 reset={reset}
                 buttonClassName="hidden lg:block"
-                hideButton={hideCtaForPending}
+                hideButton={hideCta}
               />
             </div>
 
@@ -670,6 +648,7 @@ function AppTestingPageClient({ id }: { id: string }) {
                 offeredAppHref={myPendingHref}
               />
             )}
+            {ctaReplacement}
             <AppInfoSidebar
               app={appDetails}
               handleRequestToJoin={handleSubmit}
@@ -678,7 +657,7 @@ function AppTestingPageClient({ id }: { id: string }) {
               isError={isError}
               error={error}
               reset={reset}
-              hideButton={hideCtaForPending}
+              hideButton={hideCta}
             />
           </aside>
         </main>

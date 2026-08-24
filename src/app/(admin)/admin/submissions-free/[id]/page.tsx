@@ -23,6 +23,7 @@ import {
   Pencil,
   Loader2,
   Eye,
+  Handshake,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -81,6 +82,13 @@ const AdminEditSubmissionDialog = dynamic(
     ),
   { ssr: false },
 );
+const AdminForceHandshakeDialog = dynamic(
+  () =>
+    import("@/components/admin/admin-force-handshake-dialog").then(
+      (mod) => mod.AdminForceHandshakeDialog,
+    ),
+  { ssr: false },
+);
 
 export default function AdminSubmissionDetailPage({
   params,
@@ -97,6 +105,7 @@ export default function AdminSubmissionDetailPage({
   const [showCompleteDialog, setShowCompleteDialog] = useState(false);
   const [showManageTestersDialog, setShowManageTestersDialog] = useState(false);
   const [showStartTestingDialog, setShowStartTestingDialog] = useState(false);
+  const [showForceHandshakeDialog, setShowForceHandshakeDialog] = useState(false);
   const [showEditDialog, setShowEditDialog] = useState(false);
   const { toast } = useToast();
   const [isUpdatingStatus, setIsUpdatingStatus] = useState(false);
@@ -374,9 +383,24 @@ export default function AdminSubmissionDetailPage({
                     className="px-5 py-2.5 h-auto rounded-xl shadow-sm font-bold"
                   >
                     <Users className="w-4 h-4 mr-1.5" />
-                    Manage Testers
+                    Assign Testers
                   </Button>
                 )}
+
+                {/* S12: force-pair this campaign with another HANDSHAKE
+                    campaign so testing can start immediately (skips the 24h
+                    partner wait). AVAILABLE only — once testing is running
+                    the partner section + Assign Testers cover further needs. */}
+                {project.appType === "HANDSHAKE" &&
+                  project.status === "AVAILABLE" && (
+                    <Button
+                      onClick={() => setShowForceHandshakeDialog(true)}
+                      className="px-5 py-2.5 h-auto bg-amber-600 hover:bg-amber-700 text-white rounded-xl shadow-md font-bold shadow-amber-600/20"
+                    >
+                      <Handshake className="w-4 h-4 mr-1.5" />
+                      Force Handshake
+                    </Button>
+                  )}
 
                 {project.status === "AVAILABLE" && (
                   <Button
@@ -943,6 +967,7 @@ export default function AdminSubmissionDetailPage({
       {project?.id && (
         <AdminManageTestersDialog
           appId={project.id}
+          appOwnerId={project.appOwnerId}
           open={showManageTestersDialog}
           onOpenChange={setShowManageTestersDialog}
           onSuccess={() => refetch()}
@@ -965,6 +990,13 @@ export default function AdminSubmissionDetailPage({
         currentTester={project.currentTester || 0}
         totalTester={project.totalTester || 0}
         appType={project.appType}
+      />
+      {/* S12: Force Handshake — admin-only, HANDSHAKE + AVAILABLE */}
+      <AdminForceHandshakeDialog
+        open={showForceHandshakeDialog}
+        onOpenChange={setShowForceHandshakeDialog}
+        thisCampaign={{ id: project.id, appOwnerId: project.appOwnerId }}
+        onSuccess={() => refetch()}
       />
       {/* Fullscreen Image Viewer */}
       {fullscreenImage && (

@@ -47,7 +47,7 @@ export const GoogleGroupBanner = ({
   }
 
   return (
-    <Card className="relative overflow-hidden border-none bg-gradient-to-br from-amber-500/10 via-amber-500/5 to-transparent shadow-xl shadow-amber-500/5 rounded-[2rem] p-6 sm:p-8 border border-amber-500/10">
+    <Card className="relative overflow-hidden border-none bg-gradient-to-br from-amber-500/10 via-amber-500/5 to-transparent shadow-xl shadow-amber-500/5 rounded-[2rem] p-3 sm:p-8 border border-amber-500/10">
       <div className="absolute -right-12 -top-12 w-48 h-48 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
 
       <div className="relative flex flex-col md:flex-row gap-8 items-start">

@@ -6,7 +6,7 @@ import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { SafeImage } from "@/components/safe-image";
-import { Clock, Check, X } from "lucide-react";
+import { Clock, Check, X, Handshake, ExternalLink } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -224,7 +224,7 @@ export function RequestSentCard({
       <CardContent className="p-5 space-y-3">
         <div className="flex items-center gap-2 text-amber-600">
           <Clock className="w-4 h-4" />
-          <p className="font-semibold">Request sent — awaiting response</p>
+          <p className="font-semibold">Request sent, awaiting response</p>
         </div>
         <p className="text-xs text-muted-foreground">
           You&apos;re waiting for the developer to accept. We&apos;ll notify
@@ -253,6 +253,97 @@ export function RequestSentCard({
           Request #{requestId} · expires in{" "}
           {formatTimeLeft(expiresAt)}
         </p>
+      </CardContent>
+    </Card>
+  );
+}
+
+interface ActiveHandshakeCardProps {
+  campaignId: number;
+  /** Campaign lifecycle status — detects the 24h waiting window. */
+  status?: string;
+  currentDay?: number;
+  totalDay?: number;
+}
+
+/** Shown on the detail page when the viewer already has an ACTIVE handshake
+ *  link on this campaign (handshake.partnerApp is set). Replaces the generic
+ *  "Request to Join Testing" CTA — they are already a tester here, so the
+ *  only meaningful action is going to the testing dashboard. */
+export function ActiveHandshakeCard({
+  campaignId,
+  status,
+  currentDay,
+  totalDay,
+}: ActiveHandshakeCardProps) {
+  const isWaiting = status === "WAITING_FOR_PARTNERS";
+  const day = currentDay && currentDay > 0 ? currentDay : 1;
+  const progress =
+    totalDay && totalDay > 0 ? Math.min((day / totalDay) * 100, 100) : 0;
+
+  return (
+    <Card className="overflow-hidden border-emerald-500/30 bg-gradient-to-br from-emerald-500/5 to-background">
+      <CardContent className="p-5 space-y-3">
+        <div className="flex items-center gap-2 text-emerald-600">
+          <Handshake className="w-4 h-4" />
+          <p className="font-semibold">
+            Handshake active — you&apos;re testing this app
+          </p>
+        </div>
+        {isWaiting ? (
+          <p className="text-xs text-muted-foreground">
+            Handshake confirmed. Testing starts once the 24-hour waiting
+            period ends — we&apos;ll notify you when day 1 begins.
+          </p>
+        ) : (
+          totalDay && totalDay > 0 && (
+            <div className="space-y-1.5">
+              <div className="flex justify-between text-xs font-medium text-muted-foreground">
+                <span>Progress</span>
+                <span>
+                  Day {day} of {totalDay}
+                </span>
+              </div>
+              <div className="h-2 w-full bg-secondary rounded-full overflow-hidden">
+                <div
+                  className="h-full bg-gradient-to-r from-emerald-500 to-emerald-400 transition-all duration-500 ease-out"
+                  style={{ width: `${progress}%` }}
+                />
+              </div>
+            </div>
+          )
+        )}
+        <Button asChild size="sm" className="w-full">
+          <Link href={`/app/handshake-testing/${campaignId}/ongoing`}>
+            Go to Testing Dashboard
+          </Link>
+        </Button>
+      </CardContent>
+    </Card>
+  );
+}
+
+/** Shown on the detail page when the viewer is the campaign's owner —
+ *  joining your own campaign makes no sense, so point them to their
+ *  submission management view instead. */
+export function OwnCampaignCard({ campaignId }: { campaignId: number }) {
+  return (
+    <Card className="overflow-hidden border-border/60 bg-secondary/20">
+      <CardContent className="p-5 space-y-3">
+        <div className="flex items-center gap-2 text-foreground/80">
+          <Handshake className="w-4 h-4" />
+          <p className="font-semibold">This is your campaign</p>
+        </div>
+        <p className="text-xs text-muted-foreground">
+          You published this app. Manage its details and testers from your
+          submission page.
+        </p>
+        <Button asChild size="sm" variant="outline" className="w-full">
+          <Link href={`/app/handshake-testing/my-submissions/${campaignId}`}>
+            <ExternalLink className="w-4 h-4 mr-1" />
+            Manage Submission
+          </Link>
+        </Button>
       </CardContent>
     </Card>
   );
