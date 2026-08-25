@@ -40,7 +40,7 @@ import { ExpandableText } from "@/components/expandable-text";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { OfferAppModal } from "@/components/handshake/offer-app-modal";
 import { AddonsSection } from "@/components/handshake/addons-section";
-import { PendingHandshakeCard, RequestSentCard, ActiveHandshakeCard, OwnCampaignCard } from "@/components/handshake/pending-handshake-card";
+import { PendingHandshakeCard, RequestSentCard, ActiveHandshakeCard, OwnCampaignCard, FullHandshakeCard } from "@/components/handshake/pending-handshake-card";
 import { authClient } from "@/lib/auth-client";
 
 const confettiConfig = {
@@ -93,7 +93,16 @@ function AppTestingPageClient({ id }: { id: string }) {
     !!appDetails?.handshake?.partnerApp && !appDetails?.handshake?.isBlocked;
   const isOwner =
     !!currentUserId && !!appDetails && appDetails.appOwnerId === currentUserId;
-  const hideCta = hideCtaForPending || activeHandshake || isOwner;
+  // Campaign capacity: once currentTester catches totalTester the owner stops
+  // accepting (backend 409 "not accepting any more testers"). Surface it as a
+  // first-class card rather than letting the visitor hit that error after picking
+  // an app in the offer modal.
+  const isFull =
+    !!appDetails?.totalTester &&
+    (appDetails?.currentTester ?? 0) >= appDetails.totalTester;
+  // Full is lower priority than owner / pending / active-handshake — those must
+  // keep winning when they apply.
+  const hideCta = hideCtaForPending || activeHandshake || isOwner || isFull;
 
   useEffect(() => {
     if (isSuccess) {
@@ -110,6 +119,7 @@ function AppTestingPageClient({ id }: { id: string }) {
   }, [isError]);
 
   const handleSubmit = () => {
+    if (isFull) return;
     if (appDetails?.appType === "HANDSHAKE") {
       setShowOfferModal(true);
       return;
@@ -125,6 +135,7 @@ function AppTestingPageClient({ id }: { id: string }) {
 
   const handleErrorRetry = () => {
     setShowErrorModal(false);
+    if (isFull) return;
     // P5: retry through the same appType-aware path as handleSubmit ,  for
     // HANDSHAKE campaigns this re-opens the offer modal instead of firing
     // the legacy join mutation that never applies to them.
@@ -219,7 +230,8 @@ function AppTestingPageClient({ id }: { id: string }) {
   }
 
   // Replaces the generic join CTA in all render spots when the viewer is
-  // already an active tester (or the owner) on this campaign.
+  // already an active tester (or the owner) on this campaign, or when the
+  // campaign is at capacity.
   const ctaReplacement = (
     <>
       {activeHandshake && (
@@ -231,6 +243,12 @@ function AppTestingPageClient({ id }: { id: string }) {
         />
       )}
       {isOwner && <OwnCampaignCard campaignId={appDetails.id} />}
+      {isFull && !isOwner && !activeHandshake && !hideCtaForPending && (
+        <FullHandshakeCard
+          currentTester={appDetails.currentTester ?? 0}
+          totalTester={appDetails.totalTester}
+        />
+      )}
     </>
   );
 

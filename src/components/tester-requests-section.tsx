@@ -7,6 +7,13 @@ import {
   useRejectHubAppTestingRequest,
 } from "@/hooks/useHub";
 import {
+  useIncomingHandshakeRequests,
+  useAcceptHandshakeRequest as useAcceptHandshakeReqV2,
+  useRejectHandshakeRequest as useRejectHandshakeReqV2,
+} from "@/hooks/useHandshakeRequests";
+import type { HandshakeRequest } from "@/lib/types";
+import Link from "next/link";
+import {
   Check,
   X,
   User,
@@ -79,6 +86,10 @@ export function TesterRequestsSection({
   const [isRejectModalOpen, setIsRejectModalOpen] = useState(false);
   const [isDetailsModalOpen, setIsDetailsModalOpen] = useState(false);
   const [isVerificationModalOpen, setIsVerificationModalOpen] = useState(false);
+  // v2 handshake request state for this hub
+  const [v2RejectingId, setV2RejectingId] = useState<number | null>(null);
+  const [v2RejectReason, setV2RejectReason] = useState("");
+  const [v2ProcessingId, setV2ProcessingId] = useState<number | null>(null);
   const [selectedVerification, setSelectedVerification] = useState<{
     id: number;
     dayNumber: number;
@@ -126,6 +137,17 @@ export function TesterRequestsSection({
   const { createUploadUrl, isPendingCUU, uploadFileToR2 } = useR2();
   const acceptMutation = useAcceptHubAppTestingRequest();
   const rejectMutation = useRejectHubAppTestingRequest();
+
+  // v2 handshake requests targeting this hub (owner view)
+  const { data: incomingData } = useIncomingHandshakeRequests({
+    status: "PENDING",
+    limit: 50,
+  });
+  const incomingForHub: HandshakeRequest[] = (
+    (incomingData?.items ?? []) as HandshakeRequest[]
+  ).filter((r) => r.requestedApp?.id === Number(hubId));
+  const acceptHandshakeV2 = useAcceptHandshakeReqV2();
+  const rejectHandshakeV2 = useRejectHandshakeReqV2();
 
   useEffect(() => {
     return () => {
@@ -177,6 +199,76 @@ export function TesterRequestsSection({
       });
     } finally {
       setProcessingId(null);
+    }
+  };
+
+  // v2 handshake handlers for this hub
+  const formatTimeLeft = (expiresAt: string) => {
+    const ms = new Date(expiresAt).getTime() - Date.now();
+    if (ms <= 0) return "expired";
+    const days = Math.floor(ms / (24 * 60 * 60 * 1000));
+    const hours = Math.floor((ms % (24 * 60 * 60 * 1000)) / (60 * 60 * 1000));
+    if (days > 0) return `${days}d ${hours}h left`;
+    return `${hours}h left`;
+  };
+
+  const handleV2Accept = async (id: number) => {
+    setV2ProcessingId(id);
+    try {
+      await acceptHandshakeV2.mutateAsync(id);
+      setFeedback({
+        open: true,
+        status: "success",
+        title: "Handshake Accepted",
+        description: "Handshake accepted. Both apps will now enter testing.",
+        actionLabel: "Done",
+      });
+      refetch();
+    } catch (error: any) {
+      console.error("Error accepting handshake:", error);
+      setFeedback({
+        open: true,
+        status: "error",
+        title: "Action Failed",
+        description:
+          error?.message || "Could not accept the handshake. Please try again.",
+        actionLabel: "Close",
+      });
+    } finally {
+      setV2ProcessingId(null);
+    }
+  };
+
+  const handleV2RejectConfirm = async () => {
+    if (v2RejectingId == null || !v2RejectReason.trim()) return;
+    setV2ProcessingId(v2RejectingId);
+    try {
+      await rejectHandshakeV2.mutateAsync({
+        id: v2RejectingId,
+        reason: v2RejectReason.trim(),
+      });
+      setFeedback({
+        open: true,
+        status: "success",
+        title: "Request Rejected",
+        description: "The handshake request has been rejected.",
+        actionLabel: "Done",
+      });
+      setV2RejectingId(null);
+      setV2RejectReason("");
+      refetch();
+    } catch (error: any) {
+      console.error("Error rejecting handshake:", error);
+      setFeedback({
+        open: true,
+        status: "error",
+        title: "Action Failed",
+        description:
+          error?.message || "Could not reject the handshake. Please try again.",
+        actionLabel: "Close",
+      });
+    } finally {
+      setV2ProcessingId(null);
     }
   };
 
@@ -316,12 +408,12 @@ export function TesterRequestsSection({
         <TabsList className="grid w-full grid-cols-2 max-w-[400px] mb-4">
           <TabsTrigger value="pending" className="relative">
             Pending Requests
-            {pendingRequests.length > 0 && (
+            {pendingRequests.length + incomingForHub.length > 0 && (
               <Badge
                 variant="destructive"
                 className="ml-2 px-1.5 h-5 min-w-5 flex items-center justify-center rounded-full text-[10px]"
               >
-                {pendingRequests.length}
+                {pendingRequests.length + incomingForHub.length}
               </Badge>
             )}
           </TabsTrigger>
@@ -339,6 +431,122 @@ export function TesterRequestsSection({
         </TabsList>
 
         <TabsContent value="pending" className="space-y-4">
+          {/* v2 handshake requests targeting this hub — same rows that appear on /handshake-testing?tab=requests Incoming */}
+          {incomingForHub.length > 0 && (
+            <div className="space-y-3 rounded-xl border bg-card p-4">
+              <p className="text-xs font-bold uppercase tracking-widest text-primary">
+                Handshake requests · {incomingForHub.length} pending
+              </p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <AnimatePresence>
+                  {incomingForHub.map((req) => {
+                    const offered = req.offeredApp?.androidApp;
+                    const offeredAppId = req.offeredApp?.id;
+                    const offeredHref = offeredAppId
+                      ? `/app/handshake-testing/${offeredAppId}`
+                      : null;
+                    return (
+                      <motion.div
+                        key={`v2-${req.id}`}
+                        initial={{ opacity: 0, y: 6 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, x: -20 }}
+                        className="rounded-xl border bg-secondary/20 p-4 flex flex-col gap-3"
+                      >
+                        <div className="flex items-start gap-3">
+                          <Avatar className="h-10 w-10 border border-border">
+                            <AvatarImage src={req.fromUser?.image || ""} />
+                            <AvatarFallback className="bg-primary/10 text-primary font-medium">
+                              {req.fromUser?.name?.charAt(0) || "U"}
+                            </AvatarFallback>
+                          </Avatar>
+                          <div className="flex-1 min-w-0">
+                            <p className="font-semibold text-sm truncate">
+                              {req.fromUser?.name || "Unknown"}
+                            </p>
+                            <p className="text-xs text-muted-foreground truncate">
+                              wants to test your app
+                            </p>
+                            {req.message && (
+                              <p className="text-xs italic text-muted-foreground mt-1 line-clamp-2 bg-background/60 rounded px-2 py-1 border-l-2 border-primary/40">
+                                &quot;{req.message}&quot;
+                              </p>
+                            )}
+                          </div>
+                        </div>
+                        {offered && offeredAppId && (
+                          <Link
+                            href={offeredHref!}
+                            className="flex items-center gap-2 rounded-lg border bg-card p-2 hover:bg-secondary/40 transition-colors"
+                          >
+                            <div className="relative w-8 h-8 rounded-lg overflow-hidden bg-muted border border-border/40 flex-shrink-0">
+                              {offered.appLogoUrl ? (
+                                <SafeImage
+                                  src={offered.appLogoUrl}
+                                  alt={offered.appName}
+                                  fill
+                                  className="object-cover"
+                                />
+                              ) : null}
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <p className="text-xs font-semibold truncate">
+                                {offered.appName}
+                              </p>
+                              <p className="text-[10px] uppercase tracking-wide text-muted-foreground">
+                                Their app · click to preview
+                              </p>
+                            </div>
+                            <Eye className="w-3.5 h-3.5 text-muted-foreground flex-shrink-0" />
+                          </Link>
+                        )}
+                        <div className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
+                          <Clock className="w-3 h-3" />
+                          {formatTimeLeft(req.expiresAt)}
+                        </div>
+                        <div className="flex gap-2 pt-1">
+                          {offeredHref && (
+                            <Button size="sm" variant="outline" asChild className="px-3">
+                              <Link href={offeredHref}>
+                                <Eye className="w-3.5 h-3.5 mr-1" />
+                                View
+                              </Link>
+                            </Button>
+                          )}
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            className="flex-1"
+                            disabled={v2ProcessingId === req.id}
+                            onClick={() => {
+                              setV2RejectingId(req.id);
+                              setV2RejectReason("");
+                            }}
+                          >
+                            <X className="w-4 h-4 mr-1" />
+                            Reject
+                          </Button>
+                          <Button
+                            size="sm"
+                            className="flex-1"
+                            disabled={v2ProcessingId === req.id}
+                            onClick={() => handleV2Accept(req.id)}
+                          >
+                            {v2ProcessingId === req.id ? (
+                              <Loader2 className="w-4 h-4 mr-1 animate-spin" />
+                            ) : (
+                              <Check className="w-4 h-4 mr-1" />
+                            )}
+                            Accept
+                          </Button>
+                        </div>
+                      </motion.div>
+                    );
+                  })}
+                </AnimatePresence>
+              </div>
+            </div>
+          )}
           <div className="rounded-xl border bg-card shadow-sm overflow-hidden hidden md:grid md:grid-cols-1">
             <Table>
               <TableHeader className="bg-muted/50">
@@ -451,9 +659,14 @@ export function TesterRequestsSection({
                 </AnimatePresence>
               </TableBody>
             </Table>
-            {pendingRequests.length === 0 && (
+            {pendingRequests.length === 0 && incomingForHub.length === 0 && (
               <div className="p-8 text-center text-muted-foreground">
                 No pending requests found.
+              </div>
+            )}
+            {pendingRequests.length === 0 && incomingForHub.length > 0 && (
+              <div className="p-3 text-center text-xs text-muted-foreground">
+                No legacy requests — handshake requests above
               </div>
             )}
           </div>
@@ -548,7 +761,7 @@ export function TesterRequestsSection({
                 </motion.div>
               ))}
             </AnimatePresence>
-            {pendingRequests.length === 0 && (
+            {pendingRequests.length === 0 && incomingForHub.length === 0 && (
               <div className="p-8 text-center text-muted-foreground border-2 border-dashed rounded-xl">
                 No pending requests found.
               </div>
@@ -1263,6 +1476,67 @@ export function TesterRequestsSection({
                   check-in
                 </p>
               </div>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* v2 Handshake Reject Dialog */}
+      <Dialog
+        open={v2RejectingId != null}
+        onOpenChange={(open) => {
+          if (!open) {
+            setV2RejectingId(null);
+            setV2RejectReason("");
+          }
+        }}
+      >
+        <DialogContent className="sm:max-w-[420px]">
+          <DialogHeader>
+            <DialogTitle>Reject handshake request</DialogTitle>
+            <DialogDescription className="text-muted-foreground">
+              Tell the developer why you are rejecting this handshake.
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-3">
+            <label htmlFor="v2-reject-reason" className="text-sm font-medium">
+              Reason
+            </label>
+            <Textarea
+              id="v2-reject-reason"
+              value={v2RejectReason}
+              onChange={(e) => setV2RejectReason(e.target.value.slice(0, 280))}
+              placeholder="Tell them why (helps the community)..."
+              rows={3}
+            />
+            <p className="text-[10px] text-muted-foreground text-right">
+              {v2RejectReason.length}/280
+            </p>
+            <div className="flex gap-2">
+              <Button
+                variant="outline"
+                className="flex-1"
+                onClick={() => {
+                  setV2RejectingId(null);
+                  setV2RejectReason("");
+                }}
+              >
+                Cancel
+              </Button>
+              <Button
+                className="flex-1"
+                disabled={!v2RejectReason.trim() || v2ProcessingId === v2RejectingId}
+                onClick={handleV2RejectConfirm}
+              >
+                {v2ProcessingId === v2RejectingId ? (
+                  <>
+                    <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                    Rejecting...
+                  </>
+                ) : (
+                  "Reject"
+                )}
+              </Button>
             </div>
           </div>
         </DialogContent>

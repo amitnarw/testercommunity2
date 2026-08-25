@@ -721,7 +721,10 @@ function SubmissionDetailsPage({
 
             {(appDetails?.status === "AVAILABLE" ||
               appDetails?.status === "IN_TESTING" ||
-              appDetails?.status === "COMPLETED") && (
+              appDetails?.status === "COMPLETED" ||
+              appDetails?.status === "WAITING_FOR_PARTNERS" ||
+              appDetails?.status === "TESTING_ACTIVE" ||
+              appDetails?.status === "FINDING_TESTERS") && (
               <TesterRequestsSection
                 hubId={id}
                 requests={appDetails?.testerRelations || []}

@@ -6,7 +6,7 @@ import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { SafeImage } from "@/components/safe-image";
-import { Clock, Check, X, Handshake, ExternalLink } from "lucide-react";
+import { Clock, Check, X, Handshake, ExternalLink, Users } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -317,6 +317,43 @@ export function ActiveHandshakeCard({
           <Link href={`/app/handshake-testing/${campaignId}/ongoing`}>
             Go to Testing Dashboard
           </Link>
+        </Button>
+      </CardContent>
+    </Card>
+  );
+}
+
+/** Shown when a visitor lands on a campaign whose tester slots are already filled.
+ *  Replaces the generic join CTA in both the sidebar and the mobile CTA block
+ *  so the user never reaches a dead-end 409 ("not accepting any more testers").
+ *  Lower priority than owner / pending / active-handshake — those win over "full". */
+export function FullHandshakeCard({
+  currentTester,
+  totalTester,
+}: {
+  currentTester: number;
+  totalTester: number;
+}) {
+  return (
+    <Card className="overflow-hidden border-border bg-muted/30">
+      <CardContent className="p-5 space-y-3">
+        <div className="flex items-center gap-2 text-muted-foreground">
+          <Users className="w-4 h-4" />
+          <p className="font-semibold">Slots full · not accepting testers</p>
+        </div>
+        <p className="text-xs text-muted-foreground">
+          This campaign has filled all tester slots (
+          <span className="font-semibold text-foreground">
+            {currentTester}/{totalTester}
+          </span>
+          ). Check back later or browse other apps you can test.
+        </p>
+        <div className="h-2 w-full bg-secondary rounded-full overflow-hidden">
+          <div className="h-full bg-muted-foreground/30" style={{ width: "100%" }} />
+        </div>
+        <Button variant="outline" size="sm" className="w-full" disabled>
+          <Users className="w-4 h-4 mr-1" />
+          Full
         </Button>
       </CardContent>
     </Card>
