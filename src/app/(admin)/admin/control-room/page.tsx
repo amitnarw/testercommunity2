@@ -152,7 +152,7 @@ export default function AdminControlRoomPage() {
       );
     };
 
-  // S9: Points & Withdrawal settings removed — the points economy no longer exists.
+  // S9: Points & Withdrawal settings removed , the points economy no longer exists.
 
   const handleToggleHumanChat = (checked: boolean) => {
     handleChange("humanChatEnabled", checked);

@@ -312,7 +312,7 @@ export const AppInfoSidebar = ({
             <p className="text-lg font-semibold text-primary text-start">
               REWARD
             </p>
-            {/* S8-A2: handshake testing is a barter system — no points, no
+            {/* S8-A2: handshake testing is a barter system , no points, no
                 money. Show a handshake badge instead of "0 Points". */}
             {app?.appType === "HANDSHAKE" ? (
               <div className="text-xl sm:text-2xl font-bold text-foreground flex items-center gap-2 justify-start mt-1">

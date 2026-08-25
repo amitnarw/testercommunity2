@@ -198,7 +198,7 @@ function RunningHandshakeCard({
             {relation.hadMissSinceStart && (
               <p className="flex items-center gap-1 text-[11px] text-red-500">
                 <AlertTriangle className="w-3 h-3" />
-                Missed a day — level credit at risk
+                Missed a day , level credit at risk
               </p>
             )}
           </div>

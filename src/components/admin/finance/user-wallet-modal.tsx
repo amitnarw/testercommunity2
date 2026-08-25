@@ -56,7 +56,7 @@ export function UserWalletModal({ userId, open, onClose }: Props) {
                 <p className="text-2xl font-bold">{data.wallet.totalPackages}</p>
                 <p className="text-xs text-muted-foreground">Packages</p>
               </div>
-              {/* S9: Points card removed — money balance only */}
+              {/* S9: Points card removed , money balance only */}
               <div className="bg-secondary/30 rounded-xl p-4 text-center">
                 <DollarSign className="h-5 w-5 mx-auto mb-1 text-amber-500" />
                 <p className="text-2xl font-bold">₹{data.wallet.balanceMoney}</p>

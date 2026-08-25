@@ -118,7 +118,7 @@ export function WalletCard({
   }, [x, y]);
 
   // S9: points no longer exist; money is not a user-facing balance (pro
-  // tester payouts live on the tester dashboard) — the card is packages-only.
+  // tester payouts live on the tester dashboard) , the card is packages-only.
   const cardNumber = walletData
     ? formatCardNumber(walletData.totalPackages ?? 0)
     : "0000";

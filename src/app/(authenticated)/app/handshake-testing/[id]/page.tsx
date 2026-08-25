@@ -86,7 +86,7 @@ function AppTestingPageClient({ id }: { id: string }) {
 
   // The viewer is already an active tester on this campaign (partnerApp is
   // only attached when an ACTIVE HandshakeLink exists) or is the campaign's
-  // owner — in both cases the generic join CTA must go away.
+  // owner , in both cases the generic join CTA must go away.
   const { data: session } = authClient.useSession();
   const currentUserId = session?.user?.id;
   const activeHandshake =
@@ -250,7 +250,7 @@ function AppTestingPageClient({ id }: { id: string }) {
               <AlertTriangle className="w-6 h-6 text-red-600 flex-shrink-0 mt-0.5" />
               <div>
                 <h1 className="text-lg font-bold text-red-700 dark:text-red-500">
-                  Penalty mode — limited access
+                  Penalty mode , limited access
                 </h1>
                 <p className="text-sm text-muted-foreground mt-1">
                   You have active penalty tasks. Until they are resolved, only

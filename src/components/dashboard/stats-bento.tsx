@@ -19,7 +19,7 @@ export function StatsBento({ summary }: { summary: any }) {
 
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
           
-          {/* Left: Packages (Wide Block) — Points removed: platform no
+          {/* Left: Packages (Wide Block) , Points removed: platform no
               longer uses a points system */}
           <div className="lg:col-span-2">
             <div className="bg-gradient-to-br from-slate-50 via-white to-slate-50 dark:from-card dark:via-card/50 dark:to-card rounded-[2rem] flex flex-col justify-between overflow-hidden h-full border border-slate-200/60 dark:border-border/10 shadow-[0_8px_30px_rgb(0,0,0,0.04)] transition-all duration-300 relative">

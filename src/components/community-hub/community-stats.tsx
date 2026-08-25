@@ -123,7 +123,7 @@ export function CommunityStats({
   const isPro = variant === "pro";
   const isHandshake = variant === "handshake";
 
-  // S8-A4: the handshake variant must not mention points — the platform has
+  // S8-A4: the handshake variant must not mention points , the platform has
   // no points system. Barter metrics replace the old "Points Earned" card.
   const stats = isPro
     ? [

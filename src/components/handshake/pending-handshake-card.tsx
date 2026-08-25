@@ -205,7 +205,7 @@ interface RequestSentCardProps {
     id: number;
     androidApp?: { appName: string; appLogoUrl: string };
   } | null;
-  /** Owner link — viewer owns this app so it goes to my-submissions. */
+  /** Owner link , viewer owns this app so it goes to my-submissions. */
   offeredAppHref?: string | null;
 }
 
@@ -260,7 +260,7 @@ export function RequestSentCard({
 
 interface ActiveHandshakeCardProps {
   campaignId: number;
-  /** Campaign lifecycle status — detects the 24h waiting window. */
+  /** Campaign lifecycle status , detects the 24h waiting window. */
   status?: string;
   currentDay?: number;
   totalDay?: number;
@@ -268,7 +268,7 @@ interface ActiveHandshakeCardProps {
 
 /** Shown on the detail page when the viewer already has an ACTIVE handshake
  *  link on this campaign (handshake.partnerApp is set). Replaces the generic
- *  "Request to Join Testing" CTA — they are already a tester here, so the
+ *  "Request to Join Testing" CTA , they are already a tester here, so the
  *  only meaningful action is going to the testing dashboard. */
 export function ActiveHandshakeCard({
   campaignId,
@@ -287,13 +287,13 @@ export function ActiveHandshakeCard({
         <div className="flex items-center gap-2 text-emerald-600">
           <Handshake className="w-4 h-4" />
           <p className="font-semibold">
-            Handshake active — you&apos;re testing this app
+            Handshake active | you&apos;re testing this app
           </p>
         </div>
         {isWaiting ? (
           <p className="text-xs text-muted-foreground">
             Handshake confirmed. Testing starts once the 24-hour waiting
-            period ends — we&apos;ll notify you when day 1 begins.
+            period ends , we&apos;ll notify you when day 1 begins.
           </p>
         ) : (
           totalDay && totalDay > 0 && (
@@ -323,7 +323,7 @@ export function ActiveHandshakeCard({
   );
 }
 
-/** Shown on the detail page when the viewer is the campaign's owner —
+/** Shown on the detail page when the viewer is the campaign's owner ,
  *  joining your own campaign makes no sense, so point them to their
  *  submission management view instead. */
 export function OwnCampaignCard({ campaignId }: { campaignId: number }) {

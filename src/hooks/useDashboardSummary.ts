@@ -50,7 +50,7 @@ export function useDashboardSummary() {
   const totalRejected = freeRejected + proRejected;
 
   const packagesBalance = dashData?.wallet ?? wallet?.totalPackages ?? 0;
-  // S8-A1: pointsBalance removed — the platform no longer has a points
+  // S8-A1: pointsBalance removed , the platform no longer has a points
   // system; the dashboard bento no longer renders a Points tile.
 
   const notifications = notificationsData?.notifications?.slice(0, 3) || [];

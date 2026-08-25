@@ -129,7 +129,7 @@ export async function acceptApp(payload: {
   totalTester?: number;
   totalDay?: number;
   minimumAndroidVersion?: number;
-  /** S9: PAID apps only — per-tester money payout (stored as rewardMoney). */
+  /** S9: PAID apps only , per-tester money payout (stored as rewardMoney). */
   rewardPoints?: number;
 }) {
   try {

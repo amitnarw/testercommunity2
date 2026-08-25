@@ -1144,7 +1144,7 @@ export default function AdminUserDetailsPage() {
                   <h4 className="text-xs font-semibold text-muted-foreground tracking-wide mb-3 uppercase">
                     Current Balances
                   </h4>
-                  {/* S9: Total Points removed — packages only */}
+                  {/* S9: Total Points removed , packages only */}
                   <div className="grid grid-cols-1 gap-4">
                     <div className="space-y-1.5">
                       <p className="text-xs text-muted-foreground">
@@ -1178,7 +1178,7 @@ export default function AdminUserDetailsPage() {
                   <h4 className="text-xs font-semibold text-muted-foreground tracking-wide mb-3 uppercase">
                     Lifetime History
                   </h4>
-                  {/* S9: Points Earned/Spent removed — money + packages remain */}
+                  {/* S9: Points Earned/Spent removed , money + packages remain */}
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-1.5">
                       <p className="text-xs text-muted-foreground">
@@ -1770,7 +1770,7 @@ export default function AdminUserDetailsPage() {
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-3 text-sm">
-                  {/* S9: Available Points removed — packages only */}
+                  {/* S9: Available Points removed , packages only */}
                   <div className="flex items-center gap-3">
                     <Briefcase className="w-4 h-4 text-muted-foreground shrink-0" />
                     <div>

@@ -232,7 +232,7 @@ function WaitingCampaignRow({ campaign }: { campaign: WaitingCampaign }) {
             <SelectContent>
               {candidates.map((c) => (
                 <SelectItem key={c.id} value={c.id.toString()}>
-                  #{c.id} {c.androidApp?.appName || "Untitled"} —{" "}
+                  #{c.id} {c.androidApp?.appName || "Untitled"} ,{" "}
                   {c.appOwner?.name || c.appOwnerId}
                 </SelectItem>
               ))}

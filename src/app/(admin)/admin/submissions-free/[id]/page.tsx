@@ -389,7 +389,7 @@ export default function AdminSubmissionDetailPage({
 
                 {/* S12: force-pair this campaign with another HANDSHAKE
                     campaign so testing can start immediately (skips the 24h
-                    partner wait). AVAILABLE only — once testing is running
+                    partner wait). AVAILABLE only , once testing is running
                     the partner section + Assign Testers cover further needs. */}
                 {project.appType === "HANDSHAKE" &&
                   project.status === "AVAILABLE" && (
@@ -991,7 +991,7 @@ export default function AdminSubmissionDetailPage({
         totalTester={project.totalTester || 0}
         appType={project.appType}
       />
-      {/* S12: Force Handshake — admin-only, HANDSHAKE + AVAILABLE */}
+      {/* S12: Force Handshake , admin-only, HANDSHAKE + AVAILABLE */}
       <AdminForceHandshakeDialog
         open={showForceHandshakeDialog}
         onOpenChange={setShowForceHandshakeDialog}

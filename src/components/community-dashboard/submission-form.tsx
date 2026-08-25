@@ -268,7 +268,7 @@ export function SubmissionForm({
     },
   });
 
-  // S9: points cost / promo machinery removed — submissions are free.
+  // S9: points cost / promo machinery removed , submissions are free.
 
   // Spec §2.1: Handshake Testing is free. No subscription check needed.
 
@@ -335,7 +335,7 @@ export function SubmissionForm({
       if (!hasChanges) requirements.push("At least one change");
     }
 
-    // S9: no balance requirement — submissions are free.
+    // S9: no balance requirement , submissions are free.
     return requirements;
   };
 
@@ -357,7 +357,7 @@ export function SubmissionForm({
   };
 
   const handleFormSubmit = (data: SubmissionFormData) => {
-    // S9: no balance gate — submissions are free.
+    // S9: no balance gate , submissions are free.
 
     if (mode === "edit") {
       const hasChanges =

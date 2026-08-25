@@ -9,7 +9,7 @@ const benefits = [
   {
     icon: Coins,
     title: "Free Forever",
-    description: "No subscription, no fees — handshake testing is free",
+    description: "No subscription, no fees , handshake testing is free",
     color: "text-green-500",
     bg: "bg-green-500/10",
   },
@@ -44,7 +44,7 @@ const benefits = [
   {
     icon: ShieldCheck,
     title: "No Hidden Costs",
-    description: "Barter-based and free — no subscription, no per-test fees",
+    description: "Barter-based and free , no subscription, no per-test fees",
     color: "text-orange-500",
     bg: "bg-orange-500/10",
   },

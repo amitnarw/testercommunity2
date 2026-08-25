@@ -25,7 +25,7 @@ export function EliteBadgeSection() {
         </h2>
         <p className="text-sm text-muted-foreground mt-1">
           Awarded by admins to trusted, highly reliable developers. It&apos;s a
-          visual indicator of your reputation — it doesn&apos;t unlock features
+          visual indicator of your reputation , it doesn&apos;t unlock features
           or remove restrictions.
         </p>
       </div>
@@ -44,7 +44,7 @@ export function EliteBadgeSection() {
                 You have the Elite Badge
               </p>
               <p className="text-sm text-muted-foreground mt-1">
-                Keep up the great work — it&apos;s a signal of your reliability.
+                Keep up the great work , it&apos;s a signal of your reliability.
               </p>
             </>
           ) : (

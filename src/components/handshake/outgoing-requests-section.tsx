@@ -20,7 +20,7 @@ interface OutgoingRequestsSectionProps {
 }
 
 // S12: only PENDING is an active request. ACCEPTED/MUTUAL_MATCHED move to the
-// collapsed history — the live handshake itself is shown in the Running tab,
+// collapsed history , the live handshake itself is shown in the Running tab,
 // so duplicating it here was stale noise.
 const ACTIVE_STATUSES = new Set<HandshakeRequestStatus>(["PENDING"]);
 
@@ -194,7 +194,7 @@ export function OutgoingRequestsSection({
               </div>
             )}
 
-            {/* S11-A5: sender's own offered app — owner link to my-submissions */}
+            {/* S11-A5: sender's own offered app , owner link to my-submissions */}
             {offeredHref && offeredDetail && (
               <Link
                 href={offeredHref}

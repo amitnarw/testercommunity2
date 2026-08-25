@@ -31,7 +31,7 @@ import Link from "next/link";
 
 interface AdminManageTestersDialogProps {
   appId: number;
-  /** App owner id — excluded from the picker so admin can't assign them to
+  /** App owner id , excluded from the picker so admin can't assign them to
    *  their own campaign. */
   appOwnerId?: string;
   open: boolean;
@@ -124,7 +124,7 @@ export function AdminManageTestersDialog({
   });
 
   // S14: only handshake-eligible roles. Admin / super_admin / support /
-  // moderator / guide_admin etc. are excluded — assigning them as
+  // moderator / guide_admin etc. are excluded , assigning them as
   // testers makes no product sense.
   const ALLOWED_ROLES = new Set(["user", "tester"]);
 

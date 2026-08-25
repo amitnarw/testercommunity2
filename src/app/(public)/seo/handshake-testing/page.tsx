@@ -152,7 +152,7 @@ export default function HandshakeTestingPage() {
   return (
     <>
       <CommunityHero />
-      {/* S8-A4: handshake variant — barter metrics, no points */}
+      {/* S8-A4: handshake variant , barter metrics, no points */}
       <CommunityStats variant="handshake" />
       <HowItWorks />
       <PointsFormula />

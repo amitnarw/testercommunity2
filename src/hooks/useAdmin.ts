@@ -212,7 +212,7 @@ export function useAcceptApp(options?: UseMutationOptions<any, any, any>) {
       totalTester?: number;
       totalDay?: number;
       minimumAndroidVersion?: number;
-      /** S9: PAID apps only — per-tester money payout. */
+      /** S9: PAID apps only , per-tester money payout. */
       rewardPoints?: number;
     }) => acceptApp(payload),
     ...options,

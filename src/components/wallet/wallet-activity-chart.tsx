@@ -24,7 +24,7 @@ export function WalletActivityChart({
         <div className="space-y-1">
           <h3 className="text-xl font-bold">Wallet Activity</h3>
         </div>
-        {/* S9: points legend removed — packages only */}
+        {/* S9: points legend removed , packages only */}
         <div className="flex gap-8">
           <div className="space-y-1">
             <div className="flex items-center gap-2">

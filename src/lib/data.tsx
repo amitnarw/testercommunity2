@@ -323,7 +323,7 @@ export const communityPathSteps: RoadmapStep[] = [
       {
         title: "Reward Distribution",
         description:
-          "Complete the project — testers who finished the full cycle get level credit automatically.",
+          "Complete the project , testers who finished the full cycle get level credit automatically.",
       },
       {
         title: "Campaign Summary",
@@ -1439,7 +1439,7 @@ export const notifications: Notification[] = Array.from(
         description = 'A critical bug has been reported for "Slack".';
         break;
       case "POINTS_AWARDED":
-        // S9: points no longer exist — mock now reflects a completed test.
+        // S9: points no longer exist , mock now reflects a completed test.
         title = "Test cycle credited!";
         description = `Thanks for your feedback on "${
           i % 2 === 0 ? "Todoist" : "Brawl Stars"
