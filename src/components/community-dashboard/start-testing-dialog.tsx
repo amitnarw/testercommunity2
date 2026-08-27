@@ -59,9 +59,9 @@ export function StartTestingDialog({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="w-[95vw] sm:w-[480px] rounded-3xl overflow-hidden p-0 gap-0 border-none shadow-2xl bg-white dark:bg-[#1A1A1A]">
-        <div className="bg-primary/5 p-6 border-b border-primary/10">
+        <div className="bg-emerald-500/5 p-6 border-b border-emerald-500/10">
           <DialogHeader>
-            <DialogTitle className="text-primary flex items-center gap-2 text-xl font-bold">
+            <DialogTitle className="text-emerald-600 flex items-center gap-2 text-xl font-bold">
               <PlayCircle className="w-6 h-6" />
               Start Testing Phase
             </DialogTitle>
@@ -107,7 +107,7 @@ export function StartTestingDialog({
           </Button>
           <Button
             onClick={handleStartTesting}
-            className="h-11 rounded-xl px-8 bg-primary hover:bg-primary/90 text-primary-foreground shadow-lg shadow-primary/20"
+            className="h-11 rounded-xl px-8 bg-emerald-500 hover:bg-emerald-500/90 text-white shadow-lg shadow-emerald-500/20"
             disabled={isStarting}
           >
             {isStarting ? (

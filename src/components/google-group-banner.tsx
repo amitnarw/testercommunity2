@@ -18,10 +18,10 @@ export const GoogleGroupBanner = ({
 }: GoogleGroupBannerProps) => {
   if (variant === "note") {
     return (
-      <Card className="border-none bg-blue-500/5 dark:bg-blue-500/10 rounded-2xl p-5 border-l-4 border-blue-500 shadow-sm">
+      <Card className="border-none bg-emerald-500/5 dark:bg-emerald-500/10 rounded-2xl p-5 border-l-4 border-emerald-500 shadow-sm">
         <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
           <div className="flex gap-3 items-start">
-            <div className="mt-1 p-1.5 rounded-full bg-blue-500/20 text-blue-600 dark:text-blue-400">
+            <div className="mt-1 p-1.5 rounded-full bg-emerald-500/20 text-emerald-600 dark:text-emerald-400">
               <Info className="w-5 h-5" />
             </div>
             <div className="space-y-1">
@@ -35,7 +35,7 @@ export const GoogleGroupBanner = ({
             asChild
             variant="outline"
             size="sm"
-            className="rounded-xl border-blue-500/20 hover:bg-blue-500/10 text-blue-600 dark:text-blue-400 font-bold whitespace-nowrap !px-10 w-full sm:w-auto"
+            className="rounded-xl border-emerald-500/20 hover:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-bold whitespace-nowrap !px-10 w-full sm:w-auto"
           >
             <a href={googleGroupUrl} target="_blank" rel="noopener noreferrer">
               Join Group <ExternalLink className="ml-2 w-3 h-3" />

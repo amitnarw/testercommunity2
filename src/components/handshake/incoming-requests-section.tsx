@@ -124,7 +124,7 @@ export function IncomingRequestsSection({ items, isLoading }: IncomingRequestsSe
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, x: -20 }}
               >
-                <Card className="h-full overflow-hidden hover:border-primary/40 transition-colors">
+                <Card className="h-full overflow-hidden hover:border-emerald-500/40 transition-colors">
                   <CardContent className="p-4 flex flex-col h-full gap-3">
                     {offeredHref ? (
                       <Link
@@ -201,7 +201,7 @@ export function IncomingRequestsSection({ items, isLoading }: IncomingRequestsSe
                     </div>
 
                     {req.message && (
-                      <p className="text-xs italic text-muted-foreground px-2 py-1.5 rounded bg-secondary/40 border-l-2 border-primary/40 line-clamp-3">
+                      <p className="text-xs italic text-muted-foreground px-2 py-1.5 rounded bg-secondary/40 border-l-2 border-emerald-500/40 line-clamp-3">
                         &quot;{req.message}&quot;
                       </p>
                     )}

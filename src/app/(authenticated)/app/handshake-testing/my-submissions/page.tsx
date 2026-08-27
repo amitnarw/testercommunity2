@@ -59,7 +59,7 @@ const getStatusConfig = (status: HubSubmittedAppResponse["status"]) => {
         label: "Available",
         color: "text-emerald-600",
         bgColor: "bg-emerald-500/10",
-        borderColor: "border-primary/20",
+        borderColor: "border-emerald-500/20",
         description: "Your app is available for testing.",
       };
     case "IN_TESTING":
@@ -138,7 +138,7 @@ const ProjectCard = ({ project }: { project: HubSubmittedAppResponse }) => {
         href={`/app/handshake-testing/my-submissions/${project.id}`}
         className="block h-full"
       >
-        <Card className="h-full border-0 bg-background/40 hover:bg-background/60 backdrop-blur-md shadow-sm hover:shadow-xl hover:shadow-emerald-500/5 transition-all duration-300 rounded-[1.5rem] overflow-hidden relative ring-1 ring-border/50 hover:ring-primary/20 flex flex-col">
+        <Card className="h-full border-0 bg-background/40 hover:bg-background/60 backdrop-blur-md shadow-sm hover:shadow-xl hover:shadow-emerald-500/5 transition-all duration-300 rounded-[1.5rem] overflow-hidden relative ring-1 ring-border/50 hover:ring-emerald-500/20 flex flex-col">
           {/* Status color glowing accent */}
           <div
             className={cn(
@@ -234,14 +234,14 @@ const EmptyState = () => (
     {/* Ambient Background Glow */}
     <div className="absolute inset-0 overflow-hidden pointer-events-none">
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-emerald-500/5 rounded-full blur-[120px] opacity-50" />
-      <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent opacity-50" />
+      <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-emerald-500/30 to-transparent opacity-50" />
     </div>
 
     {/* floating 3D Animation Container */}
     <div className="relative mb-8 z-10 group">
       {/* Decorative orbital rings */}
-      <div className="absolute inset-0 border border-primary/20 rounded-full scale-[1.8] opacity-20 animate-[spin_10s_linear_infinite]" />
-      <div className="absolute inset-0 border border-dashed border-primary/20 rounded-full scale-[1.5] opacity-20 animate-[spin_15s_linear_infinite_reverse]" />
+      <div className="absolute inset-0 border border-emerald-500/20 rounded-full scale-[1.8] opacity-20 animate-[spin_10s_linear_infinite]" />
+      <div className="absolute inset-0 border border-dashed border-emerald-500/20 rounded-full scale-[1.5] opacity-20 animate-[spin_15s_linear_infinite_reverse]" />
 
       <motion.div
         initial={{ y: 0 }}

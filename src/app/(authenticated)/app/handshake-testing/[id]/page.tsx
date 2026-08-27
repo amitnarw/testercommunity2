@@ -319,7 +319,7 @@ function AppTestingPageClient({ id }: { id: string }) {
             </section>
 
             {appDetails?.handshake?.partnerApp && (
-              <section className="rounded-2xl border border-emerald-500/20 bg-primary/5 p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center gap-4">
+              <section className="rounded-2xl border border-emerald-500/20 bg-emerald-500/5 p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center gap-4">
                 <div className="relative h-14 w-14 flex-shrink-0 overflow-hidden rounded-xl bg-muted">
                   {appDetails.handshake.partnerApp?.appLogoUrl && (
                     <SafeImage
@@ -393,6 +393,7 @@ function AppTestingPageClient({ id }: { id: string }) {
                 error={error}
                 reset={reset}
                 hideButton={hideCta}
+                variant="handshake"
               />
             </div>
 
@@ -509,6 +510,7 @@ function AppTestingPageClient({ id }: { id: string }) {
                 reset={reset}
                 buttonClassName="hidden lg:block"
                 hideButton={hideCta}
+                variant="handshake"
               />
             </div>
 
@@ -676,6 +678,7 @@ function AppTestingPageClient({ id }: { id: string }) {
               error={error}
               reset={reset}
               hideButton={hideCta}
+              variant="handshake"
             />
           </aside>
         </main>

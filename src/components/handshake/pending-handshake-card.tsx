@@ -84,7 +84,7 @@ export function PendingHandshakeCard({
 
   return (
     <>
-      <Card className="overflow-hidden border-primary/30 bg-gradient-to-br from-primary/5 to-background">
+      <Card className="overflow-hidden border-emerald-500/30 bg-gradient-to-br from-emerald-500/5 to-background">
         <CardContent className="p-5 space-y-4">
           <div className="flex items-start gap-3">
             <div className="relative w-10 h-10 rounded-full overflow-hidden bg-muted flex-shrink-0 border border-border/40">
@@ -112,7 +112,7 @@ export function PendingHandshakeCard({
           </div>
 
           {message && (
-            <p className="text-xs italic text-muted-foreground px-2 py-1.5 rounded bg-secondary/40 border-l-2 border-primary/40 line-clamp-3">
+            <p className="text-xs italic text-muted-foreground px-2 py-1.5 rounded bg-secondary/40 border-l-2 border-emerald-500/40 line-clamp-3">
               &quot;{message}&quot;
             </p>
           )}

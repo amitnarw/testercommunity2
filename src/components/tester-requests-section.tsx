@@ -73,12 +73,14 @@ export interface TesterRequestsSectionProps {
   hubId: string;
   requests: HubSubmittedAppResponse["testerRelations"];
   refetch: () => void;
+  totalDay?: number;
 }
 
 export function TesterRequestsSection({
   hubId,
   requests,
   refetch,
+  totalDay,
 }: TesterRequestsSectionProps) {
   const [selectedRequest, setSelectedRequest] = useState<
     (typeof requests)[0] | null
@@ -840,7 +842,7 @@ export function TesterRequestsSection({
                       </TableCell>
                       <TableCell className="text-center">
                         <div className="flex items-center justify-center gap-1 flex-wrap">
-                          {Array.from({ length: 10 }, (_, i) => {
+{Array.from({ length: totalDay || 16 }, (_, i) => {
                             const dayNum = i + 1;
                             const verification = req.dailyVerifications?.find(
                               (v) => v.dayNumber === dayNum,
@@ -950,7 +952,7 @@ export function TesterRequestsSection({
                   </div>
 
                   <div className="flex items-center justify-center gap-1 flex-wrap">
-                    {Array.from({ length: 10 }, (_, i) => {
+                    {Array.from({ length: totalDay || 16 }, (_, i) => {
                       const dayNum = i + 1;
                       const verification = req.dailyVerifications?.find(
                         (v) => v.dayNumber === dayNum,

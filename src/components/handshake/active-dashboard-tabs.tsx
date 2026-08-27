@@ -161,7 +161,7 @@ export function ActiveDashboardTabs({
                 </p>
                 <Link
                   href={ROUTES.AUTHENTICATED.HANDSHAKE_PENALTY}
-                  className="mt-4 inline-flex items-center gap-1 text-sm text-primary hover:underline font-semibold"
+                  className="mt-4 inline-flex items-center gap-1 text-sm text-emerald-600 hover:underline font-semibold"
                 >
                   Open Penalty page →
                 </Link>
@@ -188,11 +188,11 @@ export function ActiveDashboardTabs({
 
 function Stat({ label, value, highlight }: { label: string; value: string; highlight?: boolean }) {
   return (
-    <div className={`p-3 rounded-xl border ${highlight ? "border-primary/30 bg-primary/5" : "border-border/60 bg-secondary/30"}`}>
+    <div className={`p-3 rounded-xl border ${highlight ? "border-emerald-500/30 bg-emerald-500/5" : "border-border/60 bg-secondary/30"}`}>
       <p className="text-[10px] uppercase tracking-wide text-muted-foreground font-semibold">
         {label}
       </p>
-      <p className={`text-lg font-bold mt-1 capitalize ${highlight ? "text-primary" : ""}`}>
+      <p className={`text-lg font-bold mt-1 capitalize ${highlight ? "text-emerald-600" : ""}`}>
         {value}
       </p>
     </div>

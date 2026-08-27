@@ -135,7 +135,7 @@ export function AdminManageTestersDialog({
         !assignedTesterIds.includes(user.id) &&
         // don't let admin assign the owner to their own campaign
         user.id !== appOwnerId &&
-        ALLOWED_ROLES.has(user?.userDetail?.role?.name),
+        ALLOWED_ROLES.has(user?.role),
     ) || [];
 
   const filteredUsers = availableUsers.filter((user: any) => {

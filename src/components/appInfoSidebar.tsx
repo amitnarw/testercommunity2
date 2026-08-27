@@ -44,6 +44,7 @@ export const AppActionButton = ({
   reset,
   hideButton,
   visitUrl,
+  variant = "default",
 }: {
   app: HubSubmittedAppResponse;
   handleRequestToJoin?: () => void;
@@ -58,14 +59,23 @@ export const AppActionButton = ({
   hoverBgColor?: string;
   hideButton?: boolean;
   visitUrl?: string;
+  variant?: "default" | "handshake";
 }) => {
+  const isHandshake = variant === "handshake";
+  const ctaBg = isHandshake ? "bg-emerald-500 hover:bg-emerald-500/90" : "bg-primary hover:bg-primary/90";
+  const ctaText = isHandshake ? "text-white" : "text-primary-foreground";
+  const ctaShadow = isHandshake ? "shadow-lg shadow-emerald-500/20" : "";
   if (visitUrl) {
     return (
       <a
         href={visitUrl}
         target="_blank"
         rel="noopener noreferrer"
-        className="flex flex-row gap-2 w-full bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl items-center justify-center py-3 font-semibold transition-colors"
+        className={cn(
+          "flex flex-row gap-2 w-full rounded-xl items-center justify-center py-3 font-semibold transition-colors",
+          ctaBg,
+          ctaText,
+        )}
       >
         <SquareArrowOutUpRight className="w-5 h-5" />
         View on Google Play
@@ -119,7 +129,12 @@ export const AppActionButton = ({
           href={url}
           target="_blank"
           rel="noopener noreferrer"
-          className="flex flex-row gap-2 w-full bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl items-center justify-center py-3 font-semibold transition-all shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-[0.98]"
+          className={cn(
+            "flex flex-row gap-2 w-full rounded-xl items-center justify-center py-3 font-semibold transition-all hover:scale-[1.02] active:scale-[0.98]",
+            ctaBg,
+            ctaText,
+            ctaShadow,
+          )}
         >
           View on Google Play <SquareArrowOutUpRight className="w-5 h-5" />
         </a>
@@ -132,7 +147,10 @@ export const AppActionButton = ({
       <a
         href={url}
         target="_blank"
-        className="flex flex-row gap-2 w-full bg-primary rounded-full items-center justify-center py-2 text-white hover:scale-105 duration-300"
+        className={cn(
+          "flex flex-row gap-2 w-full rounded-full items-center justify-center py-2 text-white hover:scale-105 duration-300",
+          isHandshake ? "bg-emerald-500" : "bg-primary",
+        )}
       >
         Open Google Play <SquareArrowOutUpRight size={20} />
       </a>
@@ -182,7 +200,14 @@ export const AppActionButton = ({
 
   return (
     <div className="w-full m-auto space-y-4">
-      <div className="bg-primary/5 dark:bg-primary/10 border border-primary/20 rounded-xl p-4 space-y-3">
+      <div
+        className={cn(
+          "rounded-xl p-4 space-y-3 border",
+          isHandshake
+            ? "bg-emerald-500/5 dark:bg-emerald-500/10 border-emerald-500/20"
+            : "bg-primary/5 dark:bg-primary/10 border-primary/20",
+        )}
+      >
         <div className="flex items-start gap-3 text-sm">
           <Checkbox
             id="google-group-join"
@@ -199,7 +224,10 @@ export const AppActionButton = ({
               href="https://groups.google.com/g/appstestlab"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-primary hover:underline font-bold"
+              className={cn(
+                "hover:underline font-bold",
+                isHandshake ? "text-emerald-600" : "text-primary",
+              )}
             >
               Google Group (appstestlab)
             </a>{" "}
@@ -241,6 +269,7 @@ export const AppInfoSidebar = ({
   hideButton,
   visitUrl,
   buttonClassName,
+  variant = "default",
 }: {
   app: HubSubmittedAppResponse;
   handleRequestToJoin?: () => void;
@@ -254,8 +283,10 @@ export const AppInfoSidebar = ({
   hideButton?: boolean;
   visitUrl?: string;
   buttonClassName?: string;
+  variant?: "default" | "handshake";
 }) => {
   const { theme } = useTheme();
+  const isHandshake = variant === "handshake";
 
   const hoverTextColor = theme === "dark" ? "black" : "white";
   const hoverBgColor = theme === "dark" ? "white" : "black";
@@ -279,6 +310,7 @@ export const AppInfoSidebar = ({
           visitUrl={visitUrl}
           hoverTextColor={hoverTextColor}
           hoverBgColor={hoverBgColor}
+          variant={variant}
         />
       </div>
 
@@ -296,20 +328,42 @@ export const AppInfoSidebar = ({
             <div className="flex flex-col items-start justify-between gap-2">
               <Badge
                 variant="outline"
-                className="mt-1 text-md border-none bg-gradient-to-b from-primary to-primary/50 !text-white text-normal"
+                className={cn(
+                  "mt-1 text-md border-none !text-white text-normal",
+                  isHandshake
+                    ? "bg-gradient-to-b from-emerald-500 to-emerald-700"
+                    : "bg-gradient-to-b from-primary to-primary/50",
+                )}
               >
                 {app?.androidApp?.appCategory?.name}
               </Badge>
               <div className="flex items-center gap-2 text-xs sm:text-sm">
-                <Smartphone className="w-5 h-5 text-primary/80" />
+                <Smartphone
+                  className={cn(
+                    "w-5 h-5",
+                    isHandshake ? "text-emerald-600/80" : "text-primary/80",
+                  )}
+                />
                 Android {app?.minimumAndroidVersion}
               </div>
             </div>
           </div>
         </CardContent>
-        <CardFooter className="p-2 bg-gradient-to-b from-primary/0 to-primary/60 rounded-b-2xl relative">
+        <CardFooter
+          className={cn(
+            "p-2 rounded-b-2xl relative",
+            isHandshake
+              ? "bg-gradient-to-b from-emerald-500/0 to-emerald-500/60"
+              : "bg-gradient-to-b from-primary/0 to-primary/60",
+          )}
+        >
           <div className="w-full p-4 rounded-xl text-center">
-            <p className="text-lg font-semibold text-primary text-start">
+            <p
+              className={cn(
+                "text-lg font-semibold text-start",
+                isHandshake ? "text-emerald-600" : "text-primary",
+              )}
+            >
               REWARD
             </p>
             {/* S8-A2: handshake testing is a barter system , no points, no
@@ -321,7 +375,14 @@ export const AppInfoSidebar = ({
             ) : app?.appType === "PAID" ? (
               <div className="text-3xl font-bold text-foreground flex items-center gap-2 justify-start mt-1">
                 {`₹${app?.rewardMoney || 0}`}
-                <Star className="w-7 h-7 text-primary/0 fill-primary/20 scale-[4] sm:scale-[6] absolute bottom-8 right-2 sm:right-6 rotate-90" />
+                <Star
+                  className={cn(
+                    "w-7 h-7 scale-[4] sm:scale-[6] absolute bottom-8 right-2 sm:right-6 rotate-90",
+                    isHandshake
+                      ? "text-emerald-500/0 fill-emerald-500/20"
+                      : "text-primary/0 fill-primary/20",
+                  )}
+                />
               </div>
             ) : (
               <div className="text-xl sm:text-2xl font-bold text-foreground flex items-center gap-2 justify-start mt-1">
@@ -332,7 +393,14 @@ export const AppInfoSidebar = ({
         </CardFooter>
       </Card>
 
-      <Card className="border-0 rounded-2xl shadow-xl shadow-gray-100 dark:shadow-gray-900 overflow-hidden bg-gradient-to-br from-primary/10 to-primary/30 dark:from-secondary dark:to-secondary/30">
+      <Card
+        className={cn(
+          "border-0 rounded-2xl shadow-xl shadow-gray-100 dark:shadow-gray-900 overflow-hidden",
+          isHandshake
+            ? "bg-gradient-to-br from-emerald-500/10 to-emerald-500/30 dark:from-secondary dark:to-secondary/30"
+            : "bg-gradient-to-br from-primary/10 to-primary/30 dark:from-secondary dark:to-secondary/30",
+        )}
+      >
         <CardHeader className="pb-2">
           <CardTitle className="text-base font-semibold text-foreground/80">
             Project Specifications
@@ -361,7 +429,12 @@ export const AppInfoSidebar = ({
   );
 };
 
-export const AppInfoSidebarSkeleton = () => {
+export const AppInfoSidebarSkeleton = ({
+  variant = "default",
+}: {
+  variant?: "default" | "handshake";
+}) => {
+  const isHandshake = variant === "handshake";
   return (
     <div className="sticky top-24 space-y-6">
       {/* Button Skeleton */}
@@ -379,7 +452,14 @@ export const AppInfoSidebarSkeleton = () => {
             </div>
           </div>
         </CardContent>
-        <CardFooter className="p-2 bg-gradient-to-b from-primary/0 to-primary/60 rounded-b-2xl relative">
+        <CardFooter
+          className={cn(
+            "p-2 rounded-b-2xl relative",
+            isHandshake
+              ? "bg-gradient-to-b from-emerald-500/0 to-emerald-500/60"
+              : "bg-gradient-to-b from-primary/0 to-primary/60",
+          )}
+        >
           <div className="w-full p-4 rounded-xl">
             <Skeleton className="h-5 w-20 mb-2" />
             <div className="flex items-center gap-2">
@@ -390,7 +470,14 @@ export const AppInfoSidebarSkeleton = () => {
       </Card>
 
       {/* Creator Profile Skeleton */}
-      <Card className="border-0 rounded-2xl shadow-xl shadow-gray-100 dark:shadow-gray-900 overflow-hidden bg-gradient-to-br from-primary/10 to-primary/30 dark:from-secondary dark:to-secondary/30">
+      <Card
+        className={cn(
+          "border-0 rounded-2xl shadow-xl shadow-gray-100 dark:shadow-gray-900 overflow-hidden",
+          isHandshake
+            ? "bg-gradient-to-br from-emerald-500/10 to-emerald-500/30 dark:from-secondary dark:to-secondary/30"
+            : "bg-gradient-to-br from-primary/10 to-primary/30 dark:from-secondary dark:to-secondary/30",
+        )}
+      >
         <CardHeader className="pb-2">
           <Skeleton className="h-5 w-32 bg-background/50" />
         </CardHeader>

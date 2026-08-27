@@ -888,13 +888,14 @@ export default function AdminSubmissionDetailPage({
           {/* Assigned Testers Section */}
           {(project.status === "AVAILABLE" ||
             project.status === "IN_TESTING" ||
-            project.status === "COMPLETED") && (
+            project.status === "COMPLETED" ||
+            project.status === "TESTING_ACTIVE" ||
+            project.status === "WAITING_FOR_PARTNERS") && (
             <div className="bg-card rounded-3xl overflow-hidden border border-border/50 shadow-sm">
               <AdminAssignedTestersTable
                 testerRelations={project.testerRelations}
                 appId={project.id}
                 totalDays={project.totalDay || 14}
-                currentDay={currentDay}
                 onRefetch={refetch}
                 appType="FREE"
               />

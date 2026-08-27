@@ -19,8 +19,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useAdminForceHandshake } from "@/hooks/useHandshakeMonitoring";
-import { useSubmittedApps } from "@/hooks/useAdmin";
-import { useSingleHubAppDetails } from "@/hooks/useHub";
+import { useHubApps, useSingleHubAppDetails } from "@/hooks/useHub";
 import { useToast } from "@/hooks/use-toast";
 import type { HubSubmittedAppResponse } from "@/lib/types";
 
@@ -55,19 +54,96 @@ export function AdminForceHandshakeDialog({
   const thisAppName =
     detail?.androidApp?.appName ?? `Campaign #${thisCampaign.id}`;
 
-  // Fetch partner candidates: AVAILABLE HANDSHAKE campaigns, not self,
-  // with free slot capacity. Mirrors the monitoring-page filter.
+  // Fetch partner candidates from the hub endpoint. Its server-side filter
+  // already excludes: non-HANDSHAKE apps, my own apps, apps I'm actively
+  // testing (so any active handshake I'm part of is hidden), and apps I've
+  // sent a PENDING handshake request to. We only need to drop thisCampaign.
   const { data: availableData, isLoading: loadingAvailable } =
-    useSubmittedApps("AVAILABLE");
+    useHubApps({ type: "AVAILABLE" });
 
-  const candidates: HubSubmittedAppResponse[] = useMemo(() => {
-    return (availableData || []).filter(
-      (a: HubSubmittedAppResponse) =>
-        a.appType === "HANDSHAKE" &&
-        a.id !== thisCampaign.id &&
-        (a.currentTester || 0) < (a.totalTester || 0),
-    );
-  }, [availableData, thisCampaign.id]);
+  // Per-combination pairing rule: if thisCampaign is already linked to a
+  // candidate via an active HandshakeLink, exclude that candidate. Re-pair
+  // becomes allowed once the prior link completes (the relation drops out
+  // of these queries because its status is no longer IN_PROGRESS).
+  //
+  // Each admin-active tester relation carries a `handshakePair` whose
+  // partnerRelation.campaign.id is the OTHER side of the link. Reading
+  // those across admin's IN_TESTING + APPROVED apps gives us the exact
+  // set of campaign IDs currently paired with thisCampaign.
+  //
+  // (Caveat: this assumes admin === thisCampaign.appOwnerId, which is
+  // true for the current Force Handshake entry path. For the admin-
+  // viewing-someone-else case, this same set is not sufficient and would
+  // need a backend extension to fetch thisCampaign owner's partners.)
+  const { data: inTestingApps } = useHubApps({ type: "IN_TESTING" });
+  const { data: approvedApps } = useHubApps({ type: "APPROVED" });
+
+  const currentlyPairedCampaignIds = useMemo(() => {
+    const ids = new Set<number>();
+    const allAdminApps = [...(inTestingApps ?? []), ...(approvedApps ?? [])];
+    for (const app of allAdminApps) {
+      const partnerCampaign =
+        app.testerRelations?.[0]?.handshakePair?.partnerRelation?.campaign;
+      if (partnerCampaign?.id) ids.add(partnerCampaign.id);
+    }
+    return ids;
+  }, [inTestingApps, approvedApps]);
+
+  const candidates: HubSubmittedAppResponse[] = useMemo(
+    () =>
+      (availableData || []).filter((a) => {
+        // (1) status sanity
+        if (a.status !== "AVAILABLE") return false;
+        // (2) type sanity
+        if (a.appType !== "HANDSHAKE") return false;
+        // (3) self
+        if (a.id === thisCampaign.id) return false;
+
+        // (4) Per-combination rule: this exact pair is already linked by
+        // an active HandshakeLink. Re-pair becomes allowed once the link
+        // completes (the tester relation drops out of IN_PROGRESS, the
+        // campaign disappears from IN_TESTING/APPROVED, partner id is
+        // no longer added to the set).
+        if (currentlyPairedCampaignIds.has(a.id)) return false;
+
+        // (5) Same owner — three orthogonal signals so a single
+        // malformed field can't bypass this. Owner names are always
+        // visible in the dropdown ("Amit Narwal" etc.); appName is the
+        // campaign display name. If any signal matches, exclude.
+        const thisOwnerName = detail?.appOwner?.name?.toLowerCase().trim();
+        const candOwnerName = a.appOwner?.name?.toLowerCase().trim();
+        const thisAppName = detail?.androidApp?.appName?.toLowerCase().trim();
+        const candAppName = a.androidApp?.appName?.toLowerCase().trim();
+
+        const sameOwnerById =
+          a.appOwnerId != null &&
+          thisCampaign.appOwnerId != null &&
+          a.appOwnerId === thisCampaign.appOwnerId;
+        const sameOwnerByName =
+          thisOwnerName != null &&
+          thisOwnerName !== "" &&
+          candOwnerName != null &&
+          candOwnerName !== "" &&
+          thisOwnerName === candOwnerName;
+        const sameAppName =
+          thisAppName != null &&
+          thisAppName !== "" &&
+          candAppName != null &&
+          candAppName !== "" &&
+          thisAppName === candAppName;
+
+        if (sameOwnerById || sameOwnerByName || sameAppName) return false;
+
+        return true;
+      }),
+    [
+      availableData,
+      thisCampaign.id,
+      thisCampaign.appOwnerId,
+      detail,
+      currentlyPairedCampaignIds,
+    ],
+  );
 
   const selected = candidates.find((c) => c.id.toString() === partnerAppId);
 
@@ -159,9 +235,10 @@ export function AdminForceHandshakeDialog({
                 ))}
               </SelectContent>
             </Select>
-            <p className="text-[11px] text-muted-foreground">
-              Only HANDSHAKE campaigns with available tester slots and a
-              different owner are shown.
+<p className="text-[11px] text-muted-foreground">
+              Only AVAILABLE HANDSHAKE campaigns with free slots that
+              aren&apos;t yours and aren&apos;t already paired with this one
+              are shown. A completed pair becomes eligible again.
             </p>
           </div>
 

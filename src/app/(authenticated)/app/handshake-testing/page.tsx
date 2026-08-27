@@ -295,7 +295,7 @@ function CommunityDashboardContent() {
                   onClick={() => handleRequestsSubTabChange("incoming")}
                   className={`px-4 py-1.5 rounded-full text-sm font-medium transition-all ${
                     requestsSubTab === "incoming"
-                      ? "bg-primary text-primary-foreground shadow-md shadow-primary/20"
+                      ? "bg-emerald-500 text-white shadow-md shadow-emerald-500/20"
                       : "bg-secondary text-secondary-foreground hover:bg-secondary/70"
                   }`}
                 >
@@ -314,7 +314,7 @@ function CommunityDashboardContent() {
                   onClick={() => handleRequestsSubTabChange("outgoing")}
                   className={`px-4 py-1.5 rounded-full text-sm font-medium transition-all ${
                     requestsSubTab === "outgoing"
-                      ? "bg-primary text-primary-foreground shadow-md shadow-primary/20"
+                      ? "bg-emerald-500 text-white shadow-md shadow-emerald-500/20"
                       : "bg-secondary text-secondary-foreground hover:bg-secondary/70"
                   }`}
                 >

@@ -130,7 +130,9 @@ function RunningHandshakeCard({
     <Card
       className="cursor-pointer hover:border-emerald-500/40 transition-colors"
       onClick={() =>
-        router.push(ROUTES.AUTHENTICATED.HANDSHAKE_TESTING + `/${app.id}`)
+        router.push(
+          ROUTES.AUTHENTICATED.HANDSHAKE_TESTING + `/${app.id}/ongoing`,
+        )
       }
     >
       <CardContent className="p-4 flex flex-col gap-3">

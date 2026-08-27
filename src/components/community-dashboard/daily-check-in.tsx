@@ -320,7 +320,7 @@ export function DailyTestingAction({
           <AlertDialogFooter className="mt-4">
             <AlertDialogAction
               onClick={resetAndRetry}
-              className="w-full bg-primary hover:bg-primary/90"
+              className="w-full bg-emerald-500 hover:bg-emerald-500/90"
             >
               <RefreshCw className="h-4 w-4 mr-2" />
               Upload New Screenshot
@@ -332,7 +332,7 @@ export function DailyTestingAction({
       <Card
         className={cn(
           "overflow-hidden border transition-all duration-300",
-          isExpanded ? "shadow-xl shadow-primary/5" : "",
+          isExpanded ? "shadow-xl shadow-emerald-500/5" : "",
         )}
       >
         {/* Header Strip */}

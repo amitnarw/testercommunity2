@@ -141,7 +141,7 @@ export function AddonsSection({ campaignId }: AddonsSectionProps) {
           <Card key={addOn.id} className="hover:border-emerald-500/40 transition-colors">
             <CardContent className="p-5">
               <div className="flex items-start gap-3 mb-3">
-                <div className="p-2 rounded-lg bg-primary/10 text-primary">
+                <div className="p-2 rounded-lg bg-emerald-500/10 text-emerald-600">
                   <Icon className="w-5 h-5" />
                 </div>
                 <div className="flex-1">

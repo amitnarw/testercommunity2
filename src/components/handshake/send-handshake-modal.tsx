@@ -189,7 +189,7 @@ export function SendHandshakeModal({
                   onChange={(e) => setMessage(e.target.value.slice(0, 280))}
                   rows={3}
                   placeholder="Hi! I'd love to test your app..."
-                  className="w-full rounded-xl border border-border/60 bg-secondary/30 px-3 py-2 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-primary/40"
+                  className="w-full rounded-xl border border-border/60 bg-secondary/30 px-3 py-2 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-emerald-500/40"
                 />
                 <p className="text-[10px] text-muted-foreground text-right mt-1">
                   {message.length}/280

@@ -67,7 +67,7 @@ export function AvailableDevelopersSection({ apps, isLoading }: AvailableDevelop
         <button
           type="button"
           onClick={() => refetchProfile()}
-          className="mt-3 inline-flex items-center justify-center rounded-xl bg-primary px-4 h-9 text-sm font-semibold text-primary-foreground hover:bg-primary/90"
+          className="mt-3 inline-flex items-center justify-center rounded-xl bg-emerald-500 px-4 h-9 text-sm font-semibold text-white hover:bg-emerald-500/90"
         >
           Retry
         </button>
@@ -82,7 +82,7 @@ export function AvailableDevelopersSection({ apps, isLoading }: AvailableDevelop
         <button
           type="button"
           onClick={() => router.push(ROUTES.AUTH.LOGIN)}
-          className="mt-3 inline-flex items-center justify-center rounded-xl bg-primary px-4 h-9 text-sm font-semibold text-primary-foreground hover:bg-primary/90"
+          className="mt-3 inline-flex items-center justify-center rounded-xl bg-emerald-500 px-4 h-9 text-sm font-semibold text-white hover:bg-emerald-500/90"
         >
           Sign in
         </button>

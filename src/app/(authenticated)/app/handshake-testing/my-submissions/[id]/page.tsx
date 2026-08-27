@@ -729,6 +729,7 @@ function SubmissionDetailsPage({
                 hubId={id}
                 requests={appDetails?.testerRelations || []}
                 refetch={appDetailsRefetch}
+                totalDay={appDetails?.totalDay}
               />
             )}
 
