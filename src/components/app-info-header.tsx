@@ -86,10 +86,15 @@ const AppInfoHeader = ({
               upperStatus === "IN_TESTING" ||
               upperStatus === "APPROVED" ||
               upperStatus === "AVAILABLE" ||
-              upperStatus === "IN TESTING";
+              upperStatus === "IN TESTING" ||
+              upperStatus === "TESTING_ACTIVE";
 
             let displayStatus = "In Review";
-            if (upperStatus === "IN_TESTING" || upperStatus === "IN TESTING")
+            if (
+              upperStatus === "IN_TESTING" ||
+              upperStatus === "IN TESTING" ||
+              upperStatus === "TESTING_ACTIVE"
+            )
               displayStatus = "In Testing";
             else if (isRejected) displayStatus = "Rejected";
             else if (isCompleted) displayStatus = "Completed";

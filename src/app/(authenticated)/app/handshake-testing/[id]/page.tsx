@@ -100,7 +100,7 @@ function AppTestingPageClient({ id }: { id: string }) {
   const isFull =
     !!appDetails?.totalTester &&
     (appDetails?.currentTester ?? 0) >= appDetails.totalTester;
-  // Full is lower priority than owner / pending / active-handshake — those must
+  // Full is lower priority than owner / pending / active-handshake ,  those must
   // keep winning when they apply.
   const hideCta = hideCtaForPending || activeHandshake || isOwner || isFull;
 

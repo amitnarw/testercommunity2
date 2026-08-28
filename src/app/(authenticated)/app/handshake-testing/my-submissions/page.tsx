@@ -71,6 +71,15 @@ const getStatusConfig = (status: HubSubmittedAppResponse["status"]) => {
         borderColor: "border-amber-500/20",
         description: "Community members are actively testing your app.",
       };
+    case "TESTING_ACTIVE":
+      return {
+        icon: <Clock className="w-3.5 h-3.5" />,
+        label: "In Testing",
+        color: "text-amber-500",
+        bgColor: "bg-amber-500/10",
+        borderColor: "border-amber-500/20",
+        description: "Community members are actively testing your app.",
+      };
     case "COMPLETED":
       return {
         icon: <CheckCircle className="w-3.5 h-3.5" />,

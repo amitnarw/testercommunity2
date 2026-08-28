@@ -2448,7 +2448,7 @@ export async function updateDailyVerificationStatus(payload: {
   }
 }
 
-export async function adminCompleteApp(payload: { id: number }) {
+export async function adminCompleteApp(payload: { id: number; force?: boolean }) {
   try {
     const response = await api.post(
       API_ROUTES.ADMIN + "/admin-complete-app",
@@ -2457,6 +2457,28 @@ export async function adminCompleteApp(payload: { id: number }) {
     return response?.data?.data;
   } catch (error) {
     console.error("Error completing app as admin:", error);
+    if (axios.isAxiosError(error)) {
+      const responseData = error.response?.data;
+      throw new Error(
+        responseData?.message || error.message || "Unknown Axios error",
+      );
+    } else if (error instanceof Error) {
+      throw new Error(error.message);
+    } else {
+      throw new Error(JSON.stringify(error));
+    }
+  }
+}
+
+export async function adminRestartApp(payload: { id: number }) {
+  try {
+    const response = await api.post(
+      API_ROUTES.ADMIN + "/admin-restart-app",
+      payload,
+    );
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error restarting app as admin:", error);
     if (axios.isAxiosError(error)) {
       const responseData = error.response?.data;
       throw new Error(

@@ -433,7 +433,7 @@ export function TesterRequestsSection({
         </TabsList>
 
         <TabsContent value="pending" className="space-y-4">
-          {/* v2 handshake requests targeting this hub — same rows that appear on /handshake-testing?tab=requests Incoming */}
+          {/* v2 handshake requests targeting this hub ,  same rows that appear on /handshake-testing?tab=requests Incoming */}
           {incomingForHub.length > 0 && (
             <div className="space-y-3 rounded-xl border bg-card p-4">
               <p className="text-xs font-bold uppercase tracking-widest text-primary">
@@ -668,7 +668,7 @@ export function TesterRequestsSection({
             )}
             {pendingRequests.length === 0 && incomingForHub.length > 0 && (
               <div className="p-3 text-center text-xs text-muted-foreground">
-                No legacy requests — handshake requests above
+                No legacy requests ,  handshake requests above
               </div>
             )}
           </div>

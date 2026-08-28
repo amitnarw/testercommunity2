@@ -106,7 +106,7 @@ export function AdminForceHandshakeDialog({
         // no longer added to the set).
         if (currentlyPairedCampaignIds.has(a.id)) return false;
 
-        // (5) Same owner — three orthogonal signals so a single
+        // (5) Same owner ,  three orthogonal signals so a single
         // malformed field can't bypass this. Owner names are always
         // visible in the dropdown ("Amit Narwal" etc.); appName is the
         // campaign display name. If any signal matches, exclude.

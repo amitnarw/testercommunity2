@@ -65,6 +65,11 @@ const getStatusConfig = (status: string) => {
         badgeVariant: "destructive",
         icon: <Clock className="w-5 h-5" />,
       };
+    case "TESTING_ACTIVE":
+      return {
+        badgeVariant: "destructive",
+        icon: <Clock className="w-5 h-5" />,
+      };
     case "COMPLETED":
       return {
         badgeVariant: "secondary",

@@ -326,7 +326,7 @@ export function ActiveHandshakeCard({
 /** Shown when a visitor lands on a campaign whose tester slots are already filled.
  *  Replaces the generic join CTA in both the sidebar and the mobile CTA block
  *  so the user never reaches a dead-end 409 ("not accepting any more testers").
- *  Lower priority than owner / pending / active-handshake — those win over "full". */
+ *  Lower priority than owner / pending / active-handshake ,  those win over "full". */
 export function FullHandshakeCard({
   currentTester,
   totalTester,

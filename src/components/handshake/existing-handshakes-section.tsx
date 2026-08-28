@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
-import { AlertTriangle, Check, Clock, Handshake } from "lucide-react";
+import { AlertTriangle, Check, Clock, ExternalLink, Handshake } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { SafeImage } from "@/components/safe-image";
@@ -229,7 +229,26 @@ function RunningHandshakeCard({
                     {partner.campaign.androidApp.appName}
                   </p>
                 </div>
+                <button
+                  type="button"
+                  aria-label="Open your app (owner view)"
+                  title="Open your app (owner view)"
+                  className="flex-shrink-0 inline-flex items-center justify-center w-7 h-7 rounded-md text-muted-foreground hover:text-foreground hover:bg-muted/60 transition-colors"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    router.push(
+                      `${ROUTES.AUTHENTICATED.HANDSHAKE_MY_SUBMISSIONS}/${partner.campaign!.id}`,
+                    );
+                  }}
+                >
+                  <ExternalLink className="w-3.5 h-3.5" />
+                </button>
               </div>
+            )}
+            {!partner.campaign?.androidApp && (
+              <p className="text-xs text-muted-foreground italic">
+                App unavailable
+              </p>
             )}
             <div className="flex items-center justify-between gap-2 text-xs">
               <span className="flex items-center gap-1.5 text-muted-foreground truncate">
