@@ -109,7 +109,7 @@ export default function AuthenticatedLayout({
             </div>
           </div>
         </div>
-        {/* Bottom edge fade — at the bottom of the viewport */}
+        {/* Bottom edge fade ,  at the bottom of the viewport */}
         <div
           aria-hidden="true"
           className="fixed left-0 right-0 bottom-0 h-6 bg-gradient-to-t from-background/80 to-transparent pointer-events-none z-30 print:hidden"

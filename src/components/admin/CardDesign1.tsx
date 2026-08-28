@@ -24,7 +24,7 @@ export function CardDesign1({
   const totalRevenue = financeDashboard?.totalRevenue || 0;
   const formattedRevenue = financeDashboard
     ? formatCurrency(Math.floor(totalRevenue / 100))
-    : "—";
+    : ", ";
   const data = [
     { time: "00:00", value: totalRevenue * 0.4 },
     { time: "04:00", value: totalRevenue * 0.5 },

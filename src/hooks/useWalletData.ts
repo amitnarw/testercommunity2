@@ -7,7 +7,6 @@ import { UserTransaction } from "@/lib/apiCalls";
 export interface ChartDataPoint {
   name: string;
   package: number;
-  points: number;
 }
 
 export interface WalletDataReturn {
@@ -62,7 +61,7 @@ function isSpent(t: UserTransaction) {
   );
 }
 
-function getNetValue(t: UserTransaction, key: "points" | "package") {
+function getNetValue(t: UserTransaction, key: "package") {
   let raw = 0;
   if (t[key] !== null && t[key] !== undefined && t[key] !== 0) {
     raw = Math.abs(t[key] as number);
@@ -122,29 +121,20 @@ export function useWalletData(): WalletDataReturn {
         (sum, t) => sum + getNetValue(t, "package"),
         0
       ),
-      points: monthTransactions.reduce(
-        (sum, t) => sum + getNetValue(t, "points"),
-        0
-      ),
     };
   });
 
   const sumNetPackages = monthlyNet.reduce((s, m) => s + m.package, 0);
-  const sumNetPoints = monthlyNet.reduce((s, m) => s + m.points, 0);
 
   const startPackages = (walletData?.totalPackages || 0) - sumNetPackages;
-  const startPoints = (walletData?.totalPoints || 0) - sumNetPoints;
 
   let runningPackages = startPackages;
-  let runningPoints = startPoints;
 
   const combinedChartData = monthlyNet.map((d) => {
     runningPackages += d.package;
-    runningPoints += d.points;
     return {
       name: d.name,
       package: runningPackages,
-      points: runningPoints,
     };
   });
 

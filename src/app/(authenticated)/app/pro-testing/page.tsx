@@ -319,7 +319,7 @@ function DashboardPageContent() {
         description: app.androidApp?.description || "",
         testingInstructions: app.instructionsForTester || "",
         androidVersion: `Android ${app.minimumAndroidVersion}+`,
-        pointsCost: app.costPoints || 0,
+        pointsCost: 0, // S9: points removed
         crashFreeRate: 100, // Placeholder
         overallRating: app.averageRating || 0,
         feedbackBreakdown: { bugs: 0, suggestions: 0, praise: 0 },

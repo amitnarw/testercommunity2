@@ -249,7 +249,7 @@ function SortableRow({
             Popular
           </Badge>
         ) : (
-          <span className="text-xs text-muted-foreground">—</span>
+          <span className="text-xs text-muted-foreground">, </span>
         )}
       </TableCell>
       <TableCell>
@@ -924,7 +924,7 @@ export function PlansTable() {
                     />
                     <p className="text-xs text-muted-foreground">
                       {form.buttonAction === "REDIRECT"
-                        ? "Where the button navigates — internal route or full link."
+                        ? "Where the button navigates ,  internal route or full link."
                         : "Fallback for public pages where Razorpay isn't available."}
                     </p>
                   </div>
@@ -932,7 +932,7 @@ export function PlansTable() {
                 {form.buttonAction === "REDIRECT" && !form.ctaHref.trim() && (
                   <div className="flex items-center gap-2 text-xs text-amber-600 bg-amber-500/10 rounded-lg px-3 py-2">
                     <AlertCircle className="h-4 w-4 shrink-0" />
-                    Add a destination URL — without it the button falls back to /pricing.
+                    Add a destination URL ,  without it the button falls back to /pricing.
                   </div>
                 )}
               </div>

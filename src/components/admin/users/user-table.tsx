@@ -57,6 +57,7 @@ export const UserTable = ({
   users,
   onEdit,
   onStatusChange,
+  onActiveStatusChange,
   onDelete,
   isLoading,
   currentUserId,
@@ -64,6 +65,7 @@ export const UserTable = ({
   users: any[];
   onEdit: (user: any) => void;
   onStatusChange: (user: any) => void;
+  onActiveStatusChange?: (user: any) => void;
   onDelete: (user: any) => void;
   isLoading: boolean;
   currentUserId?: string;
@@ -162,6 +164,17 @@ export const UserTable = ({
                       {user.status === "Banned" ? "Activate User" : "Ban User"}
                       {user.id === currentUserId && " (Self)"}
                     </DropdownMenuItem>
+                    {onActiveStatusChange && (
+                      <DropdownMenuItem
+                        onClick={() => onActiveStatusChange(user)}
+                        disabled={user.id === currentUserId}
+                      >
+                        {user.isActive === false
+                          ? "Reactivate Account"
+                          : "Deactivate Account"}
+                        {user.id === currentUserId && " (Self)"}
+                      </DropdownMenuItem>
+                    )}
                     <DropdownMenuItem
                       className="text-destructive focus:text-destructive"
                       onClick={() => onDelete(user)}

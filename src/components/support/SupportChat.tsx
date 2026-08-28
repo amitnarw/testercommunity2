@@ -28,6 +28,7 @@ interface SupportChatProps {
   onOpenChange?: (open: boolean) => void;
   hidden?: boolean;
   senderType?: "USER" | "AGENT";
+  viewerType?: "OWNER" | "ADMIN";
 }
 
 export function SupportChat({
@@ -38,6 +39,7 @@ export function SupportChat({
   onOpenChange,
   hidden = false,
   senderType = "USER",
+  viewerType,
 }: SupportChatProps) {
   if (mode === "direct") {
     return (
@@ -48,6 +50,7 @@ export function SupportChat({
         onOpenChange={onOpenChange}
         hidden={hidden}
         senderType={senderType}
+        viewerType={viewerType}
       />
     );
   }
@@ -689,6 +692,7 @@ interface DirectChatWindowProps {
   onOpenChange?: (open: boolean) => void;
   hidden?: boolean;
   senderType?: "USER" | "AGENT";
+  viewerType?: "OWNER" | "ADMIN";
 }
 
 function DirectChatWindow({
@@ -697,6 +701,7 @@ function DirectChatWindow({
   open,
   onOpenChange,
   hidden = false,
+  viewerType,
   senderType = "USER",
 }: DirectChatWindowProps) {
   const [humanInput, setHumanInput] = useState("");
@@ -722,6 +727,8 @@ function DirectChatWindow({
 
   const messages = directChat.messages;
 
+  const isAdminViewer = viewerType !== undefined ? viewerType === "ADMIN" : senderType === "AGENT";
+
   return (
     <div className="flex flex-col h-full w-full overflow-hidden">
       {/* Header */}
@@ -732,10 +739,16 @@ function DirectChatWindow({
           </div>
           <div>
             <h3 className="font-bold text-sm">{title}</h3>
-            <p className="text-[10px] text-primary-foreground/80 flex items-center gap-1.5">
-              <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
-              Live Agent
-            </p>
+            {isAdminViewer ? (
+              <p className="text-[10px] text-primary-foreground/80">
+                {directChat.chat?.user?.name || "App Owner"}
+              </p>
+            ) : (
+              <p className="text-[10px] text-primary-foreground/80 flex items-center gap-1.5">
+                <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
+                Live Agent
+              </p>
+            )}
           </div>
         </div>
         <div className="flex items-center gap-1">
@@ -758,8 +771,10 @@ function DirectChatWindow({
         <>
           <ScrollArea ref={humanScrollRef} className="flex-1 p-4 bg-background/50">
             <div className="space-y-4 pb-4">
-              {messages.map((m, i) => (
-                <div key={m.id || i} className={cn("flex gap-3", m.senderType === "USER" ? "flex-row-reverse" : "flex-row")}>
+              {messages.map((m, i) => {
+                const isMine = isAdminViewer ? m.senderType === "AGENT" : m.senderType === "USER";
+                return (
+                <div key={m.id || i} className={cn("flex gap-3", isMine ? "flex-row-reverse" : "flex-row")}>
                   <div className={cn(
                     "h-8 w-8 rounded-full flex items-center justify-center flex-shrink-0 border",
                     m.senderType === "AGENT" ? "bg-primary/10 border-primary/20" : m.senderType === "SYSTEM" ? "bg-muted border-dashed" : "bg-muted"
@@ -772,10 +787,10 @@ function DirectChatWindow({
                       <User className="h-4 w-4 text-muted-foreground" />
                     )}
                   </div>
-                  <div className={cn("flex flex-col max-w-[80%] min-w-0 gap-1", m.senderType === "USER" ? "items-end" : "items-start")}>
+                  <div className={cn("flex flex-col max-w-[80%] min-w-0 gap-1", isMine ? "items-end" : "items-start")}>
                     <div className={cn(
                       "px-4 py-2.5 rounded-2xl text-sm shadow-sm leading-relaxed break-words",
-                      m.senderType === "USER"
+                      isMine
                         ? "bg-primary text-primary-foreground rounded-tr-none"
                         : m.senderType === "SYSTEM"
                         ? "bg-muted/30 border border-dashed rounded-tl-none text-muted-foreground italic text-xs"
@@ -792,7 +807,8 @@ function DirectChatWindow({
                     </span>
                   </div>
                 </div>
-              ))}
+                );
+              })}
             </div>
           </ScrollArea>
           {directChat.agentTyping && (
@@ -837,7 +853,9 @@ function DirectChatWindow({
               </Button>
             </form>
             <p className="mt-2 text-[9px] text-muted-foreground/60 text-center leading-tight">
-              This conversation is saved and will be available to your Testing Manager.
+              {isAdminViewer
+                ? "Responding as Testing Manager."
+                : "This conversation is saved and will be available to your Testing Manager."}
             </p>
           </footer>
         </>

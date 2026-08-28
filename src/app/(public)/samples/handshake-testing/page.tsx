@@ -18,7 +18,7 @@ export default function SampleHandshakeTestingPage() {
       <div className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-md border-b border-border/50">
         <div className="container mx-auto px-4 md:px-6 py-3 flex flex-col sm:flex-row items-center justify-between gap-1 sm:gap-2">
           <div className="flex items-center justify-between sm:justify-center gap-2 w-full">
-            <h1 className="text-lg sm:text-xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+            <h1 className="text-lg sm:text-xl font-bold bg-gradient-to-r from-emerald-500 to-emerald-700 bg-clip-text text-transparent">
               Handshake Testing
             </h1>
             <Badge>HANDSHAKE</Badge>
@@ -36,7 +36,7 @@ export default function SampleHandshakeTestingPage() {
 
           <Button
             asChild
-            className="rounded-full shadow-lg shadow-primary/20 px-6 w-full sm:w-auto"
+            className="rounded-full shadow-lg shadow-emerald-500/20 px-6 w-full sm:w-auto"
           >
             <Link href="/auth/register">
               <Lock className="w-4 h-4 mr-2" />

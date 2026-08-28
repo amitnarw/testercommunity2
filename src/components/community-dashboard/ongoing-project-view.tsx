@@ -72,7 +72,7 @@ const DailyProgress = ({
             className={cn(
               "aspect-square rounded-xl flex flex-col items-center justify-center p-1 transition-all duration-300 shadow-none hover:scale-105 cursor-pointer",
               isCurrent
-                ? "bg-gradient-to-br from-primary to-accent text-primary-foreground scale-110"
+                ? "bg-gradient-to-br from-emerald-500 to-emerald-700 text-white scale-110"
                 : "bg-gradient-to-br from-gray-400/20 to-gray-400/2",
               isCompleted
                 ? "bg-gradient-to-br from-green-400/50 to-green-400/20 dark:from-green-400/60 dark:to-green-400/20 text-muted-foreground"
@@ -82,7 +82,7 @@ const DailyProgress = ({
             {isCompleted ? (
               <CheckCircle className="w-4 h-4 text-green-500" />
             ) : isCurrent && isCheckingIn ? (
-              <Loader2 className="w-6 h-6 animate-spin text-primary-foreground" />
+              <Loader2 className="w-6 h-6 animate-spin text-white" />
             ) : (
               <>
                 <p
@@ -303,7 +303,7 @@ export default function OngoingProjectView({
               <div className="flex flex-col gap-10 lg:col-span-2">
                 <div className="lg:col-span-2 space-y-12">
                   <section>
-                    <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-br from-primary to-accent bg-clip-text text-transparent pb-1">
+                    <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-br from-emerald-500 to-emerald-700 bg-clip-text text-transparent pb-1">
                       {appDetails?.androidApp?.appName}
                     </h1>
                     <ExpandableText
@@ -317,6 +317,7 @@ export default function OngoingProjectView({
                       app={appDetails}
                       buttonType="external"
                       url={`https://play.google.com/store/apps/details?id=${appDetails?.androidApp?.packageName}`}
+                      variant="handshake"
                     />
                   </div>
 
@@ -407,14 +408,15 @@ export default function OngoingProjectView({
                       isLoading={isLoading}
                       isCompleted={isReadOnlyMode}
                       isLocked={isTestingNotStarted || isAdminCompleted}
+                      variant="handshake"
                     />
                   </div>
                   {isTestingNotStarted && (
                     <div className="absolute inset-0 flex items-center justify-center">
                       <div className="bg-background/90 backdrop-blur-sm border border-border/50 rounded-2xl p-6 text-center shadow-lg max-w-md">
                         <div className="flex items-center justify-center gap-2 mb-2">
-                          <Users className="w-5 h-5 text-primary" />
-                          <span className="font-semibold text-primary">
+                          <Users className="w-5 h-5 text-emerald-600" />
+                          <span className="font-semibold text-emerald-600">
                             Feedback locked
                           </span>
                         </div>
@@ -465,7 +467,7 @@ export default function OngoingProjectView({
                           </span>
                         )}
                         {isRatingPending && (
-                          <Loader2 className="w-4 h-4 animate-spin text-primary ml-2" />
+                          <Loader2 className="w-4 h-4 animate-spin text-emerald-500 ml-2" />
                         )}
                       </div>
                     </CardContent>
@@ -481,6 +483,7 @@ export default function OngoingProjectView({
                     buttonType="external"
                     url={`https://play.google.com/store/apps/details?id=${appDetails?.androidApp?.packageName}`}
                     buttonClassName="hidden lg:block"
+                    variant="handshake"
                   />
                 )}
               </aside>
@@ -501,16 +504,16 @@ export default function OngoingProjectView({
           <div className="relative p-8 flex flex-col items-center text-center">
             {/* Decoration Background */}
             <div className="absolute inset-0 overflow-hidden pointer-events-none">
-              <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-primary/10 via-transparent to-transparent opacity-70" />
+              <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-emerald-500/10 via-transparent to-transparent opacity-70" />
             </div>
 
             {/* Icon */}
-            <div className="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center mb-6 ring-8 ring-primary/5 transition-transform duration-500 hover:scale-110">
-              <CalendarDays className="w-10 h-10 text-primary" />
+            <div className="w-20 h-20 rounded-full bg-emerald-500/10 flex items-center justify-center mb-6 ring-8 ring-emerald-500/5 transition-transform duration-500 hover:scale-110">
+              <CalendarDays className="w-10 h-10 text-emerald-600" />
             </div>
 
             <DialogHeader className="space-y-3 items-center">
-              <DialogTitle className="text-3xl font-bold tracking-tight bg-gradient-to-br from-primary to-accent bg-clip-text text-transparent">
+              <DialogTitle className="text-3xl font-bold tracking-tight bg-gradient-to-br from-emerald-500 to-emerald-700 bg-clip-text text-transparent">
                 Daily Check-in
               </DialogTitle>
               <DialogDescription className="text-muted-foreground text-center max-w-xs text-base leading-relaxed">
@@ -529,7 +532,7 @@ export default function OngoingProjectView({
                   submitCheckIn({ hubId, proofImage: "" });
                   setIsConfirmModalOpen(false);
                 }}
-                className="w-full h-14 rounded-2xl text-lg font-bold shadow-xl shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] transition-all"
+                className="w-full h-14 rounded-2xl text-lg font-bold shadow-xl shadow-emerald-500/20 hover:scale-[1.02] active:scale-[0.98] transition-all"
               >
                 Yes, Check In
               </Button>

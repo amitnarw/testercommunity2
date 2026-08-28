@@ -4,14 +4,16 @@ export function StatusBadge({ status }: { status: string }) {
   return (
     <Badge
       variant={
-        status === "Banned" || status === "Inactive"
+        status === "Banned" || status === "Deactivated" || status === "Inactive"
           ? "destructive"
           : "secondary"
       }
       className={
         status === "Active"
           ? "bg-green-500/20 text-green-700 dark:bg-green-500/10 dark:text-green-400"
-          : ""
+          : status === "Deactivated"
+            ? "bg-amber-500/20 text-amber-700 border-amber-500/40 dark:bg-amber-500/10 dark:text-amber-400"
+            : ""
       }
     >
       {status}

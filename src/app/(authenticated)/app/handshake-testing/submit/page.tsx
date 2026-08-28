@@ -8,27 +8,9 @@ import { SubmissionSuccess } from "@/components/community-dashboard/submission-s
 import { SubmissionError } from "@/components/community-dashboard/submission-error";
 import { useAddHubApp } from "@/hooks/useHub";
 import { ROUTES } from "@/lib/routes";
-import { getMyHandshakeSubscription } from "@/lib/apiCalls";
-import { useQuery } from "@tanstack/react-query";
-import { Loader2 } from "lucide-react";
 
 export default function SubmitAppPage() {
   const router = useRouter();
-
-  const { data: handshakeSub, isLoading: subLoading } = useQuery({
-    queryKey: ["myHandshakeSubscription"],
-    queryFn: () => getMyHandshakeSubscription(),
-    retry: false,
-  });
-  const hasActiveSubscription =
-    !!handshakeSub &&
-    (handshakeSub.status === "ACTIVE" || handshakeSub.status === "AUTHENTICATED");
-
-  useEffect(() => {
-    if (!subLoading && !hasActiveSubscription) {
-      router.replace("/pricing");
-    }
-  }, [subLoading, hasActiveSubscription, router]);
 
   const {
     mutate: addHubAppMutate,
@@ -49,16 +31,10 @@ export default function SubmitAppPage() {
     addHubAppMutate(data);
   };
 
-  if (!isMounted || subLoading) {
+  if (!isMounted) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <Loader2 className="w-8 h-8 animate-spin text-muted-foreground" />
-      </div>
+      <div className="min-h-screen flex items-center justify-center" />
     );
-  }
-
-  if (!hasActiveSubscription) {
-    return null;
   }
 
   if (addHubAppIsSuccess) {
@@ -87,7 +63,7 @@ export default function SubmitAppPage() {
   return (
     <div className="bg-brand-background min-h-screen">
       <PageHeader
-        title="Submit"
+        title="Submit Handshake App"
         backHref={ROUTES.AUTHENTICATED.HANDSHAKE_TESTING}
         className="w-1/2 px-5 sm:px-10"
       />

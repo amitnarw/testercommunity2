@@ -15,7 +15,7 @@ interface NotificationsCardProps {
 
 export function NotificationsCard({ notifications, totalUnread }: NotificationsCardProps) {
   return (
-    <div className="rounded-[2.5rem] border border-border/30 bg-card/50 p-5 overflow-hidden">
+    <div className="rounded-[2.5rem] border border-border/30 bg-card p-6 overflow-hidden">
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-2">
           <StatLabel>Notifications</StatLabel>
@@ -32,7 +32,7 @@ export function NotificationsCard({ notifications, totalUnread }: NotificationsC
           View All <ChevronRight className="w-3 h-3" />
         </AutoTransitionLink>
       </div>
-      <div className="space-y-0.5">
+      <div className="divide-y divide-slate-100 dark:divide-white/[0.08]">
         {notifications.length > 0 ? (
           notifications.map((n) => (
             <NotificationRow key={n.id} notification={n} />

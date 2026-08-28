@@ -89,7 +89,7 @@ export function VerificationHistoryModal({
           >
             <DialogHeader className="p-6 sm:p-8 pb-4 border-b border-border space-y-1 shrink-0 bg-muted/5">
               <div className="flex items-center gap-3">
-                <div className="h-10 w-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary shadow-sm ring-1 ring-primary/20">
+                <div className="h-10 w-10 rounded-xl bg-emerald-500/10 flex items-center justify-center text-emerald-600 shadow-sm ring-1 ring-emerald-500/20">
                   <Smartphone className="w-5 h-5" />
                 </div>
                 <div className="text-left">

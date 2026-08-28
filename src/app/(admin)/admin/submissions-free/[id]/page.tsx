@@ -21,9 +21,10 @@ import {
   Activity,
   CheckCircle2,
   Pencil,
-  Star,
   Loader2,
   Eye,
+  Handshake,
+  RotateCcw,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -75,6 +76,27 @@ const AdminStartTestingDialog = dynamic(
     ),
   { ssr: false },
 );
+const AdminEditSubmissionDialog = dynamic(
+  () =>
+    import("@/components/admin/admin-edit-submission-dialog").then(
+      (mod) => mod.AdminEditSubmissionDialog,
+    ),
+  { ssr: false },
+);
+const AdminForceHandshakeDialog = dynamic(
+  () =>
+    import("@/components/admin/admin-force-handshake-dialog").then(
+      (mod) => mod.AdminForceHandshakeDialog,
+    ),
+  { ssr: false },
+);
+const AdminRestartDialog = dynamic(
+  () =>
+    import("@/components/admin/admin-restart-dialog").then(
+      (mod) => mod.AdminRestartDialog,
+    ),
+  { ssr: false },
+);
 
 export default function AdminSubmissionDetailPage({
   params,
@@ -91,6 +113,9 @@ export default function AdminSubmissionDetailPage({
   const [showCompleteDialog, setShowCompleteDialog] = useState(false);
   const [showManageTestersDialog, setShowManageTestersDialog] = useState(false);
   const [showStartTestingDialog, setShowStartTestingDialog] = useState(false);
+  const [showForceHandshakeDialog, setShowForceHandshakeDialog] = useState(false);
+  const [showEditDialog, setShowEditDialog] = useState(false);
+  const [showRestartDialog, setShowRestartDialog] = useState(false);
   const { toast } = useToast();
   const [isUpdatingStatus, setIsUpdatingStatus] = useState(false);
 
@@ -240,7 +265,7 @@ export default function AdminSubmissionDetailPage({
             <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-3xl -z-10 -translate-y-1/2 translate-x-1/2" />
 
             <div className="flex flex-col lg:flex-row md:items-center justify-between gap-6">
-              <div className="flex items-center gap-5 z-10">
+              <div className="flex flex-col sm:flex-row items-center gap-5 z-10">
                 <div className="flex flex-col items-center gap-1 sm:gap-2">
                   <SafeImage
                     src={project.androidApp?.appLogoUrl}
@@ -254,7 +279,7 @@ export default function AdminSubmissionDetailPage({
                   </div>
                 </div>
                 <div className="space-y-1.5 min-w-0">
-                  <h1 className="text-2xl md:text-3xl font-extrabold bg-gradient-to-br from-primary to-accent bg-clip-text text-transparent truncate">
+                  <h1 className="text-2xl md:text-3xl font-extrabold bg-gradient-to-br from-primary to-accent bg-clip-text text-transparent sm:truncate">
                     {project.androidApp?.appName || `App #${project.appId}`}
                   </h1>
                   <div className="flex flex-col gap-2">
@@ -268,39 +293,42 @@ export default function AdminSubmissionDetailPage({
                             ? "destructive"
                             : "secondary"
                         }
-                        className={
-                          project.status === "ACCEPTED" ||
-                          project.status === "AVAILABLE" ||
-                          project.status === "IN_TESTING" ||
-                          project.status === "COMPLETED"
-                            ? "bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 font-bold border-emerald-500/20"
-                            : "font-bold"
-                        }
-                      >
-                        {project.status.replace("_", " ")}
-                      </Badge>
-                    </div>
-                    {(project.status === "ACCEPTED" ||
-                      project.status === "AVAILABLE" ||
-                      project.status === "IN_TESTING" ||
-                      project.status === "COMPLETED") && (
-                      <p className="text-sm text-muted-foreground max-w-xl leading-snug">
-                        {project.status === "ACCEPTED" &&
-                          "This application has been approved. It is currently in the queue waiting for setup before becoming available to testers."}
-                        {project.status === "AVAILABLE" &&
-                          "This application is active and listed on the Dashboard. Testers can now join this project."}
-                        {project.status === "IN_TESTING" &&
-                          "Active testing phase. Testers are participating and feedback is being collected."}
-                        {project.status === "COMPLETED" &&
-                          "Testing completed. All required testers have participated and duration fulfilled."}
-                      </p>
-                    )}
+className={
+                            project.status === "ACCEPTED" ||
+                            project.status === "AVAILABLE" ||
+                            project.status === "IN_TESTING" ||
+                            project.status === "TESTING_ACTIVE" ||
+                            project.status === "COMPLETED"
+                              ? "bg-emerald-500/10 text-emerald-700 dark:text-emerald-400 font-bold border-emerald-500/20"
+                              : "font-bold"
+                          }
+                        >
+                          {project.status.replace("_", " ")}
+                        </Badge>
+                      </div>
+                      {(project.status === "ACCEPTED" ||
+                        project.status === "AVAILABLE" ||
+                        project.status === "IN_TESTING" ||
+                        project.status === "TESTING_ACTIVE" ||
+                        project.status === "COMPLETED") && (
+                        <p className="text-sm text-muted-foreground max-w-xl leading-snug">
+                          {project.status === "ACCEPTED" &&
+                            "This application has been approved. It is currently in the queue waiting for setup before becoming available to testers."}
+                          {project.status === "AVAILABLE" &&
+                            "This application is active and listed on the Dashboard. Testers can now join this project."}
+                          {(project.status === "IN_TESTING" ||
+                            project.status === "TESTING_ACTIVE") &&
+                            "Active testing phase. Testers are participating and feedback is being collected."}
+                          {project.status === "COMPLETED" &&
+                            "Testing completed. All required testers have participated and duration fulfilled."}
+                        </p>
+                      )}
                   </div>
                 </div>
               </div>
 
               {/* Action Buttons Zone */}
-              <div className="flex flex-wrap items-center gap-3 w-full md:w-auto z-10 shrink-0">
+              <div className="flex flex-wrap items-center justify-end gap-3 w-full z-10">
                 <a
                   href={visitUrl}
                   target="_blank"
@@ -309,6 +337,18 @@ export default function AdminSubmissionDetailPage({
                 >
                   <ExternalLink className="w-4 h-4" /> Play Store
                 </a>
+
+                {/* F-8: the edit endpoint hard-rejects FREE campaigns ,  hide
+                    the button instead of letting every save fail with 400. */}
+                {project.appType !== "FREE" && (
+                  <Button
+                    variant="outline"
+                    onClick={() => setShowEditDialog(true)}
+                    className="px-5 py-2.5 h-auto rounded-xl shadow-sm font-bold border-blue-500/30 hover:border-blue-500/60 text-blue-600 bg-blue-500/5"
+                  >
+                    <Pencil className="w-4 h-4 mr-1.5" /> Edit
+                  </Button>
+                )}
 
                 {(project.status === "IN_REVIEW" ||
                   project.status === "REJECTED") && (
@@ -349,15 +389,31 @@ export default function AdminSubmissionDetailPage({
                 )}
 
                 {(project.status === "AVAILABLE" ||
-                  project.status === "IN_TESTING") && (
+                  project.status === "IN_TESTING" ||
+                  project.status === "TESTING_ACTIVE") && (
                   <Button
                     onClick={() => setShowManageTestersDialog(true)}
                     className="px-5 py-2.5 h-auto rounded-xl shadow-sm font-bold"
                   >
                     <Users className="w-4 h-4 mr-1.5" />
-                    Manage Testers
+                    Assign Testers
                   </Button>
                 )}
+
+                {/* S12: force-pair this campaign with another HANDSHAKE
+                    campaign so testing can start immediately (skips the 24h
+                    partner wait). AVAILABLE only , once testing is running
+                    the partner section + Assign Testers cover further needs. */}
+                {project.appType === "HANDSHAKE" &&
+                  project.status === "AVAILABLE" && (
+                    <Button
+                      onClick={() => setShowForceHandshakeDialog(true)}
+                      className="px-5 py-2.5 h-auto bg-amber-600 hover:bg-amber-700 text-white rounded-xl shadow-md font-bold shadow-amber-600/20"
+                    >
+                      <Handshake className="w-4 h-4 mr-1.5" />
+                      Force Handshake
+                    </Button>
+                  )}
 
                 {project.status === "AVAILABLE" && (
                   <Button
@@ -375,6 +431,27 @@ export default function AdminSubmissionDetailPage({
                   >
                     <CheckCircle2 className="w-4 h-4 mr-1.5" />
                     Mark Completed
+                  </Button>
+                )}
+
+                {(project.status === "TESTING_ACTIVE" ||
+                  project.status === "WAITING_FOR_PARTNERS") && (
+                  <Button
+                    onClick={handleAdminComplete}
+                    className="px-5 py-2.5 h-auto bg-blue-600 hover:bg-blue-700 text-white rounded-xl shadow-md font-bold"
+                  >
+                    <CheckCircle2 className="w-4 h-4 mr-1.5" />
+                    Complete Testing
+                  </Button>
+                )}
+
+                {project.status === "COMPLETED" && (
+                  <Button
+                    onClick={() => setShowRestartDialog(true)}
+                    className="px-5 py-2.5 h-auto bg-amber-600 hover:bg-amber-700 text-white rounded-xl shadow-md font-bold shadow-amber-600/20"
+                  >
+                      <RotateCcw className="w-4 h-4 mr-1.5" />
+                      Reopen Testing
                   </Button>
                 )}
               </div>
@@ -531,33 +608,7 @@ export default function AdminSubmissionDetailPage({
                   </div>
                 </div>
 
-                {/* Rewards & Payments Row */}
-                <div className="grid grid-cols-2 divide-x border-b border-border/50 bg-secondary/20">
-                  <div className="p-4 flex flex-col items-center justify-center text-center space-y-1.5 hover:bg-background transition-colors">
-                    <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider flex items-center gap-1">
-                      <Activity className="w-3.5 h-3.5 text-primary" />
-                      Cost Points
-                    </span>
-                    <span className="text-2xl font-black text-blue-600">
-                      {project.costPoints || 0}{" "}
-                      <span className="text-xs font-bold text-muted-foreground lowercase">
-                        Pts
-                      </span>
-                    </span>
-                  </div>
-                  <div className="p-4 flex flex-col items-center justify-center text-center space-y-1.5 hover:bg-background transition-colors">
-                    <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider flex items-center gap-1">
-                      <Star className="w-3.5 h-3.5 text-primary" />
-                      Reward Points
-                    </span>
-                    <span className="text-2xl font-black text-emerald-600">
-                      {project.rewardPoints || 0}{" "}
-                      <span className="text-xs font-bold text-muted-foreground lowercase">
-                        Pts
-                      </span>
-                    </span>
-                  </div>
-                </div>
+                {/* S9: Cost/Reward Points row removed with the points economy */}
 
                 <div className="p-6 bg-card flex flex-col items-center justify-center text-center gap-3">
                   <div className="p-4 bg-emerald-500/10 rounded-full">
@@ -569,7 +620,7 @@ export default function AdminSubmissionDetailPage({
                     </h4>
                     <p className="text-sm text-muted-foreground max-w-[250px] mt-1 mx-auto leading-relaxed">
                       This is a handshake testing project managed through the
-                      subscription-based barter system.
+                      free barter system.
                     </p>
                   </div>
                 </div>
@@ -871,13 +922,14 @@ export default function AdminSubmissionDetailPage({
           {/* Assigned Testers Section */}
           {(project.status === "AVAILABLE" ||
             project.status === "IN_TESTING" ||
-            project.status === "COMPLETED") && (
+            project.status === "COMPLETED" ||
+            project.status === "TESTING_ACTIVE" ||
+            project.status === "WAITING_FOR_PARTNERS") && (
             <div className="bg-card rounded-3xl overflow-hidden border border-border/50 shadow-sm">
               <AdminAssignedTestersTable
                 testerRelations={project.testerRelations}
                 appId={project.id}
                 totalDays={project.totalDay || 14}
-                currentDay={currentDay}
                 onRefetch={refetch}
                 appType="FREE"
               />
@@ -909,6 +961,12 @@ export default function AdminSubmissionDetailPage({
       </div>
 
       {/* Modals */}
+      <AdminEditSubmissionDialog
+        project={project}
+        open={showEditDialog}
+        onOpenChange={setShowEditDialog}
+        onSuccess={() => refetch()}
+      />
       <AdminRejectDialog
         appId={project.id}
         open={showRejectDialog}
@@ -932,8 +990,6 @@ export default function AdminSubmissionDetailPage({
           totalTester: project.totalTester,
           totalDay: project.totalDay,
           minimumAndroidVersion: project.minimumAndroidVersion,
-          costPoints: project.costPoints || 0,
-          rewardPoints: project.rewardPoints || 0,
         }}
         isReview={project.status === "IN_REVIEW"}
       />
@@ -942,10 +998,20 @@ export default function AdminSubmissionDetailPage({
         open={showCompleteDialog}
         onOpenChange={setShowCompleteDialog}
         onSuccess={() => refetch()}
+        appType={project.appType}
+        unfinishedCount={
+          project.testerRelations?.filter(
+            (r) =>
+              r.status === "IN_PROGRESS" &&
+              (r.daysCompleted || 0) < (project.totalDay || 16),
+          ).length || 0
+        }
+        requiredDays={project.totalDay || 16}
       />
       {project?.id && (
         <AdminManageTestersDialog
           appId={project.id}
+          appOwnerId={project.appOwnerId}
           open={showManageTestersDialog}
           onOpenChange={setShowManageTestersDialog}
           onSuccess={() => refetch()}
@@ -967,6 +1033,21 @@ export default function AdminSubmissionDetailPage({
         onSuccess={() => refetch()}
         currentTester={project.currentTester || 0}
         totalTester={project.totalTester || 0}
+        appType={project.appType}
+      />
+      {/* S12: Force Handshake , admin-only, HANDSHAKE + AVAILABLE */}
+      <AdminForceHandshakeDialog
+        open={showForceHandshakeDialog}
+        onOpenChange={setShowForceHandshakeDialog}
+        thisCampaign={{ id: project.id, appOwnerId: project.appOwnerId }}
+        onSuccess={() => refetch()}
+      />
+      <AdminRestartDialog
+        appId={project.id}
+        appName={project.androidApp?.appName}
+        open={showRestartDialog}
+        onOpenChange={setShowRestartDialog}
+        onSuccess={() => refetch()}
       />
       {/* Fullscreen Image Viewer */}
       {fullscreenImage && (

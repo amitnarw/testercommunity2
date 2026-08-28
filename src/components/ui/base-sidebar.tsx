@@ -53,12 +53,10 @@ export const SidebarNavLink = ({
       : pathname === href || pathname.startsWith(`${href}/`);
 
   const isPro = badge === "PRO";
-  const isBeta = badge === "BETA";
 
   const getBadgeStyles = () => {
     if (badge === "PRO") return "bg-amber-500/30 text-amber-300 dark:bg-amber-500/10 dark:text-amber-600";
     if (badge === "FREE") return "bg-blue-500/30 text-blue-300 dark:bg-blue-500/10 dark:text-blue-600";
-    if (badge === "BETA") return "bg-emerald-500/30 text-emerald-300 dark:bg-emerald-500/10 dark:text-emerald-600";
     return "";
   };
 

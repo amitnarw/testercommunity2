@@ -2,14 +2,14 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = {
   title: "Pricing | inTesters",
-  description: "View inTesters pricing and testing packages. Choose between handshake testing (subscription-based barter) or professional testing packages for guaranteed results.",
+  description: "View inTesters pricing and testing packages. Choose between handshake testing (free barter) or professional testing packages for guaranteed results.",
   keywords: "inTesters pricing, app testing packages, professional testing, handshake testing, Android app testing, beta testing, user testing",
   alternates: {
     canonical: "/pricing",
   },
   openGraph: {
     title: "Pricing | inTesters",
-    description: "View inTesters pricing and testing packages. Choose between handshake testing (subscription-based barter) or professional testing packages for guaranteed results.",
+    description: "View inTesters pricing and testing packages. Choose between handshake testing (free barter) or professional testing packages for guaranteed results.",
     type: "website",
     locale: "en_US",
     url: "/pricing",
@@ -26,7 +26,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "Pricing | inTesters",
-    description: "View inTesters pricing and testing packages. Choose between handshake testing (subscription-based barter) or professional testing packages for guaranteed results.",
+    description: "View inTesters pricing and testing packages. Choose between handshake testing (free barter) or professional testing packages for guaranteed results.",
     images: ["/dark-mac.png"],
   },
 };

@@ -20,6 +20,7 @@ import {
   getDiscoverySourceCounts,
   getUserNotifications,
   updateUserStatus,
+  updateUserActiveStatus,
   updateUserRole,
   updateUserProfile,
   updateUserWallet,
@@ -211,6 +212,7 @@ export function useAcceptApp(options?: UseMutationOptions<any, any, any>) {
       totalTester?: number;
       totalDay?: number;
       minimumAndroidVersion?: number;
+      /** S9: PAID apps only , per-tester money payout. */
       rewardPoints?: number;
     }) => acceptApp(payload),
     ...options,
@@ -381,6 +383,18 @@ export function useUpdateUserStatus(
   return mutation;
 }
 
+export function useUpdateUserActiveStatus(
+  options?: UseMutationOptions<any, any, any>,
+) {
+  const mutation = useMutation({
+    mutationFn: (payload: { id: string; isActive: boolean }) =>
+      updateUserActiveStatus(payload),
+    ...options,
+  });
+
+  return mutation;
+}
+
 export function useUpdateUserRole(options?: UseMutationOptions<any, any, any>) {
   const mutation = useMutation({
     mutationFn: (payload: { id: string; role: string }) =>
@@ -445,7 +459,6 @@ export function useUpdateUserWallet(options?: UseMutationOptions<any, any, any>)
   const mutation = useMutation({
     mutationFn: (payload: {
       id: string;
-      totalPoints: number;
       totalPackages: number;
       reason?: string;
     }) => updateUserWallet(payload),
@@ -1660,8 +1673,7 @@ export function useGiftPointsAndPackages(options?: UseMutationOptions<any, any, 
   return useMutation({
     mutationFn: (payload: {
       id: string;
-      points?: number;
-      packages?: number;
+      packages: number;
     }) => giftPointsAndPackages(payload),
     ...options,
     onSuccess: (_data, variables, ...rest) => {

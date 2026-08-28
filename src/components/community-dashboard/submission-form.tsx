@@ -1,23 +1,19 @@
-"use client";
+﻿"use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useForm, FormProvider } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Link from "next/link";
 import * as z from "zod";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { useInView } from "react-intersection-observer";
 import {
   FileText,
   Link as LinkIcon,
   Users,
-  AlertCircle,
   CheckCircle2,
-  TrendingUp,
-  Zap,
   BookOpen,
   PlayCircle,
-  Loader2,
   Check,
   Clipboard,
   Info,
@@ -39,8 +35,6 @@ import {
   FormControl,
   FormItem,
   FormMessage,
-  FormLabel,
-  FormDescription,
 } from "@/components/ui/form";
 import {
   Accordion,
@@ -58,11 +52,7 @@ import {
   TooltipTrigger,
   TooltipContent,
 } from "@/components/ui/tooltip";
-import { useAppCategories, useValidatePromoCode } from "@/hooks/useHub";
-import { useGetUserWallet } from "@/hooks/useUser";
-import { useQuery } from "@tanstack/react-query";
-import { getMyHandshakeSubscription } from "@/lib/apiCalls";
-import SkeletonSubmitAppBottom from "@/components/community-dashboard/submit-app-bottom-skeleton";
+import { useAppCategories } from "@/hooks/useHub";
 
 const minimum_android_versions = [
   { name: "Android 5.0 (Lollipop)", value: 5.0 },
@@ -89,10 +79,14 @@ const submissionSchema = z.object({
   app_logo_url: z.string().url("Please enter a valid URL for the app logo."),
   app_screenshot_url_1: z
     .string()
-    .url("Please enter a valid URL for the first screenshot."),
+    .url("Please enter a valid URL for the first screenshot.")
+    .optional()
+    .or(z.literal("")),
   app_screenshot_url_2: z
     .string()
-    .url("Please enter a valid URL for the second screenshot."),
+    .url("Please enter a valid URL for the second screenshot.")
+    .optional()
+    .or(z.literal("")),
   category_id: z.string().min(1, "Please select a category."),
   app_description: z
     .string()
@@ -141,12 +135,6 @@ const formSteps = [
     description: "Finally, set the technical parameters and choose how many testers you need.",
   },
 ];
-
-const Highlight = ({ children }: { children: React.ReactNode }) => (
-  <span className="bg-primary/20 text-primary font-semibold px-1.5 py-0.5 rounded-md">
-    {children}
-  </span>
-);
 
 const CopyBlock = ({ textToCopy }: { textToCopy: string }) => {
   const [copied, setCopied] = useState(false);
@@ -223,22 +211,45 @@ export function SubmissionForm({
   onCancel,
 }: SubmissionFormProps) {
   const isHandshake = variant === "handshake";
+  // `cls(e, p)` returns the emerald class when in handshake mode, else the
+  // original primary class. Keeps the rest of the JSX free of nested ternaries.
+  const cls = (emeraldClass: string, primaryClass: string) =>
+    isHandshake ? emeraldClass : primaryClass;
   const [activeStep, setActiveStep] = useState(formSteps[0].id);
-  const [isErrorModalOpen, setIsErrorModalOpen] = useState(false);
   const [isVideoExpanded, setIsVideoExpanded] = useState(false);
-  const [cost, setCost] = useState(0);
-  const [promoCodeInput, setPromoCodeInput] = useState("");
-  const [appliedPromo, setAppliedPromo] = useState<{
-    code: string;
-    discountValue: number;
-    discountType: string;
-  } | null>(null);
-  const [promoCodeError, setPromoCodeError] = useState<string | null>(null);
   const [hoveredTooltip, setHoveredTooltip] = useState<string | null>(null);
   const [pinnedTooltip, setPinnedTooltip] = useState<string | null>(null);
 
+  // Screenshots stay mandatory for Pro/PAID submissions; handshake only
+  // requires App Name + Link + Logo, so the refinement is variant-aware.
+  const resolverSchema = useMemo(
+    () =>
+      isHandshake
+        ? submissionSchema
+        : submissionSchema.superRefine((data, ctx) => {
+            const requireScreenshotUrl = (
+              field: "app_screenshot_url_1" | "app_screenshot_url_2",
+              message: string,
+            ) => {
+              const value = data[field];
+              if (!value || !z.string().url().safeParse(value).success) {
+                ctx.addIssue({ code: z.ZodIssueCode.custom, path: [field], message });
+              }
+            };
+            requireScreenshotUrl(
+              "app_screenshot_url_1",
+              "Please enter a valid URL for the first screenshot.",
+            );
+            requireScreenshotUrl(
+              "app_screenshot_url_2",
+              "Please enter a valid URL for the second screenshot.",
+            );
+          }),
+    [isHandshake],
+  );
+
   const form = useForm<SubmissionFormData>({
-    resolver: zodResolver(submissionSchema),
+    resolver: zodResolver(resolverSchema),
     mode: "onBlur",
     defaultValues: {
       app_name: initialData?.app_name || "",
@@ -255,32 +266,9 @@ export function SubmissionForm({
     },
   });
 
-  const testers = form.watch("total_tester");
-  const duration = form.watch("total_days");
+  // S9: points cost / promo machinery removed , submissions are free.
 
-  useEffect(() => {
-    const calculatedCost = testers * 80 + duration * 10;
-    if (appliedPromo) {
-      if (appliedPromo.discountType === "PERCENTAGE") {
-        setCost(Math.max(0, calculatedCost * (1 - appliedPromo.discountValue / 100)));
-      } else {
-        setCost(appliedPromo.discountValue);
-      }
-    } else {
-      setCost(calculatedCost);
-    }
-  }, [testers, duration, appliedPromo]);
-
-  const { data: handshakeSub, isLoading: handshakeSubLoading } = useQuery({
-    queryKey: ["myHandshakeSubscription"],
-    queryFn: () => getMyHandshakeSubscription(),
-    enabled: isHandshake,
-    retry: false,
-  });
-  const hasActiveSubscription =
-    !!handshakeSub &&
-    (handshakeSub.status === "ACTIVE" ||
-      handshakeSub.status === "AUTHENTICATED");
+  // Spec §2.1: Handshake Testing is free. No subscription check needed.
 
   const { ref: rulesRef, inView: rulesInView } = useInView({ threshold: 0.5 });
   const { ref: connectRef, inView: connectInView } = useInView({ threshold: 0.5 });
@@ -294,53 +282,7 @@ export function SubmissionForm({
     else if (configureInView) setActiveStep("configure");
   }, [rulesInView, connectInView, describeInView, configureInView]);
 
-  const {
-    mutate: validatePromoMutate,
-    isPending: isValidatingPromo,
-  } = useValidatePromoCode({
-    onSuccess: (data: any) => {
-      if (data && data.discountValue !== undefined) {
-        setAppliedPromo({
-          code: promoCodeInput,
-          discountValue: data.discountValue,
-          discountType: data.discountType || "FIXED",
-        });
-        setPromoCodeError(null);
-      }
-    },
-    onError: (error: any) => {
-      setPromoCodeError(error?.message || "Invalid or inactive promo code");
-      setAppliedPromo(null);
-    },
-  });
-
-  const handleApplyPromo = () => {
-    setPromoCodeError(null);
-    if (!promoCodeInput.trim()) {
-      setPromoCodeError("Promo code is required");
-      return;
-    }
-    validatePromoMutate({ code: promoCodeInput });
-  };
-
-  const handleRemovePromo = () => {
-    setAppliedPromo(null);
-    setPromoCodeInput("");
-    setPromoCodeError(null);
-  };
-
-  const { data: walletData, isPending: walletIsPending } = useGetUserWallet();
   const { data: appCategoriesData } = useAppCategories();
-
-  const isBalanceInsufficient = isHandshake
-    ? !hasActiveSubscription
-    : cost > (walletData?.totalPoints || 0);
-
-  useEffect(() => {
-    if (!isBalanceInsufficient) {
-      form.clearErrors("total_tester");
-    }
-  }, [isBalanceInsufficient, form]);
 
   const watchedFields = form.watch();
 
@@ -356,13 +298,15 @@ export function SubmissionForm({
     )
       requirements.push("App Logo URL");
     if (
-      !watchedFields.app_screenshot_url_1 ||
-      !watchedFields.app_screenshot_url_1.startsWith("http")
+      !isHandshake &&
+      (!watchedFields.app_screenshot_url_1 ||
+        !watchedFields.app_screenshot_url_1.startsWith("http"))
     )
       requirements.push("Screenshot 1");
     if (
-      !watchedFields.app_screenshot_url_2 ||
-      !watchedFields.app_screenshot_url_2.startsWith("http")
+      !isHandshake &&
+      (!watchedFields.app_screenshot_url_2 ||
+        !watchedFields.app_screenshot_url_2.startsWith("http"))
     )
       requirements.push("Screenshot 2");
     if (!watchedFields.category_id) requirements.push("Category Selection");
@@ -389,16 +333,12 @@ export function SubmissionForm({
       if (!hasChanges) requirements.push("At least one change");
     }
 
-    if (!isHandshake && mode === "create" && isBalanceInsufficient)
-      requirements.push("Sufficient Balance");
-    if (isHandshake && mode === "create" && !hasActiveSubscription)
-      requirements.push("Active Handshake subscription");
+    // S9: no balance requirement , submissions are free.
     return requirements;
   };
 
   const pendingRequirements = getPendingRequirements();
-  const isSubmitDisabled =
-    isPending || (isHandshake && !hasActiveSubscription);
+  const isSubmitDisabled = isPending;
 
   const onInvalid = (errors: any) => {
     const errorFields = Object.keys(errors);
@@ -415,25 +355,7 @@ export function SubmissionForm({
   };
 
   const handleFormSubmit = (data: SubmissionFormData) => {
-    if (isHandshake && !hasActiveSubscription) {
-      form.setError("total_tester", {
-        message: "An active Handshake subscription is required to publish an app.",
-      });
-      const element = document.getElementById("total_tester");
-      if (element) {
-        element.scrollIntoView({ behavior: "smooth", block: "center" });
-      }
-      return;
-    }
-
-    if (!isHandshake && mode === "create" && isBalanceInsufficient) {
-      form.setError("total_tester", { message: "Insufficient balance in your wallet." });
-      const element = document.getElementById("total_tester");
-      if (element) {
-        element.scrollIntoView({ behavior: "smooth", block: "center" });
-      }
-      return;
-    }
+    // S9: no balance gate , submissions are free.
 
     if (mode === "edit") {
       const hasChanges =
@@ -461,13 +383,14 @@ export function SubmissionForm({
       onSubmit({
         ...data,
         appType: "HANDSHAKE",
+        // Fixed campaign setup (Spec v2): 14 testers x 16 days. Backend
+        // ignores client values anyway, but we send the canonical numbers.
+        total_tester: 14,
+        total_days: 16,
       });
     } else {
-      onSubmit({
-        ...data,
-        points_cost: cost,
-        promo_code: appliedPromo?.code,
-      });
+      // S9: no points cost / promo â€” submissions are free.
+      onSubmit({ ...data });
     }
   };
 
@@ -498,6 +421,12 @@ export function SubmissionForm({
     );
   };
 
+  const Highlight = ({ children }: { children: React.ReactNode }) => (
+    <span className={cn("font-semibold px-1.5 py-0.5 rounded-md", cls("bg-emerald-500/20 text-emerald-600", "bg-primary/20 text-primary"))}>
+      {children}
+    </span>
+  );
+
   return (
     <div className="lg:grid lg:grid-cols-12 lg:gap-16 bg-background rounded-3xl px-3 sm:px-5">
       {/* Mobile Step Navigator */}
@@ -512,13 +441,13 @@ export function SubmissionForm({
             }}
             className={cn(
               "flex-1 flex items-center justify-center gap-2 text-center p-3 text-sm font-medium transition-all text-muted-foreground relative",
-              activeStep === step.id && "text-primary",
+              activeStep === step.id && cls("text-emerald-600", "text-primary"),
             )}
           >
             {step.title}
             {activeStep === step.id && (
               <motion.div
-                className="absolute bottom-0 left-0 right-0 h-0.5 bg-primary"
+                className={cn("absolute bottom-0 left-0 right-0 h-0.5", cls("bg-emerald-500", "bg-primary"))}
                 layoutId="mobile-active-step-indicator"
               />
             )}
@@ -541,7 +470,7 @@ export function SubmissionForm({
                     className={cn(
                       "flex items-center gap-3 p-3 rounded-lg transition-all",
                       activeStep === step.id
-                        ? "bg-primary/10 text-primary"
+                        ? cls("bg-emerald-500/10 text-emerald-600", "bg-primary/10 text-primary")
                         : "text-muted-foreground hover:bg-secondary/50",
                     )}
                   >
@@ -549,14 +478,14 @@ export function SubmissionForm({
                       className={cn(
                         "p-2 rounded-full flex items-center justify-center border-2 transition-all",
                         activeStep === step.id
-                          ? "bg-primary text-primary-foreground border-primary"
+                          ? cls("bg-emerald-500 text-white border-emerald-500", "bg-primary text-primary-foreground border-primary")
                           : "bg-secondary border-border group-hover:border-primary/50",
                       )}
                     >
                       {step.icon}
                     </div>
                     <div>
-                      <p className={cn("font-bold transition-all", activeStep === step.id ? "text-primary" : "text-foreground")}>
+                      <p className={cn("font-bold transition-all", activeStep === step.id ? cls("text-emerald-600", "text-primary") : "text-foreground")}>
                         {step.title}
                       </p>
                       <p className="text-xs">{step.description.split(".")[0]}</p>
@@ -579,7 +508,7 @@ export function SubmissionForm({
               description="Take a moment to understand how this process works."
             >
               <div className="space-y-8">
-                <div className="rounded-xl overflow-hidden shadow-lg relative bg-gradient-to-br from-primary/50 to-primary">
+                <div className={cn("rounded-xl overflow-hidden shadow-lg relative bg-gradient-to-br", cls("from-emerald-500/50 to-emerald-700", "from-primary/50 to-primary"))}>
                   <IconRain />
                   {isVideoExpanded ? (
                     <div className="relative aspect-video">
@@ -624,7 +553,7 @@ export function SubmissionForm({
                   >
                     <AccordionTrigger className="p-6 text-left hover:no-underline flex flex-row items-center justify-between w-full relative">
                       <div className="flex items-start flex-1">
-                        <span className="text-7xl md:text-5xl font-black bg-gradient-to-br from-primary/20 to-primary/0 bg-clip-text text-transparent md:w-20 absolute -top-3 -left-3 md:relative md:top-auto md:left-auto">
+                        <span className={cn("text-7xl md:text-5xl font-black bg-gradient-to-br bg-clip-text text-transparent md:w-20 absolute -top-3 -left-3 md:relative md:top-auto md:left-auto", cls("from-emerald-500/20 to-emerald-700/0", "from-primary/20 to-primary/0"))}>
                           01
                         </span>
                         <div>
@@ -646,7 +575,7 @@ export function SubmissionForm({
                           <div className="space-y-4">
                             <div className="p-4 rounded-lg bg-secondary/50 border border-border/40">
                               <p className="font-semibold text-foreground mb-2 flex items-center gap-2">
-                                <span className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center text-xs font-bold text-primary">1</span>
+                                <span className={cn("w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold", cls("bg-emerald-500/10 text-emerald-600", "bg-primary/10 text-primary"))}>1</span>
                                 Grant Testers Access
                               </p>
                               <div className="text-sm space-y-2">
@@ -657,14 +586,14 @@ export function SubmissionForm({
                             </div>
                             <div className="p-4 rounded-lg bg-secondary/50 border border-border/40">
                               <p className="font-semibold text-foreground mb-2 flex items-center gap-2">
-                                <span className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center text-xs font-bold text-primary">2</span>
+                                <span className={cn("w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold", cls("bg-emerald-500/10 text-emerald-600", "bg-primary/10 text-primary"))}>2</span>
                                 Enable Global Reach
                               </p>
                               <p className="text-sm">Click the <Highlight>Countries / regions</Highlight> tab and click <Highlight>Add countries / regions</Highlight>. Select the first checkbox to include <Highlight>All</Highlight> countries and regions for maximum test coverage.</p>
                             </div>
                             <div className="p-4 rounded-lg bg-secondary/50 border border-border/40">
                               <p className="font-semibold text-foreground mb-2 flex items-center gap-2">
-                                <span className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center text-xs font-bold text-primary">3</span>
+                                <span className={cn("w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold", cls("bg-emerald-500/10 text-emerald-600", "bg-primary/10 text-primary"))}>3</span>
                                 Submit for Google's Review
                               </p>
                               <p className="text-sm"><Highlight>Save</Highlight> your changes. Go to Publishing Overview and Send Changes for Review.</p>
@@ -680,7 +609,7 @@ export function SubmissionForm({
                   >
                     <AccordionTrigger className="p-6 text-left hover:no-underline flex flex-row items-center justify-between w-full relative">
                       <div className="flex items-start flex-1">
-                        <span className="text-7xl md:text-5xl font-black bg-gradient-to-br from-primary/20 to-primary/0 bg-clip-text text-transparent md:w-20 absolute -top-3 -left-3 md:relative md:top-auto md:left-auto">
+                        <span className={cn("text-7xl md:text-5xl font-black bg-gradient-to-br bg-clip-text text-transparent md:w-20 absolute -top-3 -left-3 md:relative md:top-auto md:left-auto", cls("from-emerald-500/20 to-emerald-700/0", "from-primary/20 to-primary/0"))}>
                           02
                         </span>
                         <div>
@@ -688,7 +617,9 @@ export function SubmissionForm({
                             Finding Your App Details
                           </h3>
                           <p className="text-muted-foreground text-sm text-left">
-                            Where to get your testing link, logo, and screenshots
+                            {isHandshake
+                              ? "Where to get your testing link and logo"
+                              : "Where to get your testing link, logo, and screenshots"}
                           </p>
                         </div>
                       </div>
@@ -702,25 +633,27 @@ export function SubmissionForm({
                           <div className="space-y-4">
                             <div className="p-4 rounded-lg bg-secondary/50 border border-border/40">
                               <p className="font-semibold text-foreground mb-2 flex items-center gap-2">
-                                <span className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center text-xs font-bold text-primary">1</span>
+                                <span className={cn("w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold", cls("bg-emerald-500/10 text-emerald-600", "bg-primary/10 text-primary"))}>1</span>
                                 Testing Link
                               </p>
                               <p className="text-sm">Go to your app in the Google Play Console. Click on <Highlight>Testing</Highlight> from the left menu. Click on <Highlight>Closed Testing</Highlight>. Click on the testers tab. Look for the <Highlight>Join on Android</Highlight> link and copy it. This is the link our testers will use to download your app.</p>
                             </div>
                             <div className="p-4 rounded-lg bg-secondary/50 border border-border/40">
                               <p className="font-semibold text-foreground mb-2 flex items-center gap-2">
-                                <span className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center text-xs font-bold text-primary">2</span>
+                                <span className={cn("w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold", cls("bg-emerald-500/10 text-emerald-600", "bg-primary/10 text-primary"))}>2</span>
                                 App Logo
                               </p>
                               <p className="text-sm">Go to your app in Google Play Console. Click on <Highlight>Store presence</Highlight> on the left menu. Click on <Highlight>Store listing</Highlight>. Scroll down to <Highlight>Graphic Assets</Highlight>. Find the App Icon section. Right-click on the icon and copy the image address. This is your logo URL.</p>
                             </div>
-                            <div className="p-4 rounded-lg bg-secondary/50 border border-border/40">
-                              <p className="font-semibold text-foreground mb-2 flex items-center gap-2">
-                                <span className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center text-xs font-bold text-primary">3</span>
-                                Screenshots
-                              </p>
-                              <p className="text-sm">In the same Store listing page, scroll down to <Highlight>Screenshots</Highlight>. Click on any screenshot. Right-click and copy the image address. You need to provide two screenshots. These help testers understand what your app looks like.</p>
-                            </div>
+                            {!isHandshake && (
+                              <div className="p-4 rounded-lg bg-secondary/50 border border-border/40">
+                                <p className="font-semibold text-foreground mb-2 flex items-center gap-2">
+                                  <span className={cn("w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold", cls("bg-emerald-500/10 text-emerald-600", "bg-primary/10 text-primary"))}>3</span>
+                                  Screenshots
+                                </p>
+                                <p className="text-sm">In the same Store listing page, scroll down to <Highlight>Screenshots</Highlight>. Click on any screenshot. Right-click and copy the image address. You need to provide two screenshots. These help testers understand what your app looks like.</p>
+                              </div>
+                            )}
                           </div>
                         </div>
                       </div>
@@ -733,15 +666,15 @@ export function SubmissionForm({
                   >
                     <AccordionTrigger className="p-6 text-left hover:no-underline flex flex-row items-center justify-between w-full relative">
                       <div className="flex items-start flex-1">
-                        <span className="text-7xl md:text-5xl font-black bg-gradient-to-br from-primary/20 to-primary/0 bg-clip-text text-transparent md:w-20 absolute -top-3 -left-3 md:relative md:top-auto md:left-auto">
+                        <span className={cn("text-7xl md:text-5xl font-black bg-gradient-to-br bg-clip-text text-transparent md:w-20 absolute -top-3 -left-3 md:relative md:top-auto md:left-auto", cls("from-emerald-500/20 to-emerald-700/0", "from-primary/20 to-primary/0"))}>
                           03
                         </span>
                         <div>
                           <h3 className="font-bold text-xl mb-1">
-                            Understanding Points
+                            How Handshake Testing Works
                           </h3>
                           <p className="text-muted-foreground text-sm text-left">
-                            How the point system works and how much it costs
+                            Barter-based testing , free for everyone
                           </p>
                         </div>
                       </div>
@@ -755,24 +688,24 @@ export function SubmissionForm({
                           <div className="space-y-4">
                             <div className="p-4 rounded-lg bg-secondary/50 border border-border/40">
                               <p className="font-semibold text-foreground mb-2 flex items-center gap-2">
-                                <span className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center text-xs font-bold text-primary">1</span>
+                                <span className={cn("w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold", cls("bg-emerald-500/10 text-emerald-600", "bg-primary/10 text-primary"))}>1</span>
                                 What is a handshake?
                               </p>
                               <p className="text-sm">When you request to test an app, you offer one of your own published apps in return. Both of you join each other's tests. No points are involved.</p>
                             </div>
                             <div className="p-4 rounded-lg bg-secondary/50 border border-border/40">
                               <p className="font-semibold text-foreground mb-2 flex items-center gap-2">
-                                <span className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center text-xs font-bold text-primary">2</span>
-                                Subscription required
+                                <span className={cn("w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold", cls("bg-emerald-500/10 text-emerald-600", "bg-primary/10 text-primary"))}>2</span>
+                                Completely free
                               </p>
-                              <p className="text-sm">A monthly subscription of ₹99 unlocks publishing and joining handshake tests. Your level rises as you complete successful handshakes, unlocking more simultaneous test slots.</p>
+                              <p className="text-sm">No subscription and no points , publishing and joining handshake tests is free for everyone. Your level rises as you complete successful handshakes, unlocking more simultaneous test slots.</p>
                             </div>
                             <div className="p-4 rounded-lg bg-secondary/50 border border-border/40">
                               <p className="font-semibold text-foreground mb-2 flex items-center gap-2">
-                                <span className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center text-xs font-bold text-primary">3</span>
+                                <span className={cn("w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold", cls("bg-emerald-500/10 text-emerald-600", "bg-primary/10 text-primary"))}>3</span>
                                 Slots and levels
                               </p>
-                              <p className="text-sm">Each level grants more active handshake slots. Complete two successful handshakes to level up. Skipping your half of a test can temporarily block you from new handshakes.</p>
+                              <p className="text-sm">Each level grants more active handshake slots (start at 12, up to 20). Reach the next level's completion threshold to level up. Skipping your half of a test can temporarily block you from new handshakes.</p>
                             </div>
                           </div>
                         </div>
@@ -786,7 +719,7 @@ export function SubmissionForm({
                   >
                     <AccordionTrigger className="p-6 text-left hover:no-underline flex flex-row items-center justify-between w-full relative">
                       <div className="flex items-start flex-1">
-                        <span className="text-7xl md:text-5xl font-black bg-gradient-to-br from-primary/20 to-primary/0 bg-clip-text text-transparent md:w-20 absolute -top-3 -left-3 md:relative md:top-auto md:left-auto">
+                        <span className={cn("text-7xl md:text-5xl font-black bg-gradient-to-br bg-clip-text text-transparent md:w-20 absolute -top-3 -left-3 md:relative md:top-auto md:left-auto", cls("from-emerald-500/20 to-emerald-700/0", "from-primary/20 to-primary/0"))}>
                           04
                         </span>
                         <div>
@@ -794,7 +727,9 @@ export function SubmissionForm({
                             Setting Up Your Test
                           </h3>
                           <p className="text-muted-foreground text-sm text-left">
-                            How to choose testers, duration, and Android version
+                            {isHandshake
+                              ? "Test setup is fixed â€” here is what to know"
+                              : "How to choose testers, duration, and Android version"}
                           </p>
                         </div>
                       </div>
@@ -802,27 +737,39 @@ export function SubmissionForm({
                     <AccordionContent className="px-6 pb-6">
                       <div className="flex flex-col gap-6 items-start">
                         <div className="flex-1 space-y-4 text-muted-foreground">
-                          <p>
-                            When you configure your test, you need to decide three things:
-                          </p>
+                          {isHandshake ? (
+                            <p>
+                              Handshake campaigns use a fixed setup of{" "}
+                              <Highlight>14 tester slots</Highlight> for{" "}
+                              <Highlight>16 days</Highlight>. The only setting you choose is the minimum Android version.
+                            </p>
+                          ) : (
+                            <p>
+                              When you configure your test, you need to decide three things:
+                            </p>
+                          )}
                           <div className="space-y-4">
+                            {!isHandshake && (
+                              <div className="p-4 rounded-lg bg-secondary/50 border border-border/40">
+                                <p className="font-semibold text-foreground mb-2 flex items-center gap-2">
+                                  <span className={cn("w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold", cls("bg-emerald-500/10 text-emerald-600", "bg-primary/10 text-primary"))}>1</span>
+                                  Number of testers
+                                </p>
+                                <p className="text-sm">Choose how many testers you want for your app. We recommend at least <Highlight>15 testers</Highlight> because some testers may drop out during the testing period. Each tester must complete testing within the time limit you set.</p>
+                              </div>
+                            )}
+                            {!isHandshake && (
+                              <div className="p-4 rounded-lg bg-secondary/50 border border-border/40">
+                                <p className="font-semibold text-foreground mb-2 flex items-center gap-2">
+                                  <span className={cn("w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold", cls("bg-emerald-500/10 text-emerald-600", "bg-primary/10 text-primary"))}>2</span>
+                                  Test duration
+                                </p>
+                                <p className="text-sm">Choose how many days testers have to complete their testing. The minimum is <Highlight>14 days</Highlight>. We recommend <Highlight>16 to 20 days</Highlight> because testers have different schedules. Longer durations give testers more flexibility to provide thorough feedback.</p>
+                              </div>
+                            )}
                             <div className="p-4 rounded-lg bg-secondary/50 border border-border/40">
                               <p className="font-semibold text-foreground mb-2 flex items-center gap-2">
-                                <span className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center text-xs font-bold text-primary">1</span>
-                                Number of testers
-                              </p>
-                              <p className="text-sm">Choose how many testers you want for your app. We recommend at least <Highlight>15 testers</Highlight> because some testers may drop out during the testing period. Each tester must complete testing within the time limit you set. The more testers you choose, the more points the test will cost.</p>
-                            </div>
-                            <div className="p-4 rounded-lg bg-secondary/50 border border-border/40">
-                              <p className="font-semibold text-foreground mb-2 flex items-center gap-2">
-                                <span className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center text-xs font-bold text-primary">2</span>
-                                Test duration
-                              </p>
-                              <p className="text-sm">Choose how many days testers have to complete their testing. The minimum is <Highlight>14 days</Highlight>. We recommend <Highlight>16 to 20 days</Highlight> because testers have different schedules. Longer durations give testers more flexibility to provide thorough feedback. Each extra day adds to your total cost.</p>
-                            </div>
-                            <div className="p-4 rounded-lg bg-secondary/50 border border-border/40">
-                              <p className="font-semibold text-foreground mb-2 flex items-center gap-2">
-                                <span className="w-6 h-6 rounded-full bg-primary/10 flex items-center justify-center text-xs font-bold text-primary">3</span>
+                                <span className={cn("w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold", cls("bg-emerald-500/10 text-emerald-600", "bg-primary/10 text-primary"))}>{isHandshake ? 1 : 3}</span>
                                 Minimum Android version
                               </p>
                               <p className="text-sm">Select the oldest Android version your app supports. This helps us match testers who have devices that can run your app. If your app works on Android 8, select <Highlight>Android 8.0</Highlight> from the list. Only testers with devices running that version or newer will be assigned to your test.</p>
@@ -879,41 +826,45 @@ export function SubmissionForm({
                       <FormItem>
                         <div className="flex items-center gap-1.5">
                           <Label htmlFor="app_logo_url">App Logo URL <span className="text-destructive">*</span></Label>
-                          <TooltipWithClick id="app_logo_url" content="Go to Play Console → Side Menu → Grow Users → Store Presence → Store listing → Open Default Store Listing → Right-click on your app icon and open the image in a new tab → Copy the image URL" />
+                          <TooltipWithClick id="app_logo_url" content="Go to Play Console â†’ Side Menu â†’ Grow Users â†’ Store Presence â†’ Store listing â†’ Open Default Store Listing â†’ Right-click on your app icon and open the image in a new tab â†’ Copy the image URL" />
                         </div>
                         <FormControl><Input id="app_logo_url" placeholder="https://play-lh.googleusercontent.com/..." {...field} value={field.value ?? ""} className="py-0" /></FormControl>
                         <FormMessage />
                       </FormItem>
                     )}
                   />
-                  <FormField
-                    control={form.control}
-                    name="app_screenshot_url_1"
-                    render={({ field }) => (
-                      <FormItem>
-                        <div className="flex items-center gap-1.5">
-                          <Label htmlFor="app_screenshot_url_1">Screenshot 1 URL <span className="text-destructive">*</span></Label>
-                          <TooltipWithClick id="app_screenshot_url_1" content="Paste the screenshot URL from your Play Store listing" />
-                        </div>
-                        <FormControl><Input id="app_screenshot_url_1" placeholder="https://play-lh.googleusercontent.com/..." {...field} value={field.value ?? ""} className="py-0" /></FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                  <FormField
-                    control={form.control}
-                    name="app_screenshot_url_2"
-                    render={({ field }) => (
-                      <FormItem>
-                        <div className="flex items-center gap-1.5">
-                          <Label htmlFor="app_screenshot_url_2">Screenshot 2 URL <span className="text-destructive">*</span></Label>
-                          <TooltipWithClick id="app_screenshot_url_2" content="Paste another screenshot URL from your Play Store listing" />
-                        </div>
-                        <FormControl><Input id="app_screenshot_url_2" placeholder="https://play-lh.googleusercontent.com/..." {...field} value={field.value ?? ""} className="py-0" /></FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
+                  {!isHandshake && (
+                    <>
+                      <FormField
+                        control={form.control}
+                        name="app_screenshot_url_1"
+                        render={({ field }) => (
+                          <FormItem>
+                            <div className="flex items-center gap-1.5">
+                              <Label htmlFor="app_screenshot_url_1">Screenshot 1 URL <span className="text-destructive">*</span></Label>
+                              <TooltipWithClick id="app_screenshot_url_1" content="Paste the screenshot URL from your Play Store listing" />
+                            </div>
+                            <FormControl><Input id="app_screenshot_url_1" placeholder="https://play-lh.googleusercontent.com/..." {...field} value={field.value ?? ""} className="py-0" /></FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                      <FormField
+                        control={form.control}
+                        name="app_screenshot_url_2"
+                        render={({ field }) => (
+                          <FormItem>
+                            <div className="flex items-center gap-1.5">
+                              <Label htmlFor="app_screenshot_url_2">Screenshot 2 URL <span className="text-destructive">*</span></Label>
+                              <TooltipWithClick id="app_screenshot_url_2" content="Paste another screenshot URL from your Play Store listing" />
+                            </div>
+                            <FormControl><Input id="app_screenshot_url_2" placeholder="https://play-lh.googleusercontent.com/..." {...field} value={field.value ?? ""} className="py-0" /></FormControl>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </>
+                  )}
                 </CardContent>
               </Card>
             </Section>
@@ -1009,7 +960,17 @@ export function SubmissionForm({
                     )}
                   />
 
-                  {mode === "create" && (
+                  {mode === "create" && isHandshake && (
+                    <div className="p-4 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-sm text-muted-foreground">
+                      Handshake campaigns run at a fixed setup of{" "}
+                      <span className="font-semibold text-foreground">14 tester slots</span>{" "}
+                      for{" "}
+                      <span className="font-semibold text-foreground">16 days</span>
+                      {" "}â€” no configuration needed. An admin can adjust these later if required.
+                    </div>
+                  )}
+
+                  {mode === "create" && !isHandshake && (
                     <>
                       <FormField
                         control={form.control}
@@ -1018,7 +979,7 @@ export function SubmissionForm({
                           <FormItem>
                             <Label className="text-sm font-medium text-foreground/80">Number of Testers</Label>
                             <FormControl>
-                              <ModernSlider id="total_tester" value={field.value} onChange={field.onChange} min={1} max={20} label="" unit="testers" accentColor="primary" />
+                              <ModernSlider id="total_tester" value={field.value} onChange={field.onChange} min={1} max={20} label="" unit="testers" accentColor={isHandshake ? "emerald" : "primary"} />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -1031,7 +992,7 @@ export function SubmissionForm({
                           <FormItem>
                             <Label className="text-sm font-medium text-foreground/80">Test Duration (Days)</Label>
                             <FormControl>
-                              <ModernSlider value={field.value} onChange={field.onChange} min={1} max={20} label="" unit="days" accentColor="primary" />
+                              <ModernSlider value={field.value} onChange={field.onChange} min={1} max={20} label="" unit="days" accentColor={isHandshake ? "emerald" : "primary"} />
                             </FormControl>
                             <FormMessage />
                           </FormItem>
@@ -1044,257 +1005,31 @@ export function SubmissionForm({
                     <div className="mt-8">
                       <div className="rounded-3xl p-6 border border-border/60 bg-secondary/40 flex flex-col sm:flex-row items-center justify-between gap-4">
                         <div className="flex items-center gap-3">
-                          <div className={cn(
-                            "p-2.5 rounded-full",
-                            hasActiveSubscription ? "bg-emerald-500/15 text-emerald-500" : "bg-amber-500/15 text-amber-500",
-                          )}>
-                            {hasActiveSubscription ? <CheckCircle2 className="w-6 h-6" /> : <AlertCircle className="w-6 h-6" />}
+                          <div className="p-2.5 rounded-full bg-emerald-500/15 text-emerald-500">
+                            <CheckCircle2 className="w-6 h-6" />
                           </div>
                           <div>
                             <p className="font-semibold text-foreground">
-                              {handshakeSubLoading
-                                ? "Checking subscription..."
-                                : hasActiveSubscription
-                                  ? "Handshake subscription active"
-                                  : "Handshake subscription required"}
+                              Handshake Testing is free
                             </p>
                             <p className="text-sm text-muted-foreground">
-                              {hasActiveSubscription
-                                ? "You can publish handshake apps anytime."
-                                : "Subscribe for ₹99/month to publish and join handshake tests."}
+                              Publish your app and earn the Elite Badge through reliability.
                             </p>
                           </div>
                         </div>
-                        {!hasActiveSubscription && (
-                          <Link
-                            href="/pricing"
-                             className="shrink-0 inline-flex items-center justify-center rounded-xl bg-emerald-600 px-5 h-11 text-sm font-semibold text-white hover:bg-emerald-700"
-                          >
-                            Subscribe
-                          </Link>
-                        )}
+                        <Link
+                          href="/profile#elite-badge"
+                          className="shrink-0 inline-flex items-center justify-center rounded-xl bg-emerald-600 px-5 h-11 text-sm font-semibold text-white hover:bg-emerald-700"
+                        >
+                          About Elite Badge
+                        </Link>
                       </div>
                     </div>
                   )}
 
-                  {mode === "create" && !isHandshake && (
-                    walletIsPending ? <SkeletonSubmitAppBottom /> : (
-                      <div className="mt-8 flex justify-center">
-                        {/* Premium Card Design */}
-                        <div
-                          className={cn(
-                            "relative w-full overflow-hidden rounded-3xl p-8 shadow-2xl transition-all duration-500",
-                            isBalanceInsufficient
-                              ? "bg-gradient-to-br from-red-600 to-rose-900 shadow-red-900/20"
-                              : "bg-gradient-to-br from-[#1e293b] via-[#334155] to-[#0f172a] shadow-blue-900/20 dark:from-slate-900 dark:via-slate-800 dark:to-black",
-                          )}
-                        >
-                          {/* Background Pattern/Noise */}
-                          <div className="absolute inset-0 opacity-10 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] bg-repeat mix-blend-overlay pointer-events-none"></div>
-                          <div className="absolute -top-24 -right-24 h-64 w-64 rounded-full bg-white/5 blur-3xl pointer-events-none"></div>
-                          <div className="absolute -bottom-24 -left-24 h-64 w-64 rounded-full bg-white/5 blur-3xl pointer-events-none"></div>
+                  {/* S9: the "Community Points" virtual-card cost block was
+                      removed with the points economy â€” submissions are free. */}
 
-                          <div className="relative z-10 flex flex-col justify-between h-full min-h-[220px]">
-                            {/* Card Header */}
-                            <div className="flex justify-between items-start">
-                              <div className="flex items-center gap-2">
-                                <div className="p-2 rounded-lg bg-white/10 backdrop-blur-md border border-white/10">
-                                  <Zap className="w-5 h-5 text-yellow-400 fill-yellow-400" />
-                                </div>
-                                <div>
-                                  <p className="text-xs font-semibold text-white/60 tracking-widest uppercase">
-                                    COMMUNITY POINTS
-                                  </p>
-                                  <p className="text-white text-sm font-medium tracking-wide">
-                                    Virtual Card
-                                  </p>
-                                </div>
-                              </div>
-                              <div className="flex flex-col items-end">
-                                <div className="text-white/80">
-                                  <TrendingUp className="w-6 h-6" />
-                                </div>
-                              </div>
-                            </div>
-
-                            {/* Main Balance/Cost Display */}
-                            <div className="my-6">
-                              <p className="text-sm text-white/60 font-medium mb-1">
-                                Total Campaign Cost
-                              </p>
-                              <div className="flex items-baseline gap-2">
-                                <h2 className="text-5xl sm:text-6xl font-bold text-white tracking-tighter">
-                                  {cost.toLocaleString()}
-                                </h2>
-                                <span className="text-xl text-white/60 font-medium">
-                                  pts
-                                </span>
-                              </div>
-                              {isBalanceInsufficient && (
-                                <div className="mt-2 inline-flex items-center gap-2 px-3 py-1 rounded-full bg-black/20 backdrop-blur-md border border-white/10 text-white/90 text-xs font-medium">
-                                  <div className="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse" />
-                                  Exceeds Balance
-                                </div>
-                              )}
-                            </div>
-
-                            {/* Card Footer / Progress */}
-                            <div className="space-y-4">
-                              <div className="flex justify-between items-end text-sm">
-                                <div className="flex flex-col">
-                                  <span className="text-white/50 text-xs font-medium uppercase tracking-wider mb-1">
-                                    Wallet Balance
-                                  </span>
-                                  <span className="text-2xl font-semibold text-white tracking-tight">
-                                    {(
-                                      walletData?.totalPoints || 0
-                                    ).toLocaleString()}
-                                  </span>
-                                </div>
-                                <div className="text-right">
-                                  <span
-                                    className={cn(
-                                      "text-xs font-bold px-2 py-1 rounded bg-white/10 backdrop-blur border border-white/5",
-                                      isBalanceInsufficient
-                                        ? "text-red-200"
-                                        : "text-emerald-300",
-                                    )}
-                                  >
-                                    {isBalanceInsufficient
-                                      ? "INSUFFICIENT FUNDS"
-                                      : "SUFFICIENT FUNDS"}
-                                  </span>
-                                </div>
-                              </div>
-
-                              {/* Glassy Progress Bar */}
-                              <div className="relative h-2 w-full bg-white/10 rounded-full overflow-hidden backdrop-blur-sm">
-                                <div
-                                  className={cn(
-                                    "absolute top-0 left-0 h-full transition-all duration-700 ease-out rounded-full",
-                                    isBalanceInsufficient
-                                      ? "bg-white/40 w-full"
-                                      : "bg-emerald-400 w-[var(--prog)] shadow-[0_0_10px_2px_rgba(52,211,153,0.5)]",
-                                  )}
-                                  style={
-                                    {
-                                      "--prog": `${Math.min(
-                                        (cost /
-                                          (walletData?.totalPoints || 1)) *
-                                        100,
-                                        100,
-                                      )}%`,
-                                    } as React.CSSProperties
-                                  }
-                                />
-                              </div>
-                            </div>
-
-                            {/* Promo Code Section (Moved to Card bottom) */}
-                            <div className="mt-4 space-y-3">
-                              <div className="flex gap-2 items-center">
-                                <Input
-                                  id="promo_code"
-                                  placeholder="Have a promo code?"
-                                  value={promoCodeInput}
-                                  onChange={(e) =>
-                                    setPromoCodeInput(e.target.value.replace(/[^A-Za-z0-9]/g, '').toUpperCase())
-                                  }
-                                  disabled={
-                                    !!appliedPromo || isValidatingPromo
-                                  }
-                                  className="uppercase max-w-[200px] h-9 bg-black/20 border-white/10 text-white placeholder:text-white/40 focus-visible:ring-1 focus-visible:ring-white/20"
-                                />
-                                <AnimatePresence mode="wait">
-                                  {isValidatingPromo ? (
-                                    <motion.div
-                                      key="loading"
-                                      initial={{ opacity: 0 }}
-                                      animate={{ opacity: 1 }}
-                                      exit={{ opacity: 0 }}
-                                      className="flex items-center justify-center h-9 px-4"
-                                    >
-                                      <Loader2 className="w-5 h-5 text-white animate-spin" />
-                                    </motion.div>
-                                  ) : !appliedPromo ? (
-                                    <motion.div
-                                      key="apply"
-                                      initial={{ opacity: 0 }}
-                                      animate={{ opacity: 1 }}
-                                      exit={{ opacity: 0 }}
-                                    >
-                                      <Button
-                                        type="button"
-                                        className="h-9 px-4 bg-white/10 hover:bg-white/20 text-white border-0 hover:shadow-white/0"
-                                        onClick={handleApplyPromo}
-                                      >
-                                        Apply
-                                      </Button>
-                                    </motion.div>
-                                  ) : (
-                                    <motion.div
-                                      key="remove"
-                                      initial={{ opacity: 0 }}
-                                      animate={{ opacity: 1 }}
-                                      exit={{ opacity: 0 }}
-                                    >
-                                      <Button
-                                        type="button"
-                                        variant="destructive"
-                                        className="h-9 px-4 bg-red-500/80 hover:bg-red-500/90 text-white border-0"
-                                        onClick={handleRemovePromo}
-                                      >
-                                        Remove
-                                      </Button>
-                                    </motion.div>
-                                  )}
-                                </AnimatePresence>
-                              </div>
-                              {appliedPromo && (
-                                <p className="text-emerald-400 font-medium text-xs flex items-center gap-1.5">
-                                  <CheckCircle2 className="w-3.5 h-3.5" />
-                                  Promo applied! Cost reduced to{" "}
-                                  {cost}.
-                                </p>
-                              )}
-                              {promoCodeError && !appliedPromo && (
-                                <p className="text-red-400 font-medium text-xs flex items-center gap-1.5">
-                                  <AlertCircle className="w-3.5 h-3.5" />
-                                  {promoCodeError}
-                                </p>
-                              )}
-                            </div>
-                          </div>
-
-                          {/* Highly Realistic Chip Pattern */}
-                          <div className="absolute top-1/2 right-12 -translate-y-1/2 w-12 h-9 rounded-md bg-gradient-to-br from-yellow-200/40 via-yellow-400/20 to-yellow-500/30 border border-white/30 backdrop-blur-md hidden sm:block overflow-hidden shadow-inner">
-                            <div className="absolute inset-0">
-                              {/* Contact Grid */}
-                              <div className="absolute inset-0 grid grid-cols-3 grid-rows-2 gap-[0.5px]">
-                                <div className="border-[0.5px] border-white/10" />
-                                <div className="border-[0.5px] border-white/10" />
-                                <div className="border-[0.5px] border-white/10" />
-                                <div className="border-[0.5px] border-white/10" />
-                                <div className="border-[0.5px] border-white/10" />
-                                <div className="border-[0.5px] border-white/10" />
-                              </div>
-
-                              {/* Center Etching Core */}
-                              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-5 h-6 border-x border-white/20 bg-white/5 rounded-[1px]" />
-
-                              {/* Horizontal separators */}
-                              <div className="absolute top-[30%] left-0 w-full h-[0.5px] bg-white/10" />
-                              <div className="absolute top-[70%] left-0 w-full h-[0.5px] bg-white/10" />
-
-                              {/* Fine circuitry detail */}
-                              <div className="absolute top-[45%] left-1/2 -translate-x-1/2 w-2 h-[0.5px] bg-white/40" />
-                              <div className="absolute top-[55%] left-1/2 -translate-x-1/2 w-2 h-[0.5px] bg-white/40" />
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                    )
-                  )}
 
                   <div className="flex flex-col sm:flex-row items-center justify-end gap-3 w-full">
                     {onCancel && (

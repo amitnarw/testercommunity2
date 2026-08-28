@@ -29,9 +29,8 @@ const ProjectCard = ({ project }: { project: TesterProjectResponse }) => {
     project.appStatus === "IN_TESTING" &&
     project.testerStatus === "IN_PROGRESS";
   const isCompleted = project.testerStatus === "COMPLETED";
-  const earnings =
-    project.rewardMoney ||
-    (project.rewardPoints ? project.rewardPoints * 5 : 0);
+  // S9: money payout only (points removed).
+  const earnings = project.rewardMoney || 0;
 
   const openProjectDetails = (id: number) => {
     router.push(`/tester/projects/${id}`)

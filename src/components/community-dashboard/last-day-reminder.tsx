@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { Clock, Coins, Trophy, Sparkles, Timer, Eye } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -24,11 +24,11 @@ export function LastDayReminder({
 // Last Day Warning Banner
 function LastDayBanner({ appName }: { appName: string }) {
   return (
-    <Card className="relative overflow-hidden border-0 bg-white dark:bg-zinc-950 shadow-xl shadow-primary/5 mb-6">
+    <Card className="relative overflow-hidden border-0 bg-white dark:bg-zinc-950 shadow-xl shadow-emerald-500/5 mb-6">
       {/* Decorative background elements */}
       <div className="absolute inset-0 pointer-events-none">
-        <div className="absolute -right-12 -top-12 w-40 h-40 bg-primary/5 rounded-full blur-3xl" />
-        <div className="absolute -left-8 -bottom-8 w-32 h-32 bg-primary/5 rounded-full blur-2xl" />
+        <div className="absolute -right-12 -top-12 w-40 h-40 bg-emerald-500/5 rounded-full blur-3xl" />
+        <div className="absolute -left-8 -bottom-8 w-32 h-32 bg-emerald-500/5 rounded-full blur-2xl" />
       </div>
 
       <div className="relative p-5 sm:p-6">
@@ -40,12 +40,12 @@ function LastDayBanner({ appName }: { appName: string }) {
               transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
               className="relative"
             >
-              <div className="h-14 w-14 rounded-2xl bg-gradient-to-br from-primary to-blue-600 flex items-center justify-center shadow-lg shadow-primary/25">
+              <div className="h-14 w-14 rounded-2xl bg-gradient-to-br from-emerald-500 to-emerald-700 flex items-center justify-center shadow-lg shadow-emerald-500/25">
                 <Timer className="h-7 w-7 text-white" strokeWidth={2} />
               </div>
               {/* Pulse ring */}
               <div
-                className="absolute inset-0 rounded-2xl animate-ping bg-primary/20"
+                className="absolute inset-0 rounded-2xl animate-ping bg-emerald-500/20"
                 style={{ animationDuration: "2s" }}
               />
             </motion.div>
@@ -57,10 +57,10 @@ function LastDayBanner({ appName }: { appName: string }) {
               <h3 className="font-bold text-lg sm:text-xl text-slate-900 dark:text-white tracking-tight">
                 Final Day
               </h3>
-              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-bold uppercase tracking-wider bg-primary/10 text-primary border border-primary/20">
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-bold uppercase tracking-wider bg-emerald-500/10 text-emerald-600 border border-emerald-500/20">
                 <span className="relative flex h-1.5 w-1.5">
-                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
-                  <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-primary"></span>
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-500 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-emerald-500"></span>
                 </span>
                 Action Needed
               </span>
@@ -78,7 +78,7 @@ function LastDayBanner({ appName }: { appName: string }) {
             <div className="mt-4 flex flex-wrap items-center gap-4 text-xs sm:text-sm">
               <div className="flex items-center gap-2 text-slate-500 dark:text-slate-400">
                 <div className="h-6 w-6 rounded-lg bg-slate-100 dark:bg-zinc-800 flex items-center justify-center">
-                  <Sparkles className="h-3.5 w-3.5 text-primary" />
+                  <Sparkles className="h-3.5 w-3.5 text-emerald-600" />
                 </div>
                 <span>Upload screenshot to verify</span>
               </div>
@@ -97,7 +97,7 @@ function LastDayBanner({ appName }: { appName: string }) {
       {/* Bottom progress bar */}
       <div className="h-1 bg-slate-100 dark:bg-zinc-800">
         <motion.div
-          className="h-full bg-gradient-to-r from-primary to-blue-500"
+          className="h-full bg-gradient-to-r from-emerald-500 to-emerald-700"
           initial={{ width: "0%" }}
           animate={{ width: "92%" }}
           transition={{ duration: 1.5, ease: "easeOut" }}
@@ -110,7 +110,7 @@ function LastDayBanner({ appName }: { appName: string }) {
 // Testing Completed Banner
 function TestingCompletedBanner({ appName }: { appName: string }) {
   return (
-    <Card className="relative overflow-hidden border-0 bg-white dark:bg-zinc-950 shadow-xl shadow-primary/5 mb-6">
+    <Card className="relative overflow-hidden border-0 bg-white dark:bg-zinc-950 shadow-xl shadow-emerald-500/5 mb-6">
       {/* Decorative background */}
       <div className="absolute inset-0 pointer-events-none">
         <div className="absolute right-0 top-0 w-1/2 h-full bg-gradient-to-l from-emerald-50/50 dark:from-emerald-950/10 to-transparent" />
@@ -150,8 +150,8 @@ function TestingCompletedBanner({ appName }: { appName: string }) {
           <div className="lg:w-80 lg:shrink-0">
             <div className="rounded-xl bg-slate-50 dark:bg-zinc-900 border border-slate-100 dark:border-zinc-800 p-4">
               <div className="flex items-center gap-3">
-                <div className="h-10 w-10 rounded-xl bg-primary/10 flex items-center justify-center">
-                  <Clock className="h-5 w-5 text-primary animate-pulse" />
+                <div className="h-10 w-10 rounded-xl bg-emerald-500/10 flex items-center justify-center">
+                  <Clock className="h-5 w-5 text-emerald-600 animate-pulse" />
                 </div>
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-semibold text-slate-800 dark:text-slate-200">
@@ -165,9 +165,9 @@ function TestingCompletedBanner({ appName }: { appName: string }) {
 
               <div className="mt-3 pt-3 border-t border-slate-200 dark:border-zinc-700">
                 <div className="flex items-center gap-2 text-xs">
-                  <Coins className="h-4 w-4 text-primary" />
+                  <Coins className="h-4 w-4 text-emerald-600" />
                   <span className="text-slate-600 dark:text-slate-400">
-                    Points credited automatically after approval
+                    Level credit after successful completion
                   </span>
                 </div>
               </div>

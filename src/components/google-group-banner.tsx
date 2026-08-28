@@ -18,10 +18,10 @@ export const GoogleGroupBanner = ({
 }: GoogleGroupBannerProps) => {
   if (variant === "note") {
     return (
-      <Card className="border-none bg-blue-500/5 dark:bg-blue-500/10 rounded-2xl p-5 border-l-4 border-blue-500 shadow-sm">
+      <Card className="border-none bg-emerald-500/5 dark:bg-emerald-500/10 rounded-2xl p-5 border-l-4 border-emerald-500 shadow-sm">
         <div className="flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
           <div className="flex gap-3 items-start">
-            <div className="mt-1 p-1.5 rounded-full bg-blue-500/20 text-blue-600 dark:text-blue-400">
+            <div className="mt-1 p-1.5 rounded-full bg-emerald-500/20 text-emerald-600 dark:text-emerald-400">
               <Info className="w-5 h-5" />
             </div>
             <div className="space-y-1">
@@ -35,7 +35,7 @@ export const GoogleGroupBanner = ({
             asChild
             variant="outline"
             size="sm"
-            className="rounded-xl border-blue-500/20 hover:bg-blue-500/10 text-blue-600 dark:text-blue-400 font-bold whitespace-nowrap !px-10 w-full sm:w-auto"
+            className="rounded-xl border-emerald-500/20 hover:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 font-bold whitespace-nowrap !px-10 w-full sm:w-auto"
           >
             <a href={googleGroupUrl} target="_blank" rel="noopener noreferrer">
               Join Group <ExternalLink className="ml-2 w-3 h-3" />
@@ -47,7 +47,7 @@ export const GoogleGroupBanner = ({
   }
 
   return (
-    <Card className="relative overflow-hidden border-none bg-gradient-to-br from-amber-500/10 via-amber-500/5 to-transparent shadow-xl shadow-amber-500/5 rounded-[2rem] p-6 sm:p-8 border border-amber-500/10">
+    <Card className="relative overflow-hidden border-none bg-gradient-to-br from-amber-500/10 via-amber-500/5 to-transparent shadow-xl shadow-amber-500/5 rounded-[2rem] p-3 sm:p-8 border border-amber-500/10">
       <div className="absolute -right-12 -top-12 w-48 h-48 bg-amber-500/10 rounded-full blur-3xl pointer-events-none" />
 
       <div className="relative flex flex-col md:flex-row gap-8 items-start">
@@ -67,7 +67,7 @@ export const GoogleGroupBanner = ({
             </p>
           </div>
 
-          <div className="grid gap-4">
+          <div className="grid gap-2">
             <div className="flex items-start gap-3 bg-background/50 backdrop-blur-sm p-4 rounded-2xl border border-amber-500/10 transition-colors hover:bg-background/80">
               <div className="mt-1 flex-shrink-0 w-6 h-6 rounded-full bg-amber-500/20 flex items-center justify-center text-amber-600 dark:text-amber-500 font-bold text-xs">1</div>
               <div className="space-y-2 flex-1">

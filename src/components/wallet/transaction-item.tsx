@@ -9,10 +9,11 @@ function CurrencyBadge({
 }) {
   if (!method) return null;
   const config = {
+    // S9: legacy POINTS rows may exist in history; render them neutrally.
     POINTS: {
-      label: "pts",
+      label: "legacy",
       className:
-        "bg-emerald-500/10 text-emerald-600 border-emerald-500/20",
+        "bg-muted text-muted-foreground border-border/60",
     },
     PACKAGE: {
       label: "pkg",

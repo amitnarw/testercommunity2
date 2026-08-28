@@ -73,17 +73,45 @@ export function CommunityCompletedAppCard({
         {/* Footer Action Area */}
         <div className="relative p-4 pt-0 mt-auto z-10">
           <div className="flex flex-col gap-3 p-4 bg-secondary/30 rounded-2xl border border-border/40 group-hover:border-green-500/20 transition-colors duration-300">
-            <div className="flex justify-between items-center w-full">
-              <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider">
-                Earned
-              </span>
-              <div className="flex items-center gap-2 bg-green-500/10 px-3 py-1 rounded-full border border-green-500/20">
-                <Star className="w-4 h-4 text-green-600 dark:text-green-400 fill-green-600 dark:fill-green-400" />
-                <span className="font-bold text-green-700 dark:text-green-300 text-sm">
-                  {app?.rewardPoints} Pts
+            {/* S9-A3: points no longer exist. Handshake = barter badge;
+                anything else shows the money payout (or a plain Completed). */}
+            {app?.appType === "HANDSHAKE" ? (
+              <div className="flex justify-between items-center w-full">
+                <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider">
+                  Completed
                 </span>
+                <div className="flex items-center gap-2 bg-green-500/10 px-3 py-1 rounded-full border border-green-500/20">
+                  <span aria-hidden className="text-sm">🤝</span>
+                  <span className="font-bold text-green-700 dark:text-green-300 text-sm">
+                    Handshake
+                  </span>
+                </div>
               </div>
-            </div>
+            ) : app?.rewardMoney ? (
+              <div className="flex justify-between items-center w-full">
+                <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider">
+                  Earned
+                </span>
+                <div className="flex items-center gap-2 bg-green-500/10 px-3 py-1 rounded-full border border-green-500/20">
+                  <Star className="w-4 h-4 text-green-600 dark:text-green-400 fill-green-600 dark:fill-green-400" />
+                  <span className="font-bold text-green-700 dark:text-green-300 text-sm">
+                    ₹{app.rewardMoney}
+                  </span>
+                </div>
+              </div>
+            ) : (
+              <div className="flex justify-between items-center w-full">
+                <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider">
+                  Status
+                </span>
+                <div className="flex items-center gap-2 bg-green-500/10 px-3 py-1 rounded-full border border-green-500/20">
+                  <CheckCircle2 className="w-4 h-4 text-green-600 dark:text-green-400" />
+                  <span className="font-bold text-green-700 dark:text-green-300 text-sm">
+                    Completed
+                  </span>
+                </div>
+              </div>
+            )}
 
             <div className="w-full text-center py-2 text-sm font-semibold text-muted-foreground group-hover:text-primary transition-colors">
               View Feedback

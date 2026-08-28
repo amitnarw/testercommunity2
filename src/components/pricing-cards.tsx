@@ -71,7 +71,6 @@ export const ProfessionalPlanCard = ({
   accent = "primary",
   accentIcon,
   description,
-  comingSoon,
   customPriceLabel,
   ctaLabel,
   ctaHref,
@@ -82,7 +81,6 @@ export const ProfessionalPlanCard = ({
   accent?: "primary" | "emerald" | "blue" | "amber" | "purple";
   accentIcon?: React.ReactNode;
   description?: string;
-  comingSoon?: boolean;
   customPriceLabel?: string;
   ctaLabel?: string | null;
   ctaHref?: string | null;
@@ -155,11 +153,6 @@ export const ProfessionalPlanCard = ({
               <span className="text-5xl font-bold tracking-tight">
                 {customPriceLabel || plan.customPriceLabel}
               </span>
-            ) : comingSoon ? (
-              <>
-                <span className="text-5xl font-bold tracking-tight">xx</span>
-                <span className={`ml-2 text-sm font-medium ${palette.muted}`}>/month</span>
-              </>
             ) : (
               <>
                 <span className="text-5xl font-bold tracking-tight">

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { motion } from "framer-motion";
 import { Play, CheckCircle, Star, Smartphone } from "lucide-react";
@@ -38,7 +38,7 @@ const FreeCommunityPreview = ({
       <div className="flex items-center justify-between">
         <div>
           <p className={cn(compact ? "text-[5px]" : "text-[8px] sm:text-[10px]", "opacity-80")}>REWARD</p>
-          <p className={cn(compact ? "text-[9px]" : "text-sm sm:text-base", "font-bold")}>150 Points</p>
+          <p className={cn(compact ? "text-[9px]" : "text-sm sm:text-base", "font-bold")}>🤝 Barter</p>
         </div>
         <Star className={cn(compact ? "w-3 h-3" : "w-5 h-5 sm:w-6 sm:h-6", "opacity-40")} />
       </div>

@@ -71,6 +71,7 @@ const FeedbackFormModal = ({
   feedback,
   onSave,
   children,
+  variant = "default",
 }: {
   feedback?: HubSubmittedAppResponse["feedback"][number] | null;
   onSave: (data: {
@@ -84,7 +85,16 @@ const FeedbackFormModal = ({
     };
   }) => void;
   children: React.ReactNode;
+  variant?: "default" | "handshake";
 }) => {
+  const isHandshake = variant === "handshake";
+  const accentText = isHandshake ? "text-emerald-600" : "text-primary";
+  const accentBg = isHandshake ? "bg-emerald-500/10" : "bg-primary/10";
+  const accentRing = isHandshake ? "ring-emerald-500/20" : "ring-primary/20";
+  const accentBorderHover = isHandshake ? "hover:border-emerald-500/50" : "hover:border-primary/50";
+  const accentBgHover = isHandshake ? "hover:bg-emerald-500/5" : "hover:bg-primary/5";
+  const accentShadow = isHandshake ? "shadow-emerald-500/25" : "shadow-primary/25";
+  const accentShadowHover = isHandshake ? "shadow-emerald-500/40" : "shadow-primary/40";
   const [open, setOpen] = useState(false);
   const [message, setMessage] = useState(feedback?.message || "");
   const [type, setType] = useState<
@@ -242,11 +252,11 @@ const FeedbackFormModal = ({
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent className="w-[95vw] h-[95vh] sm:max-w-[600px] p-0 bg-[#fafafa] dark:bg-[#0f0f0f] shadow-2xl rounded-2xl sm:rounded-3xl border-0 overflow-hidden gap-0">
-        <div className="absolute top-0 left-0 w-full h-32 bg-gradient-to-b from-primary/5 to-transparent pointer-events-none" />
+        <div className={cn("absolute top-0 left-0 w-full h-32 bg-gradient-to-b to-transparent pointer-events-none", isHandshake ? "from-emerald-500/5" : "from-primary/5")} />
         <DialogHeader className="relative z-10 w-full bg-white dark:bg-[#141414] border-b border-border/40">
           <div className="flex flex-row items-center justify-between p-4 sm:p-5">
             <div className="flex items-center gap-3">
-              <div className="absolute sm:static top-0 left-0 scale-[2] sm:scale-100 w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary opacity-20 sm:opacity-100 shadow-sm ring-2 ring-primary/20">
+              <div className={cn("absolute sm:static top-0 left-0 scale-[2] sm:scale-100 w-10 h-10 rounded-xl flex items-center justify-center opacity-20 sm:opacity-100 shadow-sm ring-2", accentBg, accentText, accentRing)}>
                 {feedback ? (
                   <Edit className="w-5 h-5" />
                 ) : (
@@ -437,7 +447,12 @@ const FeedbackFormModal = ({
                         ? "What feature or improvement would you like to see?"
                         : "What did you enjoy most about the app?"
                   }
-                  className="min-h-[160px] resize-none text-sm sm:text-base bg-white dark:bg-black/20 border-border/60 focus:border-primary/50 focus:ring-4 focus:ring-primary/5 rounded-2xl p-2 sm:p-5 shadow-sm transition-all placeholder:text-muted-foreground/50"
+                  className={cn(
+                    "min-h-[160px] resize-none text-sm sm:text-base bg-white dark:bg-black/20 border-border/60 rounded-2xl p-2 sm:p-5 shadow-sm transition-all placeholder:text-muted-foreground/50",
+                    isHandshake
+                      ? "focus:border-emerald-500/50 focus:ring-4 focus:ring-emerald-500/5"
+                      : "focus:border-primary/50 focus:ring-4 focus:ring-primary/5",
+                  )}
                 />
                 <div className="absolute bottom-4 right-4 text-xs text-muted-foreground pointer-events-none">
                   {message.length} chars
@@ -490,9 +505,14 @@ const FeedbackFormModal = ({
                   <div
                     {...getRootProps()}
                     className={cn(
-                      "aspect-square rounded-lg border-2 border-dashed border-muted-foreground/20 flex flex-col items-center justify-center cursor-pointer hover:border-primary/50 hover:bg-primary/5 transition-all text-muted-foreground hover:text-primary gap-1 w-32",
+                      "aspect-square rounded-lg border-2 border-dashed border-muted-foreground/20 flex flex-col items-center justify-center cursor-pointer transition-all text-muted-foreground gap-1 w-32",
+                      accentBorderHover,
+                      accentBgHover,
+                      isHandshake ? "hover:text-emerald-600" : "hover:text-primary",
                       isDragActive &&
-                        "border-primary bg-primary/10 text-primary",
+                        (isHandshake
+                          ? "border-emerald-500 bg-emerald-500/10 text-emerald-600"
+                          : "border-primary bg-primary/10 text-primary"),
                     )}
                   >
                     <input {...getInputProps()} />
@@ -554,7 +574,11 @@ const FeedbackFormModal = ({
             </Button>
             <Button
               onClick={handleSubmit}
-              className="flex-[2] rounded-xl h-11 sm:h-12 text-sm sm:text-base font-semibold shadow-lg shadow-primary/25 hover:shadow-primary/40 transition-all active:scale-[0.98]"
+              className={cn(
+                "flex-[2] rounded-xl h-11 sm:h-12 text-sm sm:text-base font-semibold shadow-lg transition-all active:scale-[0.98]",
+                accentShadow,
+                accentShadowHover,
+              )}
               disabled={
                 !message || !type || isPendingCUU || uploadFileToR2.isPending
               }
@@ -599,6 +623,7 @@ const FeedbackListItem = ({
   isCompleted,
   currentUserId,
   isPrivileged,
+  variant = "default",
 }: {
   fb: HubSubmittedAppResponse["feedback"][0];
   onSave: (data: {
@@ -616,6 +641,7 @@ const FeedbackListItem = ({
   isCompleted: boolean;
   currentUserId: string | null;
   isPrivileged: boolean;
+  variant?: "default" | "handshake";
 }) => (
   <Card
     className={`bg-gradient-to-tl ${
@@ -643,7 +669,7 @@ const FeedbackListItem = ({
             (isCompleted || fb.testerId !== currentUserId) && "hidden"
           }`}
         >
-          <FeedbackFormModal feedback={fb} onSave={onSave}>
+          <FeedbackFormModal feedback={fb} onSave={onSave} variant={variant}>
             <button className="hover:bg-white/50 p-2 rounded-md duration-300">
               <Edit className="w-4 h-4" />
             </button>
@@ -713,6 +739,7 @@ const FeedbackGridItem = ({
   isCompleted,
   currentUserId,
   isPrivileged,
+  variant = "default",
 }: {
   fb: HubSubmittedAppResponse["feedback"][number];
   onSave: (data: {
@@ -730,6 +757,7 @@ const FeedbackGridItem = ({
   isCompleted: boolean;
   currentUserId: string | null;
   isPrivileged: boolean;
+  variant?: "default" | "handshake";
 }) => (
   <Card
     className={`bg-gradient-to-bl ${
@@ -788,7 +816,7 @@ const FeedbackGridItem = ({
           (isCompleted || fb.testerId !== currentUserId) && "hidden"
         }`}
       >
-        <FeedbackFormModal feedback={fb} onSave={onSave}>
+        <FeedbackFormModal feedback={fb} onSave={onSave} variant={variant}>
           <button className="hover:bg-white/50 p-1 sm:p-2 rounded-md duration-300">
             <Edit className="w-3 h-3 sm:w-4 sm:h-4" />
           </button>
@@ -832,6 +860,7 @@ export function SubmittedFeedback({
   hubId,
   refetch,
   isLoading = false,
+  variant = "default",
 }: {
   isCompleted?: boolean;
   isLocked?: boolean;
@@ -839,7 +868,10 @@ export function SubmittedFeedback({
   hubId?: string;
   refetch?: () => void;
   isLoading?: boolean;
+  variant?: "default" | "handshake";
 }) {
+  const isHandshake = variant === "handshake";
+  const accentText = isHandshake ? "text-emerald-600" : "text-primary";
   const [viewMode, setViewMode] = useState<"grid" | "list">("list");
   const [currentPage, setCurrentPage] = useState(1);
   const [fullscreenImage, setFullscreenImage] = useState<string | null>(null);
@@ -958,7 +990,12 @@ export function SubmittedFeedback({
           <div className="absolute top-0 right-0">
             <Badge
               variant="secondary"
-              className="w-7 h-7 sm:w-auto sm:h-auto text-xs sm:text-sm rounded-full bg-primary/10 text-primary hover:bg-primary/20 transition-colors gap-1"
+              className={cn(
+                "w-7 h-7 sm:w-auto sm:h-auto text-xs sm:text-sm rounded-full transition-colors gap-1",
+                isHandshake
+                  ? "bg-emerald-500/10 text-emerald-600 hover:bg-emerald-500/20"
+                  : "bg-primary/10 text-primary hover:bg-primary/20",
+              )}
             >
               <span>{filteredFeedback.length}</span>
               <span className="hidden sm:block">Submitted</span>
@@ -985,7 +1022,7 @@ export function SubmittedFeedback({
             </Button>
 
             {!isCompleted && !isLocked && (
-              <FeedbackFormModal onSave={handleSaveFeedback}>
+              <FeedbackFormModal onSave={handleSaveFeedback} variant={variant}>
                 <Button size="sm" className="relative overflow-hidden h-9">
                   <PlusCircle className="mr-2 h-4 w-4" />
                   Submit New
@@ -1029,6 +1066,7 @@ export function SubmittedFeedback({
                     isCompleted={isCompleted || isLocked}
                     currentUserId={currentUserId}
                     isPrivileged={isPrivileged}
+                    variant={variant}
                   />
                 ))}
               </div>
@@ -1044,6 +1082,7 @@ export function SubmittedFeedback({
                     isCompleted={isCompleted || isLocked}
                     currentUserId={currentUserId}
                     isPrivileged={isPrivileged}
+                    variant={variant}
                   />
                 ))}
               </div>
@@ -1062,7 +1101,14 @@ export function SubmittedFeedback({
                 <div className="p-3 rounded-2xl bg-red-500/10 text-red-500 border border-red-500/20 transform -rotate-12 hover:rotate-0 transition-transform duration-300">
                   <Bug className="w-5 h-5" />
                 </div>
-                <div className="p-5 rounded-3xl bg-primary/10 text-primary border border-primary/20 shadow-lg shadow-primary/10 transform scale-110 z-10">
+                <div
+                  className={cn(
+                    "p-5 rounded-3xl border shadow-lg transform scale-110 z-10",
+                    isHandshake
+                      ? "bg-emerald-500/10 text-emerald-600 border-emerald-500/20 shadow-emerald-500/10"
+                      : "bg-primary/10 text-primary border-primary/20 shadow-primary/10",
+                  )}
+                >
                   <MessageSquareQuote className="w-8 h-8" />
                 </div>
                 <div className="p-3 rounded-2xl bg-amber-500/10 text-amber-500 border border-amber-500/20 transform rotate-12 hover:rotate-0 transition-transform duration-300">
@@ -1079,7 +1125,7 @@ export function SubmittedFeedback({
                     </>
                   ) : (
                     <>
-                      Make Your <span className="text-primary">Impact</span>
+                      Make Your <span className={accentText}>Impact</span>
                     </>
                   )}
                 </h3>
@@ -1093,10 +1139,15 @@ export function SubmittedFeedback({
 
               {!isCompleted && !isLocked && (
                 <div className="pt-2">
-                  <FeedbackFormModal onSave={handleSaveFeedback}>
+                  <FeedbackFormModal onSave={handleSaveFeedback} variant={variant}>
                     <Button
                       size="lg"
-                      className="rounded-full px-8 py-6 text-sm sm:text-lg shadow-xl shadow-primary/20 hover:shadow-primary/30 transition-all hover:scale-105 active:scale-95 group"
+                      className={cn(
+                        "rounded-full px-8 py-6 text-sm sm:text-lg shadow-xl transition-all hover:scale-105 active:scale-95 group",
+                        isHandshake
+                          ? "shadow-emerald-500/20 hover:shadow-emerald-500/30"
+                          : "shadow-primary/20 hover:shadow-primary/30",
+                      )}
                     >
                       <Sparkles className="mr-2 h-5 w-5 group-hover:animate-spin" />{" "}
                       Start Contributing

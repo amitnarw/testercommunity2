@@ -192,6 +192,28 @@ export enum TesterStatus {
   DROPPED = "DROPPED",
   REMOVED = "REMOVED",
   REJECTED = "REJECTED",
+  MISSED = "MISSED",
+  PENALIZED = "PENALIZED",
+  REPLACED = "REPLACED",
+}
+
+export enum DashboardAndHubStatus {
+  DRAFT = "DRAFT",
+  PENDING_ADMIN_REVIEW = "PENDING_ADMIN_REVIEW",
+  APPROVED = "APPROVED",
+  FINDING_TESTERS = "FINDING_TESTERS",
+  WAITING_FOR_PARTNERS = "WAITING_FOR_PARTNERS",
+  TESTING_ACTIVE = "TESTING_ACTIVE",
+  COMPLETED = "COMPLETED",
+  UNDER_ADMIN_REVIEW = "UNDER_ADMIN_REVIEW",
+  SUSPENDED = "SUSPENDED",
+  REMOVED = "REMOVED",
+  IN_REVIEW = "IN_REVIEW",
+  REJECTED = "REJECTED",
+  IN_TESTING = "IN_TESTING",
+  ON_HOLD = "ON_HOLD",
+  REQUESTED = "REQUESTED",
+  AVAILABLE = "AVAILABLE",
 }
 
 export type UserDataAttributes = {
@@ -346,9 +368,6 @@ export interface ControlRoomResponse {
   createdAt: string;
   updatedAt: string;
   id?: number | undefined;
-  profileSurveyPoints?: number | null | undefined;
-  pointsWithdrawalLimit?: number | null | undefined;
-  pointsWithdrawalThreshold?: number | null | undefined;
   humanChatEnabled?: boolean | undefined;
   countriesSupported?: number | null | undefined;
   bugsFound?: number | null | undefined;
@@ -378,8 +397,6 @@ export interface DashboardDataResponse {
     currentDay: number;
     totalDay: number;
     instructionsForTester: string | null;
-    rewardPoints: number | null;
-    costPoints: number | null;
   averageTimeTesting: string | null;
     status:
       | "IN_REVIEW"
@@ -409,10 +426,10 @@ export interface AppData {
   currentDay: number;
   totalDay: number;
   instructionsForTester: string | null;
-  rewardPoints: number | null;
-  costPoints: number | null;
   averageTimeTesting: string | null;
   minimumAndroidVersion: number;
+  // Full DashboardAndHubStatus set (P2.9/P4): the backend returns the v2
+  // lifecycle states on owner lists and detail responses.
   status:
     | "IN_REVIEW"
     | "DRAFT"
@@ -422,7 +439,15 @@ export interface AppData {
     | "ON_HOLD"
     | "REQUESTED"
     | "AVAILABLE"
-    | "ACCEPTED";
+    | "ACCEPTED"
+    | "PENDING_ADMIN_REVIEW"
+    | "APPROVED"
+    | "FINDING_TESTERS"
+    | "WAITING_FOR_PARTNERS"
+    | "TESTING_ACTIVE"
+    | "UNDER_ADMIN_REVIEW"
+    | "SUSPENDED"
+    | "REMOVED";
   createdAt: Date;
   updatedAt: Date;
 }
@@ -466,6 +491,42 @@ export interface AndroidApp {
   reviews?: ReviewResponse[];
 }
 
+/** S12: partner half of an active handshake, resolved via HandshakeLink. */
+export interface HandshakePairInfo {
+  linkId: number;
+  linkStatus: "ACTIVE" | "COMPLETED" | "CANCELLED";
+  partnerRelation: {
+    id: number;
+    status:
+      | "PENDING"
+      | "IN_PROGRESS"
+      | "COMPLETED"
+      | "DROPPED"
+      | "REMOVED"
+      | "REJECTED"
+      | "MISSED"
+      | "PENALIZED"
+      | "REPLACED";
+    daysCompleted: number;
+    tester: {
+      id: string;
+      name: string;
+      image: string | null;
+      handshakeLevel?: number;
+      eliteBadge?: boolean;
+    };
+    campaign: {
+      id: number;
+      status: AppData["status"];
+      currentDay: number;
+      totalDay: number;
+      testingStartDate: string | null;
+      testingStartEligibleAt: string | null;
+      androidApp: { appName: string; appLogoUrl: string } | null;
+    } | null;
+  } | null;
+}
+
 export interface HubSubmittedAppResponse {
   androidApp: AndroidApp;
   id: number;
@@ -479,18 +540,42 @@ export interface HubSubmittedAppResponse {
     email: string;
     emailVerified: boolean;
     image: string | null;
+    handshakeLevel?: number;
+    eliteBadge?: boolean;
   };
   handshake?: {
     linkId: number;
+    /** True when the user has at least one active penalty task. */
     isBlocked: boolean;
-    blockedUntil: string | null;
+    /** Number of active penalty tasks (PENDING or IN_PROGRESS). */
+    penaltyCount: number;
     partnerApp?: {
       appName?: string;
       appLogoUrl?: string;
     } | null;
     partnerOwner?: {
       name?: string;
-      email?: string;
+      image?: string | null;
+      handshakeLevel?: number;
+      eliteBadge?: boolean;
+    } | null;
+    /** S11-B1: owner's PENDING request to the viewer for THIS app (offeredAppId). */
+    pendingIncomingRequest?: {
+      id: number;
+      message: string | null;
+      expiresAt: string;
+      createdAt: string;
+      fromUser: { id: string; name: string; image: string | null };
+    } | null;
+    /** S11-B2: viewer's own PENDING request to the owner for THIS app (requestedAppId). */
+    myPendingOutgoingRequest?: {
+      id: number;
+      expiresAt: string;
+      createdAt: string;
+      offeredApp: {
+        id: number;
+        androidApp: { appName: string; appLogoUrl: string };
+      };
     } | null;
   } | null;
   appType: AppData["appType"];
@@ -498,9 +583,12 @@ export interface HubSubmittedAppResponse {
   totalTester: number;
   currentDay: number;
   totalDay: number;
+  /** S12: lifecycle dates returned by getHubApps (full-scalar include). */
+  testingStartDate?: string | null;
+  testingEndDate?: string | null;
+  testingStartEligibleAt?: string | null;
+  waitingPeriodStartedAt?: string | null;
   instructionsForTester: string | null;
-  rewardPoints: number | null;
-  costPoints: number | null;
   averageTimeTesting: string | null;
   averageRating: number;
   minimumAndroidVersion: number;
@@ -549,10 +637,13 @@ export interface HubSubmittedAppResponse {
     id: number;
     testerId: string;
     tester: {
+      id?: string;
       name: string;
       email: string;
       image: string | null;
       createdAt: Date;
+      handshakeLevel?: number;
+      eliteBadge?: boolean;
       userDetail: {
         country: string | null;
         profile_type: UserProfileType | null;
@@ -576,7 +667,10 @@ export interface HubSubmittedAppResponse {
       | "COMPLETED"
       | "DROPPED"
       | "REMOVED"
-      | "REJECTED";
+      | "REJECTED"
+      | "MISSED"
+      | "PENALIZED"
+      | "REPLACED";
     statusDetails: {
       title: string;
       description: string;
@@ -584,6 +678,8 @@ export interface HubSubmittedAppResponse {
       video: string;
     } | null;
     daysCompleted: number;
+    /** S8-G1: true once a day was missed in the current cycle (level credit at risk). */
+    hadMissSinceStart?: boolean;
     lastActivityAt?: string | Date;
     dailyVerifications?: {
       id: number;
@@ -594,6 +690,8 @@ export interface HubSubmittedAppResponse {
       metaData?: any;
       rejectionReason?: string;
     }[];
+    /** S12: populated by getHubApps for handshake relations with a live link. */
+    handshakePair?: HandshakePairInfo | null;
   }[];
   paymentInfo?: {
     amountPaid: number;
@@ -613,11 +711,11 @@ export interface HubSubmittedAppResponse {
 }
 
 export interface HubDataResponse {
-  wallet: number;
   appsSubmitted: number;
   testersEngaged: number;
   testsCompleted: number;
-  availableApps: AppData[];
+  // P5: backend sends a count (availableApps.length), not an array.
+  availableApps: number;
   statusCounts: {
     _count: {
       _all: number;
@@ -670,8 +768,8 @@ export type Notification = NotificationResponse;
 export interface UserWallerResponse {
   id: number;
   userId: string;
-  totalPoints: number;
   totalPackages: number;
+  balanceMoney: number;
   lastUpdated: Date;
   createdAt: Date;
 }
@@ -853,8 +951,6 @@ export type TesterProjectResponse = {
   currentDay: number;
   totalTester: number;
   currentTester: number;
-  rewardPoints: number | null;
-  costPoints: number | null;
   rewardMoney?: number | null;
   costMoney?: number | null;
   instructionsForTester: string | null;
@@ -885,8 +981,6 @@ export type CommunityApp = {
   icon: string;
   shortDescription: string;
   category: string;
-  points?: number;
-  rewardPoints?: number;
   androidVersion: string;
   estimatedTime: string;
   dataAiHint?: string;
@@ -906,7 +1000,7 @@ export type CommunityApp = {
 
 export interface BillingHistoryItem {
   id: string;
-  type: "ONE_TIME" | "SUBSCRIPTION";
+  type: "ONE_TIME";
   invoiceId: string | null;
   invoiceNumber?: string | null;
   orderId?: number;
@@ -919,8 +1013,6 @@ export interface BillingHistoryItem {
   plan: string;
   packages?: number;
   paymentMethod: string | null;
-  subscriptionId?: number | null;
-  subscriptionStatus?: string | null;
 }
 
 export interface PaymentConfigResponse {
@@ -1122,7 +1214,6 @@ export interface FinanceDashboardData {
   totalRefunds: number;
   ordersByStatus: Record<string, number>;
   packagesSold: number;
-  pointsDistributed: number;
   testerEarnings: number;
   pendingWithdrawalsCount: number;
   pendingWithdrawalsAmount: number;
@@ -1175,7 +1266,6 @@ export interface FinancePayment {
   user: { id: string; name: string; email: string; image: string | null } | null;
   refunds: Array<{ id: number; amount: number; status: string; reason: string | null }>;
   invoice: { id: number; invoice_number: string } | null;
-  handshakeSubscription: { id: number; status: string; razorpaySubscriptionId: string } | null;
   createdAt: string;
 }
 
@@ -1279,11 +1369,13 @@ export interface FinancePagination {
 }
 
 export interface FinanceUserWallet {
-  wallet: { totalPoints: number; totalPackages: number; balanceMoney: number };
+  wallet: { totalPackages: number; balanceMoney: number };
   transactions: Array<{
     id: number;
     action: string | null;
-    points: number | null;
+    amount: number | null;
+    /** S9-F5: true on pre-migration rows whose amount holds points, not ₹. */
+    isLegacyPoints?: boolean;
     package: number | null;
     transactionType: string;
     status: string;
@@ -1346,24 +1438,6 @@ export interface DeclarationAnswers {
   deletedQuestions?: string[];
 }
 
-export interface SubscriptionStatusResponse {
-  status: string;
-  paidCount: number;
-  currentPeriodStart: string | null;
-  currentPeriodEnd: string | null;
-  latestPayment: {
-    id: number;
-    amount: number;
-    currency: string;
-    method: string | null;
-    razorpayPaymentId: string;
-    createdAt: string;
-  } | null;
-  latestInvoice: {
-    invoice_number: string;
-  } | null;
-}
-
 export interface AutoGeneratedStats {
   totalTesters: number;
   completedTesters: number;
@@ -1381,4 +1455,298 @@ export interface AutoGeneratedStats {
   testingEndDate: string | null;
   packageName: string;
   category: string;
+}
+
+// ============================================================
+// Handshake Testing v2 (Spec §3-49)
+// ============================================================
+
+export type HandshakeRequestStatus =
+  | "PENDING"
+  | "ACCEPTED"
+  | "REJECTED"
+  | "EXPIRED"
+  | "CANCELLED"
+  | "MUTUAL_MATCHED";
+
+export interface HandshakeRequest {
+  id: number;
+  fromUserId: string;
+  toUserId: string;
+  requestedAppId: number;
+  offeredAppId: number | null;
+  status: HandshakeRequestStatus;
+  message: string | null;
+  rejectionReason: string | null;
+  expiresAt: string;
+  respondedAt: string | null;
+  createdAt: string;
+  updatedAt: string;
+  fromUser?: { id: string; name: string; image: string | null };
+  toUser?: { id: string; name: string; image: string | null };
+  requestedApp?: {
+    id: number;
+    appOwnerId: string;
+    status: DashboardAndHubStatus;
+    androidApp?: {
+      appName: string;
+      appLogoUrl: string;
+      packageName: string;
+    };
+  };
+  offeredApp?: {
+    id: number;
+    appOwnerId: string;
+    status: DashboardAndHubStatus;
+    androidApp?: {
+      appName: string;
+      appLogoUrl: string;
+      packageName: string;
+    };
+  } | null;
+}
+
+export interface SendHandshakeRequestInput {
+  toUserId: string;
+  requestedAppId: number;
+  offeredAppId?: number | null;
+  message?: string | null;
+}
+
+export interface SendHandshakeRequestResponse {
+  mutualMatch: boolean;
+  request: HandshakeRequest;
+  reciprocalRequestId?: number;
+  linkCreated?: boolean;
+}
+
+export interface HandshakeRequestListResponse {
+  items: HandshakeRequest[];
+  pagination: {
+    total: number;
+    page: number;
+    limit: number;
+    totalPages: number;
+  };
+}
+
+export type PenaltyTaskStatus =
+  | "PENDING"
+  | "IN_PROGRESS"
+  | "COMPLETED"
+  | "EXPIRED"
+  | "FAILED";
+
+export interface PenaltyTask {
+  id: number;
+  userId: string;
+  sourceRelationId: number | null;
+  sourceCampaignId: number | null;
+  taskAppId: number | null;
+  reason: string;
+  assignedAt: string;
+  completedAt: string | null;
+  deadline: string;
+  status: PenaltyTaskStatus;
+  proofImageUrl: string | null;
+  verifiedByAdminId: string | null;
+  createdAt: string;
+  updatedAt: string;
+  sourceCampaign?: {
+    id: number;
+    status: DashboardAndHubStatus;
+    androidApp?: { appName: string; appLogoUrl: string; packageName: string };
+  };
+  taskApp?: {
+    id: number;
+    status: DashboardAndHubStatus;
+    androidApp?: { appName: string; appLogoUrl: string; packageName: string };
+  };
+}
+
+export interface MyPenaltiesResponse {
+  active: PenaltyTask[];
+  completed: number;
+  failed: number;
+  isPenalized: boolean;
+}
+
+export type AddOnCategory =
+  | "PROFESSIONAL_TESTER"
+  | "PRIORITY_SUPPORT"
+  | "EXTRA_TESTING";
+
+export interface AddOn {
+  id: number;
+  name: string;
+  description: string;
+  priceINR: number;
+  category: AddOnCategory;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export type AddOnPurchaseStatus =
+  | "CREATED"
+  | "PAID"
+  | "FAILED"
+  | "REFUNDED";
+
+export interface AddOnPurchase {
+  id: number;
+  userId: string;
+  campaignId: number;
+  addOnId: number;
+  razorpayOrderId: string | null;
+  amountINR: number;
+  status: AddOnPurchaseStatus;
+  purchasedAt: string | null;
+  refundedAt: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface PurchaseAddonResponse {
+  purchaseId: number;
+  razorpayOrderId: string;
+  razorpayKeyId: string;
+  amountINR: number;
+  addOnName: string;
+}
+
+export type ProfessionalTesterStatus =
+  | "OPEN"
+  | "FILLED"
+  | "COMPLETED"
+  | "CANCELLED";
+
+export interface ProfessionalTesterAssignment {
+  id: number;
+  campaignId: number;
+  assignedByAdminId: string;
+  professionalUserId: string | null;
+  status: ProfessionalTesterStatus;
+  feeINR: number;
+  assignedAt: string;
+  filledAt: string | null;
+  notes: string | null;
+  createdAt: string;
+  updatedAt: string;
+  campaign?: {
+    id: number;
+    status: DashboardAndHubStatus;
+    appOwnerId: string;
+    androidApp?: { appName: string; appLogoUrl: string };
+  };
+}
+
+export interface LevelConfigEntry {
+  level: number;
+  threshold: number;
+}
+
+export interface MyLevelResponse {
+  level: number;
+  completedCount: number;
+  currentThreshold: number;
+  nextThreshold: number | null;
+  percent: number;
+  remaining: number;
+  slots: number;
+  eliteBadge: boolean;
+}
+
+export interface LeaderboardEntry {
+  id: string;
+  name: string;
+  image: string | null;
+  handshakeLevel: number;
+  handshakeCompletedCount: number;
+  eliteBadge: boolean;
+}
+
+export interface EliteBadgeInfo {
+  userId: string;
+  eliteBadge: boolean;
+  awardedAt: string | null;
+  reason: string | null;
+  userName?: string;
+}
+
+export interface HandshakeMonitoringOverview {
+  waiting: number;
+  waitingOver24h: number;
+  activeHandshakes: number;
+  activePenalties: number;
+  proTesterOpen: number;
+  eliteBadgesAwarded: number;
+  pendingRequests: number;
+  campaignsByStatus: Array<{ status: DashboardAndHubStatus; _count: { _all: number } }>;
+}
+
+export interface WaitingCampaign {
+  id: number;
+  appOwnerId: string;
+  status: DashboardAndHubStatus;
+  testingStartEligibleAt: string | null;
+  waitingPeriodStartedAt: string | null;
+  escalatedToAdminAt: string | null;
+  appOwner?: { id: string; name: string; image: string | null };
+  androidApp?: { appName: string; appLogoUrl: string };
+  testerRelations?: Array<{
+    id: number;
+    status: TesterStatus;
+    tester: { id: string; name: string };
+  }>;
+}
+
+export interface PenalizedUser {
+  id: string;
+  name: string;
+  email: string;
+  image: string | null;
+  handshakeLevel: number;
+  penaltyTasks: Array<{
+    id: number;
+    reason: string;
+    assignedAt: string;
+    deadline: string;
+    status: PenaltyTaskStatus;
+    sourceCampaign?: {
+      id: number;
+      androidApp?: { appName: string };
+    };
+  }>;
+}
+
+export interface MissedDayRecord {
+  id: number;
+  testerRelationId: number;
+  dayNumber: number;
+  recordedAt: string;
+  testerRelation?: {
+    id: number;
+    testerId: string;
+    tester?: { id: string; name: string; email: string };
+    dashboardAndHub?: {
+      id: number;
+      androidApp?: { appName: string; appLogoUrl: string };
+    };
+  };
+}
+
+export interface DeveloperCardData {
+  id: number;
+  appName: string;
+  appLogoUrl: string;
+  packageName: string;
+  appOwnerId: string;
+  appOwnerName: string;
+  appOwnerImage: string | null;
+  appOwnerLevel: number;
+  eliteBadge: boolean;
+  totalTester: number;
+  currentTester: number;
+  status: DashboardAndHubStatus;
 }

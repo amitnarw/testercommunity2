@@ -2,7 +2,7 @@
 
 import { useMemo } from "react";
 import { isToday, isYesterday, format } from "date-fns";
-import { useHubData, useHubApps, useHubAppsCount } from "@/hooks/useHub";
+import { useHubApps, useHubAppsCount } from "@/hooks/useHub";
 import { useDashboardApps, useDashboardAppsCount } from "@/hooks/useDashboard";
 import { useGetUserWallet, useGetUserTransactions, useGetUserNotifications, useGetUserImmediateAttention, useDashboardData } from "@/hooks/useUser";
 import { ROUTES } from "@/lib/routes";
@@ -28,7 +28,6 @@ function groupByDate(txs: UserTransaction[]) {
 }
 
 export function useDashboardSummary() {
-  const { data: hubData } = useHubData();
   const { data: hubAppsCount } = useHubAppsCount();
   const { data: hubActiveApps, isLoading: hubActiveLoading } = useHubApps({ type: "IN_TESTING" });
   const { data: dashData } = useDashboardData();
@@ -51,7 +50,8 @@ export function useDashboardSummary() {
   const totalRejected = freeRejected + proRejected;
 
   const packagesBalance = dashData?.wallet ?? wallet?.totalPackages ?? 0;
-  const pointsBalance = hubData?.wallet ?? wallet?.totalPoints ?? 0;
+  // S8-A1: pointsBalance removed , the platform no longer has a points
+  // system; the dashboard bento no longer renders a Points tile.
 
   const notifications = notificationsData?.notifications?.slice(0, 3) || [];
   const totalUnread = notificationsData?.totalNotifications || 0;
@@ -123,7 +123,6 @@ export function useDashboardSummary() {
     totalDrafts,
     totalRejected,
     packagesBalance,
-    pointsBalance,
     notifications,
     totalUnread,
     groupedTransactions,

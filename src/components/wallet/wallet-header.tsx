@@ -5,8 +5,8 @@ export function WalletHeader() {
         Wallet
       </h1>
       <p className="text-muted-foreground text-base md:text-lg">
-        Manage your points, track transactions, and view your package
-        balance in real-time.
+        Manage your packages, track transactions, and view your balances
+        in real-time.
       </p>
     </div>
   );

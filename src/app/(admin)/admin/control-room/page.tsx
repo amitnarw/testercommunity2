@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { Loader2, Save, Zap, Banknote, MessageSquare, Bot } from "lucide-react";
+import { Loader2, Save, Zap, MessageSquare, Bot } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -40,8 +40,6 @@ export default function AdminControlRoomPage() {
     landingStatTitles: [] as Array<{ id: string; title: string }>,
     landingStatDescriptions: [] as Array<{ id: string; description: string }>,
     landingStatValues: [] as Array<{ id: string; value: string }>,
-    pointsWithdrawalLimit: 2000,
-    pointsWithdrawalThreshold: 20000,
     humanChatEnabled: true,
     alexSystemPrompt: "",
   });
@@ -70,8 +68,6 @@ export default function AdminControlRoomPage() {
         landingStatTitles: controlRoom.landingStatTitles ?? [],
         landingStatDescriptions: controlRoom.landingStatDescriptions ?? [],
         landingStatValues: controlRoom.landingStatValues ?? [],
-        pointsWithdrawalLimit: controlRoom.pointsWithdrawalLimit ?? 2000,
-        pointsWithdrawalThreshold: controlRoom.pointsWithdrawalThreshold ?? 20000,
         humanChatEnabled: controlRoom.humanChatEnabled ?? true,
         alexSystemPrompt: controlRoom.alexSystemPrompt ?? "",
       });
@@ -156,20 +152,7 @@ export default function AdminControlRoomPage() {
       );
     };
 
-  const handleSavePoints = () => {
-    updateMutation.mutate(
-      {
-        pointsWithdrawalLimit: formValues.pointsWithdrawalLimit,
-        pointsWithdrawalThreshold: formValues.pointsWithdrawalThreshold,
-      },
-      {
-        onSuccess: () =>
-          showFeedback("success", "Points & Withdrawal Settings Saved", "Reward thresholds updated."),
-        onError: (err: any) =>
-          showFeedback("error", "Points & Withdrawal Settings Update Failed", err?.message || "Something went wrong."),
-      },
-    );
-  };
+  // S9: Points & Withdrawal settings removed , the points economy no longer exists.
 
   const handleToggleHumanChat = (checked: boolean) => {
     handleChange("humanChatEnabled", checked);
@@ -356,49 +339,7 @@ export default function AdminControlRoomPage() {
             </CardContent>
         </Card>
 
-        <Card>
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-lg">
-              <Banknote className="h-5 w-5 text-primary" />
-              Points & Withdrawal Settings
-            </CardTitle>
-            <CardDescription>
-              Configure point rewards and withdrawal thresholds for testers.
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-              <div className="space-y-2">
-                <Label htmlFor="pointsWithdrawalLimit">Withdrawal Limit</Label>
-                <Input
-                  id="pointsWithdrawalLimit"
-                  type="number"
-                  value={formValues.pointsWithdrawalLimit}
-                  onChange={(e) => handleChange("pointsWithdrawalLimit", parseInt(e.target.value) || 0)}
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="pointsWithdrawalThreshold">Withdrawal Threshold</Label>
-                <Input
-                  id="pointsWithdrawalThreshold"
-                  type="number"
-                  value={formValues.pointsWithdrawalThreshold}
-                  onChange={(e) => handleChange("pointsWithdrawalThreshold", parseInt(e.target.value) || 0)}
-                />
-              </div>
-            </div>
-            <div className="flex justify-end pt-4 border-t mt-4">
-              <Button onClick={handleSavePoints} disabled={updateMutation.isPending} size="sm" className="gap-2">
-                {updateMutation.isPending ? (
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                ) : (
-                  <Save className="h-4 w-4" />
-                )}
-                Save Section
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
+        {/* S9: Points & Withdrawal Settings card removed with the points economy. */}
 
         <Card>
           <CardHeader>

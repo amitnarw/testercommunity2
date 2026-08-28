@@ -117,8 +117,11 @@ export function WalletCard({
     y.set(0);
   }, [x, y]);
 
-  const cardNumber = walletData ? formatCardNumber(walletData.totalPoints) : "0000";
-  const points = walletData?.totalPoints ?? 0;
+  // S9: points no longer exist; money is not a user-facing balance (pro
+  // tester payouts live on the tester dashboard) , the card is packages-only.
+  const cardNumber = walletData
+    ? formatCardNumber(walletData.totalPackages ?? 0)
+    : "0000";
   const packages = walletData?.totalPackages ?? 0;
 
   return (
@@ -213,9 +216,7 @@ export function WalletCard({
                 TOTAL BALANCE
               </p>
               {walletIsPending ? (
-                <div className="flex items-center justify-end gap-2 sm:gap-3">
-                  <Skeleton className="w-20 h-7 sm:h-8 bg-white/10" />
-                  <div className="w-px h-6 sm:h-8 bg-white/20 rotate-[15deg]" />
+                <div className="flex items-center justify-end">
                   <Skeleton className="w-20 h-7 sm:h-8 bg-white/10" />
                 </div>
               ) : (
@@ -224,13 +225,6 @@ export function WalletCard({
                     {packages}{" "}
                     <span className="text-xs sm:text-sm text-white/50 font-normal">
                       pkgs
-                    </span>
-                  </h2>
-                  <div className="w-px h-6 sm:h-8 bg-white/20 rotate-[15deg]" />
-                  <h2 className="text-xl sm:text-3xl font-bold tabular-nums" style={embossedStyle}>
-                    {points}{" "}
-                    <span className="text-xs sm:text-sm text-white/50 font-normal">
-                      pts
                     </span>
                   </h2>
                 </div>

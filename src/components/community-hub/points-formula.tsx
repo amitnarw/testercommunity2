@@ -117,9 +117,9 @@ export function PointsFormula() {
                     subtext="tester slots per app"
                   />
                   <ReadoutCard
-                    label="Monthly Cost"
-                    value="₹99"
-                    subtext="flat rate, unlimited"
+                    label="Cost"
+                    value="Free"
+                    subtext="barter-based, no subscription"
                   />
                   <ReadoutCard
                     label="Next Level In"
@@ -299,15 +299,15 @@ export function PointsFormula() {
           <div className="flex flex-wrap items-center justify-center gap-4 md:gap-6">
             <TrustBadge
               icon={<CheckCircle className="w-4 h-4" />}
-              text="₹99/month flat"
+              text="Free forever"
             />
             <TrustBadge
               icon={<CheckCircle className="w-4 h-4" />}
-              text="Cancel anytime"
+              text="No subscription"
             />
             <TrustBadge
               icon={<Shield className="w-4 h-4" />}
-              text="Razorpay secure"
+              text="Pure 1:1 barter"
             />
             <TrustBadge
               icon={<CheckCircle className="w-4 h-4" />}

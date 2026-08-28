@@ -16,7 +16,6 @@ import {
   Smartphone,
   Activity,
   CheckCircle2,
-  Clock,
   ExternalLink,
 } from "lucide-react";
 import { toast } from "@/hooks/use-toast";
@@ -32,6 +31,9 @@ import Link from "next/link";
 
 interface AdminManageTestersDialogProps {
   appId: number;
+  /** App owner id , excluded from the picker so admin can't assign them to
+   *  their own campaign. */
+  appOwnerId?: string;
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onSuccess?: () => void;
@@ -78,6 +80,7 @@ function AvailabilityDot({ status }: { status: string }) {
 
 export function AdminManageTestersDialog({
   appId,
+  appOwnerId,
   open,
   onOpenChange,
   onSuccess,
@@ -88,9 +91,11 @@ export function AdminManageTestersDialog({
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedTesterIds, setSelectedTesterIds] = useState<string[]>([]);
 
-  // Only fetch testers when the modal is open (lazy load)
+  // Only fetch testers when the modal is open (lazy load).
+  // S13: drop the `role: "tester"` filter so admin can assign any active user
+  // (regular handshake users too), not only the pro-tester pool.
   const { data: usersData, isLoading: isLoadingUsers } = useAllUsers(
-    { role: "tester" },
+    undefined,
     { enabled: open },
   );
 
@@ -118,10 +123,19 @@ export function AdminManageTestersDialog({
     },
   });
 
+  // S14: only handshake-eligible roles. Admin / super_admin / support /
+  // moderator / guide_admin etc. are excluded , assigning them as
+  // testers makes no product sense.
+  const ALLOWED_ROLES = new Set(["user", "tester"]);
+
   const availableUsers =
     usersData?.filter(
       (user: any) =>
-        user.status !== "Banned" && !assignedTesterIds.includes(user.id),
+        user.status !== "Banned" &&
+        !assignedTesterIds.includes(user.id) &&
+        // don't let admin assign the owner to their own campaign
+        user.id !== appOwnerId &&
+        ALLOWED_ROLES.has(user?.role),
     ) || [];
 
   const filteredUsers = availableUsers.filter((user: any) => {
@@ -173,10 +187,12 @@ export function AdminManageTestersDialog({
         <div className="bg-primary/5 px-4 py-4 sm:p-6 border-b border-primary/10 shrink-0">
           <DialogHeader>
             <DialogTitle className="text-primary flex items-center gap-2 text-base sm:text-lg">
-              Manage Testers
+              Assign Testers
             </DialogTitle>
             <DialogDescription className="text-xs sm:text-sm">
-              Select testers to assign. Sorted by availability and workload.
+              Pick an active handshake user or pro tester. Admin, support,
+              and moderator accounts are hidden. Sorted by availability and
+              workload.
             </DialogDescription>
           </DialogHeader>
           <div className="mt-3 sm:mt-4 flex flex-col sm:flex-row gap-3 sm:gap-4 items-stretch sm:items-center justify-between">

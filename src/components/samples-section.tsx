@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState } from "react";
 import { motion } from "framer-motion";
@@ -112,7 +112,7 @@ export const FreeCommunityPreview = ({ compact = false }: { compact?: boolean })
               "font-bold",
             )}
           >
-            150 Points
+            Free Barter
           </p>
         </div>
         <Star

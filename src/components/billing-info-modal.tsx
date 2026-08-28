@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from "react";
 import {
-  FileText,
   User,
   Mail,
   Phone,
@@ -13,15 +12,12 @@ import {
   ShieldCheck,
   ArrowRight,
   Info,
-  X,
 } from "lucide-react";
 import {
   Dialog,
   DialogContent,
-  DialogHeader,
   DialogTitle,
   DialogDescription,
-  DialogClose,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -140,9 +136,6 @@ export function BillingInfoModal({
                     We need your information to generate valid tax invoices for your purchases.
                   </DialogDescription>
                 </div>
-                <DialogClose className="absolute right-5 top-5 rounded-full p-2 hover:bg-zinc-100 dark:hover:bg-zinc-800 transition-colors">
-                  <X className="h-5 w-5 text-zinc-500 dark:text-zinc-400" />
-                </DialogClose>
               </div>
             </div>
 

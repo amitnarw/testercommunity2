@@ -19,7 +19,8 @@ export function StatsBento({ summary }: { summary: any }) {
 
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
           
-          {/* Left: Packages & Points (Wide Slider Block) */}
+          {/* Left: Packages (Wide Block) , Points removed: platform no
+              longer uses a points system */}
           <div className="lg:col-span-2">
             <div className="bg-gradient-to-br from-slate-50 via-white to-slate-50 dark:from-card dark:via-card/50 dark:to-card rounded-[2rem] flex flex-col justify-between overflow-hidden h-full border border-slate-200/60 dark:border-border/10 shadow-[0_8px_30px_rgb(0,0,0,0.04)] transition-all duration-300 relative">
               
@@ -41,29 +42,14 @@ export function StatsBento({ summary }: { summary: any }) {
                 
                 <div className="flex-1 flex flex-col justify-center z-10 mt-6 md:mt-0">
                   <div className="flex items-end justify-between w-full">
-                    
+
                     <div className="flex flex-col">
                       <span className="text-3xl md:text-4xl font-extrabold text-slate-900 dark:text-foreground tracking-tight">
                         <span>{summary.packagesBalance}</span>
                       </span>
                       <span className="text-xs font-semibold text-slate-400 dark:text-muted-foreground mt-1">Packages</span>
                     </div>
-                    
-                    <div className="flex-1 mx-4 sm:mx-8 mb-4 flex flex-col items-center">
-                      <div className="w-full h-1.5 bg-slate-100 dark:bg-muted rounded-full relative overflow-visible">
-                        <div className="absolute inset-y-0 left-0 right-0 bg-gradient-to-r from-slate-300 dark:from-muted-foreground to-primary rounded-full" style={{ width: '100%', opacity: 0.3 }}></div>
-                        <div className="absolute top-1/2 -translate-y-1/2 w-3 h-3 bg-white dark:bg-background border-2 border-slate-300 dark:border-muted-foreground rounded-full shadow-xs" style={{ left: '0%' }}></div>
-                        <div className="absolute right-0 top-1/2 -translate-y-1/2 w-3 h-3 bg-white dark:bg-background border-2 border-primary rounded-full shadow-xs" style={{ right: '0%' }}></div>
-                      </div>
-                    </div>
-                    
-                    <div className="flex flex-col items-end">
-                      <span className="text-3xl md:text-4xl font-extrabold text-slate-900 dark:text-foreground tracking-tight">
-                        <span>{summary.pointsBalance}</span>
-                      </span>
-                      <span className="text-xs font-semibold text-slate-400 dark:text-muted-foreground mt-1 text-right">Points</span>
-                    </div>
-                    
+
                   </div>
                 </div>
                 

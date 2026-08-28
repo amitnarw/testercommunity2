@@ -23,7 +23,7 @@ export function SubmissionSuccess({
         <div className="relative p-4 sm:p-12 flex flex-col items-center text-center">
           {/* Confetti / Decoration Background */}
           <div className="absolute inset-0 overflow-hidden pointer-events-none">
-            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-primary/10 via-transparent to-transparent opacity-70" />
+            <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-emerald-500/10 via-transparent to-transparent opacity-70" />
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -102,7 +102,7 @@ export function SubmissionSuccess({
         <div className="bg-secondary/30 p-4 text-center border-t border-border">
           <p className="text-xs text-muted-foreground">
             Need help?{" "}
-            <a href="#" className="underline hover:text-primary">
+            <a href="#" className="underline hover:text-emerald-600">
               Contact Support
             </a>
           </p>

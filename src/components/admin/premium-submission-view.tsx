@@ -233,8 +233,8 @@ export function PremiumSubmissionView({ project }: PremiumSubmissionViewProps) {
                   value={`v${project.minimumAndroidVersion}`}
                 />
                 <DetailRow
-                  label="Points Cost"
-                  value={project.costPoints?.toString() || "0"}
+                  label="Cost"
+                  value={`₹${project.costMoney ?? 0}`}
                 />
               </dl>
             </CardContent>

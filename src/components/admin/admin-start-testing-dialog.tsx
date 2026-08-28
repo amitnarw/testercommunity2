@@ -20,6 +20,10 @@ interface AdminStartTestingDialogProps {
   onSuccess?: () => void;
   currentTester?: number;
   totalTester?: number;
+  /** P4 fix #2: HANDSHAKE campaigns must transition to TESTING_ACTIVE (the
+   * backend allow-list rejects IN_TESTING for them and stamps testing dates
+   * on TESTING_ACTIVE automatically). */
+  appType?: "FREE" | "PAID" | "HANDSHAKE";
 }
 
 export function AdminStartTestingDialog({
@@ -29,6 +33,7 @@ export function AdminStartTestingDialog({
   onSuccess,
   currentTester,
   totalTester,
+  appType,
 }: AdminStartTestingDialogProps) {
   const { mutate: updateStatus, isPending: isUpdating } =
     useUpdateProjectStatus({
@@ -40,7 +45,7 @@ export function AdminStartTestingDialog({
         onOpenChange(false);
         onSuccess?.();
       },
-      onError: (err: any) => {
+      onError: (err) => {
         toast({
           variant: "destructive",
           title: "Error",
@@ -50,7 +55,10 @@ export function AdminStartTestingDialog({
     });
 
   const handleStartTesting = () => {
-    updateStatus({ id: appId, status: "IN_TESTING" });
+    updateStatus({
+      id: appId,
+      status: appType === "HANDSHAKE" ? "TESTING_ACTIVE" : "IN_TESTING",
+    });
   };
 
   const showWarning =
@@ -75,8 +83,11 @@ export function AdminStartTestingDialog({
 
         <div className="p-6 space-y-4">
           <p className="text-sm text-muted-foreground leading-relaxed">
-            By starting the testing phase, the application will be marked as "IN
-            TESTING". Testers assigned to this project will be able to see the
+            By starting the testing phase, the application will be marked as{" "}
+            {appType === "HANDSHAKE"
+              ? '"TESTING ACTIVE"'
+              : '"IN TESTING"'}
+            . Testers assigned to this project will be able to see the
             instructions and begin testing.
           </p>
 
@@ -93,8 +104,8 @@ export function AdminStartTestingDialog({
             <div className="bg-blue-500/5 p-4 rounded-xl border border-blue-500/20">
               <p className="text-xs text-blue-700 dark:text-blue-400 leading-relaxed font-medium">
                 Note: Make sure you have assigned the required number of testers
-                using the "Manage Testers" option before starting the testing
-                phase.
+                using the &quot;Manage Testers&quot; option before starting the
+                testing phase.
               </p>
             </div>
           )}

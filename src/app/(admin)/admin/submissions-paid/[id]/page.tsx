@@ -37,13 +37,14 @@ import {
   CalendarDays,
   Activity,
   ArrowRight,
-  ChevronRight,
-  Pencil,
-  Loader2,
-  CheckCircle2,
-  Eye,
-  Trash2,
-} from "lucide-react";
+ChevronRight,
+    Pencil,
+    Loader2,
+    CheckCircle2,
+    Eye,
+    Trash2,
+    RotateCcw,
+  } from "lucide-react";
 import { Progress } from "@/components/ui/progress";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -102,6 +103,13 @@ const AdminCompleteDialog = dynamic(
     ),
   { ssr: false },
 );
+const AdminRestartDialog = dynamic(
+  () =>
+    import("@/components/admin/admin-restart-dialog").then(
+      (mod) => mod.AdminRestartDialog,
+    ),
+  { ssr: false },
+);
 const AdminAssignedTestersTable = dynamic(
   () =>
     import("@/components/admin/admin-assigned-testers-table").then(
@@ -141,6 +149,7 @@ export default function AdminSubmissionDetailPage({
   const [showCompleteDialog, setShowCompleteDialog] = useState(false);
   const [showEditDialog, setShowEditDialog] = useState(false);
   const [showChatDialog, setShowChatDialog] = useState(false);
+  const [showRestartDialog, setShowRestartDialog] = useState(false);
   const [isUpdatingStatus, setIsUpdatingStatus] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
 
@@ -466,16 +475,25 @@ export default function AdminSubmissionDetailPage({
                   </Button>
                 )}
 
-                {(project.status === "ACCEPTED" ||
-                  project.status === "AVAILABLE" ||
-                  project.status === "IN_TESTING") && (
-                  <Button
-                    onClick={handleAdminComplete}
-                    className="px-5 py-2.5 h-auto bg-blue-600 hover:bg-blue-700 text-white rounded-xl shadow-md font-bold"
-                  >
-                    <CheckCircle2 className="w-4 h-4 mr-1.5" /> Complete Testing
-                  </Button>
-                )}
+{(project.status === "ACCEPTED" ||
+                    project.status === "AVAILABLE" ||
+                    project.status === "IN_TESTING") && (
+                    <Button
+                      onClick={handleAdminComplete}
+                      className="px-5 py-2.5 h-auto bg-blue-600 hover:bg-blue-700 text-white rounded-xl shadow-md font-bold"
+                    >
+                      <CheckCircle2 className="w-4 h-4 mr-1.5" /> Complete Testing
+                    </Button>
+                  )}
+
+                  {project.status === "COMPLETED" && (
+                    <Button
+                      onClick={() => setShowRestartDialog(true)}
+                      className="px-5 py-2.5 h-auto bg-amber-600 hover:bg-amber-700 text-white rounded-xl shadow-md font-bold shadow-amber-600/20"
+                    >
+                      <RotateCcw className="w-4 h-4 mr-1.5" /> Reopen Testing
+                    </Button>
+                  )}
 
                 {project.status === "AVAILABLE" && (
                   <Button
@@ -1086,6 +1104,7 @@ export default function AdminSubmissionDetailPage({
         open={showStartTestingDialog}
         onOpenChange={setShowStartTestingDialog}
         onSuccess={() => refetch()}
+        appType={project.appType}
       />
       <AdminManageTestersDialog
         appId={project.id}
@@ -1098,12 +1117,19 @@ export default function AdminSubmissionDetailPage({
           project.testerRelations?.map((rel) => rel.testerId) || []
         }
       />
-      <AdminCompleteDialog
-        appId={project.id}
-        open={showCompleteDialog}
-        onOpenChange={setShowCompleteDialog}
-        onSuccess={() => refetch()}
-      />
+<AdminCompleteDialog
+          appId={project.id}
+          open={showCompleteDialog}
+          onOpenChange={setShowCompleteDialog}
+          onSuccess={() => refetch()}
+        />
+        <AdminRestartDialog
+          appId={project.id}
+          appName={project.androidApp?.appName}
+          open={showRestartDialog}
+          onOpenChange={setShowRestartDialog}
+          onSuccess={() => refetch()}
+        />
 
       {/* App Chat Dialog */}
       <Dialog
@@ -1124,7 +1150,7 @@ export default function AdminSubmissionDetailPage({
           <SupportChat
             mode="direct"
             directChatId={project?.id ?? null}
-            title="Testing Manager"
+            title={project.appOwner?.name ? `Chat with ${project.appOwner.name}` : "Chat with App Owner"}
             open={showChatDialog}
             onOpenChange={(val) => {
               setShowChatDialog(val);
@@ -1135,6 +1161,7 @@ export default function AdminSubmissionDetailPage({
               }
             }}
             senderType="AGENT"
+            viewerType="ADMIN"
           />
         </DialogContent>
       </Dialog>

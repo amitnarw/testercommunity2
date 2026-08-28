@@ -26,6 +26,7 @@ import { TransitionLink } from "@/components/transition-link";
 import { ProfileBentoGrid } from "@/components/profile-bento-grid";
 import { ActiveSessions } from "@/components/authenticated/profile/active-sessions";
 import { UserDataForm } from "@/components/authenticated/profile/user-data-form";
+import { EliteBadgeSection } from "@/components/profile/elite-badge-section";
 
 export default function ProfilePage() {
   return (
@@ -40,6 +41,9 @@ export default function ProfilePage() {
       />
       <div className="mx-auto space-y-12">
         <UserDataForm title="User Data" />
+
+        {/* S10: Elite Badge moved here from the removed standalone page */}
+        <EliteBadgeSection />
 
         <ActiveSessions />
 

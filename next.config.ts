@@ -17,6 +17,11 @@ const nextConfig: NextConfig = {
       { source: "/samples/free-community-hub", destination: "/samples/handshake-testing", permanent: true },
       { source: "/samples/free-testing", destination: "/samples/handshake-testing", permanent: true },
       { source: "/samples/paid-dashboard", destination: "/samples/pro-testing", permanent: true },
+
+      // S10: My Tasks page removed (hub Running tab replaces it); Elite Badge
+      // moved to /profile , preserve old bookmarks.
+      { source: "/app/handshake-testing/my-tasks", destination: "/app/handshake-testing", permanent: true },
+      { source: "/app/handshake-testing/elite-badge", destination: "/profile#elite-badge", permanent: true },
     ];
   },
   typescript: {

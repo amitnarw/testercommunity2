@@ -29,7 +29,6 @@ import { CustomTabsList } from "@/components/custom-tabs-list";
 import { AppPagination } from "@/components/app-pagination";
 import { motion, AnimatePresence } from "framer-motion";
 import SubTabUI from "@/components/sub-tab-ui";
-import Confetti from "react-dom-confetti";
 import { useTransitionRouter } from "@/context/transition-context";
 import { PageHeader } from "@/components/page-header";
 import { useHubSubmittedApp, useHubSubmittedAppsCount } from "@/hooks/useHub";
@@ -60,10 +59,19 @@ const getStatusConfig = (status: HubSubmittedAppResponse["status"]) => {
         label: "Available",
         color: "text-emerald-600",
         bgColor: "bg-emerald-500/10",
-        borderColor: "border-primary/20",
+        borderColor: "border-emerald-500/20",
         description: "Your app is available for testing.",
       };
     case "IN_TESTING":
+      return {
+        icon: <Clock className="w-3.5 h-3.5" />,
+        label: "In Testing",
+        color: "text-amber-500",
+        bgColor: "bg-amber-500/10",
+        borderColor: "border-amber-500/20",
+        description: "Community members are actively testing your app.",
+      };
+    case "TESTING_ACTIVE":
       return {
         icon: <Clock className="w-3.5 h-3.5" />,
         label: "In Testing",
@@ -139,7 +147,7 @@ const ProjectCard = ({ project }: { project: HubSubmittedAppResponse }) => {
         href={`/app/handshake-testing/my-submissions/${project.id}`}
         className="block h-full"
       >
-        <Card className="h-full border-0 bg-background/40 hover:bg-background/60 backdrop-blur-md shadow-sm hover:shadow-xl hover:shadow-emerald-500/5 transition-all duration-300 rounded-[1.5rem] overflow-hidden relative ring-1 ring-border/50 hover:ring-primary/20 flex flex-col">
+        <Card className="h-full border-0 bg-background/40 hover:bg-background/60 backdrop-blur-md shadow-sm hover:shadow-xl hover:shadow-emerald-500/5 transition-all duration-300 rounded-[1.5rem] overflow-hidden relative ring-1 ring-border/50 hover:ring-emerald-500/20 flex flex-col">
           {/* Status color glowing accent */}
           <div
             className={cn(
@@ -235,14 +243,14 @@ const EmptyState = () => (
     {/* Ambient Background Glow */}
     <div className="absolute inset-0 overflow-hidden pointer-events-none">
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-emerald-500/5 rounded-full blur-[120px] opacity-50" />
-      <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-primary/30 to-transparent opacity-50" />
+      <div className="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-emerald-500/30 to-transparent opacity-50" />
     </div>
 
     {/* floating 3D Animation Container */}
     <div className="relative mb-8 z-10 group">
       {/* Decorative orbital rings */}
-      <div className="absolute inset-0 border border-primary/20 rounded-full scale-[1.8] opacity-20 animate-[spin_10s_linear_infinite]" />
-      <div className="absolute inset-0 border border-dashed border-primary/20 rounded-full scale-[1.5] opacity-20 animate-[spin_15s_linear_infinite_reverse]" />
+      <div className="absolute inset-0 border border-emerald-500/20 rounded-full scale-[1.8] opacity-20 animate-[spin_10s_linear_infinite]" />
+      <div className="absolute inset-0 border border-dashed border-emerald-500/20 rounded-full scale-[1.5] opacity-20 animate-[spin_15s_linear_infinite_reverse]" />
 
       <motion.div
         initial={{ y: 0 }}
@@ -293,7 +301,7 @@ const EmptyState = () => (
 
       <Button
         asChild
-        className="h-11 px-8 rounded-full bg-emerald-500 text-white font-semibold shadow-lg shadow-emerald-500/25 hover:shadow-emerald-500/40 hover:scale-105 transition-all duration-300"
+        className="h-11 px-8 rounded-full bg-gradient-to-b from-emerald-600/80 to-emerald-700/80 text-white font-semibold shadow-lg shadow-emerald-500/25 hover:shadow-emerald-500/40 hover:scale-105 transition-all duration-300"
       >
         <Link
           href="/app/handshake-testing/submit"
@@ -513,31 +521,18 @@ function MySubmissionsContent() {
 
   return (
     <>
-      <Confetti
-        active={true}
-        config={{
-          angle: 90,
-          spread: 360,
-          startVelocity: 30,
-          elementCount: 150,
-          dragFriction: 0.1,
-          duration: 4000,
-          stagger: 3,
-          width: "10px",
-          height: "10px",
-        }}
-      />
       <div className="min-h-screen mb-12">
         <div className="container mx-auto px-4 md:px-6">
           <main className="space-y-4">
             <PageHeader
-              title="MySubmissions"
+              title="My Submissions"
               backHref="/app/handshake-testing"
-              className="w-1/2 px-0"
+              className="w-1/2 px-0 whitespace-nowrap"
+              titleClassName="text-emerald-600"
             />
             <div className="flex flex-row items-center justify-end gap-4 w-full">
               <Button
-                className="bg-gradient-to-b from-emerald-500 to-emerald-600/40 text-white px-3 h-8 sm:p-auto sm:h-10"
+                className="bg-gradient-to-b from-emerald-600 to-emerald-700 text-white px-3 h-8 sm:p-auto sm:h-10"
                 onClick={() => openPage("/app/handshake-testing/submit")}
               >
                 <PlusCircle className="h-4 w-4 absolute sm:static top-0 sm:top-auto left-0 sm:left-auto scale-[2] sm:scale-100 text-white/20 sm:text-white" />
