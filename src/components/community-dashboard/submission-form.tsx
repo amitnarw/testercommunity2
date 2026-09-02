@@ -966,7 +966,7 @@ export function SubmissionForm({
                       <span className="font-semibold text-foreground">14 tester slots</span>{" "}
                       for{" "}
                       <span className="font-semibold text-foreground">16 days</span>
-                      {" "}â€” no configuration needed. An admin can adjust these later if required.
+                      {" "} no configuration needed. An admin can adjust these later if required.
                     </div>
                   )}
 

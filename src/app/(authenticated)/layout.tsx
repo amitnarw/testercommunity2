@@ -9,12 +9,13 @@ import { authClient } from "@/lib/auth-client";
 import { motion, AnimatePresence } from "framer-motion";
 import PageTransition from "@/components/page-transition";
 import { ROUTES } from "@/lib/routes";
-import { useUserData } from "@/hooks/useUser";
+import { useUserData, useUserProfileData } from "@/hooks/useUser";
 import { useToggleMyActiveStatus } from "@/hooks/useAuth";
 import { useQueryClient } from "@tanstack/react-query";
 import { Logo } from "@/components/logo";
 import { Button } from "@/components/ui/button";
 import { Power } from "lucide-react";
+import { DiscoverySourceModal } from "@/components/discovery-source-modal";
 
 export default function AuthenticatedLayout({
   children,
@@ -26,8 +27,17 @@ export default function AuthenticatedLayout({
   const pathname = usePathname();
   const { data: session, isPending } = authClient.useSession();
   const { data: userData } = useUserData({ enabled: !!session });
+  const { data: userProfileData, isLoading: profileLoading } =
+    useUserProfileData({ enabled: !!session });
   const queryClient = useQueryClient();
   const [reactivating, setReactivating] = useState(false);
+  const [discoveryDismissed, setDiscoveryDismissed] = useState(false);
+
+  const showDiscoveryModal =
+    !profileLoading &&
+    !!userProfileData &&
+    !discoveryDismissed &&
+    userProfileData.discovery_source_answered === false;
 
   const { mutate: toggleStatus } = useToggleMyActiveStatus({
     onSuccess: () => {
@@ -113,6 +123,11 @@ export default function AuthenticatedLayout({
         <div
           aria-hidden="true"
           className="fixed left-0 right-0 bottom-0 h-6 bg-gradient-to-t from-background/80 to-transparent pointer-events-none z-30 print:hidden"
+        />
+        <DiscoverySourceModal
+          open={showDiscoveryModal}
+          onComplete={() => setDiscoveryDismissed(true)}
+          onClose={() => setDiscoveryDismissed(true)}
         />
       </>
     </PageTransition>

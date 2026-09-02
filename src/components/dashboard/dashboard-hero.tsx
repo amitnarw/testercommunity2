@@ -1,5 +1,6 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { format } from "date-fns";
 import { Activity, Bell, Sparkles } from "lucide-react";
 import { motion } from "framer-motion";
@@ -18,6 +19,9 @@ export function DashboardHero({
   totalActive,
   totalUnread,
 }: DashboardHeroProps) {
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => setMounted(true), []);
+
   return (
     <section className="my-8">
       <motion.div
@@ -41,7 +45,7 @@ export function DashboardHero({
               </div>
             </div>
             <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold tracking-tight mt-2">
-              {greeting}, {userName}
+              {greeting}, {mounted ? userName : "Developer"}
             </h1>
             <div className="flex flex-wrap items-center gap-4 mt-3">
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
