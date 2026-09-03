@@ -24,6 +24,7 @@ import {
   Users,
   UserPlus,
   MessageSquare,
+  MessageSquareQuote,
   Lightbulb,
   Wallet,
   Settings,
@@ -31,6 +32,7 @@ import {
 import { TransitionLink } from "./transition-link";
 import { ROUTES } from "@/lib/routes";
 import { hasPermission } from "@/lib/permissions";
+import { useAppChatsTotalUnread } from "@/hooks/useAdmin";
 
 interface UserNavProps {
   session?: {
@@ -76,6 +78,10 @@ export function UserNav({ session, onLogout }: UserNavProps) {
   const _roleObj = (session as any)?.role || (session as any)?.user?.role;
   const roleName = typeof _roleObj === "string" ? _roleObj.toLowerCase() : typeof _roleObj === "object" && _roleObj?.name ? _roleObj.name.toLowerCase() : "";
   const permissions = typeof _roleObj === "object" ? _roleObj?.permissions : undefined;
+
+  const { data: appChatsTotalUnread = 0 } = useAppChatsTotalUnread({
+    enabled: isAdmin,
+  });
 
   const getRoleBadge = () => {
     // Handle case where role might be an object with name property
@@ -149,20 +155,27 @@ export function UserNav({ session, onLogout }: UserNavProps) {
     icon: Icon,
     label,
     className = "",
+    badge,
   }: {
     href: string;
     icon: any;
     label: string;
     className?: string;
+    badge?: number;
   }) => (
     <TransitionLink href={href} className={`block ${className}`}>
-      <DropdownMenuItem className="flex flex-col items-center justify-center gap-2 p-3 h-20 rounded-2xl cursor-pointer bg-muted/40 hover:bg-muted/80 hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 border border-transparent hover:border-border/50 group focus:bg-muted/80 outline-none">
+      <DropdownMenuItem className="relative flex flex-col items-center justify-center gap-2 p-3 h-20 rounded-2xl cursor-pointer bg-muted/40 hover:bg-muted/80 hover:scale-[1.02] active:scale-[0.98] transition-all duration-200 border border-transparent hover:border-border/50 group focus:bg-muted/80 outline-none">
         <div className="p-2 rounded-full bg-background shadow-sm group-hover:shadow-md transition-shadow ring-1 ring-border/10">
           <Icon className="h-5 w-5 text-muted-foreground group-hover:text-primary transition-colors" />
         </div>
         <span className="text-xs font-semibold text-muted-foreground group-hover:text-foreground transition-colors">
           {label}
         </span>
+        {badge && badge > 0 ? (
+          <span className="absolute top-1.5 right-1.5 min-w-5 h-5 px-1 rounded-full bg-destructive text-destructive-foreground text-[10px] font-bold flex items-center justify-center ring-2 ring-muted/40">
+            {badge > 9 ? "9+" : badge}
+          </span>
+        ) : null}
       </DropdownMenuItem>
     </TransitionLink>
   );
@@ -206,6 +219,14 @@ export function UserNav({ session, onLogout }: UserNavProps) {
                 href={ROUTES.ADMIN.FEEDBACK}
                 icon={MessageSquare}
                 label="Feedback"
+              />
+            )}
+            {hasPermission(roleName, permissions, "app_chat", "canReadList") && (
+              <BentoItem
+                href={ROUTES.ADMIN.APP_CHATS}
+                icon={MessageSquareQuote}
+                label="App Chats"
+                badge={appChatsTotalUnread}
               />
             )}
           </div>

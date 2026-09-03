@@ -25,6 +25,7 @@ const MODULE_ROUTE_MAP: Record<string, string> = {
   review: ROUTES.ADMIN.USER_REVIEWS,
   logs: ROUTES.ADMIN.LOGS,
   support: ROUTES.ADMIN.SUPPORT,
+  app_chat: ROUTES.ADMIN.APP_CHATS,
   permissions: ROUTES.ADMIN.PERMISSIONS,
   faqs: ROUTES.ADMIN.FAQS,
   control_room: ROUTES.ADMIN.CONTROL_ROOM,

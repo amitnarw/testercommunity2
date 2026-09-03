@@ -29,12 +29,13 @@ import {
   FileText,
   Zap,
   ShieldCheck,
+  MessageSquareQuote,
 } from "lucide-react";
 import { BaseSidebar, SidebarNavLink } from "@/components/ui/base-sidebar";
 import { authClient } from "@/lib/auth-client";
 import { ROUTES } from "@/lib/routes";
 import { hasPermission } from "@/lib/permissions";
-import { useMailUnreadCount } from "@/hooks/useAdmin";
+import { useMailUnreadCount, useAppChatsTotalUnread } from "@/hooks/useAdmin";
 
 const baseMainNavLinks = [
   { name: "Dashboard", href: ROUTES.AUTHENTICATED.DASHBOARD, icon: Home },
@@ -246,6 +247,15 @@ const adminNavLinks: AdminNavLink[] = [
     section: "support",
     moduleName: "support",
   },
+
+  // App Chats
+  {
+    name: "App Chats",
+    href: ROUTES.ADMIN.APP_CHATS,
+    icon: MessageSquareQuote,
+    section: "app_chats",
+    moduleName: "app_chat",
+  },
 ];
 
 interface SidebarProps {
@@ -282,12 +292,23 @@ export function Sidebar({
 
   const permissions = role?.permissions;
   const { data: unreadCount = 0 } = useMailUnreadCount({ enabled: effectiveIsAdmin });
+  const { data: appChatsTotalUnread = 0 } = useAppChatsTotalUnread({
+    enabled: effectiveIsAdmin,
+  });
 
   const mailLinkIndex = adminNavLinks.findIndex((l) => l.name === "Mail");
   if (mailLinkIndex >= 0) {
     adminNavLinks[mailLinkIndex] = {
       ...adminNavLinks[mailLinkIndex],
       badge: unreadCount > 0 ? String(unreadCount) : undefined,
+    };
+  }
+
+  const appChatsLinkIndex = adminNavLinks.findIndex((l) => l.name === "App Chats");
+  if (appChatsLinkIndex >= 0) {
+    adminNavLinks[appChatsLinkIndex] = {
+      ...adminNavLinks[appChatsLinkIndex],
+      badge: appChatsTotalUnread > 0 ? String(appChatsTotalUnread) : undefined,
     };
   }
 
@@ -304,6 +325,7 @@ export function Sidebar({
     { key: "finance" as const, label: "Finance", color: "text-cyan-300" },
     { key: "platform" as const, label: "Platform" },
     { key: "support" as const, label: "Support", color: "text-green-400" },
+    { key: "app_chats" as const, label: "App Chats", color: "text-violet-400" },
     { key: "system" as const, label: "System", color: "text-purple-300" },
   ];
 

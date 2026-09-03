@@ -202,8 +202,12 @@ function CommunityDashboardContent() {
                   {handshakeStats?.handshakeLevel ?? 1}
                 </p>
                 <p className="flex flex-row gap-2 text-xs text-white/80 relative z-10">
-                  <span className="bg-card/20 rounded-xl py-0.5 px-2">{myLevel?.completedCount ?? 0} completed</span>
-                  <span className="bg-card/20 rounded-xl py-0.5 px-2">{myLevel?.slots ?? 12} slots</span>
+                  <span className="bg-card/20 rounded-xl py-0.5 px-2">
+                    {myLevel?.completedCount ?? 0} completed
+                  </span>
+                  <span className="bg-card/20 rounded-xl py-0.5 px-2">
+                    {myLevel?.slots ?? 12} slots
+                  </span>
                 </p>
               </BentoCard>
 
@@ -320,9 +324,7 @@ function CommunityDashboardContent() {
                   items={outgoing?.items ?? []}
                   isLoading={outgoingLoading}
                   showHistory={showOutgoingHistory}
-                  onToggleHistory={() =>
-                    setShowOutgoingHistory((v) => !v)
-                  }
+                  onToggleHistory={() => setShowOutgoingHistory((v) => !v)}
                 />
               )}
             </TabsContent>

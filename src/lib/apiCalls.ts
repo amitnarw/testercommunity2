@@ -1,4 +1,4 @@
-import axios from "axios";
+﻿import axios from "axios";
 import API_ROUTES from "./apiRoutes";
 import { authClient } from "./auth-client";
 import { ROUTES } from "./routes";
@@ -1096,12 +1096,12 @@ export async function addHubAppTestingRequest(payload: {
 }
 
 export async function createHandshakeSubscription() {
-  // @deprecated Subscription system removed (Spec §2.1). Throws for any caller.
+  // @deprecated Subscription system removed (Spec Â§2.1). Throws for any caller.
   throw new Error("createHandshakeSubscription is no longer supported");
 }
 
 // ============================================================
-// Handshake Testing v2 ,  Spec §3-49
+// Handshake Testing v2 ,  Spec Â§3-49
 // ============================================================
 
 import type {
@@ -1119,6 +1119,10 @@ import type {
   MyLevelResponse,
   LeaderboardEntry,
   EliteBadgeInfo,
+  EliteBadgeUserSearchItem,
+  EliteBadgeHolder,
+  EliteBadgeActivityEntry,
+  PaginatedEliteBadgeResponse,
   HandshakeMonitoringOverview,
   WaitingCampaign,
   PenalizedUser,
@@ -1260,6 +1264,65 @@ export async function getUserEliteBadge(
     return response?.data?.data;
   } catch (error) {
     console.error("Error fetching elite badge:", error);
+    throw error;
+  }
+}
+
+export async function searchEliteBadgeUsers(
+  query: string,
+  limit = 20,
+): Promise<{ items: EliteBadgeUserSearchItem[] }> {
+  try {
+    const params = new URLSearchParams();
+    if (query) params.set("query", query);
+    params.set("limit", String(limit));
+    const response = await api.get(
+      `${API_ROUTES.ELITE_BADGE}/admin/user-search?${params.toString()}`,
+    );
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error searching elite badge users:", error);
+    throw error;
+  }
+}
+
+export async function getEliteBadgeHolders(
+  params: { page?: number; limit?: number; search?: string } = {},
+): Promise<PaginatedEliteBadgeResponse<EliteBadgeHolder>> {
+  try {
+    const search = new URLSearchParams();
+    if (params.page) search.set("page", String(params.page));
+    if (params.limit) search.set("limit", String(params.limit));
+    if (params.search) search.set("search", params.search);
+    const response = await api.get(
+      `${API_ROUTES.ELITE_BADGE}/admin/holders?${search.toString()}`,
+    );
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error fetching elite badge holders:", error);
+    throw error;
+  }
+}
+
+export async function getEliteBadgeActivity(
+  params: {
+    page?: number;
+    limit?: number;
+    action?: "AWARD" | "REVOKE" | "ALL";
+  } = {},
+): Promise<PaginatedEliteBadgeResponse<EliteBadgeActivityEntry>> {
+  try {
+    const search = new URLSearchParams();
+    if (params.page) search.set("page", String(params.page));
+    if (params.limit) search.set("limit", String(params.limit));
+    if (params.action && params.action !== "ALL")
+      search.set("action", params.action);
+    const response = await api.get(
+      `${API_ROUTES.ELITE_BADGE}/admin/activity?${search.toString()}`,
+    );
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error fetching elite badge activity:", error);
     throw error;
   }
 }
@@ -3236,6 +3299,26 @@ export async function getAppChatsAdmin(params?: { status?: string; page?: number
     return response?.data?.data;
   } catch (error) {
     console.error("Error fetching admin app chats:", error);
+    throw error;
+  }
+}
+
+export async function getAppChatsCount() {
+  try {
+    const response = await api.get(API_ROUTES.APP_CHAT + `/admin/count`);
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error fetching admin app chats count:", error);
+    throw error;
+  }
+}
+
+export async function getAppChatsTotalUnread() {
+  try {
+    const response = await api.get(API_ROUTES.APP_CHAT + `/admin/total-unread`);
+    return response?.data?.data;
+  } catch (error) {
+    console.error("Error fetching admin app chats total unread:", error);
     throw error;
   }
 }

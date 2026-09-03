@@ -136,6 +136,7 @@ import {
   updatePaidSubmission,
   deletePaidSubmission,
 } from "@/lib/apiCallsAdmin";
+import { getAppChatsAdmin, getAppChatsCount, getAppChatsTotalUnread } from "@/lib/apiCalls";
 import { useRouter } from "next/navigation";
 import { ROUTES } from "@/lib/routes";
 import { authClient } from "@/lib/auth-client";
@@ -199,6 +200,40 @@ export function useSubmittedApps(
     queryFn: () => getSubmittedApps(status, includeDrafts),
     queryKey: ["useSubmittedApps", status, includeDrafts],
     staleTime: 0,
+    enabled: options?.enabled ?? true,
+  });
+
+  return query;
+}
+
+export function useAppChats(options?: { enabled?: boolean }) {
+  const query = useQuery({
+    queryFn: () => getAppChatsAdmin({ limit: 1000 }),
+    queryKey: ["useAppChats"],
+    staleTime: 0,
+    enabled: options?.enabled ?? true,
+  });
+
+  return query;
+}
+
+export function useAppChatsCount(options?: { enabled?: boolean }) {
+  const query = useQuery({
+    queryFn: () => getAppChatsCount(),
+    queryKey: ["useAppChatsCount"],
+    staleTime: 0,
+    enabled: options?.enabled ?? true,
+  });
+
+  return query;
+}
+
+export function useAppChatsTotalUnread(options?: { enabled?: boolean }) {
+  const query = useQuery({
+    queryFn: () => getAppChatsTotalUnread(),
+    queryKey: ["useAppChatsTotalUnread"],
+    staleTime: 0,
+    refetchInterval: 15000,
     enabled: options?.enabled ?? true,
   });
 

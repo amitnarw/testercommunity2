@@ -1674,6 +1674,53 @@ export interface EliteBadgeInfo {
   userName?: string;
 }
 
+export interface EliteBadgeUserSearchItem {
+  id: string;
+  name: string;
+  email: string;
+  image: string | null;
+  handshakeLevel: number;
+  eliteBadge: boolean;
+}
+
+export interface EliteBadgeHolder {
+  id: string;
+  name: string;
+  email: string;
+  image: string | null;
+  handshakeLevel: number;
+  handshakeCompletedCount: number;
+  eliteBadge: boolean;
+  eliteBadgeAwardedAt: string | null;
+  eliteBadgeReason: string | null;
+}
+
+export interface EliteBadgeActivityStats {
+  totalHolders: number;
+  awardsLast30d: number;
+  revokesLast30d: number;
+}
+
+export interface EliteBadgeActivityEntry {
+  id: number;
+  userId: string;
+  adminId: string;
+  action: "AWARD" | "REVOKE" | string;
+  reason: string | null;
+  createdAt: string;
+  user?: EliteBadgeUserSearchItem | null;
+  admin?: { id: string; name: string; email: string; image: string | null };
+}
+
+export interface PaginatedEliteBadgeResponse<T> {
+  items: T[];
+  page: number;
+  limit: number;
+  total: number;
+  totalPages: number;
+  stats?: EliteBadgeActivityStats;
+}
+
 export interface HandshakeMonitoringOverview {
   waiting: number;
   waitingOver24h: number;
@@ -1749,4 +1796,39 @@ export interface DeveloperCardData {
   totalTester: number;
   currentTester: number;
   status: DashboardAndHubStatus;
+}
+
+export interface AppChat {
+  id: number;
+  status: string;
+  subject: string | null;
+  createdAt: string;
+  lastMessageAt: string | null;
+  user: {
+    id: string;
+    name: string;
+    email: string;
+    image: string | null;
+  } | null;
+  appDashboardAndHub: {
+    id: number;
+    status: string;
+    androidApp: { appName: string; appLogoUrl: string } | null;
+  } | null;
+}
+
+export interface AppChatsAdminResponse {
+  conversations: AppChat[];
+  total: number;
+  page: number;
+  limit: number;
+}
+
+export interface AppChatsCount {
+  all: number;
+  pending: number;
+  open: number;
+  inProgress: number;
+  completed: number;
+  deleted: number;
 }

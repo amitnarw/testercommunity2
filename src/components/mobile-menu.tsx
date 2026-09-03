@@ -29,6 +29,7 @@ import {
   Settings,
   Mail,
   ShieldCheck,
+  MessageSquareQuote,
 } from "lucide-react";
 import { Button } from "./ui/button";
 import {
@@ -44,7 +45,7 @@ import { TransitionLink } from "./transition-link";
 import { ROUTES } from "@/lib/routes";
 import { hasPermission } from "@/lib/permissions";
 import { authClient } from "@/lib/auth-client";
-import { useMailUnreadCount } from "@/hooks/useAdmin";
+import { useMailUnreadCount, useAppChatsTotalUnread } from "@/hooks/useAdmin";
 
 type AdminNavItem = {
   name: string;
@@ -231,6 +232,15 @@ const adminNavItems: AdminNavItem[] = [
     moduleName: "support",
   },
 
+  // App Chats
+  {
+    name: "App Chats",
+    href: ROUTES.ADMIN.APP_CHATS,
+    icon: MessageSquareQuote,
+    section: "app_chats",
+    moduleName: "app_chat",
+  },
+
   // System
   {
     name: "Permission Matrix",
@@ -264,12 +274,23 @@ export default function MobileMenu({
   const permissions = role?.permissions;
   const isAdminRole = role?.isAdmin === true;
   const { data: unreadCount = 0 } = useMailUnreadCount({ enabled: isAdminRole });
+  const { data: appChatsTotalUnread = 0 } = useAppChatsTotalUnread({
+    enabled: isAdminRole,
+  });
 
   const mailLinkIndex = adminNavItems.findIndex((l) => l.name === "Mail");
   if (mailLinkIndex >= 0) {
     adminNavItems[mailLinkIndex] = {
       ...adminNavItems[mailLinkIndex],
       badge: unreadCount > 0 ? String(unreadCount) : undefined,
+    };
+  }
+
+  const appChatsLinkIndex = adminNavItems.findIndex((l) => l.name === "App Chats");
+  if (appChatsLinkIndex >= 0) {
+    adminNavItems[appChatsLinkIndex] = {
+      ...adminNavItems[appChatsLinkIndex],
+      badge: appChatsTotalUnread > 0 ? String(appChatsTotalUnread) : undefined,
     };
   }
 
@@ -328,6 +349,9 @@ export default function MobileMenu({
         ),
         support: (displayItems as AdminNavItem[]).filter(
           (item) => item.section === "support" && isItemVisible(item),
+        ),
+        app_chats: (displayItems as AdminNavItem[]).filter(
+          (item) => item.section === "app_chats" && isItemVisible(item),
         ),
         system: (displayItems as AdminNavItem[]).filter(
           (item) => item.section === "system" && isItemVisible(item),
@@ -402,6 +426,7 @@ export default function MobileMenu({
                     { key: "finance", header: "Finance", iconColor: "text-emerald-500", hoverClass: "hover:bg-emerald-500/10" },
                     { key: "platform", header: "Platform", hoverClass: "hover:bg-muted", activeClass: "text-primary bg-primary/5" },
                     { key: "support", header: "Support", iconColor: "text-green-500", hoverClass: "hover:bg-green-500/10" },
+                    { key: "app_chats", header: "App Chats", iconColor: "text-violet-500", hoverClass: "hover:bg-violet-500/10" },
                     { key: "system", header: "System", iconColor: "text-purple-500", hoverClass: "hover:bg-purple-500/10" },
                   ];
 
@@ -411,6 +436,7 @@ export default function MobileMenu({
                     finance: "text-emerald-500",
                     platform: "text-muted-foreground",
                     support: "text-green-500",
+                    app_chats: "text-violet-500",
                     system: "text-purple-500",
                   };
 

@@ -55,7 +55,8 @@ function AddAppFormContent() {
   const userPackages = Number(dashboardData?.wallet) || 0;
   const hasEnoughPackages = userPackages >= 1;
 
-  const { data: draftData, isLoading: isLoadingDraft } = useDashboardAppById(draftId);
+  const { data: draftData, isLoading: isLoadingDraft } =
+    useDashboardAppById(draftId);
 
   // Form state
   const [appName, setAppName] = useState("");
@@ -104,7 +105,6 @@ function AddAppFormContent() {
     }
   }, [draftData, isPrefilled]);
 
-
   // Save draft mutation - only triggered when user clicks Draft button
   const { mutate: saveDraft, isPending: isSavingDraft } =
     useSaveDashboardAppDraft({
@@ -113,7 +113,8 @@ function AddAppFormContent() {
           open: true,
           status: "success",
           title: "Draft Saved!",
-          description: "Your app draft has been saved successfully. You can continue editing and submit when ready.",
+          description:
+            "Your app draft has been saved successfully. You can continue editing and submit when ready.",
           primaryAction: { label: "Continue", onClick: () => {} },
         });
       },
@@ -122,7 +123,9 @@ function AddAppFormContent() {
           open: true,
           status: "error",
           title: "Failed to Save Draft",
-          description: error.message || "Something went wrong while saving your draft. Please try again or contact support if the problem persists.",
+          description:
+            error.message ||
+            "Something went wrong while saving your draft. Please try again or contact support if the problem persists.",
           primaryAction: { label: "OK", onClick: () => {} },
         });
       },
@@ -140,11 +143,15 @@ function AddAppFormContent() {
         open: true,
         status: "success",
         title: "App Submitted!",
-        description: "Your app has been submitted for testing. You will be notified when testers start reviewing it.",
-        primaryAction: { label: "View Dashboard", onClick: () => {
-          router.push(ROUTES.AUTHENTICATED.PRO_TESTING);
-          setFeedbackModal(prev => ({ ...prev, open: false }));
-        } },
+        description:
+          "Your app has been submitted for testing. You will be notified when testers start reviewing it.",
+        primaryAction: {
+          label: "View Dashboard",
+          onClick: () => {
+            router.push(ROUTES.AUTHENTICATED.PRO_TESTING);
+            setFeedbackModal((prev) => ({ ...prev, open: false }));
+          },
+        },
       });
       // Invalidate dashboard data to refresh wallet balance
       queryClient.invalidateQueries({ queryKey: ["useDashboardData"] });
@@ -160,7 +167,9 @@ function AddAppFormContent() {
         open: true,
         status: "error",
         title: "Submission Failed",
-        description: error.message || "Something went wrong while submitting your app. Please check your details and try again.",
+        description:
+          error.message ||
+          "Something went wrong while submitting your app. Please check your details and try again.",
         primaryAction: { label: "OK", onClick: () => {} },
       });
     },
@@ -190,7 +199,8 @@ function AddAppFormContent() {
         open: true,
         status: "error",
         title: "Delete Failed",
-        description: error.message || "Failed to delete draft. Please try again.",
+        description:
+          error.message || "Failed to delete draft. Please try again.",
         primaryAction: {
           label: "OK",
           onClick: () => setFeedbackModal((prev) => ({ ...prev, open: false })),
@@ -237,10 +247,12 @@ function AddAppFormContent() {
   const isValidPlayStoreLogoUrl = (url: string) => {
     try {
       const parsed = new URL(url);
-      const allowedHosts = ["play-lh.googleusercontent.com", "lh3.googleusercontent.com"];
+      const allowedHosts = [
+        "play-lh.googleusercontent.com",
+        "lh3.googleusercontent.com",
+      ];
       return (
-        allowedHosts.includes(parsed.hostname) &&
-        parsed.protocol === "https:"
+        allowedHosts.includes(parsed.hostname) && parsed.protocol === "https:"
       );
     } catch {
       return false;
@@ -410,7 +422,6 @@ function AddAppFormContent() {
       />
       {/* Animated Background Elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-
         <div
           className="absolute top-1/3 -left-32 w-80 h-80 bg-gradient-to-tr from-blue-500/15 via-primary/10 to-transparent rounded-full blur-3xl animate-pulse"
           style={{ animationDelay: "1s", animationDuration: "4s" }}
@@ -529,7 +540,9 @@ function AddAppFormContent() {
                         value={testingUrl}
                         onChange={(e) => {
                           setTestingUrl(e.target.value);
-                          setTestingUrlError(validateTestingUrl(e.target.value));
+                          setTestingUrlError(
+                            validateTestingUrl(e.target.value),
+                          );
                         }}
                         className="pl-14 py-3 h-13 text-base rounded-xl bg-secondary/20 border-border/60 focus-visible:ring-2 focus-visible:ring-primary/30 focus-visible:border-primary focus-visible:bg-card transition-all duration-300 hover:border-primary/40 hover:bg-secondary/30"
                       />
@@ -540,7 +553,9 @@ function AddAppFormContent() {
                       </p>
                     ) : (
                       <p className="text-xs text-muted-foreground pl-1">
-                        Paste your app&apos;s Google Play Store page URL. Example: https://play.google.com/store/apps/details?id=com.example.app
+                        Paste your app&apos;s Google Play Store page URL.
+                        Example:
+                        https://play.google.com/store/apps/details?id=com.example.app
                       </p>
                     )}
                   </div>
@@ -570,7 +585,10 @@ function AddAppFormContent() {
                       </p>
                     ) : (
                       <p className="text-xs text-muted-foreground pl-1 leading-relaxed">
-                        Go to Play Console → Side Menu → Grow Users → Store Presence → Store listing → Open Default Store Listing → Right-click on your app icon and open the image in a new tab → Copy the image URL
+                        Go to Play Console → Side Menu → Grow Users → Store
+                        Presence → Store listing → Open Default Store Listing →
+                        Right-click on your app icon and open the image in a new
+                        tab → Copy the image URL
                       </p>
                     )}
                   </div>
@@ -637,7 +655,6 @@ function AddAppFormContent() {
               </div>
               <div className="p-5 sm:p-8">
                 <div className="flex items-center gap-3 sm:gap-4 mb-6 sm:mb-8">
-
                   <div>
                     <h2 className="text-lg sm:text-xl font-bold tracking-tight">
                       Instructions for Testers
@@ -802,7 +819,9 @@ function AddAppFormContent() {
                         variant="outline"
                         size="sm"
                         className="w-full mt-4 text-destructive border-destructive/30 hover:bg-destructive/10 rounded-xl h-10 font-medium"
-                        onClick={()=>router.push(ROUTES.AUTHENTICATED.BILLING)}
+                        onClick={() =>
+                          router.push(ROUTES.AUTHENTICATED.BILLING)
+                        }
                       >
                         Buy More Packages
                       </Button>
@@ -862,7 +881,6 @@ function AddAppFormContent() {
                 {/* Compact Verified Testing Protocol */}
                 <div className="mt-6 sm:mt-8 pt-5 sm:pt-6 border-t border-border/40">
                   <div className="flex items-center gap-2 sm:gap-2.5 mb-3 sm:mb-4">
-
                     <span className="text-xs sm:text-sm font-bold tracking-tight">
                       Verified Testing Protocol
                     </span>
@@ -871,7 +889,7 @@ function AddAppFormContent() {
                     <div className="group/stat flex flex-col items-center text-center p-2 sm:p-3 rounded-xl bg-gradient-to-br from-secondary/60 to-secondary/30 border border-border/30 transition-all duration-300 hover:border-primary/20 hover:shadow-md cursor-default">
                       <Clock className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary mb-1 sm:mb-1.5 transition-transform duration-300 group-hover/stat:scale-110" />
                       <span className="text-[10px] sm:text-xs font-bold">
-                        14-15
+                        15-20
                       </span>
                       <span className="text-[9px] sm:text-[10px] text-muted-foreground">
                         Days
@@ -880,7 +898,7 @@ function AddAppFormContent() {
                     <div className="group/stat flex flex-col items-center text-center p-2 sm:p-3 rounded-xl bg-gradient-to-br from-secondary/60 to-secondary/30 border border-border/30 transition-all duration-300 hover:border-primary/20 hover:shadow-md cursor-default">
                       <Users className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary mb-1 sm:mb-1.5 transition-transform duration-300 group-hover/stat:scale-110" />
                       <span className="text-[10px] sm:text-xs font-bold">
-                        12-14
+                        15-20
                       </span>
                       <span className="text-[9px] sm:text-[10px] text-muted-foreground">
                         Testers
@@ -903,7 +921,7 @@ function AddAppFormContent() {
                   <div className="inline-flex items-center gap-2 text-xs text-muted-foreground px-4 py-2 rounded-full bg-secondary/30 border border-border/30">
                     <ShieldCheck className="w-3.5 h-3.5 text-green-500" />
                     <span className="font-medium">
-                      Secured by inTesters Community
+                      100% Production Access Guarantee
                     </span>
                   </div>
                 </div>
