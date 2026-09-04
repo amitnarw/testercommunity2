@@ -22,7 +22,9 @@ export default function HandshakeTestingLayout({
   // Add-ons-only view under penalty.
   const isExempt =
     pathname === "/app/handshake-testing/penalty" ||
-    /^\/app\/handshake-testing\/\d+$/.test(pathname);
+    /^\/app\/handshake-testing\/\d+$/.test(pathname) ||
+    pathname === "/app/handshake-testing/submit" ||
+    pathname === "/app/handshake-testing/submit/form";
 
   useEffect(() => {
     if (isLoading) return;

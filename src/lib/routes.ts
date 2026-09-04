@@ -89,6 +89,7 @@ export const ROUTES = {
     HANDSHAKE_TESTING: "/app/handshake-testing",
     HANDSHAKE_PENALTY: "/app/handshake-testing/penalty",
     HANDSHAKE_SUBMIT: "/app/handshake-testing/submit",
+    HANDSHAKE_SUBMIT_FORM: "/app/handshake-testing/submit/form",
     HANDSHAKE_MY_SUBMISSIONS: "/app/handshake-testing/my-submissions",
     HANDSHAKE_HISTORY: "/app/handshake-testing/history",
     NOTIFICATIONS: "/notifications",

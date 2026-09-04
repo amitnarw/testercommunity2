@@ -30,6 +30,7 @@ import {
 } from "@/components/ui/select";
 import { LoadingButton } from "@/components/ui/loading-button";
 import { PageHeader } from "@/components/page-header";
+import { StepIndicator } from "@/components/ui/step-indicator";
 import { useDashboardData } from "@/hooks/useUser";
 import { cn } from "@/lib/utils";
 import { useAppCategories } from "@/hooks/useHub";
@@ -453,25 +454,11 @@ function AddAppFormContent() {
           </p>
 
           {/* Step indicator */}
-          <div className="flex items-center justify-center mt-6 sm:mt-8">
-            <div className="flex items-center">
-              <div className="px-3 py-1.5 sm:px-5 sm:py-2 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-xs sm:text-sm font-bold shadow-lg shadow-primary/30">
-                Details
-              </div>
-            </div>
-            <div className="w-6 sm:w-12 h-0.5 bg-gradient-to-r from-primary to-primary/30 rounded-full" />
-            <div className="flex items-center">
-              <div className="px-3 py-1.5 sm:px-5 sm:py-2 rounded-full bg-primary/20 text-primary flex items-center justify-center text-xs sm:text-sm font-bold border border-primary/30">
-                Review
-              </div>
-            </div>
-            <div className="w-6 sm:w-12 h-0.5 bg-border rounded-full" />
-            <div className="flex items-center">
-              <div className="px-3 py-1.5 sm:px-5 sm:py-2 rounded-full bg-secondary text-muted-foreground flex items-center justify-center text-xs sm:text-sm font-medium border border-border">
-                Submit
-              </div>
-            </div>
-          </div>
+          <StepIndicator
+            steps={["Details", "Review", "Submit"]}
+            currentStep={0}
+            className="mt-6 sm:mt-8"
+          />
         </header>
 
         <div className="grid lg:grid-cols-5 gap-8">

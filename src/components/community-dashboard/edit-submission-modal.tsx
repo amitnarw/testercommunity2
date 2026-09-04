@@ -32,14 +32,9 @@ export function EditSubmissionModal({
     app_name: app.androidApp?.appName || "",
     app_url: `https://play.google.com/store/apps/details?id=${app.androidApp?.packageName}` || "",
     app_logo_url: app.androidApp?.appLogoUrl || "",
-    app_screenshot_url_1: app.androidApp?.appScreenshotUrl1 || "",
-    app_screenshot_url_2: app.androidApp?.appScreenshotUrl2 || "",
     category_id: String(app.androidApp?.appCategoryId) || "",
-    app_description: app.androidApp?.description || "",
     instruction_for_tester: app.instructionsForTester || "",
     minimum_android_version: app.minimumAndroidVersion || 0,
-    total_tester: app.totalTester || 10,
-    total_days: app.totalDay || 14,
   };
 
   const handleFormSubmit = async (data: any) => {
