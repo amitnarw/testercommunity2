@@ -61,7 +61,7 @@ api.interceptors.response.use(
         // Public SEO marketing pages must remain accessible to logged-out visitors.
         // Some components on /seo/* (e.g. pricing cards) call useUserData() to decide
         // CTAs, which legitimately returns 401 for anonymous users. Bouncing them to
-        // /auth/login or signing them out is wrong — let the query see "no user" and move on.
+        // /auth/login or signing them out is wrong ,  let the query see "no user" and move on.
         if (pathname.startsWith("/seo/")) {
           return Promise.reject(error);
         }

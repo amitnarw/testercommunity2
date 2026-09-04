@@ -500,7 +500,7 @@ button {
   }
 }
 
-/* HorizontalPinPricing — mobile horizontal layout for multi-card pricing.
+/* HorizontalPinPricing ,  mobile horizontal layout for multi-card pricing.
    At >=768px the @media query below doesn't apply, so the Tailwind
    `grid` + `grid-cols-*` classes on the inner div restore the desktop layout. */
 @media (max-width: 767px) {
@@ -520,7 +520,7 @@ button {
   }
 }
 
-/* PricingCardsGrid — grid columns auto-scale to actual card count.
+/* PricingCardsGrid ,  grid columns auto-scale to actual card count.
    JS sets --pricing-count; CSS handles the breakpoint ladder. */
 .pricing-grid {
   grid-template-columns: repeat(1, minmax(0, 1fr));
