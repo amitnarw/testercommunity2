@@ -36,7 +36,7 @@ function resolvePlanCta(
   pathname: string,
   isLoggedIn: boolean,
 ): Cta {
-  // Enterprise (CUSTOM) — always uses admin-configured href if set
+  // Enterprise (CUSTOM) ,  always uses admin-configured href if set
   if (
     plan.billingType === "CUSTOM" &&
     plan.ctaHref &&
@@ -45,7 +45,7 @@ function resolvePlanCta(
     return { kind: "link", href: plan.ctaHref };
   }
 
-  // REDIRECT plans — admin href if set
+  // REDIRECT plans ,  admin href if set
   if (
     plan.buttonAction === "REDIRECT" &&
     plan.ctaHref &&
@@ -57,7 +57,7 @@ function resolvePlanCta(
   const isPaid =
     plan.billingType === "ONE_TIME" || plan.billingType === "SUBSCRIPTION";
 
-  // /billing — Razorpay for paid, link for free
+  // /billing ,  Razorpay for paid, link for free
   if (pathname === "/billing") {
     if (isPaid) return { kind: "razorpay", planId: plan.id };
     return {
@@ -68,7 +68,7 @@ function resolvePlanCta(
     };
   }
 
-  // Other pages — link only, no Razorpay
+  // Other pages ,  link only, no Razorpay
   if (isPaid) {
     return {
       kind: "link",

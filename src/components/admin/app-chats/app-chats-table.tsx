@@ -146,7 +146,7 @@ function AppChatsTableRow({
         <span className="text-muted-foreground text-sm">
           {chat.lastMessageAt
             ? format(new Date(chat.lastMessageAt), "yyyy-MM-dd HH:mm")
-            : "—"}
+            : ", "}
         </span>
       </TableCell>
       <TableCell>

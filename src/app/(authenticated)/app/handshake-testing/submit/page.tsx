@@ -284,7 +284,7 @@ export default function SubmitAppGuidePage() {
                         Setting Up Your Test
                       </h3>
                       <p className="text-muted-foreground text-sm text-left">
-                        Test setup is fixed — here is what to know
+                        Test setup is fixed ,  here is what to know
                       </p>
                     </div>
                   </div>

@@ -721,11 +721,11 @@ function HolderRow({ holder }: { holder: EliteBadgeHolder }) {
       <td className="px-4 py-3 text-muted-foreground whitespace-nowrap">
         {holder.eliteBadgeAwardedAt
           ? new Date(holder.eliteBadgeAwardedAt).toLocaleString()
-          : "—"}
+          : ", "}
       </td>
       <td className="px-4 py-3 max-w-xs">
         <p className="truncate text-muted-foreground" title={holder.eliteBadgeReason || ""}>
-          {holder.eliteBadgeReason || "—"}
+          {holder.eliteBadgeReason || ", "}
         </p>
       </td>
     </tr>
@@ -856,7 +856,7 @@ function ActivityTab() {
                         className="truncate text-muted-foreground"
                         title={entry.reason || ""}
                       >
-                        {entry.reason || "—"}
+                        {entry.reason || ", "}
                       </p>
                     </td>
                     <td className="px-4 py-3 text-muted-foreground whitespace-nowrap">
