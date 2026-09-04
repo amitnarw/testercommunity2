@@ -6,7 +6,7 @@ import {
 } from "lucide-react";
 import { getPublicFaqs } from "@/lib/apiCalls";
 import FaqItem from "@/components/faq-item";
-import { PricingCardsGrid } from "@/components/pricing-cards-grid";
+import { HorizontalPinPricing } from "@/components/horizontal-pin-pricing";
 
 import { useState, useEffect } from "react";
 import type { Faq } from "@/lib/types";
@@ -49,7 +49,7 @@ export default function PricingPage() {
 
         {/* Plan Cards */}
         <section className="mt-20 max-w-7xl w-full mx-auto">
-          <PricingCardsGrid variant="pricing" className="w-full" />
+          <HorizontalPinPricing variant="pricing" className="w-full" showAllPlans />
         </section>
 
         {/* FAQ */}

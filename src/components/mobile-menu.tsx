@@ -40,6 +40,7 @@ import {
   SheetTrigger,
 } from "./ui/sheet";
 import { usePathname } from "next/navigation";
+import { Fragment } from "react";
 import { cn } from "@/lib/utils";
 import { TransitionLink } from "./transition-link";
 import { ROUTES } from "@/lib/routes";
@@ -320,11 +321,17 @@ export default function MobileMenu({
 
   const publicNavItems = [
     { name: "Home", href: ROUTES.PUBLIC.HOME },
+    { key: "testing" as const },
     { name: "How It Works", href: ROUTES.PUBLIC.HOW_IT_WORKS },
     { name: "Reviews", href: ROUTES.PUBLIC.REVIEWS },
     { name: "Pricing", href: ROUTES.PUBLIC.PRICING },
     { name: "Support", href: ROUTES.PUBLIC.SUPPORT },
     { name: "Blog", href: ROUTES.PUBLIC.BLOG },
+  ];
+
+  const publicTestingItems = [
+    { name: "Handshake Testing", href: ROUTES.PUBLIC.HANDSHAKE_TESTING },
+    { name: "Pro Testing", href: ROUTES.PUBLIC.PRO_TESTING },
   ];
 
   const displayItems = isAuthenticated ? navItems : publicNavItems;
@@ -579,6 +586,32 @@ export default function MobileMenu({
               // Flat layout for testers and public users
               <nav className="flex flex-col gap-1 py-2 pr-0 flex-1 overflow-y-auto">
                 {displayItems.map((item: any) => {
+                  if ("key" in item && item.key === "testing" && !isAuthenticated) {
+                    return (
+                      <Fragment key="testing">
+                        {publicTestingItems.map((opt) => {
+                          return (
+                            <TransitionLink
+                              key={opt.name}
+                              href={opt.href}
+                              onClick={() => setIsMenuOpen(false)}
+                              className={cn(
+                                "block w-full text-left px-3 py-2 rounded-md",
+                                "text-sm font-medium no-underline",
+                                "text-foreground",
+                                "hover:bg-black/5 dark:hover:bg-white/[0.10]",
+                                "focus-visible:bg-black/5 dark:focus-visible:bg-white/[0.10]",
+                                "transition-colors duration-150 outline-none cursor-pointer",
+                              )}
+                            >
+                              {opt.name}
+                            </TransitionLink>
+                          );
+                        })}
+                      </Fragment>
+                    );
+                  }
+
                   const isItemActive = pathname === item.href || pathname.startsWith(item.href + "/");
                   return (
                     <TransitionLink

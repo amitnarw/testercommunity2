@@ -58,6 +58,14 @@ api.interceptors.response.use(
       if (typeof window !== "undefined") {
         const pathname = window.location.pathname;
 
+        // Public SEO marketing pages must remain accessible to logged-out visitors.
+        // Some components on /seo/* (e.g. pricing cards) call useUserData() to decide
+        // CTAs, which legitimately returns 401 for anonymous users. Bouncing them to
+        // /auth/login or signing them out is wrong — let the query see "no user" and move on.
+        if (pathname.startsWith("/seo/")) {
+          return Promise.reject(error);
+        }
+
         // Avoid infinite redirect loops if we're already on a login page
         const isAlreadyOnLogin =
           pathname.includes(ROUTES.AUTH.LOGIN) ||

@@ -12,7 +12,7 @@ import {
   TrendingUp,
   Users,
 } from "lucide-react";
-import { PricingCardsGrid } from "@/components/pricing-cards-grid";
+import { HorizontalPinPricing } from "@/components/horizontal-pin-pricing";
 
 const proFeatures = [
   {
@@ -172,7 +172,7 @@ export function WhatProUnlocks() {
           variants={containerVariants}
           className="max-w-6xl mx-auto"
         >
-          <PricingCardsGrid variant="what-pro" />
+          <HorizontalPinPricing variant="what-pro" />
         </motion.div>
       </div>
     </section>

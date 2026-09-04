@@ -14,7 +14,7 @@ import { Button } from "@/components/ui/button";
 import { ROUTES } from "@/lib/routes";
 import { HoverBorderGradient } from "@/components/ui/hover-border-gradient";
 import { MagneticButton } from "@/components/magnetic-button";
-import { PricingCardsGrid } from "@/components/pricing-cards-grid";
+import { HorizontalPinPricing } from "@/components/horizontal-pin-pricing";
 import {
   BrowserFrame,
   PhoneFrame,
@@ -246,7 +246,7 @@ function ProPricingSection() {
           </p>
         </motion.div>
 
-        <PricingCardsGrid variant="seo" />
+        <HorizontalPinPricing variant="seo" />
 
         <motion.div
           initial={{ opacity: 0, y: 15 }}

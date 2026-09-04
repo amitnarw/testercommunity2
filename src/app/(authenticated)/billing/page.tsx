@@ -36,7 +36,7 @@ import { Accordion } from "@/components/ui/accordion";
 import FaqItem from "@/components/faq-item";
 import { getPublicFaqs } from "@/lib/apiCalls";
 import type { Faq } from "@/lib/types";
-import { PricingCardsGrid } from "@/components/pricing-cards-grid";
+import { HorizontalPinPricing } from "@/components/horizontal-pin-pricing";
 import Script from "next/script";
 
 type FeedbackModalState = {
@@ -430,10 +430,11 @@ export default function BillingPage() {
                   ))}
                 </div>
               ) : (
-                <PricingCardsGrid
+                <HorizontalPinPricing
                   variant="billing"
                   mode="billing"
                   onSubscribe={handleSubscribe}
+                  showAllPlans
                 />
               )}
             </section>
