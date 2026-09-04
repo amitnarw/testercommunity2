@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useEffect } from "react";
 import { Handshake } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
 interface HandshakeCelebrationModalProps {
   open: boolean;
@@ -97,6 +97,9 @@ export function HandshakeCelebrationModal({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-[420px] overflow-hidden border-emerald-500/30 bg-gradient-to-br from-emerald-500/10 via-background to-blue-500/10">
+        <DialogHeader className="sr-only">
+          <DialogTitle>Handshake Completed</DialogTitle>
+        </DialogHeader>
         <div className="flex flex-col items-center justify-center py-6 text-center">
           <AnimatePresence>
             {open && (

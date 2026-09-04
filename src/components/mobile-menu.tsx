@@ -29,6 +29,7 @@ import {
   Settings,
   Mail,
   ShieldCheck,
+  MessageSquareQuote,
 } from "lucide-react";
 import { Button } from "./ui/button";
 import {
@@ -39,12 +40,13 @@ import {
   SheetTrigger,
 } from "./ui/sheet";
 import { usePathname } from "next/navigation";
+import { Fragment } from "react";
 import { cn } from "@/lib/utils";
 import { TransitionLink } from "./transition-link";
 import { ROUTES } from "@/lib/routes";
 import { hasPermission } from "@/lib/permissions";
 import { authClient } from "@/lib/auth-client";
-import { useMailUnreadCount } from "@/hooks/useAdmin";
+import { useMailUnreadCount, useAppChatsTotalUnread } from "@/hooks/useAdmin";
 
 type AdminNavItem = {
   name: string;
@@ -231,6 +233,15 @@ const adminNavItems: AdminNavItem[] = [
     moduleName: "support",
   },
 
+  // App Chats
+  {
+    name: "App Chats",
+    href: ROUTES.ADMIN.APP_CHATS,
+    icon: MessageSquareQuote,
+    section: "app_chats",
+    moduleName: "app_chat",
+  },
+
   // System
   {
     name: "Permission Matrix",
@@ -264,12 +275,23 @@ export default function MobileMenu({
   const permissions = role?.permissions;
   const isAdminRole = role?.isAdmin === true;
   const { data: unreadCount = 0 } = useMailUnreadCount({ enabled: isAdminRole });
+  const { data: appChatsTotalUnread = 0 } = useAppChatsTotalUnread({
+    enabled: isAdminRole,
+  });
 
   const mailLinkIndex = adminNavItems.findIndex((l) => l.name === "Mail");
   if (mailLinkIndex >= 0) {
     adminNavItems[mailLinkIndex] = {
       ...adminNavItems[mailLinkIndex],
       badge: unreadCount > 0 ? String(unreadCount) : undefined,
+    };
+  }
+
+  const appChatsLinkIndex = adminNavItems.findIndex((l) => l.name === "App Chats");
+  if (appChatsLinkIndex >= 0) {
+    adminNavItems[appChatsLinkIndex] = {
+      ...adminNavItems[appChatsLinkIndex],
+      badge: appChatsTotalUnread > 0 ? String(appChatsTotalUnread) : undefined,
     };
   }
 
@@ -299,11 +321,17 @@ export default function MobileMenu({
 
   const publicNavItems = [
     { name: "Home", href: ROUTES.PUBLIC.HOME },
+    { key: "testing" as const },
     { name: "How It Works", href: ROUTES.PUBLIC.HOW_IT_WORKS },
     { name: "Reviews", href: ROUTES.PUBLIC.REVIEWS },
     { name: "Pricing", href: ROUTES.PUBLIC.PRICING },
     { name: "Support", href: ROUTES.PUBLIC.SUPPORT },
     { name: "Blog", href: ROUTES.PUBLIC.BLOG },
+  ];
+
+  const publicTestingItems = [
+    { name: "Handshake Testing", href: ROUTES.PUBLIC.HANDSHAKE_TESTING },
+    { name: "Pro Testing", href: ROUTES.PUBLIC.PRO_TESTING },
   ];
 
   const displayItems = isAuthenticated ? navItems : publicNavItems;
@@ -328,6 +356,9 @@ export default function MobileMenu({
         ),
         support: (displayItems as AdminNavItem[]).filter(
           (item) => item.section === "support" && isItemVisible(item),
+        ),
+        app_chats: (displayItems as AdminNavItem[]).filter(
+          (item) => item.section === "app_chats" && isItemVisible(item),
         ),
         system: (displayItems as AdminNavItem[]).filter(
           (item) => item.section === "system" && isItemVisible(item),
@@ -402,6 +433,7 @@ export default function MobileMenu({
                     { key: "finance", header: "Finance", iconColor: "text-emerald-500", hoverClass: "hover:bg-emerald-500/10" },
                     { key: "platform", header: "Platform", hoverClass: "hover:bg-muted", activeClass: "text-primary bg-primary/5" },
                     { key: "support", header: "Support", iconColor: "text-green-500", hoverClass: "hover:bg-green-500/10" },
+                    { key: "app_chats", header: "App Chats", iconColor: "text-violet-500", hoverClass: "hover:bg-violet-500/10" },
                     { key: "system", header: "System", iconColor: "text-purple-500", hoverClass: "hover:bg-purple-500/10" },
                   ];
 
@@ -411,6 +443,7 @@ export default function MobileMenu({
                     finance: "text-emerald-500",
                     platform: "text-muted-foreground",
                     support: "text-green-500",
+                    app_chats: "text-violet-500",
                     system: "text-purple-500",
                   };
 
@@ -553,6 +586,32 @@ export default function MobileMenu({
               // Flat layout for testers and public users
               <nav className="flex flex-col gap-1 py-2 pr-0 flex-1 overflow-y-auto">
                 {displayItems.map((item: any) => {
+                  if ("key" in item && item.key === "testing" && !isAuthenticated) {
+                    return (
+                      <Fragment key="testing">
+                        {publicTestingItems.map((opt) => {
+                          return (
+                            <TransitionLink
+                              key={opt.name}
+                              href={opt.href}
+                              onClick={() => setIsMenuOpen(false)}
+                              className={cn(
+                                "block w-full text-left px-3 py-2 rounded-md",
+                                "text-sm font-medium no-underline",
+                                "text-foreground",
+                                "hover:bg-black/5 dark:hover:bg-white/[0.10]",
+                                "focus-visible:bg-black/5 dark:focus-visible:bg-white/[0.10]",
+                                "transition-colors duration-150 outline-none cursor-pointer",
+                              )}
+                            >
+                              {opt.name}
+                            </TransitionLink>
+                          );
+                        })}
+                      </Fragment>
+                    );
+                  }
+
                   const isItemActive = pathname === item.href || pathname.startsWith(item.href + "/");
                   return (
                     <TransitionLink

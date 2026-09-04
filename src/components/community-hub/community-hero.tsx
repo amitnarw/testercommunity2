@@ -23,14 +23,6 @@ export function CommunityHero() {
       <div className="absolute inset-0 bg-dot-pattern z-0" />
       <div className="container mx-auto px-4 md:px-6 text-center relative z-10">
         <div className="max-w-4xl mx-auto">
-          <HoverBorderGradient
-            containerClassName="rounded-full m-auto mb-5 sm:mb-10"
-            as="button"
-            className="dark:bg-black text-[10px] sm:text-xs bg-white text-black dark:text-white flex items-center space-x-2"
-          >
-            <Coins className="w-4 h-4 mr-2 text-emerald-500" />
-            <span>Start Barter Testing , Free</span>
-          </HoverBorderGradient>
 
           <h1 className="text-[1.85rem] sm:text-[2.75rem] md:text-[3.5rem] lg:text-[4.25rem] font-heading leading-[1.2] md:leading-[1.1] tracking-tight font-bold mb-5 sm:mb-8 text-center mx-auto max-w-[900px]">
             Guaranteed{" "}

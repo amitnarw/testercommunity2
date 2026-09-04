@@ -63,7 +63,7 @@ export function AppTestingChatSection({ dashboardAndHubId, appName, appStatus }:
       </Card>
 
       <Dialog open={open} onOpenChange={handleOpenChange}>
-        <DialogContent className="max-w-2xl h-[80vh] flex flex-col p-0 gap-0 overflow-hidden rounded-2xl">
+        <DialogContent className="w-full h-dvh sm:max-w-2xl sm:h-[80vh] flex flex-col p-0 gap-0 overflow-hidden rounded-none sm:rounded-2xl" hideClose>
           <VisuallyHidden.Root asChild>
             <DialogTitle>Testing Manager Chat</DialogTitle>
           </VisuallyHidden.Root>

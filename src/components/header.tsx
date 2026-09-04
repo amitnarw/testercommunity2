@@ -4,13 +4,14 @@ import { motion, useScroll, useMotionValueEvent } from "framer-motion";
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { ArrowRight, Sun, Moon } from "lucide-react";
+import { Sun, Moon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useState, useEffect } from "react";
 import { useTheme } from "next-themes";
 import { UserNav } from "./user-nav";
 import MobileMenu from "./mobile-menu";
 import { AnimatedLink } from "./ui/animated-link";
+import { TestingDropdown } from "./testing-dropdown";
 import { authClient } from "@/lib/auth-client";
 import { useQueryClient } from "@tanstack/react-query";
 import { Logo } from "./logo";
@@ -19,6 +20,7 @@ import { ROUTES } from "@/lib/routes";
 
 const visitorNavItems = [
   { name: "Home", href: ROUTES.PUBLIC.HOME },
+  { key: "testing" as const },
   { name: "How It Works", href: ROUTES.PUBLIC.HOW_IT_WORKS },
   { name: "Reviews", href: ROUTES.PUBLIC.REVIEWS },
   { name: "Pricing", href: ROUTES.PUBLIC.PRICING },
@@ -139,32 +141,46 @@ export function Header({
         }}
         transition={{ type: "tween", duration: 0.3, ease: "easeInOut" }}
         className={cn(
-          "relative flex items-center justify-between gap-14 md:gap-20 px-6 py-2 bg-white/70 dark:bg-black/70 backdrop-blur-md border border-black/5 dark:border-white/10 shadow-lg shadow-black/5 dark:shadow-white/5 transition-colors rounded-full",
+          "relative flex justify-between md:grid md:grid-cols-[1fr_auto_1fr] items-center gap-8 px-6 py-2 bg-white/70 dark:bg-black/70 backdrop-blur-md border border-black/5 dark:border-white/10 shadow-lg shadow-black/5 dark:shadow-white/5 transition-colors rounded-full",
           isScrolled ? "" : "w-full",
         )}
       >
-        <div className="flex items-center gap-4">
+        <div className="flex items-center justify-start gap-2">
           <Link href="/" className="flex items-center gap-2">
-            <Logo />
+            <Logo className="w-8 h-8 md:w-10 md:h-10" />
           </Link>
         </div>
 
-        <nav className="hidden md:flex items-center gap-1">
-          {navItems.map((item) => (
-            <AnimatedLink
-              key={item.name}
-              href={item.href}
-              className={cn(
-                "px-4 py-2 rounded-full text-sm font-medium transition-colors hover:bg-black/5 dark:hover:bg-white/10",
-                isScrolled ? "text-sm" : "text-base",
-              )}
-            >
-              {item.name}
-            </AnimatedLink>
-          ))}
+        <nav className="hidden md:flex items-center justify-center gap-1">
+          {navItems.map((item) => {
+            if ("key" in item && item.key === "testing") {
+              return (
+                <TestingDropdown
+                  key="testing"
+                  className={cn(
+                    "px-3 py-1.5 rounded-full",
+                    "sm:text-sm",
+                  )}
+                />
+              );
+            }
+            if (!("href" in item) || !item.href) return null;
+            return (
+              <AnimatedLink
+                key={item.name}
+                href={item.href}
+                className={cn(
+                  "px-3 py-1.5 rounded-full text-sm font-medium transition-colors hover:bg-black/5 dark:hover:bg-white/10",
+                  "sm:text-sm",
+                )}
+              >
+                {item.name}
+              </AnimatedLink>
+            );
+          })}
         </nav>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center justify-end gap-2">
           {isMounted && (
             <>
               <Button
@@ -198,7 +214,7 @@ export function Header({
                     className="rounded-full shadow-md hover:shadow-lg transition-shadow"
                   >
                     <Link href={ROUTES.AUTH.REGISTER}>
-                      Sign Up <ArrowRight className="ml-1.5 h-3.5 w-3.5" />
+                      Sign Up
                     </Link>
                   </Button>
                 </div>

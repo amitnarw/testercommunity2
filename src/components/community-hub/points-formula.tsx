@@ -100,7 +100,7 @@ export function PointsFormula() {
                   value={completedCount}
                   onChange={setCompletedCount}
                   min={0}
-                  max={40}
+                  max={(MAX_HANDSHAKE_LEVEL - 1) * 2}
                   label="Completed Handshakes"
                   accentColor="emerald"
                 />
@@ -147,25 +147,26 @@ export function PointsFormula() {
                         : `${currentSlots} slots`}
                     </span>
                   </div>
-                  <div className="relative">
-                    <div className="absolute top-1/2 left-0 right-0 h-1 -translate-y-1/2 bg-secondary/50 rounded-full">
-                      <motion.div
-                        className="h-full bg-gradient-to-r from-emerald-500 to-emerald-400 rounded-full"
-                        style={{
-                          width: `${(currentLevel / MAX_HANDSHAKE_LEVEL) * 100}%`,
-                        }}
-                        layout
-                      />
-                    </div>
-                    <div className="flex justify-between relative">
-                      {levelNodes.map((node) => {
-                        const isActive = node.level <= currentLevel;
-                        const isCurrent = node.level === currentLevel;
-                        return (
-                          <div key={node.level} className="flex flex-col items-center">
+                  <div>
+                    <div className="relative">
+                      <div className="absolute top-1/2 left-0 right-0 h-1 -translate-y-1/2 bg-secondary/50 rounded-full">
+                        <motion.div
+                          className="h-full bg-gradient-to-r from-emerald-500 to-emerald-400 rounded-full"
+                          style={{
+                            width: `${(currentLevel / MAX_HANDSHAKE_LEVEL) * 100}%`,
+                          }}
+                          layout
+                        />
+                      </div>
+                      <div className="flex justify-between relative">
+                        {levelNodes.map((node) => {
+                          const isActive = node.level <= currentLevel;
+                          const isCurrent = node.level === currentLevel;
+                          return (
                             <motion.div
+                              key={node.level}
                               className={cn(
-                                "relative w-8 h-8 md:w-10 md:h-10 rounded-full flex items-center justify-center text-xs font-bold border-2 transition-all duration-300 z-10",
+                                "relative w-5 h-5 md:w-10 md:h-10 rounded-full flex items-center justify-center text-xs font-bold border-2 transition-all duration-300 z-10",
                                 isActive
                                   ? "bg-emerald-500 border-emerald-500 text-white shadow-lg shadow-emerald-500/30"
                                   : "bg-background border-border/50 text-muted-foreground",
@@ -183,17 +184,25 @@ export function PointsFormula() {
                             >
                               {node.level}
                             </motion.div>
-                            <span
-                              className={cn(
-                                "text-[10px] mt-1.5 font-medium",
-                                isActive
-                                  ? "text-emerald-600"
-                                  : "text-muted-foreground/60",
-                              )}
-                            >
-                              {node.slots}
-                            </span>
-                          </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                    <div className="flex justify-between mt-1.5">
+                      {levelNodes.map((node) => {
+                        const isActive = node.level <= currentLevel;
+                        return (
+                          <span
+                            key={node.level}
+                            className={cn(
+                              "w-8 md:w-10 text-center text-[10px] font-medium",
+                              isActive
+                                ? "text-emerald-600"
+                                : "text-muted-foreground/60",
+                            )}
+                          >
+                            {node.slots}
+                          </span>
                         );
                       })}
                     </div>

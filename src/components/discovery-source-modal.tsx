@@ -79,9 +79,10 @@ const itemVariants = {
 interface DiscoverySourceModalProps {
   open: boolean;
   onComplete: () => void;
+  onClose?: () => void;
 }
 
-export function DiscoverySourceModal({ open, onComplete }: DiscoverySourceModalProps) {
+export function DiscoverySourceModal({ open, onComplete, onClose }: DiscoverySourceModalProps) {
   const [selected, setSelected] = useState<string | null>(null);
   const [otherText, setOtherText] = useState("");
   const [showSuccess, setShowSuccess] = useState(false);
@@ -113,7 +114,7 @@ export function DiscoverySourceModal({ open, onComplete }: DiscoverySourceModalP
   const isSubmitting = saveMutation.isPending;
 
   return (
-    <Dialog open={open} onOpenChange={() => {}}>
+    <Dialog open={open} onOpenChange={(isOpen) => { if (!isOpen) onClose?.(); }}>
       <DialogContent
         className="max-w-[520px] w-[calc(100vw-40px)] h-auto max-h-[95%] p-0 border-none shadow-2xl overflow-y-auto bg-background [&::-webkit-scrollbar]:w-1.5 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-border [&::-webkit-scrollbar-thumb]:rounded-full"
         onPointerDownOutside={(e) => e.preventDefault()}

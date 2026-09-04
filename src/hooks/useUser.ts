@@ -65,11 +65,11 @@ export function useUserDataSave(options?: UseMutationOptions<any, any, any>) {
   return mutation;
 }
 
-export function useUserProfileData() {
+export function useUserProfileData(options?: { enabled?: boolean }) {
   const query = useQuery<UserProfileDataAttributes, Error>({
     queryFn: () => getUserProfileData(),
     queryKey: ["getUserProfileData"],
-    enabled: false,
+    enabled: options?.enabled ?? true,
     retry: false,
     staleTime: 0,
   });

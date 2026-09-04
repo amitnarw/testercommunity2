@@ -84,6 +84,7 @@
 
   html {
     scroll-behavior: smooth;
+    scrollbar-gutter: stable;
   }
 
 :root {
@@ -496,5 +497,46 @@ button {
   * {
     -webkit-print-color-adjust: exact !important;
     print-color-adjust: exact !important;
+  }
+}
+
+/* HorizontalPinPricing — mobile horizontal layout for multi-card pricing.
+   At >=768px the @media query below doesn't apply, so the Tailwind
+   `grid` + `grid-cols-*` classes on the inner div restore the desktop layout. */
+@media (max-width: 767px) {
+  .horizontal-pin-slider > div {
+    display: flex !important;
+    flex-direction: row !important;
+    gap: 1rem !important;
+    overflow: hidden !important;
+    grid-template-columns: none !important;
+    max-width: none !important;
+  }
+  .horizontal-pin-slider > div > * {
+    flex: 0 0 auto !important;
+    width: min(85vw, 360px) !important;
+    max-width: none !important;
+    min-width: 0 !important;
+  }
+}
+
+/* PricingCardsGrid — grid columns auto-scale to actual card count.
+   JS sets --pricing-count; CSS handles the breakpoint ladder. */
+.pricing-grid {
+  grid-template-columns: repeat(1, minmax(0, 1fr));
+}
+@media (min-width: 768px) {
+  .pricing-grid {
+    grid-template-columns: repeat(min(var(--pricing-count, 2), 2), minmax(0, 1fr));
+  }
+}
+@media (min-width: 1024px) {
+  .pricing-grid {
+    grid-template-columns: repeat(min(var(--pricing-count, 3), 3), minmax(0, 1fr));
+  }
+}
+@media (min-width: 1280px) {
+  .pricing-grid {
+    grid-template-columns: repeat(min(var(--pricing-count, 4), 4), minmax(0, 1fr));
   }
 }

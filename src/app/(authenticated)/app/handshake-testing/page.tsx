@@ -14,8 +14,6 @@ import {
   useHubStats,
   useHubApps,
 } from "@/hooks/useHub";
-import { useUserProfileData } from "@/hooks/useUser";
-import { DiscoverySourceModal } from "@/components/discovery-source-modal";
 import { ROUTES } from "@/lib/routes";
 import {
   useIncomingHandshakeRequests,
@@ -45,21 +43,6 @@ function CommunityDashboardContent() {
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const router = useRouter();
-
-  const [showDiscoveryModal, setShowDiscoveryModal] = useState(false);
-
-  const { data: userProfileData, refetch: refetchProfile } =
-    useUserProfileData();
-
-  useEffect(() => {
-    refetchProfile();
-  }, [refetchProfile]);
-
-  useEffect(() => {
-    if (userProfileData && !userProfileData.discovery_source_answered) {
-      setShowDiscoveryModal(true);
-    }
-  }, [userProfileData]);
 
   const [selectedTab, setSelectedTab] = useState(
     searchParams.get("tab") || "available",
@@ -173,10 +156,6 @@ function CommunityDashboardContent() {
 
   return (
     <div data-loc="CommunityDashboardPage" className="min-h-screen mb-8">
-      <DiscoverySourceModal
-        open={showDiscoveryModal}
-        onComplete={() => setShowDiscoveryModal(false)}
-      />
       <div className="container mx-auto px-4 md:px-6">
         <header className="mb-12">
           <div className="mb-6">
@@ -223,8 +202,12 @@ function CommunityDashboardContent() {
                   {handshakeStats?.handshakeLevel ?? 1}
                 </p>
                 <p className="flex flex-row gap-2 text-xs text-white/80 relative z-10">
-                  <span className="bg-card/20 rounded-xl py-0.5 px-2">{myLevel?.completedCount ?? 0} completed</span>
-                  <span className="bg-card/20 rounded-xl py-0.5 px-2">{myLevel?.slots ?? 12} slots</span>
+                  <span className="bg-card/20 rounded-xl py-0.5 px-2">
+                    {myLevel?.completedCount ?? 0} completed
+                  </span>
+                  <span className="bg-card/20 rounded-xl py-0.5 px-2">
+                    {myLevel?.slots ?? 12} slots
+                  </span>
                 </p>
               </BentoCard>
 
@@ -341,9 +324,7 @@ function CommunityDashboardContent() {
                   items={outgoing?.items ?? []}
                   isLoading={outgoingLoading}
                   showHistory={showOutgoingHistory}
-                  onToggleHistory={() =>
-                    setShowOutgoingHistory((v) => !v)
-                  }
+                  onToggleHistory={() => setShowOutgoingHistory((v) => !v)}
                 />
               )}
             </TabsContent>

@@ -741,7 +741,7 @@ function DirectChatWindow({
             <h3 className="font-bold text-sm">{title}</h3>
             {isAdminViewer ? (
               <p className="text-[10px] text-primary-foreground/80">
-                {directChat.chat?.user?.name || "App Owner"}
+                App Owner
               </p>
             ) : (
               <p className="text-[10px] text-primary-foreground/80 flex items-center gap-1.5">
