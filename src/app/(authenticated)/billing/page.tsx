@@ -401,7 +401,7 @@ export default function BillingPage() {
         <PageHeader
           title="Billing"
           backHref={ROUTES.AUTHENTICATED.WALLET}
-          className="w-1/2 px-4 md:px-6"
+          className="w-1/2 px-4 md:px-6 py-2 sm:!py-2.5"
         />
         <div className="relative z-10 container mx-auto py-8 space-y-16">
           <motion.div

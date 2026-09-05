@@ -37,9 +37,9 @@ export default function ProfilePage() {
       <PageHeader
         title="Profile"
         backHref={ROUTES.AUTHENTICATED.HANDSHAKE_TESTING}
-        className="w-1/2 lg:w-full"
+        className="w-1/2 lg:w-full !py-2"
       />
-      <div className="mx-auto space-y-12">
+      <div className="mx-auto space-y-12 mt-5">
         <UserDataForm title="User Data" />
 
         {/* S10: Elite Badge moved here from the removed standalone page */}

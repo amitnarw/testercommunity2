@@ -1,7 +1,7 @@
 "use client";
 
 import { CheckCircle, Users, Loader2, CalendarDays, AlertCircle, Star } from "lucide-react";
-import { BackButton } from "@/components/back-button";
+import { PageHeader } from "@/components/page-header";
 import { ROUTES } from "@/lib/routes";
 import { useToast } from "@/hooks/use-toast";
 import { Button } from "@/components/ui/button";
@@ -259,9 +259,11 @@ export default function OngoingProjectView({
     <div className="min-h-screen mb-10">
       <div className="container mx-auto px-4 md:px-6">
         {showBackButton && (
-          <div className="sticky top-0 z-[50] pt-2 sm:pt-3 pb-4 pl-0 xl:pl-8 w-1/2">
-            <BackButton href={ROUTES.AUTHENTICATED.HANDSHAKE_TESTING} />
-          </div>
+          <PageHeader
+            title=""
+            backHref={ROUTES.AUTHENTICATED.HANDSHAKE_TESTING}
+            className="pl-0 xl:pl-8"
+          />
         )}
 
         <main className="max-w-7xl mx-auto grid lg:grid-cols-3 gap-12 mt-8">

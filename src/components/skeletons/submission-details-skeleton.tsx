@@ -7,7 +7,7 @@ export function SubmissionDetailsSkeleton() {
     <div className="bg-[#f8fafc] dark:bg-[#0f151e] min-h-screen relative">
       <div className="container mx-auto px-4 md:px-6">
         <main className="max-w-7xl mx-auto space-y-8">
-          <div className="sticky top-0 z-[50] pt-2 sm:pt-3 pb-4 pl-0 w-1/2">
+          <div className="sticky top-0 z-[50] py-2 md:py-1 px-2 pl-0 w-1/2">
             <Skeleton className="h-10 w-24 rounded-lg" />
           </div>
 

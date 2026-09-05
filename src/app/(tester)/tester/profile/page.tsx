@@ -15,9 +15,9 @@ export default function ProfilePage() {
       <PageHeader
         title="Profile"
         backHref={ROUTES.TESTER.DASHBOARD}
-        className="w-1/2 lg:w-full"
+        className="w-1/2 lg:w-full !py-2"
       />
-      <div className="mx-auto space-y-12">
+      <div className="mx-auto space-y-12 mt-5">
         <UserDataForm title="Tester Data" />
         <ActiveSessions />
         <ProfileBentoGrid

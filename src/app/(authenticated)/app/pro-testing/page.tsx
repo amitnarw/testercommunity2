@@ -20,6 +20,7 @@ import { ProjectList } from "@/components/project-list";
 import Link from "next/link";
 import { Gem } from "lucide-react";
 import { AutoTransitionLink } from "@/components/auto-transition-link";
+import { StickyPageTitle } from "@/components/sticky-page-title";
 import { useState, useEffect, Suspense } from "react";
 import { useSearchParams, usePathname, useRouter } from "next/navigation";
 import { motion } from "framer-motion";
@@ -29,7 +30,11 @@ import { CustomTabsList } from "@/components/custom-tabs-list";
 import { AppPagination } from "@/components/app-pagination";
 import SubTabUI from "@/components/sub-tab-ui";
 import { useDashboardData } from "@/hooks/useUser";
-import { useDashboardAppsCount, useDashboardApps, useDeleteDashboardApp } from "@/hooks/useDashboard";
+import {
+  useDashboardAppsCount,
+  useDashboardApps,
+  useDeleteDashboardApp,
+} from "@/hooks/useDashboard";
 import { AppCardSkeleton } from "@/components/app-card-skeleton";
 import { format } from "date-fns";
 import { FeedbackModal } from "@/components/feedback-modal";
@@ -356,27 +361,25 @@ function DashboardPageContent() {
   return (
     <div data-loc="DashboardPage" className="min-h-screen mb-8">
       <div className="container mx-auto px-4 md:px-6">
-        <header className="mb-6">
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-            <div>
-              <div className="flex items-center gap-3 mb-1">
-                <h1 className="text-2xl sm:text-4xl font-bold bg-gradient-to-b from-amber-500 to-amber-300 bg-clip-text text-transparent leading-0 pb-1">
-                  Pro Testing
-                </h1>
-                <Badge className="bg-amber-500/20 text-amber-600 dark:text-amber-400 border-amber-500/30 font-bold text-xs px-2.5 py-0.5 mt-1">
-                  PRO
-                </Badge>
-              </div>
-              <p className="text-sm sm:text-base text-muted-foreground">
-                Manage your apps and professional testing projects.
-              </p>
-            </div>
+        <StickyPageTitle
+          title="Pro Testing"
+          titleClassName="text-2xl sm:text-4xl font-bold bg-gradient-to-b from-amber-500 to-amber-300 bg-clip-text text-transparent sm:pb-1"
+          rightContent={
+            <Badge className="bg-amber-500/20 text-amber-600 dark:text-amber-400 border-amber-500/30 font-bold text-xs px-2.5 py-0.5">
+              PRO
+            </Badge>
+          }
+        >
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
+            <p className="text-sm sm:text-base text-muted-foreground">
+              Manage your apps and professional testing projects.
+            </p>
             <span className="hidden sm:block relative h-8 w-8">
               <span className="absolute inset-0 rounded-full bg-amber-100/60 animate-thunder-bg" />
               <Zap className="h-8 w-8 relative z-10 animate-thunder text-amber-400" />
             </span>
           </div>
-        </header>
+        </StickyPageTitle>
 
         <div className="grid gap-4 grid-cols-1 lg:grid-cols-4">
           <div className="flex flex-col gap-2 bg-card col-span-1 lg:col-span-2 rounded-xl py-4 px-3">
@@ -441,7 +444,7 @@ function DashboardPageContent() {
               asChild
               className="w-full h-full bg-gradient-to-br from-primary to-primary/40"
             >
-               <AutoTransitionLink href="/app/pro-testing/add-app">
+              <AutoTransitionLink href="/app/pro-testing/add-app">
                 <PlusCircle className="mr-2 h-4 w-4" /> Submit Your App
               </AutoTransitionLink>
             </Button>
@@ -532,15 +535,12 @@ function DashboardPageContent() {
           }}
           secondaryAction={{
             label: "Cancel",
-            onClick: () =>
-              setDeleteModalState({ open: false, draftId: null }),
+            onClick: () => setDeleteModalState({ open: false, draftId: null }),
           }}
         />
         <FeedbackModal
           open={feedbackModal.open}
-          onOpenChange={(open) =>
-            setFeedbackModal({ ...feedbackModal, open })
-          }
+          onOpenChange={(open) => setFeedbackModal({ ...feedbackModal, open })}
           status={feedbackModal.status}
           title={feedbackModal.title}
           description={feedbackModal.description}

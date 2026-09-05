@@ -114,7 +114,7 @@ export default function AuthenticatedLayout({
             />
             <div className="flex flex-col flex-1 min-w-0 md:pl-20">
               <Navbar onLogout={handleLogout} />
-              <main className="flex-1 bg-secondary/50 overflow-x-hidden print:bg-transparent">{children}</main>
+              <main className="flex-1 bg-secondary/50 print:bg-transparent">{children}</main>
               <Footer />
             </div>
           </div>

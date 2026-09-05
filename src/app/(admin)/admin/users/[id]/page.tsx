@@ -99,7 +99,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { useToast } from "@/hooks/use-toast";
-import { BackButton } from "@/components/back-button";
+import { PageHeader } from "@/components/page-header";
 import {
   useUserById,
   useUpdateUserRole,
@@ -898,13 +898,11 @@ export default function AdminUserDetailsPage() {
   return (
     <>
       <div className="container mx-auto px-4 md:px-6 mb-8">
-        <div className="sticky top-0 z-[50] pt-2 sm:pt-3 pb-4 w-1/2 flex flex-row gap-4">
-          <BackButton href={ROUTES.ADMIN.USERS} />
-          <h2 className="text-2xl sm:text-3xl font-extrabold bg-gradient-to-br from-primary to-primary/10 bg-clip-text text-transparent">
-            <span className="hidden sm:block">User Details</span>
-            <span className="block sm:hidden">Details</span>
-          </h2>
-        </div>
+        <PageHeader
+          title="User Details"
+          backHref={ROUTES.ADMIN.USERS}
+          titleClassName="text-2xl sm:text-3xl font-extrabold bg-gradient-to-br from-primary to-primary/10 bg-clip-text text-transparent"
+        />
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
           <div className="flex flex-col sm:flex-row items-center justify-between gap-4 w-full">
             <div className="flex flex-wrap gap-2 sm:gap-4 w-full">

@@ -1,13 +1,16 @@
+import { StickyPageHeader } from "@/components/sticky-page-header";
+
 export function WalletHeader() {
   return (
-    <div className="space-y-2">
-      <h1 className="text-3xl sm:text-5xl font-bold bg-gradient-to-b from-primary to-primary/40 bg-clip-text text-transparent">
-        Wallet
-      </h1>
-      <p className="text-muted-foreground text-base md:text-lg">
+    <StickyPageHeader
+      title="Wallet"
+      backHref="/app/dashboard"
+      titleClassName="text-3xl sm:text-5xl font-bold bg-gradient-to-b from-primary to-primary/50 bg-clip-text text-transparent leading-0 pb-1"
+    >
+      <p className="text-muted-foreground text-base md:text-lg mb-6">
         Manage your packages, track transactions, and view your balances
         in real-time.
       </p>
-    </div>
+    </StickyPageHeader>
   );
 }

@@ -419,7 +419,7 @@ function AddAppFormContent() {
       <PageHeader
         title=""
         backHref="/app/pro-testing/add-app"
-        className="w-1/2"
+        className="w-1/2 py-2 sm:!py-2.5"
       />
       {/* Animated Background Elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">

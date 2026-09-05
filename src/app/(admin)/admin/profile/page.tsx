@@ -1,4 +1,3 @@
-
 "use client";
 
 import { PageHeader } from "@/components/page-header";
@@ -8,29 +7,29 @@ import { ProfileBentoGrid } from "@/components/profile-bento-grid";
 import { ROUTES } from "@/lib/routes";
 
 export default function ProfilePage() {
-    const backHref = ROUTES.ADMIN.DASHBOARD;
+  const backHref = ROUTES.ADMIN.DASHBOARD;
 
-    return (
-        <div
-            data-loc="ProfilePage"
-            className="mx-auto pb-12 max-w-4xl px-4 md:px-6 py-12"
-        >
-            <PageHeader
-                title="Profile"
-                backHref={backHref}
-                className="w-1/2 lg:w-full"
-            />
-            <div className="mx-auto space-y-12">
-                <UserDataForm title="Admin Data" showAdvancedSetup={false} />
-                <ActiveSessions />
-                <ProfileBentoGrid
-                    showReferAndEarn={false}
-                    showUpgrade={false}
-                    showSupport={false}
-                    settingsHref={ROUTES.ADMIN.DASHBOARD}
-                    supportHref={ROUTES.ADMIN.SUPPORT}
-                />
-            </div>
-        </div>
-    );
+  return (
+    <div
+      data-loc="ProfilePage"
+      className="mx-auto pb-12 max-w-4xl px-4 md:px-6 py-12"
+    >
+      <PageHeader
+        title="Profile"
+        backHref={backHref}
+        className="w-1/2 lg:w-full !py-2"
+      />
+      <div className="mx-auto space-y-12 mt-5">
+        <UserDataForm title="Admin Data" showAdvancedSetup={false} />
+        <ActiveSessions />
+        <ProfileBentoGrid
+          showReferAndEarn={false}
+          showUpgrade={false}
+          showSupport={false}
+          settingsHref={ROUTES.ADMIN.DASHBOARD}
+          supportHref={ROUTES.ADMIN.SUPPORT}
+        />
+      </div>
+    </div>
+  );
 }

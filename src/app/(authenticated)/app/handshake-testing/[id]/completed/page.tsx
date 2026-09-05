@@ -2,7 +2,7 @@
 
 import { notFound } from "next/navigation";
 import { CheckCircle, Bug, Lightbulb, PartyPopper, Handshake } from "lucide-react";
-import { BackButton } from "@/components/back-button";
+import { PageHeader } from "@/components/page-header";
 import { AppActionButton, AppInfoSidebar } from "@/components/appInfoSidebar";
 import { SubmittedFeedback } from "@/components/community-dashboard/submitted-feedback";
 import { ReviewSubmissionForm } from "@/components/review-submission-form";
@@ -196,9 +196,11 @@ export default function AppTestingCompletedPage({
   return (
     <div className="bg-secondary/50 min-h-screen mb-8">
       <div className="container mx-auto px-4 md:px-6">
-        <div className="sticky top-0 z-[50] pt-2 pb-4 pl-0 xl:pl-8 w-1/2">
-          <BackButton href={ROUTES.AUTHENTICATED.HANDSHAKE_TESTING} />
-        </div>
+        <PageHeader
+          title=""
+          backHref={ROUTES.AUTHENTICATED.HANDSHAKE_TESTING}
+          className="pl-0 xl:pl-8"
+        />
 
         <main className="max-w-7xl mx-auto grid lg:grid-cols-3 gap-12 mt-8">
           <div className="flex flex-col gap-10 lg:col-span-2">

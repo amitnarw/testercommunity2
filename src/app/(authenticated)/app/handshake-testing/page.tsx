@@ -24,6 +24,7 @@ import { IncomingRequestsSection } from "@/components/handshake/incoming-request
 import { OutgoingRequestsSection } from "@/components/handshake/outgoing-requests-section";
 import { ExistingHandshakesSection } from "@/components/handshake/existing-handshakes-section";
 import { useMyLevel } from "@/hooks/useLevel";
+import { StickyPageTitle } from "@/components/sticky-page-title";
 
 const BentoCard = ({
   children,
@@ -157,17 +158,16 @@ function CommunityDashboardContent() {
   return (
     <div data-loc="CommunityDashboardPage" className="min-h-screen mb-8">
       <div className="container mx-auto px-4 md:px-6">
-        <header className="mb-12">
-          <div className="mb-6">
-            <h1 className="text-2xl sm:text-4xl font-bold bg-gradient-to-b from-emerald-600 to-emerald-700 bg-clip-text text-transparent leading-[unset] pb-2">
-              Handshake Testing
-            </h1>
-            <p className="text-sm sm:text-base text-muted-foreground max-w-xl mt-2">
+        <StickyPageTitle
+          title="Handshake Testing"
+          titleClassName="text-2xl sm:text-4xl font-bold bg-gradient-to-b from-emerald-600 to-emerald-700 bg-clip-text text-transparent py-0 sm:py-1.5"
+        >
+          <div className="mb-12">
+            <p className="text-sm sm:text-base text-muted-foreground max-w-xl mb-6">
               Offer your app, test a peer&apos;s app, and level up. Free for
               everyone.
             </p>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
             <BentoCard className="col-span-2">
               <CardTitle className="text-sm font-medium flex items-center gap-2 text-muted-foreground">
                 <Activity className="w-4 h-4" /> Performance
@@ -250,7 +250,8 @@ function CommunityDashboardContent() {
               </Button>
             </BentoCard>
           </div>
-        </header>
+          </div>
+        </StickyPageTitle>
 
         <main>
           <Tabs

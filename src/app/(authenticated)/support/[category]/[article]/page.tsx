@@ -13,7 +13,6 @@ import {
   Wallet,
   Globe,
   Share2,
-  Bookmark,
   Zap,
 } from "lucide-react";
 import Link from "next/link";
@@ -30,7 +29,7 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import { BackButton } from "@/components/back-button";
+import { StickyPageHeader } from "@/components/sticky-page-header";
 
 const categorySlugMap: Record<string, string> = {
   "google-play-guidelines": "Google Play Guidelines",
@@ -67,9 +66,16 @@ export default function ArticlePage() {
     .slice(0, 3);
 
   return (
-    <div className="min-h-screen relative overflow-hidden text-foreground transition-colors duration-500">
-      <main className="container mx-auto px-4 md:px-6 py-10 relative z-10 max-w-4xl">
-        <motion.div
+    <div className="min-h-screen relative text-foreground transition-colors duration-500">
+      <div className="container mx-auto px-4 md:px-6 max-w-4xl">
+        <StickyPageHeader
+          title={article.title}
+          backHref={`/support/${categorySlug}`}
+          className="!py-2.5"
+          titleClassName="text-2xl sm:text-4xl font-bold bg-gradient-to-b from-primary to-primary/50 bg-clip-text text-transparent leading-0"
+        />
+        <main className="py-10">
+          <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
@@ -100,12 +106,15 @@ export default function ArticlePage() {
                 </BreadcrumbItem>
               </BreadcrumbList>
             </Breadcrumb>
+          </div>
 
-            <div className="flex justify-between items-center">
-              <div className="sticky top-0 z-[50] pt-2 pb-4 pl-0 xl:pl-8 w-1/2">
-                <BackButton href={`/support/${categorySlug}`} />
-              </div>
-              <div className="flex gap-2">
+          {/* Article Identity Section */}
+          <div className="space-y-8 pb-12 border-b border-border/50">
+            <div className="space-y-6">
+              <div className="flex items-center justify-between gap-4">
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/5 border border-primary/10 text-xs font-medium text-primary">
+                  {article.category}
+                </div>
                 <Button
                   variant="outline"
                   size="icon"
@@ -113,22 +122,6 @@ export default function ArticlePage() {
                 >
                   <Share2 className="w-4 h-4" />
                 </Button>
-                <Button
-                  variant="outline"
-                  size="icon"
-                  className="w-10 h-10 rounded-full border-border/50 hover:border-primary/50 hover:bg-primary/5 transition-all"
-                >
-                  <Bookmark className="w-4 h-4" />
-                </Button>
-              </div>
-            </div>
-          </div>
-
-          {/* Article Identity Section */}
-          <div className="space-y-8 pb-12 border-b border-border/50">
-            <div className="space-y-6">
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/5 border border-primary/10 text-xs font-medium text-primary">
-                {article.category}
               </div>
               <h1 className="text-4xl md:text-5xl font-bold tracking-tight bg-clip-text text-transparent bg-gradient-to-b from-foreground to-foreground/80 pb-2">
                 {article.title}
@@ -244,5 +237,6 @@ export default function ArticlePage() {
         </motion.div>
       </main>
     </div>
+  </div>
   );
 }

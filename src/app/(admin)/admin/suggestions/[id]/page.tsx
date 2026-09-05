@@ -20,7 +20,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { useState } from "react";
-import { BackButton } from "@/components/back-button";
+import { PageHeader } from "@/components/page-header";
 
 const suggestionItems = [
   {
@@ -80,9 +80,10 @@ export default function SuggestionDetailsPage() {
 
   return (
     <div className="container mx-auto px-4 md:px-6 mb-8">
-      <div className="sticky top-0 z-[50] pt-2 pb-4 w-1/2">
-        <BackButton href="/app/handshake-testing" />
-      </div>
+      <PageHeader
+        title=""
+        backHref="/app/handshake-testing"
+      />
       <div className="flex flex-row items-center justify-between gap-4">
         <div className="flex items-center gap-4">
           <div>
