@@ -34,7 +34,7 @@ import {
 import { useState, useEffect, use } from "react";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
-import { BackButton } from "@/components/back-button";
+import { PageHeader } from "@/components/page-header";
 import { AppPagination } from "@/components/app-pagination";
 import DeveloperInstructions from "@/components/developerInstructions";
 import AppInfoHeader from "@/components/app-info-header";
@@ -409,9 +409,11 @@ function SubmissionDetailsPage({
       </div>
       <div className="container mx-auto px-4 md:px-6">
         <main className="max-w-7xl mx-auto space-y-8">
-          <div className="sticky top-0 z-[50] pt-2 pb-4 pl-0 w-1/2">
-            <BackButton href="/app/handshake-testing/my-submissions" />
-          </div>
+          <PageHeader
+            title=""
+            backHref="/app/handshake-testing/my-submissions"
+            className="pl-0"
+          />
 
           <AppInfoHeader
             logo={appDetails?.androidApp?.appLogoUrl}

@@ -28,7 +28,7 @@ import {
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import { BackButton } from "@/components/back-button";
+import { StickyPageHeader } from "@/components/sticky-page-header";
 
 const categoryMap: Record<
   string,
@@ -116,14 +116,21 @@ export default function CategoryPage() {
   }
 
   return (
-    <div className="min-h-screen relative overflow-hidden text-foreground transition-colors duration-500">
-      <main className="container mx-auto px-4 md:px-6 py-10 relative z-10 max-w-5xl">
-        <motion.div
-          initial="hidden"
-          animate="visible"
-          variants={containerVariants}
-          className="space-y-12"
-        >
+    <div className="min-h-screen relative text-foreground transition-colors duration-500">
+      <div className="container mx-auto px-4 md:px-6 max-w-5xl">
+        <StickyPageHeader
+          title={categoryInfo.title}
+          backHref="/support"
+          className="!py-2.5"
+          titleClassName="text-2xl sm:text-4xl font-bold bg-gradient-to-b from-primary to-primary/50 bg-clip-text text-transparent leading-0"
+        />
+        <main className="py-10">
+          <motion.div
+            initial="hidden"
+            animate="visible"
+            variants={containerVariants}
+            className="space-y-12"
+          >
           {/* Header Section */}
           <motion.div variants={itemVariants} className="space-y-8">
             <Breadcrumb>
@@ -141,12 +148,6 @@ export default function CategoryPage() {
                 </BreadcrumbItem>
               </BreadcrumbList>
             </Breadcrumb>
-
-            <div className="flex items-center justify-between">
-              <div className="sticky top-0 z-[50] pt-2 pb-4 pl-0 xl:pl-8 w-1/2">
-                <BackButton href="/support" />
-              </div>
-            </div>
 
             <div className="flex flex-col gap-6 items-start pb-10 border-b border-border/50">
               <div
@@ -265,5 +266,6 @@ export default function CategoryPage() {
         </motion.div>
       </main>
     </div>
+  </div>
   );
 }

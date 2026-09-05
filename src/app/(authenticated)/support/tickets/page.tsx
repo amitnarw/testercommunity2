@@ -24,7 +24,7 @@ import {
 import api from "@/lib/axios";
 import API_ROUTES from "@/lib/apiRoutes";
 import { toast } from "@/hooks/use-toast";
-import { BackButton } from "@/components/back-button";
+import { PageHeader } from "@/components/page-header";
 import { cn } from "@/lib/utils";
 import { Skeleton } from "@/components/ui/skeleton";
 import { TransitionLink } from "@/components/transition-link";
@@ -102,9 +102,11 @@ export default function TicketsListPage() {
 
   return (
     <div className="min-h-screen">
-      <div className="sticky top-0 z-[50] pt-2 pb-4 px-4 max-w-6xl mx-auto">
-        <BackButton href="/support" className="mb-4 md:mb-8" />
-      </div>
+      <PageHeader
+        title=""
+        backHref="/support"
+        className="max-w-6xl mx-auto"
+      />
       <div className="container py-6 md:py-12 px-4 max-w-6xl mx-auto">
 
         {/* Modern Header Section */}

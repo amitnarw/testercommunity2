@@ -24,7 +24,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
-import { BackButton } from "@/components/back-button";
+import { PageHeader } from "@/components/page-header";
 import { LinkifyText } from "@/components/linkify-text";
 import {
   AlertDialog,
@@ -205,9 +205,11 @@ export default function TicketDetailPage() {
 
   return (
     <div className="min-h-screen">
-      <div className="sticky top-0 z-[50] pt-2 pb-4 px-4 max-w-5xl mx-auto">
-        <BackButton href="/support/tickets" className="mb-8" />
-      </div>
+      <PageHeader
+        title=""
+        backHref="/support/tickets"
+        className="max-w-5xl mx-auto"
+      />
       <div className="container py-12 px-4 max-w-5xl mx-auto">
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">

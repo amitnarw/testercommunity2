@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { Trophy, Search, Calendar, Handshake } from "lucide-react";
 import { CommunityCompletedAppCard } from "@/components/community-completed-app-card";
-import { BackButton } from "@/components/back-button";
+import { PageHeader } from "@/components/page-header";
 import { AppPagination } from "@/components/app-pagination";
 import { motion } from "framer-motion";
 import type { HubSubmittedAppResponse } from "@/lib/types";
@@ -127,9 +127,11 @@ export default function HistoryPage() {
       <div className="container mx-auto px-4 md:px-6">
         {/* Header with back button */}
         <header className="mb-8 relative">
-          <div className="sticky top-0 z-[50] pt-2 sm:pt-3 pb-4 pl-0 w-1/2">
-            <BackButton href="/app/handshake-testing" />
-          </div>
+          <PageHeader
+            title=""
+            backHref="/app/handshake-testing"
+            className="pl-0"
+          />
 
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mt-4">
             <div>

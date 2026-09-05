@@ -7,7 +7,7 @@ import { DeviceOSCoverage } from "@/components/dashboard/device-os-coverage";
 import { useState, useEffect } from "react";
 import type { Project, HubSubmittedAppResponse } from "@/lib/types";
 import { motion } from "framer-motion";
-import { BackButton } from "@/components/back-button";
+import { PageHeader } from "@/components/page-header";
 import { ROUTES } from "@/lib/routes";
 import { MediaGallery } from "@/components/media-gallery";
 import AppInfoHeader from "@/components/app-info-header";
@@ -172,9 +172,11 @@ export default function ProjectDetailsView({
 
       <div className="container px-4 md:px-6">
         {showBackButton && (
-          <div className="sticky top-0 z-[50] pt-2 pb-4 pl-0 xl:pl-8 w-1/2">
-            <BackButton href={ROUTES.AUTHENTICATED.PRO_TESTING} />
-          </div>
+          <PageHeader
+            title=""
+            backHref={ROUTES.AUTHENTICATED.PRO_TESTING}
+            className="pl-0 xl:pl-8"
+          />
         )}
 
         <motion.div

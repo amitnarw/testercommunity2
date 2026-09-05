@@ -21,7 +21,7 @@ import {
 } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
-import { BackButton } from "@/components/back-button";
+import { PageHeader } from "@/components/page-header";
 import { useState } from "react";
 import {
   useTesterApplicationById,
@@ -149,9 +149,10 @@ export default function AdminApplicationDetailPage() {
 
   return (
     <div className="container mx-auto px-4 md:px-6">
-      <div className="sticky top-0 z-[50] pt-2 pb-4 w-1/2">
-        <BackButton href={ROUTES.ADMIN.APPLICATIONS} />
-      </div>
+      <PageHeader
+        title=""
+        backHref={ROUTES.ADMIN.APPLICATIONS}
+      />
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div className="flex items-center justify-between gap-4 w-full">
           <div className="flex flex-col sm:flex-row items-start sm:items-center sm:gap-2">

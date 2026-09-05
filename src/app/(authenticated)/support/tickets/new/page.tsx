@@ -26,7 +26,7 @@ import {
 import { Card } from "@/components/ui/card";
 import { createSupportTicket } from "@/lib/apiCalls";
 import { toast } from "@/hooks/use-toast";
-import { BackButton } from "@/components/back-button";
+import { PageHeader } from "@/components/page-header";
 import { cn } from "@/lib/utils";
 
 export default function NewTicketPage() {
@@ -107,11 +107,13 @@ export default function NewTicketPage() {
   return (
     <div className="min-h-screen">
       <div className="container max-w-5xl py-12 px-4 mx-auto">
-        <div className="sticky top-0 z-[50] pt-2 sm:pt-3 pb-10 w-1/2">
-          <BackButton href="/support/tickets" />
-        </div>
+        <PageHeader
+          title=""
+          backHref="/support/tickets"
+          className="w-1/2"
+        />
 
-        <div className="grid grid-cols-1 lg:grid-cols-5 gap-12">
+        <div className="grid grid-cols-1 lg:grid-cols-5 gap-12  mt-5">
           {/* Left Side: Form */}
           <div className="lg:col-span-3 space-y-8">
             <div className="space-y-4">

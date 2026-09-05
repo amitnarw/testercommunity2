@@ -16,6 +16,7 @@ import { AppPagination } from "@/components/app-pagination";
 import { useGetUserNotifications } from "@/hooks/useUser";
 import { NotificationResponse } from "@/lib/types";
 import SkeletonNotification from "./loading-skeleton";
+import { StickyPageHeader } from "@/components/sticky-page-header";
 
 const NOTIFICATIONS_PER_PAGE = 10;
 
@@ -82,14 +83,15 @@ export function NotificationsPageContent({
       data-loc="NotificationsPage"
       className="container mx-auto px-4 md:px-6 flex flex-col flex-1 h-full"
     >
-      <header>
-        <h1 className="text-2xl sm:text-4xl font-bold bg-gradient-to-b from-primary to-primary/40 bg-clip-text text-transparent leading-[unset]">
-          {title}
-        </h1>
-        <p className="text-sm sm:text-base text-muted-foreground">
+      <StickyPageHeader
+        title={title}
+        backHref="/app/dashboard"
+        titleClassName="text-2xl sm:text-4xl font-bold bg-gradient-to-b from-primary to-primary/50 bg-clip-text text-transparent leading-0 pb-1"
+      >
+        <p className="text-sm sm:text-base text-muted-foreground mb-6">
           {description}
         </p>
-      </header>
+      </StickyPageHeader>
 
       {notificationIsPending ? (
         <SkeletonNotification />

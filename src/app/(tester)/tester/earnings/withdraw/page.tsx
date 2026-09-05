@@ -32,7 +32,7 @@ import {
   XCircle,
 } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { BackButton } from "@/components/back-button";
+import { PageHeader } from "@/components/page-header";
 import { AppPagination } from "@/components/app-pagination";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import {
@@ -192,9 +192,10 @@ export default function WithdrawFundsPage() {
 
   return (
     <div className="flex-1 space-y-8 container mx-auto px-4 md:px-6">
-      <div className="sticky top-0 z-[50] pt-2 sm:pt-3 pb-4 w-1/2">
-        <BackButton href={ROUTES.TESTER.EARNINGS} />
-      </div>
+      <PageHeader
+        title=""
+        backHref={ROUTES.TESTER.EARNINGS}
+      />
       <div className="flex items-center gap-4">
         <div>
           <h2 className="text-2xl sm:text-3xl font-bold bg-gradient-to-br from-primary to-primary/40 bg-clip-text text-transparent leading-[unset]">
