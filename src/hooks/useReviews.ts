@@ -8,6 +8,7 @@ import {
   useMutation,
   UseMutationOptions,
   useQuery,
+  useQueryClient,
 } from "@tanstack/react-query";
 
 export function useMyReviews(options?: { enabled?: boolean }) {
@@ -20,33 +21,54 @@ export function useMyReviews(options?: { enabled?: boolean }) {
 }
 
 export function useCreateReview(options?: UseMutationOptions<any, any, any>) {
+  const queryClient = useQueryClient();
   const mutation = useMutation({
     mutationFn: (payload: {
       rating: number;
       comment: string;
       appId?: number;
     }) => createReview(payload),
-    ...options,
+    onSuccess: (data, variables, ctx) => {
+      queryClient.invalidateQueries({ queryKey: ["useMyReviews"] });
+      (options as any)?.onSuccess?.(data, variables, ctx);
+    },
+    onError: (data, variables, ctx) => {
+      (options as any)?.onError?.(data, variables, ctx);
+    },
   });
   return mutation;
 }
 
 export function useUpdateReview(options?: UseMutationOptions<any, any, any>) {
+  const queryClient = useQueryClient();
   const mutation = useMutation({
     mutationFn: (payload: {
       id: number;
       rating?: number;
       comment?: string;
     }) => updateReview(payload),
-    ...options,
+    onSuccess: (data, variables, ctx) => {
+      queryClient.invalidateQueries({ queryKey: ["useMyReviews"] });
+      (options as any)?.onSuccess?.(data, variables, ctx);
+    },
+    onError: (data, variables, ctx) => {
+      (options as any)?.onError?.(data, variables, ctx);
+    },
   });
   return mutation;
 }
 
 export function useDeleteMyReview(options?: UseMutationOptions<any, any, any>) {
+  const queryClient = useQueryClient();
   const mutation = useMutation({
     mutationFn: (id: number) => deleteMyReview(id),
-    ...options,
+    onSuccess: (data, variables, ctx) => {
+      queryClient.invalidateQueries({ queryKey: ["useMyReviews"] });
+      (options as any)?.onSuccess?.(data, variables, ctx);
+    },
+    onError: (data, variables, ctx) => {
+      (options as any)?.onError?.(data, variables, ctx);
+    },
   });
   return mutation;
 }

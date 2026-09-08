@@ -1,4 +1,4 @@
-import { useQuery, useMutation } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   getAddonCatalog,
   purchaseAddon,
@@ -29,6 +29,7 @@ export function usePurchaseAddon(
     >
   >[0],
 ) {
+  const queryClient = useQueryClient();
   return useMutation<
     PurchaseAddonResponse,
     Error,
@@ -36,7 +37,14 @@ export function usePurchaseAddon(
   >({
     mutationFn: ({ addOnId, campaignId }) =>
       purchaseAddon(addOnId, campaignId),
-    ...options,
+    onSuccess: (data, variables, ctx) => {
+      queryClient.invalidateQueries({ queryKey: ["professional-assignments"] });
+      queryClient.invalidateQueries({ queryKey: ["useSingleHubAppDetails"] });
+      (options as any)?.onSuccess?.(data, variables, ctx);
+    },
+    onError: (data, variables, ctx) => {
+      (options as any)?.onError?.(data, variables, ctx);
+    },
   });
 }
 
@@ -45,9 +53,17 @@ export function useAssignProfessionalTester(
     typeof useMutation<unknown, Error, { campaignId: number; feeINR?: number }>
   >[0],
 ) {
+  const queryClient = useQueryClient();
   return useMutation<unknown, Error, { campaignId: number; feeINR?: number }>({
     mutationFn: (payload) => assignProfessionalTester(payload),
-    ...options,
+    onSuccess: (data, variables, ctx) => {
+      queryClient.invalidateQueries({ queryKey: ["professional-assignments"] });
+      queryClient.invalidateQueries({ queryKey: ["useSingleHubAppDetails"] });
+      (options as any)?.onSuccess?.(data, variables, ctx);
+    },
+    onError: (data, variables, ctx) => {
+      (options as any)?.onError?.(data, variables, ctx);
+    },
   });
 }
 
@@ -56,19 +72,33 @@ export function useFillProfessionalTester(
     typeof useMutation<unknown, Error, { assignmentId: number; professionalUserId: string }>
   >[0],
 ) {
+  const queryClient = useQueryClient();
   return useMutation<unknown, Error, { assignmentId: number; professionalUserId: string }>({
     mutationFn: ({ assignmentId, professionalUserId }) =>
       fillProfessionalTester(assignmentId, professionalUserId),
-    ...options,
+    onSuccess: (data, variables, ctx) => {
+      queryClient.invalidateQueries({ queryKey: ["professional-assignments"] });
+      (options as any)?.onSuccess?.(data, variables, ctx);
+    },
+    onError: (data, variables, ctx) => {
+      (options as any)?.onError?.(data, variables, ctx);
+    },
   });
 }
 
 export function useCancelProfessionalTester(
   options?: Parameters<typeof useMutation<unknown, Error, number>>[0],
 ) {
+  const queryClient = useQueryClient();
   return useMutation<unknown, Error, number>({
     mutationFn: (id) => cancelProfessionalTester(id),
-    ...options,
+    onSuccess: (data, variables, ctx) => {
+      queryClient.invalidateQueries({ queryKey: ["professional-assignments"] });
+      (options as any)?.onSuccess?.(data, variables, ctx);
+    },
+    onError: (data, variables, ctx) => {
+      (options as any)?.onError?.(data, variables, ctx);
+    },
   });
 }
 

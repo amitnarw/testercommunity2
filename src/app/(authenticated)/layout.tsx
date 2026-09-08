@@ -65,10 +65,13 @@ export default function AuthenticatedLayout({
     await authClient.signOut({
       fetchOptions: {
         onSuccess: () => {
+          queryClient.clear();
           router.push(ROUTES.AUTH.LOGIN);
         },
       },
     });
+    // Fallback — clear even if fetchOptions.onSuccess doesn't fire (e.g. network error)
+    queryClient.clear();
   };
 
   if (userData?.isActive === false) {

@@ -11,7 +11,11 @@ export function useMyPenalties() {
   return useQuery<MyPenaltiesResponse>({
     queryKey: ["my-penalties"],
     queryFn: () => getMyPenalties(),
+    staleTime: 2 * 60 * 1000,
+    gcTime: 10 * 60 * 1000,
     refetchInterval: 30_000,
+    retryOnMount: false,
+    refetchOnWindowFocus: false,
   });
 }
 

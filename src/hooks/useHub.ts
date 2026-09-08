@@ -52,15 +52,22 @@ export function useAppCategories() {
 }
 
 export function useAddHubApp(options?: UseMutationOptions<any, any, any>) {
+  const queryClient = useQueryClient();
+
   const mutation = useMutation({
     mutationFn: (payload: any) => addHubApp(payload),
-    onSuccess: (data) => {
+    onSuccess: (data, variables, ctx) => {
       console.log("Hub app added successfully: " + data);
+      queryClient.invalidateQueries({ queryKey: ["useHubSubmittedApp"] });
+      queryClient.invalidateQueries({ queryKey: ["useHubSubmittedAppsCount"] });
+      queryClient.invalidateQueries({ queryKey: ["useHubData"] });
+      queryClient.invalidateQueries({ queryKey: ["useHubApps"] });
+      (options as any)?.onSuccess?.(data, variables, ctx);
     },
-    onError: (data) => {
+    onError: (data, variables, ctx) => {
       console.log("Hub app adding failed: " + data);
+      (options as any)?.onError?.(data, variables, ctx);
     },
-    ...options,
   });
 
   return mutation;
@@ -161,14 +168,15 @@ export function useAddHubAppTestingRequest(
   const mutation = useMutation({
     mutationFn: (payload: { hub_id: string; offered_app_id?: string | number }) =>
       addHubAppTestingRequest(payload),
-    onSuccess: (data) => {
+    onSuccess: (data, variables, ctx) => {
       console.log("Hub app testing request added successfully: " + data);
       queryClient.invalidateQueries({ queryKey: ["useSingleHubAppDetails"] });
+      (options as any)?.onSuccess?.(data, variables, ctx);
     },
-    onError: (data) => {
+    onError: (data, variables, ctx) => {
       console.log("Hub app testing request adding failed: " + data);
+      (options as any)?.onError?.(data, variables, ctx);
     },
-    ...options,
   });
 
   return mutation;
@@ -177,16 +185,22 @@ export function useAddHubAppTestingRequest(
 export function useAcceptHubAppTestingRequest(
   options?: UseMutationOptions<any, any, any>,
 ) {
+  const queryClient = useQueryClient();
+
   const mutation = useMutation({
     mutationFn: (payload: { hub_id: string; tester_id: string }) =>
       acceptHubAppTestingRequest(payload),
-    onSuccess: (data) => {
+    onSuccess: (data, variables, ctx) => {
       console.log("Hub app testing request accepted successfully: " + data);
+      queryClient.invalidateQueries({ queryKey: ["useSingleHubAppDetails"] });
+      queryClient.invalidateQueries({ queryKey: ["useHubApps"] });
+      queryClient.invalidateQueries({ queryKey: ["useHubAppsCount"] });
+      (options as any)?.onSuccess?.(data, variables, ctx);
     },
-    onError: (data) => {
+    onError: (data, variables, ctx) => {
       console.log("Hub app testing request accepting failed: " + data);
+      (options as any)?.onError?.(data, variables, ctx);
     },
-    ...options,
   });
 
   return mutation;
@@ -195,6 +209,8 @@ export function useAcceptHubAppTestingRequest(
 export function useRejectHubAppTestingRequest(
   options?: UseMutationOptions<any, any, any>,
 ) {
+  const queryClient = useQueryClient();
+
   const mutation = useMutation({
     mutationFn: (payload: {
       hub_id: string;
@@ -204,13 +220,17 @@ export function useRejectHubAppTestingRequest(
       image?: string;
       video?: string;
     }) => rejectHubAppTestingRequest(payload),
-    onSuccess: (data) => {
+    onSuccess: (data, variables, ctx) => {
       console.log("Hub app testing request rejected successfully: " + data);
+      queryClient.invalidateQueries({ queryKey: ["useSingleHubAppDetails"] });
+      queryClient.invalidateQueries({ queryKey: ["useHubApps"] });
+      queryClient.invalidateQueries({ queryKey: ["useHubAppsCount"] });
+      (options as any)?.onSuccess?.(data, variables, ctx);
     },
-    onError: (data) => {
+    onError: (data, variables, ctx) => {
       console.log("Hub app testing request rejecting failed: " + data);
+      (options as any)?.onError?.(data, variables, ctx);
     },
-    ...options,
   });
 
   return mutation;
@@ -219,6 +239,8 @@ export function useRejectHubAppTestingRequest(
 export function useAddHubAppFeedback(
   options?: UseMutationOptions<any, any, any>,
 ) {
+  const queryClient = useQueryClient();
+
   const mutation = useMutation({
     mutationFn: (payload: {
       hub_id: string;
@@ -228,13 +250,15 @@ export function useAddHubAppFeedback(
       image?: string;
       video?: string;
     }) => addHubAppFeedback(payload),
-    onSuccess: (data) => {
+    onSuccess: (data, variables, ctx) => {
       console.log("Hub app feedback added successfully: " + data);
+      queryClient.invalidateQueries({ queryKey: ["useSingleHubAppDetails"] });
+      (options as any)?.onSuccess?.(data, variables, ctx);
     },
-    onError: (data) => {
+    onError: (data, variables, ctx) => {
       console.log("Hub app feedback adding failed: " + data);
+      (options as any)?.onError?.(data, variables, ctx);
     },
-    ...options,
   });
 
   return mutation;
@@ -243,15 +267,19 @@ export function useAddHubAppFeedback(
 export function useDeleteHubAppFeedback(
   options?: UseMutationOptions<any, any, any>,
 ) {
+  const queryClient = useQueryClient();
+
   const mutation = useMutation({
     mutationFn: (id: number) => deleteHubAppFeedback(id),
-    onSuccess: (data) => {
+    onSuccess: (data, variables, ctx) => {
       console.log("Hub app feedback deleted successfully: " + data);
+      queryClient.invalidateQueries({ queryKey: ["useSingleHubAppDetails"] });
+      (options as any)?.onSuccess?.(data, variables, ctx);
     },
-    onError: (data) => {
+    onError: (data, variables, ctx) => {
       console.log("Hub app feedback deleting failed: " + data);
+      (options as any)?.onError?.(data, variables, ctx);
     },
-    ...options,
   });
 
   return mutation;
@@ -260,19 +288,24 @@ export function useDeleteHubAppFeedback(
 export function useSubmitDailyVerification(
   options?: UseMutationOptions<any, any, any>,
 ) {
+  const queryClient = useQueryClient();
+
   const mutation = useMutation({
     mutationFn: (payload: {
       hubId: number | string;
       proofImage: string;
       metaData?: any;
     }) => submitDailyVerification(payload),
-    onSuccess: (data) => {
+    onSuccess: (data, variables, ctx) => {
       console.log("Daily verification submitted: " + data);
+      queryClient.invalidateQueries({ queryKey: ["useSingleHubAppDetails"] });
+      queryClient.invalidateQueries({ queryKey: ["useHubStats"] });
+      (options as any)?.onSuccess?.(data, variables, ctx);
     },
-    onError: (data) => {
+    onError: (data, variables, ctx) => {
       console.log("Daily verification failed: " + data);
+      (options as any)?.onError?.(data, variables, ctx);
     },
-    ...options,
   });
 
   return mutation;
@@ -286,17 +319,18 @@ export function useCompleteHostedApp(
   const mutation = useMutation({
     mutationFn: (payload: { appId: number | string }) =>
       completeHostedApp(payload),
-    onSuccess: (data) => {
+    onSuccess: (data, variables, ctx) => {
       console.log("App completed successfully: " + data);
       queryClient.invalidateQueries({ queryKey: ["useHubAppsCount"] });
       queryClient.invalidateQueries({ queryKey: ["useHubApps"] });
       queryClient.invalidateQueries({ queryKey: ["useSingleHubAppDetails"] });
       queryClient.invalidateQueries({ queryKey: ["useHubData"] });
+      (options as any)?.onSuccess?.(data, variables, ctx);
     },
-    onError: (data) => {
+    onError: (data, variables, ctx) => {
       console.log("App completion failed: " + data);
+      (options as any)?.onError?.(data, variables, ctx);
     },
-    ...options,
   });
 
   return mutation;
@@ -310,17 +344,18 @@ export function useStartHubAppTesting(
   const mutation = useMutation({
     mutationFn: (payload: { appId: number | string }) =>
       startHubAppTesting(payload),
-    onSuccess: (data) => {
+    onSuccess: (data, variables, ctx) => {
       console.log("Testing started successfully: " + data);
       queryClient.invalidateQueries({ queryKey: ["useSingleHubAppDetails"] });
       queryClient.invalidateQueries({ queryKey: ["useHubSubmittedApp"] });
       queryClient.invalidateQueries({ queryKey: ["useHubAppsCount"] });
       queryClient.invalidateQueries({ queryKey: ["useHubApps"] });
+      (options as any)?.onSuccess?.(data, variables, ctx);
     },
-    onError: (data) => {
+    onError: (data, variables, ctx) => {
       console.log("Testing start failed: " + data);
+      (options as any)?.onError?.(data, variables, ctx);
     },
-    ...options,
   });
 
   return mutation;
@@ -331,15 +366,16 @@ export function useResubmitHubApp(options?: UseMutationOptions<any, any, any>) {
 
   const mutation = useMutation({
     mutationFn: (payload: any) => resubmitHubApp(payload),
-    onSuccess: (data) => {
+    onSuccess: (data, variables, ctx) => {
       console.log("Hub app resubmitted successfully: " + data);
       queryClient.invalidateQueries({ queryKey: ["useSingleHubAppDetails"] });
       queryClient.invalidateQueries({ queryKey: ["useHubSubmittedApp"] });
+      (options as any)?.onSuccess?.(data, variables, ctx);
     },
-    onError: (data) => {
+    onError: (data, variables, ctx) => {
       console.log("Hub app resubmitting failed: " + data);
+      (options as any)?.onError?.(data, variables, ctx);
     },
-    ...options,
   });
 
   return mutation;

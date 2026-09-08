@@ -1176,6 +1176,7 @@ export function useDeleteUserReview(
 
 export function useActAsRole(options?: UseMutationOptions<any, any, any>) {
   const router = useRouter();
+  const queryClient = useQueryClient();
   const { data: session } = authClient.useSession();
   const actingAsRole = ((session as any)?.actingAsRole as "tester" | "user" | null) ?? null;
 
@@ -1185,6 +1186,7 @@ export function useActAsRole(options?: UseMutationOptions<any, any, any>) {
         return result;
       },
       onSuccess: (_data, role) => {
+        queryClient.clear();
         if (!role) {
           router.push(ROUTES.ADMIN.DASHBOARD);
         } else if (role === "tester") {

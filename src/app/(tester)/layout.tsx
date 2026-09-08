@@ -8,6 +8,7 @@ import { Sidebar } from "@/components/authenticated/sidebar";
 import { authClient } from "@/lib/auth-client";
 import PageTransition from "@/components/page-transition";
 import { ROUTES } from "@/lib/routes";
+import { useQueryClient } from "@tanstack/react-query";
 
 export default function ProfessionalLayout({
   children,
@@ -18,6 +19,7 @@ export default function ProfessionalLayout({
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(true);
   const router = useRouter();
   const pathname = usePathname();
+  const queryClient = useQueryClient();
 
   useEffect(() => {
     if (isPending) return;
@@ -89,10 +91,12 @@ export default function ProfessionalLayout({
     await authClient.signOut({
       fetchOptions: {
         onSuccess: () => {
+          queryClient.clear();
           router.push(ROUTES.AUTH.LOGIN);
         },
       },
     });
+    queryClient.clear();
   };
 
   const isAuthPage =

@@ -51,7 +51,7 @@ export const AppActionButton = ({
   isPending?: boolean;
   isSuccess?: boolean;
   isError?: boolean;
-  error?: Error;
+  error?: Error | null;
   reset?: () => void;
   buttonType?: string;
   url?: string;
@@ -276,7 +276,7 @@ export const AppInfoSidebar = ({
   isPending?: boolean;
   isSuccess?: boolean;
   isError?: boolean;
-  error?: Error;
+  error?: Error | null;
   reset?: () => void;
   buttonType?: string;
   url?: string;
