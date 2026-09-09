@@ -28,7 +28,6 @@ import {
   ThumbsUp,
   FileText,
   Zap,
-  ShieldCheck,
   MessageSquareQuote,
 } from "lucide-react";
 import { BaseSidebar, SidebarNavLink } from "@/components/ui/base-sidebar";
@@ -95,28 +94,14 @@ const adminNavLinks: AdminNavLink[] = [
   },
 
   // Handshake Services
+  // Handshake Apps now hosts Submissions / Monitoring / Pro Tester Queue
+  // under /admin/submissions-free via the ?view= URL param.
   {
     name: "Handshake Apps",
     href: ROUTES.ADMIN.SUBMISSIONS_FREE,
     icon: Handshake,
     section: "free",
     badge: "HANDSHAKE",
-    moduleName: "submissions",
-  },
-  // P4: these three pages existed but were unreachable from navigation ,
-  // admins had to hand-type URLs.
-  {
-    name: "Handshake Monitoring",
-    href: ROUTES.ADMIN.HANDSHAKE_MONITORING,
-    icon: Activity,
-    section: "free",
-    moduleName: "submissions",
-  },
-  {
-    name: "Pro Tester Queue",
-    href: ROUTES.ADMIN.HANDSHAKE_ADDONS,
-    icon: ShieldCheck,
-    section: "free",
     moduleName: "submissions",
   },
   {

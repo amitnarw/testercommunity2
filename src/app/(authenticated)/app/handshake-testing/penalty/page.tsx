@@ -10,6 +10,7 @@ import { useMyPenalties, useSubmitPenaltyProof } from "@/hooks/usePenalty";
 import { uploadFileDirectlyToR2 } from "@/lib/apiCalls";
 import { SafeImage } from "@/components/safe-image";
 import { useToast } from "@/hooks/use-toast";
+import { useQueryClient } from "@tanstack/react-query";
 
 function formatDeadline(deadline: string): string {
   const ms = new Date(deadline).getTime() - Date.now();
@@ -38,6 +39,7 @@ function DeadlineBadge({ deadline }: { deadline: string }) {
 
 export default function PenaltyPage() {
   const { data, isLoading } = useMyPenalties();
+  const queryClient = useQueryClient();
   const submit = useSubmitPenaltyProof();
   const { toast } = useToast();
   const [submittingId, setSubmittingId] = useState<number | null>(null);
@@ -76,6 +78,7 @@ export default function PenaltyPage() {
         title: "Proof submitted",
         description: "Your proof has been submitted for admin verification.",
       });
+      queryClient.invalidateQueries({ queryKey: ["my-penalties"] });
       setProofUrlByTask((p) => {
         const next = { ...p };
         delete next[taskId];

@@ -5,7 +5,7 @@ import { useSearchParams, usePathname, useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
-import { Search } from "lucide-react";
+import { Handshake, Activity, ShieldCheck, Search } from "lucide-react";
 import { Tabs, TabsList, TabsContent, TabsTrigger } from "@/components/ui/tabs";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -13,8 +13,32 @@ import { AppPagination } from "@/components/app-pagination";
 import { useSubmittedApps, useSubmittedAppsCount } from "@/hooks/useAdmin";
 import { HubSubmittedAppResponse } from "@/lib/types";
 import { SubmissionsTable } from "@/components/admin/submissions-table";
+import HandshakeMonitoringPanel from "@/components/admin/handshake-monitoring-panel";
+import HandshakeAddonsPanel from "@/components/admin/handshake-addons-panel";
 
 const ITEMS_PER_PAGE = 8;
+
+const VIEW_KEYS = ["submissions", "monitoring", "addons"] as const;
+type ViewKey = (typeof VIEW_KEYS)[number];
+
+const VIEW_META: Record<ViewKey, { label: string; description: string }> = {
+  submissions: {
+    label: "Submissions",
+    description: "Review, approve, or reject handshake app submissions.",
+  },
+  monitoring: {
+    label: "Monitoring",
+    description: "Real-time overview of campaigns, testers, penalties, and missed days.",
+  },
+  addons: {
+    label: "Pro Tester Queue",
+    description: "Manage professional tester assignments for campaigns that need a tester replacement.",
+  },
+};
+
+function isViewKey(value: string | null): value is ViewKey {
+  return !!value && (VIEW_KEYS as readonly string[]).includes(value);
+}
 
 function AdminSubmissionsFreeContent() {
   const searchParams = useSearchParams();
@@ -25,6 +49,8 @@ function AdminSubmissionsFreeContent() {
   const [activeTab, setActiveTab] = useState(searchParams.get("tab") || "All");
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState("");
+  const viewParam = searchParams.get("view");
+  const activeView: ViewKey = isViewKey(viewParam) ? viewParam : "submissions";
 
   // Sync with URL changes (e.g. back button)
   useEffect(() => {
@@ -44,6 +70,14 @@ function AdminSubmissionsFreeContent() {
   const updateUrl = (params: Record<string, string>) => {
     const newParams = new URLSearchParams(searchParams.toString());
     Object.entries(params).forEach(([key, value]) => {
+      if (key === "view") {
+        if (value && value !== "submissions") {
+          newParams.set(key, value);
+        } else {
+          newParams.delete(key);
+        }
+        return;
+      }
       if (value && value !== "All") {
         newParams.set(key, value);
       } else {
@@ -53,6 +87,11 @@ function AdminSubmissionsFreeContent() {
     router.replace(`${pathname}?${newParams.toString()}`, {
       scroll: false,
     });
+  };
+
+  const handleViewChange = (val: string) => {
+    const next: ViewKey = isViewKey(val) ? val : "submissions";
+    updateUrl({ view: next });
   };
 
   const handlePageChange = (page: number) => {
@@ -112,123 +151,156 @@ function AdminSubmissionsFreeContent() {
     currentPage * ITEMS_PER_PAGE,
   );
 
+  const meta = VIEW_META[activeView];
+
   return (
     <div className="flex-1 space-y-6 container mx-auto px-4 md:px-6 py-6">
       {/* Header */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between space-y-2">
         <div>
           <h2 className="text-2xl sm:text-3xl font-bold bg-gradient-to-b from-primary to-primary/40 bg-clip-text text-transparent leading-[unset]">
-            Handshake Submissions
+            Handshake Apps
           </h2>
           <p className="text-sm sm:text-md text-muted-foreground">
-            Review, approve, or reject handshake app submissions.
+            {meta.description}
           </p>
         </div>
       </div>
 
       <Tabs
-        value={
-          activeTab === "AVAILABLE" || activeTab === "IN_TESTING"
-            ? "RUNNING"
-            : activeTab
-        }
-        onValueChange={(val) =>
-          handleTabChange(val === "RUNNING" ? "AVAILABLE" : val)
-        }
+        value={activeView}
+        onValueChange={handleViewChange}
         className="w-full grid grid-cols-1"
       >
-        <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-          <div className="relative w-full md:w-auto">
-            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-            <Input
-              placeholder="Search by app name or developer..."
-              className="pl-8 w-full md:w-[300px]"
-              value={searchQuery}
-              onChange={(e) => {
-                setSearchQuery(e.target.value);
-                setCurrentPage(1);
-              }}
-            />
-          </div>
-          <TabsList className="w-full md:w-auto flex gap-1">
-            <TabsTrigger value="All">All ({countsData?.All || 0})</TabsTrigger>
-            <TabsTrigger value="IN_REVIEW">
-              Pending ({countsData?.IN_REVIEW || 0})
-            </TabsTrigger>
-            <TabsTrigger value="RUNNING">
-              Running (
-              {(countsData?.AVAILABLE || 0) + (countsData?.IN_TESTING || 0)})
-            </TabsTrigger>
-            <TabsTrigger value="REJECTED">
-              Rejected ({countsData?.REJECTED || 0})
-            </TabsTrigger>
-            <TabsTrigger value="DRAFT">
-              Draft ({countsData?.DRAFT || 0})
-            </TabsTrigger>
-            <TabsTrigger value="COMPLETED">
-              Completed ({countsData?.COMPLETED || 0})
-            </TabsTrigger>
-          </TabsList>
-        </div>
+        <TabsList className="w-full md:w-auto flex gap-1">
+          <TabsTrigger value="submissions" className="gap-2">
+            <Handshake className="h-4 w-4" />
+            Submissions
+          </TabsTrigger>
+          <TabsTrigger value="monitoring" className="gap-2">
+            <Activity className="h-4 w-4" />
+            Monitoring
+          </TabsTrigger>
+          <TabsTrigger value="addons" className="gap-2">
+            <ShieldCheck className="h-4 w-4" />
+            Pro Tester Queue
+          </TabsTrigger>
+        </TabsList>
 
-        <TabsContent
-          value={
-            activeTab === "AVAILABLE" || activeTab === "IN_TESTING"
-              ? "RUNNING"
-              : activeTab
-          }
-          className="mt-4 grid grid-cols-1"
-        >
-          {/* Sub-tabs for Running status */}
-          {(activeTab === "AVAILABLE" || activeTab === "IN_TESTING") && (
-            <div className="flex justify-start mb-4">
-              <div className="flex items-center gap-2 bg-muted rounded-lg p-1">
-                {[
-                  {
-                    label: "Available",
-                    value: "AVAILABLE",
-                    count: countsData?.AVAILABLE || 0,
-                  },
-                  {
-                    label: "In Testing",
-                    value: "IN_TESTING",
-                    count: countsData?.IN_TESTING || 0,
-                  },
-                ].map((tab) => (
-                  <button
-                    key={tab.value}
-                    onClick={() => handleTabChange(tab.value)}
-                    className={cn(
-                      "rounded-lg px-4 py-1.5 text-xs sm:text-sm h-auto transition-colors",
-                      activeTab === tab.value
-                        ? "bg-black text-white dark:bg-white dark:text-black shadow-sm"
-                        : "text-muted-foreground hover:text-foreground hover:bg-background/50",
-                    )}
-                  >
-                    {tab.label} ({tab.count})
-                  </button>
-                ))}
-              </div>
-            </div>
-          )}
-          <div className="overflow-x-auto">
-            <Card>
-              <CardContent className="p-0">
-                <SubmissionsTable
-                  submissions={paginatedSubmissions}
-                  isLoading={isLoading}
-                  showAppType={false}
+        <TabsContent value="submissions" className="mt-4 grid grid-cols-1 space-y-6">
+          <Tabs
+            value={
+              activeTab === "AVAILABLE" || activeTab === "IN_TESTING"
+                ? "RUNNING"
+                : activeTab
+            }
+            onValueChange={(val) =>
+              handleTabChange(val === "RUNNING" ? "AVAILABLE" : val)
+            }
+            className="w-full grid grid-cols-1"
+          >
+            <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+              <div className="relative w-full md:w-auto">
+                <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                <Input
+                  placeholder="Search by app name or developer..."
+                  className="pl-8 w-full md:w-[300px]"
+                  value={searchQuery}
+                  onChange={(e) => {
+                    setSearchQuery(e.target.value);
+                    setCurrentPage(1);
+                  }}
                 />
-              </CardContent>
-            </Card>
-          </div>
-          {!isLoading && paginatedSubmissions.length > 0 && (
-            <AppPagination
-              currentPage={currentPage}
-              totalPages={totalPages}
-              onPageChange={handlePageChange}
-            />
-          )}
+              </div>
+              <TabsList className="w-full md:w-auto flex gap-1">
+                <TabsTrigger value="All">All ({countsData?.All || 0})</TabsTrigger>
+                <TabsTrigger value="IN_REVIEW">
+                  Pending ({countsData?.IN_REVIEW || 0})
+                </TabsTrigger>
+                <TabsTrigger value="RUNNING">
+                  Running (
+                  {(countsData?.AVAILABLE || 0) + (countsData?.IN_TESTING || 0)})
+                </TabsTrigger>
+                <TabsTrigger value="REJECTED">
+                  Rejected ({countsData?.REJECTED || 0})
+                </TabsTrigger>
+                <TabsTrigger value="DRAFT">
+                  Draft ({countsData?.DRAFT || 0})
+                </TabsTrigger>
+                <TabsTrigger value="COMPLETED">
+                  Completed ({countsData?.COMPLETED || 0})
+                </TabsTrigger>
+              </TabsList>
+            </div>
+
+            <TabsContent
+              value={
+                activeTab === "AVAILABLE" || activeTab === "IN_TESTING"
+                  ? "RUNNING"
+                  : activeTab
+              }
+              className="mt-4 grid grid-cols-1"
+            >
+              {/* Sub-tabs for Running status */}
+              {(activeTab === "AVAILABLE" || activeTab === "IN_TESTING") && (
+                <div className="flex justify-start mb-4">
+                  <div className="flex items-center gap-2 bg-muted rounded-lg p-1">
+                    {[
+                      {
+                        label: "Available",
+                        value: "AVAILABLE",
+                        count: countsData?.AVAILABLE || 0,
+                      },
+                      {
+                        label: "In Testing",
+                        value: "IN_TESTING",
+                        count: countsData?.IN_TESTING || 0,
+                      },
+                    ].map((tab) => (
+                      <button
+                        key={tab.value}
+                        onClick={() => handleTabChange(tab.value)}
+                        className={cn(
+                          "rounded-lg px-4 py-1.5 text-xs sm:text-sm h-auto transition-colors",
+                          activeTab === tab.value
+                            ? "bg-black text-white dark:bg-white dark:text-black shadow-sm"
+                            : "text-muted-foreground hover:text-foreground hover:bg-background/50",
+                        )}
+                      >
+                        {tab.label} ({tab.count})
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+              <div className="overflow-x-auto">
+                <Card>
+                  <CardContent className="p-0">
+                    <SubmissionsTable
+                      submissions={paginatedSubmissions}
+                      isLoading={isLoading}
+                      showAppType={false}
+                    />
+                  </CardContent>
+                </Card>
+              </div>
+              {!isLoading && paginatedSubmissions.length > 0 && (
+                <AppPagination
+                  currentPage={currentPage}
+                  totalPages={totalPages}
+                  onPageChange={handlePageChange}
+                />
+              )}
+            </TabsContent>
+          </Tabs>
+        </TabsContent>
+
+        <TabsContent value="monitoring" className="mt-4">
+          <HandshakeMonitoringPanel />
+        </TabsContent>
+
+        <TabsContent value="addons" className="mt-4">
+          <HandshakeAddonsPanel />
         </TabsContent>
       </Tabs>
     </div>

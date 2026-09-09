@@ -9,10 +9,12 @@ import { Button } from "@/components/ui/button";
 import { PageHeader } from "@/components/page-header";
 import Spinner from "@/components/ui/spinner";
 import { useOrderStatus } from "@/hooks/useBilling";
+import { useQueryClient } from "@tanstack/react-query";
 
 function ProcessingContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
+  const queryClient = useQueryClient();
   const orderId = searchParams.get("orderId");
   const [timedOut, setTimedOut] = useState(false);
   const startTime = useRef(Date.now());
@@ -23,13 +25,17 @@ function ProcessingContent() {
     if (!data) return;
 
     if (data.status === "PAID") {
+      queryClient.invalidateQueries({ queryKey: ["useGetUserWallet"] });
+      queryClient.invalidateQueries({ queryKey: ["useGetUserTransactions"] });
+      queryClient.invalidateQueries({ queryKey: ["useDashboardData"] });
+      queryClient.invalidateQueries({ queryKey: ["getBillingHistory"] });
       const params = new URLSearchParams();
       params.set("orderId", orderId || "");
       if (data.invoiceId) params.set("invoiceId", data.invoiceId);
       if (data.paymentId) params.set("paymentId", String(data.paymentId));
       router.replace(`/billing/success?${params.toString()}`);
     }
-  }, [data, orderId, router]);
+  }, [data, orderId, router, queryClient]);
 
   const handleTryAgain = () => {
     router.replace(ROUTES.AUTHENTICATED.BILLING);

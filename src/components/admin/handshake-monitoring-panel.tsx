@@ -29,16 +29,9 @@ import type {
   WaitingCampaign,
 } from "@/lib/types";
 
-export default function AdminHandshakeMonitoringPage() {
+export default function HandshakeMonitoringPanel() {
   return (
-    <div className="container mx-auto px-4 py-8 space-y-6">
-      <header>
-        <h1 className="text-2xl font-bold">Handshake Monitoring</h1>
-        <p className="text-sm text-muted-foreground">
-          Real-time overview of campaigns, testers, penalties, and missed days.
-        </p>
-      </header>
-
+    <div className="space-y-6">
       <OverviewCards />
 
       <Tabs defaultValue="waiting" className="space-y-4">

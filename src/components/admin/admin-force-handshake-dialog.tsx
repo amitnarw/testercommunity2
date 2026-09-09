@@ -34,7 +34,7 @@ interface AdminForceHandshakeDialogProps {
 
 /**
  * S12: Force-handshake affordance from the admin submission-detail page.
- * Mirrors the Waiting-tab row on /admin/handshake-monitoring but is
+ * Mirrors the Waiting-tab row in the Monitoring tab of /admin/submissions-free but is
  * contextual: this campaign is side A; admin picks a partner (side B).
  * Backend rejects same-owner, non-HANDSHAKE, or non-eligible states.
  */

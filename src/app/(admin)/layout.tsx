@@ -9,6 +9,7 @@ import { Sidebar } from "@/components/authenticated/sidebar";
 import PageTransition from "@/components/page-transition";
 import { authClient } from "@/lib/auth-client";
 import { ROUTES } from "@/lib/routes";
+import { useQueryClient } from "@tanstack/react-query";
 
 const MODULE_ROUTE_MAP: Record<string, string> = {
   dashboard: ROUTES.ADMIN.DASHBOARD,
@@ -62,6 +63,7 @@ export default function AdminLayout({
   const router = useRouter();
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(true);
   const { data: session, isPending } = authClient.useSession();
+  const queryClient = useQueryClient();
   const isLoginPage = pathname?.startsWith(ROUTES.ADMIN.AUTH.LOGIN);
 
   useEffect(() => {
@@ -116,10 +118,12 @@ export default function AdminLayout({
     await authClient.signOut({
       fetchOptions: {
         onSuccess: () => {
+          queryClient.clear();
           router.push(ROUTES.ADMIN.AUTH.LOGIN);
         },
       },
     });
+    queryClient.clear();
   };
 
   if (isLoginPage) {
