@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { Loader2, Save, Zap, MessageSquare, Bot } from "lucide-react";
+import { Loader2, Save, Zap, MessageSquare, Bot, PlayCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -12,6 +12,7 @@ import { FeedbackModal } from "@/components/feedback-modal";
 import { useControlRoomData, useUpdateControlRoom } from "@/hooks/useAdmin";
 import { IconPickerModal } from "@/components/admin/icon-picker-modal";
 import { resolveIcon } from "@/lib/lucideIconCatalog";
+import { toYouTubeEmbedUrl } from "@/lib/youtube";
 
  interface StatCardDef {
    id: string;
@@ -42,6 +43,8 @@ export default function AdminControlRoomPage() {
     landingStatValues: [] as Array<{ id: string; value: string }>,
     humanChatEnabled: true,
     alexSystemPrompt: "",
+    proTestingVideoUrl: "",
+    handshakeVideoUrl: "",
   });
 
   // Unified, editable view of the 6 stat cards (resolved: DB value overrides default).
@@ -70,6 +73,8 @@ export default function AdminControlRoomPage() {
         landingStatValues: controlRoom.landingStatValues ?? [],
         humanChatEnabled: controlRoom.humanChatEnabled ?? true,
         alexSystemPrompt: controlRoom.alexSystemPrompt ?? "",
+        proTestingVideoUrl: controlRoom.proTestingVideoUrl ?? "",
+        handshakeVideoUrl: controlRoom.handshakeVideoUrl ?? "",
       });
 
       // Resolve the 6 editable cards: DB overrides defaults by id (canonical order preserved).
@@ -177,6 +182,21 @@ export default function AdminControlRoomPage() {
           showFeedback("success", "AI Assistant Settings Saved", "Alex's extra instructions have been updated."),
         onError: (err: any) =>
           showFeedback("error", "AI Assistant Settings Update Failed", err?.message || "Something went wrong."),
+      },
+    );
+  };
+
+  const handleSaveVideos = () => {
+    updateMutation.mutate(
+      {
+        proTestingVideoUrl: formValues.proTestingVideoUrl.trim() === "" ? null : formValues.proTestingVideoUrl.trim(),
+        handshakeVideoUrl: formValues.handshakeVideoUrl.trim() === "" ? null : formValues.handshakeVideoUrl.trim(),
+      },
+      {
+        onSuccess: () =>
+          showFeedback("success", "Submission Videos Saved", "Guide videos on the Pro Testing and Handshake submission pages have been updated."),
+        onError: (err: any) =>
+          showFeedback("error", "Submission Videos Update Failed", err?.message || "Something went wrong."),
       },
     );
   };
@@ -340,6 +360,77 @@ export default function AdminControlRoomPage() {
         </Card>
 
         {/* S9: Points & Withdrawal Settings card removed with the points economy. */}
+
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-lg">
+              <PlayCircle className="h-5 w-5 text-primary" />
+              Submission Guide Videos
+            </CardTitle>
+            <CardDescription>
+              The walkthrough videos shown at the top of the Pro Testing and Handshake Testing
+              submission guides. Leave empty to fall back to the default video.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            <div className="space-y-2">
+              <Label htmlFor="proTestingVideoUrl">Pro Testing Submission Video</Label>
+              <Input
+                id="proTestingVideoUrl"
+                type="url"
+                value={formValues.proTestingVideoUrl}
+                onChange={(e) => handleChange("proTestingVideoUrl", e.target.value)}
+                placeholder="https://www.youtube.com/watch?v=jibAmGjSEiE"
+              />
+              <p className="text-xs text-muted-foreground">
+                Any YouTube link works (watch, shorts, youtu.be, embed). Non-YouTube URLs are
+                used as-is.
+              </p>
+              {formValues.proTestingVideoUrl && (
+                <div className="text-xs text-muted-foreground">
+                  Resolves to:{" "}
+                  <code className="font-mono">
+                    {toYouTubeEmbedUrl(formValues.proTestingVideoUrl) || "(invalid)"}
+                  </code>
+                </div>
+              )}
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="handshakeVideoUrl">Handshake Testing Submission Video</Label>
+              <Input
+                id="handshakeVideoUrl"
+                type="url"
+                value={formValues.handshakeVideoUrl}
+                onChange={(e) => handleChange("handshakeVideoUrl", e.target.value)}
+                placeholder="https://www.youtube.com/watch?v=9V6kyq8z4UQ"
+              />
+              <p className="text-xs text-muted-foreground">
+                Any YouTube link works (watch, shorts, youtu.be, embed). Non-YouTube URLs are
+                used as-is.
+              </p>
+              {formValues.handshakeVideoUrl && (
+                <div className="text-xs text-muted-foreground">
+                  Resolves to:{" "}
+                  <code className="font-mono">
+                    {toYouTubeEmbedUrl(formValues.handshakeVideoUrl) || "(invalid)"}
+                  </code>
+                </div>
+              )}
+            </div>
+
+            <div className="flex justify-end pt-4 border-t mt-4">
+              <Button onClick={handleSaveVideos} disabled={updateMutation.isPending} size="sm" className="gap-2">
+                {updateMutation.isPending ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  <Save className="h-4 w-4" />
+                )}
+                Save Section
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
 
         <Card>
           <CardHeader>

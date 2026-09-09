@@ -382,6 +382,8 @@ export interface ControlRoomResponse {
   landingStatValues?: Array<{ id: string; value: string }> | null | undefined;
   landingStatIcons?: Array<{ id: string; icon: string }> | null | undefined;
   alexSystemPrompt?: string | null | undefined;
+  proTestingVideoUrl?: string | null | undefined;
+  handshakeVideoUrl?: string | null | undefined;
 }
 
 export interface DashboardDataResponse {

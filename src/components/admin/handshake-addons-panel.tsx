@@ -19,7 +19,7 @@ import {
 } from "@/hooks/useAddons";
 import { useToast } from "@/hooks/use-toast";
 
-export default function AdminHandshakeAddonsPage() {
+export default function HandshakeAddonsPanel() {
   const { data, isLoading, refetch } = useProfessionalAssignments();
   const { toast } = useToast();
 
@@ -54,15 +54,7 @@ export default function AdminHandshakeAddonsPage() {
   const [proUserIdByRow, setProUserIdByRow] = useState<Record<number, string>>({});
 
   return (
-    <div className="container mx-auto px-4 py-8 space-y-6">
-      <header>
-        <h1 className="text-2xl font-bold">Handshake Add-ons</h1>
-        <p className="text-sm text-muted-foreground">
-          Manage professional tester assignments for campaigns that need a
-          tester replacement.
-        </p>
-      </header>
-
+    <div className="space-y-6">
       <section>
         <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground mb-3">
           Professional Tester queue
@@ -164,9 +156,9 @@ export default function AdminHandshakeAddonsPage() {
             </p>
             <p>
               To replace a failing tester on an active campaign: use the{" "}
-              <strong>Replace</strong> action on the Handshake Monitoring page.
-              Then fill the open assignment above with a professional
-              tester&apos;s user ID, or cancel it to release the slot.
+              <strong>Replace</strong> action on the Monitoring tab. Then fill
+              the open assignment above with a professional tester&apos;s user
+              ID, or cancel it to release the slot.
             </p>
           </CardContent>
         </Card>

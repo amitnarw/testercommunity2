@@ -18,6 +18,11 @@ import {
 import { IconRain } from "@/components/icon-rain";
 import { PageHeader } from "@/components/page-header";
 import { ROUTES } from "@/lib/routes";
+import { getPublicStats } from "@/lib/apiCalls";
+import { toYouTubeEmbedUrl } from "@/lib/youtube";
+
+const DEFAULT_HANDSHAKE_VIDEO_EMBED =
+  "https://www.youtube-nocookie.com/embed/9V6kyq8z4UQ";
 
 const Highlight = ({ children }: { children: React.ReactNode }) => (
   <span className="bg-emerald-500/20 text-emerald-600 font-semibold px-1.5 py-0.5 rounded-md">
@@ -51,9 +56,25 @@ const CopyBlock = ({ textToCopy }: { textToCopy: string }) => {
 export default function SubmitAppGuidePage() {
   const [isVideoExpanded, setIsVideoExpanded] = useState(false);
   const [isClient, setIsClient] = useState(false);
+  const [videoEmbedUrl, setVideoEmbedUrl] = useState<string>(
+    DEFAULT_HANDSHAKE_VIDEO_EMBED,
+  );
 
   useEffect(() => {
     setIsClient(true);
+    let cancelled = false;
+    getPublicStats()
+      .then((stats) => {
+        if (cancelled) return;
+        const resolved = toYouTubeEmbedUrl(stats?.handshakeVideoUrl);
+        if (resolved) setVideoEmbedUrl(resolved);
+      })
+      .catch(() => {
+        // Network/parse failure: keep the default.
+      });
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   return (
@@ -83,7 +104,7 @@ export default function SubmitAppGuidePage() {
                 <div className="relative aspect-video">
                   <iframe
                     className="absolute top-0 left-0 w-full h-full"
-                    src="https://www.youtube-nocookie.com/embed/9V6kyq8z4UQ?autoplay=1"
+                    src={`${videoEmbedUrl}?autoplay=1`}
                     title="YouTube video player"
                     frameBorder="0"
                     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"

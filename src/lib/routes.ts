@@ -53,8 +53,6 @@ export const ROUTES = {
     TESTER_ACTIVITY: "/admin/tester-activity",
     MAIL: "/admin/mail",
     APP_CHATS: "/admin/app-chats",
-    HANDSHAKE_MONITORING: "/admin/handshake-monitoring",
-    HANDSHAKE_ADDONS: "/admin/handshake-addons",
     ELITE_BADGES: "/admin/elite-badges",
     AUTH: {
       LOGIN: "/admin/auth/login",

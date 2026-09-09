@@ -28,7 +28,6 @@ import {
   MessageSquare,
   Settings,
   Mail,
-  ShieldCheck,
   MessageSquareQuote,
 } from "lucide-react";
 import { Button } from "./ui/button";
@@ -98,27 +97,14 @@ const adminNavItems: AdminNavItem[] = [
   },
 
   // Handshake Services
+  // Handshake Apps now hosts Submissions / Monitoring / Pro Tester Queue
+  // under /admin/submissions-free via the ?view= URL param.
   {
     name: "Handshake Apps",
     href: ROUTES.ADMIN.SUBMISSIONS_FREE,
     icon: Handshake,
     section: "free",
     badge: "HANDSHAKE",
-    moduleName: "submissions",
-  },
-  // P4: mirror the desktop sidebar additions (were unreachable on mobile).
-  {
-    name: "Handshake Monitoring",
-    href: ROUTES.ADMIN.HANDSHAKE_MONITORING,
-    icon: Activity,
-    section: "free",
-    moduleName: "submissions",
-  },
-  {
-    name: "Pro Tester Queue",
-    href: ROUTES.ADMIN.HANDSHAKE_ADDONS,
-    icon: ShieldCheck,
-    section: "free",
     moduleName: "submissions",
   },
   {
