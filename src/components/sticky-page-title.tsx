@@ -20,7 +20,7 @@ export function StickyPageTitle({
       <div
         data-loc="StickyPageTitle"
         className={cn(
-          "flex flex-row gap-5 items-center sticky top-0 z-[50] pt-2 md:pt-1",
+          "flex flex-row gap-5 items-center sticky top-0 z-[50] pt-2 md:pt-1 w-4/5",
           className,
         )}
       >

@@ -30,8 +30,12 @@ import {
   ChevronDown,
   Loader2,
   PlayCircle,
+  BarChart3,
+  Users,
+  BookOpen,
 } from "lucide-react";
-import { useState, useEffect, use } from "react";
+import { Suspense, useState, useEffect, use } from "react";
+import { useSearchParams, usePathname, useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { format } from "date-fns";
 import { PageHeader } from "@/components/page-header";
@@ -55,6 +59,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { useToast } from "@/hooks/use-toast";
 import { EditSubmissionModal } from "@/components/community-dashboard/edit-submission-modal";
 import { StartTestingDialog } from "@/components/community-dashboard/start-testing-dialog";
+import { Tabs, TabsContent } from "@/components/ui/tabs";
+import { CustomTabsList } from "@/components/custom-tabs-list";
 
 const FEEDBACK_PER_PAGE = 5;
 
@@ -177,8 +183,6 @@ const TestCompleteSection = ({
     visible: { opacity: 1, y: 0, transition: { type: "spring" } },
   };
 
-  // P3.4: real feedback breakdown computed from actual feedback rows
-  // (case-insensitive type match), replacing hardcoded mock numbers.
   const allFeedback = app?.feedback ?? [];
   const feedbackBreakdown = {
     bugs: allFeedback.filter((fb) => (fb.type || "").toUpperCase() === "BUG")
@@ -274,6 +278,23 @@ function SubmissionDetailsPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = use(params);
+  return (
+    <Suspense
+      fallback={<SubmissionDetailsSkeleton />}
+    >
+      <SubmissionDetailsContent id={id} />
+    </Suspense>
+  );
+}
+
+function SubmissionDetailsContent({ id }: { id: string }) {
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
+  const router = useRouter();
+
+  const [selectedTab, setSelectedTab] = useState(
+    searchParams.get("tab") || "overview",
+  );
   const [feedbackPage, setFeedbackPage] = useState(1);
   const [viewMode, setViewMode] = useState<"list" | "grid">("list");
   const [fullscreenImage, setFullscreenImage] = useState<string | null>(null);
@@ -282,6 +303,29 @@ function SubmissionDetailsPage({
   const [isStartTestingModalOpen, setIsStartTestingModalOpen] = useState(false);
   const [showDeclaration, setShowDeclaration] = useState(false);
   const { toast } = useToast();
+
+  useEffect(() => {
+    const tab = searchParams.get("tab");
+    if (tab) setSelectedTab(tab);
+  }, [searchParams]);
+
+  const updateTabUrl = (newTab: string) => {
+    const params = new URLSearchParams(searchParams.toString());
+    if (newTab === "overview") {
+      params.delete("tab");
+    } else {
+      params.set("tab", newTab);
+    }
+    router.push(`${pathname}${params.toString() ? `?${params.toString()}` : ""}`, {
+      scroll: false,
+    });
+  };
+
+  const handleTabChange = (val: string) => {
+    setSelectedTab(val);
+    updateTabUrl(val);
+    if (val === "feedback") setFeedbackPage(1);
+  };
 
   const {
     data: appDetails,
@@ -313,23 +357,15 @@ function SubmissionDetailsPage({
 
   const statusConfig = getStatusConfig(appDetails.status);
 
-  // Calculate completed testers count (testers with status COMPLETED)
   const completedTestersCount =
     appDetails?.testerRelations?.filter(
       (relation) => relation.status === "COMPLETED",
     ).length || 0;
 
-  // Current day and total days for the test
   const currentDay = appDetails?.currentDay || 0;
   const totalDays = appDetails?.totalDay || 16;
-  // P3.4: use the campaign's own capacity instead of a hardcoded 12 ,
-  // an L9 owner with 20 slots previously never saw the completion banner.
   const requiredTesters = appDetails?.totalTester || 12;
 
-  // Show complete testing banner conditions:
-  // 1. Status is in an ongoing-testing state
-  // 2. Current day >= total days (last day or past)
-  // 3. Either: minimum testers met OR past last day
   const isOngoingStatus =
     appDetails?.status === "IN_TESTING" ||
     appDetails?.status === "AVAILABLE" ||
@@ -344,9 +380,7 @@ function SubmissionDetailsPage({
 
   const handleCompleteTest = async () => {
     try {
-      console.log("Completing test for hub:", id);
       await completeTest({ appId: id });
-      // After completion, refetch the app details
       await appDetailsRefetch();
     } catch (error) {
       console.error("Failed to complete test:", error);
@@ -385,6 +419,50 @@ function SubmissionDetailsPage({
     totalTesters: isUnderReviewOrRejected ? 0 : appDetails?.currentTester,
   };
 
+  const testersCount = appDetails?.testerRelations?.length ?? 0;
+  const feedbackCount = isUnderReviewOrRejected
+    ? 0
+    : appDetails?.feedback?.length ?? 0;
+  const showInstructionsTab = !!appDetails?.instructionsForTester;
+  const showTestersTab =
+    appDetails?.status === "AVAILABLE" ||
+    appDetails?.status === "IN_TESTING" ||
+    appDetails?.status === "COMPLETED" ||
+    appDetails?.status === "WAITING_FOR_PARTNERS" ||
+    appDetails?.status === "TESTING_ACTIVE" ||
+    appDetails?.status === "FINDING_TESTERS";
+
+  const tabs = [
+    {
+      label: "Overview",
+      value: "overview",
+      icon: BarChart3,
+      description: "Stats & summary",
+    },
+    {
+      label: "Testers",
+      value: "testers",
+      count: testersCount,
+      icon: Users,
+      description: "Manage testers",
+    },
+    {
+      label: "Feedback",
+      value: "feedback",
+      count: feedbackCount,
+      icon: MessageSquare,
+      description: "Tester feedback log",
+    },
+  ];
+  if (showInstructionsTab) {
+    tabs.push({
+      label: "Instructions",
+      value: "instructions",
+      icon: BookOpen,
+      description: "Developer instructions",
+    });
+  }
+
   return (
     <div className="bg-[#f8fafc] dark:bg-[#0f151e] text-foreground min-h-screen relative mb-8 overflow-x-hidden">
       <div
@@ -415,103 +493,6 @@ function SubmissionDetailsPage({
             className="pl-0"
           />
 
-          <AppInfoHeader
-            logo={appDetails?.androidApp?.appLogoUrl}
-            name={appDetails?.androidApp?.appName}
-            dataAiHint={appDetails?.androidApp?.appName}
-            category={appDetails?.androidApp?.appCategory?.name}
-            description={appDetails?.androidApp?.description || ""}
-            status={appDetails?.status}
-            statusConfig={statusConfig}
-          />
-
-          {appDetails?.status === "REJECTED" && (
-            <motion.section
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="rounded-[32px] border border-destructive/10 bg-background/50 backdrop-blur-xl shadow-2xl shadow-destructive/5 relative overflow-hidden group"
-            >
-              <div className="absolute inset-0 bg-gradient-to-br from-red-500/60 to-red-500/20 dark:from-red-500/30 dark:to-red-500/5 opacity-30 dark:opacity-70" />
-
-              <div className="flex flex-col lg:flex-row relative z-10">
-                <div className="flex-1 p-4 sm:p-10 sm:pr-14 flex flex-col justify-center">
-                  <div className="flex items-center gap-4 mb-8">
-                    <div className="h-14 w-14 rounded-2xl bg-destructive/10 text-destructive flex items-center justify-center shadow-inner ring-1 ring-destructive/20 relative overflow-hidden">
-                      <div className="absolute inset-0 bg-gradient-to-br from-destructive/20 to-transparent opacity-50" />
-                      <XCircle className="w-7 h-7 relative z-10" />
-                    </div>
-                    <div>
-                      <div className="flex items-center gap-2 mb-1">
-                        <span className="flex h-2 w-2 rounded-full bg-destructive"></span>
-                        <p className="text-xs font-bold text-destructive uppercase tracking-widest">
-                          Action Required
-                        </p>
-                      </div>
-                      <h2 className="text-2xl sm:text-3xl font-bold text-foreground tracking-tight">
-                        {appDetails?.statusDetails?.title}
-                      </h2>
-                    </div>
-                  </div>
-
-                  <div className="space-y-6 mb-10 relative">
-                    <div className="bg-white/50 dark:bg-white/10 rounded-2xl p-3 sm:p-6 border border-destructive/10 relative overflow-hidden">
-                      <div className="flex items-center gap-2 mb-3 text-yellow-500 font-medium text-sm uppercase tracking-wider">
-                        <AlertTriangle className="w-4 h-4" />
-                        Publisher Feedback
-                      </div>
-                      <p className="text-base text-foreground/80 leading-relaxed font-medium">
-                        {appDetails?.statusDetails?.description}
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="flex flex-wrap gap-4">
-                    <Button
-                      variant="outline"
-                      className="border-destructive/20 hover:bg-destructive/5 text-destructive rounded-xl h-12 px-8 text-base bg-background/50"
-                      onClick={() =>
-                        (window.location.href = "mailto:support@system.intesters.com")
-                      }
-                    >
-                      Contact Support
-                    </Button>
-                    <Button
-                      onClick={() => setIsEditModalOpen(true)}
-                      className="rounded-xl h-12 px-8 text-base shadow-lg shadow-emerald-500/20"
-                    >
-                      Edit and Resubmit
-                    </Button>
-                  </div>
-                </div>
-
-                {/* Media Side */}
-                {appDetails?.statusDetails?.image && (
-                  <div
-                    className="flex w-full lg:w-[480px] relative h-[300px] lg:h-auto lg:min-h-full group/image cursor-pointer overflow-hidden border-t lg:border-t-0 lg:border-l border-destructive/10"
-                    onClick={() =>
-                      setFullscreenImage(appDetails?.statusDetails?.image!)
-                    }
-                  >
-                    <SafeImage
-                      src={appDetails?.statusDetails?.image}
-                      alt="Rejection details"
-                      fill
-                      className="object-cover transition-transform duration-700 group-hover/image:scale-105"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-60 lg:opacity-0 group-hover/image:opacity-100 transition-all duration-500 lg:bg-black/40 flex flex-col items-center justify-center gap-3 backdrop-blur-[2px]">
-                      <div className="p-3 rounded-full bg-white/20 backdrop-blur-md border border-white/30 text-white scale-0 group-hover/image:scale-100 transition-transform duration-500">
-                        <Expand className="w-6 h-6" />
-                      </div>
-                      <p className="text-white font-medium text-sm opacity-0 group-hover/image:opacity-100 transition-opacity duration-500 delay-100">
-                        View Attachment
-                      </p>
-                    </div>
-                  </div>
-                )}
-              </div>
-            </motion.section>
-          )}
-
           {appDetails && (
             <EditSubmissionModal
               isOpen={isEditModalOpen}
@@ -532,453 +513,571 @@ function SubmissionDetailsPage({
             />
           )}
 
-          {appDetails?.status === "AVAILABLE" && (
-            <div className="bg-gradient-to-r from-blue-50/50 to-indigo-50/50 dark:from-blue-950/10 dark:to-indigo-950/10 border border-blue-100 dark:border-blue-900/30 rounded-2xl p-5 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-sm">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-emerald-500/10 flex items-center justify-center text-emerald-600 shrink-0">
-                  <PlayCircle className="w-5 h-5" />
-                </div>
-                <div className="text-left">
-                  <h4 className="font-bold text-sm text-foreground">
-                    Start testing early?
-                  </h4>
-                  <p className="text-xs text-muted-foreground">
-                    You have reached <span className="font-semibold text-emerald-600">{appDetails.currentTester || 0}</span> out of <span className="font-semibold text-emerald-600">{appDetails.totalTester || 12}</span> testers. You can start the {appDetails.totalDay || 16}-day testing period now.
-                  </p>
-                </div>
-              </div>
-              <Button
-                onClick={() => setIsStartTestingModalOpen(true)}
-                className="w-full sm:w-auto px-6 py-3 h-auto bg-emerald-500 hover:bg-emerald-500/90 text-white font-semibold rounded-2xl shadow-md transition-all shrink-0"
-              >
-                Start Testing Now
-              </Button>
-            </div>
-          )}
-
-          {showCompleteTestingBanner && (
-            <CompleteTestingBanner
-              appName={appDetails?.androidApp?.appName || ""}
-              currentDay={currentDay}
-              totalDays={totalDays}
-              completedTesters={completedTestersCount}
-              totalTesters={appDetails?.totalTester || 0}
-              requiredTesters={requiredTesters}
-              onComplete={handleCompleteTest}
-            />
-          )}
-
-          <div
-            className={`relative flex flex-col gap-10 ${
-              isUnderReviewOrRejected ? "blur-md pointer-events-none" : ""
-            }`}
+          <Tabs
+            value={selectedTab}
+            onValueChange={handleTabChange}
+            className="w-full"
           >
-            {appDetails?.status !== "COMPLETED" ? (
+            <CustomTabsList
+              tabs={tabs}
+              activeTab={selectedTab}
+              className="sticky top-0 z-30 backdrop-blur-xl py-2 -mx-4 px-4 md:mx-0 md:px-0 mb-6"
+              layoutId="submissionTab"
+            />
+
+            <TabsContent value="overview" className="space-y-8">
+              <AppInfoHeader
+                logo={appDetails?.androidApp?.appLogoUrl}
+                name={appDetails?.androidApp?.appName}
+                dataAiHint={appDetails?.androidApp?.appName}
+                category={appDetails?.androidApp?.appCategory?.name}
+                description={appDetails?.androidApp?.description || ""}
+                status={appDetails?.status}
+                statusConfig={statusConfig}
+              />
+
+              {appDetails?.status === "REJECTED" && (
+                <motion.section
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="rounded-[32px] border border-destructive/10 bg-background/50 backdrop-blur-xl shadow-2xl shadow-destructive/5 relative overflow-hidden group"
+                >
+                  <div className="absolute inset-0 bg-gradient-to-br from-red-500/60 to-red-500/20 dark:from-red-500/30 dark:to-red-500/5 opacity-30 dark:opacity-70" />
+
+                  <div className="flex flex-col lg:flex-row relative z-10">
+                    <div className="flex-1 p-4 sm:p-10 sm:pr-14 flex flex-col justify-center">
+                      <div className="flex items-center gap-4 mb-8">
+                        <div className="h-14 w-14 rounded-2xl bg-destructive/10 text-destructive flex items-center justify-center shadow-inner ring-1 ring-destructive/20 relative overflow-hidden">
+                          <div className="absolute inset-0 bg-gradient-to-br from-destructive/20 to-transparent opacity-50" />
+                          <XCircle className="w-7 h-7 relative z-10" />
+                        </div>
+                        <div>
+                          <div className="flex items-center gap-2 mb-1">
+                            <span className="flex h-2 w-2 rounded-full bg-destructive"></span>
+                            <p className="text-xs font-bold text-destructive uppercase tracking-widest">
+                              Action Required
+                            </p>
+                          </div>
+                          <h2 className="text-2xl sm:text-3xl font-bold text-foreground tracking-tight">
+                            {appDetails?.statusDetails?.title}
+                          </h2>
+                        </div>
+                      </div>
+
+                      <div className="space-y-6 mb-10 relative">
+                        <div className="bg-white/50 dark:bg-white/10 rounded-2xl p-3 sm:p-6 border border-destructive/10 relative overflow-hidden">
+                          <div className="flex items-center gap-2 mb-3 text-yellow-500 font-medium text-sm uppercase tracking-wider">
+                            <AlertTriangle className="w-4 h-4" />
+                            Publisher Feedback
+                          </div>
+                          <p className="text-base text-foreground/80 leading-relaxed font-medium">
+                            {appDetails?.statusDetails?.description}
+                          </p>
+                        </div>
+                      </div>
+
+                      <div className="flex flex-wrap gap-4">
+                        <Button
+                          variant="outline"
+                          className="border-destructive/20 hover:bg-destructive/5 text-destructive rounded-xl h-12 px-8 text-base bg-background/50"
+                          onClick={() =>
+                            (window.location.href = "mailto:support@system.intesters.com")
+                          }
+                        >
+                          Contact Support
+                        </Button>
+                        <Button
+                          onClick={() => setIsEditModalOpen(true)}
+                          className="rounded-xl h-12 px-8 text-base shadow-lg shadow-emerald-500/20"
+                        >
+                          Edit and Resubmit
+                        </Button>
+                      </div>
+                    </div>
+
+                    {appDetails?.statusDetails?.image && (
+                      <div
+                        className="flex w-full lg:w-[480px] relative h-[300px] lg:h-auto lg:min-h-full group/image cursor-pointer overflow-hidden border-t lg:border-t-0 lg:border-l border-destructive/10"
+                        onClick={() =>
+                          setFullscreenImage(appDetails?.statusDetails?.image!)
+                        }
+                      >
+                        <SafeImage
+                          src={appDetails?.statusDetails?.image}
+                          alt="Rejection details"
+                          fill
+                          className="object-cover transition-transform duration-700 group-hover/image:scale-105"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-60 lg:opacity-0 group-hover/image:opacity-100 transition-all duration-500 lg:bg-black/40 flex flex-col items-center justify-center gap-3 backdrop-blur-[2px]">
+                          <div className="p-3 rounded-full bg-white/20 backdrop-blur-md border border-white/30 text-white scale-0 group-hover/image:scale-100 transition-transform duration-500">
+                            <Expand className="w-6 h-6" />
+                          </div>
+                          <p className="text-white font-medium text-sm opacity-0 group-hover/image:opacity-100 transition-opacity duration-500 delay-100">
+                            View Attachment
+                          </p>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </motion.section>
+              )}
+
+              {appDetails?.status === "AVAILABLE" && (
+                <div className="bg-gradient-to-r from-blue-50/50 to-indigo-50/50 dark:from-blue-950/10 dark:to-indigo-950/10 border border-blue-100 dark:border-blue-900/30 rounded-2xl p-5 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-sm">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-emerald-500/10 flex items-center justify-center text-emerald-600 shrink-0">
+                      <PlayCircle className="w-5 h-5" />
+                    </div>
+                    <div className="text-left">
+                      <h4 className="font-bold text-sm text-foreground">
+                        Start testing early?
+                      </h4>
+                      <p className="text-xs text-muted-foreground">
+                        You have reached <span className="font-semibold text-emerald-600">{appDetails.currentTester || 0}</span> out of <span className="font-semibold text-emerald-600">{appDetails.totalTester || 12}</span> testers. You can start the {appDetails.totalDay || 16}-day testing period now.
+                      </p>
+                    </div>
+                  </div>
+                  <Button
+                    onClick={() => setIsStartTestingModalOpen(true)}
+                    className="w-full sm:w-auto px-6 py-3 h-auto bg-emerald-500 hover:bg-emerald-500/90 text-white font-semibold rounded-2xl shadow-md transition-all shrink-0"
+                  >
+                    Start Testing Now
+                  </Button>
+                </div>
+              )}
+
+              {showCompleteTestingBanner && (
+                <CompleteTestingBanner
+                  appName={appDetails?.androidApp?.appName || ""}
+                  currentDay={currentDay}
+                  totalDays={totalDays}
+                  completedTesters={completedTestersCount}
+                  totalTesters={appDetails?.totalTester || 0}
+                  requiredTesters={requiredTesters}
+                  onComplete={handleCompleteTest}
+                />
+              )}
+
               <div
                 className={cn(
-                  "grid grid-cols-1 lg:grid-cols-3 gap-2 sm:gap-4 text-center",
-                  isUnderReviewOrRejected && "pointer-events-none",
+                  isUnderReviewOrRejected && "blur-md pointer-events-none",
                 )}
               >
-                <div className="flex flex-row gap-1 items-center justify-center rounded-2xl overflow-hidden">
-                  <div className="bg-gradient-to-tl from-emerald-500/20 to-emerald-600 text-white p-5 h-full w-full flex flex-col justify-center gap-1">
-                    <p className="text-xs">Testers</p>
-                    <p className="text-4xl sm:text-5xl font-bold">
-                      {appDetails?.currentTester}
-                      <span className="text-2xl text-white/50">
-                        /{appDetails?.totalTester}
-                      </span>
-                    </p>
-                  </div>
-                  <div className="bg-gradient-to-tr from-emerald-500/20 to-emerald-600 text-white p-5 h-full w-full flex flex-col justify-center gap-1">
-                    <p className="text-xs">Days</p>
-                    <p className="text-4xl sm:text-5xl font-bold">
-                      {isUnderReviewOrRejected ? 0 : appDetails?.currentDay}
-                      <span className="text-2xl text-white/50">
-                        /{appDetails?.totalDay}
-                      </span>
-                    </p>
-                  </div>
-                </div>
-                <div className="flex flex-col gap-2 items-center justify-center bg-card rounded-2xl p-3">
-                  <p className="text-xs sm:text-sm">Feedback</p>
-                  <div className="flex flex-row gap-2 items-center justify-center w-full">
-                    <div className="bg-gradient-to-bl from-red-500/20 to-red-500/10 p-2 sm:p-5 rounded-lg relative overflow-hidden w-full">
-                      <div className="p-3 rounded-full absolute opacity-10 scale-[2] -right-2 -top-1 -rotate-45 text-red-500">
-                        <Bug />
+                {appDetails?.status !== "COMPLETED" ? (
+                  <div
+                    className={cn(
+                      "grid grid-cols-1 lg:grid-cols-3 gap-2 sm:gap-4 text-center",
+                      isUnderReviewOrRejected && "pointer-events-none",
+                    )}
+                  >
+                    <div className="flex flex-row gap-1 items-center justify-center rounded-2xl overflow-hidden">
+                      <div className="bg-gradient-to-tl from-emerald-500/20 to-emerald-600 text-white p-5 h-full w-full flex flex-col justify-center gap-1">
+                        <p className="text-xs">Testers</p>
+                        <p className="text-4xl sm:text-5xl font-bold">
+                          {appDetails?.currentTester}
+                          <span className="text-2xl text-white/50">
+                            /{appDetails?.totalTester}
+                          </span>
+                        </p>
                       </div>
-                      <p className="text-[10px] sm:text-xs text-muted-foreground">
-                        Bugs
-                      </p>
-                      <p className="text-3xl sm:text-4xl font-bold">
-                        {feedbackBreakdown.bugs}
-                      </p>
-                    </div>
-                    <div className="bg-gradient-to-bl from-yellow-500/20 to-yellow-500/10 p-2 sm:p-5 rounded-lg relative overflow-hidden w-full">
-                      <div className="p-3 rounded-full absolute opacity-10 scale-[2] -right-2 -top-1 -rotate-45 text-yellow-500">
-                        <Lightbulb />
+                      <div className="bg-gradient-to-tr from-emerald-500/20 to-emerald-600 text-white p-5 h-full w-full flex flex-col justify-center gap-1">
+                        <p className="text-xs">Days</p>
+                        <p className="text-4xl sm:text-5xl font-bold">
+                          {isUnderReviewOrRejected ? 0 : appDetails?.currentDay}
+                          <span className="text-2xl text-white/50">
+                            /{appDetails?.totalDay}
+                          </span>
+                        </p>
                       </div>
-                      <p className="text-[10px] sm:text-xs text-muted-foreground">
-                        Suggestions
-                      </p>
-                      <p className="text-3xl sm:text-4xl font-bold">
-                        {feedbackBreakdown.suggestions}
-                      </p>
                     </div>
-                    <div className="bg-gradient-to-bl from-green-500/20 to-green-500/10 p-2 sm:p-5 rounded-lg relative overflow-hidden w-full">
-                      <div className="p-3 rounded-full absolute opacity-10 scale-[2] -right-2 -top-1 -rotate-90 text-green-500">
-                        <PartyPopper />
+                    <div className="flex flex-col gap-2 items-center justify-center bg-card rounded-2xl p-3">
+                      <p className="text-xs sm:text-sm">Feedback</p>
+                      <div className="flex flex-row gap-2 items-center justify-center w-full">
+                        <div className="bg-gradient-to-bl from-red-500/20 to-red-500/10 p-2 sm:p-5 rounded-lg relative overflow-hidden w-full">
+                          <div className="p-3 rounded-full absolute opacity-10 scale-[2] -right-2 -top-1 -rotate-45 text-red-500">
+                            <Bug />
+                          </div>
+                          <p className="text-[10px] sm:text-xs text-muted-foreground">
+                            Bugs
+                          </p>
+                          <p className="text-3xl sm:text-4xl font-bold">
+                            {feedbackBreakdown.bugs}
+                          </p>
+                        </div>
+                        <div className="bg-gradient-to-bl from-yellow-500/20 to-yellow-500/10 p-2 sm:p-5 rounded-lg relative overflow-hidden w-full">
+                          <div className="p-3 rounded-full absolute opacity-10 scale-[2] -right-2 -top-1 -rotate-45 text-yellow-500">
+                            <Lightbulb />
+                          </div>
+                          <p className="text-[10px] sm:text-xs text-muted-foreground">
+                            Suggestions
+                          </p>
+                          <p className="text-3xl sm:text-4xl font-bold">
+                            {feedbackBreakdown.suggestions}
+                          </p>
+                        </div>
+                        <div className="bg-gradient-to-bl from-green-500/20 to-green-500/10 p-2 sm:p-5 rounded-lg relative overflow-hidden w-full">
+                          <div className="p-3 rounded-full absolute opacity-10 scale-[2] -right-2 -top-1 -rotate-90 text-green-500">
+                            <PartyPopper />
+                          </div>
+                          <p className="text-[10px] sm:text-xs text-muted-foreground">
+                            Praise
+                          </p>
+                          <p className="text-3xl sm:text-4xl font-bold">
+                            {feedbackBreakdown.praise}
+                          </p>
+                        </div>
                       </div>
-                      <p className="text-[10px] sm:text-xs text-muted-foreground">
-                        Praise
-                      </p>
-                      <p className="text-3xl sm:text-4xl font-bold">
-                        {feedbackBreakdown.praise}
-                      </p>
                     </div>
-                  </div>
-                </div>
 
-                <div className="grid grid-cols-2 gap-2 sm:gap-4 w-full">
-                  <div className="bg-card p-3 pt-4 rounded-2xl flex flex-col justify-center h-full min-w-0 flex-1">
-                    <p className="text-xs sm:text-sm mb-2 text-muted-foreground font-medium">
-                      Test Duration
-                    </p>
-                    <div className="bg-secondary/50 rounded-xl p-3 h-full flex items-center justify-center">
-                      <p className="text-xl sm:text-2xl font-black">
-                        {isUnderReviewOrRejected ? "N/A" : `${appDetails?.totalDay || 14} Days`}
-                      </p>
+                    <div className="grid grid-cols-2 gap-2 sm:gap-4 w-full">
+                      <div className="bg-card p-3 pt-4 rounded-2xl flex flex-col justify-center h-full min-w-0 flex-1">
+                        <p className="text-xs sm:text-sm mb-2 text-muted-foreground font-medium">
+                          Test Duration
+                        </p>
+                        <div className="bg-secondary/50 rounded-xl p-3 h-full flex items-center justify-center">
+                          <p className="text-xl sm:text-2xl font-black">
+                            {isUnderReviewOrRejected ? "N/A" : `${appDetails?.totalDay || 14} Days`}
+                          </p>
+                        </div>
+                      </div>
+                      <div className="bg-card p-3 pt-4 rounded-2xl flex flex-col justify-center h-full min-w-0 flex-1">
+                        <p className="text-xs sm:text-sm mb-2 text-muted-foreground font-medium">
+                          Android Min
+                        </p>
+                        <div className="bg-secondary/50 rounded-xl p-3 h-full flex items-center justify-center">
+                          <p className="text-xl sm:text-2xl font-black">
+                            {isUnderReviewOrRejected
+                              ? "N/A"
+                              : `${appDetails?.minimumAndroidVersion}+`}
+                          </p>
+                        </div>
+                      </div>
                     </div>
                   </div>
-                  <div className="bg-card p-3 pt-4 rounded-2xl flex flex-col justify-center h-full min-w-0 flex-1">
-                    <p className="text-xs sm:text-sm mb-2 text-muted-foreground font-medium">
-                      Android Min
-                    </p>
-                    <div className="bg-secondary/50 rounded-xl p-3 h-full flex items-center justify-center">
-                      <p className="text-xl sm:text-2xl font-black">
-                        {isUnderReviewOrRejected
-                          ? "N/A"
-                          : `${appDetails?.minimumAndroidVersion}+`}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ) : (
-              <TestCompleteSection
-                app={appDetails}
-                isUnderReviewOrRejected={isUnderReviewOrRejected}
-              />
-            )}
-
-            {appDetails?.status === "COMPLETED" && !isUnderReviewOrRejected && (
-              <ReviewSubmissionForm
-                appId={appDetails?.androidApp?.id}
-                appName={appDetails?.androidApp?.appName}
-                existingReview={appDetails?.androidApp?.reviews?.find(
-                  (r) => r.userId === appDetails.appOwnerId
-                )}
-                onSuccess={() => appDetailsRefetch()}
-                showStatus={false}
-              />
-            )}
-
-            {appDetails?.status === "COMPLETED" && !isUnderReviewOrRejected && (
-              <div className="bg-card rounded-2xl p-6 border">
-                <button
-                  onClick={() => setShowDeclaration(!showDeclaration)}
-                  className="w-full flex items-center justify-between text-left"
-                >
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-emerald-500/10 flex items-center justify-center">
-                      <FileText className="w-5 h-5 text-emerald-600" />
-                    </div>
-                    <div>
-                      <h3 className="font-semibold">Declaration Report</h3>
-                      <p className="text-sm text-muted-foreground">
-                        Testing summary &amp; Google Play production declaration
-                      </p>
-                    </div>
-                  </div>
-                  <ChevronDown
-                    className={`w-5 h-5 text-muted-foreground transition-transform ${
-                      showDeclaration ? "rotate-180" : ""
-                    }`}
+                ) : (
+                  <TestCompleteSection
+                    app={appDetails}
+                    isUnderReviewOrRejected={isUnderReviewOrRejected}
                   />
-                </button>
-                {showDeclaration && (
-                  <div className="mt-6 pt-6 border-t">
-                    <DeclarationReport
-                      appId={appDetails.id}
-                      appDetails={appDetails}
-                      onClose={() => setShowDeclaration(false)}
+                )}
+
+                {appDetails?.status === "COMPLETED" && !isUnderReviewOrRejected && (
+                  <ReviewSubmissionForm
+                    appId={appDetails?.androidApp?.id}
+                    appName={appDetails?.androidApp?.appName}
+                    existingReview={appDetails?.androidApp?.reviews?.find(
+                      (r) => r.userId === appDetails.appOwnerId
+                    )}
+                    onSuccess={() => appDetailsRefetch()}
+                    showStatus={false}
+                  />
+                )}
+
+                {appDetails?.status === "COMPLETED" && !isUnderReviewOrRejected && (
+                  <div className="bg-card rounded-2xl p-6 border">
+                    <button
+                      onClick={() => setShowDeclaration(!showDeclaration)}
+                      className="w-full flex items-center justify-between text-left"
+                    >
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-xl bg-emerald-500/10 flex items-center justify-center">
+                          <FileText className="w-5 h-5 text-emerald-600" />
+                        </div>
+                        <div>
+                          <h3 className="font-semibold">Declaration Report</h3>
+                          <p className="text-sm text-muted-foreground">
+                            Testing summary &amp; Google Play production declaration
+                          </p>
+                        </div>
+                      </div>
+                      <ChevronDown
+                        className={`w-5 h-5 text-muted-foreground transition-transform ${
+                          showDeclaration ? "rotate-180" : ""
+                        }`}
+                      />
+                    </button>
+                    {showDeclaration && (
+                      <div className="mt-6 pt-6 border-t">
+                        <DeclarationReport
+                          appId={appDetails.id}
+                          appDetails={appDetails}
+                          onClose={() => setShowDeclaration(false)}
+                        />
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+              </TabsContent>
+
+              {showTestersTab && (
+                <TabsContent value="testers">
+                  <TesterRequestsSection
+                    hubId={id}
+                    requests={appDetails?.testerRelations || []}
+                    refetch={appDetailsRefetch}
+                    totalDay={appDetails?.totalDay}
+                  />
+                </TabsContent>
+              )}
+
+              <TabsContent value="feedback">
+                <div
+                  className={cn(
+                    "bg-card/50 rounded-2xl p-2 sm:p-6 sm:pt-4",
+                    isUnderReviewOrRejected && "blur-md pointer-events-none",
+                  )}
+                >
+                  <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
+                    <div>
+                      <h2 className="text-xl sm:text-2xl font-bold">
+                        Detailed Feedback Log
+                      </h2>
+                      <p className="text-sm sm:text-base text-muted-foreground">
+                        All feedback submitted by testers for this project.
+                      </p>
+                    </div>
+                    <div className="flex items-center gap-1">
+                      <Button
+                        variant={viewMode === "list" ? "secondary" : "ghost"}
+                        size="icon"
+                        onClick={() => setViewMode("list")}
+                      >
+                        <List className="w-4 h-4" />
+                      </Button>
+                      <Button
+                        variant={viewMode === "grid" ? "secondary" : "ghost"}
+                        size="icon"
+                        onClick={() => setViewMode("grid")}
+                      >
+                        <LayoutGrid className="w-4 h-4" />
+                      </Button>
+                    </div>
+                  </div>
+                  {currentFeedback.length > 0 ? (
+                    <>
+                      {viewMode === "list" ? (
+                        <div className="space-y-3">
+                          {currentFeedback.map((fb) => (
+                            <Card
+                              key={fb.id}
+                              className={`bg-gradient-to-tl ${
+                                fb.type === "BUG"
+                                  ? "from-red-500/20"
+                                  : fb.type === "SUGGESTION"
+                                    ? "from-yellow-500/20"
+                                    : "from-green-500/20"
+                              } ${
+                                fb.type === "BUG"
+                                  ? "to-red-500/5"
+                                  : fb.type === "SUGGESTION"
+                                    ? "to-yellow-500/5"
+                                    : "to-green-500/5"
+                              } p-0 pt-2 shadow-none border-0 relative overflow-hidden`}
+                            >
+                              <div className="flex items-start flex-col gap-0 pr-2 pl-5">
+                                <div className="absolute scale-[2.5] rotate-45 top-2 left-1 opacity-5 dark:opacity-10">
+                                  {getFeedbackIcon(fb.type)}
+                                </div>
+                                <div className="flex flex-row items-center justify-between w-full">
+                                  <div className="flex items-center gap-3">
+                                    <p className="font-semibold">{fb.type}</p>
+                                    {fb?.priority && getSeverityBadge(fb?.priority)}
+                                  </div>
+                                </div>
+                                <p className="text-sm text-muted-foreground mt-1">
+                                  {fb?.message}
+                                </p>
+                              </div>
+                              <div className="flex items-center justify-between text-xs text-muted-foreground w-full mt-3 bg-black/5 dark:bg-white/10 px-5 h-12">
+                                {fb?.media ? (
+                                  <div
+                                    className="cursor-pointer h-10 w-7 relative"
+                                    onClick={() =>
+                                      setFullscreenImage(fb?.media?.src || "")
+                                    }
+                                  >
+                                    <SafeImage
+                                      src={fb?.media?.src}
+                                      alt="Feedback screenshot"
+                                      fill
+                                      className="absolute rounded border object-cover"
+                                    />
+                                  </div>
+                                ) : (
+                                  <div />
+                                )}
+                                <div className="flex flex-col sm:flex-row gap-0 sm:gap-5 items-end">
+                                  <div>
+                                    <span className="font-semibold text-foreground">
+                                      {fb?.tester?.name}
+                                    </span>
+                                  </div>
+                                  <span className="text-[10px]">
+                                    {format(new Date(fb?.createdAt), "dd MMM yyyy")}
+                                  </span>
+                                </div>
+                              </div>
+                            </Card>
+                          ))}
+                        </div>
+                      ) : (
+                        <div className="grid grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-4">
+                          {currentFeedback.map((fb) => (
+                            <Card
+                              key={fb.id}
+                              className={`bg-gradient-to-bl ${
+                                fb.type === "BUG"
+                                  ? "from-red-500/20"
+                                  : fb.type === "SUGGESTION"
+                                    ? "from-yellow-500/20"
+                                    : "from-green-500/20"
+                              } ${
+                                fb.type === "BUG"
+                                  ? "to-red-500/10"
+                                  : fb.type === "SUGGESTION"
+                                    ? "to-yellow-500/10"
+                                    : "to-green-500/10"
+                              } shadow-none border-0 h-full flex flex-col relative gap-1 sm:gap-2 overflow-hidden`}
+                            >
+                              <CardHeader className="p-2 px-3 pb-0 sm:px-4 flex-row items-center justify-between">
+                                <div className="flex items-center gap-3">
+                                  <div
+                                    className={`p-3 rounded-full absolute opacity-10 scale-[3] -right-1 -top-1 ${
+                                      fb.type === "PRAISE"
+                                        ? "-rotate-90"
+                                        : "-rotate-45"
+                                    }`}
+                                  >
+                                    {getFeedbackIcon(fb.type)}
+                                  </div>
+                                  <CardTitle className="text-base">
+                                    {fb.type}
+                                  </CardTitle>
+                                </div>
+                                {fb?.priority && getSeverityBadge(fb?.priority)}
+                              </CardHeader>
+                              <CardContent className="p-2 px-3 py-0 sm:px-4 flex-grow">
+                                <p className="text-xs sm:text-sm text-muted-foreground">
+                                  {fb?.message}
+                                </p>
+                              </CardContent>
+                              <CardFooter className="p-2 px-3 sm:px-4 flex items-center justify-between text-xs text-muted-foreground mt-2 h-10 bg-black/5 dark:bg-white/10">
+                                {fb?.media ? (
+                                  <div
+                                    className="cursor-pointer h-8 w-6 relative"
+                                    onClick={() =>
+                                      setFullscreenImage(fb?.media?.src || "")
+                                    }
+                                  >
+                                    <SafeImage
+                                      src={fb?.media?.src}
+                                      alt="Feedback screenshot"
+                                      fill
+                                      className="absolute rounded-sm border object-cover"
+                                    />
+                                  </div>
+                                ) : (
+                                  <div />
+                                )}
+                                <div className="flex flex-col sm:flex-row gap-0 sm:gap-5 items-end">
+                                  <div>
+                                    <span className="font-semibold text-foreground text-[10px] sm:text-[12px]">
+                                      {fb?.tester?.name}
+                                    </span>
+                                  </div>
+                                  <span className="text-[8px] sm:text-[10px]">
+                                    {format(new Date(fb?.createdAt), "dd MMM yyyy")}
+                                  </span>
+                                </div>
+                              </CardFooter>
+                            </Card>
+                          ))}
+                        </div>
+                      )}
+                      <AppPagination
+                        currentPage={feedbackPage}
+                        totalPages={totalFeedbackPages}
+                        onPageChange={handleFeedbackPageChange}
+                      />
+                    </>
+                  ) : (
+                    <motion.div
+                      initial={{ opacity: 0, scale: 0.95 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ duration: 0.5 }}
+                      className="flex flex-col items-center justify-center py-16 px-4 text-center border-2 border-dashed border-muted-foreground/20 rounded-3xl bg-muted/50 dark:bg-muted/10 relative overflow-hidden"
+                    >
+                      <div className="absolute top-0 right-0 p-12 bg-emerald-500/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none" />
+                      <div className="absolute bottom-0 left-0 p-12 bg-emerald-500/5 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2 pointer-events-none" />
+
+                      <div className="relative mb-6 group">
+                        <div className="absolute inset-0 bg-emerald-500/20 rounded-full blur-xl group-hover:bg-emerald-500/30 transition-all duration-500"></div>
+                        <div className="relative bg-card/80 backdrop-blur-sm p-6 rounded-2xl shadow-sm border border-border/50 ring-1 ring-black/5 dark:ring-white/5">
+                          <ClipboardList className="w-10 h-10 text-emerald-600" />
+                        </div>
+                        <motion.div
+                          animate={{ y: [0, -5, 0] }}
+                          transition={{
+                            repeat: Infinity,
+                            duration: 4,
+                            ease: "easeInOut",
+                          }}
+                          className="absolute -right-3 -top-3 bg-card rounded-lg p-2 shadow-sm border border-border/50 text-red-500"
+                        >
+                          <Bug className="w-4 h-4" />
+                        </motion.div>
+                        <motion.div
+                          animate={{ y: [0, 5, 0] }}
+                          transition={{
+                            repeat: Infinity,
+                            duration: 5,
+                            ease: "easeInOut",
+                            delay: 1,
+                          }}
+                          className="absolute -left-3 -bottom-3 bg-card rounded-lg p-2 shadow-sm border border-border/50 text-green-500"
+                        >
+                          <PartyPopper className="w-4 h-4" />
+                        </motion.div>
+                      </div>
+
+                      <h3 className="text-xl font-bold bg-gradient-to-br from-foreground to-muted-foreground bg-clip-text text-transparent mb-2">
+                        Awaiting Feedback
+                      </h3>
+                      <p className="text-muted-foreground max-w-md mx-auto mb-8 leading-relaxed">
+                        Your app is currently being tested by our community.
+                        Detailed feedback, bug reports, and suggestions will appear
+                        here soon.
+                      </p>
+
+                      <div className="flex items-center gap-3 text-sm font-medium text-emerald-600 bg-emerald-500/10 border border-emerald-500/20 px-4 py-2 rounded-full shadow-sm">
+                        <span className="relative flex h-2.5 w-2.5">
+                          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-500 opacity-75"></span>
+                          <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+                        </span>
+                        Monitoring for submissions...
+                      </div>
+                    </motion.div>
+                  )}
+                </div>
+              </TabsContent>
+
+              {showInstructionsTab && (
+                <TabsContent value="instructions">
+                  <div
+                    className={cn(
+                      isUnderReviewOrRejected && "blur-md pointer-events-none",
+                    )}
+                  >
+                    <DeveloperInstructions
+                      title="Instructions for Testers"
+                      instruction={`"${appDetails?.instructionsForTester}"`}
+                      mt={0}
                     />
                   </div>
-                )}
-              </div>
-            )}
-
-            {appDetails?.instructionsForTester && (
-              <DeveloperInstructions
-                title="Instructions for Testers"
-                instruction={`"${appDetails?.instructionsForTester}"`}
-                mt={8}
-              />
-            )}
-
-            {(appDetails?.status === "AVAILABLE" ||
-              appDetails?.status === "IN_TESTING" ||
-              appDetails?.status === "COMPLETED" ||
-              appDetails?.status === "WAITING_FOR_PARTNERS" ||
-              appDetails?.status === "TESTING_ACTIVE" ||
-              appDetails?.status === "FINDING_TESTERS") && (
-              <TesterRequestsSection
-                hubId={id}
-                requests={appDetails?.testerRelations || []}
-                refetch={appDetailsRefetch}
-                totalDay={appDetails?.totalDay}
-              />
-            )}
-
-            <div
-              className={cn(
-                "bg-card/50 rounded-2xl p-2 sm:p-6 sm:pt-4",
-                isUnderReviewOrRejected && "pointer-events-none",
+                </TabsContent>
               )}
-            >
-              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
-                <div>
-                  <h2 className="text-xl sm:text-2xl font-bold">
-                    Detailed Feedback Log
-                  </h2>
-                  <p className="text-sm sm:text-base text-muted-foreground">
-                    All feedback submitted by testers for this project.
-                  </p>
-                </div>
-                <div className="flex items-center gap-1">
-                  <Button
-                    variant={viewMode === "list" ? "secondary" : "ghost"}
-                    size="icon"
-                    onClick={() => setViewMode("list")}
-                  >
-                    <List className="w-4 h-4" />
-                  </Button>
-                  <Button
-                    variant={viewMode === "grid" ? "secondary" : "ghost"}
-                    size="icon"
-                    onClick={() => setViewMode("grid")}
-                  >
-                    <LayoutGrid className="w-4 h-4" />
-                  </Button>
-                </div>
-              </div>
-              {currentFeedback.length > 0 ? (
-                <>
-                  {viewMode === "list" ? (
-                    <div className="space-y-3">
-                      {currentFeedback.map((fb) => (
-                        <Card
-                          key={fb.id}
-                          className={`bg-gradient-to-tl ${
-                            fb.type === "BUG"
-                              ? "from-red-500/20"
-                              : fb.type === "SUGGESTION"
-                                ? "from-yellow-500/20"
-                                : "from-green-500/20"
-                          } ${
-                            fb.type === "BUG"
-                              ? "to-red-500/5"
-                              : fb.type === "SUGGESTION"
-                                ? "to-yellow-500/5"
-                                : "to-green-500/5"
-                          } p-0 pt-2 shadow-none border-0 relative overflow-hidden`}
-                        >
-                          <div className="flex items-start flex-col gap-0 pr-2 pl-5">
-                            <div className="absolute scale-[2.5] rotate-45 top-2 left-1 opacity-5 dark:opacity-10">
-                              {getFeedbackIcon(fb.type)}
-                            </div>
-                            <div className="flex flex-row items-center justify-between w-full">
-                              <div className="flex items-center gap-3">
-                                <p className="font-semibold">{fb.type}</p>
-                                {fb?.priority && getSeverityBadge(fb?.priority)}
-                              </div>
-                            </div>
-                            <p className="text-sm text-muted-foreground mt-1">
-                              {fb?.message}
-                            </p>
-                          </div>
-                          <div className="flex items-center justify-between text-xs text-muted-foreground w-full mt-3 bg-black/5 dark:bg-white/10 px-5 h-12">
-                            {fb?.media ? (
-                              <div
-                                className="cursor-pointer h-10 w-7 relative"
-                                onClick={() =>
-                                  setFullscreenImage(fb?.media?.src || "")
-                                }
-                              >
-                                <SafeImage
-                                  src={fb?.media?.src}
-                                  alt="Feedback screenshot"
-                                  fill
-                                  className="absolute rounded border object-cover"
-                                />
-                              </div>
-                            ) : (
-                              <div />
-                            )}
-                            <div className="flex flex-col sm:flex-row gap-0 sm:gap-5 items-end">
-                              <div>
-                                <span className="font-semibold text-foreground">
-                                  {fb?.tester?.name}
-                                </span>
-                              </div>
-                              <span className="text-[10px]">
-                                {format(new Date(fb?.createdAt), "dd MMM yyyy")}
-                              </span>
-                            </div>
-                          </div>
-                        </Card>
-                      ))}
-                    </div>
-                  ) : (
-                    <div className="grid grid-cols-2 lg:grid-cols-3 gap-2 sm:gap-4">
-                      {currentFeedback.map((fb) => (
-                        <Card
-                          key={fb.id}
-                          className={`bg-gradient-to-bl ${
-                            fb.type === "BUG"
-                              ? "from-red-500/20"
-                              : fb.type === "SUGGESTION"
-                                ? "from-yellow-500/20"
-                                : "from-green-500/20"
-                          } ${
-                            fb.type === "BUG"
-                              ? "to-red-500/10"
-                              : fb.type === "SUGGESTION"
-                                ? "to-yellow-500/10"
-                                : "to-green-500/10"
-                          } shadow-none border-0 h-full flex flex-col relative gap-1 sm:gap-2 overflow-hidden`}
-                        >
-                          <CardHeader className="p-2 px-3 pb-0 sm:px-4 flex-row items-center justify-between">
-                            <div className="flex items-center gap-3">
-                              <div
-                                className={`p-3 rounded-full absolute opacity-10 scale-[3] -right-1 -top-1 ${
-                                  fb.type === "PRAISE"
-                                    ? "-rotate-90"
-                                    : "-rotate-45"
-                                }`}
-                              >
-                                {getFeedbackIcon(fb.type)}
-                              </div>
-                              <CardTitle className="text-base">
-                                {fb.type}
-                              </CardTitle>
-                            </div>
-                            {fb?.priority && getSeverityBadge(fb?.priority)}
-                          </CardHeader>
-                          <CardContent className="p-2 px-3 py-0 sm:px-4 flex-grow">
-                            <p className="text-xs sm:text-sm text-muted-foreground">
-                              {fb?.message}
-                            </p>
-                          </CardContent>
-                          <CardFooter className="p-2 px-3 sm:px-4 flex items-center justify-between text-xs text-muted-foreground mt-2 h-10 bg-black/5 dark:bg-white/10">
-                            {fb?.media ? (
-                              <div
-                                className="cursor-pointer h-8 w-6 relative"
-                                onClick={() =>
-                                  setFullscreenImage(fb?.media?.src || "")
-                                }
-                              >
-                                <SafeImage
-                                  src={fb?.media?.src}
-                                  alt="Feedback screenshot"
-                                  fill
-                                  className="absolute rounded-sm border object-cover"
-                                />
-                              </div>
-                            ) : (
-                              <div />
-                            )}
-                            <div className="flex flex-col sm:flex-row gap-0 sm:gap-5 items-end">
-                              <div>
-                                <span className="font-semibold text-foreground text-[10px] sm:text-[12px]">
-                                  {fb?.tester?.name}
-                                </span>
-                              </div>
-                              <span className="text-[8px] sm:text-[10px]">
-                                {format(new Date(fb?.createdAt), "dd MMM yyyy")}
-                              </span>
-                            </div>
-                          </CardFooter>
-                        </Card>
-                      ))}
-                    </div>
-                  )}
-                  <AppPagination
-                    currentPage={feedbackPage}
-                    totalPages={totalFeedbackPages}
-                    onPageChange={handleFeedbackPageChange}
-                  />
-                </>
-              ) : (
-                <motion.div
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ duration: 0.5 }}
-                  className="flex flex-col items-center justify-center py-16 px-4 text-center border-2 border-dashed border-muted-foreground/20 rounded-3xl bg-muted/50 dark:bg-muted/10 relative overflow-hidden"
-                >
-                  <div className="absolute top-0 right-0 p-12 bg-emerald-500/5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2 pointer-events-none" />
-                  <div className="absolute bottom-0 left-0 p-12 bg-emerald-500/5 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2 pointer-events-none" />
-
-                  <div className="relative mb-6 group">
-                    <div className="absolute inset-0 bg-emerald-500/20 rounded-full blur-xl group-hover:bg-emerald-500/30 transition-all duration-500"></div>
-                    <div className="relative bg-card/80 backdrop-blur-sm p-6 rounded-2xl shadow-sm border border-border/50 ring-1 ring-black/5 dark:ring-white/5">
-                      <ClipboardList className="w-10 h-10 text-emerald-600" />
-                    </div>
-                    <motion.div
-                      animate={{ y: [0, -5, 0] }}
-                      transition={{
-                        repeat: Infinity,
-                        duration: 4,
-                        ease: "easeInOut",
-                      }}
-                      className="absolute -right-3 -top-3 bg-card rounded-lg p-2 shadow-sm border border-border/50 text-red-500"
-                    >
-                      <Bug className="w-4 h-4" />
-                    </motion.div>
-                    <motion.div
-                      animate={{ y: [0, 5, 0] }}
-                      transition={{
-                        repeat: Infinity,
-                        duration: 5,
-                        ease: "easeInOut",
-                        delay: 1,
-                      }}
-                      className="absolute -left-3 -bottom-3 bg-card rounded-lg p-2 shadow-sm border border-border/50 text-green-500"
-                    >
-                      <PartyPopper className="w-4 h-4" />
-                    </motion.div>
-                  </div>
-
-                  <h3 className="text-xl font-bold bg-gradient-to-br from-foreground to-muted-foreground bg-clip-text text-transparent mb-2">
-                    Awaiting Feedback
-                  </h3>
-                  <p className="text-muted-foreground max-w-md mx-auto mb-8 leading-relaxed">
-                    Your app is currently being tested by our community.
-                    Detailed feedback, bug reports, and suggestions will appear
-                    here soon.
-                  </p>
-
-                  <div className="flex items-center gap-3 text-sm font-medium text-emerald-600 bg-emerald-500/10 border border-emerald-500/20 px-4 py-2 rounded-full shadow-sm">
-                    <span className="relative flex h-2.5 w-2.5">
-                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-500 opacity-75"></span>
-                      <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
-                    </span>
-                    Monitoring for submissions...
-                  </div>
-                </motion.div>
-              )}
-            </div>
-          </div>
+          </Tabs>
         </main>
       </div>
 

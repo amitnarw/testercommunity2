@@ -58,19 +58,13 @@ export default function WalletPage() {
   return (
     <div data-loc="WalletPage" className="min-h-screen w-full relative">
       <main className="container mx-auto px-4 md:px-8 py-6 md:py-10 max-w-7xl">
+        <WalletHeader />
         <motion.div
           initial="hidden"
           animate="visible"
           variants={containerVariants}
           className="space-y-8 md:space-y-12"
         >
-          <motion.div
-            variants={itemVariants}
-            className="flex flex-col md:flex-row md:items-center justify-between gap-6"
-          >
-            <WalletHeader />
-          </motion.div>
-
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
             <motion.div
               variants={itemVariants}

@@ -111,13 +111,17 @@ export function PricingCardsGrid({
     return [...arr]
       .filter((p) => p.isActive)
       .filter((p) => (showAllPlans ? true : p.id !== "handshake"))
+      .filter((p) => (mode === "billing" ? p.billingType === "ONE_TIME" : true))
       .sort((a, b) => (a.sequence ?? 0) - (b.sequence ?? 0));
-  }, [allPlans, showAllPlans]);
+  }, [allPlans, showAllPlans, mode]);
 
   if (sortedPlans.length === 0) return null;
 
   const style = VARIANT_STYLES[variant] ?? VARIANT_STYLES.pricing;
-  const maxW = responsiveMaxW(sortedPlans.length, style.maxW);
+  const maxW =
+    mode === "billing" && sortedPlans.length === 1
+      ? "max-w-sm"
+      : responsiveMaxW(sortedPlans.length, style.maxW);
 
   return (
     <div

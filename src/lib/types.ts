@@ -1797,6 +1797,8 @@ export interface DeveloperCardData {
   eliteBadge: boolean;
   totalTester: number;
   currentTester: number;
+  totalDay: number;
+  averageRating: number;
   status: DashboardAndHubStatus;
 }
 
